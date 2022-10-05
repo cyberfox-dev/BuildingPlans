@@ -129,5 +129,7 @@
       }
     }
   },
-  "defaultProject": "WayleaveManagementSystem"
+  "cli": {
+    "analytics": false
+  }
 }

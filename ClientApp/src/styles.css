@@ -14,3 +14,231 @@ code {
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
+
+#stripes {
+  width: 100%;
+  height: 50em;
+  top: -50px;
+  overflow: hidden;
+  transform-origin: 0;
+  transform: skewY(-12deg);
+  z-index: -1;
+  background: -webkit-linear-gradient(300deg,#53f 15%,#05d5ff 70%,#a6ffcb 94%);
+  background: linear-gradient(150deg,#53f 15%,#05d5ff 70%,#a6ffcb 94%);
+}
+
+  #stripes, #stripes span {
+    position: absolute;
+  }
+
+    #stripes span {
+      height: 40px;
+    }
+
+    #stripes :nth-child(1) {
+      width: 50%;
+      left: 50%;
+      top: 40px;
+      background: #4c29ff;
+    }
+
+    #stripes :nth-child(2) {
+      width: 14%;
+      right: 0;
+      bottom: 40px;
+      background: #2be7ff;
+    }
+
+    #stripes :nth-child(3) {
+      width: 25%;
+      bottom: 0;
+      right: 0;
+      background: #a1ffc8;
+    }
+
+@media (min-width:670px) {
+  #stripes span {
+    height: 150px;
+  }
+
+  #stripes :nth-child(1) {
+    top: 0;
+  }
+
+  #stripes :nth-child(2) {
+    width: 16.66667%;
+    top: 300px;
+    bottom: auto;
+    background: #0dcfff;
+  }
+
+  #stripes :nth-child(3) {
+    width: 33.33333%;
+    right: auto;
+    background: #11bdff;
+  }
+}
+
+@media (min-width: 880px) {
+  #stripes span {
+    height: 190px;
+  }
+
+  #stripes :nth-child(1) {
+    width: 33.33333%;
+    left: -16.66666%;
+    background: #53f;
+  }
+
+  #stripes :nth-child(2) {
+    width: 33.33333%;
+    top: 0;
+    left: 16.66666%;
+    right: auto;
+    background: #4553ff;
+  }
+
+  #stripes :nth-child(3) {
+    width: 33.33333%;
+    left: 49.99999%;
+    bottom: auto;
+    background: #4f40ff;
+  }
+
+  #stripes :nth-child(4) {
+    width: 33.33333%;
+    top: 380px;
+    right: -16.66666%;
+    background: #25ddf5;
+  }
+
+  #stripes :nth-child(5) {
+    width: 33.33333%;
+    bottom: 0;
+    background: #1fa2ff;
+  }
+}
+
+
+.area {
+  background-color: #4158D0;
+}
+
+.circles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -2;
+}
+
+  .circles li {
+    position: absolute;
+    display: block;
+    list-style: none;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 80px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    animation: animate 25s linear infinite;
+    bottom: -150px;
+  }
+
+    .circles li:nth-child(1) {
+      left: 25%;
+      width: 80px;
+      height: 80px;
+      animation-delay: 0s;
+    }
+
+
+    .circles li:nth-child(2) {
+      left: 10%;
+      width: 20px;
+      height: 20px;
+      animation-delay: 2s;
+      animation-duration: 12s;
+    }
+
+    .circles li:nth-child(3) {
+      left: 70%;
+      width: 20px;
+      height: 20px;
+      animation-delay: 4s;
+    }
+
+    .circles li:nth-child(4) {
+      left: 40%;
+      width: 60px;
+      height: 60px;
+      animation-delay: 0s;
+      animation-duration: 18s;
+    }
+
+    .circles li:nth-child(5) {
+      left: 65%;
+      width: 20px;
+      height: 20px;
+      animation-delay: 0s;
+    }
+
+    .circles li:nth-child(6) {
+      left: 75%;
+      width: 110px;
+      height: 110px;
+      animation-delay: 3s;
+    }
+
+    .circles li:nth-child(7) {
+      left: 35%;
+      width: 150px;
+      height: 150px;
+      animation-delay: 7s;
+    }
+
+    .circles li:nth-child(8) {
+      left: 50%;
+      width: 25px;
+      height: 25px;
+      animation-delay: 15s;
+      animation-duration: 45s;
+    }
+
+    .circles li:nth-child(9) {
+      left: 20%;
+      width: 15px;
+      height: 15px;
+      animation-delay: 2s;
+      animation-duration: 35s;
+    }
+
+    .circles li:nth-child(10) {
+      left: 85%;
+      width: 150px;
+      height: 150px;
+      animation-delay: 0s;
+      animation-duration: 11s;
+    }
+
+
+
+@keyframes animate {
+
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+    border-radius: 0;
+  }
+
+  100% {
+    transform: translateY(-1000px) rotate(720deg);
+    opacity: 0;
+    border-radius: 50%;
+  }
+}
