@@ -12,7 +12,7 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 })
 export class LoginComponent implements OnInit {
   public container = document.getElementById('container');
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
   }
@@ -38,6 +38,8 @@ export class LoginComponent implements OnInit {
       console.log("remove");
     }
   }
-
+  login(){
+    this.router.navigate(["/home"]);
+}
 
 }
