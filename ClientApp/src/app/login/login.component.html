@@ -2,9 +2,6 @@
 <link _ngcontent-ng-cli-universal-c545="" href="https://fonts.googleapis.com/css?family=Roboto:300italic,400italic,400,100,300,600,700" rel="stylesheet" type="text/css">
 <body>
 
-
-
-
     <div class="splash flex" id="splashlogo">
         <div class="container2">
             <img src="assets/ctlogo.png" class="logo">
@@ -14,25 +11,29 @@
     <div class="container-fluid">
         <div class="container" id="container">
             <div class="form-container sign-up-container">
-                <form action="#">
-                    <h2>Create an account</h2>
-                    <input type="text" placeholder="BP Number" />
-                    <input type="text" placeholder="Name & Surname" />
-                    <input type="email" placeholder="Cell No." />
-                    <input type="password" placeholder="Email" />
-                    <button class="OTP">Send OTP</button>
-                    <input type="text" placeholder="Enter OTP" />
-                    <button type="button" >Verify & Continue</button>
-                </form>
+              <form action="#" [formGroup]="registerForm">
+                
+                <h2>Create an account</h2>
+                <input type="text" placeholder="BP Number" />
+                <input type="text" placeholder="Name & Surname" /> formControlName="fullName"
+                <input type="text" placeholder="Cell No." />
+                <input type="email" formControlName="email" placeholder="Email" /> 
+                <input type="password" formControlName="password" placeholder="Password" /> 
+                <button class="OTP">Send OTP</button>
+                <input type="text" placeholder="Enter OTP" />
+                <button type="button">Verify & Continue</button>
+              </form>
                 </div>
             <div class="form-container sign-in-container">
-                <form action="#">
-                    <h2>Login</h2>
-                    <input type="text" placeholder="Email"/>
-                    <input type="password" placeholder="Password"  />
-                    <a href="#">Forgot your password?</a>
-                    <button type="submit" class="submit" (click)="login()">Login</button>
-                </form>
+              <form action="#" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                
+
+                <h2>Login</h2>
+                <input type="email" formControlName="email" placeholder="Email" /> 
+                <input type="password" formControlName="password" placeholder="Password" /> 
+                <a href="#">Forgot your password?</a>
+                <button type="submit" [disabled]="!loginForm.valid" class="submit">Login</button> <!--(click)="login()"-->  
+              </form>
                 </div>
             <div class="overlay-container">
                 <div class="overlay">
