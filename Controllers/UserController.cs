@@ -67,13 +67,16 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     //covert errors to an array then return it by Description
-                    return await Task.FromResult(string.Join(",", result.Errors.Select(x => x.Description).ToArray()));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "", result.Errors.Select(x => x.Description).ToArray()));
                 }
+                    
             }
             catch (Exception ex)
             {
 
-                return await Task.FromResult(ex.Message);
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             }
 
         }
@@ -99,8 +102,10 @@ namespace WayleaveManagementSystem.Controllers
             }
             catch (Exception ex)
             {
-                return await Task.FromResult(ex.Message);
-                // return await Task.FromResult(new ResponseModel(ResponseCode.Error, ex.Message, null));
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+                
             }
         }
 
@@ -143,12 +148,15 @@ namespace WayleaveManagementSystem.Controllers
                         var appUser = await _userManager.FindByEmailAsync(model.Email);
                         var user = new UserDTO(appUser.FullName, appUser.Email, appUser.UserName, appUser.DateCreated);
                         user.Token = GenerateToken(appUser);
-                        return await Task.FromResult(user);
-
+    
+                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "", user));
                     }
                     else
                     {
-                        return await Task.FromResult("Login Failed, Invalid Email or Password");
+                       
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Login Failed, Invalid Email or Password", null));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
                     }
                 }
                 else
@@ -161,7 +169,9 @@ namespace WayleaveManagementSystem.Controllers
             }
             catch (Exception ex)
             {
-                return await Task.FromResult(ex.Message);
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             }
         }
 

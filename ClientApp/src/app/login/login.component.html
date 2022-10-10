@@ -11,21 +11,21 @@
     <div class="container-fluid">
         <div class="container" id="container">
             <div class="form-container sign-up-container">
-              <form action="#" [formGroup]="registerForm">
+              <form action="#" [formGroup]="registerForm" (ngSubmit)="onRegister()" >
                 
                 <h2>Create an account</h2>
                 <input type="text" placeholder="BP Number" />
-                <input type="text" placeholder="Name & Surname" /> formControlName="fullName"
+                <input type="text" formControlName="fullName" placeholder="Name & Surname" /> 
                 <input type="text" placeholder="Cell No." />
                 <input type="email" formControlName="email" placeholder="Email" /> 
                 <input type="password" formControlName="password" placeholder="Password" /> 
                 <button class="OTP">Send OTP</button>
                 <input type="text" placeholder="Enter OTP" />
-                <button type="button">Verify & Continue</button>
+                <button type="submit" [disabled]="!registerForm.valid">Verify & Continue</button>
               </form>
                 </div>
             <div class="form-container sign-in-container">
-              <form action="#" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+              <form action="#" [formGroup]="loginForm" (ngSubmit)="onLogin()">
                 
 
                 <h2>Login</h2>

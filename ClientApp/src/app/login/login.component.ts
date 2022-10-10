@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
-import { error } from 'console';
 import { UserService } from '../service/user.service';
 
 
@@ -37,11 +36,34 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onSubmit() {
+  onLogin() {
     //let fullName = this.loginForm.controls["fullName"].value;
     let email = this.loginForm.controls["email"].value;
     let password = this.loginForm.controls["password"].value;
-    this.userService.login(email,password).subscribe((data) => {
+    this.userService.login(email, password).subscribe((data: any) => {
+      debugger;
+      if (data.responseCode == 1) {
+        localStorage.setItem("LoggedInUserInfo", data.DataSet);
+        this.router.navigate(["/home"]);
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  onRegister() {
+    console.log("onRegister");
+    let fullName = this.registerForm.controls["fullName"].value;
+    let email = this.registerForm.controls["email"].value;
+    let password = this.registerForm.controls["password"].value;
+    this.userService.register(fullName, email, password).subscribe((data:any) => {
+      
       console.log("reponse", data);
 
     }, error => {

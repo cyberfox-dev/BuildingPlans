@@ -19,7 +19,7 @@ export class UserService {
 
   }
 
-  public register(fullName: string, email: string, password: string) {
+  public register(fullName: string | null, email: string | null, password: string | null) {
 
     const body = {
       FullName: fullName,
