@@ -10,3 +10,11 @@ NPM INSTALLS:
 
 07 october: ng add @angular/material
 
+"to install... npm install ..."
+
+Dotnet install for EntityFramwork
+dotnet tool install --global dotnet-ef (run on main folder)
+
+
+Project migrated to entity framwork core 
+to remove run : ef migrations remove
