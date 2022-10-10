@@ -1,16 +1,106 @@
 <app-nav-menu></app-nav-menu>
+<link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700,800&display=swap" rel="stylesheet">
+<link _ngcontent-ng-cli-universal-c545="" href="https://fonts.googleapis.com/css?family=Roboto:300italic,400italic,400,100,300,600,700" rel="stylesheet" type="text/css">
 
-<h1>Hello, world!</h1>
-<p>Welcome to your new single-page application, built with:</p>
-<ul>
-  <li><a href='https://get.asp.net/'>ASP.NET Core</a> and <a href='https://msdn.microsoft.com/en-us/library/67ef8sbd.aspx'>C#</a> for cross-platform server-side code</li>
-  <li><a href='https://angular.io/'>Angular</a> and <a href='http://www.typescriptlang.org/'>TypeScript</a> for client-side code</li>
-  <li><a href='http://getbootstrap.com/'>Bootstrap</a> for layout and styling</li>
-</ul>
-<p>To help you get started, we've also set up:</p>
-<ul>
-  <li><strong>Client-side navigation</strong>. For example, click <em>Counter</em> then <em>Back</em> to return here.</li>
-  <li><strong>Angular CLI integration</strong>. In development mode, there's no need to run <code>ng serve</code>. It runs in the background automatically, so your client-side resources are dynamically built on demand and the page refreshes when you modify any file.</li>
-  <li><strong>Efficient production builds</strong>. In production mode, development-time features are disabled, and your <code>dotnet publish</code> configuration automatically invokes <code>ng build</code> to produce minified, ahead-of-time compiled JavaScript files.</li>
-</ul>
-<p>The <code>ClientApp</code> subdirectory is a standard Angular CLI application. If you open a command prompt in that directory, you can run any <code>ng</code> command (e.g., <code>ng test</code>), or use <code>npm</code> to install extra packages into it.</p>
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<!--<h1>Navbar</h1>-->
+
+<div class="container-fluid main">
+
+<h1>Hi Jahdiel Sanjeevy</h1>
+<h2>Welcome to your Dashboard</h2>
+<button class="btn"><a><i class="fa fa-plus"> </i> Create New Wayleave</a></button>
+
+<!--Tabs-->
+
+<div class="main-container">
+  <div class="heading">
+    <h3><span>Recent Projects</span></h3>
+
+  </div>
+  <div class="cards">
+    <div class="card card-1">
+      <h4>Projects in : Processing</h4>
+      <h1 class="num">6</h1>
+      <p class="card__apply">
+        <a class="card__link">View these projects</a>
+      </p>
+    </div>
+    <div class="card card-2">
+      <h4>Projects in : Declined</h4>
+      <h1 class="num">2</h1>
+      <p class="card__apply">
+        <a class="card__link">View these projects</a>
+      </p>
+    </div>
+    <div class="card card-3">
+      <h4>Projects in : Paid</h4>
+      <h1 class="num">9</h1>
+      <p class="card__apply">
+        <a class="card__link">View these projects</a>
+      </p>
+    </div>
+    <div class="card card-4">
+      <h4>Projects in : Approved</h4>
+      <h1 class="num">12</h1>
+      <p class="card__apply">
+        <a class="card__link">View these projects</a>
+      </p>
+    </div>
+    <div class="card card-5">
+      <h4>Projects in : Invoiced</h4>
+      <h1 class="num">1</h1>
+      <p class="card__apply">
+        <a class="card__link">View these projects</a>
+      </p>
+    </div>
+  </div>
+</div>
+<!--END OF TABS-->
+
+<div class="table container-fluid">
+  <table class="table table-hover table-xl border_bottom">
+    <thead>
+      <tr class="tableheader">
+        <th scope="col" class="border-top-0">Status</th>
+        <th scope="col" class="border-top-0">Project#</th>
+        <th scope="col" class="border-top-0">Item Location</th>
+        <th scope="col" class="border-top-0">Item Name</th>
+        <th scope="col" class="border-top-0">Application Type</th>
+        <th scope="col" class="border-top-0">Current Stage</th>
+        <th scope="col" class="border-top-0">Date Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="text-truncate row_padding">
+          <i class="la la-dot-circle-o  font-medium-1 mr-1"></i>
+          Test
+        </td>
+        <td class="text-truncate row_padding">
+          <a href="javascript:void(0);">TEST</a>
+        </td>
+
+        <td class="text-truncate row_padding">
+          <span>TEST</span>
+        </td>
+
+        <td class="text-truncate row_padding">
+          <span>TEST</span>
+        </td>
+        <td class="text-truncate row_padding">
+          <span>
+            TEST
+          </span>
+        </td>
+        <td class="text-truncate row_padding">
+          <span>TEST</span>
+        </td>
+        <td class="text-truncate row_padding">TEST</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+  </div>

@@ -1,0 +1,233 @@
+<link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700,800&display=swap" rel="stylesheet">
+<link _ngcontent-ng-cli-universal-c545="" href="https://fonts.googleapis.com/css?family=Roboto:300italic,400italic,400,100,300,600,700" rel="stylesheet" type="text/css">
+
+
+
+<app-nav-menu></app-nav-menu>
+
+
+
+<!--<div class="splash flex" id="splashlogo">
+  <div class="container2">
+    <img src="assets/ctlogo.png" href="#" class="logo" >
+    <h3>CCT Wayleaves Management System</h3>
+  </div>
+</div>-->
+
+<div class="container-fluid ">
+  <h2>Creating a new user</h2>
+  <div class="card">
+    <div class="process-wrap active-step1">
+      <div class="process-main">
+        <div class="col-3 ">
+          <div class="process-step-cont">
+            <div class="process-step step-1" (click)="step1()"></div>
+            <span class="process-label">Personal Information</span>
+
+          </div>
+        </div>
+        <div class="col-3 ">
+          <div class="process-step-cont">
+            <div class="process-step step-2" (click)="step2()" [class.navactive]="step2active"></div>
+            <span class="process-label" [class.proceslabelactive]="step2label">Engineer Information</span>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="process-step-cont">
+            <div class="process-step step-3" (click)="step3()" [class.navactive]="step3active"></div>
+            <span class="process-label" [class.proceslabelactive]="step3label">Contractor Information</span>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="process-step-cont">
+            <div class="process-step step-4" (click)="step4()" [class.navactive]="step4active"></div>
+            <span class="process-label" [class.proceslabelactive]="step4label">Finalize</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--Personal Information-->
+    <div class="container-fluid div" *ngIf="step1div">
+      <div class="typeofapplicant">
+        <h5>What type of Applicant are you ?</h5>
+        <div class="row">
+          <div class="col">
+            <button class="typeofApplicant" (click)="sInternal()" [class.active]="Internal">Internal Applicant</button>
+
+
+          </div>
+          <div class="col">
+            <button class="typeofApplicant" (click)="sExternal()" [class.active]="External">External Applicant</button>
+          </div>
+        </div>
+      </div>
+
+      <!--External Applicant-->
+      <div class="external" *ngIf="showExternal">
+        <h5>Please enter your details as an External Applicant</h5>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="BpNoApplicant" placeholder="Enter BP Number" name="bpNoApplicant">
+              <label for="bpNoApplicant">BP Number</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="Address" placeholder="Enter Address" name="address">
+              <label for="address">Company Name</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="Address" placeholder="Enter Address" name="address">
+              <label for="address">Company Reg No.</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="email" class="form-control" id="ApplicantEmail" placeholder="Enter Email" name="applicantEmail">
+              <label for="applicantEmail">Company Type</label>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="Name" placeholder="Enter First Name" name="name">
+              <label for="name">Name</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="Surname" placeholder="Enter Surname" name="surname">
+              <label for="surname">Surname</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="tel" class="form-control" id="ApplicantTel" placeholder="Enter Tell No." name="applicantTellNo">
+              <label for="applicantTellNo">Cell No.</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="email" class="form-control" id="ApplicantEmail" placeholder="Enter Email" name="applicantEmail">
+              <label for="applicantEmail">Email</label>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="tel" class="form-control" id="ApplicantTel" placeholder="Enter Tell No." name="applicantTellNo">
+              <label for="applicantTellNo">Physcial Address</label>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <!--END-->
+      <!--Internal Applicant-->
+      <div class="internal" *ngIf="showInternal">
+        <h5>Please enter your details as an Internal Applicant</h5>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="Name" placeholder="Enter First Name" name="name">
+              <label for="name">Name</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="Surname" placeholder="Enter Surname" name="surname">
+              <label for="surname">Surname</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="tel" class="form-control" id="ApplicantTel" placeholder="Enter Tell No." name="applicantTellNo">
+              <label for="applicantTellNo">Directorate</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="email" class="form-control" id="ApplicantEmail" placeholder="Enter Email" name="applicantEmail">
+              <label for="applicantEmail">Department</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="tel" class="form-control" id="ApplicantTel" placeholder="Enter Tell No." name="applicantTellNo">
+              <label for="applicantTellNo">Branch</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="email" class="form-control" id="ApplicantEmail" placeholder="Enter Email" name="applicantEmail">
+              <label for="applicantEmail">Cost Center Number</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="tel" class="form-control" id="ApplicantTel" placeholder="Enter Tell No." name="applicantTellNo">
+              <label for="applicantTellNo">Cost Center Owner</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--END-->
+
+
+
+    </div>
+
+    <!--Engineer-->
+    <div class="container-fluid div" *ngIf="step2div">
+      <app-new-egineer></app-new-egineer>
+
+
+
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>You have added</strong> "name of engineer"
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    </div>
+
+
+    <!--Contractor-->
+    <div class="container-fluid div" *ngIf="step3div">
+      <app-new-contractor></app-new-contractor>
+
+    </div>
+
+    <div class="container-fluid div" *ngIf="step4div">
+
+      <h5>All of my details are correct</h5>
+      <div class="row">
+      <button class="save">Save and create new user</button>
+        </div>
+    </div>
+
+
+
+  </div>
+  </div>
