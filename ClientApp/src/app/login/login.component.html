@@ -27,51 +27,7 @@
   </div>
 
 
-  <div class="splash flex" id="splashlogo">
-    <div class="container2">
-      <img src="assets/ctlogo.png" class="logo">
-      <h3>Welcome to CCT Wayleaves Management System</h3>
-    </div>
-  </div>
-  <div class="container-fluid">
-    <div class="container" id="container">
-      <div class="form-container sign-up-container">
-        <form action="#">
-          <h2>Create an account</h2>
-          <input type="text" placeholder="BP Number"/>
-          <input type="text" placeholder="Name & Surname"/>
-          <input type="email" placeholder="Cell No."/>
-          <input type="password" placeholder="Email"/>
-          <button class="OTP">Send OTP</button>
-          <input type="text" placeholder="Enter OTP"/>
-          <button type="button" (click)="newUser()">Verify & Continue</button>
-        </form>
-      </div>
-      <div class="form-container sign-in-container">
-        <form action="#">
-          <h2>Login</h2>
-          <input type="text" placeholder="Email" />
-          <input type="password" placeholder="Password" />
-          <a href="#">Forgot your password?</a>
-          <button type="submit" class="submit" (click)="login()">Login</button>
-        </form>
-      </div>
-      <div class="overlay-container">
-        <div class="overlay">
-          <div class="overlay-panel overlay-left">
-            <h1>Already have an account ?</h1>
-            <button (click)="remove()" class="ghost" id="login">Login Up</button>
-          </div>
-          <div class="overlay-panel overlay-right">
-            <h1>Don't have an account ?</h1>
-            <button (click)="add()" class="ghost" id="signUp">Sign Up</button>
-            <p class="bprequired">* Please note a Business Partner (BP) number is required to use this portal. Click here to register with CCT eServices for a BP number</p>
-            <p class="link"> </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+
     <div class="splash flex" id="splashlogo">
         <div class="container2">
             <img src="assets/ctlogo.png" class="logo">
@@ -88,7 +44,6 @@
                 <input type="text" formControlName="fullName" placeholder="Name & Surname" /> 
                 <input type="text" placeholder="Cell No." />
                 <input type="email" formControlName="email" placeholder="Email" /> 
-                <input type="password" formControlName="password" placeholder="Password" /> 
                 <button class="OTP">Send OTP</button>
                 <input type="text" placeholder="Enter OTP" />
                 <button type="submit" [disabled]="!registerForm.valid">Verify & Continue</button>
