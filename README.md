@@ -18,3 +18,13 @@ dotnet tool install --global dotnet-ef (run on main folder)
 
 Project migrated to entity framwork core 
 to remove run : ef migrations remove
+
+npm uninstall @angular/material @angular/cdk
+
+npm install --save @angular/material @angular/cdk --force
+
+ng add @angular/material
+
+custom theme
+yes for fonts
+and no for animations

@@ -13,7 +13,8 @@ import { NewProfileComponent } from './new-profile/new-profile.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NewEgineerComponent } from './new-egineer/new-egineer.component';
 import { NewContractorComponent } from './new-contractor/new-contractor.component';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatStepperModule } from '@angular/material/stepper';
 
 
 
@@ -35,7 +36,9 @@ import { NewContractorComponent } from './new-contractor/new-contractor.componen
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    
+    MatStepperModule,
+    BrowserAnimationsModule,
+
     
     NgbModule,
     RouterModule.forRoot([
