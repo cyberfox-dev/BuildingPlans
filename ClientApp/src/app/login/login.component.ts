@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
     let email = this.loginForm.controls["email"].value;
     let password = this.loginForm.controls["password"].value;
     this.userService.login(email, password).subscribe((data: any) => {
-      debugger;
+    
       if (data.responseCode == 1) {
         localStorage.setItem("LoggedInUserInfo", data.DataSet);
         this.router.navigate(["/home"]);

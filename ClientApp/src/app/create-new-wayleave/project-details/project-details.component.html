@@ -1,0 +1,96 @@
+<div class="container-fluid">
+
+
+  <div class="form-floating ">
+    <select class="form-select" aria-label="Default select example" placeholder="Type of application">
+      <option selected>Type of application</option>
+      <option value="1">Small</option>
+      <option value="2">Medium</option>
+      <option value="3">Large</option>
+      <option value="4">Emergency</option>
+    </select>
+
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" id="NotificationNo" placeholder="Enter Notification Number" name="notificationNo">
+        <label for="name">Notification Number</label>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" id="WBSNo" placeholder="Enter WBS Number" name="wbsNo">
+        <label for="name">WBS Number</label>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" id="Address" placeholder="Enter Address" name="address">
+        <label for="name">Physical Address</label>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" id="Description" placeholder="Enter Description" name="desecription">
+        <label for="name">Description of Proposed Construction Work</label>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <div class="row">
+    <div class="col">
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" id="Email" placeholder="Enter Email" name="email">
+        <label for="name">Type/Nature of works to be undertaken</label>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="row">
+    <div class="typeOfExcavation">
+
+      <div class="card">
+        <h3><span>Type of excavation</span></h3>
+      </div>
+      <div class="container-fluid">
+        <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+          <mat-button-toggle value="bold">Hand Excavation</mat-button-toggle>
+          <mat-button-toggle value="italic">Machine Excavation</mat-button-toggle>
+          <mat-button-toggle value="underline">Drilling</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="card">
+    <h3><span>Expected Start & End Dates </span></h3>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="date" class="form-control" id="startDate" placeholder="Enter Start Date" name="startdate">
+          <label for="name">Start Date</label>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="date" class="form-control" id="endDate" placeholder="" name="enddate">
+          <label for="name">Completion Date</label>
+        </div>
+      </div>
+    </div>
+
+  </div>

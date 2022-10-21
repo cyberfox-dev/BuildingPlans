@@ -1,0 +1,369 @@
+<app-nav-menu></app-nav-menu>
+
+
+  <h1>Application Information</h1>
+  <h2>Project number LS/BP 321</h2>
+
+
+
+  <app-action-center></app-action-center>
+
+
+    <div class="container-fluid">
+
+      <mat-tab-group>
+
+        <!--------------------------------------------------------Project Information--------------------------------------------------->
+
+        <mat-tab label="Project Information">
+
+          <app-view-project-details></app-view-project-details>
+
+          <app-project-details-map></app-project-details-map>
+
+          <app-department-circulation></app-department-circulation>
+        </mat-tab>
+
+        <!--------------------------------------------------------Messaging--------------------------------------------------->
+
+        <mat-tab label="Messaging">
+
+        </mat-tab>
+
+        <!--------------------------------------------------------Financial--------------------------------------------------->
+
+        <mat-tab label="Financial">
+          <div class="container-fluid">
+            <br>
+            <div class="form-floating">
+              <select class="form-select" aria-label="Default select example" placeholder="Type of application">
+                <option selected>Type </option>
+                <option value="1">Deposit</option>
+                <option value="2">Transgression</option>
+                <option value="3">type 3</option>
+                <option value="4">type 4</option>
+              </select>
+
+              <br>
+              <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+                <!--- Note that these columns can be defined in any order.
+              The actual rendered columns are set as a property on the row definition" -->
+                <!-- Position Column -->
+                <ng-container matColumnDef="position">
+                  <th mat-header-cell *matHeaderCellDef> No. </th>
+                  <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+                </ng-container>
+
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef> Name </th>
+                  <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                </ng-container>
+
+                <!-- Weight Column -->
+                <ng-container matColumnDef="weight">
+                  <th mat-header-cell *matHeaderCellDef> Weight </th>
+                  <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
+                </ng-container>
+
+                <!-- Symbol Column -->
+                <ng-container matColumnDef="symbol">
+                  <th mat-header-cell *matHeaderCellDef> Symbol </th>
+                  <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+            </div>
+          </div>
+
+        </mat-tab>
+
+        <!--------------------------------------------------------Applicant--------------------------------------------------->
+
+        <mat-tab label="Applicant">
+
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+
+                  <input type="text" class="form-control" id="BpNoApplicant" placeholder="Enter BP Number" name="bpNoApplicant" value="001" disabled>
+                  <label for="bpNoApplicant">BP Number</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+
+                  <input type="text" class="form-control" id="Address" placeholder="Enter Address" name="address" value="Cyber" disabled>
+                  <label for="address">Company Name</label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" id="Address" placeholder="Enter Address" name="address" value="0909" disabled>
+                  <label for="address">Company Reg No.</label>
+
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+
+                  <input type="email" class="form-control" id="ApplicantEmail" placeholder="Enter Email" name="applicantEmail" value="Test" disabled>
+                  <label for="applicantEmail">Company Type</label>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+
+                  <input type="text" class="form-control" id="Name" placeholder="Enter First Name" name="name" value="John" disabled>
+                  <label for="name">Name</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+
+                  <input type="text" class="form-control" id="Surname" placeholder="Enter Surname" name="surname" value="Smith" disabled>
+                  <label for="surname">Surname</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+
+                  <input type="tel" class="form-control" id="ApplicantTel" placeholder="Enter Tell No." name="applicantTellNo" value="085214532" disabled>
+                  <label for="applicantTellNo">Cell No.</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+
+                  <input type="email" class="form-control" id="ApplicantEmail" placeholder="Enter Email" name="applicantEmail" value="johnsmith@ggmail.com" disabled>
+                  <label for="applicantEmail">Email</label>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+
+                  <input type="tel" class="form-control" id="ApplicantTel" placeholder="Enter Tell No." name="applicantTellNo" value="10 myhouse mysub" disabled>
+                  <label for="applicantTellNo">Physcial Address</label>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </mat-tab>
+
+        <!--------------------------------------------------------Engineer--------------------------------------------------->
+
+        <mat-tab label="Engineer">
+          <div class="container-fluid">
+
+            <app-new-egineer></app-new-egineer>
+
+            <mat-accordion>
+
+              <mat-expansion-panel (opened)="panelOpenState = true"
+                                   (closed)="panelOpenState = false">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Liam Potter
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    Currently linked to this project
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                BP no: 64210<br>
+                Name & Surname: Liam Potter<br>
+                Professional Reg No: EP08562<br>
+                Cell No: 045968712<br>
+                Email: laimpotter@gmail.com<br>
+                <br>
+                <button mat-raised-button color="warn">Remove</button>
+
+
+              </mat-expansion-panel>
+
+              <mat-expansion-panel (opened)="panelOpenState = true"
+                                   (closed)="panelOpenState = false">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Test 2
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    Currently linked to this project
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                BP no: 64210<br>
+                Name & Surname: Liam Potter<br>
+                Professional Reg No: EP08562<br>
+                Cell No: 045968712<br>
+                Email: laimpotter@gmail.com<br>
+                <br>
+                <button mat-raised-button color="warn">Remove</button>
+
+
+              </mat-expansion-panel>
+            </mat-accordion>
+            <br>
+
+          </div>
+
+
+
+
+
+        </mat-tab>
+
+
+
+        <!--------------------------------------------------------Contractor--------------------------------------------------->
+
+        <mat-tab label="Contractor">
+
+          <div class="container-fluid">
+
+
+            <app-new-contractor></app-new-contractor>
+
+            <mat-accordion>
+
+              <mat-expansion-panel (opened)="panelOpenState = true"
+                                   (closed)="panelOpenState = false">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Luiz Diaz
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    Currently linked to this project
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                BP no: 987562<br>
+                Name & Surname: Luiz Diaz<br>
+                Professional Reg No: EP02568<br>
+                Cell No: 89726516510<br>
+                Email: luizdiaz@gmail.com<br>
+                CIBD Rating: 5<br>
+
+                <br>
+                <button mat-raised-button color="warn">Remove</button>
+
+
+              </mat-expansion-panel>
+
+              <mat-expansion-panel (opened)="panelOpenState = true"
+                                   (closed)="panelOpenState = false">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Test 2
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    Currently linked to this project
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                BP no: 64210<br>
+                Name & Surname: Liam Potter<br>
+                Professional Reg No: EP08562<br>
+                Cell No: 045968712<br>
+                Email: laimpotter@gmail.com<br>
+                CIBD Rating: 5<br>
+                <br>
+                <button mat-raised-button color="warn">Remove</button>
+
+
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+
+        </mat-tab>
+
+        <!--------------------------------------------------------Documents--------------------------------------------------->
+
+
+        <mat-tab label="Documents">
+
+
+        </mat-tab>
+
+        <!--------------------------------------------------------Comments--------------------------------------------------->
+
+
+        <mat-tab label="Comments">
+
+          <div class="panel panel-primary">
+
+            <div class="panel-body">
+              <b>Fire</b>
+              <p>Approved</p>
+              <button class="btn ">Reply</button>
+              <hr>
+
+              <b>Energy</b>
+              <p>Can you please provide more information</p>
+              <button class="btn ">Reply</button>
+              <hr>
+
+              <b>Water & Sanitation</b>
+              <p>hello there , this is example </p>
+              <button class="btn ">Reply</button>
+              <hr>
+
+              <b>IST</b>
+              <p>hello there , this is example </p>
+              <button class="btn ">Reply</button>
+              <hr>
+
+              <div ng-app="">
+                <b></b>
+                <p> </p>
+
+
+
+
+
+                <!--          <input Style="width:40%;display:inline-block;" class="form-control" placeholder="Write Your Name.. " />
+              <input Style="width:40%;display:inline-block;" class="form-control" placeholder="Write Your Name.. " />
+              <button class="btn btn-danger">Add Comment</button>-->
+              </div>
+            </div>
+          </div>
+
+        </mat-tab>
+
+        <!--------------------------------------------------------Tracking--------------------------------------------------->
+
+
+        <mat-tab label="Tracking">
+
+
+        </mat-tab>
+
+        <!--------------------------------------------------------Auditing--------------------------------------------------->
+
+
+        <mat-tab label="Auditing">
+
+
+        </mat-tab>
+
+
+      </mat-tab-group>
+
+    </div>
+

@@ -93,8 +93,6 @@
     <None Remove="ClientApp\.angular\cache\14.2.4\angular-webpack\434d242ab7fcbf00018cb622370ee47e9a4055c8\9.pack" />
     <None Remove="ClientApp\.angular\cache\14.2.4\angular-webpack\434d242ab7fcbf00018cb622370ee47e9a4055c8\index.pack" />
     <None Remove="ClientApp\.angular\cache\14.2.4\angular-webpack\434d242ab7fcbf00018cb622370ee47e9a4055c8\index.pack.old" />
-    <None Remove="ClientApp\.angular\cache\14.2.4\angular-webpack\59e7315697036bf6c908d20ff72eea9a5a7b1af7\0.pack" />
-    <None Remove="ClientApp\.angular\cache\14.2.4\angular-webpack\59e7315697036bf6c908d20ff72eea9a5a7b1af7\index.pack" />
     <None Remove="ClientApp\.angular\cache\14.2.4\angular-webpack\8eff61d45378396e4db10978a6b661313c35fa27\0.pack" />
     <None Remove="ClientApp\.angular\cache\14.2.4\angular-webpack\8eff61d45378396e4db10978a6b661313c35fa27\1.pack" />
     <None Remove="ClientApp\.angular\cache\14.2.4\angular-webpack\8eff61d45378396e4db10978a6b661313c35fa27\2.pack" />
@@ -590,7 +588,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ClientApp\.angular\cache\14.2.4\" />
+    <Folder Include="ClientApp\.angular\cache\14.2.4\angular-webpack\" />
     <Folder Include="ClientApp\src\app\service\" />
   </ItemGroup>
 
