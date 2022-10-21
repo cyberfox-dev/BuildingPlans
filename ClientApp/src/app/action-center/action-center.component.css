@@ -24,6 +24,7 @@ mat-sidenav-content{
   font-family: 'Nunito';
   font-style: normal;
   margin: auto;
+  margin-bottom:86px;
 }
 
   .actioncenter a {

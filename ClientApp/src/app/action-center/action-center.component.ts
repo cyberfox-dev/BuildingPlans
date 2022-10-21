@@ -1,7 +1,9 @@
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MatSnackBar } from '@angular/material/snack-bar';
+
 
 @Component({
   selector: 'app-action-center',
@@ -17,11 +19,12 @@ export class ActionCenterComponent implements OnInit {
   }
   ngOnInit(): void {
   }
-
+  openXl(content: any) {
+    this.modalService.open(content, { size: 'xl' });
   }
-  openSnackBar(message: string, action: string) {
-    this._snackBar.open(message, action);
-  }
-
   panelOpenState = false;
-}
+  }
+
+
+
+
