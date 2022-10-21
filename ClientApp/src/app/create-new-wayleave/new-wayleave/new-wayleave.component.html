@@ -1,0 +1,119 @@
+<app-nav-menu></app-nav-menu>
+
+
+
+<!--<app-internal-option (optionEvent)="reciveOption($event)"></app-internal-option>
+-->
+
+
+<div class="content-body">
+  <h2>Create new wayleave</h2>
+
+
+  <!--Stepper-->
+  <mat-horizontal-stepper linear #stepper>
+
+    <!---------------------------------------------------------------Application Details----------------------------------------------------------->
+
+    <mat-step>
+
+      <form>
+        <ng-template matStepLabel>Application details</ng-template>
+        <div class="detials">
+          <div class="card">
+            <h3><span>Applicant details</span></h3>
+          </div>
+
+          <!--Show details for external applicant details-->
+          <app-external-details *ngIf="external"></app-external-details>
+          <!--Show details for internal applicant detials-->
+          <app-internal-details *ngIf="internal"></app-internal-details>
+
+          <div class="container-fluid" *ngIf="client">
+
+
+          </div>
+
+          <!--the applicant selecting an engineer-->
+          <div class="card">
+            <h3><span>Please select an engineer</span></h3>
+          </div>
+
+          <!--Table displaying the engineers-->
+          <app-select-engineer-table></app-select-engineer-table>
+
+
+          <!--Creating a new engineer -->
+          <app-new-egineer></app-new-egineer>
+
+
+
+
+          <!--the applicant selecting an contractor-->
+          <div class="card">
+            <h3><span>Please select a contractor</span></h3>
+            </div>
+            <!--Table displaying the contractors-->
+            <app-select-contractor-table></app-select-contractor-table>
+
+            <!--Creating a new contractor-->
+            <app-new-contractor></app-new-contractor>
+
+          </div>
+
+
+</form>
+    </mat-step>
+
+    <!---------------------------------------------------------------Project Details----------------------------------------------------------->
+    <mat-step>
+      <form>
+
+
+
+        <ng-template matStepLabel>Project Details</ng-template>
+        <div class="card">
+          <h3><span>Project Details</span></h3>
+        </div>
+        <!--enterning project details-->
+
+        <app-project-details></app-project-details>
+
+        <!---------------------------------------------------------------Map----------------------------------------------------------->
+        <div class="card">
+          <h3><span>Location</span></h3>
+          </div>
+          <app-project-details-map></app-project-details-map>
+
+
+      </form>
+    </mat-step>
+
+
+
+
+
+    <!---------------------------------------------------------------uploading docs----------------------------------------------------------->
+
+    <mat-step>
+      <form>
+        <ng-template matStepLabel>checklist and document uploads</ng-template>
+        <img src="assets/uploads.PNG">
+
+        <!--<app-checklist-details (newItemEvent)="StepSave(6,$event)"></app-checklist-details>-->
+
+        <div class="row">
+
+
+          <button type="submit" class="submit">Create Invoice</button>
+
+        </div>
+
+
+
+      </form>
+    </mat-step>
+
+
+  </mat-horizontal-stepper>
+</div>

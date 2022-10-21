@@ -263,7 +263,9 @@
 .nav-user-dropdown {
   padding: 0px;
   min-width: 230px;
-  margin: 0px;
+  margin-right: -4px;
+  top: 63px;
+  left: -204px;
 }
 
 .nav-user-name {
@@ -281,7 +283,7 @@
   .nav-user-info .status {
     float: left;
     top: 7px;
-    left: 0px;
+    right: 0px;
   }
 
 .nav-user-dropdown {
@@ -300,6 +302,7 @@
     border: 0;
     font-size: 13px;
     line-height: 0.4;
+    right:0;
   }
 
     .nav-user-dropdown .dropdown-item:hover {
@@ -308,37 +311,11 @@
 
 /*---- User icon sizes ---*/
 
-.user-avatar-xxl {
-  height: 128px;
-  width: 128px;
-}
-
-.user-avatar-xl {
-  height: 90px;
-  width: 90px;
-}
-
-.user-avatar-lg {
-  height: 48px;
-  width: 48px;
-}
 
 .user-avatar-md {
   height: 32px;
   width: 32px;
 }
-
-.user-avatar-sm {
-  height: 24px;
-  width: 24px;
-}
-
-.user-avatar-xs {
-  height: 18px;
-  width: 18px;
-}
-
-
 
 .avatar {
   width: 2.25rem;
@@ -348,7 +325,6 @@
   background: #F7F9FA;
   color: #fff;
 }
-
 
 .media-attachment div.avatar {
   border: none;
@@ -410,4 +386,8 @@ h2 {
     background: #fff;
     color: #000;
   }
+
+.dropdown-menu {
+  left: -368px;
+}
 

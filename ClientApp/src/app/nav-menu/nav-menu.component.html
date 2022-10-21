@@ -1,11 +1,11 @@
 <!--<h1>Navbar</h1>-->
+<div class="container-fluid">
 <div class="dashboard-header">
   <nav class="navbar navbar-expand-lg bg-white fixed-top">
     <a class="navbar-brand" href="#"><img src="assets/cctlogoblack.png" alt="" class="logo"></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-
       <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
       <ul class="navbar-nav ml-auto navbar-right-top">
         <li ngbDropdown class="nav-item dropdown notification">
@@ -13,7 +13,7 @@
           <ul class="dropdown-menu dropdown-menu-right notification-dropdown">
             <li>
 
-              <div ngbDropdownMenuclass="notification-list">
+              <div ngbDropdownMenu class="notification-list">
                 <div class="list-group">
                   <a ngbDropdownItem class="list-group-item list-group-item-action ">
                     <div class="notification-info">
@@ -34,8 +34,8 @@
                 </div>
               </div>
             </li>
-            <li>
-              <div class="list-footer"> <a>View all notifications</a></div>
+            <li ngbDropdownItem>
+              <div  class="list-footer"> <a>View all notifications</a></div>
             </li>
           </ul>
         </li>
@@ -56,6 +56,6 @@
     </div>
   </nav>
 </div>
-
+  </div>
 
 

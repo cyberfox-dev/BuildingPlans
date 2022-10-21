@@ -1,0 +1,33 @@
+.demo-table {
+  width: 100%;
+}
+
+.mat-row .mat-cell {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+}
+
+.mat-row:hover .mat-cell {
+  background-color: #10c4ff1f;
+}
+
+.demo-row-is-clicked {
+  font-weight: bold;
+  background-color: #d4ffde;
+  color: white;
+}
+
+td {
+  cursor: pointer;
+}
+
+.refresh {
+  width: 60px;
+  height: 40px;
+  margin-top: 20px;
+  border: none;
+  background-color: #a684d3;
+  border-radius: 9px;
+  --box-shadow-color: rgba(255, 215, 97, 0.48);
+}

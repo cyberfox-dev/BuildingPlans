@@ -1,0 +1,46 @@
+.form-select {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+h3 {
+  width: 20em;
+  /* display: flex; */
+  text-align: center;
+  font-family: 'Nunito', sans-serif;
+  border-bottom: 1px solid #4aa704;
+  line-height: 0.1em;
+  margin: 0 auto;
+  padding-top: 50px;
+  margin-bottom: 50px;
+  justify-content: space-around;
+}
+
+  h3 span {
+    background-color: #e3ffe2;
+    padding: 0 10px;
+  }
+
+mat-button-toggle {
+  width: 100%;
+}
+
+mat-button-toggle-group {
+  width: 100%;
+}
+
+.mat-button-toggle-checked {
+  background-color: #6bdd73fa;
+  color: white;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgb(0 0 0 / 13%), 0 6px 20px 0 rgb(0 0 0 / 0%);
+  margin: 20px;
+  border-color: #f1f1f1;
+  background-color: #e3ffe2;
+  margin-bottom: 50px;
+  margin-top: 50px;
+}
+
+

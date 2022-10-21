@@ -1,0 +1,437 @@
+
+/*.mat-form-field
+{
+    min-width: 300px;
+    width:300px;
+
+}
+.dialogControls
+{
+    margin-top:35px;
+}
+
+.mat-form-field-custom
+{*/
+/* min-width: 300px; */
+/* width:300px; */
+/*height:5px;
+    width:10vw;
+    font-size: 13px;*/
+/* border-color: cadetblue; */
+/*}
+
+
+.mat-form-field-custom-checkbox
+{
+    font-size: 12px;
+    width:10vw;
+    line-height: 15px;
+    height: 10px;
+
+}
+
+
+.mat-form-input
+{
+    font-size: 14px;
+
+}
+
+.mat-form-field--inline {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.mat-form-field--inline .mat-form-field {
+    display: inline-block;
+    width: 100%;
+    vertical-align: middle;
+}
+
+.mat-form-field--inline .mat-form-field:nth-child(1) {
+    margin-right: 10px;
+}
+
+.mat-toolbar-single-row {
+    height: auto !important;
+    background: transparent;
+}
+
+.mat-toolbar-single-row button {
+    width: 200px;
+}
+
+#uploadFile {
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    z-index: 9;
+    opacity: 0;
+    height: 100%;
+    cursor: pointer;
+    position: absolute;
+}
+
+
+
+
+
+.mat-form-field
+{
+    min-width: 300px;
+    width:300px;
+}
+
+
+
+form {
+    padding-top:35px;
+
+}*/
+
+/*used to make mat-slide-toggle label appear on the top*/
+/*.text-invisible {
+    opacity: 0;
+  }
+  :host {
+    display: block;
+    padding: 32px;
+    border: 1px solid black;
+    border-radius: 8px;
+  }*/
+
+h1 {
+  /* margin: 0 auto; */
+  /* text-align: center; */
+  padding-top: 12px;
+  /* color: black; */
+  /* font-size: 30px; */
+  /* font-weight: bold; */
+}
+
+h5 {
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+h2 {
+  color: white;
+  margin-top: 211px;
+  margin-bottom: 186px;
+  text-align: center;
+  font-family: 'Nunito';
+  font-size: 55px;
+}
+
+/*h4 {
+  text-align: center;
+  background-color: rgb(229, 235, 120);
+  border-radius: 12px;
+  font-size: 18px;
+  margin-bottom: 10px;
+  opacity: 60%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+*/
+.bpNum {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-family: 'Nunito', sans-serif;
+  background-color: rgb(38, 168, 255);
+  border: 1px solid rgb(38, 168, 255);
+  color: white;
+  transition: 0.3s;
+  padding: 0;
+  width: 100px;
+  height: 55px;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+  .bpNum:hover {
+    background: rgb(38, 168, 200);
+    color: white;
+    border: rgb(38, 168, 200);
+  }
+
+.applicantDetials {
+  text-align: center;
+  background-color: rgb(120, 210, 235);
+  border-radius: 12px;
+  font-size: 18px;
+  margin-bottom: 10px;
+  opacity: 60%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.clientDetials {
+  text-align: center;
+  background-color: rgb(120, 235, 147);
+  border-radius: 12px;
+  font-size: 18px;
+  margin-bottom: 50px;
+  opacity: 60%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 50px;
+}
+
+.projectDetials {
+  text-align: center;
+  background-color: rgb(229, 235, 120);
+  border-radius: 12px;
+  font-size: 18px;
+  margin-bottom: 10px;
+  opacity: 60%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.nextButton {
+  margin-top: 20px;
+}
+
+.detials {
+  position: relative;
+}
+
+.flexContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: baseline;
+}
+
+.inputField {
+  flex: 1;
+  height: 55px;
+  border-radius: 0;
+}
+
+.maps {
+  position: center;
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+
+/*cards to show what application they can pick*/
+
+.telk {
+  width: 210px;
+  height: 68px;
+  background-color: white;
+  position: relative;
+  margin-bottom: 25px;
+  border-radius: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  box-shadow: -1px -1px 5px rgb(224 224 224), 3px 3px 3px rgb(224 224 224);
+  color: black;
+  font-family: "Quicksand", Georgia, "Times New Roman", Times, serif;
+  font-weight: bold;
+  margin: 15px;
+  border-color: #ebebeb;
+  border: none;
+}
+
+.telkactive {
+  opacity: 1;
+  box-shadow: inset -4px -4px 8px rgba(255, 255, 255, 0.5), inset 8px 8px 16px rgba(0, 0, 0, 0.1);
+  color: #79e3b6;
+}
+
+
+.education {
+  --bg-color: #ffd861;
+  --bg-color-light: #ffeeba;
+  --text-color-hover: #4C5656;
+  --box-shadow-color: rgba(255, 215, 97, 0.48);
+}
+
+.credentialing {
+  --bg-color: #B8F9D3;
+  --bg-color-light: #e2fced;
+  --text-color-hover: #4C5656;
+  --box-shadow-color: rgba(184, 249, 211, 0.48);
+}
+
+.wallet {
+  --bg-color: #CEB2FC;
+  --bg-color-light: #F0E7FF;
+  --text-color-hover: #fff;
+  --box-shadow-color: rgba(206, 178, 252, 0.48);
+}
+
+.human-resources {
+  --bg-color: #DCE9FF;
+  --bg-color-light: #f1f7ff;
+  --text-color-hover: #4C5656;
+  --box-shadow-color: rgba(220, 233, 255, 0.48);
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgb(0 0 0 / 13%), 0 6px 20px 0 rgb(0 0 0 / 0%);
+  margin: 20px;
+  border-color: #f1f1f1;
+  background-color: #c7f4ff;
+  margin-bottom: 50px;
+  margin-top: 50px;
+}
+
+
+.active {
+  transform: scale(1) translateZ(0);
+  /*    box-shadow: 0 15px 24px rgba(0,0,0,0.11), 0 15px 24px var(--box-shadow-color);*/
+  border: 3px solid rgb(115, 222, 124);
+}
+
+.card p {
+  font-size: 17px;
+  color: #4C5656;
+  margin-top: 30px;
+  z-index: 1000;
+  transition: color 0.3s ease-out;
+}
+
+.circle {
+  width: 131px;
+  height: 131px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--bg-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease-out;
+}
+
+  .circle:after {
+    content: "";
+    width: 118px;
+    height: 118px;
+    display: block;
+    position: absolute;
+    background: var(--bg-color);
+    border-radius: 50%;
+    top: 7px;
+    left: 7px;
+    transition: opacity 0.3s ease-out;
+  }
+
+  .circle svg {
+    z-index: 10000;
+    transform: translateZ(0);
+  }
+
+.overlay {
+  width: 118px;
+  position: absolute;
+  height: 118px;
+  border-radius: 50%;
+  background: var(--bg-color);
+  top: 70px;
+  left: 50px;
+  z-index: 0;
+  transition: transform 0.3s ease-out;
+}
+
+.w3-modal-content {
+  margin-top: 50px;
+}
+
+.row {
+  justify-content: space-around;
+}
+
+.submit {
+  margin-top: 40px;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-family: 'Nunito', sans-serif;
+  background-color: #73dd73;
+  border: none;
+  color: White;
+  transition: 0.3s;
+  height: 74px;
+  width: 415px;
+  font-size: 20px;
+  border-radius: 20px;
+}
+
+.editandsave {
+  width: 110px;
+  height: 50px;
+  color: white;
+  background-color: dodgerblue;
+  border: none;
+  border-radius: 20px;
+}
+
+.form-select {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.demo-table {
+  width: 100%;
+}
+
+.mat-row .mat-cell {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+}
+
+.mat-row:hover .mat-cell {
+  background-color: #10c4ff1f;
+}
+
+.demo-row-is-clicked {
+  font-weight: bold;
+  background-color: #d4ffde;
+  color: white;
+}
+td{
+    cursor:pointer;
+}
+h3 {
+  width: 20em;
+  border-color: #00cdff;
+  text-align: center;
+  font-family: 'Nunito', sans-serif;
+  border-bottom: 1px solid #0487a7;
+  line-height: 0.1em;
+  margin: 0 auto;
+  padding-top: 50px;
+  margin-bottom: 50px;
+  justify-content: space-around;
+}
+
+  h3 span {
+    background-color: #c7f4ff;
+    padding: 0 10px;
+  }
+
+.refresh {
+  width: 60px;
+  height: 40px;
+  margin-top: 20px;
+  border: none;
+  background-color: #a684d3;
+  border-radius: 9px;
+  --box-shadow-color: rgba(255, 215, 97, 0.48);
+}
+
+/*check buttons for water and sanitation type of excavtion*/
