@@ -24,7 +24,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     var key = Encoding.ASCII.GetBytes(builder.Configuration["JWTConfig:Key"]);
     var issuer = builder.Configuration["JWTConfig:Issuer"];
     var audience = builder.Configuration["JWTConfig:Audience"];
-    options.TokenValidationParameters = new TokenValidationParameters()
+    options.TokenValidationParameters = new TokenValidationParameters() 
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(key),
