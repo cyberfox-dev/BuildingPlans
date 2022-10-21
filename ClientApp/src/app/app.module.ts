@@ -37,6 +37,8 @@ import { DepartmentCirculationComponent } from './department-circulation/departm
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -58,6 +60,17 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     ViewProjectDetailsComponent,
     ActionCenterComponent,
     DepartmentCirculationComponent,
+    NewWayleaveComponent,
+    ExternalDetailsComponent,
+    InternalDetailsComponent,
+    InternalOptionComponent,
+    SelectEngineerTableComponent,
+    SelectContractorTableComponent,
+    ProjectDetailsComponent,
+    ProjectDetailsMapComponent,
+    ViewProjectInfoComponent,
+    ViewProjectDetailsComponent,
+    ActionCenterComponent,
 
   ],
   imports: [
@@ -74,6 +87,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatSidenavModule,
     MatButtonModule,
     MatFormFieldModule,
+    MatTabsModule,
+    MatExpansionModule,
+    MatIconModule,
+    MatTableModule,
+    MatSidenavModule,
+    MatButtonModule,
     MatTabsModule,
     MatExpansionModule,
     MatIconModule,

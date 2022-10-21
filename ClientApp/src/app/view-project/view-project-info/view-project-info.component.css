@@ -15,17 +15,13 @@ h2 {
   margin: 0 auto;
   text-align: center;
   padding-top: 0;
+  padding-bottom: 40px;
   color: white;
   font-size: 30px;
-  /* margin-top: -5px; */
-  margin-bottom: 76px;
 }
 mat-tab-group{
-    width:100%;
-    margin-top:55px;
 }
 mat-tab {
-  width: 100%;
 }
 mat-tab-labels {
   display: flex;
