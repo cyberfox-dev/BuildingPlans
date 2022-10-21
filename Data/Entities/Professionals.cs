@@ -13,7 +13,7 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public string BP_Number { get; set; }
 
-        public bool BpVerified { get; set; }
+        public bool? BpVerified { get; set; }
 
         public string Email { get; set; }
 
@@ -24,6 +24,7 @@ namespace WayleaveManagementSystem.Data.Entities
         public string AppUserID { get; set; }
 
         public AppUser AppUser { get; set; }
+
 
 
 
