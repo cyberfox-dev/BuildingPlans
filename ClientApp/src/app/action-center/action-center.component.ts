@@ -2,6 +2,7 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-action-center',
@@ -11,7 +12,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class ActionCenterComponent implements OnInit {
 
   closeResult!: string;
-  constructor(private offcanvasService: NgbOffcanvas, private modalService: NgbModal) { }
+  constructor(private offcanvasService: NgbOffcanvas, private modalService: NgbModal, private _snackBar: MatSnackBar) { }
   openEnd(content: TemplateRef<any>) {
     this.offcanvasService.open(content, { position: 'end' });
   }
@@ -21,7 +22,9 @@ export class ActionCenterComponent implements OnInit {
   openXl(content: any) {
     this.modalService.open(content, { size: 'xl' });
   }
-
+  openSnackBar(message: string, action: string) {
+    this._snackBar.open(message, action);
+  }
 
   panelOpenState = false;
 }

@@ -34,6 +34,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { ActionCenterComponent } from './action-center/action-center.component';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { DepartmentCirculationComponent } from './department-circulation/department-circulation.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @NgModule({
   declarations: [
@@ -68,9 +70,10 @@ import { DepartmentCirculationComponent } from './department-circulation/departm
     MatDatepickerModule,
     BrowserAnimationsModule,
     MatTableModule,
- 
+    MatSnackBarModule,
     MatSidenavModule,
     MatButtonModule,
+    MatFormFieldModule,
     MatTabsModule,
     MatExpansionModule,
     MatIconModule,
