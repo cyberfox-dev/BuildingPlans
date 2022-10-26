@@ -36,7 +36,10 @@ import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { DepartmentCirculationComponent } from './department-circulation/department-circulation.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
-
+import { MatMenuModule } from '@angular/material/menu';
+import { DepartmentConfigComponent } from './department-config/department-config.component';
+import {MatPaginator} from '@angular/material/paginator';
+import { ConfigurationComponent } from './configuration/configuration.component';
 
 
 @NgModule({
@@ -71,6 +74,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     ViewProjectInfoComponent,
     ViewProjectDetailsComponent,
     ActionCenterComponent,
+    DepartmentConfigComponent,
+    ConfigurationComponent,
 
   ],
   imports: [
@@ -90,6 +95,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatTabsModule,
     MatExpansionModule,
     MatIconModule,
+    MatMenuModule,
     MatTableModule,
     MatSidenavModule,
     MatButtonModule,
@@ -103,6 +109,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
       { path: 'new-profile', component: NewProfileComponent },
       { path: 'new-wayleave', component: NewWayleaveComponent },
       { path: 'view-project-info', component: ViewProjectInfoComponent },
+      {path: 'configuration',component:ConfigurationComponent},
     ])
   ],
   providers: [],

@@ -149,17 +149,14 @@ mat-expansion-panel {
   display: flex;
   margin: 0 auto;
 }
-mat-form-field {
-  margin-right: 12px;
+
+textarea {
+  margin-top: 20px;
+  width: 100%;
+  min-height: 130px;
+  border-color: #f1f1f1;
+  padding: 10px;
 }
 
-.example-form {
-  min-width: 150px;
-  max-width: 500px;
-  width: 100%;
-}
 
-.example-full-width {
-  width: 100%;
-}
 

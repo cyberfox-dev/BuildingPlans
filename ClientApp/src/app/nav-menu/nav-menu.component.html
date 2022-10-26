@@ -1,3 +1,20 @@
+<!-- modal for line departments -->
+
+<ng-template #content let-modal>
+	<div class="modal-header">
+		<h1 class="modal-title">Line Departments</h1>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+	</div>
+	<div class="modal-body">
+    <button mat-raised-button color="primary">Create a new line department</button>
+    
+	</div>
+  
+	<div class="modal-footer">
+		<button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+	</div>
+</ng-template>
+
 <!--<h1>Navbar</h1>-->
 <div class="container-fluid">
 <div class="dashboard-header">
@@ -7,52 +24,47 @@
       <span class="navbar-toggler-icon"></span>
     </button>
       <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-      <ul class="navbar-nav ml-auto navbar-right-top">
-        <li ngbDropdown class="nav-item dropdown notification">
-          <a ngbDropdownToggle class="nav-link nav-icons" id="navbarDropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bell"></i> <span class="indicator"></span></a>
-          <ul class="dropdown-menu dropdown-menu-right notification-dropdown">
-            <li>
+        <ul class="navbar-nav ml-auto navbar-right-top">
 
-              <div ngbDropdownMenu class="notification-list">
-                <div class="list-group">
-                  <a ngbDropdownItem class="list-group-item list-group-item-action ">
-                    <div class="notification-info">
-                      <div class="notification-list-user-block">
-                        <span class="notification-list-user-name">Water & Sanitation </span>has commented on project LS/BP 321
-                        <div class="notification-date">2 min ago</div>
-                      </div>
-                    </div>
-                  </a>
-                  <a ngbDropdownItem class="list-group-item list-group-item-action">
-                    <div class="notification-info">
-                      <div class="notification-list-user-block">
-                        <span class="notification-list-user-name"></span>Project LS/BP 321 has been moved to paid
-                        <div class="notification-date">2 days ago</div>
-                      </div>
-                    </div>
-                  </a>
-                </div>
-              </div>
-            </li>
-            <li ngbDropdownItem>
-              <div  class="list-footer"> <a>View all notifications</a></div>
-            </li>
           </ul>
-        </li>
+        <ul class="navbar-nav ml-auto navbar-right-top">
 
-        <li ngbDropdown class="nav-item dropdown nav-user">
-          <a ngbDropdownToggle class="nav-link nav-user-img" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="https://img.icons8.com/dusk/100/000000/user-female-circle.png" alt="" class="user-avatar-md rounded-circle"></a>
-          <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
-            <div class="nav-user-info">
-              <h5 class="mb-0 text-white nav-user-name">Jahdiel Sanjeevy</h5>
+          <!--Configs-->
 
-            </div>
-            <a class="dropdown-item"><i class="fa fa-user mr-2"></i>Account</a>
-            <a class="dropdown-item"><i class="fa fa-cog mr-2"></i>Setting</a>
-            <a class="dropdown-item" href="#"><i class="fa fa-power-off mr-2"></i>Logout</a>
-          </div>
-        </li>
-      </ul>
+          <button mat-button [matMenuTriggerFor]="config"><i class="fa fa-cogs"></i></button>
+          <mat-menu #config="matMenu">
+            <button mat-menu-item>Roles</button>
+            <button mat-menu-item (click)="goToconfig()">Line Departments</button>
+            
+          </mat-menu>
+
+          <!--notifications-->
+
+          <button mat-button ><i class="fa fa-bell"></i> <span class="indicator"></span></button>
+
+
+
+          <!--User settings-->
+
+          <button mat-button [matMenuTriggerFor]="user"><img src="https://img.icons8.com/dusk/100/000000/user-female-circle.png" alt="" class="user-avatar-md rounded-circle"></button>
+          <mat-menu #user="matMenu">
+            <button mat-menu-item>Settings</button>
+            <button mat-menu-item>Log Out</button>
+          </mat-menu>
+
+          <!-- <li ngbDropdown class="nav-item dropdown nav-user">
+     <a ngbDropdownToggle class="nav-link nav-user-img" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="https://img.icons8.com/dusk/100/000000/user-female-circle.png" alt="" class="user-avatar-md rounded-circle"></a>
+     <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
+       <div class="nav-user-info">
+         <h5 class="mb-0 text-white nav-user-name">Jahdiel Sanjeevy</h5>
+
+       </div>
+       <a class="dropdown-item"><i class="fa fa-user mr-2"></i>Account</a>
+       <a class="dropdown-item"><i class="fa fa-cog mr-2"></i>Setting</a>
+       <a class="dropdown-item" href="#"><i class="fa fa-power-off mr-2"></i>Logout</a>
+     </div>
+   </li>-->
+        </ul>
     </div>
   </nav>
 </div>

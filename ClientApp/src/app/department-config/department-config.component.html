@@ -1,0 +1,44 @@
+<ng-template #internalOpt let-modal>
+    <div class="modal-header">
+      <h1 class="modal-title" id="modal-basic-title">As an internal applicant are you...</h1>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="container-fluid">
+  
+          <div class="row">
+            <div class="col">
+              <div class="card education" >
+                <div class="overlay"></div>
+                <div class="circle">
+  
+                </div>
+                <p>Applying for a client</p>
+  
+              </div>
+  
+            </div>
+  
+  
+            <div class="col">
+              <div class="card wallet" >
+                <div class="overlay"></div>
+                <div class="circle">
+  
+                </div>
+                <p>Applying for yourself</p>
+              </div>
+            </div>
+  
+  
+          </div>
+        </div>
+  
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-success" (click)="modal.dismiss('Cross click')">Continue</button>
+    </div>
+  
+  </ng-template>
