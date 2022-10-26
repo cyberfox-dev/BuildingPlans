@@ -3,7 +3,7 @@
     // DTO - Data Trasfer Object
     public class UserDTO
     {
-        public UserDTO(string fullName, string email, string userName, DateTime dateCreated)
+        public UserDTO(string? fullName, string email, string userName, DateTime dateCreated)
         {
             FullName = fullName;
             Email = email;
