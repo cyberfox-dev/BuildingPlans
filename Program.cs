@@ -5,7 +5,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WayleaveManagementSystem.Data;
 using WayleaveManagementSystem.Data.Entities;
+using WayleaveManagementSystem.IServices;
 using WayleaveManagementSystem.Models;
+using WayleaveManagementSystem.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,7 @@ builder.Services.AddDbContext<AppDBContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddIdentity<AppUser, IdentityRole>(opt => { }).AddEntityFrameworkStores<AppDBContext>();
+builder.Services.AddScoped<IProfessionalsService, ProfessionalsService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     var key = Encoding.ASCII.GetBytes(builder.Configuration["JWTConfig:Key"]);
@@ -34,6 +37,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidAudience = audience
     };
 });
+
+
 
 builder.Services.AddCors(opt =>
 {
