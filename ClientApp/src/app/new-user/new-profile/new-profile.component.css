@@ -8,6 +8,26 @@
   transform: rotate(0deg) scale(1) translateZ(0);
   transition: all 0.4s cubic-bezier(0.8, 1.8, 0.75, 0.75);
 }
+.row {
+  justify-content: space-around;
+}
+
+mat-button-toggle {
+  width: 100%;
+  height: 49px;
+  font-size: 18px;
+  font-family: 'Nunito';
+}
+
+mat-button-toggle-group {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.mat-button-toggle-checked {
+  background-color: #6bdd73fa;
+  color: white;
+}
 
 h3 {
   font-family: 'Nunito';
