@@ -40,6 +40,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { DepartmentConfigComponent } from './department-config/department-config.component';
 import {MatPaginator} from '@angular/material/paginator';
 import { ConfigurationComponent } from './configuration/configuration.component';
+import { ViewEngineersTableComponent } from './view-engineers-table/view-engineers-table.component';
+import { ViewContractorsTableComponent } from './view-contractors-table/view-contractors-table.component';
+import { EditEngineerComponent } from './edit-engineer/edit-engineer.component';
+import { EditContractorComponent } from './edit-contractor/edit-contractor.component';
 
 
 @NgModule({
@@ -76,6 +80,10 @@ import { ConfigurationComponent } from './configuration/configuration.component'
     ActionCenterComponent,
     DepartmentConfigComponent,
     ConfigurationComponent,
+    ViewEngineersTableComponent,
+    ViewContractorsTableComponent,
+    EditEngineerComponent,
+    EditContractorComponent,
 
   ],
   imports: [

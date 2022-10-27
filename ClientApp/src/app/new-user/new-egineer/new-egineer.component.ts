@@ -27,4 +27,6 @@ export class NewEgineerComponent implements OnInit {
     }
   }
 
+  panelOpenState = false;
+
 }

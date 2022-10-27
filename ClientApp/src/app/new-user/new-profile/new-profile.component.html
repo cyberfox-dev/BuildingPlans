@@ -45,15 +45,15 @@
       <div class="container-fluid ">
         <div class="typeofapplicant">
           <h5>What type of Applicant are you ?</h5>
-          <div class="row">
-            <div class="col">
-              <button class="typeofApplicant" (click)="sInternal()" [class.active]="Internal">Internal Applicant</button>
 
-            </div>
-            <div class="col">
-              <button class="typeofApplicant" (click)="sExternal()" [class.active]="External">External Applicant</button>
-            </div>
+          <div class="row">
+            <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+              <mat-button-toggle (click)="sInternal()">Internal Applicant</mat-button-toggle>
+              <mat-button-toggle  (click)="sExternal()">External Applicant</mat-button-toggle>
+ 
+            </mat-button-toggle-group>
           </div>
+
         </div>
 
         <!--External Applicant-->
@@ -214,13 +214,13 @@
       <div class="container-fluid div">
         <app-new-egineer></app-new-egineer>
 
+        <app-view-engineers-table></app-view-engineers-table>
 
-
-        <!--     <div class="alert alert-success alert-dismissible fade show" role="alert">
-          <strong>You have added</strong> "name of engineer"
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>-->
-      </div>
+          <!--     <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>You have added</strong> "name of engineer"
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>-->
+</div>
 
     </mat-step>
     <mat-step label="Contractor Information">
@@ -229,10 +229,8 @@
 
         <app-new-contractor></app-new-contractor>
 
-
-
-
-      </div>
+        <app-view-contractors-table></app-view-contractors-table>
+</div>
 
     </mat-step>
     <mat-step label="Finalize">
