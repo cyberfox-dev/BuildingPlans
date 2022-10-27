@@ -77,7 +77,7 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-        [HttpPost("GetProfessionalsList")]
+        [HttpGet("GetProfessionalsList")]
         public async Task<object> GetProfessionalsList([FromBody] string userId)
         {
             try
