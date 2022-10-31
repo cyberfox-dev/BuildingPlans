@@ -10,7 +10,7 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="BpNoApplicant" placeholder="Enter BP Number" name="bpNoApplicant">
+              <input type="text" class="form-control" id="BpNoApplicant" placeholder="Enter BP Number"  name="bpNoApplicant">
               <label for="bpNoApplicant">BP Number</label>
             </div>
           </div>
@@ -55,7 +55,7 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click');onAddEgineer()">Save</button>
   </div>
 </ng-template>
 
