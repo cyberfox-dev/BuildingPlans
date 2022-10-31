@@ -8,13 +8,16 @@ h1 {
   font-size: 40px;
   font-weight: bold;
 }
-button{
-    margin:10px;
+
+button {
+  margin: 10px;
 }
+
 .mat-success {
   background-color: #2dd568;
   color: #fff;
 }
+
 .mat-blue {
   background-color: #369cf4;
   color: #fff;
@@ -28,8 +31,9 @@ button{
 table {
   width: 100%;
   margin: 0 auto;
-  margin-bottom:30px;
+  margin-bottom: 30px;
 }
+
 .mat-column-name {
   word-wrap: break-word !important;
   white-space: unset !important;
@@ -42,7 +46,6 @@ table {
   -moz-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
-
 }
 
 .mat-column-actions {
@@ -57,9 +60,5 @@ table {
   -moz-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
-  text-align:center;
- 
-
+  text-align: center;
 }
-
-

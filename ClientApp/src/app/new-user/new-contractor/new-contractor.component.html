@@ -10,20 +10,20 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="BpNoApplicant" placeholder="Enter BP Number" name="bpNoApplicant">
-              <label for="bpNoApplicant">BP Number</label>
+              <input type="text" class="form-control" id="bpNoContractor" [(ngModal)]="bpNoContractor" placeholder="Enter BP Number" name="bpNoContractor">
+              <label for="bpNoContractor">BP Number</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="Address" placeholder="Enter Address" name="address">
-              <label for="address">Professional Reg No.</label>
+              <input type="text" class="form-control" id="ProfessionalRegNo" [(ngModal)]="ProfessionalRegNo" placeholder="Enter Professional Reg No" name="professionalRegNo">
+              <label for="professionalRegNo">Professional Reg No.</label>
             </div>
           </div>
 
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="CIBDrating" placeholder="Enter Rating" name="cibdrating">
+              <input type="text" class="form-control" id="CIBDrating" [(ngModal)]="CIBDrating" placeholder="Enter Rating" name="cibdrating">
               <label for="CIBDrating">CIBD Rating</label>
             </div>
           </div>
@@ -32,13 +32,13 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="Name" placeholder="Enter First Name" name="name">
+              <input type="text" class="form-control" id="Name" [(ngModal)]="Name" placeholder="Enter First Name" name="name">
               <label for="name">Name</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="Surname" placeholder="Enter Surname" name="surname">
+              <input type="text" class="form-control" id="Surname" [(ngModal)]="Surname"  placeholder="Enter Surname" name="surname">
               <label for="surname">Surname</label>
             </div>
           </div>
@@ -46,14 +46,14 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="tel" class="form-control" id="ApplicantTel" placeholder="Enter Tell No." name="applicantTellNo">
-              <label for="applicantTellNo">Cell No.</label>
+              <input type="tel" class="form-control" id="ContractorTell" [(ngModal)]="ContractorTell" placeholder="Enter Tell No." name="contractorTell">
+              <label for="contractorTell">Cell No.</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="email" class="form-control" id="ApplicantEmail" placeholder="Enter Email" name="applicantEmail">
-              <label for="applicantEmail">Email</label>
+              <input type="email" class="form-control" id="ContractorEmail" [(ngModal)]="ContractorEmail" placeholder="Enter Email" name="contractorEmail">
+              <label for="contractorEmail">Email</label>
             </div>
           </div>
         </div>
