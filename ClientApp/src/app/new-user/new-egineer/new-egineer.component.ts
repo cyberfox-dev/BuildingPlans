@@ -11,8 +11,24 @@ export interface EngineerList {
   phoneNumber: string;
 
 }
+export interface PeriodicElement {
+  name: string;
+  position: number;
+  weight: number;
+  symbol: string;
+
+  cell: number;
+  email: string;
+
+}
 
 
+const ELEMENT_DATA: PeriodicElement[] = [
+  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H', cell: 526205658, email: 'jjjj@gmail.com' },
+  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He', cell: 526205658, email: 'jjjj@gmail.com' },
+  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li', cell: 526205658, email: 'jjjj@gmail.com' },
+  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be', cell: 526205658, email: 'jjjj@gmail.com' },
+];
 
 @Component({
   selector: 'app-new-egineer',
@@ -32,6 +48,9 @@ export class NewEgineerComponent implements OnInit {
   @Input() tempEngineerList: EngineerList[] = [];
 
   constructor(private modalService: NgbModal) { }
+
+  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'cell', 'email', 'actions'];
+  dataSource = ELEMENT_DATA;
 
   ngOnInit(): void {
   }
