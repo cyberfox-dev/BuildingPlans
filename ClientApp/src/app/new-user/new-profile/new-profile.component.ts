@@ -27,6 +27,23 @@ export class NewProfileComponent implements OnInit {
   public step4div: boolean = false;
   closeResult = '';
 
+  //External
+  //bpNoApplicant
+  //companyName
+  //CompanyRegNo
+  //companyType
+  //name
+  //surname
+  //applicantTellNo
+  //applicantEmail
+  //applicantPhyscialAddress
+  //Upload
+
+  //Internal
+
+
+
+
   constructor(private modalService: NgbModal) { }
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
@@ -99,7 +116,9 @@ export class NewProfileComponent implements OnInit {
   }
 
 
+  onNewProfileCreate() {
 
+  }
 
 
 }
