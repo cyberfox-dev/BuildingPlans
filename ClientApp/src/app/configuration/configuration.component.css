@@ -8,6 +8,27 @@ h1 {
   padding-top: 40px;
   padding-bottom: 40px;
   color: white;
-  font-size: 50px;
+  font-size: 70px;
   font-weight: bold;
+  margin-top: 152px;
 }
+
+
+h3 {
+  width: 30em;
+  border-color: #00cdff;
+  text-align: center;
+  font-family: 'Nunito', sans-serif;
+  border-bottom: 1px solid #ababab;
+  line-height: 0.1em;
+  margin: 0 auto;
+  padding-top: 50px;
+  margin-bottom: 50px;
+  justify-content: space-around;
+}
+
+  h3 span {
+    background-color: #ffffff;
+    padding: 0 10px;
+    font-size: 25px;
+  }

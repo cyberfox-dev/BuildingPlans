@@ -1,0 +1,15 @@
+.createNewZone {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+h1 {
+  font-family: 'Nunito', sans-serif;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 113px;
+  color: white;
+  font-size: 40px;
+  font-weight: bold;
+}

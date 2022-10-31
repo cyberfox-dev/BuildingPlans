@@ -1,30 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 
-
 @Component({
-  selector: 'app-new-contractor',
-  templateUrl: './new-contractor.component.html',
-  styleUrls: ['./new-contractor.component.css']
+  selector: 'app-new-department',
+  templateUrl: './new-department.component.html',
+  styleUrls: ['./new-department.component.css']
 })
-export class NewContractorComponent implements OnInit {
-  closeResult = "";
-  bpNoContractor = "";
-  ProfessionalRegNo = "";
-  CIBDrating = "";
-  Name = "";
-  Surname = '';
-  ContractorTell = 0;
-  ContractorEmail = '';
+export class NewDepartmentComponent implements OnInit {
 
+  closeResult = '';
 
-
-  constructor(private modalService: NgbModal) { }
+  constructor(private modalService: NgbModal) {}
 
   ngOnInit(): void {
   }
+
   openXl(content: any) {
-    this.modalService.open(content, { size: 'xl' });
+    this.modalService.open(content, { size: 'lg' });
   }
 
   private getDismissReason(reason: any): string {
@@ -36,4 +28,5 @@ export class NewContractorComponent implements OnInit {
       return `with: ${reason}`;
     }
   }
+
 }

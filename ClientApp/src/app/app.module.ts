@@ -44,7 +44,14 @@ import { ViewEngineersTableComponent } from './view-engineers-table/view-enginee
 import { ViewContractorsTableComponent } from './view-contractors-table/view-contractors-table.component';
 import { EditEngineerComponent } from './edit-engineer/edit-engineer.component';
 import { EditContractorComponent } from './edit-contractor/edit-contractor.component';
-
+import { MatDividerModule } from '@angular/material/divider';
+import { NewDepartmentComponent } from './new-department/new-department.component';
+import { NewSubDepartmentComponent } from './new-sub-department/new-sub-department.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { SubDepartmentConfigComponent } from './sub-department-config/sub-department-config.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ZoneConfigComponent } from './zone-config/zone-config.component';
+import { NewZoneComponent } from './new-zone/new-zone.component';
 
 @NgModule({
   declarations: [
@@ -84,6 +91,11 @@ import { EditContractorComponent } from './edit-contractor/edit-contractor.compo
     ViewContractorsTableComponent,
     EditEngineerComponent,
     EditContractorComponent,
+    NewDepartmentComponent,
+    NewSubDepartmentComponent,
+    SubDepartmentConfigComponent,
+    ZoneConfigComponent,
+    NewZoneComponent,
 
   ],
   imports: [
@@ -96,12 +108,15 @@ import { EditContractorComponent } from './edit-contractor/edit-contractor.compo
     MatDatepickerModule,
     BrowserAnimationsModule,
     MatTableModule,
+    MatDividerModule,
+    MatTooltipModule,
     MatSnackBarModule,
     MatSidenavModule,
     MatButtonModule,
     MatFormFieldModule,
     MatTabsModule,
     MatExpansionModule,
+    MatDialogModule,
     MatIconModule,
     MatMenuModule,
     MatTableModule,
