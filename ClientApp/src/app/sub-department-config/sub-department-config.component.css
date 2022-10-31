@@ -2,22 +2,8 @@ h1 {
   font-family: 'Nunito', sans-serif;
   margin: 0 auto;
   text-align: center;
-  padding-top: 26px;
-  padding-bottom: 113px;
-  color: white;
-  font-size: 40px;
+
   font-weight: bold;
-}
-button{
-    margin:10px;
-}
-.mat-success {
-  background-color: #2dd568;
-  color: #fff;
-}
-.mat-blue {
-  background-color: #369cf4;
-  color: #fff;
 }
 
 .createNewDep {
@@ -28,13 +14,15 @@ button{
 table {
   width: 100%;
   margin: 0 auto;
-  margin-bottom:30px;
+  margin-bottom: 30px;
+  box-shadow:none;
 }
+
 .mat-column-name {
   word-wrap: break-word !important;
   white-space: unset !important;
   flex: 0 0 8% !important;
-  width: 80% !important;
+  width: 90% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
@@ -42,14 +30,13 @@ table {
   -moz-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
-
 }
 
 .mat-column-action {
   word-wrap: break-word !important;
   white-space: unset !important;
   flex: 0 0 8% !important;
-  width: 20% !important;
+  width: 10% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
@@ -57,8 +44,5 @@ table {
   -moz-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
-  text-align:center;
-
+  text-align: center;
 }
-
-
