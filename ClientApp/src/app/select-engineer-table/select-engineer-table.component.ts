@@ -1,5 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
-//import { ProfessionalService } from '../service/professional.service';
+import { Component, OnInit } from '@angular/core';
 
 export interface PeriodicElement {
   name: string;

@@ -62,13 +62,13 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="BpNoApplicant" placeholder="Enter BP Number" name="bpNoApplicant">
+                <input type="text" class="form-control" id="BpNoApplicant" [(ngModel)]="bpNoApplicant" placeholder="Enter BP Number" name="bpNoApplicant">
                 <label for="bpNoApplicant">BP Number</label>
               </div>
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="applicantCompanyName" placeholder="Enter Company Name" name="companyName">
+                <input type="text" class="form-control" id="applicantCompanyName" [(ngModel)]="companyName" placeholder="Enter Company Name" name="companyName">
                 <label for="address">Company Name</label>
               </div>
             </div>
@@ -76,13 +76,13 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="applicantCompanyRegNo " placeholder="Enter Company Reg No" name="CompanyRegNo">
+                <input type="text" class="form-control" id="applicantCompanyRegNo" [(ngModel)]="CompanyRegNo" placeholder="Enter Company Reg No" name="CompanyRegNo">
                 <label for="address">Company Reg No.</label>
               </div>
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control" id="applicantCompanyType" placeholder="Select Company Type" name="companyType">
+                <input type="email" class="form-control" id="applicantCompanyType" [(ngModel)]="companyType" placeholder="Select Company Type" name="companyType">
                 <label for="applicantEmail">Company Type</label>
               </div>
             </div>
@@ -92,13 +92,13 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="Name" placeholder="Enter First Name" name="name">
+                <input type="text" class="form-control" id="Name" [(ngModel)]="name" placeholder="Enter First Name" name="name">
                 <label for="name">Name</label>
               </div>
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="Surname" placeholder="Enter Surname" name="surname">
+                <input type="text" class="form-control" id="Surname" [(ngModel)]="surname" placeholder="Enter Surname" name="surname">
                 <label for="surname">Surname</label>
               </div>
             </div>
@@ -107,13 +107,13 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="tel" class="form-control" id="ApplicantTel" placeholder="Enter Tell No." name="applicantTellNo">
+                <input type="tel" class="form-control" id="ApplicantTel" [(ngModel)]="applicantTellNo" placeholder="Enter Tell No." name="applicantTellNo">
                 <label for="applicantTellNo">Cell No.</label>
               </div>
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control" id="ApplicantEmail" placeholder="Enter Email" name="applicantEmail">
+                <input type="email" class="form-control" id="ApplicantEmail" [(ngModel)]="applicantEmail" placeholder="Enter Email" name="applicantEmail">
                 <label for="applicantEmail">Email</label>
               </div>
             </div>
@@ -123,7 +123,7 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="applicantPhysicalAddress" placeholder="Enter Address" name="applicantPhyscialAddress">
+                <input type="text" class="form-control" id="applicantPhysicalAddress" [(ngModel)]="applicantPhyscialAddress" placeholder="Enter Address" name="applicantPhyscialAddress">
                 <label for="applicantTellNo">Physcial Address</label>
               </div>
             </div>
@@ -133,7 +133,7 @@
           <div class="row">
             <h5>Please upload a copy of your ID</h5>
             <div class="input-group">
-              <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+              <input type="file" class="form-control" id="inputGroupFile04" [(ngModel)]="Upload" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
 
             </div>
 
@@ -149,13 +149,13 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="Name" placeholder="Enter First Name" name="name">
+                <input type="text" class="form-control" id="Name" [(ngModel)]="" placeholder="Enter First Name" name="name">
                 <label for="name">Name</label>
               </div>
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="Surname" placeholder="Enter Surname" name="surname">
+                <input type="text" class="form-control" id="Surname" [(ngModel)]="" placeholder="Enter Surname" name="surname">
                 <label for="surname">Surname</label>
               </div>
             </div>
@@ -164,13 +164,13 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="tel" class="form-control" id="ApplicantTel" placeholder="Enter Tell No." name="applicantTellNo">
+                <input type="tel" class="form-control" id="ApplicantTel" [(ngModel)]="" placeholder="Enter Tell No." name="applicantTellNo">
                 <label for="applicantTellNo">Directorate</label>
               </div>
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <select class="form-select" aria-label="Default select example" placeholder="Department">
+                <select class="form-select" aria-label="Default select example" [(ngModel)]="" placeholder="Department">
                   <option selected>Department</option>
                   <option value="1">Water</option>
                   <option value="2">Energy</option>
@@ -183,13 +183,13 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="tel" class="form-control" id="ApplicantTel" placeholder="Enter Tell No." name="applicantTellNo">
+                <input type="tel" class="form-control" id="ApplicantTel" [(ngModel)]="" placeholder="Enter Tell No." name="applicantTellNo">
                 <label for="applicantTellNo">Branch</label>
               </div>
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control" id="ApplicantEmail" placeholder="Enter Email" name="applicantEmail">
+                <input type="email" class="form-control" id="ApplicantEmail" [(ngModel)]="" placeholder="Enter Email" name="applicantEmail">
                 <label for="applicantEmail">Cost Center Number</label>
               </div>
             </div>
@@ -197,7 +197,7 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="tel" class="form-control" id="ApplicantTel" placeholder="Enter Tell No." name="applicantTellNo">
+                <input type="tel" class="form-control" id="ApplicantTel" [(ngModel)]="" placeholder="Enter Tell No." name="applicantTellNo">
                 <label for="applicantTellNo">Cost Center Owner</label>
               </div>
             </div>
