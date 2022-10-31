@@ -589,7 +589,7 @@
 
   <ItemGroup>
     <Folder Include="ClientApp\.angular\cache\14.2.4\angular-webpack\" />
-    <Folder Include="ClientApp\src\app\service\" />
+    <Folder Include="ClientApp\src\app\service\UserProfile\" />
   </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

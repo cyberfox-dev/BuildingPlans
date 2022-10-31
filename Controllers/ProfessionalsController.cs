@@ -37,7 +37,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _professionalsService.AddUpdateProfessional(model.ProfessinalID, model.ProfessinalType, model.FullName, model.BP_Number, model.BpVerified, model.Email, model.PhoneNumber, model.ProfessionalRegNo, model.AppUserID, (int)model.CreatedById);
+                    var result = await _professionalsService.AddUpdateProfessional(model.ProfessinalID, model.ProfessinalType, model.FullName, model.BP_Number, model.BpVerified, model.Email, model.PhoneNumber, model.ProfessionalRegNo, model.AppUserID, model.CreatedById);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ProfessinalID > 0 ? "Professional Updated Sussessfully": "Professional Added Sussessfully"), result));
                 }
 

@@ -1,5 +1,20 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net.NetworkInformation;
+using System.Text;
+using WayleaveManagementSystem.BindingModel;
+using WayleaveManagementSystem.Data.Entities;
+using WayleaveManagementSystem.DTO;
+using WayleaveManagementSystem.IServices;
+using WayleaveManagementSystem.Models;
+using WayleaveManagementSystem.Models.BindingModel;
+using WayleaveManagementSystem.Service;
 
 namespace WayleaveManagementSystem.Controllers
 {
@@ -7,5 +22,89 @@ namespace WayleaveManagementSystem.Controllers
     [ApiController]
     public class UserProfileController : ControllerBase
     {
+        private readonly IUserProfileService _userProfileService;
+
+        public UserProfileController(IUserProfileService userProfileService)
+        {
+            _userProfileService = userProfileService;
+        }
+
+
+        [HttpPost("AddUpdateUserProfiles")]
+        public async Task<object> AddUpdateUserProfiles([FromBody] UsersProfileBindingModel model)
+        {
+            try
+            {
+
+                if (model == null || model.UserProfileID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _userProfileService.AddUpdateUserProfiles(model.UserProfileID, model.UserID, model.FullName, model.Email, model.PhoneNumber, model.isInternal, model.BP_Number, model.CompanyName, model.CompanyRegNo, model.PhyscialAddress, model.Directorate, model.DepartmentID, model.SubDepartmentID, model.Branch, model.CostCenterNumber, model.CostCenterOwner, model.CopyOfID, model.CreatedById);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.UserProfileID > 0 ? "User Profile Updated Sussessfully" : "User Profile Added Sussessfully"), result));
+                }
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        [HttpPost("DeleteUserProfile")]
+        public async Task<object> DeleteUserProfile([FromBody] int userProfileID)
+        {
+            try
+            {
+
+                if (userProfileID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _userProfileService.DeleteUserProfile(userProfileID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Professional Deleted Sussessfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        [HttpPost("GetAllUserProfiles")]
+        public async Task<object> GetAllUserProfiles([FromBody] string userId)
+        {
+            try
+            {
+
+                if (userId.Length < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _userProfileService.GetAllUserProfiles(userId);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Professionals List Created", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
     }
 }

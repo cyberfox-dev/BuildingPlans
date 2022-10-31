@@ -1,20 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { ProfessionalService } from '../service/professional.service';
 
 export interface PeriodicElement {
   name: string;
-  position: number;
-  weight: number;
-  symbol: string;
+  bp: number;
+  surname: string;
+  professionalRegNumber: string;
+  cellNumber: string;
+  email: string;
+
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
-  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
-  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
-  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
-  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
-
+  { bp: 1, name: 'FullName', surname: "", professionalRegNumber: 'H',cellNumber:"",email:"", },
 ];
+
+
 
 @Component({
   selector: 'app-select-engineer-table',
@@ -23,16 +24,40 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class SelectEngineerTableComponent implements OnInit {
 
-  constructor() { }
+  
+  constructor(private professionalService: ProfessionalService) { }
 
   ngOnInit(): void {
   }
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
+  displayedColumns: string[] = ['bp', 'name', 'weight', 'symbol'];
   dataSource = ELEMENT_DATA;
   clickedRows = new Set<PeriodicElement>();
 
   clearAll() {
     this.clickedRows.clear();
+  }
+
+  onLogin() {
+    //let fullName = this.loginForm.controls["fullName"].value;
+    //let email = this.loginForm.controls["email"].value;
+    //let password = this.loginForm.controls["password"].value;
+
+
+    //this.professionalService.addUpdateProfessional(email, password).subscribe((data: any) => {
+
+    //  if (data.responseCode == 1) {
+    //    localStorage.setItem("LoggedInUserInfo", data.DataSet);
+    //    this.router.navigate(["/home"]);
+    //  }
+    //  else {
+    //    //alert("Invalid Email or Password");
+    //    alert(data.responseMessage);
+    //  }
+    //  console.log("reponse", data);
+
+    //}, error => {
+    //  console.log("Error: ", error);
+    //})
   }
 
 }

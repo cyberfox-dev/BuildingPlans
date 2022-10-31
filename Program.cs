@@ -22,6 +22,7 @@ builder.Services.AddDbContext<AppDBContext>(opt =>
 });
 builder.Services.AddIdentity<AppUser, IdentityRole>(opt => { }).AddEntityFrameworkStores<AppDBContext>();
 builder.Services.AddScoped<IProfessionalsService, ProfessionalsService>();
+builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     var key = Encoding.ASCII.GetBytes(builder.Configuration["JWTConfig:Key"]);
