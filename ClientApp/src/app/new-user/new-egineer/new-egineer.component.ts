@@ -29,6 +29,7 @@ export class NewEgineerComponent implements OnInit {
   applicantTellNo = '';
   applicantEmail = '';
 
+
   @Input() tempEngineerList: EngineerList[] = [];
 
   constructor(private modalService: NgbModal) { }
