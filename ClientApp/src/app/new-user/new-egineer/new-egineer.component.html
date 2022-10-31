@@ -10,14 +10,14 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="BpNoApplicant" [(ngModel)]="bpNoApplicant" placeholder="Enter BP Number"  name="bpNoApplicant">
+              <input type="text" class="form-control" id="BpNoApplicant" placeholder="Enter BP Number"  name="bpNoApplicant">
               <label for="bpNoApplicant">BP Number</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="professionalRegNo" [(ngModel)]="professionalRegNo" placeholder="Professional Reg No" name="professionalRegNo">
-              <label for="professionalRegNo">Professional Reg No.</label>
+              <input type="text" class="form-control" id="Address" placeholder="Enter Address" name="address">
+              <label for="address">Professional Reg No.</label>
             </div>
           </div>
         </div>
@@ -25,13 +25,13 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="Name" [(ngModel)]="name"placeholder="Enter First Name" name="name">
+              <input type="text" class="form-control" id="Name" placeholder="Enter First Name" name="name">
               <label for="name">Name</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="Surname" [(ngModel)]="surname" placeholder="Enter Surname" name="surname">
+              <input type="text" class="form-control" id="Surname" placeholder="Enter Surname" name="surname">
               <label for="surname">Surname</label>
             </div>
           </div>
@@ -39,13 +39,13 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="tel" class="form-control" id="ApplicantTel" [(ngModel)]="applicantTellNo" placeholder="Enter Tell No." name="applicantTellNo">
+              <input type="tel" class="form-control" id="ApplicantTel"  placeholder="Enter Tell No." name="applicantTellNo">
               <label for="applicantTellNo">Cell No.</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="email" class="form-control" id="ApplicantEmail" [(ngModel)]="applicantEmail"  placeholder="Enter Email" name="applicantEmail">
+              <input type="email" class="form-control" id="ApplicantEmail" placeholder="Enter Email" name="applicantEmail">
               <label for="applicantEmail">Email</label>
             </div>
           </div>
@@ -55,7 +55,7 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click');onAddEngineer()">Save</button>
+    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click');onAddEgineer()">Save</button>
   </div>
 </ng-template>
 

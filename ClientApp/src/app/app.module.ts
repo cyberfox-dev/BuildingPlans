@@ -50,6 +50,8 @@ import { NewSubDepartmentComponent } from './new-sub-department/new-sub-departme
 import { MatDialogModule } from '@angular/material/dialog';
 import { SubDepartmentConfigComponent } from './sub-department-config/sub-department-config.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ZoneConfigComponent } from './zone-config/zone-config.component';
+import { NewZoneComponent } from './new-zone/new-zone.component';
 
 @NgModule({
   declarations: [
@@ -92,6 +94,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     NewDepartmentComponent,
     NewSubDepartmentComponent,
     SubDepartmentConfigComponent,
+    ZoneConfigComponent,
+    NewZoneComponent,
 
   ],
   imports: [

@@ -1,18 +1,24 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 
-export interface EngineerList {
-  ProfessinalType: string;
-  professionalRegNo: string;
-  bpNumber: string;
+export interface PeriodicElement {
   name: string;
-  surname: string;
+  position: number;
+  weight: number;
+  symbol: string;
+
+  cell: number;
   email: string;
-  phoneNumber: string;
-  
+
 }
 
 
+const ELEMENT_DATA: PeriodicElement[] = [
+  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H', cell: 526205658, email: 'jjjj@gmail.com' },
+  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He', cell: 526205658, email: 'jjjj@gmail.com' },
+  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li', cell: 526205658, email: 'jjjj@gmail.com' },
+  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be', cell: 526205658, email: 'jjjj@gmail.com' },
+];
 
 @Component({
   selector: 'app-new-egineer',
@@ -37,20 +43,9 @@ export class NewEgineerComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onAddEngineer() {
+  onAddEgineer() {
 
-    const newEnineer = {} as EngineerList;
-    newEnineer.ProfessinalType = "Engineer";
-    newEnineer.bpNumber = this.bpNoApplicant;
-    newEnineer.professionalRegNo = this.professionalRegNo;
-    newEnineer.name = this.name;
-    newEnineer.surname = this.surname;
-    newEnineer.email = this.applicantEmail;
-    newEnineer.phoneNumber = this.applicantTellNo;
-
-    this.tempEngineerList.push(newEnineer)
-
-    console.log("tempEngineerList:", this.tempEngineerList);
+    console.log("hit on click");
   }
 
   openXl(content: any) {

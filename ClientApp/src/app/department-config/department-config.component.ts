@@ -8,8 +8,6 @@ import { SubDepartmentConfigComponent } from '../sub-department-config/sub-depar
 
 export interface PeriodicElement {
   name: string;
-
-
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
@@ -27,10 +25,10 @@ const ELEMENT_DATA: PeriodicElement[] = [
 export class DepartmentConfigComponent implements OnInit {
   displayedColumns: string[] = ['name', 'actions'];
   dataSource = ELEMENT_DATA;
-  constructor(private modalService: NgbModal, private matdialog: MatDialog) { }
+  constructor( private matdialog: MatDialog) { }
 
   createSub() {
- /*   this.modalService.open(NewSubDepartmentComponent);*/
+
     this.matdialog.open(NewSubDepartmentComponent);
   }
 
@@ -40,8 +38,6 @@ export class DepartmentConfigComponent implements OnInit {
     this.matdialog.open(SubDepartmentConfigComponent, { width:'60%' });
   }
 
-  // If the user clicks the cancel button a.k.a. the go back button, then\
-  // just close the modal
 
 
 }

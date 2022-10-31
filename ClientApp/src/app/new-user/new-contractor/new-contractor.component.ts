@@ -8,7 +8,16 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./new-contractor.component.css']
 })
 export class NewContractorComponent implements OnInit {
-  closeResult = '';
+  closeResult = "";
+  bpNoContractor = "";
+  ProfessionalRegNo = "";
+  CIBDrating = "";
+  Name = "";
+  Surname = '';
+  ContractorTell = 0;
+  ContractorEmail = '';
+
+
 
   constructor(private modalService: NgbModal) { }
 
