@@ -76,7 +76,7 @@ namespace WayleaveManagementSystem.Service
             }
         }
 
-        public async Task<List<DepartmentsDTO>> GetAllDepartments(int DepartmentID)
+        public async Task<List<DepartmentsDTO>> GetAllDepartments()
         {
             return await (
                 from Departments in _context.DepartmentsTable
