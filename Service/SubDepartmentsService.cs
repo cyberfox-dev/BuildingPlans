@@ -79,11 +79,11 @@ namespace WayleaveManagementSystem.Service
             }
         }
 
-        public async Task<List<SubDepartmentsDTO>> GetAllSubDepartments(int subDepartmentID)
+        public async Task<List<SubDepartmentsDTO>> GetAllSubDepartments()
         {
             return await (
                 from SubDepartments in _context.SubDepartmentsTable
-                where SubDepartments.SubDepartmentID == subDepartmentID && SubDepartments.isActive == true
+               // where SubDepartments.SubDepartmentID == subDepartmentID && SubDepartments.isActive == true
                 select new SubDepartmentsDTO()
                 {
                     SubDepartmentID = SubDepartments.SubDepartmentID,
