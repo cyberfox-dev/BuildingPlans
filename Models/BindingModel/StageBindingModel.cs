@@ -1,6 +1,6 @@
 ﻿namespace WayleaveManagementSystem.Models.BindingModel
 {
-    public class StageBingingModel
+    public class StageBindingModel
     {
         public int? StageID { get; set; }
         public string? StageName { get; set; }

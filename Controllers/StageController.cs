@@ -16,7 +16,7 @@ namespace WayleaveManagementSystem.Controllers
             _stageServices = stageService;
         }
         [HttpPost("AddUpdateStage")]
-        public async Task<object> AddUpdateStage([FromBody] StageBingingModel model)
+        public async Task<object> AddUpdateStage([FromBody] StageBindingModel model)
         {
             try
             {
