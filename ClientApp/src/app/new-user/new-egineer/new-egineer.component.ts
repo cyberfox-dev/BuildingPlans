@@ -1,7 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { MatTable } from '@angular/material/table';
 
 export interface EngineerList {
+ 
   ProfessinalType: string;
   professionalRegNo: string;
   bpNumber: string;
@@ -31,18 +33,26 @@ export class NewEgineerComponent implements OnInit {
   applicantTellNo = '';
   applicantEmail = '';
 
-  @Input() tempEngineerList: EngineerList[] = [];
+
+tempEngineerList: EngineerList[] = [];
 
   constructor(private modalService: NgbModal) { }
 
-  displayedColumns: string[] = ['Professinal Type', 'Professional Reg No', 'BP Number', 'Name', 'Surname', 'Email', 'Phone Number'];
-  dataSource = this.tempEngineerList;
+  displayedColumns: string[] = ['ProfessinalType', 'bpNumber', 'name', 'surname', 'professionalRegNo', 'phoneNumber', 'email', 'actions'];
+  myDataSource = this.tempEngineerList;
+  @ViewChild(MatTable) table: MatTable<EngineerList> | undefined;
 
-  ngOnInit(): void {
+  ngOnInit() {
+    
+  }
+
+  ngDoCheck() {
+  //  debugger;
+    
+  // this.myDataSource = this.tempEngineerList;
   }
 
   onAddEngineer() {
-
     const newEnineer = {} as EngineerList;
     newEnineer.ProfessinalType = "Engineer";
     newEnineer.bpNumber = this.bpNoApplicant;
@@ -52,9 +62,17 @@ export class NewEgineerComponent implements OnInit {
     newEnineer.email = this.applicantEmail;
     newEnineer.phoneNumber = this.applicantTellNo;
 
-    this.tempEngineerList.push(newEnineer)
+    this.tempEngineerList.push(newEnineer);
+    this.table?.renderRows();
+  }
+  onDelete(position: any) {
+   
+    debugger;
+    console.log("de ",position );
+    this.tempEngineerList.splice(position,1);
+    this.table?.renderRows();
+    console.log("tempEngineerList",this.tempEngineerList);
 
-    console.log("tempEngineerList:", this.tempEngineerList);
   }
 
   openXl(content: any) {
