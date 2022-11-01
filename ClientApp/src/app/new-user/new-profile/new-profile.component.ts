@@ -28,19 +28,24 @@ export class NewProfileComponent implements OnInit {
   closeResult = '';
 
   //External
-  //bpNoApplicant
-  //companyName
-  //CompanyRegNo
-  //companyType
-  //name
-  //surname
-  //applicantTellNo
-  //applicantEmail
-  //applicantPhyscialAddress
-  //Upload
+  bpNoApplicant = '';
+  companyName = '';
+  CompanyRegNo = '';
+  companyType = '';
+  name = '';
+  surname = '';
+  applicantTellNo = '';
+  applicantEmail = '';
+  applicantPhyscialAddress = '';
+  Upload = '';
 
   //Internal
-
+  internalName = '';
+  internalSurname = '';
+  internalApplicantTellNo = '';
+  internalDepartment = '';
+  internalApplicantEmail = '';
+  //internalApplicantTellNo = '';
 
 
 

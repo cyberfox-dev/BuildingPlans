@@ -149,13 +149,13 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="Name" [(ngModel)]="" placeholder="Enter First Name" name="name">
+                <input type="text" class="form-control" id="Name" [(ngModel)]="internalName" placeholder="Enter First Name" name="internalName">
                 <label for="name">Name</label>
               </div>
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="Surname" [(ngModel)]="" placeholder="Enter Surname" name="surname">
+                <input type="text" class="form-control" id="Surname" [(ngModel)]="internalSurname" placeholder="Enter Surname" name="internalSurname">
                 <label for="surname">Surname</label>
               </div>
             </div>
@@ -164,13 +164,13 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="tel" class="form-control" id="ApplicantTel" [(ngModel)]="" placeholder="Enter Tell No." name="applicantTellNo">
+                <input type="tel" class="form-control" id="ApplicantTel" [(ngModel)]="internalApplicantTellNo" placeholder="Enter Tell No." name="internalApplicantTellNo">
                 <label for="applicantTellNo">Directorate</label>
               </div>
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <select class="form-select" aria-label="Default select example" [(ngModel)]="" placeholder="Department">
+                <select class="form-select" aria-label="Default select example" [(ngModel)]="internalDepartment" placeholder="internalDepartment">
                   <option selected>Department</option>
                   <option value="1">Water</option>
                   <option value="2">Energy</option>
@@ -183,13 +183,13 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="tel" class="form-control" id="ApplicantTel" [(ngModel)]="" placeholder="Enter Tell No." name="applicantTellNo">
+                <input type="tel" class="form-control" id="ApplicantTel" [(ngModel)]="internalApplicantTellNo" placeholder="Enter Tell No." name="internalApplicantTellNo">
                 <label for="applicantTellNo">Branch</label>
               </div>
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control" id="ApplicantEmail" [(ngModel)]="" placeholder="Enter Email" name="applicantEmail">
+                <input type="email" class="form-control" id="ApplicantEmail" [(ngModel)]="internalApplicantEmail" placeholder="Enter Email" name="internalApplicantEmail">
                 <label for="applicantEmail">Cost Center Number</label>
               </div>
             </div>
@@ -197,7 +197,7 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="tel" class="form-control" id="ApplicantTel" [(ngModel)]="" placeholder="Enter Tell No." name="applicantTellNo">
+                <input type="text" class="form-control" id="ApplicantTel" [(ngModel)]="internalApplicantTellNo" placeholder="Enter Tell No." name="internalApplicantTellNo">
                 <label for="applicantTellNo">Cost Center Owner</label>
               </div>
             </div>
