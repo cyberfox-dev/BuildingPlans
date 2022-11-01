@@ -68,6 +68,67 @@
   </div>
 </div>
 
+<ng-template #edit let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Edit a new engineer</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="mb-3">
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="BpNoApplicant" [(ngModel)]="editBpNoApplicant" placeholder="Enter BP Number" name="editBpNoApplicant">
+              <label for="bpNoApplicant">BP Number</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="professionalRegNo" [(ngModel)]="editProfessionalRegNo" placeholder="Professional Reg No" name="editProfessionalRegNo">
+              <label for="professionalRegNo">Professional Reg No.</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="Name" [(ngModel)]="editName" placeholder="Enter First Name" name="editName">
+              <label for="name">Name</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="Surname" [(ngModel)]="editSurname" placeholder="Enter Surname" name="editSurname">
+              <label for="surname">Surname</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="tel" class="form-control" id="ApplicantTel" [(ngModel)]="editApplicantTellNo" placeholder="Enter Tell No." name="editApplicantTellNo">
+              <label for="applicantTellNo">Cell No.</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="email" class="form-control" id="ApplicantEmail" [(ngModel)]="editApplicantEmail" placeholder="Enter Email" name="editApplicantEmail">
+              <label for="applicantEmail">Email</label>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click');onEditEngineer()">Save</button>
+  </div>
+</ng-template>
 
 <br>
 
@@ -117,8 +178,10 @@
 
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef>Actions</th>
-    <td mat-cell *matCellDef="let i = index">  <button mat-raised-button color="warn" (click)="onDelete(i)"><i class="fa fa-trash" aria-hidden="true"></i></button>
-    <button mat-raised-button color="primary"><i class="fa fa-pencil" aria-hidden="true"></i></button>  </td>
+    <td mat-cell *matCellDef="let i = index">
+      <button mat-raised-button color="warn" (click)="onDelete(i)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+      <button mat-raised-button color="primary" (click)="openEditModal(edit, i)"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+    </td>
     <td mat-cell *matCellDef="let element">  </td>
   </ng-container>
 

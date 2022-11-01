@@ -33,8 +33,17 @@ export class NewEgineerComponent implements OnInit {
   applicantTellNo = '';
   applicantEmail = '';
 
+  editBpNoApplicant = '';
+  editProfessionalRegNo = '';
+  editName = '';
+  editSurname = '';
+  editApplicantTellNo = '';
+  editApplicantEmail = '';
 
-tempEngineerList: EngineerList[] = [];
+
+  tempEngineerList: EngineerList[] = [];
+  forEditEngineer: EngineerList[] = [];
+  forEditIndex: any;
 
   constructor(private modalService: NgbModal) { }
 
@@ -64,19 +73,57 @@ tempEngineerList: EngineerList[] = [];
 
     this.tempEngineerList.push(newEnineer);
     this.table?.renderRows();
+    this.clearCreateComponent();
   }
   onDelete(position: any) {
-   
-    debugger;
-    console.log("de ",position );
     this.tempEngineerList.splice(position,1);
     this.table?.renderRows();
-    console.log("tempEngineerList",this.tempEngineerList);
-
   }
 
   openXl(content: any) {
     this.modalService.open(content, { size: 'xl' });
+  }
+
+  openEditModal(edit: any, index:any) {
+    this.modalService.open(edit, { size: 'xl' });
+
+    const forEditEngineer  = this.tempEngineerList[index];
+    this.editBpNoApplicant = forEditEngineer.bpNumber;
+    this.editProfessionalRegNo = forEditEngineer.professionalRegNo;
+    this.editName = forEditEngineer.name;
+    this.editSurname = forEditEngineer.surname;
+    this.editApplicantTellNo = forEditEngineer.phoneNumber;
+    this.editApplicantEmail = forEditEngineer.email;
+
+
+
+    this.forEditIndex = index;
+  }
+
+  onEditEngineer() {
+    this.tempEngineerList.splice(this.forEditIndex, 1);
+    const toEdit = {} as EngineerList;
+    toEdit.ProfessinalType = "Engineer";
+    toEdit.bpNumber = this.editBpNoApplicant;
+    toEdit.professionalRegNo = this.editProfessionalRegNo;
+    toEdit.name = this.editName;
+    toEdit.surname = this.editSurname;
+    toEdit.email = this.editApplicantEmail;
+    toEdit.phoneNumber = this.editApplicantTellNo;
+    this.tempEngineerList.push(toEdit);
+
+    this.table?.renderRows();
+
+  }
+
+
+  clearCreateComponent() {
+    this.bpNoApplicant = '';
+    this.professionalRegNo = '';
+    this.name = '';
+    this.surname = '';
+    this.applicantTellNo = '';
+    this.applicantEmail = '';
   }
 
   private getDismissReason(reason: any): string {
