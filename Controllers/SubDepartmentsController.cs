@@ -70,20 +70,14 @@ namespace WayleaveManagementSystem.Controllers
         }
 
         [HttpGet("GetDepartmentsList")]
-        public async Task<object> GetSubDepartmentsList([FromBody] string userId)
+        public async Task<object> GetSubDepartmentsList([FromBody] int SubDepartmentID)
         {
             try
             {
+                var result = await _subDepartmentService.GetAllSubDepartments();
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Sub Departments List Created", result));
 
-                if (userId.Length < 1)
-                {
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
-                }
-                else
-                {
-                    var result = await _subDepartmentService.GetAllSubDepartments(userId);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Sub Departments List Created", result));
-                }
+                
 
             }
             catch (Exception ex)
