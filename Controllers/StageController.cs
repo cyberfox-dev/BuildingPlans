@@ -6,6 +6,8 @@ using WayleaveManagementSystem.Service;
 
 namespace WayleaveManagementSystem.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class StageController : Controller
     {
         private readonly IStageServices _stageServices;
