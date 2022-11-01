@@ -15,37 +15,31 @@ export class NewProfileComponent implements OnInit {
   public External: boolean = false;
   public Internal: boolean = false;
   public einfoactive: boolean = false;
-  public step1div: boolean = true;
-  public step2active: boolean = false;
-  public step3active: boolean = false;
-  public step4active: boolean = false;
-  public step2label: boolean = false;
-  public step3label: boolean = false;
-  public step4label: boolean = false;
-  public step2div: boolean = false;
-  public step3div: boolean = false;
-  public step4div: boolean = false;
+
   closeResult = '';
 
-  //External
-  bpNoApplicant = '';
-  companyName = '';
-  CompanyRegNo = '';
-  companyType = '';
-  name = '';
-  surname = '';
-  applicantTellNo = '';
-  applicantEmail = '';
-  applicantPhyscialAddress = '';
-  Upload = '';
+  /*External*/
+  extApplicantBpNoApplicant = '';
+  extApplicantCompanyName = '';
+  extApplicantCompanyRegNo = '';
+  extApplicantCompanyType = '';
+  extApplicantName = '';
+  extApplicantSurname = '';
+  extApplicantTellNo = '';
+  extApplicantEmail = '';
+  extApplicantPhyscialAddress = '';
+  extApplicantIDUpload = '';
 
-  //Internal
-  internalName = '';
-  internalSurname = '';
+
+  /*Internal*/
+  internalApplicantName = '';
+  internalApplicantSurname = '';
+  internalApplicantDirectorate = '';
+  internalApplicantDepartment = '';
   internalApplicantTellNo = '';
-  internalDepartment = '';
-  internalApplicantEmail = '';
-  //internalApplicantTellNo = '';
+  internalApplicantBranch = '';
+  internalApplicantCostCenterNo = '';
+  internalApplicantCostCenterOwner = '';
 
 
 
@@ -84,40 +78,6 @@ export class NewProfileComponent implements OnInit {
     this.showExternal = true;
     this.Internal = false;
     this.External = true;
-  }
-  step1() {
-    this.step1div = true;
-    this.step2div = false;
-    this.step3div = false;
-    this.step4div = false;
-  }
-  step2() {
-    this.step1div = false;
-    this.step2active = true;
-    this.step3div = false;
-    this.step2label = true;
-    this.step2div = true;
-    this.step4div = false;
-
-  }
-  step3() {
-    this.step1div = false;
-    this.step2div = false;
-    this.step3active = true;
-    this.step3div = true;
-    this.step3label = true;
-    this.step4div = false;
-
-  }
-  step4() {
-    this.step1div = false;
-    this.step2div = false;
-    this.step4active = true;
-    this.step3div = false;
-    this.step4div = true;
- 
-    this.step4label = true;
-
   }
 
 
