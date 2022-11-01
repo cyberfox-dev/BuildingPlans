@@ -11,6 +11,6 @@ namespace WayleaveManagementSystem.IServices
         //this will return T/F 
          public Task<bool> DeleteZone(int ZoneID);
 
-         public Task<List<ZonesDTO>> GetAllZones(string ZoneName);
+         public Task<List<ZonesDTO>> GetAllZones(int ZoneID);
     }
 }

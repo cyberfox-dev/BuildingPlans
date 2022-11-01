@@ -15,7 +15,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Zones> AddUpdateZone(int? ZoneID, string ZoneName, int DepartmentID, int SubDepartmentID)
+        public async Task<Zones> AddUpdateZones(int? ZoneID, string ZoneName, int DepartmentID, int SubDepartmentID)
         {
             if (ZoneID == 0)
             {
