@@ -5,7 +5,7 @@
 <div class="container-fluid">
 <div class="dashboard-header">
   <nav class="navbar navbar-expand-lg bg-white fixed-top">
-    <a class="navbar-brand" href="#"><img src="assets/cctlogoblack.png" alt="" class="logo"></a>
+    <a class="navbar-brand"(click)="goHome()"><img src="assets/cctlogoblack.png" alt="" class="logo"></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -20,8 +20,8 @@
           <button mat-button [matMenuTriggerFor]="config"><i class="fa fa-cogs"></i></button>
           <mat-menu #config="matMenu">
             <button mat-menu-item>Roles</button>
-            <button mat-menu-item (click)="goToconfig()">Line Departments</button>
-            <button mat-menu-item (click)="goToconfig()">Zone Configuration</button>
+            <button mat-menu-item (click)="goToconfig('department')">Line Departments</button>
+            <button mat-menu-item (click)="goToconfig('zone')">Zone Configuration</button>
             
           </mat-menu>
 

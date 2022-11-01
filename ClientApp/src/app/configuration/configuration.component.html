@@ -1,24 +1,24 @@
-<app-nav-menu></app-nav-menu>
+<app-nav-menu ></app-nav-menu>
 
 <h1>Configuration</h1>
 
 
 <!-----------------------------------------------------Line Departments configuration-------------------------------------------------------------->
-<!--<div class="container-fluid">
+<div class="container-fluid"  *ngIf="dep">
 
   <app-new-department></app-new-department>
   <app-department-config></app-department-config>
 
 
 </div>
--->
 
 <!-----------------------------------------------------------Zone configuration-------------------------------------------------------------->
-<div class="container-fluid">
+<div class="container-fluid" *ngIf="zone">
 
   <app-new-zone></app-new-zone>
   <app-zone-config></app-zone-config>
 
 
 </div>
+
 

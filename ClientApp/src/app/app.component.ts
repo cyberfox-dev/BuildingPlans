@@ -6,4 +6,12 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'app';
+  message: any;
+
+  recieveConfigShow($event: string) {
+    console.log('msdsdessage', $event);
+    this.message = $event;
+
+
+  }
 }
