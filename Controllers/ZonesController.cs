@@ -70,20 +70,14 @@ namespace WayleaveManagementSystem.Controllers
         }
 
         [HttpGet("GetZonesList")]
-        public async Task<object> GetZonesList([FromBody] string ZoneName)
+        public async Task<object> GetZonesList()
         {
             try
             {
+                var result = await _zonesServices.GetAllZones();
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Zones List Created", result));
 
-                if (ZoneName.Length < 1)
-                {
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
-                }
-                else
-                {
-                    var result = await _zonesServices.GetAllZones(ZoneName);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Zones List Created", result));
-                }
+               
 
             }
             catch (Exception ex)

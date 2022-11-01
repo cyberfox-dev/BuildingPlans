@@ -74,11 +74,11 @@ namespace WayleaveManagementSystem.Service
             }
         }
 
-        public async Task<List<ZonesDTO>> GetAllZones(int ZoneID)
+        public async Task<List<ZonesDTO>> GetAllZones()
         {
             return await (
                 from Zones in _context.ZonesTable
-                where Zones.ZoneID == ZoneID && Zones.isActive == true
+                //where Zones.ZoneID == ZoneID && Zones.isActive == true
                 select new ZonesDTO()
                 {
                     ZoneID = Zones.ZoneID,
