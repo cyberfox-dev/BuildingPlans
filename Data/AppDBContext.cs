@@ -21,7 +21,9 @@ namespace WayleaveManagementSystem.Data
 
         public DbSet<Zones> ZonesTable { get; set; }
 
-        public DbSet<ZoneLinking> ZoneLinkingTable { get; set; }
-        
+        public DbSet<ZoneLink> ZoneLinkTable { get; set; }
+
+        public DbSet<Stages> StageTable { get; set; }
+
     }
 }

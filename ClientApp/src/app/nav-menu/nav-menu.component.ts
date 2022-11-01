@@ -1,19 +1,51 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DepartmentConfigComponent } from 'src/app/department-config/department-config.component';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { SharedService } from '../shared/shared.service';
+
 
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
   styleUrls: ['./nav-menu.component.css']
 })
-export class NavMenuComponent {
+export class NavMenuComponent implements OnInit {
   isExpanded = false;
+  configShow = "";
 
-  constructor(private modalService: NgbModal, private router: Router) { }
 
+
+
+
+
+
+  constructor(private modalService: NgbModal, private router: Router, private shared: SharedService) { }
+
+  ngOnInit(): void {
+  
+
+  }
+
+
+  goToconfig(ids: string) {
+
+    this.router.navigate(["/configuration"]);
+
+    if (ids == 'department') {
+      this.configShow = "department";
+    }
+    else {
+      this.configShow = "zone";
+    }
+
+   /* this.configShow = ids;*/
+    
+this.shared.setConfigShow(this.configShow);
+
+  }
   collapse() {
     this.isExpanded = false;
   }
@@ -33,11 +65,13 @@ export class NavMenuComponent {
 
   openXl(content: any) {
 		this.modalService.open(content, { size: 'xl' });
-	}
-
-  goToconfig(){
-    this.router.navigate(["/configuration"]);
   }
+
+
+  goHome() {
+    this.router.navigate(["/home"]);
+  }
+
 
   
 
