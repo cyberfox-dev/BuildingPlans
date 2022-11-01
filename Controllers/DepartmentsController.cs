@@ -4,6 +4,7 @@ using WayleaveManagementSystem.Models.BindingModel;
 using WayleaveManagementSystem.Models;
 using WayleaveManagementSystem.Service;
 using WayleaveManagementSystem.Data.Entities;
+using WayleaveManagementSystem.Models.DTO;
 
 namespace WayleaveManagementSystem.Controllers
 {
@@ -73,20 +74,15 @@ namespace WayleaveManagementSystem.Controllers
         }
 
         [HttpGet("GetDepartmentsList")]
-        public async Task<object> GetDepartmentsList([FromBody] string userId)
+        public async Task<object> GetDepartmentsList()
         {
             try
             {
+                List<DepartmentsDTO> departmentsDTOs = new List<DepartmentsDTO>();
+                var result = await _departmentsService.GetAllDepartments();
 
-                if (userId.Length < 1)
-                {
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
-                }
-                else
-                {
-                    var result = await _departmentsService.GetAllDepartments(userId);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Departments List Created", result));
-                }
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Departments List Created", result));
+
 
             }
             catch (Exception ex)

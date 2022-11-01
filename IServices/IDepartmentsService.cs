@@ -11,7 +11,7 @@ namespace WayleaveManagementSystem.IServices
         //this will return T/F 
         public Task<bool> DeleteDepartments(int DepartmentID);
         
-        Task<List<DepartmentsDTO>> GetAllDepartments(int DepartmentID);
+        Task<List<DepartmentsDTO>> GetAllDepartments();
         
     }
 }
