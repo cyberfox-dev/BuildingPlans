@@ -3,22 +3,39 @@
 <h1>Configuration</h1>
 
 
-<!-----------------------------------------------------Line Departments configuration-------------------------------------------------------------->
-<div class="container-fluid"  *ngIf="dep">
+<!-----------------------------------------------------Roles configuration-------------------------------------------------------------->
+<div class="container-fluid"  >
 
-  <app-new-department></app-new-department>
-  <app-department-config></app-department-config>
+  <mat-tab-group>
 
-
-</div>
-
-<!-----------------------------------------------------------Zone configuration-------------------------------------------------------------->
-<div class="container-fluid" *ngIf="zone">
-
-  <app-new-zone></app-new-zone>
-  <app-zone-config></app-zone-config>
+    <mat-tab label="Roles">
 
 
+    </mat-tab>
+
+
+
+    <!-----------------------------------------------------------Line Departments configuration-------------------------------------------------------------->
+
+    <mat-tab label="Line Departments">
+      <app-new-department></app-new-department>
+      <app-department-config></app-department-config>
+    </mat-tab>
+
+    <!-----------------------------------------------------------Zones configuration-------------------------------------------------------------->
+
+    <mat-tab label="Zones">
+      <app-new-zone></app-new-zone>
+      <app-zone-config></app-zone-config>
+    </mat-tab>
+
+  <!-----------------------------------------------------------Stages configuration-------------------------------------------------------------->
+
+    <mat-tab label="Stages">
+    </mat-tab>
+
+
+  </mat-tab-group>
 </div>
 
 

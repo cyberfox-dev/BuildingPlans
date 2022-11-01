@@ -13,7 +13,7 @@ export class ConfigurationComponent implements OnInit {
 
 
   public zone: boolean = false;
-  public dep: boolean = false;
+  public department: boolean = false;
 
   configShow: any;
 
@@ -24,11 +24,8 @@ export class ConfigurationComponent implements OnInit {
 
   }
 
-  ngAfterViewInit() {
-    this.configShow = this.shared.getConfigShow();
+  
 
-    console.log(this.configShow);
-  } 
 
 
 }

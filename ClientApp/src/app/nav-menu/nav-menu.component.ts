@@ -14,13 +14,7 @@ import { SharedService } from '../shared/shared.service';
 })
 export class NavMenuComponent implements OnInit {
   isExpanded = false;
-  configShow = "";
-
-
-
-
-
-
+  configShow : number | undefined;
 
   constructor(private modalService: NgbModal, private router: Router, private shared: SharedService) { }
 
@@ -29,23 +23,13 @@ export class NavMenuComponent implements OnInit {
 
   }
 
-
-  goToconfig(ids: string) {
+  goToConfig() {
 
     this.router.navigate(["/configuration"]);
 
-    if (ids == 'department') {
-      this.configShow = "department";
-    }
-    else {
-      this.configShow = "zone";
-    }
-
-   /* this.configShow = ids;*/
-    
-this.shared.setConfigShow(this.configShow);
 
   }
+
   collapse() {
     this.isExpanded = false;
   }

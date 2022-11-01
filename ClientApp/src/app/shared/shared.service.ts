@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class SharedService {
-  configShow!: string;
+  configShow!: any;
   constructor() { }
  setConfigShow(data:any){
   this.configShow=data
