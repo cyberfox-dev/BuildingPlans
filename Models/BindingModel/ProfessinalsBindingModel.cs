@@ -18,6 +18,9 @@
 
         public string ProfessionalRegNo { get; set; }
         public string? AppUserID { get; set; }
+
+        public int IDNumber { get; set; }
+
         public string? CreatedById { get; set; }
 
         
