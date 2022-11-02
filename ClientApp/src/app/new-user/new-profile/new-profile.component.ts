@@ -3,9 +3,39 @@ import { GooglePlaceDirective } from 'ngx-google-places-autocomplete';
 import { Address } from 'ngx-google-places-autocomplete/objects/address';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
 import Stepper from 'bs-stepper';
-
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { SharedService } from 'src/app/shared/shared.service';
 
+
+
+
+export interface ExternalList {
+
+    extApplicantBpNoApplicant:string;
+  extApplicantCompanyName: string;
+  extApplicantCompanyRegNo: string;
+  extApplicantCompanyType: string;
+  extApplicantName: string;
+  extApplicantSurname: string;
+  extApplicantTellNo: string;
+  extApplicantEmail: string;
+  extApplicantPhyscialAddress: string;
+  extApplicantIDNumber: string;
+  extApplicantIDUpload: string;
+
+}
+export interface InternalList {
+
+  internalApplicantName: string;
+  internalApplicantSurname: string;
+  internalApplicantDirectorate: string;
+  internalApplicantDepartment: string;
+  internalApplicantTellNo: string;
+  internalApplicantBranch: string;
+  internalApplicantCostCenterNo: string;
+  internalApplicantCostCenterOwner: string;
+
+}
 
 @Component({
   selector: 'app-new-profile',
@@ -56,9 +86,11 @@ export class NewProfileComponent implements OnInit {
 
   CurrentUser: any;
   stringifiedData: any;  
+  ExternalUserProfileData: ExternalList[] = [];
+  InternalUserProfileData: InternalList[] = [];
 
 
-  constructor(private modalService: NgbModal) { }
+  constructor(private modalService: NgbModal, private shared: SharedService) { }
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
@@ -103,6 +135,41 @@ export class NewProfileComponent implements OnInit {
     this.extApplicantEmail = this.CurrentUser.email; 
 
   }
+
+  ngDoCheck() {
+
+    if (this.showInternal) {
+
+      const newInternalUserProfile = {} as InternalList;
+      newInternalUserProfile.internalApplicantName = this.internalApplicantName;
+      newInternalUserProfile.internalApplicantSurname =  this.internalApplicantSurname;
+      newInternalUserProfile.internalApplicantDirectorate = this.internalApplicantDirectorate;
+      newInternalUserProfile.internalApplicantDepartment =  this.internalApplicantDepartment;
+      newInternalUserProfile.internalApplicantTellNo =  this.internalApplicantTellNo;
+      newInternalUserProfile.internalApplicantBranch =  this.internalApplicantBranch;
+      newInternalUserProfile.internalApplicantCostCenterNo =   this.internalApplicantCostCenterNo;
+      newInternalUserProfile.internalApplicantCostCenterOwner = this.internalApplicantCostCenterOwner;
+
+      this.InternalUserProfileData.push(newInternalUserProfile);
+
+
+    }
+    else {
+      const newExternalUserProfile = {} as ExternalList;
+      this.extApplicantBpNoApplicant;
+      this.extApplicantCompanyName;
+      this.extApplicantCompanyRegNo;
+      this.extApplicantCompanyType;
+      this.extApplicantName;
+      this.extApplicantSurname;
+      this.extApplicantTellNo;
+      this.extApplicantEmail;
+      this.extApplicantPhyscialAddress;
+      this.extApplicantIDNumber;
+      this.extApplicantIDUpload;
+    }
+
+  }
   sInternal() {
     this.showInternal = true;
     this.showExternal = false;
@@ -117,6 +184,8 @@ export class NewProfileComponent implements OnInit {
     this.External = true;
   }
 
+
+ 
 
   onNewProfileCreate() {
 

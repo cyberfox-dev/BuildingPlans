@@ -88,7 +88,7 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
                 List<UserDTO> allUserDTO = new List<UserDTO>();
-                var users = _userManager.Users.Select(x => new UserDTO(x.FullName, x.Email, x.UserName, x.DateCreated));
+                var users = _userManager.Users.Select(x => new UserDTO(x.FullName, x.Email, x.UserName, x.DateCreated,x.Id));
 
                 return await Task.FromResult(users);
 
@@ -146,7 +146,7 @@ namespace WayleaveManagementSystem.Controllers
                     if (result.Succeeded)
                     {
                         var appUser = await _userManager.FindByEmailAsync(model.Email);
-                        var user = new UserDTO(appUser.FullName, appUser.Email, appUser.UserName, appUser.DateCreated);
+                        var user = new UserDTO(appUser.FullName, appUser.Email, appUser.UserName, appUser.DateCreated,appUser.Id);
                         user.Token = GenerateToken(appUser);
     
                         return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "", user));

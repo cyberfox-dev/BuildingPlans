@@ -37,7 +37,7 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public byte? CopyOfID { get; set; }
 
-
+        public int? idNumber { get; set; }
 
 
 

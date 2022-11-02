@@ -18,7 +18,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string userID, string fullName, string email, string? phoneNumber, bool isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, byte? copyOfID, string createdById)
+        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string userID, string fullName, string email, string? phoneNumber, bool isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, byte? copyOfID, string createdById, int? idNumber)
         {
             if (userProfileID == 0)
             {
@@ -53,7 +53,8 @@ namespace WayleaveManagementSystem.Service
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     CreatedById = createdById,
-                    isActive = true
+                    isActive = true,
+                    idNumber = idNumber
                 };
 
                 //After the inizlization add to the db
@@ -86,6 +87,7 @@ namespace WayleaveManagementSystem.Service
                 tempUserProfile.DateUpdated = DateTime.Now;
                // tempUserProfile.CreatedById = createdById;
                 tempUserProfile.isActive = true;
+                tempUserProfile.idNumber = idNumber;
 
                 _context.Update(tempUserProfile);
                 await _context.SaveChangesAsync();
@@ -142,6 +144,7 @@ namespace WayleaveManagementSystem.Service
                    DateUpdated = UserProfile.DateUpdated,
                    CreatedById = UserProfile.CreatedById,
                    //isActive = true
+                   idNumber = UserProfile.idNumber,
 
                }
 

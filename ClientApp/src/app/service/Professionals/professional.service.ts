@@ -11,7 +11,7 @@ export class ProfessionalService {
 
  
 
-  public addUpdateProfessional(professinalID: number | null, professinalType: string, fullName: string, bp_Number: string, bpVerified: boolean | null, email: string, phoneNumber: string, professionalRegNo: string, appUserID: string, createdById: string ) {
+  public addUpdateProfessional(professinalID: number | null, professinalType: string, fullName: string, bp_Number: string, bpVerified: boolean | null, email: string, phoneNumber: string, professionalRegNo: string, appUserID: string,idNumber:number ,createdById: string ) {
 
     const body = {
       ProfessinalID: professinalID,
@@ -24,6 +24,7 @@ export class ProfessionalService {
       ProfessionalRegNo: professionalRegNo,
       AppUserID: appUserID, 
       CreatedById: createdById,
+      IDNumber: idNumber,
       
     }
     return this.httpClient.post(this.baseURL + "AddUpdateProfessional", body);
