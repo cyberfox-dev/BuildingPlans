@@ -47,5 +47,8 @@ namespace WayleaveManagementSystem.Models.DTO
         public string? CreatedById { get; set; }
 
         public bool isActive { get; set; }
+
+        public int? idNumber { get; set; }
+
     }    
 }

@@ -26,6 +26,7 @@
 
         public bool isActive { get; set; }
 
+        public int? idNumber { get; set; }
 
     }
 }
