@@ -1,17 +1,17 @@
 
 
 .education {
-  --bg-color: #ffd861;
-  --bg-color-light: #ffeeba;
+  --bg-color: #2d84cf;
+  --bg-color-light: #2d84cf;
   --text-color-hover: #fff;
-  --box-shadow-color: rgba(255, 215, 97, 0.48);
+  --box-shadow-color: rgb(97 211 255 / 48%);
 }
 
 .wallet {
-  --bg-color: #CEB2FC;
-  --bg-color-light: #F0E7FF;
+  --bg-color: #2d84cf;
+  --bg-color-light: #2d84cf;
   --text-color-hover: #fff;
-  --box-shadow-color: rgba(206, 178, 252, 0.48);
+  --box-shadow-color: rgb(97 211 255 / 48%);
 }
 .col {
   flex: 1 0 0%;
@@ -43,21 +43,23 @@
 }
 
   .card:hover {
-    transform: translateY(-5px) scale(1.005) translateZ(0);
+    /* transform: translateY(-5px) scale(1.005) translateZ(0);*/
+    background-color: lightskyblue;
     box-shadow: 0 24px 36px rgba(0,0,0,0.11), 0 24px 46px var(--box-shadow-color);
   }
 
     .card:hover .overlay {
       transform: scale(4) translateZ(0);
+      background-color: lightskyblue;
     }
 
     .card:hover .circle {
       border-color: var(--bg-color-light);
-      background: var(--bg-color);
+      background-color: lightskyblue;
     }
 
       .card:hover .circle:after {
-        background: var(--bg-color-light);
+        background-color: lightskyblue;
       }
 
     .card:hover p {

@@ -38,7 +38,7 @@ export class InternalOptionComponent implements OnInit {
   }
 
   openSm(internalOpt: any) {
-    this.modalService.open(internalOpt, { size: 'xl' });
+    this.modalService.open(internalOpt, { size: 'lg' });
   }
 
 }
