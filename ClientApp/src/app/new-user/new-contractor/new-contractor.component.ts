@@ -1,24 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { MatTable } from '@angular/material/table';
 
-export interface PeriodicElement {
+export interface ContractorList {
+
+  ProfessinalType: string;
+  professionalRegNo: string;
+  bpNumber: string;
   name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-
-  cell: number;
+  surname: string;
   email: string;
+  phoneNumber: number;
+  CIBDrating: string;
 
 }
 
 
-const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H', cell: 526205658, email: 'jjjj@gmail.com' },
-  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He', cell: 526205658, email: 'jjjj@gmail.com' },
-  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li', cell: 526205658, email: 'jjjj@gmail.com' },
-  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be', cell: 526205658, email: 'jjjj@gmail.com' },
-];
+
 
 @Component({
   selector: 'app-new-contractor',
@@ -36,15 +34,45 @@ export class NewContractorComponent implements OnInit {
   ContractorEmail = '';
 
 
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'cell', 'email', 'actions'];
-  dataSource = ELEMENT_DATA;
+
+  editBpNoApplicant = '';
+  editProfessionalRegNo = '';
+  editName = '';
+  editSurname = '';
+  editApplicantTellNo = '';
+  editApplicantEmail = '';
+
+
+  tempContractorList: ContractorList[] = [];
+
+ 
 
   constructor(private modalService: NgbModal) { }
+
+  displayedColumns: string[] = ['ProfessinalType', 'bpNumber', 'name', 'surname', 'professionalRegNo', 'phoneNumber','CIBDrating' ,'email', 'actions'];
+  dataSource = this.tempContractorList;
+  @ViewChild(MatTable) table: MatTable<ContractorList> | undefined;
 
   ngOnInit(): void {
   }
   openXl(content: any) {
     this.modalService.open(content, { size: 'xl' });
+  }
+
+  onAddcontractor() {
+    const newContractor = {} as ContractorList;
+    newContractor.ProfessinalType = "Contactor";
+    newContractor.bpNumber = this.bpNoContractor;
+    newContractor.professionalRegNo = this.ProfessionalRegNo;
+    newContractor.name = this.Name;
+    newContractor.surname = this.Surname;
+    newContractor.email = this.ContractorEmail;
+    newContractor.phoneNumber = this.ContractorTell;
+    newContractor.bpNumber = this.CIBDrating;
+
+    this.tempContractorList.push(newContractor);
+    this.table?.renderRows();
+   // this.clearCreateComponent();
   }
 
   private getDismissReason(reason: any): string {
