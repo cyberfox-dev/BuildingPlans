@@ -7,7 +7,7 @@ namespace WayleaveManagementSystem.IServices
     {
 
         //Task<Professionals> - This is the return type so its going to ruturn it in the fromt of the professinals model
-        Task<Professionals> AddUpdateProfessional(int? professinalID, string professinalType, string fullName, string bp_Number, bool? bpVerified, string email, string phoneNumber, string professionalRegNo, string appUserID, string createdById);
+        Task<Professionals> AddUpdateProfessional(int? professinalID, string professinalType, string fullName, string bp_Number, bool? bpVerified, string email, string phoneNumber, string professionalRegNo, string appUserID, int idNumber, string createdById);
         //this will return T/F 
         public Task<bool> DeleteProfessional(int professinalID);
 

@@ -23,6 +23,8 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public string AppUserID { get; set; }
 
+        public int IDNumber { get; set; }
+
         public AppUser AppUser { get; set; }
 
 

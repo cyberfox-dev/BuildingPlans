@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit {
     this.userService.login(email, password).subscribe((data: any) => {
     
       if (data.responseCode == 1) {
-        localStorage.setItem("LoggedInUserInfo", data.DataSet);
+        localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
         this.router.navigate(["/home"]);
       }
       else {
@@ -63,8 +63,16 @@ export class LoginComponent implements OnInit {
     let email = this.registerForm.controls["email"].value;
     let password = this.registerForm.controls["password"].value;
     this.userService.register(fullName, email, password).subscribe((data:any) => {
-      
-      console.log("reponse", data);
+
+      if (data.responseCode == 1) {
+        localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
+        this.router.navigate(["/new-profile"]);
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      //console.log("reponse", data);
 
     }, error => {
       console.log("Error: ", error);

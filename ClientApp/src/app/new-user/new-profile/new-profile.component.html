@@ -92,13 +92,13 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control"  [(ngModel)]="extApplicantName" placeholder="Enter First Name" >
+                <input type="text" class="form-control"  [(ngModel)]="extApplicantName" placeholder="Enter First Name" disabled >
                 <label for="name">Name</label>
               </div>
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control"  [(ngModel)]="extApplicantSurname" placeholder="Enter Surname" >
+                <input type="text" class="form-control"  [(ngModel)]="extApplicantSurname" placeholder="Enter Surname" disabled>
                 <label for="surname">Surname</label>
               </div>
             </div>
@@ -113,7 +113,7 @@
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control"  [(ngModel)]="extApplicantEmail" placeholder="Enter Email" >
+                <input type="email" class="form-control"  [(ngModel)]="extApplicantEmail" placeholder="Enter Email" disabled>
                 <label for="applicantEmail">Email</label>
               </div>
             </div>
@@ -123,7 +123,8 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address">
+                <!--<input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address">-->
+                <input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" />
                 <label for="applicantTellNo">Physcial Address</label>
               </div>
             </div>
@@ -155,13 +156,13 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="internalApplicantName" placeholder="Enter First Name">
+                <input type="text" class="form-control" [(ngModel)]="internalApplicantName" placeholder="Enter First Name" disabled>
                 <label for="name">Name</label>
               </div>
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="internalApplicantSurname" placeholder="Enter Surname" >
+                <input type="text" class="form-control" [(ngModel)]="internalApplicantSurname" placeholder="Enter Surname" disabled>
                 <label for="surname">Surname</label>
               </div>
             </div>

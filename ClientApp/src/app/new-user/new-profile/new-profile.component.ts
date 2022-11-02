@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { GooglePlaceDirective } from 'ngx-google-places-autocomplete';
+import { Address } from 'ngx-google-places-autocomplete/objects/address';
+import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
 import Stepper from 'bs-stepper';
 
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
@@ -10,6 +13,15 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./new-profile.component.css']
 })
 export class NewProfileComponent implements OnInit {
+
+  @ViewChild("placesRef")
+  placesRef: GooglePlaceDirective | undefined;
+  options = {
+    types: [],
+    componentRestrictions: { country: 'ZA' }
+  } as unknown as Options
+
+
   public showExternal: boolean = false;
   public showInternal: boolean = false;
   public External: boolean = false;
@@ -42,6 +54,8 @@ export class NewProfileComponent implements OnInit {
   internalApplicantCostCenterNo = '';
   internalApplicantCostCenterOwner = '';
 
+  CurrentUser: any;
+  stringifiedData: any;  
 
 
   constructor(private modalService: NgbModal) { }
@@ -52,6 +66,17 @@ export class NewProfileComponent implements OnInit {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
+
+  public handleAddressChange(address: Address) {
+    // Do some stuff
+    console.log("Address", address);
+    console.log("Address", address);
+    console.log("Address", address);
+  }
+
+
+
+
 
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
@@ -65,6 +90,17 @@ export class NewProfileComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
+
+    const fullname = this.CurrentUser.fullName;
+
+    this.internalApplicantName = fullname.substring(0, fullname.indexOf(' '));
+    this.internalApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
+
+    this.extApplicantName = fullname.substring(0, fullname.indexOf(' '));
+    this.extApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
+    this.extApplicantEmail = this.CurrentUser.email; 
 
   }
   sInternal() {
