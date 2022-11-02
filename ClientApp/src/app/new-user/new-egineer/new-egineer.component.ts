@@ -76,8 +76,11 @@ export class NewEgineerComponent implements OnInit {
     this.clearCreateComponent();
   }
   onDelete(position: any) {
-    this.tempEngineerList.splice(position,1);
-    this.table?.renderRows();
+    const deleteContractor = this.tempEngineerList[position];
+    if (confirm("Are you sure to delete " + deleteContractor.name + " " + deleteContractor.surname + "?")) {
+      this.tempEngineerList.splice(position, 1);
+      this.table?.renderRows();
+    }
   }
 
   openXl(content: any) {
@@ -94,8 +97,6 @@ export class NewEgineerComponent implements OnInit {
     this.editSurname = forEditEngineer.surname;
     this.editApplicantTellNo = forEditEngineer.phoneNumber;
     this.editApplicantEmail = forEditEngineer.email;
-
-
 
     this.forEditIndex = index;
   }
