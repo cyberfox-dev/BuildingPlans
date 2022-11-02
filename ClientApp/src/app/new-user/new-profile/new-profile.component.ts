@@ -28,6 +28,7 @@ export class NewProfileComponent implements OnInit {
   extApplicantTellNo = '';
   extApplicantEmail = '';
   extApplicantPhyscialAddress = '';
+  extApplicantIDNumber = '';
   extApplicantIDUpload = '';
 
 
