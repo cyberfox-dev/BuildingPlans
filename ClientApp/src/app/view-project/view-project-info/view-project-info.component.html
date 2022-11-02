@@ -18,7 +18,21 @@
         <mat-tab label="Project Information">
 
           <app-view-project-details></app-view-project-details>
+          <nav class="menu">
+            <input type="checkbox" href="#" class="menu-open" name="menu-open" id="menu-open" />
+            <label class="menu-open-button" for="menu-open">
+              <span class="hamburger hamburger-1"></span>
+              <span class="hamburger hamburger-2"></span>
+              <span class="hamburger hamburger-3"></span>
+            </label>
 
+            <a class="menu-item"  matTooltipPosition="left" matTooltip="Show applicant layer"> <i class="fa fa-user"></i> </a>
+            <a class="menu-item"  matTooltipPosition="left" matTooltip="Show department layer"><i class="fa fa-building"></i> </a>
+            <a class="menu-item"  matTooltipPosition="left" matTooltip="Show all layers"> <i class="fa fa-eye"></i> </a>
+            <a class="menu-item"  matTooltipPosition="left" matTooltip="Hide all layers"> <i class="fa fa-eye-slash"></i> </a>
+
+
+          </nav>
           <app-project-details-map></app-project-details-map>
 
           <app-department-circulation></app-department-circulation>
