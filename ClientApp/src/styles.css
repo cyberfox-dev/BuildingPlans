@@ -278,3 +278,19 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   display: flex;
   justify-content: space-between;
 }
+
+::-webkit-scrollbar{
+    width:7px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 255, 0);
+  border-radius: 20px;
+  margin-block:10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color:#6b767998;
+    border-radius: 20px;
+}
+

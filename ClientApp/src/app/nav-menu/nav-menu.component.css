@@ -14,7 +14,10 @@
   -webkit-transition: all 0.3s ease;
   height: 70px;
 }
-
+a{
+    color:black;
+    text-decoration:none; 
+}
 
 
 .navbar-brand {

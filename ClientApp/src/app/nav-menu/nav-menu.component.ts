@@ -24,10 +24,11 @@ export class NavMenuComponent implements OnInit {
   }
 
   goToConfig() {
-
     this.router.navigate(["/configuration"]);
+  }
 
-
+  goToSettings() {
+    this.router.navigate(["/user-settings"]);
   }
 
   collapse() {

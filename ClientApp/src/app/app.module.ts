@@ -52,6 +52,7 @@ import { SubDepartmentConfigComponent } from './sub-department-config/sub-depart
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ZoneConfigComponent } from './zone-config/zone-config.component';
 import { NewZoneComponent } from './new-zone/new-zone.component';
+import { UserSettingsComponent } from './user-settings/user-settings.component';
 
 @NgModule({
   declarations: [
@@ -96,6 +97,7 @@ import { NewZoneComponent } from './new-zone/new-zone.component';
     SubDepartmentConfigComponent,
     ZoneConfigComponent,
     NewZoneComponent,
+    UserSettingsComponent,
 
   ],
   imports: [
@@ -132,7 +134,8 @@ import { NewZoneComponent } from './new-zone/new-zone.component';
       { path: 'new-profile', component: NewProfileComponent },
       { path: 'new-wayleave', component: NewWayleaveComponent },
       { path: 'view-project-info', component: ViewProjectInfoComponent },
-      {path: 'configuration',component:ConfigurationComponent},
+      { path: 'configuration', component: ConfigurationComponent },
+      { path: 'user-settings', component: UserSettingsComponent },
     ])
   ],
   providers: [],
