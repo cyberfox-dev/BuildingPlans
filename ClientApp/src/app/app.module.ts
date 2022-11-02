@@ -53,6 +53,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ZoneConfigComponent } from './zone-config/zone-config.component';
 import { NewZoneComponent } from './new-zone/new-zone.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
+import { GooglePlaceModule } from "ngx-google-places-autocomplete";
 
 @NgModule({
   declarations: [
@@ -128,6 +129,7 @@ import { UserSettingsComponent } from './user-settings/user-settings.component';
     MatExpansionModule,
     MatIconModule,
     NgbModule,
+    GooglePlaceModule,
     RouterModule.forRoot([
       { path: '', component: LoginComponent },
       { path: 'home', component: HomeComponent},

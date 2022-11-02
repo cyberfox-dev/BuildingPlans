@@ -28,3 +28,6 @@ ng add @angular/material
 custom theme
 yes for fonts
 and no for animations
+
+
+npm i ngx-google-places-autocomplete
