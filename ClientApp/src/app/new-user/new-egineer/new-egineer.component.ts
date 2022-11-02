@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { MatTable } from '@angular/material/table';
+import { SharedService } from 'src/app/shared/shared.service';
 
 export interface EngineerList {
  
@@ -46,7 +47,7 @@ export class NewEgineerComponent implements OnInit {
   forEditEngineer: EngineerList[] = [];
   forEditIndex: any;
 
-  constructor(private modalService: NgbModal) { }
+  constructor(private modalService: NgbModal, private shared: SharedService) { }
 
   displayedColumns: string[] = ['ProfessinalType', 'bpNumber', 'name', 'surname', 'professionalRegNo', 'phoneNumber', 'email', 'actions'];
   myDataSource = this.tempEngineerList;
@@ -74,6 +75,7 @@ export class NewEgineerComponent implements OnInit {
 
     this.tempEngineerList.push(newEnineer);
     this.table?.renderRows();
+    this.shared.setEngineerData(this.tempEngineerList);
     this.clearCreateComponent();
   }
   onDelete(position: any) {
@@ -81,6 +83,7 @@ export class NewEgineerComponent implements OnInit {
     if (confirm("Are you sure to delete " + deleteContractor.name + " " + deleteContractor.surname + "?")) {
       this.tempEngineerList.splice(position, 1);
       this.table?.renderRows();
+      this.shared.setEngineerData(this.tempEngineerList);
     }
   }
 
@@ -113,8 +116,8 @@ export class NewEgineerComponent implements OnInit {
     toEdit.email = this.editApplicantEmail;
     toEdit.phoneNumber = this.editApplicantTellNo;
     this.tempEngineerList.push(toEdit);
-
     this.table?.renderRows();
+    this.shared.setEngineerData(this.tempEngineerList);
 
   }
 

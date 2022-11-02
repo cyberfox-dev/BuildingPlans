@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { MatTable } from '@angular/material/table';
+import { SharedService } from 'src/app/shared/shared.service';
 
 export interface ContractorList {
 
@@ -50,7 +51,7 @@ export class NewContractorComponent implements OnInit {
 
  
 
-  constructor(private modalService: NgbModal) { }
+  constructor(private modalService: NgbModal, private shared: SharedService) { }
 
   displayedColumns: string[] = ['ProfessinalType', 'bpNumber', 'name', 'surname', 'professionalRegNo', 'phoneNumber','CIBDrating' ,'email', 'actions'];
   dataSource = this.tempContractorList;
@@ -75,6 +76,7 @@ export class NewContractorComponent implements OnInit {
 
     this.tempContractorList.push(newContractor);
     this.table?.renderRows();
+    this.shared.setContactorData(this.tempContractorList);
    this.clearCreateComponent();
   }
 
@@ -83,6 +85,7 @@ export class NewContractorComponent implements OnInit {
     if (confirm("Are you sure to delete " + deleteContractor.name +" "+ deleteContractor.surname +"?")) {
       this.tempContractorList.splice(position, 1);
       this.table?.renderRows();
+      this.shared.setContactorData(this.tempContractorList);
     }
     
   }
@@ -114,8 +117,8 @@ export class NewContractorComponent implements OnInit {
     toEdit.phoneNumber = this.editContractorTell;
     toEdit.CIBDrating = this.editCIBDrating;
     this.tempContractorList.push(toEdit);
-
     this.table?.renderRows();
+    this.shared.setContactorData(this.tempContractorList);
 
   }
 
