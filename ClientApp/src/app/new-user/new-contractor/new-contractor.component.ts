@@ -25,6 +25,7 @@ export interface ContractorList {
 })
 export class NewContractorComponent implements OnInit {
   closeResult = "";
+  contractorIDNo = '';
   bpNoContractor = "";
   ProfessionalRegNo = "";
   CIBDrating = "";

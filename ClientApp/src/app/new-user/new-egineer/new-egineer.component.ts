@@ -26,6 +26,7 @@ export interface EngineerList {
 export class NewEgineerComponent implements OnInit {
   closeResult = '';
 
+  engineerIDNo = '';
   bpNoApplicant = '';
   professionalRegNo = '';
   name = '';
