@@ -44,7 +44,7 @@ namespace WayleaveManagementSystem.DTO
 
         public string? AppUserID { get; set; }
 
-        public int IDNumber { get; set; }
+        public string? IdNumber { get; set; }
 
        
     }

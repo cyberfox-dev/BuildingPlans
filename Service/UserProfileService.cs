@@ -18,7 +18,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string userID, string fullName, string email, string? phoneNumber, bool isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, byte? copyOfID, string createdById, int? idNumber)
+        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string userID, string fullName, string email, string? phoneNumber, bool isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, byte? copyOfID, string createdById, string? IdNumber)
         {
             if (userProfileID == 0)
             {
@@ -54,7 +54,7 @@ namespace WayleaveManagementSystem.Service
                     DateUpdated = DateTime.Now,
                     CreatedById = createdById,
                     isActive = true,
-                    idNumber = idNumber
+                    IdNumber = IdNumber
                 };
 
                 //After the inizlization add to the db
@@ -87,7 +87,7 @@ namespace WayleaveManagementSystem.Service
                 tempUserProfile.DateUpdated = DateTime.Now;
                // tempUserProfile.CreatedById = createdById;
                 tempUserProfile.isActive = true;
-                tempUserProfile.idNumber = idNumber;
+                tempUserProfile.IdNumber = IdNumber;
 
                 _context.Update(tempUserProfile);
                 await _context.SaveChangesAsync();
@@ -144,7 +144,7 @@ namespace WayleaveManagementSystem.Service
                    DateUpdated = UserProfile.DateUpdated,
                    CreatedById = UserProfile.CreatedById,
                    //isActive = true
-                   idNumber = UserProfile.idNumber,
+                   IdNumber = UserProfile.IdNumber,
 
                }
 

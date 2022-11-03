@@ -11,16 +11,16 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 })
 export class InternalOptionComponent implements OnInit {
   option = "";
-
-
-
-
-
+  clientactive: boolean = false;
   cardchange(ids: any) {
     this.option = ids;
     console.log(this.option);
-  }
+    if (this.option == 'client') {
+      this.clientactive = true;
 
+    }
+  }
+  
 
   @Output() optionEvent = new EventEmitter<string>();
 
@@ -38,7 +38,7 @@ export class InternalOptionComponent implements OnInit {
   }
 
   openSm(internalOpt: any) {
-    this.modalService.open(internalOpt, { size: 'xl' });
+    this.modalService.open(internalOpt, { size: 'lg' });
   }
 
 }
