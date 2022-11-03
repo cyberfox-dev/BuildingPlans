@@ -5,6 +5,9 @@ import { Options } from 'ngx-google-places-autocomplete/objects/options/options'
 import Stepper from 'bs-stepper';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { SharedService } from 'src/app/shared/shared.service';
+import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
+import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
+
 
 
 
@@ -90,7 +93,7 @@ export class NewProfileComponent implements OnInit {
   InternalUserProfileData: InternalList[] = [];
 
 
-  constructor(private modalService: NgbModal, private shared: SharedService) { }
+  constructor(private modalService: NgbModal, private shared: SharedService, private userPofileService: UserProfileService, private professionalService :ProfessionalService) { }
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
@@ -138,36 +141,8 @@ export class NewProfileComponent implements OnInit {
 
   ngDoCheck() {
 
-    if (this.showInternal) {
-
-      const newInternalUserProfile = {} as InternalList;
-      newInternalUserProfile.internalApplicantName = this.internalApplicantName;
-      newInternalUserProfile.internalApplicantSurname =  this.internalApplicantSurname;
-      newInternalUserProfile.internalApplicantDirectorate = this.internalApplicantDirectorate;
-      newInternalUserProfile.internalApplicantDepartment =  this.internalApplicantDepartment;
-      newInternalUserProfile.internalApplicantTellNo =  this.internalApplicantTellNo;
-      newInternalUserProfile.internalApplicantBranch =  this.internalApplicantBranch;
-      newInternalUserProfile.internalApplicantCostCenterNo =   this.internalApplicantCostCenterNo;
-      newInternalUserProfile.internalApplicantCostCenterOwner = this.internalApplicantCostCenterOwner;
-
-      this.InternalUserProfileData.push(newInternalUserProfile);
-
-
-    }
-    else {
-      const newExternalUserProfile = {} as ExternalList;
-      this.extApplicantBpNoApplicant;
-      this.extApplicantCompanyName;
-      this.extApplicantCompanyRegNo;
-      this.extApplicantCompanyType;
-      this.extApplicantName;
-      this.extApplicantSurname;
-      this.extApplicantTellNo;
-      this.extApplicantEmail;
-      this.extApplicantPhyscialAddress;
-      this.extApplicantIDNumber;
-      this.extApplicantIDUpload;
-    }
+    
+   
 
   }
   sInternal() {
@@ -188,6 +163,40 @@ export class NewProfileComponent implements OnInit {
  
 
   onNewProfileCreate() {
+    if (this.showInternal) {
+
+     
+      //newInternalUserProfile.internalApplicantName = this.internalApplicantName;
+      //newInternalUserProfile.internalApplicantSurname = this.internalApplicantSurname;
+      //newInternalUserProfile.internalApplicantDirectorate = this.internalApplicantDirectorate;
+      //newInternalUserProfile.internalApplicantDepartment = this.internalApplicantDepartment;
+      //newInternalUserProfile.internalApplicantTellNo = this.internalApplicantTellNo;
+      //newInternalUserProfile.internalApplicantBranch = this.internalApplicantBranch;
+      //newInternalUserProfile.internalApplicantCostCenterNo = this.internalApplicantCostCenterNo;
+      //newInternalUserProfile.internalApplicantCostCenterOwner = this.internalApplicantCostCenterOwner;
+
+      //this.userPofileService.addUpdateUserProfiles(null, this.CurrentUser.);
+
+
+    }
+
+    else {
+      //const newExternalUserProfile = {} as ExternalList;
+      //this.extApplicantBpNoApplicant;
+      //this.extApplicantCompanyName;
+      //this.extApplicantCompanyRegNo;
+      //this.extApplicantCompanyType;
+      //this.extApplicantName;
+      //this.extApplicantSurname;
+      //this.extApplicantTellNo;
+      //this.extApplicantEmail;
+      //this.extApplicantPhyscialAddress;
+      //this.extApplicantIDNumber;
+      //this.extApplicantIDUpload;
+    }
+
+
+
 
   }
 
