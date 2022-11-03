@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WayleaveManagementSystem.Data;
 
@@ -11,9 +12,10 @@ using WayleaveManagementSystem.Data;
 namespace WayleaveManagementSystem.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20221103070115_UpdateProfessionals")]
+    partial class UpdateProfessionals
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -278,7 +280,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<bool?>("BpVerified")
                         .HasColumnType("bit");
 
-                    b.Property<string>("CIBRating")
+                    b.Property<string>("CIDRating")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedById")

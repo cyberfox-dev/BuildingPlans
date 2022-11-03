@@ -2,11 +2,11 @@
 {
     public class SubDepartmentsDTO
     {
-        public int SubDepartmentID { get; set; }
+        public int? SubDepartmentID { get; set; }
 
         public string? SubDepartmentName { get; set; }
 
-        public int DepartmentID { get; set; }
+        public int? DepartmentID { get; set; }
 
 
         public DateTime DateCreated { get; set; }

@@ -17,7 +17,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Professionals> AddUpdateProfessional(int? professinalID, string professinalType, string fullName, string bp_Number, bool? bpVerified, string email, string phoneNumber, string professionalRegNo, string appUserID, int idNumber, string createdById)
+        public async Task<Professionals> AddUpdateProfessional(int? professinalID, string professinalType, string fullName, string bp_Number, bool? bpVerified, string email, string phoneNumber, string professionalRegNo, string appUserID, string? idNumber, string createdById, string? cibRating)
         {
 
             if (professinalID == 0)
@@ -41,7 +41,8 @@ namespace WayleaveManagementSystem.Service
                     Email = email,
                     ProfessionalRegNo = professionalRegNo,
                     AppUserID = appUserID, // this is the fkey that is going to link the proffessional to the user creating the wayleave application
-                    IDNumber = idNumber,
+                    IdNumber = idNumber,
+                    CIBRating = cibRating,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     CreatedById = createdById,
@@ -65,7 +66,8 @@ namespace WayleaveManagementSystem.Service
                 tempProfessenalTable.Email = email;
                 tempProfessenalTable.ProfessionalRegNo = professionalRegNo;
                 tempProfessenalTable.AppUserID = appUserID; // this is the fkey that is going to link the proffessional to the user creating the wayleave application
-                tempProfessenalTable.IDNumber = idNumber;
+                tempProfessenalTable.IdNumber = idNumber;
+                tempProfessenalTable.CIBRating = cibRating;
                 //tempProfessenalTable.DateCreated = DateTime.Now;
                 tempProfessenalTable.DateUpdated = DateTime.Now;
                 //tempProfessenalTable.CreatedById = createdById;
@@ -118,13 +120,13 @@ namespace WayleaveManagementSystem.Service
                     Email = professional.Email,
                     ProfessionalRegNo = professional.ProfessionalRegNo,
                     AppUserID = professional.AppUserID, 
-                    IDNumber = professional.IDNumber,
+                    IdNumber = professional.IdNumber,
+                    CIBRating = professional.CIBRating,
                     DateCreated = professional.DateCreated,
                     DateUpdated = professional.DateUpdated,
                     CreatedById = professional.CreatedById,
                    
                 }
-                
                 ).ToListAsync();
         }
     }

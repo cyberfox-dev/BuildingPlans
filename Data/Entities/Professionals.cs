@@ -23,11 +23,11 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public string AppUserID { get; set; }
 
-        public int IDNumber { get; set; }
+        public string? IdNumber { get; set; }
 
         public AppUser AppUser { get; set; }
 
-
+        public string? CIBRating { get; set; }
 
 
     }

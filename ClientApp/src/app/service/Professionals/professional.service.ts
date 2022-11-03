@@ -11,7 +11,7 @@ export class ProfessionalService {
 
  
 
-  public addUpdateProfessional(professinalID: number | null, professinalType: string, fullName: string, bp_Number: string, bpVerified: boolean | null, email: string, phoneNumber: string, professionalRegNo: string, appUserID: string,idNumber:number ,createdById: string ) {
+  public addUpdateProfessional(professinalID: number | null, professinalType: string, fullName: string, bp_Number: string, bpVerified: boolean | null, email: string, phoneNumber: string | undefined, professionalRegNo: string, appUserID: string,idNumber:string | undefined,createdById: string,cibRating: string | null ) {
 
     const body = {
       ProfessinalID: professinalID,
@@ -25,6 +25,7 @@ export class ProfessionalService {
       AppUserID: appUserID, 
       CreatedById: createdById,
       IDNumber: idNumber,
+      CIBRating: cibRating,
       
     }
     return this.httpClient.post(this.baseURL + "AddUpdateProfessional", body);

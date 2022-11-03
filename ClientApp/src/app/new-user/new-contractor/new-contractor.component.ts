@@ -12,7 +12,8 @@ export interface ContractorList {
   surname: string;
   email: string;
   phoneNumber?: number;
-  CIBDrating: string;
+  CIBRating: string;
+  idNumber?: string;
 
 }
 
@@ -29,11 +30,12 @@ export class NewContractorComponent implements OnInit {
   contractorIDNo = '';
   bpNoContractor = "";
   ProfessionalRegNo = "";
-  CIBDrating = "";
+  CIBRating = "";
   Name = "";
   Surname = '';
   ContractorTell?: number;
   ContractorEmail = '';
+
 
 
 
@@ -44,6 +46,7 @@ export class NewContractorComponent implements OnInit {
   editSurname = '';
   editContractorTell?:number;
   editContractorEmail = '';
+  editContractorIDNo? = '';
 
   forEditIndex = 0;
 
@@ -53,7 +56,7 @@ export class NewContractorComponent implements OnInit {
 
   constructor(private modalService: NgbModal, private shared: SharedService) { }
 
-  displayedColumns: string[] = ['ProfessinalType', 'bpNumber', 'name', 'surname', 'professionalRegNo', 'phoneNumber','CIBDrating' ,'email', 'actions'];
+  displayedColumns: string[] = ['ProfessinalType', 'bpNumber', 'name', 'surname', 'professionalRegNo', 'phoneNumber','CIBRating' ,'email', 'actions'];
   dataSource = this.tempContractorList;
   @ViewChild(MatTable) table: MatTable<ContractorList> | undefined;
 
@@ -72,7 +75,8 @@ export class NewContractorComponent implements OnInit {
     newContractor.surname = this.Surname;
     newContractor.email = this.ContractorEmail;
     newContractor.phoneNumber = this.ContractorTell;
-    newContractor.CIBDrating = this.CIBDrating;
+    newContractor.CIBRating = this.CIBRating;
+    newContractor.idNumber = this.contractorIDNo;
 
     this.tempContractorList.push(newContractor);
     this.table?.renderRows();
@@ -100,7 +104,8 @@ export class NewContractorComponent implements OnInit {
     this.editSurname = forEditContactor.surname;
     this.editContractorTell = forEditContactor.phoneNumber;
     this.editContractorEmail = forEditContactor.email;
-    this.editCIBDrating = forEditContactor.CIBDrating;
+    this.editCIBDrating = forEditContactor.CIBRating;
+    this.editContractorIDNo = forEditContactor.idNumber;
 
     this.forEditIndex = index;
   }
@@ -115,7 +120,9 @@ export class NewContractorComponent implements OnInit {
     toEdit.surname = this.editSurname;
     toEdit.email = this.editContractorEmail;
     toEdit.phoneNumber = this.editContractorTell;
-    toEdit.CIBDrating = this.editCIBDrating;
+    toEdit.CIBRating = this.editCIBDrating;
+    toEdit.idNumber = this.editContractorIDNo;
+
     this.tempContractorList.push(toEdit);
     this.table?.renderRows();
     this.shared.setContactorData(this.tempContractorList);
@@ -125,7 +132,7 @@ export class NewContractorComponent implements OnInit {
   clearCreateComponent() {
     this.bpNoContractor = "";
     this.ProfessionalRegNo = "";
-    this.CIBDrating = "";
+    this.CIBRating = "";
     this.Name = "";
     this.Surname = '';
     this.ContractorTell = undefined;
