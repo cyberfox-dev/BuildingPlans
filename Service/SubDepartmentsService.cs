@@ -18,7 +18,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }  
 
-        public async Task<SubDepartments> AddUpdateSubDepartments(int? subDepartmentID, string subDepartmentName, int DepartmentID) 
+        public async Task<SubDepartments> AddUpdateSubDepartments(int? subDepartmentID, string? subDepartmentName, int? DepartmentID) 
         {
             if(subDepartmentID == 0) 
             { 
