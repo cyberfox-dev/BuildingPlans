@@ -29,10 +29,7 @@
           <!--Show details for internal applicant detials-->
           <app-internal-details *ngIf="internal"></app-internal-details>
 
-          <div class="container-fluid" *ngIf="client">
-
-
-          </div>
+          <app-client-details *ngIf="client"></app-client-details>
 
           <!--the applicant selecting an engineer-->
           <div class="card">

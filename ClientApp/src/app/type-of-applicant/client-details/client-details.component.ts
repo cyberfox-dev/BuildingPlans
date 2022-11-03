@@ -6,7 +6,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./client-details.component.css']
 })
 export class ClientDetailsComponent implements OnInit {
-
+  clientName = '';
+  clientSurname = '';
+  clientEmail = '';
+  clientCellNo = '';
+  clientAddress = '';
+  clientRefNo = '';
   constructor() { }
 
   ngOnInit(): void {

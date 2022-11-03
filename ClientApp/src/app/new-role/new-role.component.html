@@ -1,0 +1,28 @@
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Creating a new role</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form>
+
+
+      <div class="row">
+
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" id="roleName" placeholder="Enter the role name" >
+          <label for="roleName">Role Name</label>
+        </div>
+
+      </div>
+
+
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+
+<!--End of modal-->
+<button type="button" class="btn btn-primary createNewRole" (click)="openXl(content)">Create a new role</button>
