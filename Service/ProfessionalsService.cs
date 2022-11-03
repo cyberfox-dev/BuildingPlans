@@ -42,7 +42,7 @@ namespace WayleaveManagementSystem.Service
                     ProfessionalRegNo = professionalRegNo,
                     AppUserID = appUserID, // this is the fkey that is going to link the proffessional to the user creating the wayleave application
                     IdNumber = idNumber,
-                    CIDRating = cibRating,
+                    CIBRating = cibRating,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     CreatedById = createdById,
@@ -67,7 +67,7 @@ namespace WayleaveManagementSystem.Service
                 tempProfessenalTable.ProfessionalRegNo = professionalRegNo;
                 tempProfessenalTable.AppUserID = appUserID; // this is the fkey that is going to link the proffessional to the user creating the wayleave application
                 tempProfessenalTable.IdNumber = idNumber;
-                tempProfessenalTable.CIDRating = cibRating;
+                tempProfessenalTable.CIBRating = cibRating;
                 //tempProfessenalTable.DateCreated = DateTime.Now;
                 tempProfessenalTable.DateUpdated = DateTime.Now;
                 //tempProfessenalTable.CreatedById = createdById;
@@ -121,7 +121,7 @@ namespace WayleaveManagementSystem.Service
                     ProfessionalRegNo = professional.ProfessionalRegNo,
                     AppUserID = professional.AppUserID, 
                     IdNumber = professional.IdNumber,
-                    CIBRating = professional.CIDRating,
+                    CIBRating = professional.CIBRating,
                     DateCreated = professional.DateCreated,
                     DateUpdated = professional.DateUpdated,
                     CreatedById = professional.CreatedById,
