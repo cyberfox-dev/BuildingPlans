@@ -40,6 +40,20 @@ export interface InternalList {
 
 }
 
+export interface ContractorList {
+
+  ProfessinalType: string;
+  professionalRegNo: string;
+  bpNumber: string;
+  name: string;
+  surname: string;
+  email: string;
+  phoneNumber?: number;
+  CIBRating: string;
+  idNumber?: string;
+
+}
+
 @Component({
   selector: 'app-new-profile',
   templateUrl: './new-profile.component.html',
@@ -91,6 +105,7 @@ export class NewProfileComponent implements OnInit {
   stringifiedData: any;  
   ExternalUserProfileData: ExternalList[] = [];
   InternalUserProfileData: InternalList[] = [];
+  linkedContractors: ContractorList[] = [];
 
 
   constructor(private modalService: NgbModal, private shared: SharedService, private userPofileService: UserProfileService, private professionalService :ProfessionalService) { }
@@ -165,18 +180,51 @@ export class NewProfileComponent implements OnInit {
   onNewProfileCreate() {
     if (this.showInternal) {
 
-     
-      //newInternalUserProfile.internalApplicantName = this.internalApplicantName;
-      //newInternalUserProfile.internalApplicantSurname = this.internalApplicantSurname;
-      //newInternalUserProfile.internalApplicantDirectorate = this.internalApplicantDirectorate;
-      //newInternalUserProfile.internalApplicantDepartment = this.internalApplicantDepartment;
-      //newInternalUserProfile.internalApplicantTellNo = this.internalApplicantTellNo;
-      //newInternalUserProfile.internalApplicantBranch = this.internalApplicantBranch;
-      //newInternalUserProfile.internalApplicantCostCenterNo = this.internalApplicantCostCenterNo;
-      //newInternalUserProfile.internalApplicantCostCenterOwner = this.internalApplicantCostCenterOwner;
+      this.userPofileService.addUpdateUserProfiles(null, this.CurrentUser.appUserId, this.internalApplicantName + " " + this.internalApplicantSurname, this.CurrentUser.email, this.internalApplicantTellNo, this.showInternal, null, null, null, null, this.internalApplicantDirectorate, 1/*this.internalApplicantDepartment*/, 1, this.internalApplicantBranch, this.internalApplicantCostCenterNo, this.internalApplicantCostCenterOwner, null, this.CurrentUser.appUserId, null).subscribe((data: any) => {
 
-      //this.userPofileService.addUpdateUserProfiles(null, this.CurrentUser.);
+        if (data.responseCode == 1) {
 
+          alert(data.responseMessage);
+
+          debugger;
+          const linkedContractors = this.shared.getContactorData();
+          
+         
+
+          for (let i = 0; i < linkedContractors.length; i++) {
+            const linkedContractor = this.shared.getContactorDataByIndex(i);
+
+            this.professionalService.addUpdateProfessional(null, linkedContractor.ProfessinalType, linkedContractor.name + " " + linkedContractor.surname, linkedContractor.bpNumber, false, linkedContractor.email, linkedContractor.phoneNumber?.toString(), linkedContractor.professionalRegNo, this.CurrentUser.appUserId, linkedContractor.idNumber, this.CurrentUser.appUserId, linkedContractor.CIBRating)
+              .subscribe((data: any) => {
+
+                if (data.responseCode == 1) {
+
+                  //alert(data.responseMessage);
+                }
+                else {
+                  //alert("Invalid Email or Password");
+                  alert(data.responseMessage);
+                }
+                console.log("reponse", data);
+
+              }, error => {
+                console.log("Error: ", error);
+              })
+          }
+        }
+
+        else {
+          
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+      const linkedEngineers = this.shared.getEngineerData;
+      //Engineer goes here
 
     }
 
@@ -188,7 +236,7 @@ export class NewProfileComponent implements OnInit {
       //this.extApplicantCompanyType;
       //this.extApplicantName;
       //this.extApplicantSurname;
-      //this.extApplicantTellNo;
+      //this.extApplicantTellNo;.
       //this.extApplicantEmail;
       //this.extApplicantPhyscialAddress;
       //this.extApplicantIDNumber;

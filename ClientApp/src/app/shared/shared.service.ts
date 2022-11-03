@@ -1,16 +1,35 @@
 import { Injectable } from '@angular/core';
 
+
+export interface ContractorList {
+
+  ProfessinalType: string;
+  professionalRegNo: string;
+  bpNumber: string;
+  name: string;
+  surname: string;
+  email: string;
+  phoneNumber?: number;
+  CIBRating: string;
+  idNumber?: string;
+
+}
+
 @Injectable({
   providedIn: 'root'
 })
 
 
 
+
 export class SharedService {
+
+
+
   configShow!: any;
 
   userProfileData: any;
-  contactorData: any;
+  contactorData: ContractorList[] =[];
   engineerData: any;
 
   constructor() { }
@@ -29,11 +48,16 @@ export class SharedService {
     return this.userProfileData;
   }
 
-  setContactorData(data: any) {
+  setContactorData(data: ContractorList[]) {
+    debugger;
     this.contactorData = data;
   }
+  getContactorDataByIndex(index: number) {
+    return this.contactorData[index];
+  }
   getContactorData() {
-    return this.engineerData;
+    debugger;
+    return this.contactorData;
   }
   setEngineerData(data: any) {
     this.contactorData = data;

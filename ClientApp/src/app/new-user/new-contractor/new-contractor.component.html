@@ -106,46 +106,52 @@
               <label for="professionalRegNo">Professional Reg No.</label>
             </div>
           </div>
-
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="editCIBDrating" [(ngModel)]="editCIBDrating" placeholder="Enter Rating" name="editCIBDrating">
-              <label for="CIBDrating">CIBD Rating</label>
+              <input type="text" class="form-control" id="editContractorIDNo" [(ngModel)]="editContractorIDNo" placeholder="Enter ID Number" name="editContractorIDNo">
+              <label for="contractorIDNo">ID Number</label>
             </div>
           </div>
+
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="editCIBDrating" [(ngModel)]="editCIBDrating" placeholder="Enter Rating" name="editCIBDrating">
+                <label for="CIBDrating">CIBD Rating</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="editName" [(ngModel)]="editName" placeholder="Enter First Name" name="editName">
+                <label for="name">Name</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="Surname" [(ngModel)]="editSurname" placeholder="Enter Surname" name="editSurname">
+                <label for="surname">Surname</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="tel" class="form-control" id="editContractorTell" [(ngModel)]="editContractorTell" placeholder="Enter Tell No." name="editContractorTell">
+                <label for="contractorTell">Cell No.</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="email" class="form-control" id="editContractorEmail" [(ngModel)]="editContractorEmail" placeholder="Enter Email" name="editContractorEmail">
+                <label for="contractorEmail">Email</label>
+              </div>
+            </div>
+          </div>
+
+
         </div>
-
-        <div class="row">
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="editName" [(ngModel)]="editName" placeholder="Enter First Name" name="editName">
-              <label for="name">Name</label>
-            </div>
-          </div>
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="Surname" [(ngModel)]="editSurname" placeholder="Enter Surname" name="editSurname">
-              <label for="surname">Surname</label>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="tel" class="form-control" id="editContractorTell" [(ngModel)]="editContractorTell" placeholder="Enter Tell No." name="editContractorTell">
-              <label for="contractorTell">Cell No.</label>
-            </div>
-          </div>
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="email" class="form-control" id="editContractorEmail" [(ngModel)]="editContractorEmail" placeholder="Enter Email" name="editContractorEmail">
-              <label for="contractorEmail">Email</label>
-            </div>
-          </div>
-        </div>
-
-
-      </div>
     </form>
   </div>
   <div class="modal-footer">

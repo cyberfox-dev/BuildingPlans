@@ -13,6 +13,7 @@ export interface ContractorList {
   email: string;
   phoneNumber?: number;
   CIBRating: string;
+  idNumber?: string;
 
 }
 
@@ -37,6 +38,7 @@ export class NewContractorComponent implements OnInit {
 
 
 
+
   editBpNoContractor = '';
   editProfessionalRegNo = '';
   editCIBDrating = '';
@@ -44,6 +46,7 @@ export class NewContractorComponent implements OnInit {
   editSurname = '';
   editContractorTell?:number;
   editContractorEmail = '';
+  editContractorIDNo? = '';
 
   forEditIndex = 0;
 
@@ -73,6 +76,7 @@ export class NewContractorComponent implements OnInit {
     newContractor.email = this.ContractorEmail;
     newContractor.phoneNumber = this.ContractorTell;
     newContractor.CIBRating = this.CIBRating;
+    newContractor.idNumber = this.contractorIDNo;
 
     this.tempContractorList.push(newContractor);
     this.table?.renderRows();
@@ -101,6 +105,7 @@ export class NewContractorComponent implements OnInit {
     this.editContractorTell = forEditContactor.phoneNumber;
     this.editContractorEmail = forEditContactor.email;
     this.editCIBDrating = forEditContactor.CIBRating;
+    this.editContractorIDNo = forEditContactor.idNumber;
 
     this.forEditIndex = index;
   }
@@ -116,6 +121,8 @@ export class NewContractorComponent implements OnInit {
     toEdit.email = this.editContractorEmail;
     toEdit.phoneNumber = this.editContractorTell;
     toEdit.CIBRating = this.editCIBDrating;
+    toEdit.idNumber = this.editContractorIDNo;
+
     this.tempContractorList.push(toEdit);
     this.table?.renderRows();
     this.shared.setContactorData(this.tempContractorList);
