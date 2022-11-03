@@ -23,6 +23,8 @@
 
         public string? CreatedById { get; set; }
 
+        public string? CIBRating { get; set; }
+
         
     }
 }

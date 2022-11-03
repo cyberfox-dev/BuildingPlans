@@ -27,7 +27,7 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public AppUser AppUser { get; set; }
 
-
+        public string? CIDRating { get; set; }
 
 
     }
