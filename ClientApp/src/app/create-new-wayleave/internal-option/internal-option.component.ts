@@ -12,15 +12,29 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 export class InternalOptionComponent implements OnInit {
   option = "";
   clientactive: boolean = false;
+  internalactive: boolean = false;
+
+
   cardchange(ids: any) {
     this.option = ids;
-    console.log(this.option);
+    
+    
     if (this.option == 'client') {
       this.clientactive = true;
-
+      this.internalactive = false;
+     
+    }
+    else if (this.option == 'internal') {
+      this.internalactive = true;
+      this.clientactive = false;
     }
   }
-  
+  client() {
+    this.clientactive = true;
+  }
+  internal() {
+    this.internalactive = true;
+  }
 
   @Output() optionEvent = new EventEmitter<string>();
 
