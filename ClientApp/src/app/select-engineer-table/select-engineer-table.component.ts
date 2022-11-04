@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 export interface PeriodicElement {
   name: string;
-  bp: number;
+  bp: string;
   surname: string;
   professionalRegNumber: string;
   cellNumber: string;
@@ -11,7 +11,7 @@ export interface PeriodicElement {
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
-  { bp: 1, name: 'FullName', surname: "", professionalRegNumber: 'H',cellNumber:"",email:"", },
+  { bp: 'fdf', name: 'FullName', surname: "", professionalRegNumber: 'H',cellNumber:"",email:"", },
 ];
 
 

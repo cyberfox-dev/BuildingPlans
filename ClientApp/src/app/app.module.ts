@@ -54,6 +54,10 @@ import { ZoneConfigComponent } from './zone-config/zone-config.component';
 import { NewZoneComponent } from './new-zone/new-zone.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { GooglePlaceModule } from "ngx-google-places-autocomplete";
+import { ClientDetailsComponent } from 'src/app/type-of-applicant/client-details/client-details.component';
+import { RolesConfigComponent } from './roles-config/roles-config.component';
+import { NewRoleComponent } from './new-role/new-role.component';
+
 
 @NgModule({
   declarations: [
@@ -99,6 +103,10 @@ import { GooglePlaceModule } from "ngx-google-places-autocomplete";
     ZoneConfigComponent,
     NewZoneComponent,
     UserSettingsComponent,
+    ClientDetailsComponent,
+    RolesConfigComponent,
+    NewRoleComponent,
+  
 
   ],
   imports: [
