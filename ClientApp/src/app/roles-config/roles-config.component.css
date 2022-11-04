@@ -62,3 +62,8 @@ table {
   hyphens: auto;
   text-align: center;
 }
+.createNewRole {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
