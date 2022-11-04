@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { TooltipPosition } from '@angular/material/tooltip';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NewSubDepartmentComponent } from '../new-sub-department/new-sub-department.component';
 import { SubDepartmentConfigComponent } from '../sub-department-config/sub-department-config.component';
 import { DepartmentsService } from '../service/Departments/departments.service';
 import { MatTable } from '@angular/material/table';
+import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
 
 export interface DepartmentList {
   departmentID: number;
@@ -31,13 +31,20 @@ export class DepartmentConfigComponent implements OnInit {
 
   closeResult = '';
   DepartmentList: DepartmentList[] = [];
+
+  CurrentUser: any;
+  stringifiedData: any;
+  public addDepartment = this.formBuilder.group({
+    newDepName: ['', Validators.required]
+
+  })
   displayedColumns: string[] = ['departmentID', 'departmentName', 'dateUpdated', 'dateCreated', 'actions'];
   dataSource = this.DepartmentList;
   @ViewChild(MatTable) table: MatTable<DepartmentList> | undefined;
 
  
 
-  constructor(private matdialog: MatDialog, private departmentService: DepartmentsService, private modalService: NgbModal,) { }
+  constructor(private matdialog: MatDialog, private formBuilder: FormBuilder ,private departmentService: DepartmentsService, private modalService: NgbModal,) { }
 
   createSub() {
 
@@ -45,6 +52,11 @@ export class DepartmentConfigComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData); this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
+
+
     this.departmentService.getDepartmentsList().subscribe((data: any) => {
    
       if (data.responseCode == 1) {
@@ -88,6 +100,34 @@ export class DepartmentConfigComponent implements OnInit {
   openXl(content: any) {
     this.modalService.open(content, { size: 'lg' });
   }
+
+
+
+  onDepartmentCreate() {
+    let newDepName = this.addDepartment.controls["newDepName"].value;
+
+
+
+    this.departmentService.addUpdateDepartment(0, newDepName, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        alert(data.responseMessage);
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+
+
+
 
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
