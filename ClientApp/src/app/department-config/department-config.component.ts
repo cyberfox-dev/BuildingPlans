@@ -15,12 +15,31 @@ export interface DepartmentList {
   dateCreated: any;
 }
 
-//const ELEMENT_DATA: DepartmentList[] = [
-//  { name: 'Water'},
-//  { name: 'IST' },
-//  { name: 'Energy'},
-//  { name: 'Fire' },
-//];
+
+/*For viewing sub dep*/
+export interface PeriodicElement {
+  name: string;
+}
+
+const ELEMENT_DATA: PeriodicElement[] = [
+  { name: 'Water' },
+  { name: 'IST' },
+  { name: 'Energy' },
+  { name: 'Fire' },
+];
+
+/*Zone*/
+export interface PeriodicElements {
+  name: string;
+}
+
+const ELEMENT_DATAs: PeriodicElement[] = [
+  { name: 'Water' },
+  { name: 'IST' },
+  { name: 'Energy' },
+  { name: 'Fire' },
+];
+
 
 @Component({
   selector: 'app-department-config',
@@ -42,9 +61,21 @@ export class DepartmentConfigComponent implements OnInit {
   dataSource = this.DepartmentList;
   @ViewChild(MatTable) table: MatTable<DepartmentList> | undefined;
 
- 
+  newSub: any;
 
   constructor(private matdialog: MatDialog, private formBuilder: FormBuilder ,private departmentService: DepartmentsService, private modalService: NgbModal,) { }
+
+  openDialog() {
+    this.matdialog.open(this.newSub);
+  }
+  openNewSubDep(newSub: any) {
+    this.modalService.open(newSub, { centered: true });
+  }
+
+  openViewSubDep(viewSub: any) {
+    this.modalService.open(viewSub, { centered: true, size: 'xl' });
+  }
+
 
   createSub() {
 
@@ -103,6 +134,8 @@ export class DepartmentConfigComponent implements OnInit {
 
 
 
+
+
   onDepartmentCreate() {
     let newDepName = this.addDepartment.controls["newDepName"].value;
 
@@ -127,8 +160,6 @@ export class DepartmentConfigComponent implements OnInit {
 
 
 
-
-
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -142,12 +173,20 @@ export class DepartmentConfigComponent implements OnInit {
   ngDoCheck() {
     this.table?.renderRows();
   }
-  viewSub() {
-    this.matdialog.open(SubDepartmentConfigComponent, { width:'60%' });
+
+
+/*Sub dep*/
+  displayedColumnsSub: string[] = ['name', 'actions'];
+  dataSourceSub = ELEMENT_DATA;
+
+  /*Zone*/
+  displayedColumnsZone: string[] = ['name', 'actions'];
+  dataSourceZone = ELEMENT_DATA;
+
+
+  /*new zone*/
+  openNewZone(newZone: any) {
+    this.modalService.open(newZone, { size: 'lg' });
   }
-
-
-
-
 
 }

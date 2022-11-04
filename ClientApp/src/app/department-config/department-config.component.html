@@ -1,3 +1,4 @@
+<!-------------------------------------------------------------------dep-------------------------------------------------------------->
 <!--modal to create a new department-->
 
 <ng-template #content let-modal>
@@ -28,7 +29,14 @@
 
 
 <!--End of modal-->
+
+<div class="card">
+  <h3><span>Departments</span></h3>
+</div>
+
+
 <!--create modal button-->
+
 <button type="button" class="btn btn-primary createNewDep" (click)="openXl(content)">Create a new department</button>
 
 <!--table displaying the departments-->
@@ -56,8 +64,8 @@
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let element">
-      <button mat-raised-button color="success" matTooltip="Add Sub Department" (click)="createSub()"><i class="fa fa-plus"></i></button>
-      <button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="viewSub()"><i class="fa fa-eye"></i></button>
+      <button mat-raised-button color="success" matTooltip="Add Sub Department" (click)="openNewSubDep(newSub)"><i class="fa fa-plus"></i></button>
+      <button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="openViewSubDep(viewSub)"><i class="fa fa-eye"></i></button>
       <button mat-raised-button color="warn" matTooltip="Delete Department"><i class="fa fa-trash"></i></button>
 
     </td>
@@ -68,6 +76,115 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
 
+<!--end of display-->
+<!-------------------------------------------------------------------sub dep-------------------------------------------------------------->
+<!--dialog for create new sub dep-->
 
 
+<ng-template #newSub let-modal>
+  <div class="modal-header">
+    <h2 class="modal-title">New Sub Department</h2>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" id="SubDepName" placeholder="Enter a sub department name" name="newSubDepName">
+      <label for="newSubDepName">Sub Department Name</label>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Close click')">Save</button>
+  </div>
+</ng-template>
 
+<!--end-->
+<!--view all sub dep-->
+<ng-template #viewSub let-modal>
+  <div class="modal-header">
+    <h2 class="modal-title">View Sub Departments linked</h2>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <table mat-table [dataSource]="dataSourceSub" class="mat-elevation-z8">
+
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">  <button mat-raised-button color="warn"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+        <td mat-cell *matCellDef="let element">  </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsSub"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Close click')">Save</button>
+  </div>
+</ng-template>
+<!--end-->
+<!-------------------------------------------------------------------zones-------------------------------------------------------------->
+<div class="card">
+  <h3><span>Zones Config</span></h3>
+</div>
+
+<!--dialog for create new zone-->
+<ng-template #newZone let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Creating a new zone</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form>
+
+
+      <div class="row">
+
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" id="ZoneName" placeholder="Enter a zone name" name="newZoneName">
+          <label for="newZoneName">Zone Name</label>
+        </div>
+
+      </div>
+
+
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+<!--end-->
+<button type="button" class="btn btn-primary createNewZone" (click)="openNewZone(newZone)">Create a new zone</button>
+<!--view all zones-->
+
+<table mat-table [dataSource]="dataSourceZone" class="mat-elevation-z8">
+
+
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef> Zone Name </th>
+    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+  </ng-container>
+
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-raised-button color="success" matTooltip="Add Sub Department"><i class="fa fa-plus"></i></button>
+      <button mat-raised-button color="blue" matTooltip="View all sub Depertments"><i class="fa fa-eye"></i></button>
+      <button mat-raised-button color="warn" matTooltip="Delete Department"><i class="fa fa-trash"></i></button>
+
+    </td>
+    <td mat-cell *matCellDef="let element">  </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumnsZone"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumnsZone;"></tr>
+</table>
+<!--end-->
