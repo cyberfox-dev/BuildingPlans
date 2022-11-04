@@ -10,7 +10,7 @@ export class DepartmentsService {
   constructor(private httpClient: HttpClient) { }
 
   public addUpdateDepartment(departmentID: number | null, departmentName: string | null, createdById?:string  ) {
-    debugger;
+   
     const body = {
       DepartmentID: departmentID,
       DepartmentName: departmentName,

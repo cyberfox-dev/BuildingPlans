@@ -47,7 +47,7 @@ export class NewDepartmentComponent implements OnInit {
 
 
     this.departmentService.addUpdateDepartment(0, newDepName, this.CurrentUser.appUserId).subscribe((data: any) => {
-      debugger;
+     
       if (data.responseCode == 1) {
         
         alert(data.responseMessage);

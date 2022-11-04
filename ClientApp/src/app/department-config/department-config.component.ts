@@ -28,6 +28,8 @@ export interface DepartmentList {
   styleUrls: ['./department-config.component.css']
 })
 export class DepartmentConfigComponent implements OnInit {
+
+  closeResult = '';
   DepartmentList: DepartmentList[] = [];
   displayedColumns: string[] = ['departmentID', 'departmentName', 'dateUpdated', 'dateCreated', 'actions'];
   dataSource = this.DepartmentList;
@@ -35,7 +37,7 @@ export class DepartmentConfigComponent implements OnInit {
 
  
 
-  constructor( private matdialog: MatDialog,private departmentService : DepartmentsService) { }
+  constructor(private matdialog: MatDialog, private departmentService: DepartmentsService, private modalService: NgbModal,) { }
 
   createSub() {
 
@@ -44,7 +46,7 @@ export class DepartmentConfigComponent implements OnInit {
 
   ngOnInit(): void {
     this.departmentService.getDepartmentsList().subscribe((data: any) => {
-      debugger;
+   
       if (data.responseCode == 1) {
 
 
@@ -80,6 +82,21 @@ export class DepartmentConfigComponent implements OnInit {
     })
    // console.log("DepartmentList", this.DepartmentList);
 
+  }
+
+  /*modal*/
+  openXl(content: any) {
+    this.modalService.open(content, { size: 'lg' });
+  }
+
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
   }
 
   ngDoCheck() {
