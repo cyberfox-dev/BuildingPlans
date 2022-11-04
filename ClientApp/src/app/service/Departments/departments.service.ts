@@ -9,13 +9,14 @@ export class DepartmentsService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public addUpdateDepartment(departmentID: number | null, departmentName: string) {
-
+  public addUpdateDepartment(departmentID: number | null, departmentName: string | null, createdById?:string  ) {
+    debugger;
     const body = {
       DepartmentID: departmentID,
       DepartmentName: departmentName,
+      CreatedById: createdById,
     }
-    return this.httpClient.post(this.baseURL + "AddUpdateDepartment", body);
+    return this.httpClient.post(this.baseURL + "AddUpdateDepartments", body);
 
   }
 
@@ -25,9 +26,9 @@ export class DepartmentsService {
 
   }
 
-  public getDepartmentsList(departmentID: any) {
+  public getDepartmentsList() {
 
-    return this.httpClient.get(this.baseURL + "GetDepartmentsList", departmentID);
+    return this.httpClient.get(this.baseURL + "GetDepartmentsList");
 
   }
 }

@@ -9,8 +9,6 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public string DepartmentName { get; set; }
 
-        public DateTime DateCreated { get; set; }
-        public DateTime DateUpdated { get; set; }
 
 
     }

@@ -10,7 +10,7 @@ namespace WayleaveManagementSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DepartmentsController:Controller
+    public class DepartmentsController: ControllerBase
     {
 
         private readonly IDepartmentsService _departmentsService;
@@ -22,18 +22,18 @@ namespace WayleaveManagementSystem.Controllers
 
 
         [HttpPost("AddUpdateDepartments")]
-        public async Task<object> AddUpdateDepartment([FromBody] DepartmentsBindingModel model)
+        public async Task<object> AddUpdateDepartments([FromBody] DepartmentsBindingModel model)
         {
             try
             {
 
-                if (model == null || model.DepartmentID < 1)
+                if (model == null || model.DepartmentName.Length < 1)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
-                    var result = await _departmentsService.AddUpdateDepartments(model.DepartmentID, model.DepartmentName);
+                    var result = await _departmentsService.AddUpdateDepartments(model.DepartmentID, model.DepartmentName, model.CreatedById);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.DepartmentID > 0 ? "Department Updated Sussessfully" : "Department Added Sussessfully"), result));
                 }
 
@@ -81,7 +81,7 @@ namespace WayleaveManagementSystem.Controllers
                 List<DepartmentsDTO> departmentsDTOs = new List<DepartmentsDTO>();
                 var result = await _departmentsService.GetAllDepartments();
 
-                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Departments List Created", result));
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Departments", result));
 
 
             }

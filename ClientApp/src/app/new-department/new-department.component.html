@@ -6,13 +6,13 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-    <form>
+    <form [formGroup]="addDepartment" (ngSubmit)="onDepartmentCreate()">
       
 
         <div class="row">
       
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="DepName" placeholder="Enter a department name" name="newDepName">
+              <input type="text" class="form-control" id="DepName" formControlName="newDepName" placeholder="Enter a department name" name="newDepName">
               <label for="newDepName">Department Name</label>
             </div>
          
@@ -22,7 +22,7 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+    <button type="submit" class="btn btn-outline-success"  [disabled]="!addDepartment.valid"  (click)="modal.close('Save click');onDepartmentCreate()">Save</button>
   </div>
 </ng-template>
 

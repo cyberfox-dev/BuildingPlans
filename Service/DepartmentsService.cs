@@ -3,7 +3,6 @@ using WayleaveManagementSystem.Data.Entities;
 using WayleaveManagementSystem.DTO;
 using WayleaveManagementSystem.IServices;
 using WayleaveManagementSystem.Models.DTO;
-
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel;
@@ -19,7 +18,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Departments> AddUpdateDepartments(int? departmentID, string departmentName )
+        public async Task<Departments> AddUpdateDepartments(int? departmentID, string departmentName, string? createdById )
         {
             if (departmentID == 0) 
             {
@@ -35,6 +34,7 @@ namespace WayleaveManagementSystem.Service
                     DepartmentName = departmentName,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
+                    CreatedById = createdById,
                     isActive = true
                 };
 
