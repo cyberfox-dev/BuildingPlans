@@ -44,12 +44,12 @@ namespace WayleaveManagementSystem.Controllers
         }
 
         [HttpPost("DeleteSubDepartments")]
-        public async Task<object> DeleteSubDepartments([FromBody] int SubDepartmentName)
+        public async Task<object> DeleteSubDepartments([FromBody] string SubDepartmentName)
         {
             try
             {
 
-                if (SubDepartmentName < 1)
+                if (SubDepartmentName == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
