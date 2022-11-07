@@ -29,16 +29,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
 ];
 
 /*Zone*/
-export interface PeriodicElements {
-  name: string;
-}
 
-const ELEMENT_DATAs: PeriodicElement[] = [
-  { name: 'Water' },
-  { name: 'IST' },
-  { name: 'Energy' },
-  { name: 'Fire' },
-];
 
 
 @Component({
@@ -187,6 +178,17 @@ export class DepartmentConfigComponent implements OnInit {
   /*new zone*/
   openNewZone(newZone: any) {
     this.modalService.open(newZone, { size: 'lg' });
+  }
+
+  /*link sub dep to zone*/
+  linkSubDep(linkSub:any) {
+    this.modalService.open(linkSub, { centered: true,size: 'lg' });
+  }
+
+  /*view linked sub to zone*/
+  viewLinkSubDep(ViewSublinkedZone: any) {
+    this.modalService.open(ViewSublinkedZone, { centered: true, size: 'lg' });
+
   }
 
 }
