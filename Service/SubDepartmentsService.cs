@@ -60,9 +60,9 @@ namespace WayleaveManagementSystem.Service
 
         }
 
-        public async Task<bool> DeleteSubDepartments(int subDepartmentID)
+        public async Task<bool> DeleteSubDepartments(string subDepartmentName)
         {
-            var tempSubDepartmentsTable = _context.SubDepartmentsTable.FirstOrDefault(x => x.SubDepartmentID == subDepartmentID);
+            var tempSubDepartmentsTable = _context.SubDepartmentsTable.FirstOrDefault(x => x.SubDepartmentName == subDepartmentName);
 
             if (tempSubDepartmentsTable == null)
             {
@@ -82,8 +82,8 @@ namespace WayleaveManagementSystem.Service
         public async Task<List<SubDepartmentsDTO>> GetAllSubDepartments()
         {
             return await (
-                from SubDepartments in _context.SubDepartmentsTable
-               // where SubDepartments.SubDepartmentID == subDepartmentID && SubDepartments.isActive == true
+                from SubDepartments in _context.SubDepartmentsTable 
+                where SubDepartments.isActive == true
                 select new SubDepartmentsDTO()
                 {
                     SubDepartmentID = SubDepartments.SubDepartmentID,
