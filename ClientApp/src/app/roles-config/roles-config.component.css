@@ -66,4 +66,8 @@ table {
   margin-top: 10px;
   margin-bottom: 10px;
 }
+.checked{
+    background-color: limegreen;
+    color:white;
 
+}

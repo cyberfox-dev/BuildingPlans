@@ -57,7 +57,8 @@ import { GooglePlaceModule } from "ngx-google-places-autocomplete";
 import { ClientDetailsComponent } from 'src/app/type-of-applicant/client-details/client-details.component';
 import { RolesConfigComponent } from './roles-config/roles-config.component';
 import { NewRoleComponent } from './new-role/new-role.component';
-
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { StagesConfigComponent } from './stages-config/stages-config.component';
 
 @NgModule({
   declarations: [
@@ -106,6 +107,7 @@ import { NewRoleComponent } from './new-role/new-role.component';
     ClientDetailsComponent,
     RolesConfigComponent,
     NewRoleComponent,
+    StagesConfigComponent,
   
 
   ],
@@ -138,6 +140,7 @@ import { NewRoleComponent } from './new-role/new-role.component';
     MatIconModule,
     NgbModule,
     GooglePlaceModule,
+    DragDropModule,
     RouterModule.forRoot([
       { path: '', component: LoginComponent },
       { path: 'home', component: HomeComponent},

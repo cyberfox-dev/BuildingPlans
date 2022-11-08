@@ -21,7 +21,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class RolesConfigComponent implements OnInit {
   closeResult = '';
-
+  check : boolean= false;
   constructor(private matdialog: MatDialog, private modalService: NgbModal) { }
 
   ngOnInit(): void {
@@ -51,8 +51,16 @@ export class RolesConfigComponent implements OnInit {
   }
 
 
-  viewSub() {
-    /*this.matdialog.open(SubDepartmentConfigComponent, { width: '60%' });*/
+  linkUsers(linkUsersToRole : any) {
+    this.modalService.open(linkUsersToRole, { centered: true, size: 'lg' });
   }
+  viewLinkedUsers(viewlinkedUsersToRole : any) {
+    this.modalService.open(viewlinkedUsersToRole, { centered: true, size: 'lg' });
+  }
+  toggle() {
+    this.check != this.check;
+  }
+
+
 
 }
