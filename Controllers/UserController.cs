@@ -51,8 +51,8 @@ namespace WayleaveManagementSystem.Controllers
                     UserName = model.Email,
                     FullName = model.FullName,
                     Email = model.Email,
-                    DateCreated = DateTime.UtcNow,
-                    DateModified = DateTime.UtcNow
+                    DateCreated = DateTime.Now,
+                    DateModified = DateTime.Now
                 };
 
                 //to register a user i and going to use userManager
@@ -190,7 +190,7 @@ namespace WayleaveManagementSystem.Controllers
                     new System.Security.Claims.Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 }),
                 //Token will expire after 12h
-                Expires = DateTime.UtcNow.AddHours(12),
+                Expires = DateTime.Now.AddHours(12),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
                 Audience = _jWTConfig.Audience,
                 Issuer = _jWTConfig.Issuer,

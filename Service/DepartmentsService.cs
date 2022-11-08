@@ -80,7 +80,7 @@ namespace WayleaveManagementSystem.Service
         {
             return await (
                 from Departments in _context.DepartmentsTable
-               // where Departments.DepartmentID == DepartmentID && Departments.isActive == true
+               where Departments.isActive == true
                 select new DepartmentsDTO()
                 {
                     DepartmentID = Departments.DepartmentID,

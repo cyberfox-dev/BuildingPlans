@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class SubDepartmentsService {
-  private readonly baseURL: string = "https://localhost:7123/api/subdepartments/"
+  private readonly baseURL: string = "https://localhost:7123/api/subDepartments/"
   constructor(private httpClient: HttpClient) { }
 
 
@@ -26,9 +26,9 @@ export class SubDepartmentsService {
 
   }
 
-  public getSubDepartmentsList(subDepartmentID: any) {
+  public getSubDepartmentsList() {
 
-    return this.httpClient.get(this.baseURL + "GetSubDepartmentsList", subDepartmentID);
+    return this.httpClient.get(this.baseURL + "GetSubDepartmentsList");
 
   }
 }

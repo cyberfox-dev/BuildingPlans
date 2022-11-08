@@ -27,9 +27,9 @@ export class ZonesService {
 
   }
 
-  public getZonesList(zoneID: any) {
+  public getZonesList() {
 
-    return this.httpClient.get(this.baseURL + "GetZonesList", zoneID);
+    return this.httpClient.get(this.baseURL + "GetZonesList");
 
   }
 }
