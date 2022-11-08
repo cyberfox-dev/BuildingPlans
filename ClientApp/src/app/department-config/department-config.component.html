@@ -63,10 +63,10 @@
 
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef></th>
-    <td mat-cell *matCellDef="let element">
-      <button mat-raised-button color="success" matTooltip="Link Sub Department" (click)="openNewSubDep(newSub)"><i class="fa fa-plus"></i></button>
-      <button mat-raised-button color="blue" matTooltip="View all sub Depertments linked" (click)="openViewSubDep(viewSub)"><i class="fa fa-eye"></i></button>
-      <button mat-raised-button color="warn" matTooltip="Delete Department"><i class="fa fa-trash"></i></button>
+    <td mat-cell *matCellDef="let i = index">
+      <button mat-raised-button color="success" matTooltip="Add Sub Department" (click)="openNewSubDep(newSub)"><i class="fa fa-plus"></i></button>
+      <button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="openViewSubDep(viewSub)"><i class="fa fa-eye"></i></button>
+      <button mat-raised-button color="warn" matTooltip="Delete Department" (click)="onDeleteDepartment(i)"><i class="fa fa-trash"></i></button>
 
     </td>
     <td mat-cell *matCellDef="let element">  </td>
@@ -167,18 +167,23 @@
 <table mat-table [dataSource]="dataSourceZone" class="mat-elevation-z8">
 
 
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef> Zone Name </th>
-    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+  <ng-container matColumnDef="subDepartmentID">
+    <th mat-header-cell *matHeaderCellDef> SubDepartment ID </th>
+    <td mat-cell *matCellDef="let element"> {{element.subDepartmentID}} </td>
   </ng-container>
+  <ng-container matColumnDef="subDepartmentName">
+    <th mat-header-cell *matHeaderCellDef> SubDepartment Name </th>
+    <td mat-cell *matCellDef="let element"> {{element.subDepartmentName}} </td>
+  </ng-container>
+
 
 
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let element">
-      <button mat-raised-button color="success" matTooltip="Link Sub Department" (click)="linkSubDep(linkSub)"><i class="fa fa-plus"></i></button>
-      <button mat-raised-button color="blue" matTooltip="View all sub Depertments linked" (click)="viewLinkSubDep(ViewSublinkedZone)"><i class="fa fa-eye"></i></button>
-      <button mat-raised-button color="warn" matTooltip="Delete Zone"><i class="fa fa-trash"></i></button>
+      <button mat-raised-button color="success" matTooltip="Add Sub Department"><i class="fa fa-plus"></i></button>
+      <button mat-raised-button color="blue" matTooltip="View all sub Depertments"><i class="fa fa-eye"></i></button>
+      <button mat-raised-button color="warn" matTooltip="Delete Department"><i class="fa fa-trash"></i></button>
 
     </td>
     <td mat-cell *matCellDef="let element">  </td>
