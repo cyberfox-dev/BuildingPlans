@@ -1,9 +1,36 @@
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Creating a new department</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="addDepartment" (ngSubmit)="onDepartmentCreate()">
+
+
+      <div class="row">
+
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" id="DepName" formControlName="newDepName" placeholder="Enter a department name" name="newDepName">
+          <label for="newDepName">Department Name</label>
+        </div>
+
+      </div>
+
+
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" [disabled]="!addDepartment.valid" (click)="modal.close('Save click');onDepartmentCreate()">Save</button>
+  </div>
+</ng-template>
+
+
 <div class="container-fluid">
-  
-<div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-  <div class="example-box" *ngFor="let movie of movies" cdkDrag>
-    <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-    {{movie}}
+  <button mat-raised-button color="primary">Create new stage</button>
+  <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+    <div class="example-box" *ngFor="let movie of movies" cdkDrag>
+      <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+      {{movie}}
+    </div>
   </div>
 </div>
-  </div>
