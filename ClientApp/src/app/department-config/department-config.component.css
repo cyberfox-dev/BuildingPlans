@@ -23,6 +23,10 @@ button{
   background-color: #369cf4;
   color: #fff;
 }
+.mat-orange {
+  background-color: #f9ba09;
+  color: #fff;
+}
 
 .createNewDep {
   margin-top: 10px;
