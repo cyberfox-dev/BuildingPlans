@@ -247,6 +247,32 @@ export class DepartmentConfigComponent implements OnInit {
 
   }
 
+  onSubDepartmentCreate() {
+    debugger;
+    let newSubDepName = this.addDepartment.controls["newDepName"].value;
+
+
+
+    this.departmentService.addUpdateDepartment(0, newSubDepName, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        alert(data.responseMessage);
+        this.getAllDepartments();
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
+
   onDeleteDepartment(index: any) {
     if (confirm("Are you sure to delete " + this.DepartmentList[index].departmentName + "?")) {
 
@@ -281,9 +307,6 @@ export class DepartmentConfigComponent implements OnInit {
     }
   }
 
-  ngDoCheck() {
-    
-  }
 
 
 /*Sub dep*/
