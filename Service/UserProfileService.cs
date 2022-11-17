@@ -116,7 +116,7 @@ namespace WayleaveManagementSystem.Service
 
         }
 
-        public async Task<List<UserProfileDTO>> GetAllUserProfiles(string userId)
+        public async Task<List<UserProfileDTO>> GetUserByUserID(string userId)
         {
             return await(
                from UserProfile in _context.UserProfilesTable

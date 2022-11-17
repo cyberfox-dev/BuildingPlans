@@ -11,6 +11,6 @@ namespace WayleaveManagementSystem.IServices
         //this will return T/F 
         public Task<bool> DeleteUserProfile(int userProfileID);
 
-        Task<List<UserProfileDTO>> GetAllUserProfiles(string userId);
+        Task<List<UserProfileDTO>> GetUserByUserID(string userId);
     }
 }
