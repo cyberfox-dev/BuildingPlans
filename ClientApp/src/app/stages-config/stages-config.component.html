@@ -1,8 +1,34 @@
+<!--create modal for new stage-->
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Creating a new stage</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form >
 
 
+      <div class="row">
 
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" id="StageName" formControlName="newStageName" placeholder="Enter astage name" name="newStageName">
+          <label for="newStageName">Stage Name</label>
+        </div>
+
+      </div>
+
+
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success"  (click)="modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+
+
+<!--stages-->
 <div class="container-fluid">
-  <button mat-raised-button color="primary">Create new stage</button>
+  <button mat-raised-button color="primary" (click)="openXl(content)">Create new stage</button>
   <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
     <div class="example-box" *ngFor="let movie of movies" cdkDrag>
       <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
