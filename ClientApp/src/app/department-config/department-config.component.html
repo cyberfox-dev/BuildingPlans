@@ -14,7 +14,7 @@
 
         <div class="form-floating mb-3 mt-3">
           <input type="text" class="form-control" id="DepName" formControlName="newDepName" placeholder="Enter a department name" name="newDepName">
-          <label for="newDepName">Department Name</label>
+          <label for="newDepName">Department Names</label>
         </div>
 
       </div>
@@ -30,9 +30,9 @@
 
 <!--End of modal-->
 
-<div class="card">
+<!--<div class="card">
   <h3><span>Departments</span></h3>
-</div>
+</div>-->
 
 
 <!--create modal button-->
@@ -67,6 +67,7 @@
       <button mat-raised-button color="success" matTooltip="Add Sub Department" (click)="openNewSubDep(newSub)"><i class="fa fa-plus"></i></button>
       <button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="openViewSubDep(viewSub)"><i class="fa fa-eye"></i></button>
       <button mat-raised-button color="warn" matTooltip="Delete Department" (click)="onDeleteDepartment(i)"><i class="fa fa-trash"></i></button>
+      <button mat-raised-button color="orange" matTooltip="Link Zone" (click)="openNewZone(newZone)"><i class="fa fa-link"></i></button>
 
     </td>
     <td mat-cell *matCellDef="let element">  </td>
@@ -130,14 +131,15 @@
 </ng-template>
 <!--end-->
 <!-------------------------------------------------------------------zones-------------------------------------------------------------->
-<div class="card">
+
+<!--<div class="card">
   <h3><span>Zones Config</span></h3>
-</div>
+</div>-->
 
 <!--dialog for create new zone-->
 <ng-template #newZone let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Creating a new zone</h4>
+    <h4 class="modal-title" id="modal-basic-title">Link a zone</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
@@ -151,7 +153,27 @@
           <label for="newZoneName">Zone Name</label>
         </div>
 
+
       </div>
+      <table mat-table [dataSource]="dataSourceSub" class="mat-elevation-z8">
+
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Sub Departments </th>
+          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element">  <button mat-raised-button><i class="fa fa-check" aria-hidden="true"></i></button></td>
+          <td mat-cell *matCellDef="let element">  </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsSub"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
 
 
     </form>
@@ -161,10 +183,10 @@
   </div>
 </ng-template>
 <!--end-->
-<button type="button" class="btn btn-primary createNewZone" (click)="openNewZone(newZone)">Create a new zone</button>
+<!--<button type="button" class="btn btn-primary createNewZone" (click)="openNewZone(newZone)">Create a new zone</button>-->
 <!--view all zones-->
 
-<table mat-table [dataSource]="dataSourceZone" class="mat-elevation-z8">
+<!--<table mat-table [dataSource]="dataSourceZone" class="mat-elevation-z8">
 
 
   <ng-container matColumnDef="subDepartmentID">
@@ -191,12 +213,12 @@
 
   <tr mat-header-row *matHeaderRowDef="displayedColumnsZone"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumnsZone;"></tr>
-</table>
+</table>-->
 <!--end-->
 
 <!--Linking sub deps to zone-->
 
-<ng-template #linkSub let-modal>
+<!--<ng-template #linkSub let-modal>
   <div class="modal-header">
     <h2 class="modal-title">List of  Sub Departments </h2>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
@@ -224,12 +246,12 @@
   <div class="modal-footer">
     <button type="submit" class="btn btn-outline-success" (click)="modal.close('Close click')">Save</button>
   </div>
-</ng-template>
+</ng-template>-->
 
 <!---->
 
 <!--View all sub deps linked to zone-->
-<ng-template #ViewSublinkedZone let-modal>
+<!--<ng-template #ViewSublinkedZone let-modal>
   <div class="modal-header">
     <h2 class="modal-title">List of  Sub Departments Linked</h2>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
@@ -257,6 +279,6 @@
   <div class="modal-footer">
     <button type="submit" class="btn btn-outline-success" (click)="modal.close('Close click')">Save</button>
   </div>
-</ng-template>
+</ng-template>-->
 
 <!---->

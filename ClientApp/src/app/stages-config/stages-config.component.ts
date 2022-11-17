@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-stages-config',
@@ -8,22 +9,24 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 })
 export class StagesConfigComponent implements OnInit {
 
+  newStageName = '';
+
   movies = [
-    'Episode I - The Phantom Menace',
-    'Episode II - Attack of the Clones',
-    'Episode III - Revenge of the Sith',
-    'Episode IV - A New Hope',
-    'Episode V - The Empire Strikes Back',
-    'Episode VI - Return of the Jedi',
-    'Episode VII - The Force Awakens',
-    'Episode VIII - The Last Jedi',
-    'Episode IX - The Rise of Skywalker',
+    'Stage 1',
+    'Stage 2',
+    'Stage 3',
+    'Stage 4',
   ];
 
   drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.movies, event.previousIndex, event.currentIndex);
   }
-  constructor() { }
+
+  openXl(content: any) {
+    this.modalService.open(content, { size: 'lg' });
+  }
+
+  constructor(private modalService: NgbModal) { }
 
   ngOnInit(): void {
   }
