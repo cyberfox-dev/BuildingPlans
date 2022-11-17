@@ -145,29 +145,38 @@
   <div class="modal-body">
     <form>
 
+      <div class="container-fluid">
+      <mat-tab-group>
 
-      <div class="row">
+        <mat-tab label="Link sub department to zone">
 
-        <div class="form-floating mb-3 mt-3">
-          <input type="text" class="form-control" id="ZoneName" placeholder="Enter a zone name" name="newZoneName">
-          <label for="newZoneName">Zone Name</label>
+       
+
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="ZoneName" placeholder="Enter a zone name" name="newZoneName">
+              <label for="newZoneName">Zone Name</label>
+            </div>
+
+
+         
+          <div class="form-floating mb-3 mt-3">
+            <select class="form-select" aria-label="Default select example" placeholder="internalDepartment">
+              <option selected>select a sub department</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+
+          </div>
+
+        </mat-tab>
+        <mat-tab label="Link users to zone">
+          test1
+          </mat-tab>
+</mat-tab-group>
         </div>
 
-
-      </div>
-      <div class="form-floating mb-3 mt-2">
-        <select class="form-select" aria-label="Default select example"  placeholder="internalDepartment">
-          <option selected>select a sub department</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-        </select>
-
-      </div>
-
-
-
-    </form>
+</form>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>

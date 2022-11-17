@@ -318,7 +318,7 @@ export class DepartmentConfigComponent implements OnInit {
 
   /*new zone*/
   openNewZone(newZone: any) {
-    this.modalService.open(newZone, { centered: true, size: 'lg' });
+    this.modalService.open(newZone, { centered: true, size: 'xl' });
   }
 
   /*link sub dep to zone*/
