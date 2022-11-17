@@ -59,6 +59,7 @@ import { RolesConfigComponent } from './roles-config/roles-config.component';
 import { NewRoleComponent } from './new-role/new-role.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { StagesConfigComponent } from './stages-config/stages-config.component';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -124,6 +125,7 @@ import { StagesConfigComponent } from './stages-config/stages-config.component';
     MatDividerModule,
     MatTooltipModule,
     MatSnackBarModule,
+    MatSelectModule,
     MatSidenavModule,
     MatButtonModule,
     MatFormFieldModule,
