@@ -11,5 +11,8 @@ namespace WayleaveManagementSystem.IServices
         public Task<bool> DeleteSubDepartments(string SubDepartmentNamem);
 
         Task<List<SubDepartmentsDTO>> GetAllSubDepartments();
+
+        Task<List<SubDepartmentsDTO>> GetAllSubDepartmentsBydepartmentID(int departmentID);
+
     }
 }

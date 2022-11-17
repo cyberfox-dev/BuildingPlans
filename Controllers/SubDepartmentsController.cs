@@ -88,5 +88,25 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+
+        [HttpGet("GetSubDepartmentByDepartmentID")]
+        public async Task<object> GetSubDepartmentByDepartmentID(int departmentID)
+        {
+            try
+            {
+                var result = await _subDepartmentService.GetAllSubDepartmentsBydepartmentID(departmentID);
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got all Sub Departments for given department", result));
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
     }
 }

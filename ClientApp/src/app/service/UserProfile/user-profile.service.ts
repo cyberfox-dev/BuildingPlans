@@ -1,11 +1,16 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserProfileService {
+  headers = new HttpHeaders();
+  // options = { headers: this.headers, withCredintials: false };
+
+  options = { headers: this.headers };
 
   private readonly baseURL: string = "https://localhost:7123/api/userprofile/"
 
@@ -18,7 +23,7 @@ export class UserProfileService {
       UserID: userID,
       FullName: fullName,
       Email: email,
-      PhoneNumber: phoneNumber,
+      PhoneNumber: phoneNumber, 
       isInternal: isInternal,
       BP_Number: bp_Number,
       CompanyName: companyName,
@@ -46,10 +51,17 @@ export class UserProfileService {
 
   }
 
-  public getAllUserProfiles(userId: any) {
+  public getUserProfileById(userId: string) {
 
-    return this.httpClient.get(this.baseURL + "GetAllUserProfiles", userId);
+    const body = {
+      UserID: userId,
+    }
+   
+    return this.httpClient.post(this.baseURL + "GetUserByUserID", body);
 
   }
+
+
+
 
 }

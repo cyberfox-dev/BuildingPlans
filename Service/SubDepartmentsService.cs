@@ -97,5 +97,24 @@ namespace WayleaveManagementSystem.Service
                 }
                 ).ToListAsync();
         }
+
+        public async Task<List<SubDepartmentsDTO>> GetAllSubDepartmentsBydepartmentID(int departmentID)
+        {
+            return await(
+                from SubDepartments in _context.SubDepartmentsTable
+                where departmentID == SubDepartments.DepartmentID && SubDepartments.isActive == true
+                select new SubDepartmentsDTO()
+                {
+                    SubDepartmentID = SubDepartments.SubDepartmentID,
+                    SubDepartmentName = SubDepartments.SubDepartmentName,
+                    DepartmentID = SubDepartments.DepartmentID,
+                    DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,
+                    isActive = true
+
+
+                }
+                ).ToListAsync();
+        }
     }
 }

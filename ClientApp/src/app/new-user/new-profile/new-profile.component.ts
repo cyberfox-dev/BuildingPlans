@@ -14,7 +14,7 @@ import { ProfessionalService } from 'src/app/service/Professionals/professional.
 
 export interface ExternalList {
 
-    extApplicantBpNoApplicant:string;
+  extApplicantBpNoApplicant:string;
   extApplicantCompanyName: string;
   extApplicantCompanyRegNo: string;
   extApplicantCompanyType: string;

@@ -31,4 +31,10 @@ export class SubDepartmentsService {
     return this.httpClient.get(this.baseURL + "GetSubDepartmentsList");
 
   }
+
+  public getSubDepartmentsByDepartmentID() {
+
+    return this.httpClient.get(this.baseURL + "GetSubDepartmentByDepartmentID");
+
+  }
 }

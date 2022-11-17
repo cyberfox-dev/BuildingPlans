@@ -144,7 +144,15 @@ export class DepartmentConfigComponent implements OnInit {
 
   
   }
+  getAllSubDepartmentsByDepartment(index: any) {
 
+    this.subDepartment.getSubDepartmentsList().subscribe((data: any)=>{
+      for (let i = 0; i < data.dateSet.length; i++) {
+
+      }
+
+    })
+  }
 
   getAllSubDepartments() {
     this.subDepartment.getSubDepartmentsList().subscribe((data: any) => {

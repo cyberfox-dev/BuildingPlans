@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Headers;
 using System.Net.NetworkInformation;
 using System.Text;
 using WayleaveManagementSystem.BindingModel;
@@ -80,24 +81,25 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
-
-        [HttpPost("GetAllUserProfiles")]
-        public async Task<object> GetAllUserProfiles([FromBody] string userId)
+        //[FromBody] string userId
+        [HttpPost("GetUserByUserID")]
+        public async Task<object> GetUserByUserID([FromBody] UsersProfileIdOnlyBindingModel model)
         {
             try
             {
 
-                if (userId.Length < 1)
+                if (model.UserID.Length < 1)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
-                    var result = await _userProfileService.GetAllUserProfiles(userId);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Professionals List Created", result));
-                }
+                    var result = await _userProfileService.GetUserByUserID(model.UserID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "UserProfile List fetched", result));
+                    }
 
-            }
+
+                }
             catch (Exception ex)
             {
 
