@@ -62,12 +62,32 @@
 
 
   <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef></th>
+    <th mat-header-cell *matHeaderCellDef>Sub Departments</th>
     <td mat-cell *matCellDef="let i = index">
       <button mat-raised-button color="success" matTooltip="Add Sub Department" (click)="openNewSubDep(newSub)"><i class="fa fa-plus"></i></button>
       <button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="openViewSubDep(viewSub)"><i class="fa fa-eye"></i></button>
-      <button mat-raised-button color="warn" matTooltip="Delete Department" (click)="onDeleteDepartment(i)"><i class="fa fa-trash"></i></button>
+   
+
+
+    </td>
+    <td mat-cell *matCellDef="let element">  </td>
+  </ng-container>
+  <ng-container matColumnDef="actionsZone">
+    <th mat-header-cell *matHeaderCellDef>Zones</th>
+    <td mat-cell *matCellDef="let i = index">
+
+
       <button mat-raised-button color="orange" matTooltip="Link Zone" (click)="openNewZone(newZone)"><i class="fa fa-link"></i></button>
+      <button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="openViewZones(viewlinkedZones)"><i class="fa fa-eye"></i></button>
+
+    </td>
+    <td mat-cell *matCellDef="let element">  </td>
+  </ng-container>
+
+  <ng-container matColumnDef="actionsDep">
+    <th mat-header-cell *matHeaderCellDef>Action</th>
+    <td mat-cell *matCellDef="let i = index">
+      <button mat-raised-button color="warn" matTooltip="Delete Department" (click)="onDeleteDepartment(i)"><i class="fa fa-trash"></i></button>
 
     </td>
     <td mat-cell *matCellDef="let element">  </td>
@@ -144,13 +164,13 @@
   </div>
   <div class="modal-body">
     <form>
-
       <div class="container-fluid">
-      <mat-tab-group>
 
-        <mat-tab label="Link sub department to zone">
+        <mat-tab-group>
 
-       
+
+
+          <mat-tab label="Linking Sub departments">
 
             <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" id="ZoneName" placeholder="Enter a zone name" name="newZoneName">
@@ -158,31 +178,134 @@
             </div>
 
 
-         
-          <div class="form-floating mb-3 mt-3">
-            <select class="form-select" aria-label="Default select example" placeholder="internalDepartment">
-              <option selected>select a sub department</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
 
-          </div>
+            <div class="form-floating mb-3 mt-3">
+              <select class="form-select" aria-label="Default select example" placeholder="internalDepartment">
+                <option selected>select a sub department</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
 
-        </mat-tab>
-        <mat-tab label="Link users to zone">
-          test1
+            </div>
+
+            </mat-tab>
+
+          <mat-tab label="Linking Users">
+            <div class="form-floating mb-3 mt-3">
+              <select class="form-select" aria-label="Default select example" placeholder="internalDepartment">
+                <option selected>select a zone</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+
+            </div>
+
+            <div class="form-floating mb-3 mt-3">
+              <select class="form-select" aria-label="Default select example" placeholder="internalDepartment">
+                <option selected>select a user</option>
+                <option value="1">User 1</option>
+                <option value="2">User 2</option>
+                <option value="3">User 3</option>
+              </select>
+
+            </div>
           </mat-tab>
-</mat-tab-group>
-        </div>
 
-</form>
+</mat-tab-group>
+
+        </div>
+    </form>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
   </div>
 </ng-template>
 <!--end-->
+
+<ng-template #viewlinkedZones let-modal>
+  <div class="modal-header">
+    <h2 class="modal-title">View Zones linked</h2>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="container-fluid">
+
+        <mat-tab-group>
+
+
+
+          <mat-tab label="View linked sub departments">
+
+            <div class="container-fluid">
+              <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef> Name </th>
+                  <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef></th>
+                  <td mat-cell *matCellDef="let element">  <button mat-raised-button color="warn"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+                  <td mat-cell *matCellDef="let element">  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+            </div>
+
+          </mat-tab>
+
+          <mat-tab label="View linked users">
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Name </th>
+                <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+              </ng-container>
+
+
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let element">  <button mat-raised-button color="warn"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+                <td mat-cell *matCellDef="let element">  </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+          </mat-tab>
+
+        </mat-tab-group>
+
+      </div>
+    </form>
+  </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-outline-success" (click)="modal.close('Close click')">Save</button>
+      </div>
+</ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!--<button type="button" class="btn btn-primary createNewZone" (click)="openNewZone(newZone)">Create a new zone</button>-->
 <!--view all zones-->
 

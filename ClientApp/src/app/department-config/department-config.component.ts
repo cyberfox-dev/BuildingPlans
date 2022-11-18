@@ -67,7 +67,7 @@ export class DepartmentConfigComponent implements OnInit {
     newDepName: ['', Validators.required]
 
   })
-  displayedColumns: string[] = ['departmentID', 'departmentName', 'dateUpdated', 'dateCreated', 'actions'];
+  displayedColumns: string[] = ['departmentID', 'departmentName', 'dateUpdated', 'dateCreated', 'actions', 'actionsZone','actionsDep'];
   dataSource = this.DepartmentList;
 
 
@@ -93,6 +93,9 @@ export class DepartmentConfigComponent implements OnInit {
 
   openViewSubDep(viewSub: any) {
     this.modalService.open(viewSub, { centered: true, size: 'xl' });
+  }
+  openViewZones(viewlinkedZones:any) {
+    this.modalService.open(viewlinkedZones, { centered: true, size: 'xl' });
   }
 
 
@@ -310,7 +313,7 @@ export class DepartmentConfigComponent implements OnInit {
 
 
 /*Sub dep*/
-  displayedColumnsSub: string[] = ['name', 'actions'];
+  displayedColumnsSub: string[] = ['name', 'actions','actionsZone'];
   dataSourceSub = ELEMENT_DATA;
 
 
