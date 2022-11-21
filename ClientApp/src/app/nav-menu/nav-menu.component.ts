@@ -6,7 +6,16 @@ import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { SharedService } from '../shared/shared.service';
 
+export interface PeriodicElement {
+  name: string;
+  date: string;
+}
 
+const ELEMENT_DATA: PeriodicElement[] = [
+  { name: 'new comment',date:'10/10/10' },
+  { name: 'this is just a test', date: '10/10/10' },
+  { name: 'these are hard coded', date: '10/10/10' },
+];
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
@@ -23,12 +32,25 @@ export class NavMenuComponent implements OnInit {
 
   }
 
+  displayedColumns: string[] = ['name','date', 'actions'];
+  dataSource = ELEMENT_DATA;
+
   goToConfig() {
     this.router.navigate(["/configuration"]);
+  }
+  goToCommentBuilder(commentBuilder : any) {
+    this.modalService.open(commentBuilder, { centered : true ,size: 'xl' });
+  }
+
+  createNewComment(newComment : any) {
+    this.modalService.open(newComment, { centered: true, size: 'lg' });
   }
 
   goToSettings() {
     this.router.navigate(["/user-settings"]);
+  }
+  viewComment(editComment : any) {
+    this.modalService.open(editComment, { centered: true, size: 'lg' });
   }
 
   collapse() {
