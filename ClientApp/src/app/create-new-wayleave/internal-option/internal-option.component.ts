@@ -22,7 +22,7 @@ export class InternalOptionComponent implements OnInit {
     if (this.option == 'client') {
       this.clientactive = true;
       this.internalactive = false;
-      console.log('client');
+     
     }
     else if (this.option == 'internal') {
       this.internalactive = true;

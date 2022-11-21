@@ -6,9 +6,7 @@
   cursor:pointer;
 }
 
-button {
-  margin: 10px;
-}
+
 .dashboard-header .navbar {
   padding: 0px;
   border-bottom: 1px solid #e6e6f2;
@@ -21,44 +19,6 @@ a{
     text-decoration:none; 
 }
 
-.mat-newComment {
-  background-color: #2dd568;
-  color: #fff;
-  margin-bottom: 20px;
-}
-.mat-blue {
-  background-color: #369cf4;
-  color: #fff;
-}
-
-.mat-column-name {
-  word-wrap: break-word !important;
-  white-space: unset !important;
-  flex: 0 0 8% !important;
-  width: 60% !important;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
-  -ms-hyphens: auto;
-  -moz-hyphens: auto;
-  -webkit-hyphens: auto;
-  hyphens: auto;
-}
-
-.mat-column-actions {
-  word-wrap: break-word !important;
-  white-space: unset !important;
-  flex: 0 0 8% !important;
-  width: 20% !important;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
-  -ms-hyphens: auto;
-  -moz-hyphens: auto;
-  -webkit-hyphens: auto;
-  hyphens: auto;
-  text-align: center;
-}
 
 .navbar-brand {
   display: inline-block;
