@@ -73,7 +73,7 @@ export class DepartmentConfigComponent implements OnInit {
     newSubDepName: ['', Validators.required]
 
   })
-  displayedColumns: string[] = ['departmentID', 'departmentName', 'dateUpdated', 'dateCreated', 'actions'];
+  displayedColumns: string[] = ['departmentID', 'departmentName', 'dateUpdated', 'dateCreated', 'actions','actionsZone','actionsDep'];
   dataSource = this.DepartmentList;
 
 

@@ -29,7 +29,7 @@ export class NavMenuComponent implements OnInit {
 
   ngOnInit(): void {
   
-
+     
   }
 
   displayedColumns: string[] = ['name','date', 'actions'];
