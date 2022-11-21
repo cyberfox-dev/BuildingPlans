@@ -23,12 +23,12 @@ export interface PeriodicElement {
   name: string;
 }
 
-const ELEMENT_DATA: PeriodicElement[] = [
+/*const ELEMENT_DATA: PeriodicElement[] = [
   { name: 'Water' },
   { name: 'IST' },
   { name: 'Energy' },
   { name: 'Fire' },
-];
+];*/
 
 /*Zone*/
 export interface ZoneList {
@@ -46,6 +46,7 @@ export interface SubDepartmentList {
   dateUpdated: any;
   dateCreated: any;
 }
+
 
 
 
@@ -78,7 +79,7 @@ export class DepartmentConfigComponent implements OnInit {
 
 
     //Which is populated with subDepartments
-  displayedColumnsSubDepartment: string[] = ['subDepartmentID', 'subDepartmentName','actions'];
+  displayedColumnsSubDepartment: string[] = ['subDepartmentID', 'subDepartmentName', 'actions', 'departmentID', 'dateUpdated','dateCreated'];
   dataSourceSubDepartment = this.SubDepartmentList;
 
   @ViewChild(MatTable) DepartmentListTable: MatTable<DepartmentList> | undefined;
@@ -111,6 +112,7 @@ export class DepartmentConfigComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData); this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
@@ -118,6 +120,8 @@ export class DepartmentConfigComponent implements OnInit {
 
     this.getAllDepartments();
 
+   /* this.SubDepartmentList = [];*/
+ /*   this.SubDepartmentListTable?.renderRows();*/
     //this.zoneService.getZonesList().subscribe((data: any) => {
 
     //  if (data.responseCode == 1) {
@@ -149,7 +153,7 @@ export class DepartmentConfigComponent implements OnInit {
     //  console.log("Error: ", error);
     //})
 
-  
+    this.getSubDemartmentByDepartmentID(0);
 
   
   }
@@ -183,11 +187,14 @@ export class DepartmentConfigComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
-
+  ngOnDoCheck() {
+    this.SubDepartmentListTable?.renderRows();
+  }
 
   getSubDemartmentByDepartmentID(index:number) {
     
     debugger;
+   /* this.SubDepartmentList = [];*/
     this.subDepartment.getSubDepartmentsByDepartmentID(this.DepartmentList[index].departmentID).subscribe((data: any) => {
       debugger;
       console.log("Got SubDepartments", data.dateSet);
@@ -200,10 +207,15 @@ export class DepartmentConfigComponent implements OnInit {
           tempSubDepartmentList.departmentID = current.departmentID;
           tempSubDepartmentList.dateUpdated = current.dateUpdated;
           tempSubDepartmentList.dateCreated = current.dateCreated;
+
           this.SubDepartmentList.push(tempSubDepartmentList);
           
         }
-       
+        console.log("this.SubDepartmentList", this.SubDepartmentList);
+        this.SubDepartmentListTable?.renderRows();
+
+     
+
 
       }
       else {
@@ -211,7 +223,7 @@ export class DepartmentConfigComponent implements OnInit {
         alert(data.responseMessage);
       }
       console.log("reponse", data);
-      this.SubDepartmentListTable?.renderRows();
+   
 
     }, error => {
       console.log("Error: ", error);
@@ -357,8 +369,6 @@ export class DepartmentConfigComponent implements OnInit {
 
 
 /*Sub dep*/
-  displayedColumnsSub: string[] = ['name', 'actions','actionsZone'];
-  dataSourceSub = ELEMENT_DATA;
 
 
 

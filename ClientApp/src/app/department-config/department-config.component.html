@@ -133,14 +133,30 @@
     <table mat-table [dataSource]="dataSourceSubDepartment" class="mat-elevation-z8">
 
 
+      <ng-container matColumnDef="subDepartmentID">
+        <th mat-header-cell *matHeaderCellDef> subDepartmentID </th>
+        <td mat-cell *matCellDef="let element"> {{element.subDepartmentID}} </td>
+      </ng-container>
+
       <ng-container matColumnDef="subDepartmentName">
         <th mat-header-cell *matHeaderCellDef> Name </th>
         <td mat-cell *matCellDef="let element"> {{element.subDepartmentName}} </td>
       </ng-container>
-      <!--<ng-container matColumnDef="departmentID">
-        <th mat-header-cell *matHeaderCellDef> Name </th>
+
+      <ng-container matColumnDef="dateUpdated">
+        <th mat-header-cell *matHeaderCellDef> dateUpdated </th>
+        <td mat-cell *matCellDef="let element"> {{element.dateUpdated}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="dateCreated">
+        <th mat-header-cell *matHeaderCellDef> dateCreated </th>
+        <td mat-cell *matCellDef="let element"> {{element.dateCreated}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="departmentID">
+        <th mat-header-cell *matHeaderCellDef> departmentID </th>
         <td mat-cell *matCellDef="let element"> {{element.departmentID}} </td>
-      </ng-container>-->
+  </ng-container>
 
 
       <ng-container matColumnDef="actions">
@@ -149,9 +165,10 @@
         <td mat-cell *matCellDef="let element">  </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsSubDepartment"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumnsSubDepartment;"></tr>
     </table>
+
   </div>
   <div class="modal-footer">
     <button type="submit" class="btn btn-outline-success" (click)="modal.close('Close click')">Save</button>

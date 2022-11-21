@@ -21,6 +21,7 @@ namespace WayleaveManagementSystem.Controllers
         [HttpPost("AddUpdateSubDepartments")]
         public async Task<object> AddUpdateSubDepartments([FromBody] SubDepartmentsBindingModel model)
         {
+
             try
             {
 
