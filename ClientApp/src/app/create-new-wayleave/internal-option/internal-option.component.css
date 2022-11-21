@@ -42,7 +42,6 @@
   cursor:pointer;
 }
 
-
   .card:hover {
      transform: translateY(-5px) scale(1.005) translateZ(0);
     background-color: lightskyblue;
@@ -73,10 +72,17 @@
     }
 
 
-.cardactive {
-  background-color: lightskyblue;
-  box-shadow: 0 24px 36px rgba(0,0,0,0.11), 0 24px 46px var(--box-shadow-color);
-  color: white;
+.active {
+  height: 10px;
+  width: 118px;
+  position: absolute;
+  height: 118px;
+  border-radius: 50%;
+  background: var(--bg-color);
+  top: 70px;
+  left: 50px;
+  z-index: 0;
+  transition: transform 0.3s ease-out;
 }
 
   .card p {

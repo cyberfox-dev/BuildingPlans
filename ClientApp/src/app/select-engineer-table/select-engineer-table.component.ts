@@ -5,12 +5,13 @@ export interface PeriodicElement {
   bp: string;
   surname: string;
   professionalRegNumber: string;
-
+  cellNumber: string;
+  email: string;
 
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
-  { bp: 'fdf', name: 'FullName', surname: "", professionalRegNumber: 'H', },
+  { bp: 'fdf', name: 'FullName', surname: "", professionalRegNumber: 'H',cellNumber:"",email:"", },
 ];
 
 
@@ -27,7 +28,7 @@ export class SelectEngineerTableComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  displayedColumns: string[] = ['bp', 'name', 'surname', 'professionalRegNumber'];
+  displayedColumns: string[] = ['bp', 'name', 'weight', 'symbol'];
   dataSource = ELEMENT_DATA;
   clickedRows = new Set<PeriodicElement>();
 

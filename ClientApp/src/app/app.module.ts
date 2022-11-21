@@ -60,7 +60,6 @@ import { NewRoleComponent } from './new-role/new-role.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { StagesConfigComponent } from './stages-config/stages-config.component';
 import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -127,7 +126,6 @@ import { MatInputModule } from '@angular/material/input';
     MatTooltipModule,
     MatSnackBarModule,
     MatSelectModule,
-    MatInputModule,
     MatSidenavModule,
     MatButtonModule,
     MatFormFieldModule,

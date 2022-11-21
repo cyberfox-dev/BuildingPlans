@@ -1,30 +1,4 @@
-<!-- modal for comment builder -->
-
-<ng-template #commentBuilder let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Comment Builder</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-  </div>
-  <div class="modal-body">
-    <form>
-      <button mat-raised-button color="newComment" (click)="createNewComment(newComment)">Create new comment</button>
-
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
-
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Comment </th>
-          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-        </ng-container>
-        <ng-container matColumnDef="date">
-          <th mat-header-cell *matHeaderCellDef>Date Created </th>
-          <td mat-cell *matCellDef="let element"> {{element.date}} </td>
-        </ng-container>
-
-
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef></th>
-          <td mat-cell *matCellDef="let element">
+<!-- modal for line departments -->
 
             <button mat-raised-button color="blue" matTooltip="View users on this role" (click)="viewComment(editComment)"><i class="fa fa-pencil"></i></button>
             <button mat-raised-button color="warn" matTooltip="Delete role"><i class="fa fa-trash"></i></button>
@@ -46,84 +20,27 @@
   </div>
 </ng-template>
 
-
-<!--create new comment-->
-
-<ng-template #newComment let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">New comment</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-  </div>
-  <div class="modal-body">
-    <form>
-
-      <div class="row">
-
-        <mat-form-field class="example-full-width">
-          <mat-label>New Comment</mat-label>
-          <textarea matInput placeholder="Ex. There are too many variables to consider..."></textarea>
-        </mat-form-field>
-
-      </div>
-
-    </form>
-  </div>
-  <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
-  </div>
-</ng-template>
-
-
-<!--edit new comment-->
-
-<ng-template #editComment let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">View comment</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-  </div>
-  <div class="modal-body">
-    <form>
-
-      <div class="row">
-
-        <mat-form-field class="example-full-width">
-          <mat-label>Comment</mat-label>
-          <textarea matInput ></textarea>
-        </mat-form-field>
-
-      </div>
-
-    </form>
-  </div>
-  <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
-  </div>
-</ng-template>
-
 <!--<h1>Navbar</h1>-->
 <div class="container-fluid">
-  <div class="dashboard-header">
-    <nav class="navbar navbar-expand-lg bg-white fixed-top">
-      <a class="navbar-brand" (click)="goHome()"><img src="assets/cctlogoblack.png" alt="" class="logo"></a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+<div class="dashboard-header">
+  <nav class="navbar navbar-expand-lg bg-white fixed-top">
+    <a class="navbar-brand"(click)="goHome()"><img src="assets/cctlogoblack.png" alt="" class="logo"></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
       <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto navbar-right-top">
-        </ul>
+
+          </ul>
         <ul class="navbar-nav ml-auto navbar-right-top">
-
-          <!--comment builder-->
-
-          <button mat-button (click)="goToCommentBuilder(commentBuilder)"><i class="fa fa-comment"></i></button>
 
           <!--Configs-->
 
-          <button mat-button (click)="goToConfig()"><i class="fa fa-cogs"></i></button>
+          <button mat-button  (click)="goToConfig()"><i class="fa fa-cogs"></i></button>
 
           <!--notifications-->
 
-          <button mat-button><i class="fa fa-bell"></i> <span class="indicator"></span></button>
+          <button mat-button ><i class="fa fa-bell"></i> <span class="indicator"></span></button>
 
 
 
@@ -136,21 +53,21 @@
           </mat-menu>
 
           <!-- <li ngbDropdown class="nav-item dropdown nav-user">
-            <a ngbDropdownToggle class="nav-link nav-user-img" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="https://img.icons8.com/dusk/100/000000/user-female-circle.png" alt="" class="user-avatar-md rounded-circle"></a>
-            <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
-              <div class="nav-user-info">
-                <h5 class="mb-0 text-white nav-user-name">Jahdiel Sanjeevy</h5>
+     <a ngbDropdownToggle class="nav-link nav-user-img" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="https://img.icons8.com/dusk/100/000000/user-female-circle.png" alt="" class="user-avatar-md rounded-circle"></a>
+     <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
+       <div class="nav-user-info">
+         <h5 class="mb-0 text-white nav-user-name">Jahdiel Sanjeevy</h5>
 
-              </div>
-              <a class="dropdown-item"><i class="fa fa-user mr-2"></i>Account</a>
-              <a class="dropdown-item"><i class="fa fa-cog mr-2"></i>Setting</a>
-              <a class="dropdown-item" href="#"><i class="fa fa-power-off mr-2"></i>Logout</a>
-            </div>
-          </li>-->
+       </div>
+       <a class="dropdown-item"><i class="fa fa-user mr-2"></i>Account</a>
+       <a class="dropdown-item"><i class="fa fa-cog mr-2"></i>Setting</a>
+       <a class="dropdown-item" href="#"><i class="fa fa-power-off mr-2"></i>Logout</a>
+     </div>
+   </li>-->
         </ul>
-      </div>
-    </nav>
-  </div>
+    </div>
+  </nav>
 </div>
+  </div>
 
 
