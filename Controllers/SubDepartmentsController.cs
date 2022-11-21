@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WayleaveManagementSystem.IServices;
 using WayleaveManagementSystem.Models.BindingModel;
+using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
 using WayleaveManagementSystem.Models;
 using WayleaveManagementSystem.Service;
 
@@ -8,7 +9,7 @@ namespace WayleaveManagementSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SubDepartmentsController : Controller
+    public class SubDepartmentsController : ControllerBase
     {
         private readonly ISubDepartmentService _subDepartmentService;
 
@@ -18,18 +19,18 @@ namespace WayleaveManagementSystem.Controllers
         }
 
         [HttpPost("AddUpdateSubDepartments")]
-        public async Task<object> AddUpdateSubDepartment([FromBody] SubDepartmentsBindingModel model)
+        public async Task<object> AddUpdateSubDepartments([FromBody] SubDepartmentsBindingModel model)
         {
             try
             {
 
-                if (model == null || model.SubDepartmentID < 1)
+                if (model == null || model.SubDepartmentName.Length < 1)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
-                    var result = await _subDepartmentService.AddUpdateSubDepartments(model.SubDepartmentID, model.SubDepartmentName, model.DepartmentID);
+                    var result = await _subDepartmentService.AddUpdateSubDepartments(model.SubDepartmentID, model.SubDepartmentName, model.DepartmentID, model.CreatedById);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.DepartmentID > 0 ? "Sub Department Updated Sussessfully" : "Sub Department Added Sussessfully"), result));
                 }
 
@@ -89,13 +90,23 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-        [HttpGet("GetSubDepartmentByDepartmentID")]
-        public async Task<object> GetSubDepartmentByDepartmentID(int departmentID)
+        [HttpPost("GetSubDepartmentByDepartmentID")]
+        public async Task<object> GetSubDepartmentByDepartmentID([FromBody]  SubDepartmentsByDepartmentIdBindingModel model)
         {
             try
             {
-                var result = await _subDepartmentService.GetAllSubDepartmentsBydepartmentID(departmentID);
-                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got all Sub Departments for given department", result));
+
+                if (model.DepartmentID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _subDepartmentService.GetAllSubDepartmentsBydepartmentID(model.DepartmentID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got all Sub Departments for given department", result));
+                }
+
+               
 
 
 

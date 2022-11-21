@@ -24,6 +24,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(opt => { }).AddEntityFramewo
 builder.Services.AddScoped<IProfessionalsService, ProfessionalsService>();
 builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 builder.Services.AddScoped<IDepartmentsService, DepartmentsService>();
+builder.Services.AddScoped<ISubDepartmentService, SubDepartmentsService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     var key = Encoding.ASCII.GetBytes(builder.Configuration["JWTConfig:Key"]);
