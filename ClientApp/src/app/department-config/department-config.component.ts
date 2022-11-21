@@ -100,6 +100,9 @@ export class DepartmentConfigComponent implements OnInit {
   openViewSubDep(viewSub: any) {
     this.modalService.open(viewSub, { centered: true, size: 'xl' });
   }
+  openViewZones(viewlinkedZones:any) {
+    this.modalService.open(viewlinkedZones, { centered: true, size: 'xl' });
+  }
 
 
   createSub() {
@@ -354,7 +357,7 @@ export class DepartmentConfigComponent implements OnInit {
 
 
 /*Sub dep*/
-  displayedColumnsSub: string[] = ['name', 'actions'];
+  displayedColumnsSub: string[] = ['name', 'actions','actionsZone'];
   dataSourceSub = ELEMENT_DATA;
 
 
@@ -362,7 +365,7 @@ export class DepartmentConfigComponent implements OnInit {
 
   /*new zone*/
   openNewZone(newZone: any) {
-    this.modalService.open(newZone, { centered: true, size: 'lg' });
+    this.modalService.open(newZone, { centered: true, size: 'xl' });
   }
 
   /*link sub dep to zone*/
