@@ -57,6 +57,8 @@ export interface SubDepartmentList {
 export class DepartmentConfigComponent implements OnInit {
 
   closeResult = '';
+
+  CurrentDepartmentID: any;
   DepartmentList: DepartmentList[] = [];
   ZoneList: ZoneList[] = [];
   SubDepartmentList: SubDepartmentList[] = [];
@@ -67,13 +69,17 @@ export class DepartmentConfigComponent implements OnInit {
     newDepName: ['', Validators.required]
 
   })
+  public addSubDepartment = this.formBuilder.group({
+    newSubDepName: ['', Validators.required]
+
+  })
   displayedColumns: string[] = ['departmentID', 'departmentName', 'dateUpdated', 'dateCreated', 'actions'];
   dataSource = this.DepartmentList;
 
 
-    /*Zone*/ //Which is populated with subDepartments
-  displayedColumnsZone: string[] = ['subDepartmentID', 'subDepartmentName' ,'actions'];
-  dataSourceZone = ELEMENT_DATA;
+    //Which is populated with subDepartments
+  displayedColumnsSubDepartment: string[] = ['subDepartmentID', 'subDepartmentName','actions'];
+  dataSourceSubDepartment = this.SubDepartmentList;
 
   @ViewChild(MatTable) DepartmentListTable: MatTable<DepartmentList> | undefined;
   @ViewChild(MatTable) ZoneListTable: MatTable<ZoneList> | undefined;
@@ -144,15 +150,7 @@ export class DepartmentConfigComponent implements OnInit {
 
   
   }
-  getAllSubDepartmentsByDepartment(index: any) {
 
-    this.subDepartment.getSubDepartmentsList().subscribe((data: any)=>{
-      for (let i = 0; i < data.dateSet.length; i++) {
-
-      }
-
-    })
-  }
 
   getAllSubDepartments() {
     this.subDepartment.getSubDepartmentsList().subscribe((data: any) => {
@@ -169,8 +167,7 @@ export class DepartmentConfigComponent implements OnInit {
           this.SubDepartmentList.push(tempSubDepartmentList);
 
         }
-        this.ZoneListTable?.renderRows();
-        // this.ZoneList = data.dateSet;
+      
 
       }
       else {
@@ -182,6 +179,44 @@ export class DepartmentConfigComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
+  }
+
+
+  getSubDemartmentByDepartmentID(index:number) {
+    
+    debugger;
+    this.subDepartment.getSubDepartmentsByDepartmentID(this.DepartmentList[index].departmentID).subscribe((data: any) => {
+      debugger;
+      console.log("Got SubDepartments", data.dateSet);
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepartmentList = {} as SubDepartmentList;
+          const current = data.dateSet[i];
+          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.departmentID = current.departmentID;
+          tempSubDepartmentList.dateUpdated = current.dateUpdated;
+          tempSubDepartmentList.dateCreated = current.dateCreated;
+          this.SubDepartmentList.push(tempSubDepartmentList);
+          
+        }
+       
+
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+      this.SubDepartmentListTable?.renderRows();
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+
+
   }
 
   /*modal*/
@@ -222,6 +257,8 @@ export class DepartmentConfigComponent implements OnInit {
 
 
 
+
+
   onDepartmentCreate() {
     debugger;
     let newDepName = this.addDepartment.controls["newDepName"].value;
@@ -247,13 +284,20 @@ export class DepartmentConfigComponent implements OnInit {
 
   }
 
+
+  setCurrentDepartmentID(index: any) {
+    this.CurrentDepartmentID = this.DepartmentList[index].departmentID;
+
+
+  }
+
   onSubDepartmentCreate() {
     debugger;
-    let newSubDepName = this.addDepartment.controls["newDepName"].value;
+    let newSubDepName = this.addSubDepartment.controls["newSubDepName"].value;
 
 
 
-    this.departmentService.addUpdateDepartment(0, newSubDepName, this.CurrentUser.appUserId).subscribe((data: any) => {
+    this.subDepartment.addUpdateSubDepartment(0, newSubDepName, this.CurrentDepartmentID,this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
