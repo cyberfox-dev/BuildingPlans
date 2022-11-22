@@ -1,4 +1,12 @@
-
+.mat-green {
+  background-color: #2dd568;
+  color: #fff;
+  margin-bottom:20px;
+}
+button{
+    margin-left:5px;
+    margin-right:5px;
+}
 
 .logo {
   width: 100%;
@@ -30,7 +38,7 @@ a{
 }
 
 
-.mat-column-name {
+.mat-column-Comment {
   word-wrap: break-word !important;
   white-space: unset !important;
   flex: 0 0 8% !important;
@@ -42,6 +50,9 @@ a{
   -moz-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
+}
+.example-full-width {
+  width: 100%;
 }
 
 .mat-column-actions {
