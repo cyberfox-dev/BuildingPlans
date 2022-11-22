@@ -193,7 +193,7 @@ export class DepartmentConfigComponent implements OnInit {
 
   getSubDemartmentByDepartmentID(index:number) {
     
-    debugger;
+    
    /* this.SubDepartmentList = [];*/
     this.subDepartment.getSubDepartmentsByDepartmentID(this.DepartmentList[index].departmentID).subscribe((data: any) => {
       debugger;
