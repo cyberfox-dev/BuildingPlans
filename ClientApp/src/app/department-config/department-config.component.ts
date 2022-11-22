@@ -47,6 +47,15 @@ export interface SubDepartmentList {
   dateCreated: any;
 }
 
+export interface linkusersToZone {
+  name: string;
+}
+const LinkUsersToZone: PeriodicElement[] = [
+  { name: 'User 1' },
+  { name: 'User 2' },
+  { name: 'User 3' },
+];
+
 
 
 
@@ -58,11 +67,15 @@ export interface SubDepartmentList {
 export class DepartmentConfigComponent implements OnInit {
 
   closeResult = '';
-
+  check: boolean = false;
   CurrentDepartmentID: any;
   DepartmentList: DepartmentList[] = [];
   ZoneList: ZoneList[] = [];
   SubDepartmentList: SubDepartmentList[] = [];
+
+
+
+
 
   CurrentUser: any;
   stringifiedData: any;
@@ -81,6 +94,10 @@ export class DepartmentConfigComponent implements OnInit {
     //Which is populated with subDepartments
   displayedColumnsSubDepartment: string[] = ['subDepartmentID', 'subDepartmentName', 'departmentID', 'dateUpdated', 'dateCreated', 'actions'  ];
   dataSourceSubDepartment = this.SubDepartmentList;
+
+  displayedColumnsLinkUsers: string[] = ['name','actions'];
+  dataSourceLinkUsers = LinkUsersToZone;
+  clickedRows = new Set<PeriodicElement>();
 
   @ViewChild(MatTable) DepartmentListTable: MatTable<DepartmentList> | undefined;
   @ViewChild(MatTable) ZoneListTable: MatTable<ZoneList> | undefined;
@@ -188,15 +205,17 @@ export class DepartmentConfigComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
+
+
   
 
   getSubDemartmentByDepartmentID(index: number, viewSub:any) {
     
-    debugger;
+ 
     this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
 
       this.subDepartment.getSubDepartmentsByDepartmentID(this.DepartmentList[index].departmentID).subscribe((data: any) => {
-        debugger;
+      
         console.log("Got SubDepartments", data.dateSet);
         if (data.responseCode == 1) {
 
@@ -314,7 +333,7 @@ export class DepartmentConfigComponent implements OnInit {
   }
 
   onSubDepartmentCreate() {
-    debugger;
+    
     let newSubDepName = this.addSubDepartment.controls["newSubDepName"].value;
 
     this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
@@ -434,6 +453,10 @@ export class DepartmentConfigComponent implements OnInit {
   viewLinkSubDep(ViewSublinkedZone: any) {
     this.modalService.open(ViewSublinkedZone, { centered: true, size: 'lg' });
 
+  }
+  toggle() {
+    this.check = !this.check;
+    console.log("1")
   }
 
 }

@@ -12,6 +12,20 @@ h2{
     padding:0;
 
 }
+::ng-deep .mat-checkbox .mat-checkbox-frame {
+  transform: scale(2);
+  border: #a5a5a5 solid 1px;
+}
+
+::ng-deep .mat-checkbox-checked .mat-checkbox-background {
+  transform: scale(2);
+}
+
+.checked {
+  background-color: limegreen;
+  color: white;
+}
+
 button{
     margin:10px;
 }

@@ -61,6 +61,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { StagesConfigComponent } from './stages-config/stages-config.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 
 @NgModule({
@@ -137,6 +138,7 @@ import { MatInputModule } from '@angular/material/input';
     MatDialogModule,
     MatIconModule,
     MatMenuModule,
+    MatCheckboxModule,
     MatTableModule,
     MatSidenavModule,
     MatButtonModule,
