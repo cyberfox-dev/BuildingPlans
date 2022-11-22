@@ -61,9 +61,9 @@ namespace WayleaveManagementSystem.Service
 
         }
 
-        public async Task<bool> DeleteSubDepartments(string subDepartmentName)
+        public async Task<bool> DeleteSubDepartments(int subDepartmentID)
         {
-            var tempSubDepartmentsTable = _context.SubDepartmentsTable.FirstOrDefault(x => x.SubDepartmentName == subDepartmentName);
+            var tempSubDepartmentsTable = _context.SubDepartmentsTable.FirstOrDefault(x => x.SubDepartmentID == subDepartmentID);
 
             if (tempSubDepartmentsTable == null)
             {

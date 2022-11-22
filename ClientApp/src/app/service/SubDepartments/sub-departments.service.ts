@@ -23,7 +23,7 @@ export class SubDepartmentsService {
 
   public deleteSubDepartment(subDepartmentID: number) {
 
-    return this.httpClient.post(this.baseURL + "DeleteSubDepartment", subDepartmentID);
+    return this.httpClient.post(this.baseURL + "DeleteSubDepartments", subDepartmentID);
 
   }
 

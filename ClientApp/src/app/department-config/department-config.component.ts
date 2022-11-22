@@ -79,7 +79,7 @@ export class DepartmentConfigComponent implements OnInit {
 
 
     //Which is populated with subDepartments
-  displayedColumnsSubDepartment: string[] = ['subDepartmentID', 'subDepartmentName', 'actions', 'departmentID', 'dateUpdated','dateCreated'];
+  displayedColumnsSubDepartment: string[] = ['subDepartmentID', 'subDepartmentName', 'departmentID', 'dateUpdated', 'dateCreated', 'actions'  ];
   dataSourceSubDepartment = this.SubDepartmentList;
 
   @ViewChild(MatTable) DepartmentListTable: MatTable<DepartmentList> | undefined;
@@ -153,9 +153,8 @@ export class DepartmentConfigComponent implements OnInit {
     //  console.log("Error: ", error);
     //})
 
-    this.getSubDemartmentByDepartmentID(0);
-
   
+ 
   }
 
 
@@ -163,6 +162,7 @@ export class DepartmentConfigComponent implements OnInit {
     this.subDepartment.getSubDepartmentsList().subscribe((data: any) => {
 
       if (data.responseCode == 1) {
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempSubDepartmentList = {} as SubDepartmentList;
           const current = data.dateSet[i];
@@ -172,14 +172,15 @@ export class DepartmentConfigComponent implements OnInit {
           tempSubDepartmentList.dateUpdated = current.dateUpdated;
           tempSubDepartmentList.dateCreated = current.dateCreated;
           this.SubDepartmentList.push(tempSubDepartmentList);
-
+           this.SubDepartmentListTable?.renderRows();
         }
       
-
+        this.SubDepartmentListTable?.renderRows();
       }
       else {
         //alert("Invalid Email or Password");
         alert(data.responseMessage);
+        this.SubDepartmentListTable?.renderRows();
       }
       console.log("reponse", data);
 
@@ -187,49 +188,56 @@ export class DepartmentConfigComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
-  ngOnDoCheck() {
-    this.SubDepartmentListTable?.renderRows();
-  }
+  
 
-  getSubDemartmentByDepartmentID(index:number) {
+  getSubDemartmentByDepartmentID(index: number, viewSub:any) {
     
     debugger;
-   /* this.SubDepartmentList = [];*/
-    this.subDepartment.getSubDepartmentsByDepartmentID(this.DepartmentList[index].departmentID).subscribe((data: any) => {
-      debugger;
-      console.log("Got SubDepartments", data.dateSet);
-      if (data.responseCode == 1) {
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempSubDepartmentList = {} as SubDepartmentList;
-          const current = data.dateSet[i];
-          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
-          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
-          tempSubDepartmentList.departmentID = current.departmentID;
-          tempSubDepartmentList.dateUpdated = current.dateUpdated;
-          tempSubDepartmentList.dateCreated = current.dateCreated;
+    console.log('this.SubDepartmentList here', this.SubDepartmentList);
+    if (this.SubDepartmentList.length == 0) {
+      this.subDepartment.getSubDepartmentsByDepartmentID(this.DepartmentList[index].departmentID).subscribe((data: any) => {
+        debugger;
+        console.log("Got SubDepartments", data.dateSet);
+        if (data.responseCode == 1) {
 
-          this.SubDepartmentList.push(tempSubDepartmentList);
-          
+          this.SubDepartmentListTable?.renderRows();
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempSubDepartmentList = {} as SubDepartmentList;
+            const current = data.dateSet[i];
+            tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+            tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+            tempSubDepartmentList.departmentID = current.departmentID;
+            tempSubDepartmentList.dateUpdated = current.dateUpdated;
+            tempSubDepartmentList.dateCreated = current.dateCreated;
+
+            this.SubDepartmentList.push(tempSubDepartmentList);
+
+          }
+          console.log("this.SubDepartmentList", this.SubDepartmentList);
+
+
+          this.openViewSubDep(viewSub);
+          this.SubDepartmentListTable?.renderRows();
+
+
+
+
         }
-        console.log("this.SubDepartmentList", this.SubDepartmentList);
-        this.SubDepartmentListTable?.renderRows();
-
-     
-
-
-      }
-      else {
-        //alert("Invalid Email or Password");
-        alert(data.responseMessage);
-      }
-      console.log("reponse", data);
-   
-
-    }, error => {
-      console.log("Error: ", error);
-    })
+        else {
+          //alert("Invalid Email or Password");
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
 
 
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+    }
+    else {
+      this.openViewSubDep(viewSub);
+    }
 
 
   }
@@ -257,6 +265,8 @@ export class DepartmentConfigComponent implements OnInit {
         }
         this.DepartmentListTable?.renderRows();
         //this.DepartmentList = data.dateSet;
+
+        
         console.log("DepartmentList", this.DepartmentList);
       }
       else {
@@ -310,14 +320,15 @@ export class DepartmentConfigComponent implements OnInit {
     debugger;
     let newSubDepName = this.addSubDepartment.controls["newSubDepName"].value;
 
-
+    this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
+    console.log("this.SubDepartmentList", this.SubDepartmentList);
 
     this.subDepartment.addUpdateSubDepartment(0, newSubDepName, this.CurrentDepartmentID,this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-
+       
         alert(data.responseMessage);
-        this.getAllDepartments();
+        
       }
       else {
         //alert("Invalid Email or Password");
@@ -356,14 +367,53 @@ export class DepartmentConfigComponent implements OnInit {
     }
   }
 
+  onDeleteSubDepartment(index: any) {
+ 
+    if (confirm("Are you sure to delete " + this.SubDepartmentList[index].subDepartmentName + "?")) {
+
+      this.subDepartment.deleteSubDepartment(this.SubDepartmentList[index].subDepartmentID).subscribe((data: any) => {
+        
+        if (data.responseCode == 1) {
+          this.SubDepartmentList.splice(index, 1);
+          this.SubDepartmentListTable?.renderRows();
+          //this.openViewSubDep("viewSub");
+          alert(data.responseMessage);
+         
+
+          
+        }
+        else {
+          //alert("Invalid Email or Password");             
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+
+    }
+  }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
+      this.SubDepartmentList = [];
       return 'by pressing ESC';
     } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      this.SubDepartmentList = [];
       return 'by clicking on a backdrop';
-    } else {
+    }
+    else if (reason === 'Cross click') {
+      this.SubDepartmentList = [];
+      return 'by clicking on a backdrop';
+    }
+    else {
+      this.SubDepartmentList = [];
+
       return `with: ${reason}`;
     }
+    
   }
 
 
