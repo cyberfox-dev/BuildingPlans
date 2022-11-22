@@ -193,8 +193,8 @@ export class DepartmentConfigComponent implements OnInit {
   getSubDemartmentByDepartmentID(index: number, viewSub:any) {
     
     debugger;
-    console.log('this.SubDepartmentList here', this.SubDepartmentList);
-    if (this.SubDepartmentList.length == 0) {
+    this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
+
       this.subDepartment.getSubDepartmentsByDepartmentID(this.DepartmentList[index].departmentID).subscribe((data: any) => {
         debugger;
         console.log("Got SubDepartments", data.dateSet);
@@ -234,10 +234,7 @@ export class DepartmentConfigComponent implements OnInit {
         console.log("Error: ", error);
       })
 
-    }
-    else {
-      this.openViewSubDep(viewSub);
-    }
+   
 
 
   }
