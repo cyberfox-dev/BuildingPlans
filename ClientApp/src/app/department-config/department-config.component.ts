@@ -109,7 +109,7 @@ export class DepartmentConfigComponent implements OnInit {
     newSubDepName: ['', Validators.required]
 
   })
-  displayedColumns: string[] = ['departmentID', 'departmentName', 'dateUpdated', 'dateCreated', 'actions','actionsZone','actionsDep'];
+  displayedColumns: string[] = [ 'departmentName', 'actions','actionsZone','actionsDep'];
   dataSource = this.DepartmentList;
 
 
@@ -469,7 +469,7 @@ export class DepartmentConfigComponent implements OnInit {
 
   /*new zone*/
   openNewZone(newZone: any) {
-    this.modalService.open(newZone, { centered: true, size: 'xl' });
+    this.modalService.open(newZone, { centered: true, size: 'lg' });
   }
 
   /*link sub dep to zone*/
@@ -481,6 +481,10 @@ export class DepartmentConfigComponent implements OnInit {
   viewLinkSubDep(ViewSublinkedZone: any) {
     this.modalService.open(ViewSublinkedZone, { centered: true, size: 'lg' });
 
+  }
+
+  openNewUserlinkedToZone(newUserLinkedToZone : any) {
+    this.modalService.open(newUserLinkedToZone, { centered: true, size: 'xl' });
   }
   toggle() {
     this.check = !this.check;
