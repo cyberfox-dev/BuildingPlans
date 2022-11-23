@@ -10,6 +10,7 @@ import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ZonesService } from '../service/Zones/zones.service';
 import { SubDepartmentsService } from '../service/SubDepartments/sub-departments.service';
 
+
 export interface DepartmentList {
   departmentID: number;
   departmentName: string;
@@ -78,7 +79,10 @@ const viewLinkedUsersToZone: PeriodicElement[] = [
   { name: 'User 3' },
 ];
 
-
+export interface SubDepartmentDropdown {
+  subDepartmentID: number;
+  subDepartmentName: string ;
+}
 
 
 @Component({
@@ -94,6 +98,7 @@ export class DepartmentConfigComponent implements OnInit {
   DepartmentList: DepartmentList[] = [];
   ZoneList: ZoneList[] = [];
   SubDepartmentList: SubDepartmentList[] = [];
+  SubDepartmentDropdown: SubDepartmentDropdown[] = [];
 
 
 
@@ -107,6 +112,12 @@ export class DepartmentConfigComponent implements OnInit {
   })
   public addSubDepartment = this.formBuilder.group({
     newSubDepName: ['', Validators.required]
+
+  })
+
+  public addZone = this.formBuilder.group({
+    newZoneName: ['', Validators.required],
+    newZoneSubDemartment: ['', Validators.required]
 
   })
   displayedColumns: string[] = [ 'departmentName', 'actions','actionsZone','actionsDep'];
@@ -162,44 +173,8 @@ export class DepartmentConfigComponent implements OnInit {
     this.CurrentUser = JSON.parse(this.stringifiedData); this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
 
-
     this.getAllDepartments();
 
-   /* this.SubDepartmentList = [];*/
- /*   this.SubDepartmentListTable?.renderRows();*/
-    //this.zoneService.getZonesList().subscribe((data: any) => {
-
-    //  if (data.responseCode == 1) {
-
-    //    // Todo Zones
-    //    for (let i = 0; i < data.dateSet.length; i++) {
-    //      const tempZoneList = {} as ZoneList;
-    //      const current = data.dateSet[i];
-    //      tempZoneList.zoneID = current.ZoneID;
-    //      tempZoneList.zoneName = current.ZoneName;
-    //      tempZoneList.departmentID = current.departmentID;
-    //      tempZoneList.subDepartmentID = current.SubDepartmentID;
-    //      tempZoneList.dateUpdated = current.dateUpdated;
-    //      tempZoneList.dateCreated = current.dateCreated;
-    //      this.ZoneList.push(tempZoneList);
-
-    //    }
-    //    this.ZoneListTable?.renderRows();
-    //   // this.ZoneList = data.dateSet;
-    //    console.log("ZoneList", this.ZoneList);
-    //  }
-    //  else {
-    //    //alert("Invalid Email or Password");
-    //    alert(data.responseMessage);
-    //  }
-    //  console.log("reponse", data);
-
-    //}, error => {
-    //  console.log("Error: ", error);
-    //})
-
-  
- 
   }
 
 
@@ -397,8 +372,7 @@ export class DepartmentConfigComponent implements OnInit {
           alert(data.responseMessage);
           this.getAllDepartments();
         }
-        else {
-          //alert("Invalid Email or Password");             
+        else {         
           alert(data.responseMessage);
         }
         console.log("reponse", data);
@@ -438,6 +412,62 @@ export class DepartmentConfigComponent implements OnInit {
 
 
     }
+  }
+
+
+  /*Zones*/
+  onZoneCreate() {
+    let newZoneName = this.addZone.controls["newZoneName"].value;
+    let newZoneSubDemartment = Number(this.addZone.controls["newZoneSubDemartment"].value);
+    debugger;
+    this.zoneService.addUpdateZone(0, newZoneName, this.DepartmentList[this.CurrentDepartmentID].departmentID, newZoneSubDemartment , this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        alert(data.responseMessage);
+
+      }
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
+  populateSubDepartmentDropDown(index: any, newZone:any) {
+
+    this.SubDepartmentDropdown.splice(0, this.SubDepartmentDropdown.length);
+    this.subDepartment.getSubDepartmentsByDepartmentID(this.DepartmentList[index].departmentID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepartmentList = {} as SubDepartmentDropdown;
+          const current = data.dateSet[i];
+          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+
+          this.SubDepartmentDropdown.push(tempSubDepartmentList);
+
+        }
+        this.openNewZone(newZone);
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 
   private getDismissReason(reason: any): string {

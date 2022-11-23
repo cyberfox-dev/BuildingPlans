@@ -65,10 +65,7 @@
   <ng-container matColumnDef="actionsZone">
     <th mat-header-cell *matHeaderCellDef>Zones</th>
     <td mat-cell *matCellDef="let i = index">
-
-
-
-      <button mat-raised-button color="success" matTooltip="Link Sub to zone" (click)="openNewZone(newZone)"><i class="fa fa-plus"></i></button>
+      <button mat-raised-button color="success" matTooltip="Link Sub to zone" (click)="populateSubDepartmentDropDown(i,newZone);setCurrentDepartmentID(i)"><i class="fa fa-plus"></i></button>
       <button mat-raised-button color="orange" matTooltip="Link User to zone" (click)="openNewUserlinkedToZone(newUserLinkedToZone)"><i class="fa fa-link"></i></button>
 
       <button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="openViewZones(viewlinkedZones)"><i class="fa fa-eye"></i></button>
@@ -183,24 +180,22 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-    <form>
+    <form [formGroup]="addZone" (ngSubmit)="onZoneCreate()" >
       <div class="container-fluid">
 
 
 
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="ZoneName" placeholder="Enter a zone name" name="newZoneName">
+              <input type="text" class="form-control" id="ZoneName" formControlName="newZoneName" placeholder="Enter a zone name" name="newZoneName">
               <label for="newZoneName">Zone Name</label>
             </div>
 
 
 
             <div class="form-floating mb-3 mt-3">
-              <select class="form-select" aria-label="Default select example" placeholder="internalDepartment">
-                <option selected>select a sub department</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
+              <select class="form-select" aria-label="Default select example" formControlName="newZoneSubDemartment"  >
+                <option selected value="1">Select a SubDepartment</option>
+                <option *ngFor="let subDemartment of SubDepartmentDropdown" value="{{subDemartment.subDepartmentID}}">{{subDemartment.subDepartmentName}}</option>
               </select>
 
             </div>
@@ -210,7 +205,7 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click');onZoneCreate()">Save</button>
   </div>
 </ng-template>
 

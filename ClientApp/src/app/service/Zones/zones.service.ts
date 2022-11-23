@@ -9,15 +9,16 @@ export class ZonesService {
   constructor(private httpClient: HttpClient) { }
 
 
-  public addUpdateZone(zoneID: number | null, zoneName: string, departmentID: number, subDepartmentID: number) {
+  public addUpdateZone(zoneID: number, zoneName: string | null, departmentID: number, subDepartmentID: number | null, createdById: string | null) {
 
     const body = {
       ZoneID: zoneID,
       ZoneName: zoneName,
       DepartmentID: departmentID,
       SubDepartmentID: subDepartmentID,
+      CreatedById: createdById
     }
-    return this.httpClient.post(this.baseURL + "AddUpdateZone", body);
+    return this.httpClient.post(this.baseURL + "AddUpdateZones", body);
 
   }
 

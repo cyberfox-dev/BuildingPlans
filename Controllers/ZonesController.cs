@@ -29,7 +29,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _zonesServices.AddUpdateZones(model.ZoneID, model.ZoneName, model.DepartmentID, model.SubDepartmentID);
+                    var result = await _zonesServices.AddUpdateZones(model.ZoneID, model.ZoneName, model.DepartmentID, model.SubDepartmentID,model.CreatedById);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ZoneID > 0 ? "Zone Updated Sussessfully" : "Zone Added Sussessfully"), result));
                 }
 
