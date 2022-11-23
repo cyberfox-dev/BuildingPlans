@@ -18,6 +18,8 @@ export interface DepartmentList {
 }
 
 
+
+
 /*For viewing sub dep*/
 export interface PeriodicElement {
   name: string;
@@ -51,6 +53,26 @@ export interface linkusersToZone {
   name: string;
 }
 const LinkUsersToZone: PeriodicElement[] = [
+  { name: 'User 1' },
+  { name: 'User 2' },
+  { name: 'User 3' },
+];
+
+export interface ViewLinkUsersToZone {
+  name: string;
+}
+
+const ViewLinkUsersToZone: PeriodicElement[] = [
+  { name: 'User 1' },
+  { name: 'User 2' },
+  { name: 'User 3' },
+];
+
+export interface viewLinkedUsersToZone {
+  name: string;
+}
+
+const viewLinkedUsersToZone: PeriodicElement[] = [
   { name: 'User 1' },
   { name: 'User 2' },
   { name: 'User 3' },
@@ -97,12 +119,18 @@ export class DepartmentConfigComponent implements OnInit {
 
   displayedColumnsLinkUsers: string[] = ['name','actions'];
   dataSourceLinkUsers = LinkUsersToZone;
-  clickedRows = new Set<PeriodicElement>();
+
+
+  displayedColumnsViewLinkedSubZones: string[] = ['name', 'actions'];
+  dataSourceViewLinkedSubZones = ViewLinkUsersToZone;
+
+  displayedColumnsViewLinkedUsers: string[] = ['name', 'actions'];
+  dataSourceViewLinkedUsers = viewLinkedUsersToZone;
 
   @ViewChild(MatTable) DepartmentListTable: MatTable<DepartmentList> | undefined;
   @ViewChild(MatTable) ZoneListTable: MatTable<ZoneList> | undefined;
   @ViewChild(MatTable) SubDepartmentListTable: MatTable<SubDepartmentList> | undefined;
-
+  
 
   newSub: any;
 
