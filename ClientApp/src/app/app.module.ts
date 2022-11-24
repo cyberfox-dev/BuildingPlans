@@ -62,7 +62,7 @@ import { StagesConfigComponent } from './stages-config/stages-config.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -127,6 +127,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatTableModule,
     MatDividerModule,
     MatTooltipModule,
+    MatProgressSpinnerModule,
     MatSnackBarModule,
     MatSelectModule,
     MatSidenavModule,
