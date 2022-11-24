@@ -21,6 +21,10 @@ body{
 #stripes, #stripes span {
   position: absolute;
 }
+.spinner{
+    text-align:center;
+    display:flex;
+}
 
 #stripes span {
   height: 40px;

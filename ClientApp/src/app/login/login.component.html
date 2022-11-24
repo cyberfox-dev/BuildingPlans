@@ -2,7 +2,7 @@
 <link _ngcontent-ng-cli-universal-c545="" href="https://fonts.googleapis.com/css?family=Roboto:300italic,400italic,400,100,300,600,700" rel="stylesheet" type="text/css">
 <body>
 
-<!--Background-->
+  <!--Background-->
 
   <div class="area">
     <ul class="circles">
@@ -17,65 +17,77 @@
       <li></li>
       <li></li>
     </ul>
-    <div id="stripes">
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
+    <!--    <div id="stripes">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>-->
   </div>
 
 
 
-    <div class="splash flex" id="splashlogo">
-        <div class="container2">
-            <img src="assets/ctlogo.png" class="logo">
-            <h3>Welcome to CCT Wayleaves Management System</h3>
-        </div>
+  <div class="splash flex" id="splashlogo">
+    <div class="container2">
+      <img src="assets/ctlogo.png" class="logo">
+      <h3>Welcome to CCT Wayleaves Management System</h3>
     </div>
-    <div class="container-fluid">
-        <div class="container" id="container">
-            <div class="form-container sign-up-container">
-              <form action="#" [formGroup]="registerForm" (ngSubmit)="onRegister()" >
-                
-                <h2>Create an account</h2>
-                <input type="text" placeholder="BP Number" />
-                <input type="text" formControlName="fullName" placeholder="Name & Surname" /> 
-                <input type="text" placeholder="Cell No." />
-                <input type="email" formControlName="email" placeholder="Email" /> 
-                <input type="password" formControlName="password" placeholder="password">
-                <button class="OTP" (click)="newUser()">Send OTP</button>
-                <input type="text" placeholder="Enter OTP" />
-    
-                <button type="submit" [disabled]="!registerForm.valid">Verify & Continue</button>
-              </form>
-                </div>
-            <div class="form-container sign-in-container">
-              <form action="#" [formGroup]="loginForm" (ngSubmit)="onLogin()">
-                
+  </div>
+  <div class="container-fluid">
+    <div class="container" id="container">
+      <div class="form-container sign-up-container">
+        <form action="#" [formGroup]="registerForm" (ngSubmit)="onRegister()">
 
-                <h2>Login</h2>
-                <input type="email" formControlName="email" placeholder="Email" /> 
-                <input type="password" formControlName="password" placeholder="Password" /> 
-                <a href="#">Forgot your password?</a>
-                <button type="submit" [disabled]="!loginForm.valid" class="submit">Login</button> <!--(click)="login()"-->  
-              </form>
-                </div>
-            <div class="overlay-container">
-                <div class="overlay">
-                  <div class="overlay-panel overlay-left">
-                    <h1>Already have an account ?</h1>
-                    <button (click)="remove()" class="ghost" id="login">Login Up</button>
-                  </div>
-                    <div class="overlay-panel overlay-right">
-                        <h1>Don't have an account ?</h1>
-                        <button (click)="add()" class="ghost" id="signUp">Sign Up</button>
-                        <p class="bprequired">* Please note a Business Partner (BP) number is required to use this portal. Click here to register with CCT eServices for a BP number</p>
-                        <p class="link"> </p>
-                    </div>
-                </div>
-            </div>
-            </div>
+          <h2>Create an account</h2>
+          <input type="text" placeholder="BP Number" />
+          <input type="text" formControlName="fullName" placeholder="Name & Surname" />
+          <input type="text" placeholder="Cell No." />
+          <input type="email" formControlName="email" placeholder="Email" />
+          <input type="password" formControlName="password" placeholder="password">
+          <button class="OTP" (click)="newUser()">Send OTP</button>
+          <input type="text" placeholder="Enter OTP" />
+
+          <button type="submit" [disabled]="!registerForm.valid">Verify & Continue</button>
+        </form>
+      </div>
+      <div class="form-container sign-in-container" >
+        <form action="#" [formGroup]="loginForm" (ngSubmit)="onLogin()">
+
+
+          <h2>Login</h2>
+          <input type="email" formControlName="email" placeholder="Email" />
+          <input type="password" formControlName="password" placeholder="Password" />
+          <a href="#">Forgot your password?</a>
+          <button *ngIf="!isLoading" type="submit" [disabled]="!loginForm.valid" class="submit">Login</button> <!--(click)="login()"-->
+          <div *ngIf="isLoading">
+            <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+          </div>
+        </form>
+
+      </div>
+
+
+      <div class="overlay-container">
+        <div class="overlay">
+          <div class="overlay-panel overlay-left">
+            <h1>Already have an account ?</h1>
+            <button (click)="remove()" class="ghost" id="login">Login Up</button>
+          </div>
+          <div class="overlay-panel overlay-right">
+            <h1>Don't have an account ?</h1>
+            <button (click)="add()" class="ghost" id="signUp">Sign Up</button>
+            <p class="bprequired">* Please note a Business Partner (BP) number is required to use this portal. Click here to register with CCT eServices for a BP number</p>
+            <p class="link"> </p>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <div class="alert alert-danger" *ngIf="error">
+      {{error}}
+    </div>
+
+  </div>
+
 </body>
