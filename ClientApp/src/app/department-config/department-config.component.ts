@@ -491,6 +491,11 @@ export class DepartmentConfigComponent implements OnInit {
   }
 
 
+  onZoneUserLink() {
+
+  }
+
+
 
 /*Sub dep*/
 
@@ -513,7 +518,10 @@ export class DepartmentConfigComponent implements OnInit {
 
   }
 
-  openNewUserlinkedToZone(newUserLinkedToZone : any) {
+  openNewUserlinkedToZone(newUserLinkedToZone: any) {
+
+
+
     this.modalService.open(newUserLinkedToZone, { centered: true, size: 'xl' });
   }
   toggle() {
