@@ -27,13 +27,13 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
 
-                if (model == null || model.ZoneLinkID < 1)
+                if (model == null || model.ZoneLinkID < 0)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
-                    var result = await _zonesLinkingServices.AddUpdateZoneLink(model.ZoneLinkID,model.ZoneID ,model.DepartmentID, model.SubDepartmentID, model.AssignedUserID, model.UserType);
+                    var result = await _zonesLinkingServices.AddUpdateZoneLink(model.ZoneLinkID,model.ZoneID ,model.DepartmentID, model.SubDepartmentID, model.AssignedUserID, model.UserType,model.CreatedById);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ZoneLinkID > 0 ? "Zone Link Updated Sussessfully" : "Zone Link Added Sussessfully"), result));
                 }
             }
@@ -111,13 +111,13 @@ namespace WayleaveManagementSystem.Controllers
         //    }
         //}
 
-        [HttpGet("GetUsersNotLinkedByUserID")]
-        public async Task<object> GetUsersNotLinkedByUserID()
+        [HttpPost("GetUsersNotLinkedByUserID")]
+        public async Task<object> GetUsersNotLinkedByUserID([FromBody] int zoneID)
         {
             try
             {
                 //var result = await _zonesLinkingServices.GetUsersNotLinkedByUserID();
-                var result = _context.Users.FromSqlRaw($"SP_GetUsersNotLinkedByUserID").AsEnumerable();
+                var result = _context.Users.FromSqlRaw($"SP_GetUsersNotLinkedByUserID {zoneID}").AsEnumerable();
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Unlinked Users", result));
 
             }

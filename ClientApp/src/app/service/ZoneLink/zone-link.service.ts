@@ -9,7 +9,7 @@ export class ZoneLinkService {
   constructor(private httpClient: HttpClient) { }
 
 
-  public addUpdateZoneLink(zoneLinkID: number | null, departmentID: number,zoneID:number|null ,subDepartmentID: number, assignedUserID: string | null, userType: string | null) {
+  public addUpdateZoneLink(zoneLinkID: number | null, departmentID: number, zoneID: number | null, subDepartmentID: number, assignedUserID: string | null, userType: string | null,createdById: string|null) {
 
     const body = {
       ZoneLinkID: zoneLinkID,
@@ -17,7 +17,8 @@ export class ZoneLinkService {
       SubDepartmentID: subDepartmentID,
       AssignedUserID: assignedUserID,
       UserType: userType,
-      ZoneID: zoneID
+      ZoneID: zoneID,
+      CreatedById:createdById
     }
     return this.httpClient.post(this.baseURL + "AddUpdateZoneLink", body);
 
@@ -35,9 +36,9 @@ export class ZoneLinkService {
 
   }
 
-  public getUsersNotLinkedByUserID() {
+  public getUsersNotLinkedByUserID(zoneID:any) {
    
-    return this.httpClient.get(this.baseURL + "GetUsersNotLinkedByUserID");
+    return this.httpClient.post(this.baseURL + "GetUsersNotLinkedByUserID", zoneID);
 
   }
 }

@@ -198,7 +198,9 @@ export class DepartmentConfigComponent implements OnInit {
 
     this.getAllDepartments();
 
-
+    this.addZone.controls["newZoneSubDemartment"].setValue("0");
+    this.userZoneLink.controls["selectedSubDep"].setValue("0");
+    this.userZoneLink.controls["selectedZone"].setValue("0");
 
   }
 
@@ -445,22 +447,29 @@ export class DepartmentConfigComponent implements OnInit {
     let newZoneName = this.addZone.controls["newZoneName"].value;
     let newZoneSubDemartment = Number(this.addZone.controls["newZoneSubDemartment"].value);
     debugger;
-    this.zoneService.addUpdateZone(0, newZoneName, this.DepartmentList[this.CurrentDepartmentID].departmentID, newZoneSubDemartment , this.CurrentUser.appUserId).subscribe((data: any) => {
+    if (newZoneSubDemartment != 0) {
 
-      if (data.responseCode == 1) {
 
-        alert(data.responseMessage);
+      this.zoneService.addUpdateZone(0, newZoneName, this.DepartmentList[this.CurrentDepartmentID].departmentID, newZoneSubDemartment, this.CurrentUser.appUserId).subscribe((data: any) => {
 
-      }
-      else {
+        if (data.responseCode == 1) {
 
-        alert(data.responseMessage);
-      }
-      console.log("reponse", data);
+          alert(data.responseMessage);
 
-    }, error => {
-      console.log("Error: ", error);
-    })
+        }
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    } else {
+      alert("Please Select a Sub Department");
+
+    }
 
   }
 
@@ -517,42 +526,38 @@ export class DepartmentConfigComponent implements OnInit {
 
 
   onZoneUserLink() {
-    let selectedSubDep = this.userZoneLink.controls["selectedSubDep"].value;
-    let selectedZone = this.userZoneLink.controls["selectedZone"].value;
+    debugger;
+    let selectedSubDep = Number(this.userZoneLink.controls["selectedSubDep"].value);
+    let selectedZone = Number(this.userZoneLink.controls["selectedZone"].value);
     
 
     for (let i = 0; i < this.selection.selected.length; i++) {      
       const current = this.selection.selected[i];
      
-      //this.zoneLinkService.addUpdateZoneLink().subscribe((data: any) => {
+      this.zoneLinkService.addUpdateZoneLink(0, this.CurrentDepartmentID, selectedZone, selectedSubDep, current.id ,null,this.CurrentUser.appUserId,).subscribe((data: any) => {
 
-      //  if (data.responseCode == 1) {
+        if (data.responseCode == 1) {
 
-      //    for (let i = 0; i < data.dateSet.length; i++) {
-      //      const tempZoneList = {} as ZoneDropdown;
-      //      const current = data.dateSet[i];
-      //      tempZoneList.zoneID = current.zoneID;
-      //      tempZoneList.zoneName = current.zoneName;
+         
 
-      //      this.ZoneDropdown.push(tempZoneList);
-
-      //    }
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
 
 
-      //  }
-      //  else {
-      //    alert(data.responseMessage);
-      //  }
-      //  console.log("reponse", data);
-
-
-      //}, error => {
-      //  console.log("Error: ", error);
-      //})
+      }, error => {
+        console.log("Error: ", error);
+      })
 
       
 
     }
+    this.userZoneLink.controls["selectedSubDep"].setValue("0");
+    this.userZoneLink.controls["selectedZone"].setValue("0");
+    this.UserZoneList.splice(0, this.UserZoneList.length);
+
   }
 
   onSelectToPopulateZone(event:any) {
@@ -608,7 +613,7 @@ export class DepartmentConfigComponent implements OnInit {
     const tempSelectedSub = selectedSubDep;
     const tempSelectedZone = selectedZone; 
     this.UserZoneList.splice(0, this.UserZoneList.length);
-    this.zoneLinkService.getUsersNotLinkedByUserID().subscribe((data: any) => {
+    this.zoneLinkService.getUsersNotLinkedByUserID(Number(selectedZone)).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
