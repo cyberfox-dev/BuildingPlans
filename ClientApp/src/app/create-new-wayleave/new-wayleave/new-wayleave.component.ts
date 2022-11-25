@@ -33,7 +33,7 @@ export class NewWayleaveComponent implements OnInit {
   public external: boolean = true;
   public internal: boolean = false;
   public client: boolean = false;
-
+  public map: boolean = true;
     option: any;
     isAllSelected: any;
   constructor(private modalService: NgbModal) { }
@@ -56,6 +56,7 @@ export class NewWayleaveComponent implements OnInit {
     if (this.option == "client") {
       this.client = true;
       this.external = false;
+      this.map = false;
     }
     else if (this.option == "internal") {
       this.internal = true;
