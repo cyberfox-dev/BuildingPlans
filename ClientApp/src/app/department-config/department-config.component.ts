@@ -9,6 +9,8 @@ import { MatTable } from '@angular/material/table';
 import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ZonesService } from '../service/Zones/zones.service';
 import { SubDepartmentsService } from '../service/SubDepartments/sub-departments.service';
+import { ZoneLinkService } from '../service/ZoneLink/zone-link.service';
+import { SelectionModel } from '@angular/cdk/collections';
 
 
 export interface DepartmentList {
@@ -73,17 +75,25 @@ export interface viewLinkedUsersToZone {
   name: string;
 }
 
-const viewLinkedUsersToZone: PeriodicElement[] = [
-  { name: 'User 1' },
-  { name: 'User 2' },
-  { name: 'User 3' },
-];
+//const viewLinkedUsersToZone: PeriodicElement[] = [
+//  { name: 'User 1' },
+//  { name: 'User 2' },
+//  { name: 'User 3' },
+//];
 
 export interface SubDepartmentDropdown {
   subDepartmentID: number;
   subDepartmentName: string ;
 }
+export interface ZoneDropdown {
+  zoneID: number;
+  zoneName: string;
+}
 
+export interface UserZoneList {
+  id: string;
+  fullName: string;
+}
 
 @Component({
   selector: 'app-department-config',
@@ -99,13 +109,18 @@ export class DepartmentConfigComponent implements OnInit {
   ZoneList: ZoneList[] = [];
   SubDepartmentList: SubDepartmentList[] = [];
   SubDepartmentDropdown: SubDepartmentDropdown[] = [];
+  ZoneDropdown: ZoneDropdown[] = [];
+  UserZoneList: UserZoneList[] = [];
 
 
 
 
-
+  selection = new SelectionModel<UserZoneList>(true, []);
   CurrentUser: any;
   stringifiedData: any;
+  showZone = false;
+  showZoneUserTable = false;
+
   public addDepartment = this.formBuilder.group({
     newDepName: ['', Validators.required]
 
@@ -120,6 +135,13 @@ export class DepartmentConfigComponent implements OnInit {
     newZoneSubDemartment: ['', Validators.required]
 
   })
+
+  public userZoneLink = this.formBuilder.group({
+    selectedSubDep: ['', Validators.required],
+    selectedZone: ['', Validators.required]
+
+  })
+
   displayedColumns: string[] = [ 'departmentName', 'actions','actionsZone','actionsDep'];
   dataSource = this.DepartmentList;
 
@@ -128,24 +150,25 @@ export class DepartmentConfigComponent implements OnInit {
   displayedColumnsSubDepartment: string[] = ['subDepartmentID', 'subDepartmentName', 'departmentID', 'dateUpdated', 'dateCreated', 'actions'  ];
   dataSourceSubDepartment = this.SubDepartmentList;
 
-  displayedColumnsLinkUsers: string[] = ['name','actions'];
-  dataSourceLinkUsers = LinkUsersToZone;
+  displayedColumnsLinkUsers: string[] = ['fullName','actions'];
+  dataSourceLinkUsers = this.UserZoneList;
 
 
-  displayedColumnsViewLinkedSubZones: string[] = ['name', 'actions'];
-  dataSourceViewLinkedSubZones = ViewLinkUsersToZone;
+  displayedColumnsViewLinkedSubZones: string[] = ['fullName', 'actions'];
+  dataSourceViewLinkedSubZones = this.UserZoneList;
 
-  displayedColumnsViewLinkedUsers: string[] = ['name', 'actions'];
-  dataSourceViewLinkedUsers = viewLinkedUsersToZone;
+  displayedColumnsViewLinkedUsers: string[] = ['fullName', 'actions'];
+  dataSourceViewLinkedUsers = this.UserZoneList;
 
   @ViewChild(MatTable) DepartmentListTable: MatTable<DepartmentList> | undefined;
   @ViewChild(MatTable) ZoneListTable: MatTable<ZoneList> | undefined;
   @ViewChild(MatTable) SubDepartmentListTable: MatTable<SubDepartmentList> | undefined;
+  @ViewChild(MatTable) UserZoneListTable:  MatTable<UserZoneList> | undefined;
   
 
   newSub: any;
 
-  constructor(private matdialog: MatDialog, private formBuilder: FormBuilder, private departmentService: DepartmentsService, private modalService: NgbModal, private zoneService: ZonesService, private subDepartment: SubDepartmentsService) { }
+  constructor(private matdialog: MatDialog, private formBuilder: FormBuilder, private departmentService: DepartmentsService, private modalService: NgbModal, private zoneService: ZonesService, private subDepartment: SubDepartmentsService, private zoneLinkService: ZoneLinkService) { }
 
   openDialog() {
     this.matdialog.open(this.newSub);
@@ -174,6 +197,8 @@ export class DepartmentConfigComponent implements OnInit {
     this.CurrentUser = JSON.parse(this.stringifiedData);
 
     this.getAllDepartments();
+
+
 
   }
 
@@ -492,10 +517,129 @@ export class DepartmentConfigComponent implements OnInit {
 
 
   onZoneUserLink() {
+    let selectedSubDep = this.userZoneLink.controls["selectedSubDep"].value;
+    let selectedZone = this.userZoneLink.controls["selectedZone"].value;
+    
+
+    for (let i = 0; i < this.selection.selected.length; i++) {      
+      const current = this.selection.selected[i];
+     
+      //this.zoneLinkService.addUpdateZoneLink().subscribe((data: any) => {
+
+      //  if (data.responseCode == 1) {
+
+      //    for (let i = 0; i < data.dateSet.length; i++) {
+      //      const tempZoneList = {} as ZoneDropdown;
+      //      const current = data.dateSet[i];
+      //      tempZoneList.zoneID = current.zoneID;
+      //      tempZoneList.zoneName = current.zoneName;
+
+      //      this.ZoneDropdown.push(tempZoneList);
+
+      //    }
+
+
+      //  }
+      //  else {
+      //    alert(data.responseMessage);
+      //  }
+      //  console.log("reponse", data);
+
+
+      //}, error => {
+      //  console.log("Error: ", error);
+      //})
+
+      
+
+    }
+  }
+
+  onSelectToPopulateZone(event:any) {
+    if (event.target.value > 0) {
+
+      this.ZoneDropdown.splice(0, this.ZoneDropdown.length);
+      this.zoneService.getZonesBySubDepartmentsID(event.target.value).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempZoneList = {} as ZoneDropdown;
+            const current = data.dateSet[i];
+            tempZoneList.zoneID = current.zoneID;
+            tempZoneList.zoneName = current.zoneName;
+
+            this.ZoneDropdown.push(tempZoneList);
+
+          }
+
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+      this.showZone = true;
+    }
+
+    else {
+      this.showZone = false;
+    }
 
   }
 
+  userSelectedForLink(user: any) {
+    this.selection.toggle(user);
+  }
 
+
+
+  onSelectToPopulateZoneUsers(event: any, newUserLinkedToZone: any) {
+    debugger;
+    let selectedSubDep = this.userZoneLink.controls["selectedSubDep"].value;
+    let selectedZone = this.userZoneLink.controls["selectedZone"].value;
+
+    const tempSelectedSub = selectedSubDep;
+    const tempSelectedZone = selectedZone; 
+    this.UserZoneList.splice(0, this.UserZoneList.length);
+    this.zoneLinkService.getUsersNotLinkedByUserID().subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempZoneList = {} as UserZoneList;
+          const current = data.dateSet[i];
+          tempZoneList.id = current.id;
+          tempZoneList.fullName = current.fullName;
+
+          this.UserZoneList.push(tempZoneList);
+
+        }
+        
+        this.modalService.dismissAll(newUserLinkedToZone);
+        this.UserZoneListTable?.renderRows();
+        this.modalService.open(newUserLinkedToZone, { centered: true, size: 'xl' });
+        this.userZoneLink.controls["selectedSubDep"].setValue(tempSelectedSub);
+        this.userZoneLink.controls["selectedZone"].setValue(tempSelectedZone);
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+    this.UserZoneListTable?.renderRows();
+  }
 
 /*Sub dep*/
 
@@ -518,8 +662,34 @@ export class DepartmentConfigComponent implements OnInit {
 
   }
 
-  openNewUserlinkedToZone(newUserLinkedToZone: any) {
+  openNewUserlinkedToZone(newUserLinkedToZone: any,index: any) {
+    this.SubDepartmentDropdown.splice(0, this.SubDepartmentDropdown.length);
+    this.subDepartment.getSubDepartmentsByDepartmentID(this.DepartmentList[index].departmentID).subscribe((data: any) => {
 
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepartmentList = {} as SubDepartmentDropdown;
+          const current = data.dateSet[i];
+          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+
+          this.SubDepartmentDropdown.push(tempSubDepartmentList);
+
+        }
+        
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
 
 
     this.modalService.open(newUserLinkedToZone, { centered: true, size: 'xl' });

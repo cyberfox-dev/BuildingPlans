@@ -5,11 +5,11 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class ZoneLinkService {
-  private readonly baseURL: string = "https://localhost:7123/api/zonelinks/"
+  private readonly baseURL: string = "https://localhost:7123/api/zoneLinking/"
   constructor(private httpClient: HttpClient) { }
 
 
-  public addUpdateZoneLink(zoneLinkID: number | null, departmentID: number, subDepartmentID: number, assignedUserID: string | null, userType: string | null) {
+  public addUpdateZoneLink(zoneLinkID: number | null, departmentID: number,zoneID:number|null ,subDepartmentID: number, assignedUserID: string | null, userType: string | null) {
 
     const body = {
       ZoneLinkID: zoneLinkID,
@@ -17,6 +17,7 @@ export class ZoneLinkService {
       SubDepartmentID: subDepartmentID,
       AssignedUserID: assignedUserID,
       UserType: userType,
+      ZoneID: zoneID
     }
     return this.httpClient.post(this.baseURL + "AddUpdateZoneLink", body);
 
@@ -31,6 +32,12 @@ export class ZoneLinkService {
   public getZoneLinkssList(zoneLinkID: any) {
 
     return this.httpClient.get(this.baseURL + "GetZoneLinksList", zoneLinkID);
+
+  }
+
+  public getUsersNotLinkedByUserID() {
+   
+    return this.httpClient.get(this.baseURL + "GetUsersNotLinkedByUserID");
 
   }
 }

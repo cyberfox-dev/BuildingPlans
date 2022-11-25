@@ -4,6 +4,7 @@ using WayleaveManagementSystem.Models.BindingModel;
 using WayleaveManagementSystem.Models;
 using WayleaveManagementSystem.Service;
 using WayleaveManagementSystem.Data.Entities;
+using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
 
 namespace WayleaveManagementSystem.Controllers
 {
@@ -78,6 +79,36 @@ namespace WayleaveManagementSystem.Controllers
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Zones List Created", result));
 
                
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        [HttpPost("GetZoneBySubDepartmentID")]
+        public async Task<object> GetZoneBySubDepartmentID([FromBody] ZoneSubDepartmentIDBindingModel model)
+        {
+            try
+            {
+
+                if (model.SubDepartmentID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _zonesServices.GetZoneBySubDepartmentID(model.SubDepartmentID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got all Zones for given Sub Departments", result));
+                }
+
+
+
+
 
             }
             catch (Exception ex)

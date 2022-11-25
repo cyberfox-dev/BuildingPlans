@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WayleaveManagementSystem.Data;
 
@@ -11,9 +12,10 @@ using WayleaveManagementSystem.Data;
 namespace WayleaveManagementSystem.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20221124130908_SP_GetUsersNotLinkedByUserID")]
+    partial class SP_GetUsersNotLinkedByUserID
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -256,7 +258,7 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.HasKey("DepartmentID");
 
-                    b.ToTable("DepartmentsTable", (string)null);
+                    b.ToTable("DepartmentsTable");
                 });
 
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Professionals", b =>
@@ -320,7 +322,7 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.HasIndex("AppUserID");
 
-                    b.ToTable("ProfessionalsTable", (string)null);
+                    b.ToTable("ProfessionalsTable");
                 });
 
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Stages", b =>
@@ -351,7 +353,7 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.HasKey("StageID");
 
-                    b.ToTable("StageTable", (string)null);
+                    b.ToTable("StageTable");
                 });
 
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.SubDepartments", b =>
@@ -382,7 +384,7 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.HasKey("SubDepartmentID");
 
-                    b.ToTable("SubDepartmentsTable", (string)null);
+                    b.ToTable("SubDepartmentsTable");
                 });
 
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.UserProfile", b =>
@@ -461,7 +463,7 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.HasKey("UserProfileID");
 
-                    b.ToTable("UserProfilesTable", (string)null);
+                    b.ToTable("UserProfilesTable");
                 });
 
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.ZoneLink", b =>
@@ -501,7 +503,7 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.HasKey("ZoneLinkID");
 
-                    b.ToTable("ZoneLinkTable", (string)null);
+                    b.ToTable("ZoneLinkTable");
                 });
 
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Zones", b =>
@@ -536,7 +538,7 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.HasKey("ZoneID");
 
-                    b.ToTable("ZonesTable", (string)null);
+                    b.ToTable("ZonesTable");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

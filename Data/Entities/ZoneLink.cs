@@ -7,6 +7,7 @@ namespace WayleaveManagementSystem.Data.Entities
         [Key]
         public int? ZoneLinkID { get; set; }
 
+        public int? ZoneID { get; set; }
         public int DepartmentID { get; set; }
 
         public int SubDepartmentID { get; set; }

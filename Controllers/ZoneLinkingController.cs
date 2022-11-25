@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WayleaveManagementSystem.Data;
 using WayleaveManagementSystem.IServices;
 using WayleaveManagementSystem.Models;
 using WayleaveManagementSystem.Models.BindingModel;
+using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
+using WayleaveManagementSystem.Service;
 
 namespace WayleaveManagementSystem.Controllers
 {
@@ -10,10 +14,12 @@ namespace WayleaveManagementSystem.Controllers
     public class ZoneLinkingController : Controller
     {
         private readonly IZoneLinkServices _zonesLinkingServices;
+        private readonly AppDBContext _context;
 
-        public ZoneLinkingController(IZoneLinkServices zoneLinkService)
+        public ZoneLinkingController(IZoneLinkServices zoneLinkService, AppDBContext context)
         {
             _zonesLinkingServices = zoneLinkService;
+            _context = context;
         }
         [HttpPost("AddUpdateZoneLink")]
         public async Task<object> AddUpdateZoneLink([FromBody] ZoneLinkBindingModel model)
@@ -27,7 +33,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _zonesLinkingServices.AddUpdateZoneLink(model.ZoneLinkID, model.DepartmentID, model.SubDepartmentID, model.AssignedUserID, model.UserType);
+                    var result = await _zonesLinkingServices.AddUpdateZoneLink(model.ZoneLinkID,model.ZoneID ,model.DepartmentID, model.SubDepartmentID, model.AssignedUserID, model.UserType);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ZoneLinkID > 0 ? "Zone Link Updated Sussessfully" : "Zone Link Added Sussessfully"), result));
                 }
             }
@@ -85,5 +91,45 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+
+
+        //[HttpGet("GetUsersNotLinkedByUserID")]
+        //public async Task<object> GetUsersNotLinkedByUserID()
+        //{
+        //    try
+        //    {
+        //        var result = await _zonesLinkingServices.GetUsersNotLinkedByUserID();
+        //        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Unlinked Users", result));
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+
+        //        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+        //    }
+        //}
+
+        [HttpGet("GetUsersNotLinkedByUserID")]
+        public async Task<object> GetUsersNotLinkedByUserID()
+        {
+            try
+            {
+                //var result = await _zonesLinkingServices.GetUsersNotLinkedByUserID();
+                var result = _context.Users.FromSqlRaw($"SP_GetUsersNotLinkedByUserID").AsEnumerable();
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Unlinked Users", result));
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+
     }
 }

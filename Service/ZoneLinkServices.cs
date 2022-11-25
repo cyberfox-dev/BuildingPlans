@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Data;
 using WayleaveManagementSystem.Data.Entities;
+using WayleaveManagementSystem.DTO;
 using WayleaveManagementSystem.IServices;
 using WayleaveManagementSystem.Models.DTO;
+
 
 namespace WayleaveManagementSystem.Service
 {
@@ -15,7 +17,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<ZoneLink> AddUpdateZoneLink(int? zoneLinkID, int departmentID, int subDepartmentID, string? assignedUserID, string? userType)
+        public async Task<ZoneLink> AddUpdateZoneLink(int? zoneLinkID,int? zoneID ,int departmentID, int subDepartmentID, string? assignedUserID, string? userType)
         {
             if (zoneLinkID == 0)
             {
@@ -33,7 +35,7 @@ namespace WayleaveManagementSystem.Service
                     SubDepartmentID = subDepartmentID,
                     AssignedUserID = assignedUserID,
                     UserType = userType,
-
+                    ZoneID = zoneID,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     isActive = true
@@ -97,5 +99,30 @@ namespace WayleaveManagementSystem.Service
                 }
                 ).ToListAsync();
         }
+
+        public async Task<List<UserZoneLinkDTO>> GetUsersNotLinkedByUserID()
+        {
+            return await (
+
+                from AspNetUsers in _context.Users
+                join ZoneLinkTable in _context.ZoneLinkTable on AspNetUsers.Id equals ZoneLinkTable.AssignedUserID
+                // where ZoneLinkTable.AssignedUserID == null || ZoneLinkTable.isActive == false /*&& ZoneLinkTable.AssignedUserID == AspNetUsers.Id || ZoneLinkTable.isActive == false*/
+                select new UserZoneLinkDTO()
+                {
+
+                    FullName = AspNetUsers.FullName,
+                    Email = AspNetUsers.Email,
+                    UserId = AspNetUsers.Id
+
+
+                }
+                ).ToListAsync();
+
+
+            //UserZoneLink  FromSqlRaw("SP_GetUsersNotLinkedByUserID").ToListAsync();
+            //var result = _context.UserZoneLink.FromSqlRaw("GetUsersNotLinkedByUserID").ToListAsync();
+            //return result;
+        }
+    
     }
 }
