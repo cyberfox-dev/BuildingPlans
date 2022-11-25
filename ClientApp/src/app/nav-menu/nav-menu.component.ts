@@ -44,6 +44,9 @@ export class NavMenuComponent implements OnInit {
   goToSettings() {
     this.router.navigate(["/user-settings"]);
   }
+  goToCyberfoxCofig() {
+    this.router.navigate(["/cyberfox-config"]);
+  }
 
   openCommentBuilder(commentBuilder:any) {
     this.modalService.open(commentBuilder, { centered:true,size: 'xl' });
