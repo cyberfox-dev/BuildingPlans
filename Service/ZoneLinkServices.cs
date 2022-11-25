@@ -17,7 +17,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<ZoneLink> AddUpdateZoneLink(int? zoneLinkID,int? zoneID ,int departmentID, int subDepartmentID, string? assignedUserID, string? userType)
+        public async Task<ZoneLink> AddUpdateZoneLink(int? zoneLinkID,int? zoneID ,int departmentID, int subDepartmentID, string? assignedUserID, string? userType,string? createdById)
         {
             if (zoneLinkID == 0)
             {
@@ -38,6 +38,7 @@ namespace WayleaveManagementSystem.Service
                     ZoneID = zoneID,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
+                    CreatedById = createdById,
                     isActive = true
                 };
 
