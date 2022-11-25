@@ -8,7 +8,7 @@ namespace WayleaveManagementSystem.IServices
     {
 
         //Task<Professionals> - This is the return type so its going to ruturn it in the fromt of the professinals model
-        Task<Roles> AddUpdateRole(int? roleID, string roleName, string roleType, string roleDescription, DateTime dateCreated, DateTime dateUpdated, string? creadtedByID, bool isActive);
+        Task<Roles> AddUpdateRole(int? roleID, string roleName, string roleType, string roleDescription, string? creadtedByID);
         //this will return T/F 
         public Task<bool> DeleteRole(int roleID);
 

@@ -27,6 +27,8 @@ builder.Services.AddScoped<IDepartmentsService, DepartmentsService>();
 builder.Services.AddScoped<ISubDepartmentService, SubDepartmentsService>();
 builder.Services.AddScoped<IZonesServices, ZonesServices>();
 builder.Services.AddScoped<IZoneLinkServices, ZoneLinkServices>();
+builder.Services.AddScoped<IRolesService, RolesService>();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     var key = Encoding.ASCII.GetBytes(builder.Configuration["JWTConfig:Key"]);

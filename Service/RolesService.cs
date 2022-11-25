@@ -17,7 +17,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Roles> AddUpdateRole(int? roleID, string roleName, string roleType, string roleDescription, DateTime dateCreated, DateTime dateUpdated, string? creadtedByID, bool isActive)
+        public async Task<Roles> AddUpdateRole(int? roleID, string roleName, string roleType, string roleDescription, string? creadtedByID)
         {
 
             if (roleID == 0)
@@ -36,8 +36,8 @@ namespace WayleaveManagementSystem.Service
                     RoleName = roleName,
                     RoleType = roleType,
                     RoleDescription = roleDescription,
-                    DateCreated = dateCreated,
-                    DateUpdated = dateUpdated,
+                    DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,
                     CreatedById = creadtedByID,
                     isActive = true
                 };

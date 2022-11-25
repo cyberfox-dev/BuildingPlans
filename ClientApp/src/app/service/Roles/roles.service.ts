@@ -8,13 +8,14 @@ export class RolesService {
   private readonly baseURL: string = "https://localhost:7123/api/roles/"
   constructor(private httpClient: HttpClient) { }
 
-  public addUpdateRole(roleID: number | null, roleName: string, roleType: string, roleDescription: string) {
+  public addUpdateRole(roleID: number | null, roleName: string | null, roleType: string | null, roleDescription: string | null, createdById: string|null) {
 
     const body = {
       RoleID: roleID,
       RoleName: roleName,
       RoleType: roleType,
       RoleDescription: roleDescription,
+      CreatedById: createdById,
 
     }
     return this.httpClient.post(this.baseURL + "AddUpdateRole", body);

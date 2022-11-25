@@ -32,7 +32,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _rolesService.AddUpdateRole(model.RoleID, model.RoleName, model.RoleType, model.RoleDescription, model.DateCreated, model.DateUpdated, model.CreatedById, model.isActive);
+                    var result = await _rolesService.AddUpdateRole(model.RoleID, model.RoleName, model.RoleType, model.RoleDescription, model.CreatedById);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.RoleID > 0 ? "Role Updated Sussessfully" : "Role Added Sussessfully"), result));
                 }
 
