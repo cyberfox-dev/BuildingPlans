@@ -55,7 +55,7 @@
     <th mat-header-cell *matHeaderCellDef>Sub Departments</th>
     <td mat-cell *matCellDef="let i = index">
       <button mat-raised-button color="success" matTooltip="Add Sub Department" (click)="openNewSubDep(newSub);setCurrentDepartmentID(i)"><i class="fa fa-plus"></i></button>
-      <button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="getSubDemartmentByDepartmentID(i,viewSub)"><i class="fa fa-eye"></i></button>
+      <button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="getSubDemartmentByDepartmentID(i,viewSub);setCurrentDepartmentID(i)"><i class="fa fa-eye"></i></button>
       <!--<button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="openViewSubDep(viewSub);getSubDemartmentByDepartmentID(i,viewSub)"><i class="fa fa-eye"></i></button>-->
 
 
@@ -151,7 +151,7 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Actions</th>
         <td mat-cell *matCellDef="let i = index">
-          <button mat-raised-button color="warn" (click)="onDeleteSubDepartment(i)"><i class="fa fa-trash" aria-hidden="true" ></i></button>
+          <button mat-raised-button color="warn" (click)="modal.close('Close click');onDeleteSubDepartment(i,viewSub)"><i class="fa fa-trash" aria-hidden="true" ></i></button>
         </td>
         <td mat-cell *matCellDef="let element">  </td>
 
@@ -237,7 +237,7 @@
 
 
 
-        <table mat-table [dataSource]="dataSourceLinkUsers" class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSourceLinkUsers" class="mat-elevation-z8" *ngIf="showZoneUserTable">
           <!--*ngIf="showZoneUserTable"-->
 
 
@@ -286,11 +286,17 @@
           <mat-tab label="View linked sub departments">
 
             <div class="form-floating mb-3 mt-3">
-              <select class="form-select" aria-label="Default select example">
-                <option selected>select a Sub dep</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
+              <select class="form-select" aria-label="Default select example" formControlName="selectedSubDep" (change)="onSelectToPopulateZone($event)">
+                <option selected value="0">Select a Sub Department</option>
+                <option *ngFor="let subDemartment of SubDepartmentDropdown" value="{{subDemartment.subDepartmentID}}">{{subDemartment.subDepartmentName}}</option>
+              </select>
+
+            </div>
+
+            <div class="form-floating mb-3 mt-3" *ngIf="showZone">
+              <select class="form-select" aria-label="Default select example" formControlName="selectedZone" (change)="onSelectToPopulateZoneUsers($event,newUserLinkedToZone)">
+                <option selected value="0">select a zone</option>
+                <option *ngFor="let zone of ZoneDropdown" value="{{zone.zoneID}}">{{zone.zoneName}}</option>
               </select>
 
             </div>
@@ -299,9 +305,9 @@
               <table mat-table [dataSource]="dataSourceViewLinkedSubZones" class="mat-elevation-z8">
 
 
-                <ng-container matColumnDef="name">
+                <ng-container matColumnDef="fullName">
                   <th mat-header-cell *matHeaderCellDef> Name </th>
-                  <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                  <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
                 </ng-container>
 
 

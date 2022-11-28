@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Data.Entities;
+using WayleaveManagementSystem.DTO;
 
 namespace WayleaveManagementSystem.Data
 {
@@ -25,6 +26,8 @@ namespace WayleaveManagementSystem.Data
 
         public DbSet<Stages> StageTable { get; set; }
         public DbSet<Roles> Role { get; set; }
+
+        public virtual DbSet<UserSpDTO> UserSpDTOs { get; set; }
 
     }
 }
