@@ -41,8 +41,6 @@ export interface ZoneList {
   zoneName: string;
   departmentID: number;
   subDepartmentID: number;
-  dateUpdated: any;
-  dateCreated: any;
 }
 export interface SubDepartmentList {
   subDepartmentID: number;
@@ -90,6 +88,8 @@ export interface ZoneDropdown {
   zoneName: string;
 }
 
+
+
 export interface UserZoneList {
   id: string;
   fullName: string;
@@ -115,16 +115,19 @@ export class DepartmentConfigComponent implements OnInit {
 
 
 
+
   selection = new SelectionModel<UserZoneList>(true, []);
   CurrentUser: any;
   stringifiedData: any;
   showZone = false;
+  showZone2 = false;
   showZoneUserTable = false;
 
   public addDepartment = this.formBuilder.group({
     newDepName: ['', Validators.required]
 
   })
+
   public addSubDepartment = this.formBuilder.group({
     newSubDepName: ['', Validators.required]
 
@@ -142,6 +145,15 @@ export class DepartmentConfigComponent implements OnInit {
 
   })
 
+
+  public viewZonesLinkedtoSub = this.formBuilder.group({
+    viewSelectedSubDep: ['', Validators.required],
+    viewSelectedSubDep2: ['', Validators.required],
+    viewSelectedZone: ['', Validators.required],
+
+  })
+
+
   displayedColumns: string[] = [ 'departmentName', 'actions','actionsZone','actionsDep'];
   dataSource = this.DepartmentList;
 
@@ -154,8 +166,8 @@ export class DepartmentConfigComponent implements OnInit {
   dataSourceLinkUsers = this.UserZoneList;
 
 
-  displayedColumnsViewLinkedSubZones: string[] = ['fullName', 'actions'];
-  dataSourceViewLinkedSubZones = this.UserZoneList;
+  displayedColumnsViewLinkedSubZones: string[] = ['zoneName', 'actions'];
+  dataSourceViewLinkedSubZones = this.ZoneList;
 
   displayedColumnsViewLinkedUsers: string[] = ['fullName', 'actions'];
   dataSourceViewLinkedUsers = this.UserZoneList;
@@ -204,9 +216,7 @@ export class DepartmentConfigComponent implements OnInit {
 
   }
 
-  getAllUsersLinkedToZone() {
-
-  }
+ 
 
 
   getAllSubDepartments() {
@@ -477,6 +487,124 @@ export class DepartmentConfigComponent implements OnInit {
 
   }
 
+  getAllUsersLinkedToZone(SubDepartmentID:any) {
+    this.zoneService.getZonesBySubDepartmentsID(SubDepartmentID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempZoneList = {} as ZoneDropdown;
+          const current = data.dateSet[i];
+          tempZoneList.zoneID = current.zoneID;
+          tempZoneList.zoneName = current.zoneName;
+
+          this.ZoneDropdown.push(tempZoneList);
+
+        }
+
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  forViewPopulateSubDepartmentDropDown(index: any, viewlinkedZones: any) {
+
+    this.SubDepartmentDropdown.splice(0, this.SubDepartmentDropdown.length);
+    this.subDepartment.getSubDepartmentsByDepartmentID(this.DepartmentList[index].departmentID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepartmentList = {} as SubDepartmentDropdown;
+          const current = data.dateSet[i];
+          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+
+          this.SubDepartmentDropdown.push(tempSubDepartmentList);
+
+        }
+        this.openViewZones(viewlinkedZones);
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+  onSelectToPopulateZoneTable(event: any, viewlinkedZones: any) {
+
+    let viewSelectedSubDep = Number(this.viewZonesLinkedtoSub.controls["viewSelectedSubDep"].value);
+    this.ZoneList.splice(0, this.ZoneList.length);
+    this.zoneService.getZonesBySubDepartmentsID(viewSelectedSubDep).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempZoneList = {} as ZoneList;
+          const current = data.dateSet[i];
+          tempZoneList.zoneID = current.zoneID;
+          tempZoneList.zoneName = current.zoneName;
+          tempZoneList.subDepartmentID = current.subDepartmentID;
+          tempZoneList.departmentID = current.departmentID;
+
+          this.ZoneList.push(tempZoneList);
+
+
+        }
+
+        this.openViewZones(viewlinkedZones);
+
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  onZoneDelete(index: any, viewlinkedZones:any) {
+    if (confirm("Are you sure to delete " + this.ZoneList[index].zoneName + "?")) {
+
+      this.zoneService.deleteZone(this.ZoneList[index].zoneID).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          alert(data.responseMessage);
+
+          this.onSelectToPopulateZoneTable(null, viewlinkedZones)
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+
+    }
+  }
+
   populateSubDepartmentDropDown(index: any, newZone:any) {
 
     this.SubDepartmentDropdown.splice(0, this.SubDepartmentDropdown.length);
@@ -506,6 +634,75 @@ export class DepartmentConfigComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
+  }
+
+  onSelectToPopulateZoneUserTable(event:any) {
+    if (event.target.value > 0) {
+      this.zoneService.getUsersLinkedByZoneID(Number(event.target.value)).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempZoneList = {} as UserZoneList;
+            const current = data.dateSet[i];
+            tempZoneList.id = current.id;
+            tempZoneList.fullName = current.fullName;
+
+            this.UserZoneList.push(tempZoneList);
+          }
+
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+    }
+  }
+
+  onSelectToPopulateZoneDropDownView(event: any) {
+    debugger;
+    if (event.target.value > 0) {
+
+      this.ZoneDropdown.splice(0, this.ZoneDropdown.length);
+      this.zoneService.getZonesBySubDepartmentsID(event.target.value).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempZoneList = {} as ZoneDropdown;
+            const current = data.dateSet[i];
+            tempZoneList.zoneID = current.zoneID;
+            tempZoneList.zoneName = current.zoneName;
+
+            this.ZoneDropdown.push(tempZoneList);
+
+          }
+
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+      this.showZone2 = true;
+    }
+    else {
+      this.showZone2 = false;
+    }
+
   }
 
   private getDismissReason(reason: any): string {

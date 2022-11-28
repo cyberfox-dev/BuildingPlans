@@ -35,7 +35,7 @@ export class ZonesService {
   }
 
   public getZonesBySubDepartmentsID(subDepartmentId: number) {
-    debugger;
+    
     const body = {
 
       SubDepartmentID: subDepartmentId,
@@ -44,4 +44,12 @@ export class ZonesService {
     return this.httpClient.post(this.baseURL + "GetZoneBySubDepartmentID", body);
 
   }
+
+  public getUsersLinkedByZoneID(zoneID: any) {
+    debugger;
+    return this.httpClient.post(this.baseURL + "GetUsersLinkedByZoneID", zoneID);
+
+  }
+
+
 }

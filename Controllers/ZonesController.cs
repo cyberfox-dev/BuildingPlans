@@ -5,6 +5,8 @@ using WayleaveManagementSystem.Models;
 using WayleaveManagementSystem.Service;
 using WayleaveManagementSystem.Data.Entities;
 using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
+using Microsoft.EntityFrameworkCore;
+using WayleaveManagementSystem.Data;
 
 namespace WayleaveManagementSystem.Controllers
 {
@@ -13,9 +15,11 @@ namespace WayleaveManagementSystem.Controllers
     public class ZonesController : Controller
     {
         private readonly IZonesServices _zonesServices;
-        public ZonesController(IZonesServices zonesService)
+        private readonly AppDBContext _context;
+        public ZonesController(IZonesServices zonesService, AppDBContext context)
         {
             _zonesServices = zonesService;
+            _context = context;
         }
 
         [HttpPost("AddUpdateZones")]
@@ -44,7 +48,7 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-        [HttpPost("DeleteZones")]
+        [HttpPost("DeleteZone")]
         public async Task<object> DeleteZone([FromBody] int ZoneID)
         {
             try
@@ -109,6 +113,28 @@ namespace WayleaveManagementSystem.Controllers
 
 
 
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+
+        [HttpPost("GetUsersLinkedByZoneID")]
+        public async Task<object> GetUsersLinkedByZoneID([FromBody] int zoneID)
+        {
+            try
+            {
+                //var result = await _zonesLinkingServices.GetUsersNotLinkedByUserID();
+                var result = _context.UserSpDTOs.FromSqlRaw($"SP_GetUsersLinkedByZoneID {zoneID}").AsEnumerable();
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Linked Users", result));
 
             }
             catch (Exception ex)
