@@ -204,6 +204,10 @@ export class DepartmentConfigComponent implements OnInit {
 
   }
 
+  getAllUsersLinkedToZone() {
+
+  }
+
 
   getAllSubDepartments() {
     this.subDepartment.getSubDepartmentsList().subscribe((data: any) => {
@@ -412,7 +416,7 @@ export class DepartmentConfigComponent implements OnInit {
     }
   }
 
-  onDeleteSubDepartment(index: any) {
+  onDeleteSubDepartment(index: any, viewSub:any) {
  
     if (confirm("Are you sure to delete " + this.SubDepartmentList[index].subDepartmentName + "?")) {
 
@@ -425,7 +429,7 @@ export class DepartmentConfigComponent implements OnInit {
           alert(data.responseMessage);
          
 
-          
+          this.openViewSubDep(viewSub);
         }
         else {
           //alert("Invalid Email or Password");             
@@ -537,7 +541,7 @@ export class DepartmentConfigComponent implements OnInit {
       this.zoneLinkService.addUpdateZoneLink(0, this.CurrentDepartmentID, selectedZone, selectedSubDep, current.id ,null,this.CurrentUser.appUserId,).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
-
+          alert(data.responseMessage);
          
 
         }
@@ -613,6 +617,10 @@ export class DepartmentConfigComponent implements OnInit {
     const tempSelectedSub = selectedSubDep;
     const tempSelectedZone = selectedZone; 
     this.UserZoneList.splice(0, this.UserZoneList.length);
+
+    if (Number(selectedZone) !> 0) {
+
+    }
     this.zoneLinkService.getUsersNotLinkedByUserID(Number(selectedZone)).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -632,8 +640,10 @@ export class DepartmentConfigComponent implements OnInit {
         this.modalService.open(newUserLinkedToZone, { centered: true, size: 'xl' });
         this.userZoneLink.controls["selectedSubDep"].setValue(tempSelectedSub);
         this.userZoneLink.controls["selectedZone"].setValue(tempSelectedZone);
+        this.showZoneUserTable = true;
       }
       else {
+        this.showZoneUserTable = false;
         alert(data.responseMessage);
       }
       console.log("reponse", data);
@@ -642,6 +652,8 @@ export class DepartmentConfigComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
+
+    
 
     this.UserZoneListTable?.renderRows();
   }

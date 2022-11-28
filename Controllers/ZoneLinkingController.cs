@@ -34,7 +34,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _zonesLinkingServices.AddUpdateZoneLink(model.ZoneLinkID,model.ZoneID ,model.DepartmentID, model.SubDepartmentID, model.AssignedUserID, model.UserType,model.CreatedById);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ZoneLinkID > 0 ? "Zone Link Updated Sussessfully" : "Zone Link Added Sussessfully"), result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ZoneLinkID > 0 ? "Zone Link Updated Sussessfully" : "User Linked Sussessfully"), result));
                 }
             }
             catch (Exception ex)
@@ -117,7 +117,9 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
                 //var result = await _zonesLinkingServices.GetUsersNotLinkedByUserID();
-                var result = _context.Users.FromSqlRaw($"SP_GetUsersNotLinkedByUserID {zoneID}").AsEnumerable();
+                var result = _context.UserSpDTOs.FromSqlRaw($"SP_GetUsersNotLinkedByUserID {zoneID}").AsEnumerable();
+
+
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Unlinked Users", result));
 
             }
