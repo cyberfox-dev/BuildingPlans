@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class StagesService {
-  private readonly baseURL: string = "https://localhost:7123/api/stages/"
+  private readonly baseURL: string = "https://localhost:7123/api/stage/"
   constructor(private httpClient: HttpClient) { }
 
 
@@ -29,6 +29,12 @@ export class StagesService {
   public getStageList(stageID: any) {
 
     return this.httpClient.get(this.baseURL + "GetStagesList", stageID);
+
+  }
+
+  public getAllStages() {
+
+    return this.httpClient.get(this.baseURL + "GetAllStages");
 
   }
 }

@@ -30,7 +30,7 @@ export class RolesConfigComponent implements OnInit {
   RolesList: RolesList[] = [];
   forEditRole: RolesList[] = [];
   forEditIndex: any;
-  editRoleID: any;
+ 
 
 
 

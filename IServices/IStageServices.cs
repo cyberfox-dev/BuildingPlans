@@ -10,6 +10,6 @@ namespace WayleaveManagementSystem.IServices
         //this will return T/F 
         public Task<bool> DeleteStage(int StageID);
 
-        public Task<List<StageDTO>> GetAllStages();
+         Task<List<StageDTO>> GetAllStages();
     }
 }
