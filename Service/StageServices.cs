@@ -48,6 +48,7 @@ namespace WayleaveManagementSystem.Service
             {
                 tempStageTable.StageName = stageName;
                 tempStageTable.DateUpdated = DateTime.Now;
+                tempStageTable.StageOrderNumber = stageOrderNumber;
                 tempStageTable.isActive = true;
 
                 _context.Update(tempStageTable);
@@ -88,7 +89,7 @@ namespace WayleaveManagementSystem.Service
                     DateUpdated = DateTime.Now,
 
                 }
-                ).ToListAsync();
+                ).OrderBy(x=>x.StageOrderNumber).ToListAsync();
         }
     }
 }

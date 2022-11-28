@@ -30,7 +30,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _stageServices.AddUpdateStages(model.StageID, model.StageName, model.StageOrderNumber );
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.StageID > 0 ? "Stage Updated Sussessfully" : "Stage Added Sussessfully"), result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.StageID > 0 ? "Updated Sussessfully" : "Stage Added Sussessfully"), result));
                 }
 
             }

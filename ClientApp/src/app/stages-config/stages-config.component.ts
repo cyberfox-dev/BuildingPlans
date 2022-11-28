@@ -27,9 +27,43 @@ export interface StagesOrderList {
 export class StagesConfigComponent implements OnInit {
 
 
-  drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.StagesList, event.previousIndex, event.currentIndex);
+  drop(event: CdkDragDrop<StagesList[]>) {
+    moveItemInArray(this.StagesList, event.previousIndex , event.currentIndex);
 
+    
+    
+    //let stagePre = this.StagesList[event.previousIndex];
+    for (var i = 0; i < event.previousIndex + 1; i++) {
+      let stage = this.StagesList[i];
+
+
+
+      this.stagesService.addUpdateStage(stage.StageID, stage.StageName, i).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          alert(data.dateSet.stageName+ " " + data.responseMessage  );
+        
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("response", data);
+      }, error => {
+        console.log("Error", error);
+      })
+
+      
+    }
+
+    console.log("event.currentIndex", event.currentIndex);
+
+    debugger;
+
+  
+
+
+    
   }
 
   CurrentUser: any;
@@ -64,7 +98,7 @@ export class StagesConfigComponent implements OnInit {
 
   getAllStages() {
 
-
+    this.StagesList.splice(0, this.StagesList.length);
 
     this.stagesService.getAllStages().subscribe((data: any) => {
       if (data.responseCode == 1) {
@@ -80,6 +114,8 @@ export class StagesConfigComponent implements OnInit {
           this.StagesList.push(tempStageList);
 
         }
+
+      
         this.stagesTable?.renderRows();
         console.log("GetAllStages", data.dateSet);
         
@@ -150,7 +186,9 @@ export class StagesConfigComponent implements OnInit {
     this.modalService.open(changeOrderNumber, { size: 'lg' });
   }
 
-  onStageEdit() {
+  onStageEdit(event: any) {
+
+    console.log("event", event);
     let editStageOrder = this.editStage.controls["editStageOrder"].value;
     console.log("editStageOrder", editStageOrder);
   }

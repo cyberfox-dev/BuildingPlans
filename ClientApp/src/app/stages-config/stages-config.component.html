@@ -5,7 +5,8 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-    <form [formGroup]="addStage" (ngSubmit)="onStageCreate()">
+    <form [formGroup]="addStage">
+      <!--(ngSubmit)="onStageCreate()"-->
 
 
       <div class="row">
@@ -33,7 +34,7 @@
   <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
     <div class="example-box" *ngFor="let stage of StagesList" cdkDrag>
       <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-      {{stage.StageName}}  <button mat-raised-button color="blue" matTooltip="Edit stage"><i class="fa fa-pencil"></i></button>
+      {{stage.StageName}}  <button mat-raised-button color="blue" matTooltip="Edit stage" (click)="onStageEdit($event)" ><i class="fa fa-pencil"></i></button>
     </div> 
   </div>
 
@@ -75,7 +76,7 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-    <form [formGroup]="editStage" (ngSubmit)="onStageEdit()">
+    <form [formGroup]="editStage" >
 
 
       <div class="row">
@@ -98,6 +99,6 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" [disabled]="!editStage.valid" (click)="modal.close('Save click');onStageEdit()">Save</button>
+    <button type="submit" class="btn btn-outline-success" [disabled]="!editStage.valid" (click)="modal.close('Save click')">Save</button>
   </div>
 </ng-template>
