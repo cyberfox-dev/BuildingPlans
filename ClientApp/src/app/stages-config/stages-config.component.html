@@ -5,7 +5,7 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-    <form >
+    <form [formGroup]="addStage" (ngSubmit)="onStageCreate()">
 
 
       <div class="row">
@@ -21,7 +21,7 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success"  (click)="modal.close('Save click')">Save</button>
+    <button type="submit" class="btn btn-outline-success" [disabled]="!addStage.valid" (click)="modal.close('Save click');onStageCreate()">Save</button>
   </div>
 </ng-template>
 
@@ -29,10 +29,75 @@
 <!--stages-->
 <div class="container-fluid">
   <button mat-raised-button color="primary" (click)="openXl(content)">Create new stage</button>
+  
   <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-    <div class="example-box" *ngFor="let movie of movies" cdkDrag>
+    <div class="example-box" *ngFor="let stage of StagesList" cdkDrag>
       <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-      {{movie}}
-    </div>
+      {{stage.StageName}}  <button mat-raised-button color="blue" matTooltip="Edit stage"><i class="fa fa-pencil"></i></button>
+    </div> 
   </div>
+
+<!--  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+
+    <ng-container matColumnDef="StageName">
+      <th mat-header-cell *matHeaderCellDef>Stage Name </th>
+      <td mat-cell *matCellDef="let element"> {{element.StageName}} </td>
+    </ng-container>
+    <ng-container matColumnDef="StageOrderNumber">
+      <th mat-header-cell *matHeaderCellDef>Stage Order Number </th>
+      <td mat-cell *matCellDef="let element"> {{element.StageOrderNumber}} </td>
+    </ng-container>
+
+
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let i = index">
+        <button mat-raised-button color="blue" matTooltip="Edit stage"(click)="changeStageOrderNo(changeOrderNumber,i);populateStageOrder()"><i class="fa fa-pencil"></i></button>
+        <button mat-raised-button color="warn" matTooltip="Delete stage" (click)="onStageDelete(i)"><i class="fa fa-trash"></i></button>
+
+      </td>
+      <td mat-cell *matCellDef="let element">  </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>-->
+
+
 </div>
+
+<!--change stage order number-->
+<ng-template #changeOrderNumber let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Change stage order number</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="editStage" (ngSubmit)="onStageEdit()">
+
+
+      <div class="row">
+
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" id="StageName" formControlName="editStageName" placeholder="Enter a stage name" name="editStageName">
+          <label for="editStageName">Stage Name</label>
+        </div>
+
+      </div>
+      <div class="form-floating mb-3 mt-3">
+        <select class="form-select"  formControlName="editStageOrder">
+          <option selected value="0">Select the order for this stage</option>
+          <option *ngFor="let order of StagesOrderList" value="{{order.StageNo}}">{{order.StageNo}}</option>
+         
+        </select>
+      </div>
+
+
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" [disabled]="!editStage.valid" (click)="modal.close('Save click');onStageEdit()">Save</button>
+  </div>
+</ng-template>

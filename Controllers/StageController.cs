@@ -3,6 +3,8 @@ using WayleaveManagementSystem.IServices;
 using WayleaveManagementSystem.Models.BindingModel;
 using WayleaveManagementSystem.Models;
 using WayleaveManagementSystem.Service;
+using WayleaveManagementSystem.DTO;
+using WayleaveManagementSystem.Models.DTO;
 
 namespace WayleaveManagementSystem.Controllers
 {
@@ -75,6 +77,27 @@ namespace WayleaveManagementSystem.Controllers
                 var result = await _stageServices.GetAllStages();
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Stage List Created", result));
 
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        [HttpGet("GetAllStages")]
+        public async Task<object> GetAllStages()
+        {
+            try
+            {
+                List<StageDTO> stageDTOs = new List<StageDTO>();
+                var result = await _stageServices.GetAllStages();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Stages", result));
 
 
             }

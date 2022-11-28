@@ -78,7 +78,7 @@ namespace WayleaveManagementSystem.Service
         public async Task<List<StageDTO>> GetAllStages()
         {
             return await(
-                from Stages in _context.StageTable
+                from Stages in _context.StageTable where Stages.isActive == true
                 select new StageDTO()
                 {
                     StageID = Stages.StageID,
