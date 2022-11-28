@@ -30,7 +30,7 @@ export class RolesConfigComponent implements OnInit {
   RolesList: RolesList[] = [];
   forEditRole: RolesList[] = [];
   forEditIndex: any;
-
+  editRoleID: any;
 
 
 
@@ -81,6 +81,9 @@ export class RolesConfigComponent implements OnInit {
   @ViewChild(MatTable) rolesTable: MatTable<RolesList> | undefined;
 
   getAllRoles() {
+
+    this.RolesList.splice(0, this.RolesList.length);
+
     this.roleService.getAllRoles().subscribe((data: any) => {
 
      if (data.responseCode == 1) {
@@ -144,10 +147,12 @@ export class RolesConfigComponent implements OnInit {
   }
 
   onRoleDelete(index: any) {
+    console.log(this.RolesList[index].RoleName);
     if (confirm("Are you sure to delete " + this.RolesList[index].RoleName + "?")) {
 
       this.roleService.deleteRole(this.RolesList[index].RoleID).subscribe((data: any) => {
         this.RolesList.splice(0, this.RolesList.length);
+       
         if (data.responseCode == 1) {
 
           alert(data.responseMessage);
@@ -172,11 +177,13 @@ export class RolesConfigComponent implements OnInit {
     this.editRole.controls["editRoleName"].setValue(this.RolesList[index].RoleName);
     this.editRole.controls["editRoleType"].setValue(this.RolesList[index].RoleType);
     this.editRole.controls["editRoleDescription"].setValue(this.RolesList[index].RoleDescription);
-
+    
     this.forEditIndex = index;
-    this.RolesList.splice(0, this.RolesList.length);
+  
+    console.log(index);
+ 
 
-   
+    
     //forEditRole.RoleID = "Engineer";
     //forEditRole.RoleName = "Engineer";
     //forEditRole.RoleType = this.editBpNoApplicant;
@@ -186,8 +193,9 @@ export class RolesConfigComponent implements OnInit {
   }
 
   onRoleEdit() {
-
-   
+  
+    debugger;
+  
     let editRoleName = this.editRole.controls["editRoleName"].value;
     let editRoleType = this.editRole.controls["editRoleType"].value;
     let editRoleDescription = this.editRole.controls["editRoleDescription"].value;
