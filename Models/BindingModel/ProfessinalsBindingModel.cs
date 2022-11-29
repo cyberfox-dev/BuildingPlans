@@ -1,6 +1,6 @@
 ﻿namespace WayleaveManagementSystem.Models.BindingModel
 {
-    public class ProfessinalsGetByUserProfTypeBindingModel
+    public class ProfessinalsBindingModel
     {
         public int? ProfessinalID { get; set; }
 

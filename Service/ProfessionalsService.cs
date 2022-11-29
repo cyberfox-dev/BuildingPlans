@@ -58,20 +58,11 @@ namespace WayleaveManagementSystem.Service
             }
             else //if it is not null then user is doing an update 
             {
-                tempProfessenalTable.ProfessinalType = professinalType;
-                tempProfessenalTable.FullName = fullName;
-                tempProfessenalTable.BP_Number = bp_Number;
-                tempProfessenalTable.BpVerified = bpVerified;
+
+
                 tempProfessenalTable.PhoneNumber = phoneNumber;
                 tempProfessenalTable.Email = email;
-                tempProfessenalTable.ProfessionalRegNo = professionalRegNo;
-                tempProfessenalTable.AppUserID = appUserID; // this is the fkey that is going to link the proffessional to the user creating the wayleave application
-                tempProfessenalTable.IdNumber = idNumber;
-                tempProfessenalTable.CIBRating = cibRating;
-                //tempProfessenalTable.DateCreated = DateTime.Now;
                 tempProfessenalTable.DateUpdated = DateTime.Now;
-                //tempProfessenalTable.CreatedById = createdById;
-                tempProfessenalTable.isActive = true;
 
                 _context.Update(tempProfessenalTable);
                 await _context.SaveChangesAsync();
@@ -125,7 +116,8 @@ namespace WayleaveManagementSystem.Service
                     DateCreated = professional.DateCreated,
                     DateUpdated = professional.DateUpdated,
                     CreatedById = professional.CreatedById,
-                   
+                    PhoneNumber = professional.PhoneNumber,
+
                 }
                 ).ToListAsync();
         }
@@ -152,6 +144,7 @@ namespace WayleaveManagementSystem.Service
                     DateCreated = professional.DateCreated,
                     DateUpdated = professional.DateUpdated,
                     CreatedById = professional.CreatedById,
+                    PhoneNumber = professional.PhoneNumber,
 
                 }
                 ).ToListAsync();

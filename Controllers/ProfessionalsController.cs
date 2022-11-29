@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.BindingModel;
+
 using WayleaveManagementSystem.Data.Entities;
 using WayleaveManagementSystem.DTO;
 using WayleaveManagementSystem.IServices;
 using WayleaveManagementSystem.Models;
 using WayleaveManagementSystem.Models.BindingModel;
+using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
 
 namespace WayleaveManagementSystem.Controllers
 {
@@ -26,7 +27,7 @@ namespace WayleaveManagementSystem.Controllers
 
 
         [HttpPost("AddUpdateProfessional")]
-        public async Task<object> AddUpdateProfessional([FromBody] ProfessinalsGetByUserProfTypeBindingModel model)
+        public async Task<object> AddUpdateProfessional([FromBody] ProfessinalsBindingModel model)
         {
             try
             {

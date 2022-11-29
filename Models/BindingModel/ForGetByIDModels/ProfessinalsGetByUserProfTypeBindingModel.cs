@@ -6,7 +6,7 @@
 
         public string ProfessinalType { get; set; }
 
-        public string? AppUserID { get; set; }
+        public string AppUserID { get; set; }
 
 
         

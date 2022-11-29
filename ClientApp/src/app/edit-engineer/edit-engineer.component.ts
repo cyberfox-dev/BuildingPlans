@@ -2,10 +2,11 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { MatTable } from '@angular/material/table';
 import { SharedService } from 'src/app/shared/shared.service';
+import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
 
 
 export interface EngineerList {
-
+  professinalID: number;
   ProfessinalType: string;
   professionalRegNo: string;
   bpNumber: string;
@@ -13,6 +14,7 @@ export interface EngineerList {
   surname: string;
   email: string;
   phoneNumber: string;
+  idNumber?: string;
 
 }
 
@@ -23,8 +25,8 @@ export interface EngineerList {
 })
 export class EditEngineerComponent implements OnInit {
   closeResult = '';
-
-  engineerIDNo = '';
+  ProfessionalID: number | undefined;
+  engineerIDNo? = '';
   bpNoApplicant = '';
   professionalRegNo = '';
   name = '';
@@ -38,21 +40,67 @@ export class EditEngineerComponent implements OnInit {
   editSurname = '';
   editApplicantTellNo = '';
   editApplicantEmail = '';
+  editEngineerIDNo?= '';
 
-
-  tempEngineerList: EngineerList[] = [];
+  EngineerList: EngineerList[] = [];
   forEditEngineer: EngineerList[] = [];
   forEditIndex: any;
 
-  constructor(private modalService: NgbModal, private shared: SharedService) { }
-
+  constructor(private modalService: NgbModal, private shared: SharedService, private professionalService: ProfessionalService) { }
+  CurrentUser: any;
+  stringifiedData: any;  
   displayedColumns: string[] = ['ProfessinalType', 'bpNumber', 'name', 'surname', 'professionalRegNo', 'phoneNumber', 'email', 'actions'];
-  myDataSource = this.tempEngineerList;
-  @ViewChild(MatTable) table: MatTable<EngineerList> | undefined;
+  myDataSource = this.EngineerList;
+  @ViewChild(MatTable) EngineerTable: MatTable<EngineerList> | undefined;
 
   ngOnInit() {
 
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
+    this.getProfessionalsListByProfessionalType();
+   
   }
+
+
+
+  getProfessionalsListByProfessionalType() {
+    this.EngineerList.splice(0, this.EngineerList.length);
+
+    this.professionalService.getProfessionalsListByProfessionalType(this.CurrentUser.appUserId, "Engineer").subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        console.log("data.dateSet get", data.dateSet);
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempEngineerList = {} as EngineerList;
+          const current = data.dateSet[i];
+          tempEngineerList.bpNumber = current.bP_Number;
+          tempEngineerList.email = current.email;
+          tempEngineerList.idNumber = current.idNumber;
+          tempEngineerList.name = current.fullName.substring(0, current.fullName.indexOf(' '));;
+          tempEngineerList.surname = current.fullName.substring(current.fullName.indexOf(' ') + 1);
+          tempEngineerList.phoneNumber = current.phoneNumber;
+          tempEngineerList.ProfessinalType = current.professinalType;
+          tempEngineerList.professionalRegNo = current.professionalRegNo;
+          tempEngineerList.professinalID = current.professinalID;
+
+          this.EngineerList.push(tempEngineerList);
+          this.EngineerTable?.renderRows();
+        }
+        this.EngineerTable?.renderRows();
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
   onAddEngineer() {
     const newEnineer = {} as EngineerList;
     newEnineer.ProfessinalType = "Engineer";
@@ -62,18 +110,53 @@ export class EditEngineerComponent implements OnInit {
     newEnineer.surname = this.surname;
     newEnineer.email = this.applicantEmail;
     newEnineer.phoneNumber = this.applicantTellNo;
+    this.professionalService.addUpdateProfessional(0, "Engineer", this.name + " " + this.surname, this.bpNoApplicant, false, this.applicantEmail, this.applicantTellNo.toString(), this.professionalRegNo, this.CurrentUser.appUserId, this.engineerIDNo, this.CurrentUser.appUserId, null).subscribe((data: any) => {
 
-    this.tempEngineerList.push(newEnineer);
-    this.table?.renderRows();
-    this.shared.setEngineerData(this.tempEngineerList);
+      if (data.responseCode == 1) {
+        alert(data.responseMessage);
+        this.getProfessionalsListByProfessionalType();
+        this.EngineerTable?.renderRows();
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+    this.clearCreateComponent();
+    this.EngineerTable?.renderRows();
+
     this.clearCreateComponent();
   }
   onDelete(position: any) {
-    const deleteContractor = this.tempEngineerList[position];
-    if (confirm("Are you sure to delete " + deleteContractor.name + " " + deleteContractor.surname + "?")) {
-      this.tempEngineerList.splice(position, 1);
-      this.table?.renderRows();
-      this.shared.setEngineerData(this.tempEngineerList);
+    const deleteEngineer = this.EngineerList[position];
+    if (confirm("Are you sure to delete " + deleteEngineer.name + " " + deleteEngineer.surname + "?")) {
+      this.EngineerList.splice(position, 1);
+
+      this.professionalService.deleteProfessional(deleteEngineer.professinalID).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          alert(data.responseMessage);
+          //this.getProfessionalsListByProfessionalType();
+          this.EngineerTable?.renderRows();
+        }
+
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+      this.EngineerTable?.renderRows();
     }
   }
 
@@ -84,30 +167,42 @@ export class EditEngineerComponent implements OnInit {
   openEditModal(edit: any, index: any) {
     this.modalService.open(edit, { size: 'xl' });
 
-    const forEditEngineer = this.tempEngineerList[index];
+    const forEditEngineer = this.EngineerList[index];
     this.editBpNoApplicant = forEditEngineer.bpNumber;
     this.editProfessionalRegNo = forEditEngineer.professionalRegNo;
     this.editName = forEditEngineer.name;
     this.editSurname = forEditEngineer.surname;
     this.editApplicantTellNo = forEditEngineer.phoneNumber;
     this.editApplicantEmail = forEditEngineer.email;
+    this.editEngineerIDNo = forEditEngineer.idNumber;
+    this.ProfessionalID = forEditEngineer.professinalID;
 
     this.forEditIndex = index;
   }
 
   onEditEngineer() {
-    this.tempEngineerList.splice(this.forEditIndex, 1);
-    const toEdit = {} as EngineerList;
-    toEdit.ProfessinalType = "Engineer";
-    toEdit.bpNumber = this.editBpNoApplicant;
-    toEdit.professionalRegNo = this.editProfessionalRegNo;
-    toEdit.name = this.editName;
-    toEdit.surname = this.editSurname;
-    toEdit.email = this.editApplicantEmail;
-    toEdit.phoneNumber = this.editApplicantTellNo;
-    this.tempEngineerList.push(toEdit);
-    this.table?.renderRows();
-    this.shared.setEngineerData(this.tempEngineerList);
+
+    this.professionalService.addUpdateProfessional(Number(this.ProfessionalID), "Engineer", this.editName + " " + this.editSurname, this.editBpNoApplicant, false, this.editApplicantEmail, this.editApplicantTellNo?.toString(), this.editProfessionalRegNo, this.CurrentUser.appUserId, this.editEngineerIDNo, this.CurrentUser.appUserId, null).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        alert(data.responseMessage);
+        this.getProfessionalsListByProfessionalType();
+        this.EngineerTable?.renderRows();
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+    this.EngineerTable?.renderRows();
+
 
   }
 
