@@ -26,7 +26,7 @@ namespace WayleaveManagementSystem.Controllers
 
 
         [HttpPost("AddUpdateProfessional")]
-        public async Task<object> AddUpdateProfessional([FromBody] ProfessinalsBindingModel model)
+        public async Task<object> AddUpdateProfessional([FromBody] ProfessinalsGetByUserProfTypeBindingModel model)
         {
             try
             {
@@ -103,6 +103,30 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpPost("GetProfessionalsListByProfessionalType")]
+        public async Task<object> GetProfessionalsListByProfessionalType([FromBody] ProfessinalsGetByUserProfTypeBindingModel model)
+        {
+            try
+            {
 
+                if (model.AppUserID.Length < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _professionalsService.GetProfessionalsListByProfessionalType(model.AppUserID, model.ProfessinalType);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Professionals List Created", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
     }
 }

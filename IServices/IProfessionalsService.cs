@@ -12,5 +12,7 @@ namespace WayleaveManagementSystem.IServices
         public Task<bool> DeleteProfessional(int professinalID);
 
         Task<List<ProfessionalsDTO>> GetAllProfessionals(string userId);
+
+        Task<List<ProfessionalsDTO>> GetProfessionalsListByProfessionalType(string userId, string professinalType);
     }
 }
