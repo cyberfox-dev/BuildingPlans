@@ -23,8 +23,8 @@ export class LoginComponent implements OnInit {
   })
 
   public registerForm = this.formBuilder.group({
-    email: ['',  Validators.required],
-    password: ['', Validators.required],
+    registerEmail: ['',  Validators.required],
+    registerPassword: ['', Validators.required],
     fullName: ['', Validators.required],
 
   })
@@ -69,12 +69,13 @@ export class LoginComponent implements OnInit {
   onRegister() {
     console.log("onRegister");
     let fullName = this.registerForm.controls["fullName"].value;
-    let email = this.registerForm.controls["email"].value;
-    let password = this.registerForm.controls["password"].value;
+    let email = this.registerForm.controls["registerEmail"].value;
+    let password = this.registerForm.controls["registerPassword"].value;
     this.userService.register(fullName, email, password).subscribe((data:any) => {
 
       if (data.responseCode == 1) {
         localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
+        alert(data.responseMessage);
         this.router.navigate(["/new-profile"]);
       }
       else {

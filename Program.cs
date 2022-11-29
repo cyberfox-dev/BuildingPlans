@@ -20,7 +20,15 @@ builder.Services.AddDbContext<AppDBContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-builder.Services.AddIdentity<AppUser, IdentityRole>(opt => { }).AddEntityFrameworkStores<AppDBContext>();
+builder.Services.AddIdentity<AppUser, IdentityRole>(opt => {
+    opt.Password.RequireDigit = false;
+    opt.Password.RequireLowercase = false;
+    opt.Password.RequireNonAlphanumeric = false;
+    opt.Password.RequireUppercase = false;
+    opt.Password.RequiredLength = 4;
+
+    opt.User.RequireUniqueEmail = true;
+}).AddEntityFrameworkStores<AppDBContext>();
 builder.Services.AddScoped<IProfessionalsService, ProfessionalsService>();
 builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 builder.Services.AddScoped<IDepartmentsService, DepartmentsService>();
