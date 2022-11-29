@@ -63,7 +63,7 @@ export class UserSettingsComponent implements OnInit {
 
       if (data.responseCode == 1) {
 
-        debugger;
+        
         console.log("data", data.dateSet);
 
         const currentUserProfile = data.dateSet[0];
