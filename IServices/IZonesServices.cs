@@ -12,5 +12,9 @@ namespace WayleaveManagementSystem.IServices
          public Task<bool> DeleteZone(int ZoneID);
 
          public Task<List<ZonesDTO>> GetAllZones();
+
+        Task<List<ZonesDTO>> GetZoneBySubDepartmentID(int subDepartmentID);
+
+        
     }
 }

@@ -56,3 +56,12 @@
 button {
   margin: 10px;
 }
+table {
+  width: 100%;
+  margin: 0 auto;
+  margin-bottom: 30px;
+}
+.mat-blue {
+  background-color: #369cf4;
+  color: #fff;
+}

@@ -38,7 +38,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatMenuModule } from '@angular/material/menu';
 import { DepartmentConfigComponent } from './department-config/department-config.component';
-import {MatPaginator} from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { ConfigurationComponent } from './configuration/configuration.component';
 import { ViewEngineersTableComponent } from './view-engineers-table/view-engineers-table.component';
 import { ViewContractorsTableComponent } from './view-contractors-table/view-contractors-table.component';
@@ -62,6 +62,9 @@ import { StagesConfigComponent } from './stages-config/stages-config.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { CyberfoxConfigComponent } from './cyberfox-config/cyberfox-config.component';
+import { AccessGroupsConfigComponent } from './access-groups-config/access-groups-config.component';
 
 
 @NgModule({
@@ -112,6 +115,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     RolesConfigComponent,
     NewRoleComponent,
     StagesConfigComponent,
+    CyberfoxConfigComponent,
+    AccessGroupsConfigComponent,
   
 
   ],
@@ -125,8 +130,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatDatepickerModule,
     BrowserAnimationsModule,
     MatTableModule,
+    MatPaginatorModule,
     MatDividerModule,
     MatTooltipModule,
+    MatProgressSpinnerModule,
     MatSnackBarModule,
     MatSelectModule,
     MatSidenavModule,
@@ -156,6 +163,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
       { path: 'view-project-info', component: ViewProjectInfoComponent },
       { path: 'configuration', component: ConfigurationComponent },
       { path: 'user-settings', component: UserSettingsComponent },
+      { path: 'cyberfox-config', component: CyberfoxConfigComponent },
     ])
   ],
   providers: [],

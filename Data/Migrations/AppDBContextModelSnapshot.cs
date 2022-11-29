@@ -323,6 +323,40 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("ProfessionalsTable");
                 });
 
+            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Roles", b =>
+                {
+                    b.Property<int>("RoleID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleID"), 1L, 1);
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RoleDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("RoleID");
+
+                    b.ToTable("Role");
+                });
+
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Stages", b =>
                 {
                     b.Property<int?>("StageID")
@@ -356,14 +390,14 @@ namespace WayleaveManagementSystem.Data.Migrations
 
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.SubDepartments", b =>
                 {
-                    b.Property<int>("SubDepartmentID")
+                    b.Property<int?>("SubDepartmentID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SubDepartmentID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("SubDepartmentID"), 1L, 1);
 
-                    b.Property<int?>("CreatedById")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
@@ -371,11 +405,10 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<DateTime>("DateUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DepartmentID")
+                    b.Property<int?>("DepartmentID")
                         .HasColumnType("int");
 
                     b.Property<string>("SubDepartmentName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("isActive")
@@ -493,6 +526,9 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.Property<string>("UserType")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ZoneID")
+                        .HasColumnType("int");
 
                     b.Property<bool>("isActive")
                         .HasColumnType("bit");

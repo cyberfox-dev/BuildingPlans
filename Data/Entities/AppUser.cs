@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
 namespace WayleaveManagementSystem.Data.Entities
@@ -9,6 +10,7 @@ namespace WayleaveManagementSystem.Data.Entities
         //[Key]
         //public int UserID { get; set; }
         //public string UserName { get; set; }
+       
         public string FullName { get; set; }
         public DateTime DateCreated { get; set; } 
         public DateTime DateModified { get; set; }

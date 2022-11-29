@@ -1,0 +1,16 @@
+app-nav-menu {
+  margin: 60px;
+}
+
+h1 {
+  font-family: 'Nunito', sans-serif;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  color: white;
+  font-size: 70px;
+  font-weight: bold;
+  margin-top: 152px;
+  padding-bottom: 206px;
+}

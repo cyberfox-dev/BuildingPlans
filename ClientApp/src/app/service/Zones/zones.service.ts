@@ -33,4 +33,23 @@ export class ZonesService {
     return this.httpClient.get(this.baseURL + "GetZonesList");
 
   }
+
+  public getZonesBySubDepartmentsID(subDepartmentId: number) {
+    
+    const body = {
+
+      SubDepartmentID: subDepartmentId,
+
+    }
+    return this.httpClient.post(this.baseURL + "GetZoneBySubDepartmentID", body);
+
+  }
+
+  public getUsersLinkedByZoneID(zoneID: any) {
+    debugger;
+    return this.httpClient.post(this.baseURL + "GetUsersLinkedByZoneID", zoneID);
+
+  }
+
+
 }

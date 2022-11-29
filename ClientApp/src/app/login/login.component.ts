@@ -11,6 +11,9 @@ import { UserService } from '../service//User/user.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+  isLoading = false;
+  error!: string;
+
   public container = document.getElementById('container');
 
   public loginForm = this.formBuilder.group({
@@ -37,18 +40,24 @@ export class LoginComponent implements OnInit {
   }
 
   onLogin() {
+    this.isLoading = true;
     //let fullName = this.loginForm.controls["fullName"].value;
     let email = this.loginForm.controls["email"].value;
     let password = this.loginForm.controls["password"].value;
     this.userService.login(email, password).subscribe((data: any) => {
+      
     
       if (data.responseCode == 1) {
         localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
+
         this.router.navigate(["/home"]);
+        this.isLoading = false;
       }
       else {
         //alert("Invalid Email or Password");
-        alert(data.responseMessage);
+       
+        this.isLoading = false;
+        this.error='An error ocured'
       }
       console.log("reponse", data);
 

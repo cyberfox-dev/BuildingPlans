@@ -98,17 +98,21 @@
         </ul>
         <ul class="navbar-nav ml-auto navbar-right-top">
 
+          <!--Cyberfox configs-->
+
+          <button mat-button matTooltip="Cyberfox configs" (click)="goToCyberfoxCofig()"><i class="fa fa-superpowers"></i></button>
+
+          <!--Comment builder-->
+
+          <button mat-button matTooltip="Comment Builder" (click)="openCommentBuilder(commentBuilder)"><i class="fa fa-comment"></i></button>
+
           <!--Configs-->
 
-          <button mat-button (click)="openCommentBuilder(commentBuilder)"><i class="fa fa-comment"></i></button>
-
-          <!--Configs-->
-
-          <button mat-button (click)="goToConfig()"><i class="fa fa-cogs"></i></button>
+          <button mat-button matTooltip="Configurations" (click)="goToConfig()"><i class="fa fa-cogs"></i></button>
 
           <!--notifications-->
 
-          <button mat-button><i class="fa fa-bell"></i> <span class="indicator"></span></button>
+          <button mat-button matTooltip="Notifications" ><i class="fa fa-bell"></i> <span class="indicator"></span></button>
 
 
 
@@ -121,17 +125,17 @@
           </mat-menu>
 
           <!-- <li ngbDropdown class="nav-item dropdown nav-user">
-            <a ngbDropdownToggle class="nav-link nav-user-img" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="https://img.icons8.com/dusk/100/000000/user-female-circle.png" alt="" class="user-avatar-md rounded-circle"></a>
-            <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
-              <div class="nav-user-info">
-                <h5 class="mb-0 text-white nav-user-name">Jahdiel Sanjeevy</h5>
+    <a ngbDropdownToggle class="nav-link nav-user-img" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="https://img.icons8.com/dusk/100/000000/user-female-circle.png" alt="" class="user-avatar-md rounded-circle"></a>
+    <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
+      <div class="nav-user-info">
+        <h5 class="mb-0 text-white nav-user-name">Jahdiel Sanjeevy</h5>
 
-              </div>
-              <a class="dropdown-item"><i class="fa fa-user mr-2"></i>Account</a>
-              <a class="dropdown-item"><i class="fa fa-cog mr-2"></i>Setting</a>
-              <a class="dropdown-item" href="#"><i class="fa fa-power-off mr-2"></i>Logout</a>
-            </div>
-          </li>-->
+      </div>
+      <a class="dropdown-item"><i class="fa fa-user mr-2"></i>Account</a>
+      <a class="dropdown-item"><i class="fa fa-cog mr-2"></i>Setting</a>
+      <a class="dropdown-item" href="#"><i class="fa fa-power-off mr-2"></i>Logout</a>
+    </div>
+  </li>-->
         </ul>
       </div>
     </nav>

@@ -11,5 +11,6 @@
         public DateTime DateUpdated { get; set; }
         public string? CreatedById { get; set; }
         public string? AppUserID { get; set; }
+        public bool? isActive { get; set; }
     }
 }
