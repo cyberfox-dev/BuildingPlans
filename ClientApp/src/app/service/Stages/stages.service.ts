@@ -9,12 +9,13 @@ export class StagesService {
   constructor(private httpClient: HttpClient) { }
 
 
-  public addUpdateStage(stageID: number | null, stageName: string | null, stageOrderNumber: number | null) {
-    debugger;
+  public addUpdateStage(stageID: number | null, stageName: string | null, stageOrderNumber: number | null, createdById: string ) {
+   
     const body = {
       StageID: stageID,
       StageName: stageName,
       StageOrderNumber: stageOrderNumber,
+      CreatedById: createdById,
     }
     return this.httpClient.post(this.baseURL + "AddUpdateStage", body);
 

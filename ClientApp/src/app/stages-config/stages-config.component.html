@@ -32,9 +32,17 @@
   <button mat-raised-button color="primary" (click)="openXl(content)">Create new stage</button>
   
   <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-    <div class="example-box" *ngFor="let stage of StagesList" cdkDrag>
+    <div class="example-box" *ngFor="let stage of StagesList;let i = index" cdkDrag>
       <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-      {{stage.StageName}}  <button mat-raised-button color="blue" matTooltip="Edit stage" (click)="onStageEdit($event)" ><i class="fa fa-pencil"></i></button>
+      <div class="col1">
+        {{stage.StageName}}
+      </div>
+      <div class="col2">
+       <button mat-raised-button color="blue" matTooltip="Edit stage" (click)="onStageEdit($event,i,changeOrderNumber)"><i class="fa fa-pencil"></i></button>
+        </div>
+      <div class="col2">
+        <button mat-raised-button color="warn" matTooltip="Delete stage" (click)="onStageDelete(i)"><i class="fa fa-trash"></i></button>
+      </div>
     </div> 
   </div>
 
@@ -87,18 +95,18 @@
         </div>
 
       </div>
-      <div class="form-floating mb-3 mt-3">
+    <!--  <div class="form-floating mb-3 mt-3">
         <select class="form-select"  formControlName="editStageOrder">
           <option selected value="0">Select the order for this stage</option>
           <option *ngFor="let order of StagesOrderList" value="{{order.StageNo}}">{{order.StageNo}}</option>
          
         </select>
-      </div>
+      </div>-->
 
 
     </form>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" [disabled]="!editStage.valid" (click)="modal.close('Save click')">Save</button>
+    <button type="submit" class="btn btn-outline-success"  (click)="modal.close('Save click');saveStageEdit()">Save</button>
   </div>
 </ng-template>

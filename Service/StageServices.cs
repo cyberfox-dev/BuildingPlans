@@ -16,7 +16,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Stages> AddUpdateStages(int? stageID, string? stageName, int? stageOrderNumber)
+        public async Task<Stages> AddUpdateStages(int? stageID, string? stageName, int? stageOrderNumber, string? createdByID)
         {
             if (stageID == 0)
             {
@@ -32,7 +32,7 @@ namespace WayleaveManagementSystem.Service
                     StageID = stageID,
                     StageName = stageName,
                     StageOrderNumber = stageOrderNumber,
-
+                    CreatedById = createdByID,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     isActive = true
