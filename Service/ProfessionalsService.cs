@@ -129,5 +129,32 @@ namespace WayleaveManagementSystem.Service
                 }
                 ).ToListAsync();
         }
+
+
+
+        public async Task<List<ProfessionalsDTO>> GetProfessionalsListByProfessionalType(string userId,string professinalType)
+        {
+            return await (
+                from professional in _context.ProfessionalsTable
+                where professional.AppUserID == userId && professional.isActive == true && professional.ProfessinalType == professinalType
+                select new ProfessionalsDTO()
+                {
+                    ProfessinalID = professional.ProfessinalID,
+                    ProfessinalType = professional.ProfessinalType,
+                    FullName = professional.FullName,
+                    BP_Number = professional.BP_Number,
+                    BpVerified = professional.BpVerified,
+                    Email = professional.Email,
+                    ProfessionalRegNo = professional.ProfessionalRegNo,
+                    AppUserID = professional.AppUserID,
+                    IdNumber = professional.IdNumber,
+                    CIBRating = professional.CIBRating,
+                    DateCreated = professional.DateCreated,
+                    DateUpdated = professional.DateUpdated,
+                    CreatedById = professional.CreatedById,
+
+                }
+                ).ToListAsync();
+        }
     }
 }
