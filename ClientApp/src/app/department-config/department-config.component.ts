@@ -120,6 +120,7 @@ export class DepartmentConfigComponent implements OnInit {
   CurrentUser: any;
   stringifiedData: any;
   showZone = false;
+  showZoneTableUsers = false;
   showZone2 = false;
   showZoneUserTable = false;
 
@@ -180,6 +181,7 @@ export class DepartmentConfigComponent implements OnInit {
 
   newSub: any;
 
+  tabIndex: Tabs = Tabs.View_linked_sub_departments;
   constructor(private matdialog: MatDialog, private formBuilder: FormBuilder, private departmentService: DepartmentsService, private modalService: NgbModal, private zoneService: ZonesService, private subDepartment: SubDepartmentsService, private zoneLinkService: ZoneLinkService) { }
 
   openDialog() {
@@ -194,9 +196,12 @@ export class DepartmentConfigComponent implements OnInit {
   }
   openViewZones(viewlinkedZones:any) {
     this.modalService.open(viewlinkedZones, { centered: true, size: 'xl' });
+    this.setTab(Tabs.View_linked_users);
   }
 
-
+  setTab(tab: Tabs) {
+    this.tabIndex = tab;
+  }
   createSub() {
 
     this.matdialog.open(NewSubDepartmentComponent);
@@ -207,7 +212,7 @@ export class DepartmentConfigComponent implements OnInit {
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData); this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
-
+    
     this.getAllDepartments();
 
     this.addZone.controls["newZoneSubDemartment"].setValue("0");
@@ -638,8 +643,9 @@ export class DepartmentConfigComponent implements OnInit {
 
   onSelectToPopulateZoneUserTable(event:any) {
     if (event.target.value > 0) {
+      console.log(event.target.value);
       this.zoneService.getUsersLinkedByZoneID(Number(event.target.value)).subscribe((data: any) => {
-
+      
         if (data.responseCode == 1) {
 
           for (let i = 0; i < data.dateSet.length; i++) {
@@ -659,20 +665,24 @@ export class DepartmentConfigComponent implements OnInit {
         console.log("reponse", data);
 
 
+
       }, error => {
         console.log("Error: ", error);
       })
-
+      this.showZoneTableUsers = true;
+    }
+    else {
+      this.showZoneTableUsers = false;;
     }
   }
 
   onSelectToPopulateZoneDropDownView(event: any) {
-    debugger;
+   
     if (event.target.value > 0) {
 
-      this.ZoneDropdown.splice(0, this.ZoneDropdown.length);
+      
       this.zoneService.getZonesBySubDepartmentsID(event.target.value).subscribe((data: any) => {
-
+        
         if (data.responseCode == 1) {
 
           for (let i = 0; i < data.dateSet.length; i++) {
@@ -701,6 +711,7 @@ export class DepartmentConfigComponent implements OnInit {
     }
     else {
       this.showZone2 = false;
+      this.showZoneTableUsers = false;
     }
 
   }
@@ -807,7 +818,7 @@ export class DepartmentConfigComponent implements OnInit {
 
 
   onSelectToPopulateZoneUsers(event: any, newUserLinkedToZone: any) {
-    debugger;
+    
     let selectedSubDep = this.userZoneLink.controls["selectedSubDep"].value;
     let selectedZone = this.userZoneLink.controls["selectedZone"].value;
 
@@ -913,4 +924,8 @@ export class DepartmentConfigComponent implements OnInit {
     console.log("1")
   }
 
+}
+enum Tabs {
+  View_linked_sub_departments = 0,
+  View_linked_users = 1
 }
