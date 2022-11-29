@@ -13,6 +13,7 @@ export class UserSettingsComponent implements OnInit {
 
 
   /*type of applicant*/
+  isInternal = true;
   toa = '';
   /*external*/
   extApplicantBpNoApplicant = '';
@@ -80,6 +81,8 @@ export class UserSettingsComponent implements OnInit {
           this.internalApplicantBranch = currentUserProfile.branch;
           this.internalApplicantCostCenterNo = currentUserProfile.costCenterNumber;
           this.internalApplicantCostCenterOwner = currentUserProfile.costCenterOwner;
+          this.isInternal = true;
+
         }
         else {
           this.toa = 'External User';
@@ -93,6 +96,7 @@ export class UserSettingsComponent implements OnInit {
           this.extApplicantEmail = currentUserProfile.email;
           this.extApplicantPhyscialAddress = currentUserProfile.physcialAddress;
          // this.extApplicantIDNumber = ''; todo chage the dto to include the id number
+          this.isInternal = false;
         }
        
       }

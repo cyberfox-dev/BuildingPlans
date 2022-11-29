@@ -19,7 +19,7 @@
         </div>
 
 <!--External User information-->
-        <div class="container-fluid">
+        <div class="container-fluid" *ngIf="isInternal == false">
 
           <div class="row">
             <div class="col">
@@ -106,7 +106,7 @@
 
 
 <!--Internal user information-->
-        <div class="container-fluid">
+        <div class="container-fluid" *ngIf="isInternal == true">
 
 
           <div class="row">
