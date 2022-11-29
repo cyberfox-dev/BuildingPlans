@@ -70,6 +70,7 @@ namespace WayleaveManagementSystem.Service
             {
                 tempStageTable.DateUpdated = DateTime.Now;
                 tempStageTable.isActive = false;
+                tempStageTable.StageOrderNumber = null;
                 _context.Update(tempStageTable);
                 await _context.SaveChangesAsync();
                 return true;

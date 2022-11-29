@@ -34,7 +34,7 @@ export class SubDepartmentsService {
   }
 
   public getSubDepartmentsByDepartmentID(departmentId : number) {
-    debugger;
+  
     const body = {
  
       DepartmentID: departmentId,

@@ -60,12 +60,6 @@ export class StagesConfigComponent implements OnInit {
 
     console.log("event.currentIndex", event.currentIndex);
 
-    
-
-  
-
-
-    
   }
   orderNo:any
   stringifiedData: any;
@@ -164,6 +158,7 @@ export class StagesConfigComponent implements OnInit {
 
   onStageDelete(index: any) {
     console.log(this.StagesList[index].StageName);
+    debugger;
     if (confirm("Are you sure to delete " + this.StagesList[index].StageName + "?")) {
 
       this.stagesService.deleteStage(this.StagesList[index].StageID).subscribe((data: any) => {
@@ -171,7 +166,9 @@ export class StagesConfigComponent implements OnInit {
 
         if (data.responseCode == 1) {
 
+
           alert(data.responseMessage);
+
           this.getAllStages();
         }
         else {
@@ -184,7 +181,30 @@ export class StagesConfigComponent implements OnInit {
       })
 
 
+      for (var i = 0; i < this.StagesList.length; i++) {
+        let stage = this.StagesList[i];
+
+
+
+        this.stagesService.addUpdateStage(stage.StageID, stage.StageName, i, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+
+            alert(data.dateSet.stageName + " " + data.responseMessage);
+
+          }
+          else {
+            alert(data.responseMessage);
+          }
+          console.log("response", data);
+        }, error => {
+          console.log("Error", error);
+        })
+
+      }
     }
+
+
   }
 
 
