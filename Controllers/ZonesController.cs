@@ -131,7 +131,7 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
                 //var result = await _zonesLinkingServices.GetUsersNotLinkedByUserID();
-                var result = _context.UserSpDTOs.FromSqlRaw($"SP_GetUsersLinkedByZoneID {zoneID}").AsEnumerable();
+                var result = _context.LinkedUserSpDTOs.FromSqlRaw($"SP_GetUsersLinkedByZoneID {zoneID}").AsEnumerable();
 
 
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Linked Users", result));

@@ -50,34 +50,7 @@ export interface SubDepartmentList {
   dateCreated: any;
 }
 
-export interface linkusersToZone {
-  name: string;
-}
-const LinkUsersToZone: PeriodicElement[] = [
-  { name: 'User 1' },
-  { name: 'User 2' },
-  { name: 'User 3' },
-];
 
-export interface ViewLinkUsersToZone {
-  name: string;
-}
-
-const ViewLinkUsersToZone: PeriodicElement[] = [
-  { name: 'User 1' },
-  { name: 'User 2' },
-  { name: 'User 3' },
-];
-
-export interface viewLinkedUsersToZone {
-  name: string;
-}
-
-//const viewLinkedUsersToZone: PeriodicElement[] = [
-//  { name: 'User 1' },
-//  { name: 'User 2' },
-//  { name: 'User 3' },
-//];
 
 export interface SubDepartmentDropdown {
   subDepartmentID: number;
@@ -93,6 +66,7 @@ export interface ZoneDropdown {
 export interface UserZoneList {
   id: string;
   fullName: string;
+  zoneLinkID?: any;
 }
 
 @Component({
@@ -178,7 +152,7 @@ export class DepartmentConfigComponent implements OnInit {
   @ViewChild(MatTable) SubDepartmentListTable: MatTable<SubDepartmentList> | undefined;
   @ViewChild(MatTable) UserZoneListTable:  MatTable<UserZoneList> | undefined;
   
-
+  header: any;
   newSub: any;
 
   tabIndex: Tabs = Tabs.View_linked_sub_departments;
@@ -196,7 +170,7 @@ export class DepartmentConfigComponent implements OnInit {
   }
   openViewZones(viewlinkedZones:any) {
     this.modalService.open(viewlinkedZones, { centered: true, size: 'xl' });
-    this.setTab(Tabs.View_linked_users);
+    
   }
 
   setTab(tab: Tabs) {
@@ -377,8 +351,7 @@ export class DepartmentConfigComponent implements OnInit {
 
   setCurrentDepartmentID(index: any) {
     this.CurrentDepartmentID = this.DepartmentList[index].departmentID;
-
-
+    this.header = this.DepartmentList[index].departmentName;
   }
 
   onSubDepartmentCreate() {
@@ -492,7 +465,8 @@ export class DepartmentConfigComponent implements OnInit {
 
   }
 
-  getAllUsersLinkedToZone(SubDepartmentID:any) {
+  getAllUsersLinkedToZone(SubDepartmentID: any) {
+    this.ZoneDropdown.splice(0, this.ZoneDropdown.length);
     this.zoneService.getZonesBySubDepartmentsID(SubDepartmentID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -570,7 +544,7 @@ export class DepartmentConfigComponent implements OnInit {
 
 
         }
-
+        this.setTab(Tabs.View_linked_sub_departments);
         this.openViewZones(viewlinkedZones);
 
 
@@ -584,6 +558,7 @@ export class DepartmentConfigComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
+
   }
 
   onZoneDelete(index: any, viewlinkedZones:any) {
@@ -595,7 +570,7 @@ export class DepartmentConfigComponent implements OnInit {
 
           alert(data.responseMessage);
 
-          this.onSelectToPopulateZoneTable(null, viewlinkedZones)
+          this.onSelectToPopulateZoneTable(null, viewlinkedZones);
         }
         else {
           alert(data.responseMessage);
@@ -609,6 +584,33 @@ export class DepartmentConfigComponent implements OnInit {
 
     }
   }
+
+  onUserUnlinkFromZone(index: any, viewlinkedZones: any) {
+    if (confirm("Are you sure to delete " + this.UserZoneList[index].fullName + "?")) {
+      this.zoneLinkService.deleteZoneLink(this.UserZoneList[index].zoneLinkID).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          alert(data.responseMessage);
+      
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+        this.UserZoneListTable?.renderRows();
+        this.setTab(Tabs.View_linked_users);
+        this.UserZoneList.splice(0, this.UserZoneList.length);
+
+        this.openViewZones(viewlinkedZones);
+        this.UserZoneListTable?.renderRows();
+
+      },
+        error => {
+          console.log("Error", error);
+        })
+    }
+  }
+
 
   populateSubDepartmentDropDown(index: any, newZone:any) {
 
@@ -641,7 +643,8 @@ export class DepartmentConfigComponent implements OnInit {
     })
   }
 
-  onSelectToPopulateZoneUserTable(event:any) {
+  onSelectToPopulateZoneUserTable(event: any, viewlinkedZones: any) {
+    this.UserZoneList.splice(0, this.UserZoneList.length);
     if (event.target.value > 0) {
       console.log(event.target.value);
       this.zoneService.getUsersLinkedByZoneID(Number(event.target.value)).subscribe((data: any) => {
@@ -653,11 +656,14 @@ export class DepartmentConfigComponent implements OnInit {
             const current = data.dateSet[i];
             tempZoneList.id = current.id;
             tempZoneList.fullName = current.fullName;
+            tempZoneList.zoneLinkID = current.zoneLinkID;
+
 
             this.UserZoneList.push(tempZoneList);
           }
-
-
+          console.log("sovghigiwsgvlp;wsfvg", this.UserZoneList);
+          this.setTab(Tabs.View_linked_users);
+          this.openViewZones(viewlinkedZones);
         }
         else {
           alert(data.responseMessage);
@@ -672,12 +678,18 @@ export class DepartmentConfigComponent implements OnInit {
       this.showZoneTableUsers = true;
     }
     else {
-      this.showZoneTableUsers = false;;
+      this.viewZonesLinkedtoSub.controls["viewSelectedSubDep2"].setValue("0");
+      this.viewZonesLinkedtoSub.controls["viewSelectedZone"].setValue("0");
+      
+      alert("Please Select a Zone");
+      this.showZone2 = false;
+      this.showZoneTableUsers = false;
+      this.openViewZones(viewlinkedZones);
     }
   }
 
-  onSelectToPopulateZoneDropDownView(event: any) {
-   
+  onSelectToPopulateZoneDropDownView(event: any, viewlinkedZones: any) {
+    this.ZoneDropdown.splice(0, this.ZoneDropdown.length);
     if (event.target.value > 0) {
 
       
@@ -694,8 +706,8 @@ export class DepartmentConfigComponent implements OnInit {
             this.ZoneDropdown.push(tempZoneList);
 
           }
-
-
+          this.setTab(Tabs.View_linked_users);
+          this.openViewZones(viewlinkedZones);
         }
         else {
           alert(data.responseMessage);
@@ -708,23 +720,31 @@ export class DepartmentConfigComponent implements OnInit {
       })
 
       this.showZone2 = true;
+      this.showZoneTableUsers = false;
     }
     else {
+      this.viewZonesLinkedtoSub.controls["viewSelectedZone"].setValue("0");
+      alert("Please Select a sub department");
       this.showZone2 = false;
       this.showZoneTableUsers = false;
+      this.openViewZones(viewlinkedZones);
+
     }
 
   }
 
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
+
       this.SubDepartmentList = [];
       return 'by pressing ESC';
     } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+
       this.SubDepartmentList = [];
       return 'by clicking on a backdrop';
     }
     else if (reason === 'Cross click') {
+
       this.SubDepartmentList = [];
       return 'by clicking on a backdrop';
     }
@@ -741,16 +761,51 @@ export class DepartmentConfigComponent implements OnInit {
     debugger;
     let selectedSubDep = Number(this.userZoneLink.controls["selectedSubDep"].value);
     let selectedZone = Number(this.userZoneLink.controls["selectedZone"].value);
-    
-
+    debugger;
     for (let i = 0; i < this.selection.selected.length; i++) {      
       const current = this.selection.selected[i];
-     
-      this.zoneLinkService.addUpdateZoneLink(0, this.CurrentDepartmentID, selectedZone, selectedSubDep, current.id ,null,this.CurrentUser.appUserId,).subscribe((data: any) => {
 
+      this.zoneLinkService.getAllRecordsByUserIdIfDeleted(current.id).subscribe((data: any) => {
+        debugger;
         if (data.responseCode == 1) {
-          alert(data.responseMessage);
+          if (data.dateSet.length > 0 ) {
+            this.zoneLinkService.addUpdateZoneLink(data.dateSet[0].zoneLinkID, this.CurrentDepartmentID, selectedZone, selectedSubDep, current.id, null, this.CurrentUser.appUserId,).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+                alert(data.responseMessage);
+
+
+              }
+              else {
+                alert(data.responseMessage);
+              }
+              console.log("reponse", data);
+
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+          }
+          else {
+            this.zoneLinkService.addUpdateZoneLink(0, this.CurrentDepartmentID, selectedZone, selectedSubDep, current.id, null, this.CurrentUser.appUserId,).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+                alert(data.responseMessage);
+
+
+              }
+              else {
+                alert(data.responseMessage);
+              }
+              console.log("reponse", data);
+
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+          }
          
+
 
         }
         else {
@@ -763,16 +818,23 @@ export class DepartmentConfigComponent implements OnInit {
         console.log("Error: ", error);
       })
 
-      
+
+
+
+
+
+
 
     }
+    this.UserZoneList.splice(0, this.UserZoneList.length);
     this.userZoneLink.controls["selectedSubDep"].setValue("0");
     this.userZoneLink.controls["selectedZone"].setValue("0");
-    this.UserZoneList.splice(0, this.UserZoneList.length);
+    
 
   }
 
-  onSelectToPopulateZone(event:any) {
+  onSelectToPopulateZone(event: any) {
+
     if (event.target.value > 0) {
 
       this.ZoneDropdown.splice(0, this.ZoneDropdown.length);
@@ -830,7 +892,7 @@ export class DepartmentConfigComponent implements OnInit {
 
     }
     this.zoneLinkService.getUsersNotLinkedByUserID(Number(selectedZone)).subscribe((data: any) => {
-
+     
       if (data.responseCode == 1) {
 
         for (let i = 0; i < data.dateSet.length; i++) {
@@ -844,11 +906,13 @@ export class DepartmentConfigComponent implements OnInit {
         }
         
         this.modalService.dismissAll(newUserLinkedToZone);
-        this.UserZoneListTable?.renderRows();
+       
         this.modalService.open(newUserLinkedToZone, { centered: true, size: 'xl' });
         this.userZoneLink.controls["selectedSubDep"].setValue(tempSelectedSub);
         this.userZoneLink.controls["selectedZone"].setValue(tempSelectedZone);
         this.showZoneUserTable = true;
+
+
       }
       else {
         this.showZoneUserTable = false;
@@ -864,6 +928,8 @@ export class DepartmentConfigComponent implements OnInit {
     
 
     this.UserZoneListTable?.renderRows();
+    this.userZoneLink.controls["selectedSubDep"].setValue("0");
+    this.userZoneLink.controls["selectedZone"].setValue("0");
   }
 
 /*Sub dep*/

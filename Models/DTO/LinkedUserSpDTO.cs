@@ -4,14 +4,14 @@ namespace WayleaveManagementSystem.DTO
 {
     // DTO - Data Trasfer Object
     [Keyless]
-    public class UserSpDTO
+    public class LinkedUserSpDTO
     {
       
         public string FullName { get; set; }
    
         public string id { get; set; }
 
-       
+        public int ZoneLinkID { get; set; }
 
     }
 

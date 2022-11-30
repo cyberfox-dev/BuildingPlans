@@ -29,5 +29,7 @@ namespace WayleaveManagementSystem.Data
 
         public virtual DbSet<UserSpDTO> UserSpDTOs { get; set; }
 
+        public virtual DbSet<LinkedUserSpDTO> LinkedUserSpDTOs { get; set; }
+
     }
 }
