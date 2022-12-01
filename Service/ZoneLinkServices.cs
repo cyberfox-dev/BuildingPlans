@@ -124,6 +124,28 @@ namespace WayleaveManagementSystem.Service
             //var result = _context.UserZoneLink.FromSqlRaw("GetUsersNotLinkedByUserID").ToListAsync();
             //return result;
         }
-    
+
+
+        public async Task<List<ZoneLinkDTO>> GetAllRecordsByUserIdIfDeleted(string userID)
+        {
+            return await (
+                from ZoneLink in _context.ZoneLinkTable
+                    where ZoneLink.AssignedUserID == userID && ZoneLink.isActive == false
+                select new ZoneLinkDTO()
+                {
+                    ZoneLinkID = ZoneLink.ZoneLinkID,
+                    DepartmentID = ZoneLink.DepartmentID,
+                    SubDepartmentID = ZoneLink.SubDepartmentID,
+
+                    AssignedUserID = ZoneLink.AssignedUserID,
+                    UserType = ZoneLink.UserType,
+
+                    DateCreated = ZoneLink.DateCreated,
+                    DateUpdated = ZoneLink.DateUpdated,
+
+                }
+                ).ToListAsync();
+        }
+
     }
 }

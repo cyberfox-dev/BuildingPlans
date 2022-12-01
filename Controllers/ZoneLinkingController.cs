@@ -132,6 +132,24 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpPost("GetAllRecordsByUserIdIfDeleted")]
+        public async Task<object> GetAllRecordsByUserIdIfDeleted([FromBody] ZoneLinkByUserIDBindingModel model)
+        {
+            try
+            {
+                var result = await _zonesLinkingServices.GetAllRecordsByUserIdIfDeleted(model.UserID);
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Zone Link List Created", result));
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
 
     }
 }
