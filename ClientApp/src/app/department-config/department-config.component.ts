@@ -165,16 +165,16 @@ export class DepartmentConfigComponent implements OnInit {
   }
   openNewSubDep(newSub: any) {
     
-    this.modalService.open(newSub, { centered: true });
+    this.modalService.open(newSub, { backdrop: 'static', centered: true });
     
   }
 
   openViewSubDep(viewSub: any) {
-    this.modalService.open(viewSub, { centered: true, size: 'xl' });
+    this.modalService.open(viewSub, { backdrop: 'static', centered: true, size: 'xl' });
   }
   openViewZones(viewlinkedZones: any) {
     this.viewZonesLinkedtoSub.controls["viewSelectedSubDep2"].setValue("0");
-    this.modalService.open(viewlinkedZones, { centered: true, size: 'xl' });
+    this.modalService.open(viewlinkedZones, { backdrop: 'static', centered: true, size: 'xl' });
     
   }
 
@@ -308,7 +308,7 @@ export class DepartmentConfigComponent implements OnInit {
 
   /*modal*/
   openXl(content: any) {
-    this.modalService.open(content, { size: 'lg' });
+    this.modalService.open(content, { backdrop: 'static', size: 'lg' });
   }
 
   getAllDepartments() {
@@ -612,6 +612,12 @@ export class DepartmentConfigComponent implements OnInit {
 
   onUserUnlinkFromZone(index: any, viewlinkedZones: any) {
     if (confirm("Are you sure to delete " + this.UserZoneList[index].fullName + "?")) {
+      this.viewZonesLinkedtoSub.controls["viewSelectedSubDep2"].setValue("0");
+      this.viewZonesLinkedtoSub.controls["viewSelectedZone"].setValue("0");
+
+     
+      this.showZone2 = false;
+      this.showZoneTableUsers = false;
       this.zoneLinkService.deleteZoneLink(this.UserZoneList[index].zoneLinkID).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
@@ -938,7 +944,7 @@ export class DepartmentConfigComponent implements OnInit {
 
           this.modalService.dismissAll(newUserLinkedToZone);
 
-          this.modalService.open(newUserLinkedToZone, { centered: true, size: 'xl' });
+          this.modalService.open(newUserLinkedToZone, { backdrop: 'static', centered: true, size: 'xl' });
           this.userZoneLink.controls["selectedSubDep"].setValue(tempSelectedSub);
           this.userZoneLink.controls["selectedZone"].setValue(tempSelectedZone);
           this.showZoneUserTable = true;
@@ -974,17 +980,17 @@ export class DepartmentConfigComponent implements OnInit {
 
   /*new zone*/
   openNewZone(newZone: any) {
-    this.modalService.open(newZone, { centered: true, size: 'lg' });
+    this.modalService.open(newZone, { backdrop: 'static', centered: true, size: 'lg' });
   }
 
   /*link sub dep to zone*/
   linkSubDep(linkSub:any) {
-    this.modalService.open(linkSub, { centered: true,size: 'lg' });
+    this.modalService.open(linkSub, { backdrop: 'static', centered: true,size: 'lg' });
   }
 
   /*view linked sub to zone*/
   viewLinkSubDep(ViewSublinkedZone: any) {
-    this.modalService.open(ViewSublinkedZone, { centered: true, size: 'lg' });
+    this.modalService.open(ViewSublinkedZone, { backdrop: 'static', centered: true, size: 'lg' });
 
   }
 
@@ -1018,7 +1024,7 @@ export class DepartmentConfigComponent implements OnInit {
     })
 
 
-    this.modalService.open(newUserLinkedToZone, { centered: true, size: 'xl' });
+    this.modalService.open(newUserLinkedToZone, { backdrop: 'static', centered: true, size: 'xl' });
   }
   toggle() {
     this.check = !this.check;
