@@ -97,6 +97,8 @@ export class DepartmentConfigComponent implements OnInit {
   showZoneTableUsers = false;
   showZone2 = false;
   showZoneUserTable = false;
+  showZoneUsersLinkedTable = false;
+  showViewSubLinkedToZone = false;
 
   public addDepartment = this.formBuilder.group({
     newDepName: ['', Validators.required]
@@ -162,13 +164,16 @@ export class DepartmentConfigComponent implements OnInit {
     this.matdialog.open(this.newSub);
   }
   openNewSubDep(newSub: any) {
+    
     this.modalService.open(newSub, { centered: true });
+    
   }
 
   openViewSubDep(viewSub: any) {
     this.modalService.open(viewSub, { centered: true, size: 'xl' });
   }
-  openViewZones(viewlinkedZones:any) {
+  openViewZones(viewlinkedZones: any) {
+    this.viewZonesLinkedtoSub.controls["viewSelectedSubDep2"].setValue("0");
     this.modalService.open(viewlinkedZones, { centered: true, size: 'xl' });
     
   }
@@ -227,6 +232,26 @@ export class DepartmentConfigComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
+  }
+
+  closemodal() {
+
+    /*this is for viewing linked users to reset*/
+    this.viewZonesLinkedtoSub.controls["viewSelectedSubDep2"].setValue("0");
+    this.viewZonesLinkedtoSub.controls["viewSelectedZone"].setValue("0");
+    this.showZoneTableUsers = false; 
+    this.showZone2 = false;
+
+/*this is for linking new users to reset*/
+    this.showZoneUserTable = false;
+    this.userZoneLink.controls["selectedSubDep"].setValue("0");
+    this.userZoneLink.controls["selectedZone"].setValue("0");
+    this.showZone = false;
+
+
+    /*the other viewing one*/
+    this.showViewSubLinkedToZone = false;
+    this.viewZonesLinkedtoSub.controls["viewSelectedSubDep"].setValue("0");
   }
 
 
@@ -546,7 +571,7 @@ export class DepartmentConfigComponent implements OnInit {
         }
         this.setTab(Tabs.View_linked_sub_departments);
         this.openViewZones(viewlinkedZones);
-
+        this.showViewSubLinkedToZone = true;
 
       }
       else {
@@ -735,22 +760,22 @@ export class DepartmentConfigComponent implements OnInit {
 
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
-
+      console.log("ESC");
       this.SubDepartmentList = [];
       return 'by pressing ESC';
     } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-
+      console.log("BACKDROP_CLICK");
       this.SubDepartmentList = [];
       return 'by clicking on a backdrop';
     }
     else if (reason === 'Cross click') {
-
+      console.log("Cross click");
       this.SubDepartmentList = [];
       return 'by clicking on a backdrop';
     }
     else {
       this.SubDepartmentList = [];
-
+      console.log("555");
       return `with: ${reason}`;
     }
     
@@ -801,6 +826,7 @@ export class DepartmentConfigComponent implements OnInit {
 
 
             }, error => {
+              alert(data.responseMessage);
               console.log("Error: ", error);
             })
           }
@@ -815,6 +841,7 @@ export class DepartmentConfigComponent implements OnInit {
 
 
       }, error => {
+        alert("Error");
         console.log("Error: ", error);
       })
 
@@ -863,12 +890,14 @@ export class DepartmentConfigComponent implements OnInit {
       }, error => {
         console.log("Error: ", error);
       })
-
+      this.userZoneLink.controls["selectedZone"].setValue("0");
       this.showZone = true;
     }
 
     else {
       this.showZone = false;
+      this.showZoneUserTable = false;
+
     }
 
   }
@@ -880,56 +909,62 @@ export class DepartmentConfigComponent implements OnInit {
 
 
   onSelectToPopulateZoneUsers(event: any, newUserLinkedToZone: any) {
-    
-    let selectedSubDep = this.userZoneLink.controls["selectedSubDep"].value;
-    let selectedZone = this.userZoneLink.controls["selectedZone"].value;
 
-    const tempSelectedSub = selectedSubDep;
-    const tempSelectedZone = selectedZone; 
-    this.UserZoneList.splice(0, this.UserZoneList.length);
+    if (event.target.value > 0) {
 
-    if (Number(selectedZone) !> 0) {
+      let selectedSubDep = this.userZoneLink.controls["selectedSubDep"].value;
+      let selectedZone = this.userZoneLink.controls["selectedZone"].value;
 
-    }
-    this.zoneLinkService.getUsersNotLinkedByUserID(Number(selectedZone)).subscribe((data: any) => {
-     
-      if (data.responseCode == 1) {
+      const tempSelectedSub = selectedSubDep;
+      const tempSelectedZone = selectedZone;
+      this.UserZoneList.splice(0, this.UserZoneList.length);
 
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempZoneList = {} as UserZoneList;
-          const current = data.dateSet[i];
-          tempZoneList.id = current.id;
-          tempZoneList.fullName = current.fullName;
+      if (Number(selectedZone)! > 0) {
 
-          this.UserZoneList.push(tempZoneList);
+      }
+      this.zoneLinkService.getUsersNotLinkedByUserID(Number(selectedZone)).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempZoneList = {} as UserZoneList;
+            const current = data.dateSet[i];
+            tempZoneList.id = current.id;
+            tempZoneList.fullName = current.fullName;
+
+            this.UserZoneList.push(tempZoneList);
+
+          }
+
+          this.modalService.dismissAll(newUserLinkedToZone);
+
+          this.modalService.open(newUserLinkedToZone, { centered: true, size: 'xl' });
+          this.userZoneLink.controls["selectedSubDep"].setValue(tempSelectedSub);
+          this.userZoneLink.controls["selectedZone"].setValue(tempSelectedZone);
+          this.showZoneUserTable = true;
+
 
         }
-        
-        this.modalService.dismissAll(newUserLinkedToZone);
-       
-        this.modalService.open(newUserLinkedToZone, { centered: true, size: 'xl' });
-        this.userZoneLink.controls["selectedSubDep"].setValue(tempSelectedSub);
-        this.userZoneLink.controls["selectedZone"].setValue(tempSelectedZone);
-        this.showZoneUserTable = true;
+        else {
+          
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
 
 
-      }
-      else {
-        this.showZoneUserTable = false;
-        alert(data.responseMessage);
-      }
-      console.log("reponse", data);
+      }, error => {
+        console.log("Error: ", error);
+      })
 
 
-    }, error => {
-      console.log("Error: ", error);
-    })
 
-    
-
-    this.UserZoneListTable?.renderRows();
-    this.userZoneLink.controls["selectedSubDep"].setValue("0");
-    this.userZoneLink.controls["selectedZone"].setValue("0");
+      this.UserZoneListTable?.renderRows();
+      this.userZoneLink.controls["selectedSubDep"].setValue("0");
+      this.userZoneLink.controls["selectedZone"].setValue("0");
+    }
+    else {
+      this.showZoneUserTable = false;
+    }
   }
 
 /*Sub dep*/

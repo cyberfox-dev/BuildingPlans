@@ -68,7 +68,7 @@
       <button mat-raised-button color="success" matTooltip="Link Sub to zone" (click)="populateSubDepartmentDropDown(i,newZone);setCurrentDepartmentID(i)"><i class="fa fa-plus"></i></button>
       <button mat-raised-button color="orange" matTooltip="Link User to zone" (click)="openNewUserlinkedToZone(newUserLinkedToZone,i);setCurrentDepartmentID(i)"><i class="fa fa-link"></i></button>
 
-      <button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="forViewPopulateSubDepartmentDropDown(i,viewlinkedZones)"><i class="fa fa-eye"></i></button>
+      <button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="forViewPopulateSubDepartmentDropDown(i,viewlinkedZones);setCurrentDepartmentID(i)"><i class="fa fa-eye"></i></button>
 
 
     </td>
@@ -213,7 +213,7 @@
 <ng-template #newUserLinkedToZone let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">{{header}} - Link user to zone</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click');closemodal()"></button>
   </div>
   <div class="modal-body">
     <form [formGroup]="userZoneLink" (ngSubmit)="onZoneUserLink()">
@@ -273,7 +273,7 @@
 <ng-template #viewlinkedZones let-modal>
   <div class="modal-header">
     <h2 class="modal-title">{{header}} - View Zones linked</h2>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click');closemodal()"></button>
   </div>
   <div class="modal-body">
     <form [formGroup]="viewZonesLinkedtoSub">
@@ -303,7 +303,7 @@
             </div>-->
 
             <div class="container-fluid">
-              <table mat-table [dataSource]="dataSourceViewLinkedSubZones" class="mat-elevation-z8">
+              <table mat-table [dataSource]="dataSourceViewLinkedSubZones" class="mat-elevation-z8" *ngIf="showViewSubLinkedToZone">
 
 
                 <ng-container matColumnDef="zoneName">
