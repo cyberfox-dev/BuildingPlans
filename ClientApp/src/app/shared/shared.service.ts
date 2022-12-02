@@ -15,6 +15,28 @@ export interface ContractorList {
 
 }
 
+export interface ApplicationList {
+
+  clientName: string,
+  clientEmail: string,
+  clientAddress: string,
+  clientRefNo: string,
+  CompanyRegNo: string,
+  TypeOfApplication: string,
+  NotificationNumber: string,
+  WBSNumber: string,
+  PhysicalAddressOfProject: string,
+  DescriptionOfProject: string,
+  NatureOfWork: string,
+  ExcavationType: string,
+  ExpectedStartDate: Date,
+  ExpectedEndDate: Date,
+  Location: string,
+  clientCellNo: string,
+  CreatedById: number,
+
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -29,7 +51,8 @@ export class SharedService {
   configShow!: any;
 
   userProfileData: any;
-  contactorData: ContractorList[] =[];
+  contactorData: ContractorList[] = [];
+  applicationData: ApplicationList[] = [];
   engineerData: any;
 
   constructor() { }
@@ -65,4 +88,10 @@ export class SharedService {
   getEngineerData() {
     return this.engineerData;
   }
+
+  setApplicationData(data: ApplicationList[]) {
+    debugger;
+    this.applicationData = data;
+  }
+
 }

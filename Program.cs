@@ -29,6 +29,7 @@ builder.Services.AddScoped<IZonesServices, ZonesServices>();
 builder.Services.AddScoped<IZoneLinkServices, ZoneLinkServices>();
 builder.Services.AddScoped<IRolesService, RolesService>();
 builder.Services.AddScoped<IStageServices, StageServices>();
+builder.Services.AddScoped<IApplicationsService, ApplicationsService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
