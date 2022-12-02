@@ -709,8 +709,8 @@ export class DepartmentConfigComponent implements OnInit {
       this.showZoneTableUsers = true;
     }
     else {
-      this.viewZonesLinkedtoSub.controls["viewSelectedSubDep2"].setValue("0");
-      this.viewZonesLinkedtoSub.controls["viewSelectedZone"].setValue("0");
+/*      this.viewZonesLinkedtoSub.controls["viewSelectedSubDep2"].setValue("0");
+      this.viewZonesLinkedtoSub.controls["viewSelectedZone"].setValue("0");*/
       
       alert("Please Select a Zone");
       this.showZone2 = false;

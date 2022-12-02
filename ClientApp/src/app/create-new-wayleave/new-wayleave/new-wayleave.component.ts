@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-/*import { ApplicationsService } from 'src/app/service/Applications/applications.service';*/
+import { ApplicationsService } from 'src/app/service/Applications/applications.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { empty } from 'rxjs';
 import { InternalOptionComponent } from 'src/app/create-new-wayleave/internal-option/internal-option.component';
@@ -19,8 +19,25 @@ export interface PeriodicElement {
 }
 
 
+
 const ELEMENT_DATA: PeriodicElement[] = [
   { bp: 'fdf', name: 'FullName', surname: "", professionalRegNumber: 'H' },
+];
+
+export interface PeriodicElements {
+  name: string;
+  position: number;
+  weight: number;
+  symbol: string;
+}
+
+const ELEMENT_DATAS: PeriodicElements[] = [
+  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
+  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
+  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
+  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
+  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
+
 ];
 
 @Component({
@@ -30,6 +47,30 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrls: ['./new-wayleave.component.css']
 })
 export class NewWayleaveComponent implements OnInit {
+
+  /*project details*/
+  typeOfApplication = '';
+  notificationNumber = '';
+  wbsNumber = '';
+  physicalAddressOfProject = '';
+  descriptionOfProject = '';
+  natureOfWork = '';
+  excavationType = '';
+  expectedStartDate: Date = new Date();
+  expectedEndType: Date = new Date();
+
+  public addApplicationProject = this.formBuilder.group({
+    typeOfApplication: ['', Validators.required],
+    notificationNumber: ['', Validators.required],
+    wbsNumber: ['', Validators.required],
+    physicalAddressOfProject: ['', Validators.required],
+    descriptionOfProject: ['', Validators.required],
+    natureOfWork: ['', Validators.required],
+    excavationType: ['', Validators.required],
+    expectedStartDate: ['', Validators.required],
+    expectedEndType: ['', Validators.required]
+  })
+
 
   public external: boolean = true;
   public internal: boolean = false;
@@ -104,4 +145,12 @@ export class NewWayleaveComponent implements OnInit {
     //})
   }
 
+
+  displayedColumnss: string[] = ['position', 'name', 'weight', 'symbol'];
+  dataSources = ELEMENT_DATAS;
+  clickedRowsS = new Set<PeriodicElements>();
+
+  clearSAll() {
+    this.clickedRowsS.clear();
+  }
 }
