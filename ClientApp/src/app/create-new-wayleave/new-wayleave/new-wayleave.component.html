@@ -29,7 +29,60 @@
           <!--Show details for internal applicant detials-->
           <app-internal-details *ngIf="internal"></app-internal-details>
 
-          <app-client-details *ngIf="client"></app-client-details>
+         <!-- <app-client-details *ngIf="client"></app-client-details>-->
+          <div *ngIf="client">
+            <div class="container-fluid">
+              <form [formGroup]="addApplicationClient">
+                <div class="row">
+                  <div class="col">
+                    <div class="form-floating mb-3 mt-3">
+                      <input type="text" class="form-control" formControlNameAdd="clientNameAdd" name="clientNameAdd" placeholder="Enter First Name" id="clientNameAdd">
+                      <label for="clientNameAdd">Name</label>
+                    </div>
+                  </div>
+
+                  <div class="col">
+                    <div class="form-floating mb-3 mt-3">
+                      <input type="text" class="form-control" formControlName="clientSurnameAdd" name="clientSurnameAdd" placeholder="Enter SurnameAdd">
+                      <label for="clientSurnameAdd">Surname</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <div class="form-floating mb-3 mt-3">
+                      <input type="text" class="form-control" formControlName="clientEmailAdd" name="clientEmailAdd" placeholder="Enter Email">
+                      <label for="clientEmailAdd">Email</label>
+                    </div>
+                  </div>
+
+                  <div class="col">
+                    <div class="form-floating mb-3 mt-3">
+                      <input type="text" class="form-control" formControlName="clientCellNoAdd" name="clientCellNoAdd" placeholder="Enter Cell Number">
+                      <label for="clientEmailAdd">Cell Number</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <div class="form-floating mb-3 mt-3">
+                      <input type="text" class="form-control" formControlName="clientAddressAdd" name="clientAddressAdd" placeholder="Enter Address">
+                      <label for="clientAddressAdd">Address</label>
+                    </div>
+                  </div>
+
+                  <div class="col">
+                    <div class="form-floating mb-3 mt-3">
+                      <input type="text" class="form-control" formControlName="clientRefNoAdd" name="clientRefNoAdd" placeholder="Enter Ref No">
+                      <label for="clientRefNoAdd">Reference Number</label>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+          </div>
+            
 
           <!--the applicant selecting an engineer-->
           <div class="card">
@@ -99,8 +152,7 @@
 
         <div class="row">
 
-
-          <button type="submit" class="submit">Create Invoice</button>
+          <button type="submit" class="submit" (click)="onWayleaveCreate()">Create Invoice</button>
 
         </div>
 

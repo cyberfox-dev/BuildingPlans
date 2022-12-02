@@ -1,17 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using WayleaveManagementSystem.Data.Entities;
 
-namespace WayleaveManagementSystem.Data.Entities
+namespace WayleaveManagementSystem.Models.DTO
 {
-    public class Applications: BaseEntity
+    public class ApplicationsDTO
     {
-        [Key]
         public int? ApplicationID { get; set; }
-        public string UserID { get; set; }
-        public string FullName { get; set; }
-        public string Email { get; set;}
-        public string? PhoneNumber { get; set;}
-        public string? PhyscialAddress { get; set; }
-         public string? ReferenceNumber { get; set; }
+        public string? UserID { get; set; }
+        public string? FullName { get; set; }
+        public string? Email { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? PhysicalAddress { get; set; }
+        public string? ReferenceNumber { get; set; }
         public string? CompanyRegNo { get; set; }
         public string? TypeOfApplication { get; set; }
         public string? NotificationNumber { get; set; }
@@ -23,5 +22,10 @@ namespace WayleaveManagementSystem.Data.Entities
         public DateTime? ExpectedStartDate { get; set; }
         public DateTime? ExpectedEndDate { get; set; }
         public string? Location { get; set; }
+        public DateTime DateCreated { get; set; }
+        public DateTime DateUpdated { get; set; }
+        public string? CreatedById { get; set; }
+        public bool isActive { get; set; }
+
     }
 }

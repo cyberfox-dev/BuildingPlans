@@ -26,6 +26,7 @@ namespace WayleaveManagementSystem.Data
 
         public DbSet<Stages> StageTable { get; set; }
         public DbSet<Roles> Role { get; set; }
+        public DbSet<Applications> Application { get; set; }
 
         public virtual DbSet<UserSpDTO> UserSpDTOs { get; set; }
 
