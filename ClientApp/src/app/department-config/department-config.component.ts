@@ -173,7 +173,7 @@ export class DepartmentConfigComponent implements OnInit {
     this.modalService.open(viewSub, { backdrop: 'static', centered: true, size: 'xl' });
   }
   openViewZones(viewlinkedZones: any) {
-    this.viewZonesLinkedtoSub.controls["viewSelectedSubDep2"].setValue("0");
+    
     this.modalService.open(viewlinkedZones, { backdrop: 'static', centered: true, size: 'xl' });
     
   }
@@ -197,6 +197,8 @@ export class DepartmentConfigComponent implements OnInit {
     this.addZone.controls["newZoneSubDemartment"].setValue("0");
     this.userZoneLink.controls["selectedSubDep"].setValue("0");
     this.userZoneLink.controls["selectedZone"].setValue("0");
+    this.viewZonesLinkedtoSub.controls["viewSelectedSubDep2"].setValue("0");
+    this.viewZonesLinkedtoSub.controls["viewSelectedSubDep"].setValue("0");
 
   }
 
