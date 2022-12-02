@@ -46,7 +46,7 @@ export class ZonesService {
   }
 
   public getUsersLinkedByZoneID(zoneID: any) {
-    debugger;
+  
     return this.httpClient.post(this.baseURL + "GetUsersLinkedByZoneID", zoneID);
 
   }

@@ -44,4 +44,20 @@ export class ProfessionalService {
 
   }
 
+  public getProfessionalsListByProfessionalType(userId: string, professinalType: string) {
+    debugger;
+    const body = {
+
+      ProfessinalType: professinalType,
+      AppUserID: userId,
+
+    }
+
+    return this.httpClient.post(this.baseURL + "GetProfessionalsListByProfessionalType", body);
+
+  }
+
+
+  
+
 }

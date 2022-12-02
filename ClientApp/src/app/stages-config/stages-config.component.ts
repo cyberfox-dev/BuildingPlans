@@ -9,7 +9,9 @@ import { MatTable } from '@angular/material/table';
 export interface StagesList {
   StageID: number;
   StageName: string;
-  StageOrderNumber: string;
+  StageOrderNumber: number;
+  CurrentUser: any
+  stringifiedData: any;
 }
 
 export interface StagesOrderList {
@@ -35,10 +37,10 @@ export class StagesConfigComponent implements OnInit {
     //let stagePre = this.StagesList[event.previousIndex];
     for (var i = 0; i < event.previousIndex + 1; i++) {
       let stage = this.StagesList[i];
+     
 
 
-
-      this.stagesService.addUpdateStage(stage.StageID, stage.StageName, i).subscribe((data: any) => {
+      this.stagesService.addUpdateStage(stage.StageID, stage.StageName, i, this.CurrentUser.appUserId).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 
@@ -58,14 +60,9 @@ export class StagesConfigComponent implements OnInit {
 
     console.log("event.currentIndex", event.currentIndex);
 
-    debugger;
-
-  
-
-
-    
   }
-
+  orderNo:any
+  stringifiedData: any;
   CurrentUser: any;
   StagesList: StagesList[] = [];
   StagesOrderList: StagesOrderList[] = [];
@@ -88,6 +85,10 @@ export class StagesConfigComponent implements OnInit {
   constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private shared: SharedService, private stagesService: StagesService) { }
 
   ngOnInit(): void {
+
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData); this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
     this.getAllStages();
    
   }
@@ -133,18 +134,20 @@ export class StagesConfigComponent implements OnInit {
 
   onStageCreate() {
     let newStageName = this.addStage.controls["newStageName"].value;
+    let newStageOrder = this.StagesList.length;
 
+   
 
-    this.StagesList.splice(0, this.StagesList.length);
-
-    this.stagesService.addUpdateStage(0, newStageName, 0).subscribe((data: any) => {
+    this.stagesService.addUpdateStage(0, newStageName, newStageOrder, this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         alert(data.responseMessage);
         this.getAllStages();
+        this.StagesList.splice(0, this.StagesList.length);
       }
       else {
         alert(data.responseMessage);
+
       }
       console.log("response", data);
     }, error => {
@@ -155,6 +158,7 @@ export class StagesConfigComponent implements OnInit {
 
   onStageDelete(index: any) {
     console.log(this.StagesList[index].StageName);
+    debugger;
     if (confirm("Are you sure to delete " + this.StagesList[index].StageName + "?")) {
 
       this.stagesService.deleteStage(this.StagesList[index].StageID).subscribe((data: any) => {
@@ -162,7 +166,9 @@ export class StagesConfigComponent implements OnInit {
 
         if (data.responseCode == 1) {
 
+
           alert(data.responseMessage);
+
           this.getAllStages();
         }
         else {
@@ -175,23 +181,64 @@ export class StagesConfigComponent implements OnInit {
       })
 
 
+      for (var i = 0; i < this.StagesList.length; i++) {
+        let stage = this.StagesList[i];
+
+
+
+        this.stagesService.addUpdateStage(stage.StageID, stage.StageName, i, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+
+            alert(data.dateSet.stageName + " " + data.responseMessage);
+
+          }
+          else {
+            alert(data.responseMessage);
+          }
+          console.log("response", data);
+        }, error => {
+          console.log("Error", error);
+        })
+
+      }
     }
+
+
   }
 
-  changeStageOrderNo(changeOrderNumber: any, index: any) {
+
+
+  onStageEdit(event: any, index: any, changeOrderNumber: any) {
 
     this.editStage.controls["editStageName"].setValue(this.StagesList[index].StageName);
-   
+
     this.forEditIndex = index;
     this.modalService.open(changeOrderNumber, { size: 'lg' });
   }
 
-  onStageEdit(event: any) {
+  saveStageEdit() {
+    
+    let editStageName = this.editStage.controls["editStageName"].value;
+    console.log(this.orderNo);
 
-    console.log("event", event);
-    let editStageOrder = this.editStage.controls["editStageOrder"].value;
-    console.log("editStageOrder", editStageOrder);
+    this.stagesService.addUpdateStage(this.StagesList[this.forEditIndex].StageID, editStageName, this.StagesList[this.forEditIndex].StageOrderNumber, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        alert(data.responseMessage);
+        this.getAllStages();
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("response", data);
+    }, error => {
+      console.log("Error", error);
+    })
+  
   }
+
+
 
   populateStageOrder() {
 

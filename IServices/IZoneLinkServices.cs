@@ -14,6 +14,11 @@ namespace WayleaveManagementSystem.IServices
         public Task<List<ZoneLinkDTO>> GetAllZoneLinks();
 
         Task<List<UserZoneLinkDTO>> GetUsersNotLinkedByUserID();
-       
+
+        public Task<List<ZoneLinkDTO>> GetAllRecordsByUserIdIfDeleted(string userID);
+
+
+        
+
     }
 }

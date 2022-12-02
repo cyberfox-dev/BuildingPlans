@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.BindingModel;
+
 using WayleaveManagementSystem.Data.Entities;
 using WayleaveManagementSystem.DTO;
 using WayleaveManagementSystem.IServices;
 using WayleaveManagementSystem.Models;
 using WayleaveManagementSystem.Models.BindingModel;
+using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
 
 namespace WayleaveManagementSystem.Controllers
 {
@@ -103,6 +104,30 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpPost("GetProfessionalsListByProfessionalType")]
+        public async Task<object> GetProfessionalsListByProfessionalType([FromBody] ProfessinalsGetByUserProfTypeBindingModel model)
+        {
+            try
+            {
 
+                if (model.AppUserID.Length < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _professionalsService.GetProfessionalsListByProfessionalType(model.AppUserID, model.ProfessinalType);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Professionals List Created", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
     }
 }

@@ -41,4 +41,13 @@ export class ZoneLinkService {
     return this.httpClient.post(this.baseURL + "GetUsersNotLinkedByUserID", zoneID);
 
   }
+
+  public getAllRecordsByUserIdIfDeleted(userID: any) {
+    const body = {
+      UserID: userID,
+    }
+    return this.httpClient.post(this.baseURL + "GetAllRecordsByUserIdIfDeleted", body);
+
+  }
+  
 }
