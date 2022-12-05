@@ -199,6 +199,7 @@ export class DepartmentConfigComponent implements OnInit {
     this.userZoneLink.controls["selectedZone"].setValue("0");
     this.viewZonesLinkedtoSub.controls["viewSelectedSubDep2"].setValue("0");
     this.viewZonesLinkedtoSub.controls["viewSelectedSubDep"].setValue("0");
+    this.viewZonesLinkedtoSub.controls["viewSelectedZone"].setValue("0");
 
   }
 
