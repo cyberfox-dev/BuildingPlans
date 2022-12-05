@@ -65,6 +65,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CyberfoxConfigComponent } from './cyberfox-config/cyberfox-config.component';
 import { AccessGroupsConfigComponent } from './access-groups-config/access-groups-config.component';
+import { MatToolbarModule } from '@angular/material/toolbar'; 
 
 
 @NgModule({
@@ -139,6 +140,7 @@ import { AccessGroupsConfigComponent } from './access-groups-config/access-group
     MatSidenavModule,
     MatInputModule,
     MatButtonModule,
+    MatToolbarModule,
     MatFormFieldModule,
     MatTabsModule,
     MatExpansionModule,
