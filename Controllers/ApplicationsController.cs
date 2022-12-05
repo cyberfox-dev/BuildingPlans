@@ -24,7 +24,7 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
 
-                if (model == null || ModelState.IsValid && model.FullName.Length > 1)
+                if (model == null || ModelState.IsValid && model.FullName.Length < 1)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }

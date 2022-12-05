@@ -5,8 +5,6 @@ import { ApplicationsService } from 'src/app/service/Applications/applications.s
 import { FormBuilder, Validators } from '@angular/forms';
 import { empty } from 'rxjs';
 import { InternalOptionComponent } from 'src/app/create-new-wayleave/internal-option/internal-option.component';
-import { ClientDetailsComponent } from '../../type-of-applicant/client-details/client-details.component';
-import { ProjectDetailsComponent } from '../project-details/project-details.component';
 import { SharedService } from "../../shared/shared.service";
 
 export interface PeriodicElement {
@@ -21,6 +19,7 @@ export interface PeriodicElement {
 
 
 const ELEMENT_DATA: PeriodicElement[] = [
+  { bp: 'fdf', name: 'FullName', surname: "", professionalRegNumber: 'H' },
   { bp: 'fdf', name: 'FullName', surname: "", professionalRegNumber: 'H' },
 ];
 
@@ -42,11 +41,18 @@ const ELEMENT_DATAS: PeriodicElements[] = [
 
 @Component({
   selector: 'app-new-wayleave',
-  /*  templateUrl: './new-wayleave.component.html',*/
   templateUrl: './new-wayleave.component.html',
   styleUrls: ['./new-wayleave.component.css']
 })
 export class NewWayleaveComponent implements OnInit {
+
+  /*Client details*/
+  clientName = '';
+  clientSurname = '';
+  clientEmail = '';
+  clientCellNo = '';
+  clientAddress = '';
+  clientRefNo = '';
 
   /*project details*/
   typeOfApplication = '';
@@ -59,17 +65,17 @@ export class NewWayleaveComponent implements OnInit {
   expectedStartDate: Date = new Date();
   expectedEndType: Date = new Date();
 
-  public addApplicationProject = this.formBuilder.group({
-    typeOfApplication: ['', Validators.required],
-    notificationNumber: ['', Validators.required],
-    wbsNumber: ['', Validators.required],
-    physicalAddressOfProject: ['', Validators.required],
-    descriptionOfProject: ['', Validators.required],
-    natureOfWork: ['', Validators.required],
-    excavationType: ['', Validators.required],
-    expectedStartDate: ['', Validators.required],
-    expectedEndType: ['', Validators.required]
-  })
+  //public addApplicationProject = this.formBuilder.group({
+  //  typeOfApplication: ['', Validators.required],
+  //  notificationNumber: ['', Validators.required],
+  //  wbsNumber: ['', Validators.required],
+  //  physicalAddressOfProject: ['', Validators.required],
+  //  descriptionOfProject: ['', Validators.required],
+  //  natureOfWork: ['', Validators.required],
+  //  excavationType: ['', Validators.required],
+  //  expectedStartDate: ['', Validators.required],
+  //  expectedEndType: ['', Validators.required]
+  //})
 
 
   public external: boolean = true;
@@ -79,15 +85,15 @@ export class NewWayleaveComponent implements OnInit {
     option: any;
     isAllSelected: any;
 
-  public addApplication = this.formBuilder.group({
-    newApplicationName: ['', Validators.required]
+  //public addApplication = this.formBuilder.group({
+  //  newApplicationName: ['', Validators.required]
 
-  })
+  //})
 
   CurrentUser: any;
   stringifiedData: any;
 
-  constructor(private modalService: NgbModal, private applicationsService: ApplicationsService, private shared: SharedService, public clientDetailsComponent: ClientDetailsComponent, public projectDetailsComponent: ProjectDetailsComponent, private formBuilder: FormBuilder) { }
+  constructor(private modalService: NgbModal, private applicationsService: ApplicationsService, private shared: SharedService, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
@@ -118,7 +124,8 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   onWayleaveCreate() {
-    this.clientDetailsComponent.initClientDetails();
+/*    this.clientDetailsComponent.initClientDetails();*/
+
     //let newApplicationName = this.addApplication.controls["newApplicationName"].value;
 
     //let clientName1 = this.clientDetailsComponent.clientName;
@@ -131,18 +138,18 @@ export class NewWayleaveComponent implements OnInit {
 /*    this.shared.getContactorData();*/
 /*    this.CurrentUser("appUserID")*/
     //ven: to access the clientDetailsComponent variable, we import it and add it to the constructor of this file.
-    //this.applicationsService.addUpdateApplication(0, 'test', this.shared.applicationData[0].clientName + ' ' + this.clientDetailsComponent.clientSurname, this.clientDetailsComponent.clientEmail, this.clientDetailsComponent.clientCellNo, this.clientDetailsComponent.clientAddress, this.clientDetailsComponent.clientRefNo, '0', this.projectDetailsComponent.typeOfApplication, this.projectDetailsComponent.notificationNumber, this.projectDetailsComponent.wbsNumber, this.projectDetailsComponent.physicalAddressOfProject, this.projectDetailsComponent.descriptionOfProject, this.projectDetailsComponent.natureOfWork, this.projectDetailsComponent.excavationType, this.projectDetailsComponent.expectedStartDate, this.projectDetailsComponent.expectedEndType, 'ven', 8).subscribe((data: any) => {
+    this.applicationsService.addUpdateApplication(0, this.CurrentUser.appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId).subscribe((data: any) => {
 
-    //  if (data.responseCode == 1) {
-    //    alert(data.responseMessage);
-    //  }
-    //  else {
-    //    alert(data.responseMessage);
-    //  }
-    //  console.log("response", data);
-    //}, error => {
-    //  console.log("Error", error);
-    //})
+      if (data.responseCode == 1) {
+        alert(data.responseMessage);
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("response", data);
+    }, error => {
+      console.log("Error", error);
+    })
   }
 
 
