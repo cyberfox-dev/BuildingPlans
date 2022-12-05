@@ -1,43 +1,37 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { MatTableModule } from '@angular/material/table';
+import { MatTable, MatTableModule } from '@angular/material/table';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ApplicationsService } from 'src/app/service/Applications/applications.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { empty } from 'rxjs';
 import { InternalOptionComponent } from 'src/app/create-new-wayleave/internal-option/internal-option.component';
 import { SharedService } from "../../shared/shared.service";
+import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
 
-export interface PeriodicElement {
+export interface EngineerList {
+  professinalID: number;
+  ProfessinalType: string;
+  professionalRegNo: string;
+  bpNumber: string;
   name: string;
-  bp: string;
   surname: string;
-  professionalRegNumber: string;
-
-
+  email: string;
+  phoneNumber: string;
+  idNumber?: string;
 }
 
-
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  { bp: 'fdf', name: 'FullName', surname: "", professionalRegNumber: 'H' },
-  { bp: 'fdf', name: 'FullName', surname: "", professionalRegNumber: 'H' },
-];
-
-export interface PeriodicElements {
+export interface ContractorList {
+  professinalID: number;
+  ProfessinalType: string;
+  professionalRegNo: string;
+  bpNumber: string;
   name: string;
-  position: number;
-  weight: number;
-  symbol: string;
+  surname: string;
+  email: string;
+  phoneNumber: number;
+  idNumber?: string;
+  CIBRating: string;
 }
-
-const ELEMENT_DATAS: PeriodicElements[] = [
-  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
-  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
-  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
-  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
-  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
-
-];
 
 @Component({
   selector: 'app-new-wayleave',
@@ -77,37 +71,61 @@ export class NewWayleaveComponent implements OnInit {
   //  expectedEndType: ['', Validators.required]
   //})
 
+  EngineerList: EngineerList[] = [];
+  ContractorList: ContractorList[] = [];
 
   public external: boolean = true;
   public internal: boolean = false;
   public client: boolean = false;
   public map: boolean = true;
-    option: any;
-    isAllSelected: any;
+  option: any;
+  isAllSelected: any;
 
   //public addApplication = this.formBuilder.group({
   //  newApplicationName: ['', Validators.required]
 
   //})
 
+  //Local storage userID
   CurrentUser: any;
+  //Convert the local storage JSON data to an array object
   stringifiedData: any;
+  //Columns for both the engineer and contractor lists
+  displayedColumns: string[] = ['ProfessinalType', 'professionalRegNo', 'bpNumber', 'name', 'surname', 'email', 'phoneNumber', 'idNumber'];
+  displayedColumnsContractors: string[] = ['ProfessinalType', 'professionalRegNo', 'bpNumber', 'name', 'surname', 'email', 'phoneNumber', 'idNumber'];
+  dataSourceEngineers = this.EngineerList;
+  dataSourceContractors = this.ContractorList;
+  @ViewChild(MatTable) EngineerTable: MatTable<EngineerList> | undefined;
+  @ViewChild(MatTable) ContractorTable: MatTable<ContractorList> | undefined;
 
-  constructor(private modalService: NgbModal, private applicationsService: ApplicationsService, private shared: SharedService, private formBuilder: FormBuilder) { }
+
+
+  constructor(private modalService: NgbModal, private applicationsService: ApplicationsService, private shared: SharedService, private formBuilder: FormBuilder, private professionalService: ProfessionalService) { }
 
   ngOnInit(): void {
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData); this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.getProfessionalsListByProfessionalType("Engineer");
+    this.getProfessionalsListByProfessionalType("Contractor");
+
+
+
   }
 
-  displayedColumns: string[] = ['bp', 'name', 'surname', 'professionalRegNumber'];
-  dataSource = ELEMENT_DATA;
-  clickedRows = new Set<PeriodicElement>();
+  //ngAfterViewInit() {
+  //  this.getProfessionalsListByProfessionalType("Contractor");
+  //}
 
-  clearAll() {
-    this.clickedRows.clear();
+  clickedRowsEngineers = new Set<EngineerList>();
+  clickedRowsContractors = new Set<ContractorList>();
+
+  clearAllEngineers() {
+    this.clickedRowsEngineers.clear();
   }
 
+  clearAllContractors() {
+    this.clickedRowsContractors.clear();
+  }
 
   reciveOption($event: any) {
     this.option = $event
@@ -123,8 +141,69 @@ export class NewWayleaveComponent implements OnInit {
 
   }
 
+  getProfessionalsListByProfessionalType(professionalType: string) {
+/*    this.EngineerList.splice(0, this.EngineerList.length);*/
+
+    this.professionalService.getProfessionalsListByProfessionalType(this.CurrentUser.appUserId, professionalType).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        console.log("data.dateSet get", data.dateSet);
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          //Check if Engineer or Contractor
+          if (professionalType == "Engineer") {
+            const tempProfessionalList = {} as EngineerList;
+            const current = data.dateSet[i];
+            tempProfessionalList.bpNumber = current.bP_Number;
+            tempProfessionalList.email = current.email;
+            tempProfessionalList.idNumber = current.idNumber;
+            tempProfessionalList.name = current.fullName.substring(0, current.fullName.indexOf(' '));
+            tempProfessionalList.surname = current.fullName.substring(current.fullName.indexOf(' ') + 1);
+            tempProfessionalList.phoneNumber = current.phoneNumber;
+            tempProfessionalList.ProfessinalType = current.professinalType;
+            tempProfessionalList.professionalRegNo = current.professionalRegNo;
+            tempProfessionalList.professinalID = current.professinalID;
+            this.EngineerList.push(tempProfessionalList);
+            console.log("this.EngineerList", this.EngineerList);
+          } else {
+            const tempProfessionalList = {} as ContractorList;
+            const current = data.dateSet[i];
+            tempProfessionalList.bpNumber = current.bP_Number;
+            tempProfessionalList.email = current.email;
+            tempProfessionalList.idNumber = current.idNumber;
+            tempProfessionalList.name = current.fullName.substring(0, current.fullName.indexOf(' '));
+            tempProfessionalList.surname = current.fullName.substring(current.fullName.indexOf(' ') + 1);
+            tempProfessionalList.phoneNumber = current.phoneNumber;
+            tempProfessionalList.ProfessinalType = current.professinalType;
+            tempProfessionalList.professionalRegNo = current.professionalRegNo;
+            tempProfessionalList.professinalID = current.professinalID;
+            tempProfessionalList.CIBRating = current.cibRating;
+            this.ContractorList.push(tempProfessionalList);
+            console.log("this.ContractorList", this.ContractorList);
+          }
+          //this.EngineerTable?.renderRows();
+          //this.ContractorTable?.renderRows();
+        }
+        this.ContractorTable?.renderRows();
+        this.EngineerTable?.renderRows();
+        
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+
+      console.log("reponse", data);
+      this.ContractorTable?.renderRows();
+      this.EngineerTable?.renderRows();
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
   onWayleaveCreate() {
-/*    this.clientDetailsComponent.initClientDetails();*/
+    /*    this.clientDetailsComponent.initClientDetails();*/
 
     //let newApplicationName = this.addApplication.controls["newApplicationName"].value;
 
@@ -135,8 +214,8 @@ export class NewWayleaveComponent implements OnInit {
     //let clientAddress = this.clientDetailsComponent.addApplicationClient.controls["clientAddress"].value;
     //let clientRefNo = this.clientDetailsComponent.addApplicationClient.controls["clientRefNo"].value;
     /*    getContactorData();*/
-/*    this.shared.getContactorData();*/
-/*    this.CurrentUser("appUserID")*/
+    /*    this.shared.getContactorData();*/
+    /*    this.CurrentUser("appUserID")*/
     //ven: to access the clientDetailsComponent variable, we import it and add it to the constructor of this file.
     this.applicationsService.addUpdateApplication(0, this.CurrentUser.appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId).subscribe((data: any) => {
 
@@ -152,12 +231,4 @@ export class NewWayleaveComponent implements OnInit {
     })
   }
 
-
-  displayedColumnss: string[] = ['position', 'name', 'weight', 'symbol'];
-  dataSources = ELEMENT_DATAS;
-  clickedRowsS = new Set<PeriodicElements>();
-
-  clearSAll() {
-    this.clickedRowsS.clear();
-  }
 }
