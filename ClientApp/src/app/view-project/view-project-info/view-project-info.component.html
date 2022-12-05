@@ -26,10 +26,10 @@
               <span class="hamburger hamburger-3"></span>
             </label>
 
-            <a class="menu-item"  matTooltipPosition="left" matTooltip="Show applicant layer"> <i class="fa fa-user"></i> </a>
-            <a class="menu-item"  matTooltipPosition="left" matTooltip="Show department layer"><i class="fa fa-building"></i> </a>
-            <a class="menu-item"  matTooltipPosition="left" matTooltip="Show all layers"> <i class="fa fa-eye"></i> </a>
-            <a class="menu-item"  matTooltipPosition="left" matTooltip="Hide all layers"> <i class="fa fa-eye-slash"></i> </a>
+            <a class="menu-item" matTooltipPosition="left" matTooltip="Show applicant layer"> <i class="fa fa-user"></i> </a>
+            <a class="menu-item" matTooltipPosition="left" matTooltip="Show department layer"><i class="fa fa-building"></i> </a>
+            <a class="menu-item" matTooltipPosition="left" matTooltip="Show all layers"> <i class="fa fa-eye"></i> </a>
+            <a class="menu-item" matTooltipPosition="left" matTooltip="Hide all layers"> <i class="fa fa-eye-slash"></i> </a>
 
 
           </nav>
@@ -62,7 +62,7 @@
               <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
                 <!--- Note that these columns can be defined in any order.
-              The actual rendered columns are set as a property on the row definition" -->
+          The actual rendered columns are set as a property on the row definition" -->
                 <!-- Position Column -->
                 <ng-container matColumnDef="position">
                   <th mat-header-cell *matHeaderCellDef> No. </th>
@@ -191,7 +191,7 @@
 
             <app-new-egineer></app-new-egineer>
             <app-view-engineers-table></app-view-engineers-table>
-              <!--    <mat-accordion>
+            <!--    <mat-accordion>
 
         <mat-expansion-panel (opened)="panelOpenState = true"
                              (closed)="panelOpenState = false">
@@ -237,7 +237,7 @@
       </mat-accordion>
       <br>-->
 
-</div>
+          </div>
 
 
 
@@ -257,7 +257,7 @@
             <app-new-contractor></app-new-contractor>
 
             <app-view-contractors-table></app-view-contractors-table>
-</div>
+          </div>
 
         </mat-tab>
 
@@ -275,14 +275,14 @@
         <mat-tab label="Comments">
 
 
-     
+
 
           <div class="main-container">
             <section id="timeline" class="timeline-outer">
               <div class="container" id="content">
                 <div class="row">
                   <div class="col s12 m12 l12">
-                  
+
                     <ul class="timeline">
                       <li class="event" data-date="2015/Present">
                         <h3>Management and Entreprenurship (MSc)</h3>
@@ -319,6 +319,15 @@
 
 
         </mat-tab>
+
+        <!--------------------------------------------------------Document Upload--------------------------------------------------->
+
+
+        <mat-tab label="Documents Upload">
+
+
+        </mat-tab>
+
 
 
       </mat-tab-group>
