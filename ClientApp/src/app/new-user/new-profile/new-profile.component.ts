@@ -7,8 +7,14 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { SharedService } from 'src/app/shared/shared.service';
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
 import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
+import { DepartmentsService } from '../../service/Departments/departments.service';
 
-
+export interface DepartmentList {
+  departmentID: number;
+  departmentName: string;
+  dateUpdated: any;
+  dateCreated: any;
+}
 
 
 
@@ -61,6 +67,8 @@ export interface ContractorList {
 })
 export class NewProfileComponent implements OnInit {
 
+  DepartmentDropdown: DepartmentList[] = [];
+
   @ViewChild("placesRef")
   placesRef: GooglePlaceDirective | undefined;
   options = {
@@ -108,7 +116,7 @@ export class NewProfileComponent implements OnInit {
   linkedContractors: ContractorList[] = [];
 
 
-  constructor(private modalService: NgbModal, private shared: SharedService, private userPofileService: UserProfileService, private professionalService :ProfessionalService) { }
+  constructor(private modalService: NgbModal, private shared: SharedService, private userPofileService: UserProfileService, private professionalService: ProfessionalService, private departmentService: DepartmentsService) { }
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
@@ -151,7 +159,7 @@ export class NewProfileComponent implements OnInit {
     this.extApplicantName = fullname.substring(0, fullname.indexOf(' '));
     this.extApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
     this.extApplicantEmail = this.CurrentUser.email; 
-
+    this.forViewPopulateDepartmentDropDown();
   }
 
   ngDoCheck() {
@@ -246,6 +254,38 @@ export class NewProfileComponent implements OnInit {
 
 
 
+  }
+
+
+  forViewPopulateDepartmentDropDown() {
+
+    this.DepartmentDropdown.splice(0, this.DepartmentDropdown.length);
+    this.departmentService.getDepartmentsList().subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempDepartmentList = {} as DepartmentList;
+          const current = data.dateSet[i];
+          tempDepartmentList.departmentID = current.departmentID;
+          tempDepartmentList.departmentName = current.departmentName;
+
+          this.DepartmentDropdown.push(tempDepartmentList);
+
+        }
+        console.log("the derpartment thing works");
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 
 

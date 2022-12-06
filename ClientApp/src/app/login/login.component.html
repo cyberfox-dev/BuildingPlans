@@ -57,7 +57,7 @@
           <h2>Login</h2>
           <input type="email" formControlName="email" placeholder="Email" />
           <input type="password" formControlName="password" placeholder="Password" />
-          <a href="#">Forgot your password?</a>
+          <a href="#" *ngIf="!isLoading">Forgot your password?</a>
           <button *ngIf="!isLoading" type="submit" [disabled]="!loginForm.valid" class="submit">Login</button> <!--(click)="login()"-->
           <div *ngIf="isLoading">
             <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
@@ -71,7 +71,7 @@
         <div class="overlay">
           <div class="overlay-panel overlay-left">
             <h1>Already have an account ?</h1>
-            <button (click)="remove()" class="ghost" id="login">Login Up</button>
+            <button (click)="remove()" class="ghost" id="login">Back To Login</button>
           </div>
           <div class="overlay-panel overlay-right">
             <h1>Don't have an account ?</h1>

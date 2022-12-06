@@ -74,6 +74,7 @@ export class LoginComponent implements OnInit {
     this.userService.register(fullName, email, password).subscribe((data:any) => {
 
       if (data.responseCode == 1) {
+        console.log("After Register", data.dateSet);
         localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
         alert(data.responseMessage);
         this.router.navigate(["/new-profile"]);
