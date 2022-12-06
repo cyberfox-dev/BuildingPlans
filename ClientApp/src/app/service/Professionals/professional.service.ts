@@ -45,7 +45,7 @@ export class ProfessionalService {
   }
 
   public getProfessionalsListByProfessionalType(userId: string, professinalType: string) {
-    debugger;
+    
     const body = {
 
       ProfessinalType: professinalType,

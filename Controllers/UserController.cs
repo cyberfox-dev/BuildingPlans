@@ -57,11 +57,12 @@ namespace WayleaveManagementSystem.Controllers
 
                 //to register a user i and going to use userManager
                 var result = await _userManager.CreateAsync(user, model.Password);
-
+                var appUser = await _userManager.FindByEmailAsync(model.Email);
+                var userInfo = new UserDTO(appUser.FullName, appUser.Email, appUser.UserName, appUser.DateCreated, appUser.Id);
                 if (result.Succeeded)
                 {
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "You have been Registered!", null));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "You have been Registered!", userInfo));
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
                 }
                 else
