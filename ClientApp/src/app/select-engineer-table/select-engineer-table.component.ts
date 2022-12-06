@@ -1,17 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 
-export interface PeriodicElement {
+export interface EngineerList {
+  professinalID: number;
+  ProfessinalType: string;
+  professionalRegNo: string;
+  bpNumber: string;
   name: string;
-  bp: string;
   surname: string;
-  professionalRegNumber: string;
-
-
+  email: string;
+  phoneNumber: string;
+  idNumber?: string;
 }
 
-const ELEMENT_DATA: PeriodicElement[] = [
-  { bp: 'fdf', name: 'FullName', surname: "", professionalRegNumber: 'H' },
-];
+//const ELEMENT_DATA: PeriodicElement[] = [
+//  { bp: 'fdf', name: 'FullName', surname: "", professionalRegNumber: 'H' },
+//];
 
 
 
@@ -21,18 +25,52 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrls: ['./select-engineer-table.component.css']
 })
 export class SelectEngineerTableComponent implements OnInit {
+  @Input()
+    data!: any[];
+  EngineerList: EngineerList[] = [];
+  @ViewChild(MatTable) EngineerTable: MatTable<EngineerList> | undefined;
+  displayedColumns: string[] = ['ProfessinalType', 'professionalRegNo', 'bpNumber', 'name', 'surname', 'email', 'phoneNumber', 'idNumber'];
+   dataSourceEngineers =  this.EngineerList;
 
- 
   constructor() { }
 
   ngOnInit(): void {
-  }
-  displayedColumns: string[] = ['bp', 'name', 'surname', 'professionalRegNumber'];
-  dataSource = ELEMENT_DATA;
-  clickedRows = new Set<PeriodicElement>();
+    setTimeout(() => {
+      debugger;
+      console.log("this.datafdgfdfdg", this.data);
+      for (let i = 0; i < this.data.length; i++) {
+        //Check if Engineer or Contractor
+        
+          const tempProfessionalList = {} as EngineerList;
+        const current = this.data[i];
+        tempProfessionalList.bpNumber = current.bpNumber;
+        tempProfessionalList.email = current.email;
+        tempProfessionalList.idNumber = current.idNumber;
+        tempProfessionalList.name = current.name;
+        tempProfessionalList.surname = current.surname;
+          tempProfessionalList.phoneNumber = current.phoneNumber;
+        tempProfessionalList.ProfessinalType = current.ProfessinalType;
+        tempProfessionalList.professionalRegNo = current.professionalRegNo;
+          tempProfessionalList.professinalID = current.professinalID;
+          this.EngineerList.push(tempProfessionalList);
+        
+      }
+    console.log("this.EngineerListfdgfdfdg", this.EngineerList);
 
-  clearAll() {
-    this.clickedRows.clear();
+      this.EngineerTable?.renderRows();
+    });
+  }
+
+  public ngOnChanges(changes: SimpleChanges) {
+   // this.dataSourceEngineers = new MatTableDataSource(changes.data.currentValue);
+  }
+
+  //displayedColumns: string[] = ['bp', 'name', 'surname', 'professionalRegNumber'];
+  //dataSource = ELEMENT_DATA;
+  clickedRowsEngineers = new Set<EngineerList>();
+
+  clearAllEngineers() {
+    this.clickedRowsEngineers.clear();
   }
 
   onLogin() {
