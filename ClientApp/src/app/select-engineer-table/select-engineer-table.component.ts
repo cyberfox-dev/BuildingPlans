@@ -1,7 +1,9 @@
 import { Component, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { SharedService } from "src/app/shared/shared.service";
+import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
 
-export interface EngineerList {
+export interface ProfessialList {
   professinalID: number;
   ProfessinalType: string;
   professionalRegNo: string;
@@ -11,6 +13,7 @@ export interface EngineerList {
   email: string;
   phoneNumber: string;
   idNumber?: string;
+  CIBRating?: string;
 }
 
 //const ELEMENT_DATA: PeriodicElement[] = [
@@ -25,75 +28,112 @@ export interface EngineerList {
   styleUrls: ['./select-engineer-table.component.css']
 })
 export class SelectEngineerTableComponent implements OnInit {
-  @Input()
-    data!: any[];
-  EngineerList: EngineerList[] = [];
-  @ViewChild(MatTable) EngineerTable: MatTable<EngineerList> | undefined;
+  //@Input()
+  //data!: any[];
+  @Input() PrfessionalType: any;
+  //Local storage userID
+  CurrentUser: any;
+  //Convert the local storage JSON data to an array object
+  stringifiedData: any;
+  ProfessialList: ProfessialList[] = [];
+  @ViewChild(MatTable) ProfessialTable: MatTable<ProfessialList> | undefined;
   displayedColumns: string[] = ['ProfessinalType', 'professionalRegNo', 'bpNumber', 'name', 'surname', 'email', 'phoneNumber', 'idNumber'];
-   dataSourceEngineers =  this.EngineerList;
-
-  constructor() { }
+  dataSourceProfessials = this.ProfessialList;
+  clickedRowsProfessials = new Set<ProfessialList>();
+  constructor(private professionalService: ProfessionalService, private shared: SharedService) { }
 
   ngOnInit(): void {
-    setTimeout(() => {
-      debugger;
-      console.log("this.datafdgfdfdg", this.data);
-      for (let i = 0; i < this.data.length; i++) {
-        //Check if Engineer or Contractor
-        
-          const tempProfessionalList = {} as EngineerList;
-        const current = this.data[i];
-        tempProfessionalList.bpNumber = current.bpNumber;
-        tempProfessionalList.email = current.email;
-        tempProfessionalList.idNumber = current.idNumber;
-        tempProfessionalList.name = current.name;
-        tempProfessionalList.surname = current.surname;
-          tempProfessionalList.phoneNumber = current.phoneNumber;
-        tempProfessionalList.ProfessinalType = current.ProfessinalType;
-        tempProfessionalList.professionalRegNo = current.professionalRegNo;
-          tempProfessionalList.professinalID = current.professinalID;
-          this.EngineerList.push(tempProfessionalList);
-        
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData); this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.getProfessionalsListByProfessionalType(this.PrfessionalType)
+
+
+  }
+
+
+  getProfessionalsListByProfessionalType(professionalType: string) {
+    /*    this.EngineerList.splice(0, this.EngineerList.length);*/
+
+    this.professionalService.getProfessionalsListByProfessionalType(this.CurrentUser.appUserId, professionalType).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        console.log("data.dateSet get", data.dateSet);
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          //Check if Engineer or Contractor
+          if (professionalType == "Engineer") {
+            const tempProfessionalList = {} as ProfessialList;
+            const current = data.dateSet[i];
+            tempProfessionalList.bpNumber = current.bP_Number;
+            tempProfessionalList.email = current.email;
+            tempProfessionalList.idNumber = current.idNumber;
+            tempProfessionalList.name = current.fullName.substring(0, current.fullName.indexOf(' '));
+            tempProfessionalList.surname = current.fullName.substring(current.fullName.indexOf(' ') + 1);
+            tempProfessionalList.phoneNumber = current.phoneNumber;
+            tempProfessionalList.ProfessinalType = current.professinalType;
+            tempProfessionalList.professionalRegNo = current.professionalRegNo;
+            tempProfessionalList.professinalID = current.professinalID;
+            this.ProfessialList.push(tempProfessionalList);
+            console.log("this.ProfessialList", this.ProfessialList);
+          } else {
+            const tempProfessionalList = {} as ProfessialList;
+            const current = data.dateSet[i];
+            tempProfessionalList.bpNumber = current.bP_Number;
+            tempProfessionalList.email = current.email;
+            tempProfessionalList.idNumber = current.idNumber;
+            tempProfessionalList.name = current.fullName.substring(0, current.fullName.indexOf(' '));
+            tempProfessionalList.surname = current.fullName.substring(current.fullName.indexOf(' ') + 1);
+            tempProfessionalList.phoneNumber = current.phoneNumber;
+            tempProfessionalList.ProfessinalType = current.professinalType;
+            tempProfessionalList.professionalRegNo = current.professionalRegNo;
+            tempProfessionalList.professinalID = current.professinalID;
+            tempProfessionalList.CIBRating = current.cibRating;
+            this.ProfessialList.push(tempProfessionalList);
+      
+          }
+     
+        }
+  
+        this.ProfessialTable?.renderRows();
+        if (professionalType == "Engineer") {
+          this.shared.setEngineerData(this.ProfessialList);
+        }
+        else {
+          this.shared.setContactorData(this.ProfessialList);
+        }
       }
-    console.log("this.EngineerListfdgfdfdg", this.EngineerList);
 
-      this.EngineerTable?.renderRows();
-    });
+      else {
+
+        alert(data.responseMessage);
+      }
+
+      console.log("reponse", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 
-  public ngOnChanges(changes: SimpleChanges) {
-   // this.dataSourceEngineers = new MatTableDataSource(changes.data.currentValue);
+
+
+  SetSharedData() {
+   
+    if (this.PrfessionalType == "Engineer") {
+      this.shared.setEngineerData(this.clickedRowsProfessials);
+    }
+    else {
+      this.shared.setContactorData(this.clickedRowsProfessials);
+    }
   }
 
-  //displayedColumns: string[] = ['bp', 'name', 'surname', 'professionalRegNumber'];
-  //dataSource = ELEMENT_DATA;
-  clickedRowsEngineers = new Set<EngineerList>();
 
   clearAllEngineers() {
-    this.clickedRowsEngineers.clear();
+    this.clickedRowsProfessials.clear();
+    this.SetSharedData();
   }
 
-  onLogin() {
-    //let fullName = this.loginForm.controls["fullName"].value;
-    //let email = this.loginForm.controls["email"].value;
-    //let password = this.loginForm.controls["password"].value;
 
-
-    //this.professionalService.addUpdateProfessional(email, password).subscribe((data: any) => {
-
-    //  if (data.responseCode == 1) {
-    //    localStorage.setItem("LoggedInUserInfo", data.DataSet);
-    //    this.router.navigate(["/home"]);
-    //  }
-    //  else {
-    //    //alert("Invalid Email or Password");
-    //    alert(data.responseMessage);
-    //  }
-    //  console.log("reponse", data);
-
-    //}, error => {
-    //  console.log("Error: ", error);
-    //})
-  }
 
 }

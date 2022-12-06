@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="dataSourceEngineers" class="mat-elevation-z8 demo-table">
+<table mat-table [dataSource]="dataSourceProfessials" class="mat-elevation-z8 demo-table">
   <!-- Name  -->
   <ng-container matColumnDef="ProfessinalType">
     <th mat-header-cell *matHeaderCellDef>Professional Type</th>
@@ -49,8 +49,8 @@
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row
-      (click)="clickedRowsEngineers.add(row)"
-      [class.demo-row-is-clicked]="clickedRowsEngineers.has(row)"
+      (click)="clickedRowsProfessials.add(row);SetSharedData()"
+      [class.demo-row-is-clicked]="clickedRowsProfessials.has(row)"
       *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
 

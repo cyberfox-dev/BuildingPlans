@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 
-export interface ContractorList {
+export interface ProfessionalList {
 
   ProfessinalType: string;
   professionalRegNo: string;
@@ -10,8 +10,8 @@ export interface ContractorList {
   surname: string;
   email: string;
   phoneNumber?: number;
-  CIBRating: string;
   idNumber?: string;
+  CIBRating: string | null;
 
 }
 
@@ -51,9 +51,9 @@ export class SharedService {
   configShow!: any;
 
   userProfileData: any;
-  contactorData: ContractorList[] = [];
+  contactorData: ProfessionalList[] = [];
   applicationData: ApplicationList[] = [];
-  engineerData: any;
+  engineerData: ProfessionalList[] = [];
 
   constructor() { }
  setConfigShow(data:any){
@@ -71,9 +71,11 @@ export class SharedService {
     return this.userProfileData;
   }
 
-  setContactorData(data: ContractorList[]) {
+  setContactorData(data: any) {
     debugger;
+   // this.contactorData.splice(0, this.contactorData.length);
     this.contactorData = data;
+    console.log("Shared this.contactorData ", this.contactorData);
   }
   getContactorDataByIndex(index: number) {
     return this.contactorData[index];
@@ -83,7 +85,9 @@ export class SharedService {
     return this.contactorData;
   }
   setEngineerData(data: any) {
-    this.contactorData = data;
+ //   this.engineerData.splice(0, this.engineerData.length);
+    this.engineerData = data;
+    console.log("Shared this.engineerData ", this.engineerData);
   }
   getEngineerData() {
     return this.engineerData;

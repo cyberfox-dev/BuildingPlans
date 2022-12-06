@@ -7,6 +7,7 @@ import { empty } from 'rxjs';
 import { InternalOptionComponent } from 'src/app/create-new-wayleave/internal-option/internal-option.component';
 import { SharedService } from "../../shared/shared.service";
 import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
+import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
 
 export interface EngineerList {
   professinalID: number;
@@ -33,6 +34,8 @@ export interface ContractorList {
   CIBRating: string;
 }
 
+
+
 @Component({
   selector: 'app-new-wayleave',
   templateUrl: './new-wayleave.component.html',
@@ -47,6 +50,16 @@ export class NewWayleaveComponent implements OnInit {
   clientCellNo = '';
   clientAddress = '';
   clientRefNo = '';
+
+
+  internalName = '';
+  internalSurname = '';
+  internalDepartmentName = '';
+  internalDepartmentID = '';
+  internalBranch = '';
+  internalCostCenterNumber = '';
+  internalCostCenterOwner = '';
+  
 
   /*project details*/
   typeOfApplication = '';
@@ -80,6 +93,8 @@ export class NewWayleaveComponent implements OnInit {
   public map: boolean = true;
   option: any;
   isAllSelected: any;
+  Engineer = "Engineer";
+  Contractor = "Contractor";
 
   //public addApplication = this.formBuilder.group({
   //  newApplicationName: ['', Validators.required]
@@ -100,9 +115,11 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
-  constructor(private modalService: NgbModal, private applicationsService: ApplicationsService, private shared: SharedService, private formBuilder: FormBuilder, private professionalService: ProfessionalService) { }
+  constructor(private modalService: NgbModal, private applicationsService: ApplicationsService, private shared: SharedService, private formBuilder: FormBuilder, private professionalService: ProfessionalService, private userPofileService: UserProfileService) { }
 
   ngOnInit(): void {
+
+
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData); this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.getProfessionalsListByProfessionalType("Engineer");
@@ -112,9 +129,10 @@ export class NewWayleaveComponent implements OnInit {
 
   }
 
-  //ngAfterViewInit() {
+  ngAfterViewInit() {
   //  this.getProfessionalsListByProfessionalType("Contractor");
-  //}
+ 
+  }
 
   clickedRowsEngineers = new Set<EngineerList>();
   clickedRowsContractors = new Set<ContractorList>();
@@ -137,9 +155,47 @@ export class NewWayleaveComponent implements OnInit {
     else if (this.option == "internal") {
       this.internal = true;
       this.external = false;
+
+
+
+
+      this.userPofileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          debugger;
+          console.log("data", data.dateSet);
+
+          const currentUserProfile = data.dateSet[0];
+          const fullname = currentUserProfile.fullName;
+
+          this.internalName = fullname.substring(0, fullname.indexOf(' '));
+          this.internalSurname = fullname.substring(fullname.indexOf(' ') + 1);
+          //directorate is the department name for displaying to the user and departmentID is what we we may need to send to the db
+          this.internalDepartmentName = currentUserProfile.directorate;
+          //the is where the departmentID is saved
+          this.internalDepartmentID = currentUserProfile.departmentID;
+          this.internalBranch = currentUserProfile.branch;
+          this.internalCostCenterNumber = currentUserProfile.costCenterNumber;
+          this.internalCostCenterOwner = currentUserProfile.costCenterOwner;
+
+        }
+
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+
     }
 
   }
+
 
   getProfessionalsListByProfessionalType(professionalType: string) {
 /*    this.EngineerList.splice(0, this.EngineerList.length);*/

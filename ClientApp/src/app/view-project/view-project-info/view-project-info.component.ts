@@ -47,6 +47,7 @@ export class ViewProjectInfoComponent implements OnInit {
         image.src = e.target.result;
         image.onload = (rs) => {
           let imgBase64Path = e.target.result;
+        //  console.log("e.target.result", e.target.result); 
         };
       };
       reader.readAsDataURL(imgFile.target.files[0]);
