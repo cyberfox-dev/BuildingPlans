@@ -43,18 +43,18 @@
 
 
       <div class="container-fluid ">
-        <div class="typeofapplicant">
+<!--        <div class="typeofapplicant">
           <h5>What type of Applicant are you ?</h5>
 
           <div class="row">
             <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
-              <mat-button-toggle (click)="sInternal()">Internal Applicant</mat-button-toggle>
-              <mat-button-toggle  (click)="sExternal()">External Applicant</mat-button-toggle>
+              <mat-button-toggle (click)="sInternal()" >Internal Applicant</mat-button-toggle>
+              <mat-button-toggle  (click)="sExternal()" >External Applicant</mat-button-toggle>
  
             </mat-button-toggle-group>
           </div>
 
-        </div>
+        </div>-->
 
         <!--External Applicant-->
         <div class="external" *ngIf="showExternal">
@@ -74,7 +74,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col">ca
+            <div class="col">
               <div class="form-floating mb-3 mt-3">
                 <input type="text" class="form-control"  [(ngModel)]="extApplicantCompanyRegNo" placeholder="Enter Company Reg No" >
                 <label for="address">Company Reg No.</label>
@@ -171,16 +171,18 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="tel" class="form-control"  [(ngModel)]="internalApplicantDirectorate" placeholder="Enter Tell No." >
-                <label for="applicantTellNo">Directorate</label>
+                <select class="form-select" aria-label="Default select example" [(ngModel)]="internalApplicantDepartment" (change)="onSelectToSendDepName($event)">
+                  <option selected value="0">Test</option>
+                  <option *ngFor="let department of DepartmentDropdown" value="{{department.departmentID}}">{{department.departmentName}}</option>
+                </select>
+
+
               </div>
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <select class="form-select" aria-label="Default select example" [(ngModel)]="internalApplicantDepartment">
-                  <option selected value="0">Test</option>
-                  <option *ngFor="let department of DepartmentDropdown" value="{{department.departmentID}}">{{department.departmentName}}</option>
-                </select>
+                <input type="text" class="form-control" [(ngModel)]="internalApplicantCostCenterOwner" placeholder="Enter Cost Center Owner">
+                <label for="applicantTellNo">Cost Center Owner</label>
 
               </div>
             </div>
@@ -202,8 +204,8 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control"  [(ngModel)]="internalApplicantCostCenterOwner" placeholder="Enter Cost Center Owner" >
-                <label for="applicantTellNo">Cost Center Owner</label>
+                <input type="tel" class="form-control" [(ngModel)]="internalApplicantDirectorate" placeholder="Enter Tell No." hidden>
+                <label for="applicantTellNo" hidden>Directorate</label>
               </div>
             </div>
           </div>

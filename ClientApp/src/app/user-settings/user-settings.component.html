@@ -127,10 +127,8 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <select class="form-select" aria-label="Default select example" [(ngModel)]="internalApplicantDepartment" disabled>
-                  <option selected value="0">Test</option>
-                  <option *ngFor="let department of DepartmentDropdown" value="{{department.departmentID}}">{{department.departmentName}}</option>
-                </select>
+                <input type="text" class="form-control" [(ngModel)]="internalApplicantDirectorate" placeholder="Enter Surname" disabled>
+                <label for="surname">Department</label>
               </div>
             </div>
             <div class="col">

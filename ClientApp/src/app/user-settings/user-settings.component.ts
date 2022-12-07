@@ -76,12 +76,12 @@ export class UserSettingsComponent implements OnInit {
    /*this.getAllDepartments();*/
 
     this.getUserProfileByUserID();
-    this.forViewPopulateDepartmentDropDown();
+
   }
   //this.CurrentUser.appUserId
 
   getUserProfileByUserID() {
-
+    debugger;
     this.userPofileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -98,7 +98,7 @@ export class UserSettingsComponent implements OnInit {
           this.internalApplicantName = fullname.substring(0, fullname.indexOf(' '));
           this.internalApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
           this.internalApplicantDirectorate = currentUserProfile.directorate;
-          this.internalApplicantDepartment = currentUserProfile.directorate;
+          this.internalApplicantDepartment = currentUserProfile.departmentName;
           this.internalApplicantTellNo = currentUserProfile.phoneNumber;
           this.internalApplicantBranch = currentUserProfile.branch;
           this.internalApplicantCostCenterNo = currentUserProfile.costCenterNumber;
@@ -135,36 +135,6 @@ export class UserSettingsComponent implements OnInit {
   }
 
 
-  forViewPopulateDepartmentDropDown() {
-    
-    this.DepartmentDropdown.splice(0, this.DepartmentDropdown.length);
-    this.departmentService.getDepartmentsList().subscribe((data: any) => {
-
-      if (data.responseCode == 1) {
-
-
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempDepartmentList = {} as DepartmentList;
-          const current = data.dateSet[i];
-          tempDepartmentList.departmentID = current.departmentID;
-          tempDepartmentList.departmentName = current.departmentName;
-
-          this.DepartmentDropdown.push(tempDepartmentList);
-
-        }
-        console.log("the derpartment thing works");
-
-      }
-      else {
-        alert(data.responseMessage);
-      }
-      console.log("reponse", data);
-
-
-    }, error => {
-      console.log("Error: ", error);
-    })
-  }
 
 
 }
