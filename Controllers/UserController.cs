@@ -22,12 +22,13 @@ namespace WayleaveManagementSystem.Controllers
         private readonly ILogger<UserController> _logger;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         //This is the sign the token
         private readonly JWTConfig _jWTConfig;
 
 
         //This is a service injection using the constructor 
-        public UserController(ILogger<UserController> logger, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IOptions<JWTConfig> jwtConfig)
+        public UserController(ILogger<UserController> logger, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IOptions<JWTConfig> jwtConfig, RoleManager<IdentityRole> roleManager)
         {
 
             // dotnet core will then inject these service i created into the controller
@@ -36,6 +37,7 @@ namespace WayleaveManagementSystem.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
             _jWTConfig = jwtConfig.Value;
+            _roleManager = roleManager;
         }
 
 
@@ -201,6 +203,9 @@ namespace WayleaveManagementSystem.Controllers
 
         }
 
+
+
+      
 
     }
 }

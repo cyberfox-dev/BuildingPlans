@@ -130,8 +130,8 @@ export class RolesConfigComponent implements OnInit {
     let newRoleDescription = this.addRole.controls["newRoleDescription"].value;
 
     this.RolesList.splice(0, this.RolesList.length);
-
-    this.roleService.addUpdateRole(0, newRoleName, newRoleType, newRoleDescription, this.CurrentUser.appUserId).subscribe((data: any) => {
+    //, newRoleType, newRoleDescription, this.CurrentUser.appUserId
+    this.roleService.addUpdateRole(null, newRoleName).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         alert(data.responseMessage);
@@ -200,19 +200,21 @@ export class RolesConfigComponent implements OnInit {
     let editRoleType = this.editRole.controls["editRoleType"].value;
     let editRoleDescription = this.editRole.controls["editRoleDescription"].value;
 
-    this.roleService.addUpdateRole(this.RolesList[this.forEditIndex].RoleID, editRoleName, editRoleType, editRoleDescription, null).subscribe((data: any) => {
+   // , editRoleType, editRoleDescription, null
 
-      if (data.responseCode == 1) {
-        alert(data.responseMessage);
-        this.getAllRoles();
-      }
-      else {
-        alert(data.responseMessage);
-      }
-      console.log("response", data);
-    }, error => {
-      console.log("Error", error);
-    })
+    //this.roleService.addUpdateRole(this.RolesList[this.forEditIndex].RoleID, editRoleName).subscribe((data: any) => {
+
+    //  if (data.responseCode == 1) {
+    //    alert(data.responseMessage);
+    //    this.getAllRoles();
+    //  }
+    //  else {
+    //    alert(data.responseMessage);
+    //  }
+    //  console.log("response", data);
+    //}, error => {
+    //  console.log("Error", error);
+    //})
 
 /*    this.RolesList.splice(0, this.RolesList.length);
     const forEditRole = {} as RolesList;
