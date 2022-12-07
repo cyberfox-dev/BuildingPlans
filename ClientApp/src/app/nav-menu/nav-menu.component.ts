@@ -29,11 +29,18 @@ export class NavMenuComponent implements OnInit {
 
   displayedColumns: string[] = ['Comment','date', 'actions'];
   dataSource = ELEMENT_DATA;
-
-
+  stringifiedData: any;
+  CurrentUser: any;
 
   ngOnInit(): void {
-  
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
+    if (this.CurrentUser == null) {
+      console.log("Not");
+    }
+    else {
+      console.log(this.CurrentUser);
+    }
      
   }
 

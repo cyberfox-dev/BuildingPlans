@@ -46,7 +46,7 @@ export interface ApplicationList {
 
 export class SharedService {
 
-
+  checkEmail!: string;
 
   configShow!: any;
 
@@ -56,6 +56,16 @@ export class SharedService {
   engineerData: ProfessionalList[] = [];
 
   constructor() { }
+
+  setCheckEmail(data:any) {
+    this.checkEmail = data;
+    console.log("Set method" + this.checkEmail);
+  }
+  getCheckEmail() {
+    return this.checkEmail;
+  }
+
+
  setConfigShow(data:any){
   this.configShow=data
  }
@@ -72,7 +82,7 @@ export class SharedService {
   }
 
   setContactorData(data: any) {
-    debugger;
+   
    // this.contactorData.splice(0, this.contactorData.length);
     this.contactorData = data;
     console.log("Shared this.contactorData ", this.contactorData);

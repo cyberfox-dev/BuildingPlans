@@ -8,6 +8,7 @@ import { SharedService } from 'src/app/shared/shared.service';
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
 import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
 import { DepartmentsService } from '../../service/Departments/departments.service';
+import { Router } from '@angular/router';
 
 export interface DepartmentList {
   departmentID: number;
@@ -66,7 +67,7 @@ export interface ContractorList {
   styleUrls: ['./new-profile.component.css']
 })
 export class NewProfileComponent implements OnInit {
-
+  checkEmail!: string;
   DepartmentDropdown: DepartmentList[] = [];
 
   @ViewChild("placesRef")
@@ -116,7 +117,7 @@ export class NewProfileComponent implements OnInit {
   linkedContractors: ContractorList[] = [];
 
 
-  constructor(private modalService: NgbModal, private shared: SharedService, private userPofileService: UserProfileService, private professionalService: ProfessionalService, private departmentService: DepartmentsService) { }
+  constructor(private modalService: NgbModal, private shared: SharedService, private userPofileService: UserProfileService, private professionalService: ProfessionalService, private departmentService: DepartmentsService, private router: Router) { }
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
@@ -150,16 +151,23 @@ export class NewProfileComponent implements OnInit {
   ngOnInit(): void {
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
-
+    
     const fullname = this.CurrentUser.fullName;
-
+    this.checkEmail = this.shared.getCheckEmail();
+    console.log(this.checkEmail);
+    if (this.checkEmail === "@capetown.gov.za") {
+      this.showInternal = true;
+    }
+    else {
+      this.showExternal = true;
+    }
     this.internalApplicantName = fullname.substring(0, fullname.indexOf(' '));
     this.internalApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
 
     this.extApplicantName = fullname.substring(0, fullname.indexOf(' '));
     this.extApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
     this.extApplicantEmail = this.CurrentUser.email; 
-    this.forViewPopulateDepartmentDropDown();
+    this.getAllDeps();
   }
 
   ngDoCheck() {
@@ -168,27 +176,12 @@ export class NewProfileComponent implements OnInit {
    
 
   }
-  sInternal() {
-    this.showInternal = true;
-    this.showExternal = false;
-    this.Internal = true;
-    this.External = false;
-  }
-
-  sExternal() {
-    this.showInternal = false;
-    this.showExternal = true;
-    this.Internal = false;
-    this.External = true;
-  }
-
-
- 
 
   onNewProfileCreate() {
     if (this.showInternal) {
 
-      this.userPofileService.addUpdateUserProfiles(null, this.CurrentUser.appUserId, this.internalApplicantName + " " + this.internalApplicantSurname, this.CurrentUser.email, this.internalApplicantTellNo, this.showInternal, null, null, null, null, this.internalApplicantDirectorate, 1/*this.internalApplicantDepartment*/, 1, this.internalApplicantBranch, this.internalApplicantCostCenterNo, this.internalApplicantCostCenterOwner, null, this.CurrentUser.appUserId, null).subscribe((data: any) => {
+      debugger;
+      this.userPofileService.addUpdateUserProfiles(null, this.CurrentUser.appUserId, this.internalApplicantName + " " + this.internalApplicantSurname, this.CurrentUser.email, this.internalApplicantTellNo, this.showInternal, null, null, null, null,/*THE DIRECTORATE IS NOW SENDING THROUGH THE DEPSRTMENT NAME*/ this.internalApplicantDirectorate, Number(this.internalApplicantDepartment), 1, this.internalApplicantBranch, this.internalApplicantCostCenterNo, this.internalApplicantCostCenterOwner, null, this.CurrentUser.appUserId, null).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 
@@ -212,6 +205,7 @@ export class NewProfileComponent implements OnInit {
                 else {
                   //alert("Invalid Email or Password");
                   alert(data.responseMessage);
+                  this.router.navigate(["/home"]);
                 }
                 console.log("reponse", data);
 
@@ -257,7 +251,7 @@ export class NewProfileComponent implements OnInit {
   }
 
 
-  forViewPopulateDepartmentDropDown() {
+  getAllDeps() {
 
     this.DepartmentDropdown.splice(0, this.DepartmentDropdown.length);
     this.departmentService.getDepartmentsList().subscribe((data: any) => {
@@ -272,10 +266,11 @@ export class NewProfileComponent implements OnInit {
           tempDepartmentList.departmentName = current.departmentName;
 
           this.DepartmentDropdown.push(tempDepartmentList);
-
+       
         }
         console.log("the derpartment thing works");
-
+        
+        
       }
       else {
         alert(data.responseMessage);
@@ -286,6 +281,21 @@ export class NewProfileComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
+  }
+
+  onSelectToSendDepName(event: any) {
+
+    for (var i = 0; i < this.DepartmentDropdown.length; i++) {
+      if (this.DepartmentDropdown[i].departmentID == Number(this.internalApplicantDepartment)) {
+        debugger;
+        this.internalApplicantDirectorate = this.DepartmentDropdown[i].departmentName; 
+      }
+    }
+
+
+ 
+    
+    
   }
 
 
