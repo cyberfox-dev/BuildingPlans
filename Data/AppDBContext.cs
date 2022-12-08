@@ -14,6 +14,7 @@ namespace WayleaveManagementSystem.Data
         }
 
         public DbSet<Professionals> ProfessionalsTable { get; set; }
+        public DbSet<ProfessionalsLinks> ProfessionalsLink { get; set; }
         public DbSet<UserProfile> UserProfilesTable { get; set; }
 
         public DbSet<Departments> DepartmentsTable { get; set; }

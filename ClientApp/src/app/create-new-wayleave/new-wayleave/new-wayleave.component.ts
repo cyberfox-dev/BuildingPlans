@@ -8,6 +8,7 @@ import { InternalOptionComponent } from 'src/app/create-new-wayleave/internal-op
 import { SharedService } from "../../shared/shared.service";
 import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
+import { ProfessionalsLinksService } from 'src/app/service/ProfessionalsLinks/professionals-links.service';
 
 export interface EngineerList {
   professinalID: number;
@@ -59,7 +60,7 @@ export class NewWayleaveComponent implements OnInit {
   internalBranch = '';
   internalCostCenterNumber = '';
   internalCostCenterOwner = '';
-  
+
 
   /*project details*/
   typeOfApplication = '';
@@ -105,6 +106,9 @@ export class NewWayleaveComponent implements OnInit {
   CurrentUser: any;
   //Convert the local storage JSON data to an array object
   stringifiedData: any;
+  venstringifiedData: any;
+  venContractorData: any;
+
   //Columns for both the engineer and contractor lists
   displayedColumns: string[] = ['ProfessinalType', 'professionalRegNo', 'bpNumber', 'name', 'surname', 'email', 'phoneNumber', 'idNumber'];
   displayedColumnsContractors: string[] = ['ProfessinalType', 'professionalRegNo', 'bpNumber', 'name', 'surname', 'email', 'phoneNumber', 'idNumber'];
@@ -115,13 +119,13 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
-  constructor(private modalService: NgbModal, private applicationsService: ApplicationsService, private shared: SharedService, private formBuilder: FormBuilder, private professionalService: ProfessionalService, private userPofileService: UserProfileService) { }
+  constructor(private modalService: NgbModal, private applicationsService: ApplicationsService, private professionalsLinksService: ProfessionalsLinksService, private shared: SharedService, private formBuilder: FormBuilder, private professionalService: ProfessionalService, private userPofileService: UserProfileService) { }
 
   ngOnInit(): void {
 
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
-    this.CurrentUser = JSON.parse(this.stringifiedData); this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
     this.getProfessionalsListByProfessionalType("Engineer");
     this.getProfessionalsListByProfessionalType("Contractor");
 
@@ -130,8 +134,8 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-  //  this.getProfessionalsListByProfessionalType("Contractor");
- 
+    //  this.getProfessionalsListByProfessionalType("Contractor");
+
   }
 
   clickedRowsEngineers = new Set<EngineerList>();
@@ -198,7 +202,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
   getProfessionalsListByProfessionalType(professionalType: string) {
-/*    this.EngineerList.splice(0, this.EngineerList.length);*/
+    /*    this.EngineerList.splice(0, this.EngineerList.length);*/
 
     this.professionalService.getProfessionalsListByProfessionalType(this.CurrentUser.appUserId, professionalType).subscribe((data: any) => {
 
@@ -242,7 +246,7 @@ export class NewWayleaveComponent implements OnInit {
         }
         this.ContractorTable?.renderRows();
         this.EngineerTable?.renderRows();
-        
+
       }
 
       else {
@@ -277,14 +281,47 @@ export class NewWayleaveComponent implements OnInit {
 
       if (data.responseCode == 1) {
         alert(data.responseMessage);
+
+        const contractorData = this.shared.getContactorData();
+        const engineerData = this.shared.getEngineerData();
+
+        //Add professional link for contractors when application is successfully captured
+        for (var i = 0; i < contractorData.length; i++) {
+
+          this.addProfessionalsLinks(data.dateSet.applicationID, contractorData[i].professinalID);
+        };
+
+        //Add professional link for engineers when application is successfully captured
+        for (var i = 0; i < engineerData.length; i++) {
+
+          this.addProfessionalsLinks(data.dateSet.applicationID, engineerData[i].professinalID);
+        };
+
       }
       else {
+/*        alert(data.responseMessage);*/
+      }
+      console.log("responseAddapplication", data);
+    }, error => {
+      console.log("Error", error);
+    })
+  }
+
+  addProfessionalsLinks(applicationID: number, professionalID: number) {
+
+    this.professionalsLinksService.addUpdateProfessionalsLink(0, applicationID, professionalID, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
         alert(data.responseMessage);
+      }
+      else {
+        /*        alert(data.responseMessage);*/
       }
       console.log("response", data);
     }, error => {
       console.log("Error", error);
     })
   }
+
 
 }

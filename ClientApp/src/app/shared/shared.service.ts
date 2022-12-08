@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 
 export interface ProfessionalList {
-
+  professinalID: number;
   ProfessinalType: string;
   professionalRegNo: string;
   bpNumber: string;
@@ -73,8 +73,9 @@ export class SharedService {
 
   setContactorData(data: any) {
     debugger;
-   // this.contactorData.splice(0, this.contactorData.length);
+/*        this.contactorData.splice(0, this.contactorData.length);*/
     this.contactorData = data;
+
     console.log("Shared this.contactorData ", this.contactorData);
   }
   getContactorDataByIndex(index: number) {

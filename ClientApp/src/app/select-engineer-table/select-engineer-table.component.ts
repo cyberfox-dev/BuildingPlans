@@ -40,6 +40,7 @@ export class SelectEngineerTableComponent implements OnInit {
   displayedColumns: string[] = ['ProfessinalType', 'professionalRegNo', 'bpNumber', 'name', 'surname', 'email', 'phoneNumber', 'idNumber'];
   dataSourceProfessials = this.ProfessialList;
   clickedRowsProfessials = new Set<ProfessialList>();
+  ProfessionalsDataForShared: ProfessialList[] = [];
   constructor(private professionalService: ProfessionalService, private shared: SharedService) { }
 
   ngOnInit(): void {
@@ -118,20 +119,62 @@ export class SelectEngineerTableComponent implements OnInit {
 
 
 
-  SetSharedData() {
-   
+  //RemovefromProList(row: any) {
+
+    
+
+
+  //  for (var i = 0; i < this.ProfessionalsDataForShared.length; i++) {
+  //    if (this.clickedRowsProfessials.has(row)) {
+  //      this.ProfessionalsDataForShared.splice(this.ProfessionalsDataForShared[i], 1);
+  //    } else {
+
+  //    }
+
+
+  
+
+  //  }
+  //}
+
+
+
+  SetSharedData(row:any) {
+     const tempData = {} as ProfessialList;
+    const currentRow = row;
+
+  
+      tempData.bpNumber = currentRow.bpNumber;
+      tempData.CIBRating = currentRow.CIBRating;
+      tempData.email = currentRow.email;
+      tempData.idNumber = currentRow.idNumber;
+      tempData.name = currentRow.name;
+      tempData.phoneNumber = currentRow.phoneNumber;
+      tempData.professinalID = currentRow.professinalID;
+      tempData.ProfessinalType = currentRow.ProfessinalType;
+      tempData.professionalRegNo = currentRow.professionalRegNo;
+      tempData.surname = currentRow.surname;
+
+      this.ProfessionalsDataForShared.push(tempData);
+    this.pushToShared();
+    
+  }
+
+  pushToShared() {
     if (this.PrfessionalType == "Engineer") {
-      this.shared.setEngineerData(this.clickedRowsProfessials);
+
+      this.shared.setEngineerData(this.ProfessionalsDataForShared);
     }
     else {
-      this.shared.setContactorData(this.clickedRowsProfessials);
+      this.shared.setContactorData(this.ProfessionalsDataForShared);
     }
   }
 
-
   clearAllEngineers() {
     this.clickedRowsProfessials.clear();
-    this.SetSharedData();
+
+    this.ProfessionalsDataForShared.splice(0, this.ProfessionalsDataForShared.length);
+    this.pushToShared();
   }
 
 

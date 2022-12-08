@@ -49,9 +49,9 @@
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row
-      (click)="clickedRowsProfessials.add(row);SetSharedData()"
+      (click)="clickedRowsProfessials.add(row);SetSharedData(row)"
       [class.demo-row-is-clicked]="clickedRowsProfessials.has(row)"
-      *matRowDef="let row; columns: displayedColumns;"></tr>
+      *matRowDef="let row; columns: displayedColumns;let i = index;"></tr>
 </table>
 
 
