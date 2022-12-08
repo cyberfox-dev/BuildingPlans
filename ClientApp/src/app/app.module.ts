@@ -66,7 +66,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CyberfoxConfigComponent } from './cyberfox-config/cyberfox-config.component';
 import { AccessGroupsConfigComponent } from './access-groups-config/access-groups-config.component';
 import { MatToolbarModule } from '@angular/material/toolbar'; 
-
+import { MatListModule } from '@angular/material/list';
 
 @NgModule({
   declarations: [
@@ -138,6 +138,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatSnackBarModule,
     MatSelectModule,
     MatSidenavModule,
+    MatListModule,
     MatInputModule,
     MatButtonModule,
     MatToolbarModule,

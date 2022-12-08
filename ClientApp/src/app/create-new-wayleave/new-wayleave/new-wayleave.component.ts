@@ -35,6 +35,19 @@ export interface ContractorList {
   CIBRating: string;
 }
 
+export interface PeriodicElement {
+
+  fileType: string;
+
+}
+
+const ELEMENT_DATA: PeriodicElement[] = [
+  { fileType: "Cover letter explaning the extent of the work" },
+  { fileType: "Drawing showing the proposed route and detail regarding the trench cross section, number of pipes etc." },
+  { fileType: "A programme with proposed timelines" },
+  { fileType: "Proof and payment"},
+];
+
 
 
 @Component({
@@ -117,7 +130,8 @@ export class NewWayleaveComponent implements OnInit {
   @ViewChild(MatTable) EngineerTable: MatTable<EngineerList> | undefined;
   @ViewChild(MatTable) ContractorTable: MatTable<ContractorList> | undefined;
 
-
+  displayedColumnsCUpload: string[] = ['fileType','actions'];
+  dataSource = ELEMENT_DATA;
 
   constructor(private modalService: NgbModal, private applicationsService: ApplicationsService, private professionalsLinksService: ProfessionalsLinksService, private shared: SharedService, private formBuilder: FormBuilder, private professionalService: ProfessionalService, private userPofileService: UserProfileService) { }
 
@@ -321,6 +335,31 @@ export class NewWayleaveComponent implements OnInit {
     }, error => {
       console.log("Error", error);
     })
+  }
+  @ViewChild('fileInput')
+    fileInput!: ElementRef;
+  fileAttr = 'Choose File';
+  uploadFileEvt(imgFile: any) {
+    if (imgFile.target.files && imgFile.target.files[0]) {
+      this.fileAttr = '';
+      Array.from(imgFile.target.files).forEach((file: any) => {
+        this.fileAttr += file.name + ' - ';
+      });
+      // HTML5 FileReader API
+      let reader = new FileReader();
+      reader.onload = (e: any) => {
+        let image = new Image();
+        image.src = e.target.result;
+        image.onload = (rs) => {
+          let imgBase64Path = e.target.result;
+        };
+      };
+      reader.readAsDataURL(imgFile.target.files[0]);
+      // Reset if duplicate image uploaded again
+      this.fileInput.nativeElement.value = '';
+    } else {
+      this.fileAttr = 'Choose File';
+    }
   }
 
 

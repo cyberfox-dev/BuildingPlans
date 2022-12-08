@@ -460,19 +460,107 @@
     <mat-step>
       <form>
         <ng-template matStepLabel>checklist and document uploads</ng-template>
-        <img src="assets/uploads.PNG">
+
 
         <!--<app-checklist-details (newItemEvent)="StepSave(6,$event)"></app-checklist-details>-->
 
-        <div class="row">
-
-          <button type="submit" class="submit" (click)="onWayleaveCreate()">Create Invoice</button>
-
-        </div>
-
-
-
       </form>
+      <mat-list>
+        <mat-list-item>Cover letter explaning the extent of the work</mat-list-item>
+        <mat-form-field>
+          <div>
+
+            <mat-toolbar>
+              <!-- Display files names -->
+              <input matInput [(ngModel)]="fileAttr" readonly name="name" />
+              <!-- Browse Button -->
+              <button mat-raised-button color="primary"><i class="fa fa-upload" aria-hidden="true"></i></button>
+              <!--<button mat-flat-button color="primary"><i class="fa fa-upload" aria-hidden="true"></i></button>-->
+            </mat-toolbar>
+
+
+            <!-- Fetch selected filed on change -->
+            <input type="file"
+                   #fileInput
+                   id="uploadFile"
+                   (change)="uploadFileEvt($event)"
+                   name="uploadFile"
+                   multiple="multiple"
+                   accept="image/*" />
+          </div>
+        </mat-form-field>
+        <button mat-raised-button color="warn"><i class="fa fa-trash" aria-hidden="true"></i></button>
+
+        <mat-list-item>Drawing showing the proposed route and detail regarding the trench cross section, number of pipes etc.</mat-list-item>
+        <mat-form-field>
+          <div>
+
+            <mat-toolbar>
+              <!-- Display files names -->
+              <input matInput [(ngModel)]="fileAttr" readonly name="name" />
+              <!-- Browse Button -->
+              <button mat-raised-button color="primary"><i class="fa fa-upload" aria-hidden="true"></i></button>
+            </mat-toolbar>
+            <!-- Fetch selected filed on change -->
+            <input type="file"
+                   #fileInput
+                   id="uploadFile"
+                   (change)="uploadFileEvt($event)"
+                   name="uploadFile"
+                   multiple="multiple"
+                   accept="image/*" />
+          </div>
+        </mat-form-field>
+        <button mat-raised-button color="warn"><i class="fa fa-trash" aria-hidden="true"></i></button>
+        <mat-list-item>A programme with proposed timelines</mat-list-item>
+        <mat-form-field>
+          <div>
+
+            <mat-toolbar>
+              <!-- Display files names -->
+              <input matInput [(ngModel)]="fileAttr" readonly name="name" />
+              <!-- Browse Button -->
+              <button mat-raised-button color="primary"><i class="fa fa-upload" aria-hidden="true"></i></button>
+            </mat-toolbar>
+            <!-- Fetch selected filed on change -->
+            <input type="file"
+                   #fileInput
+                   id="uploadFile"
+                   (change)="uploadFileEvt($event)"
+                   name="uploadFile"
+                   multiple="multiple"
+                   accept="image/*" />
+          </div>
+        </mat-form-field>
+        <button mat-raised-button color="warn"><i class="fa fa-trash" aria-hidden="true"></i></button>
+        <mat-list-item>Proof and payment</mat-list-item>
+        <mat-form-field>
+          <div>
+
+            <mat-toolbar>
+              <!-- Display files names -->
+              <input matInput [(ngModel)]="fileAttr" readonly name="name" />
+              <!-- Browse Button -->
+              <button mat-raised-button color="primary"><i class="fa fa-upload" aria-hidden="true"></i></button>
+            </mat-toolbar>
+            <!-- Fetch selected filed on change -->
+            <input type="file"
+                   #fileInput
+                   id="uploadFile"
+                   (change)="uploadFileEvt($event)"
+                   name="uploadFile"
+                   multiple="multiple"
+                   accept="image/*" />
+          </div>
+        </mat-form-field>
+        <button mat-raised-button color="warn"><i class="fa fa-trash" aria-hidden="true"></i></button>
+      </mat-list>
+
+      <div class="row">
+
+     <!--   <button type="submit" class="submit" (click)="onWayleaveCreate()">Create Invoice</button>-->
+        <button mat-raised-button color="green" (click)="onWayleaveCreate()">Create Invoice</button>
+      </div>
     </mat-step>
 
 
