@@ -17,17 +17,7 @@ export class InternalOptionComponent implements OnInit {
 
   cardchange(ids: any) {
     this.option = ids;
-    
-    
-    if (this.option == 'client') {
-      this.clientactive = true;
-      this.internalactive = false;
-     
-    }
-    else if (this.option == 'internal') {
-      this.internalactive = true;
-      this.clientactive = false;
-    }
+
   }
   client() {
     this.clientactive = true;
@@ -42,7 +32,6 @@ export class InternalOptionComponent implements OnInit {
 
   sendOption() {
     this.optionEvent.emit(this.option);
-    
 
   }
   @ViewChild("internalOpt", { static: true }) content!: ElementRef;

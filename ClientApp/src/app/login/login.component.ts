@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { UserService } from '../service//User/user.service';
-
+import { SharedService} from "src/app/shared/shared.service"
 
 
 @Component({
@@ -13,6 +13,7 @@ import { UserService } from '../service//User/user.service';
 export class LoginComponent implements OnInit {
   isLoading = false;
   error!: string;
+  checkEmail = "";
 
   public container = document.getElementById('container');
 
@@ -28,13 +29,18 @@ export class LoginComponent implements OnInit {
     fullName: ['', Validators.required],
 
   })
-  constructor(private router: Router, private formBuilder: FormBuilder, private userService: UserService) {
+    space1: number | undefined;
+  space2: number | undefined;
+
+  @Output() checkForInternalOption = new EventEmitter<string>();
+
+  constructor(private router: Router, private formBuilder: FormBuilder, private userService: UserService, private sharedService: SharedService) {
 
 
 
   }
 
-
+ 
 
   ngOnInit(): void {
   }
@@ -66,29 +72,54 @@ export class LoginComponent implements OnInit {
     })
   }
 
+
   onRegister() {
-    console.log("onRegister");
+
+    
     let fullName = this.registerForm.controls["fullName"].value;
     let email = this.registerForm.controls["registerEmail"].value;
     let password = this.registerForm.controls["registerPassword"].value;
-    this.userService.register(fullName, email, password).subscribe((data:any) => {
+    let checkEmail = email?.substring(email.indexOf("@"));
+    this.sharedService.setCheckEmail(checkEmail);
+    console.log(checkEmail);
+    let spaceCount = 0;
+ 
+  
+  
 
-      if (data.responseCode == 1) {
-        console.log("After Register", data.dateSet);
-        localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
-        alert(data.responseMessage);
-        this.router.navigate(["/new-profile"]);
-      }
-      else {
-        //alert("Invalid Email or Password");
-        alert(data.responseMessage);
-      }
-      //console.log("reponse", data);
+    if (fullName != null) {
+      spaceCount = (fullName.split(" ").length - 1);
 
-    }, error => {
-      console.log("Error: ", error);
-    })
+    }
+
+    if (spaceCount >= 2 || spaceCount == 0) {
+
+      alert("Please enter your first name and surname only!");
+    }
+    else {
+         this.userService.register(fullName, email, password).subscribe((data: any) => {
+      
+              if (data.responseCode == 1) {
+                console.log("After Register", data.dateSet);
+                localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
+                alert(data.responseMessage);
+                this.router.navigate(["/new-profile"]);
+              }
+              else {
+                //alert("Invalid Email or Password");
+                alert(data.responseMessage);
+              }
+              //console.log("reponse", data);
+      
+            }, error => {
+              console.log("Error: ", error);
+         })
+
+
+     }
   }
+
+
 
   add() {
     this.container = document.getElementById('container');

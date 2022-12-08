@@ -6,6 +6,17 @@ using WayleaveManagementSystem.Models;
 using WayleaveManagementSystem.Service;
 using WayleaveManagementSystem.Models.DTO;
 using WayleaveManagementSystem.DTO;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using WayleaveManagementSystem.BindingModel;
+using WayleaveManagementSystem.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace WayleaveManagementSystem.Controllers
 {
@@ -14,10 +25,12 @@ namespace WayleaveManagementSystem.Controllers
     public class RolesController : ControllerBase
     {
         private readonly IRolesService _rolesService;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public RolesController(IRolesService rolesService)
+        public RolesController(IRolesService rolesService, RoleManager<IdentityRole> roleManager)
         {
             _rolesService = rolesService;
+            _roleManager = roleManager;
         }
 
         [HttpPost("AddUpdateRole")]
@@ -30,11 +43,34 @@ namespace WayleaveManagementSystem.Controllers
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
+
                 else
                 {
-                    var result = await _rolesService.AddUpdateRole(model.RoleID, model.RoleName, model.RoleType, model.RoleDescription, model.CreatedById);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.RoleID > 0 ? "Role Updated Sussessfully" : "Role Added Sussessfully"), result));
+                    if (!(await _roleManager.RoleExistsAsync(model.RoleName)))
+                    {
+                        var result = await _roleManager.CreateAsync(new IdentityRole(model.RoleName));
+                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Role Added Sussessfully", result));
+                    }
+                    else
+                    {
+                        //var tempRoleTable = _roleManager.FindByIdAsync(model.RoleID);
+
+                        var result = await _roleManager.UpdateAsync(new IdentityRole(model.RoleName));
+                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Role Updated Sussessfully", result));
+                    }
                 }
+
+             
+
+                //if (model == null || model.RoleName.Length < 1)
+                //{
+                //    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                //}
+                //else
+                //{
+                //    var result = await _rolesService.AddUpdateRole(model.RoleID, model.RoleName, model.RoleType, model.RoleDescription, model.CreatedById);
+                //    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.RoleID > 0 ? "Role Updated Sussessfully" : "Role Added Sussessfully"), result));
+                //}
 
             }
             catch (Exception ex)
@@ -118,6 +154,13 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+
+
+
+
+
+
+
 
 
     }
