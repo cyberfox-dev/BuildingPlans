@@ -5,17 +5,15 @@ import { DepartmentConfigComponent } from 'src/app/department-config/department-
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { SharedService } from '../shared/shared.service';
+import { RolesService } from '../service/Roles/roles.service';
+import { MatTable } from '@angular/material/table';
+import { CommentBuilderService } from '../service/CommentBuilder/comment-builder.service';
 
-export interface PeriodicElement {
+export interface CommentList {
   Comment: string;
-  date: string;
+  DateCreated: string;
 }
 
-const ELEMENT_DATA: PeriodicElement[] = [
-  { Comment: 'This is a test', date:'10/10/10' },
-  { Comment: 'These comments are hardcoded', date: '10/10/10' },
-  { Comment: 'They are not real', date: '10/10/10' },
-];
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
@@ -23,12 +21,21 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class NavMenuComponent implements OnInit {
   isExpanded = false;
-  configShow : number | undefined;
+  configShow: number | undefined;
 
-  constructor(private modalService: NgbModal, private router: Router, private shared: SharedService) { }
+  CommentList: CommentList[] = [];
+
+  public addComment = this.formBuilder.group({
+    newCommentName: ['', Validators.required],
+
+  })
+
+  constructor(private modalService: NgbModal, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService) { }
 
   displayedColumns: string[] = ['Comment','date', 'actions'];
-  dataSource = ELEMENT_DATA;
+  dataSource = this.CommentList;
+  @ViewChild(MatTable) commentTable: MatTable<CommentList> | undefined;
+
   stringifiedData: any;
   CurrentUser: any;
 
@@ -43,6 +50,63 @@ export class NavMenuComponent implements OnInit {
     }
      
   }
+
+  onCommentCreate() {
+    let newCommentName = this.addComment.controls["newCommentName"].value;
+    debugger;
+
+    this.CommentList.splice(0, this.CommentList.length);
+ 
+    this.commentService.addUpdateComment(null, newCommentName).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        alert(data.responseMessage);
+       
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("response", data);
+    }, error => {
+      console.log("Error", error);
+    })
+  }
+
+  getAllCommentsByUserID() {
+
+    this.CommentList.splice(0, this.CommentList.length);
+
+    this.commentService.getCommentByUserID(this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempCommentList = {} as CommentList;
+          const current = data.dateSet[i];
+          tempCommentList.Comment = current.commentName;
+          tempCommentList.DateCreated = current.dateCreated;
+
+
+          this.CommentList.push(tempCommentList);
+
+        }
+        this.commentTable?.renderRows();
+        console.log("GetAllRoles", data.dateSet);
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+
+
+
 
   goToConfig() {
     this.router.navigate(["/configuration"]);

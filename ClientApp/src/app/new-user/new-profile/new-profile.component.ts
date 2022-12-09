@@ -97,7 +97,7 @@ export class NewProfileComponent implements OnInit {
   extApplicantEmail = '';
   extApplicantPhyscialAddress = '';
   extApplicantIDNumber = '';
-  extApplicantIDUpload = '';
+  extApplicantIDUpload :any;
 
 
   /*Internal*/
@@ -128,9 +128,8 @@ export class NewProfileComponent implements OnInit {
 
   public handleAddressChange(address: Address) {
     // Do some stuff
-    console.log("Address", address);
-    console.log("Address", address);
-    console.log("Address", address);
+    this.extApplicantPhyscialAddress = address.formatted_address;
+   
   }
 
 
@@ -178,6 +177,7 @@ export class NewProfileComponent implements OnInit {
   }
 
   onNewProfileCreate() {
+    debugger;
     if (this.showInternal) {
 
       debugger;
@@ -231,6 +231,61 @@ export class NewProfileComponent implements OnInit {
     }
 
     else {
+
+      this.userPofileService.addUpdateUserProfiles(0, this.CurrentUser.appUserId, this.extApplicantName + " " + this.extApplicantSurname, this.CurrentUser.email, this.extApplicantTellNo, this.showExternal, this.extApplicantBpNoApplicant, this.extApplicantCompanyName, this.extApplicantCompanyRegNo, this.extApplicantPhyscialAddress, null, null, null, null, null, null, this.extApplicantIDUpload, this.CurrentUser.appUserId,this.extApplicantIDNumber).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          alert(data.responseMessage);
+
+          debugger;
+          const linkedContractors = this.shared.getContactorData();
+
+
+
+          for (let i = 0; i < linkedContractors.length; i++) {
+            const linkedContractor = this.shared.getContactorDataByIndex(i);
+
+            this.professionalService.addUpdateProfessional(null, linkedContractor.ProfessinalType, linkedContractor.name + " " + linkedContractor.surname, linkedContractor.bpNumber, false, linkedContractor.email, linkedContractor.phoneNumber?.toString(), linkedContractor.professionalRegNo, this.CurrentUser.appUserId, linkedContractor.idNumber, this.CurrentUser.appUserId, linkedContractor.CIBRating)
+              .subscribe((data: any) => {
+
+                if (data.responseCode == 1) {
+
+                  //alert(data.responseMessage);
+                }
+                else {
+                  //alert("Invalid Email or Password");
+                  alert(data.responseMessage);
+                  this.router.navigate(["/home"]);
+                }
+                console.log("reponse", data);
+
+              }, error => {
+                console.log("Error: ", error);
+              })
+          }
+        }
+
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+      const linkedEngineers = this.shared.getEngineerData;
+
+
+
+
+
+
+
+
+/*this is some other type of code im not sure*/
       //const newExternalUserProfile = {} as ExternalList;
       //this.extApplicantBpNoApplicant;
       //this.extApplicantCompanyName;
