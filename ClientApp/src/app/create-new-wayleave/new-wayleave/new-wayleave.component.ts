@@ -160,7 +160,7 @@ export class NewWayleaveComponent implements OnInit {
       this.external = false;
       this.client = false;
     }
-
+   
 
   }
 
