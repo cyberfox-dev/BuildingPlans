@@ -12,6 +12,7 @@ import { CommentBuilderService } from '../service/CommentBuilder/comment-builder
 export interface CommentList {
   Comment: string;
   DateCreated: string;
+  createdBy:any;
 }
 
 @Component({
