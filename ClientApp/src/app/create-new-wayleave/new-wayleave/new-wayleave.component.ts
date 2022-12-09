@@ -122,6 +122,8 @@ export class NewWayleaveComponent implements OnInit {
   venstringifiedData: any;
   venContractorData: any;
 
+  CurrentUserProfile: any;
+  stringifiedDataUserProfile: any;
   //Columns for both the engineer and contractor lists
   displayedColumns: string[] = ['ProfessinalType', 'professionalRegNo', 'bpNumber', 'name', 'surname', 'email', 'phoneNumber', 'idNumber'];
   displayedColumnsContractors: string[] = ['ProfessinalType', 'professionalRegNo', 'bpNumber', 'name', 'surname', 'email', 'phoneNumber', 'idNumber'];
@@ -143,6 +145,21 @@ export class NewWayleaveComponent implements OnInit {
     this.getProfessionalsListByProfessionalType("Engineer");
     this.getProfessionalsListByProfessionalType("Contractor");
 
+    this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
+    this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
+
+
+
+    if (this.CurrentUserProfile.isInternal == false) {
+      this.external = true;
+      this.internal = false;
+      this.client = false;
+    }
+    else {
+      this.internal = true;
+      this.external = false;
+      this.client = false;
+    }
 
 
   }
@@ -168,6 +185,7 @@ export class NewWayleaveComponent implements OnInit {
     if (this.option == "client") {
       this.client = true;
       this.external = false;
+      this.internal = false;
       this.map = false;
     }
     else if (this.option == "internal") {

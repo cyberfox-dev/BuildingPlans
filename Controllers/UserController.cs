@@ -48,6 +48,13 @@ namespace WayleaveManagementSystem.Controllers
         {
             try
             {
+                var User = await _userManager.FindByEmailAsync(model.Email);
+
+                if (User != null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Email already exists", null));
+                }
+                else { 
                 var user = new AppUser()
                 {
                     UserName = model.Email,
@@ -56,6 +63,7 @@ namespace WayleaveManagementSystem.Controllers
                     DateCreated = DateTime.Now,
                     DateModified = DateTime.Now
                 };
+
 
                 //to register a user i and going to use userManager
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -72,7 +80,8 @@ namespace WayleaveManagementSystem.Controllers
                     //covert errors to an array then return it by Description
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "", result.Errors.Select(x => x.Description).ToArray()));
                 }
-                    
+                }
+
             }
             catch (Exception ex)
             {
