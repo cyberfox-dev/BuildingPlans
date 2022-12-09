@@ -89,12 +89,12 @@ namespace WayleaveManagementSystem.Controllers
         }
 
         [HttpGet("GetCommentByUserID")]
-        public async Task<object> GetCommentByUserID([FromBody] int userID)
+        public async Task<object> GetCommentByUserID([FromBody] string userID)
         {
             try
             {
 
-                if (userID < 1)
+                if (userID.Length < 3)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }

@@ -10,7 +10,7 @@ namespace WayleaveManagementSystem.IServices
       
         public Task<bool> DeleteComment(int commentID);
 
-        Task<List<CommentBuilderDTO>> GetCommentByUserID(int userID);
+        Task<List<CommentBuilderDTO>> GetCommentByUserID(string? userID);
 
        
     }
