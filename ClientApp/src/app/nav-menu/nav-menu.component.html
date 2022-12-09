@@ -1,7 +1,7 @@
 <!--modal for comment builder-->
 <ng-template #commentBuilder let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Comment Builder</h4>
+    <h4 class="modal-title" id="modal-basic-title">{{CurrentUser.fullName}}'s Comment Builder</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
@@ -53,15 +53,15 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-    <form>
+    <form [formGroup]="addComment" (ngSubmit)="onCommentCreate()">
       <mat-form-field class="example-full-width">
         <mat-label>Type new comment</mat-label>
-        <textarea matInput placeholder="Eg. This is good"></textarea>
+        <textarea matInput placeholder="Eg. This is good" formControlName="newCommentName"></textarea>
       </mat-form-field>
     </form>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+    <button type="submit" class="btn btn-outline-success" (click)="onCommentCreate()">Save</button>
   </div>
 </ng-template>
 

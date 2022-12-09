@@ -16,7 +16,7 @@ export class UserProfileService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public addUpdateUserProfiles(userProfileID: number | null, userID: string | null, fullName: string, email: string, phoneNumber: string | null, isInternal: boolean, bp_Number: string | null, companyName: string | null, companyRegNo: string | null, physcialAddress: string | null, directorate: string | null, departmentID: number | null, subDepartmentID: number | null, branch: string | null, costCenterNumber: string | null, costCenterOwner: string | null, copyOfID: any | null,createdById: string | null,idNumber: number |null) {
+  public addUpdateUserProfiles(userProfileID: number | null, userID: string | null, fullName: string, email: string, phoneNumber: string | null, isInternal: boolean, bp_Number: string | null, companyName: string | null, companyRegNo: string | null, physcialAddress: string | null, directorate: string | null, departmentID: number | null, subDepartmentID: number | null, branch: string | null, costCenterNumber: string | null, costCenterOwner: string | null, copyOfID: any | null,createdById: string | null,idNumber: string |null) {
 
     const body = {
       UserProfileID: userProfileID,

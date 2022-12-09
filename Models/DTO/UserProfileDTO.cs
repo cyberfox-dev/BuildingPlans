@@ -40,7 +40,7 @@ namespace WayleaveManagementSystem.Models.DTO
         public string? Branch { get; set; }
         public string? CostCenterNumber { get; set; }
         public string? CostCenterOwner { get; set; }
-        public byte? CopyOfID { get; set; }
+        public string? CopyOfID { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
 

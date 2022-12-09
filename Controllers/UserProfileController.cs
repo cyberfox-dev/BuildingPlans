@@ -37,7 +37,7 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
 
-                if (model == null || model.UserProfileID < 1)
+                if (model == null || model.UserProfileID < 0)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
