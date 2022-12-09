@@ -58,7 +58,7 @@ export class NavMenuComponent implements OnInit {
 
     this.CommentList.splice(0, this.CommentList.length);
  
-    this.commentService.addUpdateComment(null, newCommentName).subscribe((data: any) => {
+    this.commentService.addUpdateComment(null, newCommentName,this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         alert(data.responseMessage);
