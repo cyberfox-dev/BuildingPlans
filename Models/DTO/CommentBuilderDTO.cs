@@ -13,7 +13,7 @@ namespace WayleaveManagementSystem.DTO
 
         public string? CreatedById { get; set; }
 
-        public bool isActive { get; set; }
+
 
     }
 

@@ -49,34 +49,37 @@ export class NavMenuComponent implements OnInit {
     else {
       console.log(this.CurrentUser);
     }
+
      
   }
 
-  onCommentCreate() {
+
+  onCommentCreate(commentBuilder: any) {
     let newCommentName = this.addComment.controls["newCommentName"].value;
-    debugger;
+   
 
     this.CommentList.splice(0, this.CommentList.length);
  
     this.commentService.addUpdateComment(null, newCommentName,this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        alert(data.responseMessage);
-       
+        this.addComment.controls["newCommentName"].setValue(null);
+        this.getAllCommentsByUserID(commentBuilder);
       }
       else {
-        alert(data.responseMessage);
+        alert("Please type a comment");
       }
+ 
       console.log("response", data);
     }, error => {
       console.log("Error", error);
     })
   }
 
-  getAllCommentsByUserID() {
-
+  getAllCommentsByUserID(commentBuilder: any) {
+  
     this.CommentList.splice(0, this.CommentList.length);
-
+    
     this.commentService.getCommentByUserID(this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -90,14 +93,18 @@ export class NavMenuComponent implements OnInit {
 
 
           this.CommentList.push(tempCommentList);
-
+         
         }
+   
         this.commentTable?.renderRows();
-        console.log("GetAllRoles", data.dateSet);
+        this.openCommentBuilder(commentBuilder);
+   
+        console.log("Got all comments", data.dateSet);
       }
       else {
         alert(data.responseMessage);
       }
+   
       console.log("reponse", data);
 
     }, error => {

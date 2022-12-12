@@ -51,7 +51,8 @@ a{
   hyphens: auto;
 }
 .example-full-width {
-  width: 100%;
+  width: 70%;
+  margin-right:40px;
 }
 
 .mat-column-actions {
