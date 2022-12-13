@@ -3,9 +3,7 @@
   color: #fff;
   margin-bottom:20px;
 }
-button{
-    margin:5px;
-}
+
 
 .logo {
   width: 100%;
@@ -32,6 +30,7 @@ a{
   margin-bottom: 20px;
 }
 .mat-blue {
+  margin-right: 5px;
   background-color: #369cf4;
   color: #fff;
 }
