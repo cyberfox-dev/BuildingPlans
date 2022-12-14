@@ -67,9 +67,12 @@ import { CyberfoxConfigComponent } from './cyberfox-config/cyberfox-config.compo
 import { AccessGroupsConfigComponent } from './access-groups-config/access-groups-config.component';
 import { MatToolbarModule } from '@angular/material/toolbar'; 
 import { MatListModule } from '@angular/material/list';
+//import { MapModule } from 'arcgis-js-api';
+//import Map from "@arcgis/core/Map";
 
 @NgModule({
   declarations: [
+  //  Map,
     AppComponent,
     NavMenuComponent,
     HomeComponent,

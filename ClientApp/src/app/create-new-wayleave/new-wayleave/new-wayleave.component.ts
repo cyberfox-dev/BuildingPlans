@@ -74,6 +74,12 @@ export class NewWayleaveComponent implements OnInit {
   internalCostCenterNumber = '';
   internalCostCenterOwner = '';
 
+  /*External details*/
+  externalBPNumber = '';
+  externalName = '';
+  externalSurname = '';
+  externalAddress = '';
+  externalEmail = '';
 
   /*project details*/
   typeOfApplication = '';
@@ -148,12 +154,53 @@ export class NewWayleaveComponent implements OnInit {
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
 
+    debugger;
 
+    console.log("this.CurrentUserProfile ", this.CurrentUserProfile);
 
-    if (this.CurrentUserProfile.isInternal == false) {
+    if (this.CurrentUserProfile[0].isInternal == false) {
+
       this.external = true;
       this.internal = false;
       this.client = false;
+
+     
+
+        this.userPofileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+
+            debugger;
+            console.log("data Ex", data.dateSet);
+
+            const currentUserProfile = data.dateSet[0];
+            const fullname = currentUserProfile.fullName;
+
+            this.externalBPNumber = currentUserProfile.bP_Number;
+            this.externalName = fullname.substring(0, fullname.indexOf(' '));
+            this.externalSurname = fullname.substring(fullname.indexOf(' ') + 1);
+            this.externalAddress = currentUserProfile.physcialAddress;
+            this.externalEmail = currentUserProfile.email;
+
+
+          }
+
+          else {
+
+            alert(data.responseMessage);
+          }
+         /* console.log("reponse", data);*/
+
+        }, error => {
+          console.log("Error: ", error);
+        })
+
+
+
+
+
+
+
     }
     else {
       this.internal = true;
@@ -230,6 +277,8 @@ export class NewWayleaveComponent implements OnInit {
 
     }
 
+
+
   }
 
 
@@ -295,49 +344,95 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   onWayleaveCreate() {
-    /*    this.clientDetailsComponent.initClientDetails();*/
 
-    //let newApplicationName = this.addApplication.controls["newApplicationName"].value;
+    const contractorData = this.shared.getContactorData();
+    const engineerData = this.shared.getEngineerData();
 
-    //let clientName1 = this.clientDetailsComponent.clientName;
-    //let clientSurname = this.clientDetailsComponent.addApplicationClient.controls["clientSurname"].value;
-    //let clientEmail = this.clientDetailsComponent.addApplicationClient.controls["clientEmail"].value;
-    //let clientCellNo = this.clientDetailsComponent.addApplicationClient.controls["clientCellNo"].value;
-    //let clientAddress = this.clientDetailsComponent.addApplicationClient.controls["clientAddress"].value;
-    //let clientRefNo = this.clientDetailsComponent.addApplicationClient.controls["clientRefNo"].value;
-    /*    getContactorData();*/
-    /*    this.shared.getContactorData();*/
-    /*    this.CurrentUser("appUserID")*/
-    //ven: to access the clientDetailsComponent variable, we import it and add it to the constructor of this file.
-    this.applicationsService.addUpdateApplication(0, this.CurrentUser.appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId).subscribe((data: any) => {
+    if (this.client) {
+      this.applicationsService.addUpdateApplication(0, this.CurrentUser.appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId).subscribe((data: any) => {
 
-      if (data.responseCode == 1) {
-        alert(data.responseMessage);
+        if (data.responseCode == 1) {
+          alert(data.responseMessage);
 
-        const contractorData = this.shared.getContactorData();
-        const engineerData = this.shared.getEngineerData();
+        
 
-        //Add professional link for contractors when application is successfully captured
-        for (var i = 0; i < contractorData.length; i++) {
+          //Add professional link for contractors when application is successfully captured
+          if (contractorData.length > 0) {
+            for (var i = 0; i < contractorData.length; i++) {
+              this.addProfessionalsLinks(data.dateSet.applicationID, contractorData[i].professinalID);
+            };
+          } else {
+            alert("This Application have no contractors linked");
+          }
+          
 
-          this.addProfessionalsLinks(data.dateSet.applicationID, contractorData[i].professinalID);
-        };
+          //Add professional link for engineers when application is successfully captured
+          if (engineerData.length > 0) {
+            for (var i = 0; i < engineerData.length; i++) {
+              this.addProfessionalsLinks(data.dateSet.applicationID, engineerData[i].professinalID);
+            };
+          }
+          else {
+            alert("This Application have no engineers linked");
+          }
 
-        //Add professional link for engineers when application is successfully captured
-        for (var i = 0; i < engineerData.length; i++) {
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("responseAddapplication", data);
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+    else if (this.internal) {
+      this.applicationsService.addUpdateApplication(0, this.CurrentUser.appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId).subscribe((data: any) => {
 
-          this.addProfessionalsLinks(data.dateSet.applicationID, engineerData[i].professinalID);
-        };
+        if (data.responseCode == 1) {
+          alert(data.responseMessage);
 
-      }
-      else {
-/*        alert(data.responseMessage);*/
-      }
-      console.log("responseAddapplication", data);
-    }, error => {
-      console.log("Error", error);
-    })
-  }
+          //Add professional link for contractors when application is successfully captured
+          if (contractorData.length > 0) {
+            for (var i = 0; i < contractorData.length; i++) {
+              this.addProfessionalsLinks(data.dateSet.applicationID, contractorData[i].professinalID);
+            };
+          } else {
+            alert("This Application have no contractors linked");
+          }
+
+
+          //Add professional link for engineers when application is successfully captured
+          if (engineerData.length > 0) {
+            for (var i = 0; i < engineerData.length; i++) {
+              this.addProfessionalsLinks(data.dateSet.applicationID, engineerData[i].professinalID);
+            };
+          }
+          else {
+            alert("This Application have no engineers linked");
+          }
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("responseAddapplication", data);
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+
+    else {
+      //External
+
+
+
+    }
+
+
+
+    }
+
+   
 
   addProfessionalsLinks(applicationID: number, professionalID: number) {
 

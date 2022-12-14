@@ -30,7 +30,7 @@
             <div class="row">
 
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="Name" placeholder="Enter First Name" name="name" disabled>
+                <input type="text" class="form-control" [(ngModel)]="externalBPNumber" id="BPNumber"  name="BPNumber" disabled>
                 <label for="name">BP Number</label>
               </div>
 
@@ -45,14 +45,14 @@
             <div class="row">
               <div class="col">
                 <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" id="Name" placeholder="Enter First Name" name="name" disabled>
+                  <input type="text" class="form-control" [(ngModel)]="externalName"  id="externalName"  name="externalName" disabled>
                   <label for="name">Name</label>
                 </div>
               </div>
 
               <div class="col">
                 <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" id="Surname" placeholder="Enter Surname" name="surname" disabled>
+                  <input type="text" class="form-control" [(ngModel)]="externalSurname" id="externalSurname"  name="externalSurname" disabled>
                   <label for="name">Surname</label>
                 </div>
               </div>
@@ -60,14 +60,14 @@
             <div class="row">
               <div class="col">
                 <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" id="Address" placeholder="Enter Address" name="address" disabled>
+                  <input type="text" class="form-control" [(ngModel)]="externalAddress" id="externalAddress"  name="externalAddress" disabled>
                   <label for="name">Physical Address</label>
                 </div>
               </div>
 
               <div class="col">
                 <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" id="Email" placeholder="Enter Email" name="email" disabled>
+                  <input type="text" class="form-control" [(ngModel)]="externalEmail"  id="externalEmail"  name="externalEmail" disabled>
                   <label for="name">Email</label>
                 </div>
               </div>
