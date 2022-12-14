@@ -17,7 +17,7 @@ using System.Text;
 using WayleaveManagementSystem.BindingModel;
 using WayleaveManagementSystem.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-
+using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
 
 namespace WayleaveManagementSystem.Controllers
 {
@@ -88,19 +88,19 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-        [HttpGet("GetCommentByUserID")]
-        public async Task<object> GetCommentByUserID([FromBody] string userID)
+        [HttpPost("GetCommentByUserID")]
+        public async Task<object> GetCommentByUserID([FromBody] ZoneLinkByUserIDBindingModel model)
         {
             try
             {
 
-                if (userID.Length < 3)
+                if (model.UserID.Length < 3)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
-                    var result = await _commentBuilderService.GetCommentByUserID(userID);
+                    var result = await _commentBuilderService.GetCommentByUserID(model.UserID);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Comments List Created", result));
                 }
 

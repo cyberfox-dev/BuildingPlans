@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class CommentBuilderService {
 
-  private readonly baseURL: string = "https://localhost:7123/api/roles/"
+  private readonly baseURL: string = "https://localhost:7123/api/commentBuilder/"
   constructor(private httpClient: HttpClient) { }
 
   /*  , roleType: string | null, roleDescription: string | null, createdById: string | null*/
@@ -14,8 +14,8 @@ export class CommentBuilderService {
   public addUpdateComment(commentID: string | null, commentName: string | null, createdByID: string | null) {
 
     const body = {
-      CommentID: commentID,
-      CommentName: commentName,
+      commentID: commentID,
+      commentName: commentName,
       createdByID: createdByID,
 
     }
@@ -30,8 +30,10 @@ export class CommentBuilderService {
   }
 
   public getCommentByUserID(userID: any) {
-
-    return this.httpClient.get(this.baseURL + "GetCommentByUserID", userID);
+    const body = {
+      UserID: userID,
+    }
+    return this.httpClient.post(this.baseURL + "GetCommentByUserID", body);
 
   }
 

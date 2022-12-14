@@ -3,9 +3,7 @@
   color: #fff;
   margin-bottom:20px;
 }
-button{
 
-}
 
 .logo {
   width: 100%;
@@ -32,6 +30,7 @@ a{
   margin-bottom: 20px;
 }
 .mat-blue {
+  margin-right: 5px;
   background-color: #369cf4;
   color: #fff;
 }
@@ -51,7 +50,8 @@ a{
   hyphens: auto;
 }
 .example-full-width {
-  width: 100%;
+  width: 70%;
+  margin-right:40px;
 }
 
 .mat-column-actions {

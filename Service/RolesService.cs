@@ -89,7 +89,7 @@ namespace WayleaveManagementSystem.Service
         }
 
 
-        //this method gets all the professionals linked to a partcular user 
+
         public async Task<List<RolesDTO>> GetRoleByRoleID(int roleID)
         {
             return await(
