@@ -65,7 +65,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CyberfoxConfigComponent } from './cyberfox-config/cyberfox-config.component';
 import { AccessGroupsConfigComponent } from './access-groups-config/access-groups-config.component';
-import { MatToolbarModule } from '@angular/material/toolbar'; 
+import { MatToolbarModule } from '@angular/material/toolbar';
+
 
 
 @NgModule({
@@ -118,6 +119,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     StagesConfigComponent,
     CyberfoxConfigComponent,
     AccessGroupsConfigComponent,
+    
   
 
   ],
@@ -157,6 +159,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     NgbModule,
     GooglePlaceModule,
     DragDropModule,
+  
     RouterModule.forRoot([
       { path: '', component: LoginComponent },
       { path: 'home', component: HomeComponent},
