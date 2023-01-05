@@ -41,6 +41,14 @@ export interface PeriodicElement {
 
 }
 
+export interface FileDocument {
+
+  fileName: string;
+  file: any;
+
+}
+
+
 const ELEMENT_DATA: PeriodicElement[] = [
   { fileType: "Cover letter explaning the extent of the work" },
   { fileType: "Drawing showing the proposed route and detail regarding the trench cross section, number of pipes etc." },
@@ -105,12 +113,16 @@ export class NewWayleaveComponent implements OnInit {
   //})
 
   EngineerList: EngineerList[] = [];
+
+  FileDocument: FileDocument[] = [];
   ContractorList: ContractorList[] = [];
 
   public external: boolean = true;
   public internal: boolean = false;
   public client: boolean = false;
   public map: boolean = true;
+
+  clientSelected = false;
   option: any;
   isAllSelected: any;
   Engineer = "Engineer";
@@ -181,7 +193,7 @@ export class NewWayleaveComponent implements OnInit {
             this.externalSurname = fullname.substring(fullname.indexOf(' ') + 1);
             this.externalAddress = currentUserProfile.physcialAddress;
             this.externalEmail = currentUserProfile.email;
-
+            
 
           }
 
@@ -426,13 +438,51 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
+      this.applicationsService.addUpdateApplication(0, this.CurrentUser.appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, this.externalAddress , null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId).subscribe((data: any) => {
+        
+        if (data.responseCode == 1) {
+          alert(data.responseMessage);
+
+          //Add professional link for contractors when application is successfully captured
+          if (contractorData.length > 0) {
+            for (var i = 0; i < contractorData.length; i++) {
+              this.addProfessionalsLinks(data.dateSet.applicationID, contractorData[i].professinalID);
+            };
+          } else {
+            alert("This Application have no contractors linked");
+          }
+
+
+          //Add professional link for engineers when application is successfully captured
+          if (engineerData.length > 0) {
+            for (var i = 0; i < engineerData.length; i++) {
+              this.addProfessionalsLinks(data.dateSet.applicationID, engineerData[i].professinalID);
+            };
+          }
+          else {
+            alert("This Application have no engineers linked");
+          }
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("responseAddapplication", data);
+      }, error => {
+        console.log("Error", error);
+      })
+
+
     }
 
 
 
     }
 
-   
+  coverLetterUpload(event: any) {
+    const file = event.target.files[0];
+  }
+
 
   addProfessionalsLinks(applicationID: number, professionalID: number) {
 
@@ -449,31 +499,104 @@ export class NewWayleaveComponent implements OnInit {
       console.log("Error", error);
     })
   }
-  @ViewChild('fileInput')
+
+
+
+  
+@ViewChild('fileInput')
     fileInput!: ElementRef;
   fileAttr = 'Choose File';
-  uploadFileEvt(imgFile: any) {
-    if (imgFile.target.files && imgFile.target.files[0]) {
+
+
+  uploadFileEvtCoverLetter(File: any) {
+
+    const tempFileDocumentList = {} as FileDocument;
+
+    tempFileDocumentList.fileName = File.target.files[0].name;
+    tempFileDocumentList.file = File.target.files[0];
+
+
+    this.FileDocument.push(tempFileDocumentList);
+    console.log("this.FileDocument", this.FileDocument);
+
+
+    // Check if one or more files were selected
+    if (File.target.files.length > 0) {
+      // Reset the fileAttr property
       this.fileAttr = '';
-      Array.from(imgFile.target.files).forEach((file: any) => {
+      // Iterate over the selected files
+      Array.from(File.target.files).forEach((file: any) => {
+        // Create a new File object
+        let fileObject = new File([file], file.name);
+        // Concatenate the file names and add a separator
         this.fileAttr += file.name + ' - ';
-      });
-      // HTML5 FileReader API
-      let reader = new FileReader();
-      reader.onload = (e: any) => {
-        let image = new Image();
-        image.src = e.target.result;
-        image.onload = (rs) => {
-          let imgBase64Path = e.target.result;
+        // Create a new FileReader object
+        let reader = new FileReader();
+        // Set the onload event handler 
+        reader.onload = (e: any) => {
+          // Create a Byte[] array from the file contents
+          let fileBytes = new Uint8Array(e.target.result);
+          console.log("fileBytes", fileBytes);
         };
-      };
-      reader.readAsDataURL(imgFile.target.files[0]);
-      // Reset if duplicate image uploaded again
+        // Start reading the file as an ArrayBuffer
+        reader.readAsArrayBuffer(fileObject);
+
+        console.log("fileObject", fileObject);
+        console.log("reader.readAsArrayBuffer(fileObject)", reader.readAsArrayBuffer(fileObject));
+        
+      });
+      // Reset the value of the file input element
       this.fileInput.nativeElement.value = '';
     } else {
+      // If no file was selected, set fileAttr to the default value
       this.fileAttr = 'Choose File';
     }
   }
 
+
+  uploadFileEvt(File: any) {
+    debugger;
+    const tempFileDocumentList = {} as FileDocument;
+
+    tempFileDocumentList.fileName = File.target.files[0].name;
+    tempFileDocumentList.file = File.target.files[0];
+    this.fileAttr += File.target.files[0].name + ' - ';
+
+    this.FileDocument.push(tempFileDocumentList);
+    console.log("this.FileDocument", this.FileDocument);
+
+
+    //// Check if one or more files were selected
+    //if (File.target.files.length > 0) {
+    //  // Reset the fileAttr property
+    //  this.fileAttr = '';
+    //  // Iterate over the selected files
+    //  Array.from(File.target.files).forEach((file: any) => {
+    //    // Create a new File object
+    //    let fileObject = new File([file], file.name);
+    //    // Concatenate the file names and add a separator
+    //    this.fileAttr += file.name + ' - ';
+    //    // Create a new FileReader object
+    //    let reader = new FileReader();
+    //    // Set the onload event handler 
+    //    reader.onload = (e: any) => {
+    //      // Create a Byte[] array from the file contents
+    //      let fileBytes = new Uint8Array(e.target.result);
+        
+    //    };
+    //    // Start reading the file as an ArrayBuffer
+    //    reader.readAsArrayBuffer(fileObject);
+
+    //    console.log("fileObject", fileObject);
+    //    console.log("reader.readAsArrayBuffer(fileObject)", reader.readAsArrayBuffer(fileObject));
+
+    //  });
+    //  // Reset the value of the file input element
+    //  this.fileInput.nativeElement.value = '';
+    //} else {
+    //  // If no file was selected, set fileAttr to the default value
+    //  this.fileAttr = 'Choose File';
+    //}
+  }
 
 }

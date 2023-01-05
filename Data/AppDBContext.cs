@@ -30,9 +30,16 @@ namespace WayleaveManagementSystem.Data
         public DbSet<CommentBuilder> CommentBuilder { get; set; }
         public DbSet<Applications> Application { get; set; }
 
+        public DbSet<DocumentUpload> DocumentUpload { get; set; }
+
+
+
+
+        // Virtual Db Sets for SPs go here
         public virtual DbSet<UserSpDTO> UserSpDTOs { get; set; }
 
         public virtual DbSet<LinkedUserSpDTO> LinkedUserSpDTOs { get; set; }
+
 
     }
 }
