@@ -2,6 +2,85 @@
 .main{
     margin-top:100px;
 }
+.mat-blue {
+  margin-right: 5px;
+  background-color: #369cf4;
+  color: #fff;
+  width:20px;
+}
+
+table {
+  width: 100%;
+  margin: 0 auto;
+  margin-bottom: 30px;
+}
+
+.mat-column-ApplicationID {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 25% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+.mat-column-FullName {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 25% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+.mat-column-TypeOfApplication {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 25% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+.mat-column-DateCreated {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 25% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+.mat-column-actions {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 10% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
 
 
 * {
@@ -24,7 +103,7 @@ h2 {
   margin: 0 auto;
   text-align: center;
   padding-top: 0;
-  padding-bottom: 40px;
+/*  padding-bottom: 40px;*/
   color: white;
   font-size: 30px;
   /* font-weight: bold;*/
@@ -39,8 +118,8 @@ h3 {
   border-bottom: 1px solid #ddd;
   line-height: 0.1em;
   margin: 0 auto;
-  padding-top: 50px;
-  margin-bottom: 50px;
+  padding-top: 35px;
+  margin-bottom: 11px;
   justify-content: space-around;
 }
 
@@ -829,9 +908,9 @@ button {
 }
 
 .table {
-  margin-top: 50px;
-  margin-bottom: 50px;
-  padding-bottom: 50px;
+  margin-top: 30px;
+  margin-bottom: 18px;
+  padding-bottom: 1px;
 }
 
 .tableheader {

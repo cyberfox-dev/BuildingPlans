@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using WayleaveManagementSystem.IServices;
 using WayleaveManagementSystem.Models.BindingModel;
 using WayleaveManagementSystem.Models;
+using WayleaveManagementSystem.Data;
+using Microsoft.EntityFrameworkCore;
+using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
 
 namespace WayleaveManagementSystem.Controllers
 {
@@ -11,10 +14,13 @@ namespace WayleaveManagementSystem.Controllers
     public class ApplicationsController : ControllerBase
     {
         private readonly IApplicationsService _applicationsService;
+        private readonly AppDBContext _context;
 
-        public ApplicationsController(IApplicationsService applicationsService)
+        public ApplicationsController(IApplicationsService applicationsService, AppDBContext context)
         {
             _applicationsService = applicationsService;
+            _context = context;
+
         }
 
 
@@ -70,19 +76,34 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-        [HttpGet("GetApplicationsList")]
-        public async Task<object> GetApplicationsList([FromBody] string userId)
+        [HttpPost("GetApplicationsList")]
+        public async Task<object> GetApplicationsList([FromBody] GetApplicationsSP modal)
         {
             try
             {
 
-                if (userId.Length < 1)
+                //if (modal.isInternal)
+                //{
+                //    var result = _context.ApplicationListDTO.FromSqlInterpolated($"sp_GetApplications {1},{modal.UserID}").AsEnumerable();
+                //    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Linked Users", result));
+                //}
+                //else
+                //{
+                //    var result = _context.ApplicationListDTO.FromSqlRaw($"sp_GetApplications {modal.UserID,0}").AsEnumerable();
+                //    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Linked Users", result));
+                //}
+
+
+
+
+
+                if (modal.UserID.Length < 1)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
-                    var result = await _applicationsService.GetAllApplications(userId);
+                    var result = await _applicationsService.GetApplicationsList(modal.UserID,modal.isInternal);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Applications List Created", result));
                 }
 

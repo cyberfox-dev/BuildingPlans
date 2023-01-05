@@ -12,6 +12,6 @@ namespace WayleaveManagementSystem.IServices
         //this will return T/F 
         public Task<bool> DeleteApplication(int applicationID);
 
-        Task<List<ApplicationsDTO>> GetAllApplications(string userId);
+        Task<List<ApplicationsDTO>> GetApplicationsList(string userId,bool isInternal);
     }
 }

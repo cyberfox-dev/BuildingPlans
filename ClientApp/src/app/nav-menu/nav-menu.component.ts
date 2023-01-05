@@ -28,6 +28,10 @@ export class NavMenuComponent implements OnInit {
 
   CommentList: CommentList[] = [];
   forEditIndex: any;
+
+
+
+
   public addComment = this.formBuilder.group({
     newCommentName: ['', Validators.required],
 
@@ -84,8 +88,8 @@ export class NavMenuComponent implements OnInit {
 
   getAllCommentsByUserID(commentBuilder: any) {
    
-   
 
+    debugger;
 
       this.CommentList.splice(0, this.CommentList.length);
 

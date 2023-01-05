@@ -1,7 +1,9 @@
-﻿using WayleaveManagementSystem.Data.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using WayleaveManagementSystem.Data.Entities;
 
 namespace WayleaveManagementSystem.Models.DTO
 {
+    [Keyless]
     public class ApplicationsDTO
     {
         public int? ApplicationID { get; set; }
