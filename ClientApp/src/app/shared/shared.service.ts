@@ -16,7 +16,7 @@ export interface ProfessionalList {
 }
 
 export interface ApplicationList {
-
+  applicationID: number,
   clientName: string,
   clientEmail: string,
   clientAddress: string,
@@ -53,6 +53,7 @@ export class SharedService {
   userProfileData: any;
   contactorData: ProfessionalList[] = [];
   applicationData: ApplicationList[] = [];
+  applicationDataForView: ApplicationList[] = [];
   engineerData: ProfessionalList[] = [];
 
   constructor() { }
@@ -84,7 +85,7 @@ export class SharedService {
   setContactorData(data: any) {
    
    // this.contactorData.splice(0, this.contactorData.length);
-    debugger;
+    
 /*        this.contactorData.splice(0, this.contactorData.length);*/
     this.contactorData = data;
 
@@ -110,5 +111,18 @@ export class SharedService {
     debugger;
     this.applicationData = data;
   }
+
+  setViewApplicationIndex(ApplicationList: ApplicationList[]) {
+    this.applicationDataForView = ApplicationList;
+    console.log("THIS IS THE LIST", this.applicationDataForView);
+  }
+  getViewApplicationIndex() {
+    return this.applicationDataForView[0];
+  }
+
+
+
+
+
 
 }

@@ -1,9 +1,9 @@
 <div class="container-fluid">
 
-
+  <form [formGroup]="viewProjectDetails">
   <div class="row">
       <div class="form-floating mb-3 mt-3">
-        <input type="text" class="form-control" id="TypeOfApplication" placeholder="Type pf application" name="typeOfApplication" disabled>
+        <input type="text" class="form-control"  placeholder="Type pf application" formControlName="typeOfApplication" readonly>
         <label for="name">Type of application</label>
       </div>
   </div>
@@ -11,14 +11,14 @@
   <div class="row">
     <div class="col">
       <div class="form-floating mb-3 mt-3">
-        <input type="text" class="form-control" id="NotificationNo" placeholder="Enter Notification Number" name="notificationNo" disabled>
+        <input type="text" class="form-control"  placeholder="Enter Notification Number" formControlName="notificationNumber" readonly>
         <label for="name">Notification Number</label>
       </div>
     </div>
 
     <div class="col">
       <div class="form-floating mb-3 mt-3">
-        <input type="text" class="form-control" id="WBSNo" placeholder="Enter WBS Number" name="wbsNo" disabled>
+        <input type="text" class="form-control"  placeholder="Enter WBS Number" formControlName="WBSNo" readonly>
         <label for="name">WBS Number</label>
       </div>
     </div>
@@ -26,14 +26,14 @@
   <div class="row">
     <div class="col">
       <div class="form-floating mb-3 mt-3">
-        <input type="text" class="form-control" id="Address" placeholder="Enter Address" name="address" disabled>
+        <input type="text" class="form-control"  placeholder="Enter Address" formControlName="physicalAddress" readonly>
         <label for="name">Physical Address</label>
       </div>
     </div>
 
     <div class="col">
       <div class="form-floating mb-3 mt-3">
-        <input type="text" class="form-control" id="Description" placeholder="Enter Description" name="desecription" disabled>
+        <input type="text" class="form-control"  placeholder="Enter Description" formControlName="descriptionOfWork" readonly>
         <label for="name">Description of Proposed Construction Work</label>
       </div>
     </div>
@@ -45,13 +45,13 @@
   <div class="row">
     <div class="col">
       <div class="form-floating mb-3 mt-3">
-        <input type="text" class="form-control" id="Email" placeholder="Enter Email" name="email" disabled>
+        <input type="text" class="form-control"  placeholder="Enter Email" formControlName="typeOfWorks" readonly>
         <label for="name">Type/Nature of works to be undertaken</label>
       </div>
     </div>
     <div class="col">
       <div class="form-floating mb-3 mt-3">
-        <input type="text" class="form-control" id="TypeOfExcavation" placeholder="Type of excavation" name="typeOfExcavation" disabled>
+        <input type="text" class="form-control"  placeholder="Type of excavation" formControlName="typeOfExcavation" readonly>
         <label for="name">Type of excavation</label>
       </div>
     </div>
@@ -60,17 +60,17 @@
   <div class="row">
     <div class="col">
       <div class="form-floating mb-3 mt-3">
-        <input type="date" class="form-control" id="startDate" placeholder="Enter Start Date" name="startdate" disabled>
+        <input type="text" class="form-control"  placeholder="Enter Start Date" formControlName="expectedStartDate" readonly>
         <label for="name">Start Date</label>
       </div>
     </div>
 
     <div class="col">
       <div class="form-floating mb-3 mt-3">
-        <input type="date" class="form-control" id="endDate" placeholder="Enter end date" name="enddate" disabled>
+        <input type="text" class="form-control"  placeholder="Enter end date" formControlName="expectedEndDate" readonly>
         <label for="name">Completion Date</label>
       </div>
     </div>
   </div>
-
+    </form>
 </div>

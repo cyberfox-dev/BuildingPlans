@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { MatTable, MatTableModule } from '@angular/material/table';
+import { MatTable, MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ApplicationsService } from 'src/app/service/Applications/applications.service';
 import { FormBuilder, Validators } from '@angular/forms';
@@ -9,6 +9,7 @@ import { SharedService } from "../../shared/shared.service";
 import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
 import { ProfessionalsLinksService } from 'src/app/service/ProfessionalsLinks/professionals-links.service';
+import { MatPaginator } from '@angular/material/paginator';
 
 export interface EngineerList {
   professinalID: number;
@@ -54,6 +55,26 @@ const ELEMENT_DATA: PeriodicElement[] = [
   { fileType: "Drawing showing the proposed route and detail regarding the trench cross section, number of pipes etc." },
   { fileType: "A programme with proposed timelines" },
   { fileType: "Proof and payment"},
+];
+
+export interface PeriodicElementTest {
+  name: string;
+  position: number;
+  weight: number;
+  symbol: string;
+}
+
+const ELEMENT_DATATEst: PeriodicElementTest[] = [
+  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
+  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
+  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
+  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
+  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
+  { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C' },
+  { position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N' },
+  { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O' },
+  { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F' },
+  { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
 ];
 
 
@@ -149,6 +170,8 @@ export class NewWayleaveComponent implements OnInit {
   dataSourceContractors = this.ContractorList;
   @ViewChild(MatTable) EngineerTable: MatTable<EngineerList> | undefined;
   @ViewChild(MatTable) ContractorTable: MatTable<ContractorList> | undefined;
+  @ViewChild(MatPaginator)
+    paginator!: MatPaginator;
 
   displayedColumnsCUpload: string[] = ['fileType','actions'];
   dataSource = ELEMENT_DATA;
@@ -166,7 +189,7 @@ export class NewWayleaveComponent implements OnInit {
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
 
-    debugger;
+    
 
     console.log("this.CurrentUserProfile ", this.CurrentUserProfile);
 
@@ -225,6 +248,7 @@ export class NewWayleaveComponent implements OnInit {
 
   ngAfterViewInit() {
     //  this.getProfessionalsListByProfessionalType("Contractor");
+    this.dataSourceTest.paginator = this.paginator;
 
   }
 
@@ -552,6 +576,17 @@ export class NewWayleaveComponent implements OnInit {
       this.fileAttr = 'Choose File';
     }
   }
+  displayedColumnsTest: string[] = ['position', 'name', 'weight', 'symbol'];
+  dataSourceTest = new MatTableDataSource(ELEMENT_DATATEst);
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSourceTest.filter = filterValue.trim().toLowerCase();
+  }
+
+
+
+
 
 
   uploadFileEvt(File: any) {

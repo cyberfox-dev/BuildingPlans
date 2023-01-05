@@ -1,11 +1,33 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-
+import { SharedService } from "src/app/shared/shared.service";
 export interface PeriodicElement {
   name: string;
   position: number;
   weight: number;
   symbol: string;
+}
+
+export interface ApplicationList {
+  applicationID: number,
+  clientName: string,
+  clientEmail: string,
+  clientAddress: string,
+  clientRefNo: string,
+  CompanyRegNo: string,
+  TypeOfApplication: string,
+  NotificationNumber: string,
+  WBSNumber: string,
+  PhysicalAddressOfProject: string,
+  DescriptionOfProject: string,
+  NatureOfWork: string,
+  ExcavationType: string,
+  ExpectedStartDate: Date,
+  ExpectedEndDate: Date,
+  Location: string,
+  clientCellNo: string,
+  CreatedById: number,
+
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
@@ -31,7 +53,7 @@ const Document_DATA: Documents[] = [
   styleUrls: ['./view-project-info.component.css']
 })
 export class ViewProjectInfoComponent implements OnInit {
-
+  applicationDataForView: ApplicationList[] = [];
   @ViewChild('fileInput') fileInput: ElementRef | undefined;
   fileAttr = 'Choose File';
   uploadFileEvt(imgFile: any) {
@@ -70,10 +92,16 @@ export class ViewProjectInfoComponent implements OnInit {
   displayedColumnsDocs: string[] = ['name','actions'];
   dataSourceDoc = Document_DATA;
 
-  constructor(private modalService: NgbModal) { }
+  constructor(private modalService: NgbModal, private sharedService: SharedService) { }
 
   ngOnInit(): void {
+
+
+
   }
+
+
+  
 
 
 

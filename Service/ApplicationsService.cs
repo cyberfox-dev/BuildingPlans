@@ -124,38 +124,75 @@ namespace WayleaveManagementSystem.Service
 
         //this method gets all the applications linked to a partcular user
         //We use DTO (a cutom list) because we may pull custom data from the database at some point, otherwise, we can just use the existing list.
-        public async Task<List<ApplicationsDTO>> GetAllApplications(string userId)
+        public async Task<List<ApplicationsDTO>> GetApplicationsList(string userId,bool isInternal)
         {
-            return await (
-                from Applications in _context.Application
-                where Applications.UserID == userId && Applications.isActive == true
-                select new ApplicationsDTO()
-                {
-                    ApplicationID = Applications.ApplicationID,
-                    UserID = Applications.UserID,
-                    FullName = Applications.FullName,
-                    Email = Applications.Email,
-                    PhoneNumber = Applications.PhoneNumber,
-                    PhysicalAddress = Applications.PhyscialAddress,
-                    ReferenceNumber = Applications.ReferenceNumber,
-                    CompanyRegNo = Applications.CompanyRegNo,
-                    TypeOfApplication = Applications.TypeOfApplication,
-                    NotificationNumber = Applications.NotificationNumber,
-                    WBSNumber = Applications.WBSNumber,
-                    PhysicalAddressOfProject = Applications.PhysicalAddressOfProject,
-                    DescriptionOfProject = Applications.DescriptionOfProject,
-                    NatureOfWork = Applications.NatureOfWork,
-                    ExcavationType = Applications.ExcavationType,
-                    ExpectedStartDate = Applications.ExpectedStartDate,
-                    ExpectedEndDate = Applications.ExpectedEndDate,
-                    Location = Applications.Location,
-                    DateCreated = Applications.DateCreated,
-                    DateUpdated = Applications.DateUpdated,
-                    CreatedById = Applications.CreatedById,
-                    isActive = Applications.isActive
+            if (isInternal)
+            {
+                return await (
+               from Applications in _context.Application
+               where  Applications.isActive == true
+               select new ApplicationsDTO()
+               {
+                   ApplicationID = Applications.ApplicationID,
+                   UserID = Applications.UserID,
+                   FullName = Applications.FullName,
+                   Email = Applications.Email,
+                   PhoneNumber = Applications.PhoneNumber,
+                   PhysicalAddress = Applications.PhyscialAddress,
+                   ReferenceNumber = Applications.ReferenceNumber,
+                   CompanyRegNo = Applications.CompanyRegNo,
+                   TypeOfApplication = Applications.TypeOfApplication,
+                   NotificationNumber = Applications.NotificationNumber,
+                   WBSNumber = Applications.WBSNumber,
+                   PhysicalAddressOfProject = Applications.PhysicalAddressOfProject,
+                   DescriptionOfProject = Applications.DescriptionOfProject,
+                   NatureOfWork = Applications.NatureOfWork,
+                   ExcavationType = Applications.ExcavationType,
+                   ExpectedStartDate = Applications.ExpectedStartDate,
+                   ExpectedEndDate = Applications.ExpectedEndDate,
+                   Location = Applications.Location,
+                   DateCreated = Applications.DateCreated,
+                   DateUpdated = Applications.DateUpdated,
+                   CreatedById = Applications.CreatedById,
+                   isActive = Applications.isActive
 
-                }
-                ).ToListAsync();
+               }
+               ).ToListAsync();
+            }
+            else
+            {
+                return await (
+               from Applications in _context.Application
+               where Applications.UserID == userId && Applications.isActive == true
+               select new ApplicationsDTO()
+               {
+                   ApplicationID = Applications.ApplicationID,
+                   UserID = Applications.UserID,
+                   FullName = Applications.FullName,
+                   Email = Applications.Email,
+                   PhoneNumber = Applications.PhoneNumber,
+                   PhysicalAddress = Applications.PhyscialAddress,
+                   ReferenceNumber = Applications.ReferenceNumber,
+                   CompanyRegNo = Applications.CompanyRegNo,
+                   TypeOfApplication = Applications.TypeOfApplication,
+                   NotificationNumber = Applications.NotificationNumber,
+                   WBSNumber = Applications.WBSNumber,
+                   PhysicalAddressOfProject = Applications.PhysicalAddressOfProject,
+                   DescriptionOfProject = Applications.DescriptionOfProject,
+                   NatureOfWork = Applications.NatureOfWork,
+                   ExcavationType = Applications.ExcavationType,
+                   ExpectedStartDate = Applications.ExpectedStartDate,
+                   ExpectedEndDate = Applications.ExpectedEndDate,
+                   Location = Applications.Location,
+                   DateCreated = Applications.DateCreated,
+                   DateUpdated = Applications.DateUpdated,
+                   CreatedById = Applications.CreatedById,
+                   isActive = Applications.isActive
+
+               }
+               ).ToListAsync();
+            }
+           
         }
     }
 }

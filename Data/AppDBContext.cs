@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Data.Entities;
 using WayleaveManagementSystem.DTO;
+using WayleaveManagementSystem.Models.DTO;
 
 namespace WayleaveManagementSystem.Data
 {
@@ -39,6 +40,7 @@ namespace WayleaveManagementSystem.Data
         public virtual DbSet<UserSpDTO> UserSpDTOs { get; set; }
 
         public virtual DbSet<LinkedUserSpDTO> LinkedUserSpDTOs { get; set; }
+        public virtual DbSet<ApplicationsDTO> ApplicationListDTO { get; set; }
 
 
     }

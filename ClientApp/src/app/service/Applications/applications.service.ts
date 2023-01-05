@@ -41,9 +41,12 @@ export class ApplicationsService {
 
   }
 
-  public getApplicationsList() {
-
-    return this.httpClient.get(this.baseURL + "GetApplicationsList");
+  public getApplicationsList(userID: string, isInternal: boolean) {
+    const body = {
+      UserID: userID,
+      isInternal: isInternal
+    }
+    return this.httpClient.post(this.baseURL + "GetApplicationsList", body);
 
   }
 
