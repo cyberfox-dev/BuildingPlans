@@ -67,9 +67,8 @@
     <td mat-cell *matCellDef="let i = index">
       <button mat-raised-button color="success" matTooltip="Link Sub to zone" (click)="populateSubDepartmentDropDown(i,newZone);setCurrentDepartmentID(i)"><i class="fa fa-plus"></i></button>
       <button mat-raised-button color="orange" matTooltip="Link User to zone" (click)="openNewUserlinkedToZone(newUserLinkedToZone,i);setCurrentDepartmentID(i)"><i class="fa fa-link"></i></button>
-
       <button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="forViewPopulateSubDepartmentDropDown(i,viewlinkedZones);setCurrentDepartmentID(i)"><i class="fa fa-eye"></i></button>
-
+      <button mat-raised-button color="another" matTooltip="Add map layer" (click)="openNewUserlinkedToZone(newUserLinkedToZone,i);setCurrentDepartmentID(i)"><i class="fa fa-map"></i></button>
 
     </td>
     <td mat-cell *matCellDef="let element">  </td>
