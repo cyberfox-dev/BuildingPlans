@@ -173,7 +173,7 @@ export class NewProfileComponent implements OnInit {
 
     
    
-
+   
   }
 
   onNewProfileCreate() {
@@ -199,16 +199,16 @@ export class NewProfileComponent implements OnInit {
               .subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-
+                  this.router.navigate(["/home"]);
                   //alert(data.responseMessage);
                 }
                 else {
                   //alert("Invalid Email or Password");
                   alert(data.responseMessage);
-                  this.router.navigate(["/home"]);
+                  
                 }
                 console.log("reponse", data);
-
+                this.router.navigate(["/home"]);
               }, error => {
                 console.log("Error: ", error);
               })
@@ -218,9 +218,10 @@ export class NewProfileComponent implements OnInit {
         else {
           
           alert(data.responseMessage);
+          this.router.navigate(["/home"]);
         }
         console.log("reponse", data);
-
+        this.router.navigate(["/home"]);
       }, error => {
         console.log("Error: ", error);
       })
@@ -238,7 +239,7 @@ export class NewProfileComponent implements OnInit {
 
           alert(data.responseMessage);
 
-          debugger;
+          
           const linkedContractors = this.shared.getContactorData();
 
 
@@ -250,7 +251,7 @@ export class NewProfileComponent implements OnInit {
               .subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-
+                  this.router.navigate(["/home"]);
                   //alert(data.responseMessage);
                 }
                 else {
@@ -259,7 +260,7 @@ export class NewProfileComponent implements OnInit {
                   this.router.navigate(["/home"]);
                 }
                 console.log("reponse", data);
-
+                this.router.navigate(["/home"]);
               }, error => {
                 console.log("Error: ", error);
               })
@@ -269,9 +270,10 @@ export class NewProfileComponent implements OnInit {
         else {
 
           alert(data.responseMessage);
+          this.router.navigate(["/home"]);
         }
         console.log("reponse", data);
-
+        this.router.navigate(["/home"]);
       }, error => {
         console.log("Error: ", error);
       })
@@ -304,6 +306,9 @@ export class NewProfileComponent implements OnInit {
 
 
   }
+  routeChange() {
+  
+}
 
 
   getAllDeps() {
