@@ -68,6 +68,7 @@ export interface ContractorList {
 })
 export class NewProfileComponent implements OnInit {
   checkEmail!: string;
+  checke!: string;
   DepartmentDropdown: DepartmentList[] = [];
 
   @ViewChild("placesRef")
@@ -148,11 +149,21 @@ export class NewProfileComponent implements OnInit {
 
 
   ngOnInit(): void {
+    debugger;
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
     
     const fullname = this.CurrentUser.fullName;
-    this.checkEmail = this.shared.getCheckEmail();
+
+
+    this.internalApplicantName = fullname.substring(0, fullname.indexOf(' '));
+    this.internalApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
+
+    this.extApplicantName = fullname.substring(0, fullname.indexOf(' '));
+    this.extApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
+    this.extApplicantEmail = this.CurrentUser.email;
+    this.checke = this.extApplicantEmail.toString();
+    this.checkEmail = this.checke.substring(this.checke.indexOf('@'));
     console.log(this.checkEmail);
     if (this.checkEmail === "@capetown.gov.za") {
       this.showInternal = true;
@@ -160,12 +171,6 @@ export class NewProfileComponent implements OnInit {
     else {
       this.showExternal = true;
     }
-    this.internalApplicantName = fullname.substring(0, fullname.indexOf(' '));
-    this.internalApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
-
-    this.extApplicantName = fullname.substring(0, fullname.indexOf(' '));
-    this.extApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
-    this.extApplicantEmail = this.CurrentUser.email; 
     this.getAllDeps();
   }
 
