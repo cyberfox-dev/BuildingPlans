@@ -9,9 +9,6 @@ import { SharedService } from "../../shared/shared.service";
 import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
 import { ProfessionalsLinksService } from 'src/app/service/ProfessionalsLinks/professionals-links.service';
-//import Map from "esri/Map"?
-//import MapView from "esri/views/MapView"?
-
 
 export interface EngineerList {
   professinalID: number;

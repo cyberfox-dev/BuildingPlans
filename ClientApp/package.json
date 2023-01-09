@@ -14,7 +14,6 @@
   },
   "private": true,
   "dependencies": {
-    "@angular-builders/custom-webpack": "^14.1.0",
     "@angular/animations": "^14.2.4",
     "@angular/cdk": "^14.2.4",
     "@angular/common": "^14.2.4",
@@ -26,9 +25,7 @@
     "@angular/platform-browser-dynamic": "^14.2.4",
     "@angular/platform-server": "^14.2.4",
     "@angular/router": "^14.2.4",
-    "@arcgis/core": "^4.25.5",
     "@ng-bootstrap/ng-bootstrap": "^13.0.0",
-    "arcgis-js-api": "^4.25.5",
     "bootstrap": "^5.2.2",
     "bootstrap-steps": "^1.0.3",
     "bs-stepper": "^1.7.0",
