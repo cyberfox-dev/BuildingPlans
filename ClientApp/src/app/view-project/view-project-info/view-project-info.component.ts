@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { SharedService } from "src/app/shared/shared.service";
+import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
 export interface PeriodicElement {
   name: string;
   position: number;
@@ -53,6 +54,35 @@ const Document_DATA: Documents[] = [
   styleUrls: ['./view-project-info.component.css']
 })
 export class ViewProjectInfoComponent implements OnInit {
+
+  createdByID: any | undefined; 
+
+  /*type of applicant*/
+  isInternal = true;
+  toa = '';
+  /*external*/
+  extApplicantBpNoApplicant = '';
+  extApplicantCompanyName = '';
+  extApplicantCompanyRegNo = '';
+  extApplicantCompanyType = '';
+  extApplicantName = '';
+  extApplicantSurname = '';
+  extApplicantTellNo = '';
+  extApplicantEmail = '';
+  extApplicantPhyscialAddress = '';
+  extApplicantIDNumber = '';
+
+  /*internal*/
+  internalApplicantName = '';
+  internalApplicantSurname = '';
+  internalApplicantDirectorate = '';
+  internalApplicantDepartment = '';
+  internalApplicantTellNo = '';
+  internalApplicantBranch = '';
+  internalApplicantCostCenterNo = '';
+  internalApplicantCostCenterOwner = '';
+
+
   applicationDataForView: ApplicationList[] = [];
   @ViewChild('fileInput') fileInput: ElementRef | undefined;
   fileAttr = 'Choose File';
@@ -92,12 +122,71 @@ export class ViewProjectInfoComponent implements OnInit {
   displayedColumnsDocs: string[] = ['name','actions'];
   dataSourceDoc = Document_DATA;
 
-  constructor(private modalService: NgbModal, private sharedService: SharedService) { }
+  constructor(private modalService: NgbModal, private sharedService: SharedService, private userPofileService: UserProfileService) { }
 
   ngOnInit(): void {
 
+    this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
+    console.log("LOOOOOOOK 3", this.applicationDataForView);
+    const setValues = this.applicationDataForView[0];
+
+    console.log("this is the created by ID", setValues.CreatedById);
+    this.createdByID = setValues.CreatedById;
+    this.getUserProfileByUserID();
+  }
+
+  getUserProfileByUserID() {
+    debugger;
+    this.userPofileService.getUserProfileById(this.createdByID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
 
 
+        console.log("data", data.dateSet);
+
+        const currentUserProfile = data.dateSet[0];
+        const fullname = currentUserProfile.fullName;
+
+        if (currentUserProfile.isInternal == true) {
+
+          this.toa = 'Internal User';
+          this.internalApplicantName = fullname.substring(0, fullname.indexOf(' '));
+          this.internalApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
+          this.internalApplicantDirectorate = currentUserProfile.directorate;
+          this.internalApplicantDepartment = currentUserProfile.departmentName;
+          this.internalApplicantTellNo = currentUserProfile.phoneNumber;
+          this.internalApplicantBranch = currentUserProfile.branch;
+          this.internalApplicantCostCenterNo = currentUserProfile.costCenterNumber;
+          this.internalApplicantCostCenterOwner = currentUserProfile.costCenterOwner;
+          this.isInternal = true;
+
+        }
+        else {
+          this.toa = 'External User';
+          this.extApplicantBpNoApplicant = currentUserProfile.bP_Number;
+          this.extApplicantCompanyName = currentUserProfile.companyName;
+          this.extApplicantCompanyRegNo = currentUserProfile.companyRegNo;
+          //this.extApplicantCompanyType = '';
+          this.extApplicantName = fullname.substring(0, fullname.indexOf(' '));
+          this.extApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
+          this.extApplicantTellNo = currentUserProfile.phoneNumber;
+          this.extApplicantEmail = currentUserProfile.email;
+          this.extApplicantPhyscialAddress = currentUserProfile.physcialAddress;
+          // this.extApplicantIDNumber = ''; todo chage the dto to include the id number
+          this.isInternal = false;
+        }
+
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 
 

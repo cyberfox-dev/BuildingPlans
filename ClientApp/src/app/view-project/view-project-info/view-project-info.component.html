@@ -110,19 +110,21 @@
 
         <mat-tab label="Applicant">
 
-          <div class="container-fluid">
+          <!--External User information-->
+          <div class="container-fluid" *ngIf="isInternal == false">
+
             <div class="row">
               <div class="col">
-                <div class="form-floating mb-3 mt-3">
-
-                  <input type="text" class="form-control" id="BpNoApplicant" placeholder="Enter BP Number" name="bpNoApplicant" value="001" disabled>
-                  <label for="bpNoApplicant">BP Number</label>
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="extApplicantBpNoApplicant" placeholder="Enter BP Number" disabled>
+                    <label for="bpNoApplicant">BP Number</label>
+                  </div>
                 </div>
               </div>
               <div class="col">
                 <div class="form-floating mb-3 mt-3">
-
-                  <input type="text" class="form-control" id="Address" placeholder="Enter Address" name="address" value="Cyber" disabled>
+                  <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyName" placeholder="Enter Company Name" disabled>
                   <label for="address">Company Name</label>
                 </div>
               </div>
@@ -130,15 +132,13 @@
             <div class="row">
               <div class="col">
                 <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" id="Address" placeholder="Enter Address" name="address" value="0909" disabled>
+                  <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyRegNo" placeholder="Enter Company Reg No" disabled>
                   <label for="address">Company Reg No.</label>
-
                 </div>
               </div>
               <div class="col">
                 <div class="form-floating mb-3 mt-3">
-
-                  <input type="email" class="form-control" id="ApplicantEmail" placeholder="Enter Email" name="applicantEmail" value="Test" disabled>
+                  <input type="email" class="form-control" [(ngModel)]="extApplicantCompanyType" placeholder="Select Company Type" disabled>
                   <label for="applicantEmail">Company Type</label>
                 </div>
               </div>
@@ -148,15 +148,13 @@
             <div class="row">
               <div class="col">
                 <div class="form-floating mb-3 mt-3">
-
-                  <input type="text" class="form-control" id="Name" placeholder="Enter First Name" name="name" value="John" disabled>
+                  <input type="text" class="form-control" [(ngModel)]="extApplicantName" placeholder="Enter First Name" disabled>
                   <label for="name">Name</label>
                 </div>
               </div>
               <div class="col">
                 <div class="form-floating mb-3 mt-3">
-
-                  <input type="text" class="form-control" id="Surname" placeholder="Enter Surname" name="surname" value="Smith" disabled>
+                  <input type="text" class="form-control" [(ngModel)]="extApplicantSurname" placeholder="Enter Surname" disabled>
                   <label for="surname">Surname</label>
                 </div>
               </div>
@@ -165,15 +163,14 @@
             <div class="row">
               <div class="col">
                 <div class="form-floating mb-3 mt-3">
-
-                  <input type="tel" class="form-control" id="ApplicantTel" placeholder="Enter Tell No." name="applicantTellNo" value="085214532" disabled>
-                  <label for="applicantTellNo">Cell No.</label>
+                  <input type="text" class="form-control" [(ngModel)]="extApplicantIDNumber" placeholder="Enter ID Number" disabled>
+                  <label for="extApplicantIDNumber">ID Number</label>
                 </div>
+
               </div>
               <div class="col">
                 <div class="form-floating mb-3 mt-3">
-
-                  <input type="email" class="form-control" id="ApplicantEmail" placeholder="Enter Email" name="applicantEmail" value="johnsmith@ggmail.com" disabled>
+                  <input type="email" class="form-control" [(ngModel)]="extApplicantEmail" placeholder="Enter Email" disabled>
                   <label for="applicantEmail">Email</label>
                 </div>
               </div>
@@ -183,9 +180,14 @@
             <div class="row">
               <div class="col">
                 <div class="form-floating mb-3 mt-3">
-
-                  <input type="tel" class="form-control" id="ApplicantTel" placeholder="Enter Tell No." name="applicantTellNo" value="10 myhouse mysub" disabled>
+                  <input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address" disabled>
                   <label for="applicantTellNo">Physcial Address</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="tel" class="form-control" [(ngModel)]="extApplicantTellNo" placeholder="Enter Tell No." disabled>
+                  <label for="applicantTellNo">Cell No.</label>
                 </div>
               </div>
 
@@ -193,6 +195,59 @@
 
           </div>
 
+
+
+          <!--Internal user information-->
+          <div class="container-fluid" *ngIf="isInternal == true">
+
+
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="internalApplicantName" placeholder="Enter First Name" disabled>
+                  <label for="name">Name</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="internalApplicantSurname" placeholder="Enter Surname" disabled>
+                  <label for="surname">Surname</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="internalApplicantDirectorate" placeholder="Enter Surname" disabled>
+                  <label for="surname">Department</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="internalApplicantBranch" placeholder="Enter Branch" disabled>
+                  <label for="Branch">Branch</label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="email" class="form-control" [(ngModel)]="internalApplicantCostCenterNo" placeholder="Enter Cost Center Number" disabled>
+                  <label for="applicantEmail">Cost Center Number</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="internalApplicantCostCenterOwner" placeholder="Enter Cost Center Owner" disabled>
+                  <label for="applicantTellNo">Cost Center Owner</label>
+                </div>
+              </div>
+            </div>
+
+
+
+          </div>
         </mat-tab>
 
         <!--------------------------------------------------------Engineer--------------------------------------------------->

@@ -129,7 +129,7 @@ export class HomeComponent {
 
 
   viewProject(index: any) {
-    debugger;
+ 
     console.log("FIND",this.applicationDataForView[index]);
 
     this.applicationDataForViewToShared.push(this.applicationDataForView[index])  ;
