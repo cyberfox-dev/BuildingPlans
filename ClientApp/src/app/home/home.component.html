@@ -61,7 +61,7 @@
 <!--END OF TABS-->
 
 <div class="table container-fluid">
-  <table class="table table-hover table-xl border_bottom">
+<!--  <table class="table table-hover table-xl border_bottom">
     <thead>
       <tr class="tableheader">
         <th scope="col" class="border-top-0">Status</th>
@@ -101,6 +101,47 @@
         <td class="text-truncate row_padding">TEST</td>
       </tr>
     </tbody>
+  </table>-->
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+
+    <ng-container matColumnDef="ApplicationID">
+      <th mat-header-cell *matHeaderCellDef>ApplicationID</th>
+      <td mat-cell *matCellDef="let element"> {{element.ApplicationID}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="FullName">
+      <th mat-header-cell *matHeaderCellDef>Full Name</th>
+      <td mat-cell *matCellDef="let element"> {{element.FullName}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="TypeOfApplication">
+      <th mat-header-cell *matHeaderCellDef>Type Of Application</th>
+      <td mat-cell *matCellDef="let element"> {{element.TypeOfApplication}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="DateCreated">
+      <th mat-header-cell *matHeaderCellDef>Date Created</th>
+      <td mat-cell *matCellDef="let element"> {{element.DateCreated}} </td>
+    </ng-container>
+
+
+
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let i = index">
+
+        <button mat-raised-button color="blue" matTooltip="View Application" (click)="viewProject(i)"><i class="fa fa-eye"></i></button>
+
+
+      </td>
+      <td mat-cell *matCellDef="let element">  </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 </div>
   </div>

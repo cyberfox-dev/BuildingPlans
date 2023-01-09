@@ -68,7 +68,7 @@ export class NewContractorComponent implements OnInit {
 
   onAddcontractor() {
     const newContractor = {} as ContractorList;
-    newContractor.ProfessinalType = "Contactor";
+    newContractor.ProfessinalType = "Contractor";
     newContractor.bpNumber = this.bpNoContractor;
     newContractor.professionalRegNo = this.ProfessionalRegNo;
     newContractor.name = this.Name;

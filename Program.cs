@@ -39,6 +39,8 @@ builder.Services.AddScoped<IRolesService, RolesService>();
 builder.Services.AddScoped<IStageServices, StageServices>();
 builder.Services.AddScoped<IApplicationsService, ApplicationsService>();
 builder.Services.AddScoped<IProfessionalsLinksService, ProfessionalsLinksService>();
+builder.Services.AddScoped<ICommentBuilderService, CommentBuilderService>();
+builder.Services.AddScoped<IDocumentUploadService, DocumentUploadService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {

@@ -35,7 +35,7 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public string? CostCenterOwner { get; set; }
 
-        public byte? CopyOfID { get; set; }
+        public string? CopyOfID { get; set; }
 
         public string? IdNumber { get; set; }
 

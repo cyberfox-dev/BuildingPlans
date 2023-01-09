@@ -1,44 +1,47 @@
 <!--modal for comment builder-->
 <ng-template #commentBuilder let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Comment Builder</h4>
+    <h4 class="modal-title" id="modal-basic-title">{{CurrentUser.fullName}}'s Comment Builder</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-    <form>
-
-      <button mat-raised-button color="green" (click)="openCreateNewComment(createNewComment)">Create new comment</button>
-
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
-
-        <ng-container matColumnDef="Comment">
-          <th mat-header-cell *matHeaderCellDef>Comment</th>
-          <td mat-cell *matCellDef="let element"> {{element.Comment}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="date">
-          <th mat-header-cell *matHeaderCellDef>Date Created</th>
-          <td mat-cell *matCellDef="let element"> {{element.date}} </td>
-        </ng-container>
-
-
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef></th>
-          <td mat-cell *matCellDef="let element">
-
-            <button mat-raised-button color="blue" matTooltip="View users on this role" (click)="viewEditComment(editComment)"><i class="fa fa-pencil"></i></button>
-            <button mat-raised-button color="warn" matTooltip="Delete role"><i class="fa fa-trash"></i></button>
-
-          </td>
-          <td mat-cell *matCellDef="let element">  </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-
+    <form [formGroup]="addComment" >
+      <mat-form-field class="example-full-width">
+        <mat-label>Type new comment</mat-label>
+        <textarea matInput placeholder="Eg. This is good" formControlName="newCommentName"></textarea>
+      </mat-form-field>
+      <button mat-raised-button color="green" (click)="modal.dismiss('Cross click');onCommentCreate(commentBuilder)"><i class="fa fa-save"></i></button>
     </form>
+     
+   
+
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+
+      <ng-container matColumnDef="Comment">
+        <th mat-header-cell *matHeaderCellDef>Comment</th>
+        <td mat-cell *matCellDef="let element"> {{element.Comment}} </td>
+      </ng-container>
+
+
+
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let i = index">
+
+          <button  mat-raised-button color="blue" matTooltip="Edit comment" (click)="viewEditComment(editComment,i)"><i class="fa fa-pencil"></i></button>
+          <button mat-raised-button color="warn" matTooltip="Delete comment" (click)="onCommentDelete(i,commentBuilder);modal.dismiss('Cross click')"><i class="fa fa-trash"></i></button>
+
+        </td>
+        <td mat-cell *matCellDef="let element">  </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+
   </div>
   <div class="modal-footer">
     <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
@@ -47,23 +50,23 @@
 
 <!--create a new comment-->
 
-<ng-template #createNewComment let-modal>
+<!--<ng-template #createNewComment let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Create new comment</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-    <form>
+    <form [formGroup]="addComment" (ngSubmit)="onCommentCreate(commentBuilder)">
       <mat-form-field class="example-full-width">
         <mat-label>Type new comment</mat-label>
-        <textarea matInput placeholder="Eg. This is good"></textarea>
+        <textarea matInput placeholder="Eg. This is good" formControlName="newCommentName"></textarea>
       </mat-form-field>
     </form>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+    <button type="submit" class="btn btn-outline-success" (click)="onCommentCreate(commentBuilder);modal.dismiss('Cross click')">Save</button>
   </div>
-</ng-template>
+</ng-template>-->
 
 
 <!--view comment-->
@@ -73,15 +76,15 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-    <form>
+    <form [formGroup]="editComments">
       <mat-form-field class="example-full-width">
         <mat-label>Edit comment</mat-label>
-        <textarea matInput placeholder="Eg. This is good"></textarea>
+        <textarea matInput formControlName="editCommentName"></textarea>
       </mat-form-field>
     </form>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+    <button type="submit" class="btn btn-outline-success" (click)="modal.dismiss('Cross click');onEditCommentSave(commentBuilder);modal.close('Save click')">Save</button>
   </div>
 </ng-template>
 
@@ -104,7 +107,7 @@
 
           <!--Comment builder-->
 
-          <button mat-button matTooltip="Comment Builder" (click)="openCommentBuilder(commentBuilder)"><i class="fa fa-comment"></i></button>
+          <button mat-button matTooltip="Comment Builder" (click)="getAllCommentsByUserID(commentBuilder)"><i class="fa fa-comment"></i></button>
 
           <!--Configs-->
 

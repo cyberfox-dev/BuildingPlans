@@ -1,4 +1,28 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { SharedService } from "src/app/shared/shared.service";
+
+export interface ApplicationList {
+  applicationID: number,
+  clientName: string,
+  clientEmail: string,
+  clientAddress: string,
+  clientRefNo: string,
+  CompanyRegNo: string,
+  TypeOfApplication: string,
+  NotificationNumber: string,
+  WBSNumber: string,
+  PhysicalAddressOfProject: string,
+  DescriptionOfProject: string,
+  NatureOfWork: string,
+  ExcavationType: string,
+  ExpectedStartDate: Date,
+  ExpectedEndDate: Date,
+  Location: string,
+  clientCellNo: string,
+  CreatedById: number,
+
+}
 
 @Component({
   selector: 'app-view-project-details',
@@ -7,9 +31,44 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ViewProjectDetailsComponent implements OnInit {
 
-  constructor() { }
+  public viewProjectDetails = this.formBuilder.group({
+   typeOfApplication: ['', Validators.required],
+    notificationNumber: ['', Validators.required],
+    WBSNo: ['', Validators.required],
+    physicalAddress: ['', Validators.required],
+    descriptionOfWork: ['', Validators.required],
+    typeOfWorks: ['', Validators.required],
+    typeOfExcavation: ['', Validators.required],
+    expectedStartDate: ['', Validators.required],
+    expectedEndDate: ['', Validators.required],
+
+  })
+  applicationDataForView: ApplicationList[] = [];
+  constructor(private sharedService: SharedService, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
+    this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
+    console.log("LOOOOOOOK 2", this.applicationDataForView);
+    const setValues = this.applicationDataForView[0];
+
+    this.viewProjectDetails.controls["typeOfApplication"].setValue(setValues.TypeOfApplication);
+    this.viewProjectDetails.controls["notificationNumber"].setValue(setValues.NotificationNumber);
+    this.viewProjectDetails.controls["WBSNo"].setValue(setValues.WBSNumber);
+    this.viewProjectDetails.controls["physicalAddress"].setValue(setValues.PhysicalAddressOfProject);
+    this.viewProjectDetails.controls["descriptionOfWork"].setValue(setValues.DescriptionOfProject);
+    this.viewProjectDetails.controls["typeOfWorks"].setValue(setValues.NatureOfWork);
+    this.viewProjectDetails.controls["typeOfExcavation"].setValue(setValues.ExcavationType);
+    this.viewProjectDetails.controls["expectedStartDate"].setValue(setValues.ExpectedStartDate.toString());
+    this.viewProjectDetails.controls["expectedEndDate"].setValue(setValues.ExpectedEndDate.toString());
+
+
+
+   // this.viewProjectDetails.controls["typeOfApplication"].setValue(this.applicationDataForView.)
+  }
+
+
+  settingView() {
+   
   }
 
 }

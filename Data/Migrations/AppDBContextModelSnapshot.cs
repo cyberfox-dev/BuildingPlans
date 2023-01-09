@@ -163,6 +163,9 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("ApplicationID"), 1L, 1);
 
+                    b.Property<string>("ApplicatantType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CompanyRegNo")
                         .HasColumnType("nvarchar(max)");
 
@@ -309,6 +312,34 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.CommentBuilder", b =>
+                {
+                    b.Property<int>("CommentID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommentID"), 1L, 1);
+
+                    b.Property<string>("CommentName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("CommentID");
+
+                    b.ToTable("CommentBuilder");
+                });
+
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Departments", b =>
                 {
                     b.Property<int>("DepartmentID")
@@ -336,6 +367,43 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.HasKey("DepartmentID");
 
                     b.ToTable("DepartmentsTable");
+                });
+
+            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.DocumentUpload", b =>
+                {
+                    b.Property<int>("DocumentID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DocumentID"), 1L, 1);
+
+                    b.Property<int?>("ApplicationID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AssignedUserID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("DocumentData")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("DocumentName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("DocumentID");
+
+                    b.ToTable("DocumentUpload");
                 });
 
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Professionals", b =>
@@ -549,8 +617,8 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("CompanyRegNo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte?>("CopyOfID")
-                        .HasColumnType("tinyint");
+                    b.Property<string>("CopyOfID")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CostCenterNumber")
                         .HasColumnType("nvarchar(max)");
