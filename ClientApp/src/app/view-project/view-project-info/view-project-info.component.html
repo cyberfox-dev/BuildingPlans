@@ -1,346 +1,178 @@
 <app-nav-menu></app-nav-menu>
 
-
-  <h1>Application Information</h1>
-  <h2>Project number LS/BP 321</h2>
-
-
-
-  <app-action-center></app-action-center>
-
-
-    <div class="container-fluid">
-
-      <mat-tab-group>
-
-        <!--------------------------------------------------------Project Information--------------------------------------------------->
-
-        <mat-tab label="Project Information">
-
-          <app-view-project-details></app-view-project-details>
-          <nav class="menu">
-            <input type="checkbox" href="#" class="menu-open" name="menu-open" id="menu-open" />
-            <label class="menu-open-button" for="menu-open">
-              <span class="hamburger hamburger-1"></span>
-              <span class="hamburger hamburger-2"></span>
-              <span class="hamburger hamburger-3"></span>
-            </label>
-
-            <a class="menu-item" matTooltipPosition="left" matTooltip="Show applicant layer"> <i class="fa fa-user"></i> </a>
-            <a class="menu-item" matTooltipPosition="left" matTooltip="Show department layer"><i class="fa fa-building"></i> </a>
-            <a class="menu-item" matTooltipPosition="left" matTooltip="Show all layers"> <i class="fa fa-eye"></i> </a>
-            <a class="menu-item" matTooltipPosition="left" matTooltip="Hide all layers"> <i class="fa fa-eye-slash"></i> </a>
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Creating a access group</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form>
 
 
-          </nav>
-          <app-project-details-map></app-project-details-map>
+      <div class="row">
 
-          <app-department-circulation></app-department-circulation>
-        </mat-tab>
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" id="accessGroupName" placeholder="Enter the access group name">
+          <label for="accessGroupName">Enter a description</label>
+        </div>
 
-        <!--------------------------------------------------------Messaging--------------------------------------------------->
+        <mat-form-field>
+          <div>
+            <mat-toolbar>
+              <!-- Display files names -->
+              <input matInput [(ngModel)]="fileAttr" readonly name="name" />
+              <!-- Browse Button -->
+              <button mat-flat-button color="blue">Upload Image</button>
+            </mat-toolbar>
+            <!-- Fetch selected filed on change -->
+            <input type="file"
+                   #fileInput
+                   id="uploadFile"
+                   (change)="uploadFileEvt($event)"
+                   name="uploadFile"
+                   multiple="multiple"
+                   accept="image/*" />
+          </div>
+        </mat-form-field>
 
-        <mat-tab label="Messaging">
-
-        </mat-tab>
-
-        <!--------------------------------------------------------Financial--------------------------------------------------->
-
-        <mat-tab label="Financial">
-          <div class="container-fluid">
-            <br>
-            <div class="form-floating">
-              <select class="form-select" aria-label="Default select example" placeholder="Type of application">
-                <option selected>Type </option>
-                <option value="1">Deposit</option>
-                <option value="2">Transgression</option>
-                <option value="3">type 3</option>
-                <option value="4">type 4</option>
-              </select>
-
-              <br>
-              <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
-                <!--- Note that these columns can be defined in any order.
-          The actual rendered columns are set as a property on the row definition" -->
-                <!-- Position Column -->
-                <ng-container matColumnDef="position">
-                  <th mat-header-cell *matHeaderCellDef> No. </th>
-                  <td mat-cell *matCellDef="let element"> {{element.position}} </td>
-                </ng-container>
-
-                <!-- Name Column -->
-                <ng-container matColumnDef="name">
-                  <th mat-header-cell *matHeaderCellDef> Name </th>
-                  <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-                </ng-container>
-
-                <!-- Weight Column -->
-                <ng-container matColumnDef="weight">
-                  <th mat-header-cell *matHeaderCellDef> Weight </th>
-                  <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
-                </ng-container>
-
-                <!-- Symbol Column -->
-                <ng-container matColumnDef="symbol">
-                  <th mat-header-cell *matHeaderCellDef> Symbol </th>
-                  <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
-                </ng-container>
-
-                <ng-container matColumnDef="actions">
-                  <th mat-header-cell *matHeaderCellDef></th>
-                  <td mat-cell *matCellDef="let i = index">
-                    <button mat-raised-button color="blue" matTooltip="View"><i class="fa fa-eye"></i></button>
-                    <!--<button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="openViewSubDep(viewSub);getSubDemartmentByDepartmentID(i,viewSub)"><i class="fa fa-eye"></i></button>-->
+      </div>
 
 
-                  </td>
-                  <td mat-cell *matCellDef="let element">  </td>
-                </ng-container>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
 
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-              </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h1>Application Information</h1>
+<h2>Project number LS/BP 321</h2>
+
+
+
+<app-action-center></app-action-center>
+<div class="cont1">
+  <button mat-raised-button color="warn">
+    <i class="fa fa-ban" aria-hidden="true"></i>
+    Cancel Application
+  </button>
+</div>
+<div class="container-fluid">
+
+  <mat-tab-group>
+
+    <!--------------------------------------------------------Project Information--------------------------------------------------->
+
+    <mat-tab label="Project Information">
+
+      <app-view-project-details></app-view-project-details>
+      <nav class="menu">
+        <input type="checkbox" href="#" class="menu-open" name="menu-open" id="menu-open" />
+        <label class="menu-open-button" for="menu-open">
+          <span class="hamburger hamburger-1"></span>
+          <span class="hamburger hamburger-2"></span>
+          <span class="hamburger hamburger-3"></span>
+        </label>
+
+        <a class="menu-item" matTooltipPosition="left" matTooltip="Show applicant layer"> <i class="fa fa-user"></i> </a>
+        <a class="menu-item" matTooltipPosition="left" matTooltip="Show department layer"><i class="fa fa-building"></i> </a>
+        <a class="menu-item" matTooltipPosition="left" matTooltip="Show all layers"> <i class="fa fa-eye"></i> </a>
+        <a class="menu-item" matTooltipPosition="left" matTooltip="Hide all layers"> <i class="fa fa-eye-slash"></i> </a>
+
+
+      </nav>
+      <app-project-details-map></app-project-details-map>
+
+      <app-department-circulation></app-department-circulation>
+    </mat-tab>
+
+
+    <!--------------------------------------------------------Comments--------------------------------------------------->
+
+
+    <mat-tab label="Comments">
+
+
+
+
+      <div class="main-container">
+        <section id="timeline" class="timeline-outer">
+          <div class="container" id="content">
+            <div class="row">
+              <div class="col s12 m12 l12">
+
+                <ul class="timeline">
+                  <li class="event" data-date="2015/Present">
+                    <h3>Management and Entreprenurship (MSc)</h3>
+                    <p>
+                      This September 2015 I will begin an MSc in Management and Entrepreneurship at University of Sussex, to broaden my knowledge and gain skills necessary for my future in business and management.
+                    </p>
+                  </li>
+
+                </ul>
+              </div>
             </div>
           </div>
+        </section>
 
-        </mat-tab>
+        <br />
+      </div>
+      <div class="cont3">
+        <button mat-raised-button color="green">Approval Pack</button>
+        <button mat-raised-button color="red">Rejection Pack</button>
 
-        <!--------------------------------------------------------Applicant--------------------------------------------------->
-
-        <mat-tab label="Applicant">
-
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-
-                  <input type="text" class="form-control" id="BpNoApplicant" placeholder="Enter BP Number" name="bpNoApplicant" value="001" disabled>
-                  <label for="bpNoApplicant">BP Number</label>
-                </div>
-              </div>
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-
-                  <input type="text" class="form-control" id="Address" placeholder="Enter Address" name="address" value="Cyber" disabled>
-                  <label for="address">Company Name</label>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" id="Address" placeholder="Enter Address" name="address" value="0909" disabled>
-                  <label for="address">Company Reg No.</label>
-
-                </div>
-              </div>
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-
-                  <input type="email" class="form-control" id="ApplicantEmail" placeholder="Enter Email" name="applicantEmail" value="Test" disabled>
-                  <label for="applicantEmail">Company Type</label>
-                </div>
-              </div>
-            </div>
+      </div>
 
 
-            <div class="row">
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-
-                  <input type="text" class="form-control" id="Name" placeholder="Enter First Name" name="name" value="John" disabled>
-                  <label for="name">Name</label>
-                </div>
-              </div>
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-
-                  <input type="text" class="form-control" id="Surname" placeholder="Enter Surname" name="surname" value="Smith" disabled>
-                  <label for="surname">Surname</label>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-
-                  <input type="tel" class="form-control" id="ApplicantTel" placeholder="Enter Tell No." name="applicantTellNo" value="085214532" disabled>
-                  <label for="applicantTellNo">Cell No.</label>
-                </div>
-              </div>
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-
-                  <input type="email" class="form-control" id="ApplicantEmail" placeholder="Enter Email" name="applicantEmail" value="johnsmith@ggmail.com" disabled>
-                  <label for="applicantEmail">Email</label>
-                </div>
-              </div>
-            </div>
+    </mat-tab>
 
 
-            <div class="row">
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
 
-                  <input type="tel" class="form-control" id="ApplicantTel" placeholder="Enter Tell No." name="applicantTellNo" value="10 myhouse mysub" disabled>
-                  <label for="applicantTellNo">Physcial Address</label>
-                </div>
-              </div>
 
-            </div>
 
-          </div>
+    <!--------------------------------------------------------Messaging--------------------------------------------------->
+    <!--     <mat-tab label="Messaging">
 
-        </mat-tab>
+    </mat-tab>-->
+    <!--------------------------------------------------------Financial--------------------------------------------------->
 
-        <!--------------------------------------------------------Engineer--------------------------------------------------->
+    <mat-tab label="Financial">
+      <div class="container-fluid">
+        <br>
+        <div class="form-floating">
+          <select class="form-select" aria-label="Default select example" placeholder="Type of application">
+            <option selected>Type </option>
+            <option value="1">Deposit</option>
+            <option value="2">Transgression</option>
+            <option value="3">type 3</option>
+            <option value="4">type 4</option>
+          </select>
 
-        <mat-tab label="Engineer">
-          <div class="container-fluid">
-
-            <app-new-egineer></app-new-egineer>
-            <app-view-engineers-table></app-view-engineers-table>
-            <!--    <mat-accordion>
-
-        <mat-expansion-panel (opened)="panelOpenState = true"
-                             (closed)="panelOpenState = false">
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Liam Potter
-            </mat-panel-title>
-            <mat-panel-description>
-              Currently linked to this project
-            </mat-panel-description>
-          </mat-expansion-panel-header>
-          BP no: 64210<br>
-          Name & Surname: Liam Potter<br>
-          Professional Reg No: EP08562<br>
-          Cell No: 045968712<br>
-          Email: laimpotter@gmail.com<br>
           <br>
-          <button mat-raised-button color="warn">Remove</button>
+          <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
-
-        </mat-expansion-panel>
-
-        <mat-expansion-panel (opened)="panelOpenState = true"
-                             (closed)="panelOpenState = false">
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Test 2
-            </mat-panel-title>
-            <mat-panel-description>
-              Currently linked to this project
-            </mat-panel-description>
-          </mat-expansion-panel-header>
-          BP no: 64210<br>
-          Name & Surname: Liam Potter<br>
-          Professional Reg No: EP08562<br>
-          Cell No: 045968712<br>
-          Email: laimpotter@gmail.com<br>
-          <br>
-          <button mat-raised-button color="warn">Remove</button>
-
-
-        </mat-expansion-panel>
-      </mat-accordion>
-      <br>-->
-
-          </div>
-
-
-
-
-
-        </mat-tab>
-
-
-
-        <!--------------------------------------------------------Contractor--------------------------------------------------->
-
-        <mat-tab label="Contractor">
-
-          <div class="container-fluid">
-
-
-            <app-new-contractor></app-new-contractor>
-
-            <app-view-contractors-table></app-view-contractors-table>
-          </div>
-
-        </mat-tab>
-
-        <!--------------------------------------------------------Documents--------------------------------------------------->
-
-
-        <mat-tab label="Documents">
-
-
-        </mat-tab>
-
-        <!--------------------------------------------------------Comments--------------------------------------------------->
-
-
-        <mat-tab label="Comments">
-
-
-
-
-          <div class="main-container">
-            <section id="timeline" class="timeline-outer">
-              <div class="container" id="content">
-                <div class="row">
-                  <div class="col s12 m12 l12">
-
-                    <ul class="timeline">
-                      <li class="event" data-date="2015/Present">
-                        <h3>Management and Entreprenurship (MSc)</h3>
-                        <p>
-                          This September 2015 I will begin an MSc in Management and Entrepreneurship at University of Sussex, to broaden my knowledge and gain skills necessary for my future in business and management.
-                        </p>
-                      </li>
-
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <br />
-          </div>
-
-        </mat-tab>
-
-
-
-        <!--------------------------------------------------------Tracking--------------------------------------------------->
-
-
-        <mat-tab label="Tracking">
-
-
-        </mat-tab>
-
-        <!--------------------------------------------------------Auditing--------------------------------------------------->
-
-
-        <mat-tab label="Auditing">
-
-
-        </mat-tab>
-
-        <!--------------------------------------------------------Document Upload--------------------------------------------------->
-
-
-        <mat-tab label="Documents Upload">
-
-          <div class="container-fluid">
-            <button mat-raised-button color="primary" (click)="openDocUpload(newSub)">Upload document</button>
-          </div>
-
-          <table mat-table [dataSource]="dataSourceDoc" class="mat-elevation-z8">
+            <!--- Note that these columns can be defined in any order.
+      The actual rendered columns are set as a property on the row definition" -->
+            <!-- Position Column -->
+            <ng-container matColumnDef="position">
+              <th mat-header-cell *matHeaderCellDef> No. </th>
+              <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+            </ng-container>
 
             <!-- Name Column -->
             <ng-container matColumnDef="name">
@@ -348,60 +180,316 @@
               <td mat-cell *matCellDef="let element"> {{element.name}} </td>
             </ng-container>
 
+            <!-- Weight Column -->
+            <ng-container matColumnDef="weight">
+              <th mat-header-cell *matHeaderCellDef> Weight </th>
+              <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
+            </ng-container>
+
+            <!-- Symbol Column -->
+            <ng-container matColumnDef="symbol">
+              <th mat-header-cell *matHeaderCellDef> Symbol </th>
+              <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
+            </ng-container>
 
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef></th>
               <td mat-cell *matCellDef="let i = index">
-                <button mat-raised-button color="blue" matTooltip="View document"><i class="fa fa-eye"></i></button>
+                <button mat-raised-button color="blue" matTooltip="View"><i class="fa fa-eye"></i></button>
                 <!--<button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="openViewSubDep(viewSub);getSubDemartmentByDepartmentID(i,viewSub)"><i class="fa fa-eye"></i></button>-->
-                <button mat-raised-button color="warn" matTooltip="Delete document"><i class="fa fa-trash"></i></button>
 
 
               </td>
               <td mat-cell *matCellDef="let element">  </td>
             </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumnsDocs"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumnsDocs;"></tr>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
-
-        </mat-tab>
-
-        <ng-template #newSub let-modal>
-          <div class="modal-header">
-            <h4 class="modal-title">Upload Document </h4>
-            <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+        </div>
+        <div class="cont">
+        <button mat-raised-button color="orange">Deposit Required</button>
+        <button mat-raised-button color="orange">Consolidate Deposits</button>
+        <button mat-raised-button color="orange">Deposit Refund</button>
           </div>
-          <div class="modal-body">
-            <form>
-              <mat-form-field>
-                <div>
-                  <mat-toolbar>
-                    <!-- Display files names -->
-                    <input matInput [(ngModel)]="fileAttr" readonly name="name" />
-                    <!-- Browse Button -->
-                    <button mat-flat-button color="blue">Browse File</button>
-                  </mat-toolbar>
-                  <!-- Fetch selected filed on change -->
-                  <input type="file"
-                         #fileInput
-                         id="uploadFile"
-                         (change)="uploadFileEvt($event)"
-                         name="uploadFile"
-                         multiple="multiple"
-                         accept="image/*" />
-                </div>
-              </mat-form-field>
-            </form>
+      </div>
+
+    </mat-tab>
+
+
+    <!--------------------------------------------------------Documents--------------------------------------------------->
+
+
+    <mat-tab label="Documents">
+
+      <div class="container-fluid">
+        <button mat-raised-button color="primary" (click)="openDocUpload(newSub)">Upload document</button>
+      </div>
+
+      <table mat-table [dataSource]="dataSourceDoc" class="mat-elevation-z8">
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let i = index">
+            <button mat-raised-button color="blue" matTooltip="View document"><i class="fa fa-eye"></i></button>
+            <!--<button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="openViewSubDep(viewSub);getSubDemartmentByDepartmentID(i,viewSub)"><i class="fa fa-eye"></i></button>-->
+            <button mat-raised-button color="warn" matTooltip="Delete document"><i class="fa fa-trash"></i></button>
+
+
+          </td>
+          <td mat-cell *matCellDef="let element">  </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsDocs"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsDocs;"></tr>
+      </table>
+
+    </mat-tab>
+
+
+    <!--------------------------------------------------------Applicant--------------------------------------------------->
+
+    <mat-tab label="Applicant">
+
+      <!--External User information-->
+      <div class="container-fluid" *ngIf="isInternal == false">
+
+        <div class="row">
+          <div class="col">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="extApplicantBpNoApplicant" placeholder="Enter BP Number" disabled>
+                <label for="bpNoApplicant">BP Number</label>
+              </div>
+            </div>
           </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-outline-success" (click)="modal.close('Close click')">Save</button>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyName" placeholder="Enter Company Name" disabled>
+              <label for="address">Company Name</label>
+            </div>
           </div>
-        </ng-template>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyRegNo" placeholder="Enter Company Reg No" disabled>
+              <label for="address">Company Reg No.</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="email" class="form-control" [(ngModel)]="extApplicantCompanyType" placeholder="Select Company Type" disabled>
+              <label for="applicantEmail">Company Type</label>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantName" placeholder="Enter First Name" disabled>
+              <label for="name">Name</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantSurname" placeholder="Enter Surname" disabled>
+              <label for="surname">Surname</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantIDNumber" placeholder="Enter ID Number" disabled>
+              <label for="extApplicantIDNumber">ID Number</label>
+            </div>
+
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="email" class="form-control" [(ngModel)]="extApplicantEmail" placeholder="Enter Email" disabled>
+              <label for="applicantEmail">Email</label>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address" disabled>
+              <label for="applicantTellNo">Physcial Address</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="tel" class="form-control" [(ngModel)]="extApplicantTellNo" placeholder="Enter Tell No." disabled>
+              <label for="applicantTellNo">Cell No.</label>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
 
 
 
-      </mat-tab-group>
+      <!--Internal user information-->
+      <div class="container-fluid" *ngIf="isInternal == true">
 
-    </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="internalApplicantName" placeholder="Enter First Name" disabled>
+              <label for="name">Name</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="internalApplicantSurname" placeholder="Enter Surname" disabled>
+              <label for="surname">Surname</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="internalApplicantDirectorate" placeholder="Enter Surname" disabled>
+              <label for="surname">Department</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="internalApplicantBranch" placeholder="Enter Branch" disabled>
+              <label for="Branch">Branch</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="email" class="form-control" [(ngModel)]="internalApplicantCostCenterNo" placeholder="Enter Cost Center Number" disabled>
+              <label for="applicantEmail">Cost Center Number</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="internalApplicantCostCenterOwner" placeholder="Enter Cost Center Owner" disabled>
+              <label for="applicantTellNo">Cost Center Owner</label>
+            </div>
+          </div>
+        </div>
+
+
+
+      </div>
+    </mat-tab>
+
+    <!--------------------------------------------------------Engineer--------------------------------------------------->
+
+    <mat-tab label="Engineer">
+      <div class="container-fluid">
+
+      <!--  <app-new-egineer></app-new-egineer>-->
+        <app-view-engineers-table></app-view-engineers-table>
+
+
+      </div>
+
+
+
+
+
+    </mat-tab>
+
+
+
+    <!--------------------------------------------------------Contractor--------------------------------------------------->
+
+    <mat-tab label="Contractor">
+
+      <div class="container-fluid">
+
+
+   <!--     <app-new-contractor></app-new-contractor>-->
+
+        <app-view-contractors-table></app-view-contractors-table>
+      </div>
+
+    </mat-tab>
+
+
+
+    <!--------------------------------------------------------Tracking--------------------------------------------------->
+
+
+    <mat-tab label="Tracking">
+      <button mat-raised-button color="blue" (click)="openXl(content)">Create New Note</button>
+
+    </mat-tab>
+
+
+
+    <!--------------------------------------------------------Auditing--------------------------------------------------->
+
+
+    <mat-tab label="Audit Trail">
+
+
+    </mat-tab>
+
+
+
+    <!--this is the modal for the action center-->
+
+    <ng-template #newSub let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title">Upload Document </h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <mat-form-field>
+            <div>
+              <mat-toolbar>
+                <!-- Display files names -->
+                <input matInput [(ngModel)]="fileAttr" readonly name="name" />
+                <!-- Browse Button -->
+                <button mat-flat-button color="blue">Browse File</button>
+              </mat-toolbar>
+              <!-- Fetch selected filed on change -->
+              <input type="file"
+                     #fileInput
+                     id="uploadFile"
+                     (change)="uploadFileEvt($event)"
+                     name="uploadFile"
+                     multiple="multiple"
+                     accept="image/*" />
+            </div>
+          </mat-form-field>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-outline-success" (click)="modal.close('Close click')">Save</button>
+      </div>
+    </ng-template>
+
+
+
+  </mat-tab-group>
+
+</div>
 

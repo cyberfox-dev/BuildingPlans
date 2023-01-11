@@ -24,8 +24,17 @@ namespace WayleaveManagementSystem.Data.Entities
         public DateTime? ExpectedEndDate { get; set; }
         public string? Location { get; set; }
 
-        //I am going to use the applicant type 
+        //I am going to use the applicant type  
 
-        public string? ApplicatantType { get; set; } 
+        //public string? PreviousStageName { get; set; }
+        //public string? PreviousStageNumber { get; set; }
+        //public string? CurrentStageName { get; set; }
+        //public int? CurrentStageNumber { get; set; }
+        //public DateTime? CurrentStageStartDate { get; set; }
+        //public string? NextStageName { get; set; }
+        //public string? NextStageNumber { get; set; }
+
+        //public string? ApplicationStatus { get; set; }
+
     }
 }

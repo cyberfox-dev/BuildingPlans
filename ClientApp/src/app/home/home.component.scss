@@ -3,10 +3,16 @@
     margin-top:100px;
 }
 .mat-blue {
-  margin-right: 5px;
+    margin:5px;
   background-color: #369cf4;
   color: #fff;
   width:20px;
+}
+.mat-warn {
+  margin: 5px;
+  background-color: #f43636;
+  color: #fff;
+  width: 20px;
 }
 
 table {
@@ -32,7 +38,7 @@ table {
   word-wrap: break-word !important;
   white-space: unset !important;
   flex: 0 0 8% !important;
-  width: 25% !important;
+  width: 20% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
@@ -45,7 +51,7 @@ table {
   word-wrap: break-word !important;
   white-space: unset !important;
   flex: 0 0 8% !important;
-  width: 25% !important;
+  width: 20% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
@@ -58,7 +64,7 @@ table {
   word-wrap: break-word !important;
   white-space: unset !important;
   flex: 0 0 8% !important;
-  width: 25% !important;
+  width: 20% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
@@ -72,7 +78,7 @@ table {
   word-wrap: break-word !important;
   white-space: unset !important;
   flex: 0 0 8% !important;
-  width: 10% !important;
+  width: 15% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
@@ -145,7 +151,7 @@ h3 span {
 }
 
 button {
-  display: block;
+/*  display: block;*/
   margin: 0 auto;
   width: 260px;
   height: 36px;

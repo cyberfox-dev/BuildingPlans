@@ -8,6 +8,18 @@
 mat-sidenav-content{
     background:none;
 }
+.cont {
+  display: flex;
+  justify-content: center;
+}
+
+.mat-primary {
+  margin: 10px;
+  background-color: #36a5f4;
+  color: #fff;
+  width: 261px;
+  height: 44px;
+}
 
 .actioncenter {
   position: relative;
@@ -24,7 +36,7 @@ mat-sidenav-content{
   font-family: 'Nunito';
   font-style: normal;
   margin: auto;
-  margin-bottom:86px;
+  margin-bottom:51px;
 }
 
   .actioncenter a {

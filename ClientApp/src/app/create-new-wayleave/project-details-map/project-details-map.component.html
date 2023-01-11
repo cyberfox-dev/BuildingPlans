@@ -1,11 +1,11 @@
 <div class="container-fluid">
-<div class="row">
-
-  <div class="form-floating mb-3 mt-3">
-    <input type="text" class="form-control" id="Address" placeholder="Enter Address" name="address" disabled>
-    <label for="name">Physical Address</label>
+  <div class="row">
+    <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+      <mat-button-toggle value="bold">Draw</mat-button-toggle>
+      <mat-button-toggle value="italic">Edit</mat-button-toggle>
+      <mat-button-toggle value="underline">Save</mat-button-toggle>
+    </mat-button-toggle-group>
   </div>
-</div>
 
 <div class="maps">
   <!-- <h4>Please outline the area of the construction below</h4>-->
@@ -14,11 +14,5 @@
   </div>
 </div>
 
-<div class="row">
-  <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
-    <mat-button-toggle value="bold">Draw</mat-button-toggle>
-    <mat-button-toggle value="italic">Edit</mat-button-toggle>
-    <mat-button-toggle value="underline">Save</mat-button-toggle>
-  </mat-button-toggle-group>
-</div>
+
   </div>

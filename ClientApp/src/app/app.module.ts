@@ -67,6 +67,7 @@ import { CyberfoxConfigComponent } from './cyberfox-config/cyberfox-config.compo
 import { AccessGroupsConfigComponent } from './access-groups-config/access-groups-config.component';
 import { MatToolbarModule } from '@angular/material/toolbar'; 
 import { MatListModule } from '@angular/material/list';
+import { MandatoryDocsConfigComponent } from './mandatory-docs-config/mandatory-docs-config.component';
 //import { MapModule } from 'arcgis-js-api';
 //import Map from "@arcgis/core/Map";
 
@@ -121,6 +122,7 @@ import { MatListModule } from '@angular/material/list';
     StagesConfigComponent,
     CyberfoxConfigComponent,
     AccessGroupsConfigComponent,
+    MandatoryDocsConfigComponent,
   
 
   ],
