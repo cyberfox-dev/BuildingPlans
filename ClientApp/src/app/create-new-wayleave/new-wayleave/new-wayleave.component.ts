@@ -14,6 +14,7 @@ import { UserProfileService } from 'src/app/service/UserProfile/user-profile.ser
 import { ProfessionalsLinksService } from 'src/app/service/ProfessionalsLinks/professionals-links.service';
 import { MatPaginator } from '@angular/material/paginator';
 
+
 export interface EngineerList {
   professinalID: number;
   ProfessinalType: string;
@@ -525,6 +526,22 @@ export class NewWayleaveComponent implements OnInit {
 
 
     }
+
+
+
+
+  generateInvoice() {
+    var pdf = 'http://197.242.150.226/Files/SampleInvoice.pdf';
+    window.open(pdf, '_blank');
+
+
+
+
+
+    //var ven = new Blob(['src/Files/SampleInvoice.pdf'], { type: 'application/pdf' });
+    //const fileURL = URL.createObjectURL(ven);
+    //window.open(fileURL, '_blank');
+  }
 
   coverLetterUpload(event: any) {
     const file = event.target.files[0];
