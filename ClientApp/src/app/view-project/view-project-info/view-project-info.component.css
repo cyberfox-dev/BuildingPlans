@@ -7,9 +7,54 @@ h1 {
   color: white;
   font-size: 50px;
   font-weight: bold;
-  margin-top:120px
+  margin-top:70px
 }
 
+.cont1 {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+}
+.cont {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+.cont3 {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-evenly;
+}
+
+.mat-warn {
+  margin-bottom: 10px;
+  background-color: #f43636;
+  color: #fff;
+
+  margin-bottom: 39px;
+}
+.mat-orange {
+  margin-bottom: 10px;
+  background-color: #f48a36;
+  color: #fff;
+  margin-bottom: 32px;
+}
+.mat-red {
+  margin-bottom: 10px;
+  background-color: #f43636;
+  color: #fff;
+  margin-bottom: 32px;
+  width: 226px;
+  height: 59px;
+}
+.mat-green {
+  margin-bottom: 10px;
+  background-color: #14c92c;
+  color: #fff;
+  margin-bottom: 32px;
+  width: 226px;
+  height: 59px;
+}
 
 h2 {
   font-family: 'Nunito', sans-serif;

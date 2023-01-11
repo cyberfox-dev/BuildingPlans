@@ -46,8 +46,9 @@ export class LoginComponent implements OnInit {
 
  
 
-  ngOnInit(): void {
+  ngOnInit() {
 
+ 
   }
 
   onLogin() {
@@ -91,7 +92,7 @@ export class LoginComponent implements OnInit {
 
   onRegister() {
 
-    debugger;
+    
     let fullName = this.registerForm.controls["fullName"].value;
     let email = this.registerForm.controls["registerEmail"].value;
     let password = this.registerForm.controls["registerPassword"].value;

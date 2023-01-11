@@ -7,42 +7,39 @@ export interface PeriodicElement {
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
-  { name: 'ESU' },
-  { name: 'Department Admin' },
-  { name: 'External User' },
+  { name: 'Cover letter explaning the extent of the work' },
+  { name: 'Please upload a copy of your ID' },
+
 ];
 export interface linkusersToZone {
   name: string;
 }
 const LinkUsersToZone: PeriodicElement[] = [
-  { name: 'User 1' },
-  { name: 'User 2' },
-  { name: 'User 3' },
+  { name: 'Department Comment' },
+  { name: 'ESU approved' },
+  { name: 'Application Approved' },
 ];
 
 
 @Component({
-  selector: 'app-access-groups-config',
-  templateUrl: './access-groups-config.component.html',
-  styleUrls: ['./access-groups-config.component.css']
+  selector: 'app-mandatory-docs-config',
+  templateUrl: './mandatory-docs-config.component.html',
+  styleUrls: ['./mandatory-docs-config.component.css']
 })
-
-
-
-export class AccessGroupsConfigComponent implements OnInit {
+export class MandatoryDocsConfigComponent implements OnInit {
 
   openXl(content: any) {
     this.modalService.open(content, { size: 'lg' });
   }
-  openAddUserToAccessGroup(addUserToAccessGroup :any) {
-    this.modalService.open(addUserToAccessGroup, { centered:true,size: 'lg' });
+  openAddUserToAccessGroup(addUserToAccessGroup: any) {
+    this.modalService.open(addUserToAccessGroup, { centered: true, size: 'lg' });
   }
   constructor(private modalService: NgbModal) { }
 
   ngOnInit(): void {
   }
 
-    displayedColumns: string[] = ['name', 'actions'];
+  displayedColumns: string[] = ['name', 'actions'];
   dataSource = ELEMENT_DATA;
 
   displayedColumnsAddUser: string[] = ['name', 'actions'];

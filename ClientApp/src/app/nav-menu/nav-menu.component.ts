@@ -89,7 +89,7 @@ export class NavMenuComponent implements OnInit {
   getAllCommentsByUserID(commentBuilder: any) {
    
 
-    debugger;
+    
 
       this.CommentList.splice(0, this.CommentList.length);
 

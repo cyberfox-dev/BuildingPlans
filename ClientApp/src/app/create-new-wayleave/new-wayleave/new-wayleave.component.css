@@ -108,6 +108,15 @@ form {
 .mat-input {
   border: none;
 }
+.cont {
+    margin-top:30px;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+.mat-stepper{
+    animation-duration:0s;
+}
 
 .mat-toolbar-single-row {
   height: auto !important;
@@ -495,5 +504,8 @@ h3 {
   border-radius: 9px;
   --box-shadow-color: rgba(255, 215, 97, 0.48);
 }
+h4{
+     text-align:center;
+ }
 
 /*check buttons for water and sanitation type of excavtion*/

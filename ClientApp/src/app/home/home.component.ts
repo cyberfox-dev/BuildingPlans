@@ -56,7 +56,7 @@ export class HomeComponent {
 
   }
 
-  displayedColumns: string[] = ['ApplicationID', 'FullName', 'TypeOfApplication','DateCreated', 'actions'];
+  displayedColumns: string[] = ['AplicationAge','StageAge', 'FullName', 'TypeOfApplication','DateCreated', 'actions'];
   dataSource = this.Applications;
   @ViewChild(MatTable) applicationsTable: MatTable<ApplicationsList> | undefined;
   ngOnInit(): void {
@@ -129,7 +129,7 @@ export class HomeComponent {
 
 
   viewProject(index: any) {
-    debugger;
+ 
     console.log("FIND",this.applicationDataForView[index]);
 
     this.applicationDataForViewToShared.push(this.applicationDataForView[index])  ;

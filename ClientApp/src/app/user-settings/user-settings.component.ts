@@ -81,7 +81,7 @@ export class UserSettingsComponent implements OnInit {
   //this.CurrentUser.appUserId
 
   getUserProfileByUserID() {
-    debugger;
+ 
     this.userPofileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {

@@ -2,8 +2,11 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatTable, MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ApplicationsService } from 'src/app/service/Applications/applications.service';
+import { Address } from 'ngx-google-places-autocomplete/objects/address';
+import { GooglePlaceDirective } from 'ngx-google-places-autocomplete';
 import { FormBuilder, Validators } from '@angular/forms';
 import { empty } from 'rxjs';
+import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
 import { InternalOptionComponent } from 'src/app/create-new-wayleave/internal-option/internal-option.component';
 import { SharedService } from "../../shared/shared.service";
 import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
@@ -85,7 +88,12 @@ const ELEMENT_DATATEst: PeriodicElementTest[] = [
   styleUrls: ['./new-wayleave.component.css']
 })
 export class NewWayleaveComponent implements OnInit {
-
+  @ViewChild("placesRef")
+  placesRef: GooglePlaceDirective | undefined;
+  options = {
+    types: [],
+    componentRestrictions: { country: 'ZA' }
+  } as unknown as Options
   /*Client details*/
   clientName = '';
   clientSurname = '';
@@ -93,6 +101,11 @@ export class NewWayleaveComponent implements OnInit {
   clientCellNo = '';
   clientAddress = '';
   clientRefNo = '';
+  clientBPNum = '';
+  clientCompanyName = '';
+  clientCompanyRegNo = '';
+  clientCompanyType = '';
+  clientIDNumber = '';
 
 
   internalName = '';
@@ -189,7 +202,7 @@ export class NewWayleaveComponent implements OnInit {
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
 
-    
+ 
 
     console.log("this.CurrentUserProfile ", this.CurrentUserProfile);
 
@@ -246,6 +259,12 @@ export class NewWayleaveComponent implements OnInit {
 
   }
 
+
+  public handleAddressChange(address: Address) {
+    // Do some stuff
+    this.clientAddress = address.formatted_address;
+
+  }
   ngAfterViewInit() {
     //  this.getProfessionalsListByProfessionalType("Contractor");
     this.dataSourceTest.paginator = this.paginator;
@@ -282,7 +301,7 @@ export class NewWayleaveComponent implements OnInit {
 
         if (data.responseCode == 1) {
 
-          debugger;
+         
           console.log("data", data.dateSet);
 
           const currentUserProfile = data.dateSet[0];
