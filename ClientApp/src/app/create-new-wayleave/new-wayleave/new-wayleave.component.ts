@@ -196,6 +196,10 @@ export class NewWayleaveComponent implements OnInit {
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
+
+    this.typeOfApplication = "TOA"
+
+
     this.getProfessionalsListByProfessionalType("Engineer");
     this.getProfessionalsListByProfessionalType("Contractor");
 
