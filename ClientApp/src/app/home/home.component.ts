@@ -6,13 +6,18 @@ import { CommentList } from '../nav-menu/nav-menu.component';
 //import { ApplicationList } from '../shared/shared.service';
 import { SharedService } from "src/app/shared/shared.service"
 
+
 export interface ApplicationsList {
   ApplicationID: number;
   FullName: string;
-/*  ReferenceNumber: string;*/
+  /*  ReferenceNumber: string;*/
   TypeOfApplication: any;
   DateCreated: any;
+  TestApplicationAge: number,
+  TestApplicationStageAge: number
 }
+
+
 
 export interface ApplicationList {
   applicationID: number,
@@ -86,7 +91,10 @@ export class HomeComponent {
    
           tempApplicationList.DateCreated = current.dateCreated;
 
-
+          tempApplicationList.TestApplicationAge = Math.floor(Math.random() * 30) + 1;
+          do {
+            tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
+          } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);
           //save here to send to the shared
           
           //tempApplicationListShared.applicationID = current. ;
