@@ -95,7 +95,7 @@ export class SharedService {
     return this.contactorData[index];
   }
   getContactorData() {
-    debugger;
+ 
     return this.contactorData;
   }
   setEngineerData(data: any) {

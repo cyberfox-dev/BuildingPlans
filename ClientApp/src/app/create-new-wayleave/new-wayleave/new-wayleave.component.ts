@@ -13,6 +13,7 @@ import { ProfessionalService } from 'src/app/service/Professionals/professional.
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
 import { ProfessionalsLinksService } from 'src/app/service/ProfessionalsLinks/professionals-links.service';
 import { MatPaginator } from '@angular/material/paginator';
+import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 
 
 export interface EngineerList {
@@ -190,7 +191,7 @@ export class NewWayleaveComponent implements OnInit {
   displayedColumnsCUpload: string[] = ['fileType','actions'];
   dataSource = ELEMENT_DATA;
 
-  constructor(private modalService: NgbModal, private applicationsService: ApplicationsService, private professionalsLinksService: ProfessionalsLinksService, private shared: SharedService, private formBuilder: FormBuilder, private professionalService: ProfessionalService, private userPofileService: UserProfileService) { }
+  constructor(private modalService: NgbModal, private applicationsService: ApplicationsService, private professionalsLinksService: ProfessionalsLinksService, private shared: SharedService, private formBuilder: FormBuilder, private professionalService: ProfessionalService, private userPofileService: UserProfileService, private router: Router) { }
 
   ngOnInit(): void {
 
@@ -541,6 +542,8 @@ export class NewWayleaveComponent implements OnInit {
     //var ven = new Blob(['src/Files/SampleInvoice.pdf'], { type: 'application/pdf' });
     //const fileURL = URL.createObjectURL(ven);
     //window.open(fileURL, '_blank');
+
+    this.router.navigate(["/home"]);
   }
 
   coverLetterUpload(event: any) {
