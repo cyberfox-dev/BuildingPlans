@@ -192,6 +192,11 @@ export class ViewProjectInfoComponent implements OnInit {
     this.modalService.open(content, { size: 'lg' });
   }
 
+  viewPDF() {
+    var pdf = 'http://197.242.150.226/Files/SampleInvoice.pdf';
+    window.open(pdf, '_blank');
+  }
+
 
 
 
