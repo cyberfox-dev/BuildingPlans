@@ -11,7 +11,14 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
+    <div class="cont">
+    <button mat-raised-button color="primary">Assign this project</button>
+      </div>
     <mat-accordion>
+
+
+
+      <mat-divider></mat-divider>
 
       <mat-expansion-panel (opened)="panelOpenState = true"
                            (closed)="panelOpenState = false" class="approve">
@@ -21,7 +28,7 @@
           </mat-panel-title>
         </mat-expansion-panel-header>
         <br>
-
+        <textarea matInput placeholder="Please provide a reason."></textarea>
         <button type="button" class="btn btn-outline-success">Approve</button>
 
 
@@ -36,7 +43,7 @@
         </mat-expansion-panel-header>
 
         <br>
-
+        <textarea matInput placeholder="Please provide a reason."></textarea>
         <button type="button" class="btn btn-danger">Reject</button>
 
 
@@ -52,7 +59,7 @@
         </mat-expansion-panel-header>
 
         <br>
-
+        <textarea matInput placeholder="Please provide a reason."></textarea>
         <button type="button" class="btn btn-warning">Clarify</button>
 
 
@@ -62,27 +69,19 @@
                            (closed)="panelOpenState = false" class="escalate">
         <mat-expansion-panel-header>
           <mat-panel-title>
-            Escalate
+            Refer
           </mat-panel-title>
 
         </mat-expansion-panel-header>
 
         <br>
-
-        <button type="button" class="btn btn-info ">Escalate</button>
+        <textarea matInput placeholder="Please provide a reason."></textarea>
+        <button type="button" class="btn btn-info ">Refer</button>
 
       </mat-expansion-panel>
 
     </mat-accordion>
 
-
-
-
-      <textarea matInput placeholder="Please provide a reason."></textarea>
-
-
   </div>
-  <div class="modal-footer">
-    <button mat-raised-button color="primary">Confirm</button>
-  </div>
+
 </ng-template>

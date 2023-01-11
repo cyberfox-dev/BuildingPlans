@@ -149,7 +149,7 @@ export class NewProfileComponent implements OnInit {
 
 
   ngOnInit(): void {
-    debugger;
+   
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
     

@@ -4,9 +4,7 @@ import { SharedService } from "src/app/shared/shared.service";
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
 export interface PeriodicElement {
   name: string;
-  position: number;
-  weight: number;
-  symbol: string;
+
 }
 
 export interface ApplicationList {
@@ -32,9 +30,9 @@ export interface ApplicationList {
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
-  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
-  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
+  { name: 'Proof of payment'},
+  {  name: 'Invoice' },
+  {  name: 'deposit DS456'},
 ];
 
 export interface Documents {
@@ -116,7 +114,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   panelOpenState = false;
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol','actions'];
+  displayedColumns: string[] = [ 'name','actions'];
   dataSource = ELEMENT_DATA;
 
   displayedColumnsDocs: string[] = ['name','actions'];
@@ -136,7 +134,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getUserProfileByUserID() {
-    debugger;
+   
     this.userPofileService.getUserProfileById(this.createdByID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -190,7 +188,9 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
 
-  
+  openXl(content: any) {
+    this.modalService.open(content, { size: 'lg' });
+  }
 
 
 

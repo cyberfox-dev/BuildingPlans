@@ -1,0 +1,74 @@
+h1 {
+  font-family: 'Nunito', sans-serif;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: 26px;
+  padding-bottom: 113px;
+  color: white;
+  font-size: 40px;
+  font-weight: bold;
+}
+
+button {
+  margin: 10px;
+}
+
+.mat-success {
+  background-color: #2dd568;
+  color: #fff;
+}
+
+.mat-blue {
+  background-color: #369cf4;
+  color: #fff;
+}
+
+.createNewDep {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+table {
+  width: 100%;
+  margin: 0 auto;
+  margin-bottom: 30px;
+}
+
+.mat-column-name {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 60% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+.mat-column-actions {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 20% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  text-align: center;
+}
+
+.createNewRole {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.checked {
+  background-color: limegreen;
+  color: white;
+}
