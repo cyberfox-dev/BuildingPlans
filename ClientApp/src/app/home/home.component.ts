@@ -63,7 +63,7 @@ export class HomeComponent {
 
   }
 
-  displayedColumns: string[] = ['AplicationAge','StageAge', 'FullName', 'TypeOfApplication','DateCreated', 'actions'];
+  displayedColumns: string[] = [ 'FullName', 'TypeOfApplication','AplicationAge','StageAge','DateCreated', 'actions'];
   dataSource = this.Applications;
   @ViewChild(MatTable) applicationsTable: MatTable<ApplicationsList> | undefined;
   ngOnInit(): void {

@@ -218,7 +218,7 @@ export class NewWayleaveComponent implements OnInit {
 
           if (data.responseCode == 1) {
 
-            debugger;
+         
             console.log("data Ex", data.dateSet);
 
             const currentUserProfile = data.dateSet[0];
