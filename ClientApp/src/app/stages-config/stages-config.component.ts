@@ -158,7 +158,7 @@ export class StagesConfigComponent implements OnInit {
 
   onStageDelete(index: any) {
     console.log(this.StagesList[index].StageName);
-    debugger;
+    
     if (confirm("Are you sure to delete " + this.StagesList[index].StageName + "?")) {
 
       this.stagesService.deleteStage(this.StagesList[index].StageID).subscribe((data: any) => {

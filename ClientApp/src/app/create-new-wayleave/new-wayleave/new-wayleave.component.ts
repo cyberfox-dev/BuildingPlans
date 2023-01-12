@@ -544,15 +544,6 @@ export class NewWayleaveComponent implements OnInit {
   generateInvoice() {
     var pdf = 'http://197.242.150.226/Files/SampleInvoice.pdf';
     window.open(pdf, '_blank');
-
-
-
-
-
-    //var ven = new Blob(['src/Files/SampleInvoice.pdf'], { type: 'application/pdf' });
-    //const fileURL = URL.createObjectURL(ven);
-    //window.open(fileURL, '_blank');
-
     this.router.navigate(["/home"]);
   }
 
@@ -643,7 +634,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
   uploadFileEvt(File: any) {
-    debugger;
+    
     const tempFileDocumentList = {} as FileDocument;
 
     tempFileDocumentList.fileName = File.target.files[0].name;

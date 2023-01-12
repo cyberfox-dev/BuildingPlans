@@ -352,7 +352,7 @@ export class DepartmentConfigComponent implements OnInit {
 
 
   onDepartmentCreate() {
-    debugger;
+    
     let newDepName = this.addDepartment.controls["newDepName"].value;
 
 
@@ -466,7 +466,7 @@ export class DepartmentConfigComponent implements OnInit {
   onZoneCreate() {
     let newZoneName = this.addZone.controls["newZoneName"].value;
     let newZoneSubDemartment = Number(this.addZone.controls["newZoneSubDemartment"].value);
-    debugger;
+    
     if (newZoneSubDemartment != 0) {
 
 
@@ -792,15 +792,15 @@ export class DepartmentConfigComponent implements OnInit {
 
 
   onZoneUserLink() {
-    debugger;
+    
     let selectedSubDep = Number(this.userZoneLink.controls["selectedSubDep"].value);
     let selectedZone = Number(this.userZoneLink.controls["selectedZone"].value);
-    debugger;
+    
     for (let i = 0; i < this.selection.selected.length; i++) {      
       const current = this.selection.selected[i];
 
       this.zoneLinkService.getAllRecordsByUserIdIfDeleted(current.id).subscribe((data: any) => {
-        debugger;
+        
         if (data.responseCode == 1) {
           if (data.dateSet.length > 0 ) {
             this.zoneLinkService.addUpdateZoneLink(data.dateSet[0].zoneLinkID, this.CurrentDepartmentID, selectedZone, selectedSubDep, current.id, null, this.CurrentUser.appUserId,).subscribe((data: any) => {

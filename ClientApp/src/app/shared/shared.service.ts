@@ -113,7 +113,7 @@ export class SharedService {
   }
 
   setApplicationData(data: ApplicationList[]) {
-    debugger;
+    
     this.applicationData = data;
   }
 

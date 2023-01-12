@@ -43,32 +43,31 @@
 
 
       <div class="container-fluid ">
-<!--        <div class="typeofapplicant">
-          <h5>What type of Applicant are you ?</h5>
+        <!--        <div class="typeofapplicant">
+              <h5>What type of Applicant are you ?</h5>
 
-          <div class="row">
-            <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
-              <mat-button-toggle (click)="sInternal()" >Internal Applicant</mat-button-toggle>
-              <mat-button-toggle  (click)="sExternal()" >External Applicant</mat-button-toggle>
- 
-            </mat-button-toggle-group>
-          </div>
+              <div class="row">
+                <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+                  <mat-button-toggle (click)="sInternal()" >Internal Applicant</mat-button-toggle>
+                  <mat-button-toggle  (click)="sExternal()" >External Applicant</mat-button-toggle>
 
-        </div>-->
+                </mat-button-toggle-group>
+              </div>
 
+            </div>-->
         <!--External Applicant-->
         <div class="external" *ngIf="showExternal">
           <h5>Please enter your details as an External Applicant</h5>
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control"  [(ngModel)]="extApplicantBpNoApplicant" placeholder="Enter BP Number" >
+                <input type="text" class="form-control" [(ngModel)]="extApplicantBpNoApplicant" placeholder="Enter BP Number">
                 <label for="bpNoApplicant">BP Number</label>
               </div>
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control"  [(ngModel)]="extApplicantCompanyName" placeholder="Enter Company Name" >
+                <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyName" placeholder="Enter Company Name">
                 <label for="address">Company Name</label>
               </div>
             </div>
@@ -76,13 +75,13 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control"  [(ngModel)]="extApplicantCompanyRegNo" placeholder="Enter Company Reg No" >
+                <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyRegNo" placeholder="Enter Company Reg No">
                 <label for="address">Company Reg No.</label>
               </div>
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control"  [(ngModel)]="extApplicantCompanyType" placeholder="Select Company Type" >
+                <input type="email" class="form-control" [(ngModel)]="extApplicantCompanyType" placeholder="Select Company Type">
                 <label for="applicantEmail">Company Type</label>
               </div>
             </div>
@@ -92,13 +91,13 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control"  [(ngModel)]="extApplicantName" placeholder="Enter First Name" disabled >
+                <input type="text" class="form-control" [(ngModel)]="extApplicantName" placeholder="Enter First Name" disabled>
                 <label for="name">Name</label>
               </div>
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control"  [(ngModel)]="extApplicantSurname" placeholder="Enter Surname" disabled>
+                <input type="text" class="form-control" [(ngModel)]="extApplicantSurname" placeholder="Enter Surname" disabled>
                 <label for="surname">Surname</label>
               </div>
             </div>
@@ -107,13 +106,13 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="tel" class="form-control"  [(ngModel)]="extApplicantTellNo" placeholder="Enter Tell No." >
+                <input type="tel" class="form-control" [(ngModel)]="extApplicantTellNo" placeholder="Enter Tell No.">
                 <label for="applicantTellNo">Cell No.</label>
               </div>
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control"  [(ngModel)]="extApplicantEmail" placeholder="Enter Email" disabled>
+                <input type="email" class="form-control" [(ngModel)]="extApplicantEmail" placeholder="Enter Email" disabled>
                 <label for="applicantEmail">Email</label>
               </div>
             </div>
@@ -124,7 +123,7 @@
             <div class="col">
               <div class="form-floating mb-3 mt-3">
                 <!--<input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address">-->
-                <input ngx-google-places-autocomplete class="form-control"  [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" />
+                <input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" />
                 <label for="applicantTellNo">Physcial Address</label>
               </div>
             </div>
@@ -140,7 +139,7 @@
           <div class="row">
             <h5>Please upload a copy of your ID</h5>
             <div class="input-group">
-              <input type="file" class="form-control"  [(ngModel)]="extApplicantIDUpload" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+              <input type="file" class="form-control" [(ngModel)]="extApplicantIDUpload" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
 
             </div>
 
@@ -190,13 +189,13 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control"  [(ngModel)]="internalApplicantBranch" placeholder="Enter Branch" >
+                <input type="text" class="form-control" [(ngModel)]="internalApplicantBranch" placeholder="Enter Branch">
                 <label for="Branch">Branch</label>
               </div>
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control" [(ngModel)]="internalApplicantCostCenterNo" placeholder="Enter Cost Center Number" >
+                <input type="email" class="form-control" [(ngModel)]="internalApplicantCostCenterNo" placeholder="Enter Cost Center Number">
                 <label for="applicantEmail">Cost Center Number</label>
               </div>
             </div>
@@ -213,22 +212,26 @@
         <!--END-->
 
       </div>
-
-
+      <div class="cont2">
+      <button mat-raised-button color="primary" matStepperPrevious disabled>Back</button>
+      <button mat-raised-button color="primary" matStepperNext>Next</button>
+        </div>
     </mat-step>
     <mat-step label="Engineer Information">
 
       <div class="container-fluid div">
         <app-new-egineer></app-new-egineer>
 
-      <!--  <app-view-engineers-table></app-view-engineers-table>-->
-
-          <!--     <div class="alert alert-success alert-dismissible fade show" role="alert">
-    <strong>You have added</strong> "name of engineer"
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>-->
-</div>
-
+        <!--  <app-view-engineers-table></app-view-engineers-table>-->
+        <!--     <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong>You have added</strong> "name of engineer"
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>-->
+      </div>
+      <div class="cont2">
+        <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+        <button mat-raised-button color="primary" matStepperNext>Next</button>
+        </div>
     </mat-step>
     <mat-step label="Contractor Information">
 
@@ -236,9 +239,12 @@
 
         <app-new-contractor></app-new-contractor>
 
-       <!-- <app-view-contractors-table></app-view-contractors-table>-->
-</div>
-
+        <!-- <app-view-contractors-table></app-view-contractors-table>-->
+      </div>
+      <div class="cont2">
+        <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+        <button mat-raised-button color="primary" matStepperNext>Next</button>
+        </div>
     </mat-step>
     <mat-step label="Finalize">
 
@@ -249,7 +255,10 @@
           <button class="save" (click)="onNewProfileCreate()">Save and create new user</button>
         </div>
       </div>
-
+      <div class="cont2">
+        <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+        <button mat-raised-button color="primary" matStepperNext disabled>Next</button>
+        </div>
     </mat-step>
 
 

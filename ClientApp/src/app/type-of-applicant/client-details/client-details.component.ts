@@ -68,7 +68,7 @@ export class ClientDetailsComponent implements OnInit {
   }
 
   public initClientDetails() {
-    debugger;
+    
 /*    let newStageName = this.addStage.controls["newStageName"].value;*/
     let clientName = this.addApplicationClient.controls["clientNameAdd"].value;
     let clientSurname = this.addApplicationClient.controls["clientSurnameAdd"].value;
