@@ -293,7 +293,7 @@
         <!--enterning project details-->
         <!--<app-project-details></app-project-details>-->
 
-        <div class="form-floating ">
+<!--        <div class="form-floating ">
           <select class="form-select" [(ngModel)]="typeOfApplication" name="typeOfApplication" aria-label="Default select example" placeholder="Type of application">
             <option value="TOA">Type of application</option>
             <option value="Small">Small</option>
@@ -302,7 +302,20 @@
             <option value="Emergency">Emergency</option>
           </select>
 
-        </div>
+        </div>-->
+
+        <mat-form-field appearance="fill">
+          <mat-label>Select type of application</mat-label>
+          <mat-select [(ngModel)]="typeOfApplication" name="typeOfApplication">
+            <mat-option value="Small">Small</mat-option>
+            <mat-option value="Medium">Medium</mat-option>
+            <mat-option value="Large">Large</mat-option>
+            <mat-option value="Emergency">Emergency</mat-option>
+
+          </mat-select>
+        </mat-form-field>
+
+
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
@@ -313,9 +326,9 @@
 
           <div class="col">
             <!--  <div class="form-floating mb-3 mt-3">
-      <input type="text" class="form-control" [(ngModel)]="wbsNumber" id="WBSNo" placeholder="Enter WBS Number" name="wbsNo">
-      <label for="name">WBS Number</label>
-    </div>-->
+        <input type="text" class="form-control" [(ngModel)]="wbsNumber" id="WBSNo" placeholder="Enter WBS Number" name="wbsNo">
+        <label for="name">WBS Number</label>
+      </div>-->
             <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" [(ngModel)]="descriptionOfProject" id="Description" placeholder="Enter Description" name="descriptionOfProject">
               <label for="name">Description of Proposed Construction Work</label>

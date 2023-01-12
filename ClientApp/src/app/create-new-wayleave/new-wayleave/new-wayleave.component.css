@@ -101,9 +101,9 @@ form {
     border-radius: 8px;
   }*/
 .mat-form-field {
-  margin: 10px 0;
-  width: 100px;
-  border: none;
+/*  margin: 10px 0;*/
+  width: 100%;
+
 }
 .mat-input {
   border: none;
@@ -158,11 +158,7 @@ form {
     margin-left:40px;
 }
 
-.mat-form-field {
-  width: 80%;
-  border: none;
 
-}
 
 #uploadFile {
   top: 0px;
