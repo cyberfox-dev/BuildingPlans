@@ -131,6 +131,13 @@ form {
   height:40px;
   font-size: 16px;
 }
+.mat-blue {
+  background-color: #3692f4;
+  color: #fff;
+  width: 269px;
+  height: 40px;
+  font-size: 16px;
+}
 .mat-green {
   background-color: #54d75e;
   color: #fff;
@@ -507,5 +514,17 @@ h3 {
 h4{
      text-align:center;
  }
+mat-button-toggle-group {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.mat-button-toggle-checked {
+  background-color: #6bdd73fa;
+  color: white;
+}
+mat-button-toggle {
+  width: 100%;
+}
 
 /*check buttons for water and sanitation type of excavtion*/
