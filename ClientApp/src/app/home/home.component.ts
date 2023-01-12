@@ -86,7 +86,7 @@ export class HomeComponent implements OnInit,OnDestroy {
 
 
   getAllApplicationsByUserID() {
-    debugger;
+
     
     this.Applications.splice(0, this.Applications.length);
 
@@ -216,7 +216,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   }
 
   ngOnDestroy() {
-    debugger;
+
     this.viewContainerRef.clear();
   }
 
