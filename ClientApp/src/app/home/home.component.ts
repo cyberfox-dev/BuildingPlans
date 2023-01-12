@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { ApplicationsService } from '../service/Applications/applications.service';
 import { MatTable } from '@angular/material/table';
@@ -50,7 +50,7 @@ export interface ApplicationList {
 
 
 
-export class HomeComponent {
+export class HomeComponent implements OnInit,OnDestroy {
 
   Applications: ApplicationsList[] = [];
   applicationDataForView: ApplicationList[] = [];
@@ -59,7 +59,7 @@ export class HomeComponent {
   stringifiedData: any;
     stringifiedDataUserProfile: any;
     CurrentUserProfile: any;
-  constructor(private router: Router, private applicationService: ApplicationsService, private sharedService: SharedService) {
+  constructor(private router: Router, private applicationService: ApplicationsService, private sharedService: SharedService, private viewContainerRef: ViewContainerRef) {
 
   }
 
@@ -67,17 +67,26 @@ export class HomeComponent {
   dataSource = this.Applications;
   @ViewChild(MatTable) applicationsTable: MatTable<ApplicationsList> | undefined;
   ngOnInit(): void {
-    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
-    this.CurrentUser = JSON.parse(this.stringifiedData);
+    
+   
 
-    this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
-    this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
+    setTimeout(() => {
 
-   this.getAllApplicationsByUserID();
+      this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+      this.CurrentUser = JSON.parse(this.stringifiedData);
+
+      this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
+      this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
+
+      this.getAllApplicationsByUserID();
+    }, 100);
 
   }
 
+
+
   getAllApplicationsByUserID() {
+    debugger;
     
     this.Applications.splice(0, this.Applications.length);
 
@@ -206,6 +215,12 @@ export class HomeComponent {
    
   }
 
+  ngOnDestroy() {
+    debugger;
+    this.viewContainerRef.clear();
+  }
+
+
 
   viewProject(index: any) {
  
@@ -214,11 +229,13 @@ export class HomeComponent {
     this.applicationDataForViewToShared.push(this.applicationDataForView[index])  ;
     this.sharedService.setViewApplicationIndex(this.applicationDataForViewToShared);
     this.router.navigate(["/view-project-info"]);
+    this.viewContainerRef.clear();
 
   }
 
 
   goToNewWayleave(){
     this.router.navigate(["/new-wayleave"]);
+    this.viewContainerRef.clear();
   }
 }

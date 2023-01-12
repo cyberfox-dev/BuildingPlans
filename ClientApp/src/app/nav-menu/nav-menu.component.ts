@@ -177,9 +177,18 @@ export class NavMenuComponent implements OnInit {
     })
   }
 
+  //refresh() {
+  //  this.router.navigateByUrl('/', { skipLocationChange: true }).then(() =>
+  //    this.router.navigate([this.router.url]));
+  //  location.reload();
+  //}
 
+  LogoutUser() {
+    this.router.navigate(["/"]);
+    localStorage.removeItem('LoggedInUserInfo');
+    localStorage.removeItem('userProfile');
 
-
+  }
 /*routes for nav buttons*/
   goToConfig() {
     this.router.navigate(["/configuration"]);

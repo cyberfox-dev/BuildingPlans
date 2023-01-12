@@ -124,7 +124,7 @@
           <button mat-button [matMenuTriggerFor]="user"><img src="https://img.icons8.com/dusk/100/000000/user-male-circle.png" alt="" class="user-avatar-md rounded-circle"></button>
           <mat-menu #user="matMenu">
             <button mat-menu-item (click)="goToSettings()">Settings</button>
-            <a href="#"><button mat-menu-item>Log Out</button></a>
+            <a><button mat-menu-item (click)="LogoutUser()">Log Out</button></a>
           </mat-menu>
 
           <!-- <li ngbDropdown class="nav-item dropdown nav-user">
