@@ -143,7 +143,7 @@ export class HomeComponent {
     }
     else {
       this.applicationService.getApplicationsList(this.CurrentUser.appUserId, false).subscribe((data: any) => {
-
+     
 
         if (data.responseCode == 1) {
 

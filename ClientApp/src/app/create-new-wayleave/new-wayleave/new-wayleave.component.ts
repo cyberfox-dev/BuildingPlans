@@ -6,6 +6,7 @@ import { Address } from 'ngx-google-places-autocomplete/objects/address';
 import { GooglePlaceDirective } from 'ngx-google-places-autocomplete';
 import { FormBuilder, Validators } from '@angular/forms';
 import { empty } from 'rxjs';
+import { ZonesService } from 'src/app/service/Zones/zones.service';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
 import { InternalOptionComponent } from 'src/app/create-new-wayleave/internal-option/internal-option.component';
 import { SharedService } from "../../shared/shared.service";
@@ -53,7 +54,11 @@ export interface FileDocument {
   file: any;
 
 }
+export interface UserList {
+  id: string;
+  fullName: string;
 
+}
 
 const ELEMENT_DATA: PeriodicElement[] = [
   { fileType: "Cover letter explaning the extent of the work" },
@@ -149,7 +154,7 @@ export class NewWayleaveComponent implements OnInit {
   //})
 
   EngineerList: EngineerList[] = [];
-
+  UserList: UserList[] = [];
   FileDocument: FileDocument[] = [];
   ContractorList: ContractorList[] = [];
 
@@ -191,10 +196,15 @@ export class NewWayleaveComponent implements OnInit {
   displayedColumnsCUpload: string[] = ['fileType','actions'];
   dataSource = ELEMENT_DATA;
 
-  constructor(private modalService: NgbModal, private applicationsService: ApplicationsService, private professionalsLinksService: ProfessionalsLinksService, private shared: SharedService, private formBuilder: FormBuilder, private professionalService: ProfessionalService, private userPofileService: UserProfileService, private router: Router) { }
+  displayedColumnsLinkUsers: string[] = ['fullName', 'actions'];
+  dataSourceLinkUsers = this.UserList;
+
+  @ViewChild(MatTable) UserListTable: MatTable<UserList> | undefined;
+
+  constructor(private modalService: NgbModal, private applicationsService: ApplicationsService, private professionalsLinksService: ProfessionalsLinksService, private shared: SharedService, private formBuilder: FormBuilder, private professionalService: ProfessionalService, private userPofileService: UserProfileService, private router: Router, private zoneService: ZonesService) { }
 
   ngOnInit(): void {
-
+    this.getAllUsers();
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
@@ -675,6 +685,43 @@ export class NewWayleaveComponent implements OnInit {
     //  // If no file was selected, set fileAttr to the default value
     //  this.fileAttr = 'Choose File';
     //}
+  }
+
+
+  getAllUsers() {
+   
+    this.UserList.splice(0, this.UserList.length);
+
+   
+    this.zoneService.getUsersLinkedByZoneID(Number(1)).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempZoneList = {} as UserList;
+          const current = data.dateSet[i];
+          tempZoneList.id = current.id;
+          tempZoneList.fullName = current.fullName;
+
+
+
+          this.UserList.push(tempZoneList);
+        }
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
+  openExsistingClientModal(content: any) {
+    this.modalService.open(content, { backdrop: 'static', size: 'lg' });
   }
 
 }
