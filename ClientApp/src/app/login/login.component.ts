@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
 
- 
+  
   }
 
   onLogin() {
@@ -201,6 +201,9 @@ export class LoginComponent implements OnInit {
       this.container.classList.add('right-panel-active');
       console.log("toggle");
     }
+
+    this.registerForm.controls["registerEmail"].setValue("");
+    this.registerForm.controls["registerPassword"].setValue("");
   }
 
   remove() {
