@@ -9,6 +9,12 @@ h1 {
   font-weight: bold;
   margin-top:70px
 }
+.maps {
+  position: center;
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
 
 .cont1 {
   display: flex;
@@ -183,9 +189,9 @@ a {
   border-radius: 100%;
   width: 60px;
   height: 60px;
-  margin-left: -40px;
+  margin-left: -30px;
   position: absolute;
-  top: 123px;
+  top: 38px;
   color: white;
   text-align: center;
   line-height: 60px;
