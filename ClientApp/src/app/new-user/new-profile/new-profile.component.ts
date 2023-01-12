@@ -194,7 +194,7 @@ export class NewProfileComponent implements OnInit {
 
           debugger;
           const linkedContractors = this.shared.getContactorData();
-          
+          const linkedEngineers = this.shared.getEngineerData();
          
 
           for (let i = 0; i < linkedContractors.length; i++) {
@@ -218,6 +218,28 @@ export class NewProfileComponent implements OnInit {
                 console.log("Error: ", error);
               })
           }
+
+          for (let i = 0; i < linkedEngineers.length; i++) {
+            const linkedEngineer = this.shared.getEngineerDataByIndex(i);
+
+            this.professionalService.addUpdateProfessional(null, linkedEngineer.ProfessinalType, linkedEngineer.name + " " + linkedEngineer.surname, linkedEngineer.bpNumber, false, linkedEngineer.email, linkedEngineer.phoneNumber?.toString(), linkedEngineer.professionalRegNo, this.CurrentUser.appUserId, linkedEngineer.idNumber, this.CurrentUser.appUserId, linkedEngineer.CIBRating)
+              .subscribe((data: any) => {
+
+                if (data.responseCode == 1) {
+                  this.router.navigate(["/home"]);
+                  //alert(data.responseMessage);
+                }
+                else {
+                  //alert("Invalid Email or Password");
+                  alert(data.responseMessage);
+
+                }
+                console.log("reponse", data);
+                this.router.navigate(["/home"]);
+              }, error => {
+                console.log("Error: ", error);
+              })
+          }
         }
 
         else {
@@ -231,7 +253,6 @@ export class NewProfileComponent implements OnInit {
         console.log("Error: ", error);
       })
 
-      const linkedEngineers = this.shared.getEngineerData;
       //Engineer goes here
 
     }
@@ -246,13 +267,35 @@ export class NewProfileComponent implements OnInit {
 
           
           const linkedContractors = this.shared.getContactorData();
-
+          const linkedEngineers = this.shared.getEngineerData();
 
 
           for (let i = 0; i < linkedContractors.length; i++) {
             const linkedContractor = this.shared.getContactorDataByIndex(i);
 
             this.professionalService.addUpdateProfessional(null, linkedContractor.ProfessinalType, linkedContractor.name + " " + linkedContractor.surname, linkedContractor.bpNumber, false, linkedContractor.email, linkedContractor.phoneNumber?.toString(), linkedContractor.professionalRegNo, this.CurrentUser.appUserId, linkedContractor.idNumber, this.CurrentUser.appUserId, linkedContractor.CIBRating)
+              .subscribe((data: any) => {
+
+                if (data.responseCode == 1) {
+                  this.router.navigate(["/home"]);
+                  //alert(data.responseMessage);
+                }
+                else {
+                  //alert("Invalid Email or Password");
+                  alert(data.responseMessage);
+                  this.router.navigate(["/home"]);
+                }
+                console.log("reponse", data);
+                this.router.navigate(["/home"]);
+              }, error => {
+                console.log("Error: ", error);
+              })
+          }
+
+          for (let i = 0; i < linkedEngineers.length; i++) {
+            const linkedEngineer = this.shared.getEngineerDataByIndex(i);
+
+            this.professionalService.addUpdateProfessional(null, linkedEngineer.ProfessinalType, linkedEngineer.name + " " + linkedEngineer.surname, linkedEngineer.bpNumber, false, linkedEngineer.email, linkedEngineer.phoneNumber?.toString(), linkedEngineer.professionalRegNo, this.CurrentUser.appUserId, linkedEngineer.idNumber, this.CurrentUser.appUserId, linkedEngineer.CIBRating)
               .subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
@@ -283,7 +326,7 @@ export class NewProfileComponent implements OnInit {
         console.log("Error: ", error);
       })
 
-      const linkedEngineers = this.shared.getEngineerData;
+/*      const linkedEngineers = this.shared.getEngineerData;*/
 
 
 

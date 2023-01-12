@@ -103,6 +103,11 @@ export class SharedService {
     this.engineerData = data;
     console.log("Shared this.engineerData ", this.engineerData);
   }
+
+  getEngineerDataByIndex(index: number) {
+    return this.engineerData[index];
+  }
+
   getEngineerData() {
     return this.engineerData;
   }
