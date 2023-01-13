@@ -60,6 +60,14 @@ export interface UserList {
 
 }
 
+export interface StagesList {
+  StageID: number;
+  StageName: string;
+  StageOrderNumber: number;
+  CurrentUser: any
+
+}
+
 const ELEMENT_DATA: PeriodicElement[] = [
   { fileType: "Cover letter explaning the extent of the work" },
   { fileType: "Drawing showing the proposed route and detail regarding the trench cross section, number of pipes etc." },
@@ -157,6 +165,7 @@ export class NewWayleaveComponent implements OnInit {
   UserList: UserList[] = [];
   FileDocument: FileDocument[] = [];
   ContractorList: ContractorList[] = [];
+  StagesList: StagesList[] = [];
 
   public external: boolean = true;
   public internal: boolean = false;
@@ -217,6 +226,8 @@ export class NewWayleaveComponent implements OnInit {
 
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
+
+    this.StagesList = this.shared.getStageData();
 
  
 
@@ -414,13 +425,28 @@ export class NewWayleaveComponent implements OnInit {
     })
   }
 
+
+
+
   onWayleaveCreate() {
 
     const contractorData = this.shared.getContactorData();
     const engineerData = this.shared.getEngineerData();
+    let previousStageName = "";
+    let CurrentStageName = "";
+    let NextStageName = "";
+    for (var i = 0; i < this.StagesList.length; i++) {
+
+      if (this.StagesList[i].StageOrderNumber == 1) {
+        previousStageName = this.StagesList[i - 1].StageName
+        CurrentStageName = this.StagesList[i].StageName;
+        NextStageName = this.StagesList[i + 1].StageName
+      }
+
+    }
 
     if (this.client) {
-      this.applicationsService.addUpdateApplication(0, this.CurrentUser.appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId).subscribe((data: any) => {
+      this.applicationsService.addUpdateApplication(0, this.CurrentUser.appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId,previousStageName,0,CurrentStageName,1,NextStageName,2,"Unpaided").subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           alert(data.responseMessage);

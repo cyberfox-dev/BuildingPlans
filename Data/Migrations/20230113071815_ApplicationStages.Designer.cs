@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WayleaveManagementSystem.Data;
 
@@ -11,9 +12,10 @@ using WayleaveManagementSystem.Data;
 namespace WayleaveManagementSystem.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230113071815_ApplicationStages")]
+    partial class ApplicationStages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -163,23 +165,11 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("ApplicationID"), 1L, 1);
 
-                    b.Property<string>("ApplicationStatus")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CompanyRegNo")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CurrentStageName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CurrentStageNumber")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CurrentStageStartDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
@@ -213,12 +203,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("NatureOfWork")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NextStageName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NextStageNumber")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("NotificationNumber")
                         .HasColumnType("nvarchar(max)");
 
@@ -229,12 +213,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhysicalAddressOfProject")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PreviousStageName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PreviousStageNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ReferenceNumber")

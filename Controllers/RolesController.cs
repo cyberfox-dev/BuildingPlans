@@ -49,14 +49,14 @@ namespace WayleaveManagementSystem.Controllers
                     if (!(await _roleManager.RoleExistsAsync(model.RoleName)))
                     {
                         var result = await _roleManager.CreateAsync(new IdentityRole(model.RoleName));
-                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Role Added Sussessfully", result));
+                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Role Added Successfully", result));
                     }
                     else
                     {
                         //var tempRoleTable = _roleManager.FindByIdAsync(model.RoleID);
 
                         var result = await _roleManager.UpdateAsync(new IdentityRole(model.RoleName));
-                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Role Updated Sussessfully", result));
+                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Role Updated Successfully", result));
                     }
                 }
 
@@ -69,7 +69,7 @@ namespace WayleaveManagementSystem.Controllers
                 //else
                 //{
                 //    var result = await _rolesService.AddUpdateRole(model.RoleID, model.RoleName, model.RoleType, model.RoleDescription, model.CreatedById);
-                //    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.RoleID > 0 ? "Role Updated Sussessfully" : "Role Added Sussessfully"), result));
+                //    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.RoleID > 0 ? "Role Updated Successfully" : "Role Added Successfully"), result));
                 //}
 
             }
@@ -95,7 +95,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _rolesService.DeleteRole(roleID);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Role Deleted Sussessfully", result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Role Deleted Successfully", result));
                 }
 
             }

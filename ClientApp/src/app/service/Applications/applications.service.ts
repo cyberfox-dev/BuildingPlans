@@ -8,7 +8,7 @@ export class ApplicationsService {
   private readonly baseURL: string = "https://localhost:7123/api/applications/"
 
   constructor(private httpClient: HttpClient) { }
-  public addUpdateApplication(ApplicationID?: number | null, userID?: string | null, fullName?: string | null, email?: string | null, phoneNumber?: string | null, physicalAddress?: string | null, referenceNumber?: string | null, companyRegNo?: string | null, typeOfApplication?: string | null, notificationNumber?: string | null, wbsNumber?: string | null, physicalAddressOfProject?: string | null, descriptionOfProject?: string | null, natureOfWork?: string | null, excavationType?: string | null, expectedStartDate?: Date | null, expectedEndDate?: Date | null, location?: string | null, createdById?: string | null) {
+  public addUpdateApplication(ApplicationID?: number | null, userID?: string | null, fullName?: string | null, email?: string | null, phoneNumber?: string | null, physicalAddress?: string | null, referenceNumber?: string | null, companyRegNo?: string | null, typeOfApplication?: string | null, notificationNumber?: string | null, wbsNumber?: string | null, physicalAddressOfProject?: string | null, descriptionOfProject?: string | null, natureOfWork?: string | null, excavationType?: string | null, expectedStartDate?: Date | null, expectedEndDate?: Date | null, location?: string | null, createdById?: string | null, previousStageName?: string | null, previousStageNumber?: number | null, currentStageName?: string | null, currentStageNumber?: number | null, nextStageName?: string | null, nextStageNumber?: number | null, applicationStatus?: string | null ) {
 
     const body = {
       ApplicationID: ApplicationID,
@@ -30,10 +30,35 @@ export class ApplicationsService {
       Location: location,
       PhoneNumber: phoneNumber,
       CreatedById: createdById,
+      PreviousStageName: previousStageName,
+      PreviousStageNumber: previousStageNumber,
+      CurrentStageName: currentStageName,
+      CurrentStageNumber: currentStageNumber,
+      NextStageName: nextStageName,
+      NextStageNumber: nextStageNumber,
+      ApplicationStatus: applicationStatus,
     }
     return this.httpClient.post(this.baseURL + "AddUpdateApplication", body);
 
   }
+
+
+  public updateApplicationStage(ApplicationID?: number | null, previousStageName?: string | null, previousStageNumber?: number | null, currentStageName?: string | null, currentStageNumber?: number | null, nextStageName?: string | null, nextStageNumber?: string | null, applicationStatus?: string | null) {
+
+    const body = {
+      ApplicationID: ApplicationID,
+      PreviousStageName: previousStageName,
+      PreviousStageNumber: previousStageNumber,
+      CurrentStageName: currentStageName,
+      CurrentStageNumber: currentStageNumber,
+      NextStageName: nextStageName,
+      NextStageNumber: nextStageNumber,
+      ApplicationStatus: applicationStatus,
+    }
+    return this.httpClient.post(this.baseURL + "UpdateApplicationStage", body);
+
+  }
+
 
   public deleteApplication(applicationID: number) {
 

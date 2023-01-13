@@ -15,6 +15,14 @@ export interface ProfessionalList {
 
 }
 
+export interface StagesList {
+  StageID: number;
+  StageName: string;
+  StageOrderNumber: number;
+  CurrentUser: any
+
+}
+
 export interface ApplicationList {
   applicationID: number,
   clientName: string,
@@ -55,6 +63,7 @@ export class SharedService {
   applicationData: ApplicationList[] = [];
   applicationDataForView: ApplicationList[] = [];
   engineerData: ProfessionalList[] = [];
+  StagesList: StagesList[] = [];
 
   constructor() { }
 
@@ -81,6 +90,17 @@ export class SharedService {
   getUserProfileData() {
     return this.userProfileData;
   }
+
+  setStageData(data: any) {
+    
+    this.StagesList = data;
+
+  }
+
+  getStageData() {
+    return this.StagesList;
+  }
+
 
   setContactorData(data: any) {
    
