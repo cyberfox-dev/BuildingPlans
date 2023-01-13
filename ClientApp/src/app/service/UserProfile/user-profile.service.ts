@@ -61,6 +61,12 @@ export class UserProfileService {
 
   }
 
+  public getExternalUsers() {
+
+    return this.httpClient.get(this.baseURL + "GetExternalUsers");
+
+  }
+
 
 
 

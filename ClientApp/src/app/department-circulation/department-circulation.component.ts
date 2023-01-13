@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 export interface PeriodicElement {
   dep: string;
-
+  indication: any;
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
-  { dep: 'Water & Sanitation' },
-  { dep: 'Ist' },
-  { dep: 'Transport' },
-  { dep: 'Energy' },
+  { dep: 'Water & Sanitation', indication:'green' },
+  { dep: 'Ist', indication: 'red' },
+  { dep: 'Transport', indication: 'wait' },
+  { dep: 'Energy', indication: 'orange' },
+  { dep: 'Department', indication: 'blue' },
 
 
 ];
@@ -19,10 +20,21 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class DepartmentCirculationComponent implements OnInit {
 
+  approveIcon = false;
+  rejectIcon = false;
+  waitingIcon = true;
+  referIcon = false;
+  ClarifyIcon = false;
+
+
   constructor() { }
   displayedColumns: string[] = ['dep', 'indication'];
   dataSource = ELEMENT_DATA;
   ngOnInit(): void {
+  }
+
+  setIcon() {
+
   }
 
 }
