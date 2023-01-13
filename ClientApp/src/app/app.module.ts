@@ -68,6 +68,7 @@ import { AccessGroupsConfigComponent } from './access-groups-config/access-group
 import { MatToolbarModule } from '@angular/material/toolbar'; 
 import { MatListModule } from '@angular/material/list';
 import { MandatoryDocsConfigComponent } from './mandatory-docs-config/mandatory-docs-config.component';
+import { MatRadioModule } from '@angular/material/radio';
 //import { MapModule } from 'arcgis-js-api';
 //import Map from "@arcgis/core/Map";
 
@@ -137,6 +138,7 @@ import { MandatoryDocsConfigComponent } from './mandatory-docs-config/mandatory-
     BrowserAnimationsModule,
     MatTableModule,
     MatPaginatorModule,
+    MatRadioModule,
     MatDividerModule,
     MatTooltipModule,
     MatProgressSpinnerModule,

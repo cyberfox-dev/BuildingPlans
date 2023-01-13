@@ -108,5 +108,29 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+
+
+        /*Get external users*/
+        [HttpGet("GetExternalUsers")]
+        public async Task<object> GetExternalUsers()
+        {
+            try
+            {
+
+
+                    var result = await _userProfileService.GetExternalUsers();
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "UserProfile List fetched", result));
+                
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
     }
 }

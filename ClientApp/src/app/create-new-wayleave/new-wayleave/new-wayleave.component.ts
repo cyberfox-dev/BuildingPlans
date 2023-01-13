@@ -55,7 +55,7 @@ export interface FileDocument {
 
 }
 export interface UserList {
-  id: string;
+  idNumber: string;
   fullName: string;
 
 }
@@ -196,20 +196,29 @@ export class NewWayleaveComponent implements OnInit {
   displayedColumnsCUpload: string[] = ['fileType','actions'];
   dataSource = ELEMENT_DATA;
 
-  displayedColumnsLinkUsers: string[] = ['fullName', 'actions'];
+  displayedColumnsLinkUsers: string[] = ['idNumber', 'fullName', 'actions'];
   dataSourceLinkUsers = this.UserList;
+
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSourceLinkUsers.filter(user => user.fullName.toLowerCase().includes(filterValue.trim().toLowerCase()));
+    this.UserListTable?.renderRows();
+    
+   // console.log("this is what it is filtering", this.dataSourceLinkUsers.filter(user => user.fullName.toLowerCase().includes(filterValue.trim().toLowerCase())));
+  }
 
   @ViewChild(MatTable) UserListTable: MatTable<UserList> | undefined;
 
   constructor(private modalService: NgbModal, private applicationsService: ApplicationsService, private professionalsLinksService: ProfessionalsLinksService, private shared: SharedService, private formBuilder: FormBuilder, private professionalService: ProfessionalService, private userPofileService: UserProfileService, private router: Router, private zoneService: ZonesService) { }
 
   ngOnInit(): void {
-    this.getAllUsers();
+    this.getAllExternalUsers();
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
 
-    this.typeOfApplication = "TOA"
+    this.typeOfApplication = "TOA";
 
 
     this.getProfessionalsListByProfessionalType("Engineer");
@@ -623,10 +632,6 @@ export class NewWayleaveComponent implements OnInit {
   displayedColumnsTest: string[] = ['position', 'name', 'weight', 'symbol'];
   dataSourceTest = new MatTableDataSource(ELEMENT_DATATEst);
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSourceTest.filter = filterValue.trim().toLowerCase();
-  }
 
 
 
@@ -679,19 +684,19 @@ export class NewWayleaveComponent implements OnInit {
   }
 
 
-  getAllUsers() {
+  getAllExternalUsers() {
    
     this.UserList.splice(0, this.UserList.length);
 
-   
-    this.zoneService.getUsersLinkedByZoneID(Number(1)).subscribe((data: any) => {
+ 
+    this.userPofileService.getExternalUsers().subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempZoneList = {} as UserList;
           const current = data.dateSet[i];
-          tempZoneList.id = current.id;
+          tempZoneList.idNumber = current.idNumber;
           tempZoneList.fullName = current.fullName;
 
 
@@ -710,6 +715,7 @@ export class NewWayleaveComponent implements OnInit {
     })
 
   }
+
 
   openExsistingClientModal(content: any) {
     this.modalService.open(content, { backdrop: 'static', size: 'lg' });

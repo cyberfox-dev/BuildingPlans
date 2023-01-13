@@ -18,6 +18,26 @@ table {
   hyphens: auto;
   text-align: center;
 }
+.greenThumbsUp {
+  color: #68d017;
+  font-size: 29px;
+}
+.redThumbsDown {
+  color: #d01717;
+  font-size: 29px;
+}
+.yellowTimer {
+  color: #d0c400bd;
+  font-size: 29px;
+}
+.orangeSpeech {
+  color: #ff9600;
+  font-size: 29px;
+}
+.blueRefer {
+  color: #00a4ff;
+  font-size: 29px;
+}
 
 .mat-column-indication {
   word-wrap: break-word !important;
