@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ComponentFactoryResolver, ComponentRef, ElementRef, Injector, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatTable, MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ApplicationsService } from 'src/app/service/Applications/applications.service';
@@ -15,6 +15,7 @@ import { UserProfileService } from 'src/app/service/UserProfile/user-profile.ser
 import { ProfessionalsLinksService } from 'src/app/service/ProfessionalsLinks/professionals-links.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
+import { SelectEngineerTableComponent} from 'src/app/select-engineer-table/select-engineer-table.component'
 
 
 export interface EngineerList {
@@ -55,6 +56,7 @@ export interface FileDocument {
 
 }
 export interface UserList {
+  userId: any;
   idNumber: string;
   fullName: string;
 
@@ -95,12 +97,17 @@ const ELEMENT_DATATEst: PeriodicElementTest[] = [
   styleUrls: ['./new-wayleave.component.css']
 })
 export class NewWayleaveComponent implements OnInit {
+
+  
   @ViewChild("placesRef")
   placesRef: GooglePlaceDirective | undefined;
   options = {
     types: [],
     componentRestrictions: { country: 'ZA' }
   } as unknown as Options
+  professionalType!: string;
+  userID = '';
+
   /*Client details*/
   clientName = '';
   clientSurname = '';
@@ -113,6 +120,7 @@ export class NewWayleaveComponent implements OnInit {
   clientCompanyRegNo = '';
   clientCompanyType = '';
   clientIDNumber = '';
+  clientPhysicalAddress = '';
 
 
   internalName = '';
@@ -141,6 +149,15 @@ export class NewWayleaveComponent implements OnInit {
   expectedStartDate: Date = new Date();
   expectedEndType: Date = new Date();
 
+  /*New Engineer information*/
+  engineerIDNo = '';
+  bpNoApplicant = '';
+  professionalRegNo = '';
+  name = '';
+  surname = '';
+  applicantTellNo = '';
+  applicantEmail = '';
+
   //public addApplicationProject = this.formBuilder.group({
   //  typeOfApplication: ['', Validators.required],
   //  notificationNumber: ['', Validators.required],
@@ -162,6 +179,8 @@ export class NewWayleaveComponent implements OnInit {
   public internal: boolean = false;
   public client: boolean = false;
   public map: boolean = true;
+  public newClient: boolean = true;
+  public disabled: boolean = false;
 
   clientSelected = false;
   option: any;
@@ -191,9 +210,9 @@ export class NewWayleaveComponent implements OnInit {
   @ViewChild(MatTable) EngineerTable: MatTable<EngineerList> | undefined;
   @ViewChild(MatTable) ContractorTable: MatTable<ContractorList> | undefined;
   @ViewChild(MatPaginator)
-    paginator!: MatPaginator;
+  paginator!: MatPaginator;
 
-  displayedColumnsCUpload: string[] = ['fileType','actions'];
+  displayedColumnsCUpload: string[] = ['fileType', 'actions'];
   dataSource = ELEMENT_DATA;
 
   displayedColumnsLinkUsers: string[] = ['idNumber', 'fullName', 'actions'];
@@ -204,13 +223,15 @@ export class NewWayleaveComponent implements OnInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSourceLinkUsers.filter(user => user.fullName.toLowerCase().includes(filterValue.trim().toLowerCase()));
     this.UserListTable?.renderRows();
-    
-   // console.log("this is what it is filtering", this.dataSourceLinkUsers.filter(user => user.fullName.toLowerCase().includes(filterValue.trim().toLowerCase())));
+
+    // console.log("this is what it is filtering", this.dataSourceLinkUsers.filter(user => user.fullName.toLowerCase().includes(filterValue.trim().toLowerCase())));
   }
 
   @ViewChild(MatTable) UserListTable: MatTable<UserList> | undefined;
 
-  constructor(private modalService: NgbModal, private applicationsService: ApplicationsService, private professionalsLinksService: ProfessionalsLinksService, private shared: SharedService, private formBuilder: FormBuilder, private professionalService: ProfessionalService, private userPofileService: UserProfileService, private router: Router, private zoneService: ZonesService) { }
+     
+
+  constructor(private modalService: NgbModal, private applicationsService: ApplicationsService, private professionalsLinksService: ProfessionalsLinksService, private shared: SharedService, private formBuilder: FormBuilder, private professionalService: ProfessionalService, private userPofileService: UserProfileService, private router: Router, private zoneService: ZonesService, private resolver: ComponentFactoryResolver, private container: ViewContainerRef, private injector: Injector) { }
 
   ngOnInit(): void {
     this.getAllExternalUsers();
@@ -227,7 +248,7 @@ export class NewWayleaveComponent implements OnInit {
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
 
- 
+    
 
     console.log("this.CurrentUserProfile ", this.CurrentUserProfile);
 
@@ -237,36 +258,36 @@ export class NewWayleaveComponent implements OnInit {
       this.internal = false;
       this.client = false;
 
-     
 
-        this.userPofileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
 
-          if (data.responseCode == 1) {
+      this.userPofileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
 
-         
-            console.log("data Ex", data.dateSet);
+        if (data.responseCode == 1) {
 
-            const currentUserProfile = data.dateSet[0];
-            const fullname = currentUserProfile.fullName;
 
-            this.externalBPNumber = currentUserProfile.bP_Number;
-            this.externalName = fullname.substring(0, fullname.indexOf(' '));
-            this.externalSurname = fullname.substring(fullname.indexOf(' ') + 1);
-            this.externalAddress = currentUserProfile.physcialAddress;
-            this.externalEmail = currentUserProfile.email;
-            
+          console.log("data Ex", data.dateSet);
 
-          }
+          const currentUserProfile = data.dateSet[0];
+          const fullname = currentUserProfile.fullName;
 
-          else {
+          this.externalBPNumber = currentUserProfile.bP_Number;
+          this.externalName = fullname.substring(0, fullname.indexOf(' '));
+          this.externalSurname = fullname.substring(fullname.indexOf(' ') + 1);
+          this.externalAddress = currentUserProfile.physcialAddress;
+          this.externalEmail = currentUserProfile.email;
 
-            alert(data.responseMessage);
-          }
-         /* console.log("reponse", data);*/
 
-        }, error => {
-          console.log("Error: ", error);
-        })
+        }
+
+        else {
+
+          alert(data.responseMessage);
+        }
+        /* console.log("reponse", data);*/
+
+      }, error => {
+        console.log("Error: ", error);
+      })
 
 
 
@@ -280,7 +301,7 @@ export class NewWayleaveComponent implements OnInit {
       this.external = false;
       this.client = false;
     }
-   
+
 
   }
 
@@ -326,7 +347,7 @@ export class NewWayleaveComponent implements OnInit {
 
         if (data.responseCode == 1) {
 
-         
+
           console.log("data", data.dateSet);
 
           const currentUserProfile = data.dateSet[0];
@@ -364,7 +385,7 @@ export class NewWayleaveComponent implements OnInit {
 
   getProfessionalsListByProfessionalType(professionalType: string) {
     /*    this.EngineerList.splice(0, this.EngineerList.length);*/
-
+   
     this.professionalService.getProfessionalsListByProfessionalType(this.CurrentUser.appUserId, professionalType).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -434,7 +455,7 @@ export class NewWayleaveComponent implements OnInit {
         if (data.responseCode == 1) {
           alert(data.responseMessage);
 
-        
+
 
           //Add professional link for contractors when application is successfully captured
           if (contractorData.length > 0) {
@@ -444,7 +465,7 @@ export class NewWayleaveComponent implements OnInit {
           } else {
             alert("This Application have no contractors linked");
           }
-          
+
 
           //Add professional link for engineers when application is successfully captured
           if (engineerData.length > 0) {
@@ -506,8 +527,8 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
-      this.applicationsService.addUpdateApplication(0, this.CurrentUser.appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, this.externalAddress , null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId).subscribe((data: any) => {
-        
+      this.applicationsService.addUpdateApplication(0, this.CurrentUser.appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, this.externalAddress, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId).subscribe((data: any) => {
+
         if (data.responseCode == 1) {
           alert(data.responseMessage);
 
@@ -545,9 +566,11 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
-    }
+  }
 
-
+  openXl(content: any) {
+    this.modalService.open(content, { size: 'xl' });
+  }
 
 
   generateInvoice() {
@@ -579,9 +602,9 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
-  
-@ViewChild('fileInput')
-    fileInput!: ElementRef;
+
+  @ViewChild('fileInput')
+  fileInput!: ElementRef;
   fileAttr = 'Choose File';
 
 
@@ -620,7 +643,7 @@ export class NewWayleaveComponent implements OnInit {
 
         console.log("fileObject", fileObject);
         console.log("reader.readAsArrayBuffer(fileObject)", reader.readAsArrayBuffer(fileObject));
-        
+
       });
       // Reset the value of the file input element
       this.fileInput.nativeElement.value = '';
@@ -639,7 +662,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
   uploadFileEvt(File: any) {
-    
+
     const tempFileDocumentList = {} as FileDocument;
 
     tempFileDocumentList.fileName = File.target.files[0].name;
@@ -666,7 +689,7 @@ export class NewWayleaveComponent implements OnInit {
     //    reader.onload = (e: any) => {
     //      // Create a Byte[] array from the file contents
     //      let fileBytes = new Uint8Array(e.target.result);
-        
+
     //    };
     //    // Start reading the file as an ArrayBuffer
     //    reader.readAsArrayBuffer(fileObject);
@@ -685,10 +708,10 @@ export class NewWayleaveComponent implements OnInit {
 
 
   getAllExternalUsers() {
-   
+
     this.UserList.splice(0, this.UserList.length);
 
- 
+
     this.userPofileService.getExternalUsers().subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -696,6 +719,7 @@ export class NewWayleaveComponent implements OnInit {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempZoneList = {} as UserList;
           const current = data.dateSet[i];
+          tempZoneList.userId = current.userID;
           tempZoneList.idNumber = current.idNumber;
           tempZoneList.fullName = current.fullName;
 
@@ -720,5 +744,166 @@ export class NewWayleaveComponent implements OnInit {
   openExsistingClientModal(content: any) {
     this.modalService.open(content, { backdrop: 'static', size: 'lg' });
   }
+  getUserID(index: any) {
+    this.userID = this.UserList[index].userId;
+  }
 
+  populateClientInfo() {
+
+    this.disabled = true;
+    this.newClient = false;
+    this.userPofileService.getUserProfileById(this.userID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        this.UserListTable?.renderRows();
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempUserList = {} as UserList;
+          const current = data.dateSet[i];
+
+          const fullname = current.fullName;
+
+          this.clientName = fullname.substring(0, fullname.indexOf(' '));
+          this.clientSurname = fullname.substring(fullname.indexOf(' ') + 1);
+          this.clientEmail = current.email;
+          this.clientCellNo = current.phoneNumber;
+          this.clientIDNumber = current.idNumber;
+          this.clientBPNum = current.bP_Number;
+          this.clientCompanyRegNo = current.companyRegNo;
+          this.clientCompanyName = current.companyName;
+          this.clientPhysicalAddress = current.physcialAddress;
+
+          this.getProfessionalsListByProfessionalType(this.professionalType);
+          console.log(tempUserList);
+          this.UserList.push(tempUserList);
+
+        }
+        this.UserListTable?.renderRows();
+      }
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+  tempEngineerList: EngineerList[] = [];
+  myDataSource = this.tempEngineerList;
+
+
+  recallMyComponent() {
+
+
+    //  this.componentRef.destroy();
+    //  this.container.clear();
+
+
+    //const factory = this.resolver.resolveComponentFactory(selectProfessionals.SelectEngineerTableComponent);
+    //const componentRef = factory.create(this.injector);
+    //this.container.insert(componentRef.hostView);
+
+    let refreshTable = new SelectEngineerTableComponent(this.professionalService, this.shared);
+    refreshTable.ngOnInit();
+  }
+
+  onAddEngineer() {
+   
+    const newEnineer = {} as EngineerList;
+    newEnineer.ProfessinalType = "Engineer";
+    newEnineer.bpNumber = this.bpNoApplicant;
+    newEnineer.professionalRegNo = this.professionalRegNo;
+    newEnineer.name = this.name;
+    newEnineer.surname = this.surname;
+    newEnineer.email = this.applicantEmail;
+    newEnineer.phoneNumber = this.applicantTellNo;
+    this.professionalService.addUpdateProfessional(0, "Engineer", this.name + " " + this.surname, this.bpNoApplicant, false, this.applicantEmail, this.applicantTellNo.toString(), this.professionalRegNo, this.CurrentUser.appUserId, this.engineerIDNo, this.CurrentUser.appUserId, null).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        alert(data.responseMessage);
+
+        this.EngineerTable?.renderRows();
+
+        this.recallMyComponent();
+        
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+    
+    this.EngineerTable?.renderRows();
+
+
+  }
+
+
+  getProfessionalsListForExsitingUser(professionalType: string) {
+    /*    this.EngineerList.splice(0, this.EngineerList.length);*/
+
+    this.professionalService.getProfessionalsListByProfessionalType(this.userID, professionalType).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        console.log("data.dateSet get", data.dateSet);
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          //Check if Engineer or Contractor
+          if (professionalType == "Engineer") {
+            const tempProfessionalList = {} as EngineerList;
+            const current = data.dateSet[i];
+            tempProfessionalList.bpNumber = current.bP_Number;
+            tempProfessionalList.email = current.email;
+            tempProfessionalList.idNumber = current.idNumber;
+            tempProfessionalList.name = current.fullName.substring(0, current.fullName.indexOf(' '));
+            tempProfessionalList.surname = current.fullName.substring(current.fullName.indexOf(' ') + 1);
+            tempProfessionalList.phoneNumber = current.phoneNumber;
+            tempProfessionalList.ProfessinalType = current.professinalType;
+            tempProfessionalList.professionalRegNo = current.professionalRegNo;
+            tempProfessionalList.professinalID = current.professinalID;
+            this.EngineerList.push(tempProfessionalList);
+            console.log("this.EngineerList", this.EngineerList);
+          } else {
+            const tempProfessionalList = {} as ContractorList;
+            const current = data.dateSet[i];
+            tempProfessionalList.bpNumber = current.bP_Number;
+            tempProfessionalList.email = current.email;
+            tempProfessionalList.idNumber = current.idNumber;
+            tempProfessionalList.name = current.fullName.substring(0, current.fullName.indexOf(' '));
+            tempProfessionalList.surname = current.fullName.substring(current.fullName.indexOf(' ') + 1);
+            tempProfessionalList.phoneNumber = current.phoneNumber;
+            tempProfessionalList.ProfessinalType = current.professinalType;
+            tempProfessionalList.professionalRegNo = current.professionalRegNo;
+            tempProfessionalList.professinalID = current.professinalID;
+            tempProfessionalList.CIBRating = current.cibRating;
+            this.ContractorList.push(tempProfessionalList);
+            console.log("this.ContractorList", this.ContractorList);
+          }
+          //this.EngineerTable?.renderRows();
+          //this.ContractorTable?.renderRows();
+        }
+        this.ContractorTable?.renderRows();
+        this.EngineerTable?.renderRows();
+
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+
+      console.log("reponse", data);
+      this.ContractorTable?.renderRows();
+      this.EngineerTable?.renderRows();
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
 }

@@ -379,6 +379,7 @@ export class DepartmentConfigComponent implements OnInit {
 
   setCurrentDepartmentID(index: any) {
     this.CurrentDepartmentID = this.DepartmentList[index].departmentID;
+    console.log("IM USING THIS CODE", this.CurrentDepartmentID);
     this.header = this.DepartmentList[index].departmentName;
   }
 

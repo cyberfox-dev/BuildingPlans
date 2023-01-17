@@ -141,134 +141,136 @@
 
               <button mat-raised-button color="blue" (click)="openExsistingClientModal(user)">Create for an exsisting client</button>
 
-              <!--<form>-->
-              <div class="row">
-                <div class="col">
-                  <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control" [(ngModel)]="clientName" name="clientName" placeholder="Enter First Name">
-                    <label for="clientName">Name</label>
+              <form>
+                <div class="row">
+                  <div class="col">
+                    <div class="form-floating mb-3 mt-3">
+                      <input type="text" class="form-control" [(ngModel)]="clientName" name="clientName" placeholder="Enter First Name">
+                      <label for="clientName">Name</label>
+                    </div>
                   </div>
-                </div>
 
-                <div class="col">
-                  <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control" [(ngModel)]="clientSurname" name="clientSurname" placeholder="Enter Surname">
-                    <label for="clientSurname">Surname</label>
+                  <div class="col">
+                    <div class="form-floating mb-3 mt-3">
+                      <input type="text" class="form-control" [(ngModel)]="clientSurname" name="clientSurname" placeholder="Enter Surname">
+                      <label for="clientSurname">Surname</label>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="row">
-                <div class="col">
-                  <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control" [(ngModel)]="clientEmail" name="clientEmail" placeholder="Enter Email">
-                    <label for="clientEmail">Email</label>
+                <div class="row">
+                  <div class="col">
+                    <div class="form-floating mb-3 mt-3">
+                      <input type="text" class="form-control" [(ngModel)]="clientEmail" name="clientEmail" placeholder="Enter Email">
+                      <label for="clientEmail">Email</label>
+                    </div>
                   </div>
-                </div>
 
-                <div class="col">
-                  <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control" [(ngModel)]="clientCellNo" name="clientCellNo" placeholder="Enter Cell Number">
-                    <label for="clientCellNo">Cell Number</label>
+                  <div class="col">
+                    <div class="form-floating mb-3 mt-3">
+                      <input type="text" class="form-control" [(ngModel)]="clientCellNo" name="clientCellNo" placeholder="Enter Cell Number">
+                      <label for="clientCellNo">Cell Number</label>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="row">
-                <div class="col">
-                  <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control" [(ngModel)]="clientIDNumber" placeholder="Enter ID Number">
-                    <label for="extApplicantIDNumber">ID Number</label>
+                <div class="row">
+                  <div class="col">
+                    <div class="form-floating mb-3 mt-3">
+                      <input type="text" class="form-control" [(ngModel)]="clientIDNumber" name="clientIDNumber" placeholder="Enter ID Number">
+                      <label for="extApplicantIDNumber">ID Number</label>
+                    </div>
                   </div>
-                </div>
 
-                <div class="col">
-                  <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control" [(ngModel)]="clientRefNo" name="clientRefNo" placeholder="Enter Ref No">
-                    <label for="clientRefNo">Reference Number</label>
+                  <div class="col">
+                    <div class="form-floating mb-3 mt-3">
+                      <input type="text" class="form-control" [(ngModel)]="clientRefNo" name="clientRefNo" placeholder="Enter Ref No">
+                      <label for="clientRefNo">Reference Number</label>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="row">
-                <div class="col">
-                  <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control" [(ngModel)]="clientBPNum" placeholder="Enter BP Number">
-                    <label for="bpNoApplicant">BP Number</label>
+                <div class="row">
+                  <div class="col">
+                    <div class="form-floating mb-3 mt-3">
+                      <input type="text" class="form-control" [(ngModel)]="clientBPNum" name="clientBPNum" placeholder="Enter BP Number">
+                      <label for="bpNoApplicant">BP Number</label>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="form-floating mb-3 mt-3">
+                      <input type="text" class="form-control" [(ngModel)]="clientCompanyName" name="clientCompanyName" placeholder="Enter Company Name">
+                      <label for="address">Company Name</label>
+                    </div>
                   </div>
                 </div>
-                <div class="col">
-                  <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control" [(ngModel)]="clientCompanyName" placeholder="Enter Company Name">
-                    <label for="address">Company Name</label>
+                <div class="row">
+                  <div class="col">
+                    <div class="form-floating mb-3 mt-3">
+                      <input type="text" class="form-control" [(ngModel)]="clientCompanyRegNo" name="clientCompanyRegNo" placeholder="Enter Company Reg No">
+                      <label for="address">Company Reg No.</label>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="form-floating mb-3 mt-3">
+                      <input type="email" class="form-control" [(ngModel)]="clientCompanyType" name="clientCompanyType" placeholder="Select Company Type">
+                      <label for="applicantEmail">Company Type</label>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="row">
-                <div class="col">
+                <div class="row">
                   <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control" [(ngModel)]="clientCompanyRegNo" placeholder="Enter Company Reg No">
-                    <label for="address">Company Reg No.</label>
+                    <input type="email" class="form-control" [(ngModel)]="clientPhysicalAddress" name="clientPhysicalAddress" placeholder="Select Address">
+                    <label for="applicantEmail">Address</label>
                   </div>
-                </div>
-                <div class="col">
-                  <div class="form-floating mb-3 mt-3">
-                    <input type="email" class="form-control" [(ngModel)]="clientCompanyType" placeholder="Select Company Type">
-                    <label for="applicantEmail">Company Type</label>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-
-                <div class="form-floating mb-3 mt-3">
-                  <!--<input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address">-->
-                  <input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" />
-                  <label for="applicantTellNo">Physical Address</label>
-                </div>
 
 
 
-              </div>
-              <div class="row">
-                <h5>Please upload a copy of your ID</h5>
-                <div class="input-group">
-                  <input type="file" class="form-control"  aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                </div>
+                <div class="row" *ngIf="newClient">
+                  <h5>Please upload a copy of your ID</h5>
+                  <div class="input-group">
+                    <input type="file" class="form-control" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+
+                  </div>
 
                 </div>
-
-              </div>
-              <!--</form>-->
+              </form>
             </div>
 
           </div>
 
           <!--Only if they are a client do they see these divs to create a new engineer and contractor-->
+          <!--          <div class="container-fluid" *ngIf="client">
+              <div class="card">
+                <h3><span>Please create an engineer</span></h3>
+              </div>
+              <app-new-egineer></app-new-egineer>
 
-          <div class="container-fluid" *ngIf="client">
-            <div class="card">
-              <h3><span>Please create an engineer</span></h3>
-            </div>
-            <app-new-egineer></app-new-egineer>
+              <div class="card" >
+                <h3><span>Please create a contractor</span></h3>
+              </div>
 
-            <div class="card" >
-              <h3><span>Please create a contractor</span></h3>
-            </div>
-
-            <app-new-contractor></app-new-contractor>
-          </div>
-
+              <app-new-contractor></app-new-contractor>
+            </div>-->
           <!--the applicant selecting an engineer-->
-          <div class="card" *ngIf="!client">
+          <div class="card">
             <h3><span>Please select an engineer</span></h3>
           </div>
-
+          <div class="container-fluid">
+            <div class="row">
+              <button type="button" class="createNewEngin" (click)="openXl(content)">
+                Create New Engineer
+              </button>
+            </div>
+          </div>
           <!--Table displaying the engineers-->
-          <app-select-engineer-table [PrfessionalType]='Engineer' *ngIf="!client"></app-select-engineer-table>
+          <app-select-engineer-table [PrfessionalType]='Engineer'></app-select-engineer-table>
 
-        
-          <div class="card" *ngIf="!client">
+
+          <div class="card">
             <h3><span>Please select a contractor</span></h3>
           </div>
-          <app-select-engineer-table [PrfessionalType]='Contractor' *ngIf="!client"></app-select-engineer-table>
+          <app-select-engineer-table [PrfessionalType]='Contractor'></app-select-engineer-table>
 
-         
+
 
         </div>
 
@@ -583,11 +585,11 @@
 
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>Select</th>
-          <td mat-cell *matCellDef="let element">
+          <td mat-cell *matCellDef="let i = index">
 
-            <mat-radio-button class="example-margin"></mat-radio-button>
+            <mat-radio-button class="example-margin" (click)="getUserID(i)"></mat-radio-button>
           </td>
-          <td mat-cell *matCellDef="let element">  </td>
+       
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumnsLinkUsers"></tr>
@@ -599,8 +601,75 @@
   </div>
 
   <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+    <button type="submit" class="btn btn-outline-success" (click)="populateClientInfo();modal.close('Save click')">Save</button>
   </div>
 </ng-template>
 
 <!--end-->
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Creating a new engineer</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="mb-3">
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="BpNoApplicant" [(ngModel)]="bpNoApplicant" placeholder="Enter BP Number" name="bpNoApplicant">
+              <label for="bpNoApplicant">BP Number</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="professionalRegNo" [(ngModel)]="professionalRegNo" placeholder="Professional Reg No" name="professionalRegNo">
+              <label for="professionalRegNo">Professional Reg No.</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="engineerIDNo" [(ngModel)]="engineerIDNo" placeholder="Engineer ID Number" name="engineerIDNo">
+              <label for="engineerIDNo">ID Number</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="Name" [(ngModel)]="name" placeholder="Enter First Name" name="name">
+              <label for="name">Name</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="Surname" [(ngModel)]="surname" placeholder="Enter Surname" name="surname">
+              <label for="surname">Surname</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="tel" class="form-control" id="ApplicantTel" [(ngModel)]="applicantTellNo" placeholder="Enter Tell No." name="applicantTellNo">
+              <label for="applicantTellNo">Cell No.</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="email" class="form-control" id="ApplicantEmail" [(ngModel)]="applicantEmail" placeholder="Enter Email" name="applicantEmail">
+              <label for="applicantEmail">Email</label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click');onAddEngineer()">Save</button>
+  </div>
+</ng-template>
