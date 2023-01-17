@@ -49,7 +49,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _commentBuilderService.AddUpdateComment(model.CommentID, model.CommentName, model.CreatedById);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.CommentID > 0 ? "Comment Updated Sussessfully" : "Comment Added Sussessfully"), result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.CommentID > 0 ? "Comment Updated Successfully" : "Comment Added Successfully"), result));
                 }
 
             }
@@ -75,7 +75,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _commentBuilderService.DeleteComment(commentID);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Comment Deleted Sussessfully", result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Comment Deleted Successfully", result));
                 }
 
             }

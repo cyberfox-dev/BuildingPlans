@@ -34,7 +34,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _zonesLinkingServices.AddUpdateZoneLink(model.ZoneLinkID,model.ZoneID ,model.DepartmentID, model.SubDepartmentID, model.AssignedUserID, model.UserType,model.CreatedById);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ZoneLinkID > 0 ? "Zone Link Updated Sussessfully" : "User Linked Sussessfully"), result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ZoneLinkID > 0 ? "Zone Link Updated Successfully" : "User Linked Successfully"), result));
                 }
             }
             catch (Exception ex)
@@ -59,7 +59,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _zonesLinkingServices.DeleteZoneLink(zoneID);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Zone Link Deleted Sussessfully", result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Zone Link Deleted Successfully", result));
                 }
 
             }

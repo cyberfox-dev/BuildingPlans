@@ -35,7 +35,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _zonesServices.AddUpdateZones(model.ZoneID, model.ZoneName, model.DepartmentID, model.SubDepartmentID,model.CreatedById);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ZoneID > 0 ? "Zone Updated Sussessfully" : "Zone Added Sussessfully"), result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ZoneID > 0 ? "Zone Updated Successfully" : "Zone Added Successfully"), result));
                 }
 
             }
@@ -61,7 +61,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _zonesServices.DeleteZone(ZoneID);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Zone Deleted Sussessfully", result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Zone Deleted Successfully", result));
                 }
 
             }

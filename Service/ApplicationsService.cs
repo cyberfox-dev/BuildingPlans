@@ -19,7 +19,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string userID, string fullName, string email, string phoneNumber, string physicalAddress, string referenceNumber, string? companyRegNo, string typeOfApplication, string notificationNumber, string wBSNumber, string physicalAddressOfProject, string descriptionOfProject, string natureOfWork, string excavationType, DateTime expectedStartDate, DateTime expectedEndDate, string location, string createdById)
+        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string userID, string fullName, string email, string phoneNumber, string physicalAddress, string referenceNumber, string? companyRegNo, string typeOfApplication, string notificationNumber, string wBSNumber, string physicalAddressOfProject, string descriptionOfProject, string natureOfWork, string excavationType, DateTime expectedStartDate, DateTime expectedEndDate, string location, string createdById, string? PreviousStageName, string? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, DateTime? CurrentStageStartDate, string? NextStageName, string? NextStageNumber, string? ApplicationStatus)
         {
 
             if (ApplicationID == 0)
@@ -57,6 +57,15 @@ namespace WayleaveManagementSystem.Service
                     DateUpdated = DateTime.Now,
                     CreatedById = createdById,
                     isActive = true,
+                    PreviousStageName = PreviousStageName,
+                    PreviousStageNumber = PreviousStageNumber,
+                    CurrentStageName = CurrentStageName,
+                    CurrentStageNumber = CurrentStageNumber,
+                    CurrentStageStartDate = CurrentStageStartDate,
+                    NextStageName = NextStageName,
+                    NextStageNumber = NextStageNumber,
+                    ApplicationStatus = ApplicationStatus
+                    
 
 
                 };
@@ -98,6 +107,42 @@ namespace WayleaveManagementSystem.Service
 
 
         }
+
+
+
+        public async Task<Applications> UpdateApplicationStage(int ApplicationID, string? PreviousStageName, string? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, string? NextStageNumber, string? ApplicationStatus)
+        {
+
+           
+            //this checks is the record exists in the db
+            var tempApplicationTable = _context.Application.FirstOrDefault(x => x.ApplicationID == ApplicationID);
+
+               
+            tempApplicationTable.PreviousStageName = PreviousStageName;
+            tempApplicationTable.PreviousStageNumber = PreviousStageNumber;
+            tempApplicationTable.CurrentStageName = CurrentStageName;
+            tempApplicationTable.CurrentStageNumber = CurrentStageNumber;
+            tempApplicationTable.CurrentStageStartDate = DateTime.Now;
+            tempApplicationTable.NextStageName = NextStageName;
+            tempApplicationTable.NextStageNumber = NextStageNumber;
+            tempApplicationTable.ApplicationStatus = ApplicationStatus;
+            
+
+
+
+            _context.Update(tempApplicationTable);
+                await _context.SaveChangesAsync();
+                return tempApplicationTable;
+            }
+
+
+
+
+  
+
+
+
+
 
         public async Task<bool> DeleteApplication(int applicationID)
         {

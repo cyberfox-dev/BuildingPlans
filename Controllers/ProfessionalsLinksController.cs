@@ -31,7 +31,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _professionalsLinksService.AddUpdateProfessionalsLink(model.ProfessionalsLinkID, model.ApplicationID, model.ProfessionalID, model.CreatedById);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ProfessionalsLinkID > 0 ? "ProfessionalsLink Updated Sussessfully" : "ProfessionalsLink Added Sussessfully"), result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ProfessionalsLinkID > 0 ? "ProfessionalsLink Updated Successfully" : "ProfessionalsLink Added Successfully"), result));
                 }
 
             }
@@ -57,7 +57,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _professionalsLinksService.DeleteProfessionalsLink(professionalsLinkID);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "ProfessionalsLink Deleted Sussessfully", result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "ProfessionalsLink Deleted Successfully", result));
                 }
 
             }

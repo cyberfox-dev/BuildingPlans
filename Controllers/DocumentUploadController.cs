@@ -40,7 +40,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _documentUploadService.AddUpdateDocument(model.DocumentID, model.DocumentName, model.DocumentData, model.ApplicationID, model.AssignedUserID, model.CreatedById);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.DocumentID > 0 ? "Professional Updated Sussessfully" : "Professional Added Sussessfully"), result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.DocumentID > 0 ? "Professional Updated Successfully" : "Professional Added Successfully"), result));
                 }
 
             }
@@ -67,7 +67,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _documentUploadService.DeleteDocument(documentID);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Professional Deleted Sussessfully", result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Professional Deleted Successfully", result));
                 }
 
             }
