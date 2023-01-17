@@ -50,7 +50,9 @@ export class SelectEngineerTableComponent implements OnInit {
 
 
   }
-
+  refreshTable() {
+    this.ProfessialTable?.renderRows();
+  }
 
   getProfessionalsListByProfessionalType(professionalType: string) {
     /*    this.EngineerList.splice(0, this.EngineerList.length);*/

@@ -249,6 +249,7 @@ export class NewProfileComponent implements OnInit {
                 else {
                   //alert("Invalid Email or Password");
                   alert(data.responseMessage);
+                  console.log("comeshere")
 
                 }
                 console.log("reponse", data);
