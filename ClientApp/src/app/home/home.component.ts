@@ -5,7 +5,17 @@ import { MatTable } from '@angular/material/table';
 import { CommentList } from '../nav-menu/nav-menu.component';
 //import { ApplicationList } from '../shared/shared.service';
 import { SharedService } from "src/app/shared/shared.service"
+import { StagesService } from '../service/Stages/stages.service';
 
+
+
+export interface StagesList {
+  StageID: number;
+  StageName: string;
+  StageOrderNumber: number;
+  CurrentUser: any
+
+}
 
 export interface ApplicationsList {
   ApplicationID: number;
@@ -55,11 +65,13 @@ export class HomeComponent implements OnInit,OnDestroy {
   Applications: ApplicationsList[] = [];
   applicationDataForView: ApplicationList[] = [];
   applicationDataForViewToShared: ApplicationList[] = [];
+  StagesList: StagesList[] = [];
+
   CurrentUser: any;
   stringifiedData: any;
     stringifiedDataUserProfile: any;
     CurrentUserProfile: any;
-  constructor(private router: Router, private applicationService: ApplicationsService, private sharedService: SharedService, private viewContainerRef: ViewContainerRef) {
+  constructor(private router: Router, private applicationService: ApplicationsService, private sharedService: SharedService, private viewContainerRef: ViewContainerRef, private stagesService: StagesService) {
 
   }
 
@@ -79,6 +91,7 @@ export class HomeComponent implements OnInit,OnDestroy {
       this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
 
       this.getAllApplicationsByUserID();
+      this.getAllStages();
     }, 100);
 
   }
@@ -213,6 +226,38 @@ export class HomeComponent implements OnInit,OnDestroy {
 
    
    
+  }
+
+
+  getAllStages() {
+
+    this.StagesList.splice(0, this.StagesList.length);
+
+    this.stagesService.getAllStages().subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempStageList = {} as StagesList;
+          const current = data.dateSet[i];
+          tempStageList.StageID = current.stageID;
+          tempStageList.StageName = current.stageName;
+          tempStageList.StageOrderNumber = current.stageOrderNumber;
+
+          this.StagesList.push(tempStageList);
+          this.sharedService.setStageData(this.StagesList);
+        }
+
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 
   ngOnDestroy() {

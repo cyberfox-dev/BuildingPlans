@@ -4,15 +4,9 @@ import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { UserService } from '../service//User/user.service';
 import { SharedService } from "src/app/shared/shared.service"
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
-import { StagesService } from '../service/Stages/stages.service';
 
-export interface StagesList {
-  StageID: number;
-  StageName: string;
-  StageOrderNumber: number;
-  CurrentUser: any
 
-}
+
 
 
 
@@ -48,13 +42,13 @@ export class LoginComponent implements OnInit {
 
   @Output() checkForInternalOption = new EventEmitter<string>();
 
-  constructor(private router: Router, private formBuilder: FormBuilder, private userService: UserService, private sharedService: SharedService, private userPofileService: UserProfileService, private stagesService: StagesService) {
+  constructor(private router: Router, private formBuilder: FormBuilder, private userService: UserService, private sharedService: SharedService, private userPofileService: UserProfileService) {
 
 
 
   }
 
-  StagesList: StagesList[] = [];
+
 
   ngOnInit() {
 
@@ -71,7 +65,7 @@ export class LoginComponent implements OnInit {
           localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
           this.getUserProfile();
 
-          this.getAllStages();
+         
           this.router.navigate(["/home"]);
         } else {
           this.error = "An error occurred";
@@ -152,36 +146,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  getAllStages() {
-
-    this.StagesList.splice(0, this.StagesList.length);
-
-    this.stagesService.getAllStages().subscribe((data: any) => {
-      if (data.responseCode == 1) {
-
-
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempStageList = {} as StagesList;
-          const current = data.dateSet[i];
-          tempStageList.StageID = current.stageID;
-          tempStageList.StageName = current.stageName;
-          tempStageList.StageOrderNumber = current.stageOrderNumber;
-
-          this.StagesList.push(tempStageList);
-          this.sharedService.setStageData(this.StagesList);
-        }
-
-      }
-      else {
-        //alert("Invalid Email or Password");
-        alert(data.responseMessage);
-      }
-      console.log("reponse", data);
-
-    }, error => {
-      console.log("Error: ", error);
-    })
-  }
+ 
   //this is the old one 
   //onRegister() {
 

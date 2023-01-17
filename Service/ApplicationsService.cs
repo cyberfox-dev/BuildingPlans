@@ -19,7 +19,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string userID, string fullName, string email, string phoneNumber, string physicalAddress, string referenceNumber, string? companyRegNo, string typeOfApplication, string notificationNumber, string wBSNumber, string physicalAddressOfProject, string descriptionOfProject, string natureOfWork, string excavationType, DateTime expectedStartDate, DateTime expectedEndDate, string location, string createdById, string? PreviousStageName, string? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, DateTime? CurrentStageStartDate, string? NextStageName, string? NextStageNumber, string? ApplicationStatus)
+        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string userID, string fullName, string email, string phoneNumber, string physicalAddress, string referenceNumber, string? companyRegNo, string typeOfApplication, string notificationNumber, string wBSNumber, string physicalAddressOfProject, string descriptionOfProject, string natureOfWork, string excavationType, DateTime expectedStartDate, DateTime expectedEndDate, string location, string createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus)
         {
 
             if (ApplicationID == 0)
@@ -61,7 +61,7 @@ namespace WayleaveManagementSystem.Service
                     PreviousStageNumber = PreviousStageNumber,
                     CurrentStageName = CurrentStageName,
                     CurrentStageNumber = CurrentStageNumber,
-                    CurrentStageStartDate = CurrentStageStartDate,
+                    CurrentStageStartDate = DateTime.Now,
                     NextStageName = NextStageName,
                     NextStageNumber = NextStageNumber,
                     ApplicationStatus = ApplicationStatus
@@ -110,7 +110,7 @@ namespace WayleaveManagementSystem.Service
 
 
 
-        public async Task<Applications> UpdateApplicationStage(int ApplicationID, string? PreviousStageName, string? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, string? NextStageNumber, string? ApplicationStatus)
+        public async Task<Applications> UpdateApplicationStage(int ApplicationID, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus)
         {
 
            

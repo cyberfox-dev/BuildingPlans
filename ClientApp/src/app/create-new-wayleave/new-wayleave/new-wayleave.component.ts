@@ -444,12 +444,23 @@ export class NewWayleaveComponent implements OnInit {
     let previousStageName = "";
     let CurrentStageName = "";
     let NextStageName = "";
-    for (var i = 0; i < this.StagesList.length; i++) {
 
+    let previousStageNameIn = "";
+    let CurrentStageNameIn = "";
+    let NextStageNameIn = "";
+
+
+    for (var i = 0; i < this.StagesList.length; i++) {
+      debugger;
       if (this.StagesList[i].StageOrderNumber == 1) {
         previousStageName = this.StagesList[i - 1].StageName
         CurrentStageName = this.StagesList[i].StageName;
         NextStageName = this.StagesList[i + 1].StageName
+      }
+      else if (this.StagesList[i].StageOrderNumber == 2) {
+        previousStageNameIn = this.StagesList[i - 2].StageName
+        CurrentStageNameIn = this.StagesList[i].StageName;
+        NextStageNameIn = this.StagesList[i + 1].StageName
       }
 
     }
@@ -492,7 +503,8 @@ export class NewWayleaveComponent implements OnInit {
       })
     }
     else if (this.internal) {
-      this.applicationsService.addUpdateApplication(0, this.CurrentUser.appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId).subscribe((data: any) => {
+      debugger;
+      this.applicationsService.addUpdateApplication(0, this.CurrentUser.appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributing").subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           alert(data.responseMessage);
@@ -532,7 +544,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
-      this.applicationsService.addUpdateApplication(0, this.CurrentUser.appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, this.externalAddress , null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId).subscribe((data: any) => {
+      this.applicationsService.addUpdateApplication(0, this.CurrentUser.appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, this.externalAddress, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaided").subscribe((data: any) => {
         
         if (data.responseCode == 1) {
           alert(data.responseMessage);
