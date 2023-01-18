@@ -16,7 +16,19 @@ import { ProfessionalsLinksService } from 'src/app/service/ProfessionalsLinks/pr
 import { MatPaginator } from '@angular/material/paginator';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { SelectEngineerTableComponent} from 'src/app/select-engineer-table/select-engineer-table.component'
+import { StagesService } from '../../service/Stages/stages.service';
 
+
+
+
+
+export interface StagesList {
+  StageID: number;
+  StageName: string;
+  StageOrderNumber: number;
+  CurrentUser: any
+
+}
 
 export interface EngineerList {
   professinalID: number;
@@ -240,7 +252,7 @@ export class NewWayleaveComponent implements OnInit {
 
      
 
-  constructor(private modalService: NgbModal, private applicationsService: ApplicationsService, private professionalsLinksService: ProfessionalsLinksService, private shared: SharedService, private formBuilder: FormBuilder, private professionalService: ProfessionalService, private userPofileService: UserProfileService, private router: Router, private zoneService: ZonesService, private resolver: ComponentFactoryResolver, private container: ViewContainerRef, private injector: Injector) { }
+  constructor(private modalService: NgbModal, private applicationsService: ApplicationsService, private professionalsLinksService: ProfessionalsLinksService, private shared: SharedService, private formBuilder: FormBuilder, private professionalService: ProfessionalService, private userPofileService: UserProfileService, private router: Router, private zoneService: ZonesService, private resolver: ComponentFactoryResolver, private container: ViewContainerRef, private injector: Injector , private stagesService: StagesService) { }
 
   ngOnInit(): void {
     this.getAllExternalUsers();
@@ -257,8 +269,9 @@ export class NewWayleaveComponent implements OnInit {
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
 
-    this.StagesList = this.shared.getStageData();
+   // this.StagesList = this.shared.getStageData();
 
+    this.getAllStages();
  
 
     
@@ -393,6 +406,37 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
+  }
+
+  getAllStages() {
+
+    this.StagesList.splice(0, this.StagesList.length);
+
+    this.stagesService.getAllStages().subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempStageList = {} as StagesList;
+          const current = data.dateSet[i];
+          tempStageList.StageID = current.stageID;
+          tempStageList.StageName = current.stageName;
+          tempStageList.StageOrderNumber = current.stageOrderNumber;
+
+          this.StagesList.push(tempStageList);
+         // this.sharedService.setStageData(this.StagesList);
+        }
+
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 
 
@@ -849,7 +893,10 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   onAddEngineer() {
-   
+
+    let refreshTable = new SelectEngineerTableComponent(this.professionalService, this.shared);
+    
+
     const newEnineer = {} as EngineerList;
     newEnineer.ProfessinalType = "Engineer";
     newEnineer.bpNumber = this.bpNoApplicant;
@@ -858,31 +905,10 @@ export class NewWayleaveComponent implements OnInit {
     newEnineer.surname = this.surname;
     newEnineer.email = this.applicantEmail;
     newEnineer.phoneNumber = this.applicantTellNo;
-    this.professionalService.addUpdateProfessional(0, "Engineer", this.name + " " + this.surname, this.bpNoApplicant, false, this.applicantEmail, this.applicantTellNo.toString(), this.professionalRegNo, this.CurrentUser.appUserId, this.engineerIDNo, this.CurrentUser.appUserId, null).subscribe((data: any) => {
-
-      if (data.responseCode == 1) {
-        alert(data.responseMessage);
-
-        this.EngineerTable?.renderRows();
-
-        this.recallMyComponent();
-        
-      }
-
-      else {
-
-        alert(data.responseMessage);
-      }
-      console.log("reponse", data);
-
-    }, error => {
-      console.log("Error: ", error);
-    })
-
-    
-    this.EngineerTable?.renderRows();
-
-
+    refreshTable.onAddEngineer(this.bpNoApplicant, this.professionalRegNo, this.name, this.surname, this.applicantEmail, this.applicantTellNo, this.engineerIDNo)
+    //refreshTable.getProfessionalsListByProfessionalType('Engineer');
+    //refreshTable.refreshTable();
+   
   }
 
 
