@@ -111,6 +111,8 @@ export class NewProfileComponent implements OnInit {
   internalApplicantCostCenterNo = '';
   internalApplicantCostCenterOwner = '';
 
+  extApplicantVatNumber = '';
+
   CurrentUser: any;
   stringifiedData: any;  
   ExternalUserProfileData: ExternalList[] = [];

@@ -62,16 +62,16 @@
 
 <h1>Application Information</h1>
 <h2>Project number LS/BP 321</h2>
-
-
-
-<app-action-center></app-action-center>
 <div class="cont1">
+<button mat-raised-button color="green"><i class="fa fa-hand-peace-o" aria-hidden="true"></i>   move</button>
+  </div>
+<app-action-center></app-action-center>
+<!--<div class="cont1">
   <button mat-raised-button color="warn">
     <i class="fa fa-ban" aria-hidden="true"></i>
     Cancel Application
   </button>
-</div>
+</div>-->
 <div class="container-fluid">
 
   <mat-tab-group>
@@ -169,7 +169,7 @@
           <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
             <!--- Note that these columns can be defined in any order.
-      The actual rendered columns are set as a property on the row definition" -->
+            The actual rendered columns are set as a property on the row definition" -->
             <!-- Position Column -->
             <ng-container matColumnDef="position">
               <th mat-header-cell *matHeaderCellDef> No. </th>
@@ -198,7 +198,7 @@
               <th mat-header-cell *matHeaderCellDef></th>
               <td mat-cell *matCellDef="let i = index">
                 <button mat-raised-button color="blue" matTooltip="View" (click)="viewPDF()"><i class="fa fa-eye"></i></button>
-       
+
                 <!--<button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="openViewSubDep(viewSub);getSubDemartmentByDepartmentID(i,viewSub)"><i class="fa fa-eye"></i></button>-->
 
 
@@ -211,10 +211,10 @@
           </table>
         </div>
         <div class="cont">
-        <button mat-raised-button color="orange">Deposit Required</button>
-        <button mat-raised-button color="orange">Consolidate Deposits</button>
-        <button mat-raised-button color="orange">Deposit Refund</button>
-          </div>
+          <button mat-raised-button color="orange">Deposit Required</button>
+          <button mat-raised-button color="orange">Consolidate Deposits</button>
+          <button mat-raised-button color="orange">Deposit Refund</button>
+        </div>
       </div>
 
     </mat-tab>
@@ -406,7 +406,7 @@
     <mat-tab label="Engineer">
       <div class="container-fluid">
 
-      <!--  <app-new-egineer></app-new-egineer>-->
+        <!--  <app-new-egineer></app-new-egineer>-->
         <app-view-engineers-table></app-view-engineers-table>
 
 
@@ -427,7 +427,7 @@
       <div class="container-fluid">
 
 
-   <!--     <app-new-contractor></app-new-contractor>-->
+        <!--     <app-new-contractor></app-new-contractor>-->
 
         <app-view-contractors-table></app-view-contractors-table>
       </div>
