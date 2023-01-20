@@ -42,7 +42,14 @@ export interface ApplicationList {
   Location: string,
   clientCellNo: string,
   CreatedById: number,
-
+  ApplicationStatus: string,
+  CurrentStageName: string,
+  CurrentStageNumber: number,
+  CurrentStageStartDate: Date,
+  NextStageName: string,
+  NextStageNumber: number,
+  PreviousStageName: string,
+  PreviousStageNumber: number,
 }
 
 @Injectable({

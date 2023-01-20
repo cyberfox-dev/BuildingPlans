@@ -24,7 +24,9 @@ export interface ApplicationsList {
   TypeOfApplication: any;
   DateCreated: any;
   TestApplicationAge: number,
-  TestApplicationStageAge: number
+  TestApplicationStageAge: number,
+  CurrentStage: string,
+  ApplicationStatus: string
 }
 
 
@@ -48,6 +50,14 @@ export interface ApplicationList {
   Location: string,
   clientCellNo: string,
   CreatedById: number,
+  ApplicationStatus: string,
+  CurrentStageName: string,
+  CurrentStageNumber: number,
+  CurrentStageStartDate: Date,
+  NextStageName: string,
+  NextStageNumber: number,
+  PreviousStageName: string,
+  PreviousStageNumber: number,
 
 }
 
@@ -75,7 +85,7 @@ export class HomeComponent implements OnInit,OnDestroy {
 
   }
 
-  displayedColumns: string[] = ['Stage','FullName','Status', 'TypeOfApplication','AplicationAge','StageAge','DateCreated', 'actions'];
+  displayedColumns: string[] = ['FullName', 'Stage','Status', 'TypeOfApplication','AplicationAge','StageAge','DateCreated', 'actions'];
   dataSource = this.Applications;
   @ViewChild(MatTable) applicationsTable: MatTable<ApplicationsList> | undefined;
   ngOnInit(): void {
@@ -118,6 +128,8 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationList.ApplicationID = current.applicationID;
             tempApplicationList.FullName = current.fullName;
             tempApplicationList.TypeOfApplication = current.typeOfApplication;
+            tempApplicationList.CurrentStage = current.currentStageName;
+            tempApplicationList.ApplicationStatus = current.applicationStatus;
 
             tempApplicationList.DateCreated = current.dateCreated;
 
@@ -146,9 +158,18 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationListShared.Location = current.location;
             tempApplicationListShared.clientCellNo = current.phoneNumber;
             tempApplicationListShared.CreatedById = current.createdById;
+            tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+            tempApplicationListShared.CurrentStageName = current.currentStageName;
+            tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+            tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate;
+            tempApplicationListShared.NextStageName = current.nextStageName;
+            tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+            tempApplicationListShared.PreviousStageName = current.previousStageName;
+            tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
 
 
             this.applicationDataForView.push(tempApplicationListShared);
+            console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
             this.Applications.push(tempApplicationList);
 
           }
@@ -178,6 +199,8 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationList.ApplicationID = current.applicationID;
             tempApplicationList.FullName = current.fullName;
             tempApplicationList.TypeOfApplication = current.typeOfApplication;
+            tempApplicationList.CurrentStage = current.currentStageName;
+            tempApplicationList.ApplicationStatus = current.applicationStatus;
 
             tempApplicationList.DateCreated = current.dateCreated;
 
@@ -206,9 +229,19 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationListShared.Location = current.location;
             tempApplicationListShared.clientCellNo = current.phoneNumber;
             tempApplicationListShared.CreatedById = current.createdById;
+            tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+            tempApplicationListShared.CurrentStageName = current.currentStageName;
+            tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+            tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate;
+            tempApplicationListShared.NextStageName = current.nextStageName;
+            tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+            tempApplicationListShared.PreviousStageName = current.previousStageName;
+            tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
 
 
             this.applicationDataForView.push(tempApplicationListShared);
+            console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+
             this.Applications.push(tempApplicationList);
 
           }

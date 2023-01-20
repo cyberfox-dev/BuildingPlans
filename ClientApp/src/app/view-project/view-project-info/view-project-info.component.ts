@@ -2,8 +2,19 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { SharedService } from "src/app/shared/shared.service";
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
+import { StagesService } from '../../service/Stages/stages.service';
+import { ApplicationsService } from '../../service/Applications/applications.service';
+
 export interface PeriodicElement {
   name: string;
+
+}
+
+export interface StagesList {
+  StageID: number;
+  StageName: string;
+  StageOrderNumber: number;
+  CurrentUser: any
 
 }
 
@@ -26,6 +37,14 @@ export interface ApplicationList {
   Location: string,
   clientCellNo: string,
   CreatedById: number,
+  ApplicationStatus: string,
+  CurrentStageName: string,
+  CurrentStageNumber: number,
+  CurrentStageStartDate: Date,
+  NextStageName: string,
+  NextStageNumber: number,
+  PreviousStageName: string,
+  PreviousStageNumber: number,
 
 }
 
@@ -82,6 +101,15 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   applicationDataForView: ApplicationList[] = [];
+  StagesList: StagesList[] = [];
+
+  CurrentApplicationBeingViewed: ApplicationList[] = [];
+
+  CurrentUser: any;
+  //Convert the local storage JSON data to an array object
+  stringifiedData: any;
+
+
   @ViewChild('fileInput') fileInput: ElementRef | undefined;
   fileAttr = 'Choose File';
   uploadFileEvt(imgFile: any) {
@@ -120,18 +148,57 @@ export class ViewProjectInfoComponent implements OnInit {
   displayedColumnsDocs: string[] = ['name','actions'];
   dataSourceDoc = Document_DATA;
 
-  constructor(private modalService: NgbModal, private sharedService: SharedService, private userPofileService: UserProfileService) { }
+  constructor(private modalService: NgbModal, private sharedService: SharedService, private userPofileService: UserProfileService, private stagesService: StagesService, private applicationsService: ApplicationsService) { }
 
   ngOnInit(): void {
 
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
-    console.log("LOOOOOOOK 3", this.applicationDataForView);
+    this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
     const setValues = this.applicationDataForView[0];
 
-    console.log("this is the created by ID", setValues.CreatedById);
+
+    console.log("this is the created by ID", setValues);
     this.createdByID = setValues.CreatedById;
+
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
+
+
     this.getUserProfileByUserID();
+    this.getAllStages();
   }
+
+  getAllStages() {
+
+    this.StagesList.splice(0, this.StagesList.length);
+
+    this.stagesService.getAllStages().subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempStageList = {} as StagesList;
+          const current = data.dateSet[i];
+          tempStageList.StageID = current.stageID;
+          tempStageList.StageName = current.stageName;
+          tempStageList.StageOrderNumber = current.stageOrderNumber;
+
+          this.StagesList.push(tempStageList);
+          // this.sharedService.setStageData(this.StagesList);
+        }
+
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
 
   getUserProfileByUserID() {
    
@@ -198,6 +265,65 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
 
+  ChangeApplicationStatusToPaid() {
+
+    debugger;
+    //alert("ChangeApplicationStatusToPaid");
+
+    if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Unpaided") {
+      this.applicationsService.updateApplicationStage(this.CurrentApplicationBeingViewed[0].applicationID, this.CurrentApplicationBeingViewed[0].PreviousStageName, this.CurrentApplicationBeingViewed[0].PreviousStageNumber, this.CurrentApplicationBeingViewed[0].CurrentStageName, this.CurrentApplicationBeingViewed[0].CurrentStageNumber, this.CurrentApplicationBeingViewed[0].NextStageName, this.CurrentApplicationBeingViewed[0].NextStageNumber, "Paid").subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          alert("Application Status Updated to Paid");
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("responseAddapplication", data);
+      }, error => {
+        console.log("Error", error);
+      })
+
+    }
+    else {
+      alert("Application Status Is Not Unpaided");
+    }
+
+
+  }
+
+  MoveToNextStage() {
+
+    debugger;
+    //alert("ChangeApplicationStatusToPaid");
+
+    if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Paid") {
+      this.applicationsService.updateApplicationStage(this.CurrentApplicationBeingViewed[0].applicationID, this.CurrentApplicationBeingViewed[0].CurrentStageName, this.CurrentApplicationBeingViewed[0].CurrentStageNumber, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, "Distributing").subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          alert("Application Moved to ${this.CurrentApplicationBeingViewed[0].CurrentStageName}");
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("responseAddapplication", data);
+      }, error => {
+        console.log("Error", error);
+      })
+
+    }
+
+    else if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[2].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Distributing") {
+      
+    }
+    else {
+      alert("Application Status Is Not Paid");
+    }
+
+
+  }
 
 
 }

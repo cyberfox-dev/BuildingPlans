@@ -117,15 +117,28 @@ namespace WayleaveManagementSystem.Service
             //this checks is the record exists in the db
             var tempApplicationTable = _context.Application.FirstOrDefault(x => x.ApplicationID == ApplicationID);
 
-               
-            tempApplicationTable.PreviousStageName = PreviousStageName;
-            tempApplicationTable.PreviousStageNumber = PreviousStageNumber;
-            tempApplicationTable.CurrentStageName = CurrentStageName;
-            tempApplicationTable.CurrentStageNumber = CurrentStageNumber;
-            tempApplicationTable.CurrentStageStartDate = DateTime.Now;
-            tempApplicationTable.NextStageName = NextStageName;
-            tempApplicationTable.NextStageNumber = NextStageNumber;
-            tempApplicationTable.ApplicationStatus = ApplicationStatus;
+            if (tempApplicationTable.CurrentStageName == CurrentStageName)
+            {
+                //tempApplicationTable.PreviousStageName = PreviousStageName;
+                //tempApplicationTable.PreviousStageNumber = PreviousStageNumber;
+                //tempApplicationTable.CurrentStageName = CurrentStageName;
+                //tempApplicationTable.CurrentStageNumber = CurrentStageNumber;
+                //tempApplicationTable.NextStageName = NextStageName;
+                //tempApplicationTable.NextStageNumber = NextStageNumber;
+                tempApplicationTable.ApplicationStatus = ApplicationStatus;
+            }
+            else
+            {
+                tempApplicationTable.PreviousStageName = PreviousStageName;
+                tempApplicationTable.PreviousStageNumber = PreviousStageNumber;
+                tempApplicationTable.CurrentStageName = CurrentStageName;
+                tempApplicationTable.CurrentStageNumber = CurrentStageNumber;
+                tempApplicationTable.CurrentStageStartDate = DateTime.Now;
+                tempApplicationTable.NextStageName = NextStageName;
+                tempApplicationTable.NextStageNumber = NextStageNumber;
+                tempApplicationTable.ApplicationStatus = ApplicationStatus;
+            }
+           
             
 
 
@@ -200,7 +213,16 @@ namespace WayleaveManagementSystem.Service
                        DateCreated = Applications.DateCreated,
                        DateUpdated = Applications.DateUpdated,
                        CreatedById = Applications.CreatedById,
-                       isActive = Applications.isActive
+                       isActive = Applications.isActive,
+                       PreviousStageName = Applications.PreviousStageName,
+                       ApplicationStatus = Applications.ApplicationStatus,
+                       CurrentStageName = Applications.CurrentStageName,
+                       CurrentStageNumber = Applications.CurrentStageNumber,
+                       CurrentStageStartDate = Applications.CurrentStageStartDate,
+                       NextStageName = Applications.NextStageName,
+                       NextStageNumber = Applications.NextStageNumber,  
+                       PreviousStageNumber = Applications.PreviousStageNumber   
+                       
                    }
                    ).ToListAsync();
             }
@@ -233,7 +255,15 @@ namespace WayleaveManagementSystem.Service
                        DateCreated = Applications.DateCreated,
                        DateUpdated = Applications.DateUpdated,
                        CreatedById = Applications.CreatedById,
-                       isActive = Applications.isActive
+                       isActive = Applications.isActive,
+                        PreviousStageName = Applications.PreviousStageName,
+                       ApplicationStatus = Applications.ApplicationStatus,
+                       CurrentStageName = Applications.CurrentStageName,
+                       CurrentStageNumber = Applications.CurrentStageNumber,
+                       CurrentStageStartDate = Applications.CurrentStageStartDate,
+                       NextStageName = Applications.NextStageName,
+                       NextStageNumber = Applications.NextStageNumber,
+                       PreviousStageNumber = Applications.PreviousStageNumber
                    }
                    ).ToListAsync();
             }
