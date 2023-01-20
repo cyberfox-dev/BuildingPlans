@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { TooltipPosition } from '@angular/material/tooltip';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { NewSubDepartmentComponent } from '../new-sub-department/new-sub-department.component';
 import { SubDepartmentConfigComponent } from '../sub-department-config/sub-department-config.component';
 import { DepartmentsService } from '../service/Departments/departments.service';
@@ -11,6 +11,8 @@ import { ZonesService } from '../service/Zones/zones.service';
 import { SubDepartmentsService } from '../service/SubDepartments/sub-departments.service';
 import { ZoneLinkService } from '../service/ZoneLink/zone-link.service';
 import { SelectionModel } from '@angular/cdk/collections';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import {  MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 
 export interface DepartmentList {
@@ -76,6 +78,8 @@ export interface UserZoneList {
 })
 export class DepartmentConfigComponent implements OnInit {
 
+
+  addSubChecked = false;
   closeResult = '';
   check: boolean = false;
   CurrentDepartmentID: any;
@@ -158,11 +162,9 @@ export class DepartmentConfigComponent implements OnInit {
   newSub: any;
 
   tabIndex: Tabs = Tabs.View_linked_sub_departments;
-  constructor(private matdialog: MatDialog, private formBuilder: FormBuilder, private departmentService: DepartmentsService, private modalService: NgbModal, private zoneService: ZonesService, private subDepartment: SubDepartmentsService, private zoneLinkService: ZoneLinkService) { }
+  constructor(private matdialog: MatDialog, public dialog: MatDialog, private formBuilder: FormBuilder, private departmentService: DepartmentsService, private modalService: NgbModal, private zoneService: ZonesService, private subDepartment: SubDepartmentsService, private zoneLinkService: ZoneLinkService) { }
 
-  openDialog() {
-    this.matdialog.open(this.newSub);
-  }
+
   openNewSubDep(newSub: any) {
     
     this.modalService.open(newSub, { backdrop: 'static', centered: true });
@@ -203,10 +205,31 @@ export class DepartmentConfigComponent implements OnInit {
 
   }
 
- 
+  display = 'none';
+
+  onChange(value: MatSlideToggleChange, content:any) {
+   this.openXl(content)
+
+  }
+  openModal() {
+    this.display = 'block';
+  }
+  onCloseHandled() {
+    this.display = 'none';
+  }
+
+  showthing() {
+    console.log(this.addSubChecked);
+  }
+
+  hasSubDeps() {
+
+  }
+
 
 
   getAllSubDepartments() {
+   
     this.subDepartment.getSubDepartmentsList().subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -256,6 +279,8 @@ export class DepartmentConfigComponent implements OnInit {
     this.showViewSubLinkedToZone = false;
     this.viewZonesLinkedtoSub.controls["viewSelectedSubDep"].setValue("0");
   }
+
+
 
 
   
@@ -355,9 +380,9 @@ export class DepartmentConfigComponent implements OnInit {
     
     let newDepName = this.addDepartment.controls["newDepName"].value;
 
+    console.log("if this is checked", this.addSubChecked);
 
-
-    this.departmentService.addUpdateDepartment(0, newDepName, this.CurrentUser.appUserId).subscribe((data: any) => {
+    /*this.departmentService.addUpdateDepartment(0, newDepName, this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
@@ -372,7 +397,7 @@ export class DepartmentConfigComponent implements OnInit {
 
     }, error => {
       console.log("Error: ", error);
-    })
+    })*/
 
   }
 

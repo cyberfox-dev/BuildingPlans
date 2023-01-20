@@ -71,8 +71,8 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-        [HttpGet("GetDepartmentsList")]
-        public async Task<object> GetSubDepartmentsList()
+        [HttpGet("GetAllSubDepartments")]
+        public async Task<object> GetAllSubDepartments()
         {
             try
             {

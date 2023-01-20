@@ -69,6 +69,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 import { MandatoryDocsConfigComponent } from './mandatory-docs-config/mandatory-docs-config.component';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 //import { MapModule } from 'arcgis-js-api';
 //import Map from "@arcgis/core/Map";
 
@@ -130,6 +131,7 @@ import { MatRadioModule } from '@angular/material/radio';
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
+    MatSlideToggleModule,
     FormsModule,
     ReactiveFormsModule,
     MatStepperModule,
