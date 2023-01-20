@@ -8,6 +8,12 @@
 mat-sidenav-content{
     background:none;
 }
+
+table {
+  width: 100%;
+  margin: 20px auto;
+  margin-bottom: 30px;
+}
 .cont {
   display: flex;
   justify-content: center;
@@ -19,6 +25,51 @@ mat-sidenav-content{
   color: #fff;
   width: 261px;
   height: 44px;
+}
+.mat-green {
+  /* margin-bottom: 10px; */
+  background-color: #00c023;
+  color: #fff;
+  /* margin-bottom: 32px; */
+}
+.mat-purple {
+  margin: 10px;
+  background-color: #9a38ff;
+  color: #fff;
+  width: 50px;
+  height: 44px;
+  font-size:16px;
+}
+.cont2{
+    display:flex;
+}
+.cont3 {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  flex-wrap: nowrap;
+}
+::ng-deep .mat-focused .mat-form-field-label {
+  /*change color of label*/
+  color: darkslategrey !important;
+}
+
+::ng-deep.mat-form-field-underline {
+  /*change color of underline*/
+  background-color: darkslategrey !important;
+}
+
+::ng-deep.mat-form-field-ripple {
+  /*change color of underline when focused*/
+  background-color: darkslategrey !important;
+}
+
+
+
+.example-full-width {
+  width: 100%;
+  background-color:transparent;
+  color:black;
 }
 
 .actioncenter {
@@ -157,10 +208,7 @@ mat-expansion-panel {
   transform: none;
   border-radius: 20px 0px 0px 20px;
 }
-.btn {
-  display: flex;
-  margin: 0 auto;
-}
+
 
 textarea {
   margin-top: 20px;

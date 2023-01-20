@@ -29,7 +29,7 @@ export class SubDepartmentsService {
 
   public getSubDepartmentsList() {
 
-    return this.httpClient.get(this.baseURL + "GetSubDepartmentsList");
+    return this.httpClient.get(this.baseURL + "GetAllSubDepartments");
 
   }
 
