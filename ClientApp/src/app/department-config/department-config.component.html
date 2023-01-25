@@ -4,7 +4,7 @@
 <ng-template #content let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Creating a new department</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click');resetHasDep()"></button>
   </div>
   <div class="modal-body">
     <form [formGroup]="addDepartment" (ngSubmit)="onDepartmentCreate()">
@@ -18,9 +18,12 @@
         </div>
 
       </div>
-      <button type="submit" class="btn btn-outline-success" (click)="hasSubDeps()">Save</button>
-      <!--     <mat-slide-toggle [(ngModel)]="addSubChecked">{{}}</mat-slide-toggle>-->
+
     </form>
+    <button mat-raised-button (click)="hasSubDep()" color="blue">Has Sub Department</button>
+    <div class="alert alert-info" role="alert" *ngIf="hasSub">
+      This department is beign created with the option to create sub departments
+    </div>
   </div>
   <div class="modal-footer">
     <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click');onDepartmentCreate()">Save</button>
@@ -56,9 +59,10 @@
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef>Sub Departments</th>
     <td mat-cell *matCellDef="let i = index">
-      <button mat-raised-button color="success" matTooltip="Add Sub Department" (click)="openNewSubDep(newSub);setCurrentDepartmentID(i)"><i class="fa fa-plus"></i></button>
-      <button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="getSubDemartmentByDepartmentID(i,viewSub);setCurrentDepartmentID(i)"><i class="fa fa-eye"></i></button>
+      <button mat-raised-button color="success" matTooltip="Add Sub Department" (click)="openNewSubDep(newSub,i);setCurrentDepartmentID(i)"><i class="fa fa-plus"></i></button>
+      <button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="getSubDemartmentByDepartmentID(i,viewSub);setCurrentDepartmentID(i)" ><i class="fa fa-eye"></i></button>
       <button mat-raised-button color="orange" matTooltip="View all sub Depertments"><i class="fa fa-eye"></i></button>
+      <button mat-raised-button color="blue" matTooltip="Link Sub Department Admin"><i class="fa fa-user-plus" aria-hidden="true"></i></button>
 
 
     </td>
@@ -79,6 +83,7 @@
   <ng-container matColumnDef="actionsDep">
     <th mat-header-cell *matHeaderCellDef>Action</th>
     <td mat-cell *matCellDef="let i = index">
+      <button mat-raised-button color="blue" matTooltip="Link Department Admin" ><i class="fa fa-user-plus" aria-hidden="true"></i></button>
       <button mat-raised-button color="warn" matTooltip="Delete Department" (click)="onDeleteDepartment(i)"><i class="fa fa-trash"></i></button>
 
     </td>

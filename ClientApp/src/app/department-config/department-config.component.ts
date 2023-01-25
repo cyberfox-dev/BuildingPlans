@@ -78,7 +78,8 @@ export interface UserZoneList {
 })
 export class DepartmentConfigComponent implements OnInit {
 
-
+  public subHasDep: boolean = false;
+  public hasSub: boolean = false;
   addSubChecked = false;
   closeResult = '';
   check: boolean = false;
@@ -165,10 +166,16 @@ export class DepartmentConfigComponent implements OnInit {
   constructor(private matdialog: MatDialog, public dialog: MatDialog, private formBuilder: FormBuilder, private departmentService: DepartmentsService, private modalService: NgbModal, private zoneService: ZonesService, private subDepartment: SubDepartmentsService, private zoneLinkService: ZoneLinkService) { }
 
 
-  openNewSubDep(newSub: any) {
-    
-    this.modalService.open(newSub, { backdrop: 'static', centered: true });
-    
+  openNewSubDep(newSub: any, index: any,) {
+
+    this.getSubDepsForDep(index);
+    if (this.subHasDep == false) {
+      alert("This department cannot add sub departments");
+    }
+    else {
+
+      this.modalService.open(newSub, { backdrop: 'static', centered: true });
+    }
   }
 
   openViewSubDep(viewSub: any) {
@@ -222,9 +229,6 @@ export class DepartmentConfigComponent implements OnInit {
     console.log(this.addSubChecked);
   }
 
-  hasSubDeps() {
-
-  }
 
 
 
@@ -283,10 +287,29 @@ export class DepartmentConfigComponent implements OnInit {
 
 
 
+  getSubDepsForDep(index: number) {
+     if (this.SubDepartmentList.length > 0) {
+      if (this.DepartmentList[index].departmentName == this.SubDepartmentList[0].subDepartmentName) {
+        this.subHasDep = false;
+      }
+      else if (this.SubDepartmentList[0].subDepartmentName == undefined) {
+        this.subHasDep = true;
+      }
+      else {
+        this.subHasDep = true;
+      }
+    }
+    else {
+      this.subHasDep = true;
+    }
+
+  }
+
   
 
   getSubDemartmentByDepartmentID(index: number, viewSub:any) {
-    
+
+   
  
     this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
 
@@ -311,7 +334,28 @@ export class DepartmentConfigComponent implements OnInit {
           console.log("this.SubDepartmentList", this.SubDepartmentList);
 
 
-          this.openViewSubDep(viewSub);
+          this.getSubDepsForDep(index);
+
+          if (this.subHasDep == false) {
+            alert("This department cannot view sub departments");
+          }
+          else {
+            this.openViewSubDep(viewSub);
+          }
+/*          if (this.SubDepartmentList.length > 0) {
+            if ( this.DepartmentList[index].departmentName == this.SubDepartmentList[0].subDepartmentName) {
+              alert("This department cannot view sub departments");
+            }
+            else if (this.SubDepartmentList[0].subDepartmentName == undefined) {
+              this.openViewSubDep(viewSub);
+            }
+            else {
+              this.openViewSubDep(viewSub);
+            }
+          }
+          else {
+            this.openViewSubDep(viewSub);
+          }*/
           this.SubDepartmentListTable?.renderRows();
 
 
@@ -340,6 +384,7 @@ export class DepartmentConfigComponent implements OnInit {
   }
 
   getAllDepartments() {
+    this.DepartmentList.splice(0, this.DepartmentList.length);
     this.departmentService.getDepartmentsList().subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -373,31 +418,86 @@ export class DepartmentConfigComponent implements OnInit {
   }
 
 
+  hasSubDep() {
+    this.hasSub = true;
 
+  }
+  resetHasDep() {
+    this.hasSub = false;
+  }
 
 
   onDepartmentCreate() {
+
+   
     
     let newDepName = this.addDepartment.controls["newDepName"].value;
 
-    console.log("if this is checked", this.addSubChecked);
+    if (this.hasSub == true) {
+         this.departmentService.addUpdateDepartment(0, newDepName, this.CurrentUser.appUserId).subscribe((data: any) => {
 
-    /*this.departmentService.addUpdateDepartment(0, newDepName, this.CurrentUser.appUserId).subscribe((data: any) => {
+        if (data.responseCode == 1) {
 
-      if (data.responseCode == 1) {
+          alert(data.responseMessage);
+          this.getAllDepartments();
 
-        alert(data.responseMessage);
-        this.getAllDepartments();
+        }
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
       }
-      else {
-        //alert("Invalid Email or Password");
-        alert(data.responseMessage);
-      }
-      console.log("reponse", data);
+    else {
 
-    }, error => {
-      console.log("Error: ", error);
-    })*/
+      this.departmentService.addUpdateDepartment(0, newDepName, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+    
+          alert(data.responseMessage);
+          this.getAllDepartments();
+
+         
+         
+          let newSubDepName = this.addDepartment.controls["newDepName"].value;
+
+     
+
+
+          this.subDepartment.addUpdateSubDepartment(0, newSubDepName,data.dateSet.departmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+
+              alert(data.responseMessage);
+              this.DepartmentList.splice(0, this.DepartmentList.length);
+            }
+            else {
+              //alert("Invalid Email or Password");
+              alert(data.responseMessage);
+            }
+            console.log("reponse", data);
+
+          }, error => {
+            console.log("Error: ", error);
+          })
+        }
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+
+    }
 
   }
 
@@ -408,30 +508,39 @@ export class DepartmentConfigComponent implements OnInit {
     this.header = this.DepartmentList[index].departmentName;
   }
 
+
+
+
   onSubDepartmentCreate() {
+
+    this.getSubDepsForDep(this.CurrentDepartmentID);
+
+
+
+
+
+      let newSubDepName = this.addSubDepartment.controls["newSubDepName"].value;
+
+      this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
+      console.log("this.SubDepartmentList", this.SubDepartmentList);
+
+      this.subDepartment.addUpdateSubDepartment(0, newSubDepName, this.CurrentDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          alert(data.responseMessage);
+
+        }
+        else {
+          //alert("Invalid Email or Password");
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
     
-    let newSubDepName = this.addSubDepartment.controls["newSubDepName"].value;
-
-    this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
-    console.log("this.SubDepartmentList", this.SubDepartmentList);
-
-    this.subDepartment.addUpdateSubDepartment(0, newSubDepName, this.CurrentDepartmentID,this.CurrentUser.appUserId).subscribe((data: any) => {
-
-      if (data.responseCode == 1) {
-       
-        alert(data.responseMessage);
-        
-      }
-      else {
-        //alert("Invalid Email or Password");
-        alert(data.responseMessage);
-      }
-      console.log("reponse", data);
-
-    }, error => {
-      console.log("Error: ", error);
-    })
-
   }
 
 
@@ -474,7 +583,7 @@ export class DepartmentConfigComponent implements OnInit {
           this.openViewSubDep(viewSub);
         }
         else {
-          //alert("Invalid Email or Password");             
+          //alert("Invalid Email or Password");
           alert(data.responseMessage);
         }
         console.log("reponse", data);
@@ -482,8 +591,6 @@ export class DepartmentConfigComponent implements OnInit {
       }, error => {
         console.log("Error: ", error);
       })
-
-
     }
   }
 
