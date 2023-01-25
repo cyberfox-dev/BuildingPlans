@@ -7,5 +7,7 @@
 
         public string? CreatedById { get; set; }
         public bool isActive { get; set; }
+        
+        public bool hasSubDepartment { get; set; }
     }
 }

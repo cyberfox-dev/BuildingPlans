@@ -9,6 +9,8 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public string DepartmentName { get; set; }
 
+        public bool hasSubDepartment { get; set; }
+
 
 
     }

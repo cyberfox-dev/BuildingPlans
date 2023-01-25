@@ -20,6 +20,7 @@ export interface DepartmentList {
   departmentName: string;
   dateUpdated: any;
   dateCreated: any;
+  hasSubDepartment: boolean;
 }
 
 
@@ -168,8 +169,8 @@ export class DepartmentConfigComponent implements OnInit {
 
   openNewSubDep(newSub: any, index: any,) {
 
-    this.getSubDepsForDep(index);
-    if (this.subHasDep == false) {
+    
+    if (this.DepartmentList[index].hasSubDepartment == false) {
       alert("This department cannot add sub departments");
     }
     else {
@@ -309,7 +310,7 @@ export class DepartmentConfigComponent implements OnInit {
 
   getSubDemartmentByDepartmentID(index: number, viewSub:any) {
 
-   
+    debugger;
  
     this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
 
@@ -397,6 +398,7 @@ export class DepartmentConfigComponent implements OnInit {
           tempDepartmentList.departmentName = current.departmentName;
           tempDepartmentList.dateUpdated = current.dateUpdated;
           tempDepartmentList.dateCreated = current.dateCreated;
+          tempDepartmentList.hasSubDepartment = current.hasSubDepartment;
           this.DepartmentList.push(tempDepartmentList);
 
         }
@@ -404,7 +406,7 @@ export class DepartmentConfigComponent implements OnInit {
         //this.DepartmentList = data.dateSet;
 
         
-        console.log("DepartmentList", this.DepartmentList);
+        console.log("DepartmentListh", this.DepartmentList);
       }
       else {
         //alert("Invalid Email or Password");
@@ -430,11 +432,13 @@ export class DepartmentConfigComponent implements OnInit {
   onDepartmentCreate() {
 
    
-    
+    debugger;
     let newDepName = this.addDepartment.controls["newDepName"].value;
 
+
+
     if (this.hasSub == true) {
-         this.departmentService.addUpdateDepartment(0, newDepName, this.CurrentUser.appUserId).subscribe((data: any) => {
+      this.departmentService.addUpdateDepartment(0, newDepName, this.hasSub ,this.CurrentUser.appUserId).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 
@@ -455,7 +459,7 @@ export class DepartmentConfigComponent implements OnInit {
       }
     else {
 
-      this.departmentService.addUpdateDepartment(0, newDepName, this.CurrentUser.appUserId).subscribe((data: any) => {
+      this.departmentService.addUpdateDepartment(0, newDepName, this.hasSub,this.CurrentUser.appUserId).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
     

@@ -10,7 +10,7 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public string? SubDepartmentName { get; set; }
 
-     /*   public string? SubDepartmentAdminUserID { get; set; }*/
+        public string? SubDepartmentAdminUserID { get; set; }
 
         public int? DepartmentID { get; set; }
 

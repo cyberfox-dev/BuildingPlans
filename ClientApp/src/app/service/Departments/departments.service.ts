@@ -9,11 +9,12 @@ export class DepartmentsService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public addUpdateDepartment(departmentID: number | null, departmentName: string | null, createdById?:string  ) {
+  public addUpdateDepartment(departmentID: number | null, departmentName: string | null,hasSubDepartment :boolean ,createdById?:string  ) {
    
     const body = {
       DepartmentID: departmentID,
       DepartmentName: departmentName,
+      hasSubDepartment: hasSubDepartment,
       CreatedById: createdById,
     }
     return this.httpClient.post(this.baseURL + "AddUpdateDepartments", body);
