@@ -7,6 +7,7 @@ using WayleaveManagementSystem.Service;
 using System.Security.Policy;
 using WayleaveManagementSystem.Data;
 using WayleaveManagementSystem.Data.Entities;
+using System.Net.Http.Headers;
 
 namespace WayleaveManagementSystem.Controllers
 {
@@ -27,11 +28,35 @@ namespace WayleaveManagementSystem.Controllers
             _context = context;
         }
 
-        [HttpPost("AddUpdateDocument")]
+        [HttpPost("AddUpdateDocument"),DisableRequestSizeLimit]
         public async Task<object> AddUpdateDocument([FromBody] DocumentUploadBindingModel model)
         {
             try
             {
+
+                var file = Request.Form.Files[0];
+                var folderName = Path.Combine("Resources", "DocumentUpload");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+
+                if (file.Length > 0)
+                {
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    var fullPath = Path.Combine(pathToSave,fileName);
+                    var dbPath = Path.Combine(folderName,fileName);
+
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+
+                   // var result = await _documentUploadService.AddUpdateDocument(model.DocumentID, model.ApplicationID, model.DocumentName, model.DocumentType, model.DocumentPath, model.CreatedById, model.CreatedDate, model.ModifiedById, model.ModifiedDate);
+
+                }
+                else{
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+
+
 
                 if (model == null || model.DocumentName.Length < 1)
                 {

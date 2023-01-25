@@ -600,6 +600,7 @@
     <Folder Include="ClientApp\src\app\service\SubDepartments\" />
     <Folder Include="ClientApp\src\app\service\Stages\" />
     <Folder Include="ClientApp\src\app\service\UserProfile\" />
+    <Folder Include="Resources\DocumentUpload\" />
   </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

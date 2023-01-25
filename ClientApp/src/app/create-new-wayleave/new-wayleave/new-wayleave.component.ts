@@ -21,15 +21,6 @@ import { StagesService } from '../../service/Stages/stages.service';
 
 
 
-
-export interface StagesList {
-  StageID: number;
-  StageName: string;
-  StageOrderNumber: number;
-  CurrentUser: any
-
-}
-
 export interface EngineerList {
   professinalID: number;
   ProfessinalType: string;
