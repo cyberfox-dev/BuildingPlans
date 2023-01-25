@@ -78,4 +78,19 @@ export class ViewProjectDetailsComponent implements OnInit {
    
   }
 
+  actionCenter() {
+    if (true) {
+
+    }
+    else if (true) {
+
+    }
+    else if (true) {
+
+    }
+    else if (true) {
+
+    }
+  }
+
 }

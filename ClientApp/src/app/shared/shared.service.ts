@@ -56,7 +56,7 @@ export interface ApplicationList {
   providedIn: 'root'
 })
 
-
+ 
 
 
 export class SharedService {
