@@ -19,6 +19,7 @@ export interface SubDepartmentList {
   selector: 'app-action-center',
   templateUrl: './action-center.component.html',
   styleUrls: ['./action-center.component.css']
+
 })
 export class ActionCenterComponent implements OnInit {
 
@@ -52,8 +53,14 @@ export class ActionCenterComponent implements OnInit {
     this.modalService.open(content, { size: 'xl' });
   }
   depositReqModal(deposit: any) {
-    this.checked = true;
-    this.modalService.open(deposit, { size: 'xl' });
+
+    if (this.checked == true) {
+      this.modalService.open(deposit, { size: 'xl' });
+    }
+    else {
+      this.modalService.dismissAll();
+    }
+
   }
   uncheck() {
     this.checked = false;

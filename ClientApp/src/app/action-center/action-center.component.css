@@ -19,6 +19,10 @@ table {
   justify-content: center;
 }
 
+::ng-deep .cdk-overlay-connected-position-bounding-box {
+  z-index: 10000 !important;
+} 
+
 .mat-primary {
   margin: 10px;
   background-color: #36a5f4;
@@ -46,8 +50,9 @@ table {
 .cont3 {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: space-between;
   flex-wrap: nowrap;
+  align-items: flex-end;
 }
 ::ng-deep .mat-focused .mat-form-field-label {
   /*change color of label*/

@@ -13,6 +13,7 @@
   <div class="modal-body">
     <div class="cont">
     <button mat-raised-button color="primary" (click)="getAllSubDepartments(assign)">Assign this project</button>
+    <button mat-raised-button color="primary">Assign a Department to this project</button>
       </div>
     <mat-accordion>
 
@@ -34,7 +35,11 @@
             <mat-label>Leave a comment</mat-label>
             <input matInput autocomplete="off">
           </mat-form-field>
-          <button mat-raised-button color="purple"><i class="fa fa-comment" aria-hidden="true"></i></button>
+          <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" ><i class="fa fa-comment" aria-hidden="true"></i></button>
+          <mat-menu #menu="matMenu" xPosition="before">
+          <!-- <button mat-menu-item *ngFor="let subDemartment of SubDepartmentDropdown" value="{{subDemartment.subDepartmentID}}">{{subDemartment.subDepartmentName}}</button>
+-->
+          </mat-menu>
         </div>
 
         <div class="cont3">

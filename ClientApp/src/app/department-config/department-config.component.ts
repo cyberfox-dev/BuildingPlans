@@ -81,6 +81,12 @@ export class DepartmentConfigComponent implements OnInit {
 
   public subHasDep: boolean = false;
   public hasSub: boolean = false;
+
+  public addSubOption: boolean = true;
+  public removeSubOption: boolean = false;
+  public ifDepHasSubUserTable: boolean = false;
+  public ifDepHasSubUserDropDown: boolean = true;
+
   addSubChecked = false;
   closeResult = '';
   check: boolean = false;
@@ -134,6 +140,10 @@ export class DepartmentConfigComponent implements OnInit {
     viewSelectedSubDep2: ['', Validators.required],
     viewSelectedZone: ['', Validators.required],
 
+  })
+
+  public setSubAdmin = this.formBuilder.group({
+    SetSubDemartmentAdmin: ['', Validators.required]
   })
 
 
@@ -210,6 +220,7 @@ export class DepartmentConfigComponent implements OnInit {
     this.viewZonesLinkedtoSub.controls["viewSelectedSubDep2"].setValue("0");
     this.viewZonesLinkedtoSub.controls["viewSelectedSubDep"].setValue("0");
     this.viewZonesLinkedtoSub.controls["viewSelectedZone"].setValue("0");
+
 
   }
 
@@ -306,11 +317,58 @@ export class DepartmentConfigComponent implements OnInit {
 
   }
 
+  linkDepAdmin(index:any,linkDepAdminModal: any) {
+    this.setSubAdmin.controls["SetSubDemartmentAdmin"].setValue("0");
+
+
+    if (this.DepartmentList[index].hasSubDepartment == false) {
+      this.ifDepHasSubUserDropDown = false;
+      this.ifDepHasSubUserTable = true;
+    }
+    else {
+      this.ifDepHasSubUserDropDown = true;
+      this.ifDepHasSubUserTable = false;
+
+    }
+
+
+    this.SubDepartmentDropdown.splice(0, this.SubDepartmentDropdown.length);
+    this.subDepartment.getSubDepartmentsByDepartmentID(this.DepartmentList[index].departmentID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepartmentList = {} as SubDepartmentDropdown;
+          const current = data.dateSet[i];
+          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+
+          this.SubDepartmentDropdown.push(tempSubDepartmentList);
+
+        }
+        this.modalService.open(linkDepAdminModal, { backdrop: 'static', centered: true, size: 'xl' });
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  
+
+  }
+
   
 
   getSubDemartmentByDepartmentID(index: number, viewSub:any) {
 
-    debugger;
+
  
     this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
 
@@ -337,7 +395,7 @@ export class DepartmentConfigComponent implements OnInit {
 
           this.getSubDepsForDep(index);
 
-          if (this.subHasDep == false) {
+          if (this.DepartmentList[index].hasSubDepartment == false) {
             alert("This department cannot view sub departments");
           }
           else {
@@ -422,17 +480,27 @@ export class DepartmentConfigComponent implements OnInit {
 
   hasSubDep() {
     this.hasSub = true;
+    this.addSubOption = false;
+    this.removeSubOption = true;
+
+  }
+  hasNoSubDep() {
+    this.hasSub = false;
+    this.addSubOption = true;
+    this.removeSubOption = false;
 
   }
   resetHasDep() {
     this.hasSub = false;
+    this.addSubOption = true;
+    this.removeSubOption = false;
   }
 
 
   onDepartmentCreate() {
 
    
-    debugger;
+
     let newDepName = this.addDepartment.controls["newDepName"].value;
 
 
@@ -690,7 +758,7 @@ export class DepartmentConfigComponent implements OnInit {
     })
   }
   onSelectToPopulateZoneTable(event: any, viewlinkedZones: any) {
-
+    
     let viewSelectedSubDep = Number(this.viewZonesLinkedtoSub.controls["viewSelectedSubDep"].value);
     this.ZoneList.splice(0, this.ZoneList.length);
     this.zoneService.getZonesBySubDepartmentsID(viewSelectedSubDep).subscribe((data: any) => {
