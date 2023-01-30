@@ -32,14 +32,16 @@
 
         <div class="cont2">
           <mat-form-field class="example-full-width">
-            <mat-label>Leave a comment</mat-label>
-            <input matInput autocomplete="off">
-          </mat-form-field>
-          <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" ><i class="fa fa-comment" aria-hidden="true"></i></button>
-          <mat-menu #menu="matMenu" xPosition="before">
-          <!-- <button mat-menu-item *ngFor="let subDemartment of SubDepartmentDropdown" value="{{subDemartment.subDepartmentID}}">{{subDemartment.subDepartmentName}}</button>
--->
-          </mat-menu>
+    <mat-label>Leave a comment</mat-label>
+    <input [(ngModel)]="leaveAComment" matInput autocomplete="off">
+  </mat-form-field>
+  <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()"><i class="fa fa-comment" aria-hidden="true"></i></button>
+  <mat-menu #menu="matMenu" xPosition="before" >
+    <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)" >{{comment.commentName}} </button>
+
+  </mat-menu>
+
+
         </div>
 
         <div class="cont3">
@@ -168,8 +170,13 @@
     </div>
 
   </div>
-  <div class="modal-footer">
+ 
+    <div class="cont4">
+      <button mat-raised-button color="warn" (click)="uncheck();modal.dismiss('Cross click')">Cancel</button>
+      <button mat-raised-button color="green" (click)="check();modal.close('Save click')">Save</button>
+
     </div>
+ 
 
 </ng-template>
 
