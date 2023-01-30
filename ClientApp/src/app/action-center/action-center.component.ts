@@ -5,6 +5,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SubDepartmentsService } from '../service/SubDepartments/sub-departments.service';
 import { MatTable } from '@angular/material/table';
+import { CommentBuilderService } from '../service/CommentBuilder/comment-builder.service';
 
 export interface SubDepartmentList {
   subDepartmentID: number;
@@ -12,6 +13,18 @@ export interface SubDepartmentList {
   departmentID: number;
   dateUpdated: any;
   dateCreated: any;
+}
+
+export interface CommentList {
+  CommentID: number;
+  Comment: string;
+  DateCreated: string;
+  createdBy: any;
+}
+
+export interface CommentDropDown {
+  commentID: number;
+  commentName: string;
 }
 
 
@@ -34,6 +47,8 @@ export class ActionCenterComponent implements OnInit {
 
 
   SubDepartmentList: SubDepartmentList[] = [];
+  CommentList: CommentList[] = [];
+  CommentDropDown: CommentDropDown[] = [];
 
   displayedColumnsSubDepartment: string[] = [ 'subDepartmentName', 'actions'];
   dataSourceSubDepartment = this.SubDepartmentList;
@@ -42,28 +57,41 @@ export class ActionCenterComponent implements OnInit {
 
 
   closeResult!: string;
-  constructor(private offcanvasService: NgbOffcanvas, private modalService: NgbModal, private _snackBar: MatSnackBar, private subDepartment: SubDepartmentsService) { }
+  constructor(private offcanvasService: NgbOffcanvas, private modalService: NgbModal, private _snackBar: MatSnackBar, private subDepartment: SubDepartmentsService, private commentService: CommentBuilderService) { }
   openEnd(content: TemplateRef<any>) {
     this.offcanvasService.open(content, { position: 'end' });
   }
+
+  stringifiedData: any;
+  CurrentUser: any;
+
+  leaveAComment = "";
   ngOnInit(): void {
+
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
+    if (this.CurrentUser == null) {
+      console.log("Not");
+    }
+    else {
+      console.log(this.CurrentUser);
+    }
+ 
 
   }
   openXl(content: any) {
     this.modalService.open(content, { size: 'xl' });
   }
   depositReqModal(deposit: any) {
+    this.modalService.open(deposit, { backdrop: 'static',size: 'xl' });
 
-    if (this.checked == true) {
-      this.modalService.open(deposit, { size: 'xl' });
-    }
-    else {
-      this.modalService.dismissAll();
-    }
 
   }
   uncheck() {
     this.checked = false;
+  }
+  check() {
+    this.checked = true;
   }
   panelOpenState = false;
 
@@ -103,6 +131,45 @@ export class ActionCenterComponent implements OnInit {
     console.log("Error: ", error);
   })
   }
+
+  populateComment(commentName:any) {
+    console.log("commentName", commentName);
+    this.leaveAComment = commentName;
+  }
+
+  getAllCommentsByUserID() {
+
+    this.CommentDropDown.splice(0, this.CommentDropDown.length);
+
+    this.commentService.getCommentByUserID(this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempCommentDropDown = {} as CommentDropDown;
+          const current = data.dateSet[i];
+          tempCommentDropDown.commentID = current.commentID;
+          tempCommentDropDown.commentName = current.commentName;
+          
+
+
+          this.CommentDropDown.push(tempCommentDropDown);
+
+        }
+        console.log("Got all comments", data.dateSet);
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
 
 
 
