@@ -44,6 +44,7 @@ builder.Services.AddScoped<IProfessionalsLinksService, ProfessionalsLinksService
 builder.Services.AddScoped<ICommentBuilderService, CommentBuilderService>();
 builder.Services.AddScoped<IDocumentUploadService, DocumentUploadService>();
 builder.Services.AddScoped<ISubDepartmentForCommentService, SubDepartmentForCommentService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
