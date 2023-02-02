@@ -1,18 +1,205 @@
+<link rel="stylesheet"
+      href="https://js.arcgis.com/4.25/esri/themes/light/main.css" />
+<script src="https://js.arcgis.com/4.25/"></script>
+<style>
+  html,
+  body,
+  #Map {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+  }
+
+</style>
+
+<!--<script>
+  require([
+    "esri/widgets/Sketch",
+    "esri/Map",
+    "esri/layers/GraphicsLayer",
+    "esri/views/MapView"
+  ], (Sketch, Map, GraphicsLayer, MapView) => {
+    const graphicsLayer = new GraphicsLayer();
+
+    const map = new Map({
+      basemap: "topo-vector",
+      layers: [graphicsLayer]
+    });
+
+    const view = new MapView({
+      container: "viewDiv",
+      map: map,
+      zoom: 5,
+      center: [90, 45]
+    });
+
+
+
+    view.when(() => {
+      const sketch = new Sketch({
+        layer: graphicsLayer,
+        view: view,
+        // graphic will be selected as soon as it is created
+        creationMode: "update"
+      });
+
+      view.ui.add(sketch, "top-right");
+    });
+  });</script>-->
+
+<!--<script>
+  require([
+    "esri/widgets/Sketch",
+    "esri/widgets/Sketch/Legend",
+    "esri/Map",
+    "esri/layers/GraphicsLayer",
+    "esri/views/MapView",
+    "esri/layers/MapImageLayer"
+  ], function (
+    Basemap, Sketch, Map, GraphicsLayer, MapView, MapImageLayer
+  ) {
+
+    var citiesRenderer = {
+      type: "simple",
+      symbol: {
+        type: "simple-marker",
+        size: 6,
+        color: { a: 1, b: 200, g: 0, r: 0 },
+        style: "circle"
+      },
+      label: "Cities"
+    };
+
+    var statesRenderer = {
+      type: "simple",
+      symbol: {
+        type: "simple-fill",
+        style: "solid",
+        color: { a: 1, b: 0, g: 0, r: 0 },
+        outlike: {
+          width: 2,
+          color: { a: 1, b: 0, g: 200, r: 0 }
+        }
+
+      },
+      label: "State boundaries"
+    };
+
+    var highwaysRenderer = {
+      type: "simple",
+      symbol: {
+        type: "simple-line",
+        style: "solid",
+        width: 1.5,
+        color: { a: 1, b: 100, g: 100, r: 100 }
+      },
+      label: "Interstate highway"
+    };
+
+    var layer = new MapImageLayer({
+      portalItem: {
+        id: "e7e03ad8f72b42709e7d63dde8c6c3f5"
+      },
+      sublayers: [
+        {
+          id: 2,
+          renderer: statesrenderer,
+          Opacity: 1
+        },
+        {
+          id: 1,
+          renderer: highwaysRenderer,
+          opacity: 0.5
+        },
+        {
+          id: 0,
+          renderer: citiesRenderer,
+          opacity: 1
+        }]
+    });
+
+    var map = new Map({
+
+      })
+
+  const graphicsLayer = new GraphicsLayer();
+
+  const map = new Map({
+    basemap: new Basemap({
+      portalItem: {
+        id: "00c8181753cd4673810a1ede1f52a922"
+      }
+    }),
+    layers: [Layer]
+  });
+
+  var view = new MapView({
+    container: "viewDiv",
+    map: map,
+    zoom: 5,
+    center: [-83.114, 36.921]
+  });
+
+
+
+  //view.when(() => {
+
+  //  var layerList = new LayerList({
+  //    view: view
+  //  });
+
+  //  view.ui.add(layerList, "top-left");
+
+  //  var lengend = new Lenged({
+  //    view: view
+  //  });
+
+  //  view.ui.add(Legend, "top-left");
+
+  //  const sketch = new Sketch({
+  //    layer: graphicsLayer,
+  //    view: view,
+  //    // graphic will be selected as soon as it is created
+  //    creationMode: "update"
+  //  });
+
+  //  view.ui.add(sketch, "top-right");
+
+
+
+
+
+  //});
+  });</script>-->
+
 <div class="container-fluid">
-  <div class="row">
-    <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
-      <mat-button-toggle value="bold">Draw</mat-button-toggle>
-      <mat-button-toggle value="italic">Edit</mat-button-toggle>
-      <mat-button-toggle value="underline">Save</mat-button-toggle>
-    </mat-button-toggle-group>
-  </div>
 
-<div class="maps">
-  <!-- <h4>Please outline the area of the construction below</h4>-->
+  <!--the below works-->
+  <!--<div>
+    <div style="height:500px" id="viewDiv"></div>
+  </div>-->
+
   <div>
-    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d55522.617408819875!2d30.405427199999995!3d-29.569843200000005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sza!4v1662643454248!5m2!1sen!2sza" width="100%" height="700" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <div #viewMap style="height:500px" class="Map"></div>
   </div>
+
+  <!--<div #mapViewNode
+       class="mapViewNode"></div>-->
+  <!--<div class="row">
+      <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+        <mat-button-toggle value="bold">Draw</mat-button-toggle>
+        <mat-button-toggle value="italic">Edit</mat-button-toggle>
+        <mat-button-toggle value="underline">Save</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+
+  <div class="maps">-->
+  <!-- <h4>Please outline the area of the construction below</h4>-->
+  <!--<div>
+      <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d55522.617408819875!2d30.405427199999995!3d-29.569843200000005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sza!4v1662643454248!5m2!1sen!2sza" width="100%" height="700" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </div>-->
+
+
 </div>
-
-
-  </div>
