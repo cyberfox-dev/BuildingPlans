@@ -10,17 +10,17 @@ import FeatureTable from '@arcgis/core/widgets/FeatureTable';
 import LayerList from '@arcgis/core/widgets/LayerList';
 import Locate from '@arcgis/core/widgets/Locate';
 import Search from '@arcgis/core/widgets/Search';
-import { TranslateService } from '@ngx-translate/core';
+/*import { TranslateService } from '@ngx-translate/core';*/
 import Sketch from '@arcgis/core/widgets/Sketch';
 /*import { ARCGIS_CONFIG, ArcgisConfig } from '../arcgis';*/
-import { DeviceDetectorService } from 'ngx-device-detector';
+/*import { DeviceDetectorService } from 'ngx-device-detector';*/
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import MapImageLayer from '@arcgis/core/layers/MapImageLayer';
 import Legend from '@arcgis/core/widgets/Legend';
 import Editor from '@arcgis/core/widgets/Editor';
 import WebMap from '@arcgis/core/WebMap';
 import FormTemplate from "@arcgis/core/form/FormTemplate";
-import * as esri from 'esri-leaflet';
+/*import * as esri from 'esri-leaflet';*/
 import Layer from "@arcgis/core/layers/Layer"
 /*import LayerInfos from '@arcgis/core/widgets/Editor'*/
 
