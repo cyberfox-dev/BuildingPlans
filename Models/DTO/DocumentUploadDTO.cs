@@ -8,8 +8,8 @@ namespace WayleaveManagementSystem.DTO
 
         public int DocumentID { get; set; }
         public string? DocumentName { get; set; }
-
-        public byte[]? DocumentData { get; set; }
+        
+        public string? DocumentLocalPath { get; set; }
 
         public int? ApplicationID { get; set; }
 

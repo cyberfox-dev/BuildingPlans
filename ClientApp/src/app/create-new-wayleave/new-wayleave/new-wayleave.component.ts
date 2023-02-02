@@ -17,6 +17,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { SelectEngineerTableComponent} from 'src/app/select-engineer-table/select-engineer-table.component'
 import { StagesService } from '../../service/Stages/stages.service';
+import { DocumentUploadService } from '../../service/DocumentUpload/document-upload.service';
 
 
 
@@ -214,8 +215,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
   //Store message for file upload
-  message: string | undefined;
-  progress: number = 0;
+  response: { dbPath: ''; } | undefined
 
   CurrentUserProfile: any;
   stringifiedDataUserProfile: any;
@@ -248,7 +248,7 @@ export class NewWayleaveComponent implements OnInit {
 
      
 
-  constructor(private modalService: NgbModal, private applicationsService: ApplicationsService, private professionalsLinksService: ProfessionalsLinksService, private shared: SharedService, private formBuilder: FormBuilder, private professionalService: ProfessionalService, private userPofileService: UserProfileService, private router: Router, private zoneService: ZonesService, private resolver: ComponentFactoryResolver, private container: ViewContainerRef, private injector: Injector , private stagesService: StagesService) { }
+  constructor(private modalService: NgbModal, private applicationsService: ApplicationsService, private professionalsLinksService: ProfessionalsLinksService, private shared: SharedService, private formBuilder: FormBuilder, private professionalService: ProfessionalService, private userPofileService: UserProfileService, private router: Router, private zoneService: ZonesService, private resolver: ComponentFactoryResolver, private container: ViewContainerRef, private injector: Injector, private stagesService: StagesService, private documentUploadService: DocumentUploadService) { }
 
   ngOnInit(): void {
     this.getAllExternalUsers();
@@ -968,4 +968,36 @@ export class NewWayleaveComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
+
+
+
+  uploadFinished = (event: any) => {
+    debugger;
+    this.response = event;
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
+
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath,).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+      }
+
+  
+
+     
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+    
+    
+  }
+
+
+
+
+
 }

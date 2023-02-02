@@ -28,13 +28,15 @@ namespace WayleaveManagementSystem.Controllers
             _context = context;
         }
 
-        [HttpPost("AddUpdateDocument"),DisableRequestSizeLimit]
-        public async Task<object> AddUpdateDocument([FromBody] DocumentUploadBindingModel model)
+        [HttpPost("UploadDocument"),DisableRequestSizeLimit]
+        public async Task<object> UploadDocument()
         {
             try
             {
 
+                
                 var file = Request.Form.Files[0];
+         
                 var folderName = Path.Combine("Resources", "DocumentUpload");
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
 
@@ -49,13 +51,41 @@ namespace WayleaveManagementSystem.Controllers
                         file.CopyTo(stream);
                     }
 
-                   // var result = await _documentUploadService.AddUpdateDocument(model.DocumentID, model.ApplicationID, model.DocumentName, model.DocumentType, model.DocumentPath, model.CreatedById, model.CreatedDate, model.ModifiedById, model.ModifiedDate);
-
+                    // var result = await _documentUploadService.AddUpdateDocument(model.DocumentID, model.ApplicationID, model.DocumentName, model.DocumentType, model.DocumentPath, model.CreatedById, model.CreatedDate, model.ModifiedById, model.ModifiedDate);
+                    return  Ok(new { dbPath });
                 }
                 else{
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
 
+
+
+                //if (model == null || model.DocumentName.Length < 1)
+                //{
+                //    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                //}
+                //else
+                //{
+                //    var result = await _documentUploadService.AddUpdateDocument(model.DocumentID, model.DocumentName, model.DocumentData, model.ApplicationID, model.AssignedUserID, model.CreatedById);
+                //    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.DocumentID > 0 ? "Professional Updated Successfully" : "Professional Added Successfully"), result));
+                //}
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+
+        [HttpPost("AddUpdateDocument"), DisableRequestSizeLimit]
+        public async Task<object> AddUpdateDocument([FromBody] DocumentUploadBindingModel model)
+        {
+            try
+            {
 
 
                 if (model == null || model.DocumentName.Length < 1)
@@ -64,7 +94,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _documentUploadService.AddUpdateDocument(model.DocumentID, model.DocumentName, model.DocumentData, model.ApplicationID, model.AssignedUserID, model.CreatedById);
+                    var result = await _documentUploadService.AddUpdateDocument(model.DocumentID, model.DocumentName, model.DocumentLocalPath, model.ApplicationID, model.AssignedUserID, model.CreatedById);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.DocumentID > 0 ? "Professional Updated Successfully" : "Professional Added Successfully"), result));
                 }
 
@@ -77,7 +107,6 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
-
 
         [HttpPost("DeleteDocument")]
         public async Task<object> DeleteDocument([FromBody] int documentID)
