@@ -212,6 +212,11 @@ export class NewWayleaveComponent implements OnInit {
   venstringifiedData: any;
   venContractorData: any;
 
+
+  //Store message for file upload
+  message: string | undefined;
+  progress: number = 0;
+
   CurrentUserProfile: any;
   stringifiedDataUserProfile: any;
   //Columns for both the engineer and contractor lists
