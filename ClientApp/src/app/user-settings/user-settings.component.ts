@@ -51,6 +51,7 @@ export class UserSettingsComponent implements OnInit {
   extApplicantEmail = '';
   extApplicantPhyscialAddress = '';
   extApplicantIDNumber = '';
+extApplicantVatNumber='';
 
 /*internal*/
   internalApplicantName = '';

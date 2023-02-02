@@ -194,7 +194,7 @@ export class RolesConfigComponent implements OnInit {
 
   onRoleEdit() {
   
-    debugger;
+    
   
     let editRoleName = this.editRole.controls["editRoleName"].value;
     let editRoleType = this.editRole.controls["editRoleType"].value;

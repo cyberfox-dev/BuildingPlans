@@ -16,6 +16,11 @@ h4 {
 
   font-size: 18px;
 }
+
+.hasSub {
+  background-color: #2dd568;
+  color: #fff;
+}
 ::ng-deep .mat-checkbox .mat-checkbox-frame {
   transform: scale(2);
   border: #a5a5a5 solid 1px;

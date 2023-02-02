@@ -21,6 +21,14 @@ export interface ApplicationList {
   Location: string,
   clientCellNo: string,
   CreatedById: number,
+  ApplicationStatus: string,
+  CurrentStageName: string,
+  CurrentStageNumber: number,
+  CurrentStageStartDate: Date,
+  NextStageName: string,
+  NextStageNumber: number,
+  PreviousStageName: string,
+  PreviousStageNumber: number,
 
 }
 
@@ -48,7 +56,6 @@ export class ViewProjectDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
-    console.log("LOOOOOOOK 2", this.applicationDataForView);
     const setValues = this.applicationDataForView[0];
 
     this.viewProjectDetails.controls["typeOfApplication"].setValue(setValues.TypeOfApplication);
@@ -69,6 +76,21 @@ export class ViewProjectDetailsComponent implements OnInit {
 
   settingView() {
    
+  }
+
+  actionCenter() {
+    if (true) {
+
+    }
+    else if (true) {
+
+    }
+    else if (true) {
+
+    }
+    else if (true) {
+
+    }
   }
 
 }

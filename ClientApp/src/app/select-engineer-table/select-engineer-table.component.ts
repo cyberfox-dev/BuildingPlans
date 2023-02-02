@@ -30,6 +30,7 @@ export interface ProfessialList {
 export class SelectEngineerTableComponent implements OnInit {
   //@Input()
   //data!: any[];
+ 
   @Input() PrfessionalType: any;
   //Local storage userID
   CurrentUser: any;
@@ -45,12 +46,14 @@ export class SelectEngineerTableComponent implements OnInit {
 
   ngOnInit(): void {
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
-    this.CurrentUser = JSON.parse(this.stringifiedData); this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
     this.getProfessionalsListByProfessionalType(this.PrfessionalType)
 
 
   }
-
+  refreshTable() {
+    this.ProfessialTable?.renderRows();
+  }
 
   getProfessionalsListByProfessionalType(professionalType: string) {
     /*    this.EngineerList.splice(0, this.EngineerList.length);*/
@@ -177,6 +180,78 @@ export class SelectEngineerTableComponent implements OnInit {
     this.pushToShared();
   }
 
+  onAddEngineer(bpNoApplicant: string, professionalRegNo: string, name: string, surname: string, applicantEmail: string, applicantTellNo: string, engineerIDNo: string) {
+    debugger;
+    //const newEnineer = {} as EngineerList;
+    //newEnineer.ProfessinalType = "Engineer";:
+    //newEnineer.bpNumber = this.bpNoApplicant;
+    //newEnineer.professionalRegNo = this.professionalRegNo;
+    //newEnineer.name = this.name;
+    //newEnineer.surname = this.surname;
+    //newEnineer.email = this.applicantEmail;
+    //newEnineer.phoneNumber = this.applicantTellNo;
 
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
+    this.professionalService.addUpdateProfessional(0, "Engineer", name + " " + surname, bpNoApplicant, false, applicantEmail, applicantTellNo.toString(), professionalRegNo, this.CurrentUser.appUserId, engineerIDNo, this.CurrentUser.appUserId, null).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        alert(data.responseMessage);
+
+        this.ProfessialList = [];
+
+    
+          // code for adding an engineer
+
+          // Clear the ProfessialList array before calling getProfessionalsListByProfessionalType
+          this.ProfessialList = [];
+
+          // retrieve the updated data for professionals of type 'Engineer'
+          this.professionalService.getProfessionalsListByProfessionalType(this.CurrentUser.appUserId, 'Engineer').subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              console.log("data.dateSet get", data.dateSet);
+              for (let i = 0; i < data.dateSet.length; i++) {
+                //Check if Engineer or Contractor
+               // if (professionalType == "Engineer") {
+                  const tempProfessionalList = {} as ProfessialList;
+                  const current = data.dateSet[i];
+                  tempProfessionalList.bpNumber = current.bP_Number;
+                  tempProfessionalList.email = current.email;
+                  tempProfessionalList.idNumber = current.idNumber;
+                  tempProfessionalList.name = current.fullName.substring(0, current.fullName.indexOf(' '));
+                  tempProfessionalList.surname = current.fullName.substring(current.fullName.indexOf(' ') + 1);
+                  tempProfessionalList.phoneNumber = current.phoneNumber;
+                  tempProfessionalList.ProfessinalType = current.professinalType;
+                  tempProfessionalList.professionalRegNo = current.professionalRegNo;
+                  tempProfessionalList.professinalID = current.professinalID;
+                  this.ProfessialList.push(tempProfessionalList);
+             //   }
+              }
+            }
+          });
+          // Re-render the table rows
+          this.ProfessialTable?.renderRows();
+        }
+
+
+    
+
+      
+
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+    this.ProfessialTable?.renderRows();
+
+
+  }
 
 }

@@ -8,6 +8,13 @@
   transform: rotate(0deg) scale(1) translateZ(0);
   transition: all 0.4s cubic-bezier(0.8, 1.8, 0.75, 0.75);
 }
+.cont2 {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  margin-top:10px;
+  margin-bottom:10px;
+}
 .row {
   justify-content: space-around;
 }
@@ -276,7 +283,7 @@ h2 {
   background-color: #17d51d;
 }
 
-button {
+/*button {
   border-radius: 20px;
   border: 1px solid #78ce9f;
   background-color: #78ce9f;
@@ -287,7 +294,7 @@ button {
   letter-spacing: 1px;
   text-transform: uppercase;
   transition: transform 80ms ease-in;
-}
+}*/
 
 .typeofApplicant {
   margin-top: 20px;

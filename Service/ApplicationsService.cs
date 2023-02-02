@@ -19,7 +19,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string userID, string fullName, string email, string phoneNumber, string physicalAddress, string referenceNumber, string? companyRegNo, string typeOfApplication, string notificationNumber, string wBSNumber, string physicalAddressOfProject, string descriptionOfProject, string natureOfWork, string excavationType, DateTime expectedStartDate, DateTime expectedEndDate, string location, string createdById)
+        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string userID, string fullName, string email, string phoneNumber, string physicalAddress, string referenceNumber, string? companyRegNo, string typeOfApplication, string notificationNumber, string wBSNumber, string physicalAddressOfProject, string descriptionOfProject, string natureOfWork, string excavationType, DateTime expectedStartDate, DateTime expectedEndDate, string location, string createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus)
         {
 
             if (ApplicationID == 0)
@@ -57,6 +57,15 @@ namespace WayleaveManagementSystem.Service
                     DateUpdated = DateTime.Now,
                     CreatedById = createdById,
                     isActive = true,
+                    PreviousStageName = PreviousStageName,
+                    PreviousStageNumber = PreviousStageNumber,
+                    CurrentStageName = CurrentStageName,
+                    CurrentStageNumber = CurrentStageNumber,
+                    CurrentStageStartDate = DateTime.Now,
+                    NextStageName = NextStageName,
+                    NextStageNumber = NextStageNumber,
+                    ApplicationStatus = ApplicationStatus
+                    
 
 
                 };
@@ -98,6 +107,55 @@ namespace WayleaveManagementSystem.Service
 
 
         }
+
+
+
+        public async Task<Applications> UpdateApplicationStage(int ApplicationID, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus)
+        {
+
+           
+            //this checks is the record exists in the db
+            var tempApplicationTable = _context.Application.FirstOrDefault(x => x.ApplicationID == ApplicationID);
+
+            if (tempApplicationTable.CurrentStageName == CurrentStageName)
+            {
+                //tempApplicationTable.PreviousStageName = PreviousStageName;
+                //tempApplicationTable.PreviousStageNumber = PreviousStageNumber;
+                //tempApplicationTable.CurrentStageName = CurrentStageName;
+                //tempApplicationTable.CurrentStageNumber = CurrentStageNumber;
+                //tempApplicationTable.NextStageName = NextStageName;
+                //tempApplicationTable.NextStageNumber = NextStageNumber;
+                tempApplicationTable.ApplicationStatus = ApplicationStatus;
+            }
+            else
+            {
+                tempApplicationTable.PreviousStageName = PreviousStageName;
+                tempApplicationTable.PreviousStageNumber = PreviousStageNumber;
+                tempApplicationTable.CurrentStageName = CurrentStageName;
+                tempApplicationTable.CurrentStageNumber = CurrentStageNumber;
+                tempApplicationTable.CurrentStageStartDate = DateTime.Now;
+                tempApplicationTable.NextStageName = NextStageName;
+                tempApplicationTable.NextStageNumber = NextStageNumber;
+                tempApplicationTable.ApplicationStatus = ApplicationStatus;
+            }
+           
+            
+
+
+
+            _context.Update(tempApplicationTable);
+                await _context.SaveChangesAsync();
+                return tempApplicationTable;
+            }
+
+
+
+
+  
+
+
+
+
 
         public async Task<bool> DeleteApplication(int applicationID)
         {
@@ -155,7 +213,16 @@ namespace WayleaveManagementSystem.Service
                        DateCreated = Applications.DateCreated,
                        DateUpdated = Applications.DateUpdated,
                        CreatedById = Applications.CreatedById,
-                       isActive = Applications.isActive
+                       isActive = Applications.isActive,
+                       PreviousStageName = Applications.PreviousStageName,
+                       ApplicationStatus = Applications.ApplicationStatus,
+                       CurrentStageName = Applications.CurrentStageName,
+                       CurrentStageNumber = Applications.CurrentStageNumber,
+                       CurrentStageStartDate = Applications.CurrentStageStartDate,
+                       NextStageName = Applications.NextStageName,
+                       NextStageNumber = Applications.NextStageNumber,  
+                       PreviousStageNumber = Applications.PreviousStageNumber   
+                       
                    }
                    ).ToListAsync();
             }
@@ -188,7 +255,15 @@ namespace WayleaveManagementSystem.Service
                        DateCreated = Applications.DateCreated,
                        DateUpdated = Applications.DateUpdated,
                        CreatedById = Applications.CreatedById,
-                       isActive = Applications.isActive
+                       isActive = Applications.isActive,
+                        PreviousStageName = Applications.PreviousStageName,
+                       ApplicationStatus = Applications.ApplicationStatus,
+                       CurrentStageName = Applications.CurrentStageName,
+                       CurrentStageNumber = Applications.CurrentStageNumber,
+                       CurrentStageStartDate = Applications.CurrentStageStartDate,
+                       NextStageName = Applications.NextStageName,
+                       NextStageNumber = Applications.NextStageNumber,
+                       PreviousStageNumber = Applications.PreviousStageNumber
                    }
                    ).ToListAsync();
             }

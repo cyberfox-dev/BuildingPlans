@@ -5,7 +5,17 @@ import { MatTable } from '@angular/material/table';
 import { CommentList } from '../nav-menu/nav-menu.component';
 //import { ApplicationList } from '../shared/shared.service';
 import { SharedService } from "src/app/shared/shared.service"
+import { StagesService } from '../service/Stages/stages.service';
 
+
+
+export interface StagesList {
+  StageID: number;
+  StageName: string;
+  StageOrderNumber: number;
+  CurrentUser: any
+
+}
 
 export interface ApplicationsList {
   ApplicationID: number;
@@ -14,7 +24,9 @@ export interface ApplicationsList {
   TypeOfApplication: any;
   DateCreated: any;
   TestApplicationAge: number,
-  TestApplicationStageAge: number
+  TestApplicationStageAge: number,
+  CurrentStage: string,
+  ApplicationStatus: string
 }
 
 
@@ -38,6 +50,14 @@ export interface ApplicationList {
   Location: string,
   clientCellNo: string,
   CreatedById: number,
+  ApplicationStatus: string,
+  CurrentStageName: string,
+  CurrentStageNumber: number,
+  CurrentStageStartDate: Date,
+  NextStageName: string,
+  NextStageNumber: number,
+  PreviousStageName: string,
+  PreviousStageNumber: number,
 
 }
 
@@ -55,15 +75,17 @@ export class HomeComponent implements OnInit,OnDestroy {
   Applications: ApplicationsList[] = [];
   applicationDataForView: ApplicationList[] = [];
   applicationDataForViewToShared: ApplicationList[] = [];
+  StagesList: StagesList[] = [];
+
   CurrentUser: any;
   stringifiedData: any;
     stringifiedDataUserProfile: any;
     CurrentUserProfile: any;
-  constructor(private router: Router, private applicationService: ApplicationsService, private sharedService: SharedService, private viewContainerRef: ViewContainerRef) {
+  constructor(private router: Router, private applicationService: ApplicationsService, private sharedService: SharedService, private viewContainerRef: ViewContainerRef, private stagesService: StagesService) {
 
   }
 
-  displayedColumns: string[] = [ 'FullName', 'TypeOfApplication','AplicationAge','StageAge','DateCreated', 'actions'];
+  displayedColumns: string[] = ['FullName', 'Stage','Status', 'TypeOfApplication','AplicationAge','StageAge','DateCreated', 'actions'];
   dataSource = this.Applications;
   @ViewChild(MatTable) applicationsTable: MatTable<ApplicationsList> | undefined;
   ngOnInit(): void {
@@ -79,6 +101,7 @@ export class HomeComponent implements OnInit,OnDestroy {
       this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
 
       this.getAllApplicationsByUserID();
+      this.getAllStages();
     }, 100);
 
   }
@@ -105,6 +128,8 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationList.ApplicationID = current.applicationID;
             tempApplicationList.FullName = current.fullName;
             tempApplicationList.TypeOfApplication = current.typeOfApplication;
+            tempApplicationList.CurrentStage = current.currentStageName;
+            tempApplicationList.ApplicationStatus = current.applicationStatus;
 
             tempApplicationList.DateCreated = current.dateCreated;
 
@@ -133,9 +158,18 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationListShared.Location = current.location;
             tempApplicationListShared.clientCellNo = current.phoneNumber;
             tempApplicationListShared.CreatedById = current.createdById;
+            tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+            tempApplicationListShared.CurrentStageName = current.currentStageName;
+            tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+            tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate;
+            tempApplicationListShared.NextStageName = current.nextStageName;
+            tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+            tempApplicationListShared.PreviousStageName = current.previousStageName;
+            tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
 
 
             this.applicationDataForView.push(tempApplicationListShared);
+            console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
             this.Applications.push(tempApplicationList);
 
           }
@@ -165,6 +199,8 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationList.ApplicationID = current.applicationID;
             tempApplicationList.FullName = current.fullName;
             tempApplicationList.TypeOfApplication = current.typeOfApplication;
+            tempApplicationList.CurrentStage = current.currentStageName;
+            tempApplicationList.ApplicationStatus = current.applicationStatus;
 
             tempApplicationList.DateCreated = current.dateCreated;
 
@@ -193,9 +229,19 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationListShared.Location = current.location;
             tempApplicationListShared.clientCellNo = current.phoneNumber;
             tempApplicationListShared.CreatedById = current.createdById;
+            tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+            tempApplicationListShared.CurrentStageName = current.currentStageName;
+            tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+            tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate;
+            tempApplicationListShared.NextStageName = current.nextStageName;
+            tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+            tempApplicationListShared.PreviousStageName = current.previousStageName;
+            tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
 
 
             this.applicationDataForView.push(tempApplicationListShared);
+            console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+
             this.Applications.push(tempApplicationList);
 
           }
@@ -213,6 +259,38 @@ export class HomeComponent implements OnInit,OnDestroy {
 
    
    
+  }
+
+
+  getAllStages() {
+
+    this.StagesList.splice(0, this.StagesList.length);
+
+    this.stagesService.getAllStages().subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempStageList = {} as StagesList;
+          const current = data.dateSet[i];
+          tempStageList.StageID = current.stageID;
+          tempStageList.StageName = current.stageName;
+          tempStageList.StageOrderNumber = current.stageOrderNumber;
+
+          this.StagesList.push(tempStageList);
+          this.sharedService.setStageData(this.StagesList);
+        }
+
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 
   ngOnDestroy() {

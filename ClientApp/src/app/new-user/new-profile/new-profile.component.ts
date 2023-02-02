@@ -111,6 +111,8 @@ export class NewProfileComponent implements OnInit {
   internalApplicantCostCenterNo = '';
   internalApplicantCostCenterOwner = '';
 
+  extApplicantVatNumber = '';
+
   CurrentUser: any;
   stringifiedData: any;  
   ExternalUserProfileData: ExternalList[] = [];
@@ -181,18 +183,35 @@ export class NewProfileComponent implements OnInit {
    
   }
 
+  getUserProfile() {
+    let stringifiedData = JSON.parse(
+      JSON.stringify(localStorage.getItem("LoggedInUserInfo"))
+    );
+    let currentUser = JSON.parse(stringifiedData);
+    this.userPofileService
+      .getUserProfileById(currentUser.appUserId)
+      .subscribe(
+        (data: any) => {
+          localStorage.setItem("userProfile", JSON.stringify(data.dateSet));
+        },
+        (error) => {
+          console.log("Error: ", error);
+        }
+      );
+  }
+
   onNewProfileCreate() {
-    debugger;
+  
     if (this.showInternal) {
 
-      debugger;
+      
       this.userPofileService.addUpdateUserProfiles(null, this.CurrentUser.appUserId, this.internalApplicantName + " " + this.internalApplicantSurname, this.CurrentUser.email, this.internalApplicantTellNo, this.showInternal, null, null, null, null,/*THE DIRECTORATE IS NOW SENDING THROUGH THE DEPSRTMENT NAME*/ this.internalApplicantDirectorate, Number(this.internalApplicantDepartment), 1, this.internalApplicantBranch, this.internalApplicantCostCenterNo, this.internalApplicantCostCenterOwner, null, this.CurrentUser.appUserId, null).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 
           alert(data.responseMessage);
 
-          debugger;
+          
           const linkedContractors = this.shared.getContactorData();
           const linkedEngineers = this.shared.getEngineerData();
          
@@ -204,7 +223,7 @@ export class NewProfileComponent implements OnInit {
               .subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-                  this.router.navigate(["/home"]);
+               
                   //alert(data.responseMessage);
                 }
                 else {
@@ -213,7 +232,7 @@ export class NewProfileComponent implements OnInit {
                   
                 }
                 console.log("reponse", data);
-                this.router.navigate(["/home"]);
+             
               }, error => {
                 console.log("Error: ", error);
               })
@@ -226,16 +245,17 @@ export class NewProfileComponent implements OnInit {
               .subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-                  this.router.navigate(["/home"]);
+                
                   //alert(data.responseMessage);
                 }
                 else {
                   //alert("Invalid Email or Password");
                   alert(data.responseMessage);
+                  console.log("comeshere")
 
                 }
                 console.log("reponse", data);
-                this.router.navigate(["/home"]);
+           
               }, error => {
                 console.log("Error: ", error);
               })
@@ -245,10 +265,15 @@ export class NewProfileComponent implements OnInit {
         else {
           
           alert(data.responseMessage);
-          this.router.navigate(["/home"]);
+          localStorage.removeItem('LoggedInUserInfo');
+          localStorage.removeItem('userProfile');
+          this.router.navigate(["/"]);
+        
         }
         console.log("reponse", data);
-        this.router.navigate(["/home"]);
+        localStorage.removeItem('LoggedInUserInfo');
+        localStorage.removeItem('userProfile');
+        this.router.navigate(["/"]);
       }, error => {
         console.log("Error: ", error);
       })
@@ -277,16 +302,16 @@ export class NewProfileComponent implements OnInit {
               .subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-                  this.router.navigate(["/home"]);
+           
                   //alert(data.responseMessage);
                 }
                 else {
                   //alert("Invalid Email or Password");
                   alert(data.responseMessage);
-                  this.router.navigate(["/home"]);
+             
                 }
                 console.log("reponse", data);
-                this.router.navigate(["/home"]);
+           
               }, error => {
                 console.log("Error: ", error);
               })
@@ -299,16 +324,16 @@ export class NewProfileComponent implements OnInit {
               .subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-                  this.router.navigate(["/home"]);
+             
                   //alert(data.responseMessage);
                 }
                 else {
                   //alert("Invalid Email or Password");
                   alert(data.responseMessage);
-                  this.router.navigate(["/home"]);
+            
                 }
                 console.log("reponse", data);
-                this.router.navigate(["/home"]);
+        
               }, error => {
                 console.log("Error: ", error);
               })
@@ -318,10 +343,14 @@ export class NewProfileComponent implements OnInit {
         else {
 
           alert(data.responseMessage);
-          this.router.navigate(["/home"]);
+          localStorage.removeItem('LoggedInUserInfo');
+          localStorage.removeItem('userProfile');
+          this.router.navigate(["/"]);
         }
         console.log("reponse", data);
-        this.router.navigate(["/home"]);
+        localStorage.removeItem('LoggedInUserInfo');
+        localStorage.removeItem('userProfile');
+        this.router.navigate(["/"]);
       }, error => {
         console.log("Error: ", error);
       })
@@ -395,7 +424,7 @@ export class NewProfileComponent implements OnInit {
 
     for (var i = 0; i < this.DepartmentDropdown.length; i++) {
       if (this.DepartmentDropdown[i].departmentID == Number(this.internalApplicantDepartment)) {
-        debugger;
+    
         this.internalApplicantDirectorate = this.DepartmentDropdown[i].departmentName; 
       }
     }

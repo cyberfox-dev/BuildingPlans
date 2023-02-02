@@ -33,8 +33,8 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _departmentsService.AddUpdateDepartments(model.DepartmentID, model.DepartmentName, model.CreatedById);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.DepartmentID > 0 ? "Department Updated Sussessfully" : "Department Added Sussessfully"), result));
+                    var result = await _departmentsService.AddUpdateDepartments(model.DepartmentID, model.DepartmentName,model.hasSubDepartment ,model.CreatedById);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.DepartmentID > 0 ? "Department Updated Successfully" : "Department Added Successfully"), result));
                 }
 
             }
@@ -60,7 +60,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _departmentsService.DeleteDepartments(DepartmentID);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Department Deleted Sussessfully", result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Department Deleted Successfully", result));
                 }
 
             }

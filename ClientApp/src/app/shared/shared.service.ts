@@ -15,6 +15,14 @@ export interface ProfessionalList {
 
 }
 
+export interface StagesList {
+  StageID: number;
+  StageName: string;
+  StageOrderNumber: number;
+  CurrentUser: any
+
+}
+
 export interface ApplicationList {
   applicationID: number,
   clientName: string,
@@ -34,14 +42,21 @@ export interface ApplicationList {
   Location: string,
   clientCellNo: string,
   CreatedById: number,
-
+  ApplicationStatus: string,
+  CurrentStageName: string,
+  CurrentStageNumber: number,
+  CurrentStageStartDate: Date,
+  NextStageName: string,
+  NextStageNumber: number,
+  PreviousStageName: string,
+  PreviousStageNumber: number,
 }
 
 @Injectable({
   providedIn: 'root'
 })
 
-
+ 
 
 
 export class SharedService {
@@ -55,6 +70,7 @@ export class SharedService {
   applicationData: ApplicationList[] = [];
   applicationDataForView: ApplicationList[] = [];
   engineerData: ProfessionalList[] = [];
+  StagesList: StagesList[] = [];
 
   constructor() { }
 
@@ -81,6 +97,17 @@ export class SharedService {
   getUserProfileData() {
     return this.userProfileData;
   }
+
+  setStageData(data: any) {
+    
+    this.StagesList = data;
+
+  }
+
+  getStageData() {
+    return this.StagesList;
+  }
+
 
   setContactorData(data: any) {
    
@@ -113,7 +140,7 @@ export class SharedService {
   }
 
   setApplicationData(data: ApplicationList[]) {
-    debugger;
+    
     this.applicationData = data;
   }
 

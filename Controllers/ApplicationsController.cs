@@ -36,8 +36,34 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _applicationsService.AddUpdateApplication(model.ApplicationID, model.UserID, model.FullName, model.Email, model.PhoneNumber, model.PhysicalAddress, model.ReferenceNumber, model.CompanyRegNo, model.TypeOfApplication, model.NotificationNumber, model.WBSNumber, model.PhysicalAddressOfProject, model.DescriptionOfProject, model.NatureOfWork, model.ExcavationType, model.ExpectedStartDate, model.ExpectedEndDate, model.Location, model.CreatedById);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ApplicationID > 0 ? "Application Updated Sussessfully" : "Application Added Sussessfully"), result));
+                       var result = await _applicationsService.AddUpdateApplication(model.ApplicationID, model.UserID, model.FullName, model.Email, model.PhoneNumber, model.PhysicalAddress, model.ReferenceNumber, model.CompanyRegNo, model.TypeOfApplication, model.NotificationNumber, model.WBSNumber, model.PhysicalAddressOfProject, model.DescriptionOfProject, model.NatureOfWork, model.ExcavationType, model.ExpectedStartDate, model.ExpectedEndDate, model.Location, model.CreatedById, model.PreviousStageName,model.PreviousStageNumber, model.CurrentStageName, model.CurrentStageNumber, model.NextStageName, model.NextStageNumber, model.ApplicationStatus);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ApplicationID > 0 ? "Application Updated Successfully" : "Application Added Successfully"), result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        [HttpPost("UpdateApplicationStage")]
+        public async Task<object> UpdateApplicationStage([FromBody] ApplicationStagesBindingModel model)
+        {
+            try
+            {
+
+                if (model == null || ModelState.IsValid == false )
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.UpdateApplicationStage(model.ApplicationID, model.PreviousStageName, model.PreviousStageNumber, model.CurrentStageName, model.CurrentStageNumber, model.NextStageName, model.NextStageNumber, model.ApplicationStatus);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, ("Stage Updated Successfully"), result));
                 }
 
             }
@@ -63,7 +89,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _applicationsService.DeleteApplication(applicationID);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application Deleted Sussessfully", result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application Deleted Successfully", result));
                 }
 
             }

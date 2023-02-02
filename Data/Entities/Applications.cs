@@ -24,17 +24,26 @@ namespace WayleaveManagementSystem.Data.Entities
         public DateTime? ExpectedEndDate { get; set; }
         public string? Location { get; set; }
 
-        //I am going to use the applicant type  
 
-        //public string? PreviousStageName { get; set; }
-        //public string? PreviousStageNumber { get; set; }
-        //public string? CurrentStageName { get; set; }
-        //public int? CurrentStageNumber { get; set; }
-        //public DateTime? CurrentStageStartDate { get; set; }
-        //public string? NextStageName { get; set; }
-        //public string? NextStageNumber { get; set; }
+        //Stages
+        public string? PreviousStageName { get; set; }
+        public int? PreviousStageNumber { get; set; }
+        public string? CurrentStageName { get; set; }
+        public int? CurrentStageNumber { get; set; }
+        public DateTime? CurrentStageStartDate { get; set; }
+        public string? NextStageName { get; set; }
+        public int? NextStageNumber { get; set; }
 
-        //public string? ApplicationStatus { get; set; }
+        public string? ApplicationStatus { get; set; }
+
+        /*Application Status Logic
+        Verification Stage
+        Unpaid
+        Paid
+        
+        DD
+        Distributed 
+         */
 
     }
 }

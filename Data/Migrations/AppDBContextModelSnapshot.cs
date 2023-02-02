@@ -163,7 +163,7 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("ApplicationID"), 1L, 1);
 
-                    b.Property<string>("ApplicatantType")
+                    b.Property<string>("ApplicationStatus")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CompanyRegNo")
@@ -171,6 +171,15 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CurrentStageName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CurrentStageNumber")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CurrentStageStartDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
@@ -204,6 +213,12 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("NatureOfWork")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("NextStageName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("NextStageNumber")
+                        .HasColumnType("int");
+
                     b.Property<string>("NotificationNumber")
                         .HasColumnType("nvarchar(max)");
 
@@ -215,6 +230,12 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.Property<string>("PhysicalAddressOfProject")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PreviousStageName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PreviousStageNumber")
+                        .HasColumnType("int");
 
                     b.Property<string>("ReferenceNumber")
                         .HasColumnType("nvarchar(max)");
@@ -340,6 +361,40 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("CommentBuilder");
                 });
 
+            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Comments", b =>
+                {
+                    b.Property<int>("CommentID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommentID"), 1L, 1);
+
+                    b.Property<int?>("ApplicationID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("SubDepartmentForCommentID")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("CommentID");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Departments", b =>
                 {
                     b.Property<int>("DepartmentID")
@@ -360,6 +415,9 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("DepartmentName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("hasSubDepartment")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("isActive")
                         .HasColumnType("bit");
@@ -566,6 +624,55 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("StageTable");
                 });
 
+            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.SubDepartmentForComment", b =>
+                {
+                    b.Property<int?>("SubDepartmentForCommentID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("SubDepartmentForCommentID"), 1L, 1);
+
+                    b.Property<int?>("ApplicationID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CommentStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool?>("IsRefered")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ReferedToUserID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("SubDepartmentID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SubDepartmentName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserAssaignedToComment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("isAwaitingClarity")
+                        .HasColumnType("bit");
+
+                    b.HasKey("SubDepartmentForCommentID");
+
+                    b.ToTable("SubDepartmentForComment");
+                });
+
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.SubDepartments", b =>
                 {
                     b.Property<int?>("SubDepartmentID")
@@ -585,6 +692,9 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.Property<int?>("DepartmentID")
                         .HasColumnType("int");
+
+                    b.Property<string>("SubDepartmentAdminUserID")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SubDepartmentName")
                         .HasColumnType("nvarchar(max)");
@@ -663,6 +773,9 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.Property<string>("UserID")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VatNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("isActive")
@@ -778,6 +891,101 @@ namespace WayleaveManagementSystem.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.ToTable("UserSpDTOs");
+                });
+
+            modelBuilder.Entity("WayleaveManagementSystem.Models.DTO.ApplicationsDTO", b =>
+                {
+                    b.Property<int?>("ApplicationID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ApplicationStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CompanyRegNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CurrentStageName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CurrentStageNumber")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CurrentStageStartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DescriptionOfProject")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ExcavationType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ExpectedEndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ExpectedStartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NatureOfWork")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NextStageName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("NextStageNumber")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NotificationNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhysicalAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhysicalAddressOfProject")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PreviousStageName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PreviousStageNumber")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReferenceNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TypeOfApplication")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("WBSNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
+
+                    b.ToTable("ApplicationListDTO");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

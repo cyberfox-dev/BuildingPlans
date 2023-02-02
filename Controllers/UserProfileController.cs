@@ -44,7 +44,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _userProfileService.AddUpdateUserProfiles(model.UserProfileID, model.UserID, model.FullName, model.Email, model.PhoneNumber, model.isInternal, model.BP_Number, model.CompanyName, model.CompanyRegNo, model.PhyscialAddress, model.Directorate, model.DepartmentID, model.SubDepartmentID, model.Branch, model.CostCenterNumber, model.CostCenterOwner, model.CopyOfID, model.CreatedById, model.IdNumber);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.UserProfileID > 0 ? "User Profile Updated Sussessfully" : "User Profile Added Sussessfully"), result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.UserProfileID > 0 ? "User Profile Updated Successfully" : "User Profile Added Successfully"), result));
                 }
             }
             catch (Exception ex)
@@ -69,7 +69,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _userProfileService.DeleteUserProfile(userProfileID);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Professional Deleted Sussessfully", result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Professional Deleted Successfully", result));
                 }
 
             }
@@ -100,6 +100,30 @@ namespace WayleaveManagementSystem.Controllers
 
 
                 }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+
+        /*Get external users*/
+        [HttpGet("GetExternalUsers")]
+        public async Task<object> GetExternalUsers()
+        {
+            try
+            {
+
+
+                    var result = await _userProfileService.GetExternalUsers();
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "UserProfile List fetched", result));
+                
+
+
+            }
             catch (Exception ex)
             {
 

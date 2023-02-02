@@ -21,6 +21,12 @@ code {
   background: #68e56b;
 }
 
+/*-------------------------------------------------------------------------IF THE VIEW BREAKS REMOVE THIS FROM THE FILE---------------------------------*/
+.cdk-global-overlay-wrapper, .cdk-overlay-container {
+  z-index: 10000 !important;
+}
+/*-------------------------------------------------------------------------IF THE VIEW BREAKS REMOVE THIS FROM THE FILE---------------------------------*/
+
 #stripes {
   width: 100%;
   height: 50em;

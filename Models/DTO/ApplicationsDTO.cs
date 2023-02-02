@@ -29,5 +29,16 @@ namespace WayleaveManagementSystem.Models.DTO
         public string? CreatedById { get; set; }
         public bool isActive { get; set; }
 
+
+        //Stages
+        public string? PreviousStageName { get; set; }
+        public int? PreviousStageNumber { get; set; }
+        public string? CurrentStageName { get; set; }
+        public int? CurrentStageNumber { get; set; }
+        public DateTime? CurrentStageStartDate { get; set; }
+        public string? NextStageName { get; set; }
+        public int? NextStageNumber { get; set; }
+
+        public string? ApplicationStatus { get; set; }
     }
 }

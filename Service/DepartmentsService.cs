@@ -18,7 +18,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Departments> AddUpdateDepartments(int? departmentID, string departmentName, string? createdById )
+        public async Task<Departments> AddUpdateDepartments(int? departmentID, string departmentName, bool hasSubDepartment, string? createdById )
         {
             if (departmentID == 0) 
             {
@@ -35,7 +35,8 @@ namespace WayleaveManagementSystem.Service
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     CreatedById = createdById,
-                    isActive = true
+                    isActive = true,
+                    hasSubDepartment = hasSubDepartment
                 };
 
                 await _context.DepartmentsTable.AddAsync(tempDepartmentsTable);
@@ -87,8 +88,9 @@ namespace WayleaveManagementSystem.Service
                     DepartmentName = Departments.DepartmentName,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
-                    isActive = true
-                
+                    isActive = true,
+                    hasSubDepartment = Departments.hasSubDepartment
+
 
                 }
                 ).ToListAsync();

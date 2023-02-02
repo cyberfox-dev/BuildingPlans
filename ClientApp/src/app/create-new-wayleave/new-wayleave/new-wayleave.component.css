@@ -1,4 +1,20 @@
+:host ::ng-deep .mat-radio-container {
+  height: 50px;
+  width: 50px;
+}
 
+:host ::ng-deep .mat-radio-outer-circle {
+  height: 50px;
+  width: 50px;
+}
+
+:host ::ng-deep .mat-radio-inner-circle {
+  height: 50px;
+  width: 50px;
+}
+.mat-radio-container {
+  transform: scale(2.85);
+}
 /*.mat-form-field
 {
     min-width: 300px;
@@ -101,9 +117,9 @@ form {
     border-radius: 8px;
   }*/
 .mat-form-field {
-  margin: 10px 0;
-  width: 100px;
-  border: none;
+/*  margin: 10px 0;*/
+  width: 100%;
+
 }
 .mat-input {
   border: none;
@@ -158,11 +174,7 @@ form {
     margin-left:40px;
 }
 
-.mat-form-field {
-  width: 80%;
-  border: none;
 
-}
 
 #uploadFile {
   top: 0px;

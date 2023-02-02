@@ -10,7 +10,7 @@ export class SubDepartmentsService {
 
 
   public addUpdateSubDepartment(subDepartmentID: number | null, subDepartmentName: string | null, departmentID: number | null, createdById: string | null) {
-    debugger;
+    
     const body = {
       SubDepartmentID: subDepartmentID,
       SubDepartmentName: subDepartmentName,
@@ -29,7 +29,7 @@ export class SubDepartmentsService {
 
   public getSubDepartmentsList() {
 
-    return this.httpClient.get(this.baseURL + "GetSubDepartmentsList");
+    return this.httpClient.get(this.baseURL + "GetAllSubDepartments");
 
   }
 

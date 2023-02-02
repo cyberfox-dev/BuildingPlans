@@ -581,6 +581,11 @@
     <None Remove="ClientApp\.angular\cache\14.2.4\babel-webpack\fcfb23d9170776b97fae02d07b204523.json" />
     <None Remove="ClientApp\.angular\cache\14.2.4\babel-webpack\fe4bd6e62dc961c6c4468f8cb66e0575.json" />
     <None Remove="ClientApp\.angular\cache\14.2.4\babel-webpack\fee2c147bbf629a7616cc3b6afa97ed9.json" />
+    <None Remove="Models\BindingModel\ApplicationStagesBindingModel cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Models\BindingModel\ApplicationStagesBindingModel cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -595,6 +600,8 @@
     <Folder Include="ClientApp\src\app\service\SubDepartments\" />
     <Folder Include="ClientApp\src\app\service\Stages\" />
     <Folder Include="ClientApp\src\app\service\UserProfile\" />
+    <Folder Include="Resources\" />
+    <Folder Include="Resources\DocumentUpload\" />
   </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

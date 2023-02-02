@@ -6,6 +6,10 @@ import { SharedService } from "src/app/shared/shared.service"
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
 
 
+
+
+
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -44,11 +48,11 @@ export class LoginComponent implements OnInit {
 
   }
 
- 
+
 
   ngOnInit() {
 
- 
+  
   }
 
   onLogin() {
@@ -60,6 +64,8 @@ export class LoginComponent implements OnInit {
         if (data.responseCode === 1) {
           localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
           this.getUserProfile();
+
+         
           this.router.navigate(["/home"]);
         } else {
           this.error = "An error occurred";
@@ -140,7 +146,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-
+ 
   //this is the old one 
   //onRegister() {
 
@@ -201,6 +207,9 @@ export class LoginComponent implements OnInit {
       this.container.classList.add('right-panel-active');
       console.log("toggle");
     }
+
+    this.registerForm.controls["registerEmail"].setValue("");
+    this.registerForm.controls["registerPassword"].setValue("");
   }
 
   remove() {
