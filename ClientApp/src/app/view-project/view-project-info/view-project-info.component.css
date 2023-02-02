@@ -31,12 +31,16 @@ h1 {
   flex-wrap: nowrap;
   justify-content: space-evenly;
 }
+.cont6 {
+  top: 252px;
+  margin-top: 217px;
+  position: absolute;
+}
 
 .mat-warn {
   margin-bottom: 10px;
   background-color: #f43636;
   color: #fff;
-
   margin-bottom: 39px;
 }
 .mat-orange {
