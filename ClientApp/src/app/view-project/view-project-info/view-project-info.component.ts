@@ -72,6 +72,8 @@ const Document_DATA: Documents[] = [
 })
 export class ViewProjectInfoComponent implements OnInit {
 
+  public isInternalUser: boolean = false;
+
   createdByID: any | undefined; 
 
   /*type of applicant*/
@@ -151,7 +153,7 @@ export class ViewProjectInfoComponent implements OnInit {
   constructor(private modalService: NgbModal, private sharedService: SharedService, private userPofileService: UserProfileService, private stagesService: StagesService, private applicationsService: ApplicationsService) { }
 
   ngOnInit(): void {
-
+   
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
     const setValues = this.applicationDataForView[0];
@@ -166,6 +168,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     this.getUserProfileByUserID();
     this.getAllStages();
+    this.setInterface();
   }
 
   getAllStages() {
@@ -203,7 +206,7 @@ export class ViewProjectInfoComponent implements OnInit {
   getUserProfileByUserID() {
    
     this.userPofileService.getUserProfileById(this.createdByID).subscribe((data: any) => {
-
+    
       if (data.responseCode == 1) {
 
 
@@ -224,6 +227,7 @@ export class ViewProjectInfoComponent implements OnInit {
           this.internalApplicantCostCenterNo = currentUserProfile.costCenterNumber;
           this.internalApplicantCostCenterOwner = currentUserProfile.costCenterOwner;
           this.isInternal = true;
+         
 
         }
         else {
@@ -239,6 +243,7 @@ export class ViewProjectInfoComponent implements OnInit {
           this.extApplicantPhyscialAddress = currentUserProfile.physcialAddress;
           // this.extApplicantIDNumber = ''; todo chage the dto to include the id number
           this.isInternal = false;
+         
         }
 
       }
@@ -324,6 +329,44 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   }
+  setInterface() {
+   
+
+    this.userPofileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
+
+
+      if (data.responseCode == 1) {
+
+
+        console.log("data", data.dateSet);
+
+        const currentUserProfile = data.dateSet[0];
+        const fullname = currentUserProfile.fullName;
+
+        if (currentUserProfile.isInternal == true) {
+
+          this.isInternalUser = true;
+
+        }
+        else {
+          this.isInternalUser = false;
+
+        }
+
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+
 
 
 }

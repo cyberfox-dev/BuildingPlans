@@ -103,15 +103,15 @@
 
           <!--Cyberfox configs-->
 
-          <button mat-button matTooltip="Cyberfox configs" (click)="goToCyberfoxCofig()"><i class="fa fa-superpowers"></i></button>
+          <button mat-button matTooltip="Cyberfox configs" (click)="goToCyberfoxCofig()" *ngIf="isInternalUser"><i class="fa fa-superpowers"></i></button>
 
           <!--Comment builder-->
 
-          <button mat-button matTooltip="Comment Builder" (click)="getAllCommentsByUserID(commentBuilder)"><i class="fa fa-comment"></i></button>
+          <button mat-button matTooltip="Comment Builder" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><i class="fa fa-comment"></i></button>
 
           <!--Configs-->
 
-          <button mat-button matTooltip="Configurations" (click)="goToConfig()"><i class="fa fa-cogs"></i></button>
+          <button mat-button matTooltip="Configurations" (click)="goToConfig()"><i class="fa fa-cogs" *ngIf="isInternalUser"></i></button>
 
           <!--notifications-->
 

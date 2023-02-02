@@ -8,6 +8,7 @@ import { SharedService } from '../shared/shared.service';
 import { RolesService } from '../service/Roles/roles.service';
 import { MatTable } from '@angular/material/table';
 import { CommentBuilderService } from '../service/CommentBuilder/comment-builder.service';
+import { UserProfileService } from '../service/UserProfile/user-profile.service';
 
 
 export interface CommentList {
@@ -29,7 +30,7 @@ export class NavMenuComponent implements OnInit {
   CommentList: CommentList[] = [];
   forEditIndex: any;
 
-
+  public isInternalUser: boolean = false;
 
 
   public addComment = this.formBuilder.group({
@@ -41,7 +42,7 @@ export class NavMenuComponent implements OnInit {
     editCommentName: ['', Validators.required],
   })
 
-  constructor(private modalService: NgbModal, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService) { }
+  constructor(private modalService: NgbModal, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService) { }
 
   displayedColumns: string[] = ['Comment', 'actions'];
   dataSource = this.CommentList;
@@ -59,8 +60,46 @@ export class NavMenuComponent implements OnInit {
     else {
       console.log(this.CurrentUser);
     }
+    this.getUserProfileByUserID();
+    
 
      
+  }
+
+  getUserProfileByUserID() {
+
+    this.userPofileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      
+      if (data.responseCode == 1) {
+
+
+        console.log("data", data.dateSet);
+
+        const currentUserProfile = data.dateSet[0];
+        const fullname = currentUserProfile.fullName;
+
+        if (currentUserProfile.isInternal == true) {
+
+          this.isInternalUser = true;
+
+        }
+        else {
+          this.isInternalUser = false;
+         
+        }
+
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 
 
