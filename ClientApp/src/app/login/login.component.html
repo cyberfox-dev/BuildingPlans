@@ -35,6 +35,7 @@
       <h3>Welcome to CCT Wayleaves Management System</h3>
     </div>
   </div>
+  <div class="cont2">
   <div class="container-fluid">
     <div class="container" id="container">
       <div class="form-container sign-up-container">
@@ -51,7 +52,7 @@
           <button type="submit" [disabled]="!registerForm.valid">Verify & Continue</button>
         </form>
       </div>
-      <div class="form-container sign-in-container" >
+      <div class="form-container sign-in-container">
         <form action="#" [formGroup]="loginForm" (ngSubmit)="onLogin()">
 
 
@@ -64,7 +65,9 @@
             <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
           </div>
         </form>
-
+        <div *ngIf="isLoading">
+          <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+        </div>
       </div>
 
 
@@ -89,5 +92,6 @@
     </div>
 
   </div>
+    </div>
 
 </body>

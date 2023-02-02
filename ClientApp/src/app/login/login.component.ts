@@ -65,7 +65,7 @@ export class LoginComponent implements OnInit {
           localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
           this.getUserProfile();
 
-         
+          this.isLoading = false;
           this.router.navigate(["/home"]);
         } else {
           this.error = "An error occurred";
@@ -76,7 +76,7 @@ export class LoginComponent implements OnInit {
         console.log("Error: ", error);
       }
     );
-    this.isLoading = false;
+  
   }
 
   getUserProfile() {
