@@ -70,6 +70,7 @@ import { MatListModule } from '@angular/material/list';
 import { MandatoryDocsConfigComponent } from './mandatory-docs-config/mandatory-docs-config.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { FileUploadComponent } from './file-upload/file-upload.component';
 //import { MapModule } from 'arcgis-js-api';
 //import Map from "@arcgis/core/Map";
 
@@ -125,6 +126,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     CyberfoxConfigComponent,
     AccessGroupsConfigComponent,
     MandatoryDocsConfigComponent,
+    FileUploadComponent,
   
 
   ],
