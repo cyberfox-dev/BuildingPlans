@@ -121,6 +121,7 @@ export class NewWayleaveComponent implements OnInit {
   userID = '';
 
   /*Client details*/
+  clientUserID = '';
   clientName = '';
   clientSurname = '';
   clientEmail = '';
@@ -840,9 +841,9 @@ export class NewWayleaveComponent implements OnInit {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempUserList = {} as UserList;
           const current = data.dateSet[i];
-
+      
           const fullname = current.fullName;
-
+          this.clientUserID = current.userID;
           this.clientName = fullname.substring(0, fullname.indexOf(' '));
           this.clientSurname = fullname.substring(fullname.indexOf(' ') + 1);
           this.clientEmail = current.email;
@@ -852,7 +853,7 @@ export class NewWayleaveComponent implements OnInit {
           this.clientCompanyRegNo = current.companyRegNo;
           this.clientCompanyName = current.companyName;
           this.clientPhysicalAddress = current.physcialAddress;
-
+         
           this.getProfessionalsListByProfessionalType(this.professionalType);
           console.log(tempUserList);
           this.UserList.push(tempUserList);
