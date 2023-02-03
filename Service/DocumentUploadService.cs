@@ -18,7 +18,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
         //Implementing the interface Methods
-        public async Task<DocumentUpload> AddUpdateDocument(int? documentID, string documentName, byte[]? documentData, int? applicationID, string? assignedUserID, string createdById)
+        public async Task<DocumentUpload> AddUpdateDocument(int? documentID, string documentName, string? DocumentLocalPath, int? applicationID, string? assignedUserID, string createdById)
         {
 
             if (documentID == 0)
@@ -35,7 +35,7 @@ namespace WayleaveManagementSystem.Service
                 tempDocumentUpload = new DocumentUpload()
                 {
                     DocumentName = documentName,
-                    DocumentData = documentData,
+                    DocumentLocalPath = DocumentLocalPath,
                     ApplicationID = applicationID,
                     AssignedUserID = assignedUserID,
                     DateCreated = DateTime.Now,
@@ -57,7 +57,7 @@ namespace WayleaveManagementSystem.Service
 
 
                 tempDocumentUpload.DocumentName = documentName;
-                tempDocumentUpload.DocumentData = documentData;
+             //   tempDocumentUpload.DocumentData = documentData;
                 tempDocumentUpload.DateUpdated = DateTime.Now;
 
                 _context.Update(tempDocumentUpload);
@@ -100,7 +100,7 @@ namespace WayleaveManagementSystem.Service
                 {
                     DocumentID = item.DocumentID,
                     DocumentName = item.DocumentName,
-                    DocumentData = item.DocumentData,
+                    DocumentLocalPath = item.DocumentLocalPath,
                     ApplicationID = item.ApplicationID,
                     AssignedUserID = item.AssignedUserID,
                     DateCreated = item.DateCreated,
@@ -125,7 +125,7 @@ namespace WayleaveManagementSystem.Service
                 {
                     DocumentID = item.DocumentID,
                     DocumentName = item.DocumentName,
-                    DocumentData = item.DocumentData,
+                    DocumentLocalPath = item.DocumentLocalPath,
                     ApplicationID = item.ApplicationID,
                     AssignedUserID = item.AssignedUserID,
                     DateCreated = item.DateCreated,

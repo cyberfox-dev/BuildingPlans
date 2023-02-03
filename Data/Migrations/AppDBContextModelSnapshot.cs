@@ -450,8 +450,8 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<DateTime>("DateUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<byte[]>("DocumentData")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("DocumentLocalPath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DocumentName")
                         .HasColumnType("nvarchar(max)");
