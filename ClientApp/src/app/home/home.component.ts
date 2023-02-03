@@ -124,6 +124,7 @@ export class HomeComponent implements OnInit,OnDestroy {
             const tempApplicationList = {} as ApplicationsList;
             const tempApplicationListShared = {} as ApplicationList;
             const current = data.dateSet[i];
+            
             console.log("current", current)
             tempApplicationList.ApplicationID = current.applicationID;
             tempApplicationList.FullName = current.fullName;
@@ -132,7 +133,7 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationList.ApplicationStatus = current.applicationStatus;
 
             tempApplicationList.DateCreated = current.dateCreated;
-
+          
             tempApplicationList.TestApplicationAge = Math.floor(Math.random() * 30) + 1;
             do {
               tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
