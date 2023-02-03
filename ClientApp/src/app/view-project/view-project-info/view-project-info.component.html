@@ -135,7 +135,7 @@ MoveToNextStage()
 
         <br />
       </div>
-      <div class="cont3">
+      <div class="cont3" *ngIf="isInternalUser">
         <button mat-raised-button color="green">Approval Pack</button>
         <button mat-raised-button color="red">Rejection Pack</button>
 
@@ -211,7 +211,7 @@ MoveToNextStage()
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
         </div>
-        <div class="cont">
+        <div class="cont" *ngIf="isInternalUser">
           <button mat-raised-button color="orange">Deposit Required</button>
           <button mat-raised-button color="orange">Consolidate Deposits</button>
           <button mat-raised-button color="orange">Deposit Refund</button>
