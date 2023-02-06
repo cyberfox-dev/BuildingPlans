@@ -10,17 +10,17 @@ import FeatureTable from '@arcgis/core/widgets/FeatureTable';
 import LayerList from '@arcgis/core/widgets/LayerList';
 import Locate from '@arcgis/core/widgets/Locate';
 import Search from '@arcgis/core/widgets/Search';
-import { TranslateService } from '@ngx-translate/core';
+/*import { TranslateService } from '@ngx-translate/core';*/
 import Sketch from '@arcgis/core/widgets/Sketch';
 /*import { ARCGIS_CONFIG, ArcgisConfig } from '../arcgis';*/
-import { DeviceDetectorService } from 'ngx-device-detector';
+/*import { DeviceDetectorService } from 'ngx-device-detector';*/
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import MapImageLayer from '@arcgis/core/layers/MapImageLayer';
 import Legend from '@arcgis/core/widgets/Legend';
 import Editor from '@arcgis/core/widgets/Editor';
 import WebMap from '@arcgis/core/WebMap';
 import FormTemplate from "@arcgis/core/form/FormTemplate";
-import * as esri from 'esri-leaflet';
+/*import * as esri from 'esri-leaflet';*/
 import Layer from "@arcgis/core/layers/Layer"
 /*import LayerInfos from '@arcgis/core/widgets/Editor'*/
 
@@ -354,35 +354,44 @@ export class ProjectDetailsMapComponent implements OnInit {
           }
         };
 
-        // Begin Editor constructor
-    //    const editor = new Editor({
-    //      view: view,
-    //      /*          layerInfos: [pointInfos, lineInfos, polyInfos],*/
-    //      layerInfos: [{
-    //        layer: featureLayer, // pass in the feature layer,
-    //        formTemplate: { // autocastable to FormTemplate
-    //          elements: [
-    //            { // autocastable to FieldElement
-    //              type: "field",
-    //              fieldName: "fulladdr",
-    //              label: "Full Address"
-    //            }
-    //          ]
-    //        },
-    //      enabled: true, // Default is true, set to false to disable editing functionality.
-    //      addEnabled: true, // Default is true, set to false to disable the ability to add a new feature.
-    //      updateEnabled: false, // Default is true, set to false to disable the ability to edit an existing feature.
-    //deleteEnabled: false, // Default is true, set to false to disable the ability to delete features.
-    //attributeUpdatesEnabled: true, // Default is true, set to false to disable the ability to edit attributes in the update workflow.
-    //geometryUpdatesEnabled: true, // Default is true, set to false to disable the ability to edit feature geometries in the update workflow.
+/*         Begin Editor constructor*/
+//        const editor = new Editor({
+//          view: view,
+//          /*          layerInfos: [pointInfos, lineInfos, polyInfos],*/
+//          layerInfos: [{
+//            layer: featureLayer, // pass in the feature layer,
+//            formTemplate: { // autocastable to FormTemplate
+//              elements: [
+//                { // autocastable to FieldElement
+//                  type: "field",
+//                  fieldName: "fulladdr",
+//                  label: "Full Address"
+//                }
+//              ]
+//            },
+//          enabled: true, // Default is true, set to false to disable editing functionality.
+//          addEnabled: true, // Default is true, set to false to disable the ability to add a new feature.
+//          updateEnabled: false, // Default is true, set to false to disable the ability to edit an existing feature.
+//    deleteEnabled: false, // Default is true, set to false to disable the ability to delete features.
+//    attributeUpdatesEnabled: true, // Default is true, set to false to disable the ability to edit attributes in the update workflow.
+//    geometryUpdatesEnabled: true, // Default is true, set to false to disable the ability to edit feature geometries in the update workflow.
 
-    //    }); // End Editor constructor
+//          });
+///*      End Editor constructor*/
 
 
-        // Add the widget to the view
-/*              view.ui.add(editor, "top-right");*/
+///*         Add the widget to the view*/
+//              view.ui.add(editor, "top-right");
 
-      // Add the editor widget
+///*       Add the editor widget*/
+
+
+      // At the very minimum, set the Editor's view
+      const editor = new Editor({
+        view: view
+      });
+
+      view.ui.add(editor, "top-right");
 
       })
 
