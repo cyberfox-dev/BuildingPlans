@@ -354,35 +354,44 @@ export class ProjectDetailsMapComponent implements OnInit {
           }
         };
 
-        // Begin Editor constructor
-    //    const editor = new Editor({
-    //      view: view,
-    //      /*          layerInfos: [pointInfos, lineInfos, polyInfos],*/
-    //      layerInfos: [{
-    //        layer: featureLayer, // pass in the feature layer,
-    //        formTemplate: { // autocastable to FormTemplate
-    //          elements: [
-    //            { // autocastable to FieldElement
-    //              type: "field",
-    //              fieldName: "fulladdr",
-    //              label: "Full Address"
-    //            }
-    //          ]
-    //        },
-    //      enabled: true, // Default is true, set to false to disable editing functionality.
-    //      addEnabled: true, // Default is true, set to false to disable the ability to add a new feature.
-    //      updateEnabled: false, // Default is true, set to false to disable the ability to edit an existing feature.
-    //deleteEnabled: false, // Default is true, set to false to disable the ability to delete features.
-    //attributeUpdatesEnabled: true, // Default is true, set to false to disable the ability to edit attributes in the update workflow.
-    //geometryUpdatesEnabled: true, // Default is true, set to false to disable the ability to edit feature geometries in the update workflow.
+/*         Begin Editor constructor*/
+//        const editor = new Editor({
+//          view: view,
+//          /*          layerInfos: [pointInfos, lineInfos, polyInfos],*/
+//          layerInfos: [{
+//            layer: featureLayer, // pass in the feature layer,
+//            formTemplate: { // autocastable to FormTemplate
+//              elements: [
+//                { // autocastable to FieldElement
+//                  type: "field",
+//                  fieldName: "fulladdr",
+//                  label: "Full Address"
+//                }
+//              ]
+//            },
+//          enabled: true, // Default is true, set to false to disable editing functionality.
+//          addEnabled: true, // Default is true, set to false to disable the ability to add a new feature.
+//          updateEnabled: false, // Default is true, set to false to disable the ability to edit an existing feature.
+//    deleteEnabled: false, // Default is true, set to false to disable the ability to delete features.
+//    attributeUpdatesEnabled: true, // Default is true, set to false to disable the ability to edit attributes in the update workflow.
+//    geometryUpdatesEnabled: true, // Default is true, set to false to disable the ability to edit feature geometries in the update workflow.
 
-    //    }); // End Editor constructor
+//          });
+///*      End Editor constructor*/
 
 
-        // Add the widget to the view
-/*              view.ui.add(editor, "top-right");*/
+///*         Add the widget to the view*/
+//              view.ui.add(editor, "top-right");
 
-      // Add the editor widget
+///*       Add the editor widget*/
+
+
+      // At the very minimum, set the Editor's view
+      const editor = new Editor({
+        view: view
+      });
+
+      view.ui.add(editor, "top-right");
 
       })
 
