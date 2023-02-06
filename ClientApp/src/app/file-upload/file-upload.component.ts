@@ -35,19 +35,19 @@ export class FileUploadComponent implements OnInit {
 
     this.shared.pushFileForTempFileUpload(formData,this.UploadFor);
 
-    //this.http.post('https://localhost:7123/api/documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
-    //  .subscribe({
-    //    next: (event) => {
+    this.http.post('https://localhost:7123/api/documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+     .subscribe({
+        next: (event) => {
           
-    //      if (event.type === HttpEventType.UploadProgress && event.total)
-    //        this.progress = Math.round(100 * event.loaded / event.total);
-    //      else if (event.type === HttpEventType.Response) {
-    //        this.message = 'Upload success.';
-    //        this.onUploadFinished.emit(event.body);
-    //      }
-    //    },
-    //    error: (err: HttpErrorResponse) => console.log(err)
-    //  });
+         if (event.type === HttpEventType.UploadProgress && event.total)
+         this.progress = Math.round(100 * event.loaded / event.total);
+         else if (event.type === HttpEventType.Response) {
+          this.message = 'Upload success.';
+          this.onUploadFinished.emit(event.body);
+         }
+    },
+        error: (err: HttpErrorResponse) => console.log(err)
+      });
   }
 
 

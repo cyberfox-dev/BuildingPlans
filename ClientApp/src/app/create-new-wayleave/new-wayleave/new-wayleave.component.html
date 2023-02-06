@@ -486,13 +486,13 @@
               <app-file-upload [UploadFor]="CoverLetter" (onUploadFinished)="uploadFinished($event)"></app-file-upload>
             </mat-toolbar>
             <!-- Fetch selected filed on change -->
-            <input type="file"
+            <!--<input type="file"
                    #fileInput
                    id="uploadFile"
                    (change)="coverLetterUpload($event)"
                    name="uploadFile"
                    multiple="multiple"
-                   accept="*" />
+                   accept="*" />-->
           </div>
         </mat-form-field>
         <button mat-raised-button color="warn"><i class="fa fa-trash" aria-hidden="true"></i></button>
