@@ -33,3 +33,12 @@ and no for animations
 npm i ngx-google-places-autocomplete
 
 this is a test to see if my laptop works, test2
+
+
+THIS IS FOR THE MAPS TO WORK
+
+npm i arcgis-js-api
+
+npm i @arcgis/core
+
+npm i esri-leaflet
