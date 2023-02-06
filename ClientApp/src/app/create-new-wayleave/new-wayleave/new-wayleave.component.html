@@ -444,7 +444,7 @@
       </form>
       <mat-list>
         <mat-list-item>Cover letter explaning the extent of the work</mat-list-item>
-        <app-file-upload (onUploadFinished)="uploadFinished($event)"></app-file-upload>
+        <app-file-upload  [UploadFor]="CoverLetter" (onUploadFinished)="uploadFinished($event)"></app-file-upload>
         <mat-form-field>
           <div>
 

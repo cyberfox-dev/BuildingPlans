@@ -216,6 +216,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
   //Store message for file upload
+  CoverLetter = "CoverLetter";
   response: { dbPath: ''; } | undefined
 
   CurrentUserProfile: any;
