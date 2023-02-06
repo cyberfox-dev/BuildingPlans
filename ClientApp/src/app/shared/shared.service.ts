@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 
 
+export interface FileDocument {
+
+  formData: any;
+  UploadFor: string;
+}
+
+
 export interface ProfessionalList {
   professinalID: number;
   ProfessinalType: string;
@@ -66,6 +73,7 @@ export class SharedService {
   configShow!: any;
 
   userProfileData: any;
+  FileDocument: FileDocument[] = [];
   contactorData: ProfessionalList[] = [];
   applicationData: ApplicationList[] = [];
   applicationDataForView: ApplicationList[] = [];
@@ -154,7 +162,21 @@ export class SharedService {
 
 
 
+  pushFileForTempFileUpload(formData: any, uploadFor: any) {
 
+    //TODO: Remember to clear this when invoice is generated
+    for (var i = 0; i < this.FileDocument.length; i++) {
+      if (this.FileDocument[i].UploadFor == uploadFor) {
+        this.FileDocument[i].UploadFor = uploadFor;
+        this.FileDocument[i].formData = formData;
+      } else {
+        this.FileDocument.push(formData, uploadFor);
+      }  
+    }
+  }
 
+  pullFilesForUpload() {
+    return this.FileDocument;
+  }
 
 }

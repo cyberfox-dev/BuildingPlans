@@ -1,5 +1,9 @@
 import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { SharedService } from "src/app/shared/shared.service";
+
+
+
 
 
 @Component({
@@ -7,13 +11,16 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
   templateUrl: './file-upload.component.html',
   styleUrls: ['./file-upload.component.css']
 })
+
 export class FileUploadComponent implements OnInit {
   progress: number = 0;
   message: string | undefined;
-  
+
+  @Input() UploadFor: any;
   @Output() public onUploadFinished = new EventEmitter();
   
-  constructor(private http: HttpClient) { }
+  
+  constructor(private http: HttpClient, private shared: SharedService) { }
 
   ngOnInit(): void {
   }
@@ -26,30 +33,21 @@ export class FileUploadComponent implements OnInit {
     formData.append('file', fileToUpload, fileToUpload.name);
 
 
-    const body = {
-      DocumentID: 0,
-      DocumentName: "",
-      DocumentData: "",
-      ApplicationID: 0,
-      AssignedUserID: "",
-      CreatedById: ""
-    }
+    this.shared.pushFileForTempFileUpload(formData,this.UploadFor);
 
-    console.log("formData", formData);
-
-    this.http.post('https://localhost:7123/api/documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
-      .subscribe({
-        next: (event) => {
+    //this.http.post('https://localhost:7123/api/documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+    //  .subscribe({
+    //    next: (event) => {
           
-          if (event.type === HttpEventType.UploadProgress && event.total)
-            this.progress = Math.round(100 * event.loaded / event.total);
-          else if (event.type === HttpEventType.Response) {
-            this.message = 'Upload success.';
-            this.onUploadFinished.emit(event.body);
-          }
-        },
-        error: (err: HttpErrorResponse) => console.log(err)
-      });
+    //      if (event.type === HttpEventType.UploadProgress && event.total)
+    //        this.progress = Math.round(100 * event.loaded / event.total);
+    //      else if (event.type === HttpEventType.Response) {
+    //        this.message = 'Upload success.';
+    //        this.onUploadFinished.emit(event.body);
+    //      }
+    //    },
+    //    error: (err: HttpErrorResponse) => console.log(err)
+    //  });
   }
 
 
