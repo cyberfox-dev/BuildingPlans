@@ -165,14 +165,30 @@ export class SharedService {
   pushFileForTempFileUpload(formData: any, uploadFor: any) {
 
     //TODO: Remember to clear this when invoice is generated
-    for (var i = 0; i < this.FileDocument.length; i++) {
-      if (this.FileDocument[i].UploadFor == uploadFor) {
-        this.FileDocument[i].UploadFor = uploadFor;
-        this.FileDocument[i].formData = formData;
-      } else {
-        this.FileDocument.push(formData, uploadFor);
-      }  
+    debugger;
+    if (this.FileDocument.length != 0) {
+      for (var i = 0; i < this.FileDocument.length; i++) {
+        if (this.FileDocument[i].UploadFor == uploadFor) {
+          this.FileDocument[i].UploadFor = uploadFor;
+          this.FileDocument[i].formData = formData;
+
+          console.log("return this.FileDocument;", this.FileDocument);
+        } else {
+          const tempFileDocument = {} as FileDocument;
+          tempFileDocument.formData = formData;
+          tempFileDocument.UploadFor = uploadFor;
+          this.FileDocument.push(tempFileDocument);
+          console.log("return this.FileDocument;", this.FileDocument);
+        }
+      }
+    } else {
+      const tempFileDocument = {} as FileDocument;
+      tempFileDocument.formData = formData;
+      tempFileDocument.UploadFor = uploadFor;
+
+      this.FileDocument.push(tempFileDocument);
     }
+    
   }
 
   pullFilesForUpload() {
