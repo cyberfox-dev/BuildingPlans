@@ -18,8 +18,9 @@ export class FileUploadComponent implements OnInit {
 
   @Input() UploadFor: any;
   @Output() public onUploadFinished = new EventEmitter();
-  @Output() public onUploadFile = new EventEmitter();
-  
+  @Output() public passFileName = new EventEmitter<string>();
+ //@Output() public onUploadFile = new EventEmitter();
+ fileName: string = 'C';
   
   constructor(private http: HttpClient, private shared: SharedService) { }
 
@@ -32,13 +33,17 @@ export class FileUploadComponent implements OnInit {
       return;
     }
     let fileToUpload = <File>files[0];
-    const formData = new FormData();
-    formData.append('file', fileToUpload, fileToUpload.name + this.UploadFor);
+/*    const formData = new FormData();*/
+
+    let fileExtention = fileToUpload.name.substring(fileToUpload.name.indexOf('.'));
+    let fileUploadName = fileToUpload.name.substring(0, fileToUpload.name.indexOf('.')) + this.UploadFor;
+    this.passFileName.emit(fileToUpload.name);
+    //formData.append('file', fileToUpload, fileToUpload.name + this.UploadFor);
 
 
-    this.shared.pushFileForTempFileUpload(fileToUpload, fileToUpload.name + this.UploadFor);
-    const fileForUpload = this.shared.pullFilesForUpload();
-    console.log("fileForUploadtttttttttttttttttttttttttttttt", fileForUpload);
+    this.shared.pushFileForTempFileUpload(fileToUpload, fileUploadName + fileExtention);
+    //const fileForUpload = this.shared.pullFilesForUpload();
+    //console.log("fileForUploadtttttttttttttttttttttttttttttt", fileForUpload);
     //this.http.post('https://localhost:7123/api/documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
     // .subscribe({
     //    next: (event) => {

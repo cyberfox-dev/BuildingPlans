@@ -464,6 +464,37 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("DocumentUpload");
                 });
 
+            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.MandatoryDocumentUpload", b =>
+                {
+                    b.Property<int?>("MandatoryDocumentID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("MandatoryDocumentID"), 1L, 1);
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MandatoryDocumentName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("StageID")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("MandatoryDocumentID");
+
+                    b.ToTable("MandatoryDocumentUploads");
+                });
+
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Professionals", b =>
                 {
                     b.Property<int>("ProfessinalID")

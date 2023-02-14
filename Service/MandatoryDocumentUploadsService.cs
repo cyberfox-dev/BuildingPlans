@@ -10,24 +10,24 @@ using WayleaveManagementSystem.Models.DTO;
 
 namespace WayleaveManagementSystem.Service
 {
-    public class MandatoryDocumentUploadsService : IMandatoryDocumentUploadsService
-    {
-        private readonly AppDBContext _context;
+    //public class MandatoryDocumentUploadsService : IMandatoryDocumentUploadsService
+    //{
+    //    private readonly AppDBContext _context;
 
-        public MandatoryDocumentUploadsService(AppDBContext context)
-        {
-            _context = context;
-        }
+    //    public MandatoryDocumentUploadsService(AppDBContext context)
+    //    {
+    //        _context = context;
+    //    }
 
         public async Task<MandatoryDocumentUpload> AddUpdateMandatoryDocument(int? mandatoryDocumentID, string mandatoryDocumentName, int? stageID, string? createdByID)
         {
 
-            if (mandatoryDocumentID == 0)
+            if (MandatoryDocumentID == 0)
             {
-                mandatoryDocumentID = null;
+                MandatoryDocumentID = null;
             }
             //this checks is the record exists in the db
-            var tempMandatoryDocumentTable = _context.MandatoryDocumentUploads.FirstOrDefault(x => x.MandatoryDocumentID == mandatoryDocumentID);
+            var tempMandatoryDocumentTable = _context.MandatoryDocumentUpload.FirstOrDefault(x => x.MandatoryDocumentID == MandatoryDocumentID);
 
             //if the object is null assume that the user is tying to add a new Professional
             if (tempMandatoryDocumentTable == null)
@@ -39,98 +39,97 @@ namespace WayleaveManagementSystem.Service
                     StageID = stageID,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
-                    CreatedById = createdByID,
+                    CreatedById = creadtedByID,
                     isActive = true
                 };
 
                 //After the inizlization add to the db
-                await _context.MandatoryDocumentUploads.AddAsync(tempMandatoryDocumentTable);
+                await _context.MandatoryDocumentUpload.AddAsync(tempMandatoryDocumentTable);
                 await _context.SaveChangesAsync();
 
-                return tempMandatoryDocumentTable;
+    //            return tempMandatoryDocumentTable;
 
-            }
-            else //if it is not null then user is doing an update 
-            {
-                tempMandatoryDocumentTable.MandatoryDocumentName = mandatoryDocumentName;
-                tempMandatoryDocumentTable.StageID = stageID;
+    //        }
+    //        else //if it is not null then user is doing an update 
+    //        {
+    //            tempMandatoryDocumentTable.MandatoryDocumentName = mandatoryDocumentName;
+    //            tempMandatoryDocumentTable.StageID = stageID;
 
-                tempMandatoryDocumentTable.DateUpdated = DateTime.Now;
-                tempMandatoryDocumentTable.isActive = true;
+    //            tempMandatoryDocumentTable.DateUpdated = DateTime.Now;
+    //            tempMandatoryDocumentTable.isActive = true;
 
-                _context.Update(tempMandatoryDocumentTable);
-                await _context.SaveChangesAsync();
-                return tempMandatoryDocumentTable;
-            }
+    //            _context.Update(tempMandatoryDocumentTable);
+    //            await _context.SaveChangesAsync();
+    //            return tempMandatoryDocumentTable;
+    //        }
 
 
 
-        }
+    //    }
 
         public async Task<bool> DeleteMandatoryDocument(int mandatoryDocumentID)
         {
             //this checks is the record exists in the db
-            var tempMandatoryDocumentTable = _context.MandatoryDocumentUploads.FirstOrDefault(x => x.MandatoryDocumentID == mandatoryDocumentID);
+            var tempMandatoryDocumentTable = _context.MandatoryDocumentUpload.FirstOrDefault(x => x.MandatoryDocumentID == mandatoryDocumentID);
 
-            if (tempMandatoryDocumentTable == null)
-            {
-                return await Task.FromResult(false);
+    //        if (tempMandatoryDocumentTable == null)
+    //        {
+    //            return await Task.FromResult(false);
                 
-            }
-            else
-            {
-                tempMandatoryDocumentTable.DateUpdated = DateTime.Now;
-                tempMandatoryDocumentTable.isActive = false;
-                _context.Update(tempMandatoryDocumentTable);
-                await _context.SaveChangesAsync();
-                return true;
-            }
+    //        }
+    //        else
+    //        {
+    //            tempMandatoryDocumentTable.DateUpdated = DateTime.Now;
+    //            tempMandatoryDocumentTable.isActive = false;
+    //            _context.Update(tempMandatoryDocumentTable);
+    //            await _context.SaveChangesAsync();
+    //            return true;
+    //        }
 
 
-        }
+    //    }
 
 
 
         public async Task<List<MandatoryDocumentUploadDTO>> GetAllMandatoryDocumentsByStageID(int? stageID)
         {
             return await (
-                from MandatoryDocumentUpload in _context.MandatoryDocumentUploads
-                where MandatoryDocumentUpload.StageID == stageID && MandatoryDocumentUpload.isActive == true
-                select new MandatoryDocumentUploadDTO()
+                from comment in _context.MandatoryDocumentUpload
+                where comment.ApplicationID == stageID && comment.isActive == true
+                select new CommentDTO()
                 {
-                    MandatoryDocumentName = MandatoryDocumentUpload.MandatoryDocumentName,
+                    MandatoryDocumentName = mandatoryDocumentName,
                     StageID = stageID,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
-                    CreatedById = MandatoryDocumentUpload.CreatedById,
+                    CreatedById = creadtedByID,
                     isActive = true
 
-                }
-                ).ToListAsync();
-        }
+    //            }
+    //            ).ToListAsync();
+    //    }
 
         public async Task<List<MandatoryDocumentUploadDTO>> GetAllMandatoryDocuments()
         {
-         
+            var tempMandatoryDocumentUpload = await _context.MandatoryDocumentUpload.Where(x => x.isActive == true).ToListAsync();
 
+            var mandatoryDocumentUploadDTO = new List<MandatoryDocumentUploadDTO>();
 
+            foreach (var item in tempMandatoryDocumentUpload)
+            {
+                mandatoryDocumentUploadDTO.Add(new MandatoryDocumentUploadDTO()
+                {
+                    MandatoryDocumentName = mandatoryDocumentName,
+                    StageID = stageID,
+                    DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,
+                    CreatedById = creadtedByID,
+                    isActive = true
+                });
+            }
 
-            return await (
-                 from mandatoryDocumentUpload in _context.MandatoryDocumentUploads
-                 where mandatoryDocumentUpload.isActive == true
-                 select new MandatoryDocumentUploadDTO()
-                 {
-                     MandatoryDocumentName = mandatoryDocumentUpload.MandatoryDocumentName,
-                     StageID = mandatoryDocumentUpload.StageID,
-                     DateCreated = DateTime.Now,
-                     DateUpdated = DateTime.Now,
-                     CreatedById = mandatoryDocumentUpload.CreatedById,
-                     isActive = true
-
-
-                 }
-                 ).ToListAsync();
+            return mandatoryDocumentUploadDTO;
         }
 
-    }
+    //}
 }
