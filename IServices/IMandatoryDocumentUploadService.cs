@@ -6,15 +6,13 @@ namespace WayleaveManagementSystem.IServices
 {
     public interface IMandatoryDocumentUploadsService
     {
-        Task<MandatoryDocumentUpload> AddUpdateMandatoryDocument(int? MandatoryDocumentID, string MandatoryDocumentName, int? StageID, string? CreatedByID);
+        Task<MandatoryDocumentUpload> AddUpdateMandatoryDocument(int? MandatoryDocumentID, string MandatoryDocumentName, int? StageID);
       
         public Task<bool> DeleteMandatoryDocument(int mandatoryDocumentID);
 
-        Task<List<MandatoryDocumentUploadDTO>> GetAllMandatoryDocumentsByStageID(int? stageID);
+        Task<List<MandatoryDocumentUpload>> GetAllMandatoryDocuments();
 
-        Task<List<MandatoryDocumentUploadDTO>> GetAllMandatoryDocuments();
-
-
+        Task<List<MandatoryDocumentUpload>> GetAllMandatoryDocumentsByStageID(int? stageID);
 
 
     }

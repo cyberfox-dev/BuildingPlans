@@ -8,14 +8,13 @@ export class MandatoryDocumentUploadService {
   private readonly baseURL: string = "https://localhost:7123/api/mandatoryDocumentUploads/"
   constructor(private httpClient: HttpClient) { }
 
-  public addUpdateMandatoryDocument(mandatoryDocumentID: number | null, mandatoryDocumentName: string | null, stageID: number | null, createdByID: string | null) {
+  public addUpdateMandatoryDocument(mandatoryDocumentID: string | null, mandatoryDocumentName: string | null, stageID: string | null) {
 
     const body = {
       mandatoryDocumentID: mandatoryDocumentID,
       mandatoryDocumentName: mandatoryDocumentName,
-      CreatedByID: createdByID,
       stageID: stageID,
-
+      //im just adding this to see if this fixes the project
     }
     return this.httpClient.post(this.baseURL + "AddUpdateMandatoryDocument", body);
 
@@ -23,7 +22,7 @@ export class MandatoryDocumentUploadService {
 
   public deleteMandatoryDocument(mandatoryDocumentID: number) {
 
-    return this.httpClient.post(this.baseURL + "DeleteMandatoryDocument", mandatoryDocumentID);
+    return this.httpClient.post(this.baseURL+"DeleteMandatoryDocument", mandatoryDocumentID);
 
   }
 
@@ -31,7 +30,7 @@ export class MandatoryDocumentUploadService {
     const body = {
       StageID: stageID,
     }
-    return this.httpClient.post(this.baseURL + "GetAllMandatoryDocumentsByStageID", body);
+    return this.httpClient.post(this.baseURL+"GetAllMandatoryDocumentsByStageID", body);
 
   }
 
