@@ -18,6 +18,7 @@ import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { SelectEngineerTableComponent} from 'src/app/select-engineer-table/select-engineer-table.component'
 import { StagesService } from '../../service/Stages/stages.service';
 import { DocumentUploadService } from '../../service/DocumentUpload/document-upload.service';
+import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http';
 
 
 
@@ -214,6 +215,9 @@ export class NewWayleaveComponent implements OnInit {
   venstringifiedData: any;
   venContractorData: any;
 
+  progress: number = 0;
+  message: string | undefined;
+
 
   //Store message for file upload
   CoverLetter = "CoverLetter";
@@ -236,6 +240,7 @@ export class NewWayleaveComponent implements OnInit {
 
   displayedColumnsLinkUsers: string[] = ['idNumber', 'fullName', 'actions'];
   dataSourceLinkUsers = this.UserList;
+  //CoverLetterFileName = "Choose file";
 
 
   applyFilter(event: Event) {
@@ -250,7 +255,22 @@ export class NewWayleaveComponent implements OnInit {
 
      
 
-  constructor(private modalService: NgbModal, private applicationsService: ApplicationsService, private professionalsLinksService: ProfessionalsLinksService, private shared: SharedService, private formBuilder: FormBuilder, private professionalService: ProfessionalService, private userPofileService: UserProfileService, private router: Router, private zoneService: ZonesService, private resolver: ComponentFactoryResolver, private container: ViewContainerRef, private injector: Injector, private stagesService: StagesService, private documentUploadService: DocumentUploadService) { }
+  constructor(
+    private modalService: NgbModal,
+    private applicationsService: ApplicationsService,
+    private professionalsLinksService: ProfessionalsLinksService,
+    private shared: SharedService,
+    private formBuilder: FormBuilder,
+    private professionalService: ProfessionalService,
+    private userPofileService: UserProfileService,
+    private router: Router,
+    private zoneService: ZonesService,
+    private resolver: ComponentFactoryResolver,
+    private container: ViewContainerRef,
+    private injector: Injector,
+    private stagesService: StagesService,
+    private documentUploadService: DocumentUploadService,
+    private http: HttpClient) { }
 
   ngOnInit(): void {
     this.getAllExternalUsers();
@@ -567,19 +587,19 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
-            //this.http.post('https://localhost:7123/api/documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
-    // .subscribe({
-    //    next: (event) => {
+            this.http.post('https://localhost:7123/api/documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+     .subscribe({
+        next: (event) => {
           
-    //     if (event.type === HttpEventType.UploadProgress && event.total)
-    //     this.progress = Math.round(100 * event.loaded / event.total);
-    //     else if (event.type === HttpEventType.Response) {
-    //      this.message = 'Upload success.';
-    //      this.onUploadFinished.emit(event.body);
-    //     }
-    //},
-    //    error: (err: HttpErrorResponse) => console.log(err)
-    //  });
+         if (event.type === HttpEventType.UploadProgress && event.total)
+         this.progress = Math.round(100 * event.loaded / event.total);
+         else if (event.type === HttpEventType.Response) {
+          this.message = 'Upload success.';
+         // this.onUploadFinished.emit(event.body);
+         }
+    },
+        error: (err: HttpErrorResponse) => console.log(err)
+      });
           }
 
           //this.shared.pullFilesForUpload();
@@ -620,6 +640,34 @@ export class NewWayleaveComponent implements OnInit {
           else {
             alert("This Application have no engineers linked");
           }
+
+          //Pulling information from the share
+          const filesForUpload = this.shared.pullFilesForUpload();
+          for (var i = 0; i < filesForUpload.length; i++) {
+            const formData = new FormData();
+            let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+            let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + data.dateSet.applicationID;
+            formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention );
+
+
+
+            this.http.post('https://localhost:7123/api/documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+              .subscribe({
+                next: (event) => {
+
+                  if (event.type === HttpEventType.UploadProgress && event.total)
+                    this.progress = Math.round(100 * event.loaded / event.total);
+                  else if (event.type === HttpEventType.Response) {
+                    this.message = 'Upload success.';
+                    this.uploadFinished(event.body, data.dateSet.applicationID, data.dateSet);
+                  }
+                },
+                error: (err: HttpErrorResponse) => console.log(err)
+              });
+          }
+
+
+
 
         }
         else {
@@ -714,7 +762,7 @@ export class NewWayleaveComponent implements OnInit {
 
   @ViewChild('fileInput')
   fileInput!: ElementRef;
-  fileAttr = 'Choose File';
+  CoverLetterChooseFileText = 'Choose File';
 
 
   uploadFileEvtCoverLetter(File: any) {
@@ -732,13 +780,13 @@ export class NewWayleaveComponent implements OnInit {
     // Check if one or more files were selected
     if (File.target.files.length > 0) {
       // Reset the fileAttr property
-      this.fileAttr = '';
+      this.CoverLetterChooseFileText = '';
       // Iterate over the selected files
       Array.from(File.target.files).forEach((file: any) => {
         // Create a new File object
         let fileObject = new File([file], file.name);
         // Concatenate the file names and add a separator
-        this.fileAttr += file.name + ' - ';
+        this.CoverLetterChooseFileText += file.name + ' - ';
         // Create a new FileReader object
         let reader = new FileReader();
         // Set the onload event handler 
@@ -758,7 +806,7 @@ export class NewWayleaveComponent implements OnInit {
       this.fileInput.nativeElement.value = '';
     } else {
       // If no file was selected, set fileAttr to the default value
-      this.fileAttr = 'Choose File';
+      this.CoverLetterChooseFileText = 'Choose File';
     }
   }
   displayedColumnsTest: string[] = ['position', 'name', 'weight', 'symbol'];
@@ -776,7 +824,7 @@ export class NewWayleaveComponent implements OnInit {
 
     tempFileDocumentList.fileName = File.target.files[0].name;
     tempFileDocumentList.file = File.target.files[0];
-    this.fileAttr += File.target.files[0].name + ' - ';
+    this.CoverLetterChooseFileText += File.target.files[0].name + ' - ';
 
     this.FileDocument.push(tempFileDocumentList);
     console.log("this.FileDocument", this.FileDocument);
@@ -1000,15 +1048,16 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
-  uploadFinished = (event: any) => {
+  uploadFinished = (event: any, applicationID: any, applicationData:any) => {
     debugger;
     this.response = event;
     console.log("this.response", this.response);
     console.log("this.response?.dbPath", this.response?.dbPath);
+    console.log("applicationData", applicationData);
 
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
     console.log("documentName", documentName);
-    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath,).subscribe((data: any) => {
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, applicationID, applicationData.userID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
@@ -1026,7 +1075,10 @@ export class NewWayleaveComponent implements OnInit {
   }
 
 
+  onPassFileName = (CoverLetterFileName: any) => {
+    this.CoverLetterChooseFileText = CoverLetterFileName;
 
+  }
 
 
 }
