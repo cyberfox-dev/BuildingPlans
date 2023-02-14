@@ -23,7 +23,7 @@ export class MandatoryDocumentUploadService {
 
   public deleteMandatoryDocument(mandatoryDocumentID: number) {
 
-    return this.httpClient.post(this.baseURL + "DeleteMandatoryDocument", mandatoryDocumentID);
+    return this.httpClient.post(this.baseURL+"DeleteMandatoryDocument", mandatoryDocumentID);
 
   }
 
@@ -31,7 +31,7 @@ export class MandatoryDocumentUploadService {
     const body = {
       StageID: stageID,
     }
-    return this.httpClient.post(this.baseURL + "GetAllMandatoryDocumentsByStageID", body);
+    return this.httpClient.post(this.baseURL+"GetAllMandatoryDocumentsByStageID", body);
 
   }
 

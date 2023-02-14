@@ -40,8 +40,8 @@
 
     <mat-tab label="Mandatory Docs">
       <app-mandatory-docs-config></app-mandatory-docs-config>
-</mat-tab>
-
+    </mat-tab>
+    <!-----------------------------------------------------------GL Code configuration-------------------------------------------------------------->
     <mat-tab label="GL Code">
 
       <!--table displaying the departments-->
@@ -60,7 +60,7 @@
           <th mat-header-cell *matHeaderCellDef>Actions</th>
           <td mat-cell *matCellDef="let i = index">
             <button mat-raised-button color="success" matTooltip="Add GL Code"><i class="fa fa-plus"></i></button>
-           <!-- <button mat-raised-button color="blue" matTooltip="Add Line Item"><i class="fa fa-plus"></i></button>-->
+            <!-- <button mat-raised-button color="blue" matTooltip="Add Line Item"><i class="fa fa-plus"></i></button>-->
             <!--<button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="openViewSubDep(viewSub);getSubDemartmentByDepartmentID(i,viewSub)"><i class="fa fa-eye"></i></button>-->
 
 
@@ -77,39 +77,17 @@
 
     </mat-tab>
 
+
+    <!-----------------------------------------------------------Service Items configuration-------------------------------------------------------------->
     <mat-tab label="Service Items">
 
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
-
-
-        <ng-container matColumnDef="departmentName">
-          <th mat-header-cell *matHeaderCellDef> Department Name </th>
-          <td mat-cell *matCellDef="let element"> {{element.departmentName}} </td>
-        </ng-container>
-
-
-
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let i = index">
-           <!-- <button mat-raised-button color="success" matTooltip="Add GL Code"><i class="fa fa-plus"></i></button>-->
-             <button mat-raised-button color="blue" matTooltip="Add Line Item"><i class="fa fa-plus"></i></button>
-            <!--<button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="openViewSubDep(viewSub);getSubDemartmentByDepartmentID(i,viewSub)"><i class="fa fa-eye"></i></button>-->
-
-
-          </td>
-          <td mat-cell *matCellDef="let element">  </td>
-        </ng-container>
-
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
+     
 
 
     </mat-tab>
 
+
+    <!-----------------------------------------------------------CSV configuration-------------------------------------------------------------->
     <mat-tab label="CSV">
 
 
@@ -117,7 +95,7 @@
 
         <div class="row">
           <div class="col">
-            <div class="card education" >
+            <div class="card education">
               <div class="overlay"></div>
               <div class="circle">
                 <i class="faa fa-download" aria-hidden="true"></i>
@@ -131,7 +109,7 @@
 
           <div class="col">
 
-            <div class="card wallet" >
+            <div class="card wallet">
 
               <div class="overlay"></div>
               <div class="circle">
