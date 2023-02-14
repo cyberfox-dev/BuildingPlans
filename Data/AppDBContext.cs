@@ -39,10 +39,12 @@ namespace WayleaveManagementSystem.Data
         public DbSet<MandatoryDocumentUpload> MandatoryDocumentUploads { get; set; }
 
         // Virtual Db Sets for SPs go here
-        public virtual DbSet<UserSpDTO> UserSpDTOs { get; set; }
+        public virtual DbSet<UserSpDTO> UserSpDTOs { get; set; } 
 
         public virtual DbSet<LinkedUserSpDTO> LinkedUserSpDTOs { get; set; }
         public virtual DbSet<ApplicationsDTO> ApplicationListDTO { get; set; }
+
+
 
 
     }

@@ -6,6 +6,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel;
 using System;
+using WayleaveManagementSystem.Models.DTO;
 
 namespace WayleaveManagementSystem.Service
 {
@@ -18,33 +19,33 @@ namespace WayleaveManagementSystem.Service
     //        _context = context;
     //    }
 
-    //    public async Task<MandatoryDocumentUpload> AddUpdateMandatoryDocument(int? MandatoryDocumentID, string MandatoryDocumentName, int? StageID)
-    //    {
+        public async Task<MandatoryDocumentUpload> AddUpdateMandatoryDocument(int? mandatoryDocumentID, string mandatoryDocumentName, int? stageID, string? createdByID)
+        {
 
-    //        if (MandatoryDocumentID == 0)
-    //        {
-    //            MandatoryDocumentID = null;
-    //        }
-    //        //this checks is the record exists in the db
-    //        var tempMandatoryDocumentTable = _context.MandatoryDocumentUpload.FirstOrDefault(x => x.MandatoryDocumentID == MandatoryDocumentID);
+            if (MandatoryDocumentID == 0)
+            {
+                MandatoryDocumentID = null;
+            }
+            //this checks is the record exists in the db
+            var tempMandatoryDocumentTable = _context.MandatoryDocumentUpload.FirstOrDefault(x => x.MandatoryDocumentID == MandatoryDocumentID);
 
-    //        //if the object is null assume that the user is tying to add a new Professional
-    //        if (tempMandatoryDocumentTable == null)
-    //        {
-    //            //create a new object of professional entity class then initialize the object with given infomation
-    //            tempMandatoryDocumentTable = new MandatoryDocumentUpload()
-    //            {
-    //                MandatoryDocumentName = mandatoryDocumentName,
-    //                StageID = stageID,
-    //                DateCreated = DateTime.Now,
-    //                DateUpdated = DateTime.Now,
-    //                CreatedById = creadtedByID,
-    //                isActive = true
-    //            };
+            //if the object is null assume that the user is tying to add a new Professional
+            if (tempMandatoryDocumentTable == null)
+            {
+                //create a new object of professional entity class then initialize the object with given infomation
+                tempMandatoryDocumentTable = new MandatoryDocumentUpload()
+                {
+                    MandatoryDocumentName = mandatoryDocumentName,
+                    StageID = stageID,
+                    DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,
+                    CreatedById = creadtedByID,
+                    isActive = true
+                };
 
-    //            //After the inizlization add to the db
-    //            await _context.MandatoryDocumentUpload.AddAsync(tempMandatoryDocumentTable);
-    //            await _context.SaveChangesAsync();
+                //After the inizlization add to the db
+                await _context.MandatoryDocumentUpload.AddAsync(tempMandatoryDocumentTable);
+                await _context.SaveChangesAsync();
 
     //            return tempMandatoryDocumentTable;
 
@@ -66,10 +67,10 @@ namespace WayleaveManagementSystem.Service
 
     //    }
 
-    //    public async Task<bool> DeleteMandatoryDocument(int mandatoryDocumentID)
-    //    {
-    //        //this checks is the record exists in the db
-    //        var tempMandatoryDocumentTable = _context.MandatoryDocumentUpload.FirstOrDefault(x => x.MandatoryDocumentID == mandatoryDocumentID);
+        public async Task<bool> DeleteMandatoryDocument(int mandatoryDocumentID)
+        {
+            //this checks is the record exists in the db
+            var tempMandatoryDocumentTable = _context.MandatoryDocumentUpload.FirstOrDefault(x => x.MandatoryDocumentID == mandatoryDocumentID);
 
     //        if (tempMandatoryDocumentTable == null)
     //        {
@@ -90,45 +91,45 @@ namespace WayleaveManagementSystem.Service
 
 
 
-    //    public async Task<List<MandatoryDocumentUploadDTO>> GetAllMandatoryDocumentsByStageID(int? stageID)
-    //    {
-    //        return await (
-    //            from comment in _context.MandatoryDocumentUpload
-    //            where comment.ApplicationID == stageID && comment.isActive == true
-    //            select new CommentDTO()
-    //            {
-    //                MandatoryDocumentName = mandatoryDocumentName,
-    //                StageID = stageID,
-    //                DateCreated = DateTime.Now,
-    //                DateUpdated = DateTime.Now,
-    //                CreatedById = creadtedByID,
-    //                isActive = true
+        public async Task<List<MandatoryDocumentUploadDTO>> GetAllMandatoryDocumentsByStageID(int? stageID)
+        {
+            return await (
+                from comment in _context.MandatoryDocumentUpload
+                where comment.ApplicationID == stageID && comment.isActive == true
+                select new CommentDTO()
+                {
+                    MandatoryDocumentName = mandatoryDocumentName,
+                    StageID = stageID,
+                    DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,
+                    CreatedById = creadtedByID,
+                    isActive = true
 
     //            }
     //            ).ToListAsync();
     //    }
 
-    //    public async Task<List<MandatoryDocumentUploadDTO>> GetAllMandatoryDocuments()
-    //    {
-    //        var tempMandatoryDocumentUpload = await _context.MandatoryDocumentUpload.Where(x => x.isActive == true).ToListAsync();
+        public async Task<List<MandatoryDocumentUploadDTO>> GetAllMandatoryDocuments()
+        {
+            var tempMandatoryDocumentUpload = await _context.MandatoryDocumentUpload.Where(x => x.isActive == true).ToListAsync();
 
-    //        var mandatoryDocumentUploadDTO = new List<MandatoryDocumentUploadDTO>();
+            var mandatoryDocumentUploadDTO = new List<MandatoryDocumentUploadDTO>();
 
-    //        foreach (var item in tempMandatoryDocumentUpload)
-    //        {
-    //            mandatoryDocumentUploadDTO.Add(new MandatoryDocumentUploadDTO()
-    //            {
-    //                MandatoryDocumentName = mandatoryDocumentName,
-    //                StageID = stageID,
-    //                DateCreated = DateTime.Now,
-    //                DateUpdated = DateTime.Now,
-    //                CreatedById = creadtedByID,
-    //                isActive = true
-    //            });
-    //        }
+            foreach (var item in tempMandatoryDocumentUpload)
+            {
+                mandatoryDocumentUploadDTO.Add(new MandatoryDocumentUploadDTO()
+                {
+                    MandatoryDocumentName = mandatoryDocumentName,
+                    StageID = stageID,
+                    DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,
+                    CreatedById = creadtedByID,
+                    isActive = true
+                });
+            }
 
-    //        return mandatoryDocumentUploadDTO;
-    //    }
+            return mandatoryDocumentUploadDTO;
+        }
 
     //}
 }
