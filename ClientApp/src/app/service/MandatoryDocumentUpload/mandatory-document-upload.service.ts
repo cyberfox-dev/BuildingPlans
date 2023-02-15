@@ -28,10 +28,10 @@ export class MandatoryDocumentUploadService {
   }
 
   public getAllMandatoryDocumentsByStageID(stageID: any) {
-    const body = {
-      StageID: stageID,
-    }
-    return this.httpClient.post(this.baseURL + "GetAllMandatoryDocumentsByStageID", body);
+    //const body = {
+    //  StageID: stageID,
+    //}
+    return this.httpClient.post(this.baseURL + "GetAllMandatoryDocumentsByStageID", stageID);
 
   }
 

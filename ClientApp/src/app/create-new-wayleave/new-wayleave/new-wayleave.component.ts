@@ -18,7 +18,8 @@ import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { SelectEngineerTableComponent} from 'src/app/select-engineer-table/select-engineer-table.component'
 import { StagesService } from '../../service/Stages/stages.service';
 import { DocumentUploadService } from '../../service/DocumentUpload/document-upload.service';
-import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http'; 
+import { MandatoryDocumentUploadService } from 'src/app/service/MandatoryDocumentUpload/mandatory-document-upload.service';
 
 
 
@@ -73,6 +74,13 @@ export interface StagesList {
   StageOrderNumber: number;
   CurrentUser: any
 
+}
+
+export interface MandatoryDocumentUploadList {
+  mandatoryDocumentID: number;
+  mandatoryDocumentName: string;
+  stageID: number;
+  dateCreated: any;
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
@@ -189,6 +197,7 @@ export class NewWayleaveComponent implements OnInit {
   FileDocument: FileDocument[] = [];
   ContractorList: ContractorList[] = [];
   StagesList: StagesList[] = [];
+  MandatoryDocumentUploadList: MandatoryDocumentUploadList[] = [];
 
   public external: boolean = true;
   public internal: boolean = false;
@@ -252,7 +261,7 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   @ViewChild(MatTable) UserListTable: MatTable<UserList> | undefined;
-
+  @ViewChild(MatTable) MandatoryDocumentUploadTable: MatTable<MandatoryDocumentUploadList> | undefined;
      
 
   constructor(
@@ -270,6 +279,7 @@ export class NewWayleaveComponent implements OnInit {
     private injector: Injector,
     private stagesService: StagesService,
     private documentUploadService: DocumentUploadService,
+    private mandatoryUploadDocsService: MandatoryDocumentUploadService,
     private http: HttpClient) { }
 
   ngOnInit(): void {
@@ -290,6 +300,7 @@ export class NewWayleaveComponent implements OnInit {
    // this.StagesList = this.shared.getStageData();
 
     this.getAllStages();
+  
  
 
     
@@ -422,7 +433,7 @@ export class NewWayleaveComponent implements OnInit {
 
     }
 
-
+    this.getMandatoryDocsForCaptureStage();
 
   }
 
@@ -1080,5 +1091,49 @@ export class NewWayleaveComponent implements OnInit {
 
   }
 
+  getMandatoryDocsForCaptureStage() {
+    debugger;
+    let CaptureSageID = 0;
+
+    for (var i = 0; i < this.StagesList.length; i++) {
+
+      if (this.StagesList[i].StageOrderNumber == 0) {
+        CaptureSageID = this.StagesList[i].StageID;
+
+      }
+
+
+    }
+
+
+    this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);
+    this.mandatoryUploadDocsService.getAllMandatoryDocumentsByStageID(CaptureSageID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempMandatoryDocList = {} as MandatoryDocumentUploadList;
+          const current = data.dateSet[i];
+          tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
+          tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
+          tempMandatoryDocList.stageID = current.stageID;
+          tempMandatoryDocList.dateCreated = current.dateCreated;
+          this.MandatoryDocumentUploadList.push(tempMandatoryDocList);
+        }
+        this.MandatoryDocumentUploadTable?.renderRows();
+        console.log("Got MANDATORY DOCS BY STAGE ID", this.MandatoryDocumentUploadList);
+
+        console.log("datadatadatadata", data);
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("response", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
 
 }

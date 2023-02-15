@@ -79,7 +79,7 @@ namespace WayleaveManagementSystem.Controllers
         }
 
         [HttpPost("GetAllMandatoryDocumentsByStageID")]
-        public async Task<object> GetCommentByApplicationID([FromBody] int stageID)
+        public async Task<object> GetAllMandatoryDocumentsByStageID([FromBody] int stageID)
         {
             try
             {
