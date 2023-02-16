@@ -112,9 +112,6 @@ namespace WayleaveManagementSystem.Service
         public async Task<List<MandatoryDocumentUploadDTO>> GetAllMandatoryDocuments()
         {
 
-
-
-
             return await (
                  from mandatoryDocumentUpload in _context.MandatoryDocumentUploads
                  where mandatoryDocumentUpload.isActive == true
