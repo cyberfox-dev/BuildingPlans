@@ -2,10 +2,10 @@
 
 namespace WayleaveManagementSystem.Data.Entities
 {
-    public class ManDocStageLink : BaseEntity
+    public class MandatoryDocumentStageLink : BaseEntity
     {
         [Key]
-        public int? ManDocStageLinkID { get; set; }
+        public int? MandatoryDocumentStageLinkID { get; set; }
 
         public int? MandatoryDocumentID { get; set; }
         public int StageID { get; set; }
