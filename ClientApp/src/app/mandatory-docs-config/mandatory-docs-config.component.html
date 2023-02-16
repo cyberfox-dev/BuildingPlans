@@ -35,7 +35,7 @@
           <th mat-header-cell *matHeaderCellDef>Select</th>
           <td mat-cell let i=index *matCellDef="let element">
 
-            <mat-checkbox class="example-margin"></mat-checkbox>
+            <mat-checkbox class="example-margin"  (change)="stageSelectedForLink(element)"></mat-checkbox>
           </td>
 
         </ng-container>
@@ -48,7 +48,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-success" (click)=" onManDocCreate();modal.close('Save click')">Save</button>
+    <button type="button" class="btn btn-outline-success" (click)="onManDocCreate();modal.close('Save click')">Save</button>
   </div>
 </ng-template>
 <!--end of modal-->
