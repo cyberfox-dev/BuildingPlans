@@ -19,7 +19,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<MandatoryDocumentUpload> AddUpdateMandatoryDocument(int? mandatoryDocumentID, string mandatoryDocumentName, int? stageID, string? createdByID)
+        public async Task<MandatoryDocumentUpload> AddUpdateMandatoryDocument(int? mandatoryDocumentID, string mandatoryDocumentName, string? createdByID)
         {
 
             if (mandatoryDocumentID == 0)
@@ -36,7 +36,6 @@ namespace WayleaveManagementSystem.Service
                 tempMandatoryDocumentTable = new MandatoryDocumentUpload()
                 {
                     MandatoryDocumentName = mandatoryDocumentName,
-                    StageID = stageID,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     CreatedById = createdByID,
@@ -53,7 +52,7 @@ namespace WayleaveManagementSystem.Service
             else //if it is not null then user is doing an update 
             {
                 tempMandatoryDocumentTable.MandatoryDocumentName = mandatoryDocumentName;
-                tempMandatoryDocumentTable.StageID = stageID;
+
 
                 tempMandatoryDocumentTable.DateUpdated = DateTime.Now;
                 tempMandatoryDocumentTable.isActive = true;
@@ -91,15 +90,14 @@ namespace WayleaveManagementSystem.Service
 
 
 
-        public async Task<List<MandatoryDocumentUploadDTO>> GetAllMandatoryDocumentsByStageID(int? stageID)
+        public async Task<List<MandatoryDocumentUploadDTO>> GetAllMandatoryDocumentsByID(int? mandatoryDocumentID)
         {
             return await (
                 from MandatoryDocumentUpload in _context.MandatoryDocumentUploads
-                where MandatoryDocumentUpload.StageID == stageID && MandatoryDocumentUpload.isActive == true
+                where MandatoryDocumentUpload.MandatoryDocumentID == mandatoryDocumentID && MandatoryDocumentUpload.isActive == true
                 select new MandatoryDocumentUploadDTO()
                 {
                     MandatoryDocumentName = MandatoryDocumentUpload.MandatoryDocumentName,
-                    StageID = stageID,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     CreatedById = MandatoryDocumentUpload.CreatedById,
@@ -118,7 +116,6 @@ namespace WayleaveManagementSystem.Service
                  select new MandatoryDocumentUploadDTO()
                  {
                      MandatoryDocumentName = mandatoryDocumentUpload.MandatoryDocumentName,
-                     StageID = mandatoryDocumentUpload.StageID,
                      DateCreated = DateTime.Now,
                      DateUpdated = DateTime.Now,
                      CreatedById = mandatoryDocumentUpload.CreatedById,

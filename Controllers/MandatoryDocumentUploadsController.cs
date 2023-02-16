@@ -38,7 +38,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _mandatoryDocumentUploadsService.AddUpdateMandatoryDocument(model.MandatoryDocumentID, model.MandatoryDocumentName, model.StageID, model.CreatedById);
+                    var result = await _mandatoryDocumentUploadsService.AddUpdateMandatoryDocument(model.MandatoryDocumentID, model.MandatoryDocumentName, model.CreatedById);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.MandatoryDocumentID > 0 ? "Mandatory Document Updated Successfully" : "Mandatory Document Added Successfully"), result));
                 }
 
