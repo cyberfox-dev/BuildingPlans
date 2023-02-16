@@ -5,6 +5,7 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import {MandatoryDocumentUploadService } from '../service/MandatoryDocumentUpload/mandatory-document-upload.service';
 import { StagesService } from '../service/Stages/stages.service';
 import { MatPaginator } from '@angular/material/paginator'
+import { SelectionModel } from '@angular/cdk/collections';
 
 
 export interface MandatoryDocumentUploadList {
@@ -18,7 +19,6 @@ export interface StagesList {
   StageID: number;
   StageName: string;
   StageOrderNumber: number;
-
 }
 
 
@@ -57,6 +57,8 @@ export class MandatoryDocsConfigComponent implements OnInit {
   @ViewChild(MatTable) MandatoryDocumentUploadTable: MatTable<MandatoryDocumentUploadList> | undefined;
   @ViewChild(MatTable) StagesTable: MatTable<StagesList> | undefined;
 
+  selection = new SelectionModel<StagesList>(true, []);
+
 
   constructor(private modalService: NgbModal, private mandatoryUploadDocsService: MandatoryDocumentUploadService, private stagesService: StagesService, private formBuilder: FormBuilder) { }
 
@@ -80,6 +82,8 @@ export class MandatoryDocsConfigComponent implements OnInit {
   
 
   getAllMandatoryDocs() {
+
+    this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);
    
     this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);
     this.mandatoryUploadDocsService.getAllMandatoryDocuments().subscribe((data: any) => {
@@ -145,31 +149,38 @@ export class MandatoryDocsConfigComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
+  stageSelectedForLink(stage:any) {
+    this.selection.toggle(stage);
+  }
 
   onManDocCreate() {
 
   
     let newMandatoryDocumentName = this.addManDoc.controls["newManDocName"].value;
 
-    
+    for (let i = 0; i < this.selection.selected.length; i++) {
+      const current = this.selection.selected[i];
+      console.log("THIS IS THE STAGE ID", current.StageID);
+      this.mandatoryUploadDocsService.addUpdateMandatoryDocument(0, newMandatoryDocumentName, current.StageID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
-    this.mandatoryUploadDocsService.addUpdateMandatoryDocument(0, newMandatoryDocumentName,0,this.CurrentUser.appUserId).subscribe((data: any) => {
+        if (data.responseCode == 1) {
 
-      if (data.responseCode == 1) {
+          alert(data.responseMessage);
+          this.getAllMandatoryDocs();
 
-        alert(data.responseMessage);
-        this.getAllMandatoryDocs();
+        }
+        else {
 
-      }
-      else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
 
-        alert(data.responseMessage);
-      }
-      console.log("reponse", data);
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
 
-    }, error => {
-      console.log("Error: ", error);
-    })
+
 
   }
 
