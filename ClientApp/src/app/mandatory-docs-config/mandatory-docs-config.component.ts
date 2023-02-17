@@ -38,6 +38,9 @@ export class MandatoryDocsConfigComponent implements OnInit {
 
   })
 
+  CurrentMandatoryDocumentID: any;
+  
+
   CurrentUser: any;
   stringifiedData: any;
 
@@ -87,7 +90,7 @@ export class MandatoryDocsConfigComponent implements OnInit {
    
     this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);
     this.mandatoryUploadDocsService.getAllMandatoryDocuments().subscribe((data: any) => {
-
+      debugger;
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempMandatoryDocList = {} as MandatoryDocumentUploadList;
@@ -185,15 +188,32 @@ export class MandatoryDocsConfigComponent implements OnInit {
 
   }
 
-  onStageLink() {
-    for (let i = 0; i < this.selection.selected.length; i++) {
+  getCurrentMandatoryDocID(index: any) {
 
-      const current = this.selection.selected[i];
+    this.CurrentMandatoryDocumentID = this.MandatoryDocumentUploadList[index].mandatoryDocumentID;
 
-     /* this.mandatoryDocumentStageLink.addUpdateMandatoryDocumentStageLink(0,)*/
-    }
   }
 
+  onStageLink() {
+    for (let i = 0; i < this.selection.selected.length; i++) {
+      
+      const current = this.selection.selected[i];
 
+      this.mandatoryDocumentStageLink.addUpdateMandatoryDocumentStageLink(0, this.CurrentMandatoryDocumentID, current.StageID, current.StageName, this.CurrentUser.appUserId).subscribe((data: any) => {
 
+        if (data.responseCode == 1) {
+
+          alert(data.responseMessage);
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+  }
 }

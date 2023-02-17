@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class MandatoryDocumentStageLinkService {
 
-  private readonly baseURL: string = "https://localhost:7123/api/mandatoryDocumentStageLinking/"
+  private readonly baseURL: string = "https://localhost:7123/api/mandatoryDocumentStageLink/"
 
   constructor(private httpClient: HttpClient) { }
 
