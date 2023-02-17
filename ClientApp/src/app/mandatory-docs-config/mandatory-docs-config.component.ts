@@ -190,7 +190,7 @@ export class MandatoryDocsConfigComponent implements OnInit {
 
       const current = this.selection.selected[i];
 
-      this.mandatoryDocumentStageLink.addUpdateMandatoryDocumentStageLink(0,)
+     /* this.mandatoryDocumentStageLink.addUpdateMandatoryDocumentStageLink(0,)*/
     }
   }
 
