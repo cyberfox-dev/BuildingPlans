@@ -115,6 +115,7 @@ namespace WayleaveManagementSystem.Service
                  where mandatoryDocumentUpload.isActive == true
                  select new MandatoryDocumentUploadDTO()
                  {
+                     MandatoryDocumentID = mandatoryDocumentUpload.MandatoryDocumentID,
                      MandatoryDocumentName = mandatoryDocumentUpload.MandatoryDocumentName,
                      DateCreated = DateTime.Now,
                      DateUpdated = DateTime.Now,

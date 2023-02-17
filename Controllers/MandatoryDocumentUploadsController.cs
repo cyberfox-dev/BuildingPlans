@@ -78,19 +78,19 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-        [HttpPost("GetAllMandatoryDocumentsByStageID")]
-        public async Task<object> GetAllMandatoryDocumentsByStageID([FromBody] int stageID)
+        [HttpPost("GetAllMandatoryDocumentsByID")]
+        public async Task<object> GetAllMandatoryDocumentsByID([FromBody] int mandatoryDocumentID)
         {
             try
             {
 
-                if (stageID < 3)
+                if (mandatoryDocumentID < 3)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
-                    var result = await _mandatoryDocumentUploadsService.GetAllMandatoryDocumentsByStageID(stageID);
+                    var result = await _mandatoryDocumentUploadsService.GetAllMandatoryDocumentsByID(mandatoryDocumentID);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Comments List Created", result));
                 }
 

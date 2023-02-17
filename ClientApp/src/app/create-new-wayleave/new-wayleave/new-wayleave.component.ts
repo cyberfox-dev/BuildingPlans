@@ -1107,7 +1107,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
     this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);
-    this.mandatoryUploadDocsService.getAllMandatoryDocumentsByStageID(CaptureSageID).subscribe((data: any) => {
+/*    this.mandatoryUploadDocsService.getAllMandatoryDocumentsByStageID(CaptureSageID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
@@ -1133,7 +1133,7 @@ export class NewWayleaveComponent implements OnInit {
 
     }, error => {
       console.log("Error: ", error);
-    })
+    })*/
   }
 
 }
