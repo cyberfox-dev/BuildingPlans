@@ -8,13 +8,12 @@ export class MandatoryDocumentUploadService {
   private readonly baseURL: string = "https://localhost:7123/api/mandatoryDocumentUploads/"
   constructor(private httpClient: HttpClient) { }
 
-  public addUpdateMandatoryDocument(mandatoryDocumentID: number | null, mandatoryDocumentName: string | null, stageID: number | null, createdByID: string | null) {
+  public addUpdateMandatoryDocument(mandatoryDocumentID: number | null, mandatoryDocumentName: string | null, createdByID: string | null) {
 
     const body = {
       mandatoryDocumentID: mandatoryDocumentID,
       mandatoryDocumentName: mandatoryDocumentName,
       CreatedByID: createdByID,
-      stageID: stageID,
 
     }
     return this.httpClient.post(this.baseURL + "AddUpdateMandatoryDocument", body);
@@ -27,11 +26,11 @@ export class MandatoryDocumentUploadService {
 
   }
 
-  public getAllMandatoryDocumentsByStageID(stageID: any) {
+  public getAllMandatoryDocumentsByID(mandatoryDocumentID: any) {
     //const body = {
     //  StageID: stageID,
     //}
-    return this.httpClient.post(this.baseURL + "GetAllMandatoryDocumentsByStageID", stageID);
+    return this.httpClient.post(this.baseURL + "GetAllMandatoryDocumentsByID", mandatoryDocumentID);
 
   }
 

@@ -6,7 +6,7 @@ import {MandatoryDocumentUploadService } from '../service/MandatoryDocumentUploa
 import { StagesService } from '../service/Stages/stages.service';
 import { MatPaginator } from '@angular/material/paginator'
 import { SelectionModel } from '@angular/cdk/collections';
-
+import { MandatoryDocumentStageLinkService } from '../service/MandatoryDocumentStageLink/mandatory-document-stage-link.service';
 
 export interface MandatoryDocumentUploadList {
   mandatoryDocumentID: number;
@@ -60,7 +60,7 @@ export class MandatoryDocsConfigComponent implements OnInit {
   selection = new SelectionModel<StagesList>(true, []);
 
 
-  constructor(private modalService: NgbModal, private mandatoryUploadDocsService: MandatoryDocumentUploadService, private stagesService: StagesService, private formBuilder: FormBuilder) { }
+  constructor(private modalService: NgbModal, private mandatoryUploadDocsService: MandatoryDocumentUploadService, private stagesService: StagesService, private formBuilder: FormBuilder, private mandatoryDocumentStageLink: MandatoryDocumentStageLinkService) { }
 
   ngOnInit(): void {
     this.getAllMandatoryDocs();
@@ -158,14 +158,18 @@ export class MandatoryDocsConfigComponent implements OnInit {
   
     let newMandatoryDocumentName = this.addManDoc.controls["newManDocName"].value;
 
-    for (let i = 0; i < this.selection.selected.length; i++) {
-      const current = this.selection.selected[i];
-      console.log("THIS IS THE STAGE ID", current.StageID);
-      this.mandatoryUploadDocsService.addUpdateMandatoryDocument(0, newMandatoryDocumentName, current.StageID, this.CurrentUser.appUserId).subscribe((data: any) => {
+/*    for (let i = 0; i < this.selection.selected.length; i++) {*/
+/*      const current = this.selection.selected[i];
+      console.log("THIS IS THE STAGE ID", current.StageID);*/
+      this.mandatoryUploadDocsService.addUpdateMandatoryDocument(0, newMandatoryDocumentName, this.CurrentUser.appUserId).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 
           alert(data.responseMessage);
+
+         
+
+
           this.getAllMandatoryDocs();
 
         }
@@ -178,10 +182,16 @@ export class MandatoryDocsConfigComponent implements OnInit {
       }, error => {
         console.log("Error: ", error);
       })
+
+  }
+
+  onStageLink() {
+    for (let i = 0; i < this.selection.selected.length; i++) {
+
+      const current = this.selection.selected[i];
+
+     /* this.mandatoryDocumentStageLink.addUpdateMandatoryDocumentStageLink(0,)*/
     }
-
-
-
   }
 
 
