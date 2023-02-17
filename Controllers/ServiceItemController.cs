@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Policy;
 using WayleaveManagementSystem.Data;
 using WayleaveManagementSystem.Data.Entities;
 using WayleaveManagementSystem.IServices;
 using WayleaveManagementSystem.Models;
 using WayleaveManagementSystem.Models.BindingModel;
 using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
+using WayleaveManagementSystem.Models.DTO;
 using WayleaveManagementSystem.Service;
 
 namespace WayleaveManagementSystem.Controllers
@@ -76,7 +78,7 @@ namespace WayleaveManagementSystem.Controllers
                         result = tempServiceItemTable;
                     }
 
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ServiceItemID > 0 ? "Zone Link Updated Successfully" : "User Linked Successfully"), result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ServiceItemID > 0 ? "Zone Link Updated Successfully" : "Service Item Created Successfully"), result));
                 }
             }
             catch (Exception ex)
@@ -88,109 +90,117 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-    //    [HttpPost("DeleteZoneLink")]
-    //    public async Task<object> DeleteZoneLink([FromBody] int zoneID)
-    //    {
-    //        try
-    //        {
+        [HttpPost("DeleteServiceItemID")]
+        public async Task<object> DeleteServiceItemID([FromBody] int serviceItemID)
+        {
+            try
+            {
 
-    //            if (zoneID < 1)
-    //            {
-    //                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
-    //            }
-    //            else
-    //            {
-    //                var result = await _zonesLinkingServices.DeleteZoneLink(zoneID);
-    //                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Zone Link Deleted Successfully", result));
-    //            }
+                    var tempServiceItemTable = _context.ServiceItem.FirstOrDefault(x => x.ServiceItemID == serviceItemID);
 
-    //        }
-    //        catch (Exception ex)
-    //        {
+                    if (tempServiceItemTable == null)
+                    {
+                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", false));
 
-
-    //            return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
-
-    //        }
-    //    }
-
-    //    [HttpGet("GetZoneLinkList")]
-    //    public async Task<object> GetAllZoneLinks()
-    //    {
-    //        try
-    //        {
-    //            var result = await _zonesLinkingServices.GetAllZoneLinks();
-    //            return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Zone Link List Created", result));
+                    }
+                    else
+                    {
+                        tempServiceItemTable.DateUpdated = DateTime.Now;
+                        tempServiceItemTable.isActive = false;
+                        _context.Update(tempServiceItemTable);
+                        await _context.SaveChangesAsync();
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Zone Link Deleted Successfully", true));
+                }
 
 
-
-    //        }
-    //        catch (Exception ex)
-    //        {
-
-
-    //            return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
-
-    //        }
-    //    }
+            }
+            catch (Exception ex)
+            {
 
 
-    //    //[HttpGet("GetUsersNotLinkedByUserID")]
-    //    //public async Task<object> GetUsersNotLinkedByUserID()
-    //    //{
-    //    //    try
-    //    //    {
-    //    //        var result = await _zonesLinkingServices.GetUsersNotLinkedByUserID();
-    //    //        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Unlinked Users", result));
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
 
-    //    //    }
-    //    //    catch (Exception ex)
-    //    //    {
+            }
+        }
 
-
-    //    //        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
-
-    //    //    }
-    //    //}
-
-    //    [HttpPost("GetUsersNotLinkedByUserID")]
-    //    public async Task<object> GetUsersNotLinkedByUserID([FromBody] int zoneID)
-    //    {
-    //        try
-    //        {
-    //            //var result = await _zonesLinkingServices.GetUsersNotLinkedByUserID();
-    //            var result = _context.UserSpDTOs.FromSqlRaw($"SP_GetUsersNotLinkedByUserID {zoneID}").AsEnumerable();
-
-
-    //            return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Unlinked Users", result));
-
-    //        }
-    //        catch (Exception ex)
-    //        {
+        [HttpGet("GetAllServiceItem")]
+        public async Task<object> GetAllServiceItem()
+        {
+            try
+            {
+                var result = await (
+                from serviceItem in _context.ServiceItem
+                   where serviceItem.isActive == true
+                select new ServiceItemDTO()
+                {
+                    ServiceItemID = serviceItem.ServiceItemID,
+                    ServiceItemCode = serviceItem.ServiceItemCode,
+                    Description = serviceItem.Description,
+                    Rate = serviceItem.Rate,
+                    TotalVat = serviceItem.TotalVat,
+                    DateCreated = serviceItem.DateCreated,
+                    DateUpdated = serviceItem.DateUpdated,
+                    isActive = serviceItem.isActive,
+                    
+                }
+                ).ToListAsync();
 
 
-    //            return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
 
-    //        }
-    //    }
-
-    //    [HttpPost("GetAllRecordsByUserIdIfDeleted")]
-    //    public async Task<object> GetAllRecordsByUserIdIfDeleted([FromBody] ZoneLinkByUserIDBindingModel model)
-    //    {
-    //        try
-    //        {
-    //            var result = await _zonesLinkingServices.GetAllRecordsByUserIdIfDeleted(model.UserID);
-    //            return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Zone Link List Created", result));
-
-    //        }
-    //        catch (Exception ex)
-    //        {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Service Items", result));
 
 
-    //            return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
 
-    //        }
-    //    }
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+
+
+
+        [HttpPost("GetServiceItemByServiceItemID")]
+        public async Task<object> GetServiceItemByServiceItemID([FromBody] int serviceItemID)
+        {
+            try
+            {
+                var result = await (
+               from serviceItem in _context.ServiceItem
+               where serviceItem.ServiceItemID == serviceItemID && serviceItem.isActive == true
+               select new ServiceItemDTO()
+               {
+                   ServiceItemID = serviceItem.ServiceItemID,
+                   ServiceItemCode = serviceItem.ServiceItemCode,
+                   Description = serviceItem.Description,
+                   Rate = serviceItem.Rate,
+                   TotalVat = serviceItem.TotalVat,
+                   DateCreated = serviceItem.DateCreated,
+                   DateUpdated = serviceItem.DateUpdated,
+                   isActive = serviceItem.isActive,
+
+               }
+               ).ToListAsync();
+
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Service Items By ID", result));
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        
 
 
     }
