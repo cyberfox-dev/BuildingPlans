@@ -10,6 +10,7 @@ export interface ServiceItemList {
   Description: string;
   Rate: any;
   totalVat: number;
+  dateCreated: any;
 }
 
 @Component({
@@ -22,18 +23,21 @@ export interface ServiceItemList {
 
 export class ServiceItemsConfigComponent implements OnInit {
 
+  serviceItemCodeName = '';
+  description = '';
+  rate = '';
+  quantity = '';
+  total = '';
+  checked: boolean = false;
+
+
   ServiceItemList: ServiceItemList[] = [];
   
   CurrentUser: any;
   stringifiedData: any;
   constructor(private modalService: NgbModal,private serviceItemService: ServiceItemService) { }
 
-  serviceItemCode = '';
-  description = '';
-  rate = '';
-  quantity = '';
-  total = '';
-  checked: boolean = false;
+
 
 
 
@@ -72,6 +76,7 @@ export class ServiceItemsConfigComponent implements OnInit {
           tempServiceItemList.Description = current.description;
           tempServiceItemList.Rate = current.rate;
           tempServiceItemList.totalVat = current.totalVat;
+          tempServiceItemList.dateCreated = current.dateCreated;
           this.ServiceItemList.push(tempServiceItemList);
         }
         this.ServiceItemTable?.renderRows();
@@ -90,7 +95,7 @@ export class ServiceItemsConfigComponent implements OnInit {
   
   onServiceItemCreate() {
     debugger;
-    this.serviceItemService.addUpdateServiceItem(0, this.serviceItemCode, this.description, Number(this.rate), Number(this.total),this.CurrentUser.appUserId).subscribe((data: any) => {
+    this.serviceItemService.addUpdateServiceItem(0, this.serviceItemCodeName, this.description, Number(this.rate), Number(this.total),this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         alert(data.responseMessage);
@@ -99,7 +104,7 @@ export class ServiceItemsConfigComponent implements OnInit {
           const tempServiceItemList = {} as ServiceItemList;
           const current = data.dateSet[i];
           tempServiceItemList.serviceItemID = current.ServiceItemCode;
-          tempServiceItemList.serviceItemCode = current.stageName;
+          tempServiceItemList.serviceItemCode = current.serviceItemCodeName;
           tempServiceItemList.Description = current.Description;
           tempServiceItemList.Rate = current.Rate;
           tempServiceItemList.totalVat = current.TotalVat;

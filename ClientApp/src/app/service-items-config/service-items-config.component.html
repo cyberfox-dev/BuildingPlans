@@ -45,14 +45,14 @@
           <div class="col">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="serviceItemCode" placeholder="Enter Service Item Code">
-                <label for="serviceItemName">Service Item Code</label>
+                <input type="text" class="form-control" id="serviceItemCodeName" name="serviceItemCodeName" [(ngModel)]="serviceItemCodeName" placeholder="Enter Service Item Code">
+                <label for="serviceItemCodeName">Service Item Code</label>
               </div>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="description" placeholder="Description">
+              <input type="text" class="form-control" id="description" name="description" [(ngModel)]="description" placeholder="Description">
               <label for="description">Description</label>
             </div>
           </div>
@@ -61,14 +61,14 @@
           <div class="col">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="number" class="form-control" [(ngModel)]="rate" placeholder="Enter Rate">
+                <input type="number" class="form-control" id="rate" name="rate" [(ngModel)]="rate" placeholder="Enter Rate">
                 <label for="rate">Rate</label>
               </div>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="quantity" placeholder="Enter Quantity">
+              <input type="text" class="form-control" id="quantity" name="quantity" [(ngModel)]="quantity" placeholder="Enter Quantity">
               <label for="quantity">Quantity</label>
             </div>
           </div>
@@ -76,7 +76,7 @@
         <div class="row">
 
           <div class="form-floating mb-3 mt-3">
-            <input type="number" class="form-control" [(ngModel)]="total" placeholder="Enter Total" >
+            <input type="number" class="form-control" id="total" name="total" [(ngModel)]="total" placeholder="Enter Total" >
             <label for="total">Total exc. Vat</label>
           </div>
 
