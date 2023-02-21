@@ -10,6 +10,7 @@
         public string? StageName { get; set; }
 
         public string? CreatedById { get; set; }
+        public string? MandatoryDocumentName { get; set; }
 
 
         public DateTime DateCreated { get; set; }

@@ -20,9 +20,17 @@ import { StagesService } from '../../service/Stages/stages.service';
 import { DocumentUploadService } from '../../service/DocumentUpload/document-upload.service';
 import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http'; 
 import { MandatoryDocumentUploadService } from 'src/app/service/MandatoryDocumentUpload/mandatory-document-upload.service';
+import { MandatoryDocumentStageLinkService } from '../../service/MandatoryDocumentStageLink/mandatory-document-stage-link.service';
 
 
-
+export interface MandatoryDocumentsLinkedStagesList {
+  mandatoryDocumentStageLinkID: number;
+  mandatoryDocumentID: number;
+  mandatoryDocumentName: string;
+  stageID: number;
+  stageName: string;
+  dateCreated: any;
+}
 
 export interface EngineerList {
   professinalID: number;
@@ -129,6 +137,7 @@ export class NewWayleaveComponent implements OnInit {
   professionalType!: string;
   userID = '';
 
+  CurrentStageName = '';
   /*Client details*/
   clientUserID = '';
   clientName = '';
@@ -198,6 +207,7 @@ export class NewWayleaveComponent implements OnInit {
   ContractorList: ContractorList[] = [];
   StagesList: StagesList[] = [];
   MandatoryDocumentUploadList: MandatoryDocumentUploadList[] = [];
+  MandatoryDocumentsLinkedStagesList: MandatoryDocumentsLinkedStagesList[] = [];
 
   public external: boolean = true;
   public internal: boolean = false;
@@ -280,9 +290,12 @@ export class NewWayleaveComponent implements OnInit {
     private stagesService: StagesService,
     private documentUploadService: DocumentUploadService,
     private mandatoryUploadDocsService: MandatoryDocumentUploadService,
-    private http: HttpClient) { }
+    private http: HttpClient,
+    private mandatoryDocumentStageLink: MandatoryDocumentStageLinkService 
+  ) { }
 
   ngOnInit(): void {
+   
     this.getAllExternalUsers();
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
@@ -300,7 +313,7 @@ export class NewWayleaveComponent implements OnInit {
    // this.StagesList = this.shared.getStageData();
 
     this.getAllStages();
-  
+
  
 
     
@@ -455,6 +468,7 @@ export class NewWayleaveComponent implements OnInit {
           this.StagesList.push(tempStageList);
          // this.sharedService.setStageData(this.StagesList);
         }
+        this.getAllManDocsByStageID();
 
       }
       else {
@@ -1092,7 +1106,7 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   getMandatoryDocsForCaptureStage() {
-    debugger;
+  
     let CaptureSageID = 0;
 
     for (var i = 0; i < this.StagesList.length; i++) {
@@ -1136,4 +1150,40 @@ export class NewWayleaveComponent implements OnInit {
     })*/
   }
 
-}
+
+  getAllManDocsByStageID() {
+
+      this.MandatoryDocumentsLinkedStagesList.splice(0, this.MandatoryDocumentsLinkedStagesList.length);
+
+    this.mandatoryDocumentStageLink.getAllMandatoryDocumentsByStageID(this.StagesList[0].StageID).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+
+
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
+            const current = data.dateSet[i];
+            tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+            tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = current.mandatoryDocumentStageLinkID;
+            tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+            tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+            tempMandatoryDocumentsLinkedStagesList.stageName = current.stageName;
+            tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+
+            this.MandatoryDocumentsLinkedStagesList.push(tempMandatoryDocumentsLinkedStagesList);
+
+          }
+        }
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+  }
+  
+
+

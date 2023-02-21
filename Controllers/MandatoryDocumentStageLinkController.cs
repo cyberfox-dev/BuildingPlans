@@ -160,14 +160,14 @@ namespace WayleaveManagementSystem.Controllers
 
         /*Getting by stage ID*/
 
-        [HttpGet("GetAllMandatoryDocumentStageLinkByStageID")]
-        public async Task<object> GetAllMandatoryDocumentStageLinkByStageID([FromBody] int StageID)
+        [HttpPost("GetAllMandatoryDocumentStageLinkByStageID")]
+        public async Task<object> GetAllMandatoryDocumentStageLinkByStageID([FromBody] int mandatoryDocumentID)
         {
             try
             {
 
                 var result = await (from MandatoryDocumentStageLink in _context.MandatoryDocumentStageLink
-                                    where MandatoryDocumentStageLink.StageID == StageID && MandatoryDocumentStageLink.isActive == true 
+                                    where MandatoryDocumentStageLink.MandatoryDocumentID == mandatoryDocumentID && MandatoryDocumentStageLink.isActive == true 
                                     select new MandatoryDocumentStageLinkDTO()
                                     {
                                         MandatoryDocumentStageLinkID = MandatoryDocumentStageLink.MandatoryDocumentStageLinkID,
@@ -181,6 +181,44 @@ namespace WayleaveManagementSystem.Controllers
 
 
 
+                                    }).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Mandatory Document Links By Stage ID ", result));
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+
+
+        }
+
+        [HttpPost("GetAllMandatoryDocumentsByStageID")]
+        public async Task<object> GetAllMandatoryDocumentsByStageID([FromBody] int stageID)
+        {
+            try
+            {
+
+                var result = await (from mdl in _context.MandatoryDocumentStageLink
+                                    join md in _context.MandatoryDocumentUploads on mdl.MandatoryDocumentID equals md.MandatoryDocumentID
+                                    where mdl.StageID == stageID && mdl.isActive == true
+                                    select new MandatoryDocumentStageLinkDTO()
+                                    {
+                                        MandatoryDocumentStageLinkID = mdl.MandatoryDocumentStageLinkID,
+                                        MandatoryDocumentID = mdl.MandatoryDocumentID,
+                                        MandatoryDocumentName = md.MandatoryDocumentName,
+                                        StageID = mdl.StageID,
+                                        StageName = mdl.StageName,
+                                        CreatedById = mdl.CreatedById,
+                                        DateCreated = DateTime.Now,
+                                        DateUpdated = DateTime.Now,
+                                        isActive = mdl.isActive
                                     }).ToListAsync();
 
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Mandatory Document Links By Stage ID ", result));

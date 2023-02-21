@@ -21,6 +21,14 @@ export interface StagesList {
   StageOrderNumber: number;
 }
 
+export interface MandatoryDocumentsLinkedStagesList {
+  mandatoryDocumentStageLinkID: number;
+  mandatoryDocumentID: number;
+  stageID: number;
+  stageName: string;
+  dateCreated: any;
+}
+
 
 
 
@@ -31,7 +39,7 @@ export interface StagesList {
   styleUrls: ['./mandatory-docs-config.component.css']
 })
 export class MandatoryDocsConfigComponent implements OnInit {
-
+  header: any;
 
   public addManDoc = this.formBuilder.group({
     newManDocName: ['', Validators.required]
@@ -46,19 +54,24 @@ export class MandatoryDocsConfigComponent implements OnInit {
 
   MandatoryDocumentUploadList: MandatoryDocumentUploadList[] = [];
   StagesList: StagesList[] = [];
+  MandatoryDocumentsLinkedStagesList: MandatoryDocumentsLinkedStagesList[] = [];
+
 
   openXl(content: any) {
     this.modalService.open(content, { size: 'lg' });
   }
   openAddUserToAccessGroup(addUserToAccessGroup: any) {
-    //this.getAllStages();
     this.modalService.open(addUserToAccessGroup, { centered: true, size: 'lg' });
-    
   }
+  openViewLinkedStages(viewLinkedStages: any) {
+    this.modalService.open(viewLinkedStages, { centered: true, size: 'lg' });
+  }
+
 
 
   @ViewChild(MatTable) MandatoryDocumentUploadTable: MatTable<MandatoryDocumentUploadList> | undefined;
   @ViewChild(MatTable) StagesTable: MatTable<StagesList> | undefined;
+  @ViewChild(MatTable) MandatoryDocumentsLinkedStagesTable: MatTable<MandatoryDocumentsLinkedStagesList> | undefined;
 
   selection = new SelectionModel<StagesList>(true, []);
 
@@ -82,6 +95,8 @@ export class MandatoryDocsConfigComponent implements OnInit {
   displayedColumnsAddStage: string[] = ['StageName', 'actions'];
   dataSourceAddStage = this.StagesList;
 
+  displayedColumnsViewLinkedStages: string[] = ['stageName', 'dateCreated','actions'];
+  dataSourceViewLinkedStages = this.MandatoryDocumentsLinkedStagesList;
   
 
   getAllMandatoryDocs() {
@@ -90,7 +105,7 @@ export class MandatoryDocsConfigComponent implements OnInit {
    
     this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);
     this.mandatoryUploadDocsService.getAllMandatoryDocuments().subscribe((data: any) => {
-      debugger;
+     
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempMandatoryDocList = {} as MandatoryDocumentUploadList;
@@ -112,6 +127,44 @@ export class MandatoryDocsConfigComponent implements OnInit {
       }
       console.log("response", data);
 
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  getAllLinkedStages(index: any, viewLinkedStages: any) {
+
+        this.MandatoryDocumentsLinkedStagesList.splice(0, this.MandatoryDocumentsLinkedStagesList.length);
+
+    console.log("THIS IS A TEST TO SEE WHATS ",this.MandatoryDocumentUploadList[index].mandatoryDocumentID);
+    this.mandatoryDocumentStageLink.getAllMandatoryDocumentStageLinkByStageID(this.MandatoryDocumentUploadList[index].mandatoryDocumentID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
+          const current = data.dateSet[i];
+          tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = current.mandatoryDocumentStageLinkID;
+          tempMandatoryDocumentsLinkedStagesList.stageName = current.stageName;
+          tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+
+          this.MandatoryDocumentsLinkedStagesList.push(tempMandatoryDocumentsLinkedStagesList);
+          this.MandatoryDocumentsLinkedStagesTable?.renderRows();
+
+        }
+
+        this.openViewLinkedStages(viewLinkedStages);
+        this.MandatoryDocumentsLinkedStagesTable?.renderRows();
+
+
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
 
     }, error => {
       console.log("Error: ", error);
@@ -191,7 +244,7 @@ export class MandatoryDocsConfigComponent implements OnInit {
   getCurrentMandatoryDocID(index: any) {
 
     this.CurrentMandatoryDocumentID = this.MandatoryDocumentUploadList[index].mandatoryDocumentID;
-
+    this.header = this.MandatoryDocumentUploadList[index].mandatoryDocumentName;
   }
 
   onStageLink() {
@@ -216,4 +269,61 @@ export class MandatoryDocsConfigComponent implements OnInit {
       })
     }
   }
-}
+
+
+  onStageDelete(index: any, viewLinkedStages:any) {
+    if (confirm("Are you sure you want to remove " + this.MandatoryDocumentsLinkedStagesList[index].stageName + "?")) {
+      debugger;
+      this.mandatoryDocumentStageLink.deleteMandatoryDocumentStageLink(this.MandatoryDocumentsLinkedStagesList[index].mandatoryDocumentStageLinkID).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          this.MandatoryDocumentsLinkedStagesList.splice(index, 1);
+          this.MandatoryDocumentsLinkedStagesTable?.renderRows();
+    
+          alert(data.responseMessage);
+
+
+          this.openViewLinkedStages(viewLinkedStages);
+        }
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+
+  }
+
+
+  onManDocDelete(index:any) {
+
+    if (confirm("Are you sure to delete " + this.MandatoryDocumentUploadList[index].mandatoryDocumentName + "?")) {
+
+      this.mandatoryUploadDocsService.deleteMandatoryDocument(this.MandatoryDocumentUploadList[index].mandatoryDocumentID).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          alert(data.responseMessage);
+          this.getAllMandatoryDocs();
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+
+    }
+
+  }
+
+
+  }
+

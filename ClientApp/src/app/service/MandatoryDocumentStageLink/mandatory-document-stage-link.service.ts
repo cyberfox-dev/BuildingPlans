@@ -35,9 +35,15 @@ export class MandatoryDocumentStageLinkService {
 
   }
 
-  public getAllMandatoryDocumentStageLinkByStageID(stageID: any) {
+  public getAllMandatoryDocumentStageLinkByStageID(mandatoryDocumentID: any) {
 
-    return this.httpClient.post(this.baseURL + "GetAllMandatoryDocumentStageLinkByStageID", stageID);
+    return this.httpClient.post(this.baseURL + "GetAllMandatoryDocumentStageLinkByStageID", mandatoryDocumentID);
+
+  }
+
+  public getAllMandatoryDocumentsByStageID(stageID: any) {
+
+    return this.httpClient.post(this.baseURL + "GetAllMandatoryDocumentsByStageID", stageID);
 
   }
 

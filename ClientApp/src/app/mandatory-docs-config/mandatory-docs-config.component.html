@@ -1,4 +1,4 @@
-<!--modal to create a new access group-->
+<!--modal to create a new doc-->
 
 <ng-template #content let-modal>
   <div class="modal-header">
@@ -34,7 +34,7 @@
   <button mat-raised-button color="primary" (click)="openXl(content)">Create a new document upload </button>
 
 
-  <!--display all access groups-->
+  <!--display all docs -->
 
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
@@ -53,8 +53,8 @@
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let i = index">
         <button mat-raised-button color="success" (click)=" getCurrentMandatoryDocID(i);openAddUserToAccessGroup(addStage)"><i class="fa fa-plus"></i></button>
-        <button mat-raised-button color="blue"><i class="fa fa-eye"></i></button>
-        <button mat-raised-button color="warn"><i class="fa fa-trash"></i></button>
+        <button mat-raised-button color="blue" (click)=" getCurrentMandatoryDocID(i);getAllLinkedStages(i,viewLinkedStages)"><i class="fa fa-eye"></i></button>
+        <button mat-raised-button color="warn" (click)=" getCurrentMandatoryDocID(i);onManDocDelete(i)"><i class="fa fa-trash"></i></button>
 
       </td>
       <td mat-cell *matCellDef="let element">  </td>
@@ -103,6 +103,52 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-success" (click)="onStageLink();modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+
+<!--end-->
+<!--modal to add stages to mandatory doc-->
+
+<ng-template #viewLinkedStages let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Viewing all linked stages for {{header}}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="container-fluid">
+        <table mat-table [dataSource]="dataSourceViewLinkedStages" class="mat-elevation-z8">
+
+
+          <ng-container matColumnDef="stageName">
+            <th mat-header-cell *matHeaderCellDef> Stage name </th>
+            <td mat-cell *matCellDef="let element"> {{element.stageName}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="dateCreated">
+            <th mat-header-cell *matHeaderCellDef> Date Created</th>
+            <td mat-cell *matCellDef="let element"> {{element.dateCreated}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let i = index">
+
+              <button mat-raised-button color="warn" (click)="modal.close('Close click');onStageDelete(i,viewLinkedStages)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+            </td>
+
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsViewLinkedStages"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumnsViewLinkedStages;"></tr>
+        </table>
+
+
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
   </div>
 </ng-template>
 
