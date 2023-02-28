@@ -111,6 +111,8 @@ export class ServiceItemsConfigComponent implements OnInit {
 
           this.ServiceItemList.push(tempServiceItemList);
 
+
+          
         }
 
       }
@@ -123,8 +125,6 @@ export class ServiceItemsConfigComponent implements OnInit {
     })
     
   }
-
-
 
 
 
