@@ -9,7 +9,6 @@ import { MatTable } from '@angular/material/table';
 import { CommentBuilderService } from '../service/CommentBuilder/comment-builder.service';
 import { ServiceItemService } from 'src/app/service/ServiceItems/service-item.service';
 
-
 export interface SubDepartmentList {
   subDepartmentID: number;
   subDepartmentName: string;
@@ -51,8 +50,6 @@ export interface ServiceItemCodeDropdown {
 })
 export class ActionCenterComponent implements OnInit {
 
-
-  @Input() ApplicationID: any;
   /*textfields*/
 
   public depositRequired = this.formBuilder.group({
@@ -71,19 +68,12 @@ export class ActionCenterComponent implements OnInit {
 
 
   SubDepartmentList: SubDepartmentList[] = [];
-
-  SubDepartmentListAssigned: SubDepartmentList[] = [];
   CommentList: CommentList[] = [];
   CommentDropDown: CommentDropDown[] = [];
   ServiceItemCodeDropdown: ServiceItemCodeDropdown[] = [];
   ServiceItemList: ServiceItemList[] = [];
 
-
-
-  selection = new SelectionModel<SubDepartmentList>(true, []);
-
-
-  displayedColumnsSubDepartment: string[] = [ 'subDepartmentName', 'actions'];
+  displayedColumnsSubDepartment: string[] = ['subDepartmentName', 'actions'];
   dataSourceSubDepartment = this.SubDepartmentList;
 
   @ViewChild(MatTable) SubDepartmentListTable: MatTable<SubDepartmentList> | undefined;
@@ -109,16 +99,16 @@ export class ActionCenterComponent implements OnInit {
     else {
       console.log(this.CurrentUser);
     }
-  /*  this.getAllServiceItmes();*/
+    /*  this.getAllServiceItmes();*/
     this.getAllServiceItmesForDropdown();
- 
+
 
   }
   openXl(content: any) {
     this.modalService.open(content, { size: 'xl' });
   }
   depositReqModal(deposit: any) {
-    this.modalService.open(deposit, { backdrop: 'static',size: 'xl' });
+    this.modalService.open(deposit, { backdrop: 'static', size: 'xl' });
 
 
   }
@@ -134,40 +124,40 @@ export class ActionCenterComponent implements OnInit {
   getAllSubDepartments(assign: any) {
 
     this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
-    
-  this.subDepartment.getSubDepartmentsList().subscribe((data: any) => {
 
-    if (data.responseCode == 1) {
+    this.subDepartment.getSubDepartmentsList().subscribe((data: any) => {
 
-      for (let i = 0; i < data.dateSet.length; i++) {
-        const tempSubDepartmentList = {} as SubDepartmentList;
-        const current = data.dateSet[i];
-        tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
-        tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
-        tempSubDepartmentList.departmentID = current.departmentID;
-        tempSubDepartmentList.dateUpdated = current.dateUpdated;
-        tempSubDepartmentList.dateCreated = current.dateCreated;
-        this.SubDepartmentList.push(tempSubDepartmentList);
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepartmentList = {} as SubDepartmentList;
+          const current = data.dateSet[i];
+          tempSubDepartmentList.subDepartmentID = current.SubDepartmentID;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.departmentID = current.departmentID;
+          tempSubDepartmentList.dateUpdated = current.dateUpdated;
+          tempSubDepartmentList.dateCreated = current.dateCreated;
+          this.SubDepartmentList.push(tempSubDepartmentList);
+          this.SubDepartmentListTable?.renderRows();
+        }
+
         this.SubDepartmentListTable?.renderRows();
+        this.modalService.open(assign, { size: 'xl' });
       }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+        this.SubDepartmentListTable?.renderRows();
+        this.modalService.open(assign, { size: 'xl' });
+      }
+      console.log("reponse", data);
 
-      this.SubDepartmentListTable?.renderRows();
-      this.modalService.open(assign, { size: 'xl' });
-    }
-    else {
-      //alert("Invalid Email or Password");
-      alert(data.responseMessage);
-      this.SubDepartmentListTable?.renderRows();
-      this.modalService.open(assign, { size: 'xl' });
-    }
-    console.log("reponse", data);
-
-  }, error => {
-    console.log("Error: ", error);
-  })
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 
-  populateComment(commentName:any) {
+  populateComment(commentName: any) {
     console.log("commentName", commentName);
     this.leaveAComment = commentName;
   }
@@ -186,7 +176,7 @@ export class ActionCenterComponent implements OnInit {
           const current = data.dateSet[i];
           tempCommentDropDown.commentID = current.commentID;
           tempCommentDropDown.commentName = current.commentName;
-          
+
 
 
           this.CommentDropDown.push(tempCommentDropDown);
@@ -221,7 +211,7 @@ export class ActionCenterComponent implements OnInit {
           const current = data.dateSet[i];
           tempServiceItemList.serviceItemID = current.serviceItemID;
           tempServiceItemList.serviceItemCode = current.serviceItemCode;
-         
+
           this.ServiceItemCodeDropdown.push(tempServiceItemList);
         }
 
@@ -235,41 +225,6 @@ export class ActionCenterComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
-  }
-
-  departmentSelectedForLink(department: any) {
-    console.log("departmentdssssssssss", department);
-    this.selection.toggle(department);
-
-  }
-
-  onLinkDepartmentForComment() {
-
-   
-
-    const selectDepartments = this.selection.selected;
-
-
-
-
-    for (var i = 0; i < selectDepartments.length; i++) {
-      this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, selectDepartments[i].subDepartmentID, selectDepartments[i].subDepartmentName, null ,null,this.CurrentUser.appUserId).subscribe((data: any) => {
-
-      if (data.responseCode == 1) {
-
-        alert(data.dateSet.subDepartmentName + " assigned to this Application" );
-
-      }
-      else {
-
-        alert(data.responseMessage);
-      }
-        console.log("reponseAddUpdateDepartmentForComment", data);
-
-
-    }, error => {
-      console.log("Error: ", error);
-    })
 
   }
 
@@ -279,32 +234,6 @@ export class ActionCenterComponent implements OnInit {
   //  this.serviceItemService.getAllServiceItem().subscribe((data: any) => {
   //    if (data.responseCode == 1) {
 
-          for (var i = 0; i < data.dateSet.length; i++) {
-            const current = data.dateSet[i];
-            const tempSubDepartmentList = {} as SubDepartmentList;
-            tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
-            tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
-            tempSubDepartmentList.departmentID = current.departmentID;
-            tempSubDepartmentList.dateUpdated = current.dateUpdated;
-            tempSubDepartmentList.dateCreated = current.dateCreated;
-            this.selection.toggle(tempSubDepartmentList);
-            this.selection.isSelected(tempSubDepartmentList);
-          
-          }
-
-        }
-        else {
-
-          alert(data.responseMessage);
-        }
-        console.log("reponseGetSubDepartmentForComment", data);
-
-
-      }, error => {
-        console.log("Error: ", error);
-      })
-    
-  }
 
   //      for (let i = 0; i < data.dateSet.length; i++) {
   //        const tempServiceItemList = {} as ServiceItemList;
@@ -332,33 +261,33 @@ export class ActionCenterComponent implements OnInit {
 
   //}
 
-  onPopulateDeposit(event:any) {
+  onPopulateDeposit(event: any) {
     let selectedServiceItem = Number(this.depositRequired.controls["selectServiceItemCode"].value);
 
     console.log("THIS IS THE SERVICE ITEM CODE", selectedServiceItem);
-  
-    this.serviceItemService.getServiceItemByServiceItemID(selectedServiceItem).subscribe((data: any) => {
-        if (data.responseCode == 1) {
 
-          for (let i = 0; i < data.dateSet.length; i++) {
-            const tempServiceItemList = {} as ServiceItemList;
-            const current = data.dateSet[i];
+    this.serviceItemService.getServiceItemByServiceItemID(selectedServiceItem).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempServiceItemList = {} as ServiceItemList;
+          const current = data.dateSet[i];
           tempServiceItemList.serviceItemID = current.serviceItemID;
           tempServiceItemList.serviceItemCode = current.serviceItemCode;
 
-            this.depositRequired.controls["description"].setValue(current.description);
-            this.depositRequired.controls["rate"].setValue(current.rate);
-            this.depositRequired.controls["total"].setValue(current.totalVat);
+          this.depositRequired.controls["description"].setValue(current.description);
+          this.depositRequired.controls["rate"].setValue(current.rate);
+          this.depositRequired.controls["total"].setValue(current.totalVat);
 
-          }
         }
-        else {
-          alert(data.responseMessage);
-        }
-        console.log("reponse", data);
-      }, error => {
-        console.log("Error: ", error);
-      })
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 }
 
