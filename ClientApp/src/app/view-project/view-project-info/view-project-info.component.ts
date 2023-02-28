@@ -107,6 +107,8 @@ export class ViewProjectInfoComponent implements OnInit {
 
   CurrentApplicationBeingViewed: ApplicationList[] = [];
 
+  ApplicationID: number | undefined;
+
   CurrentUser: any;
   //Convert the local storage JSON data to an array object
   stringifiedData: any;
@@ -156,7 +158,10 @@ export class ViewProjectInfoComponent implements OnInit {
    
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
+
+   
     const setValues = this.applicationDataForView[0];
+    this.ApplicationID = setValues.applicationID;
 
 
     console.log("this is the created by ID", setValues);

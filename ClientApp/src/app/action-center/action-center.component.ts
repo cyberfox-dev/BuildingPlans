@@ -9,6 +9,7 @@ import { MatTable } from '@angular/material/table';
 import { CommentBuilderService } from '../service/CommentBuilder/comment-builder.service';
 import { ServiceItemService } from 'src/app/service/ServiceItems/service-item.service';
 
+
 export interface SubDepartmentList {
   subDepartmentID: number;
   subDepartmentName: string;
@@ -50,6 +51,8 @@ export interface ServiceItemCodeDropdown {
 })
 export class ActionCenterComponent implements OnInit {
 
+
+  @Input() ApplicationID: any;
   /*textfields*/
 
   public depositRequired = this.formBuilder.group({
@@ -68,10 +71,17 @@ export class ActionCenterComponent implements OnInit {
 
 
   SubDepartmentList: SubDepartmentList[] = [];
+
+  SubDepartmentListAssigned: SubDepartmentList[] = [];
   CommentList: CommentList[] = [];
   CommentDropDown: CommentDropDown[] = [];
   ServiceItemCodeDropdown: ServiceItemCodeDropdown[] = [];
   ServiceItemList: ServiceItemList[] = [];
+
+
+
+  selection = new SelectionModel<SubDepartmentList>(true, []);
+
 
   displayedColumnsSubDepartment: string[] = [ 'subDepartmentName', 'actions'];
   dataSourceSubDepartment = this.SubDepartmentList;
@@ -132,7 +142,7 @@ export class ActionCenterComponent implements OnInit {
       for (let i = 0; i < data.dateSet.length; i++) {
         const tempSubDepartmentList = {} as SubDepartmentList;
         const current = data.dateSet[i];
-        tempSubDepartmentList.subDepartmentID = current.SubDepartmentID;
+        tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
         tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
         tempSubDepartmentList.departmentID = current.departmentID;
         tempSubDepartmentList.dateUpdated = current.dateUpdated;
@@ -225,6 +235,41 @@ export class ActionCenterComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
+  }
+
+  departmentSelectedForLink(department: any) {
+    console.log("departmentdssssssssss", department);
+    this.selection.toggle(department);
+
+  }
+
+  onLinkDepartmentForComment() {
+
+   
+
+    const selectDepartments = this.selection.selected;
+
+
+
+
+    for (var i = 0; i < selectDepartments.length; i++) {
+      this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, selectDepartments[i].subDepartmentID, selectDepartments[i].subDepartmentName, null ,null,this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        alert(data.dateSet.subDepartmentName + " assigned to this Application" );
+
+      }
+      else {
+
+        alert(data.responseMessage);
+      }
+        console.log("reponseAddUpdateDepartmentForComment", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
 
   }
 
@@ -234,6 +279,32 @@ export class ActionCenterComponent implements OnInit {
   //  this.serviceItemService.getAllServiceItem().subscribe((data: any) => {
   //    if (data.responseCode == 1) {
 
+          for (var i = 0; i < data.dateSet.length; i++) {
+            const current = data.dateSet[i];
+            const tempSubDepartmentList = {} as SubDepartmentList;
+            tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+            tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+            tempSubDepartmentList.departmentID = current.departmentID;
+            tempSubDepartmentList.dateUpdated = current.dateUpdated;
+            tempSubDepartmentList.dateCreated = current.dateCreated;
+            this.selection.toggle(tempSubDepartmentList);
+            this.selection.isSelected(tempSubDepartmentList);
+          
+          }
+
+        }
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponseGetSubDepartmentForComment", data);
+
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    
+  }
 
   //      for (let i = 0; i < data.dateSet.length; i++) {
   //        const tempServiceItemList = {} as ServiceItemList;
