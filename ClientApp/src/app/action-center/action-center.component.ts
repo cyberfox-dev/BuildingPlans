@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild, Input } from '@angular/core';
 import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
@@ -8,6 +8,8 @@ import { SubDepartmentsService } from '../service/SubDepartments/sub-departments
 import { MatTable } from '@angular/material/table';
 import { CommentBuilderService } from '../service/CommentBuilder/comment-builder.service';
 import { ServiceItemService } from 'src/app/service/ServiceItems/service-item.service';
+import { SelectionModel } from '@angular/cdk/collections';
+import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentForComment/sub-department-for-comment.service';
 
 export interface SubDepartmentList {
   subDepartmentID: number;
@@ -50,6 +52,10 @@ export interface ServiceItemCodeDropdown {
 })
 export class ActionCenterComponent implements OnInit {
 
+
+
+
+  @Input() ApplicationID: any;
   /*textfields*/
 
   public depositRequired = this.formBuilder.group({
@@ -73,6 +79,8 @@ export class ActionCenterComponent implements OnInit {
   ServiceItemCodeDropdown: ServiceItemCodeDropdown[] = [];
   ServiceItemList: ServiceItemList[] = [];
 
+  selection = new SelectionModel<SubDepartmentList>(true, []);
+
   displayedColumnsSubDepartment: string[] = ['subDepartmentName', 'actions'];
   dataSourceSubDepartment = this.SubDepartmentList;
 
@@ -80,7 +88,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   closeResult!: string;
-  constructor(private offcanvasService: NgbOffcanvas, private modalService: NgbModal, private _snackBar: MatSnackBar, private subDepartment: SubDepartmentsService, private commentService: CommentBuilderService, private formBuilder: FormBuilder, private serviceItemService: ServiceItemService) { }
+  constructor(private offcanvasService: NgbOffcanvas, private modalService: NgbModal, private _snackBar: MatSnackBar, private subDepartment: SubDepartmentsService, private commentService: CommentBuilderService, private formBuilder: FormBuilder, private serviceItemService: ServiceItemService, private subDepartmentForCommentService: SubDepartmentForCommentService) { }
   openEnd(content: TemplateRef<any>) {
     this.offcanvasService.open(content, { position: 'end' });
   }
@@ -289,6 +297,83 @@ export class ActionCenterComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
+
+  departmentSelectedForLink(department: any) {
+    console.log("departmentdssssssssss", department);
+    this.selection.toggle(department);
+
+  }
+
+  onLinkDepartmentForComment() {
+
+
+
+    const selectDepartments = this.selection.selected;
+
+
+
+
+    for (var i = 0; i < selectDepartments.length; i++) {
+      this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, selectDepartments[i].subDepartmentID, selectDepartments[i].subDepartmentName, null, null, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          alert(data.dateSet.subDepartmentName + " assigned to this Application");
+
+        }
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponseAddUpdateDepartmentForComment", data);
+
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+
+
+
+  }
+  getLinkedDepartments() {
+
+
+    this.subDepartmentForCommentService.getSubDepartmentForComment(this.ApplicationID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+
+        for (var i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          const tempSubDepartmentList = {} as SubDepartmentList;
+          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.departmentID = current.departmentID;
+          tempSubDepartmentList.dateUpdated = current.dateUpdated;
+          tempSubDepartmentList.dateCreated = current.dateCreated;
+          this.selection.toggle(tempSubDepartmentList);
+          this.selection.isSelected(tempSubDepartmentList);
+
+        }
+
+      }
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponseGetSubDepartmentForComment", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
+
+
+
 }
 
 
