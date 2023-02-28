@@ -1,4 +1,5 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -6,12 +7,22 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SubDepartmentsService } from '../service/SubDepartments/sub-departments.service';
 import { MatTable } from '@angular/material/table';
 import { CommentBuilderService } from '../service/CommentBuilder/comment-builder.service';
+import { ServiceItemService } from 'src/app/service/ServiceItems/service-item.service';
 
 export interface SubDepartmentList {
   subDepartmentID: number;
   subDepartmentName: string;
   departmentID: number;
   dateUpdated: any;
+  dateCreated: any;
+}
+
+export interface ServiceItemList {
+  serviceItemID: number;
+  serviceItemCode: string;
+  Description: string;
+  Rate: any;
+  totalVat: number;
   dateCreated: any;
 }
 
@@ -26,7 +37,10 @@ export interface CommentDropDown {
   commentID: number;
   commentName: string;
 }
-
+export interface ServiceItemCodeDropdown {
+  serviceItemID: number;
+  serviceItemCode: string;
+}
 
 @Component({
   selector: 'app-action-center',
@@ -37,11 +51,18 @@ export interface CommentDropDown {
 export class ActionCenterComponent implements OnInit {
 
   /*textfields*/
-  serviceItemName = '';
-  description = '';
-  rate = '';
-  quantity = '';
-  total = '';
+
+  public depositRequired = this.formBuilder.group({
+    /*viewSelectedSubDep: ['', Validators.required],*/
+    selectServiceItemCode: ['', Validators.required],
+    description: ['', Validators.required],
+    rate: ['', Validators.required],
+    quantity: ['', Validators.required],
+    total: ['', Validators.required],
+
+
+  })
+
   checked: boolean = false;
 
 
@@ -49,6 +70,8 @@ export class ActionCenterComponent implements OnInit {
   SubDepartmentList: SubDepartmentList[] = [];
   CommentList: CommentList[] = [];
   CommentDropDown: CommentDropDown[] = [];
+  ServiceItemCodeDropdown: ServiceItemCodeDropdown[] = [];
+  ServiceItemList: ServiceItemList[] = [];
 
   displayedColumnsSubDepartment: string[] = [ 'subDepartmentName', 'actions'];
   dataSourceSubDepartment = this.SubDepartmentList;
@@ -57,7 +80,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   closeResult!: string;
-  constructor(private offcanvasService: NgbOffcanvas, private modalService: NgbModal, private _snackBar: MatSnackBar, private subDepartment: SubDepartmentsService, private commentService: CommentBuilderService) { }
+  constructor(private offcanvasService: NgbOffcanvas, private modalService: NgbModal, private _snackBar: MatSnackBar, private subDepartment: SubDepartmentsService, private commentService: CommentBuilderService, private formBuilder: FormBuilder, private serviceItemService: ServiceItemService) { }
   openEnd(content: TemplateRef<any>) {
     this.offcanvasService.open(content, { position: 'end' });
   }
@@ -76,6 +99,8 @@ export class ActionCenterComponent implements OnInit {
     else {
       console.log(this.CurrentUser);
     }
+  /*  this.getAllServiceItmes();*/
+    this.getAllServiceItmesForDropdown();
  
 
   }
@@ -170,9 +195,100 @@ export class ActionCenterComponent implements OnInit {
     })
   }
 
+  selectServiceItemCode(event: any, deposit: any) {
+
+  }
+
+  getAllServiceItmesForDropdown() {
 
 
+    this.serviceItemService.getAllServiceItem().subscribe((data: any) => {
+      if (data.responseCode == 1) {
 
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempServiceItemList = {} as ServiceItemCodeDropdown;
+          const current = data.dateSet[i];
+          tempServiceItemList.serviceItemID = current.serviceItemID;
+          tempServiceItemList.serviceItemCode = current.serviceItemCode;
+         
+          this.ServiceItemCodeDropdown.push(tempServiceItemList);
+        }
+
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
+  //getAllServiceItmes() {
+  //  this.ServiceItemList.splice(0, this.ServiceItemList.length);
+
+  //  this.serviceItemService.getAllServiceItem().subscribe((data: any) => {
+  //    if (data.responseCode == 1) {
+
+
+  //      for (let i = 0; i < data.dateSet.length; i++) {
+  //        const tempServiceItemList = {} as ServiceItemList;
+  //        const current = data.dateSet[i];
+  //        tempServiceItemList.serviceItemID = current.serviceItemID;
+  //        tempServiceItemList.serviceItemCode = current.serviceItemCode;
+  //        tempServiceItemList.Description = current.description;
+  //        tempServiceItemList.Rate = current.rate;
+  //        tempServiceItemList.totalVat = current.totalVat;
+  //        tempServiceItemList.dateCreated = current.dateCreated;
+  //        this.ServiceItemList.push(tempServiceItemList);
+  //      }
+
+  //    }
+  //    else {
+  //      //alert("Invalid Email or Password");
+  //      alert(data.responseMessage);
+  //    }
+  //    console.log("reponse", data);
+
+  //  }, error => {
+  //    console.log("Error: ", error);
+  //  })
+  // 
+
+  //}
+
+  onPopulateDeposit(event:any) {
+    let selectedServiceItem = Number(this.depositRequired.controls["selectServiceItemCode"].value);
+
+    console.log("THIS IS THE SERVICE ITEM CODE", selectedServiceItem);
+  
+    this.serviceItemService.getServiceItemByServiceItemID(selectedServiceItem).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempServiceItemList = {} as ServiceItemList;
+            const current = data.dateSet[i];
+          tempServiceItemList.serviceItemID = current.serviceItemID;
+          tempServiceItemList.serviceItemCode = current.serviceItemCode;
+
+            this.depositRequired.controls["description"].setValue(current.description);
+            this.depositRequired.controls["rate"].setValue(current.rate);
+            this.depositRequired.controls["total"].setValue(current.totalVat);
+
+          }
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+      }, error => {
+        console.log("Error: ", error);
+      })
+  }
 }
 
 

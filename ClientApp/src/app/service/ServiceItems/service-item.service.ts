@@ -36,9 +36,9 @@ export class ServiceItemService {
 
   }
 
-  public getStageList(ServiceItemID: any) {
+  public getServiceItemByServiceItemID(ServiceItemID: number) {
 
-    return this.httpClient.get(this.baseURL + "GetServiceItemByServiceItemID", ServiceItemID);
+    return this.httpClient.post(this.baseURL + "GetServiceItemByServiceItemID", ServiceItemID);
 
   }
 }
