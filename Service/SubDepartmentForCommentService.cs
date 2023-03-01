@@ -126,6 +126,30 @@ namespace WayleaveManagementSystem.Service
 
 
 
+
+        public async Task<List<SubDepartmentForCommentDTO>> GetSubDepartmentForCommentNotLinked(int applicationID)
+        {
+            return await (
+                from subDepartmentForComment in _context.SubDepartmentForComment
+                where subDepartmentForComment.ApplicationID == applicationID && subDepartmentForComment.isActive == true
+                select new SubDepartmentForCommentDTO()
+                {
+                    SubDepartmentForCommentID = subDepartmentForComment.SubDepartmentForCommentID,
+                    ApplicationID = subDepartmentForComment.ApplicationID,
+                    SubDepartmentID = subDepartmentForComment.SubDepartmentID,
+                    SubDepartmentName = subDepartmentForComment.SubDepartmentName,
+                    UserAssaignedToComment = subDepartmentForComment.UserAssaignedToComment,
+                    CommentStatus = subDepartmentForComment.CommentStatus,
+                    isAwaitingClarity = subDepartmentForComment.isAwaitingClarity,
+                    IsRefered = subDepartmentForComment.IsRefered,
+                    ReferedToUserID = subDepartmentForComment.ReferedToUserID,
+                    CreatedById = subDepartmentForComment.CreatedById
+
+
+                }
+                ).ToListAsync();
+        }
+
         public async Task<bool> UpdateCommentStatus(int? subDepartmentForCommentID, string? commentStatus)
         {
             //this checks is the record exists in the db

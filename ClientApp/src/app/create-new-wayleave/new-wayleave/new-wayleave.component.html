@@ -444,106 +444,109 @@
         <!--<app-checklist-details (newItemEvent)="StepSave(6,$event)"></app-checklist-details>-->
 
       </form>
-      <mat-list>
-        <mat-list-item>Cover letter explaning the extent of the work</mat-list-item>
-        <app-file-upload (onUploadFinished)="uploadFinished($event)"></app-file-upload>
-        <mat-form-field>
-          <div>
+      <mat-list *ngFor="let manDoc of MandatoryDocumentsLinkedStagesList">
+        <!--   <mat-list-item>Cover letter explaning the extent of the work</mat-list-item>
+  <app-file-upload  [UploadFor]="CoverLetter" (onUploadFinished)="uploadFinished($event)"></app-file-upload>-->
+        <!--<mat-form-field>
+  <div>
 
 
 
-            <mat-toolbar>
-              <!-- Display files names -->
-              <input matInput [(ngModel)]="fileAttr" readonly name="uploadFileEvtCoverLetter" />
-              <!-- Browse Button -->
-              <button mat-raised-button color="primary"><i class="fa fa-upload" aria-hidden="true"></i></button>
-              <!--<button mat-flat-button color="primary"><i class="fa fa-upload" aria-hidden="true"></i></button>-->
+    <mat-toolbar>-->
+        <!-- Display files names -->
+        <!--<input matInput [(ngModel)]="fileAttr" readonly name="uploadFileEvtCoverLetter" />-->
+        <!-- Browse Button -->
+        <!--<app-file-upload [UploadFor]="CoverLetter" (onUploadFinished)="uploadFinished($event)"></app-file-upload>-->
+        <!--<button mat-flat-button color="primary"><i class="fa fa-upload" aria-hidden="true"></i></button>-->
+        <!--</mat-toolbar>-->
+        <!-- Fetch selected filed on change -->
+        <!--<input type="file"
+             #fileInput
+             id="uploadFileEvtCoverLetter"
+             (change)="uploadFileEvtCoverLetter($event)"
+             name="uploadFileEvtCoverLetter"
+             multiple="multiple"
+             accept="*" />
+    </div>
+        {{manDoc.mandatoryDocumentName}}
+  </mat-form-field>
+  <button mat-raised-button color="warn"><i class="fa fa-trash" aria-hidden="true"></i></button>-->
 
-
-
-
-            </mat-toolbar>
-
-
-            <!-- Fetch selected filed on change -->
-            <input type="file"
-                   #fileInput
-                   id="uploadFileEvtCoverLetter"
-                   (change)="uploadFileEvtCoverLetter($event)"
-                   name="uploadFileEvtCoverLetter"
-                   multiple="multiple"
-                   accept="*" />
-          </div>
-        </mat-form-field>
-        <button mat-raised-button color="warn"><i class="fa fa-trash" aria-hidden="true"></i></button>
-
-        <mat-list-item>Drawing showing the proposed route and detail regarding the trench cross section, number of pipes etc.</mat-list-item>
+        <mat-list-item> {{manDoc.mandatoryDocumentName}}</mat-list-item>
         <mat-form-field>
           <div>
 
             <mat-toolbar>
               <!-- Display files names -->
-              <input matInput [(ngModel)]="fileAttr" readonly name="name" />
+              <input matInput [(ngModel)]="CoverLetterChooseFileText" readonly name="name" />
               <!-- Browse Button -->
-              <button mat-raised-button color="primary"><i class="fa fa-upload" aria-hidden="true"></i></button>
-            </mat-toolbar>
-            <!-- Fetch selected filed on change -->
-            <input type="file"
-                   #fileInput
-                   id="uploadFile"
-                   (change)="coverLetterUpload($event)"
-                   name="uploadFile"
-                   multiple="multiple"
-                   accept="image/*" />
-          </div>
-        </mat-form-field>
-        <button mat-raised-button color="warn"><i class="fa fa-trash" aria-hidden="true"></i></button>
-        <mat-list-item>A programme with proposed timelines</mat-list-item>
-        <mat-form-field>
-          <div>
+              <div class="row" style="margin-bottom:15px;">
+                <div class="container-fluid">
 
-            <mat-toolbar>
-              <!-- Display files names -->
-              <input matInput [(ngModel)]="fileAttr" readonly name="name" />
-              <!-- Browse Button -->
-              <button mat-raised-button color="primary"><i class="fa fa-upload" aria-hidden="true"></i></button>
-            </mat-toolbar>
-            <!-- Fetch selected filed on change -->
-            <input type="file"
-                   #fileInput
-                   id="uploadFile"
-                   (change)="uploadFileEvt($event)"
-                   name="uploadFile"
-                   multiple="multiple"
-                   accept="image/*" />
-          </div>
-        </mat-form-field>
-        <button mat-raised-button color="warn"><i class="fa fa-trash" aria-hidden="true"></i></button>
-        <mat-list-item>Proof and payment</mat-list-item>
-        <mat-form-field>
-          <div>
 
-            <mat-toolbar>
-              <!-- Display files names -->
-              <input matInput [(ngModel)]="fileAttr" readonly name="name" />
-              <!-- Browse Button -->
-              <button mat-raised-button color="primary"><i class="fa fa-upload" aria-hidden="true"></i></button>
+                  <app-file-upload [UploadFor]="CoverLetter" (passFileName)="onPassFileName($event)"></app-file-upload>
+                  <!--(onUploadFinished)="uploadFinished($event)"-->
+                </div>
+
+              </div>
             </mat-toolbar>
             <!-- Fetch selected filed on change -->
-            <input type="file"
-                   #fileInput
-                   id="uploadFile"
-                   (change)="uploadFileEvt($event)"
-                   name="uploadFile"
-                   multiple="multiple"
-                   accept="image/*" />
+            <!--<input type="file"
+      #fileInput
+      id="uploadFile"
+      (change)="coverLetterUpload($event)"
+      name="uploadFile"
+      multiple="multiple"
+      accept="*" />-->
           </div>
         </mat-form-field>
-        <button mat-raised-button color="warn"><i class="fa fa-trash" aria-hidden="true"></i></button>
+
+        <!--<mat-list-item>A programme with proposed timelines</mat-list-item>
+  <mat-form-field>
+    <div>
+
+      <mat-toolbar>-->
+        <!-- Display files names -->
+        <!--<input matInput [(ngModel)]="fileAttr" readonly name="name" />-->
+        <!-- Browse Button -->
+        <!--<button mat-raised-button color="primary"><i class="fa fa-upload" aria-hidden="true"></i></button>
+  </mat-toolbar>-->
+        <!-- Fetch selected filed on change -->
+        <!--<input type="file"
+             #fileInput
+             id="uploadFile"
+             (change)="uploadFileEvt($event)"
+             name="uploadFile"
+             multiple="multiple"
+             accept="image/*" />
+    </div>
+  </mat-form-field>
+  <button mat-raised-button color="warn"><i class="fa fa-trash" aria-hidden="true"></i></button>
+  <mat-list-item>Proof and payment</mat-list-item>
+  <mat-form-field>
+    <div>
+
+      <mat-toolbar>-->
+        <!-- Display files names -->
+        <!--<input matInput [(ngModel)]="fileAttr" readonly name="name" />-->
+        <!-- Browse Button -->
+        <!--<button mat-raised-button color="primary"><i class="fa fa-upload" aria-hidden="true"></i></button>
+  </mat-toolbar>-->
+        <!-- Fetch selected filed on change -->
+        <!--<input type="file"
+             #fileInput
+             id="uploadFile"
+             (change)="uploadFileEvt($event)"
+             name="uploadFile"
+             multiple="multiple"
+             accept="image/*" />
+    </div>
+  </mat-form-field>
+  <button mat-raised-button color="warn"><i class="fa fa-trash" aria-hidden="true"></i></button>-->
       </mat-list>
-
+      
       <div class="row">
-
+     
         <button mat-raised-button color="green" (click)="onWayleaveCreate();generateInvoice()">Create Invoice</button>
       </div>
 

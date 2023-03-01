@@ -82,7 +82,7 @@ table {
 
 
 .example-full-width {
-  width: 100%;
+  width: 90%;
   background-color:transparent;
   color:black;
 }
@@ -224,8 +224,8 @@ mat-expansion-panel {
 
 textarea {
   margin-top: 20px;
+  margin-bottom: 10px;
   width: 100%;
-  min-height: 130px;
   border-color: #f1f1f1;
   padding: 10px;
 }

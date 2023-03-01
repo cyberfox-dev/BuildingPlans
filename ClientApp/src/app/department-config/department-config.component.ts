@@ -1118,6 +1118,8 @@ export class DepartmentConfigComponent implements OnInit {
 
   userSelectedForLink(user: any) {
     this.selection.toggle(user);
+    console.log("THIS IS THE USER", user);
+    console.log("THIS IS THE USER", this.selection.toggle(user));
   }
 
 

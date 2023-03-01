@@ -66,7 +66,7 @@ MoveToNextStage()
   <button type="button" mat-raised-button color="green" (click)="ChangeApplicationStatusToPaid()"><i class="fa fa-hand-peace-o" aria-hidden="true"></i>   move to paid</button>
   <button type="button" mat-raised-button color="green" (click)="MoveToNextStage()"><i class="fa fa-hand-peace-o" aria-hidden="true"></i>   Next Stage</button>
 </div>
-<app-action-center *ngIf="isInternalUser"></app-action-center>
+<app-action-center [ApplicationID]="ApplicationID" *ngIf="isInternalUser"></app-action-center>
 <div class="cont1" *ngIf="!isInternalUser">
   <button mat-raised-button color="warn">
     <i class="fa fa-ban" aria-hidden="true"></i>
@@ -341,6 +341,7 @@ MoveToNextStage()
               <input type="tel" class="form-control" [(ngModel)]="extApplicantTellNo" placeholder="Enter Tell No." disabled>
               <label for="applicantTellNo">Cell No.</label>
             </div>
+
           </div>
 
         </div>

@@ -1,5 +1,9 @@
 import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { SharedService } from "src/app/shared/shared.service";
+
+
+
 
 
 @Component({
@@ -7,49 +11,52 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
   templateUrl: './file-upload.component.html',
   styleUrls: ['./file-upload.component.css']
 })
+
 export class FileUploadComponent implements OnInit {
   progress: number = 0;
   message: string | undefined;
-  
+
+  @Input() UploadFor: any;
   @Output() public onUploadFinished = new EventEmitter();
+  @Output() public passFileName = new EventEmitter<string>();
+ //@Output() public onUploadFile = new EventEmitter();
+ fileName: string = 'C';
   
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private shared: SharedService) { }
 
   ngOnInit(): void {
   }
   uploadFile = (files: any) => {
+
+    debugger;
     if (files.length === 0) {
       return;
     }
     let fileToUpload = <File>files[0];
-    const formData = new FormData();
-    formData.append('file', fileToUpload, fileToUpload.name);
+/*    const formData = new FormData();*/
+
+    let fileExtention = fileToUpload.name.substring(fileToUpload.name.indexOf('.'));
+    let fileUploadName = fileToUpload.name.substring(0, fileToUpload.name.indexOf('.')) + this.UploadFor;
+    this.passFileName.emit(fileToUpload.name);
+    //formData.append('file', fileToUpload, fileToUpload.name + this.UploadFor);
 
 
-    const body = {
-      DocumentID: 0,
-      DocumentName: "",
-      DocumentData: "",
-      ApplicationID: 0,
-      AssignedUserID: "",
-      CreatedById: ""
-    }
-
-    console.log("formData", formData);
-
-    this.http.post('https://localhost:7123/api/documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
-      .subscribe({
-        next: (event) => {
+    this.shared.pushFileForTempFileUpload(fileToUpload, fileUploadName + fileExtention);
+    //const fileForUpload = this.shared.pullFilesForUpload();
+    //console.log("fileForUploadtttttttttttttttttttttttttttttt", fileForUpload);
+    //this.http.post('https://localhost:7123/api/documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+    // .subscribe({
+    //    next: (event) => {
           
-          if (event.type === HttpEventType.UploadProgress && event.total)
-            this.progress = Math.round(100 * event.loaded / event.total);
-          else if (event.type === HttpEventType.Response) {
-            this.message = 'Upload success.';
-            this.onUploadFinished.emit(event.body);
-          }
-        },
-        error: (err: HttpErrorResponse) => console.log(err)
-      });
+    //     if (event.type === HttpEventType.UploadProgress && event.total)
+    //     this.progress = Math.round(100 * event.loaded / event.total);
+    //     else if (event.type === HttpEventType.Response) {
+    //      this.message = 'Upload success.';
+    //      this.onUploadFinished.emit(event.body);
+    //     }
+    //},
+    //    error: (err: HttpErrorResponse) => console.log(err)
+    //  });
   }
 
 

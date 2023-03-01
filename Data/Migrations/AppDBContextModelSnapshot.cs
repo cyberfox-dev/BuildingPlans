@@ -464,6 +464,71 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("DocumentUpload");
                 });
 
+            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.MandatoryDocumentStageLink", b =>
+                {
+                    b.Property<int?>("MandatoryDocumentStageLinkID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("MandatoryDocumentStageLinkID"), 1L, 1);
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("MandatoryDocumentID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StageID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StageName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("MandatoryDocumentStageLinkID");
+
+                    b.ToTable("MandatoryDocumentStageLink");
+                });
+
+            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.MandatoryDocumentUpload", b =>
+                {
+                    b.Property<int?>("MandatoryDocumentID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("MandatoryDocumentID"), 1L, 1);
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MandatoryDocumentName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("StageID")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("MandatoryDocumentID");
+
+                    b.ToTable("MandatoryDocumentUploads");
+                });
+
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Professionals", b =>
                 {
                     b.Property<int>("ProfessinalID")
@@ -591,6 +656,43 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.HasKey("RoleID");
 
                     b.ToTable("Role");
+                });
+
+            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.ServiceItems", b =>
+                {
+                    b.Property<int?>("ServiceItemID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("ServiceItemID"), 1L, 1);
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Rate")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ServiceItemCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TotalVat")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("ServiceItemID");
+
+                    b.ToTable("ServiceItem");
                 });
 
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Stages", b =>

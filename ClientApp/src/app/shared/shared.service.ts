@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 
 
+export interface FileDocument {
+
+  formData: any;
+  UploadFor: string;
+}
+
+
 export interface ProfessionalList {
   professinalID: number;
   ProfessinalType: string;
@@ -66,6 +73,7 @@ export class SharedService {
   configShow!: any;
 
   userProfileData: any;
+  FileDocument: FileDocument[] = [];
   contactorData: ProfessionalList[] = [];
   applicationData: ApplicationList[] = [];
   applicationDataForView: ApplicationList[] = [];
@@ -163,7 +171,37 @@ export class SharedService {
     return this.esriAddress;
   }
 
+  pushFileForTempFileUpload(formData: any, uploadFor: any) {
 
+    //TODO: Remember to clear this when invoice is generated
+    debugger;
+    if (this.FileDocument.length != 0) {
+      for (var i = 0; i < this.FileDocument.length; i++) {
+        if (this.FileDocument[i].UploadFor == uploadFor) {
+          this.FileDocument[i].UploadFor = uploadFor;
+          this.FileDocument[i].formData = formData;
 
+          console.log("return this.FileDocument;", this.FileDocument);
+        } else {
+          const tempFileDocument = {} as FileDocument;
+          tempFileDocument.formData = formData;
+          tempFileDocument.UploadFor = uploadFor;
+          this.FileDocument.push(tempFileDocument);
+          console.log("return this.FileDocument;", this.FileDocument);
+        }
+      }
+    } else {
+      const tempFileDocument = {} as FileDocument;
+      tempFileDocument.formData = formData;
+      tempFileDocument.UploadFor = uploadFor;
+
+      this.FileDocument.push(tempFileDocument);
+    }
+    
+  }
+
+  pullFilesForUpload() {
+    return this.FileDocument;
+  }
 
 }

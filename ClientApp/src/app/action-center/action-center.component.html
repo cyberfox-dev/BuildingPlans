@@ -12,8 +12,8 @@
   </div>
   <div class="modal-body">
     <div class="cont">
-    <button mat-raised-button color="primary" (click)="getAllSubDepartments(assign)">Assign this project</button>
-    <button mat-raised-button color="primary">Assign a Department to this project</button>
+      <button mat-raised-button color="primary" (click)="getAllSubDepartments(assign)">Assign a Department to this project</button>
+    <button mat-raised-button color="primary">Assign this project</button>
       </div>
     <mat-accordion>
 
@@ -30,10 +30,10 @@
         </mat-expansion-panel-header>
 
 
-        <div class="cont2">
-          <mat-form-field class="example-full-width">
+        
+  <mat-form-field class="example-full-width">
     <mat-label>Leave a comment</mat-label>
-    <input [(ngModel)]="leaveAComment" matInput autocomplete="off">
+    <textarea [(ngModel)]="leaveAComment" matInput autocomplete="off"></textarea>
   </mat-form-field>
   <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()"><i class="fa fa-comment" aria-hidden="true"></i></button>
   <mat-menu #menu="matMenu" xPosition="before" >
@@ -42,7 +42,7 @@
   </mat-menu>
 
 
-        </div>
+       
 
         <div class="cont3">
           <button mat-raised-button color="green">Apporove</button>
@@ -59,15 +59,19 @@
           </mat-panel-title>
         </mat-expansion-panel-header>
 
-        <div class="cont2">
-          <mat-form-field class="example-full-width">
-            <mat-label>Leave a comment</mat-label>
-            <input matInput autocomplete="off">
-          </mat-form-field>
-          <button mat-raised-button color="purple"><i class="fa fa-comment" aria-hidden="true"></i></button>
-        </div>
-        <button type="button" class="btn btn-danger">Reject</button>
 
+        <mat-form-field class="example-full-width">
+          <mat-label>Leave a comment</mat-label>
+          <textarea [(ngModel)]="leaveAComment" matInput autocomplete="off"></textarea>
+        </mat-form-field>
+        <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()"><i class="fa fa-comment" aria-hidden="true"></i></button>
+        <mat-menu #menu="matMenu" xPosition="before">
+          <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>
+
+        </mat-menu>
+        <div class="cont3">
+          <button type="button" class="btn btn-danger">Reject</button>
+          </div>
 
       </mat-expansion-panel>
 
@@ -80,15 +84,18 @@
 
         </mat-expansion-panel-header>
 
-        <div class="cont2">
-          <mat-form-field class="example-full-width">
-            <mat-label>Leave a comment</mat-label>
-            <input matInput autocomplete="off">
-          </mat-form-field>
-          <button mat-raised-button color="purple"><i class="fa fa-comment" aria-hidden="true"></i></button>
-        </div>
-        <button type="button" class="btn btn-warning">Clarify</button>
+        <mat-form-field class="example-full-width">
+          <mat-label>Leave a comment</mat-label>
+          <textarea [(ngModel)]="leaveAComment" matInput autocomplete="off"></textarea>
+        </mat-form-field>
+        <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()"><i class="fa fa-comment" aria-hidden="true"></i></button>
+        <mat-menu #menu="matMenu" xPosition="before">
+          <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>
 
+        </mat-menu>
+        <div class="cont3">
+          <button type="button" class="btn btn-warning">Clarify</button>
+          </div>
 
       </mat-expansion-panel>
 
@@ -100,15 +107,18 @@
           </mat-panel-title>
 
         </mat-expansion-panel-header>
-        <div class="cont2">
-          <mat-form-field class="example-full-width">
-            <mat-label>Leave a comment</mat-label>
-            <input matInput autocomplete="off">
-          </mat-form-field>
-          <button mat-raised-button color="purple"><i class="fa fa-comment" aria-hidden="true"></i></button>
-        </div>
-        <button type="button" class="btn btn-info ">Refer</button>
+        <mat-form-field class="example-full-width">
+          <mat-label>Leave a comment</mat-label>
+          <textarea [(ngModel)]="leaveAComment" matInput autocomplete="off"></textarea>
+        </mat-form-field>
+        <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()"><i class="fa fa-comment" aria-hidden="true"></i></button>
+        <mat-menu #menu="matMenu" xPosition="before">
+          <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>
 
+        </mat-menu>
+        <div class="cont3">
+          <button type="button" class="btn btn-info ">Refer</button>
+          </div>
       </mat-expansion-panel>
 
     </mat-accordion>
@@ -127,48 +137,48 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="uncheck();modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-
-    <div class="row">
-      <div class="col">
+    <form [formGroup]="depositRequired">
+      <div class="row">
         <div class="col">
           <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="serviceItemName" placeholder="Enter Service Item Name">
-            <label for="serviceItemName">Service Item Name</label>
+            <select class="form-select" aria-label="Default select example" formControlName="selectServiceItemCode" (change)="onPopulateDeposit($event)">
+              <option selected value="0">Select Service Item Code</option>
+              <option *ngFor="let serviceItemCode of ServiceItemCodeDropdown" value="{{serviceItemCode.serviceItemID}}">{{serviceItemCode.serviceItemCode}}</option>
+            </select>
           </div>
         </div>
-      </div>
-      <div class="col">
-        <div class="form-floating mb-3 mt-3">
-          <input type="text" class="form-control" [(ngModel)]="description" placeholder="Description">
-          <label for="description">Description</label>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
         <div class="col">
           <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="rate" placeholder="Enter Rate">
-            <label for="rate">Rate</label>
+            <input type="text" class="form-control" formControlName="description" placeholder="Description">
+            <label for="description">Description</label>
           </div>
         </div>
       </div>
-      <div class="col">
-        <div class="form-floating mb-3 mt-3">
-          <input type="text" class="form-control" [(ngModel)]="quantity" placeholder="Enter Quantity">
-          <label for="quantity">Quantity</label>
+      <div class="row">
+        <div class="col">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" formControlName="rate" placeholder="Enter Rate">
+              <label for="rate">Rate</label>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="row">
- 
+        <div class="col">
           <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="total" placeholder="Enter Total" disabled>
-            <label for="total">Total exc. Vat</label>
+            <input type="text" class="form-control" formControlName="quantity" placeholder="Enter Quantity">
+            <label for="quantity">Quantity</label>
           </div>
-       
-    </div>
+        </div>
+      </div>
+      <div class="row">
 
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" formControlName="total" placeholder="Enter Total" readonly>
+          <label for="total">Total exc. Vat</label>
+        </div>
+
+      </div>
+      </form>
   </div>
  
     <div class="cont4">
@@ -199,8 +209,8 @@
 
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Actions</th>
-        <td mat-cell *matCellDef="let i = index">
-          <mat-checkbox class="example-margin" ></mat-checkbox>
+        <td mat-cell *matCellDef="let i = index;let element">
+          <mat-checkbox class="example-margin"  (change)="departmentSelectedForLink(element)" [checked]="selection.isSelected(element)" ></mat-checkbox>
         </td>
       </ng-container>
 
@@ -210,7 +220,7 @@
 
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click');onLinkDepartmentForComment()">Save</button>
   </div>
 
 </ng-template>

@@ -1,14 +1,22 @@
 <div class="row" style="margin-bottom:15px;">
-  <div class="col-md-3">
-    <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)" style="display:none;">
-    <button type="button" class="btn btn-success" (click)="file.click()">Upload File</button>
-  </div>
-  <div class="col-md-4">
-    <span class="upload" *ngIf="progress > 0">
+  <div class="container-fluid">
+
+    <!--<span class="upload" *ngIf="progress > 0">
       {{progress}}%
     </span>
     <span class="upload" *ngIf="message">
       {{message}}
-    </span>
+    </span>-->
+
+
+    <input type="file" #file placeholder="{{fileName}}" (change)="uploadFile(file.files)" style="display:none;">
+    <button mat-raised-button matTooltip="Upload File" matTooltipPosition="above" type="button" class="btn btn-info" (click)="file.click()">
+      <div style="width: 40px; height: 30px; display: flex; align-items: center; justify-content: center;">
+        <i class="fa fa-upload" style="font-size: 1em;"></i>
+      </div>
+    </button>
   </div>
+
 </div>
+
+
