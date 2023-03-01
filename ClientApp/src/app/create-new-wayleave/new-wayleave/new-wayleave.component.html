@@ -1,6 +1,35 @@
 <app-nav-menu></app-nav-menu>
 
+<ng-template #drafts let-modal>
+  <div class="modal-header">
+    <h1 class="modal-title">Drafts</h1>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
 
+      <mat-tab label="Select departments">
+        <table mat-table  class="mat-elevation-z8">
+
+          <ng-container matColumnDef="subDepartmentName">
+            <th mat-header-cell *matHeaderCellDef> Sub Department Name </th>
+            <td mat-cell *matCellDef="let element"> e </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let i = index;let element">
+              <button mat-raised-button ><i class="fa fa-dot-circle-o" aria-hidden="true"></i></button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row ></tr>
+          <tr mat-row ></tr>
+        </table>
+      </mat-tab>
+  </div>
+
+</ng-template>
 
 <app-internal-option (optionEvent)="reciveOption($event)" *ngIf="internal"></app-internal-option>
 
@@ -33,9 +62,6 @@
                 <input type="text" class="form-control" [(ngModel)]="externalBPNumber" id="BPNumber" name="BPNumber" disabled>
                 <label for="name">BP Number</label>
               </div>
-
-
-
 
 
             </div>
@@ -294,17 +320,16 @@
         </div>
         <!--enterning project details-->
         <!--<app-project-details></app-project-details>-->
+        <!--        <div class="form-floating ">
+        <select class="form-select" [(ngModel)]="typeOfApplication" name="typeOfApplication" aria-label="Default select example" placeholder="Type of application">
+          <option value="TOA">Type of application</option>
+          <option value="Small">Small</option>
+          <option value="Medium">Medium</option>
+          <option value="Large">Large</option>
+          <option value="Emergency">Emergency</option>
+        </select>
 
-<!--        <div class="form-floating ">
-          <select class="form-select" [(ngModel)]="typeOfApplication" name="typeOfApplication" aria-label="Default select example" placeholder="Type of application">
-            <option value="TOA">Type of application</option>
-            <option value="Small">Small</option>
-            <option value="Medium">Medium</option>
-            <option value="Large">Large</option>
-            <option value="Emergency">Emergency</option>
-          </select>
-
-        </div>-->
+      </div>-->
 
         <mat-form-field appearance="fill">
           <mat-label>Select type of application</mat-label>
@@ -354,7 +379,7 @@
         </div>
 
 
-
+        <button mat-raised-button color="draft" (click)="saveProjectAsDraft()">Save project as a draft</button>
 
         <div class="row">
           <div class="typeOfExcavation">
@@ -422,6 +447,8 @@
 
 
       </form>
+
+
       <div class="cont">
         <button mat-raised-button color="primary" matStepperPrevious>Back</button>
         <button mat-raised-button color="primary" matStepperNext>Next</button>

@@ -8,7 +8,7 @@ export class ApplicationsService {
   private readonly baseURL: string = "https://localhost:7123/api/applications/"
 
   constructor(private httpClient: HttpClient) { }
-  public addUpdateApplication(ApplicationID?: number | null, userID?: string | null, fullName?: string | null, email?: string | null, phoneNumber?: string | null, physicalAddress?: string | null, referenceNumber?: string | null, companyRegNo?: string | null, typeOfApplication?: string | null, notificationNumber?: string | null, wbsNumber?: string | null, physicalAddressOfProject?: string | null, descriptionOfProject?: string | null, natureOfWork?: string | null, excavationType?: string | null, expectedStartDate?: Date | null, expectedEndDate?: Date | null, location?: string | null, createdById?: string | null, previousStageName?: string | null, previousStageNumber?: number | null, currentStageName?: string | null, currentStageNumber?: number | null, nextStageName?: string | null, nextStageNumber?: number | null, applicationStatus?: string | null ) {
+  public addUpdateApplication(ApplicationID?: number | null, userID?: string | null, fullName?: string | null, email?: string | null, phoneNumber?: string | null, physicalAddress?: string | null, referenceNumber?: string | null, companyRegNo?: string | null, typeOfApplication?: string | null, notificationNumber?: string | null, wbsNumber?: string | null, physicalAddressOfProject?: string | null, descriptionOfProject?: string | null, natureOfWork?: string | null, excavationType?: string | null, expectedStartDate?: Date | null, expectedEndDate?: Date | null, location?: string | null, createdById?: string | null, previousStageName?: string | null, previousStageNumber?: number | null, currentStageName?: string | null, currentStageNumber?: number | null, nextStageName?: string | null, nextStageNumber?: number | null, applicationStatus?: string | null ,isDrafted?:boolean ) {
     debugger;
     const body = {
       ApplicationID: ApplicationID,
@@ -72,6 +72,17 @@ export class ApplicationsService {
       isInternal: isInternal
     }
     return this.httpClient.post(this.baseURL + "GetApplicationsList", body);
+
+  }
+
+  /*this if for getting all applications that have been saved as a draft*/
+  public getAllDraftedApplications(userID: string, isInternal: boolean, isDrafted: boolean) {
+    const body = {
+      UserID: userID,
+      isInternal: isInternal,
+      isDrafted: isDrafted
+    }
+    return this.httpClient.post(this.baseURL + "GetAllDraftedApplications", body);
 
   }
 

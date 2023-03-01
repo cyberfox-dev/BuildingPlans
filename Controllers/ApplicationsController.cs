@@ -142,5 +142,32 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+
+        /*for drafted applications*/
+        [HttpPost("GetAllDraftedApplications")]
+        public async Task<object> GetAllDraftedApplications([FromBody] GetApplicationsSP modal)
+        {
+            try
+            {
+
+                if (modal.isDrafted == false)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.GetAllDraftedApplications(modal.UserID, modal.isInternal, modal.isDrafted);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Applications List Created", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
     }
 }

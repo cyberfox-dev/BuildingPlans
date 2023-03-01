@@ -36,6 +36,8 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public string? ApplicationStatus { get; set; }
 
+        public bool? isDrafted { get; set; }
+
         /*Application Status Logic
         Verification Stage
         Unpaid
