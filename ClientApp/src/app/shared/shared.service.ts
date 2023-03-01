@@ -152,7 +152,16 @@ export class SharedService {
     return this.applicationDataForView[0];
   }
 
+  //ESRI Data
+  esriAddress!: string;
 
+  setAddressData(data: any) {
+    this.esriAddress = data;
+  }
+
+  getAddressData() {
+    return this.esriAddress;
+  }
 
 
 

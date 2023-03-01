@@ -5,5 +5,8 @@
     "arcgis-js-api": "^4.25.5",
     "esri-leaflet": "^3.0.10",
     "ngx-device-detector": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/arcgis-js-api": "^4.25.0"
   }
 }
