@@ -7,6 +7,9 @@
     "ngx-device-detector": "^5.0.1"
   },
   "devDependencies": {
+    "@types/arcgis-js-api": "^4.25.0"
+  },
+  "devDependencies": {
     "@boldreports/angular-reporting-components": "^4.2.80",
     "@boldreports/types": "^4.2.80"
   }

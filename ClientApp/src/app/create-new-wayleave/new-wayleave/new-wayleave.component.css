@@ -154,6 +154,15 @@ form {
   height: 40px;
   font-size: 16px;
 }
+.mat-draft {
+  background-color: #ffefcb;
+  color: #d78900de;
+
+  height: 51px;
+  margin-top: 27px;
+  font-size: 16px;
+
+}
 .mat-green {
   background-color: #54d75e;
   color: #fff;

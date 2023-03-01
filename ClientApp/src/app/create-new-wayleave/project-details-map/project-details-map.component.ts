@@ -18,10 +18,27 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import MapImageLayer from '@arcgis/core/layers/MapImageLayer';
 import Legend from '@arcgis/core/widgets/Legend';
 import Editor from '@arcgis/core/widgets/Editor';
+import EditorViewModel from '@arcgis/core/widgets/Editor';
+import FeatureFormViewModel from '@arcgis/core/widgets/Editor';
 import WebMap from '@arcgis/core/WebMap';
 import FormTemplate from "@arcgis/core/form/FormTemplate";
-/*import * as esri from 'esri-leaflet';*/
+import * as esri from 'esri-leaflet';
 import Layer from "@arcgis/core/layers/Layer"
+import Draw from '@arcgis/core/views/draw/Draw';
+import { Polygon } from '@arcgis/core/geometry';
+import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
+import * as Geometry from '@arcgis/core/geometry/Geometry';
+import FeatureForm from '@arcgis/core/widgets/FeatureForm';
+import FeatureTemplates from '@arcgis/core/widgets/FeatureTemplates';
+import ExpressionInfo from '@arcgis/core/form/ExpressionInfo';
+import FieldElement from '@arcgis/core/form/elements/FieldElement';
+import BasemapToggle from '@arcgis/core/widgets/BasemapToggle';
+import { SharedService } from "src/app/shared/shared.service"
+/*import { Editor, EditorViewModel, FeatureFormViewModel } from "@arcgis/core/widgets/Editor";*/
+/*import * as FeatureForm from 'esri/widgets/FeatureForm';*/
+/*import { Map, FeatureLayer, Polygon, Graphic, geometryEngine, SimpleFillSymbol } from "@arcgis/core";*/
+/*import { description } from 'esri/layers/support/VoxelVariable';*/
+/*import * as FieldElement from '@arcgis/core/form/elements/FieldElement';*/
 /*import LayerInfos from '@arcgis/core/widgets/Editor'*/
 
 /*import HHelpers from '../helpers';*/
@@ -31,6 +48,56 @@ import Layer from "@arcgis/core/layers/Layer"
 //  providedIn: 'root'
 //})
 
+interface Element {
+  type: "field";
+  fieldName: string;
+  label: string;
+}
+
+interface GeometryInterface {
+  type: String,
+  rings: [[number, number], [number, number], [number, number], [number, number], [number, number]],
+};
+
+interface GraphicInterface {
+  geometry: GeometryInterface,
+  symbol: SimpleFillSymbol,
+};
+
+interface ElementPropertiesInterface {
+  type: "field",
+  fieldName: string,
+  label: string,
+  description: string,
+  visibilityExpression: string,
+
+};
+
+interface FormTemplateInterface {
+  title: string,
+  description: string,
+  elements: Element[],
+  clone?: any,
+  expressionInfos?: any,
+  preserveFieldValuesWhenHidden?: boolean
+
+};
+
+
+interface LayerInfo {
+  layer: FeatureLayer;
+  formTemplate: FormTemplate;
+  enabled?: boolean;
+  addEnabled?: boolean;
+  updateEnabled?: boolean;
+  deleteEnabled?: boolean;
+  attributeUpdatesEnabled?: boolean;
+  geometryUpdatesEnabled?: boolean;
+}
+
+
+
+
 @Component({
   selector: 'app-project-details-map',
   templateUrl: './project-details-map.component.html',
@@ -38,17 +105,19 @@ import Layer from "@arcgis/core/layers/Layer"
 })
 export class ProjectDetailsMapComponent implements OnInit {
 
-  constructor(
+    constructor(
+      private sharedService: SharedService
     /*        @Inject(ARCGIS_CONFIG) private config: ArcgisConfig,*/
     //private deviceService: DeviceDetectorService,
     //  private translate: TranslateService,
   ) { /*this.helper = new HHelpers()*/ }
 
   /*  This binds the element to the component's element. Without this, when the index page is rendered, the viewMap element does not exist*/
-  @ViewChild('viewMap', { static: true }) private mapViewEl!: ElementRef;
-
-  @ViewChild('peopelTableDiv', { static: true }) private peopleTableDivEl!: ElementRef;
-  @ViewChild('languageTableDiv', { static: true }) private languageTableDivEl!: ElementRef;
+  @ViewChild('viewDiv', { static: true }) private viewDivEl!: ElementRef;
+  //@ViewChild('formDiv', { static: true }) private formDivEl!: ElementRef;
+  //@ViewChild('addTemplatesDiv', { static: true }) private addTemplatesDivEl!: ElementRef;
+  //@ViewChild('peopelTableDiv', { static: true }) private peopleTableDivEl!: ElementRef;
+  //@ViewChild('languageTableDiv', { static: true }) private languageTableDivEl!: ElementRef;
   @ViewChild('searchDiv', { static: true }) private searchDivEl!: ElementRef;
   private helper: any;
   public view!: MapView;
@@ -70,8 +139,11 @@ export class ProjectDetailsMapComponent implements OnInit {
   private oldGraphics: any;
   private defaultZoom: number = 6;
 
+  isActive: string = "0";
+
   ngOnInit(): void {
     this.positionAndMapLoad();
+    let editConfigCrimeLayer, editConfigPoliceLayer;
   }
 
   private async positionAndMapLoad() {
@@ -81,8 +153,10 @@ export class ProjectDetailsMapComponent implements OnInit {
   }
 
   private initializeMap(): Promise<any> {
-    const graphicsLayer = new GraphicsLayer();
-    let pointLayer: FeatureLayer, lineLayer: FeatureLayer, polygonLayer: FeatureLayer;
+    /*    const graphicsLayer = new GraphicsLayer();*/
+    var pointLayer = new FeatureLayer;
+    var lineLayer = new FeatureLayer;
+    var polygonLayer = new FeatureLayer;
 
     //this.pntpplnCtryLayer = new FeatureLayer({
     //  url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer",
@@ -120,8 +194,11 @@ export class ProjectDetailsMapComponent implements OnInit {
 
     const map = new Map({
       basemap: 'gray-vector',
-      layers: [graphicsLayer]
+      /*      layers: [graphicsLayer]*/
+      /*      layers: [pointLayer, lineLayer, polygonLayer]*/
+      
     });
+
 
     //const map = new WebMap({
     //  portalItem: {
@@ -130,14 +207,24 @@ export class ProjectDetailsMapComponent implements OnInit {
     //});
 
     const view = new MapView({
-      container: this.mapViewEl.nativeElement,
+      container: this.viewDivEl.nativeElement,
       map: map,
       zoom: 5,
       center: this.position,
-      /*      center: [90, 45]*/
-      /*      center: [-33.918861, 18.423300]*/
+      //Hides the zoom buttons
+      ui: {
+        components: ["attribution"]
+      }
     });
 
+    // Toggle basemap
+    const toggle = new BasemapToggle({
+      // 2 - Set properties
+      view: view, // view that provides access to the map's 'topo-vector' basemap
+      nextBasemap: "hybrid" // allows for toggling to the 'hybrid' basemap
+    });
+
+    view.ui.add(toggle, "bottom-right");
     //view.when(() => {
     //  const sketch = new Sketch({
     //    layer: graphicsLayer,
@@ -157,20 +244,22 @@ export class ProjectDetailsMapComponent implements OnInit {
     //  center: this.position
     //});
 
-    //const searchWidget = new Search({
-    //  view: view,
-    //  popupEnabled: false,
-    //  locationEnabled: false,
-    //  resultGraphicEnabled: false,
-    //  container: this.searchDivEl.nativeElement
-    //});
-    //searchWidget.on('select-result', () => {
-    //  this.view.zoom = this.defaultZoom;
-    //});
-    //view.ui.add(searchWidget, {
-    //  position: 'top-right',
-    //  index: 1,
-    //});
+    const searchWidget = new Search({
+      view: view,
+      popupEnabled: true,
+      locationEnabled: false,
+      resultGraphicEnabled: true,
+      container: this.searchDivEl.nativeElement
+    });
+    searchWidget.on('select-result', (event) => {
+      /*      this.view.zoom = this.defaultZoom;*/
+      console.log("The selected search result: ", event.result.name);
+      this.sharedService.setAddressData(event.result.name)
+    });
+    view.ui.add(searchWidget, {
+      position: 'top-left',
+      index: 1,
+    });
 
     this.view = view;
     this.map = map;
@@ -200,21 +289,192 @@ export class ProjectDetailsMapComponent implements OnInit {
     //  }
     //  this.view.ui.add(this.locateWidget, 'top-left');
     //}
+
+    const featureLayer = new FeatureLayer({
+      url: "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves/FeatureServer",
+      title: "Wayleaves edit layer",
+      /*        definitionExpression: "OBJECTID = 1"*/
+/*      definitionExpression: "CRTD_BY_ID = 777"*/
+    });
+
+    const elementOne: ElementPropertiesInterface = {
+      type: "field",
+      fieldName: "cREATED_bYid",
+      label: "Choose incident type",
+      description: 'none',
+      visibilityExpression: '',
+    }
+
+    const polyOne: FormTemplateInterface = {
+      title: "El Paso Trails",
+      description: "Collect info on popular trails",
+      elements: [elementOne],
+
+    }
+
+    //featureLayer.formTemplate = {
+    //  title: "El Paso Trails",
+    //  description: "Collect info on popular trails",
+    //  elements: [elementOne],
+    //  expressionInfos: '',
+    //  preserveFieldValuesWhenHidden: true
+    //}
+
+
+
+    //    const elementTwo: ElementPropertiesInterface = {
+    //      type: "field",
+    //      fieldName: "WLMS_APLC_KEY",
+    //      label: "Choose incident type",
+    //    }
+
+    //    //const templates = new FeatureTemplates({
+    //    //  container: this.viewDivEl.nativeElement,
+    //    //  layers: [featureLayer]
+    ////    });
+
+    //    const featureForm = new FeatureForm({
+    //      view: view, // required if using Arcade expressions using the $map global variable
+    ///*      container: "formDiv",*/
+    //      container: this.viewDivEl.nativeElement,
+    //      layer: featureLayer,
+    //      formTemplate: {
+    //        title: "Enter the incident number",
+    //        elements: [
+    //          elementOne,
+    //          elementTwo
+    //        ]
+    //      }
+    //    });
+
+
+    //const polygon = new Polygon({
+    //  rings: [[[-117, 32], [-116, 32], [-116, 33], [-117, 33], [-117, 32]]],
+    //  spatialReference: { wkid: 4326 }
+    //});
+
+    //if (geometryEngine.isSimple(polygon)) {
+    //  const graphic = new Graphic({
+    //    geometry: polygon,
+    //    symbol: new SimpleFillSymbol(),
+    //    attributes: {
+    //      IsActive: true,
+    //      CREATED_BYid: 12345,
+    //      WLMS_APLC_KEY: "My Polygon"
+    //    }
+    //  });
+
+    //  featureLayer.applyEdits({
+    //    addFeatures: [graphic]
+    //  }).then((editsResult) => {
+    //    console.log("Polygon added to feature layer");
+    //  }).catch((error) => {
+    //    console.error("Error adding polygon to feature layer: ", error);
+    //  });
+    //} else {
+    //  console.error("Geometry is not simple and cannot be added to feature layer");
+    //}
+
+/*    Zoom into the FeatureServer layer. This doesn't seem to work too well since the FeatureServer layer is empty*/
+    //featureLayer.when(() => {
+    //  view.goTo(featureLayer.fullExtent);
+    //});
+
+    //This is used to zoom into the area of the relevant polygons for the application
+    const query = featureLayer.createQuery()
+    query.where = "CRTD_BY_ID = 777";
+    featureLayer.queryExtent(query).then(function (result) {
+      view.goTo(result.extent);
+    })
+
+    //const form = new FeatureForm({
+    //  fieldConfig: [
+    //    { name: "Location", label: "Location!!!" },
+    //    { name: "tEST", label: "test!!!" },
+    //  ]
+
+    //});
+
+
+    // Create the Form template and pass in elements
+    const formTemplate = new FormTemplate({
+      title: "Inspector report",
+      description: "Enter all relevant information below",
+      /*      elements: [groupElement] // Add all elements to the template*/
+    });
+
+    // Add a new feature form with grouped fields
+    //const form = new FeatureForm({
+    //  container: "form",
+    //  groupDisplay: "sequential", // only display one group at a time
+    //  formTemplate: formTemplate // set it to template created above
+    //});
+
+
+    // Expression created within ExpressionInfos and is referenced in element
+    const expression = new ExpressionInfo({
+      name: "alwaysHidden",
+      expression: "false"
+    });
+
+    const expression2 = new ExpressionInfo({
+      name: "assignIsActive",
+      expression: this.isActive
+    });
+
+    //const expression3 = new ExpressionInfo({
+    //  name: "assignApplicationID",
+    //  expression: 12
+    //});
+
+    // Reference an already-defined visibilityExpression set within the ExpressionInfos
+    const fieldElement = new FieldElement({
+      /*  type: "field",*/
+      fieldName: "CRTD_BY_ID",
+      label: "Created by ID",
+      /*  visibilityExpression: "alwaysHidden"*/
+    });
+
+    const fieldElement2 = new FieldElement({
+      /*  type: "field",*/
+      fieldName: "LU_ACTV_STS",
+      label: "isActive",
+      valueExpression: "assignIsActive",
+      editable: false,
+      /*        visibilityExpression: "alwaysHidden"*/
+    });
+
+    const fieldElement3 = new FieldElement({
+      /*  type: "field",*/
+      fieldName: "WLMS_APLC_KEY",
+      label: "Application ID",
+      valueExpression: "assignIsActive",
+      editable: true,
+      /*        visibilityExpression: "alwaysHidden"*/
+    });
+
+    formTemplate.expressionInfos = [expression, expression2];
+    formTemplate.elements = [fieldElement, fieldElement2, fieldElement3];
+
+    featureLayer.formTemplate = formTemplate
+
+
     return this.view.when(() => {
-      const sketch = new Sketch({
-        layer: graphicsLayer,
-        view: view,
-        // graphic will be selected as soon as it is created
-        creationMode: "update"
-      });
+      //const sketch = new Sketch({
+      //  layer: graphicsLayer,
+      //  view: view,
+      //  // graphic will be selected as soon as it is created
+      //  creationMode: "update"
+      //});
 
-      view.ui.add(sketch, "top-right");
+      /*      view.ui.add(sketch, "top-right");*/
 
-      var testlayer = new MapImageLayer({
-        url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer"
-      })
+      //Add a test layer
+      //var testlayer = new MapImageLayer({
+      //  url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer"
+      //})
 
-      map.add(testlayer);
+      //map.add(testlayer);
 
       /*      External layers*/
       var streetlights = new MapImageLayer({
@@ -223,7 +483,7 @@ export class ProjectDetailsMapComponent implements OnInit {
 
       map.add(streetlights);
 
-/*      Add layerlist and legend*/
+      /*      Add layerlist and legend*/
       var layerList = new LayerList({
         view: view
       });
@@ -237,165 +497,261 @@ export class ProjectDetailsMapComponent implements OnInit {
       view.ui.add(legend, "top-left");
 
       // Connect to the geodatabase
-      const featureLayer = new FeatureLayer({
-        url: "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves/FeatureServer"
-      });
+      //      const featureLayer = new FeatureLayer({
+      //        url: "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves/FeatureServer",
+      //        title: "Wayleaves edit layer",
+      ///*        definitionExpression: "OBJECTID = 1"*/
+      //      });
 
       map.add(featureLayer);
 
 
-          // Create a polygon feature in the layer
-    //featureLayer.applyEdits({
-    //  addFeatures: [{
-    //    geometry: {
-    //      type: "polygon",
-    //      rings: [[[-122.45, 37.75], [-122.42, 37.72], [-122.40, 37.75], [-122.45, 37.75]]]
-    //    },
-    //    attributes: {
-    //      field_name: "value"
-    //    }
-    //  }]
-    //}).then(result => {
-    //  console.log(result);
-    //});
+      // Create a polygon feature in the layer
+      //featureLayer.applyEdits({
+      //  addFeatures: [{
+      //    geometry: {
+      //      type: "polygon",
+      //      rings: [[[-122.45, 37.75], [-122.42, 37.72], [-122.40, 37.75], [-122.45, 37.75]]]
+      //    },
+      //    attributes: {
+      //      field_name: "value"
+      //    }
+      //  }]
+      //}).then(result => {
+      //  console.log(result);
+      //});
 
 
 
-/*      view.map.loadAll().then(() => {*/
-        view.map.editableLayers.forEach((layer) => {
-          if (layer.type === 'feature') {
-            switch (layer.geometryType) {
-              case "polygon":
-                polygonLayer = featureLayer;
-                break;
-              case "polyline":
-                lineLayer = featureLayer;
-                break;
-              case "point":
-                pointLayer = featureLayer;
-                break;
-            }
-          }
-        });
+      /*      view.map.loadAll().then(() => {*/
+      //view.map.editableLayers.forEach((layer) => {
+      //  if (layer.type === 'feature') {
+      //    switch (layer.geometryType) {
+      //      case "polygon":
+      //        polygonLayer = featureLayer;
+      //        break;
+      //      //case "polyline":
+      //      //  lineLayer = featureLayer;
+      //      //  break;
+      //      //case "point":
+      //      //  pointLayer = featureLayer;
+      //      //  break;
+      //    }
+      //  }
+      //});
 
-        // Set the point layer's LayerInfo
-        const pointInfos = {
-          layer: pointLayer,
-          formTemplate: { // autocasts to FormTemplate
-            elements: [{ // autocasts to Field Elements
-              type: "field",
-              fieldName: "HazardType",
-              label: "Hazard type"
-            }, {
-              type: "field",
-              fieldName: "Description",
-              label: "Description"
-            }, {
-              type: "field",
-              fieldName: "SpecialInstructions",
-              label: "Special Instructions"
-            }, {
-              type: "field",
-              fieldName: "Status",
-              label: "Status"
-            }, {
-              type: "field",
-              fieldName: "Priority",
-              label: "Priority"
-            }]
-          }
-        };
+      // Set the point layer's LayerInfo
+      //const pointInfos = {
+      //  layer: pointLayer,
+      //  formTemplate: { // autocasts to FormTemplate
+      //    elements: [{ // autocasts to Field Elements
+      //      type: "field",
+      //      fieldName: "HazardType",
+      //      label: "Hazard type"
+      //    }, {
+      //      type: "field",
+      //      fieldName: "Description",
+      //      label: "Description"
+      //    }, {
+      //      type: "field",
+      //      fieldName: "SpecialInstructions",
+      //      label: "Special Instructions"
+      //    }, {
+      //      type: "field",
+      //      fieldName: "Status",
+      //      label: "Status"
+      //    }, {
+      //      type: "field",
+      //      fieldName: "Priority",
+      //      label: "Priority"
+      //    }]
+      //  }
+      //};
 
-        // Set the line layer's LayerInfo
-        const lineInfos = {
-          layer: lineLayer,
-          formTemplate: { // autocasts to FormTemplate
-            elements: [{ // autocasts to FieldElement
-              type: "field",
-              fieldName: "Severity",
-              label: "Severity"
-            }, {
-              type: "field",
-              fieldName: "blocktype",
-              label: "Type of blockage"
-            }, {
-              type: "field",
-              fieldName: "fullclose",
-              label: "Full closure"
-            }, {
-              type: "field",
-              fieldName: "active",
-              label: "Active"
-            }, {
-              type: "field",
-              fieldName: "locdesc",
-              label: "Location Description"
-            }]
-          }
-        };
+      // Set the line layer's LayerInfo
+      //const lineInfos = {
+      //  layer: lineLayer,
+      //  formTemplate: { // autocasts to FormTemplate
+      //    elements: [{ // autocasts to FieldElement
+      //      type: "field",
+      //      fieldName: "Severity",
+      //      label: "Severity"
+      //    }, {
+      //      type: "field",
+      //      fieldName: "blocktype",
+      //      label: "Type of blockage"
+      //    }, {
+      //      type: "field",
+      //      fieldName: "fullclose",
+      //      label: "Full closure"
+      //    }, {
+      //      type: "field",
+      //      fieldName: "active",
+      //      label: "Active"
+      //    }, {
+      //      type: "field",
+      //      fieldName: "locdesc",
+      //      label: "Location Description"
+      //    }]
+      //  }
+      //};
 
-        // Set the polygon layer's LayerInfo
-        const polyInfos = {
-          layer: polygonLayer,
-          formTemplate: { // autocasts to FormTemplate
-            elements: [{ // autocasts to FieldElement
-              type: "field",
-              fieldName: "incidenttype",
-              label: "Incident Type"
-            }, {
-              type: "field",
-              fieldName: "activeincid",
-              label: "Active"
-            }, {
-              type: "field",
-              fieldName: "descrip",
-              label: "Description"
-            }]
-          }
-        };
+      // Set the polygon layer's LayerInfo
+      //const polyInfos = {
+      //  layer: polygonLayer,
+      //  //enableEditing: true,
+      //  //enableDeleting: true,
+      //  //enableSelfIntersectionCheck: true,
+      //  //keepGlobeCylinder: false,
+      //  formTemplate: { // autocasts to FormTemplate
+      //    elements: [{ // autocasts to FieldElement
+      //      type: "field",
+      //      fieldName: "incidenttype",
+      //      label: "Incident Type"
+      //    } as FieldElement, {
+      //      type: "field",
+      //      fieldName: "activeincid",
+      //      label: "Active"
+      //    } as FieldElement, {
+      //      type: "field",
+      //      fieldName: "descrip",
+      //      label: "Description"
+      //    } as FieldElement]
+      //  }
+      //};
 
-/*         Begin Editor constructor*/
-//        const editor = new Editor({
-//          view: view,
-//          /*          layerInfos: [pointInfos, lineInfos, polyInfos],*/
-//          layerInfos: [{
-//            layer: featureLayer, // pass in the feature layer,
-//            formTemplate: { // autocastable to FormTemplate
-//              elements: [
-//                { // autocastable to FieldElement
-//                  type: "field",
-//                  fieldName: "fulladdr",
-//                  label: "Full Address"
-//                }
-//              ]
-//            },
-//          enabled: true, // Default is true, set to false to disable editing functionality.
-//          addEnabled: true, // Default is true, set to false to disable the ability to add a new feature.
-//          updateEnabled: false, // Default is true, set to false to disable the ability to edit an existing feature.
-//    deleteEnabled: false, // Default is true, set to false to disable the ability to delete features.
-//    attributeUpdatesEnabled: true, // Default is true, set to false to disable the ability to edit attributes in the update workflow.
-//    geometryUpdatesEnabled: true, // Default is true, set to false to disable the ability to edit feature geometries in the update workflow.
+      /*         Begin Editor constructor*/
+      //        const editor = new Editor({
+      //          view: view,
+      //          /*          layerInfos: [pointInfos, lineInfos, polyInfos],*/
+      //          layerInfos: [{
+      //            layer: featureLayer, // pass in the feature layer,
+      //            formTemplate: { // autocastable to FormTemplate
+      //              elements: [
+      //                { // autocastable to FieldElement
+      //                  type: "field",
+      //                  fieldName: "fulladdr",
+      //                  label: "Full Address"
+      //                }
+      //              ]
+      //            },
+      //          enabled: true, // Default is true, set to false to disable editing functionality.
+      //          addEnabled: true, // Default is true, set to false to disable the ability to add a new feature.
+      //          updateEnabled: false, // Default is true, set to false to disable the ability to edit an existing feature.
+      //    deleteEnabled: false, // Default is true, set to false to disable the ability to delete features.
+      //    attributeUpdatesEnabled: true, // Default is true, set to false to disable the ability to edit attributes in the update workflow.
+      //    geometryUpdatesEnabled: true, // Default is true, set to false to disable the ability to edit feature geometries in the update workflow.
 
-//          });
-///*      End Editor constructor*/
+      //          });
+      ///*      End Editor constructor*/
 
 
-///*         Add the widget to the view*/
-//              view.ui.add(editor, "top-right");
+      ///*         Add the widget to the view*/
+      //              view.ui.add(editor, "top-right");
 
-///*       Add the editor widget*/
+      ///*       Add the editor widget*/
 
 
       // At the very minimum, set the Editor's view
       const editor = new Editor({
-        view: view
-      });
+        layerInfos: [{
+          layer: featureLayer,
 
+        }],
+        view: view as MapView,
+        /*        allowedWorkflows: "update",*/
+      });
       view.ui.add(editor, "top-right");
 
-      })
+      // Listen to the create event of the Editor widget.
+      editor.on('submit', (event) => {
+        // Get a reference to the feature that was just created.
+        const graphic = event.graphic;
+        // Set the values of the attributes for the new feature.
+        graphic.attributes = {
+          LU_ACTV_STS: "9999",
+          /*          cREATED_bYid: "99",*/
+          // other attribute values
+        };
 
-/*    });*/
+        // Save the new feature.
+        const featureFormViewModel = editor.viewModel.featureFormViewModel;
+        featureFormViewModel.submit();
+      });
+
+      ///*       create a new instance of draw*/
+      //      let draw = new Draw({
+      //        view: view
+      //      });
+
+      //      //// create an instance of draw polyline action
+      //      //// the polyline vertices will be only added when
+      //      //// the pointer is clicked on the view
+      //      let action = draw.create("polygon", { mode: "click" });
+      //      // fires when the drawing is completed
+      //      action.on("draw-complete", function (event) {
+      //        console.log("Yes, it works");
+      //        if (event.graphic) {
+      //          event.graphic.attributes = {
+      //            IsActive: "1",
+      //            cREATED_bYid: "10",
+      ///*            column3: "Value3"*/
+      //          };
+      //        }
+
+      //        /*        geometry: event.geometry,*/
+
+
+      //      });
+
+      // Create a polygon geometry
+      //const polygon: GeometryInterface = {
+      //  type: "polygon",
+      //  rings: [
+      //    [-118.818984489994, 34.0137559967283], //Longitude, latitude
+      //    [-118.806796597377, 34.0215816298725], //Longitude, latitude
+      //    [-118.791432890735, 34.0163883241613], //Longitude, latitude
+      //    [-118.79596686535, 34.008564864635],   //Longitude, latitude
+      //    [-118.808558110679, 34.0035027131376]  //Longitude, latitude
+      //  ]
+      //};
+
+      //const simpleFillSymbol = {
+      //  type: "simple-fill",
+      //  color: [227, 139, 79, 0.8],  // Orange, opacity 80%
+      //  outline: {
+      //    color: [255, 255, 255],
+      //    width: 1
+      //  }
+      //};
+
+      //const graphicsLayer = new GraphicsLayer();
+      //map.add(graphicsLayer);
+
+      //const polygonGraphic = new Graphic({
+      //  geometry: polygon,
+      //  symbol: simpleFillSymbol,
+
+      //});
+      /*      graphicsLayer.add(polygonGraphic);*/
+
+      //editor.on("create", function (event) {
+      //  if (event.graphic) {
+      //    event.graphic.attributes = {
+      //      LU_ACTV_STS: "9999",
+      //    };
+      //  }
+      //});
+
+      //Zooms into Cape Town, or rather, shows the 'fullExtent of the layer'
+      //streetlights.when(() => {
+      //  view.goTo(streetlights.fullExtent);
+      //});
+    })
+
+
+
+    /*    });*/
   };
 
 

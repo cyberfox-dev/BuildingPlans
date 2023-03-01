@@ -166,8 +166,9 @@ export class ActionCenterComponent implements OnInit {
   }
 
   populateComment(commentName: any) {
+    let currnetComment = this.leaveAComment;
     console.log("commentName", commentName);
-    this.leaveAComment = commentName;
+    this.leaveAComment = currnetComment+" "+commentName;
   }
 
   getAllCommentsByUserID() {

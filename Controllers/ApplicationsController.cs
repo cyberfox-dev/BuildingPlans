@@ -36,7 +36,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                       var result = await _applicationsService.AddUpdateApplication(model.ApplicationID, model.UserID, model.FullName, model.Email, model.PhoneNumber, model.PhysicalAddress, model.ReferenceNumber, model.CompanyRegNo, model.TypeOfApplication, model.NotificationNumber, model.WBSNumber, model.PhysicalAddressOfProject, model.DescriptionOfProject, model.NatureOfWork, model.ExcavationType, model.ExpectedStartDate, model.ExpectedEndDate, model.Location, model.CreatedById, model.PreviousStageName,model.PreviousStageNumber, model.CurrentStageName, model.CurrentStageNumber, model.NextStageName, model.NextStageNumber, model.ApplicationStatus);
+                       var result = await _applicationsService.AddUpdateApplication(model.ApplicationID, model.UserID, model.FullName, model.Email, model.PhoneNumber, model.PhysicalAddress, model.ReferenceNumber, model.CompanyRegNo, model.TypeOfApplication, model.NotificationNumber, model.WBSNumber, model.PhysicalAddressOfProject, model.DescriptionOfProject, model.NatureOfWork, model.ExcavationType, model.ExpectedStartDate, model.ExpectedEndDate, model.Location, model.CreatedById, model.PreviousStageName,model.PreviousStageNumber, model.CurrentStageName, model.CurrentStageNumber, model.NextStageName, model.NextStageNumber, model.ApplicationStatus, model.isDrafted);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ApplicationID > 0 ? "Application Updated Successfully" : "Application Added Successfully"), result));
                 }
 
@@ -130,6 +130,33 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _applicationsService.GetApplicationsList(modal.UserID,modal.isInternal);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Applications List Created", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        /*for drafted applications*/
+        [HttpPost("GetAllDraftedApplications")]
+        public async Task<object> GetAllDraftedApplications([FromBody] GetApplicationsSP modal)
+        {
+            try
+            {
+
+                if (modal.isDrafted == false)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.GetAllDraftedApplications(modal.UserID, modal.isInternal, modal.isDrafted);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Applications List Created", result));
                 }
 
