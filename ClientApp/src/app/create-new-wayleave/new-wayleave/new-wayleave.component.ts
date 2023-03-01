@@ -375,10 +375,11 @@ export class NewWayleaveComponent implements OnInit {
 
   }
 
-
+  //Unused code
   public handleAddressChange(address: Address) {
     // Do some stuff
-    this.clientAddress = address.formatted_address;
+        this.clientAddress = address.formatted_address;
+    console.log(this.clientAddress);
 
   }
   ngAfterViewInit() {
@@ -550,7 +551,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
   onWayleaveCreate() {
-
+    this.clientAddress = this.shared.getAddressData();
     const contractorData = this.shared.getContactorData();
     const engineerData = this.shared.getEngineerData();
     let previousStageName = "";
