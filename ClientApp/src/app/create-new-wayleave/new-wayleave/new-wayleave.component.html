@@ -346,7 +346,7 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="notificationNumber" id="NotificationNo" placeholder="Enter Notification Number" name="notificationNo">
+              <input type="text" class="form-control" [(ngModel)]="notificationNumber" (focusout)="onModelChange()" id="NotificationNo" placeholder="Enter Notification Number" name="notificationNo">
               <label for="name">Notification Number</label>
             </div>
           </div>
@@ -424,13 +424,13 @@
         </div>
         <!--<app-project-details-map *ngIf="map"></app-project-details-map>-->
         <div *ngIf="map">
-          <div class="row">
-            <div class="form-floating mb-3 mt-3">
+          <!--<div class="row">
+            <div class="form-floating mb-3 mt-3">-->
               <!--<input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address">-->
-              <input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" [(ngModel)]="physicalAddressOfProject" id="Address" placeholder="Enter Address" name="physicalAddressOfProject" />
+              <!--<input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" />
               <label for="applicantTellNo">Physical Address</label>
             </div>
-          </div>
+          </div>-->
           <div class="container-fluid">
             <div class="alert alert-warning">
               <h4>Please draw a polygon around the area of interest, Below you will find buttons relating to their function. Please select draw to begin drawing. Once you are done drawing you may click save to commit this drawing or if you feel that you have made a mistake feel free to retry by clicking edit, and then on save.</h4>
@@ -438,7 +438,7 @@
               <p>Z: Undo<br />R: Redo<br />A: Rotate left <br />D: Rotate right<br />Enter: Complete the drawing<br />Double click: Complete the drawing<br />Mouse scroll wheel: Zoom-in/Zoom-out<br /></p>
             </div>
           </div>
-          <app-project-details-map></app-project-details-map>
+          <app-project-details-map [data]="ARCGISAPIData"></app-project-details-map>
 
 
 
