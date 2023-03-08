@@ -72,6 +72,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FileUploadComponent } from './file-upload/file-upload.component';
 import { ServiceItemsConfigComponent } from './service-items-config/service-items-config.component';
+import { InvoiceComponent } from './invoice/invoice.component';
 //import { MapModule } from 'arcgis-js-api';
 //import Map from "@arcgis/core/Map";
 
@@ -129,6 +130,7 @@ import { ServiceItemsConfigComponent } from './service-items-config/service-item
     MandatoryDocsConfigComponent,
     FileUploadComponent,
     ServiceItemsConfigComponent,
+    InvoiceComponent,
   
 
   ],
@@ -180,6 +182,7 @@ import { ServiceItemsConfigComponent } from './service-items-config/service-item
       { path: 'configuration', component: ConfigurationComponent },
       { path: 'user-settings', component: UserSettingsComponent },
       { path: 'cyberfox-config', component: CyberfoxConfigComponent },
+      { path: 'invoice', component: InvoiceComponent },
     ])
   ],
   providers: [],
