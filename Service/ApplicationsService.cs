@@ -19,7 +19,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string userID, string fullName, string email, string phoneNumber, string physicalAddress, string referenceNumber, string? companyRegNo, string typeOfApplication, string notificationNumber, string wBSNumber, string physicalAddressOfProject, string descriptionOfProject, string natureOfWork, string excavationType, DateTime expectedStartDate, DateTime expectedEndDate, string location, string createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus)
+        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string userID, string fullName, string email, string phoneNumber, string physicalAddress, string referenceNumber, string? companyRegNo, string typeOfApplication, string notificationNumber, string wBSNumber, string physicalAddressOfProject, string descriptionOfProject, string natureOfWork, string excavationType, DateTime expectedStartDate, DateTime expectedEndDate, string location, string createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus, bool isDrafted)
         {
 
             if (ApplicationID == 0)
@@ -64,8 +64,9 @@ namespace WayleaveManagementSystem.Service
                     CurrentStageStartDate = DateTime.Now,
                     NextStageName = NextStageName,
                     NextStageNumber = NextStageNumber,
-                    ApplicationStatus = ApplicationStatus
-                    
+                    ApplicationStatus = ApplicationStatus,
+                    isDrafted = false,
+
 
 
                 };
@@ -271,5 +272,95 @@ namespace WayleaveManagementSystem.Service
         }
 
 
+
+        /*Getting all applications by draft*/
+
+        public async Task<List<ApplicationsDTO>> GetAllDraftedApplications(string userId, bool isInternal, bool isDrafted)
+        {
+            if (isInternal)
+            {
+                return await (
+                   from Applications in _context.Application
+                   where Applications.isActive == true && Applications.isDrafted == true
+                   orderby Applications.DateCreated descending
+                   select new ApplicationsDTO()
+                   {
+                       ApplicationID = Applications.ApplicationID,
+                       UserID = Applications.UserID,
+                       FullName = Applications.FullName,
+                       Email = Applications.Email,
+                       PhoneNumber = Applications.PhoneNumber,
+                       PhysicalAddress = Applications.PhyscialAddress,
+                       ReferenceNumber = Applications.ReferenceNumber,
+                       CompanyRegNo = Applications.CompanyRegNo,
+                       TypeOfApplication = Applications.TypeOfApplication,
+                       NotificationNumber = Applications.NotificationNumber,
+                       WBSNumber = Applications.WBSNumber,
+                       PhysicalAddressOfProject = Applications.PhysicalAddressOfProject,
+                       DescriptionOfProject = Applications.DescriptionOfProject,
+                       NatureOfWork = Applications.NatureOfWork,
+                       ExcavationType = Applications.ExcavationType,
+                       ExpectedStartDate = Applications.ExpectedStartDate,
+                       ExpectedEndDate = Applications.ExpectedEndDate,
+                       Location = Applications.Location,
+                       DateCreated = Applications.DateCreated,
+                       DateUpdated = Applications.DateUpdated,
+                       CreatedById = Applications.CreatedById,
+                       isActive = Applications.isActive,
+                       PreviousStageName = Applications.PreviousStageName,
+                       ApplicationStatus = Applications.ApplicationStatus,
+                       CurrentStageName = Applications.CurrentStageName,
+                       CurrentStageNumber = Applications.CurrentStageNumber,
+                       CurrentStageStartDate = Applications.CurrentStageStartDate,
+                       NextStageName = Applications.NextStageName,
+                       NextStageNumber = Applications.NextStageNumber,
+                       PreviousStageNumber = Applications.PreviousStageNumber
+
+                   }
+                   ).ToListAsync();
+            }
+            else
+            {
+                return await (
+                   from Applications in _context.Application
+                   where Applications.UserID == userId && Applications.isActive == true && Applications.isDrafted == true
+                   orderby Applications.DateCreated descending
+                   select new ApplicationsDTO()
+                   {
+                       ApplicationID = Applications.ApplicationID,
+                       UserID = Applications.UserID,
+                       FullName = Applications.FullName,
+                       Email = Applications.Email,
+                       PhoneNumber = Applications.PhoneNumber,
+                       PhysicalAddress = Applications.PhyscialAddress,
+                       ReferenceNumber = Applications.ReferenceNumber,
+                       CompanyRegNo = Applications.CompanyRegNo,
+                       TypeOfApplication = Applications.TypeOfApplication,
+                       NotificationNumber = Applications.NotificationNumber,
+                       WBSNumber = Applications.WBSNumber,
+                       PhysicalAddressOfProject = Applications.PhysicalAddressOfProject,
+                       DescriptionOfProject = Applications.DescriptionOfProject,
+                       NatureOfWork = Applications.NatureOfWork,
+                       ExcavationType = Applications.ExcavationType,
+                       ExpectedStartDate = Applications.ExpectedStartDate,
+                       ExpectedEndDate = Applications.ExpectedEndDate,
+                       Location = Applications.Location,
+                       DateCreated = Applications.DateCreated,
+                       DateUpdated = Applications.DateUpdated,
+                       CreatedById = Applications.CreatedById,
+                       isActive = Applications.isActive,
+                       PreviousStageName = Applications.PreviousStageName,
+                       ApplicationStatus = Applications.ApplicationStatus,
+                       CurrentStageName = Applications.CurrentStageName,
+                       CurrentStageNumber = Applications.CurrentStageNumber,
+                       CurrentStageStartDate = Applications.CurrentStageStartDate,
+                       NextStageName = Applications.NextStageName,
+                       NextStageNumber = Applications.NextStageNumber,
+                       PreviousStageNumber = Applications.PreviousStageNumber
+                   }
+                   ).ToListAsync();
+            }
+
+        }
     }
 }

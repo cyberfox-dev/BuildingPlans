@@ -4,9 +4,13 @@
     "@ngx-translate/core": "^14.0.0",
     "arcgis-js-api": "^4.25.5",
     "esri-leaflet": "^3.0.10",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.28",
     "ngx-device-detector": "^5.0.1"
   },
   "devDependencies": {
-    "@types/arcgis-js-api": "^4.25.0"
+    "@angular/cli": "^15.2.1",
+    "@boldreports/angular-reporting-components": "^4.2.80",
+    "@boldreports/types": "^4.2.80"
   }
 }

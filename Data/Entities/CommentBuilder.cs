@@ -11,4 +11,5 @@ namespace WayleaveManagementSystem.Data.Entities
 
 
     }
+   
 }

@@ -42,3 +42,8 @@ npm i arcgis-js-api
 npm i @arcgis/core
 
 npm i esri-leaflet
+
+
+
+npm i --save-dev @boldreports/types
+npm i @boldreports/angular-reporting-components --save-dev

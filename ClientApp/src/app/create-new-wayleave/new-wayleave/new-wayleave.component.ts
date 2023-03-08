@@ -327,7 +327,9 @@ export class NewWayleaveComponent implements OnInit {
     this.getAllStages();
 
  
+   
 
+    
     
 
     console.log("this.CurrentUserProfile ", this.CurrentUserProfile);
@@ -1199,7 +1201,11 @@ export class NewWayleaveComponent implements OnInit {
       }, error => {
         console.log("Error: ", error);
       })
-    }
+  }
+
+  saveProjectAsDraft() {
+
+  }
   }
   
 

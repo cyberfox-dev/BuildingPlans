@@ -39,7 +39,7 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public string? IdNumber { get; set; }
 
-        public string? VatNumber { get; set; }
+        /*public string? VatNumber { get; set; }*/
 
 
 

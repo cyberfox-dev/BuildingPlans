@@ -1,3 +1,10 @@
+//import * as jquery from 'jquery';
+//declare global {
+//  interface Window { jQuery: any; $: any; }
+//}
+//window['jQuery'] = jquery;
+//window['$'] = jquery;
+
 /**
  * This file includes polyfills needed by Angular and is loaded before the app.
  * You can add your own extra polyfills to this file.
