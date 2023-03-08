@@ -72,6 +72,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FileUploadComponent } from './file-upload/file-upload.component';
 import { ServiceItemsConfigComponent } from './service-items-config/service-items-config.component';
+import { GlCodeConfigComponent } from './gl-code-config/gl-code-config.component';
 //import { MapModule } from 'arcgis-js-api';
 //import Map from "@arcgis/core/Map";
 
@@ -129,6 +130,7 @@ import { ServiceItemsConfigComponent } from './service-items-config/service-item
     MandatoryDocsConfigComponent,
     FileUploadComponent,
     ServiceItemsConfigComponent,
+    GlCodeConfigComponent,
   
 
   ],

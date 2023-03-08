@@ -363,18 +363,18 @@
           </div>
         </div>
         <div class="row">
-          <div class="col">
+<!--          <div class="col">
             <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" [(ngModel)]="physicalAddressOfProject" id="Address" placeholder="Enter Address" name="physicalAddressOfProject">
               <label for="name">Physical Address</label>
             </div>
-          </div>
-          <div class="col">
+          </div>-->
+       
             <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" [(ngModel)]="natureOfWork" id="Email" placeholder="Enter Email" name="natureOfWork">
               <label for="name">Type/Nature of works to be undertaken</label>
             </div>
-          </div>
+      
 
         </div>
 
@@ -427,7 +427,7 @@
           <div class="row">
             <div class="form-floating mb-3 mt-3">
               <!--<input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address">-->
-              <input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" />
+              <input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" [(ngModel)]="physicalAddressOfProject" id="Address" placeholder="Enter Address" name="physicalAddressOfProject" />
               <label for="applicantTellNo">Physical Address</label>
             </div>
           </div>
