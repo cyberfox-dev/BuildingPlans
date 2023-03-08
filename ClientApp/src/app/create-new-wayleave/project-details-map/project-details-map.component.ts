@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ElementRef, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, OnInit, ElementRef, OnDestroy, ViewChild, ViewEncapsulation, Input } from '@angular/core';
 import { watch, whenFalse, whenTrue } from '@arcgis/core/core/watchUtils';
 import Graphic from '@arcgis/core/Graphic';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
@@ -104,9 +104,10 @@ interface LayerInfo {
   styleUrls: ['./project-details-map.component.css']
 })
 export class ProjectDetailsMapComponent implements OnInit {
-
-    constructor(
-      private sharedService: SharedService
+  /*  @Input() data: string; //retrieves this data from the parent component*/
+  @Input() data: any; //retrieves this data from the parent component
+  constructor(
+    private sharedService: SharedService
     /*        @Inject(ARCGIS_CONFIG) private config: ArcgisConfig,*/
     //private deviceService: DeviceDetectorService,
     //  private translate: TranslateService,
@@ -139,9 +140,22 @@ export class ProjectDetailsMapComponent implements OnInit {
   private oldGraphics: any;
   private defaultZoom: number = 6;
 
-  isActive: string = "0";
+  public stringifiedData: any;
+  public CurrentUser: any;
+  //public isActive: string = "1";
+  //public applicationID: string = "1";
+
+
+  //  createdByID: string;
+
+  /*  public createdByID: string = "123344";*/
 
   ngOnInit(): void {
+    if (this.data.applicationID != null && this.data.applicationID != undefined) {
+    } else {
+      /*      this.data.applicationID = "venolin";*/
+      this.data.applicationID = this.sharedService.getApplicationID();
+    }
     this.positionAndMapLoad();
     let editConfigCrimeLayer, editConfigPoliceLayer;
   }
@@ -149,10 +163,25 @@ export class ProjectDetailsMapComponent implements OnInit {
   private async positionAndMapLoad() {
     await this.setPosition();
     await this.initializeMap();
-
   }
 
-  private initializeMap(): Promise<any> {
+  //private initializeData(): string {
+  //  /*  this.sharedService.getApplicationID()*/
+  ////Convert the local storage JSON data to an array object
+  //this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+  ////Local storage userID
+  //this.CurrentUser = JSON.parse(this.stringifiedData);
+  //  this.createdByID = this.CurrentUser.appUserId;
+
+  //  console.log("get Data ven " + this.createdByID + this.data)
+  //  return this.createdByID;
+  //}
+
+  private async initializeMap(): Promise<any> {
+    console.log("ApplicationID " + this.data.applicationID)
+    console.log("IsActive " + this.data.isActive)
+    console.log("CreatedByID " + this.data.createdByID)
+
     /*    const graphicsLayer = new GraphicsLayer();*/
     var pointLayer = new FeatureLayer;
     var lineLayer = new FeatureLayer;
@@ -196,7 +225,7 @@ export class ProjectDetailsMapComponent implements OnInit {
       basemap: 'gray-vector',
       /*      layers: [graphicsLayer]*/
       /*      layers: [pointLayer, lineLayer, polygonLayer]*/
-      
+
     });
 
 
@@ -294,7 +323,9 @@ export class ProjectDetailsMapComponent implements OnInit {
       url: "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves/FeatureServer",
       title: "Wayleaves edit layer",
       /*        definitionExpression: "OBJECTID = 1"*/
-/*      definitionExpression: "CRTD_BY_ID = 777"*/
+      /*            definitionExpression: "CRTD_BY_ID = 777"*/
+      /*      definitionExpression: "CRTD_BY_ID = '22ee5b58-db0e-4774-8245-bf7b59670e44'",*/
+      definitionExpression: "CRTD_BY_ID = '" + this.data.createdByID + "'"
     });
 
     const elementOne: ElementPropertiesInterface = {
@@ -375,12 +406,12 @@ export class ProjectDetailsMapComponent implements OnInit {
     //  console.error("Geometry is not simple and cannot be added to feature layer");
     //}
 
-/*    Zoom into the FeatureServer layer. This doesn't seem to work too well since the FeatureServer layer is empty*/
+    /*    Zoom into the FeatureServer layer. This doesn't seem to work too well since the FeatureServer layer is empty*/
     //featureLayer.when(() => {
     //  view.goTo(featureLayer.fullExtent);
     //});
 
-    //This is used to zoom into the area of the relevant polygons for the application
+    /*    This is used to zoom into the area of the relevant polygons for the application*/
     const query = featureLayer.createQuery()
     query.where = "CRTD_BY_ID = 777";
     featureLayer.queryExtent(query).then(function (result) {
@@ -396,67 +427,6 @@ export class ProjectDetailsMapComponent implements OnInit {
     //});
 
 
-    // Create the Form template and pass in elements
-    const formTemplate = new FormTemplate({
-      title: "Inspector report",
-      description: "Enter all relevant information below",
-      /*      elements: [groupElement] // Add all elements to the template*/
-    });
-
-    // Add a new feature form with grouped fields
-    //const form = new FeatureForm({
-    //  container: "form",
-    //  groupDisplay: "sequential", // only display one group at a time
-    //  formTemplate: formTemplate // set it to template created above
-    //});
-
-
-    // Expression created within ExpressionInfos and is referenced in element
-    const expression = new ExpressionInfo({
-      name: "alwaysHidden",
-      expression: "false"
-    });
-
-    const expression2 = new ExpressionInfo({
-      name: "assignIsActive",
-      expression: this.isActive
-    });
-
-    //const expression3 = new ExpressionInfo({
-    //  name: "assignApplicationID",
-    //  expression: 12
-    //});
-
-    // Reference an already-defined visibilityExpression set within the ExpressionInfos
-    const fieldElement = new FieldElement({
-      /*  type: "field",*/
-      fieldName: "CRTD_BY_ID",
-      label: "Created by ID",
-      /*  visibilityExpression: "alwaysHidden"*/
-    });
-
-    const fieldElement2 = new FieldElement({
-      /*  type: "field",*/
-      fieldName: "LU_ACTV_STS",
-      label: "isActive",
-      valueExpression: "assignIsActive",
-      editable: false,
-      /*        visibilityExpression: "alwaysHidden"*/
-    });
-
-    const fieldElement3 = new FieldElement({
-      /*  type: "field",*/
-      fieldName: "WLMS_APLC_KEY",
-      label: "Application ID",
-      valueExpression: "assignIsActive",
-      editable: true,
-      /*        visibilityExpression: "alwaysHidden"*/
-    });
-
-    formTemplate.expressionInfos = [expression, expression2];
-    formTemplate.elements = [fieldElement, fieldElement2, fieldElement3];
-
-    featureLayer.formTemplate = formTemplate
 
 
     return this.view.when(() => {
@@ -663,20 +633,22 @@ export class ProjectDetailsMapComponent implements OnInit {
       });
       view.ui.add(editor, "top-right");
 
+
       // Listen to the create event of the Editor widget.
       editor.on('submit', (event) => {
         // Get a reference to the feature that was just created.
-        const graphic = event.graphic;
-        // Set the values of the attributes for the new feature.
-        graphic.attributes = {
-          LU_ACTV_STS: "9999",
-          /*          cREATED_bYid: "99",*/
-          // other attribute values
-        };
+        //const graphic = event.graphic;
+        //// Set the values of the attributes for the new feature.
+        //graphic.attributes = {
+        //  LU_ACTV_STS: "9999",
+        //  /*          cREATED_bYid: "99",*/
+        //  // other attribute values
+        //};
 
+        console.log('submitted form')
         // Save the new feature.
-        const featureFormViewModel = editor.viewModel.featureFormViewModel;
-        featureFormViewModel.submit();
+        //const featureFormViewModel = editor.viewModel.featureFormViewModel;
+        //featureFormViewModel.submit();
       });
 
       ///*       create a new instance of draw*/
@@ -744,9 +716,87 @@ export class ProjectDetailsMapComponent implements OnInit {
       //});
 
       //Zooms into Cape Town, or rather, shows the 'fullExtent of the layer'
-      //streetlights.when(() => {
-      //  view.goTo(streetlights.fullExtent);
+      streetlights.when(() => {
+        view.goTo(streetlights.fullExtent);
+      });
+
+      // Create the Form template and pass in elements
+      const formTemplate = new FormTemplate({
+        title: "Inspector report",
+        description: "Enter all relevant information below",
+        /*      elements: [groupElement] // Add all elements to the template*/
+      });
+
+      // Add a new feature form with grouped fields
+      //const form = new FeatureForm({
+      //  container: "form",
+      //  groupDisplay: "sequential", // only display one group at a time
+      //  formTemplate: formTemplate // set it to template created above
       //});
+
+
+      // Expression created within ExpressionInfos and is referenced in element
+      const expression = new ExpressionInfo({
+        name: "alwaysHidden",
+        expression: "false"
+      });
+
+      const expression2 = new ExpressionInfo({
+        name: "assignIsActive",
+        expression: "Text('" + this.data.isActive + "')",
+      });
+
+      const expression3 = new ExpressionInfo({
+        name: "assignApplicationID",
+        returnType: 'string',
+        expression: "Text('" + this.data.applicationID + "')",
+      });
+
+      const expression4 = new ExpressionInfo({
+        name: "assignCreatedByID",
+        /*        expression: this.initializeData()*/
+        returnType: 'string',
+        expression: "Text('" + this.data.createdByID + "')",
+        /*        expression: "$feature.TEMP",*/
+
+      });
+
+      // Reference an already-defined visibilityExpression set within the ExpressionInfos
+      const fieldElement = new FieldElement({
+        /*  type: "field",*/
+        fieldName: "CRTD_BY_ID",
+        label: "createdByID",
+        /*        valueExpression: "assignCreatedByID",*/
+        valueExpression: "assignCreatedByID",
+          visibilityExpression: "alwaysHidden",
+        editable: false,
+
+      });
+
+      const fieldElement2 = new FieldElement({
+        /*  type: "field",*/
+        fieldName: "LU_ACTV_STS",
+        label: "isActive",
+        valueExpression: "assignIsActive",
+        editable: false,
+                visibilityExpression: "alwaysHidden"
+      });
+
+      const fieldElement3 = new FieldElement({
+        /*  type: "field",*/
+        fieldName: "WLMS_APLC_KEY",
+        label: "applicationID",
+        valueExpression: "assignApplicationID",
+        editable: false,
+                visibilityExpression: "alwaysHidden"
+      });
+
+      formTemplate.expressionInfos = [expression, expression2, expression3, expression4];
+      formTemplate.elements = [fieldElement, fieldElement2, fieldElement3];
+
+      featureLayer.formTemplate = formTemplate
+
+
     })
 
 

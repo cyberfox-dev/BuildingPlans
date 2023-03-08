@@ -91,6 +91,12 @@ export interface MandatoryDocumentUploadList {
   dateCreated: any;
 }
 
+export interface ARCGISAPIData {
+  createdByID: string;
+  isActive: string;
+  applicationID: string;
+}
+
 const ELEMENT_DATA: PeriodicElement[] = [
   { fileType: "Cover letter explaning the extent of the work" },
   { fileType: "Drawing showing the proposed route and detail regarding the trench cross section, number of pipes etc." },
@@ -126,8 +132,6 @@ const ELEMENT_DATATEst: PeriodicElementTest[] = [
   styleUrls: ['./new-wayleave.component.css']
 })
 export class NewWayleaveComponent implements OnInit {
-
-  
   @ViewChild("placesRef")
   placesRef: GooglePlaceDirective | undefined;
   options = {
@@ -222,6 +226,9 @@ export class NewWayleaveComponent implements OnInit {
   Engineer = "Engineer";
   Contractor = "Contractor";
 
+  //Initialize the interface for ARCGIS
+  ARCGISAPIData = {} as ARCGISAPIData;
+
   //public addApplication = this.formBuilder.group({
   //  newApplicationName: ['', Validators.required]
 
@@ -300,6 +307,11 @@ export class NewWayleaveComponent implements OnInit {
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
+
+    //Assigns the below values to the variable that will be passed to the map component.
+    this.ARCGISAPIData.createdByID = this.CurrentUser.appUserId;
+    this.ARCGISAPIData.isActive = "1";
+    this.ARCGISAPIData.applicationID = this.notificationNumber;
 
     this.typeOfApplication = "TOA";
 
@@ -546,9 +558,13 @@ export class NewWayleaveComponent implements OnInit {
   }
 
 
-
+  onModelChange() {
+    this.shared.setApplicationID(this.notificationNumber);
+/*    this.shared.setCreatedByID(this.CurrentUser.appUserId)*/
+  }
 
   onWayleaveCreate() {
+/*    this.shared.setApplicationID(this.notificationNumber);*/
     this.clientAddress = this.shared.getAddressData();
     const contractorData = this.shared.getContactorData();
     const engineerData = this.shared.getEngineerData();

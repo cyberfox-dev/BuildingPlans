@@ -160,8 +160,10 @@ export class SharedService {
     return this.applicationDataForView[0];
   }
 
-  //ESRI Data
+  //ESRI DATA BEGIN
   esriAddress!: string;
+  applicationID!: string;
+  createdByID!: string;
 
   setAddressData(data: any) {
     this.esriAddress = data;
@@ -170,6 +172,28 @@ export class SharedService {
   getAddressData() {
     return this.esriAddress;
   }
+
+  //Using NotificationNumber for now, until the ApplicationID is created
+  setApplicationID(data: any) {
+    console.log("setting ..." + this.applicationID);
+    this.applicationID = data;
+  }
+
+  getApplicationID() {
+    console.log("getting ..." + this.applicationID);
+    return this.applicationID;
+  }
+
+  setCreatedByID(data: any) {
+    console.log("setting ..." + this.applicationID);
+    this.applicationID = data;
+  }
+
+  getCreatedByID() {
+    console.log("getting ..." + this.applicationID);
+    return this.applicationID;
+  }
+  //ESRI Data END
 
   pushFileForTempFileUpload(formData: any, uploadFor: any) {
 
