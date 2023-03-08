@@ -73,6 +73,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FileUploadComponent } from './file-upload/file-upload.component';
 import { ServiceItemsConfigComponent } from './service-items-config/service-items-config.component';
 import { GlCodeConfigComponent } from './gl-code-config/gl-code-config.component';
+import { InvoiceComponent } from './invoice/invoice.component';
 //import { MapModule } from 'arcgis-js-api';
 //import Map from "@arcgis/core/Map";
 
@@ -131,6 +132,7 @@ import { GlCodeConfigComponent } from './gl-code-config/gl-code-config.component
     FileUploadComponent,
     ServiceItemsConfigComponent,
     GlCodeConfigComponent,
+    InvoiceComponent,
   
 
   ],
@@ -182,6 +184,7 @@ import { GlCodeConfigComponent } from './gl-code-config/gl-code-config.component
       { path: 'configuration', component: ConfigurationComponent },
       { path: 'user-settings', component: UserSettingsComponent },
       { path: 'cyberfox-config', component: CyberfoxConfigComponent },
+      { path: 'invoice', component: InvoiceComponent },
     ])
   ],
   providers: [],
