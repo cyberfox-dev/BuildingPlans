@@ -28,7 +28,7 @@ export class FileUploadComponent implements OnInit {
   }
   uploadFile = (files: any) => {
 
-    debugger;
+   
     if (files.length === 0) {
       return;
     }

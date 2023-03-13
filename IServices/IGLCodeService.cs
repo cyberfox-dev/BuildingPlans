@@ -10,7 +10,8 @@ namespace WayleaveManagementSystem.IServices
       
         public Task<bool> DeleteGLCode(int glCodeID);
 
-        Task<List<GLCodeDTO>> GetGLCodeByDepartmentID(string? userID);
+        Task<List<GLCodeDTO>> GetGLCodeByID(int? glCodeID);
+        Task<List<GLCodeDTO>> GetAllGLCodes();
 
     }
 }
