@@ -40,6 +40,9 @@ namespace WayleaveManagementSystem.Data
 
         public DbSet<MandatoryDocumentStageLink> MandatoryDocumentStageLink { get; set; }
         public DbSet<ServiceItems> ServiceItem { get; set; }
+        public DbSet<GLCode> GLCode { get; set; }
+
+
 
         // Virtual Db Sets for SPs go here
         public virtual DbSet<UserSpDTO> UserSpDTOs { get; set; }
