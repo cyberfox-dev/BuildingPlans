@@ -88,19 +88,19 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-        [HttpPost("GetGLCodeByDepartmentID")]
-        public async Task<object> GetGLCodeByDepartmentID([FromBody] ZoneLinkByUserIDBindingModel model)
+        [HttpPost("GetGLCodeByID")]
+        public async Task<object> GetGLCodeByID([FromBody] int glCodeID)
         {
             try
             {
 
-                if (model.UserID.Length < 3)
+                if (glCodeID < 3)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
-                    var result = await _glCodeService.GetGLCodeByDepartmentID(model.UserID);
+                    var result = await _glCodeService.GetGLCodeByID(glCodeID);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "GL Code List Created", result));
                 }
 
@@ -113,6 +113,28 @@ namespace WayleaveManagementSystem.Controllers
                  
             }
         }
+
+        [HttpGet("GetAllGLCodes")]
+        public async Task<object> GetAllGLCodes()
+        {
+            try
+            {
+
+
+                var result = await _glCodeService.GetAllGLCodes();
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All GL Codes", result));
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
 
     }
 
