@@ -6,36 +6,41 @@
   <div class="modal-body">
     <form [formGroup]="addGlCode">
 
-        <div class="form-floating mb-3 mt-3">
-          <input type="text" class="form-control" id="glCodeName" formControlName="newGlCode" placeholder="Enter a GL Code name">
-          <label for="glCodeName">GL Code Name</label>
-        </div>
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" id="glCodeName" formControlName="newGlCode" placeholder="Enter a GL Code name">
+        <label for="glCodeName">GL Code Name</label>
+      </div>
 
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+    <button type="button" class="btn btn-outline-success" (click)="onAddGLCode();modal.close('Save click')">Save</button>
   </div>
 </ng-template>
 
-<!--<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+<button mat-raised-button color="primary" (click)="openCreateNewGLCode(createNewGLCode)">Create a new GL Code </button>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
 
 
   <ng-container matColumnDef="glCodeName">
-    <th mat-header-cell *matHeaderCellDef> GL Code </th>
+    <th mat-header-cell *matHeaderCellDef> GL Code Name </th>
     <td mat-cell *matCellDef="let element"> {{element.glCodeName}} </td>
   </ng-container>
-
+  <ng-container matColumnDef="dateCreated">
+    <th mat-header-cell *matHeaderCellDef>Date Created </th>
+    <td mat-cell *matCellDef="let element"> {{element.dateCreated}} </td>
+  </ng-container>
 
 
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef>Actions</th>
     <td mat-cell *matCellDef="let i = index">
-      <button mat-raised-button color="success" matTooltip="Add GL Code" (click)="openCreateNewGLCode(createNewGLCode)"><i class="fa fa-plus"></i></button>
-       <button mat-raised-button color="blue" matTooltip="View GL Code"><i class="fa fa-plus" ></i></button>
-      <button mat-raised-button color="blue" matTooltip="View all sub Depertments" ><i class="fa fa-eye"></i></button>
-     
+      <button mat-raised-button color="success"><i class="fa fa-link"></i></button>
+      <button mat-raised-button color="blue" matTooltip="View GL Code" (click)="openEditGLCode(editGLCode,i)"><i class="fa fa-eye"></i></button>
+      <button mat-raised-button color="warn" matTooltip="Delete GL Code" (click)="onGLCodeDelete(i)"><i class="fa fa-trash"></i></button>
+
 
     </td>
     <td mat-cell *matCellDef="let element">  </td>
@@ -44,4 +49,25 @@
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>-->
+</table>
+
+
+<ng-template #editGLCode let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Creating a new Gl Code</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="editGlCode">
+
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" id="glCodeName" formControlName="editGlCode" placeholder="Enter a GL Code name">
+        <label for="glCodeName">GL Code Name</label>
+      </div>
+
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="onGLCodeEdit();modal.close('Save click')">Save</button>
+  </div>
+</ng-template>

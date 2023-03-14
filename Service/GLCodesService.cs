@@ -10,7 +10,7 @@ using WayleaveManagementSystem.Models.DTO;
 
 namespace WayleaveManagementSystem.Service
 {
-    public class GLCodeService : IMandatoryDocumentUploadsService
+    public class GLCodeService : IGLCodeService
     {
         private readonly AppDBContext _context;
 
@@ -19,68 +19,68 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<MandatoryDocumentUpload> AddUpdateMandatoryDocument(int? mandatoryDocumentID, string mandatoryDocumentName, string? createdByID)
+        public async Task<GLCode> AddUpdateGLCode(int? glCodeID, string glCodeName, string? createdByID)
         {
 
-            if (mandatoryDocumentID == 0)
+            if (glCodeID == 0)
             {
-                mandatoryDocumentID = null;
+                glCodeID = null;
             }
-            //this checks is the record exists in the db
-            var tempMandatoryDocumentTable = _context.MandatoryDocumentUploads.FirstOrDefault(x => x.MandatoryDocumentID == mandatoryDocumentID);
+  
+            var tempGLCodeTable = _context.GLCode.FirstOrDefault(x => x.GLCodeID == glCodeID);
 
-            //if the object is null assume that the user is tying to add a new Professional
-            if (tempMandatoryDocumentTable == null)
+
+            if (tempGLCodeTable == null)
             {
-                //create a new object of professional entity class then initialize the object with given infomation
-                tempMandatoryDocumentTable = new MandatoryDocumentUpload()
+
+                tempGLCodeTable = new GLCode()
                 {
-                    MandatoryDocumentName = mandatoryDocumentName,
+                    GLCodeName = glCodeName,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     CreatedById = createdByID,
                     isActive = true
                 };
 
-                //After the inizlization add to the db
-                await _context.MandatoryDocumentUploads.AddAsync(tempMandatoryDocumentTable);
+     
+                await _context.GLCode.AddAsync(tempGLCodeTable);
                 await _context.SaveChangesAsync();
 
-                return tempMandatoryDocumentTable;
+                return tempGLCodeTable;
 
             }
-            else //if it is not null then user is doing an update 
+            else 
             {
-                tempMandatoryDocumentTable.MandatoryDocumentName = mandatoryDocumentName;
+                tempGLCodeTable.GLCodeName = glCodeName;
 
 
-                tempMandatoryDocumentTable.DateUpdated = DateTime.Now;
-                tempMandatoryDocumentTable.isActive = true;
+                tempGLCodeTable.DateUpdated = DateTime.Now;
+                tempGLCodeTable.isActive = true;
 
-                _context.Update(tempMandatoryDocumentTable);
+                _context.Update(tempGLCodeTable);
                 await _context.SaveChangesAsync();
-                return tempMandatoryDocumentTable;
+                return tempGLCodeTable;
             }
 
 
 
         }
 
-        public async Task<bool> DeleteMandatoryDocument(int mandatoryDocumentID)
+        public async Task<bool> DeleteGLCode(int glCodeID)
         {
-            //this checks is the record exists in the db
-            var tempMandatoryDocumentTable = _context.MandatoryDocumentUploads.FirstOrDefault(x => x.MandatoryDocumentID == mandatoryDocumentID);
+   
+            var tempGLCodeTable = _context.GLCode.FirstOrDefault(x => x.GLCodeID == glCodeID);
 
-            if (tempMandatoryDocumentTable == null)
+            if (tempGLCodeTable == null)
             {
                 return await Task.FromResult(false);
 
             }
             else
             {
-                tempMandatoryDocumentTable.DateUpdated = DateTime.Now;
-                tempMandatoryDocumentTable.isActive = false;
-                _context.Update(tempMandatoryDocumentTable);
+                tempGLCodeTable.DateUpdated = DateTime.Now;
+                tempGLCodeTable.isActive = false;
+                _context.Update(tempGLCodeTable);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -90,36 +90,36 @@ namespace WayleaveManagementSystem.Service
 
 
 
-        public async Task<List<MandatoryDocumentUploadDTO>> GetAllMandatoryDocumentsByID(int? mandatoryDocumentID)
+        public async Task<List<GLCodeDTO>> GetGLCodeByID(int? glCodeID)
         {
             return await (
-                from MandatoryDocumentUpload in _context.MandatoryDocumentUploads
-                where MandatoryDocumentUpload.MandatoryDocumentID == mandatoryDocumentID && MandatoryDocumentUpload.isActive == true
-                select new MandatoryDocumentUploadDTO()
+                from GLCode in _context.GLCode
+                where GLCode.GLCodeID == glCodeID && GLCode.isActive == true
+                select new GLCodeDTO()
                 {
-                    MandatoryDocumentName = MandatoryDocumentUpload.MandatoryDocumentName,
+                    GLCodeName = GLCode.GLCodeName,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
-                    CreatedById = MandatoryDocumentUpload.CreatedById,
+                    CreatedById = GLCode.CreatedById,
                     isActive = true
 
                 }
                 ).ToListAsync();
         }
 
-        public async Task<List<MandatoryDocumentUploadDTO>> GetAllMandatoryDocuments()
+        public async Task<List<GLCodeDTO>> GetAllGLCodes()
         {
 
             return await (
-                 from mandatoryDocumentUpload in _context.MandatoryDocumentUploads
-                 where mandatoryDocumentUpload.isActive == true
-                 select new MandatoryDocumentUploadDTO()
+                 from GLCode in _context.GLCode
+                 where GLCode.isActive == true
+                 select new GLCodeDTO()
                  {
-                     MandatoryDocumentID = mandatoryDocumentUpload.MandatoryDocumentID,
-                     MandatoryDocumentName = mandatoryDocumentUpload.MandatoryDocumentName,
+                     GLCodeID = GLCode.GLCodeID,
+                     GLCodeName = GLCode.GLCodeName,
                      DateCreated = DateTime.Now,
                      DateUpdated = DateTime.Now,
-                     CreatedById = mandatoryDocumentUpload.CreatedById,
+                     CreatedById = GLCode.CreatedById,
                      isActive = true
 
 
