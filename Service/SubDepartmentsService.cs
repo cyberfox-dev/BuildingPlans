@@ -6,6 +6,7 @@ using WayleaveManagementSystem.Models.DTO;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel;
+using System;
 
 namespace WayleaveManagementSystem.Service
 {
@@ -61,6 +62,27 @@ namespace WayleaveManagementSystem.Service
 
         }
 
+
+        public async Task<SubDepartments> AddSubDepartmentAdmin(int? subDepartmentID, string? departmentAdminUserID)
+        {
+ 
+
+            var tempSubDepartmentsTable = _context.SubDepartmentsTable.FirstOrDefault(x => x.SubDepartmentID == subDepartmentID);
+
+          
+      
+                tempSubDepartmentsTable.SubDepartmentAdminUserID = departmentAdminUserID;
+                tempSubDepartmentsTable.DateUpdated = DateTime.Now;
+
+                _context.Update(tempSubDepartmentsTable);
+                await _context.SaveChangesAsync();
+                return tempSubDepartmentsTable;
+
+            
+
+        }
+
+
         public async Task<bool> DeleteSubDepartments(int subDepartmentID)
         {
             var tempSubDepartmentsTable = _context.SubDepartmentsTable.FirstOrDefault(x => x.SubDepartmentID == subDepartmentID);
@@ -97,6 +119,51 @@ namespace WayleaveManagementSystem.Service
 
                 }
                 ).ToListAsync();
+        }
+
+
+
+        public async Task<List<SubDepartmentsDTO>> GetAllNotLinkedSubDepartmentsForComment(int applicationID)
+        {
+            var subDepartmentIDs = await (
+                 from subDepartmentForComment in _context.SubDepartmentForComment
+                 where subDepartmentForComment.ApplicationID == applicationID
+                 select subDepartmentForComment.SubDepartmentID
+             ).ToListAsync();
+
+            return await (
+                from subDepartment in _context.SubDepartmentsTable
+                where subDepartment.isActive == true && !subDepartmentIDs.Contains(subDepartment.SubDepartmentID)
+                select new SubDepartmentsDTO()
+                {
+                    SubDepartmentID = subDepartment.SubDepartmentID,
+                    SubDepartmentName = subDepartment.SubDepartmentName,
+                    DepartmentID = subDepartment.DepartmentID,
+                    DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,
+                    isActive = true
+                }
+            ).ToListAsync();
+        }
+
+        public async Task<List<SubDepartmentsDTO>> GetAllLinkedSubDepartmentsForComment(int applicationID)
+        {
+            return await (
+                from subDepartment in _context.SubDepartmentsTable
+                join subDepartmentForComment in _context.SubDepartmentForComment
+                    on subDepartment.SubDepartmentID equals subDepartmentForComment.SubDepartmentID
+                where subDepartment.isActive == true && subDepartmentForComment.ApplicationID == applicationID && subDepartmentForComment.isActive == true
+                select new SubDepartmentsDTO()
+                {
+                    SubDepartmentID = subDepartment.SubDepartmentID,
+                    SubDepartmentName = subDepartment.SubDepartmentName,
+                    DepartmentID = subDepartment.DepartmentID,
+                    SubDepartmentForCommentID = subDepartmentForComment.SubDepartmentForCommentID,
+                    DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,
+                    isActive = true
+                }
+            ).ToListAsync();
         }
 
         public async Task<List<SubDepartmentsDTO>> GetAllSubDepartmentsBydepartmentID(int departmentID)

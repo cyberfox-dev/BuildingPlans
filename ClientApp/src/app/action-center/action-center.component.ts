@@ -17,6 +17,7 @@ export interface SubDepartmentList {
   departmentID: number;
   dateUpdated: any;
   dateCreated: any;
+  subdepartmentForCommentID: number | null;
 }
 
 export interface ServiceItemList {
@@ -74,6 +75,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   SubDepartmentList: SubDepartmentList[] = [];
+  SubDepartmentLinkedList: SubDepartmentList[] = [];
   CommentList: CommentList[] = [];
   CommentDropDown: CommentDropDown[] = [];
   ServiceItemCodeDropdown: ServiceItemCodeDropdown[] = [];
@@ -84,7 +86,12 @@ export class ActionCenterComponent implements OnInit {
   displayedColumnsSubDepartment: string[] = ['subDepartmentName', 'actions'];
   dataSourceSubDepartment = this.SubDepartmentList;
 
+  displayedColumnsLinkedSubDepartment: string[] = ['subDepartmentName', 'actions'];
+  dataSourceLinkedSubDepartment = this.SubDepartmentLinkedList;
+
   @ViewChild(MatTable) SubDepartmentListTable: MatTable<SubDepartmentList> | undefined;
+  @ViewChild(MatTable) SubDepartmentLinkedListTable: MatTable<SubDepartmentList> | undefined;
+
 
 
   closeResult!: string;
@@ -132,15 +139,16 @@ export class ActionCenterComponent implements OnInit {
   getAllSubDepartments(assign: any) {
 
     this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
+    this.SubDepartmentLinkedList.splice(0, this.SubDepartmentLinkedList.length);
 
-    this.subDepartment.getSubDepartmentsList().subscribe((data: any) => {
+    this.subDepartment.getAllNotLinkedSubDepartmentsForComment(this.ApplicationID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempSubDepartmentList = {} as SubDepartmentList;
           const current = data.dateSet[i];
-          tempSubDepartmentList.subDepartmentID = current.SubDepartmentID;
+          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
           tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
           tempSubDepartmentList.departmentID = current.departmentID;
           tempSubDepartmentList.dateUpdated = current.dateUpdated;
@@ -148,7 +156,7 @@ export class ActionCenterComponent implements OnInit {
           this.SubDepartmentList.push(tempSubDepartmentList);
           this.SubDepartmentListTable?.renderRows();
         }
-
+       
         this.SubDepartmentListTable?.renderRows();
         this.modalService.open(assign, { size: 'xl' });
       }
@@ -163,6 +171,71 @@ export class ActionCenterComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
+
+
+    this.subDepartment.getAllLinkedSubDepartmentsForComment(this.ApplicationID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+
+     
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepartmentLinkedList = {} as SubDepartmentList;
+          const current = data.dateSet[i];
+          tempSubDepartmentLinkedList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentLinkedList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentLinkedList.departmentID = current.departmentID;
+          tempSubDepartmentLinkedList.dateUpdated = current.dateUpdated;
+          tempSubDepartmentLinkedList.dateCreated = current.dateCreated;
+          tempSubDepartmentLinkedList.subdepartmentForCommentID = current.subDepartmentForCommentID;
+
+          this.SubDepartmentLinkedList.push(tempSubDepartmentLinkedList);
+          this.SubDepartmentListTable?.renderRows();
+        }
+
+        this.SubDepartmentListTable?.renderRows();
+        this.SubDepartmentLinkedListTable?.renderRows();
+        this.modalService.open(assign, { size: 'xl' });
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+        this.SubDepartmentListTable?.renderRows();
+        this.SubDepartmentLinkedListTable?.renderRows();
+        this.modalService.open(assign, { size: 'xl' });
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  deleteLinkedDepartmentForComment(index: number) {
+    debugger;
+   
+    if (confirm("Are you sure to delete " + this.SubDepartmentLinkedList[index].subDepartmentName + "?")) {
+     
+      this.subDepartmentForCommentService.deleteDepartmentForComment(this.SubDepartmentLinkedList[index].subdepartmentForCommentID).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          alert(data.responseMessage);
+         
+        }
+        else {
+          alert(data.responseMessage);
+          
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+
+    }
   }
 
   populateComment(commentName: any) {
@@ -307,7 +380,7 @@ export class ActionCenterComponent implements OnInit {
 
   onLinkDepartmentForComment() {
 
-
+    debugger;
 
     const selectDepartments = this.selection.selected;
 

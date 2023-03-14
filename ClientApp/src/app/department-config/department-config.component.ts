@@ -12,7 +12,9 @@ import { SubDepartmentsService } from '../service/SubDepartments/sub-departments
 import { ZoneLinkService } from '../service/ZoneLink/zone-link.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import {  MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
+
 
 
 export interface DepartmentList {
@@ -72,6 +74,12 @@ export interface UserZoneList {
   zoneLinkID?: any;
 }
 
+export interface UserDepartmentAdminList {
+  id: string;
+  fullName: string;
+  
+}
+
 @Component({
   selector: 'app-department-config',
   templateUrl: './department-config.component.html',
@@ -97,12 +105,15 @@ export class DepartmentConfigComponent implements OnInit {
   SubDepartmentDropdown: SubDepartmentDropdown[] = [];
   ZoneDropdown: ZoneDropdown[] = [];
   UserZoneList: UserZoneList[] = [];
+  UserDepartmentAdminList: UserDepartmentAdminList[] = [];
 
 
 
 
 
   selection = new SelectionModel<UserZoneList>(true, []);
+  selectionUserDepartmentAdminList = new SelectionModel<UserDepartmentAdminList>(true, []);
+
   CurrentUser: any;
   stringifiedData: any;
   showZone = false;
@@ -156,7 +167,7 @@ export class DepartmentConfigComponent implements OnInit {
   dataSourceSubDepartment = this.SubDepartmentList;
 
   displayedColumnsLinkUsers: string[] = ['fullName','actions'];
-  dataSourceLinkUsers = this.UserZoneList;
+  dataSourceLinkUsers = this.UserDepartmentAdminList;
 
 
   displayedColumnsViewLinkedSubZones: string[] = ['zoneName', 'actions'];
@@ -174,7 +185,7 @@ export class DepartmentConfigComponent implements OnInit {
   newSub: any;
 
   tabIndex: Tabs = Tabs.View_linked_sub_departments;
-  constructor(private matdialog: MatDialog, public dialog: MatDialog, private formBuilder: FormBuilder, private departmentService: DepartmentsService, private modalService: NgbModal, private zoneService: ZonesService, private subDepartment: SubDepartmentsService, private zoneLinkService: ZoneLinkService) { }
+  constructor(private matdialog: MatDialog, public dialog: MatDialog, private formBuilder: FormBuilder, private departmentService: DepartmentsService, private modalService: NgbModal, private zoneService: ZonesService, private subDepartment: SubDepartmentsService, private zoneLinkService: ZoneLinkService, private userProfileService: UserProfileService) { }
 
 
   openNewSubDep(newSub: any, index: any,) {
@@ -221,7 +232,7 @@ export class DepartmentConfigComponent implements OnInit {
     this.viewZonesLinkedtoSub.controls["viewSelectedSubDep"].setValue("0");
     this.viewZonesLinkedtoSub.controls["viewSelectedZone"].setValue("0");
 
-
+    this.getAllUsersForDepartmentAdminLink();
   }
 
   display = 'none';
@@ -241,6 +252,71 @@ export class DepartmentConfigComponent implements OnInit {
     console.log(this.addSubChecked);
   }
 
+
+  getAllUsersForDepartmentAdminLink() {
+    this.userProfileService.getInternalUsers().subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempInternalList = {} as UserDepartmentAdminList;
+            const current = data.dateSet[i];
+            tempInternalList.id = current.userID;
+            tempInternalList.fullName = current.fullName;
+
+
+
+            this.UserDepartmentAdminList.push(tempInternalList);
+          }
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+  }
+
+
+  onDepartmentUserLink() {
+    debugger;
+    let SubDemartmentID = Number(this.setSubAdmin.controls["SetSubDemartmentAdmin"].value);
+    if (SubDemartmentID != 0) {
+
+      for (let i = 0; i < this.selectionUserDepartmentAdminList.selected.length; i++) {
+        const current = this.selectionUserDepartmentAdminList.selected[i];
+
+        this.subDepartment.addDepartmentAdmin(SubDemartmentID, current.id).subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+            alert(data.responseMessage);
+
+
+          }
+          else {
+            alert(data.responseMessage);
+          }
+          console.log("reponse", data);
+
+
+        }, error => {
+          console.log("Error: ", error);
+        })
+      }
+    } else {
+
+      alert("Please select a sundepartment");
+    }
+  
+         
+   // this..controls["selectedZone"].setValue("0");
+
+
+  }
 
 
 
@@ -317,17 +393,18 @@ export class DepartmentConfigComponent implements OnInit {
 
   }
 
-  linkDepAdmin(index:any,linkDepAdminModal: any) {
+  linkDepAdmin(index: any, linkDepAdminModal: any) {
+    debugger;
     this.setSubAdmin.controls["SetSubDemartmentAdmin"].setValue("0");
 
 
     if (this.DepartmentList[index].hasSubDepartment == false) {
       this.ifDepHasSubUserDropDown = false;
-      this.ifDepHasSubUserTable = true;
+      this.ifDepHasSubUserTable = false;
     }
     else {
       this.ifDepHasSubUserDropDown = true;
-      this.ifDepHasSubUserTable = false;
+      this.ifDepHasSubUserTable = true;
 
     }
 
@@ -1121,6 +1198,31 @@ export class DepartmentConfigComponent implements OnInit {
     console.log("THIS IS THE USER", user);
     console.log("THIS IS THE USER", this.selection.toggle(user));
   }
+  userSelectedForDepartmentLink(user: any) {
+    this.selectionUserDepartmentAdminList.clear();
+    this.selectionUserDepartmentAdminList.select(user);
+   
+    
+    //if (this.selectionUserDepartmentAdminList.selected.length < 1) {
+    //  this.selectionUserDepartmentAdminList.toggle(user);
+
+    //}
+    //for (let i = 0; i < this.selectionUserDepartmentAdminList.selected.length; i++) {
+    //  const current = this.selectionUserDepartmentAdminList.selected[i];
+
+    //  if (current.id == user.id) {
+    //    this.selectionUserDepartmentAdminList.toggle(user);
+    //  }
+    //  else {
+    //    if (this.selectionUserDepartmentAdminList.selected.length >=1) {
+    //      alert("You can Only link a single user!");
+    //    }
+    //  }
+
+
+    //}
+
+  }
 
 
 
@@ -1242,6 +1344,13 @@ export class DepartmentConfigComponent implements OnInit {
   }
 
 }
+
+
+
+
+
+
+
 enum Tabs {
   View_linked_sub_departments = 0,
   View_linked_users = 1
