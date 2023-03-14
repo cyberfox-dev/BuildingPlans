@@ -79,24 +79,19 @@ namespace WayleaveManagementSystem.Service
 
         public async Task<bool> DeleteDepartmentForComment(int subDepartmentForCommentID)
         {
-            //this checks is the record exists in the db
+            //this checks if the record exists in the db
             var tempSubDepForCommentTable = _context.SubDepartmentForComment.FirstOrDefault(x => x.SubDepartmentForCommentID == subDepartmentForCommentID);
 
             if (tempSubDepForCommentTable == null)
             {
                 return await Task.FromResult(false);
-
             }
             else
             {
-                tempSubDepForCommentTable.DateUpdated = DateTime.Now;
-                tempSubDepForCommentTable.isActive = false;
-                _context.Update(tempSubDepForCommentTable);
+                _context.SubDepartmentForComment.Remove(tempSubDepForCommentTable);
                 await _context.SaveChangesAsync();
                 return true;
             }
-
-
         }
 
 

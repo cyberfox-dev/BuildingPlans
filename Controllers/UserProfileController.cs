@@ -132,5 +132,27 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+
+        [HttpGet("GetInternalUsers")]
+        public async Task<object> GetInternalUsers()
+        {
+            try
+            {
+
+
+                var result = await _userProfileService.GetInternalUsers();
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "UserProfile List fetched", result));
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
     }
 }

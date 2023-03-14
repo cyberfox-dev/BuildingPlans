@@ -8,7 +8,7 @@
 
         public int? DepartmentID { get; set; }
 
-
+        public int? SubDepartmentForCommentID { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
         public int? CreatedById { get; set; }

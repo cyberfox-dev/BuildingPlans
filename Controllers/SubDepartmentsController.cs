@@ -45,6 +45,34 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpPost("AddSubDepartmentAdmin")]
+        public async Task<object> AddSubDepartmentAdmin([FromBody] SubDepartmentsBindingModel model)
+        {
+
+            try
+            {
+
+                if (model == null || model.SubDepartmentAdminUserID.Length < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _subDepartmentService.AddSubDepartmentAdmin(model.SubDepartmentID, model.SubDepartmentAdminUserID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Sub Department Admin Added Successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+
         [HttpPost("DeleteSubDepartments")]
         public async Task<object> DeleteSubDepartments([FromBody] int subDepartmentID)
         {
@@ -80,6 +108,46 @@ namespace WayleaveManagementSystem.Controllers
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Sub Departments List Created", result));
 
                 
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        [HttpPost("GetAllNotLinkedSubDepartmentsForComment")]
+        public async Task<object> GetAllNotLinkedAndActiveSubDepartments([FromBody] int applicationID)
+        {
+            try
+            {
+                var result = await _subDepartmentService.GetAllNotLinkedSubDepartmentsForComment(applicationID);
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Sub Departments List Created", result));
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        [HttpPost("GetAllLinkedSubDepartmentsForComment")]
+        public async Task<object> GetAllLinkedSubDepartmentsForComment([FromBody] int applicationID)
+        {
+            try
+            {
+                var result = await _subDepartmentService.GetAllLinkedSubDepartmentsForComment(applicationID);
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Sub Departments List Created", result));
+
+
 
             }
             catch (Exception ex)
