@@ -746,13 +746,14 @@ export class DepartmentConfigComponent implements OnInit {
 
   /*Zones*/
   onZoneCreate() {
+
     let newZoneName = this.addZone.controls["newZoneName"].value;
     let newZoneSubDemartment = Number(this.addZone.controls["newZoneSubDemartment"].value);
     
     if (newZoneSubDemartment != 0) {
+      
 
-      debugger;
-      this.zoneService.addUpdateZone(0, newZoneName, this.DepartmentList[this.CurrentDepartmentID].departmentID, newZoneSubDemartment, this.CurrentUser.appUserId).subscribe((data: any) => {
+      this.zoneService.addUpdateZone(0, newZoneName, this.CurrentDepartmentID, newZoneSubDemartment, this.CurrentUser.appUserId).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 
