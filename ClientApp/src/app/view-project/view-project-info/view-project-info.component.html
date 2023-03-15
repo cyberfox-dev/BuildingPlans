@@ -443,7 +443,6 @@ MoveToNextStage()
 
     <mat-tab label="Tracking" *ngIf="isInternalUser">
       <button mat-raised-button color="blue" (click)="openXl(content)">Create New Note</button>
-
     </mat-tab>
 
 
@@ -453,8 +452,9 @@ MoveToNextStage()
 
     <mat-tab label="Audit Trail" *ngIf="isInternalUser">
 
+      <app-audit-trail></app-audit-trail>
 
-    </mat-tab>
+</mat-tab>
 
 
 
