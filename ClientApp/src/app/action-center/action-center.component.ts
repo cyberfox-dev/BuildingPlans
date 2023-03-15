@@ -10,6 +10,7 @@ import { CommentBuilderService } from '../service/CommentBuilder/comment-builder
 import { ServiceItemService } from 'src/app/service/ServiceItems/service-item.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentForComment/sub-department-for-comment.service';
+import { ZonesService } from '../service/Zones/zones.service';
 
 export interface SubDepartmentList {
   subDepartmentID: number;
@@ -43,6 +44,13 @@ export interface CommentDropDown {
 export interface ServiceItemCodeDropdown {
   serviceItemID: number;
   serviceItemCode: string;
+}
+
+export interface ZoneList {
+  zoneID: number;
+  zoneName: string;
+  departmentID: number;
+  subDepartmentID: number;
 }
 
 @Component({
@@ -81,6 +89,8 @@ export class ActionCenterComponent implements OnInit {
   ServiceItemCodeDropdown: ServiceItemCodeDropdown[] = [];
   ServiceItemList: ServiceItemList[] = [];
 
+  ZoneList: ZoneList[] = [];
+
   selection = new SelectionModel<SubDepartmentList>(true, []);
 
   displayedColumnsSubDepartment: string[] = ['subDepartmentName', 'actions'];
@@ -89,13 +99,16 @@ export class ActionCenterComponent implements OnInit {
   displayedColumnsLinkedSubDepartment: string[] = ['subDepartmentName', 'actions'];
   dataSourceLinkedSubDepartment = this.SubDepartmentLinkedList;
 
+  displayedColumnsViewLinkedSubZones: string[] = ['zoneName', 'actions'];
+  dataSourceViewLinkedSubZones = this.ZoneList;
+
   @ViewChild(MatTable) SubDepartmentListTable: MatTable<SubDepartmentList> | undefined;
   @ViewChild(MatTable) SubDepartmentLinkedListTable: MatTable<SubDepartmentList> | undefined;
-
+  @ViewChild(MatTable) ZoneListTable: MatTable<ZoneList> | undefined;
 
 
   closeResult!: string;
-  constructor(private offcanvasService: NgbOffcanvas, private modalService: NgbModal, private _snackBar: MatSnackBar, private subDepartment: SubDepartmentsService, private commentService: CommentBuilderService, private formBuilder: FormBuilder, private serviceItemService: ServiceItemService, private subDepartmentForCommentService: SubDepartmentForCommentService) { }
+  constructor(private offcanvasService: NgbOffcanvas, private modalService: NgbModal, private _snackBar: MatSnackBar, private subDepartment: SubDepartmentsService, private commentService: CommentBuilderService, private formBuilder: FormBuilder, private serviceItemService: ServiceItemService, private subDepartmentForCommentService: SubDepartmentForCommentService, private zoneService: ZonesService) { }
   openEnd(content: TemplateRef<any>) {
     this.offcanvasService.open(content, { position: 'end' });
   }
@@ -124,9 +137,12 @@ export class ActionCenterComponent implements OnInit {
   }
   depositReqModal(deposit: any) {
     this.modalService.open(deposit, { backdrop: 'static', size: 'xl' });
-
-
   }
+
+  openAssignToZone(assignProjectToZone: any) {
+    this.modalService.open(assignProjectToZone, { backdrop: 'static', size: 'xl' });
+  }
+
   uncheck() {
     this.checked = false;
   }
@@ -158,13 +174,13 @@ export class ActionCenterComponent implements OnInit {
         }
        
         this.SubDepartmentListTable?.renderRows();
-        this.modalService.open(assign, { size: 'xl' });
+
       }
       else {
         //alert("Invalid Email or Password");
         alert(data.responseMessage);
         this.SubDepartmentListTable?.renderRows();
-        this.modalService.open(assign, { size: 'xl' });
+
       }
       console.log("reponse", data);
 
@@ -196,20 +212,21 @@ export class ActionCenterComponent implements OnInit {
 
         this.SubDepartmentListTable?.renderRows();
         this.SubDepartmentLinkedListTable?.renderRows();
-        this.modalService.open(assign, { size: 'xl' });
+
       }
       else {
         //alert("Invalid Email or Password");
         alert(data.responseMessage);
         this.SubDepartmentListTable?.renderRows();
         this.SubDepartmentLinkedListTable?.renderRows();
-        this.modalService.open(assign, { size: 'xl' });
+
       }
       console.log("reponse", data);
 
     }, error => {
       console.log("Error: ", error);
     })
+    this.modalService.open(assign, { size: 'xl' });
   }
 
   deleteLinkedDepartmentForComment(index: number) {
