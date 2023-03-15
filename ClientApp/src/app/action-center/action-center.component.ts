@@ -174,7 +174,7 @@ export class ActionCenterComponent implements OnInit {
         }
        
         this.SubDepartmentListTable?.renderRows();
-
+        this.modalService.open(assign, { size: 'xl' });
       }
       else {
         //alert("Invalid Email or Password");
@@ -212,7 +212,7 @@ export class ActionCenterComponent implements OnInit {
 
         this.SubDepartmentListTable?.renderRows();
         this.SubDepartmentLinkedListTable?.renderRows();
-
+        this.modalService.open(assign, { size: 'xl' });
       }
       else {
         //alert("Invalid Email or Password");
@@ -226,7 +226,7 @@ export class ActionCenterComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
-    this.modalService.open(assign, { size: 'xl' });
+
   }
 
   deleteLinkedDepartmentForComment(index: number) {
