@@ -36,6 +36,7 @@ namespace WayleaveManagementSystem.Models.DTO
         public string? PhyscialAddress { get; set; }
         public string? Directorate { get; set; }
         public int? DepartmentID { get; set; }
+        public bool? isDepartmentAdmin { get; set; }
         public int? SubDepartmentID { get; set; }
         public string? Branch { get; set; }
         public string? CostCenterNumber { get; set; }
@@ -49,6 +50,8 @@ namespace WayleaveManagementSystem.Models.DTO
         public bool isActive { get; set; }
 
         public string? IdNumber { get; set; }
+
+        public string? VatNumber { get; set; }
 
     }    
 }

@@ -30,6 +30,13 @@ export interface ServiceItemList {
   dateCreated: any;
 }
 
+export interface ZoneList {
+  zoneID: number;
+  zoneName: string;
+  departmentID: number;
+  subDepartmentID: number;
+}
+
 export interface CommentList {
   CommentID: number;
   Comment: string;
@@ -108,6 +115,12 @@ export class ActionCenterComponent implements OnInit {
 
 
   closeResult!: string;
+    stringifiedDataUserProfile: any;
+    CurrentUserProfile: any;
+    loggedInUsersIsAdmin: any;
+    loggedInUsersDepartment: void;
+    loggedInUsersSubDepartmentID: any;
+    AssignProjectToZone: boolean;
   constructor(private offcanvasService: NgbOffcanvas, private modalService: NgbModal, private _snackBar: MatSnackBar, private subDepartment: SubDepartmentsService, private commentService: CommentBuilderService, private formBuilder: FormBuilder, private serviceItemService: ServiceItemService, private subDepartmentForCommentService: SubDepartmentForCommentService, private zoneService: ZonesService) { }
   openEnd(content: TemplateRef<any>) {
     this.offcanvasService.open(content, { position: 'end' });
@@ -118,7 +131,7 @@ export class ActionCenterComponent implements OnInit {
 
   leaveAComment = "";
   ngOnInit(): void {
-
+    this.getAllSubDepartments();
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
     if (this.CurrentUser == null) {
@@ -129,9 +142,61 @@ export class ActionCenterComponent implements OnInit {
     }
     /*  this.getAllServiceItmes();*/
     this.getAllServiceItmesForDropdown();
-
+    
+    this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
+    this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
+    this.loggedInUsersIsAdmin = this.CurrentUserProfile[0].isDepartmentAdmin;
+    this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
+    this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
 
   }
+
+  setRoles() {
+    debugger;
+    for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
+      if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.loggedInUsersIsAdmin == true) {
+        this.AssignProjectToZone = true;
+        
+
+      }
+    }
+  }
+
+  getAllUsersLinkedToZone(SubDepartmentID: any) {
+    this.ZoneList.splice(0, this.ZoneList.length);
+    debugger;
+    this.zoneService.getZonesBySubDepartmentsID(SubDepartmentID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempZoneList = {} as ZoneList;
+          const current = data.dateSet[i];
+          tempZoneList.zoneID = current.zoneID;
+          tempZoneList.zoneName = current.zoneName;
+          tempZoneList.subDepartmentID = current.subDepartmentID;
+          tempZoneList.departmentID = current.departmentID;
+     
+
+          this.ZoneList.push(tempZoneList);
+          this.ZoneListTable?.renderRows();
+
+        }
+        console.log("this.ZoneListthis.ZoneListthis.ZoneListthis.ZoneList", this.ZoneList);
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+      this.ZoneListTable?.renderRows();
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
   openXl(content: any) {
     this.modalService.open(content, { size: 'xl' });
   }
@@ -140,7 +205,11 @@ export class ActionCenterComponent implements OnInit {
   }
 
   openAssignToZone(assignProjectToZone: any) {
+    //this.getAllSubDepartments();
     this.modalService.open(assignProjectToZone, { backdrop: 'static', size: 'xl' });
+  }
+  openAssignDepartment(assign: any) {
+    this.modalService.open(assign, { backdrop: 'static', size: 'xl' });
   }
 
   uncheck() {
@@ -152,7 +221,7 @@ export class ActionCenterComponent implements OnInit {
   panelOpenState = false;
 
 
-  getAllSubDepartments(assign: any) {
+  getAllSubDepartments() {
 
     this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
     this.SubDepartmentLinkedList.splice(0, this.SubDepartmentLinkedList.length);
@@ -174,7 +243,7 @@ export class ActionCenterComponent implements OnInit {
         }
        
         this.SubDepartmentListTable?.renderRows();
-        this.modalService.open(assign, { size: 'xl' });
+       // this.modalService.open(assign, { size: 'xl' });
       }
       else {
         //alert("Invalid Email or Password");
@@ -209,10 +278,10 @@ export class ActionCenterComponent implements OnInit {
           this.SubDepartmentLinkedList.push(tempSubDepartmentLinkedList);
           this.SubDepartmentListTable?.renderRows();
         }
-
+        this.setRoles();
         this.SubDepartmentListTable?.renderRows();
         this.SubDepartmentLinkedListTable?.renderRows();
-        this.modalService.open(assign, { size: 'xl' });
+       // this.modalService.open(assign, { size: 'xl' });
       }
       else {
         //alert("Invalid Email or Password");

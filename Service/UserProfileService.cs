@@ -143,7 +143,8 @@ namespace WayleaveManagementSystem.Service
                    DateCreated = UserProfile.DateCreated,
                    DateUpdated = UserProfile.DateUpdated,
                    CreatedById = UserProfile.CreatedById,
-                   //isActive = true
+                   isDepartmentAdmin = UserProfile.isDepartmentAdmin,
+                   VatNumber = UserProfile.VatNumber,
                    IdNumber = UserProfile.IdNumber,
 
                }
@@ -178,7 +179,8 @@ namespace WayleaveManagementSystem.Service
                    DateCreated = UserProfile.DateCreated,
                    DateUpdated = UserProfile.DateUpdated,
                    CreatedById = UserProfile.CreatedById,
-                   //isActive = true
+                  // isDepartmentAdmin = UserProfile.isDepartmentAdmin,
+                   VatNumber = UserProfile.VatNumber,
                    IdNumber = UserProfile.IdNumber,
 
                }
@@ -214,7 +216,8 @@ namespace WayleaveManagementSystem.Service
                    DateCreated = UserProfile.DateCreated,
                    DateUpdated = UserProfile.DateUpdated,
                    CreatedById = UserProfile.CreatedById,
-                   //isActive = true
+                   isDepartmentAdmin = UserProfile.isDepartmentAdmin,
+                   VatNumber = UserProfile.VatNumber,
                    IdNumber = UserProfile.IdNumber,
 
                }
