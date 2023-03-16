@@ -48,7 +48,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _glCodeService.AddUpdateGLCode(model.GLCodeID, model.GLCodeName, model.CreatedById);
+                    var result = await _glCodeService.AddUpdateGLCode(model.GLCodeID, model.GLCodeName, model.CreatedById, model.ProfitCenter);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.GLCodeID > 0 ? "GL Code Updated Successfully" : "GL Code Added Successfully"), result));
                 }
 
@@ -124,6 +124,32 @@ namespace WayleaveManagementSystem.Controllers
                 var result = await _glCodeService.GetAllGLCodes();
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All GL Codes", result));
 
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        [HttpGet("LinkDepartmentToGLCode")]
+        public async Task<object> LinkDepartmentToGLCode([FromBody]int glCodeID,int departmentID)
+        {
+            try
+            {
+
+                if (glCodeID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _glCodeService.LinkDepartmentToGLCode(glCodeID,departmentID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Department linked Successfully", result));
+                }
 
             }
             catch (Exception ex)

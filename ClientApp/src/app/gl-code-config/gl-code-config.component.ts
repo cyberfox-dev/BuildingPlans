@@ -4,12 +4,14 @@ import { MatTable } from '@angular/material/table';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { GlCodeService } from '../service/GLCode/gl-code.service';
 import { DepartmentsService } from '../service/Departments/departments.service';
+import { SelectionModel } from '@angular/cdk/collections';
 
 
 export interface GLCodeList {
   glCodeID: number;
   glCodeName: string;
   dateCreated: any;
+  profitCenter: string;
 }
 
 export interface DepartmentList {
@@ -44,7 +46,7 @@ export class GlCodeConfigComponent implements OnInit {
 
   @ViewChild(MatTable) GLCodeTable: MatTable<GLCodeList> | undefined;
   @ViewChild(MatTable) DepartmentListTable: MatTable<DepartmentList> | undefined;
-
+  selectionDepartmentGLCodeList = new SelectionModel<DepartmentList>(true, []);
   constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private glCodeService: GlCodeService, private departmentService: DepartmentsService) { }
 
   CurrentUser: any;
@@ -57,7 +59,7 @@ export class GlCodeConfigComponent implements OnInit {
     this.CurrentUser = JSON.parse(this.stringifiedData); this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
   }
 
-  displayedColumns: string[] = ['glCodeName', 'dateCreated', 'actions'];
+  displayedColumns: string[] = ['glCodeName', 'profitCenter', 'actions'];
   dataSource = this.GLCodeList;
 
   displayedColumnsDepartments: string[] = ['departmentName', 'actions'];
@@ -73,6 +75,7 @@ export class GlCodeConfigComponent implements OnInit {
 
   openEditGLCode(editGLCode: any, index: any) {
     this.editGlCode.controls["editGlCode"].setValue(this.GLCodeList[index].glCodeName);
+    this.editGlCode.controls["profitCenter"].setValue(this.GLCodeList[index].profitCenter);
     this.forEditIndex = index;
     this.modalService.open(editGLCode, { size: 'xl' });
   }
@@ -90,6 +93,7 @@ export class GlCodeConfigComponent implements OnInit {
           tempGLCodeList.glCodeID = current.glCodeID;
           tempGLCodeList.glCodeName = current.glCodeName;
           tempGLCodeList.dateCreated = current.dateCreated;
+          tempGLCodeList.profitCenter = current.profitCenter;
           this.GLCodeList.push(tempGLCodeList);
         }
         this.GLCodeTable?.renderRows();
@@ -111,8 +115,8 @@ export class GlCodeConfigComponent implements OnInit {
   onAddGLCode() {
 
     let newGLCode = this.addGlCode.controls["newGlCode"].value;
-
-    this.glCodeService.addUpdateGLCode(0, newGLCode, this.CurrentUser.appUserId).subscribe((data: any) => {
+    let newProfitCenter = this.addGlCode.controls["newProfitCenter"].value;
+    this.glCodeService.addUpdateGLCode(0, newGLCode, this.CurrentUser.appUserId, newProfitCenter).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
@@ -138,7 +142,8 @@ export class GlCodeConfigComponent implements OnInit {
 
   onGLCodeEdit() {
     let editGLCodeName = this.editGlCode.controls["editGlCode"].value;
-    this.glCodeService.addUpdateGLCode(this.GLCodeList[this.forEditIndex].glCodeID, editGLCodeName, null).subscribe((data: any) => {
+    let editProfitCenter = this.editGlCode.controls["profitCenter"].value;
+    this.glCodeService.addUpdateGLCode(this.GLCodeList[this.forEditIndex].glCodeID, editGLCodeName, null, editProfitCenter).subscribe((data: any) => {
       if (data.responseCode == 1) {
         alert(data.responseMessage);
         this.getAllGLCodes();
@@ -196,7 +201,7 @@ export class GlCodeConfigComponent implements OnInit {
         //this.DepartmentList = data.dateSet;
 
 
-        console.log("DepartmentListh", this.DepartmentList);
+        console.log("DepartmentList", this.DepartmentList);
       }
       else {
         //alert("Invalid Email or Password");
@@ -209,5 +214,15 @@ export class GlCodeConfigComponent implements OnInit {
     })
   }
 
+  linkDepToGLCode() {
+
+
+
+  }
+
+  departmentSelectedForGLCodelink(depID: any) {
+    this.selectionDepartmentGLCodeList.clear();
+    this.selectionDepartmentGLCodeList.select(depID);
+  }
 
 }

@@ -7,5 +7,8 @@ namespace WayleaveManagementSystem.Data.Entities
         [Key]
         public int GLCodeID { get; set; }
         public string? GLCodeName { get; set; }
+        public string? ProfitCenter { get; set; }
+
+        public int? DepartmentID { get; set; }
     }
 }
