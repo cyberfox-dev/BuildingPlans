@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WayleaveManagementSystem.Data;
 
@@ -11,9 +12,10 @@ using WayleaveManagementSystem.Data;
 namespace WayleaveManagementSystem.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230316112608_ZoneForComment")]
+    partial class ZoneForComment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -929,43 +931,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.HasKey("UserProfileID");
 
                     b.ToTable("UserProfilesTable");
-                });
-
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.ZoneForComment", b =>
-                {
-                    b.Property<int?>("ZoneForCommentID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("ZoneForCommentID"), 1L, 1);
-
-                    b.Property<int?>("ApplicationID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("SubDepartmentID")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ZoneID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ZoneName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("isActive")
-                        .HasColumnType("bit");
-
-                    b.HasKey("ZoneForCommentID");
-
-                    b.ToTable("ZoneForComment");
                 });
 
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.ZoneLink", b =>
