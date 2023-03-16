@@ -11,6 +11,7 @@ import { ServiceItemService } from 'src/app/service/ServiceItems/service-item.se
 import { SelectionModel } from '@angular/cdk/collections';
 import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentForComment/sub-department-for-comment.service';
 import { ZonesService } from '../service/Zones/zones.service';
+import { ZoneForCommentService} from '../service/ZoneForComment/zone-for-comment.service';
 
 export interface SubDepartmentList {
   subDepartmentID: number;
@@ -35,6 +36,7 @@ export interface ZoneList {
   zoneName: string;
   departmentID: number;
   subDepartmentID: number;
+  zoneForCommentID: number | null;
 }
 
 export interface CommentList {
@@ -59,6 +61,9 @@ export interface ZoneList {
   departmentID: number;
   subDepartmentID: number;
 }
+
+
+
 
 @Component({
   selector: 'app-action-center',
@@ -97,8 +102,10 @@ export class ActionCenterComponent implements OnInit {
   ServiceItemList: ServiceItemList[] = [];
 
   ZoneList: ZoneList[] = [];
+  ZoneLinkedList: ZoneList[] = [];
 
   selection = new SelectionModel<SubDepartmentList>(true, []);
+  zoneSelection = new SelectionModel<ZoneList>(true, []);
 
   displayedColumnsSubDepartment: string[] = ['subDepartmentName', 'actions'];
   dataSourceSubDepartment = this.SubDepartmentList;
@@ -109,9 +116,13 @@ export class ActionCenterComponent implements OnInit {
   displayedColumnsViewLinkedSubZones: string[] = ['zoneName', 'actions'];
   dataSourceViewLinkedSubZones = this.ZoneList;
 
+  displayedColumnsViewLinkedZones: string[] = ['zoneName', 'actions'];
+  dataSourceViewLinkedZones = this.ZoneLinkedList;
+
   @ViewChild(MatTable) SubDepartmentListTable: MatTable<SubDepartmentList> | undefined;
   @ViewChild(MatTable) SubDepartmentLinkedListTable: MatTable<SubDepartmentList> | undefined;
   @ViewChild(MatTable) ZoneListTable: MatTable<ZoneList> | undefined;
+
 
 
   closeResult!: string;
@@ -121,7 +132,18 @@ export class ActionCenterComponent implements OnInit {
     loggedInUsersDepartment: void;
     loggedInUsersSubDepartmentID: any;
     AssignProjectToZone: boolean;
-  constructor(private offcanvasService: NgbOffcanvas, private modalService: NgbModal, private _snackBar: MatSnackBar, private subDepartment: SubDepartmentsService, private commentService: CommentBuilderService, private formBuilder: FormBuilder, private serviceItemService: ServiceItemService, private subDepartmentForCommentService: SubDepartmentForCommentService, private zoneService: ZonesService) { }
+  constructor(
+    private offcanvasService: NgbOffcanvas,
+    private modalService: NgbModal,
+    private _snackBar: MatSnackBar,
+    private subDepartment: SubDepartmentsService,
+    private commentService: CommentBuilderService,
+    private formBuilder: FormBuilder,
+    private serviceItemService: ServiceItemService,
+    private subDepartmentForCommentService: SubDepartmentForCommentService,
+    private zoneService: ZonesService,
+    private zoneForCommentService: ZoneForCommentService
+  ) { }
   openEnd(content: TemplateRef<any>) {
     this.offcanvasService.open(content, { position: 'end' });
   }
@@ -148,6 +170,7 @@ export class ActionCenterComponent implements OnInit {
     this.loggedInUsersIsAdmin = this.CurrentUserProfile[0].isDepartmentAdmin;
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
     this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
+    this.getLinkedZones();
 
   }
 
@@ -183,7 +206,7 @@ export class ActionCenterComponent implements OnInit {
 
         }
         console.log("this.ZoneListthis.ZoneListthis.ZoneListthis.ZoneList", this.ZoneList);
-
+        this.ZoneListTable?.renderRows();
       }
       else {
         alert(data.responseMessage);
@@ -206,6 +229,7 @@ export class ActionCenterComponent implements OnInit {
 
   openAssignToZone(assignProjectToZone: any) {
     //this.getAllSubDepartments();
+    
     this.modalService.open(assignProjectToZone, { backdrop: 'static', size: 'xl' });
   }
   openAssignDepartment(assign: any) {
@@ -459,8 +483,14 @@ export class ActionCenterComponent implements OnInit {
   }
 
   departmentSelectedForLink(department: any) {
-    console.log("departmentdssssssssss", department);
+    
     this.selection.toggle(department);
+
+  }
+
+  zoneSelectedForLink(zone: any) {
+
+    this.zoneSelection.toggle(zone);
 
   }
 
@@ -496,6 +526,79 @@ export class ActionCenterComponent implements OnInit {
 
 
   }
+
+
+  onLinkZoneForComment() {
+
+    debugger;
+
+    const selectZones = this.zoneSelection.selected;
+
+
+
+
+    for (var i = 0; i < selectZones.length; i++) {
+      this.zoneForCommentService.addUpdateZoneForComment(0, selectZones[i].subDepartmentID, this.ApplicationID, selectZones[i].zoneID, selectZones[i].zoneName ,this.CurrentUser.appUserId).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          alert(data.dateSet.zoneName + " assigned to this Application");
+         this.getLinkedZones();
+        }
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponseAddUpdateZoneForComment", data);
+
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+
+
+
+  }
+
+
+  getLinkedZones() {
+    this.ZoneLinkedList.splice(0, this.ZoneLinkedList.length);
+    debugger;
+    this.zoneForCommentService.getZonesForComment(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempZoneList = {} as ZoneList;
+          const current = data.dateSet[i];
+          tempZoneList.zoneID = current.zoneID;
+          tempZoneList.zoneName = current.zoneName;
+          tempZoneList.subDepartmentID = current.subDepartmentID;
+          tempZoneList.departmentID = current.departmentID;
+          tempZoneList.zoneForCommentID = current.zoneForCommentID;
+
+
+          this.ZoneLinkedList.push(tempZoneList);
+          this.ZoneListTable?.renderRows();
+
+        }
+       
+        this.ZoneListTable?.renderRows();
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+      this.ZoneListTable?.renderRows();
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
   getLinkedDepartments() {
 
 
@@ -532,7 +635,31 @@ export class ActionCenterComponent implements OnInit {
   }
 
 
+  deleteLinkedZoneForComment(index: number) {
+    debugger;
 
+    if (confirm("Are you sure to delete " + this.ZoneLinkedList[index].zoneName + "?")) {
+
+      this.zoneForCommentService.deleteZoneForComment(this.ZoneLinkedList[index].zoneForCommentID).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          alert(data.responseMessage);
+          this.getLinkedZones();
+        }
+        else {
+          alert(data.responseMessage);
+
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+
+    }
+  }
 
 }
 
