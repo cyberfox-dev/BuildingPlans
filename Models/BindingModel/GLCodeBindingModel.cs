@@ -6,6 +6,8 @@
         public string? GLCodeName { get; set; }
 
         public string? CreatedById { get; set; }
+        public string? ProfitCenter { get; set; }
+    
 
     
     }

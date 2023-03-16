@@ -14,6 +14,8 @@ namespace WayleaveManagementSystem.DTO
         public DateTime DateUpdated { get; set; }
 
         public string? CreatedById { get; set; }
+        public string? ProfitCenter { get; set; }
+      
 
         public bool isActive { get; set; }
 

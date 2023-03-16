@@ -19,7 +19,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<GLCode> AddUpdateGLCode(int? glCodeID, string glCodeName, string? createdByID)
+        public async Task<GLCode> AddUpdateGLCode(int? glCodeID, string glCodeName, string? createdByID, string? profitCenter)
         {
 
             if (glCodeID == 0)
@@ -39,6 +39,7 @@ namespace WayleaveManagementSystem.Service
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     CreatedById = createdByID,
+                    ProfitCenter = profitCenter,
                     isActive = true
                 };
 
@@ -52,7 +53,7 @@ namespace WayleaveManagementSystem.Service
             else 
             {
                 tempGLCodeTable.GLCodeName = glCodeName;
-
+                tempGLCodeTable.ProfitCenter = profitCenter;
 
                 tempGLCodeTable.DateUpdated = DateTime.Now;
                 tempGLCodeTable.isActive = true;
@@ -101,8 +102,8 @@ namespace WayleaveManagementSystem.Service
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     CreatedById = GLCode.CreatedById,
+                    ProfitCenter = GLCode.ProfitCenter,
                     isActive = true
-
                 }
                 ).ToListAsync();
         }
@@ -119,12 +120,33 @@ namespace WayleaveManagementSystem.Service
                      GLCodeName = GLCode.GLCodeName,
                      DateCreated = DateTime.Now,
                      DateUpdated = DateTime.Now,
+                     ProfitCenter = GLCode.ProfitCenter,
                      CreatedById = GLCode.CreatedById,
                      isActive = true
-
-
                  }
                  ).ToListAsync();
+        }
+
+        public async Task<bool> LinkDepartmentToGLCode(int glCodeID, int departmentID)
+        {
+
+            var tempGLCodeTable = _context.GLCode.FirstOrDefault(x => x.GLCodeID == glCodeID);
+
+            if (tempGLCodeTable == null)
+            {
+                return await Task.FromResult(false);
+
+            }
+            else
+            {
+                tempGLCodeTable.DateUpdated = DateTime.Now;
+                tempGLCodeTable.DepartmentID = departmentID;
+                _context.Update(tempGLCodeTable);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+
+
         }
 
     }

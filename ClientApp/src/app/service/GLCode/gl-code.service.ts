@@ -10,12 +10,13 @@ export class GlCodeService {
   private readonly baseURL: string = "https://localhost:7123/api/glCode/"
   constructor(private httpClient: HttpClient) { }
 
-  public addUpdateGLCode(glCodeID: number | null, glCodeName: string | null, createdByID: string | null) {
+  public addUpdateGLCode(glCodeID: number | null, glCodeName: string | null, createdByID: string | null, profitCenter: string | null) {
 
     const body = {
       glCodeID: glCodeID,
       glCodeName: glCodeName,
       CreatedByID: createdByID,
+      ProfitCenter: profitCenter
 
     }
     return this.httpClient.post(this.baseURL + "AddUpdateGLCode", body);
@@ -37,6 +38,12 @@ export class GlCodeService {
   public getAllGLCodes() {
 
     return this.httpClient.get(this.baseURL + "GetAllGLCodes");
+
+  }
+
+  public linkDepartmentToGLCode(glCodeID:any,departmentID:any) {
+
+    return this.httpClient.get(this.baseURL + "LinkDepartmentToGLCode");
 
   }
 }
