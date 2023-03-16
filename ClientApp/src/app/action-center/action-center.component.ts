@@ -152,7 +152,7 @@ export class ActionCenterComponent implements OnInit {
   }
 
   setRoles() {
-    debugger;
+   
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.loggedInUsersIsAdmin == true) {
         this.AssignProjectToZone = true;
@@ -164,7 +164,7 @@ export class ActionCenterComponent implements OnInit {
 
   getAllUsersLinkedToZone(SubDepartmentID: any) {
     this.ZoneList.splice(0, this.ZoneList.length);
-    debugger;
+  
     this.zoneService.getZonesBySubDepartmentsID(SubDepartmentID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {

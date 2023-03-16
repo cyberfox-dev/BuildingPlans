@@ -15,6 +15,8 @@ namespace WayleaveManagementSystem.DTO
 
         public string? CreatedById { get; set; }
         public string? ProfitCenter { get; set; }
+        public int? DepartmentID { get; set; }
+        public string? DepartmentName{ get; set; }
       
 
         public bool isActive { get; set; }

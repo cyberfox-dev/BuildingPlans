@@ -135,19 +135,19 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-        [HttpGet("LinkDepartmentToGLCode")]
-        public async Task<object> LinkDepartmentToGLCode([FromBody]int glCodeID,int departmentID)
+        [HttpPost("SetLinkDepartmentToGLCode")]
+        public async Task<object> SetLinkDepartmentToGLCode([FromBody] GLCodeBindingModel model)
         {
             try
             {
 
-                if (glCodeID < 1)
+                if (model.GLCodeID < 1)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
-                    var result = await _glCodeService.LinkDepartmentToGLCode(glCodeID,departmentID);
+                    var result = await _glCodeService.SetLinkDepartmentToGLCode(model.GLCodeID, model.DepartmentID,model.DepartmentName);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Department linked Successfully", result));
                 }
 

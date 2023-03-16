@@ -23,6 +23,12 @@ button {
   color: #fff;
 }
 
+.mat-orange {
+  background-color: #f49336;
+  color: #fff;
+}
+
+
 .createNewDep {
   margin-top: 10px;
   margin-bottom: 10px;
@@ -38,7 +44,7 @@ table {
   word-wrap: break-word !important;
   white-space: unset !important;
   flex: 0 0 8% !important;
-  width: 20% !important;
+  width: 60% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
@@ -47,6 +53,7 @@ table {
   -webkit-hyphens: auto;
   hyphens: auto;
 }
+
 
 .mat-column-dateCreated {
   word-wrap: break-word !important;

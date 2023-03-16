@@ -9,7 +9,7 @@ namespace WayleaveManagementSystem.IServices
         Task<GLCode> AddUpdateGLCode(int? glCodeID, string glCodeName, string? creadtedByID, string? profitCenter);
       
         public Task<bool> DeleteGLCode(int glCodeID);
-        public Task<bool> LinkDepartmentToGLCode(int glCodeID,int departmentID);
+        public Task<bool> SetLinkDepartmentToGLCode(int? glCodeID,int? departmentID, string? departmentName);
 
         Task<List<GLCodeDTO>> GetGLCodeByID(int? glCodeID);
         Task<List<GLCodeDTO>> GetAllGLCodes();

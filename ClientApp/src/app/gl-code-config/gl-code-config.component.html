@@ -42,7 +42,8 @@
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef>Actions</th>
     <td mat-cell *matCellDef="let i = index">
-      <button mat-raised-button color="success" matTooltip="Link Department to GL Code" (click)="openLnkDepToGLCode(linkDepToGLCode)"><i class="fa fa-link"></i></button>
+      <button mat-raised-button color="success" matTooltip="Link Department to GL Code" (click)="openLnkDepToGLCode(linkDepToGLCode,i)"><i class="fa fa-link"></i></button>
+      <button mat-raised-button color="orange" matTooltip="Link Department to GL Code" (click)="openViewLnkDepToGLCode(unlinkDepToGLCode,i);getAllDepartmentsLinked()"><i class="fa fa-chain-broken" aria-hidden="true"></i></button>
       <button mat-raised-button color="blue" matTooltip="View GL Code" (click)="openEditGLCode(editGLCode,i)"><i class="fa fa-eye"></i></button>
       <button mat-raised-button color="warn" matTooltip="Delete GL Code" (click)="onGLCodeDelete(i)"><i class="fa fa-trash"></i></button>
 
@@ -76,6 +77,33 @@
       </div>
 
     </form>
+
+    <table mat-table [dataSource]="dataSourceLinkedDepartments" class="mat-elevation-z8">
+
+
+
+      <ng-container matColumnDef="departmentName">
+        <th mat-header-cell *matHeaderCellDef> Department Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.departmentName}} </td>
+      </ng-container>
+
+
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let i = index">
+          <mat-radio-button class="example-margin"
+                            (click)="departmentSelectedForGLCodelink(i)"
+                            [checked]="selectionDepartmentGLCodeList.isSelected(i)">
+          </mat-radio-button>
+        </td>
+        <td mat-cell *matCellDef="let element"></td>
+      </ng-container>
+
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsLinkedDepartments"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsLinkedDepartments;"></tr>
+    </table>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-success" (click)="onGLCodeEdit();modal.close('Save click')">Save</button>
@@ -101,11 +129,11 @@
 
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Actions</th>
-        <td mat-cell *matCellDef="let element">
-<!--          <mat-radio-button class="example-margin"
-                            (click)="selectionDepartmentGLCodeList(element)"
-                            [checked]="selectionDepartmentGLCodeList.isSelected(element)">
-          </mat-radio-button>-->
+        <td mat-cell *matCellDef="let i = index">
+          <mat-radio-button class="example-margin"
+                            (click)="departmentSelectedForGLCodelink(i)"
+                            [checked]="selectionDepartmentGLCodeList.isSelected(i)">
+          </mat-radio-button>
         </td>
         <td mat-cell *matCellDef="let element"></td>
       </ng-container>
@@ -113,6 +141,44 @@
 
       <tr mat-header-row *matHeaderRowDef="displayedColumnsDepartments"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumnsDepartments;"></tr>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="onLinkDepToGLCode();modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+
+<ng-template #unlinkDepToGLCode let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">View linked Department to GL Code</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <table mat-table [dataSource]="dataSourceLinkedDepartments" class="mat-elevation-z8">
+
+
+
+      <ng-container matColumnDef="departmentName">
+        <th mat-header-cell *matHeaderCellDef> Department Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.departmentName}} </td>
+      </ng-container>
+
+
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let i = index">
+          <mat-radio-button class="example-margin"
+                            (click)="departmentSelectedForGLCodelink(i)"
+                            [checked]="selectionDepartmentGLCodeList.isSelected(i)">
+          </mat-radio-button>
+        </td>
+        <td mat-cell *matCellDef="let element"></td>
+      </ng-container>
+
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsLinkedDepartments"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsLinkedDepartments;"></tr>
     </table>
   </div>
   <div class="modal-footer">

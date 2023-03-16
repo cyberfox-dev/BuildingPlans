@@ -41,9 +41,16 @@ export class GlCodeService {
 
   }
 
-  public linkDepartmentToGLCode(glCodeID:any,departmentID:any) {
+  public setLinkDepartmentToGLCode(glCodeID: any, departmentID: any,departmentName:any| null) {
 
-    return this.httpClient.get(this.baseURL + "LinkDepartmentToGLCode");
+    const body = {
+      GLCodeID: glCodeID,
+      DepartmentID: departmentID,
+      DepartmentName: departmentName  
+
+    }
+
+    return this.httpClient.post(this.baseURL + "SetLinkDepartmentToGLCode",body);
 
   }
 }

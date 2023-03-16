@@ -103,6 +103,8 @@ namespace WayleaveManagementSystem.Service
                     DateUpdated = DateTime.Now,
                     CreatedById = GLCode.CreatedById,
                     ProfitCenter = GLCode.ProfitCenter,
+                    DepartmentID = GLCode.DepartmentID,
+                    DepartmentName = GLCode.DepartmentName,
                     isActive = true
                 }
                 ).ToListAsync();
@@ -127,7 +129,7 @@ namespace WayleaveManagementSystem.Service
                  ).ToListAsync();
         }
 
-        public async Task<bool> LinkDepartmentToGLCode(int glCodeID, int departmentID)
+        public async Task<bool> SetLinkDepartmentToGLCode(int? glCodeID, int? departmentID, string? departmentName)
         {
 
             var tempGLCodeTable = _context.GLCode.FirstOrDefault(x => x.GLCodeID == glCodeID);
@@ -141,6 +143,7 @@ namespace WayleaveManagementSystem.Service
             {
                 tempGLCodeTable.DateUpdated = DateTime.Now;
                 tempGLCodeTable.DepartmentID = departmentID;
+                tempGLCodeTable.DepartmentName = departmentName;
                 _context.Update(tempGLCodeTable);
                 await _context.SaveChangesAsync();
                 return true;

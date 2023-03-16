@@ -12,6 +12,8 @@ export interface GLCodeList {
   glCodeName: string;
   dateCreated: any;
   profitCenter: string;
+  departmentID: number;
+  departmentName: string;
 }
 
 export interface DepartmentList {
@@ -47,10 +49,14 @@ export class GlCodeConfigComponent implements OnInit {
   @ViewChild(MatTable) GLCodeTable: MatTable<GLCodeList> | undefined;
   @ViewChild(MatTable) DepartmentListTable: MatTable<DepartmentList> | undefined;
   selectionDepartmentGLCodeList = new SelectionModel<DepartmentList>(true, []);
+    departmentName: string;
   constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private glCodeService: GlCodeService, private departmentService: DepartmentsService) { }
 
   CurrentUser: any;
   stringifiedData: any;
+  departmentID: any;
+  glCodeSelected: any;
+  glCodeSelected2: any;
 
   ngOnInit(): void {
     this.getAllGLCodes();
@@ -62,6 +68,9 @@ export class GlCodeConfigComponent implements OnInit {
   displayedColumns: string[] = ['glCodeName', 'profitCenter', 'actions'];
   dataSource = this.GLCodeList;
 
+  displayedColumnsLinkedDepartments: string[] = ['departmentName', 'actions'];
+  dataSourceLinkedDepartments = this.GLCodeList;
+
   displayedColumnsDepartments: string[] = ['departmentName', 'actions'];
   dataSourceDepartments = this.DepartmentList;
 
@@ -69,8 +78,17 @@ export class GlCodeConfigComponent implements OnInit {
     this.modalService.open(createNewGLCode, { size: 'xl' });
   }
 
-  openLnkDepToGLCode(linkDepToGLCode: any) {
+  openLnkDepToGLCode(linkDepToGLCode: any,index:any) {
     this.modalService.open(linkDepToGLCode, { size: 'xl' });
+    this.glCodeSelected = this.GLCodeList[index].glCodeID;
+    console.log("THIS IS THE GL CODE FOR THE BUTTON CLICK", this.glCodeSelected);
+  }
+
+  openViewLnkDepToGLCode(unlinkDepToGLCode:any, index:any) {
+
+    this.glCodeSelected2 = this.GLCodeList[index].glCodeID;
+    console.log("SELECTED GL", this.glCodeSelected2);
+    this.modalService.open(unlinkDepToGLCode, { size: 'xl' });
   }
 
   openEditGLCode(editGLCode: any, index: any) {
@@ -179,6 +197,38 @@ export class GlCodeConfigComponent implements OnInit {
     }
   }
 
+  getAllDepartmentsLinked() {
+    this.GLCodeList.splice(0, this.GLCodeList.length);
+    this.glCodeService.getGLCodeByID(this.glCodeSelected2).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempGLCodeList = {} as GLCodeList;
+          const current = data.dateSet[i];
+          tempGLCodeList.glCodeID = current.glCodeID;
+          tempGLCodeList.glCodeName = current.glCodeName;
+          tempGLCodeList.dateCreated = current.dateCreated;
+          tempGLCodeList.profitCenter = current.profitCenter;
+          tempGLCodeList.departmentID = current.departmentID;
+          tempGLCodeList.departmentName = current.departmentName;
+          this.GLCodeList.push(tempGLCodeList);
+        }
+        this.GLCodeTable?.renderRows();
+        console.log("Got ALL linked Departments", this.GLCodeList);
+        
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("response", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
   getAllDepartments() {
     this.DepartmentList.splice(0, this.DepartmentList.length);
     this.departmentService.getDepartmentsList().subscribe((data: any) => {
@@ -214,8 +264,23 @@ export class GlCodeConfigComponent implements OnInit {
     })
   }
 
-  linkDepToGLCode() {
+   onLinkDepToGLCode() {
 
+     this.glCodeService.setLinkDepartmentToGLCode(this.glCodeSelected,this.departmentID,this.departmentName).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        alert(data.responseMessage);
+        this.getAllGLCodes();
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
 
 
   }
@@ -223,6 +288,10 @@ export class GlCodeConfigComponent implements OnInit {
   departmentSelectedForGLCodelink(depID: any) {
     this.selectionDepartmentGLCodeList.clear();
     this.selectionDepartmentGLCodeList.select(depID);
+    this.departmentID = this.DepartmentList[depID].departmentID;
+    this.departmentName = this.DepartmentList[depID].departmentName;
+
+    console.log("THIS IS THE DEPARTMENT ID FOR THE RADIO BUTTON", this.departmentID);
   }
 
 }
