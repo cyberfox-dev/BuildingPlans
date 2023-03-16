@@ -74,6 +74,7 @@ import { FileUploadComponent } from './file-upload/file-upload.component';
 import { ServiceItemsConfigComponent } from './service-items-config/service-items-config.component';
 import { GlCodeConfigComponent } from './gl-code-config/gl-code-config.component';
 import { InvoiceComponent } from './invoice/invoice.component';
+import { AuditTrailComponent } from './audit-trail/audit-trail.component';
 import { ProjectDetailsMapViewComponent } from './create-new-wayleave/project-details-map-view/project-details-map-view.component';
 //import { MapModule } from 'arcgis-js-api';
 //import Map from "@arcgis/core/Map";
@@ -135,6 +136,7 @@ import { ProjectDetailsMapViewComponent } from './create-new-wayleave/project-de
     GlCodeConfigComponent,
     InvoiceComponent,
     ProjectDetailsMapViewComponent,
+    AuditTrailComponent,
   
 
   ],

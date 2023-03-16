@@ -7,12 +7,24 @@ namespace WayleaveManagementSystem.IServices
     {
         //Task<Departments> - This is the return type so its going to ruturn it in the fromt of the departments model
         Task<SubDepartments> AddUpdateSubDepartments(int? SubDepartmentID, string? SubDepartmentNamem, int? DepartmentID,string? createdByID );
+        Task<SubDepartments> AddSubDepartmentAdmin(int? subDepartmentID, string? departmentAdminUserID);
         //this will return T/F 
         public Task<bool> DeleteSubDepartments(int SubDepartmentID);
 
         Task<List<SubDepartmentsDTO>> GetAllSubDepartments();
 
+
+        Task<List<SubDepartmentsDTO>> GetAllNotLinkedSubDepartmentsForComment(int applicationID);
+        Task<List<SubDepartmentsDTO>> GetAllLinkedSubDepartmentsForComment(int applicationID);
+
+
+        
+
+
         Task<List<SubDepartmentsDTO>> GetAllSubDepartmentsBydepartmentID(int departmentID);
+
+
+
 
     }
 }

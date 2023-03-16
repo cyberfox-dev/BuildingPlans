@@ -467,6 +467,43 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("DocumentUpload");
                 });
 
+            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.GLCode", b =>
+                {
+                    b.Property<int>("GLCodeID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GLCodeID"), 1L, 1);
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DepartmentID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DepartmentName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GLCodeName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProfitCenter")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("GLCodeID");
+
+                    b.ToTable("GLCode");
+                });
+
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.MandatoryDocumentStageLink", b =>
                 {
                     b.Property<int?>("MandatoryDocumentStageLinkID")
@@ -883,12 +920,52 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<bool>("isActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool?>("isDepartmentAdmin")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("isInternal")
                         .HasColumnType("bit");
 
                     b.HasKey("UserProfileID");
 
                     b.ToTable("UserProfilesTable");
+                });
+
+            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.ZoneForComment", b =>
+                {
+                    b.Property<int?>("ZoneForCommentID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("ZoneForCommentID"), 1L, 1);
+
+                    b.Property<int?>("ApplicationID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("SubDepartmentID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ZoneID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ZoneName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("ZoneForCommentID");
+
+                    b.ToTable("ZoneForComment");
                 });
 
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.ZoneLink", b =>

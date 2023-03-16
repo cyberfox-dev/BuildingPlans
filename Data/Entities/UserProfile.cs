@@ -15,7 +15,7 @@ namespace WayleaveManagementSystem.Data.Entities
         public string? PhoneNumber { get; set;}
 
         public bool isInternal { get; set; }
-
+      
         public string? BP_Number { get; set; }
 
          public string? CompanyName { get; set; }
@@ -26,6 +26,7 @@ namespace WayleaveManagementSystem.Data.Entities
         public string? Directorate { get; set; }
 
         public int? DepartmentID { get; set; }
+        public bool? isDepartmentAdmin { get; set; }
 
         public int? SubDepartmentID { get; set; }
 
@@ -39,7 +40,7 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public string? IdNumber { get; set; }
 
-        /*public string? VatNumber { get; set; }*/
+        public string? VatNumber { get; set; }
 
 
 

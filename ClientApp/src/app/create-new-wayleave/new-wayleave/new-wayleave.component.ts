@@ -21,6 +21,10 @@ import { DocumentUploadService } from '../../service/DocumentUpload/document-upl
 import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http'; 
 import { MandatoryDocumentUploadService } from 'src/app/service/MandatoryDocumentUpload/mandatory-document-upload.service';
 import { MandatoryDocumentStageLinkService } from '../../service/MandatoryDocumentStageLink/mandatory-document-stage-link.service';
+import { DatePipe } from '@angular/common';
+import { DomSanitizer } from '@angular/platform-browser';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable'
 
 
 export interface MandatoryDocumentsLinkedStagesList {
@@ -266,6 +270,12 @@ export class NewWayleaveComponent implements OnInit {
   @ViewChild(MatPaginator)
   paginator!: MatPaginator;
 
+  ompanyName = 'ABC Corporation';
+  logoUrl = 'assets/cctlogoblack.png';
+  currentDate = new Date();
+  datePipe = new DatePipe('en-ZA');
+  formattedDate = this.datePipe.transform(this.currentDate, 'yyyy-MM-dd');
+
   displayedColumnsCUpload: string[] = ['fileType', 'actions'];
   dataSource = ELEMENT_DATA;
 
@@ -285,7 +295,7 @@ export class NewWayleaveComponent implements OnInit {
 
   @ViewChild(MatTable) UserListTable: MatTable<UserList> | undefined;
   @ViewChild(MatTable) MandatoryDocumentUploadTable: MatTable<MandatoryDocumentUploadList> | undefined;
-     
+
 
   constructor(
     private modalService: NgbModal,
@@ -304,11 +314,12 @@ export class NewWayleaveComponent implements OnInit {
     private documentUploadService: DocumentUploadService,
     private mandatoryUploadDocsService: MandatoryDocumentUploadService,
     private http: HttpClient,
-    private mandatoryDocumentStageLink: MandatoryDocumentStageLinkService 
+    private mandatoryDocumentStageLink: MandatoryDocumentStageLinkService,
+    private sanitizer: DomSanitizer
   ) { }
 
   ngOnInit(): void {
-   
+
     this.getAllExternalUsers();
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
@@ -328,15 +339,15 @@ export class NewWayleaveComponent implements OnInit {
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
 
-   // this.StagesList = this.shared.getStageData();
+    // this.StagesList = this.shared.getStageData();
 
     this.getAllStages();
 
- 
-   
 
-    
-    
+
+
+
+
 
     console.log("this.CurrentUserProfile ", this.CurrentUserProfile);
 
@@ -391,12 +402,16 @@ export class NewWayleaveComponent implements OnInit {
     }
 
 
+
+    //const imagePath = 'assets/cctlogoblack.png';
+    //this.logoUrl = this.sanitizer.bypassSecurityTrustUrl(imagePath);
+
   }
 
   //Unused code
   public handleAddressChange(address: Address) {
     // Do some stuff
-        this.clientAddress = address.formatted_address;
+    this.clientAddress = address.formatted_address;
     console.log(this.clientAddress);
 
   }
@@ -487,7 +502,7 @@ export class NewWayleaveComponent implements OnInit {
           tempStageList.StageOrderNumber = current.stageOrderNumber;
 
           this.StagesList.push(tempStageList);
-         // this.sharedService.setStageData(this.StagesList);
+          // this.sharedService.setStageData(this.StagesList);
         }
         this.getAllManDocsByStageID();
 
@@ -506,7 +521,7 @@ export class NewWayleaveComponent implements OnInit {
 
   getProfessionalsListByProfessionalType(professionalType: string) {
     /*    this.EngineerList.splice(0, this.EngineerList.length);*/
-   
+
     this.professionalService.getProfessionalsListByProfessionalType(this.CurrentUser.appUserId, professionalType).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -567,8 +582,8 @@ export class NewWayleaveComponent implements OnInit {
 
 
   onModelChange() {
-/*    this.shared.setApplicationID(this.notificationNumber);*/
-/*    this.shared.setCreatedByID(this.CurrentUser.appUserId)*/
+    this.shared.setApplicationID(this.notificationNumber);
+    /*    this.shared.setCreatedByID(this.CurrentUser.appUserId)*/
   }
 
 onWayleaveCreate(appUserId) {
@@ -650,18 +665,18 @@ onWayleaveCreate(appUserId) {
 
 
             this.http.post('https://localhost:7123/api/documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
-     .subscribe({
-        next: (event) => {
-          
-         if (event.type === HttpEventType.UploadProgress && event.total)
-         this.progress = Math.round(100 * event.loaded / event.total);
-         else if (event.type === HttpEventType.Response) {
-          this.message = 'Upload success.';
-         // this.onUploadFinished.emit(event.body);
-         }
-    },
-        error: (err: HttpErrorResponse) => console.log(err)
-      });
+              .subscribe({
+                next: (event) => {
+
+                  if (event.type === HttpEventType.UploadProgress && event.total)
+                    this.progress = Math.round(100 * event.loaded / event.total);
+                  else if (event.type === HttpEventType.Response) {
+                    this.message = 'Upload success.';
+                    // this.onUploadFinished.emit(event.body);
+                  }
+                },
+                error: (err: HttpErrorResponse) => console.log(err)
+              });
           }
 
           //this.shared.pullFilesForUpload();
@@ -823,8 +838,144 @@ onWayleaveCreate(appUserId) {
 
 
   generateInvoice() {
-    var pdf = 'http://197.242.150.226/Files/SampleInvoice.pdf';
-    window.open(pdf, '_blank');
+    if (this.internal = false) {
+      //var pdf = 'http://197.242.150.226/Files/SampleInvoice.pdf';
+      //window.open(pdf, '_blank');
+
+
+      console.log("downloadInvoice");
+      // Create a new instance of jsPDF
+      const doc = new jsPDF();
+
+
+      const image = new Image();
+      image.src = this.logoUrl;
+      image.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = image.width;
+        canvas.height = image.height;
+        const context = canvas.getContext('2d');
+        context.drawImage(image, 0, 0);
+        const dataUrl = canvas.toDataURL('image/jpeg');
+
+
+        autoTable(doc, {
+          body: [
+            [
+              {
+                content: "Logo goes here",
+
+
+                styles: {
+                  halign: 'left',
+                  fontSize: 20,
+                  textColor: '#ffffff',
+                }
+              },
+              {
+                content: 'Wayleave Application Fee Invoice',
+                styles: {
+                  halign: 'right',
+                  fontSize: 15,
+                  textColor: '#ffffff',
+                }
+              }
+            ],
+          ],
+          theme: 'plain',
+          styles: {
+            fillColor: '#3366ff',
+          }
+        });
+
+        autoTable(doc, {
+          body: [
+            [
+              {
+                content: 'Wayleave Ref No.:  1/23'
+                  + '\nBTW Reg. Nr./VAT Reg. No.4500193497'
+                  + '\nDate: ' + this.formattedDate
+                  + '\nInvoice Number: ' + "845396789",
+
+                styles: {
+                  halign: 'right',
+                }
+              }
+            ],
+          ],
+          theme: 'plain',
+        });
+
+
+        autoTable(doc, {
+          body: [
+            [
+              {
+                content: 'City of Cape Town'
+                  + '\nPost Box / Posbus / iShokisi 655'
+                  + '\nCAPE TOWN'
+                  + '\n8001',
+
+                styles: {
+                  halign: 'left',
+                }
+              }
+            ],
+          ],
+          theme: 'plain',
+        });
+        const startY = 100; // set the starting Y position for the table
+
+        autoTable(doc, {
+          head: [['Service Item Code', 'Description', 'Rate', 'Quantity', 'Amount']],
+          body: [
+            ['001', 'Wayleave Application Fees', 'R100 000.00', '1', 'R100 000.00'],
+
+          ],
+          theme: 'grid',
+          startY: startY,
+          margin: { top: 20 }
+        });
+
+        autoTable(doc, {
+          body: [
+            [
+              {
+                content: 'USE THIS REF NO: 845396789'
+                  + '\nTO MAKE EFT PAYMENTS FOR THIS INVOICE ONLY',
+
+                styles: {
+                  halign: 'center',
+                }
+              }
+            ],
+          ],
+          theme: 'grid',
+        });
+
+        autoTable(doc, {
+          body: [
+            [
+              {
+                content: 'Profit Centre: ' + 'P19070051'
+                  + '\nGL Acc: ' + "845180",
+                styles: {
+                  halign: 'left',
+                }
+              }
+            ],
+          ],
+          theme: 'plain',
+          startY: startY + 30, // add 30 units of Y position to create space between the tables
+        });
+
+        doc.save("invoice.pdf");
+        const pdf = doc.output('blob');
+        const pdfUrl = URL.createObjectURL(pdf);
+        window.open(pdfUrl, '_blank')
+      }
+
+    }
     this.router.navigate(["/home"]);
   }
 
@@ -922,7 +1073,7 @@ onWayleaveCreate(appUserId) {
 
     this.FileDocument.push(tempFileDocumentList);
     console.log("this.FileDocument", this.FileDocument);
-
+    
 
     //// Check if one or more files were selected
     //if (File.target.files.length > 0) {
@@ -1045,7 +1196,6 @@ onWayleaveCreate(appUserId) {
 
 
   recallMyComponent() {
-
 
     //  this.componentRef.destroy();
     //  this.container.clear();

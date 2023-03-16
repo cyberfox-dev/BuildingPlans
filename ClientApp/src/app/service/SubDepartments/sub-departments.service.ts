@@ -21,6 +21,18 @@ export class SubDepartmentsService {
 
   }
 
+
+  public addDepartmentAdmin(subDepartmentID: number | null, DepartmentAdminUserID:string) {
+
+    const body = {
+      SubDepartmentID: subDepartmentID,
+      SubDepartmentAdminUserID: DepartmentAdminUserID,
+  
+    }
+    return this.httpClient.post(this.baseURL + "AddSubDepartmentAdmin", body);
+
+  }
+
   public deleteSubDepartment(subDepartmentID: number) {
 
     return this.httpClient.post(this.baseURL + "DeleteSubDepartments", subDepartmentID);
@@ -30,6 +42,17 @@ export class SubDepartmentsService {
   public getSubDepartmentsList() {
 
     return this.httpClient.get(this.baseURL + "GetAllSubDepartments");
+
+  }
+  public getAllNotLinkedSubDepartmentsForComment(applicationID: number) {
+
+    return this.httpClient.post(this.baseURL + "GetAllNotLinkedSubDepartmentsForComment", applicationID);
+
+  }
+
+  public getAllLinkedSubDepartmentsForComment(applicationID: number) {
+
+    return this.httpClient.post(this.baseURL + "GetAllLinkedSubDepartmentsForComment", applicationID);
 
   }
 

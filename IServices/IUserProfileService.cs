@@ -14,5 +14,11 @@ namespace WayleaveManagementSystem.IServices
         Task<List<UserProfileDTO>> GetUserByUserID(string userId);
 
         Task<List<UserProfileDTO>> GetExternalUsers();
+
+
+        Task<List<UserProfileDTO>> GetInternalUsers();
+
+
+        
     }
 }

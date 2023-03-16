@@ -62,10 +62,10 @@ MoveToNextStage()
 
 <h1>Application Information</h1>
 <h2>Project number LS/BP 321</h2>
-<div class="cont1" *ngIf="isInternalUser">
+<!--<div class="cont1" *ngIf="isInternalUser">
   <button type="button" mat-raised-button color="green" (click)="ChangeApplicationStatusToPaid()"><i class="fa fa-hand-peace-o" aria-hidden="true"></i>   move to paid</button>
   <button type="button" mat-raised-button color="green" (click)="MoveToNextStage()"><i class="fa fa-hand-peace-o" aria-hidden="true"></i>   Next Stage</button>
-</div>
+</div>-->
 <app-action-center [ApplicationID]="ApplicationID" *ngIf="isInternalUser"></app-action-center>
 <div class="cont1" *ngIf="!isInternalUser">
   <button mat-raised-button color="warn">
@@ -443,7 +443,6 @@ MoveToNextStage()
 
     <mat-tab label="Tracking" *ngIf="isInternalUser">
       <button mat-raised-button color="blue" (click)="openXl(content)">Create New Note</button>
-
     </mat-tab>
 
 
@@ -453,8 +452,9 @@ MoveToNextStage()
 
     <mat-tab label="Audit Trail" *ngIf="isInternalUser">
 
+      <app-audit-trail></app-audit-trail>
 
-    </mat-tab>
+</mat-tab>
 
 
 
