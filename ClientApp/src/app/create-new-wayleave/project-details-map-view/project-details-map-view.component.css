@@ -1,0 +1,50 @@
+.maps {
+  position: center;
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+
+
+.row {
+  justify-content: space-around;
+}
+
+mat-button-toggle {
+  width: 100%;
+}
+
+mat-button-toggle-group {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.mat-button-toggle-checked {
+  background-color: #6bdd73fa;
+  color: white;
+}
+
+h3 {
+  width: 20em;
+  border-color: #00cdff;
+  text-align: center;
+  font-family: 'Nunito', sans-serif;
+  border-bottom: 1px solid #0487a7;
+  line-height: 0.1em;
+  margin: 0 auto;
+  padding-top: 50px;
+  margin-bottom: 50px;
+  justify-content: space-around;
+}
+
+  h3 span {
+    background-color: #c7f4ff;
+    padding: 0 10px;
+  }
+
+.card {
+  box-shadow: 0 4px 8px 0 rgb(0 0 0 / 13%), 0 6px 20px 0 rgb(0 0 0 / 0%);
+  margin: 20px;
+  border-color: #f1f1f1;
+  background-color: #c7f4ff;
+}

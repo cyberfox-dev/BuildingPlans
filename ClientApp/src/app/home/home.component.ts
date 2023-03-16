@@ -6,7 +6,7 @@ import { CommentList } from '../nav-menu/nav-menu.component';
 //import { ApplicationList } from '../shared/shared.service';
 import { SharedService } from "src/app/shared/shared.service"
 import { StagesService } from '../service/Stages/stages.service';
-
+import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component'
 
 
 export interface StagesList {
@@ -80,8 +80,8 @@ export class HomeComponent implements OnInit,OnDestroy {
   CurrentUser: any;
   stringifiedData: any;
     stringifiedDataUserProfile: any;
-    CurrentUserProfile: any;
-  constructor(private router: Router, private applicationService: ApplicationsService, private sharedService: SharedService, private viewContainerRef: ViewContainerRef, private stagesService: StagesService) {
+  CurrentUserProfile: any;
+  constructor(private router: Router, private applicationService: ApplicationsService, private sharedService: SharedService, private viewContainerRef: ViewContainerRef, private stagesService: StagesService, private NewWayleaveComponent: NewWayleaveComponent) {
 
   }
 
@@ -313,8 +313,12 @@ export class HomeComponent implements OnInit,OnDestroy {
   }
 
 
-  goToNewWayleave(){
-    this.router.navigate(["/new-wayleave"]);
+  goToNewWayleave() {
+ 
+    this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId);
+    //console.log("Test: " + this.sharedService.getApplicationID())
+/*        this.router.navigate(["/new-wayleave"]);*/
     this.viewContainerRef.clear();
+
   }
 }

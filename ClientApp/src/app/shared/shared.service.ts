@@ -162,7 +162,7 @@ export class SharedService {
 
   //ESRI DATA BEGIN
   esriAddress!: string;
-  applicationID!: string;
+  applicationID!: number;
   createdByID!: string;
 
   setAddressData(data: any) {
@@ -174,12 +174,12 @@ export class SharedService {
   }
 
   //Using NotificationNumber for now, until the ApplicationID is created
-  setApplicationID(data: any) {
-    console.log("setting ..." + this.applicationID);
+setApplicationID(data: any) {
     this.applicationID = data;
+    console.log("setting ..." + this.applicationID);
   }
 
-  getApplicationID() {
+getApplicationID(): any {
     console.log("getting ..." + this.applicationID);
     return this.applicationID;
   }

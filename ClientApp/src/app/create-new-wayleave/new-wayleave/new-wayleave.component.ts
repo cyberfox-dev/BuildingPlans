@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, ComponentRef, ElementRef, Injector, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentFactoryResolver, ComponentRef, ElementRef, Injector, OnInit, ViewChild, ViewContainerRef, Injectable } from '@angular/core';
 import { MatTable, MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ApplicationsService } from 'src/app/service/Applications/applications.service';
@@ -94,7 +94,7 @@ export interface MandatoryDocumentUploadList {
 export interface ARCGISAPIData {
   createdByID: string;
   isActive: string;
-  applicationID: string;
+  applicationID: number;
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
@@ -131,6 +131,11 @@ const ELEMENT_DATATEst: PeriodicElementTest[] = [
   templateUrl: './new-wayleave.component.html',
   styleUrls: ['./new-wayleave.component.css']
 })
+
+@Injectable({
+  providedIn: 'root'
+})
+
 export class NewWayleaveComponent implements OnInit {
   @ViewChild("placesRef")
   placesRef: GooglePlaceDirective | undefined;
@@ -266,6 +271,7 @@ export class NewWayleaveComponent implements OnInit {
 
   displayedColumnsLinkUsers: string[] = ['idNumber', 'fullName', 'actions'];
   dataSourceLinkUsers = this.UserList;
+    applicationID: any;
   //CoverLetterFileName = "Choose file";
 
 
@@ -311,7 +317,7 @@ export class NewWayleaveComponent implements OnInit {
     //Assigns the below values to the variable that will be passed to the map component.
     this.ARCGISAPIData.createdByID = this.CurrentUser.appUserId;
     this.ARCGISAPIData.isActive = "1";
-    this.ARCGISAPIData.applicationID = this.notificationNumber;
+    this.ARCGISAPIData.applicationID = 0;
 
     this.typeOfApplication = "TOA";
 
@@ -561,11 +567,23 @@ export class NewWayleaveComponent implements OnInit {
 
 
   onModelChange() {
-    this.shared.setApplicationID(this.notificationNumber);
+/*    this.shared.setApplicationID(this.notificationNumber);*/
 /*    this.shared.setCreatedByID(this.CurrentUser.appUserId)*/
   }
 
-  onWayleaveCreate() {
+onWayleaveCreate(appUserId) {
+
+    //Check if applicationid exists or not.
+    this.applicationID = this.shared.getApplicationID();
+
+    if (this.applicationID != undefined || this.applicationID != null) {
+
+    } else {
+      this.applicationID = 0;
+    };
+
+
+
 /*    this.shared.setApplicationID(this.notificationNumber);*/
     this.clientAddress = this.shared.getAddressData();
     const contractorData = this.shared.getContactorData();
@@ -595,17 +613,17 @@ export class NewWayleaveComponent implements OnInit {
     }
 
     if (this.client) {
-      this.applicationsService.addUpdateApplication(0, this.CurrentUser.appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId,previousStageName,0,CurrentStageName,1,NextStageName,2,"Unpaided").subscribe((data: any) => {
+      this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId,previousStageName,0,CurrentStageName,1,NextStageName,2,"Unpaided").subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           alert(data.responseMessage);
-
-
+          this.shared.setApplicationID(data.dateSet.applicationID);
+          this.ARCGISAPIData.applicationID = data.dateSet.applicationID;
 
           //Add professional link for contractors when application is successfully captured
           if (contractorData.length > 0) {
             for (var i = 0; i < contractorData.length; i++) {
-              this.addProfessionalsLinks(data.dateSet.applicationID, contractorData[i].professinalID);
+              this.addProfessionalsLinks(this.applicationID, contractorData[i].professinalID);
             };
           } else {
             alert("This Application have no contractors linked");
@@ -615,7 +633,7 @@ export class NewWayleaveComponent implements OnInit {
           //Add professional link for engineers when application is successfully captured
           if (engineerData.length > 0) {
             for (var i = 0; i < engineerData.length; i++) {
-              this.addProfessionalsLinks(data.dateSet.applicationID, engineerData[i].professinalID);
+              this.addProfessionalsLinks(this.applicationID, engineerData[i].professinalID);
             };
           }
           else {
@@ -648,27 +666,37 @@ export class NewWayleaveComponent implements OnInit {
 
           //this.shared.pullFilesForUpload();
 
-
+          this.shared.setApplicationID(0);
         }
         else {
           alert(data.responseMessage);
         }
         console.log("responseAddapplication", data);
+
+        if (this.applicationID == 0) {
+          this.router.navigate(["/new-wayleave"]);
+        } else {
+          this.router.navigate(["/home"]);
+        };
+
       }, error => {
         console.log("Error", error);
       })
     }
     else if (this.internal) {
       debugger;
-      this.applicationsService.addUpdateApplication(0, this.CurrentUser.appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributing").subscribe((data: any) => {
+      this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributing").subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           alert(data.responseMessage);
+          console.log(data);
+          this.shared.setApplicationID(this.applicationID);
+          this.ARCGISAPIData.applicationID = this.applicationID;
 
           //Add professional link for contractors when application is successfully captured
           if (contractorData.length > 0) {
             for (var i = 0; i < contractorData.length; i++) {
-              this.addProfessionalsLinks(data.dateSet.applicationID, contractorData[i].professinalID);
+              this.addProfessionalsLinks(this.applicationID, contractorData[i].professinalID);
             };
           } else {
             alert("This Application have no contractors linked");
@@ -678,7 +706,7 @@ export class NewWayleaveComponent implements OnInit {
           //Add professional link for engineers when application is successfully captured
           if (engineerData.length > 0) {
             for (var i = 0; i < engineerData.length; i++) {
-              this.addProfessionalsLinks(data.dateSet.applicationID, engineerData[i].professinalID);
+              this.addProfessionalsLinks(this.applicationID, engineerData[i].professinalID);
             };
           }
           else {
@@ -690,7 +718,7 @@ export class NewWayleaveComponent implements OnInit {
           for (var i = 0; i < filesForUpload.length; i++) {
             const formData = new FormData();
             let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
-            let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + data.dateSet.applicationID;
+            let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.applicationID;
             formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention );
 
 
@@ -703,7 +731,7 @@ export class NewWayleaveComponent implements OnInit {
                     this.progress = Math.round(100 * event.loaded / event.total);
                   else if (event.type === HttpEventType.Response) {
                     this.message = 'Upload success.';
-                    this.uploadFinished(event.body, data.dateSet.applicationID, data.dateSet);
+                    this.uploadFinished(event.body, this.applicationID, data.dateSet);
                   }
                 },
                 error: (err: HttpErrorResponse) => console.log(err)
@@ -712,12 +740,19 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
-
+          this.shared.setApplicationID(0);
         }
         else {
           alert(data.responseMessage);
         }
         console.log("responseAddapplication", data);
+
+        if (this.applicationID == 0) {
+          this.router.navigate(["/new-wayleave"]);
+        } else {
+          this.router.navigate(["/home"]);
+        };
+
       }, error => {
         console.log("Error", error);
       })
@@ -725,13 +760,15 @@ export class NewWayleaveComponent implements OnInit {
 
     else {
       //External
+      //This is also reached to create a blank application.
 
 
-
-      this.applicationsService.addUpdateApplication(0, this.CurrentUser.appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, this.externalAddress, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaided").subscribe((data: any) => {
+      this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, this.externalAddress, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaided").subscribe((data: any) => {
         
         if (data.responseCode == 1) {
           alert(data.responseMessage);
+          this.shared.setApplicationID(data.dateSet.applicationID);
+          this.ARCGISAPIData.applicationID = data.dateSet.applicationID;
 
           //Add professional link for contractors when application is successfully captured
           if (contractorData.length > 0) {
@@ -739,7 +776,7 @@ export class NewWayleaveComponent implements OnInit {
               this.addProfessionalsLinks(data.dateSet.applicationID, contractorData[i].professinalID);
             };
           } else {
-            alert("This Application have no contractors linked");
+/*            alert("This Application have no contractors linked");*/
           }
 
 
@@ -750,7 +787,7 @@ export class NewWayleaveComponent implements OnInit {
             };
           }
           else {
-            alert("This Application have no engineers linked");
+/*            alert("This Application have no engineers linked");*/
           }
 
         }
@@ -758,15 +795,26 @@ export class NewWayleaveComponent implements OnInit {
           alert(data.responseMessage);
         }
         console.log("responseAddapplication", data);
+
+        /*        this.shared.setApplicationID(data.dateSet.applicationID);*/
+
+        if (this.applicationID == 0) {
+          this.router.navigate(["/new-wayleave"]);
+        } else {
+          this.router.navigate(["/home"]);
+        };
+
+//        this.shared.setApplicationID(0); //sets the applicationID back to zero when a new application is created.
+/*        return this.ARCGISAPIData.applicationID;*/
+
       }, error => {
         console.log("Error", error);
       })
 
-
     }
-
-
-
+/*    this.router.navigate(["/new-wayleave"]);*/
+  /*    return this.ARCGISAPIData.applicationID;*/
+  this.shared.setApplicationID(0);
   }
 
   openXl(content: any) {
@@ -787,7 +835,9 @@ export class NewWayleaveComponent implements OnInit {
 
   addProfessionalsLinks(applicationID: number, professionalID: number) {
 
-    this.professionalsLinksService.addUpdateProfessionalsLink(0, applicationID, professionalID, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+
+    this.professionalsLinksService.addUpdateProfessionalsLink(0, applicationID, professionalID, this.ARCGISAPIData.createdByID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         alert(data.responseMessage);

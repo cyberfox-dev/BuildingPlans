@@ -5,6 +5,12 @@ import { UserProfileService } from 'src/app/service/UserProfile/user-profile.ser
 import { StagesService } from '../../service/Stages/stages.service';
 import { ApplicationsService } from '../../service/Applications/applications.service';
 
+export interface ARCGISAPIData {
+  createdByID: string;
+  isActive: string;
+  applicationID: string;
+}
+
 export interface PeriodicElement {
   name: string;
 
@@ -71,6 +77,9 @@ const Document_DATA: Documents[] = [
   styleUrls: ['./view-project-info.component.css']
 })
 export class ViewProjectInfoComponent implements OnInit {
+
+  //Initialize the interface for ARCGIS
+  ARCGISAPIData = {} as ARCGISAPIData;
 
   public isInternalUser: boolean = false;
 
@@ -155,7 +164,9 @@ export class ViewProjectInfoComponent implements OnInit {
   constructor(private modalService: NgbModal, private sharedService: SharedService, private userPofileService: UserProfileService, private stagesService: StagesService, private applicationsService: ApplicationsService) { }
 
   ngOnInit(): void {
-   
+
+
+
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
 
@@ -170,6 +181,10 @@ export class ViewProjectInfoComponent implements OnInit {
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
 
+    //Assigns the below values to the variable that will be passed to the map component.
+    this.ARCGISAPIData.createdByID = this.CurrentUser.appUserId;
+    this.ARCGISAPIData.isActive = "1";
+    /*    this.ARCGISAPIData.applicationID = this.notificationNumber;*/
 
     this.getUserProfileByUserID();
     this.getAllStages();

@@ -151,16 +151,15 @@ export class ProjectDetailsMapComponent implements OnInit {
   /*  public createdByID: string = "123344";*/
 
   ngOnInit(): void {
-    if (this.data.applicationID != null && this.data.applicationID != undefined) {
-    } else {
-      /*      this.data.applicationID = "venolin";*/
-      this.data.applicationID = this.sharedService.getApplicationID();
-    }
     this.positionAndMapLoad();
     let editConfigCrimeLayer, editConfigPoliceLayer;
   }
 
   private async positionAndMapLoad() {
+    if (this.data.applicationID != null || this.data.applicationID != undefined || this.data.applicationID != "") {
+      this.data.applicationID = this.sharedService.getApplicationID();
+    } else {
+    }
     await this.setPosition();
     await this.initializeMap();
   }
@@ -179,6 +178,7 @@ export class ProjectDetailsMapComponent implements OnInit {
 
   private async initializeMap(): Promise<any> {
     console.log("ApplicationID " + this.data.applicationID)
+    console.log(this.sharedService.getApplicationID())
     console.log("IsActive " + this.data.isActive)
     console.log("CreatedByID " + this.data.createdByID)
 
@@ -325,7 +325,7 @@ export class ProjectDetailsMapComponent implements OnInit {
       /*        definitionExpression: "OBJECTID = 1"*/
       /*            definitionExpression: "CRTD_BY_ID = 777"*/
       /*      definitionExpression: "CRTD_BY_ID = '22ee5b58-db0e-4774-8245-bf7b59670e44'",*/
-      definitionExpression: "CRTD_BY_ID = '" + this.data.createdByID + "'"
+      definitionExpression: "WLMS_APLC_KEY = '" + this.data.applicationID + "'"
     });
 
     const elementOne: ElementPropertiesInterface = {
@@ -410,13 +410,6 @@ export class ProjectDetailsMapComponent implements OnInit {
     //featureLayer.when(() => {
     //  view.goTo(featureLayer.fullExtent);
     //});
-
-    /*    This is used to zoom into the area of the relevant polygons for the application*/
-    const query = featureLayer.createQuery()
-    query.where = "CRTD_BY_ID = 777";
-    featureLayer.queryExtent(query).then(function (result) {
-      view.goTo(result.extent);
-    })
 
     //const form = new FeatureForm({
     //  fieldConfig: [
@@ -768,7 +761,7 @@ export class ProjectDetailsMapComponent implements OnInit {
         label: "createdByID",
         /*        valueExpression: "assignCreatedByID",*/
         valueExpression: "assignCreatedByID",
-          visibilityExpression: "alwaysHidden",
+/*                  visibilityExpression: "alwaysHidden",*/
         editable: false,
 
       });
@@ -779,7 +772,7 @@ export class ProjectDetailsMapComponent implements OnInit {
         label: "isActive",
         valueExpression: "assignIsActive",
         editable: false,
-                visibilityExpression: "alwaysHidden"
+/*                        visibilityExpression: "alwaysHidden"*/
       });
 
       const fieldElement3 = new FieldElement({
@@ -788,7 +781,7 @@ export class ProjectDetailsMapComponent implements OnInit {
         label: "applicationID",
         valueExpression: "assignApplicationID",
         editable: false,
-                visibilityExpression: "alwaysHidden"
+/*                        visibilityExpression: "alwaysHidden"*/
       });
 
       formTemplate.expressionInfos = [expression, expression2, expression3, expression4];
@@ -796,12 +789,13 @@ export class ProjectDetailsMapComponent implements OnInit {
 
       featureLayer.formTemplate = formTemplate
 
-
+    console.log("num of features: " + this.getCount(featureLayer,""));
     })
 
 
 
     /*    });*/
+
   };
 
 
@@ -1060,6 +1054,30 @@ export class ProjectDetailsMapComponent implements OnInit {
   //    })
   //  });
   //};
+
+  getCount(featureLayer, token) {
+
+  var xmlhttp = new XMLHttpRequest();
+  var url = featureLayer + "/query?f=json&where=1=1&returnCountOnly=true";
+
+  if (token) {
+    url = url + "&token=" + token;
+  }
+
+  xmlhttp.open("GET", url, false);
+  xmlhttp.send();
+
+  if (xmlhttp.status !== 200) {
+    return (xmlhttp.status);
+  } else {
+    var responseJSON = JSON.parse(xmlhttp.responseText)
+    if (responseJSON.error) {
+      return (JSON.stringify(responseJSON.error));
+    } else {
+      return JSON.stringify(responseJSON.count);
+    }
+  }
+}
 
   private async setPosition(): Promise<void> {
     try {
