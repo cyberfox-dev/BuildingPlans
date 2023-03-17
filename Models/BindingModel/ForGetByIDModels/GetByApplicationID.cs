@@ -5,6 +5,7 @@
 
 
         public int ApplicationID { get; set; }
+        public int? SubDepartmentID { get; set; }
 
     }
 }

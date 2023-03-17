@@ -158,6 +158,7 @@ namespace WayleaveManagementSystem.Service
                     SubDepartmentID = subDepartment.SubDepartmentID,
                     SubDepartmentName = subDepartment.SubDepartmentName,
                     DepartmentID = subDepartment.DepartmentID,
+                    UserAssaignedToComment = subDepartmentForComment.UserAssaignedToComment,
                     SubDepartmentForCommentID = subDepartmentForComment.SubDepartmentForCommentID,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
@@ -175,6 +176,7 @@ namespace WayleaveManagementSystem.Service
                 {
                     SubDepartmentID = SubDepartments.SubDepartmentID,
                     SubDepartmentName = SubDepartments.SubDepartmentName,
+                 
                     DepartmentID = SubDepartments.DepartmentID,
                     DateCreated = SubDepartments.DateCreated,
                     DateUpdated = SubDepartments.DateUpdated,

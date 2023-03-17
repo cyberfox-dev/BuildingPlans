@@ -62,6 +62,33 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpPost("DepartmentForCommentUserAssaignedToComment")]
+        public async Task<object> DepartmentForCommentUserAssaignedToComment([FromBody] SubDepartmentForCommentBindingModel model)
+        {
+            try
+            {
+
+                if (model.SubDepartmentForCommentID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _subDepartmentForCommentService.DepartmentForCommentUserAssaignedToComment(model.SubDepartmentForCommentID,model.UserAssaignedToComment);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "User Assaigned Successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+
         [HttpPost("DeleteDepartmentForComment")]
         public async Task<object> DeleteDepartmentForComment([FromBody] int subDepartmentForCommentID)
         {
@@ -114,6 +141,32 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+
+        [HttpPost("GetSubDepartmentForCommentBySubID")]
+        public async Task<object> GetSubDepartmentForCommentBySubID([FromBody] GetByApplicationID model)
+        {
+            try
+            {
+
+                if (model.ApplicationID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _subDepartmentForCommentService.GetSubDepartmentForCommentBySubID(model.ApplicationID,model.SubDepartmentID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Department For Comment List Created", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
 
 
         [HttpPost("UpdateCommentStatus")]

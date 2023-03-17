@@ -26,11 +26,24 @@ export class SubDepartmentForCommentService {
 
   }
 
+  public departmentForCommentUserAssaignedToComment(subDepartmentForCommentID: number | null, userAssaignedToComment: string | null) {
+
+    const body = {
+      SubDepartmentForCommentID: subDepartmentForCommentID,
+      UserAssaignedToComment: userAssaignedToComment,
+
+    }
+    return this.httpClient.post(this.baseURL + "DepartmentForCommentUserAssaignedToComment", body);
+
+  }
+
   public deleteDepartmentForComment(subDepartmentForCommentID: number) {
 
     return this.httpClient.post(this.baseURL + "DeleteDepartmentForComment", subDepartmentForCommentID);
 
   }
+
+
 
   public getSubDepartmentForComment(applicationID: number | null ) {
 
@@ -38,6 +51,15 @@ export class SubDepartmentForCommentService {
       ApplicationID: applicationID,
     }
     return this.httpClient.post(this.baseURL + "GetSubDepartmentForComment", body);
+
+  }
+  public getSubDepartmentForCommentBySubID(applicationID: number | null, subDepartmentID: number|null) {
+
+    const body = {
+      ApplicationID: applicationID,
+      SubDepartmentID: subDepartmentID,
+    }
+    return this.httpClient.post(this.baseURL + "GetSubDepartmentForCommentBySubID", body);
 
   }
 

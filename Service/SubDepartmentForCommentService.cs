@@ -77,6 +77,33 @@ namespace WayleaveManagementSystem.Service
 
         }
 
+
+
+
+        public async Task<bool> DepartmentForCommentUserAssaignedToComment(int? subDepartmentForCommentID,  string? userAssaignedToComment)
+        {
+
+  
+            var tempSubDepForCommentTable = _context.SubDepartmentForComment.FirstOrDefault(x => x.SubDepartmentForCommentID == subDepartmentForCommentID);
+
+            if (tempSubDepForCommentTable != null) { 
+         
+              
+                tempSubDepForCommentTable.UserAssaignedToComment = userAssaignedToComment;
+                tempSubDepForCommentTable.DateUpdated = DateTime.Now;
+
+                _context.Update(tempSubDepForCommentTable);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+
+        }
+
         public async Task<bool> DeleteDepartmentForComment(int subDepartmentForCommentID)
         {
             //this checks if the record exists in the db
@@ -101,6 +128,29 @@ namespace WayleaveManagementSystem.Service
             return await (
                 from subDepartmentForComment in _context.SubDepartmentForComment
                 where subDepartmentForComment.ApplicationID == applicationID && subDepartmentForComment.isActive == true
+                select new SubDepartmentForCommentDTO()
+                {
+                    SubDepartmentForCommentID = subDepartmentForComment.SubDepartmentForCommentID,
+                    ApplicationID = subDepartmentForComment.ApplicationID,
+                    SubDepartmentID = subDepartmentForComment.SubDepartmentID,
+                    SubDepartmentName = subDepartmentForComment.SubDepartmentName,
+                    UserAssaignedToComment = subDepartmentForComment.UserAssaignedToComment,
+                    CommentStatus = subDepartmentForComment.CommentStatus,
+                    isAwaitingClarity = subDepartmentForComment.isAwaitingClarity,
+                    IsRefered = subDepartmentForComment.IsRefered,
+                    ReferedToUserID = subDepartmentForComment.ReferedToUserID,
+                    CreatedById = subDepartmentForComment.CreatedById
+
+
+                }
+                ).ToListAsync();
+        }
+
+        public async Task<List<SubDepartmentForCommentDTO>> GetSubDepartmentForCommentBySubID(int applicationID, int? subDepartmentID)
+        {
+            return await (
+                from subDepartmentForComment in _context.SubDepartmentForComment
+                where subDepartmentForComment.ApplicationID == applicationID && subDepartmentForComment.isActive == true && subDepartmentForComment.SubDepartmentID == subDepartmentID
                 select new SubDepartmentForCommentDTO()
                 {
                     SubDepartmentForCommentID = subDepartmentForComment.SubDepartmentForCommentID,
