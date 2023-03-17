@@ -323,7 +323,7 @@ export class ActionCenterComponent implements OnInit {
   }
 
   deleteLinkedDepartmentForComment(index: number) {
-    debugger;
+    ;
    
     if (confirm("Are you sure to delete " + this.SubDepartmentLinkedList[index].subDepartmentName + "?")) {
      
@@ -496,7 +496,7 @@ export class ActionCenterComponent implements OnInit {
 
   onLinkDepartmentForComment() {
 
-    debugger;
+    ;
 
     const selectDepartments = this.selection.selected;
 
@@ -530,7 +530,7 @@ export class ActionCenterComponent implements OnInit {
 
   onLinkZoneForComment() {
 
-    debugger;
+    ;
 
     const selectZones = this.zoneSelection.selected;
 
@@ -564,7 +564,7 @@ export class ActionCenterComponent implements OnInit {
 
   getLinkedZones() {
     this.ZoneLinkedList.splice(0, this.ZoneLinkedList.length);
-    debugger;
+    ;
     this.zoneForCommentService.getZonesForComment(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -636,7 +636,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   deleteLinkedZoneForComment(index: number) {
-    debugger;
+    ;
 
     if (confirm("Are you sure to delete " + this.ZoneLinkedList[index].zoneName + "?")) {
 

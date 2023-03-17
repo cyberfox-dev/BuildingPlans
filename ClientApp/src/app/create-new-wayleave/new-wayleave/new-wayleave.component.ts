@@ -613,7 +613,7 @@ onWayleaveCreate(appUserId) {
 
 
     for (var i = 0; i < this.StagesList.length; i++) {
-      debugger;
+      ;
       if (this.StagesList[i].StageOrderNumber == 1) {
         previousStageName = this.StagesList[i - 1].StageName
         CurrentStageName = this.StagesList[i].StageName;
@@ -699,7 +699,7 @@ onWayleaveCreate(appUserId) {
       })
     }
     else if (this.internal) {
-      debugger;
+      ;
       this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributing").subscribe((data: any) => {
 
         if (data.responseCode == 1) {
@@ -1293,7 +1293,7 @@ onWayleaveCreate(appUserId) {
 
 
   uploadFinished = (event: any, applicationID: any, applicationData:any) => {
-    debugger;
+    ;
     this.response = event;
     console.log("this.response", this.response);
     console.log("this.response?.dbPath", this.response?.dbPath);
