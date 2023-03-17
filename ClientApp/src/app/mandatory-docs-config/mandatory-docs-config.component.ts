@@ -273,7 +273,7 @@ export class MandatoryDocsConfigComponent implements OnInit {
 
   onStageDelete(index: any, viewLinkedStages:any) {
     if (confirm("Are you sure you want to remove " + this.MandatoryDocumentsLinkedStagesList[index].stageName + "?")) {
-      debugger;
+      ;
       this.mandatoryDocumentStageLink.deleteMandatoryDocumentStageLink(this.MandatoryDocumentsLinkedStagesList[index].mandatoryDocumentStageLinkID).subscribe((data: any) => {
 
         if (data.responseCode == 1) {

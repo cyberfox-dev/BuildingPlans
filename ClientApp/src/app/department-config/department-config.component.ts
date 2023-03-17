@@ -283,7 +283,7 @@ export class DepartmentConfigComponent implements OnInit {
 
 
   onDepartmentUserLink() {
-    debugger;
+    ;
     let SubDemartmentID = Number(this.setSubAdmin.controls["SetSubDemartmentAdmin"].value);
     if (SubDemartmentID != 0) {
 
@@ -394,7 +394,7 @@ export class DepartmentConfigComponent implements OnInit {
   }
 
   linkDepAdmin(index: any, linkDepAdminModal: any) {
-    debugger;
+    ;
     this.setSubAdmin.controls["SetSubDemartmentAdmin"].setValue("0");
 
 
@@ -652,6 +652,7 @@ export class DepartmentConfigComponent implements OnInit {
 
 
   setCurrentDepartmentID(index: any) {
+    ;
     this.CurrentDepartmentID = this.DepartmentList[index].departmentID;
     console.log("IM USING THIS CODE", this.CurrentDepartmentID);
     this.header = this.DepartmentList[index].departmentName;
@@ -1075,10 +1076,13 @@ export class DepartmentConfigComponent implements OnInit {
 
 
   onZoneUserLink() {
-    
+    ;
     let selectedSubDep = Number(this.userZoneLink.controls["selectedSubDep"].value);
     let selectedZone = Number(this.userZoneLink.controls["selectedZone"].value);
-    
+
+    console.log("this.selection.selectedthis.selection.selectedthis.selection.selectedthis.selection.selectedthis.selection.selectedthis.selection.selectedthis.selection.selected", this.selection.selected);
+
+
     for (let i = 0; i < this.selection.selected.length; i++) {      
       const current = this.selection.selected[i];
 
@@ -1087,7 +1091,7 @@ export class DepartmentConfigComponent implements OnInit {
         if (data.responseCode == 1) {
           if (data.dateSet.length > 0 ) {
             this.zoneLinkService.addUpdateZoneLink(data.dateSet[0].zoneLinkID, this.CurrentDepartmentID, selectedZone, selectedSubDep, current.id, null, this.CurrentUser.appUserId,).subscribe((data: any) => {
-
+              ;
               if (data.responseCode == 1) {
                 alert(data.responseMessage);
 
@@ -1195,9 +1199,9 @@ export class DepartmentConfigComponent implements OnInit {
   }
 
   userSelectedForLink(user: any) {
+
     this.selection.toggle(user);
-    console.log("THIS IS THE USER", user);
-    console.log("THIS IS THE USER", this.selection.toggle(user));
+
   }
   userSelectedForDepartmentLink(user: any) {
     this.selectionUserDepartmentAdminList.clear();
@@ -1307,7 +1311,8 @@ export class DepartmentConfigComponent implements OnInit {
 
   }
 
-  openNewUserlinkedToZone(newUserLinkedToZone: any,index: any) {
+  openNewUserlinkedToZone(newUserLinkedToZone: any, index: any) {
+    ;
     this.SubDepartmentDropdown.splice(0, this.SubDepartmentDropdown.length);
     this.subDepartment.getSubDepartmentsByDepartmentID(this.DepartmentList[index].departmentID).subscribe((data: any) => {
 

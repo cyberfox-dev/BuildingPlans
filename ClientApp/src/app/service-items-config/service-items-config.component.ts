@@ -94,7 +94,7 @@ export class ServiceItemsConfigComponent implements OnInit {
   }
   
   onServiceItemCreate() {
-    debugger;
+    ;
     this.serviceItemService.addUpdateServiceItem(0, this.serviceItemCodeName, this.description, Number(this.rate), Number(this.total),this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {

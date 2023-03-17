@@ -292,7 +292,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   ChangeApplicationStatusToPaid() {
 
-    debugger;
+    ;
     //alert("ChangeApplicationStatusToPaid");
 
     if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Unpaided") {
@@ -320,7 +320,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   MoveToNextStage() {
 
-    debugger;
+    ;
     //alert("ChangeApplicationStatusToPaid");
 
     if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Paid") {

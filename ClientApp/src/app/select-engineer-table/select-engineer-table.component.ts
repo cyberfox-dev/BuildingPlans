@@ -181,7 +181,7 @@ export class SelectEngineerTableComponent implements OnInit {
   }
 
   onAddEngineer(bpNoApplicant: string, professionalRegNo: string, name: string, surname: string, applicantEmail: string, applicantTellNo: string, engineerIDNo: string) {
-    debugger;
+    ;
     //const newEnineer = {} as EngineerList;
     //newEnineer.ProfessinalType = "Engineer";:
     //newEnineer.bpNumber = this.bpNoApplicant;
