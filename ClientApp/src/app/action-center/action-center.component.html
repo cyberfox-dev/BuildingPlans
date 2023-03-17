@@ -15,7 +15,7 @@
       <button mat-raised-button color="blue" (click)="openAssignDepartment(assign)">Assign a Department to this project</button>
       <button mat-raised-button color="blue" *ngIf="AssignProjectToZone == true" (click)="openAssignToZone(assignProjectToZone)">Assign this project to a zone</button>
       <button mat-raised-button color="blue" *ngIf="AssignProjectToZone == true" (click)="openAssignToUser(assignProjectToUser)">Assign this project to a user manually</button>
-      <button mat-raised-button color="blue">Hopper</button>
+      <button mat-raised-button color="blue" *ngIf="hopperButton == true" (click)="onHopperClick()">Hopper</button>
     </div>
     <mat-accordion>
 

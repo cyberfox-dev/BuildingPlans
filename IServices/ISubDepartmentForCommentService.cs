@@ -7,10 +7,11 @@ namespace WayleaveManagementSystem.IServices
     public interface ISubDepartmentForCommentService
     {
         Task<SubDepartmentForComment> AddUpdateDepartmentForComment(int? subDepartmentForCommentID, int? applicationID , int? subDepartmentID, string subDepartmentName, string? userAssaignedToComment, string? commentStatus, string? creadtedByID);
-      
+        Task<bool> DepartmentForCommentUserAssaignedToComment(int? subDepartmentForCommentID, string? userAssaignedToComment);
         public Task<bool> DeleteDepartmentForComment(int SubDepartmentForCommentID);
 
         Task<List<SubDepartmentForCommentDTO>> GetSubDepartmentForComment(int applicationID);
+        Task<List<SubDepartmentForCommentDTO>> GetSubDepartmentForCommentBySubID(int applicationID, int? subDepartmentID);
 
         Task<bool> UpdateCommentStatus(int? subDepartmentForCommentID, string? commentStatus);
 
