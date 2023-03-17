@@ -582,7 +582,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
   onModelChange() {
-    this.shared.setApplicationID(this.notificationNumber);
+/*    this.shared.setApplicationID(this.notificationNumber);*/
     /*    this.shared.setCreatedByID(this.CurrentUser.appUserId)*/
   }
 
