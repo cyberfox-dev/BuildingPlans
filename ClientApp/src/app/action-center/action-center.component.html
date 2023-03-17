@@ -14,7 +14,7 @@
     <div class="cont">
       <button mat-raised-button color="blue" (click)="openAssignDepartment(assign)">Assign a Department to this project</button>
       <button mat-raised-button color="blue" *ngIf="AssignProjectToZone == true" (click)="openAssignToZone(assignProjectToZone)">Assign this project to a zone</button>
-      <button mat-raised-button color="blue" *ngIf="AssignProjectToZone == true" (click)="openAssignToZone(assignProjectToZone)">Assign this project to a user manually</button>
+      <button mat-raised-button color="blue" *ngIf="AssignProjectToZone == true" (click)="openAssignToUser(assignProjectToUser)">Assign this project to a user manually</button>
       <button mat-raised-button color="blue">Hopper</button>
     </div>
     <mat-accordion>
@@ -318,3 +318,68 @@
 
 </ng-template>
 
+<ng-template #assignProjectToUser let-modal>
+  <div class="modal-header">
+    <h1 class="modal-title">Assign Project to a user</h1>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <mat-tab-group>
+      <mat-tab label="Select User">
+
+
+
+        <!--        <table mat-table [dataSource]="dataSourceSelectUsers" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="userName">
+      <th mat-header-cell *matHeaderCellDef> User Name  </th>
+      <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
+    </ng-container>
+
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let i = index;let element">
+                 <mat-radio-button class="example-margin"
+                            (click)="userSelectedForProject(i)"
+                            [checked]="selectionUserProject.isSelected(i)">
+          </mat-radio-button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumnsSelectUsers"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnsSelectUsers;"></tr>
+  </table>-->
+      </mat-tab>
+
+      <mat-tab label="View Slected User">
+
+        <!--        <table mat-table [dataSource]="dataSourceViewSelectedUsers" class="mat-elevation-z8">
+
+
+
+    <ng-container matColumnDef="userName">
+      <th mat-header-cell *matHeaderCellDef> User Name </th>
+      <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
+    </ng-container>
+
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let i = index;let element">
+        <button mat-raised-button color="warn" (click)="deleteLinkedZoneForComment(i);modal.dismiss('Cross click')"><i class="fa fa-trash" aria-hidden="true"></i></button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumnsViewSelectedUsers"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnsViewSelectedUsers;"></tr>
+  </table>-->
+
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="onLinkZoneForComment();modal.close('Save click')">Save</button>
+  </div>
+
+</ng-template>
