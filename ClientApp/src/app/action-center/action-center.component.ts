@@ -232,6 +232,10 @@ export class ActionCenterComponent implements OnInit {
     
     this.modalService.open(assignProjectToZone, { backdrop: 'static', size: 'xl' });
   }
+
+  openAssignToUser(assignProjectToUser: any) {
+    this.modalService.open(assignProjectToUser, { backdrop: 'static', size: 'xl' });
+  }
   openAssignDepartment(assign: any) {
     this.modalService.open(assign, { backdrop: 'static', size: 'xl' });
   }
@@ -564,7 +568,7 @@ export class ActionCenterComponent implements OnInit {
 
   getLinkedZones() {
     this.ZoneLinkedList.splice(0, this.ZoneLinkedList.length);
-    debugger;
+
     this.zoneForCommentService.getZonesForComment(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
