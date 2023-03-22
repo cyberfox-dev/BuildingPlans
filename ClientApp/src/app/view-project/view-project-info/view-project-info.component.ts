@@ -4,6 +4,7 @@ import { SharedService } from "src/app/shared/shared.service";
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
 import { StagesService } from '../../service/Stages/stages.service';
 import { ApplicationsService } from '../../service/Applications/applications.service';
+import { CommentsService } from '../../service/Comments/comments.service';
 
 export interface ARCGISAPIData {
   createdByID: string;
@@ -21,6 +22,15 @@ export interface StagesList {
   StageName: string;
   StageOrderNumber: number;
   CurrentUser: any
+
+}
+
+export interface CommentsList {
+  CommentID: number;
+  ApplicationID: number;
+  Comment: string;
+  CommentStatus: string;
+  SubDepartmentForCommentID: number
 
 }
 
@@ -113,6 +123,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   applicationDataForView: ApplicationList[] = [];
   StagesList: StagesList[] = [];
+  CommentsList: CommentsList[] = [];
 
   CurrentApplicationBeingViewed: ApplicationList[] = [];
 
@@ -161,7 +172,7 @@ export class ViewProjectInfoComponent implements OnInit {
   displayedColumnsDocs: string[] = ['name','actions'];
   dataSourceDoc = Document_DATA;
 
-  constructor(private modalService: NgbModal, private sharedService: SharedService, private userPofileService: UserProfileService, private stagesService: StagesService, private applicationsService: ApplicationsService) { }
+  constructor(private modalService: NgbModal, private sharedService: SharedService, private userPofileService: UserProfileService, private stagesService: StagesService, private applicationsService: ApplicationsService, private commentsService: CommentsService) { }
 
   ngOnInit(): void {
 
@@ -185,10 +196,40 @@ export class ViewProjectInfoComponent implements OnInit {
     this.ARCGISAPIData.createdByID = this.CurrentUser.appUserId;
     this.ARCGISAPIData.isActive = "1";
     /*    this.ARCGISAPIData.applicationID = this.notificationNumber;*/
-
+    this.getAllComments();
     this.getUserProfileByUserID();
     this.getAllStages();
     this.setInterface();
+  }
+
+  getAllComments() {
+    this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempCommentList = {} as CommentsList;
+          const current = data.dateSet[i];
+          debugger;
+          tempCommentList.ApplicationID = current.applicationID;
+          tempCommentList.Comment = current.comment;
+          tempCommentList.CommentID = current.commentID;
+          tempCommentList.CommentStatus = current.commentStatus;
+          tempCommentList.SubDepartmentForCommentID = current.subDepartmentForCommentID;
+ 
+
+          this.CommentsList.push(tempCommentList);
+          // this.sharedService.setStageData(this.StagesList);
+        }
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 
   getAllStages() {

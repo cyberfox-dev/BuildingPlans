@@ -42,6 +42,7 @@ namespace WayleaveManagementSystem.Data
         public DbSet<ServiceItems> ServiceItem { get; set; }
         public DbSet<GLCode> GLCode { get; set; }
         public DbSet<ZoneForComment> ZoneForComment { get; set; }
+        public DbSet<DepositRequired> DepositRequired { get; set; }
 
 
 

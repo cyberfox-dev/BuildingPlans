@@ -48,7 +48,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _commentService.AddUpdateComment(model.CommentID, model.Comment, model.CreatedById);
+                    var result = await _commentService.AddUpdateComment(model.CommentID,model.ApplicationID, model.SubDepartmentForCommentID ,model.Comment, model.CommentStatus ,model.CreatedById);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.CommentID > 0 ? "Comment Updated Successfully" : "Comment Added Successfully"), result));
                 }
 

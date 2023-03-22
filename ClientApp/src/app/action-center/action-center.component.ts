@@ -13,6 +13,10 @@ import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentFor
 import { ZonesService } from '../service/Zones/zones.service';
 import { ZoneForCommentService } from '../service/ZoneForComment/zone-for-comment.service';
 import { ZoneLinkService } from '../service/ZoneLink/zone-link.service';
+import { DepositRequiredService } from '../service/DepositRequired/deposit-required.service';
+import { CommentsService } from '../service/Comments/comments.service';
+
+
 
 export interface SubDepartmentList {
   subDepartmentID: number;
@@ -113,9 +117,11 @@ export class ActionCenterComponent implements OnInit {
   ZoneList: ZoneList[] = [];
   ZoneLinkedList: ZoneList[] = [];
   UserZoneList: UserZoneList[] = [];
+  LinkedUserToSub: UserZoneList[] = [];
 
   selection = new SelectionModel<SubDepartmentList>(true, []);
   zoneSelection = new SelectionModel<ZoneList>(true, []);
+  UserSelectionForManualLink = new SelectionModel<UserZoneList>(true, []);
 
   displayedColumnsSubDepartment: string[] = ['subDepartmentName', 'actions'];
   dataSourceSubDepartment = this.SubDepartmentList;
@@ -128,6 +134,12 @@ export class ActionCenterComponent implements OnInit {
 
   displayedColumnsViewLinkedZones: string[] = ['zoneName', 'actions'];
   dataSourceViewLinkedZones = this.ZoneLinkedList;
+
+  displayedColumnsViewUsersForLink: string[] = ['fullName', 'actions'];
+  dataSourceViewUsersForLink = this.UserZoneList;
+
+  displayedColumnsViewlinkedUserForComment: string[] = ['fullName'];
+  dataSourceViewUserForComment = this.LinkedUserToSub;
 
   @ViewChild(MatTable) SubDepartmentListTable: MatTable<SubDepartmentList> | undefined;
   @ViewChild(MatTable) SubDepartmentLinkedListTable: MatTable<SubDepartmentList> | undefined;
@@ -144,6 +156,7 @@ export class ActionCenterComponent implements OnInit {
   AssignProjectToZone: boolean;
     hopperButton: boolean;
     SubForCommentIDForHopper: any;
+    forManuallyAssignSubForCommentID: any;
   constructor(
     private offcanvasService: NgbOffcanvas,
     private modalService: NgbModal,
@@ -155,7 +168,9 @@ export class ActionCenterComponent implements OnInit {
     private subDepartmentForCommentService: SubDepartmentForCommentService,
     private zoneService: ZonesService,
     private zoneForCommentService: ZoneForCommentService,
-    private zoneLinkService: ZoneLinkService
+    private zoneLinkService: ZoneLinkService,
+    private depositRequiredService: DepositRequiredService,
+    private commentsService: CommentsService,
   ) { }
   openEnd(content: TemplateRef<any>) {
     this.offcanvasService.open(content, { position: 'end' });
@@ -207,6 +222,64 @@ export class ActionCenterComponent implements OnInit {
 
 
 
+  viewSelectedUserForApplication() {
+    this.LinkedUserToSub.splice(0, this.LinkedUserToSub.length);
+    this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        const current = data.dateSet[0];
+
+        this.forManuallyAssignSubForCommentID = current.subDepartmentForCommentID;
+
+        for (var i = 0; i < this.UserZoneList.length; i++) {
+          if (this.UserZoneList[i].id == current.userAssaignedToComment) {
+            const tempUserList = {} as UserZoneList;
+            tempUserList.fullName = this.UserZoneList[i].fullName;
+            tempUserList.id = this.UserZoneList[i].id;
+            tempUserList.zoneLinkID = this.UserZoneList[i].zoneLinkID;
+            this.LinkedUserToSub.push(tempUserList);
+          }
+        }
+
+
+
+      }
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponseGetSubDepartmentForComment", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
+  onManuallyAssignUser() {
+
+
+    if (confirm("Are you sure you what to assign this project to " + this.UserSelectionForManualLink.selected[0].fullName + "?")) {
+      this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.forManuallyAssignSubForCommentID, this.UserSelectionForManualLink.selected[0].id).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          alert(data.responseMessage);
+          this.getLinkedZones();
+        }
+        else {
+          alert(data.responseMessage);
+
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+    }
+  }
+
   onHopperClick() {
     debugger;
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
@@ -257,7 +330,7 @@ export class ActionCenterComponent implements OnInit {
 
   getAllUsersLinkedToZoneByZoneID() {
     debugger;
-   
+    this.UserZoneList.splice(0, this.UserZoneList.length);
     for (var i = 0; i < this.ZoneLinkedList.length; i++) {
 
 
@@ -299,6 +372,172 @@ export class ActionCenterComponent implements OnInit {
     })
     }
 
+  }
+
+  onDepositRequiredClick() {
+
+    let rate = this.depositRequired.controls["rate"].value;
+    let description = this.depositRequired.controls["description"].value;
+    let quantity = this.depositRequired.controls["quantity"].value;
+    //let total = this.depositRequired.controls["total"].value;
+
+
+    this.depositRequiredService.addUpdateDepositRequired(0, this.forManuallyAssignSubForCommentID, Number(rate), this.ApplicationID, description, this.loggedInUsersSubDepartmentID, Number(quantity), this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        alert(data.responseMessage);
+        this.hopperButton = false;
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
+  onComment(interact:any) {
+    switch (interact) {
+
+      case "Approve": {
+        if (this.checked == true) {
+          //SubDepartmentForCommentService
+          this.onDepositRequiredClick(); 
+          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved(Conditional)").subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+
+              alert(data.responseMessage);
+             
+              //commentsService
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId).subscribe((data: any) => {
+
+                if (data.responseCode == 1) {
+
+                  alert(data.responseMessage);
+
+                }
+                else {
+                  alert(data.responseMessage);
+
+                }
+                console.log("reponse", data);
+
+              }, error => {
+                console.log("Error: ", error);
+              })
+
+
+            }
+            else {
+              alert(data.responseMessage);
+
+            }
+            console.log("reponse", data);
+
+          }, error => {
+            console.log("Error: ", error);
+          })
+
+        }
+        else {
+          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved").subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+
+              alert(data.responseMessage);
+              //commentsService
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.leaveAComment, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
+
+                if (data.responseCode == 1) {
+
+                  alert(data.responseMessage);
+
+                }
+                else {
+                  alert(data.responseMessage);
+
+                }
+                console.log("reponse", data);
+
+              }, error => {
+                console.log("Error: ", error);
+              })
+            }
+            else {
+              alert(data.responseMessage);
+
+            }
+            console.log("reponse", data);
+
+          }, error => {
+            console.log("Error: ", error);
+          })
+        }
+
+        break;
+      }
+
+      case "Reject": {
+        this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Rejected").subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+
+            alert(data.responseMessage);
+            //commentsService
+            this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.leaveAComment, "Rejected", this.CurrentUser.appUserId).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+
+                alert(data.responseMessage);
+
+              }
+              else {
+                alert(data.responseMessage);
+
+              }
+              console.log("reponse", data);
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+          }
+          else {
+            alert(data.responseMessage);
+
+          }
+          console.log("reponse", data);
+
+        }, error => {
+          console.log("Error: ", error);
+        })
+
+        break;
+      }
+
+      case "Clarify": {
+        alert("In progress");
+        break;
+      }
+      case "Refer": {
+        alert("In progress");
+
+        break;
+      }
+
+
+
+
+      default: {
+
+        break;
+      }
+    }
   }
 
 
@@ -384,6 +623,7 @@ export class ActionCenterComponent implements OnInit {
   }
   check() {
     this.checked = true;
+    alert("Deposit Saved!");
   }
   panelOpenState = false;
 
@@ -636,6 +876,13 @@ export class ActionCenterComponent implements OnInit {
 
   }
 
+
+  userSelectedForManualLink(user: any) {
+    this.UserSelectionForManualLink.clear();
+    this.UserSelectionForManualLink.toggle(user);
+
+  }
+
   zoneSelectedForLink(zone: any) {
 
     this.zoneSelection.toggle(zone);
@@ -736,6 +983,7 @@ export class ActionCenterComponent implements OnInit {
         
         this.ZoneListTable?.renderRows();
         this.getAllUsersLinkedToZoneByZoneID();
+        this.viewSelectedUserForApplication();
       }
       else {
         alert(data.responseMessage);
