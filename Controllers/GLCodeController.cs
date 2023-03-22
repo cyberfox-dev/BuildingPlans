@@ -94,14 +94,14 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
 
-                if (glCodeID < 3)
+                if (glCodeID < 1)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
                     var result = await _glCodeService.GetGLCodeByID(glCodeID);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "GL Code List Created", result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "GL Code Linked List Created", result));
                 }
 
             }

@@ -98,6 +98,7 @@ namespace WayleaveManagementSystem.Service
                 where GLCode.GLCodeID == glCodeID && GLCode.isActive == true
                 select new GLCodeDTO()
                 {
+                    GLCodeID = GLCode.GLCodeID,
                     GLCodeName = GLCode.GLCodeName,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,

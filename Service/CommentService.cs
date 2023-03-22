@@ -6,6 +6,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel;
 using System;
+using WayleaveManagementSystem.Data.Migrations;
 
 namespace WayleaveManagementSystem.Service
 {
@@ -18,7 +19,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Comments> AddUpdateComment(int? commentID, string commentName, string? creadtedByID)
+        public async Task<Comments> AddUpdateComment(int? commentID, int? applicationID, int? subDepartmentForCommentID, string commentName,string? commentStatus ,string? creadtedByID)
         {
 
             if (commentID == 0)
@@ -35,9 +36,12 @@ namespace WayleaveManagementSystem.Service
                 tempCommentTable = new Comments()
                 {
                     Comment = commentName,
+                    ApplicationID = applicationID,
+                    SubDepartmentForCommentID = subDepartmentForCommentID,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     CreatedById = creadtedByID,
+                    CommentStatus = commentStatus,
                     isActive = true
                 };
 
@@ -96,6 +100,9 @@ namespace WayleaveManagementSystem.Service
                 {
                     CommentID = comment.CommentID,
                     Comment = comment.Comment,
+                    ApplicationID = comment.ApplicationID,
+                    SubDepartmentForCommentID = comment.SubDepartmentForCommentID,
+                    CommentStatus = comment.CommentStatus,
                     DateCreated = comment.DateCreated,
                     DateUpdated = comment.DateUpdated,
                     CreatedById = comment.CreatedById,

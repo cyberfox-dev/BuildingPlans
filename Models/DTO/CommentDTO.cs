@@ -12,7 +12,9 @@ namespace WayleaveManagementSystem.DTO
         public DateTime DateUpdated { get; set; }
 
         public string? CreatedById { get; set; }
-
+        public string? CommentStatus { get; set; }
+        public int? SubDepartmentForCommentID { get; set; }
+        public int? ApplicationID { get; set; }
 
 
     }
