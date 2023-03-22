@@ -99,6 +99,7 @@ namespace WayleaveManagementSystem.Service
                 tempApplicationTable.Location = location;
                 tempApplicationTable.DateUpdated = DateTime.Now;
                 tempApplicationTable.isActive = true;
+                tempApplicationTable.ApplicationStatus = ApplicationStatus;
 
                 _context.Update(tempApplicationTable);
                 await _context.SaveChangesAsync();

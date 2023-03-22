@@ -325,7 +325,7 @@ export class ProjectDetailsMapComponent implements OnInit {
       /*        definitionExpression: "OBJECTID = 1"*/
       /*            definitionExpression: "CRTD_BY_ID = 777"*/
       /*      definitionExpression: "CRTD_BY_ID = '22ee5b58-db0e-4774-8245-bf7b59670e44'",*/
-      definitionExpression: "WLMS_APLC_KEY = '" + this.data.applicationID + "'"
+/*      definitionExpression: "WLMS_APLC_KEY = '" + this.data.applicationID + "'"*/
     });
 
     const elementOne: ElementPropertiesInterface = {

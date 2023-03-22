@@ -586,7 +586,7 @@ export class NewWayleaveComponent implements OnInit {
     /*    this.shared.setCreatedByID(this.CurrentUser.appUserId)*/
   }
 
-onWayleaveCreate(appUserId) {
+  onWayleaveCreate(appUserId) {
 
     //Check if applicationid exists or not.
     this.applicationID = this.shared.getApplicationID();
@@ -595,9 +595,9 @@ onWayleaveCreate(appUserId) {
 
     } else {
       this.applicationID = 0;
+      this.shared.clearContractorData();
+      this.shared.clearEngineerData();
     };
-
-
 
 /*    this.shared.setApplicationID(this.notificationNumber);*/
     this.clientAddress = this.shared.getAddressData();
@@ -609,7 +609,8 @@ onWayleaveCreate(appUserId) {
 
     let previousStageNameIn = "";
     let CurrentStageNameIn = "";
-    let NextStageNameIn = "";
+  let NextStageNameIn = "";
+
 
 
     for (var i = 0; i < this.StagesList.length; i++) {
@@ -753,9 +754,10 @@ onWayleaveCreate(appUserId) {
               });
           }
 
-
-
+          //Clears objects upon application update
           this.shared.setApplicationID(0);
+          this.shared.clearContractorData();
+          this.shared.clearEngineerData();
         }
         else {
           alert(data.responseMessage);
