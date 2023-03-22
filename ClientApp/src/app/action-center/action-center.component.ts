@@ -256,7 +256,7 @@ export class ActionCenterComponent implements OnInit {
 }
 
   getAllUsersLinkedToZoneByZoneID() {
-    debugger;
+   
    
     for (var i = 0; i < this.ZoneLinkedList.length; i++) {
 

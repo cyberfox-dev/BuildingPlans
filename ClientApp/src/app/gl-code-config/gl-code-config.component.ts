@@ -213,15 +213,16 @@ export class GlCodeConfigComponent implements OnInit {
   }
 
   getAllDepartmentsLinked(editGLCode: any, index: any) {
-    this.GLCodeLinkedList.splice(0, this.GLCodeLinkedList.length);
-    console.log(this.glCodeSelected2);
 
+    console.log(this.glCodeSelected2);
+    
     this.glCodeService.getGLCodeByID(this.glCodeSelected2).subscribe((data: any) => {
       
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempGLLinkedCodeList = {} as GLCodeLinkedList;
           const current = data.dateSet[i];
+          console.log("CURRENT", current);
           tempGLLinkedCodeList.glCodeID = current.glCodeID;
           tempGLLinkedCodeList.glCodeName = current.glCodeName;
           tempGLLinkedCodeList.dateCreated = current.dateCreated;
@@ -230,13 +231,13 @@ export class GlCodeConfigComponent implements OnInit {
           tempGLLinkedCodeList.departmentName = current.departmentName;
           console.log(tempGLLinkedCodeList.departmentName);
           
-
-          if (tempGLLinkedCodeList.departmentName != null) {
+          this.hasDepartmentLinked = true;
+/*          if (tempGLLinkedCodeList.departmentName != null) {
             this.hasDepartmentLinked = true;
           }
           else{
             this.hasDepartmentLinked = false;
-          }
+          }*/
 
         }
 
@@ -316,9 +317,10 @@ export class GlCodeConfigComponent implements OnInit {
   departmentSelectedForGLCodelink(depID: any) {
     this.selectionDepartmentGLCodeList.clear();
     this.selectionDepartmentGLCodeList.select(depID);
+    debugger;
     this.departmentID = this.DepartmentList[depID].departmentID;
     this.departmentName = this.DepartmentList[depID].departmentName;
-
+    
     console.log("THIS IS THE DEPARTMENT ID FOR THE RADIO BUTTON", this.departmentID);
   }
 
