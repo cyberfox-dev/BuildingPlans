@@ -744,8 +744,7 @@ export class ActionCenterComponent implements OnInit {
     this.leaveAComment = currnetComment+" "+commentName;
   }
 
-  getAllCommentsByUserID() {From	Subject	Received	Size	
-Kyle Gounden (via Cyberfox)	Moodle updates are available (https://cyberfox.co.za/learn)	Sat 03/18	4 KB	
+getAllCommentsByUserID() {
 
     this.CommentDropDown.splice(0, this.CommentDropDown.length);
 

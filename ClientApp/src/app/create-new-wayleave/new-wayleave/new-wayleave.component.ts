@@ -23,6 +23,7 @@ import { MandatoryDocumentUploadService } from 'src/app/service/MandatoryDocumen
 import { MandatoryDocumentStageLinkService } from '../../service/MandatoryDocumentStageLink/mandatory-document-stage-link.service';
 import { DatePipe } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
+import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentForComment/sub-department-for-comment.service';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable'
 
@@ -315,7 +316,8 @@ export class NewWayleaveComponent implements OnInit {
     private mandatoryUploadDocsService: MandatoryDocumentUploadService,
     private http: HttpClient,
     private mandatoryDocumentStageLink: MandatoryDocumentStageLinkService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private subDepartmentForCommentService: SubDepartmentForCommentService,
   ) { }
 
   ngOnInit(): void {
@@ -586,6 +588,33 @@ export class NewWayleaveComponent implements OnInit {
     /*    this.shared.setCreatedByID(this.CurrentUser.appUserId)*/
   }
 
+  //onLinkDepartmentForComment() {
+
+
+  //  for (var i = 0; i < selectDepartments.length; i++) {
+  //    this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.applicationID, selectDepartments[i].subDepartmentID, selectDepartments[i].subDepartmentName, null, null, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+  //      if (data.responseCode == 1) {
+
+  //        alert(data.dateSet.subDepartmentName + " assigned to this Application");
+
+  //      }
+  //      else {
+
+  //        alert(data.responseMessage);
+  //      }
+  //      console.log("reponseAddUpdateDepartmentForComment", data);
+
+
+  //    }, error => {
+  //      console.log("Error: ", error);
+  //    })
+  //  }
+
+
+
+  //}
+
   onWayleaveCreate(appUserId) {
 
     //Check if applicationid exists or not.
@@ -629,7 +658,7 @@ export class NewWayleaveComponent implements OnInit {
     }
 
     if (this.client) {
-      this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId,previousStageName,0,CurrentStageName,1,NextStageName,2,"Unpaided").subscribe((data: any) => {
+      this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId,previousStageName,0,CurrentStageName,1,NextStageName,2,"Unpaid").subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           alert(data.responseMessage);
@@ -780,7 +809,7 @@ export class NewWayleaveComponent implements OnInit {
       //This is also reached to create a blank application.
 
 
-      this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, this.externalAddress, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaided").subscribe((data: any) => {
+      this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, this.externalAddress, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid").subscribe((data: any) => {
         
         if (data.responseCode == 1) {
 /*          alert(data.responseMessage);*/

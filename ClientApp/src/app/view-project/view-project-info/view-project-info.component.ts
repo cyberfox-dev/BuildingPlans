@@ -400,7 +400,7 @@ export class ViewProjectInfoComponent implements OnInit {
     ;
     //alert("ChangeApplicationStatusToPaid");
 
-    if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Unpaided") {
+    if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Unpaid") {
       this.applicationsService.updateApplicationStage(this.CurrentApplicationBeingViewed[0].applicationID, this.CurrentApplicationBeingViewed[0].PreviousStageName, this.CurrentApplicationBeingViewed[0].PreviousStageNumber, this.CurrentApplicationBeingViewed[0].CurrentStageName, this.CurrentApplicationBeingViewed[0].CurrentStageNumber, this.CurrentApplicationBeingViewed[0].NextStageName, this.CurrentApplicationBeingViewed[0].NextStageNumber, "Paid").subscribe((data: any) => {
 
         if (data.responseCode == 1) {
@@ -417,7 +417,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     }
     else {
-      alert("Application Status Is Not Unpaided");
+      alert("Application Status Is Not Unpaid");
     }
 
 

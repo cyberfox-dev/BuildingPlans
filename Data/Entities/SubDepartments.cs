@@ -13,6 +13,7 @@ namespace WayleaveManagementSystem.Data.Entities
         public string? SubDepartmentAdminUserID { get; set; }
 
         public int? DepartmentID { get; set; }
+        public bool? isSetForAutomaticDistribution { get; set; }
 
 
     }
