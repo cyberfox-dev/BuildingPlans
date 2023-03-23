@@ -1,5 +1,6 @@
 ﻿using WayleaveManagementSystem.Data.Entities;
 using WayleaveManagementSystem.DTO;
+using WayleaveManagementSystem.Models.DTO;
 
 namespace WayleaveManagementSystem.IServices
 {
@@ -14,5 +15,6 @@ namespace WayleaveManagementSystem.IServices
         Task<List<ProfessionalsDTO>> GetAllProfessionals(string userId);
 
         Task<List<ProfessionalsDTO>> GetProfessionalsListByProfessionalType(string userId, string professinalType);
+        Task<List<ProfessionalsDTO>> GetAllProfessionalsLinkByApplicationID(int? applicationID, string? professinalType);
     }
 }

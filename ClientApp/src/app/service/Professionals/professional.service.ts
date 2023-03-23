@@ -57,6 +57,17 @@ export class ProfessionalService {
 
   }
 
+  public getAllProfessionalsLinkByApplicationID(applicationID: number, professionalType: string) {
+
+    const body = {
+      ApplicationID: applicationID,
+      ProfessinalType: professionalType,
+    }
+
+    return this.httpClient.post(this.baseURL + "GetAllProfessionalsLinkByApplicationID",body);
+
+  }
+
 
   
 

@@ -5,6 +5,7 @@ using WayleaveManagementSystem.IServices;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel;
+using WayleaveManagementSystem.Models.DTO;
 
 namespace WayleaveManagementSystem.Service
 {
@@ -149,5 +150,36 @@ namespace WayleaveManagementSystem.Service
                 }
                 ).ToListAsync();
         }
+
+
+        /*THIS IS FOR GETTING THE ENGINEERS AND CONTRACTORS BY APPLICATION ID*/
+
+        public async Task<List<ProfessionalsDTO>> GetAllProfessionalsLinkByApplicationID(int? applicationID,string? professinalType)
+        {
+            return await (
+                from professional in _context.ProfessionalsTable
+                join ProfessionalsLinks in _context.ProfessionalsLink
+                   on professional.ProfessinalID equals ProfessionalsLinks.ProfessionalID
+                where professional.isActive == true && ProfessionalsLinks.ApplicationID == applicationID && professional.ProfessinalType == professinalType
+                select new ProfessionalsDTO()
+                {
+                    ProfessinalID = professional.ProfessinalID,
+                    ProfessinalType = professional.ProfessinalType,
+                    FullName = professional.FullName,
+                    BP_Number = professional.BP_Number,
+                    BpVerified = professional.BpVerified,
+                    Email = professional.Email,
+                    ProfessionalRegNo = professional.ProfessionalRegNo,
+                    AppUserID = professional.AppUserID,
+                    IdNumber = professional.IdNumber,
+                    CIBRating = professional.CIBRating,
+                    DateCreated = professional.DateCreated,
+                    DateUpdated = professional.DateUpdated,
+                    CreatedById = professional.CreatedById,
+                    PhoneNumber = professional.PhoneNumber,
+                }
+                ).ToListAsync();
+        }
+
     }
 }

@@ -129,5 +129,32 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+
+        [HttpPost("GetAllProfessionalsLinkByApplicationID")]
+        public async Task<object> GetAllProfessionalsLinkByApplicationID([FromBody] ProfessinalsGetByUserProfTypeBindingModel model)
+        {
+            try
+            {
+
+                if (model.ApplicationID < 1)
+                {
+                   
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _professionalsService.GetAllProfessionalsLinkByApplicationID(model.ApplicationID, model.ProfessinalType);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All linked Professionals", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
     }
 }

@@ -31,4 +31,5 @@ export class ProfessionalsLinksService {
     return this.httpClient.get(this.baseURL + "GetAllProfessionalsLink");
 
   }
+
 }

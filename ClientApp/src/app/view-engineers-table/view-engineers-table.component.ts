@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatTable, MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProfessionalsLinksService } from 'src/app/service/ProfessionalsLinks/professionals-links.service';
@@ -15,7 +15,7 @@ export interface PeriodicElement {
 
 }
 
-export interface ProfessionalsLinkslist {
+export interface ProfessionalsList {
 
   professinalID: number;
   ProfessinalType: string;
@@ -29,11 +29,6 @@ export interface ProfessionalsLinkslist {
 
 }
 
-const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, name: 'jj', weight: 1.0079, symbol: 'H', cell: 526205658, email: 'jjjj@gmail.com' },
-
-];
-
 
 
 @Component({
@@ -44,23 +39,59 @@ const ELEMENT_DATA: PeriodicElement[] = [
 
 
 export class ViewEngineersTableComponent implements OnInit {
+  ProfessionalsList: ProfessionalsList[] = [];
 
-  ProfessionalsLinksService: ProfessionalsLinksService[] = [];
+  @Input() ApplicationID: any;
+  professionalsType = "Engineer";
 
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'cell', 'email', 'actions'];
-  dataSource = ELEMENT_DATA;
+  displayedColumns: string[] = ['ProfessinalType', 'bpNumber', 'name', 'surname', 'professionalRegNo', 'phoneNumber', 'email', 'actions'];
+  dataSource = this.ProfessionalsList;
 
 
-
-  constructor(private professionalService: ProfessionalService, private professionalsLinksService: ProfessionalsLinksService,) { }
+  @ViewChild(MatTable) EngineersTable: MatTable<ProfessionalsList> | undefined;
+  constructor(private professionalService: ProfessionalService) { }
 
   ngOnInit(): void {
+    this.getAllProfessionalsLinkedToApplication();
   }
 
-  getAllEngineersApplicationID() {
+  getAllProfessionalsLinkedToApplication() {
 
-    this.ProfessionalsLinksService.splice(0, this.ProfessionalsLinksService.length);
+/*    this.ProfessionalsList.splice(0, this.ProfessionalsList.length);*/
+    console.log("THIS IS THE APPLICATION ID", this.ApplicationID + "" + this.professionalsType);
+    this.professionalService.getAllProfessionalsLinkByApplicationID(this.ApplicationID, this.professionalsType).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempProfessionalsList = {} as ProfessionalsList;
+          const current = data.dateSet[i];
+          tempProfessionalsList.bpNumber = current.bP_Number;
+          tempProfessionalsList.email = current.email;
+          tempProfessionalsList.idNumber = current.idNumber;
+          tempProfessionalsList.name = current.fullName.substring(0, current.fullName.indexOf(' '));;
+          tempProfessionalsList.surname = current.fullName.substring(current.fullName.indexOf(' ') + 1);
+          tempProfessionalsList.phoneNumber = current.phoneNumber;
+          tempProfessionalsList.ProfessinalType = current.professinalType;
+          tempProfessionalsList.professionalRegNo = current.professionalRegNo;
+          tempProfessionalsList.professinalID = current.professinalID;
+          this.ProfessionalsList.push(tempProfessionalsList);
+        }
+        this.EngineersTable?.renderRows();
+        console.log("GOT ALL ENGINEERS FOR APPLICATION", this.ProfessionalsList);
+
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("response", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
 
   }
+
 
 }

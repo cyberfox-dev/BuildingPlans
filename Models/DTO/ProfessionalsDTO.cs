@@ -47,6 +47,9 @@ namespace WayleaveManagementSystem.DTO
         public string? IdNumber { get; set; }
 
         public string? CIBRating { get; set; }
+        public int ApplicationID { get; set; }
+
+
 
     }
 
