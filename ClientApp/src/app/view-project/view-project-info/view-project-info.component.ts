@@ -5,6 +5,9 @@ import { UserProfileService } from 'src/app/service/UserProfile/user-profile.ser
 import { StagesService } from '../../service/Stages/stages.service';
 import { ApplicationsService } from '../../service/Applications/applications.service';
 import { CommentsService } from '../../service/Comments/comments.service';
+import { DepositRequiredService } from 'src/app/service/DepositRequired/deposit-required.service';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 export interface ARCGISAPIData {
   createdByID: string;
@@ -75,6 +78,18 @@ export interface Documents {
 
 }
 
+
+export interface DepositRequired {
+  DepositRequiredID: number;
+  ApplicationID: number;
+  Desciption: string;
+  SubDepartmentID: number;
+  SubDepartmentForCommentID: number;
+  Rate: number;
+  Quantity: number;
+
+}
+
 const Document_DATA: Documents[] = [
   { name: 'doc1' },
   { name: 'doc2'  },
@@ -126,6 +141,7 @@ export class ViewProjectInfoComponent implements OnInit {
   CommentsList: CommentsList[] = [];
 
   CurrentApplicationBeingViewed: ApplicationList[] = [];
+  DepositRequiredList: DepositRequired[] = [];
 
   ApplicationID: number | undefined;
 
@@ -172,7 +188,15 @@ export class ViewProjectInfoComponent implements OnInit {
   displayedColumnsDocs: string[] = ['name','actions'];
   dataSourceDoc = Document_DATA;
 
-  constructor(private modalService: NgbModal, private sharedService: SharedService, private userPofileService: UserProfileService, private stagesService: StagesService, private applicationsService: ApplicationsService, private commentsService: CommentsService) { }
+  constructor(private modalService: NgbModal,
+    private sharedService: SharedService,
+    private userPofileService: UserProfileService,
+    private stagesService: StagesService,
+    private applicationsService: ApplicationsService,
+    private commentsService: CommentsService,
+    private depositRequiredService: DepositRequiredService,
+
+  ) { }
 
   ngOnInit(): void {
 
@@ -200,6 +224,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getUserProfileByUserID();
     this.getAllStages();
     this.setInterface();
+    this.getAllRequiredDeposits();
   }
 
   getAllComments() {
@@ -263,6 +288,45 @@ export class ViewProjectInfoComponent implements OnInit {
     })
   }
 
+  getAllRequiredDeposits() {
+
+    this.depositRequiredService.getDepositRequiredByApplicationID(this.ApplicationID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempDepositRequired = {} as DepositRequired;
+          const current = data.dateSet[i];
+          tempDepositRequired.ApplicationID = current.applicationID;
+          tempDepositRequired.DepositRequiredID = current.depositRequiredID;
+          tempDepositRequired.Desciption = current.desciption;
+          tempDepositRequired.Quantity = current.quantity;
+          tempDepositRequired.Rate = current.rate;
+          tempDepositRequired.SubDepartmentForCommentID = current.subDepartmentForCommentID;
+          tempDepositRequired.SubDepartmentID = current.subDepartmentID;
+
+
+          this.DepositRequiredList.push(tempDepositRequired);
+
+        }
+
+        console.log(" this.DepositRequiredList this.DepositRequiredList this.DepositRequiredList this.DepositRequiredList", this.DepositRequiredList);
+      
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  genarateConsolidatedDepositInvoice() {
+
+  }
 
   getUserProfileByUserID() {
    
