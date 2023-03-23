@@ -329,7 +329,7 @@ export class ActionCenterComponent implements OnInit {
 }
 
   getAllUsersLinkedToZoneByZoneID() {
-    debugger;
+    
     this.UserZoneList.splice(0, this.UserZoneList.length);
     for (var i = 0; i < this.ZoneLinkedList.length; i++) {
 

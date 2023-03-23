@@ -1,22 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { MatTable, MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ProfessionalsLinksService } from 'src/app/service/ProfessionalsLinks/professionals-links.service';
+import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
 
 
-export interface PeriodicElement {
+export interface ProfessionalsList {
+
+  professinalID: number;
+  ProfessinalType: string;
+  professionalRegNo: string;
+  bpNumber: string;
   name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-  rating: number;
-  cell: number;
+  surname: string;
   email: string;
+  phoneNumber: string;
+  idNumber?: string;
+
 }
 
-const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, name: 'jj', weight: 1.0079, symbol: 'H', rating: 5, cell: 526205658, email: 'jjjj@gmail.com' },
-  { position: 2, name: 'jjs', weight: 4.0026, symbol: 'He', rating: 5, cell: 526205658, email: 'jjjj@gmail.com' },
 
-
-];
 
 @Component({
   selector: 'app-view-contractors-table',
@@ -24,11 +27,59 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrls: ['./view-contractors-table.component.css']
 })
 export class ViewContractorsTableComponent implements OnInit {
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'rating', 'cell' , 'email','actions'];
-  dataSource = ELEMENT_DATA;
-  constructor() { }
+
+  ProfessionalsList: ProfessionalsList[] = [];
+
+  @Input() ApplicationID: any;
+  professionalsType = "Contractor";
+
+  displayedColumns: string[] = ['ProfessinalType', 'bpNumber', 'name', 'surname', 'professionalRegNo', 'phoneNumber', 'email', 'actions'];
+  dataSource = this.ProfessionalsList;
+
+  @ViewChild(MatTable) ContractorsTable: MatTable<ProfessionalsList> | undefined;
+
+  constructor(private professionalService: ProfessionalService) { }
 
   ngOnInit(): void {
+    this.getAllProfessionalsLinkedToApplication();
+  }
+
+  getAllProfessionalsLinkedToApplication() {
+
+    /*    this.ProfessionalsList.splice(0, this.ProfessionalsList.length);*/
+    console.log("THIS IS THE APPLICATION ID", this.ApplicationID + "" + this.professionalsType);
+    this.professionalService.getAllProfessionalsLinkByApplicationID(this.ApplicationID, this.professionalsType).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempProfessionalsList = {} as ProfessionalsList;
+          const current = data.dateSet[i];
+          tempProfessionalsList.bpNumber = current.bP_Number;
+          tempProfessionalsList.email = current.email;
+          tempProfessionalsList.idNumber = current.idNumber;
+          tempProfessionalsList.name = current.fullName.substring(0, current.fullName.indexOf(' '));;
+          tempProfessionalsList.surname = current.fullName.substring(current.fullName.indexOf(' ') + 1);
+          tempProfessionalsList.phoneNumber = current.phoneNumber;
+          tempProfessionalsList.ProfessinalType = current.professinalType;
+          tempProfessionalsList.professionalRegNo = current.professionalRegNo;
+          tempProfessionalsList.professinalID = current.professinalID;
+          this.ProfessionalsList.push(tempProfessionalsList);
+        }
+        this.ContractorsTable?.renderRows();
+        console.log("GOT ALL CONTRACTORS FOR APPLICATION", this.ProfessionalsList);
+
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("response", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
   }
 
 }

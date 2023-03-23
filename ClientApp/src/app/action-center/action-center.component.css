@@ -49,6 +49,12 @@ table {
 }
 ::ng-deep.mat-menu-panel {
   max-width: none !important;
+  word-wrap: normal;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  /* align-content: stretch; */
+  /* flex-flow: column; */
 }
 .cont4 {
   display: flex;

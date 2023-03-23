@@ -13,5 +13,6 @@ namespace WayleaveManagementSystem.IServices
         public Task<bool> DeleteProfessionalsLink(int professionalsLinkID);
 
         Task<List<ProfessionalsLinksDTO>> GetAllProfessionalsLink(string userId);
+
     }
 }

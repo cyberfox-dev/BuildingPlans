@@ -409,7 +409,7 @@ MoveToNextStage()
       <div class="container-fluid">
 
         <!--  <app-new-egineer></app-new-egineer>-->
-        <app-view-engineers-table></app-view-engineers-table>
+        <app-view-engineers-table [ApplicationID]="ApplicationID" ></app-view-engineers-table>
 
 
       </div>
@@ -431,7 +431,7 @@ MoveToNextStage()
 
         <!--     <app-new-contractor></app-new-contractor>-->
 
-        <app-view-contractors-table></app-view-contractors-table>
+        <app-view-contractors-table [ApplicationID]="ApplicationID"></app-view-contractors-table>
       </div>
 
     </mat-tab>
