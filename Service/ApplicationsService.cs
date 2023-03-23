@@ -99,6 +99,15 @@ namespace WayleaveManagementSystem.Service
                 tempApplicationTable.Location = location;
                 tempApplicationTable.DateUpdated = DateTime.Now;
                 tempApplicationTable.isActive = true;
+                tempApplicationTable.ApplicationStatus = ApplicationStatus;
+                tempApplicationTable.PreviousStageName = PreviousStageName;
+                tempApplicationTable.PreviousStageNumber = PreviousStageNumber;
+                tempApplicationTable.CurrentStageName = CurrentStageName;
+                tempApplicationTable.CurrentStageNumber = CurrentStageNumber;
+                tempApplicationTable.CurrentStageStartDate = DateTime.Now;
+                tempApplicationTable.NextStageName = NextStageName;
+                tempApplicationTable.NextStageNumber = NextStageNumber;
+
 
                 _context.Update(tempApplicationTable);
                 await _context.SaveChangesAsync();

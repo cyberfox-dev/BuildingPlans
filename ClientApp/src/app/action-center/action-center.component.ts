@@ -210,7 +210,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   setRoles() {
-
+    debugger;
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.loggedInUsersIsAdmin == true) {
         this.AssignProjectToZone = true;
@@ -223,6 +223,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   viewSelectedUserForApplication() {
+    debugger;
     this.LinkedUserToSub.splice(0, this.LinkedUserToSub.length);
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
       if (data.responseCode == 1) {
@@ -542,6 +543,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   getAllUsersLinkedToZone(SubDepartmentID: any) {
+    debugger;
     this.ZoneList.splice(0, this.ZoneList.length);
   
     this.zoneService.getZonesBySubDepartmentsID(SubDepartmentID).subscribe((data: any) => {
@@ -629,7 +631,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   getAllSubDepartments() {
-
+    debugger;
     this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
     this.SubDepartmentLinkedList.splice(0, this.SubDepartmentLinkedList.length);
 
@@ -742,7 +744,8 @@ export class ActionCenterComponent implements OnInit {
     this.leaveAComment = currnetComment+" "+commentName;
   }
 
-  getAllCommentsByUserID() {
+  getAllCommentsByUserID() {From	Subject	Received	Size	
+Kyle Gounden (via Cyberfox)	Moodle updates are available (https://cyberfox.co.za/learn)	Sat 03/18	4 KB	
 
     this.CommentDropDown.splice(0, this.CommentDropDown.length);
 

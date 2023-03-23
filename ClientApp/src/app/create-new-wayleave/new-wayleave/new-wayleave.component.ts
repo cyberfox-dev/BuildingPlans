@@ -586,7 +586,7 @@ export class NewWayleaveComponent implements OnInit {
     /*    this.shared.setCreatedByID(this.CurrentUser.appUserId)*/
   }
 
-onWayleaveCreate(appUserId) {
+  onWayleaveCreate(appUserId) {
 
     //Check if applicationid exists or not.
     this.applicationID = this.shared.getApplicationID();
@@ -595,9 +595,9 @@ onWayleaveCreate(appUserId) {
 
     } else {
       this.applicationID = 0;
+      this.shared.clearContractorData();
+      this.shared.clearEngineerData();
     };
-
-
 
 /*    this.shared.setApplicationID(this.notificationNumber);*/
     this.clientAddress = this.shared.getAddressData();
@@ -609,7 +609,8 @@ onWayleaveCreate(appUserId) {
 
     let previousStageNameIn = "";
     let CurrentStageNameIn = "";
-    let NextStageNameIn = "";
+  let NextStageNameIn = "";
+
 
 
     for (var i = 0; i < this.StagesList.length; i++) {
@@ -714,7 +715,7 @@ onWayleaveCreate(appUserId) {
               this.addProfessionalsLinks(this.applicationID, contractorData[i].professinalID);
             };
           } else {
-            alert("This Application have no contractors linked");
+          //  alert("This Application have no contractors linked");
           }
 
 
@@ -725,7 +726,7 @@ onWayleaveCreate(appUserId) {
             };
           }
           else {
-            alert("This Application have no engineers linked");
+          //  alert("This Application have no engineers linked");
           }
 
           //Pulling information from the share
@@ -753,12 +754,13 @@ onWayleaveCreate(appUserId) {
               });
           }
 
-
-
+          //Clears objects upon application update
           this.shared.setApplicationID(0);
+          this.shared.clearContractorData();
+          this.shared.clearEngineerData();
         }
         else {
-          alert(data.responseMessage);
+/*          alert(data.responseMessage);*/
         }
         console.log("responseAddapplication", data);
 
@@ -781,7 +783,7 @@ onWayleaveCreate(appUserId) {
       this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, this.externalAddress, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaided").subscribe((data: any) => {
         
         if (data.responseCode == 1) {
-          alert(data.responseMessage);
+/*          alert(data.responseMessage);*/
           this.shared.setApplicationID(data.dateSet.applicationID);
           this.ARCGISAPIData.applicationID = data.dateSet.applicationID;
 
@@ -807,7 +809,7 @@ onWayleaveCreate(appUserId) {
 
         }
         else {
-          alert(data.responseMessage);
+/*          alert(data.responseMessage);*/
         }
         console.log("responseAddapplication", data);
 
@@ -991,7 +993,7 @@ onWayleaveCreate(appUserId) {
     this.professionalsLinksService.addUpdateProfessionalsLink(0, applicationID, professionalID, this.ARCGISAPIData.createdByID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        alert(data.responseMessage);
+/*        alert(data.responseMessage);*/
       }
       else {
         /*        alert(data.responseMessage);*/

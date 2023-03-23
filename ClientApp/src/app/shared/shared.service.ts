@@ -147,6 +147,14 @@ export class SharedService {
     return this.engineerData;
   }
 
+  clearEngineerData() {
+    this.engineerData.splice(0, this.engineerData.length);
+  }
+
+  clearContractorData() {
+    this.contactorData.splice(0, this.contactorData.length);
+  }
+
   setApplicationData(data: ApplicationList[]) {
     
     this.applicationData = data;
