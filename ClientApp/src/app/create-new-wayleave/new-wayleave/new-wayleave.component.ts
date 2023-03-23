@@ -715,7 +715,7 @@ export class NewWayleaveComponent implements OnInit {
               this.addProfessionalsLinks(this.applicationID, contractorData[i].professinalID);
             };
           } else {
-            alert("This Application have no contractors linked");
+          //  alert("This Application have no contractors linked");
           }
 
 
@@ -726,7 +726,7 @@ export class NewWayleaveComponent implements OnInit {
             };
           }
           else {
-            alert("This Application have no engineers linked");
+          //  alert("This Application have no engineers linked");
           }
 
           //Pulling information from the share
@@ -760,7 +760,7 @@ export class NewWayleaveComponent implements OnInit {
           this.shared.clearEngineerData();
         }
         else {
-          alert(data.responseMessage);
+/*          alert(data.responseMessage);*/
         }
         console.log("responseAddapplication", data);
 
@@ -783,7 +783,7 @@ export class NewWayleaveComponent implements OnInit {
       this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, this.externalAddress, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaided").subscribe((data: any) => {
         
         if (data.responseCode == 1) {
-          alert(data.responseMessage);
+/*          alert(data.responseMessage);*/
           this.shared.setApplicationID(data.dateSet.applicationID);
           this.ARCGISAPIData.applicationID = data.dateSet.applicationID;
 
@@ -809,7 +809,7 @@ export class NewWayleaveComponent implements OnInit {
 
         }
         else {
-          alert(data.responseMessage);
+/*          alert(data.responseMessage);*/
         }
         console.log("responseAddapplication", data);
 
@@ -993,7 +993,7 @@ export class NewWayleaveComponent implements OnInit {
     this.professionalsLinksService.addUpdateProfessionalsLink(0, applicationID, professionalID, this.ARCGISAPIData.createdByID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        alert(data.responseMessage);
+/*        alert(data.responseMessage);*/
       }
       else {
         /*        alert(data.responseMessage);*/
