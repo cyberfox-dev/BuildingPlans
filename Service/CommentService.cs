@@ -19,7 +19,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Comments> AddUpdateComment(int? commentID, int? applicationID, int? subDepartmentForCommentID, string commentName,string? commentStatus ,string? creadtedByID)
+        public async Task<Comments> AddUpdateComment(int? commentID, int? applicationID, int? subDepartmentForCommentID,int? subDepartmentID , string? subDepartmentName , string commentName,string? commentStatus ,string? creadtedByID)
         {
 
             if (commentID == 0)
@@ -42,6 +42,8 @@ namespace WayleaveManagementSystem.Service
                     DateUpdated = DateTime.Now,
                     CreatedById = creadtedByID,
                     CommentStatus = commentStatus,
+                    SubDepartmentID = subDepartmentID,
+                    SubDepartmentName = subDepartmentName,
                     isActive = true
                 };
 
@@ -106,6 +108,8 @@ namespace WayleaveManagementSystem.Service
                     DateCreated = comment.DateCreated,
                     DateUpdated = comment.DateUpdated,
                     CreatedById = comment.CreatedById,
+                    SubDepartmentID = comment.SubDepartmentID,
+                    SubDepartmentName = comment.SubDepartmentName,
 
                 }
                 ).ToListAsync();

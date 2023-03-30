@@ -337,7 +337,7 @@ export class NewWayleaveComponent implements OnInit {
     private mandatoryDocumentStageLink: MandatoryDocumentStageLinkService,
     private sanitizer: DomSanitizer,
     private subDepartmentForCommentService: SubDepartmentForCommentService,
-    private notificationsService: NotificationsService
+    private notificationsService: NotificationsService,
     private subDepartmentsService: SubDepartmentsService,
   ) { }
 

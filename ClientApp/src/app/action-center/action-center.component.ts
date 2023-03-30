@@ -465,7 +465,15 @@ export class ActionCenterComponent implements OnInit {
 
   }
 
-  onComment(interact:any) {
+  onComment(interact: any) {
+    let SubDepartmentName = "";
+    for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
+      if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
+        SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
+      }
+    }
+    //console.log("SubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentName", SubDepartmentName);
+
     switch (interact) {
 
       case "Approve": {
@@ -479,7 +487,7 @@ export class ActionCenterComponent implements OnInit {
               alert(data.responseMessage);
              
               //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId).subscribe((data: any) => {
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName ,this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
 
@@ -516,7 +524,7 @@ export class ActionCenterComponent implements OnInit {
 
               alert(data.responseMessage);
               //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.leaveAComment, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
 
@@ -554,7 +562,7 @@ export class ActionCenterComponent implements OnInit {
 
             alert(data.responseMessage);
             //commentsService
-            this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.leaveAComment, "Rejected", this.CurrentUser.appUserId).subscribe((data: any) => {
+            this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Rejected", this.CurrentUser.appUserId).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
 
