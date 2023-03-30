@@ -8,18 +8,18 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
+          /*  migrationBuilder.AddColumn<string>(
                 name: "CommentStatus",
                 table: "Comments",
                 type: "nvarchar(max)",
-                nullable: true);
+                nullable: true);*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+           /* migrationBuilder.DropColumn(
                 name: "CommentStatus",
-                table: "Comments");
+                table: "Comments");*/
         }
     }
 }

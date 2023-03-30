@@ -8,7 +8,7 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+           /* migrationBuilder.DropColumn(
                 name: "StageID",
                 table: "MandatoryDocumentUploads");
 
@@ -24,12 +24,12 @@ namespace WayleaveManagementSystem.Data.Migrations
                 table: "Application",
                 type: "bit",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: false);*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+           /* migrationBuilder.DropColumn(
                 name: "isDrafted",
                 table: "ApplicationListDTO");
 
@@ -41,7 +41,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                 name: "StageID",
                 table: "MandatoryDocumentUploads",
                 type: "int",
-                nullable: true);
+                nullable: true);*/
         }
     }
 }

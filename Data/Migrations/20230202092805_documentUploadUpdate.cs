@@ -9,7 +9,7 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+           /* migrationBuilder.DropColumn(
                 name: "DocumentData",
                 table: "DocumentUpload");
 
@@ -17,12 +17,12 @@ namespace WayleaveManagementSystem.Data.Migrations
                 name: "DocumentLocalPath",
                 table: "DocumentUpload",
                 type: "nvarchar(max)",
-                nullable: true);
+                nullable: true);*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+           /* migrationBuilder.DropColumn(
                 name: "DocumentLocalPath",
                 table: "DocumentUpload");
 
@@ -30,7 +30,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                 name: "DocumentData",
                 table: "DocumentUpload",
                 type: "varbinary(max)",
-                nullable: true);
+                nullable: true);*/
         }
     }
 }

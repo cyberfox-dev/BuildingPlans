@@ -9,7 +9,7 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+           /* migrationBuilder.CreateTable(
                 name: "MandatoryDocumentStageLink",
                 columns: table => new
                 {
@@ -46,16 +46,16 @@ namespace WayleaveManagementSystem.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ServiceItem", x => x.ServiceItemID);
-                });
+                });*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+           /* migrationBuilder.DropTable(
                 name: "MandatoryDocumentStageLink");
 
             migrationBuilder.DropTable(
-                name: "ServiceItem");
+                name: "ServiceItem");*/
         }
     }
 }

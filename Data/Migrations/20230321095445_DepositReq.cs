@@ -9,7 +9,7 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+           /* migrationBuilder.CreateTable(
                 name: "DepositRequired",
                 columns: table => new
                 {
@@ -29,13 +29,13 @@ namespace WayleaveManagementSystem.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DepositRequired", x => x.DepositRequiredID);
-                });
+                });*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "DepositRequired");
+           /* migrationBuilder.DropTable(
+                name: "DepositRequired");*/
         }
     }
 }

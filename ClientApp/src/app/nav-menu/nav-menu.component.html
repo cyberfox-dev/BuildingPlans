@@ -115,7 +115,7 @@
 
           <!--notifications-->
 
-          <button mat-button matTooltip="Notifications" ><i class="fa fa-bell"></i> <span class="indicator"></span></button>
+          <button mat-button matTooltip="Notifications" (click)="getAllNotifications();openNotificationsModal(notificationsCenter)" ><i class="fa fa-bell"></i> <span *ngIf="notiBell" class="indicator"></span></button>
 
 
 
@@ -144,5 +144,24 @@
     </nav>
   </div>
 </div>
+
+<!--the notifications section-->
+<ng-template #notificationsCenter let-modal>
+  <div class="modal-header">
+    <h1 class="modal-title" id="modal-basic-title">Notifications</h1>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+        <div class="row1-container" *ngFor="let notificationsList of NotificationsList">
+          <div class="box box-down blue">
+            <div class="cont2">
+            <h3>{{notificationsList.NotificationName}}</h3>
+            <h4>{{notificationsList.ApplicationID}}</h4>
+              </div>
+              <p>{{notificationsList.NotificationDescription}} on {{notificationsList.DateCreated}}</p>
+          </div>
+        </div>
+  </div>
+</ng-template>
 
 

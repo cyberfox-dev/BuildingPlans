@@ -9,7 +9,7 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
+           /* migrationBuilder.AddColumn<string>(
                 name: "ApplicationStatus",
                 table: "Application",
                 type: "nvarchar(max)",
@@ -55,12 +55,12 @@ namespace WayleaveManagementSystem.Data.Migrations
                 name: "PreviousStageNumber",
                 table: "Application",
                 type: "nvarchar(max)",
-                nullable: true);
+                nullable: true);*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+           /* migrationBuilder.DropColumn(
                 name: "ApplicationStatus",
                 table: "Application");
 
@@ -90,7 +90,7 @@ namespace WayleaveManagementSystem.Data.Migrations
 
             migrationBuilder.DropColumn(
                 name: "PreviousStageNumber",
-                table: "Application");
+                table: "Application");*/
         }
     }
 }

@@ -8,7 +8,7 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<int>(
+            /*migrationBuilder.AlterColumn<int>(
                 name: "PreviousStageNumber",
                 table: "Application",
                 type: "int",
@@ -24,12 +24,12 @@ namespace WayleaveManagementSystem.Data.Migrations
                 nullable: true,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(max)",
-                oldNullable: true);
+                oldNullable: true);*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<string>(
+           /* migrationBuilder.AlterColumn<string>(
                 name: "PreviousStageNumber",
                 table: "Application",
                 type: "nvarchar(max)",
@@ -45,7 +45,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                 nullable: true,
                 oldClrType: typeof(int),
                 oldType: "int",
-                oldNullable: true);
+                oldNullable: true);*/
         }
     }
 }

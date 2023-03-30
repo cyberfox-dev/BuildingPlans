@@ -9,7 +9,7 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<string>(
+          /*  migrationBuilder.AlterColumn<string>(
                 name: "CopyOfID",
                 table: "UserProfilesTable",
                 type: "nvarchar(max)",
@@ -42,12 +42,12 @@ namespace WayleaveManagementSystem.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DocumentUpload", x => x.DocumentID);
-                });
+                });*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+           /* migrationBuilder.DropTable(
                 name: "DocumentUpload");
 
             migrationBuilder.DropColumn(
@@ -61,7 +61,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                 nullable: true,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(max)",
-                oldNullable: true);
+                oldNullable: true);*/
         }
     }
 }

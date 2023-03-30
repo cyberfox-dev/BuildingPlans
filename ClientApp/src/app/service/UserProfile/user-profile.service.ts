@@ -73,6 +73,12 @@ export class UserProfileService {
 
   }
 
+  public getAllDepartmentAdmins() {
+
+    return this.httpClient.get(this.baseURL + "GetAllDepartmentAdmins");
+
+  }
+
 
 
 

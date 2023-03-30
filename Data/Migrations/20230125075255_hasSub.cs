@@ -9,7 +9,7 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
+           /* migrationBuilder.AddColumn<string>(
                 name: "VatNumber",
                 table: "UserProfilesTable",
                 type: "nvarchar(max)",
@@ -74,12 +74,12 @@ namespace WayleaveManagementSystem.Data.Migrations
                 name: "PreviousStageNumber",
                 table: "ApplicationListDTO",
                 type: "int",
-                nullable: true);
+                nullable: true);*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+            /*migrationBuilder.DropColumn(
                 name: "VatNumber",
                 table: "UserProfilesTable");
 
@@ -121,7 +121,49 @@ namespace WayleaveManagementSystem.Data.Migrations
 
             migrationBuilder.DropColumn(
                 name: "PreviousStageNumber",
+                table: "ApplicationListDTO");*//*migrationBuilder.DropColumn(
+                name: "VatNumber",
+                table: "UserProfilesTable");
+
+            migrationBuilder.DropColumn(
+                name: "SubDepartmentAdminUserID",
+                table: "SubDepartmentsTable");
+
+            migrationBuilder.DropColumn(
+                name: "hasSubDepartment",
+                table: "DepartmentsTable");
+
+            migrationBuilder.DropColumn(
+                name: "ApplicationStatus",
                 table: "ApplicationListDTO");
+
+            migrationBuilder.DropColumn(
+                name: "CurrentStageName",
+                table: "ApplicationListDTO");
+
+            migrationBuilder.DropColumn(
+                name: "CurrentStageNumber",
+                table: "ApplicationListDTO");
+
+            migrationBuilder.DropColumn(
+                name: "CurrentStageStartDate",
+                table: "ApplicationListDTO");
+
+            migrationBuilder.DropColumn(
+                name: "NextStageName",
+                table: "ApplicationListDTO");
+
+            migrationBuilder.DropColumn(
+                name: "NextStageNumber",
+                table: "ApplicationListDTO");
+
+            migrationBuilder.DropColumn(
+                name: "PreviousStageName",
+                table: "ApplicationListDTO");
+
+            migrationBuilder.DropColumn(
+                name: "PreviousStageNumber",
+                table: "ApplicationListDTO");*/
         }
     }
 }

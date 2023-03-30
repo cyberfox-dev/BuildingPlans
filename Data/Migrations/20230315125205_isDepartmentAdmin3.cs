@@ -8,18 +8,18 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<bool>(
+           /* migrationBuilder.AlterColumn<bool>(
                 name: "isDepartmentAdmin",
                 table: "UserProfilesTable",
                 type: "bit",
                 nullable: true,
                 oldClrType: typeof(bool),
-                oldType: "bit");
+                oldType: "bit");*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<bool>(
+/*            migrationBuilder.AlterColumn<bool>(
                 name: "isDepartmentAdmin",
                 table: "UserProfilesTable",
                 type: "bit",
@@ -27,7 +27,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                 defaultValue: false,
                 oldClrType: typeof(bool),
                 oldType: "bit",
-                oldNullable: true);
+                oldNullable: true);*/
         }
     }
 }

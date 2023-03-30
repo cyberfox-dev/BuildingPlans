@@ -9,7 +9,7 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+            /*migrationBuilder.DropColumn(
                 name: "ApplicatantType",
                 table: "Application");
 
@@ -42,19 +42,19 @@ namespace WayleaveManagementSystem.Data.Migrations
                 },
                 constraints: table =>
                 {
-                });
+                });*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            /*migrationBuilder.DropTable(
                 name: "ApplicationListDTO");
 
             migrationBuilder.AddColumn<string>(
                 name: "ApplicatantType",
                 table: "Application",
                 type: "nvarchar(max)",
-                nullable: true);
+                nullable: true);*/
         }
     }
 }

@@ -136,7 +136,7 @@ MoveToNextStage()
         <br />
       </div>
       <div class="cont3" *ngIf="isInternalUser">
-        <button mat-raised-button color="green">Approval Pack</button>
+        <button mat-raised-button color="green" (click)="onCreateApprovalPack()">Approval Pack</button>
         <button mat-raised-button color="red">Rejection Pack</button>
 
       </div>
