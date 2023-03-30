@@ -97,11 +97,17 @@ const Document_DATA: Documents[] = [
   { name: 'doc3' },
 ];
 
+var img = new Image();
+img.src = 'assets/cctlogoblack.png';
+
 @Component({
   selector: 'app-view-project-info',
   templateUrl: './view-project-info.component.html',
   styleUrls: ['./view-project-info.component.css']
 })
+
+
+
 export class ViewProjectInfoComponent implements OnInit {
 
   //Initialize the interface for ARCGIS
@@ -495,11 +501,15 @@ export class ViewProjectInfoComponent implements OnInit {
 
   /*CREATING THE APPROVAL PACK*/
 
+
+
   logoUrl: any;
   currentDate = new Date();
   datePipe = new DatePipe('en-ZA');
   formattedDate = this.datePipe.transform(this.currentDate, 'yyyy-MM-dd');
   onCreateApprovalPack() {
+
+    this.logoUrl = img.src;
     const doc = new jsPDF();
 
     autoTable(doc, {
