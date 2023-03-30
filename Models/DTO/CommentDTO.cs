@@ -16,7 +16,8 @@ namespace WayleaveManagementSystem.DTO
         public int? SubDepartmentForCommentID { get; set; }
         public int? ApplicationID { get; set; }
 
-
+        public int? SubDepartmentID { get; set; }
+        public string? SubDepartmentName { get; set; }
     }
 
 }

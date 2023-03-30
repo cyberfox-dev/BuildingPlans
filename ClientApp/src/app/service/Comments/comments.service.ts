@@ -9,14 +9,16 @@ export class CommentsService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public addUpdateComment(CommentID?: number | null, applicationID?: number | null, subDepartmentForCommentID?: number| null, Comment?: string | null, CommentStatus?: string | null , createdById?: string | null) {
+  public addUpdateComment(CommentID?: number | null, applicationID?: number | null, subDepartmentForCommentID?: number | null, subDepartmentID?: number | null ,subDepartmentName?: string | null ,Comment?: string | null, CommentStatus?: string | null , createdById?: string | null) {
     const body = {
       CommentID: CommentID,
       ApplicationID: applicationID,
       SubDepartmentForCommentID: subDepartmentForCommentID,
       Comment: Comment,
       CommentStatus: CommentStatus,
-      CreatedById: createdById
+      CreatedById: createdById,
+      SubDepartmentID: subDepartmentID,
+      SubDepartmentName: subDepartmentName
     }
     return this.httpClient.post(this.baseURL + "AddUpdateComment", body);
   }

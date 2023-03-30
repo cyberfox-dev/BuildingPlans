@@ -7,6 +7,8 @@
         public string? Comment { get; set; }
         public string? CommentStatus { get; set; }
         public int? SubDepartmentForCommentID { get; set; }
+        public int? SubDepartmentID { get; set; }
+        public string? SubDepartmentName { get; set; }
         public string? CreatedById { get; set; }
 
     }

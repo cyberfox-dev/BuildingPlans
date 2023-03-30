@@ -19,6 +19,8 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public string? CommentStatus { get; set; }
         public int? SubDepartmentForCommentID { get; set; }
+        public int? SubDepartmentID { get; set; }
+        public string? SubDepartmentName { get; set; }
 
         //The CreatedBy is the user who created the comment
         // public string? UserCommentedID { get; set; }
