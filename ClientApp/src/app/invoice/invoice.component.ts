@@ -3,21 +3,32 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable'
+
+var img = new Image();
+img.src = 'assets/cctlogoblack.png';
+
 @Component({
   selector: 'app-invoice',
   templateUrl: './invoice.component.html',
   styleUrls: ['./invoice.component.css']
 })
+
+
 export class InvoiceComponent implements OnInit {
+
+
+
 
   constructor(private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
     const imagePath = 'assets/cctlogoblack.png';
-    this.logoUrl = this.sanitizer.bypassSecurityTrustUrl(imagePath);
+
+    this.logoUrl = img.src;
+    
   }
   logoUrl:any;
-  
+ 
 currentDate = new Date();
 datePipe = new DatePipe('en-ZA');
 formattedDate = this.datePipe.transform(this.currentDate, 'yyyy-MM-dd');
