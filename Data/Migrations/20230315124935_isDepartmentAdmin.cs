@@ -8,7 +8,7 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
+          /*  migrationBuilder.AddColumn<string>(
                 name: "VatNumber",
                 table: "UserProfilesTable",
                 type: "nvarchar(max)",
@@ -19,18 +19,18 @@ namespace WayleaveManagementSystem.Data.Migrations
                 table: "UserProfilesTable",
                 type: "bit",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: false);*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+           /* migrationBuilder.DropColumn(
                 name: "VatNumber",
                 table: "UserProfilesTable");
 
             migrationBuilder.DropColumn(
                 name: "isDepartmentAdmin",
-                table: "UserProfilesTable");
+                table: "UserProfilesTable");*/
         }
     }
 }

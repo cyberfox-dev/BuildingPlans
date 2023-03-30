@@ -24,6 +24,7 @@ import { MandatoryDocumentStageLinkService } from '../../service/MandatoryDocume
 import { DatePipe } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentForComment/sub-department-for-comment.service';
+import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
 import { SubDepartmentsService } from 'src/app/service/SubDepartments/sub-departments.service';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable'
@@ -36,6 +37,15 @@ export interface MandatoryDocumentsLinkedStagesList {
   stageID: number;
   stageName: string;
   dateCreated: any;
+}
+
+export interface NotificationsList {
+  NotificationID: number;
+  NotificationName: string;
+  NotificationDescription: string;
+  ApplicationID: number;
+  UserID: number;
+  DateCreated: string;
 }
 
 export interface EngineerList {
@@ -80,6 +90,13 @@ export interface UserList {
   idNumber: string;
   fullName: string;
 
+}
+
+export interface DepartmentAdminList {
+  userId: any;
+  idNumber: string;
+  fullName: string;
+  departmentAdmin: boolean;
 }
 
 export interface StagesList {
@@ -221,6 +238,7 @@ export class NewWayleaveComponent implements OnInit {
   FileDocument: FileDocument[] = [];
   ContractorList: ContractorList[] = [];
   StagesList: StagesList[] = [];
+  DepartmentAdminList: DepartmentAdminList[] = [];
   MandatoryDocumentUploadList: MandatoryDocumentUploadList[] = [];
   MandatoryDocumentsLinkedStagesList: MandatoryDocumentsLinkedStagesList[] = [];
 
@@ -319,6 +337,7 @@ export class NewWayleaveComponent implements OnInit {
     private mandatoryDocumentStageLink: MandatoryDocumentStageLinkService,
     private sanitizer: DomSanitizer,
     private subDepartmentForCommentService: SubDepartmentForCommentService,
+    private notificationsService: NotificationsService
     private subDepartmentsService: SubDepartmentsService,
   ) { }
 
@@ -348,7 +367,7 @@ export class NewWayleaveComponent implements OnInit {
     this.getAllStages();
 
 
-
+    this.getAllDepartmentAdminsForNotifications();
 
 
 
@@ -750,7 +769,7 @@ export class NewWayleaveComponent implements OnInit {
           }
 
           //this.shared.pullFilesForUpload();
-
+          this.onCreateNotification();
           this.shared.setApplicationID(0);
         }
         else {
@@ -828,6 +847,7 @@ export class NewWayleaveComponent implements OnInit {
           this.shared.setApplicationID(0);
           this.shared.clearContractorData();
           this.shared.clearEngineerData();
+          this.onCreateNotification();
         }
         else {
 /*          alert(data.responseMessage);*/
@@ -876,6 +896,7 @@ export class NewWayleaveComponent implements OnInit {
           else {
 /*            alert("This Application have no engineers linked");*/
           }
+         
 
         }
         else {
@@ -890,7 +911,7 @@ export class NewWayleaveComponent implements OnInit {
         } else {
           this.router.navigate(["/home"]);
         };
-
+        this.onCreateNotification();
 //        this.shared.setApplicationID(0); //sets the applicationID back to zero when a new application is created.
 /*        return this.ARCGISAPIData.applicationID;*/
 
@@ -1478,6 +1499,72 @@ export class NewWayleaveComponent implements OnInit {
   saveProjectAsDraft() {
 
   }
+
+  getAllDepartmentAdminsForNotifications() {
+
+    this.userPofileService.getAllDepartmentAdmins().subscribe((data: any) => {
+
+
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempDepartmentAdminList = {} as DepartmentAdminList;
+          const current = data.dateSet[i];
+          tempDepartmentAdminList.userId = current.userID;
+          tempDepartmentAdminList.departmentAdmin = current.idDepartmentAdmin;
+          tempDepartmentAdminList.fullName = current.fullname;
+
+
+
+
+          this.DepartmentAdminList.push(tempDepartmentAdminList);
+
+        }
+
+     
+
+        console.log("Got all departmentAdmins", data.dateSet);
+      
+
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
+  onCreateNotification() {
+
+    let notificationName = "Application Created";
+    let notificationDescription = this.applicationID + " was created ";
+
+    this.notificationsService.addUpdateNotification(0, notificationName, notificationDescription, false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserId, this.applicationID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        alert(data.responseMessage);
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+      console.log("response", data);
+    }, error => {
+      console.log("Error", error);
+    })
+
+
+  }
+
+
   }
   
 

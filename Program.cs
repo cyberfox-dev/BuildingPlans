@@ -47,6 +47,7 @@ builder.Services.AddScoped<ISubDepartmentForCommentService, SubDepartmentForComm
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IMandatoryDocumentUploadsService, MandatoryDocumentUploadsService>();
 builder.Services.AddScoped<IGLCodeService, GLCodeService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>

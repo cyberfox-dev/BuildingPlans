@@ -8,18 +8,18 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
+          /*  migrationBuilder.AddColumn<bool>(
                 name: "isSetForAutomaticDistribution",
                 table: "SubDepartmentsTable",
                 type: "bit",
-                nullable: true);
+                nullable: true);*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+          /*  migrationBuilder.DropColumn(
                 name: "isSetForAutomaticDistribution",
-                table: "SubDepartmentsTable");
+                table: "SubDepartmentsTable");*/
         }
     }
 }

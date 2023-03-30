@@ -449,3 +449,76 @@ h2 {
     width:100%
 }
 
+
+/*NOTIFICATIONS SECTION*/
+
+
+body {
+  font-size: 15px;
+  font-family: 'Poppins', sans-serif;
+  background-color: hsl(0, 0%, 98%);
+  ;
+}
+
+@media (max-width: 400px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+}
+
+
+
+
+.box p {
+  color: hsl(229, 6%, 66%);
+}
+
+.box {
+  border-radius: 5px;
+  box-shadow: 0px 30px 40px -20px hsl(229, 6%, 66%);
+  padding: 11px;
+  margin: 20px;
+  width: 100%;
+}
+
+
+@media (max-width: 450px) {
+  .box {
+    height: 200px;
+  }
+}
+
+@media (max-width: 950px) and (min-width: 450px) {
+  .box {
+    text-align: center;
+    height: 180px;
+  }
+}
+
+
+.blue {
+  border-top: 3px solid hsl(212, 86%, 64%);
+}
+
+h3 {
+  color: hsl(234, 12%, 34%);
+  font-weight: 600;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: 0;
+  padding-bottom: 20px;
+  font-size: 25px;
+}
+
+
+@media (min-width: 950px) {
+  .row1-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+.cont2{
+    display:flex;
+}
+

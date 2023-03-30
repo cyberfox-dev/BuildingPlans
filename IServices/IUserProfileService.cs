@@ -17,6 +17,7 @@ namespace WayleaveManagementSystem.IServices
 
 
         Task<List<UserProfileDTO>> GetInternalUsers();
+        Task<List<UserProfileDTO>> GetAllDepartmentAdmins();
 
 
         

@@ -9,7 +9,7 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+           /* migrationBuilder.DropColumn(
                 name: "VatNumber",
                 table: "UserProfilesTable");
 
@@ -28,19 +28,19 @@ namespace WayleaveManagementSystem.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GLCode", x => x.GLCodeID);
-                });
+                });*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            /*migrationBuilder.DropTable(
                 name: "GLCode");
 
             migrationBuilder.AddColumn<string>(
                 name: "VatNumber",
                 table: "UserProfilesTable",
                 type: "nvarchar(max)",
-                nullable: true);
+                nullable: true);*/
         }
     }
 }

@@ -9,7 +9,7 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+           /* migrationBuilder.CreateTable(
                 name: "ZoneForComment",
                 columns: table => new
                 {
@@ -27,13 +27,13 @@ namespace WayleaveManagementSystem.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ZoneForComment", x => x.ZoneForCommentID);
-                });
+                });*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "ZoneForComment");
+           /* migrationBuilder.DropTable(
+                name: "ZoneForComment");*/
         }
     }
 }

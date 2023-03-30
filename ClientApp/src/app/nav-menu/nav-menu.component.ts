@@ -9,6 +9,7 @@ import { RolesService } from '../service/Roles/roles.service';
 import { MatTable } from '@angular/material/table';
 import { CommentBuilderService } from '../service/CommentBuilder/comment-builder.service';
 import { UserProfileService } from '../service/UserProfile/user-profile.service';
+import { NotificationsService } from '../service/Notifications/notifications.service';
 
 
 export interface CommentList {
@@ -16,6 +17,15 @@ export interface CommentList {
   Comment: string;
   DateCreated: string;
   createdBy:any;
+}
+
+export interface NotificationsList {
+  NotificationID: number;
+  NotificationName: string;
+  NotificationDescription: string;
+  ApplicationID: number;
+  UserID: number;
+  DateCreated: string;
 }
 
 @Component({
@@ -26,8 +36,9 @@ export interface CommentList {
 export class NavMenuComponent implements OnInit {
   isExpanded = false;
   configShow: number | undefined;
-
+  notiBell = true;
   CommentList: CommentList[] = [];
+  NotificationsList: NotificationsList[] = [];
   forEditIndex: any;
 
   public isInternalUser: boolean = false;
@@ -41,11 +52,14 @@ export class NavMenuComponent implements OnInit {
   public editComments = this.formBuilder.group({
     editCommentName: ['', Validators.required],
   })
+    applica: any;
 
-  constructor(private modalService: NgbModal, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService) { }
+  constructor(private modalService: NgbModal, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService) { }
 
   displayedColumns: string[] = ['Comment', 'actions'];
   dataSource = this.CommentList;
+
+
   @ViewChild(MatTable) commentTable: MatTable<CommentList> | undefined;
 
   stringifiedData: any;
@@ -194,11 +208,7 @@ export class NavMenuComponent implements OnInit {
   }
 
   onCommentEdit(index: any, commentBuilder: any, editComment: any) {
-    
 
-    
-   
-    
   }
   onEditCommentSave(commentBuilder: any) {
     let editCommentName = this.editComments.controls["editCommentName"].value;
@@ -248,6 +258,12 @@ export class NavMenuComponent implements OnInit {
     this.modalService.dismissAll(commentBuilder);
   }
 
+  openNotificationsModal(notificationsCenter: any) {
+    this.notiBell = false;
+    this.modalService.open(notificationsCenter, { centered: true, size: 'xl' });
+  }
+  /*Notifications*/
+
   openCreateNewComment(createNewComment : any) {
     this.modalService.open(createNewComment, { centered: true, size: 'lg' });
   }
@@ -281,6 +297,39 @@ export class NavMenuComponent implements OnInit {
 
   goHome() {
     this.router.navigate(["/home"]);
+  }
+
+  getAllNotifications() {
+    this.applica = 1;
+
+    this.NotificationsList.splice(0,this.NotificationsList.length);
+    this.notificationsService.getNotificationByID(this.applica).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempNotificationsList = {} as NotificationsList;
+          const current = data.dateSet[i];
+          console.log(current);
+          const date = current.dateCreated;
+          tempNotificationsList.ApplicationID = current.applicationID;
+          tempNotificationsList.NotificationID = current.notificationID;
+          tempNotificationsList.NotificationName = current.notificationName;
+          tempNotificationsList.NotificationDescription = current.notificationDescription;
+          tempNotificationsList.DateCreated = date.substring(0, date.indexOf('T'));
+
+
+          this.NotificationsList.push(tempNotificationsList);
+          // this.sharedService.setStageData(this.StagesList);
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 
 

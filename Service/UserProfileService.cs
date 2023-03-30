@@ -227,6 +227,42 @@ namespace WayleaveManagementSystem.Service
                ).ToListAsync();
         }
 
+        public async Task<List<UserProfileDTO>> GetAllDepartmentAdmins()
+        {
+            return await (
+               from UserProfile in _context.UserProfilesTable
+               where UserProfile.isDepartmentAdmin == true && UserProfile.isActive == true
+               select new UserProfileDTO()
+               {
+                   UserProfileID = UserProfile.UserProfileID,
+                   UserID = UserProfile.UserID,
+                   FullName = UserProfile.FullName,
+                   Email = UserProfile.Email,
+                   PhoneNumber = UserProfile.PhoneNumber,
+                   isInternal = UserProfile.isInternal,
+                   BP_Number = UserProfile.BP_Number,
+                   CompanyName = UserProfile.CompanyName,
+                   CompanyRegNo = UserProfile.CompanyRegNo,
+                   PhyscialAddress = UserProfile.PhyscialAddress,
+                   Directorate = UserProfile.Directorate,
+                   DepartmentID = UserProfile.DepartmentID,
+                   SubDepartmentID = UserProfile.SubDepartmentID,
+                   Branch = UserProfile.Branch,
+                   CostCenterNumber = UserProfile.CostCenterNumber,
+                   CostCenterOwner = UserProfile.CostCenterOwner,
+                   CopyOfID = UserProfile.CopyOfID,
+                   DateCreated = UserProfile.DateCreated,
+                   DateUpdated = UserProfile.DateUpdated,
+                   CreatedById = UserProfile.CreatedById,
+                   isDepartmentAdmin = UserProfile.isDepartmentAdmin,
+                   VatNumber = UserProfile.VatNumber,
+                   IdNumber = UserProfile.IdNumber,
+
+               }
+
+               ).ToListAsync();
+        }
+
 
 
     }

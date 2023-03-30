@@ -154,5 +154,27 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+
+        [HttpGet("GetAllDepartmentAdmins")]
+        public async Task<object> GetAllDepartmentAdmins()
+        {
+            try
+            {
+
+
+                var result = await _userProfileService.GetAllDepartmentAdmins();
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Department Admins List fetched", result));
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
     }
 }
