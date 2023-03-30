@@ -102,6 +102,32 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpPost("GetApplicationsByApplicationID")]
+        public async Task<object> GetApplicationsByApplicationID([FromBody] int applicationID)
+        {
+            try
+            {
+
+                if (applicationID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.GetApplicationsByApplicationID(applicationID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application Deleted Successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
         [HttpPost("GetApplicationsList")]
         public async Task<object> GetApplicationsList([FromBody] GetApplicationsSP modal)
         {

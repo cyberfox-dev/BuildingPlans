@@ -66,6 +66,12 @@ export class ApplicationsService {
 
   }
 
+  public getApplicationsByApplicationID(applicationID: number) {
+
+    return this.httpClient.post(this.baseURL + "GetApplicationsByApplicationID", applicationID);
+
+  }
+
   public getApplicationsList(userID: string, isInternal: boolean) {
     const body = {
       UserID: userID,

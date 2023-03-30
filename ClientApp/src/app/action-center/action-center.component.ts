@@ -15,6 +15,7 @@ import { ZoneForCommentService } from '../service/ZoneForComment/zone-for-commen
 import { ZoneLinkService } from '../service/ZoneLink/zone-link.service';
 import { DepositRequiredService } from '../service/DepositRequired/deposit-required.service';
 import { CommentsService } from '../service/Comments/comments.service';
+import { ApplicationsService} from '../service/Applications/applications.service';
 
 
 
@@ -74,6 +75,7 @@ export interface UserZoneList {
   zoneLinkID?: any;
 }
 
+ 
 
 
 
@@ -157,6 +159,8 @@ export class ActionCenterComponent implements OnInit {
     hopperButton: boolean;
     SubForCommentIDForHopper: any;
     forManuallyAssignSubForCommentID: any;
+    loggedInUsersIsZoneAdmin: any;
+    AssignUserForComment: boolean;
   constructor(
     private offcanvasService: NgbOffcanvas,
     private modalService: NgbModal,
@@ -171,6 +175,7 @@ export class ActionCenterComponent implements OnInit {
     private zoneLinkService: ZoneLinkService,
     private depositRequiredService: DepositRequiredService,
     private commentsService: CommentsService,
+    private applicationsService: ApplicationsService,
   ) { }
   openEnd(content: TemplateRef<any>) {
     this.offcanvasService.open(content, { position: 'end' });
@@ -196,7 +201,8 @@ export class ActionCenterComponent implements OnInit {
 
       this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
       this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
-      this.loggedInUsersIsAdmin = this.CurrentUserProfile[0].isDepartmentAdmin;
+    this.loggedInUsersIsAdmin = this.CurrentUserProfile[0].isDepartmentAdmin;
+    this.loggedInUsersIsZoneAdmin = this.CurrentUserProfile[0].isZoneAdmin;
       this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
       this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
     this.getLinkedZones();
@@ -216,10 +222,66 @@ export class ActionCenterComponent implements OnInit {
         this.AssignProjectToZone = true;
 
 
+
+      }
+      else if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.loggedInUsersIsZoneAdmin == true){
+        this.AssignUserForComment = true;
       }
     }
   }
 
+
+  updateApplicationStatus() {
+    debugger;
+    //this.getAllSubDepartments();
+    let x = 0;
+    for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
+      if (this.SubDepartmentLinkedList[i].UserAssaignedToComment != null) {
+        x++;
+      }
+    }
+
+    if (x === this.SubDepartmentLinkedList.length) {
+      this.applicationsService.getApplicationsByApplicationID(this.ApplicationID).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          const current = data.dateSet[0];
+          
+          this.applicationsService.updateApplicationStage(this.ApplicationID, current.previousStageName, current.previousStageNumber ,current.currentStageName, current.currentStageNumber, current.nextStageName, current.nextStageNumber,"Distributed/Allocated").subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              const current = data.dateSet[0];
+
+             
+
+
+            }
+            else {
+
+              alert(data.responseMessage);
+            }
+            console.log("reponseGetSubDepartmentForComment", data);
+
+
+          }, error => {
+            console.log("Error: ", error);
+          })
+          console.log("reponseGetSubDepartmentForCommentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
+
+
+        }
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponseGetSubDepartmentForComment", data);
+
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+
+
+  }
 
 
   viewSelectedUserForApplication() {
@@ -267,6 +329,7 @@ export class ActionCenterComponent implements OnInit {
 
           alert(data.responseMessage);
           this.getLinkedZones();
+          this.updateApplicationStatus();
         }
         else {
           alert(data.responseMessage);
@@ -681,7 +744,7 @@ export class ActionCenterComponent implements OnInit {
           const current = data.dateSet[i];
           debugger;
           tempSubDepartmentLinkedList.subDepartmentID = current.subDepartmentID;
-          tempSubDepartmentLinkedList.UserAssaignedToComment = current.UserAssaignedToComment;
+          tempSubDepartmentLinkedList.UserAssaignedToComment = current.userAssaignedToComment;
           tempSubDepartmentLinkedList.subDepartmentName = current.subDepartmentName;
           tempSubDepartmentLinkedList.departmentID = current.departmentID;
           tempSubDepartmentLinkedList.dateUpdated = current.dateUpdated;
@@ -704,7 +767,7 @@ export class ActionCenterComponent implements OnInit {
         this.SubDepartmentLinkedListTable?.renderRows();
 
       }
-      console.log("reponse", data);
+      console.log("reponseGetAllLinkedSubDepartmentsForComment", data);
 
     }, error => {
       console.log("Error: ", error);
@@ -733,7 +796,6 @@ export class ActionCenterComponent implements OnInit {
       }, error => {
         console.log("Error: ", error);
       })
-
 
     }
   }
@@ -1037,7 +1099,7 @@ getAllCommentsByUserID() {
 
 
   deleteLinkedZoneForComment(index: number) {
-    ;
+
 
     if (confirm("Are you sure to delete " + this.ZoneLinkedList[index].zoneName + "?")) {
 

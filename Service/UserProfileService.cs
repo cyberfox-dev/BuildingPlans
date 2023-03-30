@@ -146,6 +146,7 @@ namespace WayleaveManagementSystem.Service
                    isDepartmentAdmin = UserProfile.isDepartmentAdmin,
                    VatNumber = UserProfile.VatNumber,
                    IdNumber = UserProfile.IdNumber,
+                   isZoneAdmin = UserProfile.isZoneAdmin,
 
                }
 
@@ -219,6 +220,7 @@ namespace WayleaveManagementSystem.Service
                    isDepartmentAdmin = UserProfile.isDepartmentAdmin,
                    VatNumber = UserProfile.VatNumber,
                    IdNumber = UserProfile.IdNumber,
+                  isZoneAdmin = UserProfile.isZoneAdmin,
 
                }
 

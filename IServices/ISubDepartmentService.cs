@@ -17,11 +17,12 @@ namespace WayleaveManagementSystem.IServices
         Task<List<SubDepartmentsDTO>> GetAllNotLinkedSubDepartmentsForComment(int applicationID);
         Task<List<SubDepartmentsDTO>> GetAllLinkedSubDepartmentsForComment(int applicationID);
 
-
         
 
 
+
         Task<List<SubDepartmentsDTO>> GetAllSubDepartmentsBydepartmentID(int departmentID);
+        Task<List<SubDepartmentsDTO>> GetAllSubDepartmentsForAutoDistribution();
 
 
 

@@ -188,5 +188,28 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+
+        [HttpGet("GetAllSubDepartmentsForAutoDistribution")]
+        public async Task<object> GetAllSubDepartmentsForAutoDistribution()
+        {
+            try
+            {
+
+              
+                    var result = await _subDepartmentService.GetAllSubDepartmentsForAutoDistribution();
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got all Sub Departments for Automatic Distribution", result));
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+
+
     }
 }

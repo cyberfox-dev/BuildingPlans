@@ -120,13 +120,16 @@ namespace WayleaveManagementSystem.Service
 
 
 
-        public async Task<Applications> UpdateApplicationStage(int ApplicationID, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus)
+        public async Task<bool> UpdateApplicationStage(int ApplicationID, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus)
         {
 
            
             //this checks is the record exists in the db
             var tempApplicationTable = _context.Application.FirstOrDefault(x => x.ApplicationID == ApplicationID);
+            if (tempApplicationTable != null)
+            {
 
+          
             if (tempApplicationTable.CurrentStageName == CurrentStageName)
             {
                 //tempApplicationTable.PreviousStageName = PreviousStageName;
@@ -148,20 +151,71 @@ namespace WayleaveManagementSystem.Service
                 tempApplicationTable.NextStageNumber = NextStageNumber;
                 tempApplicationTable.ApplicationStatus = ApplicationStatus;
             }
-           
+
             
 
 
 
             _context.Update(tempApplicationTable);
                 await _context.SaveChangesAsync();
-                return tempApplicationTable;
+                return true;
+
             }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        public async Task<List<ApplicationsDTO>> GetApplicationsByApplicationID(int applicationID)
+        {
+           
+                return await (
+                   from Applications in _context.Application
+                   where Applications.ApplicationID == applicationID
+                   select new ApplicationsDTO()
+                   {
+                       ApplicationID = Applications.ApplicationID,
+                       UserID = Applications.UserID,
+                       FullName = Applications.FullName,
+                       Email = Applications.Email,
+                       PhoneNumber = Applications.PhoneNumber,
+                       PhysicalAddress = Applications.PhyscialAddress,
+                       ReferenceNumber = Applications.ReferenceNumber,
+                       CompanyRegNo = Applications.CompanyRegNo,
+                       TypeOfApplication = Applications.TypeOfApplication,
+                       NotificationNumber = Applications.NotificationNumber,
+                       WBSNumber = Applications.WBSNumber,
+                       PhysicalAddressOfProject = Applications.PhysicalAddressOfProject,
+                       DescriptionOfProject = Applications.DescriptionOfProject,
+                       NatureOfWork = Applications.NatureOfWork,
+                       ExcavationType = Applications.ExcavationType,
+                       ExpectedStartDate = Applications.ExpectedStartDate,
+                       ExpectedEndDate = Applications.ExpectedEndDate,
+                       Location = Applications.Location,
+                       DateCreated = Applications.DateCreated,
+                       DateUpdated = Applications.DateUpdated,
+                       CreatedById = Applications.CreatedById,
+                       isActive = Applications.isActive,
+                       PreviousStageName = Applications.PreviousStageName,
+                       ApplicationStatus = Applications.ApplicationStatus,
+                       CurrentStageName = Applications.CurrentStageName,
+                       CurrentStageNumber = Applications.CurrentStageNumber,
+                       CurrentStageStartDate = Applications.CurrentStageStartDate,
+                       NextStageName = Applications.NextStageName,
+                       NextStageNumber = Applications.NextStageNumber,
+                       PreviousStageNumber = Applications.PreviousStageNumber
+
+                   }
+                   ).ToListAsync();
+          
+            
+
+        }
 
 
 
-
-  
 
 
 

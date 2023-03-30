@@ -66,4 +66,11 @@ export class SubDepartmentsService {
     return this.httpClient.post(this.baseURL + "GetSubDepartmentByDepartmentID", body);
 
   }
+  
+  public getAllSubDepartmentsForAutoDistribution() {
+
+    return this.httpClient.get(this.baseURL + "GetAllSubDepartmentsForAutoDistribution");
+
+  }
+
 }

@@ -24,6 +24,7 @@ import { MandatoryDocumentStageLinkService } from '../../service/MandatoryDocume
 import { DatePipe } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentForComment/sub-department-for-comment.service';
+import { SubDepartmentsService } from 'src/app/service/SubDepartments/sub-departments.service';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable'
 
@@ -318,6 +319,7 @@ export class NewWayleaveComponent implements OnInit {
     private mandatoryDocumentStageLink: MandatoryDocumentStageLinkService,
     private sanitizer: DomSanitizer,
     private subDepartmentForCommentService: SubDepartmentForCommentService,
+    private subDepartmentsService: SubDepartmentsService,
   ) { }
 
   ngOnInit(): void {
@@ -583,9 +585,47 @@ export class NewWayleaveComponent implements OnInit {
   }
 
 
+
   onModelChange() {
 /*    this.shared.setApplicationID(this.notificationNumber);*/
     /*    this.shared.setCreatedByID(this.CurrentUser.appUserId)*/
+  }
+
+  onAutoLinkDepartment() {
+    this.subDepartmentsService.getAllSubDepartmentsForAutoDistribution().subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+        
+          for (var i = 0; i < data.dateSet.length; i++) {
+            this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.applicationID, data.dateSet[i].subDepartmentID, data.dateSet[i].subDepartmentName, null, null, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+
+                alert(data.dateSet.subDepartmentName + " assigned to this Application");
+
+              }
+              else {
+
+                alert(data.responseMessage);
+              }
+              console.log("reponseAddUpdateDepartmentForComment", data);
+
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+          }
+        }
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponseAddUpdateDepartmentForComment", data);
+
+
+      }, error => {
+        console.log("Error: ", error);
+      })
   }
 
   //onLinkDepartmentForComment() {
@@ -730,10 +770,11 @@ export class NewWayleaveComponent implements OnInit {
     }
     else if (this.internal) {
       ;
-      this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributing").subscribe((data: any) => {
+      this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributed/Unallocated").subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           alert(data.responseMessage);
+          this.onAutoLinkDepartment();
           console.log(data);
           this.shared.setApplicationID(this.applicationID);
           this.ARCGISAPIData.applicationID = this.applicationID;

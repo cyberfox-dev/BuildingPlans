@@ -133,7 +133,7 @@ namespace WayleaveManagementSystem.Service
 
             return await (
                 from subDepartment in _context.SubDepartmentsTable
-                where subDepartment.isActive == true && !subDepartmentIDs.Contains(subDepartment.SubDepartmentID)
+                where subDepartment.isActive == true && subDepartment.SubDepartmentName != "EMB" && !subDepartmentIDs.Contains(subDepartment.SubDepartmentID)
                 select new SubDepartmentsDTO()
                 {
                     SubDepartmentID = subDepartment.SubDepartmentID,
@@ -177,6 +177,27 @@ namespace WayleaveManagementSystem.Service
                     SubDepartmentID = SubDepartments.SubDepartmentID,
                     SubDepartmentName = SubDepartments.SubDepartmentName,
                  
+                    DepartmentID = SubDepartments.DepartmentID,
+                    DateCreated = SubDepartments.DateCreated,
+                    DateUpdated = SubDepartments.DateUpdated,
+                    isActive = true
+
+
+                }
+                ).ToListAsync();
+        }
+
+
+        public async Task<List<SubDepartmentsDTO>> GetAllSubDepartmentsForAutoDistribution()
+        {
+            return await (
+                from SubDepartments in _context.SubDepartmentsTable
+                where SubDepartments.isSetForAutomaticDistribution == true && SubDepartments.isActive == true
+                select new SubDepartmentsDTO()
+                {
+                    SubDepartmentID = SubDepartments.SubDepartmentID,
+                    SubDepartmentName = SubDepartments.SubDepartmentName,
+
                     DepartmentID = SubDepartments.DepartmentID,
                     DateCreated = SubDepartments.DateCreated,
                     DateUpdated = SubDepartments.DateUpdated,
