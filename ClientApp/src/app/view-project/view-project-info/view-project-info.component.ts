@@ -307,7 +307,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getAllRequiredDeposits() {
-    debugger;
+  
 
     this.depositRequiredService.getDepositRequiredByApplicationID(this.ApplicationID).subscribe((data: any) => {
 
@@ -667,7 +667,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   getAllSubDepFroConditionalApprove() {
-    let commentS = "Approved"
+    let commentS = "Approved(Conditional)";
 
     this.commentsService.getSubDepByCommentStatus(commentS).subscribe((data: any) => {
 
@@ -714,6 +714,74 @@ export class ViewProjectInfoComponent implements OnInit {
   formattedDate = this.datePipe.transform(this.currentDate, 'yyyy-MM-dd');
   onCreateApprovalPack() {
 
+    this.getAllSubDepFroConditionalApprove();
+    const doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    // Set up table
+    const startY = 50; // set the starting Y position for the table
+    const headers = [
+      [
+        'Department',
+        'Department Comment',
+        'Comment',
+      ]
+    ];
+    const data: any[] = [];
+
+    const img = new Image();
+    img.src = 'assets/cctlogoblack.png';
+
+    // Add logo to PDF document
+    doc.addImage(img, 'png', 10, 10, 60, 20);
+
+    // Add title to PDF document
+    doc.setFontSize(24);
+    doc.text('Wayleave Approval Pack', 150, 40, { align: 'center' });
+    doc.setLineHeightFactor(10);
+
+
+    doc.setFontSize(15);
+    doc.text('Dear ' + this.CurrentUser.appUserID + ', Your application has been approved by all departments. But on condition by the following departments:',10,50);
+
+    this.SubDepConditionalApproveList.forEach((deposit) => {
+      const row = [
+        deposit.SubDepName,
+        deposit.Comment,
+        deposit.CommentStatus
+
+      ];
+ 
+      data.push(row);
+    });
+
+    doc.setFontSize(12); // add this line to set the font size
+    autoTable(doc, {
+      head: headers,
+      body: data,
+      startY: 80,
+      styles: {
+        overflow: 'linebreak',
+        halign: 'center',
+        fontSize: 14
+      },
+      columnStyles: {
+        0: { cellWidth: 50, fontStyle: 'bold' },
+        1: { cellWidth: 50 },
+        2: { cellWidth: 80 },
+      }
+    });
+
+    // Save PDF document
+    doc.save('Approval Pack');
+
+
+
+
+/*
    this.try = 1;
 
     this.logoUrl = img.src;
@@ -800,7 +868,7 @@ export class ViewProjectInfoComponent implements OnInit {
       startY: startY + 30, // add 30 units of Y position to create space between the tables
     });
 
-    return doc.save("Approval Pack");
+    return doc.save("Approval Pack");*/
   }
 
 
