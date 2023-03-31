@@ -29,4 +29,10 @@ export class CommentsService {
 
   }
 
+  public getSubDepByCommentStatus(commentStatus: string) {
+
+    return this.httpClient.post(this.baseURL + "GetSubDepByCommentStatus", commentStatus);
+
+  }
+
 }

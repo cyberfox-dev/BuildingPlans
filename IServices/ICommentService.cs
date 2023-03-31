@@ -11,6 +11,7 @@ namespace WayleaveManagementSystem.IServices
         public Task<bool> DeleteComment(int commentID);
 
         Task<List<CommentDTO>> GetCommentByApplicationID(int? applicationID);
+        Task<List<CommentDTO>> GetSubDepByCommentStatus(string? commentStatus);
 
     }
 }
