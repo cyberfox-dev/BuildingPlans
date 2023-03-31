@@ -198,7 +198,7 @@ MoveToNextStage()
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef></th>
               <td mat-cell *matCellDef="let i = index">
-                <button mat-raised-button color="blue" matTooltip="View" (click)="generateConsolidatedDepositInvoice()"><i class="fa fa-eye"></i></button>
+                <button mat-raised-button color="blue" matTooltip="View" (click)="viewPDF()"><i class="fa fa-eye"></i></button>
 
                 <!--<button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="openViewSubDep(viewSub);getSubDemartmentByDepartmentID(i,viewSub)"><i class="fa fa-eye"></i></button>-->
 
@@ -213,7 +213,7 @@ MoveToNextStage()
         </div>
         <div class="cont" *ngIf="isInternalUser">
           <button mat-raised-button color="orange">Deposit Required</button>
-          <button mat-raised-button color="orange">Consolidate Deposits</button>
+          <button mat-raised-button color="orange" (click)="generateConsolidatedDepositInvoice()" >Consolidate Deposits</button>
           <button mat-raised-button color="orange">Deposit Refund</button>
         </div>
       </div>

@@ -377,9 +377,59 @@ export class ViewProjectInfoComponent implements OnInit {
     // Add logo to PDF document
     doc.addImage(img, 'png', 10, 10, 60, 20);
 
+
     // Add title to PDF document
     doc.setFontSize(24);
-    doc.text('Consolidated Deposit Invoice', 105, 40, { align: 'center' });
+    doc.text('Consolidated Deposit Invoice', 150, 40, { align: 'center' });
+
+    // Add table with Wayleave Ref No., Date, and Invoice Number
+    autoTable(doc, {
+      body: [
+        [
+          {
+            content: 'Wayleave Ref No.: BW/041/22'
+              + '\nDate: ' + this.formattedDate
+              + '\nInvoice Number: ' + "198091735",
+
+            styles: {
+              halign: 'right',
+            }
+          }
+        ],
+      ],
+
+      theme: 'plain',
+    });
+
+    doc.setFontSize(10);
+    doc.text('BTW Reg. Nr./VAT Reg. No.4500193497', 10, 50, { align: 'left' });
+    doc.setFontSize(10);
+    doc.text('City of Cape Town'+
+    '\nPost Box / Posbus / iShokisi 655'+
+    '\nCAPE TOWN'+
+    '\n8001', 10, 60, { align: 'left' });
+    
+    //autoTable(doc, {
+    //  body: [
+    //    [
+    //      {
+    //        content: 'BTW Reg. Nr./VAT Reg. No.4500193497',
+
+    //        styles: {
+
+    //          halign: 'left',
+    //        }
+    //      }
+    //    ],
+    //  ],
+
+
+    //  theme: 'plain',
+   
+      
+    //});
+
+  
 
     // Add sub-department to table
     //const subDepartment = this.DepositRequiredList[0].SubDepartmentName;
@@ -435,8 +485,17 @@ export class ViewProjectInfoComponent implements OnInit {
       }
     });
 
+
+
+    doc.text('Profit Centre: P19070051', 280, 140, { align: 'right' });
+    doc.text('GL Acc: 845180', 10, 140, { align: 'left' });
+
+
+    doc.setFontSize(20);
+    doc.text('USE THIS REF NO: 198091735 TO MAKE EFT PAYMENTS' + '\nFOR THIS INVOICE ONLY', 150, 160, { align: 'center' });
+
     // Save PDF document
-    doc.save('Approval Pack');
+    doc.save('Deposit Invoice');
   }
 
 
