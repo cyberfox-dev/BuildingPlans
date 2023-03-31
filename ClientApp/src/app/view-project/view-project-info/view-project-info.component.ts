@@ -26,7 +26,15 @@ export interface StagesList {
   StageName: string;
   StageOrderNumber: number;
   CurrentUser: any
+}
 
+export interface SubDepConditionalApproveList {
+  SubDepID: number;
+  SubDepName: string;
+  ApplicationID: number;
+  Comment: string;
+  CommentStatus: string;
+  DateCreated: any;
 }
 
 export interface CommentsList {
@@ -148,6 +156,7 @@ export class ViewProjectInfoComponent implements OnInit {
   applicationDataForView: ApplicationList[] = [];
   StagesList: StagesList[] = [];
   CommentsList: CommentsList[] = [];
+  SubDepConditionalApproveList: SubDepConditionalApproveList[] = [];
 
   CurrentApplicationBeingViewed: ApplicationList[] = [];
   DepositRequiredList: DepositRequired[] = [];
@@ -598,12 +607,55 @@ export class ViewProjectInfoComponent implements OnInit {
   /*CREATING THE APPROVAL PACK*/
 
 
+  getAllSubDepFroConditionalApprove() {
+    let commentS = "Approved"
+
+    this.commentsService.getSubDepByCommentStatus(commentS).subscribe((data: any) => {
+
+
+      if (data.responseCode == 1) {
+        const tempSubDepCommentStatusList = {} as SubDepConditionalApproveList;
+        for (var i = 0; i < data.dateSet.length; i++) {
+
+
+          const current = data.dateSet[i];
+          tempSubDepCommentStatusList.SubDepID = current.SubDepID;
+          tempSubDepCommentStatusList.SubDepName = current.SubDepName;
+          tempSubDepCommentStatusList.ApplicationID = current.ApplicationID;
+          tempSubDepCommentStatusList.Comment = current.Comment;
+          tempSubDepCommentStatusList.DateCreated = current.DateCreated;
+
+
+          this.SubDepConditionalApproveList.push(tempSubDepCommentStatusList);
+        
+        }
+        console.log("data", data.dateSet);
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
+
+
+
 
   logoUrl: any;
+  try: any;
   currentDate = new Date();
   datePipe = new DatePipe('en-ZA');
   formattedDate = this.datePipe.transform(this.currentDate, 'yyyy-MM-dd');
   onCreateApprovalPack() {
+
+   this.try = 1;
 
     this.logoUrl = img.src;
     const doc = new jsPDF();
@@ -660,7 +712,7 @@ export class ViewProjectInfoComponent implements OnInit {
     autoTable(doc, {
       head: [['Service Item Code', 'Description', 'Rate', 'Quantity', 'Amount']],
       body: [
-        ['001', 'Consultation Services', '$100.00', '2', '$200.00'],
+        ['001', this.try, '$100.00', '2', '$200.00'],
         ['002', 'Site Survey', '$200.00', '1', '$200.00'],
         ['003', 'Permitting Services', '$300.00', '3', '$900.00'],
       ],

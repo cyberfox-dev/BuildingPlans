@@ -115,5 +115,27 @@ namespace WayleaveManagementSystem.Service
                 ).ToListAsync();
         }
 
+        public async Task<List<CommentDTO>> GetSubDepByCommentStatus(string? commentStatus)
+        {
+            return await (
+                from comment in _context.Comments
+                where comment.CommentStatus == commentStatus && comment.isActive == true
+                select new CommentDTO()
+                {
+                    CommentID = comment.CommentID,
+                    Comment = comment.Comment,
+                    ApplicationID = comment.ApplicationID,
+                    SubDepartmentForCommentID = comment.SubDepartmentForCommentID,
+                    CommentStatus = comment.CommentStatus,
+                    DateCreated = comment.DateCreated,
+                    DateUpdated = comment.DateUpdated,
+                    CreatedById = comment.CreatedById,
+                    SubDepartmentID = comment.SubDepartmentID,
+                    SubDepartmentName = comment.SubDepartmentName,
+
+                }
+                ).ToListAsync();
+        }
+
     }
 }
