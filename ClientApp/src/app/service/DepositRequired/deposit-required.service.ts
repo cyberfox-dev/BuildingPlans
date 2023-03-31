@@ -11,7 +11,7 @@ export class DepositRequiredService {
   constructor(private httpClient: HttpClient) { }
 
 
-  public addUpdateDepositRequired(depositRequiredID?: number | null, subDepartmentForCommentID?: number | null, rate?: number | null, applicationID?: number | null, desciption?: string | null, subDepartmentID?: number | null, quantity?: number | null ,createdById?: string | null) {
+  public addUpdateDepositRequired(depositRequiredID?: number | null, subDepartmentForCommentID?: number | null, rate?: number | null, applicationID?: number | null, desciption?: string | null, subDepartmentID?: number | null, quantity?: number | null, createdById?: string | null, subDepartmentName?: string | null, serviceItemCode?: string|null) {
     const body = {
       DepositRequiredID: depositRequiredID,
       SubDepartmentForCommentID: subDepartmentForCommentID,
@@ -20,7 +20,9 @@ export class DepositRequiredService {
       Desciption: desciption,
       SubDepartmentID: subDepartmentID,
       Quantity: quantity,
-      CreatedById: createdById
+      CreatedById: createdById,
+      SubDepartmentName: subDepartmentName,
+      ServiceItemCode: serviceItemCode,
     }
     return this.httpClient.post(this.baseURL + "AddUpdateDepositRequired", body);
   }

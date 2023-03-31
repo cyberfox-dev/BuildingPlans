@@ -88,6 +88,8 @@ export interface DepositRequired {
   SubDepartmentForCommentID: number;
   Rate: number;
   Quantity: number;
+  ServiceItemCodeserviceItemCode?: string | null;
+  SubDepartmentName?: string | null;
 
 }
 
@@ -296,6 +298,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getAllRequiredDeposits() {
+    debugger;
 
     this.depositRequiredService.getDepositRequiredByApplicationID(this.ApplicationID).subscribe((data: any) => {
 
@@ -311,6 +314,8 @@ export class ViewProjectInfoComponent implements OnInit {
           tempDepositRequired.Rate = current.rate;
           tempDepositRequired.SubDepartmentForCommentID = current.subDepartmentForCommentID;
           tempDepositRequired.SubDepartmentID = current.subDepartmentID;
+          tempDepositRequired.SubDepartmentName = current.subDepartmentName;
+
 
 
           this.DepositRequiredList.push(tempDepositRequired);
@@ -331,94 +336,100 @@ export class ViewProjectInfoComponent implements OnInit {
     })
   }
 
-  genarateConsolidatedDepositInvoice() {
+  generateConsolidatedDepositInvoice() {
+    // Retrieve deposit information
+    //await this.getAllRequiredDeposits();
+    debugger;
+    // Create PDF document
+    const doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'mm',
+      format: 'a4'
+    });
 
-      const doc = new jsPDF();
+    // Set up table
+    const startY = 50; // set the starting Y position for the table
+    const headers = [
+      [
+        'Department',
+        'Service Item Code',
+        'Description',
+        'Rate',
+        'Quantity',
+        'Amount'
+      ]
+    ];
+    const data: any[] = [];
 
-      autoTable(doc, {
-        body: [
-          [
-            {
-              content: this.logoUrl,
+    // Logo
+    const img = new Image();
+    img.src = 'assets/cctlogoblack.png';
 
-              styles: {
-                halign: 'left',
-                fontSize: 20,
-                textColor: '#ffffff',
-              }
-            },
-            {
-              content: 'Consolidated Deposit Invoice',
-              styles: {
-                halign: 'right',
-                fontSize: 15,
-                textColor: '#ffffff',
-              }
-            }
-          ],
-        ],
+    // Add logo to PDF document
+    doc.addImage(img, 'png', 10, 10, 60, 20);
 
-        theme: 'plain',
-        styles: {
-          fillColor: '#3366ff',
-        }
-      });
+    // Add title to PDF document
+    doc.setFontSize(24);
+    doc.text('Consolidated Deposit Invoice', 105, 40, { align: 'center' });
 
-      autoTable(doc, {
-        body: [
-          [
-            {
-              content: 'Wayleave Ref No.: '
-                + '\nDate: ' + this.formattedDate
-                + '\nInvoice Number: ' + "12345678",
+    // Add sub-department to table
+    //const subDepartment = this.DepositRequiredList[0].SubDepartmentName;
+    //data.push([{ content: `Sub-department: ${subDepartment}`, colSpan: 6, styles: { fontStyle: 'bold' } }, '', '', '', '', '']);
 
-              styles: {
-                halign: 'right',
-              }
-            }
-          ],
-        ],
+    // Initialize total variable
+    let total = 0;
 
-        theme: 'plain',
-      });
+    // Populate table data with DepositRequiredList
+    this.DepositRequiredList.forEach((deposit) => {
+      const row = [
+        deposit.SubDepartmentName,
+        deposit.DepositRequiredID,
+        deposit.Desciption,
+        deposit.Rate,
+        deposit.Quantity,
+        deposit.Rate * deposit.Quantity // calculate amount based on rate and quantity
+      ];
+      total += Number(row[5]);
+      data.push(row);
+    });
 
-      const startY = 100; // set the starting Y position for the table
+    // Add total row to table
+    const totalRow = [
+      { content: 'Total:', colSpan: 5, styles: { fontStyle: 'bold' } },
+      //'',
+      //'',
+      //'',
+      //'',
+      total// round total to 2 decimal places and add it to the total row data
+    ];
+    data.push(totalRow);
 
-      autoTable(doc, {
-        head: [['Service Item Code', 'Description', 'Rate', 'Quantity', 'Amount']],
-        body: [
-          ['001', 'Consultation Services', '$100.00', '2', '$200.00'],
-          ['002', 'Site Survey', '$200.00', '1', '$200.00'],
-          ['003', 'Permitting Services', '$300.00', '3', '$900.00'],
-        ],
 
-        theme: 'plain',
-        startY: startY,
-      });
+    // Add table to PDF document
+    doc.setFontSize(12); // add this line to set the font size
+    autoTable(doc, {
+      head: headers,
+      body: data,
+      startY: 80,
+      styles: {
+        overflow: 'linebreak',
+        halign: 'center',
+        fontSize: 14
+      },
+      columnStyles: {
+        0: { cellWidth: 50, fontStyle: 'bold' },
+        1: { cellWidth: 50 },
+        2: { cellWidth: 80 },
+        3: { cellWidth: 25, halign: 'right' },
+        4: { cellWidth: 25, halign: 'right' },
+        5: { cellWidth: 25, halign: 'right' }
+      }
+    });
 
-      autoTable(doc, {
-        body: [
-          [
-            {
-              content: 'Wayleave Ref No.: '
-                + '\nDate: ' + this.currentDate
-                + '\nInvoice Number: ' + "12345678",
-
-              styles: {
-                halign: 'left',
-
-              }
-            }
-          ],
-        ],
-
-        theme: 'plain',
-        startY: startY + 30, // add 30 units of Y position to create space between the tables
-      });
-
-      return doc.save("Approval Pack");
-    
+    // Save PDF document
+    doc.save('Approval Pack');
   }
+
 
   getUserProfileByUserID() {
    

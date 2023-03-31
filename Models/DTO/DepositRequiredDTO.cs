@@ -6,6 +6,9 @@
 
         public int? DepositRequiredID { get; set; }
         public int? ApplicationID { get; set; }
+        public string? ServiceItemCode { get; set; }
+        public string? SubDepartmentName { get; set; }
+        
         public string? Desciption { get; set; }
         public int? SubDepartmentForCommentID { get; set; }
 

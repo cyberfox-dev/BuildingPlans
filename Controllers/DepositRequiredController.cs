@@ -59,6 +59,8 @@ namespace WayleaveManagementSystem.Controllers
                             DateCreated = DateTime.Now,
                             DateUpdated = DateTime.Now,
                             isActive = true,
+                            SubDepartmentName = model.SubDepartmentName,
+                            ServiceItemCode = model.ServiceItemCode,
                         };
 
                         await _context.DepositRequired.AddAsync(tempDepositRequired);
@@ -144,6 +146,8 @@ namespace WayleaveManagementSystem.Controllers
                     DateCreated = depositRequired.DateCreated,
                     DateUpdated = depositRequired.DateUpdated,
                     isActive = depositRequired.isActive,
+                    SubDepartmentName = depositRequired.SubDepartmentName,
+                    ServiceItemCode = depositRequired.ServiceItemCode,
 
                 }
                 ).ToListAsync();
@@ -188,6 +192,8 @@ namespace WayleaveManagementSystem.Controllers
                    DateCreated = depositRequired.DateCreated,
                    DateUpdated = depositRequired.DateUpdated,
                    isActive = depositRequired.isActive,
+                   SubDepartmentName = depositRequired.SubDepartmentName,
+                   ServiceItemCode = depositRequired.ServiceItemCode,
 
                }
                ).ToListAsync();
