@@ -115,18 +115,18 @@ namespace WayleaveManagementSystem.Controllers
         }
 
         [HttpPost("GetSubDepByCommentStatus")]
-        public async Task<object> GetSubDepByCommentStatus([FromBody] string commentStatus)
+        public async Task<object> GetSubDepByCommentStatus([FromBody] string CommentStatus)
         {
             try
             {
 
-                if (commentStatus.Length < 1)
+                if (CommentStatus.Length < 1)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
-                    var result = await _commentService.GetSubDepByCommentStatus(commentStatus);
+                    var result = await _commentService.GetSubDepByCommentStatus(CommentStatus);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Comments List Created", result));
                 }
 

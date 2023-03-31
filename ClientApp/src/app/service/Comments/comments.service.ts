@@ -29,9 +29,9 @@ export class CommentsService {
 
   }
 
-  public getSubDepByCommentStatus(commentStatus: string) {
+  public getSubDepByCommentStatus(CommentStatus: string) {
 
-    return this.httpClient.post(this.baseURL + "GetSubDepByCommentStatus", commentStatus);
+    return this.httpClient.post(this.baseURL + "GetSubDepByCommentStatus", CommentStatus);
 
   }
 
