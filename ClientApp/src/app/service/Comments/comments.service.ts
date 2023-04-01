@@ -30,8 +30,13 @@ export class CommentsService {
   }
 
   public getSubDepByCommentStatus(CommentStatus: string) {
+    const body = {
 
-    return this.httpClient.post(this.baseURL + "GetSubDepByCommentStatus", CommentStatus);
+      CommentStatus: CommentStatus,
+
+    }
+
+    return this.httpClient.post(this.baseURL + "GetSubDepByCommentStatus", body);
 
   }
 

@@ -243,6 +243,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getAllStages();
     this.setInterface();
     this.getAllRequiredDeposits();
+    this.getAllSubDepFroConditionalApprove();
   }
 
   getAllComments() {
@@ -714,7 +715,7 @@ export class ViewProjectInfoComponent implements OnInit {
   formattedDate = this.datePipe.transform(this.currentDate, 'yyyy-MM-dd');
   onCreateApprovalPack() {
 
-    this.getAllSubDepFroConditionalApprove();
+    /*this.getAllSubDepFroConditionalApprove();*/
     const doc = new jsPDF({
       orientation: 'landscape',
       unit: 'mm',
