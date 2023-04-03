@@ -9,6 +9,7 @@ import { DepositRequiredService } from 'src/app/service/DepositRequired/deposit-
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { DatePipe } from '@angular/common';
+import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
 
 export interface ARCGISAPIData {
   createdByID: string;
@@ -682,22 +683,24 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
       if (data.responseCode == 1) {
-        const tempSubDepCommentStatusList = {} as SubDepConditionalApproveList;
-        for (var i = 0; i < data.dateSet.length; i++) {
 
+        for (var i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepCommentStatusList = {} as SubDepConditionalApproveList;
 
           const current = data.dateSet[i];
-          tempSubDepCommentStatusList.SubDepID = current.SubDepID;
-          tempSubDepCommentStatusList.SubDepName = current.SubDepName;
-          tempSubDepCommentStatusList.ApplicationID = current.ApplicationID;
-          tempSubDepCommentStatusList.Comment = current.Comment;
-          tempSubDepCommentStatusList.DateCreated = current.DateCreated;
-
+          tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
+          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
+          tempSubDepCommentStatusList.ApplicationID = current.applicationID;
+          tempSubDepCommentStatusList.Comment = current.comment;
+          tempSubDepCommentStatusList.DateCreated = current.dateCreated;
+          tempSubDepCommentStatusList.CommentStatus = current.commentStatus;
 
           this.SubDepConditionalApproveList.push(tempSubDepCommentStatusList);
+         
         
         }
-        console.log("data", data.dateSet);
+
+        console.log("THIS IS THE CUB DEP THAT HAS APPROVED THE APPLICATION CONDITIONALLY", data.dateSet);
       }
 
       else {
@@ -725,7 +728,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     /*this.getAllSubDepFroConditionalApprove();*/
     const doc = new jsPDF({
-      orientation: 'landscape',
+      orientation: 'portrait',
       unit: 'mm',
       format: 'a4'
     });
@@ -736,7 +739,7 @@ export class ViewProjectInfoComponent implements OnInit {
       [
         'Department',
         'Department Comment',
-        'Comment',
+        'Status'
       ]
     ];
     const data: any[] = [];
@@ -745,42 +748,45 @@ export class ViewProjectInfoComponent implements OnInit {
     img.src = 'assets/cctlogoblack.png';
 
     // Add logo to PDF document
-    doc.addImage(img, 'png', 10, 10, 60, 20);
+    doc.addImage(img, 'png', 5, 5, 55, 15);
 
     // Add title to PDF document
-    doc.setFontSize(24);
-    doc.text('Wayleave Approval Pack', 150, 40, { align: 'center' });
-    doc.setLineHeightFactor(10);
+    doc.setFontSize(22);
+    doc.text('Wayleave Approval Pack', 105, 40, { align: 'center' });
+    doc.setLineHeightFactor(60);
 
-
-    doc.setFontSize(15);
-    doc.text('Dear ' + this.CurrentUser.appUserID + ', Your application has been approved by all departments. But on condition by the following departments:',10,50);
+  
+    doc.setFontSize(10);
+    doc.text('Dear ' + this.CurrentUser.appUserID + ', Your application has been approved by all departments. But on condition by the following departments:Our company recently developed a cutting-edge software application that streamlines and automates several critical business processes. This innovative solution has been designed to help businesses of all sizes save time and reduce costs, while also improving overall efficiency and productivity. We conducted extensive research and testing to ensure that the application met the needs of our target audience, and we incorporated feedback from early adopters to refine and improve the user experience. As a result, we have received overwhelmingly positive feedback from our customers, who have reported significant improvements in their operations since implementing our solution. This success has not only boosted our bottom line, but also reinforced our reputation as a trusted provider of high-quality software solutions.', 10, 60, { maxWidth: 190, lineHeightFactor: 2, align: 'justify' });
 
     this.SubDepConditionalApproveList.forEach((deposit) => {
       const row = [
         deposit.SubDepName,
         deposit.Comment,
-        deposit.CommentStatus
+        deposit.CommentStatus,
 
       ];
  
       data.push(row);
     });
-
+    doc.setLineHeightFactor(60);
     doc.setFontSize(12); // add this line to set the font size
     autoTable(doc, {
       head: headers,
+ /*     startY: 150,*/
       body: data,
-      startY: 80,
       styles: {
-        overflow: 'linebreak',
-        halign: 'center',
-        fontSize: 14
+        overflow: 'visible',
+        halign: 'justify',
+        fontSize: 10,
+        valign: 'middle',
+        cellPadding:2,
       },
+     
       columnStyles: {
         0: { cellWidth: 50, fontStyle: 'bold' },
-        1: { cellWidth: 50 },
-        2: { cellWidth: 80 },
+        1: { cellWidth: 80 },
+        2: { cellWidth: 40 },
       }
     });
 

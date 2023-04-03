@@ -656,7 +656,7 @@ export class ActionCenterComponent implements OnInit {
   }
 
   CheckIfCurrentUserCanUseHopper() {
-    debugger;
+  
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.SubDepartmentLinkedList[i].UserAssaignedToComment == undefined) {
 
@@ -756,7 +756,7 @@ export class ActionCenterComponent implements OnInit {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempSubDepartmentLinkedList = {} as SubDepartmentList;
           const current = data.dateSet[i];
-          debugger;
+   
           tempSubDepartmentLinkedList.subDepartmentID = current.subDepartmentID;
           tempSubDepartmentLinkedList.UserAssaignedToComment = current.userAssaignedToComment;
           tempSubDepartmentLinkedList.subDepartmentName = current.subDepartmentName;
