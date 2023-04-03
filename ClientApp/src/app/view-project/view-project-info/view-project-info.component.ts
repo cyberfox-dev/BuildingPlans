@@ -408,7 +408,15 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.text('City of Cape Town'+
     '\nPost Box / Posbus / iShokisi 655'+
     '\nCAPE TOWN'+
-    '\n8001', 10, 60, { align: 'left' });
+      '\n8001', 10, 60, { align: 'left' });
+
+    doc.setFontSize(10);
+    doc.text('BTW Reg. Nr./VAT Reg. No.4500193497', 10, 50, { align: 'left' });
+    doc.setFontSize(10);
+    doc.text('City of Cape Town' +
+      '\nPost Box / Posbus / iShokisi 655' +
+      '\nCAPE TOWN' +
+      '\n8001', 10, 60, { align: 'left' });
     
     //autoTable(doc, {
     //  body: [
