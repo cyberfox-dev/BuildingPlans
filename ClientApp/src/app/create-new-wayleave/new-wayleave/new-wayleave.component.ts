@@ -302,6 +302,8 @@ export class NewWayleaveComponent implements OnInit {
   displayedColumnsLinkUsers: string[] = ['idNumber', 'fullName', 'actions'];
   dataSourceLinkUsers = this.UserList;
     applicationID: any;
+    notiName: string;
+    notiDescription: string;
   //CoverLetterFileName = "Choose file";
 
 
@@ -769,7 +771,7 @@ export class NewWayleaveComponent implements OnInit {
           }
 
           //this.shared.pullFilesForUpload();
-          this.onCreateNotification();
+
           this.shared.setApplicationID(0);
         }
         else {
@@ -847,12 +849,14 @@ export class NewWayleaveComponent implements OnInit {
           this.shared.setApplicationID(0);
           this.shared.clearContractorData();
           this.shared.clearEngineerData();
-          this.onCreateNotification();
+          
         }
         else {
 /*          alert(data.responseMessage);*/
         }
+        this.onCreateNotification();
         console.log("responseAddapplication", data);
+
 
         if (this.applicationID == 0) {
           this.router.navigate(["/new-wayleave"]);
@@ -911,7 +915,7 @@ export class NewWayleaveComponent implements OnInit {
         } else {
           this.router.navigate(["/home"]);
         };
-        this.onCreateNotification();
+
 //        this.shared.setApplicationID(0); //sets the applicationID back to zero when a new application is created.
 /*        return this.ARCGISAPIData.applicationID;*/
 
@@ -1543,10 +1547,10 @@ export class NewWayleaveComponent implements OnInit {
 
   onCreateNotification() {
 
-    let notificationName = "Application Created";
-    let notificationDescription = this.applicationID + " was created ";
-
-    this.notificationsService.addUpdateNotification(0, notificationName, notificationDescription, false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserId, this.applicationID).subscribe((data: any) => {
+    this.notiName = "Application Created";
+    this.notiDescription = this.applicationID + " was created ";
+    debugger;
+    this.notificationsService.addUpdateNotification(0, this.notiName, this.notiDescription, false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserId, this.applicationID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         alert(data.responseMessage);

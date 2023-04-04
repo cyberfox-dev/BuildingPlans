@@ -9,7 +9,7 @@
         public bool? IsRead { get; set; }
 
         public string? CreatedById { get; set; }
-        public int? UserID { get; set; }
+        public string? UserID { get; set; }
         public int? ApplicationID { get; set; }
 
     }

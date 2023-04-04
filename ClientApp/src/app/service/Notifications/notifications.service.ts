@@ -10,16 +10,16 @@ export class NotificationsService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public addUpdateNotification(notificationID: number | null, notificationName: string | null, notificationDescription: string | null, isRead: boolean | null, userID: number | null, createdByID: string | null, applicationID: number | null) {
-
+  public addUpdateNotification(notificationID?: number | null, notificationName?: string | null, notificationDescription?: string | null, isRead?: boolean | null, userID?: string | null, createdByID?: string | null, applicationID?: number | null) {
+    debugger;
     const body = {
-      notificationID: notificationID,
-      notificationName: notificationName,
-      notificationDescription: notificationDescription,
-      isRead: isRead,
-      userID: userID,
-      applicationID: applicationID,
-      createdByID: createdByID,
+      NotificationID: notificationID,
+      NotificationName: notificationName,
+      NotificationDescription: notificationDescription,
+      IsRead: isRead,
+      UserID: userID,
+      ApplicationID: applicationID,
+      CreatedById: createdByID,
 
     }
     return this.httpClient.post(this.baseURL + "AddUpdateNotification", body);

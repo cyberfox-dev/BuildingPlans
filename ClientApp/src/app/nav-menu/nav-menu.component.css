@@ -3,12 +3,15 @@
   color: #fff;
   margin-bottom:20px;
 }
+.cont2{
+    display:flex;
+}
 
 
 .logo {
   width: 100%;
   height: 50px;
-  cursor:pointer;
+  cursor: pointer;
 }
 
 
