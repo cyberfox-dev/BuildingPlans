@@ -435,10 +435,11 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
     //  theme: 'plain',
-   
-      
+
+
     //});
 
+    //doc.setFontSize(10);
   
 
     // Add sub-department to table
@@ -504,8 +505,9 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.setFontSize(20);
     doc.text('USE THIS REF NO: 198091735 TO MAKE EFT PAYMENTS' + '\nFOR THIS INVOICE ONLY', 150, 160, { align: 'center' });
 
+
     // Save PDF document
-    doc.save('Deposit Invoice');
+    doc.save('Deposit_Invoice_ApplicationID_' + this.DepositRequiredList[0].ApplicationID);
   }
 
 
