@@ -13,7 +13,7 @@ namespace WayleaveManagementSystem.DTO
         public string? NotificationDescription { get; set; }
         public bool? IsRead { get; set; }
 
-        public int? UserID { get; set; }
+        public string? UserID { get; set; }
         public int? ApplicationID { get; set; }
 
         public DateTime DateCreated { get; set; }
