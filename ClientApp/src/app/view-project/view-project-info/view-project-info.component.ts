@@ -775,14 +775,15 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.setFontSize(12); // add this line to set the font size
     autoTable(doc, {
       head: headers,
- /*     startY: 150,*/
+      
+   startY: 150,
       body: data,
       styles: {
         overflow: 'visible',
         halign: 'justify',
         fontSize: 10,
         valign: 'middle',
-        cellPadding:2,
+        
       },
      
       columnStyles: {
