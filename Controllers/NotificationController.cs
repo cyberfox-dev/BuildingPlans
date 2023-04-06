@@ -49,7 +49,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _notificationService.AddUpdateNotification(model.NotificationID, model.NotificationName, model.NotificationDescription, model.IsRead,model.UserID, model.ApplicationID,model.CreatedById);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.NotificationID > 0 ? "Notifications Updated Successfully" : "GL Code Added Successfully"), result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.NotificationID > 0 ? "Notifications Updated Successfully" : "Notification Added Successfully"), result));
                 }
 
             }
@@ -86,6 +86,32 @@ namespace WayleaveManagementSystem.Controllers
 
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
                  
+            }
+        }
+
+        [HttpPost("GetNotificationByUserID")]
+        public async Task<object> GetNotificationByUserID([FromBody] NotificationBindingModel model)
+        {
+            try
+            {
+
+                if (model.CreatedById.Length < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _notificationService.GetNotificationByUserID(model.CreatedById);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got all notifications for user", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
             }
         }
 

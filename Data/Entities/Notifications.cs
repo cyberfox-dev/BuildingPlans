@@ -15,5 +15,6 @@ namespace WayleaveManagementSystem.Data.Entities
         public int? ApplicationID { get; set; }
 
 
+
     }
 }

@@ -90,6 +90,26 @@ namespace WayleaveManagementSystem.Service
                 }
                 ).ToListAsync();
         }
+        public async Task<List<NotificationDTO>> GetNotificationByUserID(string? createdByID)
+        {
+            return await (
+                from Notification in _context.Notification
+                where Notification.isActive == true && Notification.CreatedById == createdByID
+                select new NotificationDTO()
+                {
+                    NotificationID = Notification.NotificationID,
+                    NotificationName = Notification.NotificationName,
+                    NotificationDescription = Notification.NotificationDescription,
+                    IsRead = Notification.IsRead,
+                    UserID = Notification.UserID,
+                    ApplicationID = Notification.ApplicationID,
+                    DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,
+                    CreatedById = Notification.CreatedById,
+                    isActive = true
+                }
+                ).ToListAsync();
+        }
 
     }
 }

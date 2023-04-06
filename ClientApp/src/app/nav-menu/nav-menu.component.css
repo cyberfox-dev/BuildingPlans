@@ -399,15 +399,7 @@ a{
   table {
     width: 100%;
   }
-/* h1 {
-  margin: 0 auto;
-  text-align: center;
-  padding-top: 138px;
-  padding-bottom: 40px;
-  color: white;
-  font-size: 50px;
-  font-weight: bold;
-} */
+
 
 h2 {
   margin: 0 auto;
@@ -416,7 +408,6 @@ h2 {
   padding-bottom: 40px;
   color: white;
   font-size: 30px;
-  /* font-weight: bold;*/
 }
 
 
@@ -470,11 +461,11 @@ body {
 }
 
 
-
-
 .box p {
   color: hsl(229, 6%, 66%);
 }
+
+
 
 .box {
   border-radius: 5px;
@@ -510,7 +501,11 @@ h3 {
   text-align: center;
   padding-top: 0;
   padding-bottom: 20px;
+  margin-right: 306px;
   font-size: 25px;
+}
+h4 {
+  color: hsl(234, 12%, 34%);
 }
 
 

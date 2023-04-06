@@ -9,6 +9,7 @@ namespace WayleaveManagementSystem.IServices
         Task<Notification> AddUpdateNotification(int? notificationID, string? notificationName, string? notificationDescription, bool? isRead, string? userID, int? applicationID, string? createdByID);
 
         Task<List<NotificationDTO>> GetNotificationByID(int? applicationID);
+        Task<List<NotificationDTO>> GetNotificationByUserID(string? createdByID);
 
 
     }

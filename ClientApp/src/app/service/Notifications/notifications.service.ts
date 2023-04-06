@@ -32,4 +32,15 @@ export class NotificationsService {
 
   }
 
+  public getNotificationByUserID(createdByID?: string) {
+
+    const body = {
+  
+      CreatedById: createdByID,
+
+    }
+    return this.httpClient.post(this.baseURL + "GetNotificationByUserID", body);
+
+  }
+
 }
