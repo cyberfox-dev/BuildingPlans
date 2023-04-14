@@ -117,7 +117,10 @@ export class SharedService {
   }
 
   getApiUrl() {
-    return "http://197.242.150.226:7123/api/";
+    return "https://localhost:7123/api/";
+
+    //this is the original ip address for venolin :)
+  /*  return "https://197.242.150.226:7123/api/";*/
   }
 
   setContactorData(data: any) {
