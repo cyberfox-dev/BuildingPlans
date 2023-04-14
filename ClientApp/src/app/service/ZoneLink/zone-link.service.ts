@@ -10,6 +10,8 @@ export class ZoneLinkService {
   
   private readonly apiUrl: string = this.sharedService.getApiUrl();
   private readonly baseURL: string = this.apiUrl + "zoneLinking/";
+
+
   constructor(private httpClient: HttpClient, private sharedService: SharedService) {}
 
 

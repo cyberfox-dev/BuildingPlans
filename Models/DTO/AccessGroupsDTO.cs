@@ -9,13 +9,11 @@ namespace WayleaveManagementSystem.Models.DTO
         //Access Groups
         public int? AccessGroupID { get; set; }
         public string? AccessGroupName { get; set; }
-
         public string? AccessGroupDescription { get; set; }
 
 
         //Role Link
         public int? AccessGroupRoleLinkID { get; set; }
-
         public int? RoleID { get; set; }
         public string? RoleName { get; set; }
 
@@ -27,6 +25,10 @@ namespace WayleaveManagementSystem.Models.DTO
 
         //Base Entity
         public string? CreatedById { get; set; }
+        public DateTime? DateCreated { get; set; }
+        public DateTime? DateUpdated { get; set; }
+        public bool? isActive { get; set; }
+
 
     }
 }

@@ -152,7 +152,7 @@ namespace WayleaveManagementSystem.Controllers
         }
 
 
-        [HttpPost("AddUpdateAccessGroupUserLink")]
+        [HttpPost("AddUpdateAccessGroupRoleLink")]
         public async Task<object> AddUpdateAccessGroupRoleLink([FromBody] AccessGroupsBindingModel model)
         {
             try
@@ -279,7 +279,7 @@ namespace WayleaveManagementSystem.Controllers
         }
 
 
-        [HttpPost("DeleteAccessGroupByID")]
+        [HttpPost("DeleteAccessGroupRoleLinkByID")]
         public async Task<object> DeleteAccessGroupRoleLinkByID([FromBody] int accessGroupRoleLinkID)
         {
             try
@@ -331,7 +331,6 @@ namespace WayleaveManagementSystem.Controllers
                     DateUpdated = accessGroups.DateUpdated,
                     AccessGroupName = accessGroups.AccessGroupName,
                     isActive = true,
-
                 }
                 ).ToListAsync();
 
@@ -351,42 +350,109 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-        //[HttpGet("GetAllAccessGroups")]
-        //public async Task<object> GetAllAccessGroups()
-        //{
-        //    try
-        //    {
-        //        var result = await (
-        //        from accessGroupRoleLink in _context.AccessGroupRoleLink
-        //        where accessGroupRoleLink.isActive == true
-        //        select new AccessGroupRoleLink()
-        //        {
-                    
-        //            AccessGroupRoleLinkID = accessGroupRoleLink.AccessGroupRoleLinkID,
-        //            AccessGroupID = accessGroupRoleLink.AccessGroupID,
-        //            CreatedById = accessGroupRoleLink.CreatedById,
-        //            DateCreated = accessGroupRoleLink.DateCreated,
-        //            DateUpdated = accessGroupRoleLink.DateUpdated,
-        //            isActive = true,
+        [HttpGet("GetAllAccessGroupRoles")]
+        public async Task<object> GetAllAccessGroupRoles()                                                       
+        {
+            try
+            {
+                var result = await (
+                from accessGroupRoleLink in _context.AccessGroupRoleLink
+                where accessGroupRoleLink.isActive == true
+                select new AccessGroupRoleLink()
+                {
 
-        //        }
-        //        ).ToListAsync();
+                    AccessGroupRoleLinkID = accessGroupRoleLink.AccessGroupRoleLinkID,
+                    AccessGroupID = accessGroupRoleLink.AccessGroupID,
+                    RoleID = accessGroupRoleLink.RoleID,
+                    RoleName = accessGroupRoleLink.RoleName,
+                    CreatedById = accessGroupRoleLink.CreatedById,
+                    DateCreated = accessGroupRoleLink.DateCreated,
+                    DateUpdated = accessGroupRoleLink.DateUpdated,
+                    isActive = true,
 
+                }
+                ).ToListAsync();
 
-
-        //        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Service Items", result));
-
-
-
-        //    }
-        //    catch (Exception ex)
-        //    {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Service Items", result));
+          }
+            catch (Exception ex)
+            {
 
 
-        //        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
 
-        //    }
-        //}
+            }
+        }
+
+        [HttpGet("GetAllAccessGroupRoles")]
+        public async Task<object> GetAllAccessGroupUsers()
+        {
+            try
+            {
+                var result = await (
+                from accessGroupUserLink in _context.AccessGroupUserLink
+                where accessGroupUserLink.isActive == true
+                select new AccessGroupUserLink()
+                {
+
+                    AccessGroupUserLinkID = accessGroupUserLink.AccessGroupUserLinkID,
+                    AccessGroupID = accessGroupUserLink.AccessGroupID,
+                    UserID = accessGroupUserLink.UserID,
+                    CreatedById = accessGroupUserLink.CreatedById,
+                    DateCreated = accessGroupUserLink.DateCreated,
+                    DateUpdated = accessGroupUserLink.DateUpdated,
+                    isActive = true,
+
+                }
+                ).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Service Items", result));
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        [HttpPost("GetAllAccessGroupRoles")]
+        public async Task<object> GetAllRolesForUser(string userID)
+        {
+            try
+            {
+
+                var accessGroupID = _context.AccessGroupUserLink.FirstOrDefault(x => x.UserID == userID)?.AccessGroupID;
+
+                var result = await (
+                from accessGroupRoleLink in _context.AccessGroupRoleLink
+                where accessGroupRoleLink.isActive == true && accessGroupRoleLink.AccessGroupID == accessGroupID
+                select new AccessGroupsDTO()
+                {
+
+                    AccessGroupRoleLinkID = accessGroupRoleLink.AccessGroupRoleLinkID,
+                    RoleID = accessGroupRoleLink.RoleID,
+                    RoleName = accessGroupRoleLink.RoleName,
+                    CreatedById = accessGroupRoleLink.CreatedById,
+                    DateCreated = accessGroupRoleLink.DateCreated,
+                    DateUpdated = accessGroupRoleLink.DateUpdated,
+                    isActive = true,
+
+                }
+                ).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Service Items", result));
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
 
 
     }
