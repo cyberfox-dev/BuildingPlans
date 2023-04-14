@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class CommentsService {
-  private readonly baseURL: string = "https://localhost:7123/api/comments/"
+  private readonly baseURL: string = "http://197.242.150.226:7123/api/comments/"
   constructor(private httpClient: HttpClient) { }
 
 

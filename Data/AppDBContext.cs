@@ -45,6 +45,10 @@ namespace WayleaveManagementSystem.Data
         public DbSet<ZoneForComment> ZoneForComment { get; set; }
         public DbSet<DepositRequired> DepositRequired { get; set; }
 
+        public DbSet<AccessGroups> AccessGroups { get; set; }
+        public DbSet<AccessGroupUserLink> AccessGroupUserLink { get; set; }
+        public DbSet<AccessGroupRoleLink> AccessGroupRoleLink { get; set; }
+
 
 
         // Virtual Db Sets for SPs go here

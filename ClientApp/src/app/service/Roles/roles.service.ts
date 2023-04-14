@@ -5,19 +5,19 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class RolesService {
-  private readonly baseURL: string = "https://localhost:7123/api/roles/"
+  private readonly baseURL: string = "http://197.242.150.226:7123/api/roles/"
   constructor(private httpClient: HttpClient) { }
 
 /*  , roleType: string | null, roleDescription: string | null, createdById: string | null*/
 
-  public addUpdateRole(roleID: string | null, roleName: string | null) {  
+  public addUpdateRole(roleID: number | null, roleName: string | null, roleType: string | null, roleDescription: string | null, createdById: string | null) {  
 
     const body = {
       RoleID: roleID,
       RoleName: roleName,
-      //RoleType: roleType,
-      //RoleDescription: roleDescription,
-      //CreatedById: createdById,
+      RoleType: roleType,
+      RoleDescription: roleDescription,
+      CreatedById: createdById,
 
     }
     return this.httpClient.post(this.baseURL + "AddUpdateRole", body);

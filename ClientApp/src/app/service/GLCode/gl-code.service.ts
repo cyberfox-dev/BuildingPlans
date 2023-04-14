@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class GlCodeService {
 
-  private readonly baseURL: string = "https://localhost:7123/api/glCode/"
+  private readonly baseURL: string = "http://197.242.150.226:7123/api/glCode/"
   constructor(private httpClient: HttpClient) { }
 
   public addUpdateGLCode(glCodeID: number | null, glCodeName: string | null, createdByID: string | null, profitCenter: string | null) {

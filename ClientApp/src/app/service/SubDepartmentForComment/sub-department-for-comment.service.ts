@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class SubDepartmentForCommentService {
 
-  private readonly baseURL: string = "https://localhost:7123/api/subDepartmentForComment/"
+  private readonly baseURL: string = "http://197.242.150.226:7123/api/subDepartmentForComment/"
 
   constructor(private httpClient: HttpClient) { }
 

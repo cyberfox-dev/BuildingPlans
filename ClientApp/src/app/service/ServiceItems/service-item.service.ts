@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class ServiceItemService {
-  private readonly baseURL: string = "https://localhost:7123/api/serviceItem/"
+  private readonly baseURL: string = "http://197.242.150.226:7123/api/serviceItem/"
   constructor(private httpClient: HttpClient) { }
 
 

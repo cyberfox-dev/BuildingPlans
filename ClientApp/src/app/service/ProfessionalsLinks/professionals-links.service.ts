@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class ProfessionalsLinksService {
-  private readonly baseURL: string = "https://localhost:7123/api/professionalslinks/"
+  private readonly baseURL: string = "http://197.242.150.226:7123/api/professionalslinks/"
 
   constructor(private httpClient: HttpClient) { }
   public addUpdateProfessionalsLink(professionalsLinkID?: number | null, applicationID?: number | null, professionalID?: number | null, createdById?: string | null) {

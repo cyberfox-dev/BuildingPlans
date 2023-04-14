@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class MandatoryDocumentUploadService {
-  private readonly baseURL: string = "https://localhost:7123/api/mandatoryDocumentUploads/"
+  private readonly baseURL: string = "http://197.242.150.226:7123/api/mandatoryDocumentUploads/"
   constructor(private httpClient: HttpClient) { }
 
   public addUpdateMandatoryDocument(mandatoryDocumentID: number | null, mandatoryDocumentName: string | null, createdByID: string | null) {

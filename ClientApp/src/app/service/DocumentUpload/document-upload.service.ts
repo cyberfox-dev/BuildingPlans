@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class DocumentUploadService {
-  private readonly baseURL: string = "https://localhost:7123/api/documentUpload/"
+  private readonly baseURL: string = "http://197.242.150.226:7123/api/documentUpload/"
 
   constructor(private httpClient: HttpClient) { }
 

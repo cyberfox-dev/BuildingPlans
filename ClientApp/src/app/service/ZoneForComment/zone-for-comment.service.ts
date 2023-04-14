@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class ZoneForCommentService {
-  private readonly baseURL: string = "https://localhost:7123/api/zoneForComment/"
+  private readonly baseURL: string = "http://197.242.150.226:7123/api/zoneForComment/"
 
   constructor(private httpClient: HttpClient) { }
 

@@ -39,38 +39,39 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
 
-                if (model == null || model.RoleName.Length < 1)
-                {
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
-                }
-
-                else
-                {
-                    if (!(await _roleManager.RoleExistsAsync(model.RoleName)))
-                    {
-                        var result = await _roleManager.CreateAsync(new IdentityRole(model.RoleName));
-                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Role Added Successfully", result));
-                    }
-                    else
-                    {
-                        //var tempRoleTable = _roleManager.FindByIdAsync(model.RoleID);
-
-                        var result = await _roleManager.UpdateAsync(new IdentityRole(model.RoleName));
-                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Role Updated Successfully", result));
-                    }
-                }
-
-             
-
+                //For Identity Roles
                 //if (model == null || model.RoleName.Length < 1)
                 //{
                 //    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 //}
+
                 //else
                 //{
-                //    var result = await _rolesService.AddUpdateRole(model.RoleID, model.RoleName, model.RoleType, model.RoleDescription, model.CreatedById);
-                //    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.RoleID > 0 ? "Role Updated Successfully" : "Role Added Successfully"), result));
+                //    if (!(await _roleManager.RoleExistsAsync(model.RoleName)))
+                //    {
+                //        var result = await _roleManager.CreateAsync(new IdentityRole(model.RoleName));
+                //        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Role Added Successfully", result));
+                //    }
+                //    else
+                //    {
+                //        //var tempRoleTable = _roleManager.FindByIdAsync(model.RoleID);
+
+                //        var result = await _roleManager.UpdateAsync(new IdentityRole(model.RoleName));
+                //        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Role Updated Successfully", result));
+                //    }
                 //}
+
+
+
+                if (model == null || model.RoleName.Length < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _rolesService.AddUpdateRole(model.RoleID, model.RoleName, model.RoleType, model.RoleDescription, model.CreatedById);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.RoleID > 0 ? "Role Updated Successfully" : "Role Added Successfully"), result));
+                }
 
             }
             catch (Exception ex)

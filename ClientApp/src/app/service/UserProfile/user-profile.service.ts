@@ -12,7 +12,7 @@ export class UserProfileService {
 
   options = { headers: this.headers };
 
-  private readonly baseURL: string = "https://localhost:7123/api/userprofile/"
+  private readonly baseURL: string = "http://197.242.150.226:7123/api/userprofile/"
 
   constructor(private httpClient: HttpClient) { }
 

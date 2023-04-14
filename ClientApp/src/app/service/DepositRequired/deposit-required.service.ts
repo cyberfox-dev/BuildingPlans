@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class DepositRequiredService {
 
-  private readonly baseURL: string = "https://localhost:7123/api/depositRequired/"
+  private readonly baseURL: string = "http://197.242.150.226:7123/api/depositRequired/"
 
   constructor(private httpClient: HttpClient) { }
 

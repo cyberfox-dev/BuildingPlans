@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class DepartmentsService {
-  private readonly baseURL: string = "https://localhost:7123/api/departments/"
+  private readonly baseURL: string = "http://197.242.150.226:7123/api/departments/"
 
   constructor(private httpClient: HttpClient) { }
 

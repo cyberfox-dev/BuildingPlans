@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class CommentBuilderService {
 
-  private readonly baseURL: string = "https://localhost:7123/api/commentBuilder/"
+  private readonly baseURL: string = "http://197.242.150.226:7123/api/commentBuilder/"
   constructor(private httpClient: HttpClient) { }
 
   /*  , roleType: string | null, roleDescription: string | null, createdById: string | null*/

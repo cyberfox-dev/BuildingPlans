@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class StagesService {
-  private readonly baseURL: string = "https://localhost:7123/api/stage/"
+  private readonly baseURL: string = "http://197.242.150.226:7123/api/stage/"
   constructor(private httpClient: HttpClient) { }
 
 

@@ -116,6 +116,9 @@ export class SharedService {
     return this.StagesList;
   }
 
+  getApiUrl() {
+    return "http://197.242.150.226:7123/api/";
+  }
 
   setContactorData(data: any) {
    

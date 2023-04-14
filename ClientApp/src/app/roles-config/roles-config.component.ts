@@ -131,7 +131,7 @@ export class RolesConfigComponent implements OnInit {
 
     this.RolesList.splice(0, this.RolesList.length);
     //, newRoleType, newRoleDescription, this.CurrentUser.appUserId
-    this.roleService.addUpdateRole(null, newRoleName).subscribe((data: any) => {
+    this.roleService.addUpdateRole(0, newRoleName, newRoleType, newRoleDescription, this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         alert(data.responseMessage);
