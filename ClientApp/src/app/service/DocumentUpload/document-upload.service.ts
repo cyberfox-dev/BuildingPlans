@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { SharedService } from 'src/app/shared/shared.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DocumentUploadService {
-  private readonly baseURL: string = "http://197.242.150.226:7123/api/documentUpload/"
 
-  constructor(private httpClient: HttpClient) { }
+  private readonly apiUrl: string = this.sharedService.getApiUrl();
+  private readonly baseURL: string = this.apiUrl + "documentUpload/";
+
+
+  constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
   public addUpdateDocument(documentID?: number | null, documentName?: string | null, documentLocalPath?: any | null, applicationID?: number | null, assignedUserID?: string | null, createdById?: string | null ) {
     const body = {

@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { SharedService } from 'src/app/shared/shared.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RolesService {
-  private readonly baseURL: string = "http://197.242.150.226:7123/api/roles/"
-  constructor(private httpClient: HttpClient) { }
+
+  private readonly apiUrl: string = this.sharedService.getApiUrl();
+  private readonly baseURL: string = this.apiUrl + "roles/";
+
+  constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
 /*  , roleType: string | null, roleDescription: string | null, createdById: string | null*/
 

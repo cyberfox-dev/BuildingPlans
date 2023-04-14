@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { SharedService } from 'src/app/shared/shared.service';
 
 
 @Injectable({
@@ -12,9 +13,12 @@ export class UserProfileService {
 
   options = { headers: this.headers };
 
-  private readonly baseURL: string = "http://197.242.150.226:7123/api/userprofile/"
+  private readonly apiUrl: string = this.sharedService.getApiUrl();
+  private readonly baseURL: string = this.apiUrl + "userprofile/";
 
-  constructor(private httpClient: HttpClient) { }
+
+
+  constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
   public addUpdateUserProfiles(userProfileID: number | null, userID: string | null, fullName: string, email: string, phoneNumber: string | null, isInternal: boolean, bp_Number: string | null, companyName: string | null, companyRegNo: string | null, physcialAddress: string | null, directorate: string | null, departmentID: number | null, subDepartmentID: number | null, branch: string | null, costCenterNumber: string | null, costCenterOwner: string | null, copyOfID: any | null,createdById: string | null,idNumber: string |null) {
 

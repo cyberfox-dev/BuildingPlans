@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { SharedService } from 'src/app/shared/shared.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ZonesService {
-  private readonly baseURL: string = "http://197.242.150.226:7123/api/zones/"
-  constructor(private httpClient: HttpClient) { }
+
+  private readonly apiUrl: string = this.sharedService.getApiUrl();
+  private readonly baseURL: string = this.apiUrl + "zones/";
+
+  constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
 
   public addUpdateZone(zoneID: number, zoneName: string | null, departmentID: number, subDepartmentID: number | null, createdById: string | null) {
