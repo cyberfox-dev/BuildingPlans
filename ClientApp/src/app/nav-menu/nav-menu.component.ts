@@ -249,7 +249,7 @@ export class NavMenuComponent implements OnInit {
   goToCyberfoxCofig() {
     this.router.navigate(["/cyberfox-config"]);
   }
-
+/*This is to open the comment buider modal*/
   openCommentBuilder(commentBuilder:any) {
     this.modalService.open(commentBuilder, { centered:true,size: 'xl' });
   }
@@ -257,6 +257,7 @@ export class NavMenuComponent implements OnInit {
   closeCommentBuilder(commentBuilder: any) {
     this.modalService.dismissAll(commentBuilder);
   }
+/*this is to open the notifications modal*/
 
   openNotificationsModal(notificationsCenter: any) {
     this.notiBell = false;
