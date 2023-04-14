@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { SharedService } from 'src/app/shared/shared.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationsService {
 
-  private readonly baseURL: string = "http://197.242.150.226:7123/api/notification/"
+  private readonly apiUrl: string = this.sharedService.getApiUrl();
+  private readonly baseURL: string = this.apiUrl + "notification/";
 
-  constructor(private httpClient: HttpClient) { }
+
+  constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
   public addUpdateNotification(notificationID?: number | null, notificationName?: string | null, notificationDescription?: string | null, isRead?: boolean | null, userID?: string | null, createdByID?: string | null, applicationID?: number | null) {
     debugger;

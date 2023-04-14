@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
+import { SharedService } from 'src/app/shared/shared.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommentsService {
-  private readonly baseURL: string = "http://197.242.150.226:7123/api/comments/"
-  constructor(private httpClient: HttpClient) { }
+
+  private readonly apiUrl: string = this.sharedService.getApiUrl();
+  private readonly baseURL: string = this.apiUrl + "comments/";
+
+  constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
 
   public addUpdateComment(commentID: string | null, commentName: string | null, createdByID: string | null)

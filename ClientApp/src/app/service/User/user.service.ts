@@ -1,12 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { SharedService } from 'src/app/shared/shared.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private readonly baseURL: string = "http://197.242.150.226:7123/api/user/"
-  constructor(private httpClient: HttpClient) { }
+
+  private readonly apiUrl: string = this.sharedService.getApiUrl();
+  private readonly baseURL: string = this.apiUrl + "user/";
+
+
+
+  constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
 
   public login(email: string | null, password: string | null) {
