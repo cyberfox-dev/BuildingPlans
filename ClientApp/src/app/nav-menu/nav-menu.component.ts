@@ -249,7 +249,7 @@ export class NavMenuComponent implements OnInit {
   goToCyberfoxCofig() {
     this.router.navigate(["/cyberfox-config"]);
   }
-
+/*This is to open the comment buider modal*/
   openCommentBuilder(commentBuilder:any) {
     this.modalService.open(commentBuilder, { centered:true,size: 'xl' });
   }
@@ -257,6 +257,7 @@ export class NavMenuComponent implements OnInit {
   closeCommentBuilder(commentBuilder: any) {
     this.modalService.dismissAll(commentBuilder);
   }
+/*this is to open the notifications modal*/
 
   openNotificationsModal(notificationsCenter: any) {
     this.notiBell = false;
@@ -275,7 +276,7 @@ export class NavMenuComponent implements OnInit {
 
   collapse() {
     this.isExpanded = false;
-  }
+  } 
 
   toggle() {
     this.isExpanded = !this.isExpanded;
@@ -300,10 +301,10 @@ export class NavMenuComponent implements OnInit {
   }
 
   getAllNotifications() {
-    this.applica = 1;
+    this.applica = 3023;
 
-    this.NotificationsList.splice(0,this.NotificationsList.length);
-    this.notificationsService.getNotificationByID(this.applica).subscribe((data: any) => {
+    this.NotificationsList.splice(0, this.NotificationsList.length);
+    this.notificationsService.getNotificationByUserID(this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
@@ -334,5 +335,4 @@ export class NavMenuComponent implements OnInit {
 
 
   
-
 }

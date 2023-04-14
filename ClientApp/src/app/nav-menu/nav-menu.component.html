@@ -29,11 +29,10 @@
 
 
 
-
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let i = index">
-
+          
           <button mat-raised-button color="blue" matTooltip="Edit comment" (click)="viewEditComment(editComment,i)"><i class="fa fa-pencil"></i></button>
           <button mat-raised-button color="warn" matTooltip="Delete comment" (click)="onCommentDelete(i,commentBuilder);modal.dismiss('Cross click')"><i class="fa fa-trash"></i></button>
 
@@ -160,9 +159,9 @@
           <div class="box box-down blue">
             <div class="cont2">
             <h3>{{notificationsList.NotificationName}}</h3>
-            <h4>{{notificationsList.ApplicationID}}</h4>
+            <h4>Application {{notificationsList.ApplicationID}}</h4>
               </div>
-              <p>{{notificationsList.NotificationDescription}} on {{notificationsList.DateCreated}}</p>
+            <p>Application {{notificationsList.NotificationDescription}} on {{notificationsList.DateCreated}}</p>
           </div>
         </div>
   </div>

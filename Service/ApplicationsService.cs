@@ -252,7 +252,7 @@ namespace WayleaveManagementSystem.Service
             {
                 return await (
                    from Applications in _context.Application
-                   where Applications.isActive == true
+                   where Applications.isActive == true && Applications.FullName != ""
                    orderby Applications.DateCreated descending
                    select new ApplicationsDTO()
                    {
