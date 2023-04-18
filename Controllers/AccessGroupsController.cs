@@ -176,7 +176,8 @@ namespace WayleaveManagementSystem.Controllers
                     {
                         tempAccessGroup = new AccessGroupRoleLink()
                         {
-                            RoleID = (int)model.RoleID,
+                            AccessGroupID = model.AccessGroupID,
+                            RoleID = model.RoleID,
                              RoleName = model.RoleName,
                             CreatedById = model.CreatedById,
                             DateCreated = DateTime.Now,
@@ -191,7 +192,7 @@ namespace WayleaveManagementSystem.Controllers
                     }
                     else
                     {
-                        tempAccessGroup.RoleID = (int)model.RoleID;
+                        tempAccessGroup.RoleID = model.RoleID;
                         tempAccessGroup.RoleName = model.RoleName;
                         tempAccessGroup.DateUpdated = DateTime.Now;
 
@@ -418,7 +419,7 @@ namespace WayleaveManagementSystem.Controllers
         }
 
         [HttpPost("GetAllAccessGroupRoles")]
-        public async Task<object> GetAllRolesForUser(string userID)
+        public async Task<object> GetAllRolesForUser([FromBody] string userID)
         {
             try
             {

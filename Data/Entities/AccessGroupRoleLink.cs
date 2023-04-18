@@ -6,8 +6,8 @@ namespace WayleaveManagementSystem.Data.Entities
     {
         [Key]
         public int AccessGroupRoleLinkID { get; set; }
-        public int AccessGroupID { get; set; }
-        public int RoleID { get; set; }
+        public int? AccessGroupID { get; set; }
+        public int? RoleID { get; set; }
         public string? RoleName { get; set; }
 
          

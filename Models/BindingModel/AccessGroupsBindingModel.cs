@@ -4,7 +4,7 @@
     {
 
         //Access Groups
-        public int? AccessGroupID { get; set; }
+        public int? AccessGroupID { get; set; } // this is also shareed across all 3 tables
         public string? AccessGroupName { get; set; }
 
         public string? AccessGroupDescription { get; set; }
