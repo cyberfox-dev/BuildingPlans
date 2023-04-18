@@ -30,10 +30,58 @@ table {
   width: 261px;
   height: 44px;
 }
+.mat-reffer {
+  margin: 10px;
+  background-color: #36a5f4;
+  color: #fff;
+  width: 261px;
+  height: 44px;
+}
 .mat-green {
   /* margin-bottom: 10px; */
   background-color: #00c023;
   color: #fff;
+  width:100%;
+  /* margin-bottom: 32px; */
+}
+
+.mat-approveBTN {
+  /* margin-bottom: 10px; */
+  background-color: #00c023;
+  color: #fff;
+  width: 100%;
+  height: 40px;
+  margin:10px;
+  /* margin-bottom: 32px; */
+}
+
+.mat-rejectBTN {
+  /* margin-bottom: 10px; */
+  background-color: #e72121;
+  color: #fff;
+  width: 100%;
+  height: 40px;
+  margin:20px;
+  /* margin-bottom: 32px; */
+}
+
+.mat-clarifyBTN {
+  /* margin-bottom: 10px; */
+  background-color: #fb9e10;
+  color: #fff;
+  width: 100%;
+  height: 40px;
+  marrgin:20px;
+  /* margin-bottom: 32px; */
+}
+
+.mat-referBTN {
+  /* margin-bottom: 10px; */
+  background-color: #0096c0;
+  color: #fff;
+  width: 100%;
+  height: 40px;
+  margin:20px;
   /* margin-bottom: 32px; */
 }
 .mat-purple {
@@ -44,8 +92,22 @@ table {
   height: 44px;
   font-size:16px;
 }
-.cont2{
-    display:flex;
+.mat-orange {
+  margin: 10px;
+  background-color: #9a38ff;
+  color: #fff;
+  width: 50px;
+  height: 44px;
+  font-size: 16px;
+}
+.cont2 {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  align-content: space-around;
+  padding:5px;
 }
 ::ng-deep.mat-menu-panel {
   max-width: none !important;

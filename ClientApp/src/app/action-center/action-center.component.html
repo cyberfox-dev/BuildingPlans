@@ -15,9 +15,30 @@
       <button mat-raised-button color="blue" (click)="openAssignDepartment(assign)">Assign a Department to this project</button>
       <button mat-raised-button color="blue" *ngIf="AssignProjectToZone == true" (click)="openAssignToZone(assignProjectToZone)">Assign this project to a zone</button>
       <button mat-raised-button color="blue" *ngIf="AssignUserForComment == true" (click)="openAssignToUser(assignProjectToUser)">Assign this project to a user manually</button>
-   <!-- <button mat-raised-button color="blue" *ngIf="hopperButton == true" (click)="onHopperClick()">Hopper</button>-->
+      <!-- <button mat-raised-button color="blue" *ngIf="hopperButton == true" (click)="onHopperClick()">Hopper</button>-->
     </div>
-    <mat-accordion>
+
+
+    <mat-divider></mat-divider>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Type new comment</mat-label>
+      <textarea matInput placeholder="Eg. This is good"></textarea>
+
+    </mat-form-field>
+    <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()"><i class="fa fa-comment" aria-hidden="true"></i></button>
+    <mat-menu #menu="matMenu" xPosition="before">
+      <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>
+
+    </mat-menu>
+
+    <div class="cont2">
+      <button mat-raised-button color="approveBTN"><i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true"></i>  Approve</button>
+      <button mat-raised-button color="rejectBTN"><i class="fa fa-thumbs-down redThumbsDown" aria-hidden="true"></i>  Reject</button>
+      <button mat-raised-button color="clarifyBTN"><i class="fa fa-commenting-o orangeSpeech" aria-hidden="true"></i>  Clarify</button>
+      <button mat-raised-button color="referBTN"><i class="fa fa-retweet blueRefer" aria-hidden="true"></i>  Refer</button>
+    </div>
+    <!--    <mat-accordion>
 
 
 
@@ -118,11 +139,11 @@
 
         </mat-menu>
         <div class="cont3">
-          <button type="button" class="btn btn-info "  (click)="onComment('Refer')">Refer</button>
+          <button type="button" class="btn btn-info " (click)="onComment('Refer')">Refer</button>
         </div>
       </mat-expansion-panel>
 
-    </mat-accordion>
+    </mat-accordion>-->
 
   </div>
 
