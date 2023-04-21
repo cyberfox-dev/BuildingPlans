@@ -17,6 +17,10 @@ button {
   background-color: #2dd568;
   color: #fff;
 }
+.mat-orange {
+  background-color: #ebc11d;
+  color: #fff;
+}
 
 .mat-blue {
   background-color: #369cf4;
@@ -71,4 +75,9 @@ table {
 .checked {
   background-color: limegreen;
   color: white;
+}
+
+.mat-form-field {
+  margin-top: 10px;
+  width: 100%;
 }

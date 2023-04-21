@@ -192,7 +192,7 @@ export class AccessGroupsConfigComponent implements OnInit {
         }
         this.InternalUserProfileListTable?.renderRows();
 
-        this.modalService.open(addUserToAccessGroup, { centered: true, size: 'lg' });
+        this.modalService.open(addUserToAccessGroup, { centered: true, size: 'xl' });
 
         console.log("InternalUserProfileListInternalUserProfileListInternalUserProfileListInternalUserProfileListInternalUserProfileList", this.InternalUserProfileList);
       }
@@ -204,6 +204,18 @@ export class AccessGroupsConfigComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
+  }
+
+  openAddrolesToAccessGroup(addRolesToAccessGroup) {
+    this.modalService.open(addRolesToAccessGroup, { centered: true, size: 'xl' });
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSourceAddUser.filter(user => user.FullName.toLowerCase().includes(filterValue.trim().toLowerCase()));
+    this.InternalUserProfileListTable?.renderRows();
+
+    // console.log("this is what it is filtering", this.dataSourceLinkUsers.filter(user => user.fullName.toLowerCase().includes(filterValue.trim().toLowerCase())));
   }
 
 
