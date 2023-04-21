@@ -43,7 +43,8 @@ export interface CommentsList {
   ApplicationID: number;
   Comment: string;
   CommentStatus: string;
-  SubDepartmentForCommentID: number
+  SubDepartmentForCommentID: number;
+  SubDepartmentName?: string;
 
 }
 
@@ -248,6 +249,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getAllComments() {
+    debugger;
     this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -260,6 +262,7 @@ export class ViewProjectInfoComponent implements OnInit {
           tempCommentList.CommentID = current.commentID;
           tempCommentList.CommentStatus = current.commentStatus;
           tempCommentList.SubDepartmentForCommentID = current.subDepartmentForCommentID;
+          tempCommentList.SubDepartmentName = current.subDepartmentName;
  
 
           this.CommentsList.push(tempCommentList);

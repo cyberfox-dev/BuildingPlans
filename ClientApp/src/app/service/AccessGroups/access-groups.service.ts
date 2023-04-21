@@ -98,4 +98,10 @@ export class AccessGroupsService {
 
   }
 
+  public getAllNotLinkedUsers(accessGroupID: number) {
+
+    return this.httpClient.post(this.baseURL + "GetAllNotLinkedUsers", accessGroupID);
+
+  }
+
 }

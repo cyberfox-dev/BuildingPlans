@@ -283,7 +283,7 @@ export class DepartmentConfigComponent implements OnInit {
 
 
   onDepartmentUserLink() {
-    ;
+
     let SubDemartmentID = Number(this.setSubAdmin.controls["SetSubDemartmentAdmin"].value);
     if (SubDemartmentID != 0) {
 

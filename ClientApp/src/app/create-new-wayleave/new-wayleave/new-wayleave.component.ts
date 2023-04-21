@@ -307,6 +307,10 @@ export class NewWayleaveComponent implements OnInit {
   //CoverLetterFileName = "Choose file";
 
 
+  fileAttrs: string[] = [];
+
+
+
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSourceLinkUsers.filter(user => user.fullName.toLowerCase().includes(filterValue.trim().toLowerCase()));
@@ -1416,10 +1420,18 @@ export class NewWayleaveComponent implements OnInit {
   }
 
 
-  onPassFileName = (CoverLetterFileName: any) => {
-    this.CoverLetterChooseFileText = CoverLetterFileName;
-
+  onPassFileName(event: { uploadFor: string; fileName: string }) {
+    const { uploadFor, fileName } = event;
+    const index = parseInt(uploadFor.substring('CoverLetter'.length));
+    this.fileAttrs[index] = fileName;
   }
+
+  //onPassFileName = (CoverLetterFileName: any) => {
+  //  this.CoverLetterChooseFileText = CoverLetterFileName;
+
+  //}
+
+
 
   getMandatoryDocsForCaptureStage() {
   
