@@ -14,3 +14,7 @@ h1 {
   margin-top: 152px;
   padding-bottom: 206px;
 }
+
+mat-slider {
+  width: 300px;
+}

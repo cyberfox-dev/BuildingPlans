@@ -696,6 +696,9 @@ export class ActionCenterComponent implements OnInit {
   openAssignDepartment(assign: any) {
     this.modalService.open(assign, { backdrop: 'static', size: 'xl' });
   }
+  openDepositOrWBSOption(depositOrWBSNumber: any) {
+    this.modalService.open(depositOrWBSNumber, { centered: true });
+  }
 
   uncheck() {
     this.checked = false;
