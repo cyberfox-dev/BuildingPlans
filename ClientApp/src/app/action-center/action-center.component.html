@@ -18,12 +18,12 @@
       <!-- <button mat-raised-button color="blue" *ngIf="hopperButton == true" (click)="onHopperClick()">Hopper</button>-->
     </div>
 
-
+    <br>
     <mat-divider></mat-divider>
-
+    <br>
     <mat-form-field class="example-full-width">
       <mat-label>Type new comment</mat-label>
-      <textarea matInput placeholder="Eg. This is good"></textarea>
+      <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good"></textarea>
 
     </mat-form-field>
     <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()"><i class="fa fa-comment" aria-hidden="true"></i></button>
@@ -33,117 +33,12 @@
     </mat-menu>
 
     <div class="cont2">
-      <button mat-raised-button color="approveBTN"><i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true"></i>  Approve</button>
+      <button mat-raised-button color="approveBTN" (click)="openDepositOrWBSOption(depositOrWBSNumber)"><i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true"></i>  Approve</button>
       <button mat-raised-button color="rejectBTN"><i class="fa fa-thumbs-down redThumbsDown" aria-hidden="true"></i>  Reject</button>
       <button mat-raised-button color="clarifyBTN"><i class="fa fa-commenting-o orangeSpeech" aria-hidden="true"></i>  Clarify</button>
       <button mat-raised-button color="referBTN"><i class="fa fa-retweet blueRefer" aria-hidden="true"></i>  Refer</button>
     </div>
-    <!--    <mat-accordion>
 
-
-
-      <mat-divider></mat-divider>
-
-      <mat-expansion-panel (opened)="panelOpenState = true"
-                           (closed)="panelOpenState = false" class="approve">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Approve
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-
-
-
-        <mat-form-field class="example-full-width">
-          <mat-label>Leave a comment</mat-label>
-          <textarea [(ngModel)]="leaveAComment" matInput autocomplete="off"></textarea>
-        </mat-form-field>
-        <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()"><i class="fa fa-comment" aria-hidden="true"></i></button>
-        <mat-menu #menu="matMenu" xPosition="before">
-          <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>
-
-        </mat-menu>
-
-
-
-
-        <div class="cont3">
-          <button mat-raised-button color="green" (click)="onComment('Approve')">Approve</button>
-          <mat-checkbox class="example-margin" [(ngModel)]="checked" (click)="depositReqModal(deposit)">Deposit Required</mat-checkbox>
-        </div>
-
-      </mat-expansion-panel>
-      <mat-expansion-panel (opened)="panelOpenState = true"
-                           (closed)="panelOpenState = false" class="reject">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Reject
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-
-
-        <mat-form-field class="example-full-width">
-          <mat-label>Leave a comment</mat-label>
-          <textarea [(ngModel)]="leaveAComment" matInput autocomplete="off"></textarea>
-        </mat-form-field>
-        <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()"><i class="fa fa-comment" aria-hidden="true"></i></button>
-        <mat-menu #menu="matMenu" xPosition="before">
-          <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>
-
-        </mat-menu>
-        <div class="cont3">
-          <button type="button" class="btn btn-danger" (click)="onComment('Reject')">Reject</button>
-        </div>
-
-      </mat-expansion-panel>
-
-      <mat-expansion-panel (opened)="panelOpenState = true"
-                           (closed)="panelOpenState = false" class="clarify">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Clarify
-          </mat-panel-title>
-
-        </mat-expansion-panel-header>
-
-        <mat-form-field class="example-full-width">
-          <mat-label>Leave a comment</mat-label>
-          <textarea [(ngModel)]="leaveAComment" matInput autocomplete="off"></textarea>
-        </mat-form-field>
-        <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()"><i class="fa fa-comment" aria-hidden="true"></i></button>
-        <mat-menu #menu="matMenu" xPosition="before">
-          <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>
-
-        </mat-menu>
-        <div class="cont3">
-          <button type="button" class="btn btn-warning" (click)="onComment('Clarify')">Clarify</button>
-        </div>
-
-      </mat-expansion-panel>
-
-      <mat-expansion-panel (opened)="panelOpenState = true"
-                           (closed)="panelOpenState = false" class="escalate">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Refer
-          </mat-panel-title>
-
-        </mat-expansion-panel-header>
-        <mat-form-field class="example-full-width">
-          <mat-label>Leave a comment</mat-label>
-          <textarea [(ngModel)]="leaveAComment" matInput autocomplete="off"></textarea>
-        </mat-form-field>
-        <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()"><i class="fa fa-comment" aria-hidden="true"></i></button>
-        <mat-menu #menu="matMenu" xPosition="before">
-          <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>
-
-        </mat-menu>
-        <div class="cont3">
-          <button type="button" class="btn btn-info " (click)="onComment('Refer')">Refer</button>
-        </div>
-      </mat-expansion-panel>
-
-    </mat-accordion>-->
 
   </div>
 
@@ -412,6 +307,27 @@
   </div>
   <div class="modal-footer">
     <button type="submit" class="btn btn-outline-success" (click)="onManuallyAssignUser();modal.close('Save click')">Save</button>
+  </div>
+
+</ng-template>
+
+
+<ng-template #depositOrWBSNumber let-modal>
+  <div class="modal-header">
+    <h1 class="modal-title">Approve</h1>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+
+
+      <h3>Do you want to add a deposit required ?</h3>
+      <h3>Do you want to add a WBS Number ?</h3>
+      <div class="cont3">
+        <button mat-button>No</button>
+        <button mat-raised-button (click)="depositReqModal(deposit)">Yes</button> 
+
+      </div>
+    
   </div>
 
 </ng-template>

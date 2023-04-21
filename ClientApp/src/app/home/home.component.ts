@@ -81,6 +81,15 @@ export class HomeComponent implements OnInit,OnDestroy {
   stringifiedData: any;
     stringifiedDataUserProfile: any;
   CurrentUserProfile: any;
+
+
+  unpaidcount = 0;
+  distributioncount = 0;
+  approveCount = 0;
+  EMBcount = 0;
+  rejectCount = 0;
+
+
   constructor(private router: Router, private applicationService: ApplicationsService, private sharedService: SharedService, private viewContainerRef: ViewContainerRef, private stagesService: StagesService, private NewWayleaveComponent: NewWayleaveComponent) {
 
   }
@@ -102,7 +111,11 @@ export class HomeComponent implements OnInit,OnDestroy {
 
       this.getAllApplicationsByUserID();
       this.getAllStages();
+
+
     }, 100);
+
+    
 
   }
 
@@ -183,6 +196,11 @@ export class HomeComponent implements OnInit,OnDestroy {
         else {
           alert(data.responseMessage);
         }
+        this.countUnpaid();
+        this.countDistributed();
+        this.countApproved();
+        this.countEMBStage();
+        this.countRejection();
       })
     }
     else {
@@ -248,19 +266,28 @@ export class HomeComponent implements OnInit,OnDestroy {
           }
 
           this.applicationsTable?.renderRows();
-
+       
 
           console.log("Got all applications", data.dateSet);
+          
         }
         else {
           alert(data.responseMessage);
         }
+        this.countUnpaid();
+        this.countDistributed();
+        this.countApproved();
+        this.countEMBStage();
+        this.countRejection();
+
       })
     }
 
-   
+    
    
   }
+
+
 
 
   getAllStages() {
@@ -321,4 +348,74 @@ export class HomeComponent implements OnInit,OnDestroy {
     this.viewContainerRef.clear();
 
   }
+
+  countUnpaid() {
+
+    for (var i = 0; i < this.applicationDataForView.length; i++) {
+      const current = this.applicationDataForView[i];
+      if (current.ApplicationStatus == "Unpaid") {
+        this.unpaidcount++;
+
+      }  
+    }
+  }
+
+  countDistributed() {
+
+    for (var i = 0; i < this.applicationDataForView.length; i++) {
+      const current = this.applicationDataForView[i];
+      if (current.ApplicationStatus == "Distributing" || current.ApplicationStatus == "Distributed/Unallocated" ) {
+        this.distributioncount++;
+
+      }
+    }
+  }
+
+  countApproved() {
+
+    for (var i = 0; i < this.applicationDataForView.length; i++) {
+      const current = this.applicationDataForView[i];
+      if (current.ApplicationStatus == "Approved" || current.ApplicationStatus == "Final Approval") {
+        this.approveCount++;
+
+      }
+    }
+  }
+
+
+  countEMBStage() {
+
+    for (var i = 0; i < this.applicationDataForView.length; i++) {
+      const current = this.applicationDataForView[i];
+      if (current.ApplicationStatus == "EMB") {
+        this.EMBcount++;
+
+      }
+    }
+  }
+
+  countRejection() {
+
+    for (var i = 0; i < this.applicationDataForView.length; i++) {
+      const current = this.applicationDataForView[i];
+      if (current.ApplicationStatus == "Rejected") {
+        this.rejectCount++;
+
+      }
+    }
+  }
+
+
+/*  paid
+  approved
+  final approval
+  EMB
+  and then approved or rejected*/
+
+/*  unpaidcount = 0;
+  distributioncount = 0;
+  approveCount = 0;
+  EMBcount = 0;
+  rejectCount = 0;*/
+
 }
