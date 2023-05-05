@@ -12,7 +12,7 @@ namespace WayleaveManagementSystem.Service
 {
     public class ApplicationsService : IApplicationsService
     {
-        private readonly AppDBContext _context;
+        private readonly AppDBContext _context ;
 
         public ApplicationsService(AppDBContext context)
         {
@@ -244,6 +244,7 @@ namespace WayleaveManagementSystem.Service
         }
 
 
+
         //this method gets all the applications linked to a partcular user
         //We use DTO (a cutom list) because we may pull custom data from the database at some point, otherwise, we can just use the existing list.
         public async Task<List<ApplicationsDTO>> GetApplicationsList(string userId,bool isInternal)
@@ -285,7 +286,8 @@ namespace WayleaveManagementSystem.Service
                        CurrentStageStartDate = Applications.CurrentStageStartDate,
                        NextStageName = Applications.NextStageName,
                        NextStageNumber = Applications.NextStageNumber,  
-                       PreviousStageNumber = Applications.PreviousStageNumber   
+                       PreviousStageNumber = Applications.PreviousStageNumber,   
+                 
                        
                    }
                    ).ToListAsync();

@@ -15,6 +15,11 @@ h1 {
   padding-bottom: 206px;
 }
 
-mat-slider {
-  width: 300px;
+
+.mat-success {
+  background-color: #2dd568;
+  color: #fff;
+}
+.cont2{
+    margin-bottom:10px;
 }

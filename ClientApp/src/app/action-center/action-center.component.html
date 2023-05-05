@@ -38,7 +38,8 @@
       <button mat-raised-button color="clarifyBTN"><i class="fa fa-commenting-o orangeSpeech" aria-hidden="true"></i>  Clarify</button>
       <button mat-raised-button color="referBTN"><i class="fa fa-retweet blueRefer" aria-hidden="true"></i>  Refer</button>
     </div>
-
+    <div class="cont3">
+      </div>
 
   </div>
 
@@ -330,4 +331,22 @@
     
   </div>
 
+</ng-template>
+
+
+<!--This is for the wbs number-->
+
+<ng-template #wbsNumberModal let-modal>
+  <div class="modal-header">
+    <h1 class="modal-title">WBS Number</h1>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" formControlName="wbsnumber" placeholder="wbsnumber">
+      <label for="wbsnumber">WBS Number</label>
+    </div>
+
+  </div>
 </ng-template>

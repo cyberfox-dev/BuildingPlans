@@ -38,6 +38,11 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public bool isDrafted { get; set; }
 
+        //for showing/hiding the escalate button
+
+
+
+
         /*Application Status Logic
         Verification Stage
         Unpaid

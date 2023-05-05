@@ -41,5 +41,7 @@ namespace WayleaveManagementSystem.Models.DTO
         public int? NextStageNumber { get; set; }
 
         public string? ApplicationStatus { get; set; }
+
+        public int? escalateDate { get; set; }
     }
 }

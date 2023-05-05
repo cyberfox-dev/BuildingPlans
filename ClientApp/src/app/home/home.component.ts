@@ -88,6 +88,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   approveCount = 0;
   EMBcount = 0;
   rejectCount = 0;
+  filter = false;
 
 
   constructor(private router: Router, private applicationService: ApplicationsService, private sharedService: SharedService, private viewContainerRef: ViewContainerRef, private stagesService: StagesService, private NewWayleaveComponent: NewWayleaveComponent) {
@@ -417,5 +418,63 @@ export class HomeComponent implements OnInit,OnDestroy {
   approveCount = 0;
   EMBcount = 0;
   rejectCount = 0;*/
+
+
+  filterByUnpaid() {
+    if (this.filter == false) {
+      this.dataSource = this.Applications.filter(df => df.ApplicationStatus == "Unpaid");
+      this.filter = true;
+    }
+    else {
+      this.dataSource = this.Applications.filter(df => df.DateCreated);
+      this.filter = false;
+    }
+
+  }
+
+  filterByDistribution() {
+    if (this.filter == false) {
+      this.dataSource = this.Applications.filter(df => df.ApplicationStatus == "Distributing" || df.ApplicationStatus == "Distributed/Unallocated");
+      this.filter = true;
+    }
+    else {
+      this.dataSource = this.Applications.filter(df => df.DateCreated);
+      this.filter = false;
+    }
+  }
+
+    filterByApproved() {
+      if (this.filter == false) {
+        this.dataSource = this.Applications.filter(df => df.ApplicationStatus == "Approved" || df.ApplicationStatus == "Final Approval");
+        this.filter = true;
+      }
+      else {
+        this.dataSource = this.Applications.filter(df => df.DateCreated);
+        this.filter = false;
+      }
+  }
+
+  filterByRejected() {
+    if (this.filter == false) {
+      this.dataSource = this.Applications.filter(df => df.ApplicationStatus == "Rejected");
+      this.filter = true;
+    }
+    else {
+      this.dataSource = this.Applications.filter(df => df.DateCreated);
+      this.filter = false;
+    }
+  }
+
+  filterByWIP() {
+    if (this.filter == false) {
+      this.dataSource = this.Applications.filter(df => df.ApplicationStatus == "EMB");
+      this.filter = true;
+    }
+    else {
+      this.dataSource = this.Applications.filter(df => df.DateCreated);
+      this.filter = false;
+    }
+  }
+
 
 }

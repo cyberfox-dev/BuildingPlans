@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-cyberfox-config',
@@ -7,11 +8,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CyberfoxConfigComponent implements OnInit {
 
-  constructor() { }
+
+  public addEscalateDate = this.formBuilder.group({
+    escalateDate: ['', Validators.required],
+
+
+  })
+
+  constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
   }
 
+
+  onEscalateDateSubmit(){
+
+}
 
 
 }

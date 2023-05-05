@@ -18,10 +18,16 @@
 
       <div class="cont2">
 
-        <div class="card">
 
-        </div>
+        <form [formGroup]="addEscalateDate" (ngSubmit)="onEscalateDateSubmit()">
 
+          <div class="form-floating mb-3 mt-3">
+            <input type="number" class="form-control" formControlName="escalateDate" id="escalateDate" placeholder="Enter a date">
+            <label for="escalateDate"> Please enter how many days until a project can be esclated</label>
+          </div>
+        </form>
+
+        <button type="button" mat-raised-button color="success" (click)="onEscalateDateSubmit()">Save</button>
       </div>
 
     </mat-tab>

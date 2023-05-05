@@ -8,7 +8,7 @@ namespace WayleaveManagementSystem.Data.Migrations
     public partial class AccessGroups : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
-        {
+        {/*
             migrationBuilder.CreateTable(
                 name: "AccessGroupRoleLink",
                 columns: table => new
@@ -62,19 +62,19 @@ namespace WayleaveManagementSystem.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AccessGroupUserLink", x => x.AccessGroupUserLinkID);
-                });
+                });*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+           /* migrationBuilder.DropTable(
                 name: "AccessGroupRoleLink");
 
             migrationBuilder.DropTable(
                 name: "AccessGroups");
 
             migrationBuilder.DropTable(
-                name: "AccessGroupUserLink");
+                name: "AccessGroupUserLink");*/
         }
     }
 }
