@@ -126,7 +126,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _commentService.GetSubDepByCommentStatus(model.CommentStatus);
+                    var result = await _commentService.GetSubDepByCommentStatus(model.CommentStatus, model.ApplicationID);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Comments List Created", result));
                 }
 

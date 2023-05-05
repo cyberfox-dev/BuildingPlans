@@ -684,7 +684,7 @@ export class ViewProjectInfoComponent implements OnInit {
   getAllSubDepFroConditionalApprove() {
     let commentS = "Approved(Conditional)";
 
-    this.commentsService.getSubDepByCommentStatus(commentS).subscribe((data: any) => {
+    this.commentsService.getSubDepByCommentStatus(commentS, this.ApplicationID).subscribe((data: any) => {
 
 
       if (data.responseCode == 1) {
@@ -760,9 +760,10 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.text('Wayleave Approval Pack', 105, 40, { align: 'center' });
     doc.setLineHeightFactor(60);
 
+
   
     doc.setFontSize(10);
-    doc.text('Dear ' + this.CurrentUser.appUserID + ', Your application has been approved by all departments. But on condition by the following departments:Our company recently developed a cutting-edge software application that streamlines and automates several critical business processes. This innovative solution has been designed to help businesses of all sizes save time and reduce costs, while also improving overall efficiency and productivity. We conducted extensive research and testing to ensure that the application met the needs of our target audience, and we incorporated feedback from early adopters to refine and improve the user experience. As a result, we have received overwhelmingly positive feedback from our customers, who have reported significant improvements in their operations since implementing our solution. This success has not only boosted our bottom line, but also reinforced our reputation as a trusted provider of high-quality software solutions.', 10, 60, { maxWidth: 190, lineHeightFactor: 2, align: 'justify' });
+    doc.text('Dear ' + this.CurrentUser.fullName + ', Your application has been approved by all departments. But on condition by the following departments:Our company recently developed a cutting-edge software application that streamlines and automates several critical business processes. This innovative solution has been designed to help businesses of all sizes save time and reduce costs, while also improving overall efficiency and productivity. We conducted extensive research and testing to ensure that the application met the needs of our target audience, and we incorporated feedback from early adopters to refine and improve the user experience. As a result, we have received overwhelmingly positive feedback from our customers, who have reported significant improvements in their operations since implementing our solution. This success has not only boosted our bottom line, but also reinforced our reputation as a trusted provider of high-quality software solutions.', 10, 60, { maxWidth: 190, lineHeightFactor: 2, align: 'justify' });
 
     this.SubDepConditionalApproveList.forEach((deposit) => {
       const row = [
@@ -797,7 +798,7 @@ export class ViewProjectInfoComponent implements OnInit {
     });
 
     // Save PDF document
-    doc.save('Approval Pack');
+    doc.save('Approval Pack:' + this.CurrentUser.userProfileID);
 
 
 

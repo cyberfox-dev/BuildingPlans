@@ -508,7 +508,7 @@ namespace WayleaveManagementSystem.Controllers
         }
 
 
-        [HttpPost("GetAllNotLinkedUsers")]
+        [HttpPost("GetAllLinkedUsers")]
         public async Task<object> GetAllLinkedUsers(int accessGroupID)
         {
             try

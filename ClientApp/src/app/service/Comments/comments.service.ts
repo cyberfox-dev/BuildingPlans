@@ -33,9 +33,9 @@ export class CommentsService {
 
   }
 
-  public getSubDepByCommentStatus(CommentStatus: string) {
+  public getSubDepByCommentStatus(CommentStatus: string, applicationID: number) {
     const body = {
-
+      ApplicationID: applicationID,
       CommentStatus: CommentStatus,
 
     }

@@ -115,11 +115,11 @@ namespace WayleaveManagementSystem.Service
                 ).ToListAsync();
         }
 
-        public async Task<List<CommentDTO>> GetSubDepByCommentStatus(string? commentStatus)
+        public async Task<List<CommentDTO>> GetSubDepByCommentStatus(string? commentStatus, int? applicationID)
         {
             return await (
                 from comment in _context.Comments
-                where comment.CommentStatus == commentStatus && comment.isActive == true
+                where comment.ApplicationID == applicationID && comment.CommentStatus == commentStatus && comment.isActive == true
                 select new CommentDTO()
                 {
                     CommentID = comment.CommentID,
