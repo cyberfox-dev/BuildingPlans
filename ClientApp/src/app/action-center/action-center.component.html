@@ -33,10 +33,10 @@
     </mat-menu>
 
     <div class="cont2">
-      <button mat-raised-button color="approveBTN" (click)="openDepositOrWBSOption(depositOrWBSNumber)"><i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true"></i>  Approve</button>
-      <button mat-raised-button color="rejectBTN"><i class="fa fa-thumbs-down redThumbsDown" aria-hidden="true"></i>  Reject</button>
-      <button mat-raised-button color="clarifyBTN"><i class="fa fa-commenting-o orangeSpeech" aria-hidden="true"></i>  Clarify</button>
-      <button mat-raised-button color="referBTN"><i class="fa fa-retweet blueRefer" aria-hidden="true"></i>  Refer</button>
+      <button mat-raised-button color="approveBTN" (click)="onComment('Approve')"><i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true"></i>  Approve</button>
+      <button mat-raised-button color="rejectBTN" (click)="onComment('Reject')"><i class="fa fa-thumbs-down redThumbsDown" aria-hidden="true"></i>  Reject</button>
+      <button mat-raised-button color="clarifyBTN" (click)="onComment('Clarify')"><i class="fa fa-commenting-o orangeSpeech" aria-hidden="true"></i>  Clarify</button>
+      <button mat-raised-button color="referBTN" (click)="onComment('Refer')"><i class="fa fa-retweet blueRefer" aria-hidden="true"></i>  Refer</button>
     </div>
     <div class="cont3">
       </div>
@@ -348,5 +348,8 @@
       <label for="wbsnumber">WBS Number</label>
     </div>
 
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
   </div>
 </ng-template>

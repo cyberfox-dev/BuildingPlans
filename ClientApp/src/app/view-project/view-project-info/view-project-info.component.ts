@@ -729,6 +729,8 @@ export class ViewProjectInfoComponent implements OnInit {
   currentDate = new Date();
   datePipe = new DatePipe('en-ZA');
   formattedDate = this.datePipe.transform(this.currentDate, 'yyyy-MM-dd');
+
+
   onCreateApprovalPack() {
 
     /*this.getAllSubDepFroConditionalApprove();*/
@@ -761,7 +763,9 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.setLineHeightFactor(60);
 
 
-  
+  //this is for the project details
+
+    //paragraph 
     doc.setFontSize(10);
     doc.text('Dear ' + this.CurrentUser.fullName + ', Your application has been approved by all departments. But on condition by the following departments:Our company recently developed a cutting-edge software application that streamlines and automates several critical business processes. This innovative solution has been designed to help businesses of all sizes save time and reduce costs, while also improving overall efficiency and productivity. We conducted extensive research and testing to ensure that the application met the needs of our target audience, and we incorporated feedback from early adopters to refine and improve the user experience. As a result, we have received overwhelmingly positive feedback from our customers, who have reported significant improvements in their operations since implementing our solution. This success has not only boosted our bottom line, but also reinforced our reputation as a trusted provider of high-quality software solutions.', 10, 60, { maxWidth: 190, lineHeightFactor: 2, align: 'justify' });
 
