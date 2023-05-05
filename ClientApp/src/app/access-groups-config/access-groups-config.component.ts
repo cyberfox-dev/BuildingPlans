@@ -119,7 +119,7 @@ export class AccessGroupsConfigComponent implements OnInit {
 
       }
       else {
-
+         
         alert(data.responseMessage);
       }
       console.log("reponse", data);
