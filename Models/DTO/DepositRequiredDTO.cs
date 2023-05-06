@@ -23,5 +23,8 @@
         public string? CreatedById { get; set; }
         public string? AppUserID { get; set; }
         public bool? isActive { get; set; }
+        //WBS 
+
+        public string? WBS { get; set; }
     }
 }

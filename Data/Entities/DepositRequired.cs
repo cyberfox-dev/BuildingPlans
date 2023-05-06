@@ -18,5 +18,11 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public int? Quantity { get; set; }
 
+
+        //WBS 
+
+        public string? WBS { get; set; }
+
+
     }
 }
