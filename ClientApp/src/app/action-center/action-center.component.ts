@@ -16,6 +16,7 @@ import { ZoneLinkService } from '../service/ZoneLink/zone-link.service';
 import { DepositRequiredService } from '../service/DepositRequired/deposit-required.service';
 import { CommentsService } from '../service/Comments/comments.service';
 import { ApplicationsService} from '../service/Applications/applications.service';
+import { UserProfileService } from '../service/UserProfile/user-profile.service';
 
 
 
@@ -171,6 +172,7 @@ export class ActionCenterComponent implements OnInit {
     private serviceItemService: ServiceItemService,
     private subDepartmentForCommentService: SubDepartmentForCommentService,
     private zoneService: ZonesService,
+    private userPofileService: UserProfileService,
     private zoneForCommentService: ZoneForCommentService,
     private zoneLinkService: ZoneLinkService,
     private depositRequiredService: DepositRequiredService,
@@ -183,6 +185,9 @@ export class ActionCenterComponent implements OnInit {
 
   stringifiedData: any;
   CurrentUser: any;
+
+  public isInternalUser: boolean = false;
+  public isExternalUser: boolean = false;
 
   leaveAComment = "";
   ngOnInit(): void {
@@ -207,7 +212,7 @@ export class ActionCenterComponent implements OnInit {
       this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
     this.getLinkedZones();
     
-      
+    this.getUserInternalOrExternal();
       //this.CheckIfCurrentUserCanUseHopper();
    // }, 1000);
   }
@@ -1142,6 +1147,44 @@ getAllCommentsByUserID() {
 
 
     }
+  }
+
+  getUserInternalOrExternal() {
+
+    this.userPofileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
+
+
+      if (data.responseCode == 1) {
+
+
+        console.log("data", data.dateSet);
+
+        const currentUserProfile = data.dateSet[0];
+        const fullname = currentUserProfile.fullName;
+
+        if (currentUserProfile.isInternal == true) {
+
+          this.isInternalUser = true;
+          this.isExternalUser = false;
+
+        }
+        else {
+          this.isInternalUser = false;
+          this.isExternalUser = true;
+
+        }
+
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 
 

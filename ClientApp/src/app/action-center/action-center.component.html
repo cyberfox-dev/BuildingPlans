@@ -39,11 +39,11 @@
       <button mat-raised-button color="referBTN" (click)="onComment('Refer')"><i class="fa fa-retweet blueRefer" aria-hidden="true"></i>  Refer</button>
     </div>
     <div class="cont3">
-      <!--this is for the wbs number-->
-      <mat-checkbox class="example-margin" [(ngModel)]="checked" (click)="enterWBSNumberModal(wbsNumberModal)">WBS Number</mat-checkbox>
+      <!--this is for the wbs number -->
+      <mat-checkbox class="example-margin" [(ngModel)]="checked" (click)="enterWBSNumberModal(wbsNumberModal)" *ngIf="isExternalUser">WBS Number</mat-checkbox>
 
-<!--this is for the deposit required-->
-      <mat-checkbox class="example-margin" [(ngModel)]="checked" (click)="depositReqModal(deposit)">Deposit Required</mat-checkbox>
+      <!--this is for the deposit required-->
+      <mat-checkbox class="example-margin" [(ngModel)]="checked" (click)="depositReqModal(deposit)" *ngIf="isInternalUser">Deposit Required</mat-checkbox>
     </div>
 
   </div>

@@ -249,14 +249,14 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getAllComments() {
-    debugger;
+
     this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempCommentList = {} as CommentsList;
           const current = data.dateSet[i];
-          debugger;
+          
           tempCommentList.ApplicationID = current.applicationID;
           tempCommentList.Comment = current.comment;
           tempCommentList.CommentID = current.commentID;
@@ -720,6 +720,45 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
+  getAllSubDepForReject() {
+    let commentS = "Rejected";
+
+    this.commentsService.getSubDepByCommentStatus(commentS, this.ApplicationID).subscribe((data: any) => {
+
+
+      if (data.responseCode == 1) {
+
+        for (var i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepCommentStatusList = {} as SubDepConditionalApproveList;
+
+          const current = data.dateSet[i];
+          tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
+          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
+          tempSubDepCommentStatusList.ApplicationID = current.applicationID;
+          tempSubDepCommentStatusList.Comment = current.comment;
+          tempSubDepCommentStatusList.DateCreated = current.dateCreated;
+          tempSubDepCommentStatusList.CommentStatus = current.commentStatus;
+
+          this.SubDepConditionalApproveList.push(tempSubDepCommentStatusList);
+
+
+        }
+
+        console.log("THIS IS THE CUB DEP THAT HAS APPROVED THE APPLICATION CONDITIONALLY", data.dateSet);
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
 
 
 
@@ -897,5 +936,78 @@ export class ViewProjectInfoComponent implements OnInit {
     return doc.save("Approval Pack");*/
   }
 
+  onCrreateRejectionPack() {
 
+    /*this.getAllSubDepFroConditionalApprove();*/
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    // Set up table
+    const startY = 50; // set the starting Y position for the table
+    const headers = [
+      [
+        'Department',
+        'Department Comment',
+        'Status'
+      ]
+    ];
+    const data: any[] = [];
+
+    const img = new Image();
+    img.src = 'assets/cctlogoblack.png';
+
+    // Add logo to PDF document
+    doc.addImage(img, 'png', 8, 10, 50, img.height * 50 / img.width);
+
+    //adding information underneath the logo
+    doc.setFontSize(8);
+    doc.text('BTW Reg.Nr/Vat Reg.no.4500193497', 10, 35, { align: 'left' });
+    doc.text('City of Cape Town ', 10, 40, { align: 'left' });
+    doc.text('Post Box / Posbus / iShokisi 655 ', 10, 45, { align: 'left' });
+    doc.text('CAPE TOWN ', 10, 50, { align: 'left' });
+    doc.text('8001 ', 10, 55, { align: 'left' });
+    doc.text(this.formattedDate, 10, 60, { align: 'left' });
+
+    // Add title to PDF document
+    const reject = 'Wayleave Rejection Pack';
+    const upperCase = reject.toUpperCase();
+    doc.setFontSize(22);
+
+    doc.text(upperCase, 105, 80, { align: 'center' });
+    doc.setLineHeightFactor(60);
+
+    const projectNo = 'Project Number BW/034/023';
+    doc.setFontSize(15);
+    doc.text(projectNo, 105, 90, { align: 'center' });
+    doc.setLineHeightFactor(60);
+
+
+    //this is for the project details
+
+    //paragraph 
+    doc.setFontSize(10);
+    doc.text('Dear ' + this.CurrentUser.fullName + ' Rejected Application ', 10, 110, { maxWidth: 190, lineHeightFactor: 2, align: 'justify' });
+
+
+    this.SubDepConditionalApproveList.forEach((deposit) => {
+      const row = [
+        deposit.SubDepName,
+        deposit.Comment,
+        deposit.CommentStatus,
+
+      ];
+
+      data.push(row);
+    });
+    doc.setLineHeightFactor(60);
+    doc.setFontSize(12); // add this line to set the font size 
+   
+
+    // Save PDF document
+    doc.save('Rejection Pack:' + this.CurrentUser.userProfileID);
+
+  }
 }
