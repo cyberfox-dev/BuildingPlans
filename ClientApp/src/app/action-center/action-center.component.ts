@@ -699,6 +699,9 @@ export class ActionCenterComponent implements OnInit {
   openDepositOrWBSOption(depositOrWBSNumber: any) {
     this.modalService.open(depositOrWBSNumber, { centered: true });
   }
+  enterWBSNumberModal(wbsNumberModal:any) {
+    this.modalService.open(wbsNumberModal, { backdrop: 'static', size: 'xl' });
+  }
 
   uncheck() {
     this.checked = false;
@@ -1140,6 +1143,8 @@ getAllCommentsByUserID() {
 
     }
   }
+
+
 
 }
 
