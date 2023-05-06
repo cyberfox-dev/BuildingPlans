@@ -17,6 +17,10 @@
         public int? Quantity { get; set; }
 
         public string? CreatedById { get; set; }
-       
+
+        //WBS 
+
+        public string? WBS { get; set; }
+
     }
 }

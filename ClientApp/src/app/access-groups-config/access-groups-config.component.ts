@@ -43,10 +43,20 @@ export interface InternalUserProfileList {
   DepartmentID: string;
   Branch: string;
 
-
-
 }
 
+export interface LinkedUsersList {
+
+  UserID: string;
+  FullName: string;
+  Email: string;
+  PhoneNumber: string;
+  Directorate: string;
+  SubDepartmentID: string;
+  DepartmentID: string;
+  Branch: string;
+
+}
 
 @Component({
   selector: 'app-access-groups-config',
@@ -69,6 +79,7 @@ export class AccessGroupsConfigComponent implements OnInit {
     stringifiedData: any;
   CurrentUser: any;
   InternalUserProfileList: InternalUserProfileList[] = [];
+  LinkedUsersList: LinkedUsersList[] = [];
 
 
 
@@ -100,8 +111,12 @@ export class AccessGroupsConfigComponent implements OnInit {
   displayedColumnsAddUser: string[] = ['FullName', 'actions'];
   dataSourceAddUser = this.InternalUserProfileList;
 
+  displayedColumnsLinkedUser: string[] = ['FullName', 'actions'];
+  dataSourceLinkedUser = this.LinkedUsersList;
+
   @ViewChild(MatTable) AccessGroupListTable: MatTable<AccessGroupList> | undefined;
   @ViewChild(MatTable) InternalUserProfileListTable: MatTable<InternalUserProfileList> | undefined;
+  @ViewChild(MatTable) LinkedUsersListTable: MatTable<LinkedUsersList> | undefined;
 
 
   onAccessGroupCreate() {
@@ -167,6 +182,8 @@ export class AccessGroupsConfigComponent implements OnInit {
 
 
 
+
+
   async getAllUsersForLink(index: any, addUserToAccessGroup:any) {
    
     this.InternalUserProfileList.splice(0, this.InternalUserProfileList.length);
@@ -191,6 +208,7 @@ export class AccessGroupsConfigComponent implements OnInit {
 
         }
         this.InternalUserProfileListTable?.renderRows();
+        this.getAllUsersLinkedUsers();
 
         this.modalService.open(addUserToAccessGroup, { centered: true, size: 'xl' });
 
@@ -205,6 +223,48 @@ export class AccessGroupsConfigComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
+
+
+  // Get all linked users 
+   getAllUsersLinkedUsers() {
+
+     this.LinkedUsersList.splice(0, this.LinkedUsersList.length);
+
+    this.accessGroupsService.getAllAccessGroupUsers().subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+
+              for (let i = 0; i < data.dateSet.length; i++) {
+                const tempInternalUserProfileList = {} as LinkedUsersList;
+                  const current = data.dateSet[i];
+                  tempInternalUserProfileList.UserID = current.userID;
+                  tempInternalUserProfileList.FullName = current.fullName;
+                  tempInternalUserProfileList.SubDepartmentID = current.subDepartmentID;
+                  tempInternalUserProfileList.Email = current.email;
+                  tempInternalUserProfileList.Directorate = current.directorate;
+                  tempInternalUserProfileList.Branch = current.branch;
+                  tempInternalUserProfileList.DepartmentID = current.departmentID;
+                  tempInternalUserProfileList.PhoneNumber = current.phoneNumber;
+
+                this.LinkedUsersList.push(tempInternalUserProfileList);
+
+              }
+            this.LinkedUsersListTable?.renderRows();
+
+             
+
+            console.log("LinkedUsersList", this.InternalUserProfileList);
+          }
+          else {
+              alert(data.responseMessage);
+          }
+      console.log("LinkedUsersListReponse", data);
+
+      }, error => {
+      console.log("LinkedUsersListError: ", error);
+      })
+  }
+
 
   openAddrolesToAccessGroup(addRolesToAccessGroup) {
     this.modalService.open(addRolesToAccessGroup, { centered: true, size: 'xl' });

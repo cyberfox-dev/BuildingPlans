@@ -61,6 +61,7 @@ namespace WayleaveManagementSystem.Controllers
                             isActive = true,
                             SubDepartmentName = model.SubDepartmentName,
                             ServiceItemCode = model.ServiceItemCode,
+                            WBS = model.WBS
                         };
 
                         await _context.DepositRequired.AddAsync(tempDepositRequired);
@@ -148,6 +149,8 @@ namespace WayleaveManagementSystem.Controllers
                     isActive = depositRequired.isActive,
                     SubDepartmentName = depositRequired.SubDepartmentName,
                     ServiceItemCode = depositRequired.ServiceItemCode,
+                    WBS = depositRequired.WBS
+                    
 
                 }
                 ).ToListAsync();
@@ -194,6 +197,7 @@ namespace WayleaveManagementSystem.Controllers
                    isActive = depositRequired.isActive,
                    SubDepartmentName = depositRequired.SubDepartmentName,
                    ServiceItemCode = depositRequired.ServiceItemCode,
+                   WBS = depositRequired.WBS
 
                }
                ).ToListAsync();
@@ -212,7 +216,49 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-        
+
+        [HttpPost("GetDepositRequiredByApplicationID")]
+        public async Task<object> GetWBSByApplicationID([FromBody] int applicationID)
+        {
+            try
+            {
+                var result = await (
+               from depositRequired in _context.DepositRequired
+               where depositRequired.ApplicationID == applicationID && depositRequired.isActive == true
+               select new DepositRequiredDTO()
+               {
+                   DepositRequiredID = depositRequired.DepositRequiredID,
+                   SubDepartmentForCommentID = depositRequired.SubDepartmentForCommentID,
+                   Rate = depositRequired.Rate,
+                   Quantity = depositRequired.Quantity,
+                   ApplicationID = depositRequired.ApplicationID,
+                   SubDepartmentID = depositRequired.SubDepartmentID,
+                   Desciption = depositRequired.Desciption,
+                   CreatedById = depositRequired.CreatedById,
+                   DateCreated = depositRequired.DateCreated,
+                   DateUpdated = depositRequired.DateUpdated,
+                   isActive = depositRequired.isActive,
+                   SubDepartmentName = depositRequired.SubDepartmentName,
+                   ServiceItemCode = depositRequired.ServiceItemCode,
+                   WBS = depositRequired.WBS
+
+               }
+               ).ToListAsync();
+
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Deposits By ID", result));
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
 
 
     }
