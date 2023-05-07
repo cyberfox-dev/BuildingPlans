@@ -794,12 +794,33 @@ export class ViewProjectInfoComponent implements OnInit {
     img.src = 'assets/cctlogoblack.png';
 
     // Add logo to PDF document
-    doc.addImage(img, 'png', 5, 5, 55, 15);
+
+    // Add logo to PDF document
+    doc.addImage(img, 'png', 8, 10, 50, img.height * 50 / img.width);
+
+    //adding information underneath the logo
+    doc.setFontSize(8);
+    doc.text('BTW Reg.Nr/Vat Reg.no.4500193497', 10, 35, { align: 'left' });
+    doc.text('City of Cape Town ', 10, 40, { align: 'left' });
+    doc.text('Post Box / Posbus / iShokisi 655 ', 10, 45, { align: 'left' });
+    doc.text('CAPE TOWN ', 10, 50, { align: 'left' });
+    doc.text('8001 ', 10, 55, { align: 'left' });
+    doc.text(this.formattedDate, 10, 60, { align: 'left' });
 
     // Add title to PDF document
+    const reject = 'Wayleave Approval Pack';
+    const upperCase = reject.toUpperCase();
     doc.setFontSize(22);
-    doc.text('Wayleave Approval Pack', 105, 40, { align: 'center' });
+
+    doc.text(upperCase, 105, 80, { align: 'center' });
     doc.setLineHeightFactor(60);
+
+    const projectNo = 'Project Number BW/034/023';
+    doc.setFontSize(15);
+    doc.text(projectNo, 105, 90, { align: 'center' });
+    doc.setLineHeightFactor(60);
+
+
 
 
   //this is for the project details
@@ -989,8 +1010,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     //paragraph 
     doc.setFontSize(10);
-    doc.text('Dear ' + this.CurrentUser.fullName + ' Rejected Application ', 10, 110, { maxWidth: 190, lineHeightFactor: 2, align: 'justify' });
-
+    doc.text('Dear ' + this.CurrentUser.fullName + ' in refferance to project '+', project description'+'. Unfortunately, your application has been rejected regarding the following issues: ', 10, 110, { maxWidth: 190, lineHeightFactor: 2, align: 'justify' });
 
     this.SubDepConditionalApproveList.forEach((deposit) => {
       const row = [
@@ -1002,8 +1022,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
       data.push(row);
     });
-    doc.setLineHeightFactor(60);
-    doc.setFontSize(12); // add this line to set the font size 
+
    
 
     // Save PDF document

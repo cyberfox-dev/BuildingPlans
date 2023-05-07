@@ -35,8 +35,7 @@ code {
   transform-origin: 0;
   transform: skewY(0deg);
   z-index: -1;
-  background: -webkit-linear-gradient(300deg,#53f 15%,#05d5ff 70%,#a6ffcb 94%);
-  background: linear-gradient(150deg,#53f 15%,#05d5ff 70%,#a6ffcb 94%);
+  background: #ccdee2;
 }
 
   #stripes, #stripes span {
@@ -121,15 +120,16 @@ code {
     width: 33.33333%;
     top: 380px;
     right: -16.66666%;
-    background: #25ddf5;
+    background: #343a401f;
     animation: shape2 10s ease infinite normal
   }
 
   #stripes :nth-child(5) {
     width: 33.33333%;
     bottom: 0;
-    background: #1fa2ff;
-    animation: Shape1 10s ease infinite normal
+    background: #343a401f;
+    animation: Shape1 10s ease infinite normal;
+    left: -178px;
   }
   @keyframes Shape1 {
     0% {

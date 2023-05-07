@@ -20,6 +20,20 @@
   flex-direction: row;
   justify-content: space-around;
 }
+.mat-client {
+  background-color: #369cf4;
+  color: #fff;
+  width: 100%;
+  margin: 10px;
+  height: 50px;
+}
+.mat-internal {
+  background-color: #369cf4;
+  color: #fff;
+  width: 100%;
+  margin: 10px;
+  height: 50px;
+}
 
 
 
@@ -49,8 +63,8 @@
   }
 .fa {
   color: white;
-  z-index: 1;
-  font-size: 60px;
+
+
 }
 
 .card:hover .overlay {
@@ -73,9 +87,9 @@
 
 
 .cardactive {
-  background-color: lightskyblue;
+  background-color: #87fa96;
   box-shadow: 0 24px 36px rgba(0,0,0,0.11), 0 24px 46px var(--box-shadow-color);
-  color: blue;
+  color: white;
 }
 
   .card p {
@@ -126,4 +140,10 @@
   left: 50px;
   z-index: 0;
   transition: transform 0.3s ease-out;
+}
+
+.cont2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

@@ -13,7 +13,10 @@
   <h2>Welcome to your Dashboard</h2>
 
 
-    <button class="btn" (click)="goToNewWayleave()"><a><i class="fa fa-plus"></i> Create New Wayleave</a></button>
+<!--  <button class="btn" (click)="goToNewWayleave()"><a><i class="fa fa-plus"></i> Create New Wayleave</a></button>-->
+  <div class="cont3">
+  <button mat-raised-button color="createWayleave"><i class="fa fa-plus"></i> Create New Wayleave</button>
+    </div>
 
   <!--Tabs-->
 
@@ -47,8 +50,8 @@
       </div>
 
       <div class="card card-4">
-        <h4>Rejected</h4>
-        <h1 class="num">{{rejectCount}}</h1>
+        <h5>Rejected</h5>
+        <h1 class="numReject">{{rejectCount}}</h1>
         <p class="card__apply" (click)="filterByRejected()">
           <a class="card__link">View</a>
         </p>

@@ -8,34 +8,40 @@
     <form>
       <div class="container-fluid">
 
-        <div class="row">
-          <div class="col">
-            <div class="card education" [class.cardactive]="option ==='client'" (click)="cardchange('client')" >
-              <div class="overlay"></div>
-              <div class="circle">
-                <i class="fa fa-user-plus" aria-hidden="true"></i>
+        <!--        <div class="row">
+            <div class="col">
+              <div class="card education" [class.cardactive]="option ==='client'" (click)="cardchange('client')" >
+                <div class="overlay"></div>
+                <div class="circle">
+                  <i class="fa fa-user-plus" aria-hidden="true"></i>
+                </div>
+                <p>Applying for a client</p>
+
               </div>
-              <p>Applying for a client</p>
 
             </div>
 
-          </div>
 
+            <div class="col">
 
-          <div class="col">
+              <div class="card wallet" (click)="cardchange('internal')" [class.cardactive]="option ==='internal'">
 
-            <div class="card wallet" (click)="cardchange('internal')" [class.cardactive]="option ==='internal'">
+                <div class="overlay"></div>
+                <div class="circle">
+                  <i class="fa fa-user" aria-hidden="true"></i>
 
-              <div class="overlay"></div>
-              <div class="circle">
-                <i class="fa fa-user" aria-hidden="true"></i>
-
+                </div>
+                <p>Applying for yourself</p>
               </div>
-              <p>Applying for yourself</p>
             </div>
-          </div>
 
 
+          </div>-->
+
+
+        <div class="cont2">
+          <button mat-raised-button color="client" [class.cardactive]="option ==='client'" (click)="cardchange('client')"> <i class="fa fa-user-plus" aria-hidden="true"></i> Create for client</button>
+          <button mat-raised-button color="internal" (click)="cardchange('internal')" [class.cardactive]="option ==='internal'"><i class="fa fa-user" aria-hidden="true"></i> Create for yourself</button>
         </div>
       </div>
 
