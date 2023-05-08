@@ -105,6 +105,10 @@ export class ActionCenterComponent implements OnInit {
 
   })
 
+  public wbs = this.formBuilder.group({
+    wbsnumber: ['', Validators.required]
+  })
+
   checked: boolean = false;
 
 
@@ -1185,6 +1189,17 @@ getAllCommentsByUserID() {
     }, error => {
       console.log("Error: ", error);
     })
+  }
+
+
+  /*WBS Number*/
+
+  onCreateWBSNumber() {
+
+    let WBS = String(this.wbs.controls["wbsnumber"].value);
+
+
+
   }
 
 

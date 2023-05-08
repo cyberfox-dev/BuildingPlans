@@ -347,14 +347,14 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-
-    <div class="form-floating mb-3 mt-3">
-      <input type="text" class="form-control" formControlName="wbsnumber" placeholder="wbsnumber">
-      <label for="wbsnumber">WBS Number</label>
-    </div>
-
+    <form [formGroup]="wbs">
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" formControlName="wbsnumber" placeholder="wbsnumber">
+        <label for="wbsnumber">WBS Number</label>
+      </div>
+    </form>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+    <button type="submit" class="btn btn-outline-success" (click)="onCreateWBSNumber();modal.close('Save click')">Save</button>
   </div>
 </ng-template>
