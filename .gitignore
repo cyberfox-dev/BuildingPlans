@@ -237,3 +237,4 @@ _Pvt_Extensions
 /ClientApp/.angular/cache/14.2.4/angular-webpack/59e7315697036bf6c908d20ff72eea9a5a7b1af7
 /ClientApp/.angular/cache/14.2.4/angular-webpack
 /ClientApp/src/app/service
+/.config/dotnet-tools.json
