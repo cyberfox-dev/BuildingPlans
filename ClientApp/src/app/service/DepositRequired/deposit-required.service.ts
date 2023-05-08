@@ -42,4 +42,13 @@ export class DepositRequiredService {
 
   }
 
+  public addUpdateWBSNUmber( createdById?: string | null, wbsNumber?: string | null) {
+    const body = {
+      Wbs: wbsNumber,
+      CreatedById: createdById,
+    }
+    return this.httpClient.post(this.baseURL + "AddUpdateDepositRequired", body);
+  }
+
+
 }
