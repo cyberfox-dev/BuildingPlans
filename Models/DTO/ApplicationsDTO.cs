@@ -30,6 +30,8 @@ namespace WayleaveManagementSystem.Models.DTO
         public bool isActive { get; set; }
 
         public bool isDrafted { get; set; }
+        public string? ProjectNumber { get; set; }
+        public int? RejectCount { get; set; }
 
         //Stages
         public string? PreviousStageName { get; set; }

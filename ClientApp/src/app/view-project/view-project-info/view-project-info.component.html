@@ -13,7 +13,7 @@
 
         <div class="form-floating mb-3 mt-3">
           <input type="text" class="form-control" id="accessGroupName" placeholder="Enter the access group name">
-          <label for="accessGroupName">Enter a description</label>
+          <label for="accessGroupName">Enter a description</label>                     
         </div>
 
         <mat-form-field>
@@ -49,10 +49,10 @@
 
 <h1>Application Information</h1>
 <h2>Project number LS/BP 321</h2>
-<!--<div class="cont1" *ngIf="isInternalUser">
+<div class="cont1" *ngIf="isInternalUser">
   <button type="button" mat-raised-button color="green" (click)="ChangeApplicationStatusToPaid()"><i class="fa fa-hand-peace-o" aria-hidden="true"></i>   move to paid</button>
   <button type="button" mat-raised-button color="green" (click)="MoveToNextStage()"><i class="fa fa-hand-peace-o" aria-hidden="true"></i>   Next Stage</button>
-</div>-->
+</div>
 <app-action-center [ApplicationID]="ApplicationID" *ngIf="isInternalUser"></app-action-center>
 <div class="cont1" *ngIf="!isInternalUser">
   <button mat-raised-button color="warn">
