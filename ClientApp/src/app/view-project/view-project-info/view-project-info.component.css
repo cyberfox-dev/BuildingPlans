@@ -4,10 +4,10 @@ h1 {
   text-align: center;
   padding-top: 40px;
   padding-bottom: 40px;
-  color: white;
+  color: #343a40;
   font-size: 50px;
   font-weight: bold;
-  margin-top:70px
+  margin-top: 70px
 }
 .maps {
   position: center;
@@ -73,7 +73,7 @@ h2 {
   text-align: center;
   padding-top: 0;
   padding-bottom: 40px;
-  color: white;
+  color: #343a40;
   font-size: 30px;
 }
 mat-tab-group{

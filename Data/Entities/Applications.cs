@@ -23,6 +23,8 @@ namespace WayleaveManagementSystem.Data.Entities
         public DateTime? ExpectedStartDate { get; set; }
         public DateTime? ExpectedEndDate { get; set; }
         public string? Location { get; set; }
+        public string? ProjectNumber { get; set; }
+        public int? RejectCount { get; set; }
 
 
         //Stages
