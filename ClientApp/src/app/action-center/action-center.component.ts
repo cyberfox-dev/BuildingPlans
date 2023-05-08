@@ -1197,8 +1197,53 @@ getAllCommentsByUserID() {
   onCreateWBSNumber() {
 
     let WBS = String(this.wbs.controls["wbsnumber"].value);
+    debugger;
+    this.depositRequiredService.addUpdateWBSNUmber(this.CurrentUser.appUserId, WBS).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          alert(data.responseMessage);
+
+        }
+        else {
+          alert(data.responseMessage);
+
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      }) 
+
+/*    let SubDepartmentName = "";
+    for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
+      if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
+        SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
+      }
+    }
+    let serviceItemCode = this.depositRequired.controls["selectServiceItemCode"].value;
+    let rate = this.depositRequired.controls["rate"].value;
+    let description = this.depositRequired.controls["description"].value;
+    let quantity = this.depositRequired.controls["quantity"].value;
+    //let total = this.depositRequired.controls["total"].value;
 
 
+    this.depositRequiredService.addUpdateDepositRequired(0, this.forManuallyAssignSubForCommentID, Number(rate), this.ApplicationID, description, this.loggedInUsersSubDepartmentID, Number(quantity), this.CurrentUser.appUserId, SubDepartmentName, serviceItemCode).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        alert(data.responseMessage);
+        this.hopperButton = false;
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })*/
 
   }
 
