@@ -37,7 +37,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     if (model.DepositRequiredID == 0)
-                    {
+                    { 
                         model.DepositRequiredID = null;
                     }
 
