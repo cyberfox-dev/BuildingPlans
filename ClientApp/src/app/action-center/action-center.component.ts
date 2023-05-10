@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild, Input, Output, EventEmitter, ElementRef } from '@angular/core';
 import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
@@ -192,8 +192,13 @@ export class ActionCenterComponent implements OnInit {
 
   public isInternalUser: boolean = false;
   public isExternalUser: boolean = false;
+  option = '';
 
   leaveAComment = "";
+
+  @ViewChild("internalOpt", { static: true }) content!: ElementRef;
+
+
   ngOnInit(): void {
    // setTimeout(() => {
       this.getAllSubDepartments();
@@ -1215,36 +1220,14 @@ getAllCommentsByUserID() {
         console.log("Error: ", error);
       }) 
 
-/*    let SubDepartmentName = "";
-    for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
-      if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
-        SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
-      }
-    }
-    let serviceItemCode = this.depositRequired.controls["selectServiceItemCode"].value;
-    let rate = this.depositRequired.controls["rate"].value;
-    let description = this.depositRequired.controls["description"].value;
-    let quantity = this.depositRequired.controls["quantity"].value;
-    //let total = this.depositRequired.controls["total"].value;
+  }
 
+  //this is to send the wbs number request
 
-    this.depositRequiredService.addUpdateDepositRequired(0, this.forManuallyAssignSubForCommentID, Number(rate), this.ApplicationID, description, this.loggedInUsersSubDepartmentID, Number(quantity), this.CurrentUser.appUserId, SubDepartmentName, serviceItemCode).subscribe((data: any) => {
+  @Output() optionEvent = new EventEmitter<string>();
 
-      if (data.responseCode == 1) {
-
-        alert(data.responseMessage);
-        this.hopperButton = false;
-      }
-      else {
-        alert(data.responseMessage);
-
-      }
-      console.log("reponse", data);
-
-    }, error => {
-      console.log("Error: ", error);
-    })*/
-
+  sendOption() {
+    this.optionEvent.emit(this.option);
   }
 
 

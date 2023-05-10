@@ -38,7 +38,6 @@ export class InternalOptionComponent implements OnInit {
   @ViewChild("internalOpt", { static: true }) content!: ElementRef;
   ngOnInit(): void {
     this.openSm(this.content)
-
   }
 
   openSm(internalOpt: any) {
