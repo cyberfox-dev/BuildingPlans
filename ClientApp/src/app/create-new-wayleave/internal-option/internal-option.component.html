@@ -1,8 +1,8 @@
 <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 <ng-template #internalOpt let-modal>
   <div class="modal-header">
-    <h1 class="modal-title" id="modal-basic-title">As an internal applicant are you...</h1>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    <h1 class="modal-title" id="modal-basic-title">As an internal applicant are you applying for :</h1>
+  <!--  <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>-->
   </div>
   <div class="modal-body">
     <form>
@@ -40,8 +40,8 @@
 
 
         <div class="cont2">
-          <button mat-raised-button color="client" [class.cardactive]="option ==='client'" (click)="cardchange('client')"> <i class="fa fa-user-plus" aria-hidden="true"></i> Create for client</button>
-          <button mat-raised-button color="internal" (click)="cardchange('internal')" [class.cardactive]="option ==='internal'"><i class="fa fa-user" aria-hidden="true"></i> Create for yourself</button>
+          <button mat-raised-button color="client" [class.cardactive]="option ==='client'" (click)="cardchange('client')"> <i class="fa fa-user-plus" aria-hidden="true"></i> Client</button>
+          <button mat-raised-button color="internal" (click)="cardchange('internal')" [class.cardactive]="option ==='internal'"><i class="fa fa-user" aria-hidden="true"></i> Yourself</button>
         </div>
       </div>
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild, Input, Output, EventEmitter, ElementRef } from '@angular/core';
 import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
@@ -192,8 +192,13 @@ export class ActionCenterComponent implements OnInit {
 
   public isInternalUser: boolean = false;
   public isExternalUser: boolean = false;
+  option = '';
 
   leaveAComment = "";
+
+  @ViewChild("internalOpt", { static: true }) content!: ElementRef;
+
+
   ngOnInit(): void {
    // setTimeout(() => {
       this.getAllSubDepartments();
@@ -1197,9 +1202,32 @@ getAllCommentsByUserID() {
   onCreateWBSNumber() {
 
     let WBS = String(this.wbs.controls["wbsnumber"].value);
+    debugger;
+    this.depositRequiredService.addUpdateWBSNUmber(this.CurrentUser.appUserId, WBS).subscribe((data: any) => {
 
+        if (data.responseCode == 1) {
 
+          alert(data.responseMessage);
 
+        }
+        else {
+          alert(data.responseMessage);
+
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      }) 
+
+  }
+
+  //this is to send the wbs number request
+
+  @Output() optionEvent = new EventEmitter<string>();
+
+  sendOption() {
+    this.optionEvent.emit(this.option);
   }
 
 

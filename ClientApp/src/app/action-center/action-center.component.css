@@ -18,6 +18,23 @@ table {
   display: flex;
   justify-content: center;
 }
+.cont5 {
+  display: flex;
+  justify-content: space-around;
+}
+.mat-createWayleave {
+  margin-top: 34px;
+  margin-bottom: 80px;
+  background: #005870;
+  color: #ccdee2;
+  width: 188px;
+  height: 60px;
+}
+
+  .mat-createWayleave:hover {
+    background-color: #212529;
+    color: #ccdee2;
+  }
 
 ::ng-deep .cdk-overlay-connected-position-bounding-box {
   z-index: 10000 !important;
@@ -78,7 +95,7 @@ table {
   color: #fff;
   width: 100%;
   height: 40px;
-  marrgin:20px;
+  margin: 20px;
   /* margin-bottom: 32px; */
 }
 

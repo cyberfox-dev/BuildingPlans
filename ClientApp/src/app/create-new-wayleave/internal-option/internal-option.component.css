@@ -21,18 +21,18 @@
   justify-content: space-around;
 }
 .mat-client {
-  background-color: #369cf4;
-  color: #fff;
+  background-color: #005870;
+  color: #ccdee2;
   width: 100%;
   margin: 10px;
-  height: 50px;
+  height: 68px;
 }
 .mat-internal {
-  background-color: #369cf4;
-  color: #fff;
+  background-color: #005870;
+  color: #ccdee2;
   width: 100%;
   margin: 10px;
-  height: 50px;
+  height: 68px;
 }
 
 
@@ -87,10 +87,13 @@
 
 
 .cardactive {
-  background-color: #87fa96;
+  background-color: #258e33;
   box-shadow: 0 24px 36px rgba(0,0,0,0.11), 0 24px 46px var(--box-shadow-color);
   color: white;
 }
+
+
+
 
   .card p {
     font-size: 17px;
@@ -144,6 +147,6 @@
 
 .cont2 {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
 }

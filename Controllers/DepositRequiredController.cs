@@ -30,14 +30,14 @@ namespace WayleaveManagementSystem.Controllers
             {
                 var result = new object();
 
-                if (model == null || model.Desciption == null)
+                if (model == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
                     if (model.DepositRequiredID == 0)
-                    {
+                    { 
                         model.DepositRequiredID = null;
                     }
 
