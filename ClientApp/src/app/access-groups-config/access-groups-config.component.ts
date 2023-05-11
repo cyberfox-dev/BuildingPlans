@@ -4,6 +4,7 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
 import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
 import { async } from 'rxjs';
+import { SelectionModel } from '@angular/cdk/collections';
 
 export interface PeriodicElement {
   name: string;
@@ -32,14 +33,16 @@ export interface AccessGroupList {
   DateCreated: string,
   DateUpdated: string,
 }
+
 export interface InternalUserProfileList {
 
   UserID: string;
   FullName: string;
   Email: string;
-  PhoneNumber: string;
+  PhoneNumber: string; 
   Directorate: string;
   SubDepartmentID: string;
+
   DepartmentID: string;
   Branch: string;
 
@@ -71,6 +74,11 @@ export class AccessGroupsConfigComponent implements OnInit {
 
   AccessGroupList: AccessGroupList[] = [];
 
+
+
+
+ 
+
   public addAccessGroup = this.formBuilder.group({
     accessGroupName: ['', Validators.required],
     accessGroupDescription: ['', Validators.required]
@@ -82,7 +90,8 @@ export class AccessGroupsConfigComponent implements OnInit {
   LinkedUsersList: LinkedUsersList[] = [];
 
 
-
+  selection = new SelectionModel<LinkedUsersList>(true, []);
+    currentAGID: number;
 
 
   openXl(content: any) {
@@ -187,7 +196,7 @@ export class AccessGroupsConfigComponent implements OnInit {
   async getAllUsersForLink(index: any, addUserToAccessGroup:any) {
    
     this.InternalUserProfileList.splice(0, this.InternalUserProfileList.length);
-
+    this.currentAGID = this.AccessGroupList[index].AccessGroupID;
     await this.accessGroupsService.getAllNotLinkedUsers(this.AccessGroupList[index].AccessGroupID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -207,8 +216,9 @@ export class AccessGroupsConfigComponent implements OnInit {
           this.InternalUserProfileList.push(tempInternalUserProfileList);
 
         }
-        this.InternalUserProfileListTable?.renderRows();
         this.getAllUsersLinkedUsers();
+        this.InternalUserProfileListTable?.renderRows();
+        
 
         this.modalService.open(addUserToAccessGroup, { centered: true, size: 'xl' });
 
@@ -228,7 +238,7 @@ export class AccessGroupsConfigComponent implements OnInit {
   // Get all linked users 
    getAllUsersLinkedUsers() {
 
-     this.LinkedUsersList.splice(0, this.LinkedUsersList.length);
+    // this.LinkedUsersList.splice(0, this.LinkedUsersList.length);
 
     this.accessGroupsService.getAllAccessGroupUsers().subscribe((data: any) => {
 
@@ -266,6 +276,32 @@ export class AccessGroupsConfigComponent implements OnInit {
   }
 
 
+  onLinkUser() {
+    for (let i = 0; i < this.selection.selected.length; i++) {
+      const current = this.selection.selected[i];
+
+      this.accessGroupsService.addUpdateAccessGroupUserLink(0, this.currentAGID, current.UserID, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          this.LinkedUsersListTable?.renderRows();
+
+          console.log("LinkedUsersList", this.InternalUserProfileList);
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("LinkedUsersListReponse", data);
+
+      }, error => {
+        console.log("LinkedUsersListError: ", error);
+      })
+
+    }
+
+  }
+
+
   openAddrolesToAccessGroup(addRolesToAccessGroup) {
     this.modalService.open(addRolesToAccessGroup, { centered: true, size: 'xl' });
   }
@@ -278,5 +314,9 @@ export class AccessGroupsConfigComponent implements OnInit {
     // console.log("this is what it is filtering", this.dataSourceLinkUsers.filter(user => user.fullName.toLowerCase().includes(filterValue.trim().toLowerCase())));
   }
 
+  userSelectedForLink(user: any) {
 
+    this.selection.toggle(user);
+
+  }
 }

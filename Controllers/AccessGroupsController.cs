@@ -386,7 +386,7 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-        [HttpGet("GetAllAccessGroupRoles")]
+        [HttpGet("GetAllAccessGroupUsers")]
         public async Task<object> GetAllAccessGroupUsers()
         {
             try
