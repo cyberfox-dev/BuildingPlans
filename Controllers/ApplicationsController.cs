@@ -6,6 +6,7 @@ using WayleaveManagementSystem.Models;
 using WayleaveManagementSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
+using System;
 
 namespace WayleaveManagementSystem.Controllers
 {
@@ -195,5 +196,34 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+
+        /*Reapply options on rejected applications*/
+        [HttpPost("GetApplicationsByProjectNumber")]
+        public async Task<object> GetApplicationsByProjectNumber([FromBody] string projectNumber)
+        {
+            try
+            {
+
+                if (projectNumber == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.GetApplicationsByProjectNumber(projectNumber);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application Deleted Successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+
     }
 }

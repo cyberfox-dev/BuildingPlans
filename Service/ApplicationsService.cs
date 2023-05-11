@@ -427,5 +427,48 @@ namespace WayleaveManagementSystem.Service
             }
 
         }
+
+        public async Task<List<ApplicationsDTO>> GetApplicationsByProjectNumber(string projectNumber)
+        {
+                return await (
+                   from Applications in _context.Application
+                   where Applications.isActive == true && Applications.ProjectNumber == projectNumber
+                   orderby Applications.DateCreated descending
+                   select new ApplicationsDTO()
+                   {
+                       ApplicationID = Applications.ApplicationID,
+                       UserID = Applications.UserID,
+                       FullName = Applications.FullName,
+                       Email = Applications.Email,
+                       PhoneNumber = Applications.PhoneNumber,
+                       PhysicalAddress = Applications.PhyscialAddress,
+                       ReferenceNumber = Applications.ReferenceNumber,
+                       CompanyRegNo = Applications.CompanyRegNo,
+                       TypeOfApplication = Applications.TypeOfApplication,
+                       NotificationNumber = Applications.NotificationNumber,
+                       WBSNumber = Applications.WBSNumber,
+                       PhysicalAddressOfProject = Applications.PhysicalAddressOfProject,
+                       DescriptionOfProject = Applications.DescriptionOfProject,
+                       NatureOfWork = Applications.NatureOfWork,
+                       ExcavationType = Applications.ExcavationType,
+                       ExpectedStartDate = Applications.ExpectedStartDate,
+                       ExpectedEndDate = Applications.ExpectedEndDate,
+                       Location = Applications.Location,
+                       DateCreated = Applications.DateCreated,
+                       DateUpdated = Applications.DateUpdated,
+                       CreatedById = Applications.CreatedById,
+                       isActive = Applications.isActive,
+                       PreviousStageName = Applications.PreviousStageName,
+                       ApplicationStatus = Applications.ApplicationStatus,
+                       CurrentStageName = Applications.CurrentStageName,
+                       CurrentStageNumber = Applications.CurrentStageNumber,
+                       CurrentStageStartDate = Applications.CurrentStageStartDate,
+                       NextStageName = Applications.NextStageName,
+                       NextStageNumber = Applications.NextStageNumber,
+                       PreviousStageNumber = Applications.PreviousStageNumber
+                   }
+                   ).ToListAsync();
+        }
+
     }
 }

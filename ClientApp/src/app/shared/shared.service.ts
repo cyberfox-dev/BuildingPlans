@@ -57,6 +57,7 @@ export interface ApplicationList {
   NextStageNumber: number,
   PreviousStageName: string,
   PreviousStageNumber: number,
+  ProjectNumber: string
 }
 
 @Injectable({
@@ -79,6 +80,8 @@ export class SharedService {
   applicationDataForView: ApplicationList[] = [];
   engineerData: ProfessionalList[] = [];
   StagesList: StagesList[] = [];
+
+  ProjectNumber: string = "Ven123";
 
   constructor() { }
 
@@ -117,7 +120,9 @@ export class SharedService {
   }
 
   getApiUrl() {
-    return "https://localhost:7123/api/";
+        return "https://localhost:7123/api/";
+    /*    return "http://172.29.166.10/api/";*/
+/*    return "https://wayleavesQA.capetown.gov.za/api/";*/
 
     //this is the original ip address for venolin :)
   /*  return "https://197.242.150.226:7123/api/";*/
@@ -241,5 +246,16 @@ getApplicationID(): any {
   pullFilesForUpload() {
     return this.FileDocument;
   }
+
+  setProjectNumber(data: any) {
+
+    this.ProjectNumber = data;
+
+  }
+
+  getProjectNumber() {
+    return this.ProjectNumber;
+  }
+
 
 }

@@ -60,6 +60,12 @@
     Cancel Application
   </button>
 </div>
+<div class="cont1" *ngIf="canReapply">
+  <button mat-raised-button color="warn">
+    <i class="fa fa-ban" aria-hidden="true"></i>
+    Re-apply
+  </button>
+</div>
 <div class="container-fluid cont6">
 
   <mat-tab-group>

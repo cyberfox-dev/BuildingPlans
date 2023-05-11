@@ -58,7 +58,7 @@ export interface ApplicationList {
   NextStageNumber: number,
   PreviousStageName: string,
   PreviousStageNumber: number,
-
+  ProjectNumber: string;
 }
 
 @Component({
