@@ -5,6 +5,7 @@ import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.
 import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
 import { async } from 'rxjs';
 import { SelectionModel } from '@angular/cdk/collections';
+import { RolesService } from '../service/Roles/roles.service';
 
 export interface PeriodicElement {
   name: string;
@@ -24,6 +25,12 @@ const LinkUsersToZone: PeriodicElement[] = [
   { name: 'User 3' },
 ];
 
+export interface RolesList {
+  RoleID: number;
+  RoleName: string;
+  RoleType: string;
+  RoleDescription: string;
+}
 
 export interface AccessGroupList {
   AccessGroupID: number,
@@ -73,8 +80,10 @@ export class AccessGroupsConfigComponent implements OnInit {
 
 
   AccessGroupList: AccessGroupList[] = [];
+  RolesList: RolesList[] = [];
+  RolesNotLinkedList: RolesList[] = [];
 
-
+  @ViewChild(MatTable) rolesTable: MatTable<RolesList> | undefined;
 
 
  
@@ -91,6 +100,7 @@ export class AccessGroupsConfigComponent implements OnInit {
 
 
   selection = new SelectionModel<LinkedUsersList>(true, []);
+  roleSelection = new SelectionModel<RolesList>(true, []);
     currentAGID: number;
 
 
@@ -104,7 +114,7 @@ export class AccessGroupsConfigComponent implements OnInit {
 
     
   }
-  constructor(private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private formBuilder: FormBuilder) { }
+  constructor(private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private formBuilder: FormBuilder, private rolesService: RolesService) { }
 
   ngOnInit(): void {
     this.getAllAccessGroup();
@@ -122,6 +132,12 @@ export class AccessGroupsConfigComponent implements OnInit {
 
   displayedColumnsLinkedUser: string[] = ['FullName', 'actions'];
   dataSourceLinkedUser = this.LinkedUsersList;
+
+  displayedColumnsAddRole: string[] = ['RoleName', 'RoleDescription' ,'actions'];
+  dataSourceAddRole = this.RolesList;
+
+  displayedColumnsLinkedRole: string[] = ['RoleName', 'RoleDescription','actions'];
+  dataSourceLinkedRole = this.RolesNotLinkedList;
 
   @ViewChild(MatTable) AccessGroupListTable: MatTable<AccessGroupList> | undefined;
   @ViewChild(MatTable) InternalUserProfileListTable: MatTable<InternalUserProfileList> | undefined;
@@ -190,12 +206,45 @@ export class AccessGroupsConfigComponent implements OnInit {
   }
 
 
+  getAllRoles() {
 
+    this.RolesList.splice(0, this.RolesList.length);
+
+    this.rolesService.getAllRoles().subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempRolesList = {} as RolesList;
+          const current = data.dateSet[i];
+          tempRolesList.RoleID = current.roleID;
+          tempRolesList.RoleName = current.roleName;
+          tempRolesList.RoleType = current.roleType;
+          tempRolesList.RoleDescription = current.roleDescription;
+
+          this.RolesList.push(tempRolesList);
+
+        }
+        this.rolesTable?.renderRows();
+        console.log("GetAllRoles", data.dateSet);
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
 
 
   async getAllUsersForLink(index: any, addUserToAccessGroup:any) {
    
     this.InternalUserProfileList.splice(0, this.InternalUserProfileList.length);
+    debugger;
     this.currentAGID = this.AccessGroupList[index].AccessGroupID;
     await this.accessGroupsService.getAllNotLinkedUsers(this.AccessGroupList[index].AccessGroupID).subscribe((data: any) => {
 
@@ -216,7 +265,7 @@ export class AccessGroupsConfigComponent implements OnInit {
           this.InternalUserProfileList.push(tempInternalUserProfileList);
 
         }
-        this.getAllUsersLinkedUsers();
+        // this.getAllUsersLinkedUsers();
         this.InternalUserProfileListTable?.renderRows();
         
 
@@ -236,11 +285,11 @@ export class AccessGroupsConfigComponent implements OnInit {
 
 
   // Get all linked users 
-   getAllUsersLinkedUsers() {
+  async getAllUsersLinkedUsers() {
+    debugger;
+     this.LinkedUsersList.splice(0, this.LinkedUsersList.length);
 
-    // this.LinkedUsersList.splice(0, this.LinkedUsersList.length);
-
-    this.accessGroupsService.getAllAccessGroupUsers().subscribe((data: any) => {
+     await this.accessGroupsService.getAllLinkedUsers(this.currentAGID).subscribe((data: any) => {
 
           if (data.responseCode == 1) {
 
@@ -254,8 +303,7 @@ export class AccessGroupsConfigComponent implements OnInit {
                   tempInternalUserProfileList.Directorate = current.directorate;
                   tempInternalUserProfileList.Branch = current.branch;
                   tempInternalUserProfileList.DepartmentID = current.departmentID;
-                  tempInternalUserProfileList.PhoneNumber = current.phoneNumber;
-
+                tempInternalUserProfileList.PhoneNumber = current.phoneNumber;
                 this.LinkedUsersList.push(tempInternalUserProfileList);
 
               }
@@ -301,6 +349,99 @@ export class AccessGroupsConfigComponent implements OnInit {
 
   }
 
+  
+
+  async getAllUsersNotLinkedRoles(index: any, addRolesToAccessGroup: any) {
+    debugger;
+    this.RolesNotLinkedList.splice(0, this.RolesNotLinkedList.length);
+    this.currentAGID = this.AccessGroupList[index].AccessGroupID;
+    await this.accessGroupsService.getAllNotLinkedRoles(this.currentAGID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempRolesListList = {} as RolesList;
+          const current = data.dateSet[i];
+          tempRolesListList.RoleID = current.roleID;
+          tempRolesListList.RoleDescription = current.roleDescription;
+          tempRolesListList.RoleName = current.roleName;
+          tempRolesListList.RoleType = current.roleType;
+
+          this.RolesNotLinkedList.push(tempRolesListList);
+
+        }
+        this.LinkedUsersListTable?.renderRows();
+        this.modalService.open(addRolesToAccessGroup, { centered: true, size: 'xl' });
+        
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("LinkedUsersListReponse", data);
+
+    }, error => {
+      console.log("LinkedUsersListError: ", error);
+    })
+  }
+  // Get all linked Roles
+  async getAllUsersLinkedRoles() {
+    debugger;
+    //this.RolesList.splice(0, this.RolesList.length);
+   
+    await this.accessGroupsService.getAllLinkedRoles(this.currentAGID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempRolesListList = {} as RolesList;
+          const current = data.dateSet[i];
+          tempRolesListList.RoleID = current.roleID;
+          tempRolesListList.RoleDescription = current.roleDescription;
+          tempRolesListList.RoleName = current.roleName;
+          tempRolesListList.RoleType = current.roleType;
+        
+          this.RolesList.push(tempRolesListList);
+
+        }
+        this.LinkedUsersListTable?.renderRows();
+
+        
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("getAllLinkedRolesReponse", data);
+
+    }, error => {
+      console.log("getAllLinkedRolesError: ", error);
+    })
+  }
+
+  onRoleLink() {
+    for (let i = 0; i < this.roleSelection.selected.length; i++) {
+      const current = this.roleSelection.selected[i];
+
+      this.accessGroupsService.addUpdateAccessGroupRoleLink(0, this.currentAGID, current.RoleID,current.RoleName ,this.CurrentUser.appUserId).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          this.LinkedUsersListTable?.renderRows();
+          alert(data.responseMessage);
+      
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("LinkedUsersListReponse", data);
+
+      }, error => {
+        console.log("LinkedUsersListError: ", error);
+      })
+
+    }
+  }
 
   openAddrolesToAccessGroup(addRolesToAccessGroup) {
     this.modalService.open(addRolesToAccessGroup, { centered: true, size: 'xl' });
@@ -317,6 +458,12 @@ export class AccessGroupsConfigComponent implements OnInit {
   userSelectedForLink(user: any) {
 
     this.selection.toggle(user);
+
+  }
+
+  roleSelectedForLink(role: any) {
+
+    this.roleSelection.toggle(role);
 
   }
 }

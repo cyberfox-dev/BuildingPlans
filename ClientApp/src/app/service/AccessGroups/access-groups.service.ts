@@ -88,6 +88,13 @@ export class AccessGroupsService {
     return this.httpClient.get(this.baseURL + "GetAllAccessGroupUsers");
 
   }
+  public getAllLinkedUsers(accessGroupID: number) {
+
+    return this.httpClient.post(this.baseURL + "GetAllLinkedUsers", accessGroupID);
+
+  }
+
+  
 
   public GetAllRolesForUser(userID: string) {
 
@@ -101,6 +108,17 @@ export class AccessGroupsService {
   public getAllNotLinkedUsers(accessGroupID: number) {
 
     return this.httpClient.post(this.baseURL + "GetAllNotLinkedUsers", accessGroupID);
+
+  }
+  public getAllNotLinkedRoles(accessGroupID: number) {
+
+    return this.httpClient.post(this.baseURL + "GetAllNotLinkedRoles", accessGroupID);
+
+  }
+
+  public getAllLinkedRoles(accessGroupID: number) {
+
+    return this.httpClient.post(this.baseURL + "GetAllLinkedRoles", accessGroupID);
 
   }
 

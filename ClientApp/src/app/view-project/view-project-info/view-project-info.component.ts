@@ -174,6 +174,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   @ViewChild('fileInput') fileInput: ElementRef | undefined;
   fileAttr = 'Choose File';
+    currentApplication: number;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -231,7 +232,7 @@ export class ViewProjectInfoComponent implements OnInit {
     const setValues = this.applicationDataForView[0];
     this.ApplicationID = setValues.applicationID;
 
-
+    this.currentApplication = this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     console.log("this is the created by ID", setValues);
     this.createdByID = setValues.CreatedById;
 
@@ -248,7 +249,18 @@ export class ViewProjectInfoComponent implements OnInit {
     this.setInterface();
     this.getAllRequiredDeposits();
     this.getAllSubDepFroConditionalApprove();
+
+
+
   }
+
+
+  getprojectInfo() {
+   
+    const setValues = this.applicationDataForView[0];
+}
+
+
 
   getAllComments() {
 
