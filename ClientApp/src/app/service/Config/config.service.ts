@@ -14,7 +14,7 @@ export class ConfigService {
 
   /*  , roleType: string | null, roleDescription: string | null, createdById: string | null*/
 
-  public addUpdateConfig(configID: number | null, configName: string | null, configDescription: string | null, createdByID: string | null) {
+  public addUpdateConfig(configID: string | null, configName: string | null, configDescription: string | null, createdByID: string | null) {
 
     const body = {
       configID: configID,
