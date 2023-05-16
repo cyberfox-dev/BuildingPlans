@@ -126,7 +126,7 @@ export class ViewProjectInfoComponent implements OnInit {
   ARCGISAPIData = {} as ARCGISAPIData;
 
   public isInternalUser: boolean = false;
-  public canReapply: boolean = false;
+  canReapply = false;
 
   createdByID: any | undefined; 
 
@@ -249,16 +249,9 @@ export class ViewProjectInfoComponent implements OnInit {
     this.setInterface();
     this.getAllRequiredDeposits();
     this.getAllSubDepFroConditionalApprove();
-
-
-
+    this.canReapply = this.sharedService.getCanReapply();
+    console.log("canReapplyVen: ", this.canReapply);
   }
-
-
-  getprojectInfo() {
-   
-    const setValues = this.applicationDataForView[0];
-}
 
 
 
@@ -1042,40 +1035,6 @@ export class ViewProjectInfoComponent implements OnInit {
     // Save PDF document
     doc.save('Rejection Pack:' + this.CurrentUser.userProfileID);
 
-  }
-
-  //Checks if user can re-apply
-  CheckIfCanReapply() {
-    this.relatedApplications.splice(0, this.relatedApplications.length);
-
-    this.applicationsService.getApplicationsByProjectNumber(this.sharedService.getProjectNumber()).subscribe((data: any) => {
-      if (data.responseCode == 1) {
-
-
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempRelatedApplications = {} as ApplicationList;
-          const current = data.dateSet[i];
-          tempRelatedApplications.ProjectNumber = current.ProjectNumber;
-
-          this.relatedApplications.push(tempRelatedApplications);
-          // this.sharedService.setStageData(this.StagesList);
-        }
-
-
-
-        if (data.length < 3) {
-          this.canReapply = true;
-        }
-      }
-      else {
-        //alert("Invalid Email or Password");
-        alert(data.responseMessage);
-      }
-      console.log("reponse", data);
-
-    }, error => {
-      console.log("Error: ", error);
-    })
   }
 
 }

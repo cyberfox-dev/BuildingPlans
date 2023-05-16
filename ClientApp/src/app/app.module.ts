@@ -78,6 +78,7 @@ import { AuditTrailComponent } from './audit-trail/audit-trail.component';
 import { ProjectDetailsMapViewComponent } from './create-new-wayleave/project-details-map-view/project-details-map-view.component';
 import { NotificationCenterComponent } from './notification-center/notification-center.component';
 import { MatSliderModule } from '@angular/material/slider';
+import { UserManagementComponent } from './user-management/user-management.component';
 //import { MapModule } from 'arcgis-js-api';
 //import Map from "@arcgis/core/Map";
 
@@ -140,6 +141,7 @@ import { MatSliderModule } from '@angular/material/slider';
     ProjectDetailsMapViewComponent,
     AuditTrailComponent,
     NotificationCenterComponent,
+    UserManagementComponent,
   
 
   ],

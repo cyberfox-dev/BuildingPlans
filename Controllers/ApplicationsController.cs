@@ -199,18 +199,18 @@ namespace WayleaveManagementSystem.Controllers
 
         /*Reapply options on rejected applications*/
         [HttpPost("GetApplicationsByProjectNumber")]
-        public async Task<object> GetApplicationsByProjectNumber([FromBody] string projectNumber)
+        public async Task<object> GetApplicationsByProjectNumber([FromBody] ApplicationStagesBindingModel model)
         {
             try
             {
 
-                if (projectNumber == null)
+                if (model.ProjectNumber == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
-                    var result = await _applicationsService.GetApplicationsByProjectNumber(projectNumber);
+                    var result = await _applicationsService.GetApplicationsByProjectNumber(model.ProjectNumber);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application Deleted Successfully", result));
                 }
 
