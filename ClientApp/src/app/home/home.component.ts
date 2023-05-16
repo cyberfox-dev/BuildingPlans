@@ -76,12 +76,13 @@ export class HomeComponent implements OnInit,OnDestroy {
   applicationDataForView: ApplicationList[] = [];
   applicationDataForViewToShared: ApplicationList[] = [];
   StagesList: StagesList[] = [];
+  relatedApplications: ApplicationList[] = [];
 
   CurrentUser: any;
   stringifiedData: any;
     stringifiedDataUserProfile: any;
   CurrentUserProfile: any;
-
+  public canReapply: boolean = false;
 
   unpaidcount = 0;
   distributioncount = 0;
@@ -335,11 +336,10 @@ export class HomeComponent implements OnInit,OnDestroy {
 
     this.applicationDataForViewToShared.push(this.applicationDataForView[index])  ;
     this.sharedService.setViewApplicationIndex(this.applicationDataForViewToShared);
-    this.router.navigate(["/view-project-info"]);
+/*    this.CheckIfCanReapply();*/
     this.viewContainerRef.clear();
-
+    this.router.navigate(["/view-project-info"]);
   }
-
 
   goToNewWayleave() {
  
@@ -474,6 +474,45 @@ export class HomeComponent implements OnInit,OnDestroy {
       this.dataSource = this.Applications.filter(df => df.DateCreated);
       this.filter = false;
     }
+  }
+
+  //Checks if user can re-apply
+  async CheckIfCanReapply(index: any) {
+    this.relatedApplications.splice(0, this.relatedApplications.length);
+
+    await this.applicationService.getApplicationsByProjectNumber(this.sharedService.getProjectNumber()).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempRelatedApplications = {} as ApplicationList;
+          const current = data.dateSet[i];
+          tempRelatedApplications.ProjectNumber = current.projectNumber;
+
+          this.relatedApplications.push(tempRelatedApplications);
+          // this.sharedService.setStageData(this.StagesList);
+        }
+
+
+
+        if (data.dateSet.length < 3) {
+          this.canReapply = true;
+          this.sharedService.setCanReapply(true);
+        } else {
+          this.canReapply = false;
+        }
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+      this.viewProject(index);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 
 

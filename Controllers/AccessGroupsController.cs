@@ -21,6 +21,7 @@ using WayleaveManagementSystem.Data;
 using System.Threading.Tasks;
 using System;
 using System.Linq;
+using System.Data;
 
 namespace WayleaveManagementSystem.Controllers
 {
@@ -386,7 +387,7 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-        [HttpGet("GetAllAccessGroupRoles")]
+        [HttpGet("GetAllAccessGroupUsers")]
         public async Task<object> GetAllAccessGroupUsers()
         {
             try
@@ -453,7 +454,7 @@ namespace WayleaveManagementSystem.Controllers
         }
 
         [HttpPost("GetAllNotLinkedUsers")]
-        public async Task<object> GetAllNotLinkedUsers(int accessGroupID)
+        public async Task<object> GetAllNotLinkedUsers([FromBody] int accessGroupID)
         {
             try
             {
@@ -509,7 +510,7 @@ namespace WayleaveManagementSystem.Controllers
 
 
         [HttpPost("GetAllLinkedUsers")]
-        public async Task<object> GetAllLinkedUsers(int accessGroupID)
+        public async Task<object> GetAllLinkedUsers([FromBody] int accessGroupID)
         {
             try
             {
@@ -564,52 +565,77 @@ namespace WayleaveManagementSystem.Controllers
         }
 
         [HttpPost("GetAllNotLinkedRoles")]
-        public async Task<object> GetAllNotLinkedRoles(int accessGroupID)
+        public async Task<object> GetAllNotLinkedRoles([FromBody] int accessGroupID)
         {
             try
             {
 
 
-                var userIDs = await (
-            from accessGroupUserLink in _context.AccessGroupUserLink
+                var RoleIDs = await (
+            from accessGroupUserLink in _context.AccessGroupRoleLink
             where accessGroupUserLink.AccessGroupID == accessGroupID
-            select accessGroupUserLink.UserID).ToListAsync();
+            select accessGroupUserLink.RoleID).ToListAsync();
 
 
                 var result = await (
-                    from UserProfile in _context.UserProfilesTable
-                    where UserProfile.isActive == true && UserProfile.isInternal == true && !userIDs.Contains(UserProfile.UserID)
-                    select new UserProfileDTO()
+                    from role in _context.Role
+                    where role.isActive == true  && !RoleIDs.Contains(role.RoleID)
+                    select new RolesDTO()
                     {
-                        UserProfileID = UserProfile.UserProfileID,
-                        UserID = UserProfile.UserID,
-                        FullName = UserProfile.FullName,
-                        Email = UserProfile.Email,
-                        PhoneNumber = UserProfile.PhoneNumber,
-                        isInternal = UserProfile.isInternal,
-                        BP_Number = UserProfile.BP_Number,
-                        CompanyName = UserProfile.CompanyName,
-                        CompanyRegNo = UserProfile.CompanyRegNo,
-                        PhyscialAddress = UserProfile.PhyscialAddress,
-                        Directorate = UserProfile.Directorate,
-                        DepartmentID = UserProfile.DepartmentID,
-                        SubDepartmentID = UserProfile.SubDepartmentID,
-                        Branch = UserProfile.Branch,
-                        CostCenterNumber = UserProfile.CostCenterNumber,
-                        CostCenterOwner = UserProfile.CostCenterOwner,
-                        CopyOfID = UserProfile.CopyOfID,
-                        DateCreated = UserProfile.DateCreated,
-                        DateUpdated = UserProfile.DateUpdated,
-                        CreatedById = UserProfile.CreatedById,
-                        isDepartmentAdmin = UserProfile.isDepartmentAdmin,
-                        VatNumber = UserProfile.VatNumber,
-                        IdNumber = UserProfile.IdNumber,
-                        isZoneAdmin = UserProfile.isZoneAdmin,
+                        RoleID = role.RoleID,
+                        RoleName = role.RoleName,
+                        RoleType = role.RoleType,
+                        RoleDescription = role.RoleDescription,
+                        DateCreated = role.DateCreated,
+                        DateUpdated = role.DateUpdated,
+                        CreatedById = role.CreatedById,
                     }
                 ).ToListAsync();
 
 
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Users That are not linked", result));
+            }
+            catch (Exception ex)
+            {
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+
+
+        [HttpPost("GetAllLinkedRoles")]
+        public async Task<object> GetAllLinkedRoles([FromBody] int accessGroupID)
+        {
+            try
+            {
+
+
+                var RoleIDs = await (
+          from accessGroupUserLink in _context.AccessGroupRoleLink
+          where accessGroupUserLink.AccessGroupID == accessGroupID
+          select accessGroupUserLink.RoleID).ToListAsync();
+
+
+
+                var result = await (
+                    from role in _context.Role
+                    where role.isActive == true && RoleIDs.Contains(role.RoleID)
+                  
+                  select new RolesDTO()
+                  {
+                      RoleID = role.RoleID,
+                      RoleName = role.RoleName,
+                      RoleType = role.RoleType,
+                      RoleDescription = role.RoleDescription,
+                      DateCreated = role.DateCreated,
+                      DateUpdated = role.DateUpdated,
+                      CreatedById = role.CreatedById,
+                  }
+                ).ToListAsync();
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Users that are linked", result));
             }
             catch (Exception ex)
             {
