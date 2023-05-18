@@ -43,6 +43,8 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public string? VatNumber { get; set; }
 
+        public bool? depConfirmation { get; set; }
+
 
 
     }

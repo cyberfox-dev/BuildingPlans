@@ -83,7 +83,13 @@ export class UserProfileService {
 
   }
 
+  public getAllUsersToLinkToDep() {
 
+    return this.httpClient.get(this.baseURL + "GetAllUsersToLinkToDep");
+
+  }
+
+  
 
 
 }

@@ -176,5 +176,28 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+        
+
+       [HttpGet("GetAllUsersToLinkToDep")]
+        public async Task<object> GetAllUsersToLinkToDep()
+        {
+            try
+            {
+
+
+                var result = await _userProfileService.GetAllUsersToLinkToDep();
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Users fetched", result));
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
     }
 }

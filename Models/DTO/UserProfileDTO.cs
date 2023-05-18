@@ -54,6 +54,8 @@ namespace WayleaveManagementSystem.Models.DTO
         public string? VatNumber { get; set; }
         public bool? isZoneAdmin { get; set; }
 
+        public bool? depConfirmation { get; set; }
+
 
     }
 }

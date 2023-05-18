@@ -25,15 +25,16 @@ export class CyberfoxConfigComponent implements OnInit {
     this.CurrentUser = JSON.parse(this.stringifiedData);
   }
 
-
+  
   onEscalateDateSubmit() {
     let escalteDuration = this.addEscalateDate.controls["escalateDate"].value;
     let escalteDescription = "This is the number of days set until the applicant can escalte the application";
     debugger;
-    this.configService.addUpdateConfig(null, escalteDuration, escalteDescription, this.CurrentUser.appUserId).subscribe((data: any) => {
+    this.configService.addUpdateConfig(0, escalteDuration.toString(), escalteDescription, this.CurrentUser.appUserId).subscribe((data: any) => {
       
       if (data.responseCode == 1) {
-        this.addEscalateDate.controls["newCommentName"].setValue(null);
+        alert("Added duration");
+        this.addEscalateDate.controls["escalateDate"].setValue(null);
 
       }
       else {
@@ -44,7 +45,6 @@ export class CyberfoxConfigComponent implements OnInit {
     }, error => {
       console.log("Error", error);
     })
-}
-
+  }
 
 }

@@ -62,6 +62,27 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+
+        [HttpGet("NEWTest")]
+        public async Task<object> NEWTest()
+        {
+            try
+            {
+
+               
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+              
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
         [HttpPost("DeleteConfig")]
         public async Task<object> DeleteConfig([FromBody] int configID)
         {
