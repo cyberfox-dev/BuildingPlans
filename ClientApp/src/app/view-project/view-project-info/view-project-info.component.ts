@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { SharedService } from "src/app/shared/shared.service";
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
@@ -10,6 +10,8 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { DatePipe } from '@angular/common';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
+import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component'
+
 
 export interface ARCGISAPIData {
   createdByID: string;
@@ -218,7 +220,8 @@ export class ViewProjectInfoComponent implements OnInit {
     private applicationsService: ApplicationsService,
     private commentsService: CommentsService,
     private depositRequiredService: DepositRequiredService,
-
+    private NewWayleaveComponent: NewWayleaveComponent,
+    private viewContainerRef: ViewContainerRef
   ) { }
 
   ngOnInit(): void {
@@ -1034,6 +1037,15 @@ export class ViewProjectInfoComponent implements OnInit {
 
     // Save PDF document
     doc.save('Rejection Pack:' + this.CurrentUser.userProfileID);
+
+  }
+
+  goToNewWayleave(applicationType: string) { //application type refers to whether it is a brand new application or if it is a reapply.
+    this.sharedService.setApplicationType(applicationType);
+    this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId);
+    //console.log("Test: " + this.sharedService.getApplicationID())
+    /*        this.router.navigate(["/new-wayleave"]);*/
+    this.viewContainerRef.clear();
 
   }
 
