@@ -6,7 +6,8 @@ import { CommentList } from '../nav-menu/nav-menu.component';
 //import { ApplicationList } from '../shared/shared.service';
 import { SharedService } from "src/app/shared/shared.service"
 import { StagesService } from '../service/Stages/stages.service';
-import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component'
+import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component';
+import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
 
 
 export interface StagesList {
@@ -61,6 +62,14 @@ export interface ApplicationList {
   ProjectNumber: string;
 }
 
+
+export interface RolesList {
+  RoleID: number;
+  RoleName: string;
+  //RoleType: string;
+  //RoleDescription: string;
+}
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -77,6 +86,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   applicationDataForViewToShared: ApplicationList[] = [];
   StagesList: StagesList[] = [];
   relatedApplications: ApplicationList[] = [];
+  RolesList: RolesList[] = [];
 
   CurrentUser: any;
   stringifiedData: any;
@@ -92,7 +102,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   filter = false;
 
 
-  constructor(private router: Router, private applicationService: ApplicationsService, private sharedService: SharedService, private viewContainerRef: ViewContainerRef, private stagesService: StagesService, private NewWayleaveComponent: NewWayleaveComponent) {
+  constructor(private router: Router, private applicationService: ApplicationsService, private sharedService: SharedService, private viewContainerRef: ViewContainerRef, private stagesService: StagesService, private NewWayleaveComponent: NewWayleaveComponent, private accessGroupsService: AccessGroupsService) {
 
   }
 
@@ -113,7 +123,7 @@ export class HomeComponent implements OnInit,OnDestroy {
 
       this.getAllApplicationsByUserID();
       this.getAllStages();
-
+      this.getRolesLinkedToUser();
 
     }, 100);
 
@@ -121,7 +131,42 @@ export class HomeComponent implements OnInit,OnDestroy {
 
   }
 
+  getRolesLinkedToUser() {
 
+    this.RolesList.splice(0, this.RolesList.length);
+
+    this.accessGroupsService.getAllRolesForUser(this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempRolesList = {} as RolesList;
+          const current = data.dateSet[i];
+          tempRolesList.RoleID = current.roleID;
+          tempRolesList.RoleName = current.roleName;
+          //tempRolesList.RoleType = current.roleType;
+          //tempRolesList.RoleDescription = current.roleDescription;
+
+          this.RolesList.push(tempRolesList);
+          
+
+        }
+        this.sharedService.setCurrentUserRole(this.RolesList);
+       // this.rolesTable?.renderRows();
+        console.log("getAllLinkedRolesReponse", data.dateSet);
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("getAllLinkedRolesReponse", data);
+
+    }, error => {
+      console.log("getAllLinkedRolesReponseError: ", error);
+    })
+
+  }
 
   getAllApplicationsByUserID() {
 

@@ -96,12 +96,12 @@ export class AccessGroupsService {
 
   
 
-  public GetAllRolesForUser(userID: string) {
+  public getAllRolesForUser(userID: string) {
 
-    //const body = {
-    //  UserID: userID,
-    //}
-    return this.httpClient.post(this.baseURL + "GetAllRolesForUser", userID);
+    const body = {
+      UserID: userID,
+    }
+    return this.httpClient.post(this.baseURL + "GetAllRolesForUser", body);
 
   }
 

@@ -37,6 +37,16 @@ export class SubDepartmentForCommentService {
 
     }
     return this.httpClient.post(this.baseURL + "DepartmentForCommentUserAssaignedToComment", body);
+  }
+
+  public departmentForCommentFinalAppovalUserToComment(subDepartmentForCommentID: number | null, userAssaignedToComment: string | null) {
+
+    const body = {
+      SubDepartmentForCommentID: subDepartmentForCommentID,
+      UserAssaignedToComment: userAssaignedToComment,
+
+    }
+    return this.httpClient.post(this.baseURL + "DepartmentForCommentFinalAppovalUserToComment", body);
 
   }
 

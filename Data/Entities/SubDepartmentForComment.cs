@@ -32,6 +32,11 @@ namespace WayleaveManagementSystem.Data.Entities
         public string? ReferedToUserID { get; set; }
 
 
+        //Is Set for final Approval
+        public bool? FinalApproval { get; set; }
+
+
+
 
 
 

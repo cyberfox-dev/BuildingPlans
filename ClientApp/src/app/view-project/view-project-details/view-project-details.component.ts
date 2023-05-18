@@ -50,7 +50,7 @@ export class ViewProjectDetailsComponent implements OnInit {
     expectedStartDate: ['', Validators.required],
     expectedEndDate: ['', Validators.required],
 
-  })
+  }) 
   applicationDataForView: ApplicationList[] = [];
   constructor(private sharedService: SharedService, private formBuilder: FormBuilder) { }
 

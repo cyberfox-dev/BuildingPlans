@@ -17,7 +17,7 @@ import { DepositRequiredService } from '../service/DepositRequired/deposit-requi
 import { CommentsService } from '../service/Comments/comments.service';
 import { ApplicationsService} from '../service/Applications/applications.service';
 import { UserProfileService } from '../service/UserProfile/user-profile.service';
-
+import { SharedService } from 'src/app/shared/shared.service';
 
 
 export interface SubDepartmentList {
@@ -166,6 +166,8 @@ export class ActionCenterComponent implements OnInit {
     forManuallyAssignSubForCommentID: any;
     loggedInUsersIsZoneAdmin: any;
     AssignUserForComment: boolean;
+    applicationDataForView: any;
+    CurrentApplicationBeingViewed: any;
   constructor(
     private offcanvasService: NgbOffcanvas,
     private modalService: NgbModal,
@@ -182,6 +184,7 @@ export class ActionCenterComponent implements OnInit {
     private depositRequiredService: DepositRequiredService,
     private commentsService: CommentsService,
     private applicationsService: ApplicationsService,
+    private sharedService: SharedService,
   ) { }
   openEnd(content: TemplateRef<any>) {
     this.offcanvasService.open(content, { position: 'end' });
@@ -201,6 +204,12 @@ export class ActionCenterComponent implements OnInit {
 
   ngOnInit(): void {
    // setTimeout(() => {
+
+    //Get Current Application Infomation 
+    this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
+    this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
+
+
       this.getAllSubDepartments();
       this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
       this.CurrentUser = JSON.parse(this.stringifiedData);
@@ -211,7 +220,8 @@ export class ActionCenterComponent implements OnInit {
         console.log(this.CurrentUser);
       }
       /*  this.getAllServiceItmes();*/
-      this.getAllServiceItmesForDropdown();
+    this.getAllServiceItmesForDropdown();
+
 
       this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
       this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
@@ -227,7 +237,45 @@ export class ActionCenterComponent implements OnInit {
   }
 
 
+  FakeFinal(interact:string) {
+    switch (interact) {
 
+      case "Approve": {
+        if (confirm("Are you sure you want to final approve this application?") ){
+
+
+        }
+        break;
+      }
+
+      case "Reject": {
+        if (confirm("Are you sure you want to final reject this application?")) {
+
+
+        }
+        
+        break;
+      }
+
+      case "Clarify": {
+        alert("In progress");
+        break;
+      }
+      case "Refer": {
+        alert("In progress");
+
+        break;
+      }
+
+
+
+
+      default: {
+
+        break;
+      }
+    }
+  }
 
   setRoles() {
    
@@ -356,6 +404,40 @@ export class ActionCenterComponent implements OnInit {
       })
 
     }
+  } 
+
+
+
+  getDepartmentManagerUserID() {
+
+   // const currentRole = this.sharedService.getCurrentUserRoles();
+
+
+
+  }
+
+  //im here
+  moveToFinalApprovalForDepartment() {
+
+
+      this.subDepartmentForCommentService.departmentForCommentFinalAppovalUserToComment(this.forManuallyAssignSubForCommentID, this.UserSelectionForManualLink.selected[0].id).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          alert(data.responseMessage);
+
+        }
+        else {
+          alert(data.responseMessage);
+
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+    
   }
 
   onHopperClick() {
@@ -451,6 +533,62 @@ export class ActionCenterComponent implements OnInit {
     }
 
   }
+
+
+
+
+  //getAllComments() {
+
+  //  this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
+
+  //    if (data.responseCode == 1) {
+  //      for (let i = 0; i < data.dateSet.length; i++) {
+
+  //        const current = data.dateSet[i];
+
+          
+
+          
+  //      }
+  //    }
+  //    else {
+  //      alert(data.responseMessage);
+
+  //    }
+  //    console.log("reponse", data);
+
+  //  }, error => {
+  //    console.log("Error: ", error);
+  //  })
+  //}
+
+  //ChangeApplicationStatusToFinalApproval() {
+
+
+
+  //  if (this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Unpaid") {
+  //    this.applicationsService.updateApplicationStage(this.CurrentApplicationBeingViewed[0].applicationID, this.CurrentApplicationBeingViewed[0].PreviousStageName, this.CurrentApplicationBeingViewed[0].PreviousStageNumber, this.CurrentApplicationBeingViewed[0].CurrentStageName, this.CurrentApplicationBeingViewed[0].CurrentStageNumber, this.CurrentApplicationBeingViewed[0].NextStageName, this.CurrentApplicationBeingViewed[0].NextStageNumber, "Paid").subscribe((data: any) => {
+
+  //      if (data.responseCode == 1) {
+  //        alert("Application Status Updated to Paid");
+
+  //      }
+  //      else {
+  //        alert(data.responseMessage);
+  //      }
+  //      console.log("responseAddapplication", data);
+  //    }, error => {
+  //      console.log("Error", error);
+  //    })
+
+  //  }
+  //  else {
+  //    alert("Application Status Is Not Unpaid");
+  //  }
+
+
+  //}
+
 
   onDepositRequiredClick() {
     let SubDepartmentName = "";

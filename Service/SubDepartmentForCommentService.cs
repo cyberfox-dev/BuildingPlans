@@ -104,6 +104,32 @@ namespace WayleaveManagementSystem.Service
 
         }
 
+        public async Task<bool> DepartmentForCommentFinalAppovalUserToComment(int? subDepartmentForCommentID, string? userAssaignedToComment)
+        {
+
+
+            var tempSubDepForCommentTable = _context.SubDepartmentForComment.FirstOrDefault(x => x.SubDepartmentForCommentID == subDepartmentForCommentID);
+
+            if (tempSubDepForCommentTable != null)
+            {
+
+
+                tempSubDepForCommentTable.UserAssaignedToComment = userAssaignedToComment;
+                tempSubDepForCommentTable.DateUpdated = DateTime.Now;
+                tempSubDepForCommentTable.FinalApproval = true;
+
+                _context.Update(tempSubDepForCommentTable);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+
+        }
+
         public async Task<bool> DeleteDepartmentForComment(int subDepartmentForCommentID)
         {
             //this checks if the record exists in the db

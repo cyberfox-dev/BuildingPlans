@@ -60,6 +60,14 @@ export interface ApplicationList {
   ProjectNumber: string
 }
 
+
+export interface RolesList {
+  RoleID: number;
+  RoleName: string;
+  //RoleType: string;
+  //RoleDescription: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -80,6 +88,7 @@ export class SharedService {
   applicationDataForView: ApplicationList[] = [];
   engineerData: ProfessionalList[] = [];
   StagesList: StagesList[] = [];
+  RolesList: RolesList[] = [];
 
   ProjectNumber: string = "Ven123";
   canReapply: any = false;
@@ -96,13 +105,19 @@ export class SharedService {
 
 
  setConfigShow(data:any){
-  this.configShow=data
+   this.configShow = data;
  }
  getConfigShow(){
   return this.configShow;
   }
 
+  setCurrentUserRole(data: any) {
+    this.RolesList = data;
+  }
 
+  getCurrentUserRoles(){
+    return this.RolesList;
+}
   setUserProfileData(data: any) {
     this.userProfileData = data;
   }

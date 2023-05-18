@@ -120,7 +120,7 @@ namespace WayleaveManagementSystem.Service
 
 
 
-        public async Task<bool> UpdateApplicationStage(int? ApplicationID, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus)
+        public async Task<bool> UpdateApplicationStage(int? ApplicationID, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus,string? projectNumber)
         {
 
            
@@ -139,7 +139,12 @@ namespace WayleaveManagementSystem.Service
                 //tempApplicationTable.NextStageName = NextStageName;
                 //tempApplicationTable.NextStageNumber = NextStageNumber;
                 tempApplicationTable.ApplicationStatus = ApplicationStatus;
+                   
             }
+            else if (projectNumber != null)
+                {
+                    tempApplicationTable.ProjectNumber = projectNumber;
+                }
             else
             {
                 tempApplicationTable.PreviousStageName = PreviousStageName;

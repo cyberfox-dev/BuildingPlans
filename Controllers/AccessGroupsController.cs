@@ -420,14 +420,14 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-        [HttpPost("GetAllAccessGroupRoles")]
-        public async Task<object> GetAllRolesForUser([FromBody] string userID)
+        [HttpPost("GetAllRolesForUser")]
+        public async Task<object> GetAllRolesForUser([FromBody] AccessGroupsBindingModel model)
         {
             try
             {
                 var accessGroupIDs = await (
                     from accessGroup in _context.AccessGroupUserLink
-                    where accessGroup.UserID == userID && accessGroup.isActive == true
+                    where accessGroup.UserID == model.UserID && accessGroup.isActive == true
                     select accessGroup.AccessGroupID).ToListAsync();
 
                 var result = await (
