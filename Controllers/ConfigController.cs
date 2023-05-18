@@ -48,7 +48,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _configService.AddUpdateConfig(model.ConfigID, model.ConfigName,model.ConfigDescription, model.CreatedById);
+                    var result = await _configService.AddUpdateConfig(model.ConfigID, model.ConfigName, model.ConfigDescription, model.CreatedById);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ConfigID > 0 ? "Config Updated Successfully" : "Config Saved Successfully"), result));
                 }
 
