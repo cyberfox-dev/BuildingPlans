@@ -206,6 +206,13 @@ export class ProjectDetailsMapViewComponent implements OnInit {
 
       map.add(streetlights);
 
+      /*      Internal layers*/
+      var internalLayer = new MapImageLayer({
+        url: "https://isap.capetown.gov.za/agsint/rest/services/Theme_Based/Basic_Services_Infrastructure/MapServer"
+      })
+
+      map.add(internalLayer);
+
       /*      Add layerlist and legend*/
       var layerList = new LayerList({
         view: view
