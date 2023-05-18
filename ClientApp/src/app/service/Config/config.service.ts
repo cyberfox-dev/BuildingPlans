@@ -14,16 +14,21 @@ export class ConfigService {
 
   /*  , roleType: string | null, roleDescription: string | null, createdById: string | null*/
 
-  public addUpdateConfig(configID: number | null, configName: string | null, configDescription: string | null, createdByID: string | null) {
+  public addUpdateConfig(configID?: number | null, configName?: string | null, configDescription?: string | null, createdByID?: string | null) {
 
     const body = {
-      configID: configID,
-      configName: configName,
-      configDescription: configDescription,
-      createdByID: createdByID,
+      ConfigID: configID,
+      ConfigName: configName,
+      ConfigDescription: configDescription,
+      CreatedById: createdByID,
 
     }
     return this.httpClient.post(this.baseURL + "AddUpdateConfig", body);
+
+  }
+  public addUpdateConfigg(configID?: number | null, configName?: string | null, configDescription?: string | null, createdByID?: string | null) {
+
+    return this.httpClient.get(this.baseURL + "NEWTest");
 
   }
 

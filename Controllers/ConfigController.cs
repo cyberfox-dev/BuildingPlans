@@ -48,9 +48,30 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _configService.AddUpdateConfig(model.ConfigID, model.ConfigName,model.ConfigDescription, model.CreatedById);
+                    var result = await _configService.AddUpdateConfig(model.ConfigID, model.ConfigName, model.ConfigDescription, model.CreatedById);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ConfigID > 0 ? "Config Updated Successfully" : "Config Saved Successfully"), result));
                 }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+
+        [HttpGet("NEWTest")]
+        public async Task<object> NEWTest()
+        {
+            try
+            {
+
+               
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+              
 
             }
             catch (Exception ex)
