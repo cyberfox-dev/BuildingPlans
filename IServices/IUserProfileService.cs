@@ -10,6 +10,7 @@ namespace WayleaveManagementSystem.IServices
         Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string userID, string fullName, string email, string? phoneNumber, bool isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string createdById, string? IdNumber);
         //this will return T/F 
         public Task<bool> DeleteUserProfile(int userProfileID);
+        public Task<bool> UserGainsApproval(int userProfileID);
 
         Task<List<UserProfileDTO>> GetUserByUserID(string userId);
 
@@ -19,7 +20,7 @@ namespace WayleaveManagementSystem.IServices
         Task<List<UserProfileDTO>> GetInternalUsers();
         Task<List<UserProfileDTO>> GetAllDepartmentAdmins();
 
-        Task<List<UserProfileDTO>> GetAllUsersToLinkToDep();
+        Task<List<UserProfileDTO>> GetAllUsersToLinkToDep(int depID);
 
 
 

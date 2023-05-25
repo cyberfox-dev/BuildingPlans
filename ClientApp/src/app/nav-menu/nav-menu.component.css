@@ -37,6 +37,10 @@ a{
   background-color: #369cf4;
   color: #fff;
 }
+.mat-button{
+    font-size:16px;
+
+}
 
 
 .mat-column-Comment {

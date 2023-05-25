@@ -79,6 +79,7 @@ import { ProjectDetailsMapViewComponent } from './create-new-wayleave/project-de
 import { NotificationCenterComponent } from './notification-center/notification-center.component';
 import { MatSliderModule } from '@angular/material/slider';
 import { UserManagementComponent } from './user-management/user-management.component';
+import { InternalUserUnassignedDepartmentComponent } from './internal-user-unassigned-department/internal-user-unassigned-department.component';
 //import { MapModule } from 'arcgis-js-api';
 //import Map from "@arcgis/core/Map";
 
@@ -142,6 +143,7 @@ import { UserManagementComponent } from './user-management/user-management.compo
     AuditTrailComponent,
     NotificationCenterComponent,
     UserManagementComponent,
+    InternalUserUnassignedDepartmentComponent,
   
 
   ],
@@ -195,6 +197,7 @@ import { UserManagementComponent } from './user-management/user-management.compo
       { path: 'user-settings', component: UserSettingsComponent },
       { path: 'cyberfox-config', component: CyberfoxConfigComponent },
       { path: 'invoice', component: InvoiceComponent },
+      { path: 'internal-user-unassigned-department', component: InternalUserUnassignedDepartmentComponent },
     ])
   ],
   providers: [],

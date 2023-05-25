@@ -36,8 +36,8 @@
 <!--end of modal-->
 <!--button to create new role(open modal)-->
 
-<button type="button" class="btn btn-primary createNewRole" (click)="openXl(content)">Create a new role</button>
-
+<!--<button type="button" class="btn btn-primary createNewRole" (click)="openXl(content)">Create a new role</button>-->
+<button mat-raised-button color="create" (click)="openXl(content)">Create a new role</button>
 
 <!--display all roles-->
 
@@ -62,7 +62,7 @@
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let i = index">
 <!--      <button mat-raised-button color="success" matTooltip="Add users to this role" (click)="linkUsers(linkUsersToRole)"><i class="fa fa-plus"></i></button>-->
-      <button mat-raised-button color="blue" matTooltip="Edit Role" (click)="viewLinkedUsers(viewlinkedUsersToRole,i)"><i class="fa fa-pencil"></i></button>
+      <button mat-raised-button color="orange" matTooltip="Edit Role" (click)="viewLinkedUsers(viewlinkedUsersToRole,i)"><i class="fa fa-pencil"></i></button>
       <button mat-raised-button color="warn" matTooltip="Delete role" (click)="onRoleDelete(i)"><i class="fa fa-trash"></i></button>
 
     </td>

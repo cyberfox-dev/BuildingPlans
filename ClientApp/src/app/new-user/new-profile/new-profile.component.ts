@@ -9,12 +9,20 @@ import { UserProfileService } from 'src/app/service/UserProfile/user-profile.ser
 import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
 import { DepartmentsService } from '../../service/Departments/departments.service';
 import { Router } from '@angular/router';
+import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
 
 export interface DepartmentList {
   departmentID: number;
   departmentName: string;
   dateUpdated: any;
   dateCreated: any;
+}
+
+export interface DepartmentAdminList {
+  userId: any;
+  idNumber: string;
+  fullName: string;
+  departmentAdmin: boolean;
 }
 
 
@@ -78,7 +86,7 @@ export class NewProfileComponent implements OnInit {
     componentRestrictions: { country: 'ZA' }
   } as unknown as Options
 
-
+  DepartmentAdminList: DepartmentAdminList[] = [];
   public showExternal: boolean = false;
   public showInternal: boolean = false;
   public External: boolean = false;
@@ -120,7 +128,7 @@ export class NewProfileComponent implements OnInit {
   linkedContractors: ContractorList[] = [];
 
 
-  constructor(private modalService: NgbModal, private shared: SharedService, private userPofileService: UserProfileService, private professionalService: ProfessionalService, private departmentService: DepartmentsService, private router: Router) { }
+  constructor(private modalService: NgbModal, private shared: SharedService, private userPofileService: UserProfileService, private professionalService: ProfessionalService, private departmentService: DepartmentsService, private router: Router, private notificationsService: NotificationsService) { }
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
@@ -433,6 +441,77 @@ export class NewProfileComponent implements OnInit {
  
     
     
+  }
+
+  /*notification*/
+
+
+/*  getAllDepartmentAdminsForNotifications() {
+
+    this.userPofileService.getUserProfileById().subscribe((data: any) => {
+
+
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempDepartmentAdminList = {} as DepartmentAdminList;
+          const current = data.dateSet[i];
+          tempDepartmentAdminList.userId = current.userID;
+          tempDepartmentAdminList.departmentAdmin = current.idDepartmentAdmin;
+          tempDepartmentAdminList.fullName = current.fullname;
+
+
+
+
+          this.DepartmentAdminList.push(tempDepartmentAdminList);
+
+        }
+
+
+
+        console.log("Got all departmentAdmins", data.dateSet);
+
+
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }*/
+
+  notiName: string;
+  notiDescription: string;
+  applicationID: any;
+
+  onCreateNotification() {
+
+    this.notiName = "A user has requested to join your department";
+    this.notiDescription = this.applicationID + " was created ";
+    debugger;
+    this.notificationsService.addUpdateNotification(0, this.notiName, this.notiDescription, false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserId, null).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        alert(data.responseMessage);
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+      console.log("response", data);
+    }, error => {
+      console.log("Error", error);
+    })
+
+
   }
 
 

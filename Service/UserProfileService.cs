@@ -54,7 +54,9 @@ namespace WayleaveManagementSystem.Service
                     DateUpdated = DateTime.Now,
                     CreatedById = createdById,
                     isActive = true,
-                    IdNumber = IdNumber
+                    IdNumber = IdNumber,
+                    depConfirmation = false,
+                    
                 };
 
                 //After the inizlization add to the db
@@ -87,6 +89,7 @@ namespace WayleaveManagementSystem.Service
                 tempUserProfile.DateUpdated = DateTime.Now;
                // tempUserProfile.CreatedById = createdById;
                 tempUserProfile.isActive = true;
+                tempUserProfile.depConfirmation = false;
                 tempUserProfile.IdNumber = IdNumber;
 
                 _context.Update(tempUserProfile);
@@ -109,6 +112,27 @@ namespace WayleaveManagementSystem.Service
             {
                 tempUserProfilesTable.DateUpdated = DateTime.Now;
                 tempUserProfilesTable.isActive = false;
+                _context.Update(tempUserProfilesTable);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+
+        }
+
+        public async Task<bool> UserGainsApproval(int userProfileID)
+        {
+            //this checks is the record exists in the db
+            var tempUserProfilesTable = _context.UserProfilesTable.FirstOrDefault(x => x.UserProfileID == userProfileID);
+
+            if (tempUserProfilesTable == null)
+            {
+                return await Task.FromResult(false);
+
+            }
+            else
+            {
+                tempUserProfilesTable.DateUpdated = DateTime.Now;
+                tempUserProfilesTable.depConfirmation = true;
                 _context.Update(tempUserProfilesTable);
                 await _context.SaveChangesAsync();
                 return true;
@@ -147,7 +171,7 @@ namespace WayleaveManagementSystem.Service
                    VatNumber = UserProfile.VatNumber,
                    IdNumber = UserProfile.IdNumber,
                    isZoneAdmin = UserProfile.isZoneAdmin,
-
+                   depConfirmation = UserProfile.depConfirmation,
                }
 
                ).ToListAsync();
@@ -263,11 +287,11 @@ namespace WayleaveManagementSystem.Service
                ).ToListAsync();
         }
 
-        public async Task<List<UserProfileDTO>> GetAllUsersToLinkToDep()
+        public async Task<List<UserProfileDTO>> GetAllUsersToLinkToDep(int departmentID)
         {
             return await (
                from UserProfile in _context.UserProfilesTable
-               where UserProfile.isActive == true  && UserProfile.depConfirmation == false
+               where UserProfile.isActive == true  && UserProfile.depConfirmation == false && UserProfile.DepartmentID == departmentID
                select new UserProfileDTO()
                {
                    UserProfileID = UserProfile.UserProfileID,
@@ -282,7 +306,7 @@ namespace WayleaveManagementSystem.Service
                    PhyscialAddress = UserProfile.PhyscialAddress,
                    Directorate = UserProfile.Directorate,
                    DepartmentID = UserProfile.DepartmentID,
-                   SubDepartmentID = UserProfile.SubDepartmentID,
+                   SubDepartmentID = UserProfile.SubDepartmentID, 
                    Branch = UserProfile.Branch,
                    CostCenterNumber = UserProfile.CostCenterNumber,
                    CostCenterOwner = UserProfile.CostCenterOwner,

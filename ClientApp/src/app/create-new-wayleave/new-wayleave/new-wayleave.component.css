@@ -46,7 +46,6 @@
 
 }
 
-
 .mat-form-input
 {
     font-size: 14px;
@@ -148,7 +147,7 @@ form {
   font-size: 16px;
 }
 .mat-blue {
-  background-color: #3692f4;
+  background-color: #005870;
   color: #fff;
   width: 269px;
   height: 40px;
@@ -381,7 +380,7 @@ table {
   box-shadow: 0 4px 8px 0 rgb(0 0 0 / 13%), 0 6px 20px 0 rgb(0 0 0 / 0%);
   margin: 20px;
   border-color: #f1f1f1;
-  background-color: #c7f4ff;
+  background-color: #ccdee2;
   margin-bottom: 50px;
   margin-top: 50px;
 }
@@ -519,8 +518,10 @@ h3 {
 }
 
   h3 span {
-    background-color: #c7f4ff;
+    background-color: #ccdee2;
     padding: 0 10px;
+    color: #343a40;
+    font-size: 23px;
   }
 
 .refresh {
@@ -546,6 +547,11 @@ mat-button-toggle-group {
 }
 mat-button-toggle {
   width: 100%;
+}
+
+.form-control {
+  background-color: #ccdee2;
+  border: 1px solid #005870;
 }
 
 /*check buttons for water and sanitation type of excavtion*/

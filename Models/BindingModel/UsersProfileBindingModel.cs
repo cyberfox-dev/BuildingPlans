@@ -25,6 +25,7 @@
         public string? CreatedById { get; set; }
 
         public bool isActive { get; set; }
+        public bool depConfirmation { get; set; }
 
         public string? IdNumber { get; set; }
 

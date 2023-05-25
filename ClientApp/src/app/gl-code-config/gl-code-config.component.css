@@ -14,20 +14,34 @@ button {
 }
 
 .mat-success {
-  background-color: #2dd568;
+  background-color: #446414;
+  color: #fff;
+}
+
+.mat-another {
+  background-color: #ea2a74;
+  color: #fff;
+}
+
+.mat-create {
+  background-color: #005870;
   color: #fff;
 }
 
 .mat-blue {
-  background-color: #369cf4;
+  background-color: #20c997;
+  color: #fff;
+}
+
+.mat-warn {
+  background-color: #9d2235;
   color: #fff;
 }
 
 .mat-orange {
-  background-color: #f49336;
+  background-color: #ff9900;
   color: #fff;
 }
-
 
 .createNewDep {
   margin-top: 10px;

@@ -8,6 +8,7 @@ import { SharedService } from "src/app/shared/shared.service"
 import { StagesService } from '../service/Stages/stages.service';
 import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component';
 import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
+import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
 
 
 export interface StagesList {
@@ -70,6 +71,13 @@ export interface RolesList {
   //RoleDescription: string;
 }
 
+export interface UserList {
+  userID: number;
+  fullName: string;
+  isInternal: boolean;
+  depConfirmation: boolean;
+}
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -87,6 +95,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   StagesList: StagesList[] = [];
   relatedApplications: ApplicationList[] = [];
   RolesList: RolesList[] = [];
+  UserList: UserList[] = [];
 
   CurrentUser: any;
   stringifiedData: any;
@@ -102,7 +111,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   filter = false;
 
 
-  constructor(private router: Router, private applicationService: ApplicationsService, private sharedService: SharedService, private viewContainerRef: ViewContainerRef, private stagesService: StagesService, private NewWayleaveComponent: NewWayleaveComponent, private accessGroupsService: AccessGroupsService) {
+  constructor(private router: Router, private applicationService: ApplicationsService, private sharedService: SharedService, private viewContainerRef: ViewContainerRef, private stagesService: StagesService, private NewWayleaveComponent: NewWayleaveComponent, private accessGroupsService: AccessGroupsService, private userPofileService: UserProfileService) {
 
   }
 
@@ -114,7 +123,7 @@ export class HomeComponent implements OnInit,OnDestroy {
    
 
     setTimeout(() => {
-
+     
       this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
       this.CurrentUser = JSON.parse(this.stringifiedData);
 
@@ -124,6 +133,7 @@ export class HomeComponent implements OnInit,OnDestroy {
       this.getAllApplicationsByUserID();
       this.getAllStages();
       this.getRolesLinkedToUser();
+      this.onCheckIfUserHasAccess();
 
     }, 100);
 
@@ -560,5 +570,43 @@ export class HomeComponent implements OnInit,OnDestroy {
     })
   }
 
+  goToWaitScreen() {
 
-}
+  }
+
+  onCheckIfUserHasAccess() {
+
+    this.userPofileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        const tempUserList = {} as UserList
+        const current = data.dateSet[0]
+        tempUserList.userID = current.userID;
+        tempUserList.depConfirmation = current.depConfirmation;
+        tempUserList.isInternal = current.isInternal;
+        this.UserList.push(tempUserList);
+
+        if (tempUserList.depConfirmation != true && tempUserList.isInternal == true) {
+          this.router.navigate(["/internal-user-unassigned-department"]);
+        }
+        else {
+
+        }
+        console.log("SJKBKSVBJKSJV", this.UserList);
+      }
+     
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  }
+
+
+

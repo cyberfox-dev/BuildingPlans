@@ -42,7 +42,8 @@ export class UserProfileService {
       CopyOfID: copyOfID,
       CreatedById: createdById,
       idNumber: idNumber,
-      isActive: true
+      isActive: true,
+      depConfirmation:false
 
     }
     return this.httpClient.post(this.baseURL + "AddUpdateUserProfiles", body);
@@ -52,6 +53,12 @@ export class UserProfileService {
   public deleteUserProfile(professinalID: number) {
 
     return this.httpClient.post(this.baseURL + "DeleteUserProfile", professinalID);
+
+  }
+
+  public userGainsApproval(professinalID: number) {
+
+    return this.httpClient.post(this.baseURL + "UserGainsApproval", professinalID);
 
   }
 
@@ -83,9 +90,10 @@ export class UserProfileService {
 
   }
 
-  public getAllUsersToLinkToDep() {
+  public getAllUsersToLinkToDep(depID: number) {
 
-    return this.httpClient.get(this.baseURL + "GetAllUsersToLinkToDep");
+
+    return this.httpClient.post(this.baseURL + "GetAllUsersToLinkToDep", depID);
 
   }
 
