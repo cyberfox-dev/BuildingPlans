@@ -386,8 +386,8 @@ export class HomeComponent implements OnInit,OnDestroy {
     this.router.navigate(["/view-project-info"]);
   }
 
-  goToNewWayleave(applicationType: string) { //application type refers to whether it is a brand new application or if it is a reapply.
-    this.sharedService.setApplicationType(applicationType);
+  goToNewWayleave(applicationType: boolean) { //application type refers to whether it is a brand new application or if it is a reapply.
+    this.sharedService.setReapply(applicationType);
     this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId);
     //console.log("Test: " + this.sharedService.getApplicationID())
 /*        this.router.navigate(["/new-wayleave"]);*/
@@ -545,6 +545,7 @@ export class HomeComponent implements OnInit,OnDestroy {
           this.sharedService.setCanReapply(true);
         } else {
           this.canReapply = false;
+          this.sharedService.setCanReapply(false);
         }
       }
       else {

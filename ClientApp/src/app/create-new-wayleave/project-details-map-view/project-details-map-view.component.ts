@@ -200,11 +200,11 @@ export class ProjectDetailsMapViewComponent implements OnInit {
       })
 
       /*      External layers*/
-      var streetlights = new MapImageLayer({
-        url: "https://citymaps.capetown.gov.za/agsext/rest/services/Theme_Based/Basic_Services_Infrastructure/MapServer"
-      })
+      //var streetlights = new MapImageLayer({
+      //  url: "https://citymaps.capetown.gov.za/agsext/rest/services/Theme_Based/Basic_Services_Infrastructure/MapServer"
+      //})
 
-      map.add(streetlights);
+      //map.add(streetlights);
 
       /*      Internal layers*/
       var internalLayer = new MapImageLayer({

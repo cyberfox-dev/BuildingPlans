@@ -19,7 +19,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string userID, string fullName, string email, string phoneNumber, string physicalAddress, string referenceNumber, string? companyRegNo, string typeOfApplication, string notificationNumber, string wBSNumber, string physicalAddressOfProject, string descriptionOfProject, string natureOfWork, string excavationType, DateTime expectedStartDate, DateTime expectedEndDate, string location, string createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus, bool isDrafted)
+        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string userID, string fullName, string email, string phoneNumber, string physicalAddress, string referenceNumber, string? companyRegNo, string typeOfApplication, string notificationNumber, string wBSNumber, string physicalAddressOfProject, string descriptionOfProject, string natureOfWork, string excavationType, DateTime expectedStartDate, DateTime expectedEndDate, string location, string createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus, bool isDrafted, string? ProjectNumber)
         {
 
             if (ApplicationID == 0)
@@ -66,10 +66,10 @@ namespace WayleaveManagementSystem.Service
                     NextStageNumber = NextStageNumber,
                     ApplicationStatus = ApplicationStatus,
                     isDrafted = false,
+                    ProjectNumber = null
 
 
-
-                };
+            };
 
                 //After the inizlization add to the db
                 await _context.Application.AddAsync(tempApplicationTable);
@@ -107,7 +107,7 @@ namespace WayleaveManagementSystem.Service
                 tempApplicationTable.CurrentStageStartDate = DateTime.Now;
                 tempApplicationTable.NextStageName = NextStageName;
                 tempApplicationTable.NextStageNumber = NextStageNumber;
-
+                tempApplicationTable.ProjectNumber = ProjectNumber;
 
                 _context.Update(tempApplicationTable);
                 await _context.SaveChangesAsync();
