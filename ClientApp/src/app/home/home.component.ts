@@ -113,14 +113,24 @@ export class HomeComponent implements OnInit,OnDestroy {
     previousYear: number;
 
 
-  constructor(private router: Router, private applicationService: ApplicationsService, private sharedService: SharedService, private viewContainerRef: ViewContainerRef, private stagesService: StagesService, private NewWayleaveComponent: NewWayleaveComponent, private accessGroupsService: AccessGroupsService) {
-
+  constructor(
+    private router: Router,
+    private applicationService: ApplicationsService,
+    private sharedService: SharedService,
+    private viewContainerRef: ViewContainerRef,
+    private stagesService: StagesService,
+    private NewWayleaveComponent: NewWayleaveComponent,
+    private accessGroupsService: AccessGroupsService,
+    private configService: ConfigService,
+    private userPofileService: UserProfileService,
 
   ) {
     this.currentDate = new Date();
     this.previousMonth = this.currentDate.getMonth();
     this.previousYear = this.currentDate.getFullYear();
   }
+
+
 
 
   currentDate: Date;
