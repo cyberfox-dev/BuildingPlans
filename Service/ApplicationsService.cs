@@ -69,8 +69,7 @@ namespace WayleaveManagementSystem.Service
                     ProjectNumber = null,
 
 
-
-                };
+            };
 
                 //After the inizlization add to the db
                 await _context.Application.AddAsync(tempApplicationTable);

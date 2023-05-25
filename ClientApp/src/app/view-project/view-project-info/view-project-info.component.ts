@@ -1114,8 +1114,8 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
-  goToNewWayleave(applicationType: string) { //application type refers to whether it is a brand new application or if it is a reapply.
-    this.sharedService.setApplicationType(applicationType);
+  goToNewWayleave(applicationType: boolean) { //application type refers to whether it is a brand new application or if it is a reapply.
+    this.sharedService.setReapply(applicationType);
     this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId);
     //console.log("Test: " + this.sharedService.getApplicationID())
     /*        this.router.navigate(["/new-wayleave"]);*/
