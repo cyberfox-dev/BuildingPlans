@@ -92,7 +92,7 @@ export class SharedService {
 
   ProjectNumber: string = "Ven123";
   canReapply: any = false;
-  applicationType: any = "New";
+  reapply: boolean = false;
 
   constructor() { }
 
@@ -193,6 +193,7 @@ export class SharedService {
     console.log("THIS IS THE LIST", this.applicationDataForView);
   }
   getViewApplicationIndex() {
+   
     return this.applicationDataForView[0];
   }
 
@@ -274,7 +275,7 @@ getApplicationID(): any {
     return this.ProjectNumber;
   }
 
-  setCanReapply(data: any) {
+  setCanReapply(data: boolean) {
 
     this.canReapply = data;
 
@@ -284,11 +285,11 @@ getApplicationID(): any {
     return this.canReapply;
   }
 
-  setApplicationType(data: any) {
-    this.applicationType = data; //application type refers to whether it is a brand new application or if it is a reapply.
+  setReapply(data: any) {
+    this.reapply = data; //application type refers to whether it is a brand new application or if it is a reapply.
   }
 
-  getApplicationType() {
-    return this.applicationType; //application type refers to whether it is a brand new application or if it is a reapply.
+  getReapply() {
+    return this.reapply; //application type refers to whether it is a brand new application or if it is a reapply.
   }
 }

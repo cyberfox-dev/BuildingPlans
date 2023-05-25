@@ -122,4 +122,15 @@ export class AccessGroupsService {
 
   }
 
+  public getUserBasedOnRoleName(accessGroupName: string, subDepartmentID: number) {
+
+    const body = {
+      AccessGroupName: accessGroupName,
+      SubDepartmentID: subDepartmentID,
+    }
+    return this.httpClient.post(this.baseURL + "GetUserBasedOnRoleName", body);
+
+  }
+  
+
 }

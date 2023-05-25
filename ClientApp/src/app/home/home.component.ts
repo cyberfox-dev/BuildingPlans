@@ -9,6 +9,7 @@ import { StagesService } from '../service/Stages/stages.service';
 import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component';
 import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
+import { ConfigService } from 'src/app/service/Config/config.service';
 
 
 export interface StagesList {
@@ -109,11 +110,21 @@ export class HomeComponent implements OnInit,OnDestroy {
   EMBcount = 0;
   rejectCount = 0;
   filter = false;
+    previousYear: number;
 
 
-  constructor(private router: Router, private applicationService: ApplicationsService, private sharedService: SharedService, private viewContainerRef: ViewContainerRef, private stagesService: StagesService, private NewWayleaveComponent: NewWayleaveComponent, private accessGroupsService: AccessGroupsService, private userPofileService: UserProfileService) {
+  constructor(private router: Router, private applicationService: ApplicationsService, private sharedService: SharedService, private viewContainerRef: ViewContainerRef, private stagesService: StagesService, private NewWayleaveComponent: NewWayleaveComponent, private accessGroupsService: AccessGroupsService) {
 
+
+  ) {
+    this.currentDate = new Date();
+    this.previousMonth = this.currentDate.getMonth();
+    this.previousYear = this.currentDate.getFullYear();
   }
+
+
+  currentDate: Date;
+  previousMonth: number;
 
   displayedColumns: string[] = ['FullName', 'Stage','Status', 'TypeOfApplication','AplicationAge','StageAge','DateCreated', 'actions'];
   dataSource = this.Applications;
@@ -129,7 +140,7 @@ export class HomeComponent implements OnInit,OnDestroy {
 
       this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
       this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
-
+      this.UpdateProjectNumberConfig()
       this.getAllApplicationsByUserID();
       this.getAllStages();
       this.getRolesLinkedToUser();
@@ -138,6 +149,65 @@ export class HomeComponent implements OnInit,OnDestroy {
     }, 100);
 
     
+
+  }
+
+  UpdateProjectNumberConfig() {
+    debugger;
+    let currentMonth = this.currentDate.getMonth() + 1;
+    let changeUtility = ("/" +this.currentDate.getFullYear() % 100).toString();
+    //return currentMonth !== this.previousMonth;
+   
+
+      this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const current = data.dateSet[i];
+            let dbMonth = current.utilitySlot2.substring(0, 2);
+            if (dbMonth < 10) {
+              this.previousMonth = dbMonth.substring(1, 2);
+            } else {
+              this.previousMonth = dbMonth;
+            }
+            debugger;
+            if (currentMonth !== Number(this.previousMonth)) {  //this.previousMonth  currentMonth
+              debugger;
+              this.configService.addUpdateConfig(current.configID, null, null, "1", "0" + currentMonth + changeUtility, null, this.CurrentUser.appUserId ).subscribe((data: any) => {
+              if (data.responseCode == 1) {
+                //for (let i = 0; i < data.dateSet.length; i++) {
+                //  const current = data.dateSet[i];
+
+
+
+                //}
+
+              }
+              else {
+                //alert("Invalid Email or Password");
+                alert(data.responseMessage);
+              }
+              console.log("addUpdateConfigReponse", data);
+
+            }, error => {
+              console.log("addUpdateConfigError: ", error);
+            })
+          }
+          }
+
+        }
+        else {
+          //alert("Invalid Email or Password");
+          alert(data.responseMessage);
+        }
+        console.log("getConfigsByConfigNameReponse", data);
+
+      }, error => {
+        console.log("getConfigsByConfigNameError: ", error);
+      })
+
+
+   
+   
 
   }
 
@@ -396,8 +466,8 @@ export class HomeComponent implements OnInit,OnDestroy {
     this.router.navigate(["/view-project-info"]);
   }
 
-  goToNewWayleave(applicationType: string) { //application type refers to whether it is a brand new application or if it is a reapply.
-    this.sharedService.setApplicationType(applicationType);
+  goToNewWayleave(applicationType: boolean) { //application type refers to whether it is a brand new application or if it is a reapply.
+    this.sharedService.setReapply(applicationType);
     this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId);
     //console.log("Test: " + this.sharedService.getApplicationID())
 /*        this.router.navigate(["/new-wayleave"]);*/
@@ -555,6 +625,7 @@ export class HomeComponent implements OnInit,OnDestroy {
           this.sharedService.setCanReapply(true);
         } else {
           this.canReapply = false;
+          this.sharedService.setCanReapply(false);
         }
       }
       else {

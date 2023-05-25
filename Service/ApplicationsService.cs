@@ -19,7 +19,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string userID, string fullName, string email, string phoneNumber, string physicalAddress, string referenceNumber, string? companyRegNo, string typeOfApplication, string notificationNumber, string wBSNumber, string physicalAddressOfProject, string descriptionOfProject, string natureOfWork, string excavationType, DateTime expectedStartDate, DateTime expectedEndDate, string location, string createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus, bool isDrafted)
+        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string userID, string fullName, string email, string phoneNumber, string physicalAddress, string referenceNumber, string? companyRegNo, string typeOfApplication, string notificationNumber, string wBSNumber, string physicalAddressOfProject, string descriptionOfProject, string natureOfWork, string excavationType, DateTime expectedStartDate, DateTime expectedEndDate, string location, string createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus, bool? isDrafted,string? projectNumber )
         {
 
             if (ApplicationID == 0)
@@ -66,10 +66,10 @@ namespace WayleaveManagementSystem.Service
                     NextStageNumber = NextStageNumber,
                     ApplicationStatus = ApplicationStatus,
                     isDrafted = false,
+                    ProjectNumber = null,
 
 
-
-                };
+            };
 
                 //After the inizlization add to the db
                 await _context.Application.AddAsync(tempApplicationTable);
@@ -80,34 +80,136 @@ namespace WayleaveManagementSystem.Service
             }
             else //if it is not null then user is doing an update 
             {
-                tempApplicationTable.UserID = userID;
-                tempApplicationTable.FullName = fullName;
-                tempApplicationTable.Email = email;
-                tempApplicationTable.PhoneNumber = phoneNumber;
-                tempApplicationTable.PhyscialAddress = physicalAddress;
-                tempApplicationTable.ReferenceNumber = referenceNumber;
-                tempApplicationTable.CompanyRegNo = companyRegNo;
-                tempApplicationTable.TypeOfApplication = typeOfApplication;
-                tempApplicationTable.NotificationNumber = notificationNumber;
-                tempApplicationTable.WBSNumber = wBSNumber;
-                tempApplicationTable.PhysicalAddressOfProject = physicalAddressOfProject;
-                tempApplicationTable.DescriptionOfProject = descriptionOfProject;
-                tempApplicationTable.NatureOfWork = natureOfWork;
-                tempApplicationTable.ExcavationType = excavationType;
-                tempApplicationTable.ExpectedStartDate = expectedStartDate;
-                tempApplicationTable.ExpectedEndDate = expectedEndDate;
-                tempApplicationTable.Location = location;
+                if (userID != null)
+                {
+                    tempApplicationTable.UserID = userID;
+                }
+
+                if (fullName != null)
+                {
+                    tempApplicationTable.FullName = fullName;
+                }
+
+                if (email != null)
+                {
+                    tempApplicationTable.Email = email;
+                }
+
+                if (phoneNumber != null)
+                {
+                    tempApplicationTable.PhoneNumber = phoneNumber;
+                }
+
+                if (physicalAddress != null)
+                {
+                    tempApplicationTable.PhyscialAddress = physicalAddress;
+                }
+
+                if (referenceNumber != null)
+                {
+                    tempApplicationTable.ReferenceNumber = referenceNumber;
+                }
+
+                if (companyRegNo != null)
+                {
+                    tempApplicationTable.CompanyRegNo = companyRegNo;
+                }
+
+                if (typeOfApplication != null)
+                {
+                    tempApplicationTable.TypeOfApplication = typeOfApplication;
+                }
+
+                if (notificationNumber != null)
+                {
+                    tempApplicationTable.NotificationNumber = notificationNumber;
+                }
+
+                if (wBSNumber != null)
+                {
+                    tempApplicationTable.WBSNumber = wBSNumber;
+                }
+
+                if (physicalAddressOfProject != null)
+                {
+                    tempApplicationTable.PhysicalAddressOfProject = physicalAddressOfProject;
+                }
+
+                if (descriptionOfProject != null)
+                {
+                    tempApplicationTable.DescriptionOfProject = descriptionOfProject;
+                }
+
+                if (natureOfWork != null)
+                {
+                    tempApplicationTable.NatureOfWork = natureOfWork;
+                }
+
+                if (excavationType != null)
+                {
+                    tempApplicationTable.ExcavationType = excavationType;
+                }
+
+                if (expectedStartDate != null)
+                {
+                    tempApplicationTable.ExpectedStartDate = expectedStartDate;
+                }
+
+                if (expectedEndDate != null)
+                {
+                    tempApplicationTable.ExpectedEndDate = expectedEndDate;
+                }
+
+                if (location != null)
+                {
+                    tempApplicationTable.Location = location;
+                }
+
                 tempApplicationTable.DateUpdated = DateTime.Now;
                 tempApplicationTable.isActive = true;
-                tempApplicationTable.ApplicationStatus = ApplicationStatus;
-                tempApplicationTable.PreviousStageName = PreviousStageName;
-                tempApplicationTable.PreviousStageNumber = PreviousStageNumber;
-                tempApplicationTable.CurrentStageName = CurrentStageName;
-                tempApplicationTable.CurrentStageNumber = CurrentStageNumber;
-                tempApplicationTable.CurrentStageStartDate = DateTime.Now;
-                tempApplicationTable.NextStageName = NextStageName;
-                tempApplicationTable.NextStageNumber = NextStageNumber;
 
+                if (ApplicationStatus != null)
+                {
+                    tempApplicationTable.ApplicationStatus = ApplicationStatus;
+                }
+
+                if (PreviousStageName != null)
+                {
+                    tempApplicationTable.PreviousStageName = PreviousStageName;
+                }
+
+                if (PreviousStageNumber != null)
+                {
+                    tempApplicationTable.PreviousStageNumber = PreviousStageNumber;
+                }
+
+                if (CurrentStageName != null)
+                {
+                    tempApplicationTable.CurrentStageName = CurrentStageName;
+                }
+
+                if (CurrentStageNumber != null)
+                {
+                    tempApplicationTable.CurrentStageNumber = CurrentStageNumber;
+                }
+
+                tempApplicationTable.CurrentStageStartDate = DateTime.Now;
+
+                if (NextStageName != null)
+                {
+                    tempApplicationTable.NextStageName = NextStageName;
+                }
+
+                if (NextStageNumber != null)
+                {
+                    tempApplicationTable.NextStageNumber = NextStageNumber;
+                }
+                if (NextStageNumber != null)
+                {
+                    tempApplicationTable.ProjectNumber = projectNumber;
+                }
+
+                
 
                 _context.Update(tempApplicationTable);
                 await _context.SaveChangesAsync();

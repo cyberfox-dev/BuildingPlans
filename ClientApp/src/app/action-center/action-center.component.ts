@@ -18,6 +18,7 @@ import { CommentsService } from '../service/Comments/comments.service';
 import { ApplicationsService} from '../service/Applications/applications.service';
 import { UserProfileService } from '../service/UserProfile/user-profile.service';
 import { SharedService } from 'src/app/shared/shared.service';
+import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
 
 
 export interface SubDepartmentList {
@@ -168,6 +169,8 @@ export class ActionCenterComponent implements OnInit {
     AssignUserForComment: boolean;
     applicationDataForView: any;
     CurrentApplicationBeingViewed: any;
+    subDepartmentID: any;
+    userID: any;
   constructor(
     private offcanvasService: NgbOffcanvas,
     private modalService: NgbModal,
@@ -185,6 +188,7 @@ export class ActionCenterComponent implements OnInit {
     private commentsService: CommentsService,
     private applicationsService: ApplicationsService,
     private sharedService: SharedService,
+    private accessGroupsService: AccessGroupsService,
   ) { }
   openEnd(content: TemplateRef<any>) {
     this.offcanvasService.open(content, { position: 'end' });
@@ -204,7 +208,7 @@ export class ActionCenterComponent implements OnInit {
 
   ngOnInit(): void {
    // setTimeout(() => {
-
+   //this.getDepartmentManagerUserID();
     //Get Current Application Infomation 
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
@@ -218,7 +222,8 @@ export class ActionCenterComponent implements OnInit {
       }
       else {
         console.log(this.CurrentUser);
-      }
+    }
+ 
       /*  this.getAllServiceItmes();*/
     this.getAllServiceItmesForDropdown();
 
@@ -232,6 +237,7 @@ export class ActionCenterComponent implements OnInit {
     this.getLinkedZones();
     
     this.getUserInternalOrExternal();
+   
       //this.CheckIfCurrentUserCanUseHopper();
    // }, 1000);
   }
@@ -409,18 +415,38 @@ export class ActionCenterComponent implements OnInit {
 
 
   getDepartmentManagerUserID() {
+    debugger;
+    //const currentRole = this.sharedService.getCurrentUserRoles();
+    //for (var i = 0; i < currentRole.length; i++) {
+    //  if (currentRole[i].RoleName ==) {
 
-   // const currentRole = this.sharedService.getCurrentUserRoles();
+    //  }
+
+    //}
 
 
+    this.accessGroupsService.getUserBasedOnRoleName("Department Admin",this.CurrentUserProfile.subDepartmentID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        this.userID = data.dateSet[0].userID;
+      }
+      else {    
+        alert(data.responseMessage);
+      }
+      console.log("getAllLinkedRolesReponse", data);
+
+    }, error => {
+      console.log("getAllLinkedRolesReponseError: ", error);
+    })
+    
 
   }
 
   //im here
   moveToFinalApprovalForDepartment() {
+    this.getDepartmentManagerUserID();
 
-
-      this.subDepartmentForCommentService.departmentForCommentFinalAppovalUserToComment(this.forManuallyAssignSubForCommentID, this.UserSelectionForManualLink.selected[0].id).subscribe((data: any) => {
+    this.subDepartmentForCommentService.departmentForCommentFinalAppovalUserToComment(this.forManuallyAssignSubForCommentID, this.userID).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 

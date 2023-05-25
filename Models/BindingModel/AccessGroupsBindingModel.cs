@@ -24,6 +24,7 @@
 
         //Base Entity
         public string? CreatedById { get; set; }
+        public int? SubDepartmentID { get; set; }
 
     }
 }
