@@ -25,6 +25,9 @@
         public string? CreatedById { get; set; }
         //public bool isActive { get; set; }
 
+        public string? ProjectNumber { get; set; }
+        public int? RejectCount { get; set; }
+
         //Stages
         public string? PreviousStageName { get; set; }
         public int? PreviousStageNumber { get; set; }

@@ -11,6 +11,7 @@ import autoTable from 'jspdf-autotable';
 import { DatePipe } from '@angular/common';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
 import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component'
+import { ConfigService } from 'src/app/service/Config/config.service';
 
 
 export interface ARCGISAPIData {
@@ -177,6 +178,8 @@ export class ViewProjectInfoComponent implements OnInit {
   @ViewChild('fileInput') fileInput: ElementRef | undefined;
   fileAttr = 'Choose File';
     currentApplication: number;
+    configNumberOfProject: any;
+    configMonthYear: any;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -221,7 +224,8 @@ export class ViewProjectInfoComponent implements OnInit {
     private commentsService: CommentsService,
     private depositRequiredService: DepositRequiredService,
     private NewWayleaveComponent: NewWayleaveComponent,
-    private viewContainerRef: ViewContainerRef
+    private viewContainerRef: ViewContainerRef,
+    private configService: ConfigService,
   ) { }
 
   ngOnInit(): void {
@@ -591,16 +595,86 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
 
-  ChangeApplicationStatusToPaid() {
+  buildProjectNumber() {
+    this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          this.configNumberOfProject = current.utilitySlot1; 
+          this.configMonthYear = current.utilitySlot2;
+          this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "WL:" + (Number(this.configNumberOfProject) + 1).toString() +this.configMonthYear).subscribe((data: any) => {
 
-    ;
-    //alert("ChangeApplicationStatusToPaid");
+                if (data.responseCode == 1) {
+                 
+                  alert("Your project number is: " +data.dateSet[0].projectNumber);
+
+                
+                }
+                else {
+                  alert(data.responseMessage);
+                }
+                console.log("responseAddapplication", data);
+
+              }, error => {
+                console.log("Error", error);
+              })
+            }
+            else {
+              //alert("Invalid Email or Password");
+              alert(data.responseMessage);
+            }
+            console.log("addUpdateConfigReponse", data);
+
+          }, error => {
+            console.log("addUpdateConfigError: ", error);
+          })
+        }
+
+
+
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("getConfigsByConfigNameReponse", data);
+
+    }, error => {
+      console.log("getConfigsByConfigNameError: ", error);
+    })
+  }
+  
+
+  ChangeApplicationStatusToPaid() {
 
     if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Unpaid") {
       this.applicationsService.updateApplicationStage(this.CurrentApplicationBeingViewed[0].applicationID, this.CurrentApplicationBeingViewed[0].PreviousStageName, this.CurrentApplicationBeingViewed[0].PreviousStageNumber, this.CurrentApplicationBeingViewed[0].CurrentStageName, this.CurrentApplicationBeingViewed[0].CurrentStageNumber, this.CurrentApplicationBeingViewed[0].NextStageName, this.CurrentApplicationBeingViewed[0].NextStageNumber, "Paid").subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           alert("Application Status Updated to Paid");
+          this.buildProjectNumber();
+          //this.applicationsService.updateApplicationStage(null, null, null, null, null, null, null, null, " ").subscribe((data: any) => {
+          //  if (data.responseCode == 1) {
+          //   // const current = data.dateSet[0];
+             
+
+
+
+          //  }
+          //  else {
+
+          //    alert(data.responseMessage);
+          //  }
+          //  console.log("reponseGetSubDepartmentForComment", data);
+
+
+          //}, error => {
+          //  console.log("Error: ", error);
+          //})
+
+
 
         }
         else {
@@ -621,7 +695,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   MoveToNextStage() {
 
-    ;
+  
     //alert("ChangeApplicationStatusToPaid");
 
     if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Paid") {

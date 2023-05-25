@@ -193,6 +193,7 @@ export class SharedService {
     console.log("THIS IS THE LIST", this.applicationDataForView);
   }
   getViewApplicationIndex() {
+   
     return this.applicationDataForView[0];
   }
 

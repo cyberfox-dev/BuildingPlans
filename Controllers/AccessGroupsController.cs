@@ -644,5 +644,50 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+
+        [HttpPost("GetUserBasedOnRoleName")]
+        public async Task<object> GetUserBasedOnRoleName([FromBody] AccessGroupsBindingModel model)
+        {
+            try
+            {
+
+                var AgID = await (
+      from accessGroups in _context.AccessGroups
+      where accessGroups.AccessGroupName == model.AccessGroupName
+      select accessGroups.AccessGroupID).ToListAsync();
+
+          //      var RoleIDs = await (
+          //from accessGroupUserLink in _context.AccessGroupRoleLink
+          //where accessGroupUserLink.AccessGroupID == AgID[0]
+          //select accessGroupUserLink.RoleID).ToListAsync();
+
+                var UserID = await (
+      from accessGroupUserLink in _context.AccessGroupUserLink
+      where accessGroupUserLink.AccessGroupID == AgID[0]
+      select accessGroupUserLink.UserID).ToListAsync();
+
+
+                var result = await (
+                    from userProfile in _context.UserProfilesTable
+                    where userProfile.isActive == true && UserID.Contains(userProfile.UserID) && userProfile.SubDepartmentID == model.SubDepartmentID
+
+                    select new UserProfileDTO()
+                    {
+                        UserID = userProfile.UserID,
+                       // SubDepartmentID = userProfile.SubDepartmentID,
+                        
+                    }
+                ).ToListAsync();
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Users that are linked", result));
+            }
+            catch (Exception ex)
+            {
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
     }
 }

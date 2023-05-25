@@ -17,7 +17,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Config> AddUpdateConfig(int? configID, string configName,string configDescription, string? creadtedByID)
+        public async Task<Config> AddUpdateConfig(int? configID, string configName,string configDescription, string? utilitySlot1, string? utilitySlot2, string? utilitySlot3, string? creadtedByID)
         {
 
             if (configID == 0)
@@ -38,6 +38,10 @@ namespace WayleaveManagementSystem.Service
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     CreatedById = creadtedByID,
+                    UtilitySlot1= utilitySlot1,
+                    UtilitySlot2= utilitySlot2,
+                    UtilitySlot3= utilitySlot3,
+
                     isActive = true
                 };
 
@@ -50,8 +54,23 @@ namespace WayleaveManagementSystem.Service
             }
             else //if it is not null then user is doing an update 
             {
-                tempConfigTable.ConfigName = configName;
-
+                if (utilitySlot1 != null)
+                {
+                    tempConfigTable.UtilitySlot1 = utilitySlot1;
+                }
+                if (utilitySlot2 != null)
+                {
+                    tempConfigTable.UtilitySlot2 = utilitySlot2;
+                }
+                if (utilitySlot3 != null)
+                {
+                    tempConfigTable.UtilitySlot3 = utilitySlot3;
+                }
+                if (configName != null)
+                {
+                    tempConfigTable.ConfigName = configName;
+                }
+               
                 tempConfigTable.DateUpdated = DateTime.Now;
                 tempConfigTable.isActive = true;
 
@@ -87,8 +106,54 @@ namespace WayleaveManagementSystem.Service
         }
 
 
+        public async Task<List<ConfigDTO>> GetConfigsByConfigID(int? configID)
+        {
+            return await (
+                from config in _context.Config
+                where config.ConfigID == configID && config.isActive == true
+                select new ConfigDTO()
+                {
+                    ConfigID = config.ConfigID,
+                    ConfigName = config.ConfigName,
+                    ConfigDescription = config.ConfigDescription,
+                    DateCreated = config.DateCreated,
+                    DateUpdated = config.DateUpdated,
+                    CreatedById = config.CreatedById,
+                    UtilitySlot1 = config.UtilitySlot1,
+                    UtilitySlot2 = config.UtilitySlot2,
+                    UtilitySlot3 = config.UtilitySlot3,
+
+
+
+                }
+                ).ToListAsync();
+        }
+
+
+        public async Task<List<ConfigDTO>> GetConfigsByConfigName(string? configName)
+        {
+            return await (
+                from config in _context.Config
+                where config.ConfigName == configName && config.isActive == true
+                select new ConfigDTO()
+                {
+                    ConfigID = config.ConfigID,
+                    ConfigName = config.ConfigName,
+                    ConfigDescription = config.ConfigDescription,
+                    DateCreated = config.DateCreated,
+                    DateUpdated = config.DateUpdated,
+                    CreatedById = config.CreatedById,
+                    UtilitySlot1 = config.UtilitySlot1,
+                    UtilitySlot2 = config.UtilitySlot2,
+                    UtilitySlot3 = config.UtilitySlot3,
+
+                }
+                ).ToListAsync();
+        }
+
+
         //this method gets all the professionals linked to a partcular user 
-        public async Task<List<ConfigDTO>> GetConfigsByUserID(string userID)
+        public async Task<List<ConfigDTO>> GetConfigsByUserID(string? userID)
         {
             return await(
                 from config in _context.Config where config.CreatedById == userID && config.isActive == true
@@ -96,13 +161,20 @@ namespace WayleaveManagementSystem.Service
                 {
                     ConfigID = config.ConfigID,
                     ConfigName = config.ConfigName,
+                    ConfigDescription = config.ConfigDescription,
                     DateCreated = config.DateCreated,
                     DateUpdated = config.DateUpdated,
                     CreatedById = config.CreatedById,
-
+                    UtilitySlot1 = config.UtilitySlot1,
+                    UtilitySlot2 = config.UtilitySlot2,
+                    UtilitySlot3 = config.UtilitySlot3,
                 }
                 ).ToListAsync();
         }
+
+
+      
+
 
     }
 }
