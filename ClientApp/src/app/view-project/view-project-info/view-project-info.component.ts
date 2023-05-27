@@ -180,6 +180,7 @@ export class ViewProjectInfoComponent implements OnInit {
     currentApplication: number;
     configNumberOfProject: any;
     configMonthYear: any;
+    wbs: any;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -1122,5 +1123,35 @@ export class ViewProjectInfoComponent implements OnInit {
     this.viewContainerRef.clear();
 
   }
+
+
+
+  /*WBS Number*/
+  enterWBSNumberModal(wbsNumberModal: any) {
+    this.modalService.open(wbsNumberModal, { backdrop: 'static', size: 'xl' });
+  }
+  onCreateWBSNumber() {
+
+    let WBS = String(this.wbs.controls["wbsnumber"].value);
+    debugger;
+    this.depositRequiredService.addUpdateWBSNUmber(this.CurrentUser.appUserId, WBS).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        alert(data.responseMessage);
+
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
 
 }

@@ -265,6 +265,10 @@ export class ActionCenterComponent implements OnInit {
 
       case "Clarify": {
         alert("In progress");
+
+
+
+
         break;
       }
       case "Refer": {
@@ -777,6 +781,38 @@ export class ActionCenterComponent implements OnInit {
       }
 
       case "Clarify": {
+        this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify").subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+
+            alert(data.responseMessage);
+            //commentsService
+            this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Rejected", this.CurrentUser.appUserId).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+
+                alert(data.responseMessage);
+
+              }
+              else {
+                alert(data.responseMessage);
+
+              }
+              console.log("reponse", data);
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+          }
+          else {
+            alert(data.responseMessage);
+
+          }
+          console.log("reponse", data);
+
+        }, error => {
+          console.log("Error: ", error);
+        })
         alert("In progress");
         break;
       }
@@ -957,7 +993,7 @@ export class ActionCenterComponent implements OnInit {
         this.SubDepartmentListTable?.renderRows();
         this.SubDepartmentLinkedListTable?.renderRows();
        // this.modalService.open(assign, { size: 'xl' });
-      }
+      } 
       else {
         //alert("Invalid Email or Password");
         alert(data.responseMessage);
@@ -1296,7 +1332,7 @@ getAllCommentsByUserID() {
   }
 
 
-  deleteLinkedZoneForComment(index: number) {
+  deleteLinkedZoneForComment(index: number) { 
 
 
     if (confirm("Are you sure to delete " + this.ZoneLinkedList[index].zoneName + "?")) {
@@ -1331,10 +1367,10 @@ getAllCommentsByUserID() {
 
 
         console.log("data", data.dateSet);
-
-        const currentUserProfile = data.dateSet[0];
+    const currentUserProfile = data.dateSet[0];
         const fullname = currentUserProfile.fullName;
 
+    
         if (currentUserProfile.isInternal == true) {
 
           this.isInternalUser = true;

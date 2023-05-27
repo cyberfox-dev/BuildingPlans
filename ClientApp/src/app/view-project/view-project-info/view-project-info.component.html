@@ -13,7 +13,7 @@
 
         <div class="form-floating mb-3 mt-3">
           <input type="text" class="form-control" id="accessGroupName" placeholder="Enter the access group name">
-          <label for="accessGroupName">Enter a description</label>                     
+          <label for="accessGroupName">Enter a description</label>
         </div>
 
         <mat-form-field>
@@ -76,23 +76,23 @@
 
       <app-view-project-details></app-view-project-details>
       <!--<nav class="menu">
-      <input type="checkbox" href="#" class="menu-open" name="menu-open" id="menu-open" />
-      <label class="menu-open-button" for="menu-open">
-        <span class="hamburger hamburger-1"></span>
-        <span class="hamburger hamburger-2"></span>
-        <span class="hamburger hamburger-3"></span>
-      </label>
+        <input type="checkbox" href="#" class="menu-open" name="menu-open" id="menu-open" />
+        <label class="menu-open-button" for="menu-open">
+          <span class="hamburger hamburger-1"></span>
+          <span class="hamburger hamburger-2"></span>
+          <span class="hamburger hamburger-3"></span>
+        </label>
 
-      <a class="menu-item" matTooltipPosition="left" matTooltip="Show applicant layer"> <i class="fa fa-user"></i> </a>
-      <a class="menu-item" matTooltipPosition="left" matTooltip="Show department layer"><i class="fa fa-building"></i> </a>
-      <a class="menu-item" matTooltipPosition="left" matTooltip="Show all layers"> <i class="fa fa-eye"></i> </a>
-      <a class="menu-item" matTooltipPosition="left" matTooltip="Hide all layers"> <i class="fa fa-eye-slash"></i> </a>
+        <a class="menu-item" matTooltipPosition="left" matTooltip="Show applicant layer"> <i class="fa fa-user"></i> </a>
+        <a class="menu-item" matTooltipPosition="left" matTooltip="Show department layer"><i class="fa fa-building"></i> </a>
+        <a class="menu-item" matTooltipPosition="left" matTooltip="Show all layers"> <i class="fa fa-eye"></i> </a>
+        <a class="menu-item" matTooltipPosition="left" matTooltip="Hide all layers"> <i class="fa fa-eye-slash"></i> </a>
 
 
-    </nav>-->
+      </nav>-->
       <!--<div class="maps">
-      <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d55522.617408819875!2d30.405427199999995!3d-29.569843200000005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sza!4v1662643454248!5m2!1sen!2sza" width="100%" height="700" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div>-->
+        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d55522.617408819875!2d30.405427199999995!3d-29.569843200000005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sza!4v1662643454248!5m2!1sen!2sza" width="100%" height="700" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>-->
       <app-project-details-map-view [data]="ARCGISAPIData"></app-project-details-map-view>
       <app-department-circulation></app-department-circulation>
     </mat-tab>
@@ -147,7 +147,7 @@
     <!--------------------------------------------------------Messaging--------------------------------------------------->
     <!--     <mat-tab label="Messaging">
 
-  </mat-tab>-->
+    </mat-tab>-->
     <!--------------------------------------------------------Financial--------------------------------------------------->
 
     <mat-tab label="Financial">
@@ -166,7 +166,7 @@
           <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
             <!--- Note that these columns can be defined in any order.
-          The actual rendered columns are set as a property on the row definition" -->
+            The actual rendered columns are set as a property on the row definition" -->
             <!-- Position Column -->
             <ng-container matColumnDef="position">
               <th mat-header-cell *matHeaderCellDef> No. </th>
@@ -208,7 +208,7 @@
           </table>
         </div>
         <div class="cont" *ngIf="isInternalUser">
-          <button mat-raised-button color="orange">Deposit Required</button>
+          <button mat-raised-button (click)="enterWBSNumberModal(wbsNumberModal)" color="orange">WBS</button>
           <button mat-raised-button color="orange" (click)="generateConsolidatedDepositInvoice()">Consolidate Deposits</button>
           <button mat-raised-button color="orange">Deposit Refund</button>
         </div>
@@ -490,5 +490,28 @@
 
   </mat-tab-group>
 
+
+
 </div>
+
+<!--This is for the wbs number-->
+
+<ng-template #wbsNumberModal let-modal>
+  <div class="modal-header">
+    <h1 class="modal-title">WBS Number</h1>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="wbs">
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" formControlName="wbsnumber" placeholder="wbsnumber">
+        <label for="wbsnumber">WBS Number</label>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="onCreateWBSNumber();modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+
 

@@ -39,7 +39,6 @@
 
         public string? ApplicationStatus { get; set; }
         public bool isDrafted { get; set; }
-        public string? ProjectNumber { get; set; }
-
+   
     }
 }

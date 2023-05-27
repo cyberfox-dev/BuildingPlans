@@ -226,7 +226,7 @@ namespace WayleaveManagementSystem.Service
             //this checks is the record exists in the db
             var tempSubDepForCommentTable = _context.SubDepartmentForComment.FirstOrDefault(x => x.SubDepartmentForCommentID == subDepartmentForCommentID);
 
-            if (tempSubDepForCommentTable == null)
+            if (tempSubDepForCommentTable == null) 
             {
                 return await Task.FromResult(false);
 
