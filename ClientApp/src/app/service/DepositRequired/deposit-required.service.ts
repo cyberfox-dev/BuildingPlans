@@ -42,8 +42,9 @@ export class DepositRequiredService {
 
   }
 
-  public addUpdateWBSNUmber( createdById?: string | null, wbsNumber?: string | null) {
+  public addUpdateWBSNUmber(depositRequiredID?: number | null, createdById?: string | null, wbsNumber?: string | null) {
     const body = {
+      DepositRequiredID: depositRequiredID,
       Wbs: wbsNumber,
       CreatedById: createdById,
     }

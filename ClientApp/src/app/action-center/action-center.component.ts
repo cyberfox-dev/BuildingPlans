@@ -209,14 +209,17 @@ export class ActionCenterComponent implements OnInit {
   ngOnInit(): void {
    // setTimeout(() => {
    //this.getDepartmentManagerUserID();
-    //Get Current Application Infomation 
+    //Get Current Application Infomation
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
+    this.getUserInternalOrExternal();
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
 
 
       this.getAllSubDepartments();
-      this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
-      this.CurrentUser = JSON.parse(this.stringifiedData);
+     
+    
       if (this.CurrentUser == null) {
         console.log("Not");
       }
@@ -236,7 +239,7 @@ export class ActionCenterComponent implements OnInit {
       this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
     this.getLinkedZones();
     
-    this.getUserInternalOrExternal();
+
    
       //this.CheckIfCurrentUserCanUseHopper();
    // }, 1000);
@@ -1359,7 +1362,7 @@ getAllCommentsByUserID() {
   }
 
   getUserInternalOrExternal() {
-
+    
     this.userPofileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
 
 
@@ -1368,8 +1371,7 @@ getAllCommentsByUserID() {
 
         console.log("data", data.dateSet);
     const currentUserProfile = data.dateSet[0];
-        const fullname = currentUserProfile.fullName;
-
+        console.log("WOPERIWEPORIPWEOIRPOWERIOPWERIPOWEIRPWEORIPWOERIPWEORIPWEOIRPOWER", currentUserProfile.isInternal);
     
         if (currentUserProfile.isInternal == true) {
 
@@ -1402,7 +1404,7 @@ getAllCommentsByUserID() {
   onCreateWBSNumber() {
 
     let WBS = String(this.wbs.controls["wbsnumber"].value);
-    debugger;
+   
     this.depositRequiredService.addUpdateWBSNUmber(this.CurrentUser.appUserId, WBS).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
@@ -1429,6 +1431,11 @@ getAllCommentsByUserID() {
   sendOption() {
     this.optionEvent.emit(this.option);
   }
+
+
+
+
+
 
 
 

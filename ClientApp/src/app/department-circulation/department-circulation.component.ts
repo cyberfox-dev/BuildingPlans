@@ -58,7 +58,7 @@ export class DepartmentCirculationComponent implements OnInit {
 
     
     this.getLinkedDepartments();
-    debugger;
+ 
   }
 
   setIcon() {
@@ -68,7 +68,7 @@ export class DepartmentCirculationComponent implements OnInit {
 
   getLinkedDepartments() {
 
-    debugger;
+   
     const currentApplication = this.sharedService.getViewApplicationIndex();
 
   
