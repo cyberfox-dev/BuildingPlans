@@ -1168,7 +1168,6 @@ export class ViewProjectInfoComponent implements OnInit {
   option: any;
 
   reciveOption($event: any) {
-
     debugger;
     this.option = $event
     if (this.option == "True") {
