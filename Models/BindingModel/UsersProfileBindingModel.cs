@@ -28,6 +28,8 @@
         public bool depConfirmation { get; set; }
 
         public string? IdNumber { get; set; }
+        public int? zoneID { get; set; }
+
 
     }
 }

@@ -163,7 +163,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   }
 
   UpdateProjectNumberConfig() {
-    debugger;
+    
     let currentMonth = this.currentDate.getMonth() + 1;
     let changeUtility = ("/" +this.currentDate.getFullYear() % 100).toString();
     //return currentMonth !== this.previousMonth;
@@ -179,9 +179,9 @@ export class HomeComponent implements OnInit,OnDestroy {
             } else {
               this.previousMonth = dbMonth;
             }
-            debugger;
+           
             if (currentMonth !== Number(this.previousMonth)) {  //this.previousMonth  currentMonth
-              debugger;
+            
               this.configService.addUpdateConfig(current.configID, null, null, "1", "0" + currentMonth + changeUtility, null, this.CurrentUser.appUserId ).subscribe((data: any) => {
               if (data.responseCode == 1) {
                 //for (let i = 0; i < data.dateSet.length; i++) {

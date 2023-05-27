@@ -13,6 +13,10 @@
       <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
     </ng-container>
 
+    <ng-container matColumnDef="zoneName">
+      <th mat-header-cell *matHeaderCellDef> Zone Name </th>
+      <td mat-cell *matCellDef="let element"> {{element.zoneName}} </td>
+    </ng-container>
 
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Actions</th>
@@ -41,15 +45,13 @@
   </div>
   <div class="modal-body">
 
-    <mat-form-field appearance="fill">
-      <mat-label>Select type access group for the user</mat-label>
-      <mat-select name="typeOfApplication">
-        <mat-option *ngFor="let accessGroup of AccessGroupList" value="{{accessGroup.AccessGroupID}}">{{accessGroup.AccessGroupName}}</mat-option>
-      </mat-select>
-    </mat-form-field>
+    <select class="form-select" aria-label="Default select example"  (change)="getAccesGroupID($event)">
+      <option selected value="0">select a zone</option>
+      <option *ngFor="let accessGroup of AccessGroupList" value="{{accessGroup.AccessGroupID}}">{{accessGroup.AccessGroupName}}</option>
+    </select>
 
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-success" (click)="AcceptUser();modal.close('Save click')">Save</button>
+    <button type="button" class="btn btn-outline-success" (click)="approveTheUser();modal.close('Save click')">Save</button>
   </div>
 </ng-template>
