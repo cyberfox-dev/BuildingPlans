@@ -40,5 +40,7 @@
         public string? ApplicationStatus { get; set; }
         public bool isDrafted { get; set; }
    
+
+
     }
 }

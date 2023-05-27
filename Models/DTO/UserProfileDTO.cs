@@ -55,6 +55,7 @@ namespace WayleaveManagementSystem.Models.DTO
         public bool? isZoneAdmin { get; set; }
 
         public bool? depConfirmation { get; set; }
+        public int? zoneID { get; set; }
 
 
     }

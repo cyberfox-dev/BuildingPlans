@@ -115,6 +115,26 @@ namespace WayleaveManagementSystem.Service
                 ).ToListAsync();
         }
 
-      
+        public async Task<List<ZonesDTO>> GetZoneByZoneID(int zoneID)
+        {
+            return await (
+                from Zones in _context.ZonesTable
+                where zoneID == Zones.ZoneID && Zones.isActive == true
+                select new ZonesDTO()
+                {
+                    ZoneID = Zones.ZoneID,
+                    ZoneName = Zones.ZoneName,
+                    SubDepartmentID = Zones.SubDepartmentID,
+                    DepartmentID = Zones.DepartmentID,
+                    DateCreated = Zones.DateCreated,
+                    DateUpdated = Zones.DateUpdated,
+                    isActive = true
+
+
+                }
+                ).ToListAsync();
+        }
+
+
     }
 }

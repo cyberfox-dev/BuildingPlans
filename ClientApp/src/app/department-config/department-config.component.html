@@ -38,7 +38,8 @@
 </div>-->
 <!--create modal button-->
 
-<button type="button" class="btn btn-primary createNewDep" (click)="openXl(content)">Create a new department</button>
+<!--<button type="button" class="btn btn-primary createNewDep" (click)="openXl(content)">Create a new department</button>-->
+<button mat-raised-button color="create" (click)="openXl(content)">Create a new department</button>
 
 <!--table displaying the departments-->
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
@@ -57,7 +58,7 @@
     <td mat-cell *matCellDef="let i = index">
       <button mat-raised-button color="success" matTooltip="Add Sub Department" (click)="openNewSubDep(newSub,i);setCurrentDepartmentID(i)"><i class="fa fa-plus"></i></button>
       <button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="getSubDemartmentByDepartmentID(i,viewSub);setCurrentDepartmentID(i)"><i class="fa fa-eye"></i></button>
-      <button mat-raised-button color="orange" matTooltip="View all sub Depertments"><i class="fa fa-eye"></i></button>
+    <!--  <button mat-raised-button color="orange" matTooltip="View all sub Depertments"><i class="fa fa-eye"></i></button>-->
 
 
 

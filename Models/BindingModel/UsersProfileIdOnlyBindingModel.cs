@@ -4,6 +4,7 @@
     {
 
         public string UserID { get; set; }
+        public int DepID { get; set; }
 
 
     }

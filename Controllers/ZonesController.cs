@@ -146,5 +146,33 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpPost("GetZoneByZoneID")]
+        public async Task<object> GetZoneByZoneID([FromBody] int zoneID)
+        {
+            try
+            {
+                //var result = await _zonesLinkingServices.GetUsersNotLinkedByUserID();
+                if (zoneID <1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _zonesServices.GetZoneByZoneID(zoneID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Linked Users", result));
+                }
+
+               
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
     }
 }

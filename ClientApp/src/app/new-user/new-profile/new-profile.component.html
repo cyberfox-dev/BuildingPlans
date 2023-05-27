@@ -137,11 +137,20 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <select class="form-select" aria-label="Default select example" [(ngModel)]="internalApplicantDepartment" (change)="onSelectToSendDepName($event)">
+                <select class="form-select" aria-label="Default select example" [(ngModel)]="internalApplicantDepartment" (change)="onSelectToPopulateZone($event)">
                   <option selected value="0">Test</option>
                   <option *ngFor="let department of DepartmentDropdown" value="{{department.departmentID}}">{{department.departmentName}}</option>
                 </select>
 
+
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <select class="form-select" aria-label="Default select example" [(ngModel)]="selectedZone">
+                  <option selected value="0">select a zone</option>
+                  <option *ngFor="let zone of ZoneDropdown" value="{{zone.zoneID}}">{{zone.zoneName}}</option>
+                </select>
 
               </div>
             </div>

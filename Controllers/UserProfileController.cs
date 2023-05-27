@@ -43,7 +43,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _userProfileService.AddUpdateUserProfiles(model.UserProfileID, model.UserID, model.FullName, model.Email, model.PhoneNumber, model.isInternal, model.BP_Number, model.CompanyName, model.CompanyRegNo, model.PhyscialAddress, model.Directorate, model.DepartmentID, model.SubDepartmentID, model.Branch, model.CostCenterNumber, model.CostCenterOwner, model.CopyOfID, model.CreatedById, model.IdNumber);
+                    var result = await _userProfileService.AddUpdateUserProfiles(model.UserProfileID, model.UserID, model.FullName, model.Email, model.PhoneNumber, model.isInternal, model.BP_Number, model.CompanyName, model.CompanyRegNo, model.PhyscialAddress, model.Directorate, model.DepartmentID, model.SubDepartmentID, model.Branch, model.CostCenterNumber, model.CostCenterOwner, model.CopyOfID, model.CreatedById, model.IdNumber, model.zoneID);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.UserProfileID > 0 ? "User Profile Updated Successfully" : "User Profile Added Successfully"), result));
                 }
             }
@@ -81,7 +81,33 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
-        //[FromBody] string userId
+
+        [HttpPost("UserGainsApproval")]
+        public async Task<object> UserGainsApproval([FromBody] int userProfileID)
+        {
+            try
+            {
+
+                if (userProfileID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _userProfileService.UserGainsApproval(userProfileID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "User Given Access", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+        //[FromBody] string userId UserGainsApproval
         [HttpPost("GetUserByUserID")]
         public async Task<object> GetUserByUserID([FromBody] UsersProfileIdOnlyBindingModel model)
         {
@@ -178,17 +204,23 @@ namespace WayleaveManagementSystem.Controllers
         }
         
 
-       [HttpGet("GetAllUsersToLinkToDep")]
-        public async Task<object> GetAllUsersToLinkToDep()
+       [HttpPost("GetAllUsersToLinkToDep")]
+        public async Task<object> GetAllUsersToLinkToDep([FromBody] int depID)
         {
             try
             {
 
+                if (depID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
 
-                var result = await _userProfileService.GetAllUsersToLinkToDep();
-                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Users fetched", result));
+                    var result = await _userProfileService.GetAllUsersToLinkToDep(depID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Users fetched", result));
 
-
+                }
 
             }
             catch (Exception ex)
