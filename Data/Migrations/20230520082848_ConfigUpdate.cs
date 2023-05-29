@@ -8,29 +8,29 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "FinalApproval",
-                table: "SubDepartmentForComment",
-                type: "bit",
-                nullable: true);
+            //migrationBuilder.AddColumn<bool>(
+            //    name: "FinalApproval",
+            //    table: "SubDepartmentForComment",
+            //    type: "bit",
+            //    nullable: true);
 
-            migrationBuilder.AddColumn<string>(
-                name: "UtilitySlot1",
-                table: "Config",
-                type: "nvarchar(max)",
-                nullable: true);
+            //migrationBuilder.AddColumn<string>(
+            //    name: "UtilitySlot1",
+            //    table: "Config",
+            //    type: "nvarchar(max)",
+            //    nullable: true);
 
-            migrationBuilder.AddColumn<string>(
-                name: "UtilitySlot2",
-                table: "Config",
-                type: "nvarchar(max)",
-                nullable: true);
+            //migrationBuilder.AddColumn<string>(
+            //    name: "UtilitySlot2",
+            //    table: "Config",
+            //    type: "nvarchar(max)",
+            //    nullable: true);
 
-            migrationBuilder.AddColumn<string>(
-                name: "UtilitySlot3",
-                table: "Config",
-                type: "nvarchar(max)",
-                nullable: true);
+            //migrationBuilder.AddColumn<string>(
+            //    name: "UtilitySlot3",
+            //    table: "Config",
+            //    type: "nvarchar(max)",
+            //    nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

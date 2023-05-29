@@ -4,7 +4,7 @@ import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { UserService } from '../service//User/user.service';
 import { SharedService } from "src/app/shared/shared.service"
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
-
+import { NotificationsService } from "src/app/service/Notifications/notifications.service";
 
 
 
@@ -31,6 +31,7 @@ export class LoginComponent implements OnInit {
   public registerForm = this.formBuilder.group({
     registerEmail: ['',  Validators.required],
     registerPassword: ['', Validators.required],
+    reenterPassword: ['', Validators.required],
     fullName: ['', Validators.required],
 
   })
@@ -42,7 +43,7 @@ export class LoginComponent implements OnInit {
 
   @Output() checkForInternalOption = new EventEmitter<string>();
 
-  constructor(private router: Router, private formBuilder: FormBuilder, private userService: UserService, private sharedService: SharedService, private userPofileService: UserProfileService) {
+  constructor(private router: Router, private formBuilder: FormBuilder, private userService: UserService, private sharedService: SharedService, private userPofileService: UserProfileService, private notification: NotificationsService) {
 
 
 
@@ -59,6 +60,7 @@ export class LoginComponent implements OnInit {
     this.isLoading = true;
     let email = this.loginForm.controls["email"].value;
     let password = this.loginForm.controls["password"].value;
+
     this.userService.login(email, password).subscribe(
       (data: any) => {
         if (data.responseCode === 1) {
@@ -97,11 +99,12 @@ export class LoginComponent implements OnInit {
   }
 
   onRegister() {
-
+    this.notification.sendEmail();
     
     let fullName = this.registerForm.controls["fullName"].value;
     let email = this.registerForm.controls["registerEmail"].value;
     let password = this.registerForm.controls["registerPassword"].value;
+    let passwordConfirm = this.registerForm.controls["reenterPassword"].value;
 
     // Use a regular expression to check if the email is valid
     const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -124,6 +127,14 @@ export class LoginComponent implements OnInit {
     else {
       alert("Please enter your first name and surname only!");
       return;
+    }
+
+    //Check if passwords entered, match.
+    if (password != passwordConfirm) {
+      alert("The passwords entered do not match");
+      return;
+    }
+    else {
     }
 
     if (numberOfSpaces >= 2 || numberOfSpaces == 0) {

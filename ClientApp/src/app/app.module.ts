@@ -80,6 +80,7 @@ import { NotificationCenterComponent } from './notification-center/notification-
 import { MatSliderModule } from '@angular/material/slider';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { InternalUserUnassignedDepartmentComponent } from './internal-user-unassigned-department/internal-user-unassigned-department.component';
+
 //import { MapModule } from 'arcgis-js-api';
 //import Map from "@arcgis/core/Map";
 
