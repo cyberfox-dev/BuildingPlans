@@ -93,6 +93,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   @Input() ApplicationID: any;
+  @Input() CurrentApplicant: any;
   /*textfields*/
 
   public depositRequired = this.formBuilder.group({
@@ -210,8 +211,7 @@ export class ActionCenterComponent implements OnInit {
    // setTimeout(() => {
    //this.getDepartmentManagerUserID();
     //Get Current Application Infomation 
-    this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
-    this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
+    debugger;
 
 
       this.getAllSubDepartments();
@@ -227,6 +227,12 @@ export class ActionCenterComponent implements OnInit {
       /*  this.getAllServiceItmes();*/
     this.getAllServiceItmesForDropdown();
 
+
+   //// this giving some shit
+   // this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
+   // this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
+
+    //end of shit
 
       this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
       this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
@@ -418,7 +424,7 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-  getDepartmentManagerUserID() {
+  getDepartmentManagerUserID(roleName?: string |null) {
     debugger;
     //const currentRole = this.sharedService.getCurrentUserRoles();
     //for (var i = 0; i < currentRole.length; i++) {
@@ -429,7 +435,7 @@ export class ActionCenterComponent implements OnInit {
     //}
 
 
-    this.accessGroupsService.getUserBasedOnRoleName("Department Admin",this.CurrentUserProfile.subDepartmentID).subscribe((data: any) => {
+    this.accessGroupsService.getUserBasedOnRoleName(roleName,this.CurrentUserProfile.subDepartmentID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         this.userID = data.dateSet[0].userID;
@@ -448,7 +454,7 @@ export class ActionCenterComponent implements OnInit {
 
   //im here
   moveToFinalApprovalForDepartment() {
-    this.getDepartmentManagerUserID();
+    this.getDepartmentManagerUserID("Department Admin");
 
     this.subDepartmentForCommentService.departmentForCommentFinalAppovalUserToComment(this.forManuallyAssignSubForCommentID, this.userID).subscribe((data: any) => {
 
@@ -668,7 +674,7 @@ export class ActionCenterComponent implements OnInit {
         if (this.checked == true) {
           //SubDepartmentForCommentService
           this.onDepositRequiredClick(); 
-          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved(Conditional)").subscribe((data: any) => {
+          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved(Conditional)",null).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
 
@@ -706,13 +712,13 @@ export class ActionCenterComponent implements OnInit {
 
         }
         else {
-          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved").subscribe((data: any) => {
+          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved",null).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
 
               alert(data.responseMessage);
               //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.userID, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
 
@@ -744,7 +750,7 @@ export class ActionCenterComponent implements OnInit {
       }
 
       case "Reject": {
-        this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Rejected").subscribe((data: any) => {
+        this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Rejected",null).subscribe((data: any) => {
 
           if (data.responseCode == 1) {
 
@@ -781,13 +787,14 @@ export class ActionCenterComponent implements OnInit {
       }
 
       case "Clarify": {
-        this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify").subscribe((data: any) => {
+       // this.getDepartmentManagerUserID("Senior Reviewer");
+        this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify",true).subscribe((data: any) => {
 
           if (data.responseCode == 1) {
 
             alert(data.responseMessage);
             //commentsService
-            this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Rejected", this.CurrentUser.appUserId).subscribe((data: any) => {
+            this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.CurrentApplicant, "Clarify", this.CurrentUser.appUserId).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
 
@@ -813,11 +820,45 @@ export class ActionCenterComponent implements OnInit {
         }, error => {
           console.log("Error: ", error);
         })
-        alert("In progress");
+       // alert("In progress");
         break;
       }
       case "Refer": {
-        alert("In progress");
+
+        this.getDepartmentManagerUserID("Senior Reviewer");
+        this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Referred", false,true).subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+
+            alert(data.responseMessage);
+            //commentsService
+            this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.userID, "Referred", this.CurrentUser.appUserId).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+
+                alert(data.responseMessage);
+
+              }
+              else {
+                alert(data.responseMessage);
+
+              }
+              console.log("reponse", data);
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+          }
+          else {
+            alert(data.responseMessage);
+
+          }
+          console.log("reponse", data);
+
+        }, error => {
+          console.log("Error: ", error);
+        })
+        //alert("In progress");
 
         break;
       }
@@ -969,9 +1010,6 @@ export class ActionCenterComponent implements OnInit {
     this.subDepartment.getAllLinkedSubDepartmentsForComment(this.ApplicationID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-
-
-     
 
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempSubDepartmentLinkedList = {} as SubDepartmentList;
@@ -1223,11 +1261,7 @@ getAllCommentsByUserID() {
 
   onLinkZoneForComment() {
 
-
-
     const selectZones = this.zoneSelection.selected;
-
-
 
 
     for (var i = 0; i < selectZones.length; i++) {

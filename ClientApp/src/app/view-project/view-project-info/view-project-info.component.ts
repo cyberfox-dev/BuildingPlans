@@ -181,6 +181,7 @@ export class ViewProjectInfoComponent implements OnInit {
     configNumberOfProject: any;
     configMonthYear: any;
     wbs: any;
+    CurrentApplicant: number;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -239,6 +240,7 @@ export class ViewProjectInfoComponent implements OnInit {
    
     const setValues = this.applicationDataForView[0];
     this.ApplicationID = setValues.applicationID;
+    this.CurrentApplicant = setValues.CreatedById;
 
     this.currentApplication = this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     console.log("this is the created by ID", setValues);

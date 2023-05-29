@@ -77,9 +77,12 @@ export class SubDepartmentForCommentService {
   }
 
 
-  public updateCommentStatus(subDepartmentForCommentID: number | null, commentStatus: string | null) {
+  public updateCommentStatus(subDepartmentForCommentID: number | null, commentStatus: string | null, isAwaitingClarity: boolean | null, isRefered?: boolean | null) {
 
     const body = {
+
+      isRefered: isRefered,
+      isAwaitingClarity: isAwaitingClarity,
       SubDepartmentForCommentID: subDepartmentForCommentID,
       CommentStatus: commentStatus,
     }

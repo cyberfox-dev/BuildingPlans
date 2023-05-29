@@ -209,7 +209,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _subDepartmentForCommentService.UpdateCommentStatus(model.SubDepartmentForCommentID, model.CommentStatus);
+                    var result = await _subDepartmentForCommentService.UpdateCommentStatus(model.SubDepartmentForCommentID, model.CommentStatus, model.isAwaitingClarity, model.IsRefered);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Updated Comment Status", result));
 
                 }
