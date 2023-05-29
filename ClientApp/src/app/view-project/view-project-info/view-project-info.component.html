@@ -163,7 +163,7 @@
           <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
             <!--- Note that these columns can be defined in any order.
-            The actual rendered columns are set as a property on the row definition" -->
+      The actual rendered columns are set as a property on the row definition" -->
             <!-- Position Column -->
             <ng-container matColumnDef="position">
               <th mat-header-cell *matHeaderCellDef> No. </th>
@@ -204,11 +204,17 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
         </div>
+        <div class="form-floating mb-3 mt-3" *ngIf="wbsRequired">
+          <input type="text" class="form-control" id="wbsNumberRequested" placeholder="WBS Number" [(ngModel)]="wbsNumberRequested" readonly>
+          <label for="wbsNumberRequested">WBS Number</label>
+        </div>
         <div class="cont" *ngIf="isInternalUser">
-          <button mat-raised-button (click)="enterWBSNumberModal(wbsNumberModal)" *ngIf="wbsButton" color="orange">WBS</button>
+          <button mat-raised-button (click)="enterWBSNumberModal(wbsNumberModal)"  color="orange">WBS</button>
           <button mat-raised-button color="orange" (click)="generateConsolidatedDepositInvoice()">Consolidate Deposits</button>
           <button mat-raised-button color="orange">Deposit Refund</button>
         </div>
+
+
       </div>
 
     </mat-tab>
@@ -495,7 +501,7 @@
 
 <ng-template #wbsNumberModal let-modal>
   <div class="modal-header">
-    <h1 class="modal-title">WBS Number</h1>
+    <h4 class="modal-title">WBS Number</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">

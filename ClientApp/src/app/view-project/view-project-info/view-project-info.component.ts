@@ -104,7 +104,7 @@ export interface DepositRequired {
   Quantity: number;
   ServiceItemCodeserviceItemCode?: string | null;
   SubDepartmentName?: string | null;
-
+  WBS?: string;
 }
 
 const Document_DATA: Documents[] = [
@@ -166,6 +166,8 @@ export class ViewProjectInfoComponent implements OnInit {
   internalApplicantCostCenterOwner = '';
 
 
+  wbsNumberRequested = '';
+
   applicationDataForView: ApplicationList[] = [];
   StagesList: StagesList[] = [];
   CommentsList: CommentsList[] = [];
@@ -191,6 +193,7 @@ export class ViewProjectInfoComponent implements OnInit {
     WBS: string;
     wbsButton: boolean;
     CurrentApplicant: number;
+    wbsRequired: boolean;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -242,7 +245,8 @@ export class ViewProjectInfoComponent implements OnInit {
 
   ngOnInit(): void {
 
-
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
 
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
@@ -1153,11 +1157,35 @@ export class ViewProjectInfoComponent implements OnInit {
       if (data.responseCode == 1) {
 
         alert(data.responseMessage);
+        this.wbsRequired = true;
 
+        this.depositRequiredService.getDepositRequiredByApplicationID(this.ApplicationID).subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+            const tempDepositReq = {} as DepositRequired;
+            const current = data.dateSet[0];
+            tempDepositReq.WBS = current.wbs;
+            this.wbsNumberRequested=current.wbs;
+
+            this.DepositRequired.push(tempDepositReq);
+
+            alert(data.responseMessage);
+
+
+          }
+          else {
+            alert(data.responseMessage);
+        
+          }
+          console.log("reponse", data);
+
+        }, error => {
+          console.log("Error: ", error);
+        })
       }
       else {
         alert(data.responseMessage);
-
+        this.wbsRequired = false;
       }
       console.log("reponse", data);
 
