@@ -37,7 +37,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     if (model.DepositRequiredID == 0)
-                    { 
+                    {
                         model.DepositRequiredID = null;
                     }
 
@@ -48,7 +48,7 @@ namespace WayleaveManagementSystem.Controllers
                     {
                         tempDepositRequired = new DepositRequired()
                         {
-                            
+
                             SubDepartmentForCommentID = model.SubDepartmentForCommentID,
                             Rate = model.Rate,
                             Quantity = model.Quantity,
@@ -74,7 +74,7 @@ namespace WayleaveManagementSystem.Controllers
                     {
                         tempDepositRequired.Desciption = model.Desciption;
                         tempDepositRequired.DateUpdated = DateTime.Now;
-                        
+                        tempDepositRequired.WBS = model.WBS;
 
                         _context.Update(tempDepositRequired);
                         await _context.SaveChangesAsync();
@@ -99,19 +99,19 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
 
-                    var tempDepositRequired = _context.DepositRequired.FirstOrDefault(x => x.DepositRequiredID == depositRequiredID);
+                var tempDepositRequired = _context.DepositRequired.FirstOrDefault(x => x.DepositRequiredID == depositRequiredID);
 
-                    if (tempDepositRequired == null)
-                    {
-                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", false));
+                if (tempDepositRequired == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", false));
 
-                    }
-                    else
-                    {
-                        tempDepositRequired.DateUpdated = DateTime.Now;
-                        tempDepositRequired.isActive = false;
-                        _context.Update(tempDepositRequired);
-                        await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    tempDepositRequired.DateUpdated = DateTime.Now;
+                    tempDepositRequired.isActive = false;
+                    _context.Update(tempDepositRequired);
+                    await _context.SaveChangesAsync();
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Deposit Information Deleted Successfully", true));
                 }
 
@@ -125,7 +125,7 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
-      
+
         [HttpGet("GetAlltempDepositRequired")]
         public async Task<object> GetAllServiceItem()
         {
@@ -150,7 +150,7 @@ namespace WayleaveManagementSystem.Controllers
                     SubDepartmentName = depositRequired.SubDepartmentName,
                     ServiceItemCode = depositRequired.ServiceItemCode,
                     WBS = depositRequired.WBS
-                    
+
 
                 }
                 ).ToListAsync();
@@ -217,49 +217,7 @@ namespace WayleaveManagementSystem.Controllers
         }
 
 
-        [HttpPost("GetDepositRequiredByApplicationID")]
-        public async Task<object> GetWBSByApplicationID([FromBody] int applicationID)
-        {
-            try
-            {
-                var result = await (
-               from depositRequired in _context.DepositRequired
-               where depositRequired.ApplicationID == applicationID && depositRequired.isActive == true
-               select new DepositRequiredDTO()
-               {
-                   DepositRequiredID = depositRequired.DepositRequiredID,
-                   SubDepartmentForCommentID = depositRequired.SubDepartmentForCommentID,
-                   Rate = depositRequired.Rate,
-                   Quantity = depositRequired.Quantity,
-                   ApplicationID = depositRequired.ApplicationID,
-                   SubDepartmentID = depositRequired.SubDepartmentID,
-                   Desciption = depositRequired.Desciption,
-                   CreatedById = depositRequired.CreatedById,
-                   DateCreated = depositRequired.DateCreated,
-                   DateUpdated = depositRequired.DateUpdated,
-                   isActive = depositRequired.isActive,
-                   SubDepartmentName = depositRequired.SubDepartmentName,
-                   ServiceItemCode = depositRequired.ServiceItemCode,
-                   WBS = depositRequired.WBS
-
-               }
-               ).ToListAsync();
-
-
-
-                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Deposits By ID", result));
-
-            }
-            catch (Exception ex)
-            {
-
-
-                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
-
-            }
-        }
-
-
-
     }
+
+ 
 }

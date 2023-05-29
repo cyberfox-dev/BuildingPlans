@@ -65,7 +65,30 @@
     <i class="fa fa-repeat" aria-hidden="true"></i>
     Re-apply
   </button>
+  <app-action-center [ApplicationID]="ApplicationID" *ngIf="isInternalUser" (optionEvent)="reciveOption($event)"></app-action-center>
+  <button mat-button color="action" [matMenuTriggerFor]="actions"> <mat-icon>more_vert</mat-icon></button>
+  <mat-menu #actions="matMenu">
+    <button mat-menu-item (click)="ChangeApplicationStatusToPaid()"> move to paid</button>
+    <button mat-menu-item (click)="MoveToNextStage()">Move to Next stage</button>
+    <button mat-menu-item (click)="MoveToNextStage()"> <i class="fa fa-ban" aria-hidden="true"></i> Cancel Application</button>
+    <button mat-menu-item (click)="goToNewWayleave(true)" *ngIf="canReapply"><i class="fa fa-repeat" aria-hidden="true"></i> Re-apply</button>
+  </mat-menu>
+  <!--  <button type="button" mat-raised-button color="green" (click)="ChangeApplicationStatusToPaid()"><i class="fa fa-hand-peace-o" aria-hidden="true"></i>   move to paid</button>
+    <button type="button" mat-raised-button color="green" (click)="MoveToNextStage()"><i class="fa fa-hand-peace-o" aria-hidden="true"></i>   Next Stage</button>
+
+    <button mat-raised-button color="warn">
+      <i class="fa fa-ban" aria-hidden="true"></i>
+      Cancel Application
+    </button>
+    <div *ngIf="canReapply">
+      <button mat-raised-button color="warn" (click)="goToNewWayleave(true)" style="z-index:9999">
+        <i class="fa fa-repeat" aria-hidden="true"></i>
+        Re-apply
+      </button>
+    </div>-->
 </div>
+
+
 <div class="container-fluid cont6">
 
   <mat-tab-group>
@@ -208,7 +231,7 @@
           </table>
         </div>
         <div class="cont" *ngIf="isInternalUser">
-          <button mat-raised-button (click)="enterWBSNumberModal(wbsNumberModal)" color="orange">WBS</button>
+          <button mat-raised-button (click)="enterWBSNumberModal(wbsNumberModal)" *ngIf="wbsButton" color="orange">WBS</button>
           <button mat-raised-button color="orange" (click)="generateConsolidatedDepositInvoice()">Consolidate Deposits</button>
           <button mat-raised-button color="orange">Deposit Refund</button>
         </div>
@@ -502,7 +525,7 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-    <form [formGroup]="wbs">
+    <form [formGroup]="addWBSNumber">
       <div class="form-floating mb-3 mt-3">
         <input type="text" class="form-control" formControlName="wbsnumber" placeholder="wbsnumber">
         <label for="wbsnumber">WBS Number</label>

@@ -215,8 +215,8 @@ export class ActionCenterComponent implements OnInit {
 
 
       this.getAllSubDepartments();
-      this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
-      this.CurrentUser = JSON.parse(this.stringifiedData);
+     
+    
       if (this.CurrentUser == null) {
         console.log("Not");
       }
@@ -242,7 +242,7 @@ export class ActionCenterComponent implements OnInit {
       this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
     this.getLinkedZones();
     
-    this.getUserInternalOrExternal();
+
    
       //this.CheckIfCurrentUserCanUseHopper();
    // }, 1000);
@@ -639,7 +639,7 @@ export class ActionCenterComponent implements OnInit {
     let quantity = this.depositRequired.controls["quantity"].value;
     //let total = this.depositRequired.controls["total"].value;
 
-
+    debugger;
     this.depositRequiredService.addUpdateDepositRequired(0, this.forManuallyAssignSubForCommentID, Number(rate), this.ApplicationID, description, this.loggedInUsersSubDepartmentID, Number(quantity), this.CurrentUser.appUserId, SubDepartmentName, serviceItemCode).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -698,6 +698,8 @@ export class ActionCenterComponent implements OnInit {
                 console.log("Error: ", error);
               })
 
+              //this is to send through that the wbs was requested
+             
 
             }
             else {
@@ -1393,7 +1395,7 @@ getAllCommentsByUserID() {
   }
 
   getUserInternalOrExternal() {
-
+    
     this.userPofileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
 
 
@@ -1402,8 +1404,7 @@ getAllCommentsByUserID() {
 
         console.log("data", data.dateSet);
     const currentUserProfile = data.dateSet[0];
-        const fullname = currentUserProfile.fullName;
-
+        console.log("WOPERIWEPORIPWEOIRPOWERIOPWERIPOWEIRPWEORIPWOERIPWEORIPWEOIRPOWER", currentUserProfile.isInternal);
     
         if (currentUserProfile.isInternal == true) {
 
@@ -1436,7 +1437,7 @@ getAllCommentsByUserID() {
   onCreateWBSNumber() {
 
     let WBS = String(this.wbs.controls["wbsnumber"].value);
-    debugger;
+   
     this.depositRequiredService.addUpdateWBSNUmber(this.CurrentUser.appUserId, WBS).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
@@ -1463,6 +1464,11 @@ getAllCommentsByUserID() {
   sendOption() {
     this.optionEvent.emit(this.option);
   }
+
+
+
+
+
 
 
 

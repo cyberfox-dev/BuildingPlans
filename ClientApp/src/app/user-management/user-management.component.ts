@@ -55,7 +55,7 @@ export class UserManagementComponent implements OnInit {
   AccessGroupList: AccessGroupList[] = [];
   ZoneList: ZoneList[] = [];
 
-  displayedColumnsLinkUsers: string[] = ['idNumber', 'fullName','zoneName', 'actions'];
+  displayedColumnsLinkUsers: string[] = [ 'fullName','zoneName', 'actions'];
   dataSourceLinkUsers = this.UserList;
 
   @ViewChild(MatTable) UserListTable: MatTable<UserList> | undefined;
@@ -174,7 +174,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   getAllAccessGroup() {
-    debugger;
+   
     this.AccessGroupList.splice(0, this.AccessGroupList.length);
     this.accessGroupsService.getAllAccessGroups().subscribe((data: any) => {
 

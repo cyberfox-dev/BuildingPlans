@@ -136,7 +136,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   currentDate: Date;
   previousMonth: number;
 
-  displayedColumns: string[] = ['FullName', 'Stage','Status', 'TypeOfApplication','AplicationAge','StageAge','DateCreated', 'actions'];
+  displayedColumns: string[] = ['FullName', 'TypeOfApplication', 'Status', 'Stage','AplicationAge','StageAge','DateCreated', 'actions'];
   dataSource = this.Applications;
   @ViewChild(MatTable) applicationsTable: MatTable<ApplicationsList> | undefined;
   ngOnInit(): void {

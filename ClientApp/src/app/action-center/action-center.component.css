@@ -134,11 +134,11 @@ table {
   padding:5px;
 }
 ::ng-deep.mat-menu-panel {
-  max-width: none !important;
-  display: flex;
-  flex-wrap: nowrap;
-  word-wrap: normal;
-  flex-direction: row;
+  max-width: initial !important;
+  /* display: flex; */
+  /* flex-wrap: nowrap; */
+  /* word-wrap: normal; */
+  /* flex-direction: row; */
 }
 .cont4 {
   display: flex;
