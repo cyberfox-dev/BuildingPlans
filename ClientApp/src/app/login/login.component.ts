@@ -99,7 +99,7 @@ export class LoginComponent implements OnInit {
   }
 
   onRegister() {
-    this.notification.sendEmail();
+    this.notification.sendEmail("venolin@cyberfox.co.za","Test","testing 1, 2, 3...");
     
     let fullName = this.registerForm.controls["fullName"].value;
     let email = this.registerForm.controls["registerEmail"].value;
