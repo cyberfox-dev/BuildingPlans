@@ -639,7 +639,7 @@ export class ActionCenterComponent implements OnInit {
     let quantity = this.depositRequired.controls["quantity"].value;
     //let total = this.depositRequired.controls["total"].value;
 
-    debugger;
+
     this.depositRequiredService.addUpdateDepositRequired(0, this.forManuallyAssignSubForCommentID, Number(rate), this.ApplicationID, description, this.loggedInUsersSubDepartmentID, Number(quantity), this.CurrentUser.appUserId, SubDepartmentName, serviceItemCode).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -698,8 +698,6 @@ export class ActionCenterComponent implements OnInit {
                 console.log("Error: ", error);
               })
 
-              //this is to send through that the wbs was requested
-             
 
             }
             else {
