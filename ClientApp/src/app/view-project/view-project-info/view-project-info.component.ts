@@ -10,7 +10,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { DatePipe } from '@angular/common';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
-import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component'
+import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component';
 import { ConfigService } from 'src/app/service/Config/config.service';
 import { FormBuilder, Validators } from '@angular/forms';
 
@@ -23,7 +23,6 @@ export interface ARCGISAPIData {
 
 export interface PeriodicElement {
   name: string;
-
 }
 
 export interface StagesList {
@@ -49,7 +48,6 @@ export interface CommentsList {
   CommentStatus: string;
   SubDepartmentForCommentID: number;
   SubDepartmentName?: string;
-
 }
 
 export interface ApplicationList {
