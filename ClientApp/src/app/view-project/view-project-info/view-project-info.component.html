@@ -49,45 +49,19 @@
 
 <h1>Application Information</h1>
 <h2>Project number LS/BP 321</h2>
-<div class="cont1" *ngIf="isInternalUser">
-  <button type="button" mat-raised-button color="green" (click)="ChangeApplicationStatusToPaid()"><i class="fa fa-hand-peace-o" aria-hidden="true"></i>   move to paid</button>
-  <button type="button" mat-raised-button color="green" (click)="MoveToNextStage()"><i class="fa fa-hand-peace-o" aria-hidden="true"></i>   Next Stage</button>
-</div>
-<app-action-center [ApplicationID]="ApplicationID" [CurrentApplicant]="CurrentApplicant" *ngIf="isInternalUser"></app-action-center>
-<div class="cont1" *ngIf="!isInternalUser">
-  <button mat-raised-button color="warn">
-    <i class="fa fa-ban" aria-hidden="true"></i>
-    Cancel Application
-  </button>
-</div>
-<div class="cont1" *ngIf="canReapply">
-  <button mat-raised-button color="warn" (click)="goToNewWayleave(true)" style="z-index:9999">
-    <i class="fa fa-repeat" aria-hidden="true"></i>
-    Re-apply
-  </button>
+
+<div class="cont1">
+
   <app-action-center [ApplicationID]="ApplicationID" *ngIf="isInternalUser" (optionEvent)="reciveOption($event)"></app-action-center>
   <button mat-button color="action" [matMenuTriggerFor]="actions"> <mat-icon>more_vert</mat-icon></button>
   <mat-menu #actions="matMenu">
-    <button mat-menu-item (click)="ChangeApplicationStatusToPaid()"> move to paid</button>
-    <button mat-menu-item (click)="MoveToNextStage()">Move to Next stage</button>
+    <button mat-menu-item (click)="ChangeApplicationStatusToPaid()" *ngIf="isInternalUser"> move to paid</button>
+    <button mat-menu-item (click)="MoveToNextStage()" *ngIf="isInternalUser">Move to Next stage</button>
     <button mat-menu-item (click)="MoveToNextStage()"> <i class="fa fa-ban" aria-hidden="true"></i> Cancel Application</button>
     <button mat-menu-item (click)="goToNewWayleave(true)" *ngIf="canReapply"><i class="fa fa-repeat" aria-hidden="true"></i> Re-apply</button>
   </mat-menu>
-  <!--  <button type="button" mat-raised-button color="green" (click)="ChangeApplicationStatusToPaid()"><i class="fa fa-hand-peace-o" aria-hidden="true"></i>   move to paid</button>
-    <button type="button" mat-raised-button color="green" (click)="MoveToNextStage()"><i class="fa fa-hand-peace-o" aria-hidden="true"></i>   Next Stage</button>
 
-    <button mat-raised-button color="warn">
-      <i class="fa fa-ban" aria-hidden="true"></i>
-      Cancel Application
-    </button>
-    <div *ngIf="canReapply">
-      <button mat-raised-button color="warn" (click)="goToNewWayleave(true)" style="z-index:9999">
-        <i class="fa fa-repeat" aria-hidden="true"></i>
-        Re-apply
-      </button>
-    </div>-->
 </div>
-
 
 <div class="container-fluid cont6">
 
