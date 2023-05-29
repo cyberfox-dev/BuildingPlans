@@ -12,6 +12,7 @@ import { DatePipe } from '@angular/common';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
 import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component'
 import { ConfigService } from 'src/app/service/Config/config.service';
+import { FormBuilder, Validators } from '@angular/forms';
 
 
 export interface ARCGISAPIData {
@@ -103,7 +104,7 @@ export interface DepositRequired {
   Quantity: number;
   ServiceItemCodeserviceItemCode?: string | null;
   SubDepartmentName?: string | null;
-
+  WBS?: string;
 }
 
 const Document_DATA: Documents[] = [
@@ -124,6 +125,12 @@ img.src = 'assets/cctlogoblack.png';
 
 
 export class ViewProjectInfoComponent implements OnInit {
+
+  public addWBSNumber = this.formBuilder.group({
+    wbsnumber: ['', Validators.required],
+   
+
+  })
 
   //Initialize the interface for ARCGIS
   ARCGISAPIData = {} as ARCGISAPIData;
@@ -159,13 +166,15 @@ export class ViewProjectInfoComponent implements OnInit {
   internalApplicantCostCenterOwner = '';
 
 
+  wbsNumberRequested = '';
+
   applicationDataForView: ApplicationList[] = [];
   StagesList: StagesList[] = [];
   CommentsList: CommentsList[] = [];
   SubDepConditionalApproveList: SubDepConditionalApproveList[] = [];
 
   CurrentApplicationBeingViewed: ApplicationList[] = [];
-  DepositRequiredList: DepositRequired[] = [];
+  DepositRequired: DepositRequired[] = [];
   relatedApplications: ApplicationList[] = [];
 
   ApplicationID: number | undefined;
@@ -180,6 +189,11 @@ export class ViewProjectInfoComponent implements OnInit {
     currentApplication: number;
     configNumberOfProject: any;
     configMonthYear: any;
+    wbs: any;
+    WBS: string;
+    wbsButton: boolean;
+    CurrentApplicant: number;
+    wbsRequired: boolean;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -226,11 +240,13 @@ export class ViewProjectInfoComponent implements OnInit {
     private NewWayleaveComponent: NewWayleaveComponent,
     private viewContainerRef: ViewContainerRef,
     private configService: ConfigService,
+    private formBuilder: FormBuilder,
   ) { }
 
   ngOnInit(): void {
 
-
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
 
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
@@ -238,6 +254,7 @@ export class ViewProjectInfoComponent implements OnInit {
    
     const setValues = this.applicationDataForView[0];
     this.ApplicationID = setValues.applicationID;
+    this.CurrentApplicant = setValues.CreatedById;
 
     this.currentApplication = this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     console.log("this is the created by ID", setValues);
@@ -346,11 +363,11 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
 
-          this.DepositRequiredList.push(tempDepositRequired);
+          this.DepositRequired.push(tempDepositRequired);
 
         }
 
-        console.log(" this.DepositRequiredList this.DepositRequiredList this.DepositRequiredList this.DepositRequiredList", this.DepositRequiredList);
+        console.log(" this.DepositRequiredList this.DepositRequiredList this.DepositRequiredList this.DepositRequiredList", this.DepositRequired);
       
       }
       else {
@@ -467,7 +484,7 @@ export class ViewProjectInfoComponent implements OnInit {
     let total = 0;
 
     // Populate table data with DepositRequiredList
-    this.DepositRequiredList.forEach((deposit) => {
+    this.DepositRequired.forEach((deposit) => {
       const row = [
         deposit.SubDepartmentName,
         deposit.DepositRequiredID,
@@ -524,7 +541,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
     // Save PDF document
-    doc.save('Deposit_Invoice_ApplicationID_' + this.DepositRequiredList[0].ApplicationID);
+    doc.save('Deposit_Invoice_ApplicationID_' + this.DepositRequired[0].ApplicationID);
   }
 
 
@@ -1121,6 +1138,74 @@ export class ViewProjectInfoComponent implements OnInit {
     /*        this.router.navigate(["/new-wayleave"]);*/
     this.viewContainerRef.clear();
 
+  }
+
+
+
+  /*WBS Number*/
+  enterWBSNumberModal(wbsNumberModal: any) {
+    this.modalService.open(wbsNumberModal, { backdrop: 'static', size: 'xl' });
+  }
+
+
+  onCreateWBSNumber() {
+
+    let WBS = this.addWBSNumber.controls["wbsnumber"].value;
+    debugger;
+    this.depositRequiredService.addUpdateWBSNUmber(this.DepositRequired[0].DepositRequiredID,this.CurrentUser.appUserId,WBS).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        alert(data.responseMessage);
+        this.wbsRequired = true;
+
+        this.depositRequiredService.getDepositRequiredByApplicationID(this.ApplicationID).subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+            const tempDepositReq = {} as DepositRequired;
+            const current = data.dateSet[0];
+            tempDepositReq.WBS = current.wbs;
+            this.wbsNumberRequested=current.wbs;
+
+            this.DepositRequired.push(tempDepositReq);
+
+            alert(data.responseMessage);
+
+
+          }
+          else {
+            alert(data.responseMessage);
+        
+          }
+          console.log("reponse", data);
+
+        }, error => {
+          console.log("Error: ", error);
+        })
+      }
+      else {
+        alert(data.responseMessage);
+        this.wbsRequired = false;
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
+  option: any;
+
+  reciveOption($event: any) {
+    debugger;
+    this.option = $event
+    if (this.option == "True") {
+      this.wbsButton = true;
+    }
+    else if (this.option == "False") {
+      this.wbsButton = false;
+    }
   }
 
 }

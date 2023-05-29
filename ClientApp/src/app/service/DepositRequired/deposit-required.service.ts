@@ -14,7 +14,7 @@ export class DepositRequiredService {
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
 
-  public addUpdateDepositRequired(depositRequiredID?: number | null, subDepartmentForCommentID?: number | null, rate?: number | null, applicationID?: number | null, desciption?: string | null, subDepartmentID?: number | null, quantity?: number | null, createdById?: string | null, subDepartmentName?: string | null, serviceItemCode?: string|null) {
+  public addUpdateDepositRequired(depositRequiredID?: number | null, subDepartmentForCommentID?: number | null, rate?: number | null, applicationID?: number | null, desciption?: string | null, subDepartmentID?: number | null, quantity?: number | null, createdById?: string | null, subDepartmentName?: string | null, serviceItemCode?: string | null, wbsNumber?: string | null) {
     const body = {
       DepositRequiredID: depositRequiredID,
       SubDepartmentForCommentID: subDepartmentForCommentID,
@@ -26,6 +26,7 @@ export class DepositRequiredService {
       CreatedById: createdById,
       SubDepartmentName: subDepartmentName,
       ServiceItemCode: serviceItemCode,
+      Wbs: wbsNumber,
     }
     return this.httpClient.post(this.baseURL + "AddUpdateDepositRequired", body);
   }
@@ -42,8 +43,9 @@ export class DepositRequiredService {
 
   }
 
-  public addUpdateWBSNUmber( createdById?: string | null, wbsNumber?: string | null) {
+  public addUpdateWBSNUmber(depositRequiredID?: number | null, createdById?: string | null, wbsNumber?: string | null) {
     const body = {
+      DepositRequiredID: depositRequiredID,
       Wbs: wbsNumber,
       CreatedById: createdById,
     }

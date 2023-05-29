@@ -221,18 +221,28 @@ namespace WayleaveManagementSystem.Service
                 ).ToListAsync();
         }
 
-        public async Task<bool> UpdateCommentStatus(int? subDepartmentForCommentID, string? commentStatus)
+        public async Task<bool> UpdateCommentStatus(int? subDepartmentForCommentID, string? commentStatus,bool? isAwaitingClarity,bool? isRefered)
         {
             //this checks is the record exists in the db
             var tempSubDepForCommentTable = _context.SubDepartmentForComment.FirstOrDefault(x => x.SubDepartmentForCommentID == subDepartmentForCommentID);
 
-            if (tempSubDepForCommentTable == null)
+            if (tempSubDepForCommentTable == null) 
             {
                 return await Task.FromResult(false);
 
             }
             else
             {
+                if (isAwaitingClarity != null)
+                {
+                    tempSubDepForCommentTable.isAwaitingClarity = isAwaitingClarity;
+                }
+                if (isRefered != null)
+                {
+                    tempSubDepForCommentTable.IsRefered = isRefered;
+                }
+                
+
                 tempSubDepForCommentTable.CommentStatus = commentStatus;
                 tempSubDepForCommentTable.DateUpdated = DateTime.Now;
                 _context.Update(tempSubDepForCommentTable);

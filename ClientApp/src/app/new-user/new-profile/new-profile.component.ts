@@ -9,7 +9,11 @@ import { UserProfileService } from 'src/app/service/UserProfile/user-profile.ser
 import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
 import { DepartmentsService } from '../../service/Departments/departments.service';
 import { Router } from '@angular/router';
+import { ZoneLinkService } from 'src/app/service/ZoneLink/zone-link.service';
+import { SelectionModel } from '@angular/cdk/collections';
 import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
+import { ZonesService } from '../../service/Zones/zones.service';
+import { SubDepartmentsService} from 'src/app/service/SubDepartments/sub-departments.service';
 
 export interface DepartmentList {
   departmentID: number;
@@ -17,12 +21,22 @@ export interface DepartmentList {
   dateUpdated: any;
   dateCreated: any;
 }
+export interface ZoneDropdown {
+  zoneID: number;
+  zoneName: string;
+}
 
 export interface DepartmentAdminList {
   userId: any;
   idNumber: string;
   fullName: string;
   departmentAdmin: boolean;
+}
+
+export interface UserZoneList {
+  id: string;
+  fullName: string;
+  zoneLinkID?: any;
 }
 
 
@@ -86,6 +100,7 @@ export class NewProfileComponent implements OnInit {
     componentRestrictions: { country: 'ZA' }
   } as unknown as Options
 
+  ZoneDropdown: ZoneDropdown[] = [];
   DepartmentAdminList: DepartmentAdminList[] = [];
   public showExternal: boolean = false;
   public showInternal: boolean = false;
@@ -118,7 +133,7 @@ export class NewProfileComponent implements OnInit {
   internalApplicantBranch = '';
   internalApplicantCostCenterNo = '';
   internalApplicantCostCenterOwner = '';
-
+  selectedZone = '';
   extApplicantVatNumber = '';
 
   CurrentUser: any;
@@ -126,9 +141,21 @@ export class NewProfileComponent implements OnInit {
   ExternalUserProfileData: ExternalList[] = [];
   InternalUserProfileData: InternalList[] = [];
   linkedContractors: ContractorList[] = [];
+  selection = new SelectionModel<UserZoneList>(true, []);
+    subDepartmentID: any;
 
+  constructor(private modalService: NgbModal,
+    private shared: SharedService,
+    private userPofileService: UserProfileService,
+    private professionalService: ProfessionalService,
+    private departmentService: DepartmentsService,
+    private router: Router,
+    private notificationsService:NotificationsService,
+    private zoneService: ZonesService,
+    private zoneLinkService: ZoneLinkService,
+    private subDepartmentsService: SubDepartmentsService
 
-  constructor(private modalService: NgbModal, private shared: SharedService, private userPofileService: UserProfileService, private professionalService: ProfessionalService, private departmentService: DepartmentsService, private router: Router, private notificationsService: NotificationsService) { }
+  ) { }
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
@@ -164,7 +191,7 @@ export class NewProfileComponent implements OnInit {
     this.CurrentUser = JSON.parse(this.stringifiedData);
     
     const fullname = this.CurrentUser.fullName;
-
+    this.internalApplicantDepartment = "0";
 
     this.internalApplicantName = fullname.substring(0, fullname.indexOf(' '));
     this.internalApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
@@ -211,9 +238,34 @@ export class NewProfileComponent implements OnInit {
   onNewProfileCreate() {
   
     if (this.showInternal) {
-
+      ///// 
       
-      this.userPofileService.addUpdateUserProfiles(null, this.CurrentUser.appUserId, this.internalApplicantName + " " + this.internalApplicantSurname, this.CurrentUser.email, this.internalApplicantTellNo, this.showInternal, null, null, null, null,/*THE DIRECTORATE IS NOW SENDING THROUGH THE DEPSRTMENT NAME*/ this.internalApplicantDirectorate, Number(this.internalApplicantDepartment), 1, this.internalApplicantBranch, this.internalApplicantCostCenterNo, this.internalApplicantCostCenterOwner, null, this.CurrentUser.appUserId, null).subscribe((data: any) => {
+      this.subDepartmentsService.getSubDepartmentsByDepartmentID(Number(this.internalApplicantDepartment)).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          const current = data.dateSet[0];
+
+          this.subDepartmentID = current.subDepartmentID;
+          console.log("reponse this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID", this.subDepartmentID);
+        }
+
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+
+
+
+      /////
+
+
+      this.userPofileService.addUpdateUserProfiles(null, this.CurrentUser.appUserId, this.internalApplicantName + " " + this.internalApplicantSurname, this.CurrentUser.email, this.internalApplicantTellNo, this.showInternal, null, null, null, null,/*THE DIRECTORATE IS NOW SENDING THROUGH THE DEPSRTMENT NAME*/ this.internalApplicantDirectorate, Number(this.internalApplicantDepartment), 1, this.internalApplicantBranch, this.internalApplicantCostCenterNo, this.internalApplicantCostCenterOwner, null, this.CurrentUser.appUserId, null, Number(this.selectedZone)).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 
@@ -292,7 +344,7 @@ export class NewProfileComponent implements OnInit {
 
     else {
 
-      this.userPofileService.addUpdateUserProfiles(0, this.CurrentUser.appUserId, this.extApplicantName + " " + this.extApplicantSurname, this.CurrentUser.email, this.extApplicantTellNo, this.showInternal, this.extApplicantBpNoApplicant, this.extApplicantCompanyName, this.extApplicantCompanyRegNo, this.extApplicantPhyscialAddress, null, null, null, null, null, null, this.extApplicantIDUpload, this.CurrentUser.appUserId, this.extApplicantIDNumber).subscribe((data: any) => {
+      this.userPofileService.addUpdateUserProfiles(0, this.CurrentUser.appUserId, this.extApplicantName + " " + this.extApplicantSurname, this.CurrentUser.email, this.extApplicantTellNo, this.showInternal, this.extApplicantBpNoApplicant, this.extApplicantCompanyName, this.extApplicantCompanyRegNo, this.extApplicantPhyscialAddress, null, null, null, null, null, null, this.extApplicantIDUpload, this.CurrentUser.appUserId, this.extApplicantIDNumber, Number(this.selectedZone)).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 
@@ -493,7 +545,7 @@ export class NewProfileComponent implements OnInit {
 
   onCreateNotification() {
 
-    this.notiName = "A user has requested to join your department";
+/*    this.notiName = "A user has requested to join your department";
     this.notiDescription = this.applicationID + " was created ";
     debugger;
     this.notificationsService.addUpdateNotification(0, this.notiName, this.notiDescription, false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserId, null).subscribe((data: any) => {
@@ -509,9 +561,157 @@ export class NewProfileComponent implements OnInit {
       console.log("response", data);
     }, error => {
       console.log("Error", error);
-    })
+    })*/
 
 
+  }
+
+  onSelectToPopulateZoneDropDownView(event: any, viewlinkedZones: any) {
+    this.ZoneDropdown.splice(0, this.ZoneDropdown.length);
+    if (event.target.value > 0) {
+
+
+      this.zoneService.getZonesBySubDepartmentsID(event.target.value).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempZoneList = {} as ZoneDropdown;
+            const current = data.dateSet[i];
+            tempZoneList.zoneID = current.zoneID;
+            tempZoneList.zoneName = current.zoneName;
+
+            this.ZoneDropdown.push(tempZoneList);
+
+          }
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+    else {
+  
+      alert("Please Select a sub department");
+
+
+    }
+
+  }
+
+  onSelectToPopulateZone(event: any) {
+
+
+    if (event.target.value > 0) {
+
+      this.ZoneDropdown.splice(0, this.ZoneDropdown.length);
+      this.zoneService.getZonesBySubDepartmentsID(event.target.value).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempZoneList = {} as ZoneDropdown;
+            const current = data.dateSet[i];
+            tempZoneList.zoneID = current.zoneID;
+            tempZoneList.zoneName = current.zoneName;
+
+            this.ZoneDropdown.push(tempZoneList);
+
+          }
+
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+    }
+
+    else {
+
+
+    }
+
+  }
+
+  onZoneUserLink() {
+    ;
+    let selectedDep = Number(this.internalApplicantDepartment);
+    let selectedZone = Number(this.selectedZone);
+
+    console.log("this.selection.selectedthis.selection.selectedthis.selection.selectedthis.selection.selectedthis.selection.selectedthis.selection.selectedthis.selection.selected", this.selection.selected);
+
+
+    for (let i = 0; i < this.selection.selected.length; i++) {
+      const current = this.selection.selected[i];
+
+      this.zoneLinkService.getAllRecordsByUserIdIfDeleted(current.id).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          if (data.dateSet.length > 0) {
+            this.zoneLinkService.addUpdateZoneLink(data.dateSet[0].zoneLinkID, selectedDep, selectedZone, this.subDepartmentID, current.id, null, this.CurrentUser.appUserId,).subscribe((data: any) => {
+              ;
+              if (data.responseCode == 1) {
+                alert(data.responseMessage);
+
+
+              }
+              else {
+                alert(data.responseMessage);
+              }
+              console.log("reponse", data);
+
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+          }
+          else {
+            this.zoneLinkService.addUpdateZoneLink(0, selectedDep, selectedZone, this.subDepartmentID, current.id, null, this.CurrentUser.appUserId,).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+                alert(data.responseMessage);
+
+
+              }
+              else {
+                alert(data.responseMessage);
+              }
+              console.log("reponse", data);
+
+
+            }, error => {
+              alert(data.responseMessage);
+              console.log("Error: ", error);
+            })
+          }
+
+
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+
+      }, error => {
+        alert("Error");
+        console.log("Error: ", error);
+      })
+    }
   }
 
 

@@ -17,7 +17,7 @@ namespace WayleaveManagementSystem.IServices
         Task<List<SubDepartmentForCommentDTO>> GetSubDepartmentForComment(int applicationID);
         Task<List<SubDepartmentForCommentDTO>> GetSubDepartmentForCommentBySubID(int applicationID, int? subDepartmentID);
 
-        Task<bool> UpdateCommentStatus(int? subDepartmentForCommentID, string? commentStatus);
+        Task<bool> UpdateCommentStatus(int? subDepartmentForCommentID, string? commentStatus,bool? isAwaitingClarity, bool? isRefered);
 
         Task<bool> ReferToComment(int? subDepartmentForCommentID, string? commentStatus, bool? isRefered, string? referedToUserID);
 

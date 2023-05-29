@@ -55,5 +55,11 @@ export class ZonesService {
 
   }
 
+  public getZoneByZoneID(zoneID: any) {
+
+    return this.httpClient.post(this.baseURL + "GetZoneByZoneID", zoneID);
+
+  }
+
 
 }

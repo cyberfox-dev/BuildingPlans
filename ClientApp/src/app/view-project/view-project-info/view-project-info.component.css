@@ -20,6 +20,8 @@ h1 {
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
+  align-items: baseline;
+  padding-left: 95px;
 }
 .cont {
   display: flex;
@@ -66,6 +68,21 @@ h1 {
   height: 59px;
   font-size: 19px;
 }
+
+.mat-action {
+  /* margin-bottom: 10px; */
+  background-color: #ffffff00;
+  color: #282828;
+  /* margin-bottom: 32px; */
+  /* width: 226px; */
+  height: 59px;
+  font-size: 19px;
+}
+
+
+
+
+
 
 h2 {
   font-family: 'Nunito', sans-serif;
@@ -190,7 +207,7 @@ a {
 }
 
 .menu-item, .menu-open-button {
-  background: #1fa2ff;
+/*  background: #1fa2ff;
   border-radius: 100%;
   width: 60px;
   height: 60px;
@@ -201,7 +218,7 @@ a {
   text-align: center;
   line-height: 60px;
   transform: translate3d(0, 0, 0);
-  transition: transform ease-out 200ms;
+  transition: transform ease-out 200ms;*/
 }
 
 .menu-open {
@@ -246,7 +263,7 @@ a {
 }
 
 .menu {
-  position: absolute;
+/*  position: absolute;
   right: -534px;
   margin-left: -80px;
   padding-top: 20px;
@@ -255,7 +272,7 @@ a {
   height: 150px;
   box-sizing: border-box;
   font-size: 20px;
-  text-align: left;
+  text-align: left;*/
 }
 
 .menu-item:hover {
@@ -325,7 +342,7 @@ a {
 }
 
 button {
-  margin: 10px;
+/*  margin: 10px;*/
 }
 
 .mat-column-name {

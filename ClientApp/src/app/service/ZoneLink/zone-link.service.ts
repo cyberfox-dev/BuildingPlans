@@ -28,7 +28,7 @@ export class ZoneLinkService {
       ZoneID: zoneID,
       CreatedById:createdById
     }
-    return this.httpClient.post(this.baseURL + + "AddUpdateZoneLink", body);
+    return this.httpClient.post(this.baseURL + "AddUpdateZoneLink", body);
 
   }
 
