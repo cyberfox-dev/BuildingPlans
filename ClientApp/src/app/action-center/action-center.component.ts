@@ -173,6 +173,7 @@ export class ActionCenterComponent implements OnInit {
     subDepartmentID: any;
     userID: any;
     canComment: boolean;
+    CanAssignDepartment: boolean;
   constructor(
     private offcanvasService: NgbOffcanvas,
     private modalService: NgbModal,
@@ -305,19 +306,28 @@ export class ActionCenterComponent implements OnInit {
 
 
       }
-      else if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.loggedInUsersIsZoneAdmin == true){
+      else if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.loggedInUsersIsZoneAdmin == true) {
         this.AssignUserForComment = true;
+      }
+      else if (this.loggedInUsersSubDepartmentID == 1025) {
+        this.CanAssignDepartment = true;
+      }
+      else {
+        this.CanAssignDepartment = false;
       }
     }
   }
 
   CanComment() {
+    debugger;
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         for (var i = 0; i < data.dateSet.length; i++) {
           let current = data.dateSet[i];
+          debugger;
           if (current.userAssaignedToComment == this.CurrentUser.appUserId) {
+            this.canComment = true;
             //console.log("vvvvvvvcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent",current);
             return;
           }
@@ -325,7 +335,7 @@ export class ActionCenterComponent implements OnInit {
             this.canComment = false;
           } 
         }
-        alert(data.responseMessage);
+       
 
       
 
@@ -781,13 +791,13 @@ export class ActionCenterComponent implements OnInit {
 
         }
         else {
-          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved",null).subscribe((data: any) => {
+          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved",null,null,this.userID).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
 
               alert(data.responseMessage);
               //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.userID, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
 

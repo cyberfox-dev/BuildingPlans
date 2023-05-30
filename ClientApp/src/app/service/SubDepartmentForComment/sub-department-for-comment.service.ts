@@ -77,7 +77,7 @@ export class SubDepartmentForCommentService {
   }
 
 
-  public updateCommentStatus(subDepartmentForCommentID: number | null, commentStatus: string | null, isAwaitingClarity: boolean | null, isRefered?: boolean | null) {
+  public updateCommentStatus(subDepartmentForCommentID: number | null, commentStatus: string | null, isAwaitingClarity: boolean | null, isRefered?: boolean | null, userAssaignedToComment?: string | null) {
 
     const body = {
 
@@ -85,6 +85,7 @@ export class SubDepartmentForCommentService {
       isAwaitingClarity: isAwaitingClarity,
       SubDepartmentForCommentID: subDepartmentForCommentID,
       CommentStatus: commentStatus,
+      UserAssaignedToComment: userAssaignedToComment
     }
     return this.httpClient.post(this.baseURL + "UpdateCommentStatus", body);
 
@@ -97,6 +98,7 @@ export class SubDepartmentForCommentService {
       SubDepartmentForCommentID: subDepartmentForCommentID,
       CommentStatus: commentStatus,
       isAwaitingClarity: isAwaitingClarity,
+
     }
     return this.httpClient.post(this.baseURL + "UpdateCommentStatusToAwaitingClarity", body);
 
