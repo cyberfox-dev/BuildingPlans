@@ -29,7 +29,8 @@ export interface ApplicationsList {
   TestApplicationAge: number,
   TestApplicationStageAge: number,
   CurrentStage: string,
-  ApplicationStatus: string
+  ApplicationStatus: string,
+  ProjectNumber: string;
 }
 
 
@@ -283,6 +284,7 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationList.ApplicationStatus = current.applicationStatus;
 
             tempApplicationList.DateCreated = current.dateCreated;
+            tempApplicationList.ProjectNumber = current.projectNumber;
           
             tempApplicationList.TestApplicationAge = Math.floor(Math.random() * 30) + 1;
             do {
@@ -317,7 +319,7 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationListShared.NextStageNumber = current.nextStageNumber;
             tempApplicationListShared.PreviousStageName = current.previousStageName;
             tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
-
+            tempApplicationListShared.ProjectNumber = current.projectNumber;
 
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -360,6 +362,7 @@ export class HomeComponent implements OnInit,OnDestroy {
 
             tempApplicationList.DateCreated = current.dateCreated;
 
+
             tempApplicationList.TestApplicationAge = Math.floor(Math.random() * 30) + 1;
             do {
               tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
@@ -393,6 +396,7 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationListShared.NextStageNumber = current.nextStageNumber;
             tempApplicationListShared.PreviousStageName = current.previousStageName;
             tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+
 
 
             this.applicationDataForView.push(tempApplicationListShared);
@@ -469,7 +473,8 @@ export class HomeComponent implements OnInit,OnDestroy {
  
     console.log("FIND",this.applicationDataForView[index]);
 
-    this.applicationDataForViewToShared.push(this.applicationDataForView[index])  ;
+    this.applicationDataForViewToShared.push(this.applicationDataForView[index])
+    console.log("this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]",this.applicationDataForView[index]);
     this.sharedService.setViewApplicationIndex(this.applicationDataForViewToShared);
 /*    this.CheckIfCanReapply();*/
     this.viewContainerRef.clear();

@@ -246,7 +246,7 @@ export class ActionCenterComponent implements OnInit {
       this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
     this.getLinkedZones();
     this.CanComment();
-    this.CanCommentSR();
+  //  this.CanCommentSR();
     
 
    
@@ -375,7 +375,7 @@ export class ActionCenterComponent implements OnInit {
   
 
   CanComment() {
-    this.getDepartmentManagerUserID("Senior Reviewer");
+   // this.getDepartmentManagerUserID("Senior Reviewer");
     debugger;
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
 
@@ -383,7 +383,7 @@ export class ActionCenterComponent implements OnInit {
         for (var i = 0; i < data.dateSet.length; i++) {
           let current = data.dateSet[i];
           debugger;
-          if (current.userAssaignedToComment == this.CurrentUser.appUserId && current.userAssaignedToComment != this.userID) {
+          if (current.userAssaignedToComment == this.CurrentUser.appUserId) { /*&& current.userAssaignedToComment != this.userID*/
             this.canComment = true;
             //console.log("vvvvvvvcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent",current);
             return;
@@ -446,7 +446,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   updateApplicationStatus() {
-    debugger;
+    
     //this.getAllSubDepartments();
     let x = 0;
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
@@ -561,7 +561,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   getDepartmentManagerUserID(roleName?: string |null) {
-    debugger;
+    
     //const currentRole = this.sharedService.getCurrentUserRoles();
     //for (var i = 0; i < currentRole.length; i++) {
     //  if (currentRole[i].RoleName ==) {
@@ -613,7 +613,7 @@ export class ActionCenterComponent implements OnInit {
   }
 
   onHopperClick() {
-    debugger;
+    
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {

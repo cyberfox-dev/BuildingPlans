@@ -29,7 +29,7 @@ export class CyberfoxConfigComponent implements OnInit {
   onEscalateDateSubmit() {
     let escalteDuration = this.addEscalateDate.controls["escalateDate"].value;
     let escalteDescription = "This is the number of days set until the applicant can escalte the application";
-    debugger;
+    
     this.configService.addUpdateConfig(0, escalteDuration.toString(), escalteDescription, this.CurrentUser.appUserId).subscribe((data: any) => {
       
       if (data.responseCode == 1) {
