@@ -965,7 +965,7 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.text("CITY OF CAPE TOWN, Future Planning and Resilience Directorate", 10, 220, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
 
 
-    var mammoth = require("mammoth");
+/*    var mammoth = require("mammoth");
     mammoth.extractRawText({ path: "C:\Users\Cyberfox\Downloads\Standard_Wayleave_Conditions_draft5_YD.docx" })
       .then(function (result) {
         var text = result.value; // The raw text
@@ -974,7 +974,7 @@ export class ViewProjectInfoComponent implements OnInit {
       })
       .catch(function (error) {
         console.error(error);
-      });
+      });*/
 
    
 
