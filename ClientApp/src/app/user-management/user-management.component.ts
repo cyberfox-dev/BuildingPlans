@@ -240,7 +240,7 @@ export class UserManagementComponent implements OnInit {
     //This is for the the zone linking
 
     this.zoneService.getZoneByZoneID(this.selectedUserZoneID).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
        
 

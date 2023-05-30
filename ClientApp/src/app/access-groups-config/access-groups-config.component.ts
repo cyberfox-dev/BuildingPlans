@@ -244,7 +244,7 @@ export class AccessGroupsConfigComponent implements OnInit {
   async getAllUsersForLink(index: any, addUserToAccessGroup:any) {
    
     this.InternalUserProfileList.splice(0, this.InternalUserProfileList.length);
-    debugger;
+    
     this.currentAGID = this.AccessGroupList[index].AccessGroupID;
     await this.accessGroupsService.getAllNotLinkedUsers(this.AccessGroupList[index].AccessGroupID).subscribe((data: any) => {
 
@@ -286,7 +286,7 @@ export class AccessGroupsConfigComponent implements OnInit {
 
   // Get all linked users 
   async getAllUsersLinkedUsers() {
-    debugger;
+    
      this.LinkedUsersList.splice(0, this.LinkedUsersList.length);
 
      await this.accessGroupsService.getAllLinkedUsers(this.currentAGID).subscribe((data: any) => {
@@ -352,7 +352,7 @@ export class AccessGroupsConfigComponent implements OnInit {
   
 
   async getAllUsersNotLinkedRoles(index: any, addRolesToAccessGroup: any) {
-    debugger;
+    
     this.RolesNotLinkedList.splice(0, this.RolesNotLinkedList.length);
     this.currentAGID = this.AccessGroupList[index].AccessGroupID;
     await this.accessGroupsService.getAllNotLinkedRoles(this.currentAGID).subscribe((data: any) => {
@@ -386,7 +386,7 @@ export class AccessGroupsConfigComponent implements OnInit {
   }
   // Get all linked Roles
   async getAllUsersLinkedRoles() {
-    debugger;
+    
     //this.RolesList.splice(0, this.RolesList.length);
    
     await this.accessGroupsService.getAllLinkedRoles(this.currentAGID).subscribe((data: any) => {
