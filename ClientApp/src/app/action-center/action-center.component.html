@@ -19,7 +19,7 @@
     <br>
     <mat-divider></mat-divider>
     <br>
-    <mat-form-field class="example-full-width" *ngIf="canComment == true">
+    <mat-form-field class="example-full-width" *ngIf="canComment == true || canCommentSR == true">
       <mat-label>Type new comment</mat-label>
       <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good"></textarea>
 
@@ -36,11 +36,10 @@
       <button mat-raised-button color="clarifyBTN" (click)="onComment('Clarify');sendOption()"><i class="fa fa-commenting-o orangeSpeech" aria-hidden="true"></i>  Clarify</button>
       <button mat-raised-button color="referBTN" (click)="onComment('Refer')"><i class="fa fa-retweet blueRefer" aria-hidden="true"></i>  Refer</button>
     </div>
-    <div class="cont2">
-<!--      <button mat-raised-button color="approveBTN" (click)="FakeFinal('Approve')"><i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true"></i> Final Approvel</button>
-      <button mat-raised-button color="rejectBTN" (click)="FakeFinal('Reject')"><i class="fa fa-thumbs-down redThumbsDown" aria-hidden="true"></i> Final Reject</button>-->
-      <!--<button mat-raised-button color="clarifyBTN" (click)="onComment('Clarify');sendOption()"><i class="fa fa-commenting-o orangeSpeech" aria-hidden="true"></i>  Clarify</button>
-      <button mat-raised-button color="referBTN" (click)="onComment('Refer')"><i class="fa fa-retweet blueRefer" aria-hidden="true"></i>  Refer</button>-->
+    <div class="cont2" *ngIf="canCommentSR == true">
+      <button mat-raised-button color="approveBTN" (click)="FinalApprove('Approve')"><i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true"></i> Final Approvel</button>
+      <button mat-raised-button color="rejectBTN" (click)="FinalApprove('Reject')"><i class="fa fa-thumbs-down redThumbsDown" aria-hidden="true"></i> Final Reject</button>
+     
     </div>
     <div class="cont3">
       <!--this is for the wbs number -->
