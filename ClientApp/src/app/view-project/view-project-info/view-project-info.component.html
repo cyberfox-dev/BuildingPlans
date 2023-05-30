@@ -49,45 +49,19 @@
 
 <h1>Application Information</h1>
 <h2>Project number LS/BP 321</h2>
-<div class="cont1" *ngIf="isInternalUser">
-  <button type="button" mat-raised-button color="green" (click)="ChangeApplicationStatusToPaid()"><i class="fa fa-hand-peace-o" aria-hidden="true"></i>   move to paid</button>
-  <button type="button" mat-raised-button color="green" (click)="MoveToNextStage()"><i class="fa fa-hand-peace-o" aria-hidden="true"></i>   Next Stage</button>
-</div>
-<app-action-center [ApplicationID]="ApplicationID" [CurrentApplicant]="CurrentApplicant" *ngIf="isInternalUser"></app-action-center>
-<div class="cont1" *ngIf="!isInternalUser">
-  <button mat-raised-button color="warn">
-    <i class="fa fa-ban" aria-hidden="true"></i>
-    Cancel Application
-  </button>
-</div>
-<div class="cont1" *ngIf="canReapply">
-  <button mat-raised-button color="warn" (click)="goToNewWayleave(true)" style="z-index:9999">
-    <i class="fa fa-repeat" aria-hidden="true"></i>
-    Re-apply
-  </button>
+
+<div class="cont1">
+
   <app-action-center [ApplicationID]="ApplicationID" *ngIf="isInternalUser" (optionEvent)="reciveOption($event)"></app-action-center>
   <button mat-button color="action" [matMenuTriggerFor]="actions"> <mat-icon>more_vert</mat-icon></button>
   <mat-menu #actions="matMenu">
-    <button mat-menu-item (click)="ChangeApplicationStatusToPaid()"> move to paid</button>
-    <button mat-menu-item (click)="MoveToNextStage()">Move to Next stage</button>
+    <button mat-menu-item (click)="ChangeApplicationStatusToPaid()" *ngIf="isInternalUser"> move to paid</button>
+    <button mat-menu-item (click)="MoveToNextStage()" *ngIf="isInternalUser">Move to Next stage</button>
     <button mat-menu-item (click)="MoveToNextStage()"> <i class="fa fa-ban" aria-hidden="true"></i> Cancel Application</button>
     <button mat-menu-item (click)="goToNewWayleave(true)" *ngIf="canReapply"><i class="fa fa-repeat" aria-hidden="true"></i> Re-apply</button>
   </mat-menu>
-  <!--  <button type="button" mat-raised-button color="green" (click)="ChangeApplicationStatusToPaid()"><i class="fa fa-hand-peace-o" aria-hidden="true"></i>   move to paid</button>
-    <button type="button" mat-raised-button color="green" (click)="MoveToNextStage()"><i class="fa fa-hand-peace-o" aria-hidden="true"></i>   Next Stage</button>
 
-    <button mat-raised-button color="warn">
-      <i class="fa fa-ban" aria-hidden="true"></i>
-      Cancel Application
-    </button>
-    <div *ngIf="canReapply">
-      <button mat-raised-button color="warn" (click)="goToNewWayleave(true)" style="z-index:9999">
-        <i class="fa fa-repeat" aria-hidden="true"></i>
-        Re-apply
-      </button>
-    </div>-->
 </div>
-
 
 <div class="container-fluid cont6">
 
@@ -189,7 +163,7 @@
           <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
             <!--- Note that these columns can be defined in any order.
-            The actual rendered columns are set as a property on the row definition" -->
+      The actual rendered columns are set as a property on the row definition" -->
             <!-- Position Column -->
             <ng-container matColumnDef="position">
               <th mat-header-cell *matHeaderCellDef> No. </th>
@@ -230,11 +204,17 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
         </div>
+        <div class="form-floating mb-3 mt-3" *ngIf="wbsRequired">
+          <input type="text" class="form-control" id="wbsNumberRequested" placeholder="WBS Number" [(ngModel)]="wbsNumberRequested" readonly>
+          <label for="wbsNumberRequested">WBS Number</label>
+        </div>
         <div class="cont" *ngIf="isInternalUser">
-          <button mat-raised-button (click)="enterWBSNumberModal(wbsNumberModal)" *ngIf="wbsButton" color="orange">WBS</button>
+          <button mat-raised-button (click)="enterWBSNumberModal(wbsNumberModal)"  color="orange">WBS</button>
           <button mat-raised-button color="orange" (click)="generateConsolidatedDepositInvoice()">Consolidate Deposits</button>
           <button mat-raised-button color="orange">Deposit Refund</button>
         </div>
+
+
       </div>
 
     </mat-tab>
@@ -521,7 +501,7 @@
 
 <ng-template #wbsNumberModal let-modal>
   <div class="modal-header">
-    <h1 class="modal-title">WBS Number</h1>
+    <h4 class="modal-title">WBS Number</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">

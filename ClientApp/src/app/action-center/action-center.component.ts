@@ -212,7 +212,7 @@ export class ActionCenterComponent implements OnInit {
    // setTimeout(() => {
    //this.getDepartmentManagerUserID();
     //Get Current Application Infomation 
-    debugger;
+ 
 
 
       this.getAllSubDepartments();
@@ -674,8 +674,8 @@ export class ActionCenterComponent implements OnInit {
     let quantity = this.depositRequired.controls["quantity"].value;
     //let total = this.depositRequired.controls["total"].value;
 
-    debugger;
-    this.depositRequiredService.addUpdateDepositRequired(0, this.forManuallyAssignSubForCommentID, Number(rate), this.ApplicationID, description, this.loggedInUsersSubDepartmentID, Number(quantity), this.CurrentUser.appUserId, SubDepartmentName, serviceItemCode).subscribe((data: any) => {
+
+    this.depositRequiredService.addUpdateDepositRequired(0 , this.forManuallyAssignSubForCommentID, Number(rate), this.ApplicationID, description, this.loggedInUsersSubDepartmentID, Number(quantity), this.CurrentUser.appUserId, SubDepartmentName, serviceItemCode).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
@@ -733,8 +733,6 @@ export class ActionCenterComponent implements OnInit {
                 console.log("Error: ", error);
               })
 
-              //this is to send through that the wbs was requested
-             
 
             }
             else {
@@ -746,6 +744,40 @@ export class ActionCenterComponent implements OnInit {
           }, error => {
             console.log("Error: ", error);
           })
+
+
+          //this is for the wbs number to be sent to the table
+
+          let SubDepartmentName = "";
+          for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
+            if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
+              SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
+            }
+          }
+          let serviceItemCode = this.depositRequired.controls["selectServiceItemCode"].value;
+          let rate = this.depositRequired.controls["rate"].value;
+          let description = this.depositRequired.controls["description"].value;
+          let quantity = this.depositRequired.controls["quantity"].value;
+          //let total = this.depositRequired.controls["total"].value;
+
+
+          this.depositRequiredService.addUpdateDepositRequired(0, this.forManuallyAssignSubForCommentID, Number(rate), this.ApplicationID, description, this.loggedInUsersSubDepartmentID, Number(quantity), this.CurrentUser.appUserId, SubDepartmentName, serviceItemCode,"True").subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+
+              alert(data.responseMessage);
+              this.hopperButton = false;
+            }
+            else {
+              alert(data.responseMessage);
+
+            }
+            console.log("reponse", data);
+
+          }, error => {
+            console.log("Error: ", error);
+          })
+
 
         }
         else {

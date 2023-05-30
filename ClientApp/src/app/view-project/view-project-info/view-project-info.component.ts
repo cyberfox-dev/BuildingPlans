@@ -10,7 +10,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { DatePipe } from '@angular/common';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
-import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component';
+import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component'
 import { ConfigService } from 'src/app/service/Config/config.service';
 import { FormBuilder, Validators } from '@angular/forms';
 
@@ -23,6 +23,7 @@ export interface ARCGISAPIData {
 
 export interface PeriodicElement {
   name: string;
+
 }
 
 export interface StagesList {
@@ -48,6 +49,7 @@ export interface CommentsList {
   CommentStatus: string;
   SubDepartmentForCommentID: number;
   SubDepartmentName?: string;
+
 }
 
 export interface ApplicationList {
@@ -102,7 +104,7 @@ export interface DepositRequired {
   Quantity: number;
   ServiceItemCodeserviceItemCode?: string | null;
   SubDepartmentName?: string | null;
-
+  WBS?: string;
 }
 
 const Document_DATA: Documents[] = [
@@ -164,6 +166,8 @@ export class ViewProjectInfoComponent implements OnInit {
   internalApplicantCostCenterOwner = '';
 
 
+  wbsNumberRequested = '';
+
   applicationDataForView: ApplicationList[] = [];
   StagesList: StagesList[] = [];
   CommentsList: CommentsList[] = [];
@@ -189,6 +193,7 @@ export class ViewProjectInfoComponent implements OnInit {
     WBS: string;
     wbsButton: boolean;
     CurrentApplicant: number;
+    wbsRequired: boolean;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -240,7 +245,8 @@ export class ViewProjectInfoComponent implements OnInit {
 
   ngOnInit(): void {
 
-
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
 
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
@@ -1151,11 +1157,35 @@ export class ViewProjectInfoComponent implements OnInit {
       if (data.responseCode == 1) {
 
         alert(data.responseMessage);
+        this.wbsRequired = true;
 
+        this.depositRequiredService.getDepositRequiredByApplicationID(this.ApplicationID).subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+            const tempDepositReq = {} as DepositRequired;
+            const current = data.dateSet[0];
+            tempDepositReq.WBS = current.wbs;
+            this.wbsNumberRequested=current.wbs;
+
+            this.DepositRequired.push(tempDepositReq);
+
+            alert(data.responseMessage);
+
+
+          }
+          else {
+            alert(data.responseMessage);
+        
+          }
+          console.log("reponse", data);
+
+        }, error => {
+          console.log("Error: ", error);
+        })
       }
       else {
         alert(data.responseMessage);
-
+        this.wbsRequired = false;
       }
       console.log("reponse", data);
 
