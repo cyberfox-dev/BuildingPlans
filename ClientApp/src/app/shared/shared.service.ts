@@ -211,7 +211,8 @@ export class SharedService {
   }
 
   //Using NotificationNumber for now, until the ApplicationID is created
-setApplicationID(data: any) {
+  setApplicationID(data: any) {
+ 
     this.applicationID = data;
     console.log("setting ..." + this.applicationID);
   }

@@ -81,7 +81,7 @@ namespace WayleaveManagementSystem.Controllers
                         result = tempDepositRequired;
                     }
 
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.DepositRequiredID > 0 ? "Zone Link Updated Successfully" : "Service Item Created Successfully"), result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.DepositRequiredID > 0 ? "WBS Updated Successfully" : "Service Item Created Successfully"), result));
                 }
             }
             catch (Exception ex)

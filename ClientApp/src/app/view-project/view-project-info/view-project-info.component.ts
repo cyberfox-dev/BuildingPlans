@@ -137,7 +137,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   public isInternalUser: boolean = false;
   canReapply = false;
-
+  public projectNo = "";
   createdByID: any | undefined; 
 
   /*type of applicant*/
@@ -275,9 +275,13 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getAllSubDepFroConditionalApprove();
     this.canReapply = this.sharedService.getCanReapply();
     console.log("canReapplyVen: ", this.canReapply);
+    this.setProjectNumber();
   }
 
-
+  setProjectNumber() {
+    this.projectNo = this.CurrentApplicationBeingViewed[0].ProjectNumber;
+    debugger;
+  }
 
   getAllComments() {
 
@@ -310,6 +314,8 @@ export class ViewProjectInfoComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
+
+
 
   getAllStages() {
 
