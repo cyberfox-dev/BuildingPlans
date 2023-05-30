@@ -20,6 +20,8 @@
 
         public string? ReferedToUserID { get; set; }
         public string? CreatedById { get; set; }
+        //Is Set for final Approval
+        public bool? FinalApproval { get; set; }
 
 
     }

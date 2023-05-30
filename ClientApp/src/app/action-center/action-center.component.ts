@@ -174,6 +174,7 @@ export class ActionCenterComponent implements OnInit {
     userID: any;
     canComment: boolean;
     CanAssignDepartment: boolean;
+    canCommentSR: boolean;
   constructor(
     private offcanvasService: NgbOffcanvas,
     private modalService: NgbModal,
@@ -245,6 +246,7 @@ export class ActionCenterComponent implements OnInit {
       this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
     this.getLinkedZones();
     this.CanComment();
+    this.CanCommentSR();
     
 
    
@@ -253,12 +255,50 @@ export class ActionCenterComponent implements OnInit {
   }
 
 
-  FakeFinal(interact:string) {
+  FinalApprove(interact: string) {
+
+    let SubDepartmentName = "";
+    for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
+      if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
+        SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
+      }
+    }
     switch (interact) {
 
       case "Approve": {
         if (confirm("Are you sure you want to final approve this application?") ){
+          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "FinalApproved", null, null, "EndOfCommentProcess", true).subscribe((data: any) => {
 
+            if (data.responseCode == 1) {
+
+              alert(data.responseMessage);
+              //commentsService
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "FinalApproved", this.CurrentUser.appUserId).subscribe((data: any) => {
+
+                if (data.responseCode == 1) {
+
+                  alert(data.responseMessage);
+
+                }
+                else {
+                  alert(data.responseMessage);
+
+                }
+                console.log("reponse", data);
+
+              }, error => {
+                console.log("Error: ", error);
+              })
+            }
+            else {
+              alert(data.responseMessage);
+
+            }
+            console.log("reponse", data);
+
+          }, error => {
+            console.log("Error: ", error);
+          })
 
         }
         break;
@@ -266,29 +306,43 @@ export class ActionCenterComponent implements OnInit {
 
       case "Reject": {
         if (confirm("Are you sure you want to final reject this application?")) {
+          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "FinalReject", null, null, "EndOfCommentProcess").subscribe((data: any) => {
 
+            if (data.responseCode == 1) {
+
+              alert(data.responseMessage);
+              //commentsService
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "FinalReject", this.CurrentUser.appUserId).subscribe((data: any) => {
+
+                if (data.responseCode == 1) {
+
+                  alert(data.responseMessage);
+
+                }
+                else {
+                  alert(data.responseMessage);
+
+                }
+                console.log("reponse", data);
+
+              }, error => {
+                console.log("Error: ", error);
+              })
+            }
+            else {
+              alert(data.responseMessage);
+
+            }
+            console.log("reponse", data);
+
+          }, error => {
+            console.log("Error: ", error);
+          })
 
         }
         
         break;
       }
-
-      case "Clarify": {
-        alert("In progress");
-
-
-
-
-        break;
-      }
-      case "Refer": {
-        alert("In progress");
-
-        break;
-      }
-
-
-
 
       default: {
 
@@ -318,7 +372,10 @@ export class ActionCenterComponent implements OnInit {
     }
   }
 
+  
+
   CanComment() {
+    this.getDepartmentManagerUserID("Senior Reviewer");
     debugger;
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
 
@@ -326,13 +383,47 @@ export class ActionCenterComponent implements OnInit {
         for (var i = 0; i < data.dateSet.length; i++) {
           let current = data.dateSet[i];
           debugger;
-          if (current.userAssaignedToComment == this.CurrentUser.appUserId) {
+          if (current.userAssaignedToComment == this.CurrentUser.appUserId && current.userAssaignedToComment != this.userID) {
             this.canComment = true;
             //console.log("vvvvvvvcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent",current);
             return;
           }
           else {
             this.canComment = false;
+          } 
+        }
+       
+
+      
+
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  CanCommentSR() {
+    this.getDepartmentManagerUserID("Senior Reviewer");
+    debugger;
+    this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        for (var i = 0; i < data.dateSet.length; i++) {
+          let current = data.dateSet[i];
+          debugger;
+          if (current.userAssaignedToComment == this.CurrentUser.appUserId && current.userAssaignedToComment == this.userID) {
+            this.canCommentSR = true;
+            //console.log("vvvvvvvcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent",current);
+            return;
+          }
+          else {
+            this.canCommentSR = false;
           } 
         }
        
@@ -719,7 +810,7 @@ export class ActionCenterComponent implements OnInit {
         if (this.checked == true) {
           //SubDepartmentForCommentService
           this.onDepositRequiredClick(); 
-          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved(Conditional)",null).subscribe((data: any) => {
+          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved(Conditional)",null,null,this.userID,true).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
 
@@ -769,7 +860,7 @@ export class ActionCenterComponent implements OnInit {
           let description = this.depositRequired.controls["description"].value;
           let quantity = this.depositRequired.controls["quantity"].value;
           //let total = this.depositRequired.controls["total"].value;
-
+            
 
           this.depositRequiredService.addUpdateDepositRequired(0, this.forManuallyAssignSubForCommentID, Number(rate), this.ApplicationID, description, this.loggedInUsersSubDepartmentID, Number(quantity), this.CurrentUser.appUserId, SubDepartmentName, serviceItemCode,"True").subscribe((data: any) => {
 
@@ -791,7 +882,7 @@ export class ActionCenterComponent implements OnInit {
 
         }
         else {
-          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved",null,null,this.userID).subscribe((data: any) => {
+          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved",null,null,this.userID,true).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
 
@@ -867,13 +958,13 @@ export class ActionCenterComponent implements OnInit {
 
       case "Clarify": {
        // this.getDepartmentManagerUserID("Senior Reviewer");
-        this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify",true).subscribe((data: any) => {
+        this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant,null).subscribe((data: any) => {
 
           if (data.responseCode == 1) {
 
             alert(data.responseMessage);
             //commentsService
-            this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.CurrentApplicant, "Clarify", this.CurrentUser.appUserId).subscribe((data: any) => {
+            this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
 
@@ -905,13 +996,13 @@ export class ActionCenterComponent implements OnInit {
       case "Refer": {
 
         this.getDepartmentManagerUserID("Senior Reviewer");
-        this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Referred", false,true).subscribe((data: any) => {
+        this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Referred", false, true, this.userID).subscribe((data: any) => {
 
           if (data.responseCode == 1) {
 
             alert(data.responseMessage);
             //commentsService
-            this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.userID, "Referred", this.CurrentUser.appUserId).subscribe((data: any) => {
+            this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Referred", this.CurrentUser.appUserId).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
 
