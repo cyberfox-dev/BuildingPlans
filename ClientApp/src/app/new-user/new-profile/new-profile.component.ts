@@ -547,7 +547,7 @@ export class NewProfileComponent implements OnInit {
 
 /*    this.notiName = "A user has requested to join your department";
     this.notiDescription = this.applicationID + " was created ";
-    debugger;
+    
     this.notificationsService.addUpdateNotification(0, this.notiName, this.notiDescription, false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserId, null).subscribe((data: any) => {
 
       if (data.responseCode == 1) {

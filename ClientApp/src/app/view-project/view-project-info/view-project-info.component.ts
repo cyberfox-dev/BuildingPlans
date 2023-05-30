@@ -202,6 +202,7 @@ export class ViewProjectInfoComponent implements OnInit {
     NatureOfWork: string;
     ExcavationType: string;
     ProjectNum: string;
+    clientName: string;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -290,7 +291,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   setProjectNumber() {
     this.projectNo = this.CurrentApplicationBeingViewed[0].ProjectNumber;
-    debugger;
+    
   }
 
   getAllComments() {
@@ -400,7 +401,7 @@ export class ViewProjectInfoComponent implements OnInit {
   generateConsolidatedDepositInvoice() {
     // Retrieve deposit information
     //await this.getAllRequiredDeposits();
-    debugger;
+    
     // Create PDF document
     const doc = new jsPDF({
       orientation: 'landscape',
@@ -882,12 +883,12 @@ export class ViewProjectInfoComponent implements OnInit {
     this.typeOfApp = (setValues.TypeOfApplication);
     this.NotificationNumber =(setValues.NotificationNumber);
     this.WBSNumber =(setValues.WBSNumber);
-    this.PhysicalAddressOfProject =(setValues.PhysicalAddressOfProject);
-    this.DescriptionOfProject =(setValues.DescriptionOfProject);
+    this.PhysicalAddressOfProject = (setValues.PhysicalAddressOfProject);
+    this.DescriptionOfProject = (setValues.NatureOfWork);
     this.NatureOfWork =(setValues.NatureOfWork);
     this.ExcavationType = (setValues.ExcavationType);
     this.ProjectNum = (setValues.ProjectNumber);
-
+    this.clientName = (setValues.clientName);
   }
 
 
@@ -915,7 +916,7 @@ export class ViewProjectInfoComponent implements OnInit {
     const headers = [
       [
         'Department',
-        'Department Comment',
+        'Comment',
         'Status'
       ]
     ];
@@ -927,38 +928,23 @@ export class ViewProjectInfoComponent implements OnInit {
     // Add logo to PDF document
 
     // Add logo to PDF document
-    doc.addImage(img, 'png', 8, 10, 50, img.height * 50 / img.width);
-
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
     //adding information underneath the logo
-    doc.setFontSize(8);
-    doc.text('BTW Reg.Nr/Vat Reg.no.4500193497', 10, 35, { align: 'left' });
-    doc.text('City of Cape Town ', 10, 40, { align: 'left' });
-    doc.text('Post Box / Posbus / iShokisi 655 ', 10, 45, { align: 'left' });
-    doc.text('CAPE TOWN ', 10, 50, { align: 'left' });
-    doc.text('8001 ', 10, 55, { align: 'left' });
-    doc.text(this.formattedDate, 10, 60, { align: 'left' });
 
-    // Add title to PDF document
-    const reject = 'Wayleave Approval Pack';
-    const upperCase = reject.toUpperCase();
-    doc.setFontSize(22);
+    doc.text('DATE : ' + this.formattedDate , 10, 45, { align: 'left' });
 
-    doc.text(upperCase, 105, 80, { align: 'center' });
-    doc.setLineHeightFactor(60);
+    doc.text('WAYLEAVE APPLICATION : ' + this.DescriptionOfProject, 10, 55, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
 
-    const projectNo = 'Project Number ' + this.ProjectNum;
-    doc.setFontSize(15);
-    doc.text(projectNo, 105, 90, { align: 'center' });
-    doc.setLineHeightFactor(60);
-
-
-
+    doc.text('Dear ' + this.clientName, 10, 70, { align: 'left' });
 
   //this is for the project details
 
     //paragraph 
     doc.setFontSize(10);
-    doc.text('Dear ' + this.CurrentUser.fullName + ' in refferance to project ' + this.DescriptionOfProject + '. , Your application has been approved by all departments. But on condition by the following departments: ', 10, 110, { maxWidth: 190, lineHeightFactor: 2, align: 'justify' });
+    doc.text('Kindly find a summary on the outcome of this wayleave application below as well as departmental specific wayleave approval or rejection letters attached. In the case of a wayleave rejection, please make contact with the relevant Line Department as soon as possible. ', 10, 80, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.text('Status Summary:', 10, 105, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
  
 
     this.SubDepConditionalApproveList.forEach((deposit) => {
@@ -972,11 +958,30 @@ export class ViewProjectInfoComponent implements OnInit {
       data.push(row);
     });
     doc.setLineHeightFactor(60);
-    doc.setFontSize(12); // add this line to set the font size
+    doc.setFontSize(10); // add this line to set the font size
+
+    doc.text("Based on the summary above, the wayleave application is approved. Kindly proceed to apply for a permit to work before commencement of any work on site.", 10, 190, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFontSize(12);
+    doc.text("CITY OF CAPE TOWN, Future Planning and Resilience Directorate", 10, 220, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+
+
+    var mammoth = require("mammoth");
+    mammoth.extractRawText({ path: "C:\Users\Cyberfox\Downloads\Standard_Wayleave_Conditions_draft5_YD.docx" })
+      .then(function (result) {
+        var text = result.value; // The raw text
+        doc.text(text, 10, 220, { maxWidth: 300, lineHeightFactor: 1.5, align: 'justify' });
+        var messages = result.messages;
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+
+   
+
     autoTable(doc, {
       head: headers,
       
-   startY: 150,
+   startY: 120,
       body: data,
       styles: {
         overflow: 'visible',
@@ -991,102 +996,15 @@ export class ViewProjectInfoComponent implements OnInit {
         1: { cellWidth: 80 },
         2: { cellWidth: 40 },
       }
+
+    
     });
+    doc.addPage();
+  
 
     // Save PDF document
     doc.save('Approval Pack:' + this.CurrentUser.userProfileID);
 
-
-
-
-/*
-   this.try = 1;
-
-    this.logoUrl = img.src;
-    const doc = new jsPDF();
-
-    autoTable(doc, {
-      body: [
-        [
-          {
-            content: this.logoUrl,
-
-            styles: {
-              halign: 'left',
-              fontSize: 20,
-              textColor: '#ffffff',
-            }
-          },
-          {
-            content: 'Wayleave Application Fee Invoice',
-            styles: {
-              halign: 'right',
-              fontSize: 15,
-              textColor: '#ffffff',
-            }
-          }
-        ],
-      ],
-
-      theme: 'plain',
-      styles: {
-        fillColor: '#3366ff',
-      }
-    });
-
-    autoTable(doc, {
-      body: [
-        [
-          {
-            content: 'Wayleave Ref No.: '
-              + '\nDate: ' + this.formattedDate
-              + '\nInvoice Number: ' + "12345678",
-
-            styles: {
-              halign: 'right',
-            }
-          }
-        ],
-      ],
-
-      theme: 'plain',
-    });
-
-    const startY = 100; // set the starting Y position for the table
-
-    autoTable(doc, {
-      head: [['Service Item Code', 'Description', 'Rate', 'Quantity', 'Amount']],
-      body: [
-        ['001', this.try, '$100.00', '2', '$200.00'],
-        ['002', 'Site Survey', '$200.00', '1', '$200.00'],
-        ['003', 'Permitting Services', '$300.00', '3', '$900.00'],
-      ],
-
-      theme: 'plain',
-      startY: startY,
-    });
-
-    autoTable(doc, {
-      body: [
-        [
-          {
-            content: 'Wayleave Ref No.: '
-              + '\nDate: ' + this.currentDate
-              + '\nInvoice Number: ' + "12345678",
-
-            styles: {
-              halign: 'left',
-
-            }
-          }
-        ],
-      ],
-
-      theme: 'plain',
-      startY: startY + 30, // add 30 units of Y position to create space between the tables
-    });
-
-    return doc.save("Approval Pack");*/
   }
 
   onCrreateRejectionPack() {
@@ -1182,12 +1100,16 @@ export class ViewProjectInfoComponent implements OnInit {
       }
     });
 
+
+
+
    
 
     // Save PDF document
     doc.save('Rejection Pack:' + this.CurrentUser.userProfileID);
 
   }
+
 
   goToNewWayleave(applicationType: boolean) { //application type refers to whether it is a brand new application or if it is a reapply.
     this.sharedService.setReapply(applicationType);
@@ -1200,6 +1122,9 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
 
+
+
+
   /*WBS Number*/
   enterWBSNumberModal(wbsNumberModal: any) {
     this.modalService.open(wbsNumberModal, { backdrop: 'static', size: 'xl' });
@@ -1209,7 +1134,7 @@ export class ViewProjectInfoComponent implements OnInit {
   onCreateWBSNumber() {
 
     let WBS = this.addWBSNumber.controls["wbsnumber"].value;
-    debugger;
+    
     this.depositRequiredService.addUpdateWBSNUmber(this.DepositRequired[0].DepositRequiredID,this.CurrentUser.appUserId,WBS).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -1256,7 +1181,7 @@ export class ViewProjectInfoComponent implements OnInit {
   option: any;
 
   reciveOption($event: any) {
-    debugger;
+    
     this.option = $event
     if (this.option == "True") {
       this.wbsButton = true;

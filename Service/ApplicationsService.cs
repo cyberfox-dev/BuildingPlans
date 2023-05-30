@@ -394,7 +394,7 @@ namespace WayleaveManagementSystem.Service
                        NextStageName = Applications.NextStageName,
                        NextStageNumber = Applications.NextStageNumber,  
                        PreviousStageNumber = Applications.PreviousStageNumber,   
-                 
+                       ProjectNumber = Applications.ProjectNumber,
                        
                    }
                    ).ToListAsync();

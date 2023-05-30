@@ -319,13 +319,13 @@ export class ActionCenterComponent implements OnInit {
   }
 
   CanComment() {
-    debugger;
+    
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         for (var i = 0; i < data.dateSet.length; i++) {
           let current = data.dateSet[i];
-          debugger;
+          
           if (current.userAssaignedToComment == this.CurrentUser.appUserId) {
             this.canComment = true;
             //console.log("vvvvvvvcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent",current);
@@ -355,7 +355,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   updateApplicationStatus() {
-    debugger;
+    
     //this.getAllSubDepartments();
     let x = 0;
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
@@ -470,7 +470,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   getDepartmentManagerUserID(roleName?: string |null) {
-    debugger;
+    
     //const currentRole = this.sharedService.getCurrentUserRoles();
     //for (var i = 0; i < currentRole.length; i++) {
     //  if (currentRole[i].RoleName ==) {
@@ -522,7 +522,7 @@ export class ActionCenterComponent implements OnInit {
   }
 
   onHopperClick() {
-    debugger;
+    
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
