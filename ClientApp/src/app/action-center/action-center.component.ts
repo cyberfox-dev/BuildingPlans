@@ -172,6 +172,7 @@ export class ActionCenterComponent implements OnInit {
     CurrentApplicationBeingViewed: any;
     subDepartmentID: any;
     userID: any;
+    canComment: boolean;
   constructor(
     private offcanvasService: NgbOffcanvas,
     private modalService: NgbModal,
@@ -233,7 +234,8 @@ export class ActionCenterComponent implements OnInit {
    // this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
 
     //end of shit
-
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
       this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
       this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
     this.loggedInUsersIsAdmin = this.CurrentUserProfile[0].isDepartmentAdmin;
@@ -241,6 +243,7 @@ export class ActionCenterComponent implements OnInit {
       this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
       this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
     this.getLinkedZones();
+    this.CanComment();
     
 
    
@@ -307,6 +310,38 @@ export class ActionCenterComponent implements OnInit {
       }
     }
   }
+
+  CanComment() {
+    this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        for (var i = 0; i < data.dateSet.length; i++) {
+          let current = data.dateSet[i];
+          if (current.userAssaignedToComment == this.CurrentUser.appUserId) {
+            //console.log("vvvvvvvcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent",current);
+            return;
+          }
+          else {
+            this.canComment = false;
+          } 
+        }
+        alert(data.responseMessage);
+
+      
+
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+
 
 
   updateApplicationStatus() {

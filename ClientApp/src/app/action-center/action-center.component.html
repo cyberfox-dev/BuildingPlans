@@ -30,7 +30,7 @@
 
     </mat-menu>
 
-    <div class="cont2">
+    <div class="cont2" *ngIf="canComment == true">
       <button mat-raised-button color="approveBTN" (click)="onComment('Approve')"><i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true"></i>  Approve</button>
       <button mat-raised-button color="rejectBTN" (click)="onComment('Reject')"><i class="fa fa-thumbs-down redThumbsDown" aria-hidden="true"></i>  Reject</button>
       <button mat-raised-button color="clarifyBTN" (click)="onComment('Clarify');sendOption()"><i class="fa fa-commenting-o orangeSpeech" aria-hidden="true"></i>  Clarify</button>
