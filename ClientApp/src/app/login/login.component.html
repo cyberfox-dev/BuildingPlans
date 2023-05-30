@@ -39,13 +39,14 @@
   <div class="container-fluid">
     <div class="container" id="container">
       <div class="form-container sign-up-container">
-        <form action="#" [formGroup]="registerForm" (ngSubmit)="onRegister()" autocomplete="off" >
+        <form action="#" [formGroup]="registerForm" (ngSubmit)="onRegister()" autocomplete="off">
 
-          <h2>Create an account</h2>     
+          <h2>Create an account</h2>
           <input type="text" formControlName="fullName" placeholder="Name & Surname" />
-         <!-- <input type="text" placeholder="Cell No." />-->
-          <input type="text" name="somthing" formControlName="registerEmail" placeholder="Email"  />
+          <!-- <input type="text" placeholder="Cell No." />-->
+          <input type="text" name="somthing" formControlName="registerEmail" placeholder="Email" />
           <input type="password" formControlName="registerPassword" placeholder="Password">
+          <input type="password" formControlName="reenterPassword" placeholder="Re-enter password">
           <button class="OTP" (click)="newUser()">Send OTP</button>
           <input type="text" placeholder="Enter OTP" />
 
