@@ -194,6 +194,14 @@ export class ViewProjectInfoComponent implements OnInit {
     wbsButton: boolean;
     CurrentApplicant: number;
     wbsRequired: boolean;
+    typeOfApp: string;
+    NotificationNumber: string;
+    WBSNumber: string;
+    PhysicalAddressOfProject: string;
+    DescriptionOfProject: string;
+    NatureOfWork: string;
+    ExcavationType: string;
+    ProjectNum: string;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -244,6 +252,7 @@ export class ViewProjectInfoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.getApplicationDetailsForDocs();
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
@@ -272,7 +281,8 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getAllStages();
     this.setInterface();
     this.getAllRequiredDeposits();
-    this.getAllSubDepFroConditionalApprove();
+/*    this.getAllSubDepFroConditionalApprove();*/
+    this.getAllSubDepForReject();
     this.canReapply = this.sharedService.getCanReapply();
     console.log("canReapplyVen: ", this.canReapply);
     this.setProjectNumber();
@@ -865,6 +875,20 @@ export class ViewProjectInfoComponent implements OnInit {
     })
 
   }
+  getApplicationDetailsForDocs() {
+    this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
+    const setValues = this.applicationDataForView[0];
+
+    this.typeOfApp = (setValues.TypeOfApplication);
+    this.NotificationNumber =(setValues.NotificationNumber);
+    this.WBSNumber =(setValues.WBSNumber);
+    this.PhysicalAddressOfProject =(setValues.PhysicalAddressOfProject);
+    this.DescriptionOfProject =(setValues.DescriptionOfProject);
+    this.NatureOfWork =(setValues.NatureOfWork);
+    this.ExcavationType = (setValues.ExcavationType);
+    this.ProjectNum = (setValues.ProjectNumber);
+
+  }
 
 
 
@@ -922,7 +946,7 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.text(upperCase, 105, 80, { align: 'center' });
     doc.setLineHeightFactor(60);
 
-    const projectNo = 'Project Number BW/034/023';
+    const projectNo = 'Project Number ' + this.ProjectNum;
     doc.setFontSize(15);
     doc.text(projectNo, 105, 90, { align: 'center' });
     doc.setLineHeightFactor(60);
@@ -934,7 +958,8 @@ export class ViewProjectInfoComponent implements OnInit {
 
     //paragraph 
     doc.setFontSize(10);
-    doc.text('Dear ' + this.CurrentUser.fullName + ', Your application has been approved by all departments. But on condition by the following departments:Our company recently developed a cutting-edge software application that streamlines and automates several critical business processes. This innovative solution has been designed to help businesses of all sizes save time and reduce costs, while also improving overall efficiency and productivity. We conducted extensive research and testing to ensure that the application met the needs of our target audience, and we incorporated feedback from early adopters to refine and improve the user experience. As a result, we have received overwhelmingly positive feedback from our customers, who have reported significant improvements in their operations since implementing our solution. This success has not only boosted our bottom line, but also reinforced our reputation as a trusted provider of high-quality software solutions.', 10, 60, { maxWidth: 190, lineHeightFactor: 2, align: 'justify' });
+    doc.text('Dear ' + this.CurrentUser.fullName + ' in refferance to project ' + this.DescriptionOfProject + '. , Your application has been approved by all departments. But on condition by the following departments: ', 10, 110, { maxWidth: 190, lineHeightFactor: 2, align: 'justify' });
+ 
 
     this.SubDepConditionalApproveList.forEach((deposit) => {
       const row = [
@@ -1107,17 +1132,23 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.text(upperCase, 105, 80, { align: 'center' });
     doc.setLineHeightFactor(60);
 
-    const projectNo = 'Project Number BW/034/023';
+    const projectNo = 'Project Number ' + this.ProjectNum;
     doc.setFontSize(15);
     doc.text(projectNo, 105, 90, { align: 'center' });
     doc.setLineHeightFactor(60);
 
 
     //this is for the project details
-
+/*    this.typeOfApp = (setValues.TypeOfApplication);
+    this.NotificationNumber =(setValues.NotificationNumber);
+    this.WBSNumber =(setValues.WBSNumber);
+    this.PhysicalAddressOfProject =(setValues.PhysicalAddressOfProject);
+    this.DescriptionOfProject =(setValues.DescriptionOfProject);
+    this.NatureOfWork =(setValues.NatureOfWork);
+    this.ExcavationType =(setValues.ExcavationType);*/
     //paragraph 
     doc.setFontSize(10);
-    doc.text('Dear ' + this.CurrentUser.fullName + ' in refferance to project '+', project description'+'. Unfortunately, your application has been rejected regarding the following issues: ', 10, 110, { maxWidth: 190, lineHeightFactor: 2, align: 'justify' });
+    doc.text('Dear ' + this.CurrentUser.fullName + ' in refferance to project ' + this.DescriptionOfProject +'. Unfortunately, your application has been rejected regarding the following issues: ', 10, 110, { maxWidth: 190, lineHeightFactor: 2, align: 'justify' });
 
     this.SubDepConditionalApproveList.forEach((deposit) => {
       const row = [
@@ -1128,6 +1159,27 @@ export class ViewProjectInfoComponent implements OnInit {
       ];
 
       data.push(row);
+    });
+    doc.setLineHeightFactor(60);
+    doc.setFontSize(12); // add this line to set the font size
+    autoTable(doc, {
+      head: headers,
+
+      startY: 150,
+      body: data,
+      styles: {
+        overflow: 'visible',
+        halign: 'justify',
+        fontSize: 10,
+        valign: 'middle',
+
+      },
+
+      columnStyles: {
+        0: { cellWidth: 50, fontStyle: 'bold' },
+        1: { cellWidth: 80 },
+        2: { cellWidth: 40 },
+      }
     });
 
    
