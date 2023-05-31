@@ -43,7 +43,7 @@ h1 {
   margin-bottom: 10px;
   background-color: #f43636;
   color: #fff;
-  margin-bottom: 39px;
+  margin: 10px;
 }
 .mat-orange {
   margin-bottom: 10px;
@@ -339,6 +339,7 @@ a {
 .mat-blue {
   background-color: #369cf4;
   color: #fff;
+  margin: 10px;
 }
 
 button {

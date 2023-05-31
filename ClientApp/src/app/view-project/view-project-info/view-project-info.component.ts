@@ -18,6 +18,7 @@ import { MatTable } from '@angular/material/table';
 
 
 
+
 export interface ARCGISAPIData {
   createdByID: string;
   isActive: string;
@@ -92,13 +93,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
 ];
 
 
-export interface Documents {
-  DocumentID: number;
-  DocumentName: string;
-  DocumentLocalPath: string;
-  ApplicationID: number;
-  AssignedUserID: string;
-}
+
 
 
 
@@ -180,16 +175,17 @@ export class ViewProjectInfoComponent implements OnInit {
   DepositRequired: DepositRequired[] = [];
   relatedApplications: ApplicationList[] = [];
 
-  Documents: Documents[] = [];
+ 
 
   ApplicationID: number | undefined;
 
   CurrentUser: any;
   //Convert the local storage JSON data to an array object
   stringifiedData: any;
-  @ViewChild(MatTable) DocumentsListTable: MatTable<Documents> | undefined;
 
-  @ViewChild('fileInput') fileInput: ElementRef | undefined;
+
+
+ /* @ViewChild('fileInput') fileInput: ElementRef | undefined;*/
   fileAttr = 'Choose File';
     currentApplication: number;
     configNumberOfProject: any;
@@ -241,8 +237,7 @@ export class ViewProjectInfoComponent implements OnInit {
   displayedColumns: string[] = [ 'name','actions'];
   dataSource = ELEMENT_DATA;
 
-  displayedColumnsDocs: string[] = ['DocumentName','actions'];
-  dataSourceDoc = this.Documents;
+
 
   constructor(private modalService: NgbModal,
     private sharedService: SharedService,
@@ -255,12 +250,11 @@ export class ViewProjectInfoComponent implements OnInit {
     private viewContainerRef: ViewContainerRef,
     private configService: ConfigService,
     private formBuilder: FormBuilder,
-    private documentUploadService: DocumentUploadService,
+ 
   ) { }
 
   ngOnInit(): void {
-    this.getApplicationDetailsForDocs();
-    this.getAllDocsForApplication();
+
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
@@ -271,11 +265,14 @@ export class ViewProjectInfoComponent implements OnInit {
    
     const setValues = this.applicationDataForView[0];
     this.ApplicationID = setValues.applicationID;
+  
     this.CurrentApplicant = setValues.CreatedById;
 
     this.currentApplication = this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     console.log("this is the created by ID", setValues);
     this.createdByID = setValues.CreatedById;
+    this.getApplicationDetailsForDocs();
+
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
@@ -304,41 +301,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
 
-  getAllDocsForApplication() {
-    this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
 
-      if (data.responseCode == 1) {
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempDocList = {} as Documents;
-          const current = data.dateSet[i];
-
-          tempDocList.DocumentID = current.documentID;
-          tempDocList.DocumentName = current.documentName;
-          tempDocList.DocumentLocalPath = current.documentLocalPath;
-          tempDocList.ApplicationID = current.applicationID;
-          tempDocList.AssignedUserID = current.assignedUserID;
-        
-         
-
-          this.Documents.push(tempDocList);
-         
-
-        }
-        
-        this.DocumentsListTable?.renderRows();
-        console.log("GOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCS", this.Documents[0]);
-      }
-      else {
-        alert(data.responseMessage);
-
-      }
-      console.log("reponseGetAllDocsForApplication", data);
-
-    }, error => {
-      console.log("ErrorGetAllDocsForApplication: ", error);
-    })
-
-  }
 
   viewDocument() {
 
