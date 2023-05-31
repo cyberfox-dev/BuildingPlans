@@ -246,7 +246,8 @@ export class ActionCenterComponent implements OnInit {
       this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
     this.getLinkedZones();
     this.CanComment();
-  //  this.CanCommentSR();
+ 
+ this.CanCommentSR();
     
 
    
@@ -569,9 +570,9 @@ export class ActionCenterComponent implements OnInit {
     //  }
 
     //}
+    debugger;
 
-
-    this.accessGroupsService.getUserBasedOnRoleName(roleName,this.CurrentUserProfile.subDepartmentID).subscribe((data: any) => {
+    this.accessGroupsService.getUserBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         this.userID = data.dateSet[0].userID;

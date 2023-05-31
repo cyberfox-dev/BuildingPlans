@@ -296,7 +296,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.ARCGISAPIData.isActive = "1";
     /*    this.ARCGISAPIData.applicationID = this.notificationNumber;*/
     this.getAllComments();
- 
+    this.getAllDocsForApplication();
     this.getUserProfileByUserID();
     this.getAllStages();
     this.setInterface();
@@ -306,7 +306,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.canReapply = this.sharedService.getCanReapply();
     console.log("canReapplyVen: ", this.canReapply);
     this.setProjectNumber();
-    this.getAllDocsForApplication();
+   
   }
 
   setProjectNumber() {
@@ -351,8 +351,29 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
-  viewDocument() {
+  viewDocument(index:any) {
+    fetch(`https://localhost:7123/api/documentUpload/GetDocument?filename=${this.Documents[index].DocumentName}`)
+      .then(response => {
+        if (response.ok) {
+          // The response status is in the 200 range
+          return response.blob(); // Extract the response body as a Blob
+        } else {
+          throw new Error('Error fetching the document');
+        }
+      })
+      .then(blob => {
+        // Create a URL for the Blob object
+        const documentURL = URL.createObjectURL(blob);
 
+        // Display the document, for example, in an <iframe>
+        const iframe = document.createElement('iframe');
+        iframe.src = documentURL;
+        document.body.appendChild(iframe);
+      })
+      .catch(error => {
+        console.log(error);
+        // Handle the error appropriately
+      });
   }
 
   getAllComments() {
