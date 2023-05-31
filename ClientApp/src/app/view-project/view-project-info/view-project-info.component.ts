@@ -18,6 +18,7 @@ import { MatTable } from '@angular/material/table';
 
 
 
+
 export interface ARCGISAPIData {
   createdByID: string;
   isActive: string;
@@ -91,19 +92,8 @@ const ELEMENT_DATA: PeriodicElement[] = [
   {  name: 'deposit DS456'},
 ];
 
-//export interface Documents {
-//  name: string;
 
-//}
 
-export interface Documents {
-  DocumentID: number;
-  DocumentName: string;
-  DocumentLocalPath: string;
-  ApplicationID: number;
-  AssignedUserID: string;
-  
-}
 
 
 
@@ -120,13 +110,6 @@ export interface DepositRequired {
   WBS?: string;
 }
 
-
-
-//const Document_DATA: Documents[] = [
-//  { name: 'doc1' },
-//  { name: 'doc2'  },
-//  { name: 'doc3' },
-//];
 
 var img = new Image();
 img.src = 'assets/cctlogoblack.png';
@@ -192,16 +175,17 @@ export class ViewProjectInfoComponent implements OnInit {
   DepositRequired: DepositRequired[] = [];
   relatedApplications: ApplicationList[] = [];
 
-  Documents: Documents[] = [];
+ 
 
   ApplicationID: number | undefined;
 
   CurrentUser: any;
   //Convert the local storage JSON data to an array object
   stringifiedData: any;
-  @ViewChild(MatTable) DocumentsListTable: MatTable<Documents> | undefined;
 
-  @ViewChild('fileInput') fileInput: ElementRef | undefined;
+
+
+ /* @ViewChild('fileInput') fileInput: ElementRef | undefined;*/
   fileAttr = 'Choose File';
     currentApplication: number;
     configNumberOfProject: any;
@@ -253,8 +237,7 @@ export class ViewProjectInfoComponent implements OnInit {
   displayedColumns: string[] = [ 'name','actions'];
   dataSource = ELEMENT_DATA;
 
-  displayedColumnsDocs: string[] = ['documentName','actions'];
-  dataSourceDoc = this.Documents;
+
 
   constructor(private modalService: NgbModal,
     private sharedService: SharedService,
@@ -267,11 +250,11 @@ export class ViewProjectInfoComponent implements OnInit {
     private viewContainerRef: ViewContainerRef,
     private configService: ConfigService,
     private formBuilder: FormBuilder,
-    private documentUploadService: DocumentUploadService,
+ 
   ) { }
 
   ngOnInit(): void {
-    this.getApplicationDetailsForDocs();
+
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
@@ -282,11 +265,14 @@ export class ViewProjectInfoComponent implements OnInit {
    
     const setValues = this.applicationDataForView[0];
     this.ApplicationID = setValues.applicationID;
+  
     this.CurrentApplicant = setValues.CreatedById;
 
     this.currentApplication = this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     console.log("this is the created by ID", setValues);
     this.createdByID = setValues.CreatedById;
+    this.getApplicationDetailsForDocs();
+
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
@@ -306,7 +292,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.canReapply = this.sharedService.getCanReapply();
     console.log("canReapplyVen: ", this.canReapply);
     this.setProjectNumber();
-   
+
   }
 
   setProjectNumber() {
@@ -315,55 +301,9 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
 
-  getAllDocsForApplication() {
-    this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
-
-      if (data.responseCode == 1) {
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempDocList = {} as Documents;
-          const current = data.dateSet[i];
-
-          tempDocList.DocumentID = current.documentID;
-          tempDocList.DocumentName = current.documentName;
-          tempDocList.DocumentLocalPath = current.documentLocalPath;
-          tempDocList.ApplicationID = current.applicationID;
-          tempDocList.AssignedUserID = current.assignedUserID;
-        
 
 
-          this.Documents.push(tempDocList);
-         
-          // this.sharedService.setStageData(this.StagesList);
-        }
-
-        this.DocumentsListTable?.renderRows();
-      }
-      else {
-        alert(data.responseMessage);
-
-      }
-      this.DocumentsListTable?.renderRows();
-      console.log("reponseGetAllDocsForApplication", data);
-
-    }, error => {
-      console.log("ErrorGetAllDocsForApplication: ", error);
-    })
-
-  }
-
-  viewDocument(index:any) {
-    fetch(`https://localhost:7123/api/documentUpload/GetDocument?filename=${this.Documents[index].DocumentName}`)
-      .then(response => {
-        if (response.ok) {
-          // The response status is in the 200 range
-          return response.blob(); // Extract the response body as a Blob
-        } else {
-          throw new Error('Error fetching the document');
-        }
-      })
-      .then(blob => {
-        // Create a URL for the Blob object
-        const documentURL = URL.createObjectURL(blob);
+  viewDocument() {
 
         // Display the document, for example, in an <iframe>
         const iframe = document.createElement('iframe');
@@ -1005,7 +945,66 @@ export class ViewProjectInfoComponent implements OnInit {
     const data: any[] = [];
 
     const img = new Image();
+    const footer = new Image();
+    const page1 = new Image();
+    const page2 = new Image();
+    const page3 = new Image();
+    const page4 = new Image();
+    const page5 = new Image();
+    const page6 = new Image();
+    const page7 = new Image();
+    const page8 = new Image();
+    const page9 = new Image();
+    const page10 = new Image();
+    const page11 = new Image();
+    const page12 = new Image();
+    const page13 = new Image();
+    const page14 = new Image();
+    const page15 = new Image();
+    const page16 = new Image();
+    const page17 = new Image();
+    const page18 = new Image();
+    const page19 = new Image();
+    const page20 = new Image();
+    const page21 = new Image();
+    const page22 = new Image();
+    const page23 = new Image();
+    const page24 = new Image();
+    const page25 = new Image();
+    const page26 = new Image();
+    const page27 = new Image();
+    const page28 = new Image();
     img.src = 'assets/cctlogoblack.png';
+    footer.src ='assets/Packs/footer.PNG';
+    page1.src ='assets/Packs/page1.PNG';
+    page2.src ='assets/Packs/page2.PNG';
+    page3.src ='assets/Packs/page3.PNG';
+    page4.src ='assets/Packs/page4.PNG';
+    page5.src ='assets/Packs/page5.PNG';
+    page6.src ='assets/Packs/page6.PNG';
+    page7.src ='assets/Packs/page7.PNG';
+    page8.src ='assets/Packs/page8.PNG';
+    page9.src ='assets/Packs/page9.PNG';
+    page10.src ='assets/Packs/page10.PNG';
+    page11.src ='assets/Packs/page11.PNG';
+    page12.src ='assets/Packs/page12.PNG';
+    page13.src ='assets/Packs/page13.PNG';
+    page14.src ='assets/Packs/page14.PNG';
+    page15.src ='assets/Packs/page15.PNG';
+    page16.src ='assets/Packs/page16.PNG';
+    page17.src ='assets/Packs/page17.PNG';
+    page18.src ='assets/Packs/page18.PNG';
+    page19.src ='assets/Packs/page19.PNG';
+    page20.src ='assets/Packs/page20.PNG';
+    page21.src ='assets/Packs/page21.PNG';
+    page22.src ='assets/Packs/page22.PNG';
+    page23.src ='assets/Packs/page23.PNG';
+    page24.src ='assets/Packs/page24.PNG';
+    page25.src ='assets/Packs/page25.PNG';
+    page26.src ='assets/Packs/page26.PNG';
+    page27.src ='assets/Packs/page27.PNG';
+    page28.src ='assets/Packs/page28.PNG';
+  
 
     // Add logo to PDF document
 
@@ -1045,20 +1044,8 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.text("Based on the summary above, the wayleave application is approved. Kindly proceed to apply for a permit to work before commencement of any work on site.", 10, 190, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
     doc.setFontSize(12);
     doc.text("CITY OF CAPE TOWN, Future Planning and Resilience Directorate", 10, 220, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
 
-
-/*    var mammoth = require("mammoth");
-    mammoth.extractRawText({ path: "C:\Users\Cyberfox\Downloads\Standard_Wayleave_Conditions_draft5_YD.docx" })
-      .then(function (result) {
-        var text = result.value; // The raw text
-        doc.text(text, 10, 220, { maxWidth: 300, lineHeightFactor: 1.5, align: 'justify' });
-        var messages = result.messages;
-      })
-      .catch(function (error) {
-        console.error(error);
-      });*/
-
-   
 
     autoTable(doc, {
       head: headers,
@@ -1081,13 +1068,325 @@ export class ViewProjectInfoComponent implements OnInit {
 
     
     });
+
+    //PAGE 1
     doc.addPage();
-  
+    
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+ 
+    doc.addImage(page1, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 2
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page2, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+
+    //PAGE 3
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page3, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 4
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page4, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 5
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page5, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 6
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page6, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 7
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page7, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 8
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page8, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 9
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page9, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 10
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page10, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 11
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page11, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 12
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page12, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 13
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page13, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 14
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page14, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 15
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page15, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 16
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page16, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 17
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page17, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 18
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page18, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 19
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page19, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 20
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page20, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 21
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page21, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 22
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page22, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 23
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page23, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 24
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page24, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 25
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page25, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+
+    //PAGE 26
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page26, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 27
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page27, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 28
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page28, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
 
     // Save PDF document
     doc.save('Approval Pack:' + this.CurrentUser.userProfileID);
 
+
   }
+
+
+
 
   onCrreateRejectionPack() {
 
@@ -1103,52 +1402,41 @@ export class ViewProjectInfoComponent implements OnInit {
     const headers = [
       [
         'Department',
-        'Department Comment',
+        'Comment',
         'Status'
       ]
     ];
     const data: any[] = [];
 
     const img = new Image();
+    const footer = new Image();
+
     img.src = 'assets/cctlogoblack.png';
+    footer.src = 'assets/Packs/footer.PNG';
+
+
 
     // Add logo to PDF document
-    doc.addImage(img, 'png', 8, 10, 50, img.height * 50 / img.width);
 
+    // Add logo to PDF document
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
     //adding information underneath the logo
-    doc.setFontSize(8);
-    doc.text('BTW Reg.Nr/Vat Reg.no.4500193497', 10, 35, { align: 'left' });
-    doc.text('City of Cape Town ', 10, 40, { align: 'left' });
-    doc.text('Post Box / Posbus / iShokisi 655 ', 10, 45, { align: 'left' });
-    doc.text('CAPE TOWN ', 10, 50, { align: 'left' });
-    doc.text('8001 ', 10, 55, { align: 'left' });
-    doc.text(this.formattedDate, 10, 60, { align: 'left' });
 
-    // Add title to PDF document
-    const reject = 'Wayleave Rejection Pack';
-    const upperCase = reject.toUpperCase();
-    doc.setFontSize(22);
+    doc.text('DATE : ' + this.formattedDate, 10, 45, { align: 'left' });
 
-    doc.text(upperCase, 105, 80, { align: 'center' });
-    doc.setLineHeightFactor(60);
+    doc.text('WAYLEAVE APPLICATION : ' + this.DescriptionOfProject, 10, 55, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
 
-    const projectNo = 'Project Number ' + this.ProjectNum;
-    doc.setFontSize(15);
-    doc.text(projectNo, 105, 90, { align: 'center' });
-    doc.setLineHeightFactor(60);
-
+    doc.text('Dear ' + this.clientName, 10, 70, { align: 'left' });
 
     //this is for the project details
-/*    this.typeOfApp = (setValues.TypeOfApplication);
-    this.NotificationNumber =(setValues.NotificationNumber);
-    this.WBSNumber =(setValues.WBSNumber);
-    this.PhysicalAddressOfProject =(setValues.PhysicalAddressOfProject);
-    this.DescriptionOfProject =(setValues.DescriptionOfProject);
-    this.NatureOfWork =(setValues.NatureOfWork);
-    this.ExcavationType =(setValues.ExcavationType);*/
+
     //paragraph 
     doc.setFontSize(10);
-    doc.text('Dear ' + this.CurrentUser.fullName + ' in refferance to project ' + this.DescriptionOfProject +'. Unfortunately, your application has been rejected regarding the following issues: ', 10, 110, { maxWidth: 190, lineHeightFactor: 2, align: 'justify' });
+    doc.text('Kindly find a summary on the outcome of this wayleave application below as well as departmental specific wayleave approval or rejection letters attached. In the case of a wayleave rejection, please make contact with the relevant Line Department as soon as possible. ', 10, 80, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.text('Status Summary:', 10, 105, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+
 
     this.SubDepConditionalApproveList.forEach((deposit) => {
       const row = [
@@ -1161,11 +1449,18 @@ export class ViewProjectInfoComponent implements OnInit {
       data.push(row);
     });
     doc.setLineHeightFactor(60);
-    doc.setFontSize(12); // add this line to set the font size
+    doc.setFontSize(10); // add this line to set the font size
+
+    doc.text("Based on the summary above, the wayleave application is rejected. Please contact the relevant department for guidance on the way forward.", 10, 190, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFontSize(12);
+    doc.text("CITY OF CAPE TOWN, Future Planning and Resilience Directorate", 10, 220, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+
     autoTable(doc, {
       head: headers,
 
-      startY: 150,
+      startY: 120,
       body: data,
       styles: {
         overflow: 'visible',
@@ -1180,10 +1475,9 @@ export class ViewProjectInfoComponent implements OnInit {
         1: { cellWidth: 80 },
         2: { cellWidth: 40 },
       }
+
+
     });
-
-
-
 
    
 

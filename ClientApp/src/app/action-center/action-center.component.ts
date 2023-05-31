@@ -377,13 +377,13 @@ export class ActionCenterComponent implements OnInit {
 
   CanComment() {
    // this.getDepartmentManagerUserID("Senior Reviewer");
-    debugger;
+   
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         for (var i = 0; i < data.dateSet.length; i++) {
           let current = data.dateSet[i];
-          debugger;
+         
           if (current.userAssaignedToComment == this.CurrentUser.appUserId) { /*&& current.userAssaignedToComment != this.userID*/
             this.canComment = true;
             //console.log("vvvvvvvcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent",current);
