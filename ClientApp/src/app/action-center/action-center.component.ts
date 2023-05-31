@@ -376,7 +376,7 @@ export class ActionCenterComponent implements OnInit {
 
   CanComment() {
    // this.getDepartmentManagerUserID("Senior Reviewer");
-    debugger;
+   
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
