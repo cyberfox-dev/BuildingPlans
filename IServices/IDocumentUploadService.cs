@@ -13,6 +13,9 @@ namespace WayleaveManagementSystem.IServices
         //this will return T/F 
         public Task<bool> DeleteDocument(int documentID);
 
+
+
+        Task<List<DocumentUploadDTO>> GetAllDocumentsForApplication(int? applicationID);
         Task<List<DocumentUploadDTO>> GetAllDocuments();
         Task<List<DocumentUploadDTO>> GetAllDocumentsForUser(string assignedUserID);
     }

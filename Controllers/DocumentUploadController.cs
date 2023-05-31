@@ -153,6 +153,35 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+
+
+
+        [HttpPost("GetAllDocumentsForApplication")]
+        public async Task<object> GetAllDocumentsForApplication([FromBody] int applicationID)
+        {
+            try
+            {
+
+                if (applicationID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _documentUploadService.GetAllDocumentsForApplication(applicationID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Department For Comment Deleted Successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
         [HttpPost("GetAllDocumentsForUser")]
         public async Task<object> GetAllDocumentsForUser([FromBody] DocumentUploadBindingModel model)
         {
@@ -179,6 +208,50 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpGet("GetDocument")]
+        public IActionResult GetDocument(string filename)
+        {
+            var filePath = Path.Combine("Resources", "DocumentUpload", filename);
+
+            if (System.IO.File.Exists(filePath))
+            {
+                var fileContent = System.IO.File.ReadAllBytes(filePath);
+
+                string contentType;
+                var fileExtension = Path.GetExtension(filename)?.ToLowerInvariant();
+                switch (fileExtension)
+                {
+                    case ".pdf":
+                        contentType = "application/pdf";
+                        break;
+                    case ".jpg":
+                    case ".jpeg":
+                        contentType = "image/jpeg";
+                        break;
+                    case ".png":
+                        contentType = "image/png";
+                        break;
+                    case ".xlsx":
+                        contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                        break;
+                    case ".doc":
+                        contentType = "application/msword";
+                        break;
+                    case ".docx":
+                        contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                        break;
+                    default:
+                        contentType = "application/octet-stream";
+                        break;
+                }
+
+                return File(fileContent, contentType, filename);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
 
     }
 }

@@ -42,8 +42,8 @@ export class NavMenuComponent implements OnInit {
   forEditIndex: any;
 
   public isInternalUser: boolean = false;
-
-
+  Links: boolean = false;
+  Icons: boolean = true;
   public addComment = this.formBuilder.group({
     newCommentName: ['', Validators.required],
 
@@ -331,6 +331,19 @@ export class NavMenuComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
+  }
+
+  disableIcons() {
+
+
+    if (this.Links == false) {
+      this.Links = true
+      this.Icons = false;
+    }
+    else {
+      this.Icons = true;
+      this.Links = false
+    }
   }
 
 

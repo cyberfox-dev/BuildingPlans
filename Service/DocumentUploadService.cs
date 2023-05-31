@@ -113,6 +113,33 @@ namespace WayleaveManagementSystem.Service
             return documentUploadDTO;
         }
 
+
+
+        public async Task<List<DocumentUploadDTO>> GetAllDocumentsForApplication(int? applicationID)
+        {
+
+
+            return await (
+              from documentUpload in _context.DocumentUpload
+              where documentUpload.ApplicationID == applicationID && documentUpload.isActive == true
+              select new DocumentUploadDTO()
+              {
+                  DocumentID = documentUpload.DocumentID,
+                  DocumentName = documentUpload.DocumentName,
+                  DocumentLocalPath = documentUpload.DocumentLocalPath,
+                  ApplicationID = documentUpload.ApplicationID,
+                  AssignedUserID = documentUpload.AssignedUserID,
+                  DateCreated = documentUpload.DateCreated,
+                  DateUpdated = documentUpload.DateUpdated,
+                  CreatedById = documentUpload.CreatedById,
+                  isActive = documentUpload.isActive
+
+
+              }
+              ).ToListAsync();
+
+        }
+
         public async Task<List<DocumentUploadDTO>> GetAllDocumentsForUser(string assignedUserID)
         {
             var tempDocumentUpload = await _context.DocumentUpload.Where(x => x.isActive == true && x.AssignedUserID == assignedUserID).ToListAsync();

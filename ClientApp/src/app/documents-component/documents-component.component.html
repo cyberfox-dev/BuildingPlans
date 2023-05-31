@@ -1,0 +1,57 @@
+<div class="container-fluid">
+  <button mat-raised-button color="action" (click)="openDocUpload(newSub)">Upload document</button>
+</div>
+
+<table mat-table [dataSource]="dataSourceDoc" class="mat-elevation-z8">
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="DocumentName">
+    <th mat-header-cell *matHeaderCellDef>Document Name</th>
+    <td mat-cell *matCellDef="let element"> {{element.DocumentName}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>actions</th>
+    <td mat-cell *matCellDef="let i = index">
+      <button mat-raised-button color="blue" (click)="viewDocument(i)" matTooltip="View document"><i class="fa fa-eye"></i></button>
+      <button mat-raised-button color="warn" matTooltip="Delete document"><i class="fa fa-trash"></i></button>
+    </td>
+    <td mat-cell *matCellDef="let element">  </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumnsDocs"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumnsDocs;"></tr>
+</table>
+
+
+<ng-template #newSub let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Upload Document </h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <mat-form-field>
+        <div>
+          <mat-toolbar>
+            <!-- Display files names -->
+            <input matInput [(ngModel)]="fileAttr" readonly name="name" />
+            <!-- Browse Button -->
+            <button mat-flat-button color="blue">Browse File</button>
+          </mat-toolbar>
+          <!-- Fetch selected filed on change -->
+          <input type="file"
+                 #fileInput
+                 id="uploadFile"
+                 (change)="uploadFileEvt($event)"
+                 name="uploadFile"
+                 multiple="multiple"
+                 accept="image/*" />
+        </div>
+      </mat-form-field>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Close click')">Save</button>
+  </div>
+</ng-template>
