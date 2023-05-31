@@ -262,16 +262,17 @@ export class ViewProjectInfoComponent implements OnInit {
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
 
-   
+
     const setValues = this.applicationDataForView[0];
     this.ApplicationID = setValues.applicationID;
-  
+
     this.CurrentApplicant = setValues.CreatedById;
 
     this.currentApplication = this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     console.log("this is the created by ID", setValues);
     this.createdByID = setValues.CreatedById;
     this.getApplicationDetailsForDocs();
+  
 
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
@@ -282,7 +283,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.ARCGISAPIData.isActive = "1";
     /*    this.ARCGISAPIData.applicationID = this.notificationNumber;*/
     this.getAllComments();
-    this.getAllDocsForApplication();
+    //this.getAllDocsForApplication();
     this.getUserProfileByUserID();
     this.getAllStages();
     this.setInterface();
@@ -303,18 +304,6 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
 
-  viewDocument() {
-
-        // Display the document, for example, in an <iframe>
-        const iframe = document.createElement('iframe');
-        iframe.src = documentURL;
-        document.body.appendChild(iframe);
-      })
-      .catch(error => {
-        console.log(error);
-        // Handle the error appropriately
-      });
-  }
 
   getAllComments() {
 

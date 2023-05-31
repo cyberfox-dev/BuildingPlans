@@ -208,6 +208,50 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpGet("GetDocument")]
+        public IActionResult GetDocument(string filename)
+        {
+            var filePath = Path.Combine("Resources", "DocumentUpload", filename);
+
+            if (System.IO.File.Exists(filePath))
+            {
+                var fileContent = System.IO.File.ReadAllBytes(filePath);
+
+                string contentType;
+                var fileExtension = Path.GetExtension(filename)?.ToLowerInvariant();
+                switch (fileExtension)
+                {
+                    case ".pdf":
+                        contentType = "application/pdf";
+                        break;
+                    case ".jpg":
+                    case ".jpeg":
+                        contentType = "image/jpeg";
+                        break;
+                    case ".png":
+                        contentType = "image/png";
+                        break;
+                    case ".xlsx":
+                        contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                        break;
+                    case ".doc":
+                        contentType = "application/msword";
+                        break;
+                    case ".docx":
+                        contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                        break;
+                    default:
+                        contentType = "application/octet-stream";
+                        break;
+                }
+
+                return File(fileContent, contentType, filename);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
 
     }
 }

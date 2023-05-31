@@ -63,6 +63,36 @@ export class DocumentsComponentComponent implements OnInit {
     }
   }
 
+
+  viewDocument(index:any) {
+
+    // Make an HTTP GET request to fetch the document
+    fetch(`https://localhost:7123/api/documentUpload/GetDocument?filename=${this.DocumentsList[index].DocumentName}`)
+      .then(response => {
+        if (response.ok) {
+          // The response status is in the 200 range
+          return response.blob(); // Extract the response body as a Blob
+        } else {
+          throw new Error('Error fetching the document');
+        }
+      })
+      .then(blob => {
+        // Create a URL for the Blob object
+        const documentURL = URL.createObjectURL(blob);
+
+        // Display the document, for example, in an <iframe>
+        const iframe = document.createElement('iframe');
+        iframe.src = documentURL;
+        document.body.appendChild(iframe);
+      })
+      .catch(error => {
+        console.log(error);
+        // Handle the error appropriately
+      });
+
+  }
+
+
   getAllDocsForApplication() {
     debugger;
     this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
