@@ -382,7 +382,7 @@ export class ActionCenterComponent implements OnInit {
       if (data.responseCode == 1) {
         for (var i = 0; i < data.dateSet.length; i++) {
           let current = data.dateSet[i];
-          debugger;
+         
           if (current.userAssaignedToComment == this.CurrentUser.appUserId) { /*&& current.userAssaignedToComment != this.userID*/
             this.canComment = true;
             //console.log("vvvvvvvcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent",current);

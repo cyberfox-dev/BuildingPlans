@@ -137,7 +137,7 @@ export class SharedService {
   }
 
   getApiUrl() {
-/*        return "https://localhost:7123/api/";*/
+        return "https://localhost:7123/api/";
     /*    return "http://172.29.166.10/api/";*/
     return "https://wayleaveqa.capetown.gov.za/api/";
 

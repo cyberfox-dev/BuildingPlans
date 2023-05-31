@@ -1,4 +1,43 @@
-<!--modal for comment builder-->
+<div class="nav">
+  <input type="checkbox" id="nav-check">
+  <div class="nav-header">
+    <div class="nav-title" (click)="goHome()">
+      <img src="assets/cctlogoblack.png" alt="" class="logo">
+    </div>
+  </div>
+  <div class="nav-btn">
+    <label for="nav-check" (click)="disableIcons()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
+  </div>
+
+  <div class="nav-links"  *ngIf="Icons">
+    <button mat-button matTooltip="Cyberfox configs" (click)="goToCyberfoxCofig()" *ngIf="isInternalUser"><i class="fa fa-superpowers"></i></button>
+    <button mat-button matTooltip="Comment Builder" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><i class="fa fa-comment"></i></button>
+    <button mat-button matTooltip="Configurations" (click)="goToConfig()" *ngIf="isInternalUser"><i class="fa fa-cogs" ></i></button>
+    <button mat-button matTooltip="Notifications" (click)="getAllNotifications();openNotificationsModal(notificationsCenter)"><i class="fa fa-bell"></i> <span *ngIf="notiBell" class="indicator"></span></button>
+    <button mat-button [matMenuTriggerFor]="user"><img src="https://img.icons8.com/dusk/100/000000/user-male-circle.png" alt="" class="user-avatar-md rounded-circle"></button>
+    <mat-menu #user="matMenu">
+    <button mat-menu-item (click)="goToSettings()">Settings</button>
+    <a><button mat-menu-item (click)="LogoutUser()">Log Out</button></a>
+  </mat-menu>
+  </div>
+
+  <div class="nav-links" *ngIf="Links">
+    <a (click)="goToCyberfoxCofig()" *ngIf="isInternalUser">Cyberfox config</a>
+    <a (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser">Comment Builder</a>
+    <a (click)="goToConfig()" *ngIf="isInternalUser">Configurations</a>
+    <a (click)="getAllNotifications();openNotificationsModal(notificationsCenter)">Notifications</a>
+    <a (click)="goToSettings()">User Settings</a>
+    <a (click)="LogoutUser()">Log Out</a>
+  </div>
+</div>
+
+
+
+ <!--modal for comment builder-->
 <ng-template #commentBuilder let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">{{CurrentUser.fullName}}'s Comment Builder</h4>
@@ -32,7 +71,7 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let i = index">
-          
+
           <button mat-raised-button color="blue" matTooltip="Edit comment" (click)="viewEditComment(editComment,i)"><i class="fa fa-pencil"></i></button>
           <button mat-raised-button color="warn" matTooltip="Delete comment" (click)="onCommentDelete(i,commentBuilder);modal.dismiss('Cross click')"><i class="fa fa-trash"></i></button>
 
@@ -52,7 +91,6 @@
 </ng-template>
 
 <!--create a new comment-->
-
 <!--<ng-template #createNewComment let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Create new comment</h4>
@@ -70,8 +108,6 @@
     <button type="submit" class="btn btn-outline-success" (click)="onCommentCreate(commentBuilder);modal.dismiss('Cross click')">Save</button>
   </div>
 </ng-template>-->
-
-
 <!--view comment-->
 <ng-template #editComment let-modal>
   <div class="modal-header">
@@ -92,7 +128,7 @@
 </ng-template>
 
 <!--<h1>Navbar</h1>-->
-<div class="container-fluid">
+<!--<div class="container-fluid">
   <div class="dashboard-header">
     <nav class="navbar navbar-expand-lg bg-white fixed-top">
       <a class="navbar-brand" (click)="goHome()"><img src="assets/cctlogoblack.png" alt="" class="logo"></a>
@@ -102,51 +138,51 @@
       <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto navbar-right-top">
         </ul>
-        <ul class="navbar-nav ml-auto navbar-right-top">
+        <ul class="navbar-nav ml-auto navbar-right-top">-->
 
           <!--Cyberfox configs-->
 
-          <button mat-button matTooltip="Cyberfox configs" (click)="goToCyberfoxCofig()" *ngIf="isInternalUser"><i class="fa fa-superpowers"></i></button>
+          <!--<button mat-button matTooltip="Cyberfox configs" (click)="goToCyberfoxCofig()" *ngIf="isInternalUser"><i class="fa fa-superpowers"></i></button>-->
 
           <!--Comment builder-->
 
-          <button mat-button matTooltip="Comment Builder" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><i class="fa fa-comment"></i></button>
+          <!--<button mat-button matTooltip="Comment Builder" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><i class="fa fa-comment"></i></button>-->
 
           <!--Configs-->
 
-          <button mat-button matTooltip="Configurations" (click)="goToConfig()"><i class="fa fa-cogs" *ngIf="isInternalUser"></i></button>
+          <!--<button mat-button matTooltip="Configurations" (click)="goToConfig()"><i class="fa fa-cogs" *ngIf="isInternalUser"></i></button>-->
 
           <!--notifications-->
 
-          <button mat-button matTooltip="Notifications" (click)="getAllNotifications();openNotificationsModal(notificationsCenter)" ><i class="fa fa-bell"></i> <span *ngIf="notiBell" class="indicator"></span></button>
+          <!--<button mat-button matTooltip="Notifications" (click)="getAllNotifications();openNotificationsModal(notificationsCenter)"><i class="fa fa-bell"></i> <span *ngIf="notiBell" class="indicator"></span></button>-->
 
 
 
           <!--User settings-->
 
-          <button mat-button [matMenuTriggerFor]="user"><img src="https://img.icons8.com/dusk/100/000000/user-male-circle.png" alt="" class="user-avatar-md rounded-circle"></button>
+          <!--<button mat-button [matMenuTriggerFor]="user"><img src="https://img.icons8.com/dusk/100/000000/user-male-circle.png" alt="" class="user-avatar-md rounded-circle"></button>
           <mat-menu #user="matMenu">
             <button mat-menu-item (click)="goToSettings()">Settings</button>
             <a><button mat-menu-item (click)="LogoutUser()">Log Out</button></a>
-          </mat-menu>
+          </mat-menu>-->
 
           <!-- <li ngbDropdown class="nav-item dropdown nav-user">
-    <a ngbDropdownToggle class="nav-link nav-user-img" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="https://img.icons8.com/dusk/100/000000/user-female-circle.png" alt="" class="user-avatar-md rounded-circle"></a>
-    <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
-      <div class="nav-user-info">
-        <h5 class="mb-0 text-white nav-user-name">Jahdiel Sanjeevy</h5>
+            <a ngbDropdownToggle class="nav-link nav-user-img" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="https://img.icons8.com/dusk/100/000000/user-female-circle.png" alt="" class="user-avatar-md rounded-circle"></a>
+            <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
+              <div class="nav-user-info">
+                <h5 class="mb-0 text-white nav-user-name">Jahdiel Sanjeevy</h5>
 
-      </div>
-      <a class="dropdown-item"><i class="fa fa-user mr-2"></i>Account</a>
-      <a class="dropdown-item"><i class="fa fa-cog mr-2"></i>Setting</a>
-      <a class="dropdown-item" href="#"><i class="fa fa-power-off mr-2"></i>Logout</a>
-    </div>
-  </li>-->
-        </ul>
+              </div>
+              <a class="dropdown-item"><i class="fa fa-user mr-2"></i>Account</a>
+              <a class="dropdown-item"><i class="fa fa-cog mr-2"></i>Setting</a>
+              <a class="dropdown-item" href="#"><i class="fa fa-power-off mr-2"></i>Logout</a>
+            </div>
+          </li>-->
+        <!--</ul>
       </div>
     </nav>
   </div>
-</div>
+</div>-->
 
 <!--the notifications section-->
 <ng-template #notificationsCenter let-modal>
@@ -155,16 +191,15 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-        <div class="row1-container" *ngFor="let notificationsList of NotificationsList">
-          <div class="box box-down blue">
-            <div class="cont2">
-            <h3>{{notificationsList.NotificationName}}</h3>
-            <h4>Application {{notificationsList.ApplicationID}}</h4>
-              </div>
-            <p>Application {{notificationsList.NotificationDescription}} on {{notificationsList.DateCreated}}</p>
-          </div>
+    <div class="row1-container" *ngFor="let notificationsList of NotificationsList">
+      <div class="box box-down blue">
+        <div class="cont2">
+          <h3>{{notificationsList.NotificationName}}</h3>
+          <h4>Application {{notificationsList.ApplicationID}}</h4>
         </div>
+        <p>Application {{notificationsList.NotificationDescription}} on {{notificationsList.DateCreated}}</p>
+      </div>
+    </div>
   </div>
 </ng-template>
-
 

@@ -389,11 +389,11 @@ button {
   position: absolute;
 }
 
-.mat-column-actions {
+.mat-column-DocumentName {
   word-wrap: break-word !important;
   white-space: unset !important;
   flex: 0 0 8% !important;
-  width: 19% !important;
+  width: 60% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
@@ -401,5 +401,20 @@ button {
   -moz-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
+}
+
+.mat-column-actions {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 20% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  text-align: center;
 }
 

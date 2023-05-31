@@ -91,10 +91,6 @@ const ELEMENT_DATA: PeriodicElement[] = [
   {  name: 'deposit DS456'},
 ];
 
-//export interface Documents {
-//  name: string;
-
-//}
 
 export interface Documents {
   DocumentID: number;
@@ -102,7 +98,6 @@ export interface Documents {
   DocumentLocalPath: string;
   ApplicationID: number;
   AssignedUserID: string;
-  
 }
 
 
@@ -120,13 +115,6 @@ export interface DepositRequired {
   WBS?: string;
 }
 
-
-
-//const Document_DATA: Documents[] = [
-//  { name: 'doc1' },
-//  { name: 'doc2'  },
-//  { name: 'doc3' },
-//];
 
 var img = new Image();
 img.src = 'assets/cctlogoblack.png';
@@ -253,7 +241,7 @@ export class ViewProjectInfoComponent implements OnInit {
   displayedColumns: string[] = [ 'name','actions'];
   dataSource = ELEMENT_DATA;
 
-  displayedColumnsDocs: string[] = ['documentName','actions'];
+  displayedColumnsDocs: string[] = ['DocumentName','actions'];
   dataSourceDoc = this.Documents;
 
   constructor(private modalService: NgbModal,
@@ -272,6 +260,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   ngOnInit(): void {
     this.getApplicationDetailsForDocs();
+    this.getAllDocsForApplication();
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
@@ -306,7 +295,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.canReapply = this.sharedService.getCanReapply();
     console.log("canReapplyVen: ", this.canReapply);
     this.setProjectNumber();
-    this.getAllDocsForApplication();
+
   }
 
   setProjectNumber() {
@@ -329,20 +318,20 @@ export class ViewProjectInfoComponent implements OnInit {
           tempDocList.ApplicationID = current.applicationID;
           tempDocList.AssignedUserID = current.assignedUserID;
         
-
+         
 
           this.Documents.push(tempDocList);
          
-          // this.sharedService.setStageData(this.StagesList);
-        }
 
+        }
+        
         this.DocumentsListTable?.renderRows();
+        console.log("GOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCS", this.Documents[0]);
       }
       else {
         alert(data.responseMessage);
 
       }
-      this.DocumentsListTable?.renderRows();
       console.log("reponseGetAllDocsForApplication", data);
 
     }, error => {
