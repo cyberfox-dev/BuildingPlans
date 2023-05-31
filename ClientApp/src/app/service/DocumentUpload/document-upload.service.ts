@@ -31,6 +31,12 @@ export class DocumentUploadService {
 
   }
 
+  public getAllDocumentsForApplication(applicationID: number) {
+
+    return this.httpClient.post(this.baseURL + "GetAllDocumentsForApplication", applicationID);
+
+  }
+
   public getAllDocuments() {
 
     return this.httpClient.get(this.baseURL + "GetAllDocuments");

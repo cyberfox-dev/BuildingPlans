@@ -12,7 +12,10 @@ import { DatePipe } from '@angular/common';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
 import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component'
 import { ConfigService } from 'src/app/service/Config/config.service';
+import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-upload.service';
 import { FormBuilder, Validators } from '@angular/forms';
+import { MatTable } from '@angular/material/table';
+
 
 
 export interface ARCGISAPIData {
@@ -88,10 +91,20 @@ const ELEMENT_DATA: PeriodicElement[] = [
   {  name: 'deposit DS456'},
 ];
 
-export interface Documents {
-  name: string;
+//export interface Documents {
+//  name: string;
 
+//}
+
+export interface Documents {
+  DocumentID: number;
+  DocumentName: string;
+  DocumentLocalPath: string;
+  ApplicationID: number;
+  AssignedUserID: string;
+  
 }
+
 
 
 export interface DepositRequired {
@@ -107,11 +120,13 @@ export interface DepositRequired {
   WBS?: string;
 }
 
-const Document_DATA: Documents[] = [
-  { name: 'doc1' },
-  { name: 'doc2'  },
-  { name: 'doc3' },
-];
+
+
+//const Document_DATA: Documents[] = [
+//  { name: 'doc1' },
+//  { name: 'doc2'  },
+//  { name: 'doc3' },
+//];
 
 var img = new Image();
 img.src = 'assets/cctlogoblack.png';
@@ -177,12 +192,14 @@ export class ViewProjectInfoComponent implements OnInit {
   DepositRequired: DepositRequired[] = [];
   relatedApplications: ApplicationList[] = [];
 
+  Documents: Documents[] = [];
+
   ApplicationID: number | undefined;
 
   CurrentUser: any;
   //Convert the local storage JSON data to an array object
   stringifiedData: any;
-
+  @ViewChild(MatTable) DocumentsListTable: MatTable<Documents> | undefined;
 
   @ViewChild('fileInput') fileInput: ElementRef | undefined;
   fileAttr = 'Choose File';
@@ -236,8 +253,8 @@ export class ViewProjectInfoComponent implements OnInit {
   displayedColumns: string[] = [ 'name','actions'];
   dataSource = ELEMENT_DATA;
 
-  displayedColumnsDocs: string[] = ['name','actions'];
-  dataSourceDoc = Document_DATA;
+  displayedColumnsDocs: string[] = ['documentName','actions'];
+  dataSourceDoc = this.Documents;
 
   constructor(private modalService: NgbModal,
     private sharedService: SharedService,
@@ -250,6 +267,7 @@ export class ViewProjectInfoComponent implements OnInit {
     private viewContainerRef: ViewContainerRef,
     private configService: ConfigService,
     private formBuilder: FormBuilder,
+    private documentUploadService: DocumentUploadService,
   ) { }
 
   ngOnInit(): void {
@@ -278,6 +296,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.ARCGISAPIData.isActive = "1";
     /*    this.ARCGISAPIData.applicationID = this.notificationNumber;*/
     this.getAllComments();
+ 
     this.getUserProfileByUserID();
     this.getAllStages();
     this.setInterface();
@@ -287,11 +306,53 @@ export class ViewProjectInfoComponent implements OnInit {
     this.canReapply = this.sharedService.getCanReapply();
     console.log("canReapplyVen: ", this.canReapply);
     this.setProjectNumber();
+    this.getAllDocsForApplication();
   }
 
   setProjectNumber() {
     this.projectNo = this.CurrentApplicationBeingViewed[0].ProjectNumber;
     
+  }
+
+
+  getAllDocsForApplication() {
+    this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempDocList = {} as Documents;
+          const current = data.dateSet[i];
+
+          tempDocList.DocumentID = current.documentID;
+          tempDocList.DocumentName = current.documentName;
+          tempDocList.DocumentLocalPath = current.documentLocalPath;
+          tempDocList.ApplicationID = current.applicationID;
+          tempDocList.AssignedUserID = current.assignedUserID;
+        
+
+
+          this.Documents.push(tempDocList);
+         
+          // this.sharedService.setStageData(this.StagesList);
+        }
+
+        this.DocumentsListTable?.renderRows();
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      this.DocumentsListTable?.renderRows();
+      console.log("reponseGetAllDocsForApplication", data);
+
+    }, error => {
+      console.log("ErrorGetAllDocsForApplication: ", error);
+    })
+
+  }
+
+  viewDocument() {
+
   }
 
   getAllComments() {
