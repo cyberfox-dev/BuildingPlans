@@ -81,6 +81,8 @@ import { MatSliderModule } from '@angular/material/slider';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { InternalUserUnassignedDepartmentComponent } from './internal-user-unassigned-department/internal-user-unassigned-department.component';
 import { DocumentsComponentComponent } from './documents-component/documents-component.component';
+import { TypeOfExcavationComponent } from './type-of-excavation/type-of-excavation.component';
+
 
 //import { MapModule } from 'arcgis-js-api';
 //import Map from "@arcgis/core/Map";
@@ -147,6 +149,7 @@ import { DocumentsComponentComponent } from './documents-component/documents-com
     UserManagementComponent,
     InternalUserUnassignedDepartmentComponent,
     DocumentsComponentComponent,
+    TypeOfExcavationComponent,
   
 
   ],

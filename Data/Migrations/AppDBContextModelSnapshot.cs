@@ -1095,6 +1095,37 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("SubDepartmentsTable");
                 });
 
+            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.TypeOfExcavation", b =>
+                {
+                    b.Property<int>("TypeOfExcavationID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TypeOfExcavationID"), 1L, 1);
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TypeOfExcavationDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TypeOfExcavationName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("TypeOfExcavationID");
+
+                    b.ToTable("TypesOfExcavation");
+                });
+
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.UserProfile", b =>
                 {
                     b.Property<int?>("UserProfileID")
