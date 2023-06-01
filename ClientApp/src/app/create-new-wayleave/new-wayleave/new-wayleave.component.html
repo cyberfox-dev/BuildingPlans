@@ -310,7 +310,7 @@
 
     <!---------------------------------------------------------------Project Details----------------------------------------------------------->
     <mat-step>
-      <form>
+  
 
 
 
@@ -388,11 +388,14 @@
               <h3><span>Type of excavation</span></h3>
             </div>
             <div class="container-fluid">
-              <mat-button-toggle-group [(ngModel)]="excavationType" name="excavationType" aria-label="Font Style">
-                <mat-button-toggle value="Hand Excavation">Hand Excavation</mat-button-toggle>
-                <mat-button-toggle value="Machine Excavation">Machine Excavation</mat-button-toggle>
-                <mat-button-toggle value="Drilling">Drilling</mat-button-toggle>
-              </mat-button-toggle-group>
+
+              <mat-form-field>
+                <mat-label>Types of excavation</mat-label>
+                <mat-select [(ngModel)]="TOENAMES"  multiple>
+                  <mat-option *ngFor="let TOE of TypeOfExcavationList" [value]="TOE.typeOfExcavationName">{{TOE.typeOfExcavationName}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+  
             </div>
           </div>
         </div>
@@ -448,7 +451,7 @@
         </div>
 
 
-      </form>
+      
 
 
       <div class="cont">
@@ -465,7 +468,7 @@
 
     <mat-step>
       <form>
-        <ng-template matStepLabel>checklist and document uploads</ng-template>
+        <ng-template matStepLabel>document uploads</ng-template>
       </form>
       <mat-list *ngFor="let manDoc of MandatoryDocumentsLinkedStagesList; let i=index" [attr.data-index]="i">
         <mat-list-item> {{manDoc.mandatoryDocumentName}}</mat-list-item>

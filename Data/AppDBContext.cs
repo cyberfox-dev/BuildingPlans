@@ -46,6 +46,7 @@ namespace WayleaveManagementSystem.Data
         public DbSet<DepositRequired> DepositRequired { get; set; }
 
         public DbSet<AccessGroups> AccessGroups { get; set; }
+        public DbSet<TypeOfExcavation> TypesOfExcavation { get; set; }
         public DbSet<Config> Config { get; set; }
         public DbSet<AccessGroupUserLink> AccessGroupUserLink { get; set; }
         public DbSet<AccessGroupRoleLink> AccessGroupRoleLink { get; set; }

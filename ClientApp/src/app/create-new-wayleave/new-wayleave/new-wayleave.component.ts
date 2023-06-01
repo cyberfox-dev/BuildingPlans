@@ -4,7 +4,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ApplicationsService } from 'src/app/service/Applications/applications.service';
 import { Address } from 'ngx-google-places-autocomplete/objects/address';
 import { GooglePlaceDirective } from 'ngx-google-places-autocomplete';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { empty } from 'rxjs';
 import { ZonesService } from 'src/app/service/Zones/zones.service';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
@@ -26,6 +26,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentForComment/sub-department-for-comment.service';
 import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
 import { SubDepartmentsService } from 'src/app/service/SubDepartments/sub-departments.service';
+import { TypeOfExcavationService } from 'src/app/service/TypeOfExcavation/type-of-excavation.service';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable'
 /*import { format } from 'path/win32';*/
@@ -37,6 +38,12 @@ export interface MandatoryDocumentsLinkedStagesList {
   mandatoryDocumentName: string;
   stageID: number;
   stageName: string;
+  dateCreated: any;
+}
+export interface TypeOfExcavationList {
+  typeOfExcavationID: number;
+  typeOfExcavationName: string;
+  typeOfExcavationDescription: string;
   dateCreated: any;
 }
 
@@ -201,6 +208,11 @@ export class NewWayleaveComponent implements OnInit {
   professionalType!: string;
   userID = '';
 
+  public getTOEValues = this.formBuilder.group({
+    TOEName: ['', Validators.required]
+
+  })
+
   CurrentStageName = '';
   /*Client details*/
   clientUserID = '';
@@ -244,6 +256,8 @@ export class NewWayleaveComponent implements OnInit {
   expectedStartDate: Date = new Date();
   expectedEndType: Date = new Date();
 
+  TOENAMES = '';
+
   projectNumber = '';
 
   /*New Engineer information*/
@@ -277,7 +291,7 @@ export class NewWayleaveComponent implements OnInit {
   DepartmentAdminList: DepartmentAdminList[] = [];
   MandatoryDocumentUploadList: MandatoryDocumentUploadList[] = [];
   MandatoryDocumentsLinkedStagesList: MandatoryDocumentsLinkedStagesList[] = [];
-
+  TypeOfExcavationList: TypeOfExcavationList[] = [];
   ApplicationListForReapply: ApplicationList[] = [];
 
   public external: boolean = true;
@@ -347,6 +361,7 @@ export class NewWayleaveComponent implements OnInit {
   private readonly apiUrl: string = this.shared.getApiUrl();
 
   fileAttrs: string[] = [];
+    TOE = "";
 
 
 
@@ -384,6 +399,7 @@ export class NewWayleaveComponent implements OnInit {
     private subDepartmentForCommentService: SubDepartmentForCommentService,
     private notificationsService: NotificationsService,
     private subDepartmentsService: SubDepartmentsService,
+    private typeOfExcavationService: TypeOfExcavationService,
   ) { }
 
   ngOnInit(): void {
@@ -410,7 +426,7 @@ export class NewWayleaveComponent implements OnInit {
     // this.StagesList = this.shared.getStageData();
 
     this.getAllStages();
-
+    this.getAllTOE();
 
     this.getAllDepartmentAdminsForNotifications();
 
@@ -720,11 +736,13 @@ export class NewWayleaveComponent implements OnInit {
 
   onWayleaveCreate(appUserId) {
 
-    
+
+
+    this.applicationID = this.shared.getApplicationID();
     this.projectNumber = this.shared.getProjectNumber();
 
     //Check if applicationid exists or not.
-    this.applicationID = this.shared.getApplicationID();
+  
 
     if (this.applicationID != undefined || this.applicationID != null) {
 
@@ -763,9 +781,26 @@ export class NewWayleaveComponent implements OnInit {
 
     }
 
+
+
     if (this.client) {
 
-      this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, this.projectNumber).subscribe((data: any) => {
+
+      for (var i = 0; i < this.TOENAMES.length; i++) {
+        let current = this.TOENAMES[i].toString();
+        if (i > 0) {
+          this.TOE = this.TOE + ", " + current
+        } else {
+          this.TOE = current
+        }
+
+
+      }
+
+
+      console.log("lhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfh BUTTTTTONN", this.TOE);
+
+      this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, this.projectNumber).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           alert(data.responseMessage);
@@ -837,8 +872,23 @@ export class NewWayleaveComponent implements OnInit {
       })
     }
     else if (this.internal) {
+ 
+
+      for (var i = 0; i < this.TOENAMES.length; i++) {
+        let current = this.TOENAMES[i].toString();
+        if (i > 0) {
+          this.TOE = this.TOE + ", " + current
+        } else {
+          this.TOE = current
+        }
+
+
+      }
+
+
+      console.log("lhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfh BUTTTTTONN", this.TOE);
       
-      this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributed/Unallocated", false, this.projectNumber).subscribe((data: any) => {
+      this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributed/Unallocated", false, this.projectNumber).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           alert(data.responseMessage);
@@ -920,9 +970,23 @@ export class NewWayleaveComponent implements OnInit {
     else {
       //External
       //This is also reached to create a blank application.
+  
+
+      for (var i = 0; i < this.TOENAMES.length; i++) {
+        let current = this.TOENAMES[i].toString();
+        if (i > 0) {
+          this.TOE = this.TOE + ", " + current
+        } else {
+          this.TOE = current
+        }
 
 
-      this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, this.externalAddress, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.excavationType, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, this.projectNumber).subscribe((data: any) => {
+      }
+
+
+      console.log("lhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfh BUTTTTTONN", this.TOE);
+
+      this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, this.externalAddress, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, this.projectNumber).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           /*          alert(data.responseMessage);*/
@@ -1557,9 +1621,52 @@ export class NewWayleaveComponent implements OnInit {
     })
   }
 
+  getAllTOE() {
+
+    this.TypeOfExcavationList.splice(0, this.TypeOfExcavationList.length);
+
+    this.typeOfExcavationService.getAllTypesOfExcavation().subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempTOEList = {} as TypeOfExcavationList;
+          const current = data.dateSet[i];
+          tempTOEList.typeOfExcavationID = current.typeOfExcavationID;
+          tempTOEList.typeOfExcavationName = current.typeOfExcavationName;
+          tempTOEList.typeOfExcavationDescription = current.typeOfExcavationDescription;
+          tempTOEList.dateCreated = current.dateCreated;
+          this.TypeOfExcavationList.push(tempTOEList);
+
+        }
+
+        console.log("Got ALL Types of excavation", this.TypeOfExcavationList);
+
+        console.log("datadatadatadata", data);
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("response", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+  toppings = new FormControl('');
+  toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
+
+
   saveProjectAsDraft() {
 
+
+
+
   }
+
+
+
 
   getAllDepartmentAdminsForNotifications() {
 
@@ -1667,6 +1774,15 @@ export class NewWayleaveComponent implements OnInit {
       this.projectNumber = '';
 
     }
+
+
+  }
+
+
+  savetypesOFexcavation() {
+
+   // console.log("lhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfh ", "Hi");
+  
   }
 
 

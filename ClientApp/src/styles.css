@@ -67,30 +67,9 @@ code {
       background: #a1ffc8;
     }
 
-@media (min-width:670px) {
-  #stripes span {
-    height: 150px;
-  }
 
-  #stripes :nth-child(1) {
-    top: 0;
-  }
 
-  #stripes :nth-child(2) {
-    width: 16.66667%;
-    top: 300px;
-    bottom: auto;
-    background: #0dcfff;
-  }
-
-  #stripes :nth-child(3) {
-    width: 33.33333%;
-    right: auto;
-    background: #11bdff;
-  }
-}
-
-@media (min-width: 880px) {
+@media (min-width: 500px) {
   #stripes span {
     height: 190px;
   }
