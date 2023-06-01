@@ -344,7 +344,7 @@ export class NewWayleaveComponent implements OnInit {
   notiName: string;
   notiDescription: string;
   //CoverLetterFileName = "Choose file";
-
+  private readonly apiUrl: string = this.shared.getApiUrl();
 
   fileAttrs: string[] = [];
 
@@ -801,7 +801,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
-            this.http.post('https://localhost:7123/api/documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+            this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
               .subscribe({
                 next: (event) => {
 
@@ -829,6 +829,7 @@ export class NewWayleaveComponent implements OnInit {
           this.router.navigate(["/new-wayleave"]);
         } else {
           this.router.navigate(["/home"]);
+          this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...");
         };
 
       }, error => {
@@ -876,7 +877,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
-            this.http.post('https://localhost:7123/api/documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+            this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
               .subscribe({
                 next: (event) => {
 
@@ -908,6 +909,7 @@ export class NewWayleaveComponent implements OnInit {
           this.router.navigate(["/new-wayleave"]);
         } else {
           this.router.navigate(["/home"]);
+          this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...");
         };
 
       }, error => {
@@ -960,6 +962,7 @@ export class NewWayleaveComponent implements OnInit {
           this.router.navigate(["/new-wayleave"]);
         } else {
           this.router.navigate(["/home"]);
+          this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...");
         };
 
         //        this.shared.setApplicationID(0); //sets the applicationID back to zero when a new application is created.
