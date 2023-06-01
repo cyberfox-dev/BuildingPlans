@@ -341,7 +341,7 @@ export class NavMenuComponent implements OnInit {
       this.Icons = false;
     }
     else {
-      this.Icons = true;
+
       this.Links = false
     }
   }

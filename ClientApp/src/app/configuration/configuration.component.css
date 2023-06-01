@@ -1,6 +1,4 @@
-app-nav-menu {
- margin:60px;
-}
+
 
 .mat-success {
   background-color: #2dd568;
@@ -52,12 +50,13 @@ h1 {
   margin: 0 auto;
   text-align: center;
   padding-top: 40px;
-  padding-bottom: 40px;
+  /* padding-bottom: 40px; */
   color: #343a40;
   font-size: 70px;
   font-weight: bold;
   margin-top: 152px;
-  padding-bottom: 206px;
+  /* padding-bottom: 206px; */
+  margin-bottom: 237px;
 }
 
 
