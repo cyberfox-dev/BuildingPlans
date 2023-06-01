@@ -738,11 +738,11 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
-    
+    this.applicationID = this.shared.getApplicationID();
     this.projectNumber = this.shared.getProjectNumber();
 
     //Check if applicationid exists or not.
-    this.applicationID = this.shared.getApplicationID();
+  
 
     if (this.applicationID != undefined || this.applicationID != null) {
 
@@ -784,7 +784,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
     if (this.client) {
-      let sendTOe = this.TOENAMES[0].toString();
+
 
       for (var i = 0; i < this.TOENAMES.length; i++) {
         let current = this.TOENAMES[i].toString();
@@ -871,7 +871,7 @@ export class NewWayleaveComponent implements OnInit {
       })
     }
     else if (this.internal) {
-      let sendTOe = this.TOENAMES[0].toString();
+ 
 
       for (var i = 0; i < this.TOENAMES.length; i++) {
         let current = this.TOENAMES[i].toString();
@@ -968,7 +968,7 @@ export class NewWayleaveComponent implements OnInit {
     else {
       //External
       //This is also reached to create a blank application.
-      let sendTOe = this.TOENAMES[0].toString();
+  
 
       for (var i = 0; i < this.TOENAMES.length; i++) {
         let current = this.TOENAMES[i].toString();
@@ -1776,7 +1776,7 @@ export class NewWayleaveComponent implements OnInit {
   }
 
 
-  onSaveTypeOfExcavation() {
+  savetypesOFexcavation() {
 
    // console.log("lhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfh ", "Hi");
   
