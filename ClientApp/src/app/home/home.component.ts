@@ -481,7 +481,7 @@ export class HomeComponent implements OnInit,OnDestroy {
     this.router.navigate(["/view-project-info"]);
   }
 
-  goToNewWayleave(applicationType: boolean) { //application type refers to whether it is a brand new application or if it is a reapply.
+  goToNewWayleave(applicationType: boolean, isPlanning: boolean) { //application type refers to whether it is a brand new application or if it is a reapply.
     this.sharedService.setReapply(applicationType);
     this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId);
     //console.log("Test: " + this.sharedService.getApplicationID())
