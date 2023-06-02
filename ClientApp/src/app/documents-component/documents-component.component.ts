@@ -3,6 +3,7 @@ import { MatTable } from '@angular/material/table';
 
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { DocumentUploadService } from '../service/DocumentUpload/document-upload.service';
+import { SharedService } from "../shared/shared.service";
 
 export interface DocumentsList {
   DocumentID: number;
@@ -22,6 +23,7 @@ export class DocumentsComponentComponent implements OnInit {
   @Input() ApplicationID: number;
 
   DocumentsList: DocumentsList[] = [];
+  private readonly apiUrl: string = this.shared.getApiUrl();
 
   @ViewChild(MatTable) DocumentsListTable: MatTable<DocumentsList> | undefined;
 
@@ -30,7 +32,7 @@ export class DocumentsComponentComponent implements OnInit {
   dataSourceDoc = this.DocumentsList;
 
 
-  constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal,) { }
+  constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService) { }
 
   ngOnInit(): void {
 
@@ -67,7 +69,7 @@ export class DocumentsComponentComponent implements OnInit {
   viewDocument(index:any) {
 
     // Make an HTTP GET request to fetch the document
-    fetch(`https://localhost:7123/api/documentUpload/GetDocument?filename=${this.DocumentsList[index].DocumentName}`)
+    fetch(this.apiUrl + 'documentUpload/GetDocument?filename=${this.DocumentsList[index].DocumentName}')
       .then(response => {
         if (response.ok) {
           // The response status is in the 200 range
