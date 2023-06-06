@@ -481,7 +481,8 @@ export class HomeComponent implements OnInit,OnDestroy {
     this.router.navigate(["/view-project-info"]);
   }
 
-  goToNewWayleave(applicationType: boolean) {
+  goToNewWayleave(applicationType: boolean, isPlanning: boolean) { //application type refers to whether it is a brand new application or if it is a reapply.
+
     console.log("THIS IS THE CURRENT USER SDKLFHLSDKFJKLSDFJKLSJDFKLJFKLJSDFKLJSLDKFJKLDSFKLSDF", this.CurrentUser.appUserId)
     //application type refers to whether it is a brand new application or if it is a reapply.
     console.log("THIS IS THE APPLICATION TYPE", applicationType);
