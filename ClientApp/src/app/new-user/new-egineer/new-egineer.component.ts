@@ -49,7 +49,7 @@ export class NewEgineerComponent implements OnInit {
 
   constructor(private modalService: NgbModal, private shared: SharedService) { }
 
-  displayedColumns: string[] = ['ProfessinalType', 'bpNumber', 'name', 'surname', 'professionalRegNo', 'phoneNumber', 'email', 'actions'];
+  displayedColumns: string[] = ['ProfessinalType', 'name', 'surname', 'phoneNumber', 'email', 'actions'];
   myDataSource = this.tempEngineerList;
   @ViewChild(MatTable) table: MatTable<EngineerList> | undefined;
 

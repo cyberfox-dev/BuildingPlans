@@ -56,7 +56,7 @@ export class NewContractorComponent implements OnInit {
 
   constructor(private modalService: NgbModal, private shared: SharedService) { }
 
-  displayedColumns: string[] = ['ProfessinalType', 'bpNumber', 'name', 'surname', 'professionalRegNo', 'phoneNumber','CIBRating' ,'email', 'actions'];
+  displayedColumns: string[] = ['ProfessinalType', 'name', 'surname', 'phoneNumber','CIBRating' ,'email', 'actions'];
   dataSource = this.tempContractorList;
   @ViewChild(MatTable) table: MatTable<ContractorList> | undefined;
 

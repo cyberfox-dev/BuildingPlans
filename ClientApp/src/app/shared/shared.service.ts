@@ -93,6 +93,7 @@ export class SharedService {
   ProjectNumber: string = "Ven123";
   canReapply: any = false;
   reapply: boolean = false;
+  userRoles = '';
 
   constructor() { }
 
@@ -292,5 +293,13 @@ getApplicationID(): any {
 
   getReapply() {
     return this.reapply; //application type refers to whether it is a brand new application or if it is a reapply.
+  }
+
+  getUserRoles() {
+    return this.userRoles;
+  }
+
+  setUserRoles(data: any) {
+    this.userRoles = data;
   }
 }
