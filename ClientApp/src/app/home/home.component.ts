@@ -115,7 +115,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   rejectCount = 0;
   filter = false;
   previousYear: number;
-  previousYear: number;
+
   createNewWayleaveBtn: boolean = true;
   createNewPlanningWayleaveBtn: boolean = true;
 
