@@ -94,6 +94,7 @@ export class SharedService {
   ProjectNumber: string;
   canReapply: any = false;
   reapply: boolean = false;
+  userRoles = '';
 
   constructor() { }
 
@@ -138,9 +139,9 @@ export class SharedService {
   }
 
   getApiUrl() {
-        return "https://localhost:7123/api/";
+/*        return "https://localhost:7123/api/";*/
     /*    return "http://172.29.166.10/api/";*/
-/*    return "https://wayleaveqa.capetown.gov.za/api/";*/
+    return "https://wayleaveqa.capetown.gov.za/api/";
 
     //this is the original ip address for venolin :)
   /*  return "https://197.242.150.226:7123/api/";*/
@@ -294,5 +295,13 @@ getApplicationID(): any {
 
   getReapply() {
     return this.reapply; //application type refers to whether it is a brand new application or if it is a reapply.
+  }
+
+  getUserRoles() {
+    return this.userRoles;
+  }
+
+  setUserRoles(data: any) {
+    this.userRoles = data;
   }
 }

@@ -96,7 +96,7 @@ export class DocumentsComponentComponent implements OnInit {
 
 
   getAllDocsForApplication() {
-    debugger;
+    
     this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {

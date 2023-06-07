@@ -317,7 +317,7 @@ export class GlCodeConfigComponent implements OnInit {
   departmentSelectedForGLCodelink(depID: any) {
     this.selectionDepartmentGLCodeList.clear();
     this.selectionDepartmentGLCodeList.select(depID);
-    debugger;
+    
     this.departmentID = this.DepartmentList[depID].departmentID;
     this.departmentName = this.DepartmentList[depID].departmentName;
     

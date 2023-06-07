@@ -70,6 +70,8 @@ export interface ApplicationList {
 export interface RolesList {
   RoleID: number;
   RoleName: string;
+  AccessGroupID: number;
+  AccessGroupName: string;
   //RoleType: string;
   //RoleDescription: string;
 }
@@ -113,6 +115,9 @@ export class HomeComponent implements OnInit,OnDestroy {
   rejectCount = 0;
   filter = false;
   previousYear: number;
+  previousYear: number;
+  createNewWayleaveBtn: boolean = true;
+  createNewPlanningWayleaveBtn: boolean = true;
 
 
   constructor(
@@ -235,12 +240,13 @@ export class HomeComponent implements OnInit,OnDestroy {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempRolesList = {} as RolesList;
           const current = data.dateSet[i];
+          tempRolesList.AccessGroupName = current.accessGroupName;
+          tempRolesList.AccessGroupID = current.accessGroupID;
           tempRolesList.RoleID = current.roleID;
           tempRolesList.RoleName = current.roleName;
-          //tempRolesList.RoleType = current.roleType;
-          //tempRolesList.RoleDescription = current.roleDescription;
 
           this.RolesList.push(tempRolesList);
+          
           
 
         }
@@ -259,6 +265,9 @@ export class HomeComponent implements OnInit,OnDestroy {
     })
 
   }
+
+
+
 
   getAllApplicationsByUserID() {
     debugger;

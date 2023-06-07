@@ -18,6 +18,12 @@ export interface CommentList {
   DateCreated: string;
   createdBy:any;
 }
+export interface RolesList {
+  RoleID: number;
+  RoleName: string;
+  AccessGroupID: number;
+  AccessGroupName: string;
+}
 
 export interface NotificationsList {
   NotificationID: number;
@@ -39,6 +45,7 @@ export class NavMenuComponent implements OnInit {
   notiBell = true;
   CommentList: CommentList[] = [];
   NotificationsList: NotificationsList[] = [];
+  RolesList: RolesList[] = [];
   forEditIndex: any;
 
   public isInternalUser: boolean = false;
@@ -53,6 +60,7 @@ export class NavMenuComponent implements OnInit {
     editCommentName: ['', Validators.required],
   })
     applica: any;
+    UserRoles: import("C:/CyberfoxProjects/WayleaveManagementSystem/ClientApp/src/app/shared/shared.service").RolesList[];
 
   constructor(private modalService: NgbModal, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService) { }
 
@@ -76,8 +84,33 @@ export class NavMenuComponent implements OnInit {
     }
     this.getUserProfileByUserID();
     
+    this.lockViewAccordingToRoles()
 
-     
+    this.UserRoles = this.shared.getCurrentUserRoles();
+
+    this.setCurrentUserRoles();
+  }
+
+  lockViewAccordingToRoles() {
+
+    for (var i = 0; i < this.RolesList.length; i++) {
+
+      if (this.RolesList[i].RoleName == "Create Wayleave") {
+
+      }
+
+
+    }
+
+
+  }
+
+  setCurrentUserRoles() {
+    
+    this.RolesList[0].RoleName = this.UserRoles[0].RoleName;
+    this.RolesList[0].RoleID = this.UserRoles[0].RoleID;
+
+    console.log("SJDHFKSHFKJSDJKFHJKSDFHKLDFSHKSDJFHLKJSDFHLKJSDFKSDFSDFSDFSDFSDF", this.RolesList)
   }
 
   getUserProfileByUserID() {

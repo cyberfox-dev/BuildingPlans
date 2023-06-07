@@ -91,10 +91,34 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-
+  fileAttr = 'Choose File';
   @Input() ApplicationID: any;
   @Input() CurrentApplicant: any;
   /*textfields*/
+
+  uploadFileEvt(imgFile: any) {
+    if (imgFile.target.files && imgFile.target.files[0]) {
+      this.fileAttr = '';
+      Array.from(imgFile.target.files).forEach((file: any) => {
+        this.fileAttr += file.name + ' - ';
+      });
+      // HTML5 FileReader API
+      let reader = new FileReader();
+      reader.onload = (e: any) => {
+        let image = new Image();
+        image.src = e.target.result;
+        image.onload = (rs) => {
+          let imgBase64Path = e.target.result;
+          //  console.log("e.target.result", e.target.result); 
+        };
+      };
+      reader.readAsDataURL(imgFile.target.files[0]);
+      // Reset if duplicate image uploaded again
+
+    } else {
+      this.fileAttr = 'Choose File';
+    }
+  }
 
   public depositRequired = this.formBuilder.group({
     /*viewSelectedSubDep: ['', Validators.required],*/
@@ -253,6 +277,9 @@ export class ActionCenterComponent implements OnInit {
    
       //this.CheckIfCurrentUserCanUseHopper();
    // }, 1000);
+
+
+
   }
 
 
@@ -411,13 +438,13 @@ export class ActionCenterComponent implements OnInit {
 
   CanCommentSR() {
     this.getDepartmentManagerUserID("Senior Reviewer");
-    debugger;
+    
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         for (var i = 0; i < data.dateSet.length; i++) {
           let current = data.dateSet[i];
-          debugger;
+          
           if (current.userAssaignedToComment == this.CurrentUser.appUserId && current.userAssaignedToComment == this.userID) {
             this.canCommentSR = true;
             //console.log("vvvvvvvcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent",current);
@@ -571,7 +598,7 @@ export class ActionCenterComponent implements OnInit {
     //  }
 
     //}
-    debugger;
+    
 
     this.accessGroupsService.getUserBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
 

@@ -46,54 +46,16 @@ code {
       height: 40px;
     }
 
-    #stripes :nth-child(1) {
-      width: 50%;
-      left: 50%;
-      top: 40px;
-      background: #4c29ff;
-    }
-
-    #stripes :nth-child(2) {
-      width: 14%;
-      right: 0;
-      bottom: 40px;
-      background: #2be7ff;
-    }
-
-    #stripes :nth-child(3) {
-      width: 25%;
-      bottom: 0;
-      right: 0;
-      background: #a1ffc8;
-    }
 
 
 
-@media (min-width: 500px) {
+
+@media (min-width: 400px) {
   #stripes span {
     height: 190px;
   }
 
-  #stripes :nth-child(1) {
-    width: 33.33333%;
-    left: -16.66666%;
-    background: #53f;
-  }
-
-  #stripes :nth-child(2) {
-    width: 33.33333%;
-    top: 0;
-    left: 16.66666%;
-    right: auto;
-    background: #4553ff;
-  }
-
-  #stripes :nth-child(3) {
-    width: 33.33333%;
-    left: 49.99999%;
-    bottom: auto;
-    background: #4f40ff;
-  }
+ 
 
   #stripes :nth-child(4) {
     width: 33.33333%;
