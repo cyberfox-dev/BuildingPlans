@@ -69,7 +69,7 @@ export class DocumentsComponentComponent implements OnInit {
   viewDocument(index:any) {
 
     // Make an HTTP GET request to fetch the document
-    fetch(this.apiUrl + 'documentUpload/GetDocument?filename=${this.DocumentsList[index].DocumentName}')
+    fetch(`this.apiUrl + documentUpload/GetDocument?filename=${this.DocumentsList[index].DocumentName}`)
       .then(response => {
         if (response.ok) {
           // The response status is in the 200 range
