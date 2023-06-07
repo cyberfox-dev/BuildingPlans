@@ -15,6 +15,7 @@ import { ConfigService } from 'src/app/service/Config/config.service';
 import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-upload.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
+import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 
 
 
@@ -83,7 +84,8 @@ export interface ApplicationList {
   NextStageNumber: number,
   PreviousStageName: string,
   PreviousStageNumber: number,
-  ProjectNumber: string
+  ProjectNumber: string,
+  isPlanning?: boolean,
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
@@ -250,6 +252,7 @@ export class ViewProjectInfoComponent implements OnInit {
     private viewContainerRef: ViewContainerRef,
     private configService: ConfigService,
     private formBuilder: FormBuilder,
+    private router: Router,
  
   ) { }
 
@@ -262,9 +265,18 @@ export class ViewProjectInfoComponent implements OnInit {
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
 
-
+   
     const setValues = this.applicationDataForView[0];
-    this.ApplicationID = setValues.applicationID;
+
+    if (setValues != null || setValues != undefined) {
+ 
+      this.ApplicationID = setValues.applicationID;
+    }
+    else {
+ 
+      this.router.navigate(["/home"]);
+    }
+   
 
     this.CurrentApplicant = setValues.CreatedById;
 
@@ -1478,7 +1490,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   goToNewWayleave(applicationType: boolean) { //application type refers to whether it is a brand new application or if it is a reapply.
     this.sharedService.setReapply(applicationType);
-    this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId);
+    this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId, false);
     //console.log("Test: " + this.sharedService.getApplicationID())
     /*        this.router.navigate(["/new-wayleave"]);*/
     this.viewContainerRef.clear();

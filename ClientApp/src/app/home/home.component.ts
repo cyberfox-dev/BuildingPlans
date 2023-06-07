@@ -62,7 +62,8 @@ export interface ApplicationList {
   NextStageNumber: number,
   PreviousStageName: string,
   PreviousStageNumber: number,
-  ProjectNumber: string;
+  ProjectNumber: string,
+  isPlanning?: boolean,
 }
 
 
@@ -111,7 +112,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   EMBcount = 0;
   rejectCount = 0;
   filter = false;
-    previousYear: number;
+  previousYear: number;
 
 
   constructor(
@@ -183,7 +184,7 @@ export class HomeComponent implements OnInit,OnDestroy {
            
             if (currentMonth !== Number(this.previousMonth)) {  //this.previousMonth  currentMonth
             
-              this.configService.addUpdateConfig(current.configID, null, null, "1", "0" + currentMonth + changeUtility, null, this.CurrentUser.appUserId ).subscribe((data: any) => {
+              this.configService.addUpdateConfig(current.configID, null, null, "0", "0" + currentMonth + changeUtility, null, this.CurrentUser.appUserId ).subscribe((data: any) => {
               if (data.responseCode == 1) {
                 //for (let i = 0; i < data.dateSet.length; i++) {
                 //  const current = data.dateSet[i];
@@ -260,7 +261,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   }
 
   getAllApplicationsByUserID() {
-
+    debugger;
     
     this.Applications.splice(0, this.Applications.length);
 
@@ -320,6 +321,8 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationListShared.PreviousStageName = current.previousStageName;
             tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
             tempApplicationListShared.ProjectNumber = current.projectNumber;
+            debugger;
+            tempApplicationListShared.isPlanning = current.isPlanning;
 
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -396,7 +399,8 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationListShared.NextStageNumber = current.nextStageNumber;
             tempApplicationListShared.PreviousStageName = current.previousStageName;
             tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
-
+            debugger;
+            tempApplicationListShared.isPlanning = current.isPlanning;
 
 
             this.applicationDataForView.push(tempApplicationListShared);
@@ -473,6 +477,7 @@ export class HomeComponent implements OnInit,OnDestroy {
  
     console.log("FIND",this.applicationDataForView[index]);
 
+    debugger;
     this.applicationDataForViewToShared.push(this.applicationDataForView[index])
     console.log("this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]",this.applicationDataForView[index]);
     this.sharedService.setViewApplicationIndex(this.applicationDataForViewToShared);
@@ -488,7 +493,7 @@ export class HomeComponent implements OnInit,OnDestroy {
     console.log("THIS IS THE APPLICATION TYPE", applicationType);
     this.sharedService.setReapply(applicationType);
 
-    this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId);
+    this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId, isPlanning);
 
     this.viewContainerRef.clear();
 
@@ -624,7 +629,9 @@ export class HomeComponent implements OnInit,OnDestroy {
   async CheckIfCanReapply(index: any) {
     this.relatedApplications.splice(0, this.relatedApplications.length);
 
-    await this.applicationService.getApplicationsByProjectNumber(this.sharedService.getProjectNumber()).subscribe((data: any) => {
+    //this.sharedService.getProjectNumber() i removed this
+    this.sharedService.setProjectNumber(this.applicationDataForView[index].ProjectNumber);
+    await this.applicationService.getApplicationsByProjectNumber(this.applicationDataForView[index].ProjectNumber).subscribe((data: any) => {
       if (data.responseCode == 1) {
 
 

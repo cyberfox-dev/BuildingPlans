@@ -38,7 +38,8 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public string? ApplicationStatus { get; set; }
 
-        public bool isDrafted { get; set; }
+        public bool? isDrafted { get; set; }
+        public bool? isPlanning { get; set; }
 
         //for showing/hiding the escalate button
 
