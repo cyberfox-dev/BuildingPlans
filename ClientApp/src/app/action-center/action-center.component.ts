@@ -232,7 +232,7 @@ export class ActionCenterComponent implements OnInit {
   leaveAComment = "";
 
   @ViewChild("internalOpt", { static: true }) content!: ElementRef;
-
+  @Output() refreshParent: EventEmitter<void> = new EventEmitter<void>();
 
   ngOnInit(): void {
    // setTimeout(() => {
@@ -572,6 +572,7 @@ export class ActionCenterComponent implements OnInit {
           alert(data.responseMessage);
           this.getLinkedZones();
           this.updateApplicationStatus();
+          this.refreshParent.emit(); 
         }
         else {
           alert(data.responseMessage);
@@ -850,7 +851,7 @@ export class ActionCenterComponent implements OnInit {
                 if (data.responseCode == 1) {
 
                   alert(data.responseMessage);
-
+                 
                 }
                 else {
                   alert(data.responseMessage);
@@ -906,7 +907,7 @@ export class ActionCenterComponent implements OnInit {
           }, error => {
             console.log("Error: ", error);
           })
-
+          this.refreshParent.emit();
 
         }
         else {
@@ -942,6 +943,7 @@ export class ActionCenterComponent implements OnInit {
           }, error => {
             console.log("Error: ", error);
           })
+          this.refreshParent.emit();
         }
 
         break;
@@ -980,7 +982,7 @@ export class ActionCenterComponent implements OnInit {
         }, error => {
           console.log("Error: ", error);
         })
-
+        this.refreshParent.emit();
         break;
       }
 
@@ -1008,6 +1010,7 @@ export class ActionCenterComponent implements OnInit {
             }, error => {
               console.log("Error: ", error);
             })
+            this.refreshParent.emit();
           }
           else {
             alert(data.responseMessage);
@@ -1046,6 +1049,7 @@ export class ActionCenterComponent implements OnInit {
             }, error => {
               console.log("Error: ", error);
             })
+            this.refreshParent.emit();
           }
           else {
             alert(data.responseMessage);
@@ -1460,7 +1464,7 @@ getAllCommentsByUserID() {
   onLinkZoneForComment() {
 
     const selectZones = this.zoneSelection.selected;
-
+ 
 
     for (var i = 0; i < selectZones.length; i++) {
       this.zoneForCommentService.addUpdateZoneForComment(0, selectZones[i].subDepartmentID, this.ApplicationID, selectZones[i].zoneID, selectZones[i].zoneName ,this.CurrentUser.appUserId).subscribe((data: any) => {
@@ -1468,7 +1472,8 @@ getAllCommentsByUserID() {
         if (data.responseCode == 1) {
 
           alert(data.dateSet.zoneName + " assigned to this Application");
-         this.getLinkedZones();
+          this.getLinkedZones();
+          this.refreshParent.emit();
         }
         else {
 

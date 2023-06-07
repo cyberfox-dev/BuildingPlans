@@ -38,8 +38,9 @@
         public int? NextStageNumber { get; set; }
 
         public string? ApplicationStatus { get; set; }
-        public bool isDrafted { get; set; }
-   
+        public bool? isDrafted { get; set; }
+        public bool? isPlanning { get; set; }
+
 
 
     }

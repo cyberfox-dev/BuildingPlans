@@ -57,7 +57,8 @@ export interface ApplicationList {
   NextStageNumber: number,
   PreviousStageName: string,
   PreviousStageNumber: number,
-  ProjectNumber: string
+  ProjectNumber: string,
+  isPlanning?: boolean,
 }
 
 
@@ -90,7 +91,7 @@ export class SharedService {
   StagesList: StagesList[] = [];
   RolesList: RolesList[] = [];
 
-  ProjectNumber: string = "Ven123";
+  ProjectNumber: string;
   canReapply: any = false;
   reapply: boolean = false;
   userRoles = '';
@@ -274,6 +275,7 @@ getApplicationID(): any {
   }
 
   getProjectNumber() {
+    debugger;
     return this.ProjectNumber;
   }
 

@@ -47,12 +47,13 @@
 
 
 
-<h1>Application Information</h1>
+<h1 *ngIf="CurrentApplicationBeingViewed[0].isPlanning === false" >Application Information</h1>
+<h1 *ngIf="CurrentApplicationBeingViewed[0].isPlanning === true">Application Planning Information</h1>
 <h2>Project number {{projectNo}}</h2>
 
 <div class="cont1">
 
-  <app-action-center [ApplicationID]="ApplicationID" *ngIf="isInternalUser" (optionEvent)="reciveOption($event)"></app-action-center>
+  <app-action-center  [ApplicationID]="ApplicationID" (refreshParent)="ngOnInit()" *ngIf="isInternalUser" (optionEvent)="reciveOption($event)"></app-action-center>
   <button mat-button color="action" [matMenuTriggerFor]="actions"> <mat-icon>more_vert</mat-icon></button>
   <mat-menu #actions="matMenu">
     <button mat-menu-item (click)="ChangeApplicationStatusToPaid()" *ngIf="isInternalUser"> move to paid</button>

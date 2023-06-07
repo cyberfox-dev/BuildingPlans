@@ -19,13 +19,15 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string userID, string fullName, string email, string phoneNumber, string physicalAddress, string referenceNumber, string? companyRegNo, string typeOfApplication, string notificationNumber, string wBSNumber, string physicalAddressOfProject, string descriptionOfProject, string natureOfWork, string excavationType, DateTime expectedStartDate, DateTime expectedEndDate, string location, string createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus, bool? isDrafted,string? projectNumber )
+        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string userID, string fullName, string email, string phoneNumber, string physicalAddress, string referenceNumber, string? companyRegNo, string typeOfApplication, string notificationNumber, string wBSNumber, string physicalAddressOfProject, string descriptionOfProject, string natureOfWork, string excavationType, DateTime expectedStartDate, DateTime expectedEndDate, string location, string createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus, bool? isDrafted,string? projectNumber,bool? isPlanning )
         {
 
             if (ApplicationID == 0)
             {
                 ApplicationID = null;
             }
+
+        
             //this checks is the record exists in the db
             var tempApplicationTable = _context.Application.FirstOrDefault(x => x.ApplicationID == ApplicationID);
 
@@ -66,7 +68,8 @@ namespace WayleaveManagementSystem.Service
                     NextStageNumber = NextStageNumber,
                     ApplicationStatus = ApplicationStatus,
                     isDrafted = false,
-                    ProjectNumber = null,
+                    ProjectNumber = projectNumber,
+                    isPlanning = isPlanning,
 
 
             };
@@ -204,7 +207,7 @@ namespace WayleaveManagementSystem.Service
                 {
                     tempApplicationTable.NextStageNumber = NextStageNumber;
                 }
-                if (NextStageNumber != null)
+                if (projectNumber != null)
                 {
                     tempApplicationTable.ProjectNumber = projectNumber;
                 }
@@ -312,7 +315,8 @@ namespace WayleaveManagementSystem.Service
                        CurrentStageStartDate = Applications.CurrentStageStartDate,
                        NextStageName = Applications.NextStageName,
                        NextStageNumber = Applications.NextStageNumber,
-                       PreviousStageNumber = Applications.PreviousStageNumber
+                       PreviousStageNumber = Applications.PreviousStageNumber,
+                       isPlanning = Applications.isPlanning,
 
                    }
                    ).ToListAsync();
@@ -395,7 +399,8 @@ namespace WayleaveManagementSystem.Service
                        NextStageNumber = Applications.NextStageNumber,  
                        PreviousStageNumber = Applications.PreviousStageNumber,   
                        ProjectNumber = Applications.ProjectNumber,
-                       
+                       isPlanning = Applications.isPlanning,
+
                    }
                    ).ToListAsync();
             }
@@ -436,7 +441,8 @@ namespace WayleaveManagementSystem.Service
                        CurrentStageStartDate = Applications.CurrentStageStartDate,
                        NextStageName = Applications.NextStageName,
                        NextStageNumber = Applications.NextStageNumber,
-                       PreviousStageNumber = Applications.PreviousStageNumber
+                       PreviousStageNumber = Applications.PreviousStageNumber,
+                             isPlanning = Applications.isPlanning,
                    }
                    ).ToListAsync();
             }
@@ -486,7 +492,8 @@ namespace WayleaveManagementSystem.Service
                        CurrentStageStartDate = Applications.CurrentStageStartDate,
                        NextStageName = Applications.NextStageName,
                        NextStageNumber = Applications.NextStageNumber,
-                       PreviousStageNumber = Applications.PreviousStageNumber
+                       PreviousStageNumber = Applications.PreviousStageNumber,
+                       isPlanning = Applications.isPlanning,
 
                    }
                    ).ToListAsync();
@@ -528,7 +535,8 @@ namespace WayleaveManagementSystem.Service
                        CurrentStageStartDate = Applications.CurrentStageStartDate,
                        NextStageName = Applications.NextStageName,
                        NextStageNumber = Applications.NextStageNumber,
-                       PreviousStageNumber = Applications.PreviousStageNumber
+                       PreviousStageNumber = Applications.PreviousStageNumber,
+                       isPlanning = Applications.isPlanning,
                    }
                    ).ToListAsync();
             }
@@ -573,8 +581,9 @@ namespace WayleaveManagementSystem.Service
                        NextStageName = Applications.NextStageName,
                        NextStageNumber = Applications.NextStageNumber,
                        PreviousStageNumber = Applications.PreviousStageNumber,
-                       ProjectNumber = Applications.ProjectNumber
-    }
+                       ProjectNumber = Applications.ProjectNumber,
+                       isPlanning = Applications.isPlanning,
+                   }
                    ).ToListAsync();
         }
 

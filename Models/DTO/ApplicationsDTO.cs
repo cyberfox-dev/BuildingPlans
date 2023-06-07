@@ -45,5 +45,7 @@ namespace WayleaveManagementSystem.Models.DTO
         public string? ApplicationStatus { get; set; }
 
         public int? escalateDate { get; set; }
+        public bool? isPlanning { get; set; }
+
     }
 }
