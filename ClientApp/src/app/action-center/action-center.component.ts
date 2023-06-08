@@ -19,6 +19,7 @@ import { ApplicationsService} from '../service/Applications/applications.service
 import { UserProfileService } from '../service/UserProfile/user-profile.service';
 import { SharedService } from 'src/app/shared/shared.service';
 import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
+import { ViewProjectInfoComponent } from 'src/app/view-project/view-project-info/view-project-info.component';
 
 
 export interface SubDepartmentList {
@@ -230,6 +231,7 @@ export class ActionCenterComponent implements OnInit {
     private applicationsService: ApplicationsService,
     private sharedService: SharedService,
     private accessGroupsService: AccessGroupsService,
+    private viewProjectInfoComponent: ViewProjectInfoComponent,
   ) { }
   openEnd(content: TemplateRef<any>) {
     this.offcanvasService.open(content, { position: 'end' });
@@ -317,7 +319,7 @@ export class ActionCenterComponent implements OnInit {
               this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "FinalApproved", this.CurrentUser.appUserId).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-
+                  this.viewProjectInfoComponent.getAllComments();
                   alert(data.responseMessage);
 
                 }
@@ -356,7 +358,7 @@ export class ActionCenterComponent implements OnInit {
               this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "FinalReject", this.CurrentUser.appUserId).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-
+                  this.viewProjectInfoComponent.getAllComments();
                   alert(data.responseMessage);
 
                 }
@@ -585,6 +587,7 @@ export class ActionCenterComponent implements OnInit {
           alert(data.responseMessage);
           this.getLinkedZones();
           this.updateApplicationStatus();
+          this.viewProjectInfoComponent.getAllComments();
           this.refreshParent.emit(); 
         }
         else {
@@ -639,7 +642,7 @@ export class ActionCenterComponent implements OnInit {
         if (data.responseCode == 1) {
 
           alert(data.responseMessage);
-
+          this.viewProjectInfoComponent.getAllComments();
         }
         else {
           alert(data.responseMessage);
@@ -673,6 +676,7 @@ export class ActionCenterComponent implements OnInit {
             if (data.responseCode == 1) {
 
               alert(data.responseMessage);
+              this.viewProjectInfoComponent.getAllComments();
               this.hopperButton = false;
             }
             else {
@@ -862,8 +866,9 @@ export class ActionCenterComponent implements OnInit {
               this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName ,this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-
+                 
                   alert(data.responseMessage);
+                  this.viewProjectInfoComponent.getAllComments();
                  
                 }
                 else {
@@ -935,7 +940,7 @@ export class ActionCenterComponent implements OnInit {
                 if (data.responseCode == 1) {
 
                   alert(data.responseMessage);
-
+                  this.viewProjectInfoComponent.getAllComments();
                 }
                 else {
                   alert(data.responseMessage);
@@ -974,7 +979,7 @@ export class ActionCenterComponent implements OnInit {
               if (data.responseCode == 1) {
 
                 alert(data.responseMessage);
-
+                this.viewProjectInfoComponent.getAllComments();
               }
               else {
                 alert(data.responseMessage);
@@ -1012,7 +1017,7 @@ export class ActionCenterComponent implements OnInit {
               if (data.responseCode == 1) {
 
                 alert(data.responseMessage);
-
+                this.viewProjectInfoComponent.getAllComments();
               }
               else {
                 alert(data.responseMessage);
@@ -1051,7 +1056,7 @@ export class ActionCenterComponent implements OnInit {
               if (data.responseCode == 1) {
 
                 alert(data.responseMessage);
-
+                this.viewProjectInfoComponent.getAllComments();
               }
               else {
                 alert(data.responseMessage);
@@ -1486,6 +1491,7 @@ getAllCommentsByUserID() {
 
           alert(data.dateSet.zoneName + " assigned to this Application");
           this.getLinkedZones();
+          this.viewProjectInfoComponent.getAllComments();
           this.refreshParent.emit();
         }
         else {
@@ -1657,7 +1663,7 @@ getAllCommentsByUserID() {
         if (data.responseCode == 1) {
 
           alert(data.responseMessage);
-
+          this.viewProjectInfoComponent.getAllComments();
         }
         else {
           alert(data.responseMessage);
