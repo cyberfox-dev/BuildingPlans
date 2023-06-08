@@ -28,6 +28,7 @@ import { NotificationsService } from 'src/app/service/Notifications/notification
 import { SubDepartmentsService } from 'src/app/service/SubDepartments/sub-departments.service';
 import { TypeOfExcavationService } from 'src/app/service/TypeOfExcavation/type-of-excavation.service';
 import { ConfigService } from 'src/app/service/Config/config.service';
+import { RefreshService } from '../../shared/refresh.service';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable'
 /*import { format } from 'path/win32';*/
@@ -408,9 +409,12 @@ export class NewWayleaveComponent implements OnInit {
     private typeOfExcavationService: TypeOfExcavationService,
     private route: ActivatedRoute,
     private configService: ConfigService,
+    private refreshService: RefreshService,
   ) { }
 
   ngOnInit(): void {
+    this.refreshService.enableRefreshNavigation('/home');
+
     this.route.queryParams.subscribe(params => {
 
       this.isPlanning = params['isPlanningS'] === 'true';
@@ -503,6 +507,13 @@ export class NewWayleaveComponent implements OnInit {
     //this.logoUrl = this.sanitizer.bypassSecurityTrustUrl(imagePath);
 
   }
+
+
+
+  ngOnDestroy() {
+    this.refreshService.disableRefreshNavigation();
+  }
+
 
   //Unused code
   public handleAddressChange(address: Address) {
