@@ -1707,7 +1707,8 @@ getAllCommentsByUserID() {
 
   lockViewForUserAccordingToRole() {
     for (var i = 0; i < this.UserROle.length; i++) {
-      if (this.UserROle[i].RoleName=="")
+      /*      if (this.UserROle[i].RoleName=="")
+          }*/
     }
   }
 
