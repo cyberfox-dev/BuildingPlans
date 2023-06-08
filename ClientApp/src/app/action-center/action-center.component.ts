@@ -77,6 +77,15 @@ export interface UserZoneList {
   zoneLinkID?: any;
 }
 
+export interface RolesList {
+  RoleID: number;
+  RoleName: string;
+  AccessGroupID: number;
+  AccessGroupName: string;
+  //RoleType: string;
+  //RoleDescription: string;
+}
+
  
 
 
@@ -94,6 +103,8 @@ export class ActionCenterComponent implements OnInit {
   fileAttr = 'Choose File';
   @Input() ApplicationID: any;
   @Input() CurrentApplicant: any;
+    roles: string;
+   
   /*textfields*/
 
   uploadFileEvt(imgFile: any) {
@@ -143,6 +154,8 @@ export class ActionCenterComponent implements OnInit {
   SubDepartmentLinkedList: SubDepartmentList[] = [];
   SingleSubDepartmentLinked: SubDepartmentList[] = [];
   CommentList: CommentList[] = [];
+  RolesList: RolesList[] = [];
+  UserROle: RolesList[] = [];
   CommentDropDown: CommentDropDown[] = [];
   ServiceItemCodeDropdown: ServiceItemCodeDropdown[] = [];
   ServiceItemList: ServiceItemList[] = [];
@@ -278,7 +291,7 @@ export class ActionCenterComponent implements OnInit {
       //this.CheckIfCurrentUserCanUseHopper();
    // }, 1000);
 
-
+    this.getUserRoles();
 
   }
 
@@ -1667,7 +1680,30 @@ getAllCommentsByUserID() {
   }
 
 
+  getUserRoles() {
 
+    const templist = this.sharedService.getCurrentUserRoles(); 
+
+    for (var i = 0; i < templist.length; i++) {
+      const current = templist[i];
+      const newList = {} as RolesList;
+
+      newList.RoleID = current.RoleID;
+      newList.RoleName = current.RoleName;
+
+      this.UserROle.push(newList);
+    
+    }
+    console.log("this.UserROlethis.UserROlethis.UserROlethis.UserROlethis.UserROlethis.UserROlethis.UserROlethis.UserROlethis.UserROlethis.UserROle:", this.UserROle);
+    //const role = {} as UserROle;
+    //this.RolesList.push(role);
+  }
+
+  lockViewForUserAccordingToRole() {
+    for (var i = 0; i < this.UserROle.length; i++) {
+      if (this.UserROle[i].RoleName=="")
+    }
+  }
 
 
 

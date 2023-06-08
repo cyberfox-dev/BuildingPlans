@@ -118,6 +118,7 @@ export class HomeComponent implements OnInit,OnDestroy {
 
   createNewWayleaveBtn: boolean = true;
   createNewPlanningWayleaveBtn: boolean = true;
+    date: any;
 
 
   constructor(
@@ -270,7 +271,7 @@ export class HomeComponent implements OnInit,OnDestroy {
 
 
   getAllApplicationsByUserID() {
-    debugger;
+
     
     this.Applications.splice(0, this.Applications.length);
 
@@ -293,7 +294,7 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationList.CurrentStage = current.currentStageName;
             tempApplicationList.ApplicationStatus = current.applicationStatus;
 
-            tempApplicationList.DateCreated = current.dateCreated;
+            tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));;
             tempApplicationList.ProjectNumber = current.projectNumber;
           
             tempApplicationList.TestApplicationAge = Math.floor(Math.random() * 30) + 1;
@@ -330,7 +331,7 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationListShared.PreviousStageName = current.previousStageName;
             tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
             tempApplicationListShared.ProjectNumber = current.projectNumber;
-            debugger;
+          
             tempApplicationListShared.isPlanning = current.isPlanning;
 
             this.applicationDataForView.push(tempApplicationListShared);
@@ -371,8 +372,8 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationList.TypeOfApplication = current.typeOfApplication;
             tempApplicationList.CurrentStage = current.currentStageName;
             tempApplicationList.ApplicationStatus = current.applicationStatus;
-
-            tempApplicationList.DateCreated = current.dateCreated;
+            this.date = current.dateCreated;
+            tempApplicationList.DateCreated = this.date.sub;
 
 
             tempApplicationList.TestApplicationAge = Math.floor(Math.random() * 30) + 1;
@@ -408,7 +409,7 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationListShared.NextStageNumber = current.nextStageNumber;
             tempApplicationListShared.PreviousStageName = current.previousStageName;
             tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
-            debugger;
+            
             tempApplicationListShared.isPlanning = current.isPlanning;
 
 
@@ -486,7 +487,7 @@ export class HomeComponent implements OnInit,OnDestroy {
  
     console.log("FIND",this.applicationDataForView[index]);
 
-    debugger;
+    
     this.applicationDataForViewToShared.push(this.applicationDataForView[index])
     console.log("this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]",this.applicationDataForView[index]);
     this.sharedService.setViewApplicationIndex(this.applicationDataForViewToShared);
