@@ -48,24 +48,21 @@
       <mat-checkbox class="example-margin" *ngIf="canComment == true && canCommentSR == false" [(ngModel)]="checked">WBS Number</mat-checkbox>
 
       <!--This is for the document upload-->
-<!--      <mat-form-field>
+      <mat-form-field *ngIf="CurrentApplication.isPlanning === true">
         <div>
           <mat-toolbar>
-
-            <input matInput [(ngModel)]="fileAttr" readonly name="name" />
-
-            <button mat-flat-button color="blue">Upload Image</button>
+            <!-- Display files names -->
+            <input matInput [(ngModel)]="FileUpload" readonly name="name" />
+            <!-- Browse Button -->
+            <div class="row" style="margin-bottom:15px;">
+              <div class="container-fluid">
+                <app-file-upload [UploadFor]="'CoverLetter'" (passFileName)="onPassFileName($event)"></app-file-upload>
+                <!--(onUploadFinished)="uploadFinished($event)"-->
+              </div>
+            </div>
           </mat-toolbar>
-
-          <input type="file"
-                 #fileInput
-                 id="uploadFile"
-                 (change)="uploadFileEvt($event)"
-                 name="uploadFile"
-                 multiple="multiple"
-                 accept="image/*" />
         </div>
-      </mat-form-field>-->
+      </mat-form-field>
 
       <!--this is for the deposit required-->
       <mat-checkbox class="example-margin" [(ngModel)]="checked" (click)="depositReqModal(deposit)" *ngIf="isExternalUser">Deposit Required</mat-checkbox>

@@ -105,6 +105,8 @@ export class ActionCenterComponent implements OnInit {
   @Input() ApplicationID: any;
   @Input() CurrentApplicant: any;
     roles: string;
+    CurrentApplication: any;
+    fileAttrs: any;
    
   /*textfields*/
 
@@ -245,7 +247,7 @@ export class ActionCenterComponent implements OnInit {
   option = '';
 
   leaveAComment = "";
-
+  FileUpload = "Please Upload file";
   @ViewChild("internalOpt", { static: true }) content!: ElementRef;
   @Output() refreshParent: EventEmitter<void> = new EventEmitter<void>();
 
@@ -269,6 +271,8 @@ export class ActionCenterComponent implements OnInit {
       /*  this.getAllServiceItmes();*/
     this.getAllServiceItmesForDropdown();
 
+
+       this.CurrentApplication = this.viewProjectInfoComponent.getCurrentApplication();
 
    //// this giving some shit
    // this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
@@ -295,6 +299,39 @@ export class ActionCenterComponent implements OnInit {
 
     this.getUserRoles();
 
+  }
+
+
+  onPassFileName(event: { uploadFor: string; fileName: string }) {
+    console.log("............................................onPassFileNameEvent",event);
+    const { uploadFor, fileName } = event;
+   
+
+
+
+
+    //for (var i = 0; i < filesForUpload.length; i++) {
+    //  const formData = new FormData();
+    //  let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+    //  let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.applicationID;
+    //  formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+
+
+    //  this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+    //    .subscribe({
+    //      next: (event) => {
+
+    //        if (event.type === HttpEventType.UploadProgress && event.total)
+    //          this.progress = Math.round(100 * event.loaded / event.total);
+    //        else if (event.type === HttpEventType.Response) {
+    //          this.message = 'Upload success.';
+    //          this.uploadFinished(event.body, this.applicationID, data.dateSet);
+    //        }
+    //      },
+    //      error: (err: HttpErrorResponse) => console.log(err)
+    //    });
+    //}
   }
 
 

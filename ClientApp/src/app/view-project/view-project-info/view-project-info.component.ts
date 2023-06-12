@@ -313,6 +313,10 @@ export class ViewProjectInfoComponent implements OnInit {
     
   }
 
+  getCurrentApplication(): any{
+    return this.CurrentApplicationBeingViewed[0];
+  }
+
 
   refreshComponent(): void {
     const currentApplication = this.CurrentApplicationBeingViewed[0];
