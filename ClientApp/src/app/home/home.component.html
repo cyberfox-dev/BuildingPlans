@@ -27,40 +27,40 @@
 
     </div>
     <div class="cards">
-      <div class="card card-5">
+      <div class="card card-5" (click)="filterByUnpaid()">
         <h4>Unpaid</h4>
         <h1 class="num">{{unpaidcount}}</h1>
-        <p class="card__apply" (click)="filterByUnpaid()">
+        <p class="card__apply" >
           <a class="card__link">View</a>
         </p>
       </div>
-      <div class="card card-2">
+      <div class="card card-2" (click)="filterByDistribution()">
         <h4>Distribution</h4>
         <h1 class="num">{{distributioncount}}</h1>
-        <p class="card__apply" (click)="filterByDistribution()">
+        <p class="card__apply" >
           <a class="card__link">View</a>
         </p>
       </div>
 
-      <div class="card card-1">
+      <div class="card card-1" (click)="filterByApproved()">
         <h4>Approved</h4>
         <h1 class="num">{{approveCount}}</h1>
-        <p class="card__apply" (click)="filterByApproved()">
+        <p class="card__apply" >
           <a class="card__link">View</a>
         </p>
       </div>
 
-      <div class="card card-4">
+      <div class="card card-4" (click)="filterByRejected()">
         <h5>Rejected</h5>
         <h1 class="numReject">{{rejectCount}}</h1>
-        <p class="card__apply" (click)="filterByRejected()">
+        <p class="card__apply" >
           <a class="card__link">View</a>
         </p>
       </div>
-      <div class="card card-3">
+      <div class="card card-3"  (click)=" filterByWIP()">
         <h4>WIP</h4>
         <h1 class="num">{{EMBcount}}</h1>
-        <p class="card__apply" (click)=" filterByWIP()">
+        <p class="card__apply">
           <a class="card__link">View</a>
         </p>
       </div>
@@ -154,8 +154,17 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Actions</th>
         <td mat-cell *matCellDef="let i = index">
+          <div class="buttons">
           <button mat-raised-button color="blue" matTooltip="View Application" (click)="CheckIfCanReapply(i)"><i class="fa fa-eye"></i></button>
           <button mat-raised-button color="warn" matTooltip="Escalate"><i class="fa fa-arrow-circle-up"></i></button>
+            </div>
+          <div class="menu">
+            <button mat-button color="action" [matMenuTriggerFor]="actions"> <i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
+            <mat-menu #actions="matMenu">
+              <button mat-menu-item (click)="CheckIfCanReapply(i)"> View Project</button>
+              <button mat-menu-item>Escalate Project</button>
+            </mat-menu>
+          </div>
         </td>
         <td mat-cell *matCellDef="let element">  </td>
       </ng-container>
@@ -163,5 +172,6 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+
   </div>
 </div>

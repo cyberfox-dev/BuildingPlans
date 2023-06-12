@@ -275,7 +275,7 @@ getApplicationID(): any {
   }
 
   getProjectNumber() {
-    debugger;
+    
     return this.ProjectNumber;
   }
 

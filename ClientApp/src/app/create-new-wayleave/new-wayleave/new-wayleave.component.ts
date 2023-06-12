@@ -28,6 +28,7 @@ import { NotificationsService } from 'src/app/service/Notifications/notification
 import { SubDepartmentsService } from 'src/app/service/SubDepartments/sub-departments.service';
 import { TypeOfExcavationService } from 'src/app/service/TypeOfExcavation/type-of-excavation.service';
 import { ConfigService } from 'src/app/service/Config/config.service';
+import { RefreshService } from '../../shared/refresh.service';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable'
 /*import { format } from 'path/win32';*/
@@ -408,9 +409,12 @@ export class NewWayleaveComponent implements OnInit {
     private typeOfExcavationService: TypeOfExcavationService,
     private route: ActivatedRoute,
     private configService: ConfigService,
+    private refreshService: RefreshService,
   ) { }
 
   ngOnInit(): void {
+    this.refreshService.enableRefreshNavigation('/home');
+
     this.route.queryParams.subscribe(params => {
 
       this.isPlanning = params['isPlanningS'] === 'true';
@@ -503,6 +507,13 @@ export class NewWayleaveComponent implements OnInit {
     //this.logoUrl = this.sanitizer.bypassSecurityTrustUrl(imagePath);
 
   }
+
+
+
+  ngOnDestroy() {
+    this.refreshService.disableRefreshNavigation();
+  }
+
 
   //Unused code
   public handleAddressChange(address: Address) {
@@ -749,7 +760,7 @@ export class NewWayleaveComponent implements OnInit {
 
  
    buildProjectNumber() {
-    debugger;
+    
     this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
       if (data.responseCode == 1) {
 
@@ -758,7 +769,7 @@ export class NewWayleaveComponent implements OnInit {
           this.configMonthYear = current.utilitySlot2;
           this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
             if (data.responseCode == 1) {
-              debugger;
+              
             
             }
             else {
@@ -771,11 +782,11 @@ export class NewWayleaveComponent implements OnInit {
             console.log("addUpdateConfigError: ", error);
           })
         
-       // debugger;
+       // 
         //this.applicationsService.addUpdateApplication(this.applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + this.configMonthYear, null).subscribe((data: any) => {
-        //  debugger;
+        //  
         //  if (data.responseCode == 1) {
-        //    debugger;
+        //    
         //    alert("Your project number is: " + data.dateSet[0].projectNumber);
 
 
@@ -805,7 +816,7 @@ export class NewWayleaveComponent implements OnInit {
 
   onWayleaveCreate(appUserId,isPlanning:boolean) {
 
-    debugger;
+    
 
     //this.isPlanning = isPlanning;
 
@@ -878,7 +889,7 @@ export class NewWayleaveComponent implements OnInit {
               this.configMonthYear = current.utilitySlot2;
               this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
                 if (data.responseCode == 1) {
-                  debugger;
+                  
                   this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributed/Unallocated", false, "WL:" + (Number(this.configNumberOfProject) + 1).toString()+"/" + this.configMonthYear, true).subscribe((data: any) => {
 
                     if (data.responseCode == 1) {
@@ -1211,7 +1222,7 @@ export class NewWayleaveComponent implements OnInit {
           this.configMonthYear = current.utilitySlot2;
           this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
             if (data.responseCode == 1) {
-              debugger;
+              
               this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributed/Unallocated", false, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, false).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {

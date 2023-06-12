@@ -314,11 +314,19 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
 
-
-
+  refreshComponent(): void {
+    const currentApplication = this.CurrentApplicationBeingViewed[0];
+    this.router.navigateByUrl('/view-project-info', { skipLocationChange: true })
+      .then(() => {
+        this.router.navigate(['/view-project-info'], { queryParams: { application: currentApplication } });
+      });
+  }
+  refreshButtonClicked(): void {
+    this.refreshComponent();
+  }
 
   getAllComments() {
-
+    this.CommentsList.splice(0, this.CommentsList.length);
     this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {

@@ -789,3 +789,58 @@ h8 {
   padding: 0px;
   margin: 0px;
 }
+
+
+@media (max-width: 899px){
+    h3{
+        font-size:25px;
+    }
+  .logo {
+    margin-top: 5px;
+    display: flex;
+    margin: 0;
+    justify-content: left;
+    width: 11em;
+    height: 100%;
+    animation: bounceIn 0.6s;
+    transform: rotate(0deg) scale(1) translateZ(0);
+    transition: all 0.4s cubic-bezier(0.8, 1.8, 0.75, 0.75);
+  }
+  h1 {
+    font-size: 16px;
+  }
+  h2 {
+    font-size: 16px;
+  }
+
+  .overlay-panel {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 13px;
+    text-align: center;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
+  }
+
+  button {
+    border-radius: 20px;
+    border: 1px solid #005870;
+    background-color: #005870;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: bold;
+    height: 46px;
+    width: 154px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: transform 80ms ease-in;
+  }
+
+
+}
