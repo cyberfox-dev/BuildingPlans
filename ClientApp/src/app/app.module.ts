@@ -82,6 +82,7 @@ import { UserManagementComponent } from './user-management/user-management.compo
 import { InternalUserUnassignedDepartmentComponent } from './internal-user-unassigned-department/internal-user-unassigned-department.component';
 import { DocumentsComponentComponent } from './documents-component/documents-component.component';
 import { TypeOfExcavationComponent } from './type-of-excavation/type-of-excavation.component';
+import { PermitComponentComponent } from './permit-component/permit-component.component';
 
 
 //import { MapModule } from 'arcgis-js-api';
@@ -150,6 +151,7 @@ import { TypeOfExcavationComponent } from './type-of-excavation/type-of-excavati
     InternalUserUnassignedDepartmentComponent,
     DocumentsComponentComponent,
     TypeOfExcavationComponent,
+    PermitComponentComponent,
   
 
   ],

@@ -19,6 +19,7 @@ table {
   width: 100%;
   margin: 0 auto;
   margin-bottom: 30px;
+  overflow-x: scroll;
 }
 
 .mat-column-Stage {
@@ -370,7 +371,7 @@ h3 span {
 }
 
 .card {
-    cursor:default;
+    cursor:pointer;
   margin-top: 40px;
   padding: 20px;
   width: 288px;
@@ -472,8 +473,14 @@ h5 {
   font-size: 20px;
 }
 
-/* RESPONSIVE */
 
+.menu {
+    display:none;
+}
+.buttons {
+  
+}
+/* RESPONSIVE */
 @media (max-width: 899px) {
   .cards {
     display: flex;
@@ -482,8 +489,24 @@ h5 {
     margin: 1px;
     flex-wrap: wrap;
   }
+
+  .table {
+/*    width: 750px;
+    margin: 0 auto;
+    margin-bottom: 30px;*/
+    overflow-x: scroll;
+    overflow-y: hidden
+  }
+  .buttons {
+    display: none;
+  }
+
+  .menu {
+    display: initial;
+  }
+
   .card {
-    cursor: default;
+    cursor: pointer;
     margin-top: 17px;
     padding: 20px;
     width: 170px;
@@ -500,7 +523,7 @@ h5 {
 
   .mat-createWayleave {
     margin-top: -61px;
-    margin-bottom: 108px;
+    margin-bottom: 124px;
     background: #005870;
     color: #ccdee2;
     width: 216px;
@@ -523,13 +546,20 @@ h5 {
     margin: 0 auto;
     text-align: center;
     padding-top: 18px;
-    padding-bottom: 60px;
+    padding-bottom: 30px;
     color: #343a40;
     font-size: 35px;
     font-weight: bold;
   }
 
-
+  h2 {
+    font-family: "Nunito", sans-serif;
+    margin: 0 auto;
+    text-align: center;
+    padding-top: 0;
+    color: #343a40;
+    font-size: 25px;
+  }
 }
 
 .col-12 {

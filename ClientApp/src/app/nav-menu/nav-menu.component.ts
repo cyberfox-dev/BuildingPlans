@@ -165,6 +165,7 @@ export class NavMenuComponent implements OnInit {
       else {
         alert("Please type a comment");
       }
+      alert(data.responseMessage);
  
       console.log("response", data);
     }, error => {

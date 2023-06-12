@@ -146,6 +146,7 @@ export class HomeComponent implements OnInit,OnDestroy {
 
   displayedColumns: string[] = ['FullName', 'Stage','Status', 'TypeOfApplication','AplicationAge','StageAge','DateCreated', 'actions'];
   dataSource = this.Applications;
+
   @ViewChild(MatTable) applicationsTable: MatTable<ApplicationsList> | undefined;
   ngOnInit(): void {
     
@@ -158,7 +159,7 @@ export class HomeComponent implements OnInit,OnDestroy {
 
       this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
       this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
-      this.UpdateProjectNumberConfig()
+      this.UpdateProjectNumberConfig();
       this.getAllApplicationsByUserID();
       this.getAllStages();
       this.getRolesLinkedToUser();

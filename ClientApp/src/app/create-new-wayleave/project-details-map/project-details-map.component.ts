@@ -25,7 +25,7 @@ import FormTemplate from "@arcgis/core/form/FormTemplate";
 import * as esri from 'esri-leaflet';
 import Layer from "@arcgis/core/layers/Layer"
 import Draw from '@arcgis/core/views/draw/Draw';
-import { Polygon } from '@arcgis/core/geometry';
+import { Extent, Polygon } from '@arcgis/core/geometry';
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import * as Geometry from '@arcgis/core/geometry/Geometry';
 import FeatureForm from '@arcgis/core/widgets/FeatureForm';
@@ -34,6 +34,9 @@ import ExpressionInfo from '@arcgis/core/form/ExpressionInfo';
 import FieldElement from '@arcgis/core/form/elements/FieldElement';
 import BasemapToggle from '@arcgis/core/widgets/BasemapToggle';
 import { SharedService } from "src/app/shared/shared.service"
+import Query from '@arcgis/core/rest/support/query';
+import * as SearchSource from '@arcgis/core/widgets/Search/SearchSource';
+
 /*import { Editor, EditorViewModel, FeatureFormViewModel } from "@arcgis/core/widgets/Editor";*/
 /*import * as FeatureForm from 'esri/widgets/FeatureForm';*/
 /*import { Map, FeatureLayer, Polygon, Graphic, geometryEngine, SimpleFillSymbol } from "@arcgis/core";*/
@@ -107,7 +110,8 @@ export class ProjectDetailsMapComponent implements OnInit {
   /*  @Input() data: string; //retrieves this data from the parent component*/
   @Input() data: any; //retrieves this data from the parent component
   constructor(
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    /*    private query: Query,*/
     /*        @Inject(ARCGIS_CONFIG) private config: ArcgisConfig,*/
     //private deviceService: DeviceDetectorService,
     //  private translate: TranslateService,
@@ -222,7 +226,7 @@ export class ProjectDetailsMapComponent implements OnInit {
     //});
 
     const map = new Map({
-      basemap: 'gray-vector',
+      basemap: 'hybrid',
       /*      layers: [graphicsLayer]*/
       /*      layers: [pointLayer, lineLayer, polygonLayer]*/
 
@@ -235,11 +239,25 @@ export class ProjectDetailsMapComponent implements OnInit {
     //  }
     //});
 
+    // Create the search source configuration for Cape Town, South Africa
+    //Use this tool to verify boundaries: http://bboxfinder.com
+    const theExtent = new Extent({
+      xmin: 18.2562,
+      ymin: -34.358,
+      xmax: 18.855,
+      ymax: -33.3992,
+      //spatialReference: {
+      //  wkid: 3857
+      //}
+    });
+
     const view = new MapView({
       container: this.viewDivEl.nativeElement,
       map: map,
+      extent: theExtent,
       zoom: 5,
-      center: this.position,
+      center: [18.555908, -33.879537], // Cape Town, South Africa coordinates. This is the center of the boundary
+      /*      center: this.position,*/
       //Hides the zoom buttons
       ui: {
         components: ["attribution"]
@@ -250,7 +268,7 @@ export class ProjectDetailsMapComponent implements OnInit {
     const toggle = new BasemapToggle({
       // 2 - Set properties
       view: view, // view that provides access to the map's 'topo-vector' basemap
-      nextBasemap: "hybrid" // allows for toggling to the 'hybrid' basemap
+      nextBasemap: "gray-vector" // allows for toggling to the 'hybrid' basemap
     });
 
     view.ui.add(toggle, "bottom-right");
@@ -273,13 +291,33 @@ export class ProjectDetailsMapComponent implements OnInit {
     //  center: this.position
     //});
 
+
+
+    const searchExtent = {
+      geometry: theExtent
+    };
+
+    const sources = [{
+      url: "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer",
+      name: 'Cape Town, South Africa',
+      placeholder: "Search Cape Town",
+      maxResults: 3,
+      filter: searchExtent
+    }];
+
+
+
     const searchWidget = new Search({
       view: view,
       popupEnabled: true,
       locationEnabled: false,
       resultGraphicEnabled: true,
-      container: this.searchDivEl.nativeElement
+      container: this.searchDivEl.nativeElement,
+      sources: sources,
+      activeSourceIndex:1, //for some odd reasons, index 0 contains a source already.
+      
     });
+
     searchWidget.on('select-result', (event) => {
       /*      this.view.zoom = this.defaultZoom;*/
       console.log("The selected search result: ", event.result.name);
@@ -445,6 +483,12 @@ export class ProjectDetailsMapComponent implements OnInit {
       })
 
       map.add(streetlights);
+
+      var zones = new MapImageLayer({
+        url: "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves_Regions/MapServer"
+      })
+
+      map.add(zones);
 
       /*      Add layerlist and legend*/
       var layerList = new LayerList({
@@ -644,6 +688,34 @@ export class ProjectDetailsMapComponent implements OnInit {
         //featureFormViewModel.submit();
       });
 
+      // Subscribe to the draw-complete event of the Editor widget
+      editor.on("draw-complete", (event) => {
+        // Get the drawn polygon's geometry
+        const drawnPolygon = event.graphic.geometry;
+
+        // Create a new Query object
+        const query = new Query();
+
+        // Set the spatial relationship to "intersects" or "contains" based on your requirement
+        query.spatialRelationship = "intersects";
+
+        // Set the geometry of the query to the drawn polygon
+        query.geometry = drawnPolygon;
+
+        // Set up the layer in the MapServer to query against
+        const mapServerLayerUrl = "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves_Regions/MapServer/0"; //this checks just the electricity layer.
+        const mapServerLayer = new FeatureLayer({
+          url: mapServerLayerUrl
+        });
+
+        // Perform the spatial query
+        mapServerLayer.queryFeatures(query).then((result) => {
+          // Handle the resulting features that intersect or are within the drawn polygon
+          const features = result.features;
+          // Do something with the features
+        });
+      });
+
       ///*       create a new instance of draw*/
       //      let draw = new Draw({
       //        view: view
@@ -761,7 +833,7 @@ export class ProjectDetailsMapComponent implements OnInit {
         label: "createdByID",
         /*        valueExpression: "assignCreatedByID",*/
         valueExpression: "assignCreatedByID",
-/*                  visibilityExpression: "alwaysHidden",*/
+        /*                  visibilityExpression: "alwaysHidden",*/
         editable: false,
 
       });
@@ -772,7 +844,7 @@ export class ProjectDetailsMapComponent implements OnInit {
         label: "isActive",
         valueExpression: "assignIsActive",
         editable: false,
-/*                        visibilityExpression: "alwaysHidden"*/
+        /*                        visibilityExpression: "alwaysHidden"*/
       });
 
       const fieldElement3 = new FieldElement({
@@ -781,7 +853,7 @@ export class ProjectDetailsMapComponent implements OnInit {
         label: "applicationID",
         valueExpression: "assignApplicationID",
         editable: false,
-/*                        visibilityExpression: "alwaysHidden"*/
+        /*                        visibilityExpression: "alwaysHidden"*/
       });
 
       formTemplate.expressionInfos = [expression, expression2, expression3, expression4];
@@ -789,7 +861,7 @@ export class ProjectDetailsMapComponent implements OnInit {
 
       featureLayer.formTemplate = formTemplate
 
-    console.log("num of features: " + this.getCount(featureLayer,""));
+      console.log("num of features: " + this.getCount(featureLayer, ""));
     })
 
 
@@ -1057,27 +1129,27 @@ export class ProjectDetailsMapComponent implements OnInit {
 
   getCount(featureLayer, token) {
 
-  var xmlhttp = new XMLHttpRequest();
-  var url = featureLayer + "/query?f=json&where=1=1&returnCountOnly=true";
+    var xmlhttp = new XMLHttpRequest();
+    var url = featureLayer + "/query?f=json&where=1=1&returnCountOnly=true";
 
-  if (token) {
-    url = url + "&token=" + token;
-  }
+    if (token) {
+      url = url + "&token=" + token;
+    }
 
-  xmlhttp.open("GET", url, false);
-  xmlhttp.send();
+    xmlhttp.open("GET", url, false);
+    xmlhttp.send();
 
-  if (xmlhttp.status !== 200) {
-    return (xmlhttp.status);
-  } else {
-    var responseJSON = JSON.parse(xmlhttp.responseText)
-    if (responseJSON.error) {
-      return (JSON.stringify(responseJSON.error));
+    if (xmlhttp.status !== 200) {
+      return (xmlhttp.status);
     } else {
-      return JSON.stringify(responseJSON.count);
+      var responseJSON = JSON.parse(xmlhttp.responseText)
+      if (responseJSON.error) {
+        return (JSON.stringify(responseJSON.error));
+      } else {
+        return JSON.stringify(responseJSON.count);
+      }
     }
   }
-}
 
   private async setPosition(): Promise<void> {
     try {
