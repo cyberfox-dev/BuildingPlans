@@ -330,6 +330,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getAllComments() {
+    debugger;
     this.CommentsList.splice(0, this.CommentsList.length);
     this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
 
@@ -939,7 +940,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   onCreateApprovalPack() {
 
-    /*this.getAllSubDepFroConditionalApprove();*/
+    this.getAllSubDepFroConditionalApprove();
     const doc = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
@@ -1403,7 +1404,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   onCrreateRejectionPack() {
 
-    /*this.getAllSubDepFroConditionalApprove();*/
+    this.getAllSubDepFroConditionalApprove();
     const doc = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
