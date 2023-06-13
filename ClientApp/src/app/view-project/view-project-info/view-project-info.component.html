@@ -47,7 +47,7 @@
 
 
 
-<h1 *ngIf="CurrentApplicationBeingViewed[0].isPlanning === false" >Application Information</h1>
+<h1 *ngIf="CurrentApplicationBeingViewed[0].isPlanning === false">Application Information</h1>
 <h1 *ngIf="CurrentApplicationBeingViewed[0].isPlanning === true">Application Planning Information</h1>
 <h2>Project number {{projectNo}}</h2>
 
@@ -130,9 +130,8 @@
         <br />
       </div>
       <div class="cont3" *ngIf="isInternalUser">
-        <button mat-raised-button color="green" (click)="onCreateApprovalPack()">Approval Pack</button>
-        <button mat-raised-button color="red" (click)="onCrreateRejectionPack()">Rejection Pack</button>
-
+        <button mat-raised-button color="green" (click)="onCreateApprovalPack()" *ngIf="ApprovalPackBtn">Approval Pack</button>
+        <button mat-raised-button color="red" (click)="onCrreateRejectionPack()" *ngIf="RejectionPackBtn">Rejection Pack</button>
       </div>
 
 
@@ -420,7 +419,7 @@
     <!--------------------------------------------------------Audit Trail--------------------------------------------------->
 
 
-    <mat-tab label="Audit Trail" *ngIf="isInternalUser">
+    <mat-tab label="Audit Trail" *ngIf="auditTrail">
 
       <app-audit-trail></app-audit-trail>
 

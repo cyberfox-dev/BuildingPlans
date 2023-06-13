@@ -10,6 +10,7 @@ import { MatTable } from '@angular/material/table';
 import { CommentBuilderService } from '../service/CommentBuilder/comment-builder.service';
 import { UserProfileService } from '../service/UserProfile/user-profile.service';
 import { NotificationsService } from '../service/Notifications/notifications.service';
+import { AccessGroupsService } from '../service/AccessGroups/access-groups.service';
 
 
 export interface CommentList {
@@ -48,6 +49,9 @@ export class NavMenuComponent implements OnInit {
   RolesList: RolesList[] = [];
   forEditIndex: any;
 
+  cyberfoxConfigs: boolean = false;
+  Configurations: boolean = false;
+
   public isInternalUser: boolean = false;
   Links: boolean = false;
   Icons: boolean = true;
@@ -62,7 +66,7 @@ export class NavMenuComponent implements OnInit {
     applica: any;
     UserRoles: import("C:/CyberfoxProjects/WayleaveManagementSystem/ClientApp/src/app/shared/shared.service").RolesList[];
 
-  constructor(private modalService: NgbModal, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService) { }
+  constructor(private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService) { }
 
   displayedColumns: string[] = ['Comment', 'actions'];
   dataSource = this.CommentList;
@@ -73,35 +77,79 @@ export class NavMenuComponent implements OnInit {
   stringifiedData: any;
   CurrentUser: any;
 
-  ngOnInit(): void {
+  ngOnInit() {
+    
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+/*    this.getUserProfileByUserID();*/
+
     this.CurrentUser = JSON.parse(this.stringifiedData);
+    this.getRolesLinkedToUser();
+/*    this.UserRoles = this.shared.getCurrentUserRoles();*/
+    /*    this.setCurrentUserRoles();*/
+ 
     if (this.CurrentUser == null) {
       console.log("Not");
     }
     else {
       console.log(this.CurrentUser);
     }
-    this.getUserProfileByUserID();
-    
-    this.lockViewAccordingToRoles()
 
-    this.UserRoles = this.shared.getCurrentUserRoles();
-
-    this.setCurrentUserRoles();
   }
 
   lockViewAccordingToRoles() {
-
+    console.log("werwerwerrwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwererwer", this.RolesList);
+    
     for (var i = 0; i < this.RolesList.length; i++) {
-
-      if (this.RolesList[i].RoleName == "Create Wayleave") {
-
+      
+      if (this.RolesList[i].RoleName == "Developer Config") {
+        this.Configurations = true;
+      }
+      if (this.RolesList[i].RoleName == "Developer Config") {
+        this.cyberfoxConfigs = true;
       }
 
 
     }
 
+
+  }
+
+
+  getRolesLinkedToUser() {
+    
+    this.RolesList.splice(0, this.RolesList.length);
+
+    this.accessGroupsService.getAllRolesForUser(this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempRolesList = {} as RolesList;
+          const current = data.dateSet[i];
+          tempRolesList.AccessGroupName = current.accessGroupName;
+          tempRolesList.AccessGroupID = current.accessGroupID;
+          tempRolesList.RoleID = current.roleID;
+          tempRolesList.RoleName = current.roleName;
+
+          this.RolesList.push(tempRolesList);
+          this.lockViewAccordingToRoles();
+
+
+        }
+
+        // this.rolesTable?.renderRows();
+        console.log("getAllLinkedRolesReponse", data.dateSet);
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("getAllLinkedRolesReponse", data);
+
+    }, error => {
+      console.log("getAllLinkedRolesReponseError: ", error);
+    })
 
   }
 
@@ -369,13 +417,12 @@ export class NavMenuComponent implements OnInit {
 
   disableIcons() {
 
-
+    this.Icons = false;
     if (this.Links == false) {
       this.Links = true
-      this.Icons = false;
+
     }
     else {
-
       this.Links = false
     }
   }

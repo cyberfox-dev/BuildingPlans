@@ -10,15 +10,34 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { DatePipe } from '@angular/common';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
-import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component'
+import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component';
 import { ConfigService } from 'src/app/service/Config/config.service';
 import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-upload.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
+import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentForComment/sub-department-for-comment.service';
+import { AccessGroupsService } from '../../service/AccessGroups/access-groups.service';
 
+export interface RolesList {
+  RoleID: number;
+  RoleName: string;
+  AccessGroupID: number;
+  AccessGroupName: string;
+}
 
-
+export interface SubDepartmentList {
+  IsRefered: any;
+  isAwaitingClarity: any;
+  subDepartmentID: number;
+  subDepartmentName: string;
+  departmentID: number;
+  dateUpdated: any;
+  dateCreated: any;
+  subdepartmentForCommentID: number | null;
+  UserAssaignedToComment: string | null;
+  commentStatus: string | null;
+}
 
 export interface ARCGISAPIData {
   createdByID: string;
@@ -28,7 +47,6 @@ export interface ARCGISAPIData {
 
 export interface PeriodicElement {
   name: string;
-
 }
 
 export interface StagesList {
@@ -95,10 +113,6 @@ const ELEMENT_DATA: PeriodicElement[] = [
 ];
 
 
-
-
-
-
 export interface DepositRequired {
   DepositRequiredID: number;
   ApplicationID: number;
@@ -134,7 +148,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   //Initialize the interface for ARCGIS
   ARCGISAPIData = {} as ARCGISAPIData;
-
+  auditTrail: boolean = false;
   public isInternalUser: boolean = false;
   canReapply = false;
   public projectNo = "";
@@ -172,6 +186,8 @@ export class ViewProjectInfoComponent implements OnInit {
   StagesList: StagesList[] = [];
   CommentsList: CommentsList[] = [];
   SubDepConditionalApproveList: SubDepConditionalApproveList[] = [];
+  RolesList: RolesList[] = [];
+  SubDepartmentList: SubDepartmentList[] = [];
 
   CurrentApplicationBeingViewed: ApplicationList[] = [];
   DepositRequired: DepositRequired[] = [];
@@ -206,6 +222,8 @@ export class ViewProjectInfoComponent implements OnInit {
     ExcavationType: string;
     ProjectNum: string;
     clientName: string;
+    ApprovalPackBtn: boolean = false;
+  RejectionPackBtn: boolean = false;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -251,7 +269,9 @@ export class ViewProjectInfoComponent implements OnInit {
     private NewWayleaveComponent: NewWayleaveComponent,
     private viewContainerRef: ViewContainerRef,
     private configService: ConfigService,
+    private accessGroupsService: AccessGroupsService,
     private formBuilder: FormBuilder,
+    private subDepartmentForCommentService: SubDepartmentForCommentService,
     private router: Router,
  
   ) { }
@@ -278,7 +298,7 @@ export class ViewProjectInfoComponent implements OnInit {
       this.router.navigate(["/home"]);
     }
    
-
+    this.getRolesLinkedToUser();
     this.CurrentApplicant = setValues.CreatedById;
 
     this.currentApplication = this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
@@ -306,7 +326,8 @@ export class ViewProjectInfoComponent implements OnInit {
     this.canReapply = this.sharedService.getCanReapply();
     console.log("canReapplyVen: ", this.canReapply);
     this.setProjectNumber();
-
+    this.getAllSubDepFroConditionalApprove();
+    this.getLinkedDepartments();
   }
 
   setProjectNumber() {
@@ -331,6 +352,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getAllComments() {
+    
     this.CommentsList.splice(0, this.CommentsList.length);
     this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
 
@@ -836,6 +858,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   getAllSubDepFroConditionalApprove() {
+    
     let commentS = "Approved(Conditional)";
 
     this.commentsService.getSubDepByCommentStatus(commentS, this.ApplicationID).subscribe((data: any) => {
@@ -940,7 +963,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   onCreateApprovalPack() {
 
-    /*this.getAllSubDepFroConditionalApprove();*/
+    this.getAllSubDepFroConditionalApprove();
     const doc = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
@@ -988,6 +1011,23 @@ export class ViewProjectInfoComponent implements OnInit {
     const page26 = new Image();
     const page27 = new Image();
     const page28 = new Image();
+    const page29 = new Image();
+    const page30 = new Image();
+    const page31 = new Image();
+    const page32 = new Image();
+    const page33 = new Image();
+    const page34 = new Image();
+    const page35 = new Image();
+    const page36 = new Image();
+    const page37 = new Image();
+    const page38 = new Image();
+    const page39 = new Image();
+    const page40 = new Image();
+    const page41 = new Image();
+    const page42 = new Image();
+    const page43 = new Image();
+    const page44 = new Image();
+    const page45 = new Image();
     img.src = 'assets/cctlogoblack.png';
     footer.src ='assets/Packs/footer.PNG';
     page1.src ='assets/Packs/page1.PNG';
@@ -1018,6 +1058,23 @@ export class ViewProjectInfoComponent implements OnInit {
     page26.src ='assets/Packs/page26.PNG';
     page27.src ='assets/Packs/page27.PNG';
     page28.src ='assets/Packs/page28.PNG';
+    page29.src ='assets/Packs/page29.PNG';
+    page30.src ='assets/Packs/page30.PNG';
+    page31.src ='assets/Packs/page31.PNG';
+    page32.src ='assets/Packs/page32.PNG';
+    page33.src ='assets/Packs/page33.PNG';
+    page34.src ='assets/Packs/page34.PNG';
+    page35.src ='assets/Packs/page35.PNG';
+    page36.src ='assets/Packs/page36.PNG';
+    page37.src ='assets/Packs/page37.PNG';
+    page38.src ='assets/Packs/page38.PNG';
+    page39.src ='assets/Packs/page39.PNG';
+    page40.src ='assets/Packs/page40.PNG';
+    page41.src ='assets/Packs/page41.PNG';
+    page42.src ='assets/Packs/page42.PNG';
+    page43.src ='assets/Packs/page43.PNG';
+    page44.src ='assets/Packs/page44.PNG';
+    page45.src ='assets/Packs/page45.PNG';
   
 
     // Add logo to PDF document
@@ -1393,8 +1450,195 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.addImage(page28, 'png', 10, 40, 190, 215);
     doc.addImage(footer, 'png', 7, 255, 205, 45);
 
+    //PAGE 29
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page29, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 30
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page30, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 31
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page31, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 32
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page32, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 33
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page33, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 34
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page34, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 35
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page35, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 36
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page36, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 37
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page37, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 38
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page38, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 39
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page39, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 40
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page40, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 41
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page41, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 42
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page42, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 43
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page43, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 44
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page44, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    //PAGE 45
+    doc.addPage();
+
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+
+
+    doc.addImage(page45, 'png', 10, 40, 190, 215);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
     // Save PDF document
-    doc.save('Approval Pack:' + this.CurrentUser.userProfileID);
+    doc.save('Approval Pack');
 
 
   }
@@ -1404,7 +1648,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   onCrreateRejectionPack() {
 
-    /*this.getAllSubDepFroConditionalApprove();*/
+    this.getAllSubDepFroConditionalApprove();
     const doc = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
@@ -1579,6 +1823,116 @@ export class ViewProjectInfoComponent implements OnInit {
     else if (this.option == "False") {
       this.wbsButton = false;
     }
+  }
+
+
+  getLinkedDepartments() {
+
+
+    const currentApplication = this.sharedService.getViewApplicationIndex();
+
+
+
+    this.subDepartmentForCommentService.getSubDepartmentForComment(currentApplication.applicationID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+
+        for (var i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+
+          const tempSubDepartmentList = {} as SubDepartmentList;
+          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.departmentID = current.departmentID;
+          tempSubDepartmentList.dateUpdated = current.dateUpdated;
+          tempSubDepartmentList.dateCreated = current.dateCreated;
+          tempSubDepartmentList.isAwaitingClarity = current.isAwaitingClarity;
+          tempSubDepartmentList.IsRefered = current.IsRefered;
+          tempSubDepartmentList.commentStatus = current.commentStatus;
+
+
+
+          this.SubDepartmentList.push(tempSubDepartmentList);
+        }
+
+
+      }
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForComment", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
+  showApproveOrReject() {
+    for (var i = 0; i < this.SubDepartmentList.length; i++) {
+      if (this.SubDepartmentList[i].commentStatus == "Approved(Conditional)" || this.SubDepartmentList[i].commentStatus == "Approved") {
+        this.ApprovalPackBtn = true;
+      }
+      else {
+        this.RejectionPackBtn = true;
+      }
+    }
+  
+  }
+
+  getRolesLinkedToUser() {
+
+    this.RolesList.splice(0, this.RolesList.length);
+
+    this.accessGroupsService.getAllRolesForUser(this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempRolesList = {} as RolesList;
+          const current = data.dateSet[i];
+          tempRolesList.AccessGroupName = current.accessGroupName;
+          tempRolesList.AccessGroupID = current.accessGroupID;
+          tempRolesList.RoleID = current.roleID;
+          tempRolesList.RoleName = current.roleName;
+
+          this.RolesList.push(tempRolesList);
+          this.lockViewAccordingToRoles();
+
+
+        }
+
+        // this.rolesTable?.renderRows();
+        console.log("getAllLinkedRolesReponse", data.dateSet);
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("getAllLinkedRolesReponse", data);
+
+    }, error => {
+      console.log("getAllLinkedRolesReponseError: ", error);
+    })
+
+  }
+
+  lockViewAccordingToRoles() {
+    console.log("werwerwerrwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwererwer", this.RolesList);
+
+    for (var i = 0; i < this.RolesList.length; i++) {
+
+      if (this.RolesList[i].RoleName == "Department Admin") {
+        this.auditTrail = true;
+      }
+
+    }
+
+
   }
 
 }
