@@ -70,7 +70,9 @@ export class LoginComponent implements OnInit {
           this.isLoading = false;
           this.router.navigate(["/home"]);
         } else {
-          this.error = "An error occurred";
+          this.isLoading = false;
+
+          this.error = ""+ data.responseMessage;
        
         }
       },

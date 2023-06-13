@@ -64,6 +64,13 @@ body {
   }
 
 @media (max-width:900px) {
+
+  .logo {
+    width: 165px;
+    height: 50px;
+    cursor: pointer;
+    /* width: 100%; */
+  }
   .nav > .nav-btn {
     display: inline-block;
     position: absolute;
@@ -118,6 +125,10 @@ body {
     z-index: 1;
     margin-top: 19px;
     background-color: #a5b3b7;
+  }
+
+  .nav-icons{
+      display:none;
   }
 }
 
