@@ -347,13 +347,13 @@ export class ActionCenterComponent implements OnInit {
 
       case "Approve": {
         if (confirm("Are you sure you want to final approve this application?") ){
-          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "FinalApproved", null, null, "EndOfCommentProcess", true).subscribe((data: any) => {
+          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Final Approved", null, null, "EndOfCommentProcess", true).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
 
               alert(data.responseMessage);
               //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "FinalApproved", this.CurrentUser.appUserId).subscribe((data: any) => {
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Final Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
                   this.viewProjectInfoComponent.getAllComments();
@@ -434,19 +434,24 @@ export class ActionCenterComponent implements OnInit {
   setRoles() {
    
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
+      debugger;
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.loggedInUsersIsAdmin == true) {
+        debugger;
         this.AssignProjectToZone = true;
 
 
 
       }
-      else if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.loggedInUsersIsZoneAdmin == true) {
+      if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.loggedInUsersIsZoneAdmin == true) {
+        debugger;
         this.AssignUserForComment = true;
       }
-      else if (this.loggedInUsersSubDepartmentID == 1025) {
+     if (this.loggedInUsersSubDepartmentID == 1025) {
+        debugger;
         this.CanAssignDepartment = true;
       }
       else {
+        debugger;
         this.CanAssignDepartment = false;
       }
     }
@@ -458,17 +463,20 @@ export class ActionCenterComponent implements OnInit {
    // this.getDepartmentManagerUserID("Senior Reviewer");
    
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
-
+      debugger;
       if (data.responseCode == 1) {
         for (var i = 0; i < data.dateSet.length; i++) {
+          debugger;
           let current = data.dateSet[i];
          
           if (current.userAssaignedToComment == this.CurrentUser.appUserId) { /*&& current.userAssaignedToComment != this.userID*/
             this.canComment = true;
+            debugger;
             //console.log("vvvvvvvcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent",current);
             return;
           }
           else {
+            debugger;
             this.canComment = false;
           } 
         }
@@ -579,6 +587,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   viewSelectedUserForApplication() {
+    debugger;
 
     this.LinkedUserToSub.splice(0, this.LinkedUserToSub.length);
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {

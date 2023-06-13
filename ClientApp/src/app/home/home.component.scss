@@ -22,6 +22,8 @@ table {
   overflow-x: scroll;
 }
 
+/*ProjectNumber*/
+
 .mat-column-Stage {
   word-wrap: break-word !important;
   white-space: unset !important;
@@ -32,6 +34,18 @@ table {
   word-break: break-word;
   -ms-hyphens: auto;
   -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+.mat-column-ProjectNumber {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 10% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
   -webkit-hyphens: auto;
   hyphens: auto;
 }
@@ -93,12 +107,10 @@ table {
   word-wrap: break-word !important;
   white-space: unset !important;
   flex: 0 0 8% !important;
-  width: 15% !important;
+  width: 9% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
-  -ms-hyphens: auto;
-  -moz-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
 }
@@ -107,12 +119,10 @@ table {
   word-wrap: break-word !important;
   white-space: unset !important;
   flex: 0 0 8% !important;
-  width: 20% !important;
+  width: 8% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
-  -ms-hyphens: auto;
-  -moz-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
 }
@@ -121,14 +131,13 @@ table {
   word-wrap: break-word !important;
   white-space: unset !important;
   flex: 0 0 8% !important;
-  width: 15% !important;
+  width: 9% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
-  -ms-hyphens: auto;
-  -moz-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
+
 }
 
 
@@ -488,6 +497,126 @@ h5 {
     padding: 0px;
     margin: 1px;
     flex-wrap: wrap;
+  }
+
+
+  .mat-column-Stage {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 8% !important;
+    width: 30% !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+
+  .mat-column-ProjectNumber {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 8% !important;
+    width: 30% !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+
+  .mat-column-AplicationAge {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 8% !important;
+    width: 7% !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    display:none;
+  }
+
+  .mat-column-Status {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 8% !important;
+    width: 10% !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    display: none;
+  }
+
+  .mat-column-StageAge {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 8% !important;
+    width: 7% !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    display: none;
+  }
+
+  .mat-column-FullName {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 8% !important;
+    width: 30% !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+
+  .mat-column-TypeOfApplication {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 8% !important;
+    width: 9% !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    display: none;
+  }
+
+  .mat-column-DateCreated {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 8% !important;
+    width: 35% !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    display: none;
+  }
+
+  .mat-column-actions {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 8% !important;
+    width: 1% !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    -webkit-hyphens: auto;
+    hyphens: auto;
   }
 
   .table {

@@ -14,9 +14,9 @@
   </div>
 
   <div class="nav-links"  *ngIf="Icons">
-    <button mat-button matTooltip="Cyberfox configs" (click)="goToCyberfoxCofig()" *ngIf="isInternalUser"><i class="fa fa-superpowers"></i></button>
-    <button mat-button matTooltip="Comment Builder" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><i class="fa fa-comment"></i></button>
-    <button mat-button matTooltip="Configurations" (click)="goToConfig()" *ngIf="isInternalUser"><i class="fa fa-cogs" ></i></button>
+    <button mat-button matTooltip="Cyberfox configs" (click)="goToCyberfoxCofig()" *ngIf="cyberfoxConfigs"><i class="fa fa-superpowers"></i></button>
+    <button mat-button matTooltip="Comment Builder" (click)="getAllCommentsByUserID(commentBuilder)"><i class="fa fa-comment"></i></button>
+    <button mat-button matTooltip="Configurations" (click)="goToConfig()" *ngIf="Configurations"><i class="fa fa-cogs" ></i></button>
     <button mat-button matTooltip="Notifications" (click)="getAllNotifications();openNotificationsModal(notificationsCenter)"><i class="fa fa-bell"></i> <span *ngIf="notiBell" class="indicator"></span></button>
     <button mat-button [matMenuTriggerFor]="user"><img src="https://img.icons8.com/dusk/100/000000/user-male-circle.png" alt="" class="user-avatar-md rounded-circle"></button>
     <mat-menu #user="matMenu">
@@ -26,9 +26,9 @@
   </div>
 
   <div class="nav-links" *ngIf="Links">
-    <a (click)="goToCyberfoxCofig()" *ngIf="isInternalUser">Cyberfox config</a>
+    <a (click)="goToCyberfoxCofig()" *ngIf="cyberfoxConfigs">Cyberfox config</a>
     <a (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser">Comment Builder</a>
-    <a (click)="goToConfig()" *ngIf="isInternalUser">Configurations</a>
+    <a (click)="goToConfig()" *ngIf="Configurations">Configurations</a>
     <a (click)="getAllNotifications();openNotificationsModal(notificationsCenter)">Notifications</a>
     <a (click)="goToSettings()">User Settings</a>
     <a (click)="LogoutUser()">Log Out</a>
@@ -51,7 +51,7 @@
           <textarea matInput placeholder="Eg. This is good" formControlName="newCommentName"></textarea>
         </mat-form-field>
 
-        <mat-checkbox class="example-margin">Set as default</mat-checkbox>
+        <!--<mat-checkbox class="example-margin">Set as default</mat-checkbox>-->
         <button mat-raised-button color="green" (click)="modal.dismiss('Cross click');onCommentCreate(commentBuilder)"><i class="fa fa-save"></i></button>
 
       </form>
