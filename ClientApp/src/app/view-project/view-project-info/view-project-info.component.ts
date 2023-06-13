@@ -258,6 +258,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.getAllSubDepFroConditionalApprove();
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
