@@ -17,6 +17,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentForComment/sub-department-for-comment.service';
+import { SubDepartmentsService } from 'src/app/service/SubDepartments/sub-departments.service';
 import { AccessGroupsService } from '../../service/AccessGroups/access-groups.service';
 
 export interface RolesList {
@@ -106,6 +107,8 @@ export interface ApplicationList {
   isPlanning?: boolean,
 }
 
+
+
 const ELEMENT_DATA: PeriodicElement[] = [
   { name: 'Proof of payment'},
   {  name: 'Invoice' },
@@ -154,6 +157,7 @@ export class ViewProjectInfoComponent implements OnInit {
   public projectNo = "";
   createdByID: any | undefined; 
 
+
   /*type of applicant*/
   isInternal = true;
   toa = '';
@@ -179,6 +183,8 @@ export class ViewProjectInfoComponent implements OnInit {
   internalApplicantCostCenterNo = '';
   internalApplicantCostCenterOwner = '';
 
+  
+
 
   wbsNumberRequested = '';
 
@@ -188,6 +194,7 @@ export class ViewProjectInfoComponent implements OnInit {
   SubDepConditionalApproveList: SubDepConditionalApproveList[] = [];
   RolesList: RolesList[] = [];
   SubDepartmentList: SubDepartmentList[] = [];
+  SubDepartmentsList: SubDepartmentList[] = [];
 
   CurrentApplicationBeingViewed: ApplicationList[] = [];
   DepositRequired: DepositRequired[] = [];
@@ -200,9 +207,11 @@ export class ViewProjectInfoComponent implements OnInit {
   CurrentUser: any;
   //Convert the local storage JSON data to an array object
   stringifiedData: any;
-
-
-
+  clarifyBtn: boolean = false;
+  replyCreated: boolean = false;
+  editComment: boolean = true;
+  ApplicantReply = '';
+  reply = ''
  /* @ViewChild('fileInput') fileInput: ElementRef | undefined;*/
   fileAttr = 'Choose File';
     currentApplication: number;
@@ -224,6 +233,8 @@ export class ViewProjectInfoComponent implements OnInit {
     clientName: string;
     ApprovalPackBtn: boolean = false;
   RejectionPackBtn: boolean = false;
+    depID: any;
+    subDepNameForClarify: any;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -252,6 +263,10 @@ export class ViewProjectInfoComponent implements OnInit {
     this.modalService.open(newSub, { backdrop: 'static', centered: true, size: 'lg' });
   }
 
+  openEditCommentModal(commentEditorModal: any) {
+    this.modalService.open(commentEditorModal, { centered: true, size: 'lg' });
+  }
+
 
   panelOpenState = false;
   displayedColumns: string[] = [ 'name','actions'];
@@ -273,6 +288,7 @@ export class ViewProjectInfoComponent implements OnInit {
     private formBuilder: FormBuilder,
     private subDepartmentForCommentService: SubDepartmentForCommentService,
     private router: Router,
+    private subDepartmentService: SubDepartmentsService,
  
   ) { }
 
@@ -286,6 +302,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
 
+
    
     const setValues = this.applicationDataForView[0];
 
@@ -297,7 +314,7 @@ export class ViewProjectInfoComponent implements OnInit {
  
       this.router.navigate(["/home"]);
     }
-   
+ 
     this.getRolesLinkedToUser();
     this.CurrentApplicant = setValues.CreatedById;
 
@@ -367,9 +384,9 @@ export class ViewProjectInfoComponent implements OnInit {
           tempCommentList.CommentStatus = current.commentStatus;
           tempCommentList.SubDepartmentForCommentID = current.subDepartmentForCommentID;
           tempCommentList.SubDepartmentName = current.subDepartmentName;
- 
-
+          
           this.CommentsList.push(tempCommentList);
+          
           // this.sharedService.setStageData(this.StagesList);
         }
       }
@@ -383,6 +400,25 @@ export class ViewProjectInfoComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
+
+  openReplyModal(replyModal: any) {
+    this.modalService.open(replyModal, { centered:true, size: 'lg' })
+  }
+
+
+  createReply() {
+    let Currentreply = this.reply;
+    this.ApplicantReply = Currentreply;
+    this.replyCreated = true;
+  }
+
+  checkIfApplicationIsNotApproved() {
+    if (this.CurrentApplicationBeingViewed[0].CurrentStageName == "Final Approval") {
+
+    }
+  }
+
+
 
 
 
@@ -688,42 +724,30 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   buildProjectNumber() {
+    
     this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
       if (data.responseCode == 1) {
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const current = data.dateSet[i];
-          this.configNumberOfProject = current.utilitySlot1; 
-          this.configMonthYear = current.utilitySlot2;
-          this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
-            if (data.responseCode == 1) {
-              this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "WL:" + (Number(this.configNumberOfProject) + 1).toString() +this.configMonthYear).subscribe((data: any) => {
+        
+        const current = data.dateSet[0];
+        this.configNumberOfProject = current.utilitySlot1;
+        this.configMonthYear = current.utilitySlot2;
+        this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
+          if (data.responseCode == 1) {
+            
 
-                if (data.responseCode == 1) {
-                 
-                  alert("Your project number is: " +data.dateSet[0].projectNumber);
+            this.ChangeApplicationStatusToPaid()
+          }
+          else {
+            //alert("Invalid Email or Password");
+            alert(data.responseMessage);
+          }
+          console.log("addUpdateConfigReponse", data);
 
-                
-                }
-                else {
-                  alert(data.responseMessage);
-                }
-                console.log("responseAddapplication", data);
+        }, error => {
+          console.log("addUpdateConfigError: ", error);
+        })
 
-              }, error => {
-                console.log("Error", error);
-              })
-            }
-            else {
-              //alert("Invalid Email or Password");
-              alert(data.responseMessage);
-            }
-            console.log("addUpdateConfigReponse", data);
-
-          }, error => {
-            console.log("addUpdateConfigError: ", error);
-          })
-        }
-
+       
 
 
       }
@@ -746,7 +770,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
         if (data.responseCode == 1) {
           alert("Application Status Updated to Paid");
-          this.buildProjectNumber();
+       
           //this.applicationsService.updateApplicationStage(null, null, null, null, null, null, null, null, " ").subscribe((data: any) => {
           //  if (data.responseCode == 1) {
           //   // const current = data.dateSet[0];
@@ -826,10 +850,10 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
         console.log("data", data.dateSet);
-
+        
         const currentUserProfile = data.dateSet[0];
-        const fullname = currentUserProfile.fullName;
-
+        this.depID = currentUserProfile.departmentID;
+        this.getUserDep();
         if (currentUserProfile.isInternal == true) {
 
           this.isInternalUser = true;
@@ -856,7 +880,38 @@ export class ViewProjectInfoComponent implements OnInit {
 
   /*CREATING THE APPROVAL PACK*/
 
+  getUserDep() {
+    this.subDepartmentService.getSubDepartmentsByDepartmentID(this.depID).subscribe((data: any) => {
+      
 
+      if (data.responseCode == 1) {
+
+        for (var i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepartmentList = {} as SubDepartmentList;
+
+          const current = data.dateSet[i];
+         this.subDepNameForClarify = current.subDepartmentName;
+          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+
+
+          this.SubDepartmentsList.push(tempSubDepartmentList);
+
+
+        }
+
+        console.log("THIS IS THE CUB DEP THAT HAS APPROVED THE APPLICATION CONDITIONALLY", this.subDepNameForClarify);
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
   getAllSubDepFroConditionalApprove() {
     
     let commentS = "Approved(Conditional)";

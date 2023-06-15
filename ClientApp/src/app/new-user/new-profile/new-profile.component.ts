@@ -445,7 +445,13 @@ export class NewProfileComponent implements OnInit {
   }
   routeChange() {
   
-}
+  }
+
+  refresh() {
+    localStorage.removeItem('LoggedInUserInfo');
+    localStorage.removeItem('userProfile');
+    this.router.navigate(["/"]);
+  }
 
 
   getAllDeps() {

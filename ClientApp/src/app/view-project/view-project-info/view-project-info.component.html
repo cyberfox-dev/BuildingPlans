@@ -56,7 +56,7 @@
   <app-action-center  [ApplicationID]="ApplicationID" (refreshParent)="ngOnInit()" *ngIf="isInternalUser" (optionEvent)="reciveOption($event)"></app-action-center>
   <button mat-button color="action" [matMenuTriggerFor]="actions"> <mat-icon>more_vert</mat-icon></button>
   <mat-menu #actions="matMenu">
-    <button mat-menu-item (click)="ChangeApplicationStatusToPaid()" *ngIf="isInternalUser"> move to paid</button>
+    <button mat-menu-item (click)="buildProjectNumber()" *ngIf="isInternalUser"> move to paid</button>
     <button mat-menu-item (click)="MoveToNextStage()" *ngIf="isInternalUser">Move to Next stage</button>
     <button mat-menu-item (click)="MoveToNextStage()"> <i class="fa fa-ban" aria-hidden="true"></i> Cancel Application</button>
     <button mat-menu-item (click)="goToNewWayleave(true)" *ngIf="canReapply"><i class="fa fa-repeat" aria-hidden="true"></i> Re-apply</button>
@@ -110,15 +110,28 @@
             <div class="row" *ngFor="let commentsList of CommentsList">
               <div class="col s12 m12 l12">
 
-                <ul class="timeline">
+                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'Final Approved'" [class.Reject]="commentsList.CommentStatus === 'Reject'||commentsList.CommentStatus === 'Rejected'" [class.clarify]="commentsList.CommentStatus === 'Clarify'" [class.refer]="commentsList.CommentStatus === 'Refer'">
+
                   <li class="event" data-date="">
-                    {{commentsList.SubDepartmentName}}
-                    <!-- data-bind="{{commentsList.SubDepartmentName}}-->
-                    <h3>{{commentsList.CommentStatus}}</h3>
+
+
+                    <h3>{{commentsList.SubDepartmentName}} - {{commentsList.CommentStatus}}</h3>
+                    <div class="cont2">
+                      <button mat-raised-button color="white" *ngIf="commentsList.CommentStatus != 'FinalApproved'  &&   this.subDepNameForClarify === commentsList.SubDepartmentName" (click)="openEditCommentModal(commentEditorModal)"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+                    </div>
                     <p>
 
                       {{commentsList.Comment}}
                     </p>
+                    <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarify'" (click)="openReplyModal(replyModal)">Reply</button>
+                    <div class="row" *ngIf="commentsList.CommentStatus === 'Clarify' && replyCreated">
+                      <label>Applicants Reply :</label>
+                      <div class="form-floating mb-3 mt-3">
+                        <input type="text" class="form-control" [(ngModel)]="ApplicantReply" id="ApplicantReply" name="ApplicantReply" disabled>
+
+                      </div>
+                    </div>
+
                   </li>
 
                 </ul>
@@ -136,10 +149,53 @@
 
 
     </mat-tab>
+    <!--This is the modal for when the applicant can reply to a comment made by the line department-->
+    <ng-template #replyModal let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Reply To Comment</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="row">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="reply" id="reply" name="reply" placeholder="Edit Comment">
+              <label for="reply">Enter in a reply</label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-success" (click)="createReply();modal.close('Save click')">Save</button>
+      </div>
+    </ng-template>
+
+    <!--this is the modal for when the line dep user wants to edit their comment made-->
+    <ng-template #commentEditorModal let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Edit Your Comment</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+      </div>
+      <div class="modal-body">
+        <form>
 
 
+          <div class="row">
+
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="commentEdit" placeholder="Edit Comment">
+              <label for="commentEdit">Edit Comment</label>
+            </div>
+
+          </div>
 
 
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+      </div>
+    </ng-template>
 
     <!--------------------------------------------------------Messaging--------------------------------------------------->
     <!--     <mat-tab label="Messaging">
@@ -429,7 +485,7 @@
 
     <!--------------------------------------------------------Permits--------------------------------------------------->
 
-    <mat-tab label="Permits" >
+    <mat-tab label="Permits">
       <app-permit-component></app-permit-component>
     </mat-tab>
 
