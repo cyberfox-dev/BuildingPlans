@@ -34,7 +34,7 @@ import ExpressionInfo from '@arcgis/core/form/ExpressionInfo';
 import FieldElement from '@arcgis/core/form/elements/FieldElement';
 import BasemapToggle from '@arcgis/core/widgets/BasemapToggle';
 import { SharedService } from "src/app/shared/shared.service"
-import Query from '@arcgis/core/rest/support/query';
+import Query from '@arcgis/core/rest/support/Query';
 import * as SearchSource from '@arcgis/core/widgets/Search/SearchSource';
 
 /*import { Editor, EditorViewModel, FeatureFormViewModel } from "@arcgis/core/widgets/Editor";*/
@@ -703,6 +703,47 @@ export class ProjectDetailsMapComponent implements OnInit {
         const countPolygon = event.addedFeatures.length;
 
         const drawnPolygon = event.addedFeatures;
+
+          // Create a new Query object
+          const query = new Query();
+
+          // Set the spatial relationship to "intersects" or "contains" based on your requirement
+          query.spatialRelationship = "intersects";
+
+        // Set the geometry of the query to the drawn polygon
+/*        query.geometry = event.editedFeatures.editedFeatures.adds[0].geometry;*/
+
+        // Set the geometry of the query to the drawn polygon
+        // @ts-ignore
+        query.geometry = event.edits.addFeatures[0].geometry;
+        query.outFields = ['OBJECTID'];
+
+          // Set up the layer in the MapServer to query against
+          const mapServerLayerUrl = "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves_Regions/MapServer/0"; //this checks just the electricity layer.
+          const mapServerLayer = new FeatureLayer({
+            url: mapServerLayerUrl
+          });
+
+          // Perform the spatial query
+          mapServerLayer.queryFeatures(query).then((result) => {
+            // Handle the resulting features that intersect or are within the drawn polygon
+            const features = result.features;
+            // Do something with the features
+
+            // Iterate through the features
+            features.forEach((feature) => {
+              // Access the globalID attribute
+              /*              const OBJECTID = feature.attributes.OBJECTID;*/
+
+              // @ts-ignore
+              const OBJECTID = feature.attributes.OBJECTID;
+
+              // Do something with the globalID
+              console.log('OBJECTID:', OBJECTID);
+            });
+
+          });
+
         //Now get the geometry of this polygon using the globalID
       });
 
