@@ -10,42 +10,48 @@
   </div>
   <div class="modal-body">
     <div class="cont">
-      <button mat-raised-button color="blue" *ngIf="CanAssignDepartment == true && canCommentSR == false"  (click)="openAssignDepartment(assign)">Assign a Department to this project</button>
-      <button mat-raised-button color="blue" *ngIf="AssignProjectToZone == true && canCommentSR == false" (click)="openAssignToZone(assignProjectToZone)">Assign this project to a zone</button>
-      <button mat-raised-button color="blue" *ngIf="AssignUserForComment == true && canCommentSR == false" (click)="openAssignToUser(assignProjectToUser)">Assign this project to a user manually</button>
+      <button mat-raised-button color="blue" *ngIf="CanAssignDepartment == true && canCommentFinalApprover == false" (click)="openAssignDepartment(assign)">Assign Department to Project</button>
+      <button mat-raised-button color="blue" *ngIf="AssignProjectToZone == true && canCommentFinalApprover == false" (click)="openAssignToZone(assignProjectToZone)">Assign Project to Zone</button>
+      <button mat-raised-button color="blue" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false" (click)="openAssignToUser(assignProjectToUser)">Assign User For Comment</button>
       <!-- <button mat-raised-button color="blue" *ngIf="hopperButton == true" (click)="onHopperClick()">Hopper</button>-->
     </div>
 
     <br>
     <mat-divider></mat-divider>
     <br>
-    <mat-form-field class="example-full-width" *ngIf="canComment == true ">
-      <!--|| canCommentSR == true-->
+    <mat-form-field class="example-full-width" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true">
+      <!--|| canCommentFinalApprover == true-->
       <mat-label>Type new comment</mat-label>
       <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good"></textarea>
 
     </mat-form-field>
-    <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true"><i class="fa fa-comment" aria-hidden="true" ></i></button>
+    <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true"><i class="fa fa-comment" aria-hidden="true"></i></button>
     <mat-menu #menu="matMenu" xPosition="before">
       <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>
 
     </mat-menu>
 
-    <div class="cont2" *ngIf="canComment == true && canCommentSR == false">
+    <div class="cont2" *ngIf="canComment == true && canCommentFinalApprover == false">
       <button mat-raised-button color="approveBTN" (click)="onComment('Approve')"><i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true"></i>  Approve</button>
       <button mat-raised-button color="rejectBTN" (click)="onComment('Reject')"><i class="fa fa-thumbs-down redThumbsDown" aria-hidden="true"></i>  Reject</button>
       <button mat-raised-button color="clarifyBTN" (click)="onComment('Clarify');sendOption()"><i class="fa fa-commenting-o orangeSpeech" aria-hidden="true"></i>  Clarify</button>
       <button mat-raised-button color="referBTN" (click)="onComment('Refer')"><i class="fa fa-retweet blueRefer" aria-hidden="true"></i>  Refer</button>
     </div>
-    <div class="cont2" *ngIf="canCommentSR == true">
-     <!-- -->
+    <div class="cont2" *ngIf="canCommentSeniorReviewer == true">
+      <button mat-raised-button color="approveBTN" (click)="onCommentSR('Approve')"><i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true"></i>  Approve</button>
+      <button mat-raised-button color="rejectBTN" (click)="onCommentSR('Reject')"><i class="fa fa-thumbs-down redThumbsDown" aria-hidden="true"></i>  Reject</button>
+      <button mat-raised-button color="clarifyBTN" (click)="onCommentSR('Clarify');sendOption()"><i class="fa fa-commenting-o orangeSpeech" aria-hidden="true"></i>  Clarify</button>
+     
+    </div>
+    <div class="cont2" *ngIf="canCommentFinalApprover == true">`
+      <!-- -->
       <button mat-raised-button color="approveBTN" (click)="FinalApprove('Approve')"><i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true"></i> Final Approval</button>
       <button mat-raised-button color="rejectBTN" (click)="FinalApprove('Reject')"><i class="fa fa-thumbs-down redThumbsDown" aria-hidden="true"></i> Final Reject</button>
 
     </div>
     <div class="cont3">
       <!--this is for the wbs number -->
-      <mat-checkbox class="example-margin" *ngIf="canComment == true && canCommentSR == false" [(ngModel)]="checked">WBS Number</mat-checkbox>
+      <mat-checkbox class="example-margin" *ngIf="canComment == true && canCommentFinalApprover == false || canCommentSeniorReviewer == true" [(ngModel)]="checked">WBS Number</mat-checkbox>
 
       <!--This is for the document upload-->
       <mat-form-field *ngIf="CurrentApplication.isPlanning === true">
@@ -200,7 +206,7 @@
 
 <ng-template #assignProjectToZone let-modal>
   <div class="modal-header">
-    <h1 class="modal-title">Assign Project to a zone</h1>
+    <h1 class="modal-title">Assign Project to Zone</h1>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
@@ -263,12 +269,12 @@
 
 <ng-template #assignProjectToUser let-modal>
   <div class="modal-header">
-    <h1 class="modal-title">Assign Project to a user</h1>
+    <h1 class="modal-title">Assign User For Comment</h1>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
     <mat-tab-group>
-      <mat-tab label="Select User">
+      <mat-tab label="Select User(s)">
 
         <!--<div class="form-floating mb-3 mt-3" >
           <select class="form-select" aria-label="Default select example" formControlName="selectedZone" (change)="onSelectToPopulateZoneUsers($event,newUserLinkedToZone)">
@@ -302,7 +308,7 @@
         </table>
       </mat-tab>
 
-      <mat-tab label="View Slected User">
+      <mat-tab label="View Selected User(s)">
 
         <!--<div class="form-floating mb-3 mt-3" *ngIf="showZone">
           <select class="form-select" aria-label="Default select example" formControlName="viewSelectedZone" (change)="onSelectToPopulateZoneUsers($event,newUserLinkedToZone)">
@@ -341,7 +347,7 @@
     </mat-tab-group>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" (click)="onManuallyAssignUser();modal.close('Save click')">Save</button>
+    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click');onManuallyAssignUser()">Save</button>
   </div>
 
 </ng-template>
