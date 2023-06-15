@@ -20,6 +20,8 @@ import { UserProfileService } from '../service/UserProfile/user-profile.service'
 import { SharedService } from 'src/app/shared/shared.service';
 import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
 import { ViewProjectInfoComponent } from 'src/app/view-project/view-project-info/view-project-info.component';
+import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
+import { RefreshService } from 'src/app/shared/refresh.service';
 
 
 export interface SubDepartmentList {
@@ -107,6 +109,13 @@ export class ActionCenterComponent implements OnInit {
     roles: string;
     CurrentApplication: any;
     fileAttrs: any;
+    departmentAdminUsers: any;
+    seniorReviewerUsers: any;
+    finalApproverUsers: any;
+    reviewerUsers: any;
+    EMBUsers: any;
+    developerUsers: any;
+    canCommentSeniorReviewer: boolean;
    
   /*textfields*/
 
@@ -167,6 +176,7 @@ export class ActionCenterComponent implements OnInit {
   ZoneLinkedList: ZoneList[] = [];
   UserZoneList: UserZoneList[] = [];
   LinkedUserToSub: UserZoneList[] = [];
+  ReviewerUserList: UserZoneList[] = [];
 
   selection = new SelectionModel<SubDepartmentList>(true, []);
   zoneSelection = new SelectionModel<ZoneList>(true, []);
@@ -185,7 +195,7 @@ export class ActionCenterComponent implements OnInit {
   dataSourceViewLinkedZones = this.ZoneLinkedList;
 
   displayedColumnsViewUsersForLink: string[] = ['fullName', 'actions'];
-  dataSourceViewUsersForLink = this.UserZoneList;
+  dataSourceViewUsersForLink = this.ReviewerUserList;
 
   displayedColumnsViewlinkedUserForComment: string[] = ['fullName'];
   dataSourceViewUserForComment = this.LinkedUserToSub;
@@ -214,7 +224,7 @@ export class ActionCenterComponent implements OnInit {
     userID: any;
     canComment: boolean;
     CanAssignDepartment: boolean;
-    canCommentSR: boolean;
+    canCommentFinalApprover: boolean;
   constructor(
     private offcanvasService: NgbOffcanvas,
     private modalService: NgbModal,
@@ -234,6 +244,8 @@ export class ActionCenterComponent implements OnInit {
     private sharedService: SharedService,
     private accessGroupsService: AccessGroupsService,
     private viewProjectInfoComponent: ViewProjectInfoComponent,
+    private router: Router,
+    private refreshService: RefreshService,
   ) { }
   openEnd(content: TemplateRef<any>) {
     this.offcanvasService.open(content, { position: 'end' });
@@ -241,6 +253,8 @@ export class ActionCenterComponent implements OnInit {
 
   stringifiedData: any;
   CurrentUser: any;
+
+  ReticulationID = 1025;
 
   public isInternalUser: boolean = false;
   public isExternalUser: boolean = false;
@@ -290,7 +304,7 @@ export class ActionCenterComponent implements OnInit {
     this.getLinkedZones();
     this.CanComment();
  
- this.CanCommentSR();
+
     
 
    
@@ -301,6 +315,10 @@ export class ActionCenterComponent implements OnInit {
 
   }
 
+
+  ngOnDestroy() {
+    this.refreshService.disableRefreshNavigation();
+  }
 
   onPassFileName(event: { uploadFor: string; fileName: string }) {
     console.log("............................................onPassFileNameEvent",event);
@@ -356,6 +374,7 @@ export class ActionCenterComponent implements OnInit {
               this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Final Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
+               
                   this.viewProjectInfoComponent.getAllComments();
                   alert(data.responseMessage);
 
@@ -379,7 +398,7 @@ export class ActionCenterComponent implements OnInit {
           }, error => {
             console.log("Error: ", error);
           })
-
+          this.modalService.dismissAll();
         }
         break;
       }
@@ -395,6 +414,7 @@ export class ActionCenterComponent implements OnInit {
               this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "FinalReject", this.CurrentUser.appUserId).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
+           
                   this.viewProjectInfoComponent.getAllComments();
                   alert(data.responseMessage);
 
@@ -418,7 +438,7 @@ export class ActionCenterComponent implements OnInit {
           }, error => {
             console.log("Error: ", error);
           })
-
+          this.modalService.dismissAll();
         }
         
         break;
@@ -431,31 +451,98 @@ export class ActionCenterComponent implements OnInit {
     }
   }
 
-  setRoles() {
+
+  getReviewerForLink() {
    
+    this.ReviewerUserList.splice(0, this.ReviewerUserList.length);
+   // this.ReviewerUserList = []; // Initialize the new list
+    debugger;
+    for (var i = 0; i < this.reviewerUsers.length; i++) {
+      debugger;
+      var reviewer = this.reviewerUsers[i];
+
+      for (var j = 0; j < this.UserZoneList.length; j++) {
+        var userZone = this.UserZoneList[j];
+        debugger;
+        if (reviewer.userID === userZone.id) {
+          this.ReviewerUserList.push(userZone); // Save the matching userZone in the new list
+        }
+      }
+    }
+  }
+
+
+  
+
+  setRoles() {
+  
+
+    // this.getUsersByRoleName("Department Admin");
+
+    console.log("this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].", this.departmentAdminUsers);
+
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
       
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.loggedInUsersIsAdmin == true) {
         
         this.AssignProjectToZone = true;
-
-
-
       }
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.loggedInUsersIsZoneAdmin == true) {
-        
-        this.AssignUserForComment = true;
+        debugger;
+        for (var j = 0; j < this.UserZoneList.length; j++) {
+          if (this.UserZoneList[j].id == this.CurrentUser.appUserId) {
+            this.AssignUserForComment = true;
+            this.getUsersByRoleName("Reviewer");
+  
+            break; // Exit the loop once a match is found
+          }
+        }
       }
-     if (this.loggedInUsersSubDepartmentID == 1025) {
-        
+
+      ////////////////////
+      if (this.loggedInUsersSubDepartmentID == this.ReticulationID) {
+        debugger;
         this.CanAssignDepartment = true;
-      }
-      else {
-        
+      } else {
+        debugger;
         this.CanAssignDepartment = false;
       }
     }
   }
+
+  //OLD Code 
+  //setRoles() {
+  // //Im here
+
+  // // this.getUsersByRoleName("Department Admin");
+
+  //  console.log("this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].", this.departmentAdminUsers);
+
+  //  for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
+  //    debugger;
+  //    if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.loggedInUsersIsAdmin == true ) {
+  //      debugger;
+  //      this.AssignProjectToZone = true;
+
+
+
+  //    }
+  //    if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.loggedInUsersIsZoneAdmin == true && this.LinkedUserToSub[0].id == this.CurrentUser.appUserId) {
+  //      debugger;
+  //      this.AssignUserForComment = true;
+  //    }
+
+  //    ////////////////////
+  //    if (this.loggedInUsersSubDepartmentID == this.ReticulationID) {
+  //      debugger;
+  //      this.CanAssignDepartment = true;
+  //    }
+  //    else {
+  //      debugger;
+  //      this.CanAssignDepartment = false;
+  //    }
+  //  }
+  //}
 
   
 
@@ -490,45 +577,159 @@ export class ActionCenterComponent implements OnInit {
 
       }
       console.log("reponse", data);
-
+      this.getUsersByRoleName("Senior Reviewer");
+      this.getUsersByRoleName("Final Approver");
+     // this.CanCommentFinalApprover();
     }, error => {
       console.log("Error: ", error);
     })
   }
 
-  CanCommentSR() {
-    this.getDepartmentManagerUserID("Senior Reviewer");
-    
-    this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+ 
+  CanCommentSeniorReviewer() {
+    debugger;
 
+
+    this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        for (var i = 0; i < data.dateSet.length; i++) {
-          let current = data.dateSet[i];
-          
-          if (current.userAssaignedToComment == this.CurrentUser.appUserId && current.userAssaignedToComment == this.userID) {
-            this.canCommentSR = true;
-            //console.log("vvvvvvvcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent",current);
-            return;
+        let foundMatch = false;
+        let current = data.dateSet[0];// Flag to track if a match is found
+        debugger;
+
+
+        if (current.userAssaignedToComment == "Senior Reviewer to comment") {
+          debugger;
+
+
+          for (var i = 0; i < this.seniorReviewerUsers.length; i++) {
+
+
+            if (this.seniorReviewerUsers[i].userID == this.CurrentUser.appUserId) {
+              debugger;
+             
+              if (current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
+
+                debugger;
+                foundMatch = true;
+                break;
+              }
+
+            }
+
+            if (foundMatch) {
+              debugger;
+              // A match was found, no need to continue checking
+              break;
+            }
           }
-          else {
-            this.canCommentSR = false;
-          } 
         }
+        else {
+          this.canCommentSeniorReviewer = false;
+        }
+
+        debugger;
+        this.canCommentSeniorReviewer = foundMatch;
+      } else {
+        alert(data.responseMessage);
+      }
+
+      console.log("response", data);
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+
+  CanCommentFinalApprover() {
+    debugger;
+   
+
+    this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        let foundMatch = false;
+        let current = data.dateSet[0];// Flag to track if a match is found
+        debugger;
+
+       
+        if (current.userAssaignedToComment == "All users in Subdepartment FA") {
+          debugger;
+
+
+          for (var i = 0; i < this.finalApproverUsers.length; i++) {
+
+
+            if (this.finalApproverUsers[i].userID == this.CurrentUser.appUserId) {
+              debugger;
+              // Check if any userID in this.finalApproverUsers matches current.userAssaignedToComment
+              if (current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
+
+                debugger;
+                foundMatch = true;
+                break;
+              }
+
+            }
+
+            if (foundMatch) {
+              debugger;
+              // A match was found, no need to continue checking
+              break;
+            }
+          }
+        }
+          else {
+            this.canCommentFinalApprover = false;
+          }
+        
+        debugger;
+        this.canCommentFinalApprover = foundMatch;
+      } else {
+        alert(data.responseMessage);
+      }
+
+      console.log("response", data);
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+
+  // OLd code 
+  //CanCommentFinalApprover() {
+  //  this.getUsersByRoleName("Final Approver");
+    
+  //  this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+
+  //    if (data.responseCode == 1) {
+  //      for (var i = 0; i < data.dateSet.length; i++) {
+  //        let current = data.dateSet[i];
+
+
+
+  //        if (current.userAssaignedToComment == this.CurrentUser.appUserId && current.userAssaignedToComment == this.finalApproverUsers[0].userID) {
+  //          this.canCommentFinalApprover = true;
+  //          //console.log("vvvvvvvcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent",current);
+  //          return;
+  //        }
+  //        else {
+  //          this.canCommentFinalApprover = false;
+  //        } 
+  //      }
        
 
       
 
-      }
-      else {
-        alert(data.responseMessage);
+  //    }
+  //    else {
+  //      alert(data.responseMessage);
 
-      }
-      console.log("reponse", data);
+  //    }
+  //    console.log("reponse", data);
 
-    }, error => {
-      console.log("Error: ", error);
-    })
-  }
+  //  }, error => {
+  //    console.log("Error: ", error);
+  //  })
+  //}
 
 
 
@@ -593,20 +794,24 @@ export class ActionCenterComponent implements OnInit {
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
       if (data.responseCode == 1) {
         const current = data.dateSet[0];
+        debugger;
 
         this.forManuallyAssignSubForCommentID = current.subDepartmentForCommentID;
 
         for (var i = 0; i < this.UserZoneList.length; i++) {
+          debugger;
           if (this.UserZoneList[i].id == current.userAssaignedToComment) {
             const tempUserList = {} as UserZoneList;
             tempUserList.fullName = this.UserZoneList[i].fullName;
             tempUserList.id = this.UserZoneList[i].id;
             tempUserList.zoneLinkID = this.UserZoneList[i].zoneLinkID;
+            debugger;
             this.LinkedUserToSub.push(tempUserList);
           }
         }
-
-
+        this.CanCommentSeniorReviewer();
+        this.CanCommentFinalApprover();
+       
 
       }
       else {
@@ -641,6 +846,9 @@ export class ActionCenterComponent implements OnInit {
 
         }
         console.log("reponse", data);
+        this.modalService.dismissAll();
+        this.router.navigate(["/home"]);
+        
 
       }, error => {
         console.log("Error: ", error);
@@ -651,39 +859,119 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-  getDepartmentManagerUserID(roleName?: string |null) {
+  getUsersByRoleName(roleName?: string |null) {
+    debugger;
+    if (roleName == "Department Admin") {
+      this.accessGroupsService.getUserBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+        debugger;
+        if (data.responseCode == 1) {
+          debugger;
+          this.departmentAdminUsers = data.dateSet;
+          debugger;
+          console.log("this.departmentAdminUsersgetAllLinkedRolesReponsethis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsers", this.departmentAdminUsers);
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("getAllLinkedRolesReponse", data);
+
+      }, error => {
+        console.log("getAllLinkedRolesReponseError: ", error);
+      })
+
+    }
+    else if (roleName == "Senior Reviewer") {
+      this.accessGroupsService.getUserBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          this.seniorReviewerUsers = data.dateSet;
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("getAllLinkedRolesReponse", data);
+
+      }, error => {
+        console.log("getAllLinkedRolesReponseError: ", error);
+      })
+    }
+    else if (roleName == "Final Approver") {
+      this.accessGroupsService.getUserBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          this.finalApproverUsers = data.dateSet;
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("getAllLinkedRolesReponse", data);
+
+      }, error => {
+        console.log("getAllLinkedRolesReponseError: ", error);
+      })
+    }
+    else if (roleName == "Reviewer") {
+      this.accessGroupsService.getUserBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          debugger;
+          this.reviewerUsers = data.dateSet;
+          this.getReviewerForLink();
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("getAllLinkedRolesReponse", data);
+
+      }, error => {
+        console.log("getAllLinkedRolesReponseError: ", error);
+      })
+    }
+    else if (roleName == "EMB") {
+      this.accessGroupsService.getUserBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          this.EMBUsers = data.dateSet;
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("getAllLinkedRolesReponse", data);
+
+      }, error => {
+        console.log("getAllLinkedRolesReponseError: ", error);
+      })
+    }
+    else if (roleName == "Developer") {
+      this.accessGroupsService.getUserBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          this.developerUsers = data.dateSet;
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("getAllLinkedRolesReponse", data);
+
+      }, error => {
+        console.log("getAllLinkedRolesReponseError: ", error);
+      })
+    }
+    else {
+      alert("Could not find AG");
+    }
+
     
-    //const currentRole = this.sharedService.getCurrentUserRoles();
-    //for (var i = 0; i < currentRole.length; i++) {
-    //  if (currentRole[i].RoleName ==) {
 
-    //  }
-
-    //}
-    
-
-    this.accessGroupsService.getUserBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
-
-      if (data.responseCode == 1) {
-        this.userID = data.dateSet[0].userID;
-      }
-      else {    
-        alert(data.responseMessage);
-      }
-      console.log("getAllLinkedRolesReponse", data);
-
-    }, error => {
-      console.log("getAllLinkedRolesReponseError: ", error);
-    })
     
 
   }
 
   //im here
   moveToFinalApprovalForDepartment() {
-    this.getDepartmentManagerUserID("Department Admin");
+    //this.getUsersByRoleName("Department Admin");
 
-    this.subDepartmentForCommentService.departmentForCommentFinalAppovalUserToComment(this.forManuallyAssignSubForCommentID, this.userID).subscribe((data: any) => {
+    this.subDepartmentForCommentService.departmentForCommentFinalAppovalUserToComment(this.forManuallyAssignSubForCommentID, "All users in Subdepartment FA").subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 
@@ -753,7 +1041,7 @@ export class ActionCenterComponent implements OnInit {
 }
 
   getAllUsersLinkedToZoneByZoneID() {
-    
+     
     this.UserZoneList.splice(0, this.UserZoneList.length);
     for (var i = 0; i < this.ZoneLinkedList.length; i++) {
 
@@ -773,8 +1061,9 @@ export class ActionCenterComponent implements OnInit {
 
           this.UserZoneList.push(tempZoneList);
         }
-
+        this.setRoles();
         this.CheckIfCurrentUserCanUseHopper();
+       
         //for (var i = 0; i < this.UserZoneList.length; i++) {
         //  if (this.CurrentUser.appUserId == this.UserZoneList[i].id) {
         //    this.hopperButton = true;
@@ -888,6 +1177,7 @@ export class ActionCenterComponent implements OnInit {
   }
 
   onComment(interact: any) {
+    debugger;
     let SubDepartmentName = "";
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
@@ -899,23 +1189,73 @@ export class ActionCenterComponent implements OnInit {
     switch (interact) {
 
       case "Approve": {
-        if (this.checked == true) {
+        debugger;
+        
+          if (this.checked == true) {
+            debugger;
           //SubDepartmentForCommentService
-          this.onDepositRequiredClick(); 
-          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved(Conditional)",null,null,this.userID,true).subscribe((data: any) => {
-
-            if (data.responseCode == 1) {
-
-              alert(data.responseMessage);
-             
-              //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName ,this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId).subscribe((data: any) => {
+            this.onDepositRequiredClick();
+            if (confirm("Are you sure you want to approve this application?")) {
+              this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved(Conditional)", null, null, "All users in Subdepartment FA", false).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-                 
+
                   alert(data.responseMessage);
-                  this.viewProjectInfoComponent.getAllComments();
-                 
+
+                  //commentsService
+                  this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId).subscribe((data: any) => {
+
+                    if (data.responseCode == 1) {
+
+                      alert(data.responseMessage);
+                      this.viewProjectInfoComponent.getAllComments();
+
+                    }
+                    else {
+                      alert(data.responseMessage);
+
+                    }
+                    console.log("reponse", data);
+
+                  }, error => {
+                    console.log("Error: ", error);
+                  })
+
+
+                }
+                else {
+                  alert(data.responseMessage);
+
+                }
+                console.log("reponse", data);
+
+
+              }, error => {
+                console.log("Error: ", error);
+              })
+
+
+              //this is for the wbs number to be sent to the table
+
+              let SubDepartmentName = "";
+              for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
+                if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
+                  SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
+                }
+              }
+              let serviceItemCode = this.depositRequired.controls["selectServiceItemCode"].value;
+              let rate = this.depositRequired.controls["rate"].value;
+              let description = this.depositRequired.controls["description"].value;
+              let quantity = this.depositRequired.controls["quantity"].value;
+              //let total = this.depositRequired.controls["total"].value;
+
+
+              this.depositRequiredService.addUpdateDepositRequired(0, this.forManuallyAssignSubForCommentID, Number(rate), this.ApplicationID, description, this.loggedInUsersSubDepartmentID, Number(quantity), this.CurrentUser.appUserId, SubDepartmentName, serviceItemCode, "True").subscribe((data: any) => {
+
+                if (data.responseCode == 1) {
+
+                  alert(data.responseMessage);
+                  this.hopperButton = false;
                 }
                 else {
                   alert(data.responseMessage);
@@ -926,62 +1266,70 @@ export class ActionCenterComponent implements OnInit {
               }, error => {
                 console.log("Error: ", error);
               })
-
-
+              this.refreshParent.emit();
+              this.moveToFinalApprovalForDepartment();
+              this.modalService.dismissAll();
+              this.router.navigate(["/home"]);
             }
-            else {
-              alert(data.responseMessage);
-
-            }
-            console.log("reponse", data);
-
-          }, error => {
-            console.log("Error: ", error);
-          })
-
-
-          //this is for the wbs number to be sent to the table
-
-          let SubDepartmentName = "";
-          for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
-            if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
-              SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
-            }
-          }
-          let serviceItemCode = this.depositRequired.controls["selectServiceItemCode"].value;
-          let rate = this.depositRequired.controls["rate"].value;
-          let description = this.depositRequired.controls["description"].value;
-          let quantity = this.depositRequired.controls["quantity"].value;
-          //let total = this.depositRequired.controls["total"].value;
-            
-
-          this.depositRequiredService.addUpdateDepositRequired(0, this.forManuallyAssignSubForCommentID, Number(rate), this.ApplicationID, description, this.loggedInUsersSubDepartmentID, Number(quantity), this.CurrentUser.appUserId, SubDepartmentName, serviceItemCode,"True").subscribe((data: any) => {
-
-            if (data.responseCode == 1) {
-
-              alert(data.responseMessage);
-              this.hopperButton = false;
-            }
-            else {
-              alert(data.responseMessage);
-
-            }
-            console.log("reponse", data);
-
-          }, error => {
-            console.log("Error: ", error);
-          })
-          this.refreshParent.emit();
-
         }
+        
+
         else {
-          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved",null,null,this.userID,true).subscribe((data: any) => {
+          debugger;
+          if (confirm("Are you sure you want to approve this application?")) {
+            debugger;
+            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved", null, null, "All users in Subdepartment FA", false).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+                debugger;
+                alert(data.responseMessage);
+                //commentsService
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
+
+                  if (data.responseCode == 1) {
+
+                    alert(data.responseMessage);
+                    this.viewProjectInfoComponent.getAllComments();
+                  }
+                  else {
+                    alert(data.responseMessage);
+
+                  }
+                  console.log("reponse", data);
+
+                }, error => {
+                  console.log("Error: ", error);
+                })
+              }
+              else {
+                alert(data.responseMessage);
+
+              }
+              console.log("reponse", data);
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+            this.moveToFinalApprovalForDepartment();
+            this.modalService.dismissAll();
+            this.router.navigate(["/home"]);
+            }
+
+        }
+       
+        break;
+      }
+
+      case "Reject": {
+        debugger;
+        if (confirm("Are you sure you want to reject this application?")) {
+          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Rejected", null, null,"All users in Subdepartment FA",false).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
 
               alert(data.responseMessage);
               //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Rejected", this.CurrentUser.appUserId).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
 
@@ -1007,127 +1355,355 @@ export class ActionCenterComponent implements OnInit {
           }, error => {
             console.log("Error: ", error);
           })
-          this.refreshParent.emit();
+          this.moveToFinalApprovalForDepartment();
+          this.modalService.dismissAll();
+          this.router.navigate(["/home"]);
         }
+       
+        break;
+      }
+
+      case "Clarify": {
+        debugger;
+       // this.getDepartmentManagerUserID("Senior Reviewer");
+        if (confirm("Are you sure you want to get clarity from applicant for this application?")) {
+          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+
+              alert(data.responseMessage);
+              //commentsService
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId).subscribe((data: any) => {
+
+                if (data.responseCode == 1) {
+
+                  alert(data.responseMessage);
+                  this.viewProjectInfoComponent.getAllComments();
+                }
+                else {
+                  alert(data.responseMessage);
+
+                }
+                console.log("reponse", data);
+
+              }, error => {
+                console.log("Error: ", error);
+              })
+              this.refreshParent.emit();
+            }
+            else {
+              alert(data.responseMessage);
+
+            }
+            console.log("reponse", data);
+
+          }, error => {
+            console.log("Error: ", error);
+          })
+          // alert("In progress");
+          this.modalService.dismissAll();
+          this.router.navigate(["/home"]);
+        }
+        break;
+      }
+      case "Refer": {
+
+        debugger;
+     
+        if (confirm("Are you sure you want to refer this application to Senior Reviewers?")) {
+          debugger;
+            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Referred", false, true, "Senior Reviewer to comment",false).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+                debugger;
+                alert(data.responseMessage);
+                //commentsService
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Referred", this.CurrentUser.appUserId).subscribe((data: any) => {
+
+                  if (data.responseCode == 1) {
+
+                    alert(data.responseMessage);
+                    this.viewProjectInfoComponent.getAllComments();
+                  }
+                  else {
+                    alert(data.responseMessage);
+
+                  }
+                  console.log("reponse", data);
+
+                }, error => {
+                  console.log("Error: ", error);
+                })
+                this.refreshParent.emit();
+              }
+              else {
+                alert(data.responseMessage);
+
+              }
+              console.log("reponse", data);
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+            //alert("In progress");
+            this.modalService.dismissAll();
+            this.router.navigate(["/home"]);
+          }
+        
+       
+
+        break;
+      }
+
+
+
+
+      default: {
+
+        break;
+      }
+    }
+  }
+
+  onCommentSR(interact: any) {
+    debugger;
+    let SubDepartmentName = "";
+    for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
+      if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
+        SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
+      }
+    }
+    //console.log("SubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentName", SubDepartmentName);
+
+    switch (interact) {
+
+      case "Approve": {
+        debugger;
+
+        if (this.checked == true) {
+          debugger;
+          //SubDepartmentForCommentService
+          this.onDepositRequiredClick();
+          debugger;
+          if (confirm("Are you sure you want to approve this application?")) {
+            debugger;
+            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved(Conditional)", null, false, "All users in Subdepartment FA", false).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+                debugger;
+
+                alert(data.responseMessage);
+
+                //commentsService
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId).subscribe((data: any) => {
+
+                  if (data.responseCode == 1) {
+                    debugger;
+
+                    alert(data.responseMessage);
+                    this.viewProjectInfoComponent.getAllComments();
+
+                  }
+                  else {
+                    alert(data.responseMessage);
+
+                  }
+                  console.log("reponse", data);
+
+                }, error => {
+                  console.log("Error: ", error);
+                })
+
+
+              }
+              else {
+                alert(data.responseMessage);
+
+              }
+              console.log("reponse", data);
+
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+
+
+            //this is for the wbs number to be sent to the table
+
+            let SubDepartmentName = "";
+            for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
+              if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
+                SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
+              }
+            }
+            let serviceItemCode = this.depositRequired.controls["selectServiceItemCode"].value;
+            let rate = this.depositRequired.controls["rate"].value;
+            let description = this.depositRequired.controls["description"].value;
+            let quantity = this.depositRequired.controls["quantity"].value;
+            //let total = this.depositRequired.controls["total"].value;
+
+
+            this.depositRequiredService.addUpdateDepositRequired(0, this.forManuallyAssignSubForCommentID, Number(rate), this.ApplicationID, description, this.loggedInUsersSubDepartmentID, Number(quantity), this.CurrentUser.appUserId, SubDepartmentName, serviceItemCode, "True").subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+
+                alert(data.responseMessage);
+                this.hopperButton = false;
+              }
+              else {
+                alert(data.responseMessage);
+
+              }
+              console.log("reponse", data);
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+          
+          }
+          this.refreshParent.emit();
+          this.moveToFinalApprovalForDepartment();
+          this.modalService.dismissAll();
+          this.router.navigate(["/home"]);
+        }
+
+
+        else {
+          debugger;
+          if (confirm("Are you sure you want to approve this application?")) {
+            debugger;
+            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved", null, false, "All users in Subdepartment FA", false).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+                debugger;
+                alert(data.responseMessage);
+                //commentsService
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
+
+                  if (data.responseCode == 1) {
+
+                    alert(data.responseMessage);
+                    this.viewProjectInfoComponent.getAllComments();
+                  }
+                  else {
+                    alert(data.responseMessage);
+
+                  }
+                  console.log("reponse", data);
+
+                }, error => {
+                  console.log("Error: ", error);
+                })
+              }
+              else {
+                alert(data.responseMessage);
+
+              }
+              console.log("reponse", data);
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+      
+          }
+
+          this.moveToFinalApprovalForDepartment();
+          this.modalService.dismissAll();
+          this.router.navigate(["/home"]);
+
+
+        }
+
+
 
         break;
       }
 
       case "Reject": {
-        this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Rejected",null).subscribe((data: any) => {
+        if (confirm("Are you sure you want to reject this application?")) {
+          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Rejected", null, false, "All users in Subdepartment FA",false).subscribe((data: any) => {
 
-          if (data.responseCode == 1) {
+            if (data.responseCode == 1) {
 
-            alert(data.responseMessage);
-            //commentsService
-            this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Rejected", this.CurrentUser.appUserId).subscribe((data: any) => {
+              alert(data.responseMessage);
+              //commentsService
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Rejected", this.CurrentUser.appUserId).subscribe((data: any) => {
 
-              if (data.responseCode == 1) {
+                if (data.responseCode == 1) {
 
-                alert(data.responseMessage);
-                this.viewProjectInfoComponent.getAllComments();
-              }
-              else {
-                alert(data.responseMessage);
+                  alert(data.responseMessage);
+                  this.viewProjectInfoComponent.getAllComments();
+                }
+                else {
+                  alert(data.responseMessage);
 
-              }
-              console.log("reponse", data);
+                }
+                console.log("reponse", data);
 
-            }, error => {
-              console.log("Error: ", error);
-            })
-          }
-          else {
-            alert(data.responseMessage);
+              }, error => {
+                console.log("Error: ", error);
+              })
+            }
+            else {
+              alert(data.responseMessage);
 
-          }
-          console.log("reponse", data);
+            }
+            console.log("reponse", data);
 
-        }, error => {
-          console.log("Error: ", error);
-        })
-        this.refreshParent.emit();
+          }, error => {
+            console.log("Error: ", error);
+          })
+          this.moveToFinalApprovalForDepartment();
+          this.modalService.dismissAll();
+          this.router.navigate(["/home"]);
+        }
+
         break;
       }
 
       case "Clarify": {
-       // this.getDepartmentManagerUserID("Senior Reviewer");
-        this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant,null).subscribe((data: any) => {
+        // this.getDepartmentManagerUserID("Senior Reviewer");
+        if (confirm("Are you sure you want to get clarity from applicant for this application?")) {
+          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
 
-          if (data.responseCode == 1) {
+            if (data.responseCode == 1) {
 
-            alert(data.responseMessage);
-            //commentsService
-            this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId).subscribe((data: any) => {
+              alert(data.responseMessage);
+              //commentsService
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId).subscribe((data: any) => {
 
-              if (data.responseCode == 1) {
+                if (data.responseCode == 1) {
 
-                alert(data.responseMessage);
-                this.viewProjectInfoComponent.getAllComments();
-              }
-              else {
-                alert(data.responseMessage);
+                  alert(data.responseMessage);
+                  this.viewProjectInfoComponent.getAllComments();
+                }
+                else {
+                  alert(data.responseMessage);
 
-              }
-              console.log("reponse", data);
+                }
+                console.log("reponse", data);
 
-            }, error => {
-              console.log("Error: ", error);
-            })
-            this.refreshParent.emit();
-          }
-          else {
-            alert(data.responseMessage);
+              }, error => {
+                console.log("Error: ", error);
+              })
+              this.refreshParent.emit();
+            }
+            else {
+              alert(data.responseMessage);
 
-          }
-          console.log("reponse", data);
+            }
+            console.log("reponse", data);
 
-        }, error => {
-          console.log("Error: ", error);
-        })
-       // alert("In progress");
+          }, error => {
+            console.log("Error: ", error);
+          })
+          // alert("In progress");
+          this.modalService.dismissAll();
+          this.router.navigate(["/home"]);
+        }
         break;
       }
-      case "Refer": {
-
-        this.getDepartmentManagerUserID("Senior Reviewer");
-        this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Referred", false, true, this.userID).subscribe((data: any) => {
-
-          if (data.responseCode == 1) {
-
-            alert(data.responseMessage);
-            //commentsService
-            this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Referred", this.CurrentUser.appUserId).subscribe((data: any) => {
-
-              if (data.responseCode == 1) {
-
-                alert(data.responseMessage);
-                this.viewProjectInfoComponent.getAllComments();
-              }
-              else {
-                alert(data.responseMessage);
-
-              }
-              console.log("reponse", data);
-
-            }, error => {
-              console.log("Error: ", error);
-            })
-            this.refreshParent.emit();
-          }
-          else {
-            alert(data.responseMessage);
-
-          }
-          console.log("reponse", data);
-
-        }, error => {
-          console.log("Error: ", error);
-        })
-        //alert("In progress");
-
-        break;
-      }
+   
 
 
 
@@ -1539,6 +2115,7 @@ getAllCommentsByUserID() {
           this.getLinkedZones();
           this.viewProjectInfoComponent.getAllComments();
           this.refreshParent.emit();
+          this.modalService.dismissAll();
         }
         else {
 
@@ -1584,6 +2161,7 @@ getAllCommentsByUserID() {
         this.ZoneListTable?.renderRows();
         this.getAllUsersLinkedToZoneByZoneID();
         this.viewSelectedUserForApplication();
+
       }
       else {
         alert(data.responseMessage);

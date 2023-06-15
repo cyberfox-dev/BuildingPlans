@@ -13,7 +13,7 @@
       <i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true" *ngIf=" element.commentStatus === FinalApproved"></i>
       <i class="fa fa-thumbs-up blueThumbsUp" aria-hidden="true" *ngIf="element.commentStatus === ApprovedConditional ||element.commentStatus === Approved"></i>
       <i class="fa fa-thumbs-down redThumbsDown" aria-hidden="true" *ngIf="element.commentStatus === Rejected"></i>
-      <i class="fa fa-clock-o yellowTimer" aria-hidden="true" *ngIf="element.commentStatus !== FinalApproved && element.commentStatus !== ApprovedConditional && element.commentStatus !== Approved && element.isAwaitingClarity == false && element.IsRefered == false || element.commentStatus === Null"></i>
+      <i class="fa fa-clock-o yellowTimer" aria-hidden="true" *ngIf="element.commentStatus !== FinalApproved && element.commentStatus !== ApprovedConditional && element.commentStatus !== Approved && element.isAwaitingClarity === false && element.IsRefered === false && element.commentStatus !== Rejected || element.commentStatus === Null"></i>
       <i class="fa fa-commenting-o orangeSpeech" aria-hidden="true" *ngIf="element.isAwaitingClarity"></i>
       <i class="fa fa-retweet blueRefer" aria-hidden="true" *ngIf="element.IsRefered"></i>
     </td>

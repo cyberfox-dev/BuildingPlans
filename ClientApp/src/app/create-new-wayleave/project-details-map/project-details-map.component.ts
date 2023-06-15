@@ -314,8 +314,8 @@ export class ProjectDetailsMapComponent implements OnInit {
       resultGraphicEnabled: true,
       container: this.searchDivEl.nativeElement,
       sources: sources,
-      activeSourceIndex:1, //for some odd reasons, index 0 contains a source already.
-      
+      activeSourceIndex: 1, //for some odd reasons, index 0 contains a source already.
+
     });
 
     searchWidget.on('select-result', (event) => {
@@ -672,48 +672,67 @@ export class ProjectDetailsMapComponent implements OnInit {
 
 
       // Listen to the create event of the Editor widget.
-      editor.on('submit', (event) => {
-        // Get a reference to the feature that was just created.
-        //const graphic = event.graphic;
-        //// Set the values of the attributes for the new feature.
-        //graphic.attributes = {
-        //  LU_ACTV_STS: "9999",
-        //  /*          cREATED_bYid: "99",*/
-        //  // other attribute values
-        //};
+      //editor.on('submit', (event) => {
+      //  // Get a reference to the feature that was just created.
+      //  //const graphic = event.graphic;
+      //  //// Set the values of the attributes for the new feature.
+      //  //graphic.attributes = {
+      //  //  LU_ACTV_STS: "9999",
+      //  //  /*          cREATED_bYid: "99",*/
+      //  //  // other attribute values
+      //  //};
 
-        console.log('submitted form')
-        // Save the new feature.
-        //const featureFormViewModel = editor.viewModel.featureFormViewModel;
-        //featureFormViewModel.submit();
+      //  console.log('submitted form')
+      //  // Save the new feature.
+      //  //const featureFormViewModel = editor.viewModel.featureFormViewModel;
+      //  //featureFormViewModel.submit();
+      //});
+
+      /*      This code is hit when certain actions take place on the view area, regarding the editor. Actions such as deleting polygons. Draw actions aren't hit though :('.*/
+      editor.viewModel.watch("state", (event) => {
+        console.log(event);
+      });
+
+
+
+      featureLayer.on("edits", (event) => {
+        console.log(event);
+        // Get the drawn polygon's geometry
+
+        //Count the number of polygons drawn to prevent submitting the form without inserting a polygon.
+        const countPolygon = event.addedFeatures.length;
+
+        const drawnPolygon = event.addedFeatures;
+        //Now get the geometry of this polygon using the globalID
       });
 
       // Subscribe to the draw-complete event of the Editor widget
-      editor.on("draw-complete", (event) => {
+      editor.viewModel.featureFormViewModel.on("submit", (event) => {
+        console.log(event);
         // Get the drawn polygon's geometry
-        const drawnPolygon = event.graphic.geometry;
+        //  const drawnPolygon = event.graphic.geometry;
 
-        // Create a new Query object
-        const query = new Query();
+        //  // Create a new Query object
+        //  const query = new Query();
 
-        // Set the spatial relationship to "intersects" or "contains" based on your requirement
-        query.spatialRelationship = "intersects";
+        //  // Set the spatial relationship to "intersects" or "contains" based on your requirement
+        //  query.spatialRelationship = "intersects";
 
-        // Set the geometry of the query to the drawn polygon
-        query.geometry = drawnPolygon;
+        //  // Set the geometry of the query to the drawn polygon
+        //  query.geometry = drawnPolygon;
 
-        // Set up the layer in the MapServer to query against
-        const mapServerLayerUrl = "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves_Regions/MapServer/0"; //this checks just the electricity layer.
-        const mapServerLayer = new FeatureLayer({
-          url: mapServerLayerUrl
-        });
+        //  // Set up the layer in the MapServer to query against
+        //  const mapServerLayerUrl = "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves_Regions/MapServer/0"; //this checks just the electricity layer.
+        //  const mapServerLayer = new FeatureLayer({
+        //    url: mapServerLayerUrl
+        //  });
 
-        // Perform the spatial query
-        mapServerLayer.queryFeatures(query).then((result) => {
-          // Handle the resulting features that intersect or are within the drawn polygon
-          const features = result.features;
-          // Do something with the features
-        });
+        //  // Perform the spatial query
+        //  mapServerLayer.queryFeatures(query).then((result) => {
+        //    // Handle the resulting features that intersect or are within the drawn polygon
+        //    const features = result.features;
+        //    // Do something with the features
+        //  });
       });
 
       ///*       create a new instance of draw*/

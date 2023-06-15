@@ -44,7 +44,7 @@ export class DepartmentCirculationComponent implements OnInit {
   ApprovedConditional = "Approved(Conditional)";
   Approved = "Approved";
   Rejected = "Rejected";
-  FinalApproved = "FinalApproved";
+  FinalApproved = "Final Approved";
   SubDepartmentList: SubDepartmentList[] = [];
   applicationDataForView: any;
   Null = null;
@@ -80,7 +80,7 @@ export class DepartmentCirculationComponent implements OnInit {
 
         for (var i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
-     
+          debugger;
           const tempSubDepartmentList = {} as SubDepartmentList;
           tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
           tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
@@ -88,7 +88,7 @@ export class DepartmentCirculationComponent implements OnInit {
           tempSubDepartmentList.dateUpdated = current.dateUpdated;
           tempSubDepartmentList.dateCreated = current.dateCreated;
           tempSubDepartmentList.isAwaitingClarity = current.isAwaitingClarity;
-          tempSubDepartmentList.IsRefered = current.IsRefered;
+          tempSubDepartmentList.IsRefered = current.isRefered;
           tempSubDepartmentList.commentStatus = current.commentStatus;
    
           
