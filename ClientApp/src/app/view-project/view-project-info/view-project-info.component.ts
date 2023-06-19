@@ -166,7 +166,7 @@ export class ViewProjectInfoComponent implements OnInit {
   public projectNo = "";
   createdByID: any | undefined;
 
-  canClarify:boolean;
+  canClarify: boolean;
   /*type of applicant*/
   isInternal = true;
   toa = '';
@@ -193,9 +193,17 @@ export class ViewProjectInfoComponent implements OnInit {
   internalApplicantCostCenterOwner = '';
 
 
-
+  option: any;
 
   wbsNumberRequested = '';
+
+
+  logoUrl: any;
+  try: any;
+  currentDate = new Date();
+  datePipe = new DatePipe('en-ZA');
+  formattedDate = this.datePipe.transform(this.currentDate, 'yyyy-MM-dd');
+
 
   applicationDataForView: ApplicationList[] = [];
   StagesList: StagesList[] = [];
@@ -210,6 +218,7 @@ export class ViewProjectInfoComponent implements OnInit {
   relatedApplications: ApplicationList[] = [];
 
 
+  @ViewChild('pdfTable', { static: false }) pdfTable: ElementRef;
 
   ApplicationID: number | undefined;
 
@@ -224,29 +233,30 @@ export class ViewProjectInfoComponent implements OnInit {
   /* @ViewChild('fileInput') fileInput: ElementRef | undefined;*/
   fileAttr = 'Choose File';
   commentEdit: any;
-    currentApplication: number;
-    configNumberOfProject: any;
-    configMonthYear: any;
-    wbs: any;
-    WBS: string;
-    wbsButton: boolean;
-    CurrentApplicant: number;
-    wbsRequired: boolean;
-    typeOfApp: string;
-    NotificationNumber: string;
-    WBSNumber: string;
-    PhysicalAddressOfProject: string;
-    DescriptionOfProject: string;
-    NatureOfWork: string;
-    ExcavationType: string;
-    ProjectNum: string;
-    clientName: string;
-    ApprovalPackBtn: boolean = false;
+  currentApplication: number;
+  configNumberOfProject: any;
+  configMonthYear: any;
+  wbs: any;
+  WBS: string;
+  wbsButton: boolean;
+  CurrentApplicant: number;
+  wbsRequired: boolean;
+  typeOfApp: string;
+  NotificationNumber: string;
+  WBSNumber: string;
+  PhysicalAddressOfProject: string;
+  DescriptionOfProject: string;
+  NatureOfWork: string;
+  ExcavationType: string;
+  ProjectNum: string;
+  clientName: string;
+  ApprovalPackBtn: boolean = false;
   RejectionPackBtn: boolean = false;
-    depID: any;
-    subDepNameForClarify: any;
-    currentIndex: any;
-    subDepartmentForComment: any;
+  depID: any;
+  subDepNameForClarify: any;
+  currentIndex: any;
+  subDepartmentForComment: any;
+    permitStartDate: Date;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -277,7 +287,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   openEditCommentModal(commentEditorModal: any, index: any) {
     debugger;
-   
+
     this.currentIndex = index;
 
     this.commentEdit = this.CommentsList[index].Comment;
@@ -311,10 +321,10 @@ export class ViewProjectInfoComponent implements OnInit {
     private router: Router,
     private subDepartmentService: SubDepartmentsService,
     private businessPartnerService: BusinessPartnerService,
- 
+
   ) { }
 
-  }
+
 
   ngOnInit(): void {
 
@@ -385,6 +395,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getLinkedDepartments();
     this.checkIfCanReply();
   }
+
 
 
   //validate(): void {
@@ -489,14 +500,14 @@ export class ViewProjectInfoComponent implements OnInit {
           tempCommentList.isApplicantReplay = current.isApplicantReplay;
 
 
-          
+
           this.CommentsList.push(tempCommentList);
 
           // this.sharedService.setStageData(this.StagesList);
         }
 
 
-      
+
       }
       else {
         alert(data.responseMessage);
@@ -509,45 +520,45 @@ export class ViewProjectInfoComponent implements OnInit {
     })
   }
 
-  openReplyModal(replyModal: any,index: any) {
+  openReplyModal(replyModal: any, index: any) {
     this.modalService.open(replyModal, { centered: true, size: 'lg' })
     this.currentIndex = index;
     if (this.CommentsList[index].isApplicantReplay != null) {
       this.reply = this.CommentsList[index].isApplicantReplay;
     }
-    
+
     this.subDepartmentForComment = this.CommentsList[index].SubDepartmentForCommentID;
 
   }
 
 
- //async getSelectedDepartment(subDepID:number) {
+  //async getSelectedDepartment(subDepID:number) {
 
 
- //   //this.LinkedUserToSub.splice(0, this.LinkedUserToSub.length);
- // await  this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, subDepID ).subscribe((data: any) => {
- //     if (data.responseCode == 1) {
- //       const current = data.dateSet[0];
- //       debugger;
+  //   //this.LinkedUserToSub.splice(0, this.LinkedUserToSub.length);
+  // await  this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, subDepID ).subscribe((data: any) => {
+  //     if (data.responseCode == 1) {
+  //       const current = data.dateSet[0];
+  //       debugger;
 
- //       this.subDepartmentForComment = current.subDepartmentForCommentID;
-
-
- //     }
- //     else {
-
- //       alert(data.responseMessage);
- //     }
- //     console.log("reponseGetSubDepartmentForComment", data);
+  //       this.subDepartmentForComment = current.subDepartmentForCommentID;
 
 
- //   }, error => {
- //     console.log("Error: ", error);
- //   })
+  //     }
+  //     else {
 
- // }
+  //       alert(data.responseMessage);
+  //     }
+  //     console.log("reponseGetSubDepartmentForComment", data);
 
-  val
+
+  //   }, error => {
+  //     console.log("Error: ", error);
+  //   })
+
+  // }
+
+
 
 
   updateComment() {
@@ -561,27 +572,27 @@ export class ViewProjectInfoComponent implements OnInit {
     //  }
     //}
 
-  
+
     if (confirm("Are you sure you want update this comment?")) {
-        this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, CurrentComment , null, null, null, null).subscribe((data: any) => {
+      this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, CurrentComment, null, null, null, null).subscribe((data: any) => {
 
-          if (data.responseCode == 1) {
-            this.getAllComments();
+        if (data.responseCode == 1) {
+          this.getAllComments();
 
-            alert("Update Comment Successful");
+          alert("Update Comment Successful");
 
-          }
-          else {
-            alert("Update Comment Unsuccessful");
+        }
+        else {
+          alert("Update Comment Unsuccessful");
 
-          }
-          console.log("reponse", data);
+        }
+        console.log("reponse", data);
 
-        }, error => {
-          console.log("Error: ", error);
-        })
-      }
-    
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+
     //else {
     //  alert("You cannot update this reply.");
     //}
@@ -786,7 +797,7 @@ export class ViewProjectInfoComponent implements OnInit {
     //  alert("You cannot edit this comment");
     //}
 
-   
+
 
 
 
@@ -1197,7 +1208,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.applicationsService.addUpdateApplication(this.CurrentApplicationBeingViewed[0].applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.permitStartDate).subscribe((data: any) => {
       if (data.responseCode == 1) {
         debugger;
-      
+
       }
       else {
         alert(data.responseMessage);
@@ -1283,7 +1294,6 @@ export class ViewProjectInfoComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
-  @ViewChild('pdfTable', { static: false }) pdfTable: ElementRef;
 
   /*CREATING THE APPROVAL PACK*/
 
@@ -1415,12 +1425,6 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
 
-
-  logoUrl: any;
-  try: any;
-  currentDate = new Date();
-  datePipe = new DatePipe('en-ZA');
-  formattedDate = this.datePipe.transform(this.currentDate, 'yyyy-MM-dd');
 
 
   onCreateApprovalPack() {
@@ -2274,7 +2278,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
-  option: any;
+
 
   reciveOption($event: any) {
 
@@ -2396,5 +2400,6 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   }
+
 
 }
