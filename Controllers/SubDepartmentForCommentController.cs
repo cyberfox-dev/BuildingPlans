@@ -42,7 +42,7 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
 
-                if (model == null || model.SubDepartmentName.Length < 1)
+                if (model == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
@@ -203,7 +203,7 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
 
-                if (model.CommentStatus == null)
+                if (model == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }

@@ -42,13 +42,13 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
 
-                if (model == null || model.Comment.Length < 1)
+                if (model == null )
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
-                    var result = await _commentService.AddUpdateComment(model.CommentID,model.ApplicationID, model.SubDepartmentForCommentID,model.SubDepartmentID ,model.SubDepartmentName ,model.Comment, model.CommentStatus ,model.CreatedById);
+                    var result = await _commentService.AddUpdateComment(model.CommentID,model.ApplicationID, model.SubDepartmentForCommentID,model.SubDepartmentID ,model.SubDepartmentName ,model.Comment, model.CommentStatus ,model.CreatedById, model.isClarifyCommentID,model.isApplicantReplay);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.CommentID > 0 ? "Comment Updated Successfully" : "Comment Added Successfully"), result));
                 }
 

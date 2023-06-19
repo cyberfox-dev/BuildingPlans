@@ -19,6 +19,7 @@ import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentForComment/sub-department-for-comment.service';
 import { SubDepartmentsService } from 'src/app/service/SubDepartments/sub-departments.service';
 import { AccessGroupsService } from '../../service/AccessGroups/access-groups.service';
+import { BusinessPartnerService } from '../../service/BusinessPartner/business-partner.service';
 
 export interface RolesList {
   RoleID: number;
@@ -73,6 +74,9 @@ export interface CommentsList {
   CommentStatus: string;
   SubDepartmentForCommentID: number;
   SubDepartmentName?: string;
+  isClarifyCommentID?: number; 
+  isApplicantReplay?: string; 
+
 
 }
 
@@ -157,7 +161,7 @@ export class ViewProjectInfoComponent implements OnInit {
   public projectNo = "";
   createdByID: any | undefined; 
 
-
+  canClarify:boolean;
   /*type of applicant*/
   isInternal = true;
   toa = '';
@@ -214,6 +218,7 @@ export class ViewProjectInfoComponent implements OnInit {
   reply = ''
  /* @ViewChild('fileInput') fileInput: ElementRef | undefined;*/
   fileAttr = 'Choose File';
+  commentEdit: any;
     currentApplication: number;
     configNumberOfProject: any;
     configMonthYear: any;
@@ -235,6 +240,8 @@ export class ViewProjectInfoComponent implements OnInit {
   RejectionPackBtn: boolean = false;
     depID: any;
     subDepNameForClarify: any;
+    currentIndex: any;
+    subDepartmentForComment: any;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -263,8 +270,17 @@ export class ViewProjectInfoComponent implements OnInit {
     this.modalService.open(newSub, { backdrop: 'static', centered: true, size: 'lg' });
   }
 
-  openEditCommentModal(commentEditorModal: any) {
+  openEditCommentModal(commentEditorModal: any, index: any) {
+    debugger;
+   
+    this.currentIndex = index;
+
+    this.commentEdit = this.CommentsList[index].Comment;
+
+
+    this.subDepartmentForComment = this.CommentsList[index].SubDepartmentForCommentID;
     this.modalService.open(commentEditorModal, { centered: true, size: 'lg' });
+
   }
 
 
@@ -289,6 +305,7 @@ export class ViewProjectInfoComponent implements OnInit {
     private subDepartmentForCommentService: SubDepartmentForCommentService,
     private router: Router,
     private subDepartmentService: SubDepartmentsService,
+    private businessPartnerService: BusinessPartnerService,
  
   ) { }
 
@@ -345,7 +362,70 @@ export class ViewProjectInfoComponent implements OnInit {
     this.setProjectNumber();
     this.getAllSubDepFroConditionalApprove();
     this.getLinkedDepartments();
+    this.checkIfCanReply();
   }
+
+
+  //validate(): void {
+  //  //this.businessPartnerService.validateBP().subscribe(
+  //  //  (response: boolean) => {
+  //  //    // Handle the API response
+  //  //    console.log('API response:', response);
+
+  //  //    // Update SQL database accordingly
+  //  //    // ...
+  //  //  },
+  //  //  (error: any) => {
+  //  //    alert('API error: '+ error);
+  //  //    console.error('API error:', error);
+  //  //  }
+  //  //);
+
+
+  //  this.businessPartnerService.validateBP(123).subscribe(
+  //    (response: boolean) => {
+  //      // Handle the API response
+  //      console.log('API response:', response);
+
+  //      // Update SQL database accordingly
+  //      // ...
+  //    },
+  //    (error: any) => {
+  //      // Handle API errorerror
+  //      console.error('API error:', error);
+  //    }
+  //  );
+  //}
+
+  validate(): void {
+    this.businessPartnerService.validateBP(1000110197).subscribe(
+      (response: any) => {
+        // Handle the API response
+        console.log('API response:', response);
+
+        // Access the "Response" property
+        const apiResponse = response.Response;
+        // Update SQL database accordingly
+        // ...
+        alert(apiResponse);
+      },
+      (error: any) => {
+        // Handle API error
+        console.error('API error:', error);
+      }
+    );
+  }
+
+  checkIfCanReply() {
+    if (this.CurrentApplicant == this.CurrentUser.appUserId) {
+      this.canClarify = true;
+    }
+    else {
+      this.canClarify = false;
+    }
+  }
+
+
 
   setProjectNumber() {
     this.projectNo = this.CurrentApplicationBeingViewed[0].ProjectNumber;
@@ -384,11 +464,18 @@ export class ViewProjectInfoComponent implements OnInit {
           tempCommentList.CommentStatus = current.commentStatus;
           tempCommentList.SubDepartmentForCommentID = current.subDepartmentForCommentID;
           tempCommentList.SubDepartmentName = current.subDepartmentName;
+          tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
+          tempCommentList.isApplicantReplay = current.isApplicantReplay;
+
+
           
           this.CommentsList.push(tempCommentList);
           
           // this.sharedService.setStageData(this.StagesList);
         }
+
+
+      
       }
       else {
         alert(data.responseMessage);
@@ -401,15 +488,288 @@ export class ViewProjectInfoComponent implements OnInit {
     })
   }
 
-  openReplyModal(replyModal: any) {
-    this.modalService.open(replyModal, { centered:true, size: 'lg' })
+  openReplyModal(replyModal: any,index: any) {
+    this.modalService.open(replyModal, { centered: true, size: 'lg' })
+    this.currentIndex = index;
+    if (this.CommentsList[index].isApplicantReplay != null) {
+      this.reply = this.CommentsList[index].isApplicantReplay;
+    }
+    
+    this.subDepartmentForComment = this.CommentsList[index].SubDepartmentForCommentID;
+
   }
 
 
+ //async getSelectedDepartment(subDepID:number) {
+
+
+ //   //this.LinkedUserToSub.splice(0, this.LinkedUserToSub.length);
+ // await  this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, subDepID ).subscribe((data: any) => {
+ //     if (data.responseCode == 1) {
+ //       const current = data.dateSet[0];
+ //       debugger;
+
+ //       this.subDepartmentForComment = current.subDepartmentForCommentID;
+
+
+ //     }
+ //     else {
+
+ //       alert(data.responseMessage);
+ //     }
+ //     console.log("reponseGetSubDepartmentForComment", data);
+
+
+ //   }, error => {
+ //     console.log("Error: ", error);
+ //   })
+
+ // }
+
+  val
+
+
+  updateComment() {
+    let CurrentComment = this.commentEdit;
+
+    const currentComment = this.CommentsList[this.currentIndex];
+    //let numberOfComments = 0;
+    //for (var i = 0; i < this.CommentsList.length; i++) {
+    //  if (this.CommentsList[i].SubDepartmentForCommentID == currentComment.SubDepartmentForCommentID) {
+    //    numberOfComments++;
+    //  }
+    //}
+
+  
+    if (confirm("Are you sure you want update this comment?")) {
+        this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, CurrentComment , null, null, null, null).subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+            this.getAllComments();
+
+            alert("Update Comment Successful");
+
+          }
+          else {
+            alert("Update Comment Unsuccessful");
+
+          }
+          console.log("reponse", data);
+
+        }, error => {
+          console.log("Error: ", error);
+        })
+      }
+    
+    //else {
+    //  alert("You cannot update this reply.");
+    //}
+
+
+
+    //if (currentComment.isClarifyCommentID == numberOfComments || currentComment.isClarifyCommentID == null) {
+    //  this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, null, "Clarified", null, numberOfComments, Currentreply).subscribe((data: any) => {
+
+    //    if (data.responseCode == 1) {
+    //      this.getAllComments();
+
+    //      debugger;
+    //      this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, null, false, null, null, null).subscribe((data: any) => {
+
+    //        if (data.responseCode == 1) {
+
+
+
+
+    //        }
+    //        else {
+    //          alert(data.responseMessage);
+
+    //        }
+    //        console.log("reponse", data);
+
+
+    //      }, error => {
+    //        console.log("Error: ", error);
+    //      })
+
+
+    //      alert("Reply Successful");
+
+    //    }
+    //    else {
+    //      alert("Reply Unsuccessful");
+
+    //    }
+    //    console.log("reponse", data);
+
+    //  }, error => {
+    //    console.log("Error: ", error);
+    //  })
+    //}
+    //else {
+    //  alert("You cannot edit this comment");
+    //}
+
+
+
+
+
+
+  }
+
   createReply() {
     let Currentreply = this.reply;
-    this.ApplicantReply = Currentreply;
-    this.replyCreated = true;
+    //this.ApplicantReply = Currentreply;
+    // this.replyCreated = true;
+
+    const currentComment = this.CommentsList[this.currentIndex];
+    let numberOfComments = 0;
+    for (var i = 0; i < this.CommentsList.length; i++) {
+      if (this.CommentsList[i].SubDepartmentForCommentID == currentComment.SubDepartmentForCommentID) {
+        numberOfComments++;
+      }
+    }
+
+    if (currentComment.isClarifyCommentID == null) {
+      if (confirm("Are you sure you want to add this replay?")) {
+        this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, null, "Clarified", null, numberOfComments, Currentreply).subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+            this.getAllComments();
+
+            debugger;
+            this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, null, false, null, null, null).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+
+
+
+
+              }
+              else {
+                alert(data.responseMessage);
+
+              }
+              console.log("reponse", data);
+
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+
+
+            alert("Reply Successful");
+
+          }
+          else {
+            alert("Reply Unsuccessful");
+
+          }
+          console.log("reponse", data);
+
+        }, error => {
+          console.log("Error: ", error);
+        })
+      }
+    }
+    else if (currentComment.isClarifyCommentID != null && currentComment.isClarifyCommentID == numberOfComments) {
+      if (confirm("Are you sure you want to update this replay? You will not be able to update the reply again.")) {
+        this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, null, "Clarified", null, 1, Currentreply).subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+            this.getAllComments();
+
+            debugger;
+            this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, null, false, null, null, null).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+
+
+
+
+              }
+              else {
+                alert(data.responseMessage);
+
+              }
+              console.log("reponse", data);
+
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+
+
+            alert("Update Reply Successful");
+
+          }
+          else {
+            alert("Update Reply Unsuccessful");
+
+          }
+          console.log("reponse", data);
+
+        }, error => {
+          console.log("Error: ", error);
+        })
+      }
+    }
+    else {
+      alert("You cannot update this reply.");
+    }
+
+
+
+    //if (currentComment.isClarifyCommentID == numberOfComments || currentComment.isClarifyCommentID == null) {
+    //  this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, null, "Clarified", null, numberOfComments, Currentreply).subscribe((data: any) => {
+
+    //    if (data.responseCode == 1) {
+    //      this.getAllComments();
+
+    //      debugger;
+    //      this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, null, false, null, null, null).subscribe((data: any) => {
+
+    //        if (data.responseCode == 1) {
+
+
+
+
+    //        }
+    //        else {
+    //          alert(data.responseMessage);
+
+    //        }
+    //        console.log("reponse", data);
+
+
+    //      }, error => {
+    //        console.log("Error: ", error);
+    //      })
+
+
+    //      alert("Reply Successful");
+
+    //    }
+    //    else {
+    //      alert("Reply Unsuccessful");
+
+    //    }
+    //    console.log("reponse", data);
+
+    //  }, error => {
+    //    console.log("Error: ", error);
+    //  })
+    //}
+    //else {
+    //  alert("You cannot edit this comment");
+    //}
+
+   
+
+
+
+
   }
 
   checkIfApplicationIsNotApproved() {

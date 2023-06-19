@@ -18,6 +18,9 @@ namespace WayleaveManagementSystem.DTO
 
         public int? SubDepartmentID { get; set; }
         public string? SubDepartmentName { get; set; }
+
+        public int? isClarifyCommentID { get; set; }
+        public string? isApplicantReplay { get; set; }
     }
 
 }
