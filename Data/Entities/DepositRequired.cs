@@ -23,6 +23,9 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public string? WBS { get; set; }
 
-
+        public static implicit operator DepositRequired(Financial v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -2,7 +2,7 @@
 {
     public class CommentBindingModel
     {
-        public int CommentID { get; set; }
+        public int? CommentID { get; set; }
         public int? ApplicationID { get; set; }
         public string? Comment { get; set; }
         public string? CommentStatus { get; set; }
@@ -10,6 +10,8 @@
         public int? SubDepartmentID { get; set; }
         public string? SubDepartmentName { get; set; }
         public string? CreatedById { get; set; }
+        public int? isClarifyCommentID { get; set; }
+        public string? isApplicantReplay { get; set; }
 
     }
 }

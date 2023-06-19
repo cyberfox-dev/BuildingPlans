@@ -19,7 +19,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Comments> AddUpdateComment(int? commentID, int? applicationID, int? subDepartmentForCommentID,int? subDepartmentID , string? subDepartmentName , string commentName,string? commentStatus ,string? creadtedByID)
+        public async Task<Comments> AddUpdateComment(int? commentID, int? applicationID, int? subDepartmentForCommentID,int? subDepartmentID , string? subDepartmentName , string commentName,string? commentStatus ,string? creadtedByID, int? isClarifyCommentID,string? isApplicantReplay)
         {
 
             if (commentID == 0)
@@ -44,7 +44,9 @@ namespace WayleaveManagementSystem.Service
                     CommentStatus = commentStatus,
                     SubDepartmentID = subDepartmentID,
                     SubDepartmentName = subDepartmentName,
-                    isActive = true
+                    isActive = true,
+                    isClarifyCommentID = isClarifyCommentID,
+                    isApplicantReplay = isApplicantReplay
                 };
 
                 //After the inizlization add to the db
@@ -56,10 +58,27 @@ namespace WayleaveManagementSystem.Service
             }
             else //if it is not null then user is doing an update 
             {
-                tempCommentTable.Comment = commentName;
+
+                if (commentName != null)
+                {
+                    tempCommentTable.Comment = commentName;
+                }
+                if (isClarifyCommentID != null)
+                {
+                    tempCommentTable.isClarifyCommentID = isClarifyCommentID;
+                }
+                if (isApplicantReplay != null)
+                {
+                    tempCommentTable.isApplicantReplay = isApplicantReplay;
+                }
+                if (commentStatus != null)
+                {
+                    tempCommentTable.CommentStatus = commentStatus;
+                }
+
 
                 tempCommentTable.DateUpdated = DateTime.Now;
-                tempCommentTable.isActive = true;
+
 
                 _context.Update(tempCommentTable);
                 await _context.SaveChangesAsync();
@@ -110,6 +129,8 @@ namespace WayleaveManagementSystem.Service
                     CreatedById = comment.CreatedById,
                     SubDepartmentID = comment.SubDepartmentID,
                     SubDepartmentName = comment.SubDepartmentName,
+                    isClarifyCommentID = comment.isClarifyCommentID,
+                    isApplicantReplay = comment.isApplicantReplay,
 
                 }
                 ).ToListAsync();
@@ -132,6 +153,8 @@ namespace WayleaveManagementSystem.Service
                     CreatedById = comment.CreatedById,
                     SubDepartmentID = comment.SubDepartmentID,
                     SubDepartmentName = comment.SubDepartmentName,
+                    isClarifyCommentID = comment.isClarifyCommentID,
+                    isApplicantReplay = comment.isApplicantReplay,
 
                 }
                 ).ToListAsync();

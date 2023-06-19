@@ -13,7 +13,7 @@ export class CommentsService {
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
-  public addUpdateComment(CommentID?: number | null, applicationID?: number | null, subDepartmentForCommentID?: number | null, subDepartmentID?: number | null, subDepartmentName?: string | null, Comment?: string | null, CommentStatus?: string | null, createdById?: string | null) {
+  public addUpdateComment(CommentID?: number | null, applicationID?: number | null, subDepartmentForCommentID?: number | null, subDepartmentID?: number | null, subDepartmentName?: string | null, Comment?: string | null, CommentStatus?: string | null, createdById?: string | null, isClarifyCommentID?: number | null, isApplicantReplay?: string | null) {
     const body = {
       CommentID: CommentID,
       ApplicationID: applicationID,
@@ -23,6 +23,8 @@ export class CommentsService {
       CreatedById: createdById,
       SubDepartmentID: subDepartmentID,
       SubDepartmentName: subDepartmentName,
+      isClarifyCommentID: isClarifyCommentID,
+      isApplicantReplay: isApplicantReplay,
 
     }
     return this.httpClient.post(this.baseURL + "AddUpdateComment", body);
