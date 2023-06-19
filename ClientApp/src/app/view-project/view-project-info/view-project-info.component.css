@@ -18,6 +18,11 @@ h1 {
   bottom: 53px;
   margin-bottom: -32px;
 }
+.mat-permit {
+  margin: 10px;
+  background-color: #005a71;
+  color: white;
+}
 .maps {
   position: center;
   text-align: center;

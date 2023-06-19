@@ -17,8 +17,8 @@
         public string? DescriptionOfProject { get; set; }
         public string? NatureOfWork { get; set; }
         public string? ExcavationType { get; set; }
-        public DateTime ExpectedStartDate { get; set; }
-        public DateTime ExpectedEndDate { get; set; }
+        public DateTime? ExpectedStartDate { get; set; }
+        public DateTime? ExpectedEndDate { get; set; }
         public string? Location { get; set; }
         //public DateTime DateCreated { get; set; }
         //public DateTime DateUpdated { get; set; }
@@ -41,6 +41,7 @@
         public bool? isDrafted { get; set; }
         public bool? isPlanning { get; set; }
 
+        public DateTime? PermitStartDate { get; set; }
 
 
     }
