@@ -7,31 +7,37 @@
     <form>
       <div class="mb-3">
 
+        <!--<div class="row">-->
+        <!--<div class="col">
+       <div class="form-floating mb-3 mt-3">
+         <input type="text" class="form-control" id="bpNoContractor" [(ngModel)]="bpNoContractor" placeholder="Enter BP Number" name="bpNoContractor">
+         <label for="bpNoContractor">BP Number</label>
+       </div>
+     </div>-->
+        <!--          <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" id="ProfessionalRegNo" [(ngModel)]="ProfessionalRegNo" placeholder="Enter Professional Reg No" name="professionalRegNo">
+                  <label for="professionalRegNo">CIDB Number</label>
+                </div>
+              </div>-->
+        <!--</div>-->
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="bpNoContractor" [(ngModel)]="bpNoContractor" placeholder="Enter BP Number" name="bpNoContractor">
-              <label for="bpNoContractor">BP Number</label>
+              <input type="text" class="form-control" id="contractorIDNo" [(ngModel)]="contractorIDNo" placeholder="Enter ID Number" name="contractorIDNo">
+              <label for="contractorIDNo">Company Name</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" id="ProfessionalRegNo" [(ngModel)]="ProfessionalRegNo" placeholder="Enter Professional Reg No" name="professionalRegNo">
-              <label for="professionalRegNo">Professional Reg No.</label>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="contractorIDNo" [(ngModel)]="contractorIDNo" placeholder="Enter ID Number" name="contractorIDNo">
-              <label for="contractorIDNo">ID Number</label>
+              <label for="professionalRegNo">CIDB Number</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" id="CIBDrating" [(ngModel)]="CIBRating" placeholder="Enter Rating" name="CIBRating">
-              <label for="CIBDrating">CIBD Rating</label>
+              <label for="CIBDrating">CIDB Rating</label>
             </div>
           </div>
         </div>
@@ -96,27 +102,27 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="editBpNoContractor" [(ngModel)]="editBpNoContractor" placeholder="Enter BP Number" name="editBpNoContractor" disabled>
+              <input type="text" class="form-control" id="editBpNoContractor" [(ngModel)]="editBpNoContractor" placeholder="Enter BP Number" name="editBpNoContractor">
               <label for="bpNoContractor">BP Number</label>
             </div>
           </div>
+          <!--          <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" id="editProfessionalRegNo" [(ngModel)]="editProfessionalRegNo" placeholder="Enter Professional Reg No" name="editProfessionalRegNo">
+                    <label for="professionalRegNo">Professional Reg No.</label>
+                  </div>
+                </div>-->
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="editProfessionalRegNo" [(ngModel)]="editProfessionalRegNo" placeholder="Enter Professional Reg No" name="editProfessionalRegNo"disabled>
-              <label for="professionalRegNo">Professional Reg No.</label>
-            </div>
-          </div>
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="editContractorIDNo" [(ngModel)]="editContractorIDNo" placeholder="Enter ID Number" name="editContractorIDNo" disabled>
+              <input type="text" class="form-control" id="editContractorIDNo" [(ngModel)]="editContractorIDNo" placeholder="Enter ID Number" name="editContractorIDNo">
               <label for="contractorIDNo">ID Number</label>
             </div>
           </div>
 
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="editCIBDrating" [(ngModel)]="editCIBDrating" placeholder="Enter Rating" name="editCIBDrating" disabled>
-              <label for="CIBDrating">CIBD Rating</label>
+              <input type="text" class="form-control" id="editCIBDrating" [(ngModel)]="editCIBDrating" placeholder="Enter Rating" name="editCIBDrating">
+              <label for="CIBDrating">CIDB Rating</label>
             </div>
           </div>
         </div>
@@ -124,13 +130,13 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="editName" [(ngModel)]="editName" placeholder="Enter First Name" name="editName" disabled>
+              <input type="text" class="form-control" id="editName" [(ngModel)]="editName" placeholder="Enter First Name" name="editName">
               <label for="name">Name</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="Surname" [(ngModel)]="editSurname" placeholder="Enter Surname" name="editSurname"disabled>
+              <input type="text" class="form-control" id="Surname" [(ngModel)]="editSurname" placeholder="Enter Surname" name="editSurname">
               <label for="surname">Surname</label>
             </div>
           </div>

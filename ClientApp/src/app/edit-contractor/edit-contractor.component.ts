@@ -56,7 +56,7 @@ export class EditContractorComponent implements OnInit {
   stringifiedData: any;  
   constructor(private modalService: NgbModal, private shared: SharedService, private professionalService: ProfessionalService) { }
 
-  displayedColumns: string[] = ['ProfessinalType', 'bpNumber', 'name', 'surname', 'professionalRegNo', 'phoneNumber', 'CIBRating', 'email', 'actions'];
+  displayedColumns: string[] = ['ProfessinalType', 'name', 'surname', 'phoneNumber', 'CIBRating', 'email', 'actions'];
   dataSource = this.ContractorList;
   @ViewChild(MatTable) ContractorTable: MatTable<ContractorList> | undefined;
 
