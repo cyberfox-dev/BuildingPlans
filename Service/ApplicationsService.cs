@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel;
 using System.Net.NetworkInformation;
 using WayleaveManagementSystem.Models.DTO;
+using System.Xml.Serialization;
 
 namespace WayleaveManagementSystem.Service
 {
@@ -19,7 +20,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string userID, string fullName, string email, string phoneNumber, string physicalAddress, string referenceNumber, string? companyRegNo, string typeOfApplication, string notificationNumber, string wBSNumber, string physicalAddressOfProject, string descriptionOfProject, string natureOfWork, string excavationType, DateTime expectedStartDate, DateTime expectedEndDate, string location, string createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus, bool? isDrafted,string? projectNumber,bool? isPlanning )
+        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string? userID, string? fullName, string? email, string? phoneNumber, string? physicalAddress, string? referenceNumber, string? companyRegNo, string? typeOfApplication, string? notificationNumber, string? wBSNumber, string? physicalAddressOfProject, string? descriptionOfProject, string? natureOfWork, string? excavationType, DateTime? expectedStartDate, DateTime? expectedEndDate, string? location, string? createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus, bool? isDrafted,string? projectNumber,bool? isPlanning, DateTime? PermitStartDate)
         {
 
             if (ApplicationID == 0)
@@ -70,9 +71,9 @@ namespace WayleaveManagementSystem.Service
                     isDrafted = false,
                     ProjectNumber = projectNumber,
                     isPlanning = isPlanning,
+                    PermitStartDate= PermitStartDate
 
-
-            };
+                };
 
                 //After the inizlization add to the db
                 await _context.Application.AddAsync(tempApplicationTable);
@@ -210,6 +211,10 @@ namespace WayleaveManagementSystem.Service
                 if (projectNumber != null)
                 {
                     tempApplicationTable.ProjectNumber = projectNumber;
+                }   
+                if (PermitStartDate != null)
+                {
+                    tempApplicationTable.PermitStartDate = PermitStartDate;
                 }
 
                 
@@ -317,7 +322,7 @@ namespace WayleaveManagementSystem.Service
                        NextStageNumber = Applications.NextStageNumber,
                        PreviousStageNumber = Applications.PreviousStageNumber,
                        isPlanning = Applications.isPlanning,
-
+                       permitStartDate = Applications.PermitStartDate,
                    }
                    ).ToListAsync();
           
@@ -400,7 +405,7 @@ namespace WayleaveManagementSystem.Service
                        PreviousStageNumber = Applications.PreviousStageNumber,   
                        ProjectNumber = Applications.ProjectNumber,
                        isPlanning = Applications.isPlanning,
-
+                       permitStartDate = Applications.PermitStartDate,
                    }
                    ).ToListAsync();
             }
@@ -443,6 +448,7 @@ namespace WayleaveManagementSystem.Service
                        NextStageNumber = Applications.NextStageNumber,
                        PreviousStageNumber = Applications.PreviousStageNumber,
                              isPlanning = Applications.isPlanning,
+                       permitStartDate = Applications.PermitStartDate,
                    }
                    ).ToListAsync();
             }
@@ -494,6 +500,7 @@ namespace WayleaveManagementSystem.Service
                        NextStageNumber = Applications.NextStageNumber,
                        PreviousStageNumber = Applications.PreviousStageNumber,
                        isPlanning = Applications.isPlanning,
+                       permitStartDate = Applications.PermitStartDate,
 
                    }
                    ).ToListAsync();
@@ -537,6 +544,7 @@ namespace WayleaveManagementSystem.Service
                        NextStageNumber = Applications.NextStageNumber,
                        PreviousStageNumber = Applications.PreviousStageNumber,
                        isPlanning = Applications.isPlanning,
+                       permitStartDate = Applications.PermitStartDate,
                    }
                    ).ToListAsync();
             }
@@ -583,6 +591,7 @@ namespace WayleaveManagementSystem.Service
                        PreviousStageNumber = Applications.PreviousStageNumber,
                        ProjectNumber = Applications.ProjectNumber,
                        isPlanning = Applications.isPlanning,
+                       permitStartDate = Applications.PermitStartDate,
                    }
                    ).ToListAsync();
         }

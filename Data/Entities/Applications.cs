@@ -43,7 +43,7 @@ namespace WayleaveManagementSystem.Data.Entities
 
         //for showing/hiding the escalate button
 
-
+        public DateTime? PermitStartDate { get; set; }
 
 
         /*Application Status Logic

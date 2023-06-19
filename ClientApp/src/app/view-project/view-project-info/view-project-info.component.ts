@@ -21,6 +21,8 @@ import { SubDepartmentsService } from 'src/app/service/SubDepartments/sub-depart
 import { AccessGroupsService } from '../../service/AccessGroups/access-groups.service';
 import { BusinessPartnerService } from '../../service/BusinessPartner/business-partner.service';
 
+
+
 export interface RolesList {
   RoleID: number;
   RoleName: string;
@@ -109,14 +111,15 @@ export interface ApplicationList {
   PreviousStageNumber: number,
   ProjectNumber: string,
   isPlanning?: boolean,
+  permitStartDate: Date,
 }
 
 
 
 const ELEMENT_DATA: PeriodicElement[] = [
-  { name: 'Proof of payment'},
-  {  name: 'Invoice' },
-  {  name: 'deposit DS456'},
+  { name: 'Proof of payment' },
+  { name: 'Invoice' },
+  { name: 'deposit DS456' },
 ];
 
 
@@ -147,9 +150,11 @@ img.src = 'assets/cctlogoblack.png';
 
 export class ViewProjectInfoComponent implements OnInit {
 
+  minDate: string;
+
   public addWBSNumber = this.formBuilder.group({
     wbsnumber: ['', Validators.required],
-   
+
 
   })
 
@@ -159,7 +164,7 @@ export class ViewProjectInfoComponent implements OnInit {
   public isInternalUser: boolean = false;
   canReapply = false;
   public projectNo = "";
-  createdByID: any | undefined; 
+  createdByID: any | undefined;
 
   canClarify:boolean;
   /*type of applicant*/
@@ -187,7 +192,7 @@ export class ViewProjectInfoComponent implements OnInit {
   internalApplicantCostCenterNo = '';
   internalApplicantCostCenterOwner = '';
 
-  
+
 
 
   wbsNumberRequested = '';
@@ -204,7 +209,7 @@ export class ViewProjectInfoComponent implements OnInit {
   DepositRequired: DepositRequired[] = [];
   relatedApplications: ApplicationList[] = [];
 
- 
+
 
   ApplicationID: number | undefined;
 
@@ -216,7 +221,7 @@ export class ViewProjectInfoComponent implements OnInit {
   editComment: boolean = true;
   ApplicantReply = '';
   reply = ''
- /* @ViewChild('fileInput') fileInput: ElementRef | undefined;*/
+  /* @ViewChild('fileInput') fileInput: ElementRef | undefined;*/
   fileAttr = 'Choose File';
   commentEdit: any;
     currentApplication: number;
@@ -255,7 +260,7 @@ export class ViewProjectInfoComponent implements OnInit {
         image.src = e.target.result;
         image.onload = (rs) => {
           let imgBase64Path = e.target.result;
-        //  console.log("e.target.result", e.target.result); 
+          //  console.log("e.target.result", e.target.result); 
         };
       };
       reader.readAsDataURL(imgFile.target.files[0]);
@@ -285,7 +290,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   panelOpenState = false;
-  displayedColumns: string[] = [ 'name','actions'];
+  displayedColumns: string[] = ['name', 'actions'];
   dataSource = ELEMENT_DATA;
 
 
@@ -309,6 +314,8 @@ export class ViewProjectInfoComponent implements OnInit {
  
   ) { }
 
+  }
+
   ngOnInit(): void {
 
     this.getAllSubDepFroConditionalApprove();
@@ -320,18 +327,32 @@ export class ViewProjectInfoComponent implements OnInit {
     this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
 
 
-   
+
+
+    const today = new Date();
+    const twoWeeksFromNow = new Date();
+    twoWeeksFromNow.setDate(today.getDate() + 14); // Add 14 days to the current date
+
+    this.minDate = twoWeeksFromNow.toISOString().split('T')[0];
+
+
+
+
+
+
+
+
     const setValues = this.applicationDataForView[0];
 
     if (setValues != null || setValues != undefined) {
- 
+
       this.ApplicationID = setValues.applicationID;
     }
     else {
- 
+
       this.router.navigate(["/home"]);
     }
- 
+
     this.getRolesLinkedToUser();
     this.CurrentApplicant = setValues.CreatedById;
 
@@ -339,7 +360,7 @@ export class ViewProjectInfoComponent implements OnInit {
     console.log("this is the created by ID", setValues);
     this.createdByID = setValues.CreatedById;
     this.getApplicationDetailsForDocs();
-  
+
 
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
@@ -355,7 +376,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getAllStages();
     this.setInterface();
     this.getAllRequiredDeposits();
-/*    this.getAllSubDepFroConditionalApprove();*/
+    /*    this.getAllSubDepFroConditionalApprove();*/
     this.getAllSubDepForReject();
     this.canReapply = this.sharedService.getCanReapply();
     console.log("canReapplyVen: ", this.canReapply);
@@ -429,10 +450,10 @@ export class ViewProjectInfoComponent implements OnInit {
 
   setProjectNumber() {
     this.projectNo = this.CurrentApplicationBeingViewed[0].ProjectNumber;
-    
+
   }
 
-  getCurrentApplication(): any{
+  getCurrentApplication(): any {
     return this.CurrentApplicationBeingViewed[0];
   }
 
@@ -449,7 +470,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getAllComments() {
-    
+
     this.CommentsList.splice(0, this.CommentsList.length);
     this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
 
@@ -457,7 +478,7 @@ export class ViewProjectInfoComponent implements OnInit {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempCommentList = {} as CommentsList;
           const current = data.dateSet[i];
-          
+
           tempCommentList.ApplicationID = current.applicationID;
           tempCommentList.Comment = current.comment;
           tempCommentList.CommentID = current.commentID;
@@ -470,7 +491,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
           
           this.CommentsList.push(tempCommentList);
-          
+
           // this.sharedService.setStageData(this.StagesList);
         }
 
@@ -814,7 +835,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getAllRequiredDeposits() {
-  
+
 
     this.depositRequiredService.getDepositRequiredByApplicationID(this.ApplicationID).subscribe((data: any) => {
 
@@ -839,7 +860,7 @@ export class ViewProjectInfoComponent implements OnInit {
         }
 
         console.log(" this.DepositRequiredList this.DepositRequiredList this.DepositRequiredList this.DepositRequiredList", this.DepositRequired);
-      
+
       }
       else {
         alert(data.responseMessage);
@@ -855,7 +876,7 @@ export class ViewProjectInfoComponent implements OnInit {
   generateConsolidatedDepositInvoice() {
     // Retrieve deposit information
     //await this.getAllRequiredDeposits();
-    
+
     // Create PDF document
     const doc = new jsPDF({
       orientation: 'landscape',
@@ -911,9 +932,9 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.setFontSize(10);
     doc.text('BTW Reg. Nr./VAT Reg. No.4500193497', 10, 50, { align: 'left' });
     doc.setFontSize(10);
-    doc.text('City of Cape Town'+
-    '\nPost Box / Posbus / iShokisi 655'+
-    '\nCAPE TOWN'+
+    doc.text('City of Cape Town' +
+      '\nPost Box / Posbus / iShokisi 655' +
+      '\nCAPE TOWN' +
       '\n8001', 10, 60, { align: 'left' });
 
     doc.setFontSize(10);
@@ -923,7 +944,7 @@ export class ViewProjectInfoComponent implements OnInit {
       '\nPost Box / Posbus / iShokisi 655' +
       '\nCAPE TOWN' +
       '\n8001', 10, 60, { align: 'left' });
-    
+
     //autoTable(doc, {
     //  body: [
     //    [
@@ -945,7 +966,7 @@ export class ViewProjectInfoComponent implements OnInit {
     //});
 
     //doc.setFontSize(10);
-  
+
 
     // Add sub-department to table
     //const subDepartment = this.DepositRequiredList[0].SubDepartmentName;
@@ -1017,9 +1038,9 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   getUserProfileByUserID() {
-   
+
     this.userPofileService.getUserProfileById(this.createdByID).subscribe((data: any) => {
-    
+
       if (data.responseCode == 1) {
 
 
@@ -1040,7 +1061,7 @@ export class ViewProjectInfoComponent implements OnInit {
           this.internalApplicantCostCenterNo = currentUserProfile.costCenterNumber;
           this.internalApplicantCostCenterOwner = currentUserProfile.costCenterOwner;
           this.isInternal = true;
-         
+
 
         }
         else {
@@ -1056,7 +1077,7 @@ export class ViewProjectInfoComponent implements OnInit {
           this.extApplicantPhyscialAddress = currentUserProfile.physcialAddress;
           // this.extApplicantIDNumber = ''; todo chage the dto to include the id number
           this.isInternal = false;
-         
+
         }
 
       }
@@ -1084,16 +1105,16 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   buildProjectNumber() {
-    
+
     this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
       if (data.responseCode == 1) {
-        
+
         const current = data.dateSet[0];
         this.configNumberOfProject = current.utilitySlot1;
         this.configMonthYear = current.utilitySlot2;
         this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
           if (data.responseCode == 1) {
-            
+
 
             this.ChangeApplicationStatusToPaid()
           }
@@ -1107,7 +1128,7 @@ export class ViewProjectInfoComponent implements OnInit {
           console.log("addUpdateConfigError: ", error);
         })
 
-       
+
 
 
       }
@@ -1121,7 +1142,7 @@ export class ViewProjectInfoComponent implements OnInit {
       console.log("getConfigsByConfigNameError: ", error);
     })
   }
-  
+
 
   ChangeApplicationStatusToPaid() {
 
@@ -1130,11 +1151,11 @@ export class ViewProjectInfoComponent implements OnInit {
 
         if (data.responseCode == 1) {
           alert("Application Status Updated to Paid");
-       
+
           //this.applicationsService.updateApplicationStage(null, null, null, null, null, null, null, null, " ").subscribe((data: any) => {
           //  if (data.responseCode == 1) {
           //   // const current = data.dateSet[0];
-             
+
 
 
 
@@ -1169,9 +1190,35 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
+  updateStartDateForPermit() {
+
+
+    debugger;
+    this.applicationsService.addUpdateApplication(this.CurrentApplicationBeingViewed[0].applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.permitStartDate).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        debugger;
+      
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      alert(data.responseMessage);
+      console.log("IT HAS SAVED THE START DATE DIJFNSJKFNKLSDNFKSDJFNLKSDJFNLKDJFNLKSDJNFLKSJDFNLKJSDFNLKJDFBKLN MNLZXCZXNLZKXNCLKJDNLIFNDSLJIFND FUISDHFISDUFHSID UFHISDUFHSDJFHNSDJKFNSLD FJNS DKF", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  openPermitModal(permitModal: any) {
+
+    this.modalService.open(permitModal, { size: 'lg' });
+  }
+
   MoveToNextStage() {
 
-  
+
     //alert("ChangeApplicationStatusToPaid");
 
     if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Paid") {
@@ -1192,7 +1239,7 @@ export class ViewProjectInfoComponent implements OnInit {
     }
 
     else if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[2].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Distributing") {
-      
+
     }
     else {
       alert("Application Status Is Not Paid");
@@ -1201,7 +1248,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
   setInterface() {
-   
+
 
     this.userPofileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
 
@@ -1210,7 +1257,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
         console.log("data", data.dateSet);
-        
+
         const currentUserProfile = data.dateSet[0];
         this.depID = currentUserProfile.departmentID;
         this.getUserDep();
@@ -1242,7 +1289,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   getUserDep() {
     this.subDepartmentService.getSubDepartmentsByDepartmentID(this.depID).subscribe((data: any) => {
-      
+
 
       if (data.responseCode == 1) {
 
@@ -1250,7 +1297,7 @@ export class ViewProjectInfoComponent implements OnInit {
           const tempSubDepartmentList = {} as SubDepartmentList;
 
           const current = data.dateSet[i];
-         this.subDepNameForClarify = current.subDepartmentName;
+          this.subDepNameForClarify = current.subDepartmentName;
           tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
 
 
@@ -1273,7 +1320,7 @@ export class ViewProjectInfoComponent implements OnInit {
     })
   }
   getAllSubDepFroConditionalApprove() {
-    
+
     let commentS = "Approved(Conditional)";
 
     this.commentsService.getSubDepByCommentStatus(commentS, this.ApplicationID).subscribe((data: any) => {
@@ -1293,8 +1340,8 @@ export class ViewProjectInfoComponent implements OnInit {
           tempSubDepCommentStatusList.CommentStatus = current.commentStatus;
 
           this.SubDepConditionalApproveList.push(tempSubDepCommentStatusList);
-         
-        
+
+
         }
 
         console.log("THIS IS THE CUB DEP THAT HAS APPROVED THE APPLICATION CONDITIONALLY", data.dateSet);
@@ -1355,11 +1402,11 @@ export class ViewProjectInfoComponent implements OnInit {
     const setValues = this.applicationDataForView[0];
 
     this.typeOfApp = (setValues.TypeOfApplication);
-    this.NotificationNumber =(setValues.NotificationNumber);
-    this.WBSNumber =(setValues.WBSNumber);
+    this.NotificationNumber = (setValues.NotificationNumber);
+    this.WBSNumber = (setValues.WBSNumber);
     this.PhysicalAddressOfProject = (setValues.PhysicalAddressOfProject);
     this.DescriptionOfProject = (setValues.NatureOfWork);
-    this.NatureOfWork =(setValues.NatureOfWork);
+    this.NatureOfWork = (setValues.NatureOfWork);
     this.ExcavationType = (setValues.ExcavationType);
     this.ProjectNum = (setValues.ProjectNumber);
     this.clientName = (setValues.clientName);
@@ -1444,53 +1491,53 @@ export class ViewProjectInfoComponent implements OnInit {
     const page44 = new Image();
     const page45 = new Image();
     img.src = 'assets/cctlogoblack.png';
-    footer.src ='assets/Packs/footer.PNG';
-    page1.src ='assets/Packs/page1.PNG';
-    page2.src ='assets/Packs/page2.PNG';
-    page3.src ='assets/Packs/page3.PNG';
-    page4.src ='assets/Packs/page4.PNG';
-    page5.src ='assets/Packs/page5.PNG';
-    page6.src ='assets/Packs/page6.PNG';
-    page7.src ='assets/Packs/page7.PNG';
-    page8.src ='assets/Packs/page8.PNG';
-    page9.src ='assets/Packs/page9.PNG';
-    page10.src ='assets/Packs/page10.PNG';
-    page11.src ='assets/Packs/page11.PNG';
-    page12.src ='assets/Packs/page12.PNG';
-    page13.src ='assets/Packs/page13.PNG';
-    page14.src ='assets/Packs/page14.PNG';
-    page15.src ='assets/Packs/page15.PNG';
-    page16.src ='assets/Packs/page16.PNG';
-    page17.src ='assets/Packs/page17.PNG';
-    page18.src ='assets/Packs/page18.PNG';
-    page19.src ='assets/Packs/page19.PNG';
-    page20.src ='assets/Packs/page20.PNG';
-    page21.src ='assets/Packs/page21.PNG';
-    page22.src ='assets/Packs/page22.PNG';
-    page23.src ='assets/Packs/page23.PNG';
-    page24.src ='assets/Packs/page24.PNG';
-    page25.src ='assets/Packs/page25.PNG';
-    page26.src ='assets/Packs/page26.PNG';
-    page27.src ='assets/Packs/page27.PNG';
-    page28.src ='assets/Packs/page28.PNG';
-    page29.src ='assets/Packs/page29.PNG';
-    page30.src ='assets/Packs/page30.PNG';
-    page31.src ='assets/Packs/page31.PNG';
-    page32.src ='assets/Packs/page32.PNG';
-    page33.src ='assets/Packs/page33.PNG';
-    page34.src ='assets/Packs/page34.PNG';
-    page35.src ='assets/Packs/page35.PNG';
-    page36.src ='assets/Packs/page36.PNG';
-    page37.src ='assets/Packs/page37.PNG';
-    page38.src ='assets/Packs/page38.PNG';
-    page39.src ='assets/Packs/page39.PNG';
-    page40.src ='assets/Packs/page40.PNG';
-    page41.src ='assets/Packs/page41.PNG';
-    page42.src ='assets/Packs/page42.PNG';
-    page43.src ='assets/Packs/page43.PNG';
-    page44.src ='assets/Packs/page44.PNG';
-    page45.src ='assets/Packs/page45.PNG';
-  
+    footer.src = 'assets/Packs/footer.PNG';
+    page1.src = 'assets/Packs/page1.PNG';
+    page2.src = 'assets/Packs/page2.PNG';
+    page3.src = 'assets/Packs/page3.PNG';
+    page4.src = 'assets/Packs/page4.PNG';
+    page5.src = 'assets/Packs/page5.PNG';
+    page6.src = 'assets/Packs/page6.PNG';
+    page7.src = 'assets/Packs/page7.PNG';
+    page8.src = 'assets/Packs/page8.PNG';
+    page9.src = 'assets/Packs/page9.PNG';
+    page10.src = 'assets/Packs/page10.PNG';
+    page11.src = 'assets/Packs/page11.PNG';
+    page12.src = 'assets/Packs/page12.PNG';
+    page13.src = 'assets/Packs/page13.PNG';
+    page14.src = 'assets/Packs/page14.PNG';
+    page15.src = 'assets/Packs/page15.PNG';
+    page16.src = 'assets/Packs/page16.PNG';
+    page17.src = 'assets/Packs/page17.PNG';
+    page18.src = 'assets/Packs/page18.PNG';
+    page19.src = 'assets/Packs/page19.PNG';
+    page20.src = 'assets/Packs/page20.PNG';
+    page21.src = 'assets/Packs/page21.PNG';
+    page22.src = 'assets/Packs/page22.PNG';
+    page23.src = 'assets/Packs/page23.PNG';
+    page24.src = 'assets/Packs/page24.PNG';
+    page25.src = 'assets/Packs/page25.PNG';
+    page26.src = 'assets/Packs/page26.PNG';
+    page27.src = 'assets/Packs/page27.PNG';
+    page28.src = 'assets/Packs/page28.PNG';
+    page29.src = 'assets/Packs/page29.PNG';
+    page30.src = 'assets/Packs/page30.PNG';
+    page31.src = 'assets/Packs/page31.PNG';
+    page32.src = 'assets/Packs/page32.PNG';
+    page33.src = 'assets/Packs/page33.PNG';
+    page34.src = 'assets/Packs/page34.PNG';
+    page35.src = 'assets/Packs/page35.PNG';
+    page36.src = 'assets/Packs/page36.PNG';
+    page37.src = 'assets/Packs/page37.PNG';
+    page38.src = 'assets/Packs/page38.PNG';
+    page39.src = 'assets/Packs/page39.PNG';
+    page40.src = 'assets/Packs/page40.PNG';
+    page41.src = 'assets/Packs/page41.PNG';
+    page42.src = 'assets/Packs/page42.PNG';
+    page43.src = 'assets/Packs/page43.PNG';
+    page44.src = 'assets/Packs/page44.PNG';
+    page45.src = 'assets/Packs/page45.PNG';
+
 
     // Add logo to PDF document
 
@@ -1500,19 +1547,19 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
     //adding information underneath the logo
 
-    doc.text('DATE : ' + this.formattedDate , 10, 45, { align: 'left' });
+    doc.text('DATE : ' + this.formattedDate, 10, 45, { align: 'left' });
 
     doc.text('WAYLEAVE APPLICATION : ' + this.DescriptionOfProject, 10, 55, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
 
     doc.text('Dear ' + this.clientName, 10, 70, { align: 'left' });
 
-  //this is for the project details
+    //this is for the project details
 
     //paragraph 
     doc.setFontSize(10);
     doc.text('Kindly find a summary on the outcome of this wayleave application below as well as departmental specific wayleave approval or rejection letters attached. In the case of a wayleave rejection, please make contact with the relevant Line Department as soon as possible. ', 10, 80, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
     doc.text('Status Summary:', 10, 105, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
- 
+
 
     this.SubDepConditionalApproveList.forEach((deposit) => {
       const row = [
@@ -1521,7 +1568,7 @@ export class ViewProjectInfoComponent implements OnInit {
         deposit.CommentStatus,
 
       ];
- 
+
       data.push(row);
     });
     doc.setLineHeightFactor(60);
@@ -1535,34 +1582,34 @@ export class ViewProjectInfoComponent implements OnInit {
 
     autoTable(doc, {
       head: headers,
-      
-   startY: 120,
+
+      startY: 120,
       body: data,
       styles: {
         overflow: 'visible',
         halign: 'justify',
         fontSize: 10,
         valign: 'middle',
-        
+
       },
-     
+
       columnStyles: {
         0: { cellWidth: 50, fontStyle: 'bold' },
         1: { cellWidth: 80 },
         2: { cellWidth: 40 },
       }
 
-    
+
     });
 
     //PAGE 1
     doc.addPage();
-    
+
     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
     doc.setFontSize(10);
     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
 
- 
+
     doc.addImage(page1, 'png', 10, 40, 190, 215);
     doc.addImage(footer, 'png', 7, 255, 205, 45);
 
@@ -2152,7 +2199,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     });
 
-   
+
 
     // Save PDF document
     doc.save('Rejection Pack:' + this.CurrentUser.userProfileID);
@@ -2183,8 +2230,8 @@ export class ViewProjectInfoComponent implements OnInit {
   onCreateWBSNumber() {
 
     let WBS = this.addWBSNumber.controls["wbsnumber"].value;
-    
-    this.depositRequiredService.addUpdateWBSNUmber(this.DepositRequired[0].DepositRequiredID,this.CurrentUser.appUserId,WBS).subscribe((data: any) => {
+
+    this.depositRequiredService.addUpdateWBSNUmber(this.DepositRequired[0].DepositRequiredID, this.CurrentUser.appUserId, WBS).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
@@ -2197,7 +2244,7 @@ export class ViewProjectInfoComponent implements OnInit {
             const tempDepositReq = {} as DepositRequired;
             const current = data.dateSet[0];
             tempDepositReq.WBS = current.wbs;
-            this.wbsNumberRequested=current.wbs;
+            this.wbsNumberRequested = current.wbs;
 
             this.DepositRequired.push(tempDepositReq);
 
@@ -2207,7 +2254,7 @@ export class ViewProjectInfoComponent implements OnInit {
           }
           else {
             alert(data.responseMessage);
-        
+
           }
           console.log("reponse", data);
 
@@ -2230,7 +2277,7 @@ export class ViewProjectInfoComponent implements OnInit {
   option: any;
 
   reciveOption($event: any) {
-    
+
     this.option = $event
     if (this.option == "True") {
       this.wbsButton = true;
@@ -2295,7 +2342,7 @@ export class ViewProjectInfoComponent implements OnInit {
         this.RejectionPackBtn = true;
       }
     }
-  
+
   }
 
   getRolesLinkedToUser() {

@@ -49,11 +49,9 @@ export class NavMenuComponent implements OnInit {
   RolesList: RolesList[] = [];
   forEditIndex: any;
 
-  //cyberfoxConfigs: boolean = false;
-  //Configurations: boolean = false;
-
-  cyberfoxConfigs: boolean = true;
-  Configurations: boolean = true;
+  cyberfoxConfigs: boolean = false;
+  Configurations: boolean = false;
+  CommentBuilder: boolean = false;
 
   public isInternalUser: boolean = false;
   Links: boolean = false;
@@ -100,26 +98,25 @@ export class NavMenuComponent implements OnInit {
   }
 
   lockViewAccordingToRoles() {
+  
     console.log("werwerwerrwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwererwer", this.RolesList);
     
-    //for (var i = 0; i < this.RolesList.length; i++) {
+    for (var i = 0; i < this.RolesList.length; i++) {
       
-    //  if (this.RolesList[i].RoleName == "Developer Config") {
-    //    this.Configurations = true;
-    //  }
-    //  if (this.RolesList[i].RoleName == "Developer Config") {
-    //    this.cyberfoxConfigs = true;
-    //  }
-
-
-    //}
+      if (this.RolesList[i].RoleName == "Developer Config") {
+        this.Configurations = true;
+      }
+      if (this.RolesList[i].RoleName == "Developer Config" || this.RolesList[i].RoleName == "Configuration") {
+        this.cyberfoxConfigs = true;
+      }
+    }
 
 
   }
 
 
   getRolesLinkedToUser() {
-    
+   
     this.RolesList.splice(0, this.RolesList.length);
 
     this.accessGroupsService.getAllRolesForUser(this.CurrentUser.appUserId).subscribe((data: any) => {

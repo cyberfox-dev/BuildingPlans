@@ -74,6 +74,12 @@
       <mat-checkbox class="example-margin" [(ngModel)]="checked" (click)="depositReqModal(deposit)" *ngIf="isExternalUser">Deposit Required</mat-checkbox>
     </div>
 
+    <div class="cont4" *ngIf="permit">
+      <button mat-raised-button color="approvePermit" >Approve Permit</button>
+      <button mat-raised-button color="meetOnSite" >Meet on site</button>
+      <button mat-raised-button color="rejectPermit" >Reject Permit</button>
+    </div>
+
   </div>
 
 </ng-template>
