@@ -192,6 +192,7 @@ export class NewProfileComponent implements OnInit {
     
     const fullname = this.CurrentUser.fullName;
     this.internalApplicantDepartment = "0";
+    this.selectedZone = "0";
 
     this.internalApplicantName = fullname.substring(0, fullname.indexOf(' '));
     this.internalApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
@@ -604,7 +605,7 @@ export class NewProfileComponent implements OnInit {
     }
     else {
   
-      alert("Please Select a sub department");
+    
 
 
     }
@@ -612,7 +613,7 @@ export class NewProfileComponent implements OnInit {
   }
 
   onSelectToPopulateZone(event: any) {
-
+    debugger;
 
     if (event.target.value > 0) {
 

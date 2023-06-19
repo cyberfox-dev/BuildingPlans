@@ -80,7 +80,7 @@ export class DepartmentCirculationComponent implements OnInit {
 
         for (var i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
-          debugger;
+          
           const tempSubDepartmentList = {} as SubDepartmentList;
           tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
           tempSubDepartmentList.subDepartmentName = current.subDepartmentName;

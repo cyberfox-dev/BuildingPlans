@@ -64,6 +64,7 @@ export interface ApplicationList {
   PreviousStageNumber: number,
   ProjectNumber: string,
   isPlanning?: boolean,
+  permitStartDate: Date,
 }
 
 
@@ -303,7 +304,7 @@ export class HomeComponent implements OnInit,OnDestroy {
               tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
             } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);
             //save here to send to the shared
-
+           
             //tempApplicationListShared.applicationID = current. ;
             tempApplicationListShared.applicationID = current.applicationID;
             tempApplicationListShared.clientName = current.fullName;
@@ -334,6 +335,8 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationListShared.ProjectNumber = current.projectNumber;
           
             tempApplicationListShared.isPlanning = current.isPlanning;
+            tempApplicationListShared.permitStartDate = current.permitStartDate;
+
 
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);

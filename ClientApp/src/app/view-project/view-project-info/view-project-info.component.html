@@ -110,7 +110,7 @@
             <div class="row" *ngFor="let commentsList of CommentsList">
               <div class="col s12 m12 l12">
 
-                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'Final Approved'" [class.Reject]="commentsList.CommentStatus === 'Reject'||commentsList.CommentStatus === 'Rejected'" [class.clarify]="commentsList.CommentStatus === 'Clarify'" [class.refer]="commentsList.CommentStatus === 'Refer'">
+                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved'" [class.Reject]="commentsList.CommentStatus === 'Reject'||commentsList.CommentStatus === 'Rejected'" [class.clarify]="commentsList.CommentStatus === 'Clarify'" [class.refer]="commentsList.CommentStatus === 'Refer'">
 
                   <li class="event" data-date="">
 
@@ -486,7 +486,67 @@
     <!--------------------------------------------------------Permits--------------------------------------------------->
 
     <mat-tab label="Permits">
-      <app-permit-component></app-permit-component>
+
+
+      <button mat-raised-button color="permit" (click)="openPermitModal(permitModal)">Apply For Permit</button>
+
+
+<!--      <div class="main-container">
+        <section id="timeline" class="timeline-outer">
+          <div class="container" id="content">
+            <div class="row" *ngFor="let applicationsList of applicationDataForView">
+              <div class="col s12 m12 l12">
+
+                <ul class="timeline" [class.approve]="applicationsList.clientName != ''">
+
+                  <li class="event" data-date="">
+
+
+                    <h3>{{applicationsList.clientName}} has Applied for a permit</h3>
+                 
+                    <p>
+
+                      The start date for the permit is: {{applicationsList.permitStartDate}}
+                    </p>
+
+                  </li>
+
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <br />
+      </div>-->
+
+
+      <ng-template #permitModal let-modal>
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">Please select a date for your permit</h4>
+          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+        </div>
+        <div class="modal-body">
+
+
+
+          <div class="row">
+
+            <div class="form-floating mb-3 mt-3">
+              <input type="date" class="form-control" [(ngModel)]="permitStartDate" id="permitStartDate" [min]="minDate" placeholder="Enter the start date for the permit">
+              <label for="permitStartDate">Select Start Date</label>
+            </div>
+
+          </div>
+
+
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-success" (click)="updateStartDateForPermit();modal.close('Save click')">Save</button>
+        </div>
+      </ng-template>
+
     </mat-tab>
 
   </mat-tab-group>

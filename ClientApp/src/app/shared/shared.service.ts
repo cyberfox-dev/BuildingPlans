@@ -59,6 +59,7 @@ export interface ApplicationList {
   PreviousStageNumber: number,
   ProjectNumber: string,
   isPlanning?: boolean,
+  permitStartDate: Date,
 }
 
 
