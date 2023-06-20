@@ -448,6 +448,7 @@ namespace WayleaveManagementSystem.Service
                        NextStageNumber = Applications.NextStageNumber,
                        PreviousStageNumber = Applications.PreviousStageNumber,
                              isPlanning = Applications.isPlanning,
+                       ProjectNumber = Applications.ProjectNumber,
                        permitStartDate = Applications.PermitStartDate,
                    }
                    ).ToListAsync();

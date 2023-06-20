@@ -695,15 +695,16 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   onAutoLinkDepartment() {
+    debugger;
     this.subDepartmentsService.getAllSubDepartmentsForAutoDistribution().subscribe((data: any) => {
-
+      debugger;
       if (data.responseCode == 1) {
-
+        debugger;
         for (var i = 0; i < data.dateSet.length; i++) {
           this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.applicationID, data.dateSet[i].subDepartmentID, data.dateSet[i].subDepartmentName, null, null, this.CurrentUser.appUserId).subscribe((data: any) => {
-
+        
             if (data.responseCode == 1) {
-
+              debugger;
               alert(data.dateSet.subDepartmentName + " assigned to this Application");
 
             }
@@ -867,7 +868,7 @@ export class NewWayleaveComponent implements OnInit {
     if (isPlanning === true) {
 
       //Code for Planning 
-        if (this.internal) {
+      if (this.internal) {
 
 
         for (var i = 0; i < this.TOENAMES.length; i++) {
@@ -880,105 +881,105 @@ export class NewWayleaveComponent implements OnInit {
 
 
         }
-          //this.buildProjectNumber();
-          this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
-            if (data.responseCode == 1) {
+        //this.buildProjectNumber();
+        this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
+          if (data.responseCode == 1) {
 
-              const current = data.dateSet[0];
-              this.configNumberOfProject = current.utilitySlot1;
-              this.configMonthYear = current.utilitySlot2;
-              this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
-                if (data.responseCode == 1) {
-                  
-                  this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributed/Unallocated", false, "WL:" + (Number(this.configNumberOfProject) + 1).toString()+"/" + this.configMonthYear, true).subscribe((data: any) => {
+            const current = data.dateSet[0];
+            this.configNumberOfProject = current.utilitySlot1;
+            this.configMonthYear = current.utilitySlot2;
+            this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
+              if (data.responseCode == 1) {
 
-                    if (data.responseCode == 1) {
-                      alert(data.responseMessage);
+                this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributed/Unallocated", false, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, true).subscribe((data: any) => {
 
-                      this.onAutoLinkDepartment();
-                      console.log(data);
-                      this.shared.setApplicationID(this.applicationID);
-                      this.ARCGISAPIData.applicationID = this.applicationID;
+                  if (data.responseCode == 1) {
+                    alert(data.responseMessage);
 
-                      //Add professional link for contractors when application is successfully captured
+                    this.onAutoLinkDepartment();
+                    console.log(data);
+                    this.shared.setApplicationID(this.applicationID);
+                    this.ARCGISAPIData.applicationID = this.applicationID;
 
-
-                      //Pulling information from the share
-                      const filesForUpload = this.shared.pullFilesForUpload();
-                      for (var i = 0; i < filesForUpload.length; i++) {
-                        const formData = new FormData();
-                        let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
-                        let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.applicationID;
-                        formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+                    //Add professional link for contractors when application is successfully captured
 
 
+                    //Pulling information from the share
+                    const filesForUpload = this.shared.pullFilesForUpload();
+                    for (var i = 0; i < filesForUpload.length; i++) {
+                      const formData = new FormData();
+                      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+                      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.applicationID;
+                      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
 
-                        this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
-                          .subscribe({
-                            next: (event) => {
 
-                              if (event.type === HttpEventType.UploadProgress && event.total)
-                                this.progress = Math.round(100 * event.loaded / event.total);
-                              else if (event.type === HttpEventType.Response) {
-                                this.message = 'Upload success.';
-                                this.uploadFinished(event.body, this.applicationID, data.dateSet);
-                              }
-                            },
-                            error: (err: HttpErrorResponse) => console.log(err)
-                          });
-                      }
 
-                      //Clears objects upon application update
-                      this.shared.setApplicationID(0);
-                      this.shared.clearContractorData();
-                      this.shared.clearEngineerData();
+                      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+                        .subscribe({
+                          next: (event) => {
 
+                            if (event.type === HttpEventType.UploadProgress && event.total)
+                              this.progress = Math.round(100 * event.loaded / event.total);
+                            else if (event.type === HttpEventType.Response) {
+                              this.message = 'Upload success.';
+                              this.uploadFinished(event.body, this.applicationID, data.dateSet);
+                            }
+                          },
+                          error: (err: HttpErrorResponse) => console.log(err)
+                        });
                     }
-                    else {
-                      /*          alert(data.responseMessage);*/
-                    }
-                    this.onCreateNotification();
-                    console.log("responseAddapplication", data);
+
+                    //Clears objects upon application update
+                    this.shared.setApplicationID(0);
+                    this.shared.clearContractorData();
+                    this.shared.clearEngineerData();
+
+                  }
+                  else {
+                    /*          alert(data.responseMessage);*/
+                  }
+                  this.onCreateNotification();
+                  console.log("responseAddapplication", data);
 
 
-                    if (this.applicationID == 0) {
-                      this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
-                    } else {
-                      this.router.navigate(["/home"]);
-                      this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...");
-                    };
+                  if (this.applicationID == 0) {
+                    this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
+                  } else {
+                    this.router.navigate(["/home"]);
+                    this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...");
+                  };
 
-                  }, error => {
-                    console.log("Error", error);
-                  })
-                }
-                else {
-                  //alert("Invalid Email or Password");
-                  alert(data.responseMessage);
-                }
-                console.log("addUpdateConfigReponse", data);
+                }, error => {
+                  console.log("Error", error);
+                })
+              }
+              else {
+                //alert("Invalid Email or Password");
+                alert(data.responseMessage);
+              }
+              console.log("addUpdateConfigReponse", data);
 
-              }, error => {
-                console.log("addUpdateConfigError: ", error);
-              })
-
-  
-   
-
-            }         
-
-            else {
-              //alert("Invalid Email or Password");
-              alert(data.responseMessage);
-            }
-            console.log("getConfigsByConfigNameReponse", data);
-
-          }, error => {
-            console.log("getConfigsByConfigNameError: ", error);
-          })
+            }, error => {
+              console.log("addUpdateConfigError: ", error);
+            })
 
 
-        
+
+
+          }
+
+          else {
+            //alert("Invalid Email or Password");
+            alert(data.responseMessage);
+          }
+          console.log("getConfigsByConfigNameReponse", data);
+
+        }, error => {
+          console.log("getConfigsByConfigNameError: ", error);
+        })
+
+
+
       }
       else if (this.client) {
 
@@ -1005,7 +1006,7 @@ export class NewWayleaveComponent implements OnInit {
             this.shared.setApplicationID(data.dateSet.applicationID);
             this.ARCGISAPIData.applicationID = data.dateSet.applicationID;
 
-           
+
 
 
             //Pulling information from the share
@@ -1051,339 +1052,374 @@ export class NewWayleaveComponent implements OnInit {
           console.log("Error", error);
         })
       }
-        else {
-          //External
-          //This is also reached to create a blank application.
+      else {
+        //External
+        //This is also reached to create a blank application.
 
 
-          for (var i = 0; i < this.TOENAMES.length; i++) {
-            let current = this.TOENAMES[i].toString();
-            if (i > 0) {
-              this.TOE = this.TOE + ", " + current
-            } else {
-              this.TOE = current
-            }
-
-
-          }
-
-
-          console.log("lhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfh BUTTTTTONN", this.TOE);
-
-          this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, this.externalAddress, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, this.projectNumber, true).subscribe((data: any) => {
-
-            if (data.responseCode == 1) {
-              /*          alert(data.responseMessage);*/
-              this.shared.setApplicationID(data.dateSet.applicationID);
-              this.ARCGISAPIData.applicationID = data.dateSet.applicationID;
-
-              //Add professional link for contractors when application is successfully captured
-            
-              
-
-
-            }
-            else {
-              /*          alert(data.responseMessage);*/
-            }
-            console.log("responseAddapplication", data);
-
-            /*        this.shared.setApplicationID(data.dateSet.applicationID);*/
-
-            if (this.applicationID == 0) {
-              this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
-            } else {
-              this.router.navigate(["/home"]);
-              this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...");
-            };
-
-            //        this.shared.setApplicationID(0); //sets the applicationID back to zero when a new application is created.
-            /*        return this.ARCGISAPIData.applicationID;*/
-
-          }, error => {
-            console.log("Error", error);
-          })
-
-        }
-
-
-
-    } else { 
-
-
-    if (this.client) {
-
-
-      for (var i = 0; i < this.TOENAMES.length; i++) {
-        let current = this.TOENAMES[i].toString();
-        if (i > 0) {
-          this.TOE = this.TOE + ", " + current
-        } else {
-          this.TOE = current
-        }
-
-
-      }
-
-
-      console.log("lhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfh BUTTTTTONN", this.TOE);
-
-      this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, this.projectNumber,false).subscribe((data: any) => {
-
-        if (data.responseCode == 1) {
-          alert(data.responseMessage);
-          this.shared.setApplicationID(data.dateSet.applicationID);
-          this.ARCGISAPIData.applicationID = data.dateSet.applicationID;
-
-          //Add professional link for contractors when application is successfully captured
-          if (contractorData.length > 0) {
-            for (var i = 0; i < contractorData.length; i++) {
-              this.addProfessionalsLinks(this.applicationID, contractorData[i].professinalID);
-            };
+        for (var i = 0; i < this.TOENAMES.length; i++) {
+          let current = this.TOENAMES[i].toString();
+          if (i > 0) {
+            this.TOE = this.TOE + ", " + current
           } else {
-            alert("This Application have no contractors linked");
+            this.TOE = current
           }
 
 
-          //Add professional link for engineers when application is successfully captured
-          if (engineerData.length > 0) {
-            for (var i = 0; i < engineerData.length; i++) {
-              this.addProfessionalsLinks(this.applicationID, engineerData[i].professinalID);
-            };
+        }
+
+
+        console.log("lhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfh BUTTTTTONN", this.TOE);
+
+        this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, this.externalAddress, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, this.projectNumber, true).subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+            /*          alert(data.responseMessage);*/
+            this.shared.setApplicationID(data.dateSet.applicationID);
+            this.ARCGISAPIData.applicationID = data.dateSet.applicationID;
+
+            //Add professional link for contractors when application is successfully captured
+
+
+
+
           }
           else {
-            alert("This Application have no engineers linked");
+            /*          alert(data.responseMessage);*/
           }
+          console.log("responseAddapplication", data);
 
+          /*        this.shared.setApplicationID(data.dateSet.applicationID);*/
 
-          //Pulling information from the share
-          const filesForUpload = this.shared.pullFilesForUpload();
-          for (var i = 0; i < filesForUpload.length; i++) {
-            const formData = new FormData();
-            formData.append('file', filesForUpload[i].formData, filesForUpload[i].UploadFor + "-appID-" + data.dateSet.applicationID);
+          if (this.applicationID == 0) {
+            this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
+          } else {
+            this.router.navigate(["/home"]);
+            this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...");
+          };
 
+          //        this.shared.setApplicationID(0); //sets the applicationID back to zero when a new application is created.
+          /*        return this.ARCGISAPIData.applicationID;*/
 
-
-            this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
-              .subscribe({
-                next: (event) => {
-
-                  if (event.type === HttpEventType.UploadProgress && event.total)
-                    this.progress = Math.round(100 * event.loaded / event.total);
-                  else if (event.type === HttpEventType.Response) {
-                    this.message = 'Upload success.';
-                    // this.onUploadFinished.emit(event.body);
-                  }
-                },
-                error: (err: HttpErrorResponse) => console.log(err)
-              });
-          }
-
-          //this.shared.pullFilesForUpload();
-
-          this.shared.setApplicationID(0);
-        }
-        else {
-          alert(data.responseMessage);
-        }
-        console.log("responseAddapplication", data);
-
-        if (this.applicationID == 0) {
-          this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
-        } else {
-          this.router.navigate(["/home"]);
-          this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...");
-        };
-
-      }, error => {
-        console.log("Error", error);
-      })
-    }
-    else if (this.internal) {
- 
-
-      for (var i = 0; i < this.TOENAMES.length; i++) {
-        let current = this.TOENAMES[i].toString();
-        if (i > 0) {
-          this.TOE = this.TOE + ", " + current
-        } else {
-          this.TOE = current
-        }
-
+        }, error => {
+          console.log("Error", error);
+        })
 
       }
 
 
-      this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
-        if (data.responseCode == 1) {
 
-          const current = data.dateSet[0];
-          this.configNumberOfProject = current.utilitySlot1;
-          this.configMonthYear = current.utilitySlot2;
-          this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
-            if (data.responseCode == 1) {
-              
-              this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributed/Unallocated", false, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, false).subscribe((data: any) => {
-
-                if (data.responseCode == 1) {
-                  alert(data.responseMessage);
-
-                  this.onAutoLinkDepartment();
-                  console.log(data);
-                  this.shared.setApplicationID(this.applicationID);
-                  this.ARCGISAPIData.applicationID = this.applicationID;
-
-                  //Add professional link for contractors when application is successfully captured
-                  if (contractorData.length > 0) {
-                    for (var i = 0; i < contractorData.length; i++) {
-                      this.addProfessionalsLinks(this.applicationID, contractorData[i].professinalID);
-                    };
-                  } else {
-                    //  alert("This Application have no contractors linked");
-                  }
+    } else {
 
 
-                  //Add professional link for engineers when application is successfully captured
-                  if (engineerData.length > 0) {
-                    for (var i = 0; i < engineerData.length; i++) {
-                      this.addProfessionalsLinks(this.applicationID, engineerData[i].professinalID);
-                    };
+      if (this.client) {
+
+
+        for (var i = 0; i < this.TOENAMES.length; i++) {
+          let current = this.TOENAMES[i].toString();
+          if (i > 0) {
+            this.TOE = this.TOE + ", " + current
+          } else {
+            this.TOE = current
+          }
+
+
+        }
+
+
+        console.log("lhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfh BUTTTTTONN", this.TOE);
+
+        this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, this.projectNumber, false).subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+            alert(data.responseMessage);
+            this.shared.setApplicationID(data.dateSet.applicationID);
+            this.ARCGISAPIData.applicationID = data.dateSet.applicationID;
+
+            //Add professional link for contractors when application is successfully captured
+            if (contractorData.length > 0) {
+              for (var i = 0; i < contractorData.length; i++) {
+                this.addProfessionalsLinks(this.applicationID, contractorData[i].professinalID);
+              };
+            } else {
+              alert("This Application have no contractors linked");
+            }
+
+
+            //Add professional link for engineers when application is successfully captured
+            if (engineerData.length > 0) {
+              for (var i = 0; i < engineerData.length; i++) {
+                this.addProfessionalsLinks(this.applicationID, engineerData[i].professinalID);
+              };
+            }
+            else {
+              alert("This Application have no engineers linked");
+            }
+
+
+            //Pulling information from the share
+            const filesForUpload = this.shared.pullFilesForUpload();
+            for (var i = 0; i < filesForUpload.length; i++) {
+              const formData = new FormData();
+              formData.append('file', filesForUpload[i].formData, filesForUpload[i].UploadFor + "-appID-" + data.dateSet.applicationID);
+
+
+
+              this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+                .subscribe({
+                  next: (event) => {
+
+                    if (event.type === HttpEventType.UploadProgress && event.total)
+                      this.progress = Math.round(100 * event.loaded / event.total);
+                    else if (event.type === HttpEventType.Response) {
+                      this.message = 'Upload success.';
+                      // this.onUploadFinished.emit(event.body);
+                    }
+                  },
+                  error: (err: HttpErrorResponse) => console.log(err)
+                });
+            }
+
+            //this.shared.pullFilesForUpload();
+
+            this.shared.setApplicationID(0);
+          }
+          else {
+            alert(data.responseMessage);
+          }
+          console.log("responseAddapplication", data);
+
+          if (this.applicationID == 0) {
+            this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
+          } else {
+            this.router.navigate(["/home"]);
+            this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...");
+          };
+
+        }, error => {
+          console.log("Error", error);
+        })
+      }
+      else if (this.internal) {
+
+
+        for (var i = 0; i < this.TOENAMES.length; i++) {
+          let current = this.TOENAMES[i].toString();
+          if (i > 0) {
+            this.TOE = this.TOE + ", " + current
+          } else {
+            this.TOE = current
+          }
+
+
+        }
+
+
+        this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
+          if (data.responseCode == 1) {
+
+            const current = data.dateSet[0];
+            this.configNumberOfProject = current.utilitySlot1;
+            this.configMonthYear = current.utilitySlot2;
+            this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
+              if (data.responseCode == 1) {
+
+                this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributed/Unallocated", false, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, false).subscribe((data: any) => {
+
+                  if (data.responseCode == 1) {
+                    alert(data.responseMessage);
+
+                    this.onAutoLinkDepartment();
+                    console.log(data);
+                    this.shared.setApplicationID(this.applicationID);
+                    this.ARCGISAPIData.applicationID = this.applicationID;
+
+                    //Add professional link for contractors when application is successfully captured
+                    if (contractorData.length > 0) {
+                      for (var i = 0; i < contractorData.length; i++) {
+                        this.addProfessionalsLinks(this.applicationID, contractorData[i].professinalID);
+                      };
+                    } else {
+                      //  alert("This Application have no contractors linked");
+                    }
+
+
+                    //Add professional link for engineers when application is successfully captured
+                    if (engineerData.length > 0) {
+                      for (var i = 0; i < engineerData.length; i++) {
+                        this.addProfessionalsLinks(this.applicationID, engineerData[i].professinalID);
+                      };
+                    }
+                    else {
+                      //  alert("This Application have no engineers linked");
+                    }
+
+                    //Pulling information from the share
+                    const filesForUpload = this.shared.pullFilesForUpload();
+                    for (var i = 0; i < filesForUpload.length; i++) {
+                      const formData = new FormData();
+                      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+                      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.applicationID;
+                      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+
+
+                      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+                        .subscribe({
+                          next: (event) => {
+
+                            if (event.type === HttpEventType.UploadProgress && event.total)
+                              this.progress = Math.round(100 * event.loaded / event.total);
+                            else if (event.type === HttpEventType.Response) {
+                              this.message = 'Upload success.';
+                              this.uploadFinished(event.body, this.applicationID, data.dateSet);
+                            }
+                          },
+                          error: (err: HttpErrorResponse) => console.log(err)
+                        });
+                    }
+
+                    //Clears objects upon application update
+                    this.shared.setApplicationID(0);
+                    this.shared.clearContractorData();
+                    this.shared.clearEngineerData();
+
                   }
                   else {
-                    //  alert("This Application have no engineers linked");
+                    /*          alert(data.responseMessage);*/
                   }
-
-                  //Pulling information from the share
-                  const filesForUpload = this.shared.pullFilesForUpload();
-                  for (var i = 0; i < filesForUpload.length; i++) {
-                    const formData = new FormData();
-                    let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
-                    let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.applicationID;
-                    formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+                  this.onCreateNotification();
+                  console.log("responseAddapplication", data);
 
 
+                  if (this.applicationID == 0) {
+                    this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
+                  } else {
+                    this.router.navigate(["/home"]);
+                    this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...");
+                  };
 
-                    this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
-                      .subscribe({
-                        next: (event) => {
+                }, error => {
+                  console.log("Error", error);
+                })
+              }
+              else {
+                //alert("Invalid Email or Password");
+                alert(data.responseMessage);
+              }
+              console.log("addUpdateConfigReponse", data);
 
-                          if (event.type === HttpEventType.UploadProgress && event.total)
-                            this.progress = Math.round(100 * event.loaded / event.total);
-                          else if (event.type === HttpEventType.Response) {
-                            this.message = 'Upload success.';
-                            this.uploadFinished(event.body, this.applicationID, data.dateSet);
-                          }
-                        },
-                        error: (err: HttpErrorResponse) => console.log(err)
-                      });
-                  }
-
-                  //Clears objects upon application update
-                  this.shared.setApplicationID(0);
-                  this.shared.clearContractorData();
-                  this.shared.clearEngineerData();
-
-                }
-                else {
-                  /*          alert(data.responseMessage);*/
-                }
-                this.onCreateNotification();
-                console.log("responseAddapplication", data);
+            }, error => {
+              console.log("addUpdateConfigError: ", error);
+            })
 
 
-                if (this.applicationID == 0) {
-                  this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
-                } else {
-                  this.router.navigate(["/home"]);
-                  this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...");
-                };
+          }
+          else {
+            //alert("Invalid Email or Password");
+            alert(data.responseMessage);
+          }
+          console.log("getConfigsByConfigNameReponse", data);
 
-              }, error => {
-                console.log("Error", error);
-              })
-            }
-            else {
-              //alert("Invalid Email or Password");
-              alert(data.responseMessage);
-            }
-            console.log("addUpdateConfigReponse", data);
-
-          }, error => {
-            console.log("addUpdateConfigError: ", error);
-          })
-
-
-        }
-        else {
-          //alert("Invalid Email or Password");
-          alert(data.responseMessage);
-        }
-        console.log("getConfigsByConfigNameReponse", data);
-
-      }, error => {
-        console.log("getConfigsByConfigNameError: ", error);
-      })
+        }, error => {
+          console.log("getConfigsByConfigNameError: ", error);
+        })
 
 
 
-
-     
-    }
-
-    else {
-      //External
-      //This is also reached to create a blank application.
-  
-
-      for (var i = 0; i < this.TOENAMES.length; i++) {
-        let current = this.TOENAMES[i].toString();
-        if (i > 0) {
-          this.TOE = this.TOE + ", " + current
-        } else {
-          this.TOE = current
-        }
 
 
       }
 
+      else {
+        //External
+        //This is also reached to create a blank application.
 
-      console.log("lhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfh BUTTTTTONN", this.TOE);
 
-      this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, this.externalAddress, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, this.projectNumber, false).subscribe((data: any) => {
-
-        if (data.responseCode == 1) {
-          /*          alert(data.responseMessage);*/
-          this.shared.setApplicationID(data.dateSet.applicationID);
-          this.ARCGISAPIData.applicationID = data.dateSet.applicationID;
-
-          //Add professional link for contractors when application is successfully captured
-          if (contractorData.length > 0) {
-            for (var i = 0; i < contractorData.length; i++) {
-              this.addProfessionalsLinks(data.dateSet.applicationID, contractorData[i].professinalID);
-            };
+        for (var i = 0; i < this.TOENAMES.length; i++) {
+          let current = this.TOENAMES[i].toString();
+          if (i > 0) {
+            this.TOE = this.TOE + ", " + current
           } else {
-            /*            alert("This Application have no contractors linked");*/
+            this.TOE = current
           }
 
 
-          //Add professional link for engineers when application is successfully captured
-          if (engineerData.length > 0) {
-            for (var i = 0; i < engineerData.length; i++) {
-              this.addProfessionalsLinks(data.dateSet.applicationID, engineerData[i].professinalID);
-            };
+        }
+
+
+        this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, this.externalAddress, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, this.projectNumber, false).subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+            /*          alert(data.responseMessage);*/
+            this.shared.setApplicationID(data.dateSet.applicationID);
+            this.ARCGISAPIData.applicationID = data.dateSet.applicationID;
+
+            //Add professional link for contractors when application is successfully captured
+            if (contractorData.length > 0) {
+              for (var i = 0; i < contractorData.length; i++) {
+                this.addProfessionalsLinks(data.dateSet.applicationID, contractorData[i].professinalID);
+              };
+            } else {
+              /*            alert("This Application have no contractors linked");*/
+            }
+
+
+            //Add professional link for engineers when application is successfully captured
+            if (engineerData.length > 0) {
+              for (var i = 0; i < engineerData.length; i++) {
+                this.addProfessionalsLinks(data.dateSet.applicationID, engineerData[i].professinalID);
+              };
+            }
+            else {
+              /*            alert("This Application have no engineers linked");*/
+            }
+            //Pulling information from the share
+            const filesForUpload = this.shared.pullFilesForUpload();
+            for (var i = 0; i < filesForUpload.length; i++) {
+              const formData = new FormData();
+              let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+              let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.applicationID;
+              formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+
+
+              this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+                .subscribe({
+                  next: (event) => {
+
+                    if (event.type === HttpEventType.UploadProgress && event.total)
+                      this.progress = Math.round(100 * event.loaded / event.total);
+                    else if (event.type === HttpEventType.Response) {
+                      this.message = 'Upload success.';
+                      this.uploadFinished(event.body, this.applicationID, data.dateSet);
+                    }
+                  },
+                  error: (err: HttpErrorResponse) => console.log(err)
+                });
+            }
+
+            //Clears objects upon application update
+            this.shared.setApplicationID(0);
+            this.shared.clearContractorData();
+            this.shared.clearEngineerData();
+          
           }
           else {
-            /*            alert("This Application have no engineers linked");*/
+            /*          alert(data.responseMessage);*/
           }
 
 
-        }
-        else {
-          /*          alert(data.responseMessage);*/
-        }
-        console.log("responseAddapplication", data);
 
-        /*        this.shared.setApplicationID(data.dateSet.applicationID);*/
+        
+          
+        
+          console.log("responseAddapplication", data);
+
+          /*        this.shared.setApplicationID(data.dateSet.applicationID);*/
+
+   
+
 
         if (this.applicationID == 0) {
           this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });

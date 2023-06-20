@@ -295,9 +295,13 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationList.TypeOfApplication = current.typeOfApplication;
             tempApplicationList.CurrentStage = current.currentStageName;
             tempApplicationList.ApplicationStatus = current.applicationStatus;
-
+            debugger;
             tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));;
-            tempApplicationList.ProjectNumber = current.projectNumber;
+            if (current.projectNumber != null) {
+              tempApplicationList.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationList.ProjectNumber = (current.applicationID).toString();
+            }
           
             tempApplicationList.TestApplicationAge = Math.floor(Math.random() * 30) + 1;
             do {
@@ -332,7 +336,11 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationListShared.NextStageNumber = current.nextStageNumber;
             tempApplicationListShared.PreviousStageName = current.previousStageName;
             tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
-            tempApplicationListShared.ProjectNumber = current.projectNumber;
+            if (current.projectNumber != null) {
+              tempApplicationListShared.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+            }
           
             tempApplicationListShared.isPlanning = current.isPlanning;
             tempApplicationListShared.permitStartDate = current.permitStartDate;
@@ -377,8 +385,13 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationList.CurrentStage = current.currentStageName;
             tempApplicationList.ApplicationStatus = current.applicationStatus;
             this.date = current.dateCreated;
-            tempApplicationList.DateCreated = this.date.sub;
-
+            tempApplicationList.DateCreated = this.date.substring(0, current.dateCreated.indexOf('T'));;;
+            debugger;
+            if (current.projectNumber != null) {
+              tempApplicationList.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationList.ProjectNumber = (current.applicationID).toString();
+            }
 
             tempApplicationList.TestApplicationAge = Math.floor(Math.random() * 30) + 1;
             do {
@@ -413,7 +426,13 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationListShared.NextStageNumber = current.nextStageNumber;
             tempApplicationListShared.PreviousStageName = current.previousStageName;
             tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
-            
+            debugger;
+            if (current.projectNumber != null) {
+              tempApplicationListShared.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+            }
+           
             tempApplicationListShared.isPlanning = current.isPlanning;
 
 
