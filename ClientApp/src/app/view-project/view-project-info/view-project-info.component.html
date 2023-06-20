@@ -492,38 +492,10 @@
     <mat-tab label="Permits">
 
 
-      <button mat-raised-button color="permit" (click)="openPermitModal(permitModal)">Apply For Permit</button>
-
-
-<!--      <div class="main-container">
-        <section id="timeline" class="timeline-outer">
-          <div class="container" id="content">
-            <div class="row" *ngFor="let applicationsList of applicationDataForView">
-              <div class="col s12 m12 l12">
-
-                <ul class="timeline" [class.approve]="applicationsList.clientName != ''">
-
-                  <li class="event" data-date="">
-
-
-                    <h3>{{applicationsList.clientName}} has Applied for a permit</h3>
-                 
-                    <p>
-
-                      The start date for the permit is: {{applicationsList.permitStartDate}}
-                    </p>
-
-                  </li>
-
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <br />
-      </div>-->
-
+      <button mat-raised-button color="permit" (click)="openPermitModal(permitModal)" *ngIf="permitBtn">Apply For Permit</button>
+      <br>
+      <br>
+      <input type="text" class="form-control" [(ngModel)]="permitDate" id="permitDate" *ngIf="permitTextBox" disabled>
 
       <ng-template #permitModal let-modal>
         <div class="modal-header">
