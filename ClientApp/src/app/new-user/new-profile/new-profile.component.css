@@ -15,8 +15,21 @@
   margin-top:10px;
   margin-bottom:10px;
 }
+.cont5 {
+  display: flex;
+  align-items: center;
+
+}
 .row {
   justify-content: space-around;
+}
+
+::ng-deep .mat-horizontal-stepper-header {
+  pointer-events: none !important;
+}
+.fa {
+  margin: 10px;
+  font-size: 20px;
 }
 
 mat-button-toggle {

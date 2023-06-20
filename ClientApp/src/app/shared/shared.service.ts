@@ -142,7 +142,7 @@ export class SharedService {
   getApiUrl() {
         return "https://localhost:7123/api/";
     /*    return "http://172.29.166.10/api/";*/
- /*   return "https://wayleaveqa.capetown.gov.za/api/"; */
+   /* return "https://wayleaveqa.capetown.gov.za/api/"; */
 
     //this is the original ip address for venolin :)
   /*  return "https://197.242.150.226:7123/api/";*/

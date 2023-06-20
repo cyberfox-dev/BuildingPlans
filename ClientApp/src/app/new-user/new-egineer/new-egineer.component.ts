@@ -27,7 +27,7 @@ export interface EngineerList {
 export class NewEgineerComponent implements OnInit {
   closeResult = '';
 
-  engineerIDNo = '';
+  engineerCompanyName = '';
   bpNoApplicant = '';
   professionalRegNo = '';
   name = '';
@@ -64,6 +64,26 @@ export class NewEgineerComponent implements OnInit {
   }
 
   onAddEngineer() {
+
+    if (this.engineerCompanyName == "") {
+      this.engineerCompanyName = "N/A"
+    }
+    if (this.name == "") {
+      this.name = "N/A"
+    }
+    if (this.surname == "") {
+      this.surname = "N/A"
+    }
+    if (this.applicantTellNo == "") {
+      this.applicantTellNo = "N/A"
+    }
+    if (this.applicantTellNo == "") {
+      this.applicantTellNo = "N/A"
+    }
+    if (this.applicantEmail == "") {
+      this.applicantEmail = "N/A"
+    }
+
     const newEnineer = {} as EngineerList;
     newEnineer.ProfessinalType = "Engineer";
     newEnineer.bpNumber = this.bpNoApplicant;

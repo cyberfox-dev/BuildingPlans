@@ -49,7 +49,7 @@ export class EditEngineerComponent implements OnInit {
   constructor(private modalService: NgbModal, private shared: SharedService, private professionalService: ProfessionalService) { }
   CurrentUser: any;
   stringifiedData: any;  
-  displayedColumns: string[] = ['ProfessinalType', 'bpNumber', 'name', 'surname', 'professionalRegNo', 'phoneNumber', 'email', 'actions'];
+  displayedColumns: string[] = ['ProfessinalType', 'name', 'surname', 'phoneNumber', 'email', 'actions'];
   myDataSource = this.EngineerList;
   @ViewChild(MatTable) EngineerTable: MatTable<EngineerList> | undefined;
 

@@ -192,6 +192,7 @@ export class ViewProjectInfoComponent implements OnInit {
   internalApplicantCostCenterNo = '';
   internalApplicantCostCenterOwner = '';
 
+  permitDate = '';
 
   option: any;
 
@@ -257,6 +258,9 @@ export class ViewProjectInfoComponent implements OnInit {
   currentIndex: any;
   subDepartmentForComment: any;
     permitStartDate: Date;
+  permitBtn: boolean = true;
+  permitTextBox: boolean = false;
+  startDate: string;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -394,6 +398,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getAllSubDepFroConditionalApprove();
     this.getLinkedDepartments();
     this.checkIfCanReply();
+    this.checkIfPermitExsist();
   }
 
 
@@ -1260,6 +1265,16 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
+  checkIfPermitExsist() {
+    if (this.applicationDataForView[0].permitStartDate != null) {
+      this.permitBtn = false;
+      this.permitTextBox = true;
+      this.startDate = this.applicationDataForView[0].permitStartDate.toString();
+      this.permitDate = "Permit has been applied, with a start date of :" + this.startDate.substring(0, this.startDate.indexOf('T'));;
+
+    }
+  }
+
   updateStartDateForPermit() {
 
 
@@ -1274,8 +1289,9 @@ export class ViewProjectInfoComponent implements OnInit {
       }
       alert(data.responseMessage);
       console.log("IT HAS SAVED THE START DATE DIJFNSJKFNKLSDNFKSDJFNLKSDJFNLKDJFNLKSDJNFLKSJDFNLKJSDFNLKJDFBKLN MNLZXCZXNLZKXNCLKJDNLIFNDSLJIFND FUISDHFISDUFHSID UFHISDUFHSDJFHNSDJKFNSLD FJNS DKF", data);
-
-
+      this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
+      this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
+      this.checkIfPermitExsist();
     }, error => {
       console.log("Error: ", error);
     })
