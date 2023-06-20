@@ -99,7 +99,7 @@ namespace WayleaveManagementSystem.Service
         {
             return await (
                 from Zones in _context.ZonesTable
-                where subDepartmentID == Zones.DepartmentID && Zones.isActive == true
+                where subDepartmentID == Zones.SubDepartmentID && Zones.isActive == true
                 select new ZonesDTO()
                 {
                     ZoneID = Zones.ZoneID,
