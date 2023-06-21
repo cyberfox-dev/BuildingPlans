@@ -465,7 +465,17 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   setProjectNumber() {
-    this.projectNo = this.CurrentApplicationBeingViewed[0].ProjectNumber;
+    debugger;
+    if (this.CurrentApplicationBeingViewed[0].ProjectNumber == null) {
+      debugger;
+
+      this.projectNo = this.CurrentApplicationBeingViewed[0].applicationID.toString();
+    }
+    else {
+      debugger;
+      this.projectNo = this.CurrentApplicationBeingViewed[0].ProjectNumber;
+    }
+   
 
   }
 
@@ -1132,7 +1142,7 @@ export class ViewProjectInfoComponent implements OnInit {
           if (data.responseCode == 1) {
 
 
-            this.ChangeApplicationStatusToPaid()
+            this.ChangeApplicationStatusToPaid();
           }
           else {
             //alert("Invalid Email or Password");
@@ -1159,50 +1169,99 @@ export class ViewProjectInfoComponent implements OnInit {
     })
   }
 
+  onAutoLinkDepartment() {
+    debugger;
+    this.subDepartmentService.getAllSubDepartmentsForAutoDistribution().subscribe((data: any) => {
+      debugger;
+      if (data.responseCode == 1) {
+        debugger;
+        for (var i = 0; i < data.dateSet.length; i++) {
+          this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, data.dateSet[i].subDepartmentID, data.dateSet[i].subDepartmentName, null, null, this.CurrentUser.appUserId).subscribe((data: any) => {
 
+            if (data.responseCode == 1) {
+              debugger;
+              alert(data.dateSet.subDepartmentName + " assigned to this Application");
+
+            }
+            else {
+
+              alert(data.responseMessage);
+            }
+            console.log("reponseAddUpdateDepartmentForComment", data);
+
+
+          }, error => {
+            console.log("Error: ", error);
+          })
+        }
+      }
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponseAddUpdateDepartmentForComment", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
   ChangeApplicationStatusToPaid() {
 
     if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Unpaid") {
-      this.applicationsService.updateApplicationStage(this.CurrentApplicationBeingViewed[0].applicationID, this.CurrentApplicationBeingViewed[0].PreviousStageName, this.CurrentApplicationBeingViewed[0].PreviousStageNumber, this.CurrentApplicationBeingViewed[0].CurrentStageName, this.CurrentApplicationBeingViewed[0].CurrentStageNumber, this.CurrentApplicationBeingViewed[0].NextStageName, this.CurrentApplicationBeingViewed[0].NextStageNumber, "Paid").subscribe((data: any) => {
-
+   
+      this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
         if (data.responseCode == 1) {
-          alert("Application Status Updated to Paid");
 
-          //this.applicationsService.updateApplicationStage(null, null, null, null, null, null, null, null, " ").subscribe((data: any) => {
-          //  if (data.responseCode == 1) {
-          //   // const current = data.dateSet[0];
+          const current = data.dateSet[0];
+          this.configNumberOfProject = current.utilitySlot1;
+          this.configMonthYear = current.utilitySlot2;
+          this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
+            if (data.responseCode == 1) {
 
+              this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "Distributed/Unallocated", null, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, false).subscribe((data: any) => {
 
+                if (data.responseCode == 1) {
+                  alert(data.responseMessage);
 
+                  }
+                else {
+                  /*          alert(data.responseMessage);*/
+                }
+            
+                console.log("responseAddapplication", data);
 
-          //  }
-          //  else {
+              }, error => {
+                console.log("Error", error);
+              })
+            }
+            else {
+              //alert("Invalid Email or Password");
+              alert(data.responseMessage);
+            }
+            console.log("addUpdateConfigReponse", data);
 
-          //    alert(data.responseMessage);
-          //  }
-          //  console.log("reponseGetSubDepartmentForComment", data);
-
-
-          //}, error => {
-          //  console.log("Error: ", error);
-          //})
-
-
-
+          }, error => {
+            console.log("addUpdateConfigError: ", error);
+          })
+          this.MoveToNextStage();
+          this.router.navigate(["/home"]);
         }
         else {
+          //alert("Invalid Email or Password");
           alert(data.responseMessage);
         }
-        console.log("responseAddapplication", data);
+        console.log("getConfigsByConfigNameReponse", data);
+
       }, error => {
-        console.log("Error", error);
+        console.log("getConfigsByConfigNameError: ", error);
       })
 
-    }
-    else {
-      alert("Application Status Is Not Unpaid");
-    }
+        }
 
+    else {
+      alert("Application Status Needs to Be Unpaid");
+    }
 
   }
 
@@ -1248,11 +1307,13 @@ export class ViewProjectInfoComponent implements OnInit {
 
     //alert("ChangeApplicationStatusToPaid");
 
-    if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Paid") {
-      this.applicationsService.updateApplicationStage(this.CurrentApplicationBeingViewed[0].applicationID, this.CurrentApplicationBeingViewed[0].CurrentStageName, this.CurrentApplicationBeingViewed[0].CurrentStageNumber, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, "Distributing").subscribe((data: any) => {
+   /* if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Paid") {*/
+      this.applicationsService.updateApplicationStage(this.CurrentApplicationBeingViewed[0].applicationID, this.CurrentApplicationBeingViewed[0].CurrentStageName, this.CurrentApplicationBeingViewed[0].CurrentStageNumber, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, "Distributed/Unallocated").subscribe((data: any) => {
 
         if (data.responseCode == 1) {
+          this.onAutoLinkDepartment();
           alert("Application Moved to ${this.CurrentApplicationBeingViewed[0].CurrentStageName}");
+         // this.router.navigate(["/home"]);
 
         }
         else {
@@ -1263,14 +1324,14 @@ export class ViewProjectInfoComponent implements OnInit {
         console.log("Error", error);
       })
 
-    }
+    //}
 
-    else if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[2].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Distributing") {
+    //else if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[2].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Distributing") {
 
-    }
-    else {
-      alert("Application Status Is Not Paid");
-    }
+    //}
+    //else {
+    //  alert("Application Status Is Not Paid");
+    //}
 
 
   }
@@ -1314,6 +1375,10 @@ export class ViewProjectInfoComponent implements OnInit {
   /*CREATING THE APPROVAL PACK*/
 
   getUserDep() {
+    debugger;
+    if (this.depID != null) {
+
+
     this.subDepartmentService.getSubDepartmentsByDepartmentID(this.depID).subscribe((data: any) => {
 
 
@@ -1344,6 +1409,10 @@ export class ViewProjectInfoComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
+
+    }
+
+
   }
   getAllSubDepFroConditionalApprove() {
 
@@ -2314,15 +2383,15 @@ export class ViewProjectInfoComponent implements OnInit {
     const currentApplication = this.sharedService.getViewApplicationIndex();
 
 
-
+    debugger;
     this.subDepartmentForCommentService.getSubDepartmentForComment(currentApplication.applicationID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
-
+        debugger;
         for (var i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
-
+          debugger;
           const tempSubDepartmentList = {} as SubDepartmentList;
           tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
           tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
@@ -2334,7 +2403,7 @@ export class ViewProjectInfoComponent implements OnInit {
           tempSubDepartmentList.commentStatus = current.commentStatus;
 
 
-
+          debugger;
           this.SubDepartmentList.push(tempSubDepartmentList);
         }
 

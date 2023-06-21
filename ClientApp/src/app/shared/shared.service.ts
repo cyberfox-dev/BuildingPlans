@@ -221,7 +221,10 @@ export class SharedService {
   }
 
 getApplicationID(): any {
-    console.log("getting ..." + this.applicationID);
+  console.log("getting ..." + this.applicationID);
+  if (this.applicationID == undefined || this.applicationID == null) {
+    this.applicationID = 0;
+  } 
     return this.applicationID;
   }
 

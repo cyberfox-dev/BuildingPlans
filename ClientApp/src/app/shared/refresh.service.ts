@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, ModalDismissReasons, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { share } from 'rxjs';
+import { SharedService } from "src/app/shared/shared.service";
+import { ApplicationsService } from 'src/app/service/Applications/applications.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +12,7 @@ export class RefreshService {
   private isReloaded: boolean = false;
   private openModals: NgbModalRef[] = [];
 
-  constructor(private router: Router, private modalService: NgbModal) { }
+  constructor(private router: Router, private modalService: NgbModal, private shared: SharedService, private applicationsService: ApplicationsService) { }
 
   private handleWindowBeforeUnload = (event: BeforeUnloadEvent) => {
     // Customize the confirmation message if needed
@@ -41,6 +44,28 @@ export class RefreshService {
 
     // Clear the stored route from local storage
     localStorage.removeItem('reloadRoute');
+     let appID = this.shared.getApplicationID();
+    if (appID != 0) {
+      this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          this.shared.setApplicationID(0);
+
+        }
+        else {
+          alert("RefreshService Delete Application Error");
+        }
+
+        console.log("responseAddApplication", data);
+
+      }, error => {
+        console.log("Error", error);
+      })
+
+      
+    }
+   
+
+
 
     // Delay before closing the modals
     setTimeout(() => {
