@@ -695,16 +695,16 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   onAutoLinkDepartment() {
-    debugger;
+    
     this.subDepartmentsService.getAllSubDepartmentsForAutoDistribution().subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         for (var i = 0; i < data.dateSet.length; i++) {
           this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.applicationID, data.dateSet[i].subDepartmentID, data.dateSet[i].subDepartmentName, null, null, this.CurrentUser.appUserId).subscribe((data: any) => {
         
             if (data.responseCode == 1) {
-              debugger;
+              
              // alert(data.dateSet.subDepartmentName + " assigned to this Application");
 
             }
@@ -1057,7 +1057,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
   onWayleaveCreate(appUserId, isPlanning: boolean) {
-    debugger;
+    
 
     //get ApplicationID form Shared to check if must update
     this.applicationID = this.shared.getApplicationID();
@@ -1068,7 +1068,7 @@ export class NewWayleaveComponent implements OnInit {
 
       this.applicationsService.addUpdateApplication(0, appUserId, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, isPlanning, null).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          debugger;
+          
         //Set ApplicationID to Update
           this.shared.setApplicationID(data.dateSet.applicationID);
           this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
@@ -1096,7 +1096,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
       if (this.internal) {
-        debugger;
+        
         this.internalWayleaveCreate(appUserId,isPlanning);
       }
       else if (this.client) {
@@ -1636,7 +1636,7 @@ export class NewWayleaveComponent implements OnInit {
         //External
         //This is also reached to create a blank application.
 
-        debugger;
+        
         for (var i = 0; i < this.TOENAMES.length; i++) {
           let current = this.TOENAMES[i].toString();
           if (i > 0) {
@@ -1653,7 +1653,7 @@ export class NewWayleaveComponent implements OnInit {
 
           if (data.responseCode == 1) {
 
-            debugger;
+            
             /*          alert(data.responseMessage);*/
             this.shared.setApplicationID(data.dateSet.applicationID);
             this.ARCGISAPIData.applicationID = data.dateSet.applicationID;
@@ -1678,7 +1678,7 @@ export class NewWayleaveComponent implements OnInit {
               /*            alert("This Application have no engineers linked");*/
             }
 
-            debugger;
+            
             //Pulling information from the share
             const filesForUpload = this.shared.pullFilesForUpload();
             for (var i = 0; i < filesForUpload.length; i++) {
@@ -1688,13 +1688,13 @@ export class NewWayleaveComponent implements OnInit {
               formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
 
 
-              debugger;
+              
 
               this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
                 .subscribe({
                   next: (event) => {
 
-                    debugger;
+                    
                     if (event.type === HttpEventType.UploadProgress && event.total)
                       this.progress = Math.round(100 * event.loaded / event.total);
                     else if (event.type === HttpEventType.Response) {
@@ -1720,14 +1720,14 @@ export class NewWayleaveComponent implements OnInit {
 
           /*        this.shared.setApplicationID(data.dateSet.applicationID);*/
 
-          debugger;
+          
           if (this.applicationID == 0) {
 
-            debugger;
+            
           this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
           } else {
 
-            debugger;
+            
           this.router.navigate(["/home"]);
           this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...");
         };
@@ -1902,12 +1902,12 @@ export class NewWayleaveComponent implements OnInit {
 
   addProfessionalsLinks(applicationID: number, professionalID: number) {
 
-    debugger;
+    
 
     this.professionalsLinksService.addUpdateProfessionalsLink(0, applicationID, professionalID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        debugger;
+        
         /*        alert(data.responseMessage);*/
       }
       else {
