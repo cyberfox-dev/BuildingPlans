@@ -49,7 +49,7 @@
 
 <h1 *ngIf="CurrentApplicationBeingViewed[0].isPlanning === false">Application Information</h1>
 <h1 *ngIf="CurrentApplicationBeingViewed[0].isPlanning === true">Application Planning Information</h1>
-<h2>Project number {{projectNo}}</h2>
+<h2>Project Number {{projectNo}}</h2>
 
 <div class="cont1">
 
@@ -113,7 +113,7 @@
             <div class="row" *ngFor="let commentsList of CommentsList; let i = index">
               <div class="col s12 m12 l12">
 
-                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'Final Approved'" [class.Reject]="commentsList.CommentStatus === 'Reject'||commentsList.CommentStatus === 'Rejected'" [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'"  [class.refer]="commentsList.CommentStatus === 'Refer'">
+                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved'" [class.Reject]="commentsList.CommentStatus === 'Reject'||commentsList.CommentStatus === 'Rejected'" [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'"  [class.refer]="commentsList.CommentStatus === 'Refer'">
 
                   <li class="event" data-date="">
 

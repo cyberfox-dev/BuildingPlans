@@ -71,47 +71,63 @@
 
   <div class="table container-fluid">
     <!--  <table class="table table-hover table-xl border_bottom">
-    <thead>
-      <tr class="tableheader">
-        <th scope="col" class="border-top-0">Status</th>
-        <th scope="col" class="border-top-0">Project#</th>
-        <th scope="col" class="border-top-0">Item Location</th>
-        <th scope="col" class="border-top-0">Item Name</th>
-        <th scope="col" class="border-top-0">Application Type</th>
-        <th scope="col" class="border-top-0">Current Stage</th>
-        <th scope="col" class="border-top-0">Date Created</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="text-truncate row_padding">
-          <i class="la la-dot-circle-o  font-medium-1 mr-1"></i>
-          Test
-        </td>
-        <td class="text-truncate row_padding">
-          <a href="javascript:void(0);" (click)="viewProject()">TEST</a>
-        </td>
+  <thead>
+    <tr class="tableheader">
+      <th scope="col" class="border-top-0">Status</th>
+      <th scope="col" class="border-top-0">Project#</th>
+      <th scope="col" class="border-top-0">Item Location</th>
+      <th scope="col" class="border-top-0">Item Name</th>
+      <th scope="col" class="border-top-0">Application Type</th>
+      <th scope="col" class="border-top-0">Current Stage</th>
+      <th scope="col" class="border-top-0">Date Created</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="text-truncate row_padding">
+        <i class="la la-dot-circle-o  font-medium-1 mr-1"></i>
+        Test
+      </td>
+      <td class="text-truncate row_padding">
+        <a href="javascript:void(0);" (click)="viewProject()">TEST</a>
+      </td>
 
-        <td class="text-truncate row_padding">
-          <span>TEST</span>
-        </td>
+      <td class="text-truncate row_padding">
+        <span>TEST</span>
+      </td>
 
-        <td class="text-truncate row_padding">
-          <span>TEST</span>
-        </td>
-        <td class="text-truncate row_padding">
-          <span>
-            TEST
-          </span>
-        </td>
-        <td class="text-truncate row_padding">
-          <span>TEST</span>
-        </td>
-        <td class="text-truncate row_padding">TEST</td>
-      </tr>
-    </tbody>-->
+      <td class="text-truncate row_padding">
+        <span>TEST</span>
+      </td>
+      <td class="text-truncate row_padding">
+        <span>
+          TEST
+        </span>
+      </td>
+      <td class="text-truncate row_padding">
+        <span>TEST</span>
+      </td>
+      <td class="text-truncate row_padding">TEST</td>
+    </tr>
+  </tbody>-->
     <!--ProjectNumber-->
     <!--</table>-->
+
+<!--    <mat-form-field>
+      <mat-label>Filter</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+    </mat-form-field>-->
+    
+    <mat-form-field appearance="outline">
+      <mat-label>Search</mat-label>
+      <div class="cont6">
+
+        <input matInput placeholder="Search By Project Number Or Application Number" (keyup)="applyFilter($event)" #input>
+        <i class="fa fa-search" aria-hidden="true"></i>
+      </div>
+    </mat-form-field>
+   
+    
 
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
@@ -177,7 +193,14 @@
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      <!-- Row shown when there is no matching data. -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+      </tr>
     </table>
+
+
 
   </div>
 </div>

@@ -103,6 +103,9 @@ export class HomeComponent implements OnInit,OnDestroy {
   RolesList: RolesList[] = [];
   UserList: UserList[] = [];
 
+
+  filterValue = '';
+
   CurrentUser: any;
   stringifiedData: any;
     stringifiedDataUserProfile: any;
@@ -144,11 +147,33 @@ export class HomeComponent implements OnInit,OnDestroy {
 
   currentDate: Date;
   previousMonth: number;
-
+  @ViewChild(MatTable) applicationsTable: MatTable<ApplicationsList> | undefined;
   displayedColumns: string[] = ['ProjectNumber','FullName', 'Stage','Status', 'TypeOfApplication','AplicationAge','StageAge','DateCreated', 'actions'];
   dataSource = this.Applications;
 
-  @ViewChild(MatTable) applicationsTable: MatTable<ApplicationsList> | undefined;
+
+  applyFilter(event: Event) {
+  
+    const filterValue = (event.target as HTMLInputElement).value.toUpperCase();
+    if (filterValue == "") {
+      this.applicationsTable?.renderRows();
+      this.dataSource = this.Applications.filter(df => df.DateCreated);
+    }
+    else {
+      const sanitizedFilterValue = filterValue.replace(/[^\w\s]/g, '');
+      const regex = new RegExp(sanitizedFilterValue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+
+      this.dataSource = this.dataSource.filter(user => {
+        const sanitizedProjectNumber = user.ProjectNumber.replace(/[^\w\s]/g, '');
+        return regex.test(sanitizedProjectNumber.toUpperCase());
+      });
+
+      this.applicationsTable?.renderRows();
+    }
+  }
+
+
+
   ngOnInit(): void {
     
    
