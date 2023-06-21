@@ -217,7 +217,16 @@ namespace WayleaveManagementSystem.Service
                     tempApplicationTable.PermitStartDate = PermitStartDate;
                 }
 
-                
+                if (isPlanning != null)
+                {
+                    tempApplicationTable.isPlanning = isPlanning;
+                }
+                if (createdById != null)
+                {
+                    tempApplicationTable.CreatedById = createdById;
+                }
+
+
 
                 _context.Update(tempApplicationTable);
                 await _context.SaveChangesAsync();
@@ -413,7 +422,7 @@ namespace WayleaveManagementSystem.Service
             {
                 return await (
                    from Applications in _context.Application
-                   where Applications.UserID == userId && Applications.isActive == true
+                   where Applications.UserID == userId && Applications.isActive == true && Applications.FullName != ""
                    orderby Applications.DateCreated descending
                    select new ApplicationsDTO()
                    {

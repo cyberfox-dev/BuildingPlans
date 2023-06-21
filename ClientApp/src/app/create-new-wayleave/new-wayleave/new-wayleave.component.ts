@@ -359,7 +359,7 @@ export class NewWayleaveComponent implements OnInit {
 
   displayedColumnsLinkUsers: string[] = ['idNumber', 'fullName', 'actions'];
   dataSourceLinkUsers = this.UserList;
-  applicationID: any;
+  applicationID = 0;
   notiName: string;
   notiDescription: string;
   //CoverLetterFileName = "Choose file";
@@ -705,7 +705,7 @@ export class NewWayleaveComponent implements OnInit {
         
             if (data.responseCode == 1) {
               debugger;
-              alert(data.dateSet.subDepartmentName + " assigned to this Application");
+             // alert(data.dateSet.subDepartmentName + " assigned to this Application");
 
             }
             else {
@@ -815,7 +815,306 @@ export class NewWayleaveComponent implements OnInit {
   }
 
 
-  onWayleaveCreate(appUserId,isPlanning:boolean) {
+
+  internalWayleaveCreate(appUserId: string, isPlanning: boolean): void {
+    /*    this.shared.setApplicationID(this.notificationNumber);*/
+    this.physicalAddressOfProject = this.shared.getAddressData();
+    const contractorData = this.shared.getContactorData();
+    const engineerData = this.shared.getEngineerData();
+    let previousStageName = "";
+    let CurrentStageName = "";
+    let NextStageName = "";
+
+    let previousStageNameIn = "";
+    let CurrentStageNameIn = "";
+    let NextStageNameIn = "";
+
+    for (var i = 0; i < this.StagesList.length; i++) {
+      ;
+      if (this.StagesList[i].StageOrderNumber == 1) {
+        previousStageName = this.StagesList[i - 1].StageName
+        CurrentStageName = this.StagesList[i].StageName;
+        NextStageName = this.StagesList[i + 1].StageName
+      }
+      else if (this.StagesList[i].StageOrderNumber == 2) {
+        previousStageNameIn = this.StagesList[i - 2].StageName
+        CurrentStageNameIn = this.StagesList[i].StageName;
+        NextStageNameIn = this.StagesList[i + 1].StageName
+      }
+
+    }
+
+      this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
+        if (data.responseCode == 1) {
+
+          const current = data.dateSet[0];
+          this.configNumberOfProject = current.utilitySlot1;
+          this.configMonthYear = current.utilitySlot2;
+          this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+
+              this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, null, this.CurrentUser.appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributed/Unallocated", false, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, isPlanning, null).subscribe((data: any) => {
+                if (data.responseCode == 1) {
+                  alert("Application Created");
+                  if (isPlanning == false) {
+                    this.AddProfessinal(contractorData, engineerData);
+                  }
+                  this.UploadDocuments(data.dateSet);
+                  this.onAutoLinkDepartment();
+                  this.shared.setApplicationID(0);
+                  this.shared.clearContractorData();
+                  this.shared.clearEngineerData();
+                }
+                else {
+                  alert("Failed To Create Application");
+                }
+                this.onCreateNotification();
+                this.router.navigate(["/home"]);
+                this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...");
+                console.log("responseAddapplication", data);
+              }, error => {
+                console.log("Error", error);
+              })
+            }
+            else {
+             
+              alert("Update Config Error");
+            }
+            console.log("addUpdateConfigReponse", data);
+
+          }, error => {
+            console.log("addUpdateConfigError: ", error);
+          })
+
+
+        }
+        else {
+          //alert("Invalid Email or Password");
+          alert(data.responseMessage);
+        }
+        console.log("getConfigsByConfigNameReponse", data);
+
+      }, error => {
+        console.log("getConfigsByConfigNameError: ", error);
+      })
+  }
+
+
+  clientWayleaveCreate(appUserId: string, isPlanning: boolean): void {
+
+    /*    this.shared.setApplicationID(this.notificationNumber);*/
+    this.physicalAddressOfProject = this.shared.getAddressData();
+    const contractorData = this.shared.getContactorData();
+    const engineerData = this.shared.getEngineerData();
+    let previousStageName = "";
+    let CurrentStageName = "";
+    let NextStageName = "";
+
+    let previousStageNameIn = "";
+    let CurrentStageNameIn = "";
+    let NextStageNameIn = "";
+
+    for (var i = 0; i < this.StagesList.length; i++) {
+ 
+      if (this.StagesList[i].StageOrderNumber == 1) {
+        previousStageName = this.StagesList[i - 1].StageName
+        CurrentStageName = this.StagesList[i].StageName;
+        NextStageName = this.StagesList[i + 1].StageName
+      }
+      else if (this.StagesList[i].StageOrderNumber == 2) {
+        previousStageNameIn = this.StagesList[i - 2].StageName
+        CurrentStageNameIn = this.StagesList[i].StageName;
+        NextStageNameIn = this.StagesList[i + 1].StageName
+      }
+
+    }
+
+    this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", isPlanning, this.projectNumber, isPlanning,null).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+ 
+          if (isPlanning == false) {
+            this.AddProfessinal(contractorData, engineerData);
+          }
+          this.UploadDocuments(data.dateSet);
+          this.onAutoLinkDepartment();
+          this.shared.setApplicationID(0);
+          this.shared.clearContractorData();
+            this.shared.clearEngineerData();
+            alert("Client Application Created");
+        }
+        else {
+          alert("Failed To Create Application");
+      }
+      this.onCreateNotification();
+      this.router.navigate(["/home"]);
+        console.log("responseAddapplication", data);
+      }, error => {
+        console.log("Error", error);
+      })
+   
+  }
+
+  externalWayleaveCreate(appUserId: string, isPlanning: boolean): void {
+    /*    this.shared.setApplicationID(this.notificationNumber);*/
+    this.physicalAddressOfProject = this.shared.getAddressData();
+    const contractorData = this.shared.getContactorData();
+    const engineerData = this.shared.getEngineerData();
+    let previousStageName = "";
+    let CurrentStageName = "";
+    let NextStageName = "";
+
+    let previousStageNameIn = "";
+    let CurrentStageNameIn = "";
+    let NextStageNameIn = "";
+
+    for (var i = 0; i < this.StagesList.length; i++) {
+      ;
+      if (this.StagesList[i].StageOrderNumber == 1) {
+        previousStageName = this.StagesList[i - 1].StageName
+        CurrentStageName = this.StagesList[i].StageName;
+        NextStageName = this.StagesList[i + 1].StageName
+      }
+      else if (this.StagesList[i].StageOrderNumber == 2) {
+        previousStageNameIn = this.StagesList[i - 2].StageName
+        CurrentStageNameIn = this.StagesList[i].StageName;
+        NextStageNameIn = this.StagesList[i + 1].StageName
+      }
+
+    }
+
+   
+    this.applicationsService.addUpdateApplication(this.applicationID, this.CurrentUser.appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, "Phone", this.externalAddress, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.externalAddress, appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, null, isPlanning, null).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        if (isPlanning == false) {
+          this.AddProfessinal(contractorData, engineerData);
+        }
+        this.UploadDocuments(data.dateSet);
+        this.onAutoLinkDepartment();
+        this.shared.setApplicationID(0);
+        this.shared.clearContractorData();
+        this.shared.clearEngineerData();
+        alert("Application Created");
+      }
+      else {
+        alert("Failed To Create Application");
+      }
+      this.onCreateNotification();
+      this.router.navigate(["/home"]);
+      console.log("responseAddapplication", data);
+    }, error => {
+      console.log("Error", error);
+    })
+  }
+
+  AddProfessinal(contractorData: any, engineerData:any ): void {
+    if (contractorData.length > 0) {
+      for (var i = 0; i < contractorData.length; i++) {
+        this.addProfessionalsLinks(this.applicationID, contractorData[i].professinalID);
+      };
+    } else {
+      //  alert("This Application have no contractors linked");
+    }
+
+
+    //Add professional link for engineers when application is successfully captured
+    if (engineerData.length > 0) {
+      for (var i = 0; i < engineerData.length; i++) {
+        this.addProfessionalsLinks(this.applicationID, engineerData[i].professinalID);
+      };
+    }
+    else {
+      //  alert("This Application have no engineers linked");
+    }
+  }
+
+  UploadDocuments(applicationData: any): void {
+    //Pulling information from the share
+    const filesForUpload = this.shared.pullFilesForUpload();
+    for (var i = 0; i < filesForUpload.length; i++) {
+      const formData = new FormData();
+      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.applicationID;
+      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+
+
+      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+        .subscribe({
+          next: (event) => {
+
+            if (event.type === HttpEventType.UploadProgress && event.total)
+              this.progress = Math.round(100 * event.loaded / event.total);
+            else if (event.type === HttpEventType.Response) {
+              this.message = 'Upload success.';
+              this.uploadFinished(event.body, this.applicationID, applicationData);
+            }
+          },
+          error: (err: HttpErrorResponse) => console.log(err)
+        });
+    }
+  }
+
+
+  onWayleaveCreate(appUserId, isPlanning: boolean) {
+    debugger;
+
+    //get ApplicationID form Shared to check if must update
+    this.applicationID = this.shared.getApplicationID();
+
+    if (this.applicationID === 0) {
+      this.shared.clearContractorData();
+      this.shared.clearEngineerData();
+
+      this.applicationsService.addUpdateApplication(0, appUserId, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, isPlanning, null).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          debugger;
+        //Set ApplicationID to Update
+          this.shared.setApplicationID(data.dateSet.applicationID);
+          this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
+        }
+        else {
+            alert("GIS Error");
+        }
+     
+        console.log("responseAddApplication", data);
+
+      }, error => {
+        console.log("Error", error);
+      })
+    } else {
+      // If this.applicationID != 0 then we do the update
+
+      for (var i = 0; i < this.TOENAMES.length; i++) {
+        let current = this.TOENAMES[i].toString();
+        if (i > 0) {
+          this.TOE = this.TOE + ", " + current
+        } else {
+          this.TOE = current;
+        }
+      }
+
+
+      if (this.internal) {
+        debugger;
+        this.internalWayleaveCreate(appUserId,isPlanning);
+      }
+      else if (this.client) {
+        this.clientWayleaveCreate(appUserId,isPlanning);
+      }
+      else { //External
+        this.externalWayleaveCreate(appUserId,isPlanning);
+
+      }
+
+
+    }
+
+
+      
+  }
+
+  OLDonWayleaveCreate(appUserId,isPlanning:boolean) {
 
     
 
@@ -1109,7 +1408,9 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
-    } else {
+    }
+
+    else {
 
 
       if (this.client) {
@@ -1208,7 +1509,7 @@ export class NewWayleaveComponent implements OnInit {
           if (i > 0) {
             this.TOE = this.TOE + ", " + current
           } else {
-            this.TOE = current
+            this.TOE = current;
           }
 
 
@@ -1335,7 +1636,7 @@ export class NewWayleaveComponent implements OnInit {
         //External
         //This is also reached to create a blank application.
 
-
+        debugger;
         for (var i = 0; i < this.TOENAMES.length; i++) {
           let current = this.TOENAMES[i].toString();
           if (i > 0) {
@@ -1348,9 +1649,11 @@ export class NewWayleaveComponent implements OnInit {
         }
 
 
-        this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, this.externalAddress, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, this.projectNumber, false).subscribe((data: any) => {
+        this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, "Phone" , this.externalAddress, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, this.projectNumber, false).subscribe((data: any) => {
 
           if (data.responseCode == 1) {
+
+            debugger;
             /*          alert(data.responseMessage);*/
             this.shared.setApplicationID(data.dateSet.applicationID);
             this.ARCGISAPIData.applicationID = data.dateSet.applicationID;
@@ -1374,6 +1677,8 @@ export class NewWayleaveComponent implements OnInit {
             else {
               /*            alert("This Application have no engineers linked");*/
             }
+
+            debugger;
             //Pulling information from the share
             const filesForUpload = this.shared.pullFilesForUpload();
             for (var i = 0; i < filesForUpload.length; i++) {
@@ -1383,11 +1688,13 @@ export class NewWayleaveComponent implements OnInit {
               formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
 
 
+              debugger;
 
               this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
                 .subscribe({
                   next: (event) => {
 
+                    debugger;
                     if (event.type === HttpEventType.UploadProgress && event.total)
                       this.progress = Math.round(100 * event.loaded / event.total);
                     else if (event.type === HttpEventType.Response) {
@@ -1409,21 +1716,18 @@ export class NewWayleaveComponent implements OnInit {
             /*          alert(data.responseMessage);*/
           }
 
-
-
-        
-          
-        
           console.log("responseAddapplication", data);
 
           /*        this.shared.setApplicationID(data.dateSet.applicationID);*/
 
-   
+          debugger;
+          if (this.applicationID == 0) {
 
-
-        if (this.applicationID == 0) {
+            debugger;
           this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
-        } else {
+          } else {
+
+            debugger;
           this.router.navigate(["/home"]);
           this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...");
         };
@@ -1440,7 +1744,7 @@ export class NewWayleaveComponent implements OnInit {
       /*    return this.ARCGISAPIData.applicationID;*/
 
     }
-    this.shared.setApplicationID(0);
+   // this.shared.setApplicationID(0);
   }
 
   openXl(content: any) {
@@ -1450,6 +1754,7 @@ export class NewWayleaveComponent implements OnInit {
 
   generateInvoice() {
     if (this.internal = false) {
+
       //var pdf = 'http://197.242.150.226/Files/SampleInvoice.pdf';
       //window.open(pdf, '_blank');
 
@@ -1597,11 +1902,12 @@ export class NewWayleaveComponent implements OnInit {
 
   addProfessionalsLinks(applicationID: number, professionalID: number) {
 
+    debugger;
 
-
-    this.professionalsLinksService.addUpdateProfessionalsLink(0, applicationID, professionalID, this.ARCGISAPIData.createdByID).subscribe((data: any) => {
+    this.professionalsLinksService.addUpdateProfessionalsLink(0, applicationID, professionalID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
+        debugger;
         /*        alert(data.responseMessage);*/
       }
       else {
