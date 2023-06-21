@@ -613,7 +613,7 @@ export class NewProfileComponent implements OnInit {
   }
 
   onSelectToPopulateZone(event: any) {
-    debugger;
+    
 
     if (event.target.value > 0) {
 

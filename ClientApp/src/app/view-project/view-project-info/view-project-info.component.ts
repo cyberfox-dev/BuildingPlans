@@ -290,7 +290,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   openEditCommentModal(commentEditorModal: any, index: any) {
-    debugger;
+    
 
     this.currentIndex = index;
 
@@ -465,14 +465,14 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   setProjectNumber() {
-    debugger;
+    
     if (this.CurrentApplicationBeingViewed[0].ProjectNumber == null) {
-      debugger;
+      
 
       this.projectNo = this.CurrentApplicationBeingViewed[0].applicationID.toString();
     }
     else {
-      debugger;
+      
       this.projectNo = this.CurrentApplicationBeingViewed[0].ProjectNumber;
     }
    
@@ -554,7 +554,7 @@ export class ViewProjectInfoComponent implements OnInit {
   // await  this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, subDepID ).subscribe((data: any) => {
   //     if (data.responseCode == 1) {
   //       const current = data.dateSet[0];
-  //       debugger;
+  //       
 
   //       this.subDepartmentForComment = current.subDepartmentForCommentID;
 
@@ -620,7 +620,7 @@ export class ViewProjectInfoComponent implements OnInit {
     //    if (data.responseCode == 1) {
     //      this.getAllComments();
 
-    //      debugger;
+    //      
     //      this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, null, false, null, null, null).subscribe((data: any) => {
 
     //        if (data.responseCode == 1) {
@@ -685,7 +685,7 @@ export class ViewProjectInfoComponent implements OnInit {
           if (data.responseCode == 1) {
             this.getAllComments();
 
-            debugger;
+            
             this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, null, false, null, null, null).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
@@ -727,7 +727,7 @@ export class ViewProjectInfoComponent implements OnInit {
           if (data.responseCode == 1) {
             this.getAllComments();
 
-            debugger;
+            
             this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, null, false, null, null, null).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
@@ -774,7 +774,7 @@ export class ViewProjectInfoComponent implements OnInit {
     //    if (data.responseCode == 1) {
     //      this.getAllComments();
 
-    //      debugger;
+    //      
     //      this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, null, false, null, null, null).subscribe((data: any) => {
 
     //        if (data.responseCode == 1) {
@@ -1170,16 +1170,16 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   onAutoLinkDepartment() {
-    debugger;
+    
     this.subDepartmentService.getAllSubDepartmentsForAutoDistribution().subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         for (var i = 0; i < data.dateSet.length; i++) {
           this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, data.dateSet[i].subDepartmentID, data.dateSet[i].subDepartmentName, null, null, this.CurrentUser.appUserId).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
-              debugger;
+              
               alert(data.dateSet.subDepartmentName + " assigned to this Application");
 
             }
@@ -1278,10 +1278,10 @@ export class ViewProjectInfoComponent implements OnInit {
   updateStartDateForPermit() {
 
 
-    debugger;
+    
     this.applicationsService.addUpdateApplication(this.CurrentApplicationBeingViewed[0].applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.permitStartDate).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
 
       }
       else {
@@ -1375,7 +1375,7 @@ export class ViewProjectInfoComponent implements OnInit {
   /*CREATING THE APPROVAL PACK*/
 
   getUserDep() {
-    debugger;
+    
     if (this.depID != null) {
 
 
@@ -2383,15 +2383,15 @@ export class ViewProjectInfoComponent implements OnInit {
     const currentApplication = this.sharedService.getViewApplicationIndex();
 
 
-    debugger;
+    
     this.subDepartmentForCommentService.getSubDepartmentForComment(currentApplication.applicationID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
-        debugger;
+        
         for (var i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
-          debugger;
+          
           const tempSubDepartmentList = {} as SubDepartmentList;
           tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
           tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
@@ -2403,7 +2403,7 @@ export class ViewProjectInfoComponent implements OnInit {
           tempSubDepartmentList.commentStatus = current.commentStatus;
 
 
-          debugger;
+          
           this.SubDepartmentList.push(tempSubDepartmentList);
         }
 

@@ -11,6 +11,8 @@ import { CommentBuilderService } from '../service/CommentBuilder/comment-builder
 import { UserProfileService } from '../service/UserProfile/user-profile.service';
 import { NotificationsService } from '../service/Notifications/notifications.service';
 import { AccessGroupsService } from '../service/AccessGroups/access-groups.service';
+import { ApplicationsService } from '../service/Applications/applications.service';
+import { HomeComponent } from 'src/app/home/home.component';
 
 
 export interface CommentList {
@@ -67,7 +69,7 @@ export class NavMenuComponent implements OnInit {
     applica: any;
     UserRoles: import("C:/CyberfoxProjects/WayleaveManagementSystem/ClientApp/src/app/shared/shared.service").RolesList[];
 
-  constructor(private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService) { }
+  constructor(private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private applicationsService: ApplicationsService) { }
 
   displayedColumns: string[] = ['Comment', 'actions'];
   dataSource = this.CommentList;
@@ -315,21 +317,26 @@ export class NavMenuComponent implements OnInit {
   //}
 
   LogoutUser() {
-    this.router.navigate(["/"]);
+/*    this.router.navigate(["/"]);
     localStorage.removeItem('LoggedInUserInfo');
-    localStorage.removeItem('userProfile');
+    localStorage.removeItem('userProfile');*/
+    this.deleteWayleaveWhenOnLogout();
 
   }
 /*routes for nav buttons*/
   goToConfig() {
-    this.router.navigate(["/configuration"]);
+/*    this.router.navigate(["/configuration"]);*/
+    this.deleteWayleaveWhenGoConfig();
   }
 
   goToSettings() {
-    this.router.navigate(["/user-settings"]);
+    /*this.router.navigate(["/user-settings"]);*/
+
+    this.deleteWayleaveWhenGoSettings();
   }
   goToCyberfoxCofig() {
-    this.router.navigate(["/cyberfox-config"]);
+/*    this.router.navigate(["/cyberfox-config"]);*/
+    this.deleteWayleaveWhenGoCyberfoxConfig();
   }
 /*This is to open the comment buider modal*/
   openCommentBuilder(commentBuilder:any) {
@@ -379,7 +386,9 @@ export class NavMenuComponent implements OnInit {
 
 
   goHome() {
-    this.router.navigate(["/home"]);
+    
+    this.deleteWayleaveWhenGoHome();
+
   }
 
   getAllNotifications() {
@@ -428,5 +437,132 @@ export class NavMenuComponent implements OnInit {
   }
 
 
+/*For something to to not something*/
+  deleteWayleaveWhenGoHome() {
+    debugger;
+    let appID = this.shared.getApplicationID();
+    if (appID != 0) {
+      this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          debugger;
+          this.shared.setApplicationID(0);
+/*          this.homeComponent.getAllApplicationsByUserID();*/
+          this.router.navigate(["/home"]);
+        }
+        else {
+          alert("RefreshService Delete Application Error");
+        }
+       
+        console.log("responseAddApplication", data);
+
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+    this.router.navigate(["/home"]);
+  }
+
+  deleteWayleaveWhenGoSettings() {
+    debugger;
+    let appID = this.shared.getApplicationID();
+    if (appID != 0) {
+      this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          debugger;
+          this.shared.setApplicationID(0);
+          /* this.homeComponent.getAllApplicationsByUserID();*/
+          this.router.navigate(["/user-settings"]);
+        }
+        else {
+          alert("RefreshService Delete Application Error");
+        }
+
+        console.log("responseAddApplication", data);
+
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+    this.router.navigate(["/user-settings"]);
+  }
+
+  deleteWayleaveWhenOnLogout() {
+    debugger;
+    let appID = this.shared.getApplicationID();
+    if (appID != 0) {
+      this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          debugger;
+          this.shared.setApplicationID(0);
+          /* this.homeComponent.getAllApplicationsByUserID();*/
+          this.router.navigate(["/"]);
+          localStorage.removeItem('LoggedInUserInfo');
+          localStorage.removeItem('userProfile');
+        }
+        else {
+          alert("RefreshService Delete Application Error");
+        }
+
+        console.log("responseAddApplication", data);
+
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+    this.router.navigate(["/"]);
+    localStorage.removeItem('LoggedInUserInfo');
+    localStorage.removeItem('userProfile');
+  }
+
+  deleteWayleaveWhenGoConfig() {
+    debugger;
+    let appID = this.shared.getApplicationID();
+    if (appID != 0) {
+      this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          debugger;
+          this.shared.setApplicationID(0);
+          /* this.homeComponent.getAllApplicationsByUserID();*/
+          this.router.navigate(["/configuration"]);
+        }
+        else {
+          alert("RefreshService Delete Application Error");
+        }
+
+        console.log("responseAddApplication", data);
+
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+    this.router.navigate(["/configuration"]);
+  }
+
+  deleteWayleaveWhenGoCyberfoxConfig() {
+    debugger;
+    let appID = this.shared.getApplicationID();
+    if (appID != 0) {
+      this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          debugger;
+          this.shared.setApplicationID(0);
+          /* this.homeComponent.getAllApplicationsByUserID();*/
+          this.router.navigate(["/cyberfox-config"]);
+        }
+        else {
+          alert("RefreshService Delete Application Error");
+        }
+
+        console.log("responseAddApplication", data);
+
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+    this.router.navigate(["/cyberfox-config"]);
+  }
   
 }
+
+
+/*     this.router.navigate(["/cyberfox-config"]);*/

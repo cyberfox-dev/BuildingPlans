@@ -33,7 +33,7 @@ export class BusinessPartnerService {
 
 
   validateBP(bpNumber: number): Observable<any> {
-    debugger;
+    
     const url = `${this.apiUrl}`;
     const body = { "BusinessPartnerNumber": bpNumber };
 

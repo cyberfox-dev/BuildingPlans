@@ -480,13 +480,13 @@ export class ActionCenterComponent implements OnInit {
     // this.getUsersByRoleName("Department Admin");
 
     console.log("this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].", this.departmentAdminUsers);
-    debugger;
+    
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
-      debugger;
+      
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.loggedInUsersIsAdmin == true) {
-        debugger;
+        
         this.AssignProjectToZone = true;
-        debugger;
+        
       }
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.loggedInUsersIsZoneAdmin == true) {
         
@@ -2136,13 +2136,13 @@ getAllCommentsByUserID() {
 
 
   getLinkedZones() {
-    debugger;
+    
     this.ZoneLinkedList.splice(0, this.ZoneLinkedList.length);
 
     this.zoneForCommentService.getZonesForComment(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempZoneList = {} as ZoneList;
           const current = data.dateSet[i];

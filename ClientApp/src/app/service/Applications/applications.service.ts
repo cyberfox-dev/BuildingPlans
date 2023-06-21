@@ -73,7 +73,7 @@ export class ApplicationsService {
 
   public deleteApplication(applicationID: number) {
 
-    return this.httpClient.post(this.baseURL + "DeleteApplications", applicationID);
+    return this.httpClient.post(this.baseURL + "DeleteApplication", applicationID);
 
   }
 

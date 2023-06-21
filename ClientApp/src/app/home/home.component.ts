@@ -10,6 +10,7 @@ import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/n
 import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
 import { ConfigService } from 'src/app/service/Config/config.service';
+import { Subscription } from 'rxjs';
 
 
 export interface StagesList {
@@ -120,6 +121,8 @@ export class HomeComponent implements OnInit,OnDestroy {
   filter = false;
   previousYear: number;
 
+  private subscriptions: Subscription[] = [];
+
   createNewWayleaveBtn: boolean = true;
   createNewPlanningWayleaveBtn: boolean = true;
     date: any;
@@ -196,6 +199,8 @@ export class HomeComponent implements OnInit,OnDestroy {
     
 
   }
+
+
 
   UpdateProjectNumberConfig() {
     
@@ -320,7 +325,7 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationList.TypeOfApplication = current.typeOfApplication;
             tempApplicationList.CurrentStage = current.currentStageName;
             tempApplicationList.ApplicationStatus = current.applicationStatus;
-            debugger;
+            
             tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));;
             if (current.projectNumber != null) {
               tempApplicationList.ProjectNumber = current.projectNumber;
@@ -411,7 +416,7 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationList.ApplicationStatus = current.applicationStatus;
             this.date = current.dateCreated;
             tempApplicationList.DateCreated = this.date.substring(0, current.dateCreated.indexOf('T'));;;
-            debugger;
+            
             if (current.projectNumber != null) {
               tempApplicationList.ProjectNumber = current.projectNumber;
             } else {
@@ -451,7 +456,7 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationListShared.NextStageNumber = current.nextStageNumber;
             tempApplicationListShared.PreviousStageName = current.previousStageName;
             tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
-            debugger;
+            
             if (current.projectNumber != null) {
               tempApplicationListShared.ProjectNumber = current.projectNumber;
             } else {
@@ -486,6 +491,15 @@ export class HomeComponent implements OnInit,OnDestroy {
       })
     }
 
+    const userId = this.CurrentUser.appUserId;
+    const isInternal = this.CurrentUserProfile[0].isInternal;
+
+    // Store the subscription in the subscriptions array
+    const subscription = this.applicationService.getApplicationsList(userId, isInternal)
+      .subscribe((data: any) => {
+        // Handle data
+      });
+    this.subscriptions.push(subscription);
     
    
   }
@@ -525,8 +539,12 @@ export class HomeComponent implements OnInit,OnDestroy {
   }
 
   ngOnDestroy() {
-
+    debugger;
     this.viewContainerRef.clear();
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+
   }
 
 

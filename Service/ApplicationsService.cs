@@ -346,27 +346,47 @@ namespace WayleaveManagementSystem.Service
 
 
 
+        /*        public async Task<bool> DeleteApplication(int applicationID)
+                {
+                    //this checks is the record exists in the db
+                    var tempApplicationTable = _context.Application.FirstOrDefault(x => x.ApplicationID == applicationID);
+
+                    if (tempApplicationTable == null)
+                    {
+                        return await Task.FromResult(false);
+
+                    }
+                    else
+                    {
+                        tempApplicationTable.DateUpdated = DateTime.Now;
+                        tempApplicationTable.isActive = false;
+                        _context.Update(tempApplicationTable);
+                        await _context.SaveChangesAsync();
+                        return true;
+                    }
+
+
+                }*/
+
         public async Task<bool> DeleteApplication(int applicationID)
         {
-            //this checks is the record exists in the db
-            var tempApplicationTable = _context.Application.FirstOrDefault(x => x.ApplicationID == applicationID);
+            // Check if the record exists in the db
+            var tempApplicationTable = await _context.Application.FindAsync(applicationID);
 
             if (tempApplicationTable == null)
             {
-                return await Task.FromResult(false);
-
+                return false;
             }
             else
             {
-                tempApplicationTable.DateUpdated = DateTime.Now;
-                tempApplicationTable.isActive = false;
-                _context.Update(tempApplicationTable);
+                _context.Application.Remove(tempApplicationTable);
                 await _context.SaveChangesAsync();
                 return true;
             }
-
-
         }
+
+
+
 
 
 
