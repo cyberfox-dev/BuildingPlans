@@ -18,7 +18,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string userID, string fullName, string email, string? phoneNumber, bool isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string createdById, string? IdNumber,int?zoneID)
+        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string? userID, string? fullName, string? email, string? phoneNumber, bool? isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string? createdById, string? IdNumber,int?zoneID)
         {
             if (userProfileID == 0)
             {
@@ -57,6 +57,7 @@ namespace WayleaveManagementSystem.Service
                     IdNumber = IdNumber,
                     depConfirmation = false,
                     zoneID=zoneID,
+
       
                     
                 };
@@ -70,29 +71,89 @@ namespace WayleaveManagementSystem.Service
             }
             else //if it is not null then user is doing an update 
             {
-                tempUserProfile.UserProfileID = userProfileID;
-                tempUserProfile.UserID = userID;
-                tempUserProfile.FullName = fullName;
-                tempUserProfile.Email = email;
-                tempUserProfile.PhoneNumber = phoneNumber;
-                tempUserProfile.isInternal = isInternal;
-                tempUserProfile.BP_Number = bp_Number;
-                tempUserProfile.CompanyName = companyName;
-                tempUserProfile.CompanyRegNo = companyRegNo;
-                tempUserProfile.PhyscialAddress = physcialAddress;
-                tempUserProfile.Directorate = directorate;
-                tempUserProfile.DepartmentID = departmentID;
-                tempUserProfile.SubDepartmentID = subDepartmentID;
-                tempUserProfile.Branch = branch;
-                tempUserProfile.CostCenterNumber = costCenterNumber;
-                tempUserProfile.CostCenterOwner = costCenterOwner;
-                tempUserProfile.CopyOfID = copyOfID;
+                if(userProfileID != null)
+                {
+                    tempUserProfile.UserProfileID = userProfileID;
+                }
+                if (userID != null)
+                {
+                    tempUserProfile.UserID = userID;
+                }
+                if (fullName != null)
+                {
+                    tempUserProfile.FullName = fullName;
+                }
+                if (email != null)
+                {
+                    tempUserProfile.Email = email;
+                }
+                if (phoneNumber != null)
+                {
+                    tempUserProfile.PhoneNumber = phoneNumber;
+                }
+                if (isInternal != null)
+                {
+                    tempUserProfile.isInternal = isInternal;
+                }
+                if (bp_Number != null)
+                {
+                    tempUserProfile.BP_Number = bp_Number;
+                }
+                if (companyName != null)
+                {
+                    tempUserProfile.CompanyName = companyName;
+                }
+                if (companyRegNo != null)
+                {
+                    tempUserProfile.CompanyRegNo = companyRegNo;
+                }
+                if (physcialAddress != null)
+                {
+                    tempUserProfile.PhyscialAddress = physcialAddress;
+                }
+                if (directorate != null)
+                {
+                    tempUserProfile.Directorate = directorate;
+                }
+                if (departmentID != null)
+                {
+                    tempUserProfile.DepartmentID = departmentID;
+                }
+                if (subDepartmentID != null)
+                {
+                    tempUserProfile.SubDepartmentID = subDepartmentID;
+                }
+                if (branch != null)
+                {
+                    tempUserProfile.Branch = branch;
+                }
+                if (costCenterNumber != null)
+                {
+                    tempUserProfile.CostCenterNumber = costCenterNumber;
+                }
+                if (costCenterOwner != null)
+                {
+                    tempUserProfile.CostCenterOwner = costCenterOwner;
+                }
+                if (copyOfID != null)
+                {
+                    tempUserProfile.CopyOfID = copyOfID;
+                }
+                if (copyOfID != null)
+                {
+                    tempUserProfile.CopyOfID = copyOfID;
+                }
+                if (IdNumber != null)
+                {
+                    tempUserProfile.IdNumber = IdNumber;
+                }
+
                 //tempUserProfile.DateCreated = DateTime.Now;
                 tempUserProfile.DateUpdated = DateTime.Now;
                // tempUserProfile.CreatedById = createdById;
                 tempUserProfile.isActive = true;
-                tempUserProfile.depConfirmation = false;
-                tempUserProfile.IdNumber = IdNumber;
+                tempUserProfile.depConfirmation = true;
+              
 
                 _context.Update(tempUserProfile);
                 await _context.SaveChangesAsync();

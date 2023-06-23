@@ -101,7 +101,7 @@ export class NavMenuComponent implements OnInit {
 
   lockViewAccordingToRoles() {
   
-    console.log("werwerwerrwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwererwer", this.RolesList);
+   
     
     for (var i = 0; i < this.RolesList.length; i++) {
       
@@ -439,12 +439,12 @@ export class NavMenuComponent implements OnInit {
 
 /*For something to to not something*/
   deleteWayleaveWhenGoHome() {
-    debugger;
+    
     let appID = this.shared.getApplicationID();
     if (appID != 0) {
       this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          debugger;
+          
           this.shared.setApplicationID(0);
 /*          this.homeComponent.getAllApplicationsByUserID();*/
           this.router.navigate(["/home"]);
@@ -463,12 +463,12 @@ export class NavMenuComponent implements OnInit {
   }
 
   deleteWayleaveWhenGoSettings() {
-    debugger;
+    
     let appID = this.shared.getApplicationID();
     if (appID != 0) {
       this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          debugger;
+          
           this.shared.setApplicationID(0);
           /* this.homeComponent.getAllApplicationsByUserID();*/
           this.router.navigate(["/user-settings"]);
@@ -487,12 +487,12 @@ export class NavMenuComponent implements OnInit {
   }
 
   deleteWayleaveWhenOnLogout() {
-    debugger;
+    
     let appID = this.shared.getApplicationID();
     if (appID != 0) {
       this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          debugger;
+          
           this.shared.setApplicationID(0);
           /* this.homeComponent.getAllApplicationsByUserID();*/
           this.router.navigate(["/"]);
@@ -515,12 +515,12 @@ export class NavMenuComponent implements OnInit {
   }
 
   deleteWayleaveWhenGoConfig() {
-    debugger;
+    
     let appID = this.shared.getApplicationID();
     if (appID != 0) {
       this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          debugger;
+          
           this.shared.setApplicationID(0);
           /* this.homeComponent.getAllApplicationsByUserID();*/
           this.router.navigate(["/configuration"]);
@@ -539,12 +539,12 @@ export class NavMenuComponent implements OnInit {
   }
 
   deleteWayleaveWhenGoCyberfoxConfig() {
-    debugger;
+    
     let appID = this.shared.getApplicationID();
     if (appID != 0) {
       this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          debugger;
+          
           this.shared.setApplicationID(0);
           /* this.homeComponent.getAllApplicationsByUserID();*/
           this.router.navigate(["/cyberfox-config"]);
