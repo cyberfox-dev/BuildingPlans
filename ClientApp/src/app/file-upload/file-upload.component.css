@@ -2,5 +2,16 @@
   font-weight: bold;
   color: #28a745;
   margin-left: 15px;
-  line-height: 36px;
+  /* line-height: 36px;*/
+ 
 }
+.btn {
+  background-color: #005870;
+  color: white;
+  top: 13px;
+}
+  .btn:active {
+    background-color: #005870;
+    color: white;
+    top: 13px;
+  }

@@ -22,6 +22,9 @@ body {
   display: flex;
   justify-content: space-between;
 }
+.mat-form-field {
+  width: 100%;
+}
 
   .nav > .nav-header {
     display: inline;

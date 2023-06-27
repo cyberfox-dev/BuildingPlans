@@ -89,7 +89,7 @@ namespace WayleaveManagementSystem.Controllers
             {
 
 
-                if (model == null || model.DocumentName.Length < 1)
+                if (model == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
@@ -208,6 +208,27 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+
+        [HttpGet("GetAllDocumentsForRepository")]
+        public async Task<object> GetAllDocumentsForRepository()
+        {
+            try
+            {
+               
+                    var result = await _documentUploadService.GetAllDocumentsForRepository();
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Repository Documents", result));
+               
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
 
         [HttpGet("GetDocument")]
         public IActionResult GetDocument(string filename)
