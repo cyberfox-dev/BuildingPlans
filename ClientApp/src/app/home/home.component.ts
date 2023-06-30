@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewContainerRef } from '@angular/core';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { ApplicationsService } from '../service/Applications/applications.service';
 import { MatTable } from '@angular/material/table';
@@ -11,7 +11,26 @@ import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
 import { ConfigService } from 'src/app/service/Config/config.service';
 import { Subscription } from 'rxjs';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SelectEngineerTableComponent } from 'src/app/select-engineer-table/select-engineer-table.component';
+import { SelectContractorTableComponent } from 'src/app/select-contractor-table/select-contractor-table.component';
+import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
+import { LoginComponent } from 'src/app/login/login.component';
 
+
+
+
+export interface EngineerList {
+  professinalID: number;
+  ProfessinalType: string;
+  professionalRegNo: string;
+  bpNumber: string;
+  name: string;
+  surname: string;
+  email: string;
+  phoneNumber: string;
+  idNumber?: string;
+}
 
 export interface StagesList {
   StageID: number;
@@ -85,6 +104,13 @@ export interface UserList {
   depConfirmation: boolean;
 }
 
+export interface ClientUserList {
+  userId: any;
+  idNumber: string;
+  fullName: string;
+
+}
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -103,6 +129,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   relatedApplications: ApplicationList[] = [];
   RolesList: RolesList[] = [];
   UserList: UserList[] = [];
+  ClientUserList: ClientUserList[] = [];
 
 
   filterValue = '';
@@ -121,11 +148,64 @@ export class HomeComponent implements OnInit,OnDestroy {
   filter = false;
   previousYear: number;
 
+
+  /*Client details*/
+  clientUserID = '';
+  clientName = '';
+  clientSurname = '';
+  clientEmail = '';
+  clientCellNo = '';
+  clientAddress = '';
+  clientRefNo = '';
+  clientBPNum = '';
+  clientCompanyName = '';
+  clientCompanyRegNo = '';
+  clientCompanyType = '';
+  clientIDNumber = '';
+  clientPhysicalAddress = '';
+  clientBpNumber = '';
+
+  /*New Engineer information*/
+  engineerIDNo = '';
+  bpNoApplicant = '';
+  professionalRegNo = '';
+  name = '';
+  surname = '';
+  applicantTellNo = '';
+  applicantEmail = '';
+
+
+  closeResult = "";
+  contractorIDNo = '';
+  bpNoContractor = "";
+  ProfessionalRegNo = "";
+  CIBRating = "";
+  Name = "";
+  Surname = '';
+  ContractorTell?: number;
+  ContractorEmail = '';
+
+  option = "";
+  clientactive: boolean = false;
+  internalactive: boolean = false;
+  @ViewChild("internalOpt", { static: true }) content!: ElementRef;
+  @ViewChild("clientOption", { static: true }) clientOption!: ElementRef;
+  @ViewChild("user", { static: true }) user!: ElementRef;
+  @ViewChild("Prof", { static: true }) Prof!: ElementRef;
+  @Output() optionEvent = new EventEmitter<string>();
+
+  displayedColumnsLinkUsers: string[] = ['idNumber', 'fullName', 'actions'];
+  dataSourceLinkUsers = this.ClientUserList;
+
+
   private subscriptions: Subscription[] = [];
 
   createNewWayleaveBtn: boolean = true;
   createNewPlanningWayleaveBtn: boolean = true;
     date: any;
+    applicationType: boolean;
+    isPlanning: boolean;
+    userID: any;
 
 
   constructor(
@@ -138,7 +218,11 @@ export class HomeComponent implements OnInit,OnDestroy {
     private accessGroupsService: AccessGroupsService,
     private configService: ConfigService,
     private userPofileService: UserProfileService,
-
+    private modalService: NgbModal,
+    private selectEngineerTableComponent: SelectEngineerTableComponent,
+    private selectContractorTableComponent: SelectContractorTableComponent,
+    private professionalService: ProfessionalService,
+    private loginComponent: LoginComponent,
   ) {
     this.currentDate = new Date();
     this.previousMonth = this.currentDate.getMonth();
@@ -193,6 +277,7 @@ export class HomeComponent implements OnInit,OnDestroy {
       this.getAllStages();
       this.getRolesLinkedToUser();
       this.onCheckIfUserHasAccess();
+      this.getAllExternalUsers();
 
     }, 100);
 
@@ -200,7 +285,238 @@ export class HomeComponent implements OnInit,OnDestroy {
 
   }
 
+  cardchange(ids: any) {
+    this.option = ids;
+    this.sharedService.option = this.option;
 
+
+  }
+  client() {
+    this.clientactive = true;
+  }
+  internal() {
+    this.internalactive = true;
+  }
+
+
+  sendOption() {
+  //  this.optionEvent.emit(this.option);
+    if (this.option == "internal") {
+      /* this.optionEvent.emit(this.option);*/
+      
+      this.createWayleave(this.applicationType, this.isPlanning);
+      //this.NewWayleaveComponent.reciveOption(this.option);
+
+    } else {
+      this.openClientOption(this.clientOption);
+    }
+
+  }
+  openSm(internalOpt: any) {
+    this.modalService.open(internalOpt, {
+      centered: true,
+      size: 'lg',
+      backdrop: 'static', // Prevent clicking outside the modal to close it
+      keyboard: false // Prevent pressing the ESC key to close the modal
+    });
+  }
+
+  openClientOption(clientOption: any) {
+  
+    this.modalService.open(clientOption, {
+      centered: true,
+      size: 'lg',
+      backdrop: 'static', // Prevent clicking outside the modal to close it
+      keyboard: false // Prevent pressing the ESC key to close the modal
+    });
+  }
+  openUser(user: any) {
+    if (confirm("Are you sure you what to apply for a existing client?")) {
+      this.modalService.open(user, {
+        centered: true,
+        size: 'lg',
+        backdrop: 'static', // Prevent clicking outside the modal to close it
+        keyboard: false // Prevent pressing the ESC key to close the modal
+      });
+    }
+    else {
+
+    }
+   
+  }
+
+  openXl(Prof: any) {
+    this.modalService.open(Prof, {
+      centered: true,
+      size: 'lg',
+      backdrop: 'static', // Prevent clicking outside the modal to close it
+      keyboard: false // Prevent pressing the ESC key to close the modal
+    });
+  }
+
+  openNewClient(newClient: any) {
+    this.modalService.open(newClient, {
+      centered: true,
+      size: 'lg',
+      backdrop: 'static', // Prevent clicking outside the modal to close it
+      keyboard: false // Prevent pressing the ESC key to close the modal
+    });
+  }
+
+  onAddNewClient() {
+    this.loginComponent.onRegister(this.clientName + " " + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientBpNumber, this.clientCompanyName, this.clientCompanyRegNo, this.clientPhysicalAddress, null, this.clientIDNumber);
+    if (this.sharedService.clientUserID != null || this.sharedService.clientUserID != "") {
+      this.openXl(this.Prof);
+    }
+
+  }
+
+  onAddContractor() {
+    debugger;
+    let refreshTable = new SelectEngineerTableComponent(this.professionalService, this.sharedService);
+
+    debugger;
+    if (this.sharedService.clientUserID != null || this.sharedService.clientUserID != "") {
+      debugger;
+      refreshTable.onAddContractor(this.bpNoContractor, this.professionalRegNo, this.Name, this.Surname, this.ContractorEmail, this.ContractorTell.toString(), this.contractorIDNo, this.sharedService.clientUserID);
+
+
+      this.bpNoContractor = "";
+      this.professionalRegNo = "";
+      this.Name = "";
+      this.Surname = "";
+      this.ContractorEmail = "";
+      this.ContractorTell = null;
+      this.contractorIDNo = "";
+      this.CIBRating = "";
+    // this.populateClientInfo();
+    //this.router.navigate(["/home"]);
+    //this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: this.isPlanning } });
+    //refreshTable.getProfessionalsListByProfessionalType('Engineer');
+    //refreshTable.refreshTable();
+
+    }
+    else {
+      refreshTable.onAddContractor(this.bpNoContractor, this.professionalRegNo, this.Name, this.Surname, this.ContractorEmail, this.ContractorTell.toString(), this.contractorIDNo, this.userID);
+
+
+      this.bpNoContractor = "";
+      this.professionalRegNo = "";
+      this.Name = "";
+      this.Surname = "";
+      this.ContractorEmail = "";
+      this.ContractorTell = null;
+      this.contractorIDNo = "";
+      this.CIBRating = "";
+    // this.populateClientInfo();
+    //this.router.navigate(["/home"]);
+    //this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: this.isPlanning } });
+    //refreshTable.getProfessionalsListByProfessionalType('Engineer');
+    //refreshTable.refreshTable();
+
+    }
+  
+  }
+
+  onAddEngineer() {
+
+    let refreshTable = new SelectEngineerTableComponent(this.professionalService, this.sharedService);
+    if (this.sharedService.clientUserID != null || this.sharedService.clientUserID != "") {
+      debugger;
+      const newEnineer = {} as EngineerList;
+      newEnineer.ProfessinalType = "Engineer";
+      newEnineer.bpNumber = this.bpNoApplicant;
+      newEnineer.professionalRegNo = this.professionalRegNo;
+      newEnineer.name = this.name;
+      newEnineer.surname = this.surname;
+      newEnineer.email = this.applicantEmail;
+      newEnineer.phoneNumber = this.applicantTellNo;
+      refreshTable.onAddEngineer(this.bpNoApplicant, this.professionalRegNo, this.name, this.surname, this.applicantEmail, this.applicantTellNo, this.engineerIDNo, this.sharedService.clientUserID);
+
+
+      this.bpNoApplicant = "";
+      this.professionalRegNo = "";
+      this.name = "";
+      this.surname = "";
+      this.applicantEmail = "";
+      this.applicantTellNo = "";
+      this.engineerIDNo = "";
+    } else {
+      debugger;
+      const newEnineer = {} as EngineerList;
+      newEnineer.ProfessinalType = "Engineer";
+      newEnineer.bpNumber = this.bpNoApplicant;
+      newEnineer.professionalRegNo = this.professionalRegNo;
+      newEnineer.name = this.name;
+      newEnineer.surname = this.surname;
+      newEnineer.email = this.applicantEmail;
+      newEnineer.phoneNumber = this.applicantTellNo;
+      refreshTable.onAddEngineer(this.bpNoApplicant, this.professionalRegNo, this.name, this.surname, this.applicantEmail, this.applicantTellNo, this.engineerIDNo, this.userID);
+
+
+      this.bpNoApplicant = "";
+      this.professionalRegNo = "";
+      this.name = "";
+      this.surname = "";
+      this.applicantEmail = "";
+      this.applicantTellNo = "";
+      this.engineerIDNo = "";
+    }
+
+   // this.populateClientInfo();
+    //this.router.navigate(["/home"]);
+    //this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: this.isPlanning } });
+    //refreshTable.getProfessionalsListByProfessionalType('Engineer');
+    //refreshTable.refreshTable();
+
+  }
+
+  getAllExternalUsers() {
+
+    this.UserList.splice(0, this.UserList.length);
+
+
+    this.userPofileService.getExternalUsers().subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempZoneList = {} as ClientUserList;
+          const current = data.dateSet[i];
+          tempZoneList.userId = current.userID;
+          tempZoneList.idNumber = current.idNumber;
+          tempZoneList.fullName = current.fullName;
+
+
+          this.sharedService.clientUserID = current.userID;
+          this.ClientUserList.push(tempZoneList);
+        }
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
+  getUserID(index: any) {
+    this.userID = this.ClientUserList[index].userId;
+  }
+
+
+  populateClientInfo() {
+    if (confirm("Are you sure you are done?")) {
+      this.createWayleave(this.applicationType, this.isPlanning);
+    }
+    
+   
+   
+}
 
   UpdateProjectNumberConfig() {
     
@@ -563,17 +879,29 @@ export class HomeComponent implements OnInit,OnDestroy {
   }
 
   goToNewWayleave(applicationType: boolean, isPlanning: boolean) { //application type refers to whether it is a brand new application or if it is a reapply.
+    this.applicationType = applicationType;
+    this.isPlanning = isPlanning;
+    this.openSm(this.content);
+  }
 
-  
+  createWayleave(applicationType: boolean, isPlanning: boolean) {
     //application type refers to whether it is a brand new application or if it is a reapply.
     console.log("THIS IS THE APPLICATION TYPE", applicationType);
     this.sharedService.setReapply(applicationType);
 
-    this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId, isPlanning);
+
+    if (this.option == "client") {
+      this.NewWayleaveComponent.onWayleaveCreate(this.userID, isPlanning);
+     // this.NewWayleaveComponent.populateClientInfo(this.userID);
+    }
+    else {
+      this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId, isPlanning);
+    }
+  
 
     this.viewContainerRef.clear();
-
   }
+  
 
   countUnpaid() {
 
@@ -778,6 +1106,8 @@ export class HomeComponent implements OnInit,OnDestroy {
       console.log("Error: ", error);
     })
   }
+
+
 
   }
 

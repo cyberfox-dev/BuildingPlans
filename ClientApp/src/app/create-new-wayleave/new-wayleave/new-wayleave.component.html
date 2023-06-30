@@ -7,31 +7,32 @@
   </div>
   <div class="modal-body">
 
-      <mat-tab label="Select departments">
-        <table mat-table  class="mat-elevation-z8">
+    <mat-tab label="Select departments">
+      <table mat-table class="mat-elevation-z8">
 
-          <ng-container matColumnDef="subDepartmentName">
-            <th mat-header-cell *matHeaderCellDef> Sub Department Name </th>
-            <td mat-cell *matCellDef="let element"> e </td>
-          </ng-container>
+        <ng-container matColumnDef="subDepartmentName">
+          <th mat-header-cell *matHeaderCellDef> Sub Department Name </th>
+          <td mat-cell *matCellDef="let element"> e </td>
+        </ng-container>
 
 
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Actions</th>
-            <td mat-cell *matCellDef="let i = index;let element">
-              <button mat-raised-button ><i class="fa fa-dot-circle-o" aria-hidden="true"></i></button>
-            </td>
-          </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let i = index;let element">
+            <button mat-raised-button><i class="fa fa-dot-circle-o" aria-hidden="true"></i></button>
+          </td>
+        </ng-container>
 
-          <tr mat-header-row ></tr>
-          <tr mat-row ></tr>
-        </table>
-      </mat-tab>
+        <tr mat-header-row></tr>
+        <tr mat-row></tr>
+      </table>
+    </mat-tab>
   </div>
 
 </ng-template>
 
-<app-internal-option (optionEvent)="reciveOption($event)" *ngIf="internal"></app-internal-option>
+<!--<app-internal-option (optionEvent)="reciveOption($event)" *ngIf="internal"></app-internal-option>-->
+
 
 
 
@@ -105,13 +106,6 @@
           <!-- <app-internal-details *ngIf="internal"></app-internal-details>-->
           <div *ngIf="internal">
 
-
-
-
-
-
-
-
             <div class="row">
               <div class="col">
                 <div class="form-floating mb-3 mt-3">
@@ -160,13 +154,14 @@
 
           </div>
 
+
           <!-- <app-client-details *ngIf="client"></app-client-details>-->
-          <!------------------------------------------------------------CLIENT---------------------------------------------------------------->
+        <!--  ----------------------------------------------------------CLIENT---------------------------------------------------------------->
 
           <div *ngIf="client">
             <div class="container-fluid">
 
-              <button mat-raised-button color="blue" (click)="openExsistingClientModal(user)">Create for an existing client</button>
+            <!--  <button mat-raised-button color="blue" (click)="openExsistingClientModal(user)">Create for an existing client</button>-->
 
               <form>
                 <div class="row">
@@ -265,240 +260,251 @@
           </div>
 
           <!--Only if they are a client do they see these divs to create a new engineer and contractor-->
-          <!--          <div class="container-fluid" *ngIf="client">
-              <div class="card">
-                <h3><span>Please create an engineer</span></h3>
-              </div>
-              <app-new-egineer></app-new-egineer>
+                    <!--<div class="container-fluid" *ngIf="client">
+    <div class="card">
+      <h3><span>Please create an engineer</span></h3>
+    </div>
+    <app-new-egineer></app-new-egineer>
 
-              <div class="card" >
-                <h3><span>Please create a contractor</span></h3>
-              </div>
+    <div class="card" >
+      <h3><span>Please create a contractor</span></h3>
+    </div>
 
-              <app-new-contractor></app-new-contractor>
-            </div>-->
+    <app-new-contractor></app-new-contractor>
+  </div>-->
           <!--the applicant selecting an engineer-->
           <div class="card" *ngIf="isPlanning === false ">
             <h3><span>Please select an engineer</span></h3>
           </div>
-          <!--      <div class="container-fluid">
-                  <div class="row">
-                    <button type="button" class="createNewEngin" (click)="openXl(content)">
-                      Create New Engineer
-                    </button>
-                  </div>
-                </div>-->
+                <div class="container-fluid">
+    <div class="row">
+      <button type="button" class="createNewEngin" (click)="openXl(content)">
+        Create New Engineer
+      </button>
+    </div>
+  </div>
           <!--Table displaying the engineers-->
-          <app-select-engineer-table [PrfessionalType]='Engineer' *ngIf="isPlanning === false"></app-select-engineer-table>
+          <app-select-engineer-table [UserID]='clientUserID' [PrfessionalType]='Engineer' *ngIf="isPlanning === false"></app-select-engineer-table>
 
 
           <div class="card" *ngIf="isPlanning === false">
             <h3><span>Please select a contractor</span></h3>
           </div>
-          <app-select-engineer-table [PrfessionalType]='Contractor' *ngIf="isPlanning === false"></app-select-engineer-table>
+          <app-select-engineer-table [UserID]='clientUserID'  [PrfessionalType]='Contractor' *ngIf="isPlanning === false"></app-select-engineer-table>
 
 
+          <!--<div class="card" *ngIf="isPlanning === false && client == true">
+            <h3><span>Please select a contractor</span></h3>
+          </div>
+          <app-select-contractor-table [PrfessionalType]='Contractor' *ngIf="isPlanning === false && client == true"></app-select-contractor-table>-->
 
         </div>
 
+     
 
+
+
+
+
+
+<!--app-select-contractor-table-->
       </form>
-      <div class="cont">
-        <button mat-raised-button color="primary" matStepperPrevious disabled>Back</button>
-        <button mat-raised-button color="primary" matStepperNext>Next</button>
-      </div>
+<div class="cont">
+  <button mat-raised-button color="primary" matStepperPrevious disabled>Back</button>
+  <button mat-raised-button color="primary" matStepperNext>Next</button>
+</div>
     </mat-step>
 
-    <!---------------------------------------------------------------Project Details----------------------------------------------------------->
-    <mat-step>
+<!---------------------------------------------------------------Project Details----------------------------------------------------------->
+<mat-step>
 
 
 
 
-      <ng-template matStepLabel>Project Details</ng-template>
-      <div class="card">
-        <h3><span>Project Details</span></h3>
-      </div>
-      <!--enterning project details-->
-      <!--<app-project-details></app-project-details>-->
-      <!--        <div class="form-floating ">
-        <select class="form-select" [(ngModel)]="typeOfApplication" name="typeOfApplication" aria-label="Default select example" placeholder="Type of application">
-          <option value="TOA">Type of application</option>
-          <option value="Small">Small</option>
-          <option value="Medium">Medium</option>
-          <option value="Large">Large</option>
-          <option value="Emergency">Emergency</option>
-        </select>
+  <ng-template matStepLabel>Project Details</ng-template>
+  <div class="card">
+    <h3><span>Project Details</span></h3>
+  </div>
+  <!--enterning project details-->
+  <!--<app-project-details></app-project-details>-->
+  <!--        <div class="form-floating ">
+    <select class="form-select" [(ngModel)]="typeOfApplication" name="typeOfApplication" aria-label="Default select example" placeholder="Type of application">
+      <option value="TOA">Type of application</option>
+      <option value="Small">Small</option>
+      <option value="Medium">Medium</option>
+      <option value="Large">Large</option>
+      <option value="Emergency">Emergency</option>
+    </select>
 
-      </div>-->
+  </div>-->
 
-      <mat-form-field appearance="fill">
-        <mat-label>Select type of application</mat-label>
-        <mat-select [(ngModel)]="typeOfApplication" name="typeOfApplication">
-          <mat-option value="Small">Small</mat-option>
-          <mat-option value="Medium">Medium</mat-option>
-          <mat-option value="Large">Large</mat-option>
-          <mat-option value="Emergency">Emergency</mat-option>
+  <mat-form-field appearance="fill">
+    <mat-label>Select type of application</mat-label>
+    <mat-select [(ngModel)]="typeOfApplication" name="typeOfApplication">
+      <mat-option value="Small">Small</mat-option>
+      <mat-option value="Medium">Medium</mat-option>
+      <mat-option value="Large">Large</mat-option>
+      <mat-option value="Emergency">Emergency</mat-option>
 
-        </mat-select>
-      </mat-form-field>
-
-
-      <div class="row">
-        <!--          <div class="col">
-                    <div class="form-floating mb-3 mt-3">
-                      <input type="text" class="form-control" [(ngModel)]="notificationNumber" id="NotificationNo" placeholder="Enter Notification Number" name="notificationNo">
-                      <label for="name">Notification Number</label>
-                    </div>
-                  </div>-->
-
-        <div class="col">
-          <!--  <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="wbsNumber" id="WBSNo" placeholder="Enter WBS Number" name="wbsNo">
-            <label for="name">WBS Number</label>
-          </div>-->
-          <!--            <div class="form-floating mb-3 mt-3">
-                        <input type="text" class="form-control" [(ngModel)]="descriptionOfProject" id="Description" placeholder="Enter Description" name="descriptionOfProject">
-                        <label for="name">Description of Proposed Construction Work</label>
-                      </div>-->
-        </div>
-      </div>
-      <div class="row">
-        <!--          <div class="col">
-                    <div class="form-floating mb-3 mt-3">
-                      <input type="text" class="form-control" [(ngModel)]="physicalAddressOfProject" id="Address" placeholder="Enter Address" name="physicalAddressOfProject">
-                      <label for="name">Physical Address</label>
-                    </div>
-                  </div>-->
-
-        <div class="form-floating mb-3 mt-3">
-          <input type="text" class="form-control" [(ngModel)]="natureOfWork" id="Email" placeholder="Enter Email" name="natureOfWork">
-          <label for="name">Type/Nature of works to be undertaken</label>
-        </div>
+    </mat-select>
+  </mat-form-field>
 
 
-      </div>
-
-
-      <button mat-raised-button color="draft" (click)="saveProjectAsDraft()">Save project as a draft</button>
-
-      <div class="row">
-        <div class="typeOfExcavation">
-
-          <div class="card">
-            <h3><span>Type of excavation</span></h3>
-          </div>
-          <div class="container-fluid">
-
-            <mat-form-field>
-              <mat-label>Types of excavation</mat-label>
-              <mat-select [(ngModel)]="TOENAMES" multiple>
-                <mat-option *ngFor="let TOE of TypeOfExcavationList" [value]="TOE.typeOfExcavationName">{{TOE.typeOfExcavationName}}</mat-option>
-              </mat-select>
-            </mat-form-field>
-
-          </div>
-        </div>
-      </div>
-
-
-
-      <div class="card">
-        <h3><span>Expected Start & End Dates </span></h3>
-      </div>
-      <div class="row">
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="date" class="form-control" [(ngModel)]="expectedStartDate" id="startDate" placeholder="Enter Start Date" name="expectedStartDate">
-            <label for="name">Start Date</label>
-          </div>
-        </div>
-
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="date" class="form-control" [(ngModel)]="expectedEndType" id="endDate" placeholder="" name="expectedEndType">
-            <label for="name">Completion Date</label>
-          </div>
-        </div>
-      </div>
-
-      <!---------------------------------------------------------------Map----------------------------------------------------------->
-      <div class="card" *ngIf="map">
-        <h3><span>Location</span></h3>
-      </div>
-      <!--<app-project-details-map *ngIf="map"></app-project-details-map>-->
-      <div *ngIf="map">
-        <!--<div class="row">
-          <div class="form-floating mb-3 mt-3">-->
-        <!--<input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address">-->
-        <!--<input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" />
-            <label for="applicantTellNo">Physical Address</label>
-          </div>
-        </div>-->
-        <div class="container-fluid">
-          <div class="alert alert-warning">
-            <h4>Please draw a polygon around the area of interest, Below you will find buttons relating to their function. Please select draw to begin drawing. Once you are done drawing you may click save to commit this drawing or if you feel that you have made a mistake feel free to retry by clicking edit, and then on save.</h4>
-            <h5>Shortcuts</h5>
-            <p>Z: Undo<br />R: Redo<br />A: Rotate left <br />D: Rotate right<br />Enter: Complete the drawing<br />Double click: Complete the drawing<br />Mouse scroll wheel: Zoom-in/Zoom-out<br /></p>
-          </div>
-        </div>
-        <app-project-details-map [data]="ARCGISAPIData"></app-project-details-map>
-
-
-
-      </div>
-      <div class="alert alert-warning" *ngIf="client">
-        <h4>This project is being created for a client, because of this a drawing needs to be provided of the location of works on the next step.</h4>
-      </div>
-
-
-
-
-
-      <div class="cont">
-        <button mat-raised-button color="primary" matStepperPrevious>Back</button>
-        <button mat-raised-button color="primary" matStepperNext>Next</button>
-      </div>
-    </mat-step>
-
-
-
-
-
-    <!---------------------------------------------------------------uploading docs----------------------------------------------------------->
-
-    <mat-step>
-      <form>
-        <ng-template matStepLabel>document uploads</ng-template>
-      </form>
-      <mat-list *ngFor="let manDoc of MandatoryDocumentsLinkedStagesList; let i=index" [attr.data-index]="i">
-        <mat-list-item> {{manDoc.mandatoryDocumentName}}</mat-list-item>
-        <mat-form-field>
-          <div>
-            <mat-toolbar>
-              <!-- Display files names -->
-              <input matInput [(ngModel)]="fileAttrs[i]" readonly name="name" />
-              <!-- Browse Button -->
-              <div class="row" style="margin-bottom:15px;">
-                <div class="container-fluid">
-                  <app-file-upload [UploadFor]="'CoverLetter'+i" (passFileName)="onPassFileName($event)"></app-file-upload>
-                  <!--(onUploadFinished)="uploadFinished($event)"-->
+  <div class="row">
+    <!--          <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="notificationNumber" id="NotificationNo" placeholder="Enter Notification Number" name="notificationNo">
+                  <label for="name">Notification Number</label>
                 </div>
-              </div>
-            </mat-toolbar>
-          </div>
+              </div>-->
+
+    <div class="col">
+      <!--  <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" [(ngModel)]="wbsNumber" id="WBSNo" placeholder="Enter WBS Number" name="wbsNo">
+        <label for="name">WBS Number</label>
+      </div>-->
+      <!--            <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="descriptionOfProject" id="Description" placeholder="Enter Description" name="descriptionOfProject">
+                    <label for="name">Description of Proposed Construction Work</label>
+                  </div>-->
+    </div>
+  </div>
+  <div class="row">
+    <!--          <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="physicalAddressOfProject" id="Address" placeholder="Enter Address" name="physicalAddressOfProject">
+                  <label for="name">Physical Address</label>
+                </div>
+              </div>-->
+
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" [(ngModel)]="natureOfWork" id="Email" placeholder="Enter Email" name="natureOfWork">
+      <label for="name">Type/Nature of works to be undertaken</label>
+    </div>
+
+
+  </div>
+
+
+  <button mat-raised-button color="draft" (click)="saveProjectAsDraft()">Save project as a draft</button>
+
+  <div class="row">
+    <div class="typeOfExcavation">
+
+      <div class="card">
+        <h3><span>Type of excavation</span></h3>
+      </div>
+      <div class="container-fluid">
+
+        <mat-form-field>
+          <mat-label>Types of excavation</mat-label>
+          <mat-select [(ngModel)]="TOENAMES" multiple>
+            <mat-option *ngFor="let TOE of TypeOfExcavationList" [value]="TOE.typeOfExcavationName">{{TOE.typeOfExcavationName}}</mat-option>
+          </mat-select>
         </mat-form-field>
-      </mat-list>
-      <div class="row">
-
-        <button mat-raised-button color="green" (click)="onWayleaveCreate(CurrentUser.appUserId,false);">Create Application</button>
-      </div>
-
-      <div class="cont">
-        <button mat-raised-button color="primary" matStepperPrevious>Back</button>
 
       </div>
-    </mat-step>
+    </div>
+  </div>
+
+
+
+  <div class="card">
+    <h3><span>Expected Start & End Dates </span></h3>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="form-floating mb-3 mt-3">
+        <input type="date" class="form-control" [(ngModel)]="expectedStartDate" id="startDate" placeholder="Enter Start Date" name="expectedStartDate">
+        <label for="name">Start Date</label>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="form-floating mb-3 mt-3">
+        <input type="date" class="form-control" [(ngModel)]="expectedEndType" id="endDate" placeholder="" name="expectedEndType">
+        <label for="name">Completion Date</label>
+      </div>
+    </div>
+  </div>
+
+  <!---------------------------------------------------------------Map----------------------------------------------------------->
+  <div class="card" *ngIf="map">
+    <h3><span>Location</span></h3>
+  </div>
+  <!--<app-project-details-map *ngIf="map"></app-project-details-map>-->
+  <div *ngIf="map">
+    <!--<div class="row">
+      <div class="form-floating mb-3 mt-3">-->
+    <!--<input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address">-->
+    <!--<input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" />
+        <label for="applicantTellNo">Physical Address</label>
+      </div>
+    </div>-->
+    <div class="container-fluid">
+      <div class="alert alert-warning">
+        <h4>Please draw a polygon around the area of interest, Below you will find buttons relating to their function. Please select draw to begin drawing. Once you are done drawing you may click save to commit this drawing or if you feel that you have made a mistake feel free to retry by clicking edit, and then on save.</h4>
+        <h5>Shortcuts</h5>
+        <p>Z: Undo<br />R: Redo<br />A: Rotate left <br />D: Rotate right<br />Enter: Complete the drawing<br />Double click: Complete the drawing<br />Mouse scroll wheel: Zoom-in/Zoom-out<br /></p>
+      </div>
+    </div>
+    <app-project-details-map [data]="ARCGISAPIData"></app-project-details-map>
+
+
+
+  </div>
+  <div class="alert alert-warning" *ngIf="client">
+    <h4>This project is being created for a client, because of this a drawing needs to be provided of the location of works on the next step.</h4>
+  </div>
+
+
+
+
+
+  <div class="cont">
+    <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+    <button mat-raised-button color="primary" matStepperNext>Next</button>
+  </div>
+</mat-step>
+
+
+
+
+
+<!---------------------------------------------------------------uploading docs----------------------------------------------------------->
+
+<mat-step>
+  <form>
+    <ng-template matStepLabel>document uploads</ng-template>
+  </form>
+  <mat-list *ngFor="let manDoc of MandatoryDocumentsLinkedStagesList; let i=index" [attr.data-index]="i">
+    <mat-list-item> {{manDoc.mandatoryDocumentName}}</mat-list-item>
+    <mat-form-field>
+      <div>
+        <mat-toolbar>
+          <!-- Display files names -->
+          <input matInput [(ngModel)]="fileAttrs[i]" readonly name="name" />
+          <!-- Browse Button -->
+          <div class="row" style="margin-bottom:15px;">
+            <div class="container-fluid">
+              <app-file-upload [UploadFor]="'CoverLetter'+i" (passFileName)="onPassFileName($event)"></app-file-upload>
+              <!--(onUploadFinished)="uploadFinished($event)"-->
+            </div>
+          </div>
+        </mat-toolbar>
+      </div>
+    </mat-form-field>
+  </mat-list>
+  <div class="row">
+
+    <button mat-raised-button color="green" (click)="onWayleaveCreate(CurrentUser.appUserId,false);">Create Application</button>
+  </div>
+
+  <div class="cont">
+    <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+
+  </div>
+</mat-step>
 
 
   </mat-horizontal-stepper>
@@ -506,7 +512,7 @@
 
 
 <!--choose existing-->
-<ng-template #user let-modal>
+<!--<ng-template #user let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Choose the user</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
@@ -519,10 +525,10 @@
         <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
       </mat-form-field>
 
-      <table mat-table [dataSource]="dataSourceLinkUsers" class="mat-elevation-z8">
+      <table mat-table [dataSource]="dataSourceLinkUsers" class="mat-elevation-z8">-->
         <!--*ngIf="showZoneUserTable"-->
 
-        <ng-container matColumnDef="idNumber">
+        <!--<ng-container matColumnDef="idNumber">
           <th mat-header-cell *matHeaderCellDef> ID Number </th>
           <td mat-cell *matCellDef="let element"> {{element.idNumber}} </td>
         </ng-container>
@@ -539,7 +545,7 @@
 
             <mat-radio-button class="example-margin" (click)="getUserID(i)"></mat-radio-button>
           </td>
-       
+
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumnsLinkUsers"></tr>
@@ -553,7 +559,7 @@
   <div class="modal-footer">
     <button type="submit" class="btn btn-outline-success" (click)="populateClientInfo();modal.close('Save click')">Save</button>
   </div>
-</ng-template>
+</ng-template>-->
 
 <!--end-->
 
@@ -623,3 +629,4 @@
     <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click');onAddEngineer()">Save</button>
   </div>
 </ng-template>
+

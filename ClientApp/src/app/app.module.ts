@@ -83,6 +83,7 @@ import { InternalUserUnassignedDepartmentComponent } from './internal-user-unass
 import { DocumentsComponentComponent } from './documents-component/documents-component.component';
 import { TypeOfExcavationComponent } from './type-of-excavation/type-of-excavation.component';
 import { PermitComponentComponent } from './permit-component/permit-component.component';
+import { SharedService } from './shared/shared.service';
 
 
 //import { MapModule } from 'arcgis-js-api';
@@ -114,7 +115,7 @@ import { PermitComponentComponent } from './permit-component/permit-component.co
     ExternalDetailsComponent,
     InternalDetailsComponent,
     InternalOptionComponent,
-    SelectEngineerTableComponent,
+  //  SelectEngineerTableComponent,
     SelectContractorTableComponent,
     ProjectDetailsComponent,
     ProjectDetailsMapComponent,
@@ -152,6 +153,7 @@ import { PermitComponentComponent } from './permit-component/permit-component.co
     DocumentsComponentComponent,
     TypeOfExcavationComponent,
     PermitComponentComponent,
+
   
 
   ],
@@ -208,7 +210,15 @@ import { PermitComponentComponent } from './permit-component/permit-component.co
       { path: 'internal-user-unassigned-department', component: InternalUserUnassignedDepartmentComponent },
     ])
   ],
-  providers: [],
+  providers: [
+    SelectEngineerTableComponent,
+    SelectContractorTableComponent,
+    HomeComponent,
+    SharedService,
+    LoginComponent,
+    NewProfileComponent,
+   // NewWayleaveComponent,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

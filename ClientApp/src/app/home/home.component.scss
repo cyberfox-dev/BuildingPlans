@@ -1254,3 +1254,40 @@
     display: flex;
     justify-content: center;
   }
+
+
+/*Internal Option*/
+
+
+
+
+.col {
+  flex: 1 0 0%;
+  display: flex;
+  margin: 0 auto;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.mat-client {
+  background-color: #005870;
+  color: #ccdee2;
+  width: 100%;
+  margin: 10px;
+  height: 68px;
+}
+
+.mat-internal {
+  background-color: #005870;
+  color: #ccdee2;
+  width: 100%;
+  margin: 10px;
+  height: 68px;
+}
+
+
+.mat-save {
+  background-color: green;
+  color: white;
+}
+
