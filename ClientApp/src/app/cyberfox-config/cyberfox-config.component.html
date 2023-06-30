@@ -29,7 +29,10 @@
 
         <button type="button" mat-raised-button color="success" (click)="onEscalateDateSubmit()">Save</button>
       </div>
-
+      <div class="form-floating mb-3 mt-3">
+        <input type="number" class="form-control" [(ngModel)]="viewEscalateDate" id="viewEscalateDate" name="viewEscalateDate" placeholder="Enter a date" disabled>
+        <label for="escalateDate"> The Current date for the escalation</label>
+      </div>
     </mat-tab>
 
   </mat-tab-group>

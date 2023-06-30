@@ -56,10 +56,11 @@ export class NotificationsService {
       to: to,
       subject: subject,
       text: text,
+     
     };
 
-/*    this.httpClient.post("http://localhost:7124" + "/send-email", emailData).subscribe(*/
-    this.httpClient.post("https://wayleaveqa.capetown.gov.za:7124" + "/send-email", emailData).subscribe(
+    this.httpClient.post("http://localhost:7124" + "/send-email", emailData).subscribe(
+/*    this.httpClient.post("https://wayleaveqa.capetown.gov.za:7124" + "/send-email", emailData).subscribe(*/
       () => {
         console.log('Email sent successfully');
         // Handle success, e.g., show a success message

@@ -7,6 +7,7 @@ import { ApplicationsService } from '../../service/Applications/applications.ser
 import { CommentsService } from '../../service/Comments/comments.service';
 import { DepositRequiredService } from 'src/app/service/DepositRequired/deposit-required.service';
 import jsPDF from 'jspdf';
+
 import autoTable from 'jspdf-autotable';
 import { DatePipe } from '@angular/common';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
@@ -20,6 +21,7 @@ import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentFor
 import { SubDepartmentsService } from 'src/app/service/SubDepartments/sub-departments.service';
 import { AccessGroupsService } from '../../service/AccessGroups/access-groups.service';
 import { BusinessPartnerService } from '../../service/BusinessPartner/business-partner.service';
+import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
 
 
 
@@ -67,6 +69,31 @@ export interface SubDepConditionalApproveList {
   Comment: string;
   CommentStatus: string;
   DateCreated: any;
+}
+export interface SubDepSubDepRejectList {
+  SubDepID: number;
+  SubDepName: string;
+  ApplicationID: number;
+  Comment: string;
+  CommentStatus: string;
+  DateCreated: any;
+}
+
+export interface SubDepFinalApproveList {
+  SubDepID: number;
+  SubDepName: string;
+  ApplicationID: number;
+  Comment: string;
+  CommentStatus: string;
+  DateCreated: any;
+}
+
+export interface DocumentsList {
+  DocumentID: number;
+  DocumentName: string;
+  DocumentLocalPath: string;
+  ApplicationID: number;
+  AssignedUserID: string;
 }
 
 export interface CommentsList {
@@ -210,6 +237,8 @@ export class ViewProjectInfoComponent implements OnInit {
   StagesList: StagesList[] = [];
   CommentsList: CommentsList[] = [];
   SubDepConditionalApproveList: SubDepConditionalApproveList[] = [];
+  SubDepFinalApproveList: SubDepFinalApproveList[] = [];
+  SubDepSubDepRejectList: SubDepSubDepRejectList[] = [];
   RolesList: RolesList[] = [];
   SubDepartmentList: SubDepartmentList[] = [];
   SubDepartmentsList: SubDepartmentList[] = [];
@@ -217,6 +246,9 @@ export class ViewProjectInfoComponent implements OnInit {
   CurrentApplicationBeingViewed: ApplicationList[] = [];
   DepositRequired: DepositRequired[] = [];
   relatedApplications: ApplicationList[] = [];
+
+  DocumentsList: DocumentsList[] = [];
+
 
 
   @ViewChild('pdfTable', { static: false }) pdfTable: ElementRef;
@@ -261,6 +293,11 @@ export class ViewProjectInfoComponent implements OnInit {
   permitBtn: boolean = true;
   permitTextBox: boolean = false;
   startDate: string;
+    http: any;
+    apiUrl: string;
+    progress: number;
+    message: string;
+    response: any;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -302,10 +339,15 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
+  @ViewChild(MatTable) FinancialListTable: MatTable<DocumentsList> | undefined;
+
+
+  displayedColumns: string[] = ['name', 'actions'];
+  dataSourceDoc = this.DocumentsList;
+
 
   panelOpenState = false;
-  displayedColumns: string[] = ['name', 'actions'];
-  dataSource = ELEMENT_DATA;
+
 
 
 
@@ -325,6 +367,7 @@ export class ViewProjectInfoComponent implements OnInit {
     private router: Router,
     private subDepartmentService: SubDepartmentsService,
     private businessPartnerService: BusinessPartnerService,
+    private documentUploadService: DocumentUploadService,
 
   ) { }
 
@@ -390,12 +433,14 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getAllStages();
     this.setInterface();
     this.getAllRequiredDeposits();
-    /*    this.getAllSubDepFroConditionalApprove();*/
+    this.getAllSubDepFroConditionalApprove();
+    this.getAllSubDepForFinalApprove();
     this.getAllSubDepForReject();
+/*    this.getAllSubDepForReject();*/
     this.canReapply = this.sharedService.getCanReapply();
     console.log("canReapplyVen: ", this.canReapply);
     this.setProjectNumber();
-    this.getAllSubDepFroConditionalApprove();
+ 
     this.getLinkedDepartments();
     this.checkIfCanReply();
     this.checkIfPermitExsist();
@@ -1416,8 +1461,8 @@ export class ViewProjectInfoComponent implements OnInit {
   }
   getAllSubDepFroConditionalApprove() {
 
-    let commentS = "Approved(Conditional)";
-
+    let commentS = "Approved";
+    
     this.commentsService.getSubDepByCommentStatus(commentS, this.ApplicationID).subscribe((data: any) => {
 
 
@@ -1425,7 +1470,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
         for (var i = 0; i < data.dateSet.length; i++) {
           const tempSubDepCommentStatusList = {} as SubDepConditionalApproveList;
-
+          
           const current = data.dateSet[i];
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
           tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
@@ -1440,6 +1485,46 @@ export class ViewProjectInfoComponent implements OnInit {
         }
 
         console.log("THIS IS THE CUB DEP THAT HAS APPROVED THE APPLICATION CONDITIONALLY", data.dateSet);
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
+  getAllSubDepForFinalApprove() {
+
+    let commentS = "Final Approved";
+    
+    this.commentsService.getSubDepByCommentStatus(commentS, this.ApplicationID).subscribe((data: any) => {
+
+
+      if (data.responseCode == 1) {
+
+        for (var i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepCommentStatusList = {} as SubDepFinalApproveList;
+          
+          const current = data.dateSet[i];
+          tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
+          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
+          tempSubDepCommentStatusList.ApplicationID = current.applicationID;
+          tempSubDepCommentStatusList.Comment = current.comment;
+          tempSubDepCommentStatusList.DateCreated = current.dateCreated;
+          tempSubDepCommentStatusList.CommentStatus = current.commentStatus;
+
+          this.SubDepFinalApproveList.push(tempSubDepCommentStatusList);
+
+
+        }
+
+        console.log("THIS IS THE CUB DEP THAT HAS Final APPROVED THE APPLICATION ", data.dateSet);
       }
 
       else {
@@ -1455,16 +1540,15 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getAllSubDepForReject() {
-    let commentS = "Rejected";
 
-    this.commentsService.getSubDepByCommentStatus(commentS, this.ApplicationID).subscribe((data: any) => {
+    this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
 
 
       if (data.responseCode == 1) {
 
         for (var i = 0; i < data.dateSet.length; i++) {
-          const tempSubDepCommentStatusList = {} as SubDepConditionalApproveList;
-
+          const tempSubDepCommentStatusList = {} as SubDepSubDepRejectList;
+          
           const current = data.dateSet[i];
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
           tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
@@ -1473,12 +1557,12 @@ export class ViewProjectInfoComponent implements OnInit {
           tempSubDepCommentStatusList.DateCreated = current.dateCreated;
           tempSubDepCommentStatusList.CommentStatus = current.commentStatus;
 
-          this.SubDepConditionalApproveList.push(tempSubDepCommentStatusList);
+          this.SubDepSubDepRejectList.push(tempSubDepCommentStatusList);
 
 
         }
 
-        console.log("THIS IS THE CUB DEP THAT HAS APPROVED THE APPLICATION CONDITIONALLY", data.dateSet);
+        console.log("THIS IS THE CUB DEP THAT HAS Final APPROVED THE APPLICATION ", data.dateSet);
       }
 
       else {
@@ -1492,6 +1576,7 @@ export class ViewProjectInfoComponent implements OnInit {
     })
 
   }
+
   getApplicationDetailsForDocs() {
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     const setValues = this.applicationDataForView[0];
@@ -1651,6 +1736,17 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
     this.SubDepConditionalApproveList.forEach((deposit) => {
+      const row = [
+        deposit.SubDepName,
+        deposit.Comment,
+        deposit.CommentStatus,
+
+      ];
+
+      data.push(row);
+    });
+
+    this.SubDepFinalApproveList.forEach((deposit) => {
       const row = [
         deposit.SubDepName,
         deposit.Comment,
@@ -2199,7 +2295,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   onCrreateRejectionPack() {
 
-    this.getAllSubDepFroConditionalApprove();
+    this.getAllSubDepForReject();
     const doc = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
@@ -2247,12 +2343,11 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.text('Status Summary:', 10, 105, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
 
 
-    this.SubDepConditionalApproveList.forEach((deposit) => {
+    this.SubDepSubDepRejectList.forEach((deposit) => {
       const row = [
         deposit.SubDepName,
         deposit.Comment,
         deposit.CommentStatus,
-
       ];
 
       data.push(row);
@@ -2480,9 +2575,103 @@ export class ViewProjectInfoComponent implements OnInit {
       if (this.RolesList[i].RoleName == "Department Admin") {
         this.auditTrail = true;
       }
+    
+      if (this.RolesList[i].RoleName == "Developer Config") {
+        this.ApprovalPackBtn = true;
+        this.RejectionPackBtn = true;
+      }
 
     }
 
+
+  }
+
+  UploadDocuments(applicationData: any): void {
+    //Pulling information from the share
+    const filesForUpload = this.sharedService.pullFilesForUpload();
+    for (var i = 0; i < filesForUpload.length; i++) {
+      const formData = new FormData();
+      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.ApplicationID;
+      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+
+
+      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+        .subscribe({
+          next: (event) => {
+
+            if (event.type === HttpEventType.UploadProgress && event.total)
+              this.progress = Math.round(100 * event.loaded / event.total);
+            else if (event.type === HttpEventType.Response) {
+              this.message = 'Upload success.';
+              this.uploadFinished(event.body, this.ApplicationID, applicationData);
+            }
+          },
+          error: (err: HttpErrorResponse) => console.log(err)
+        });
+    }
+  }
+
+  uploadFinished = (event: any, applicationID: any, applicationData: any) => {
+    ;
+    this.response = event;
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
+    console.log("applicationData", applicationData);
+
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, applicationID, applicationData.userID, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+      }
+
+
+
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+  }
+
+  getAllDocsForApplication() {
+
+    this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempDocList = {} as DocumentsList;
+          const current = data.dateSet[i];
+          tempDocList.DocumentID = current.documentID;
+          tempDocList.DocumentName = current.documentName;
+          tempDocList.DocumentLocalPath = current.documentLocalPath;
+          tempDocList.ApplicationID = current.applicationID;
+          tempDocList.AssignedUserID = current.assignedUserID;
+
+
+
+          this.DocumentsList.push(tempDocList);
+
+
+        }
+
+        this.FinancialListTable?.renderRows();
+        console.log("GOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCS", this.DocumentsList[0]);
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponseGetAllDocsForApplication", data);
+
+    }, error => {
+      console.log("ErrorGetAllDocsForApplication: ", error);
+    })
 
   }
 

@@ -20,6 +20,7 @@ import { LoginComponent } from 'src/app/login/login.component';
 
 
 
+
 export interface EngineerList {
   professinalID: number;
   ProfessinalType: string;
@@ -37,7 +38,7 @@ export interface StagesList {
   StageName: string;
   StageOrderNumber: number;
   CurrentUser: any
-
+  DateCreated: any,
 }
 
 export interface ApplicationsList {
@@ -147,6 +148,8 @@ export class HomeComponent implements OnInit,OnDestroy {
   rejectCount = 0;
   filter = false;
   previousYear: number;
+  appAge: number;
+  escalateBtn: boolean = false;
 
 
   /*Client details*/
@@ -202,10 +205,13 @@ export class HomeComponent implements OnInit,OnDestroy {
 
   createNewWayleaveBtn: boolean = true;
   createNewPlanningWayleaveBtn: boolean = true;
+  date: any;
     date: any;
     applicationType: boolean;
     isPlanning: boolean;
     userID: any;
+
+    viewEscalateDate= 0;
 
 
   constructor(
@@ -269,12 +275,12 @@ export class HomeComponent implements OnInit,OnDestroy {
      
       this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
       this.CurrentUser = JSON.parse(this.stringifiedData);
-
+      this.getAllStages();
       this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
       this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
       this.UpdateProjectNumberConfig();
       this.getAllApplicationsByUserID();
-      this.getAllStages();
+ 
       this.getRolesLinkedToUser();
       this.onCheckIfUserHasAccess();
       this.getAllExternalUsers();
@@ -620,6 +626,7 @@ export class HomeComponent implements OnInit,OnDestroy {
 
   getAllApplicationsByUserID() {
 
+
     
     this.Applications.splice(0, this.Applications.length);
 
@@ -634,6 +641,10 @@ export class HomeComponent implements OnInit,OnDestroy {
             const tempApplicationList = {} as ApplicationsList;
             const tempApplicationListShared = {} as ApplicationList;
             const current = data.dateSet[i];
+
+
+
+
             
             console.log("current", current)
             tempApplicationList.ApplicationID = current.applicationID;
@@ -642,17 +653,36 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationList.CurrentStage = current.currentStageName;
             tempApplicationList.ApplicationStatus = current.applicationStatus;
             
-            tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));;
+            tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+            tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
+
+/*cal application age*/
+           
+            const currentDate = new Date();
+            const dateCreated = new Date(tempApplicationList.DateCreated);
+            const timeDiff = currentDate.getTime() - dateCreated.getTime();
+            const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationAge = daysDiff ;
+
+            /*cal stage age*/
+            const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
+            const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+            const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationStageAge = stageDateDiff;
+            console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
+
+           
+
             if (current.projectNumber != null) {
               tempApplicationList.ProjectNumber = current.projectNumber;
             } else {
               tempApplicationList.ProjectNumber = (current.applicationID).toString();
             }
           
-            tempApplicationList.TestApplicationAge = Math.floor(Math.random() * 30) + 1;
-            do {
+
+/*            do {
               tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
-            } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);
+            } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
             //save here to send to the shared
            
             //tempApplicationListShared.applicationID = current. ;
@@ -677,7 +707,7 @@ export class HomeComponent implements OnInit,OnDestroy {
             tempApplicationListShared.ApplicationStatus = current.applicationStatus;
             tempApplicationListShared.CurrentStageName = current.currentStageName;
             tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
-            tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate;
+
             tempApplicationListShared.NextStageName = current.nextStageName;
             tempApplicationListShared.NextStageNumber = current.nextStageNumber;
             tempApplicationListShared.PreviousStageName = current.previousStageName;
@@ -695,10 +725,32 @@ export class HomeComponent implements OnInit,OnDestroy {
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
             this.Applications.push(tempApplicationList);
+            /*Cehcing the escaltion date*/
+            this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
+           
+              if (data.responseCode == 1) {
 
+                const current = data.dateSet[0];
+                console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
+                this.viewEscalateDate = current.configDescription;
+                if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
+                  this.escalateBtn = true;
+                }
+
+              }
+              else {
+                alert("Error");
+              }
+
+              console.log("response", data);
+            }, error => {
+              console.log("Error", error);
+            })
           }
 
           this.applicationsTable?.renderRows();
+
+
 
 
           console.log("Got all applications", data.dateSet);
@@ -809,7 +861,7 @@ export class HomeComponent implements OnInit,OnDestroy {
 
     const userId = this.CurrentUser.appUserId;
     const isInternal = this.CurrentUserProfile[0].isInternal;
-
+    this.checkForEscalation();
     // Store the subscription in the subscriptions array
     const subscription = this.applicationService.getApplicationsList(userId, isInternal)
       .subscribe((data: any) => {
@@ -837,6 +889,15 @@ export class HomeComponent implements OnInit,OnDestroy {
           tempStageList.StageID = current.stageID;
           tempStageList.StageName = current.stageName;
           tempStageList.StageOrderNumber = current.stageOrderNumber;
+          tempStageList.DateCreated = current.dateCreated.substring(0,current.dateCreated.indexOf('T'));
+
+
+          /*const stageDateCreated = new Date(this.StagesList[i].DateCreated);
+          const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+          const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+          tempApplicationList.TestApplicationStageAge = stageDateDiff;
+          console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
+*/
 
           this.StagesList.push(tempStageList);
           this.sharedService.setStageData(this.StagesList);
@@ -855,7 +916,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   }
 
   ngOnDestroy() {
-    debugger;
+    
     this.viewContainerRef.clear();
     this.subscriptions.forEach((subscription) => {
       subscription.unsubscribe();
@@ -1106,6 +1167,13 @@ export class HomeComponent implements OnInit,OnDestroy {
       console.log("Error: ", error);
     })
   }
+
+  checkForEscalation() {
+ 
+     
+    }
+
+  
 
 
 

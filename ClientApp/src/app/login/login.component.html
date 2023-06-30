@@ -39,7 +39,7 @@
   <div class="container-fluid">
     <div class="container" id="container">
       <div class="form-container sign-up-container">
-        <form action="#" [formGroup]="registerForm" (ngSubmit)="onRegister()" autocomplete="off">
+        <form action="#" [formGroup]="registerForm" autocomplete="off">
 
           <h2>Create an account</h2>
           <input type="text" formControlName="fullName" placeholder="Name & Surname" />
@@ -47,10 +47,9 @@
           <input type="text" name="somthing" formControlName="registerEmail" placeholder="Email" />
           <input type="password" formControlName="registerPassword" placeholder="Password">
           <input type="password" formControlName="reenterPassword" placeholder="Re-enter password">
-          <button class="OTP" (click)="newUser()">Send OTP</button>
-          <input type="text" placeholder="Enter OTP" />
-
-          <button type="submit" [disabled]="!registerForm.valid">Verify & Continue</button>
+          <button class="OTP" (click)="otp = generateOTP(6)" *ngIf="sendOTPBtn">Send OTP</button>
+          <input type="text" placeholder="Enter OTP" formControlName="OTPField"/>
+          <button type="submit" [disabled]="!registerForm.valid" [class.disabled]="!registerForm.valid" (click)="onRegister()">Verify & Continue</button>
         </form>
       </div>
       <div class="form-container sign-in-container">

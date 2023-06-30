@@ -12,6 +12,9 @@ body{
   height: 64px;
  
 }
+.disabled{
+    cursor:not-allowed;
+}
 
 
 #stripes {
@@ -222,9 +225,9 @@ input {
   overflow: hidden;
   width: 819px;
   max-width: 100%;
-  min-height: 482px;
+  min-height: 531px;
   animation: bounceIn 0.8s;
-/*  margin-top: 30px;*/
+  /*  margin-top: 30px;*/
 }
 
 .form-container {
