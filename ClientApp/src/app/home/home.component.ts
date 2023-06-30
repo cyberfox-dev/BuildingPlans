@@ -384,7 +384,7 @@ export class HomeComponent implements OnInit,OnDestroy {
     debugger;
     if (this.sharedService.clientUserID != null || this.sharedService.clientUserID != "") {
       debugger;
-      refreshTable.onAddContractor(this.bpNoContractor, this.professionalRegNo, this.Name, this.Surname, this.ContractorEmail, this.ContractorTell.toString(), this.contractorIDNo, this.sharedService.clientUserID);
+      refreshTable.onAddContractor(this.bpNoContractor, this.professionalRegNo, this.Name, this.Surname, this.ContractorEmail, this.ContractorTell.toString(), this.contractorIDNo, this.CIBRating ,this.sharedService.clientUserID);
 
 
       this.bpNoContractor = "";

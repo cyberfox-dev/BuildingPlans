@@ -956,7 +956,7 @@ export class NewWayleaveComponent implements OnInit {
           this.AddProfessinal(contractorData, engineerData);
         }
         this.UploadDocuments(data.dateSet);
-        this.onAutoLinkDepartment();
+       // this.onAutoLinkDepartment();
         this.shared.setApplicationID(0);
         this.shared.clearContractorData();
         this.shared.clearEngineerData();
@@ -1009,7 +1009,7 @@ export class NewWayleaveComponent implements OnInit {
           this.AddProfessinal(contractorData, engineerData);
         }
         this.UploadDocuments(data.dateSet);
-        this.onAutoLinkDepartment();
+       // this.onAutoLinkDepartment();
         this.shared.setApplicationID(0);
         this.shared.clearContractorData();
         this.shared.clearEngineerData();

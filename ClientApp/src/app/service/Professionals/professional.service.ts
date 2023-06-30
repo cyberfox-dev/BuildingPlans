@@ -16,8 +16,9 @@ export class ProfessionalService {
  
 
   public addUpdateProfessional(professinalID: number | null, professinalType: string, fullName: string, bp_Number: string, bpVerified: boolean | null, email: string, phoneNumber: string | undefined, professionalRegNo: string, appUserID: string,idNumber:string | undefined,createdById: string,cibRating: string | null ) {
-
+    debugger;
     const body = {
+
       ProfessinalID: professinalID,
       ProfessinalType : professinalType,
       FullName: fullName,

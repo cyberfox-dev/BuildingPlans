@@ -386,7 +386,7 @@ export class SelectEngineerTableComponent implements OnInit {
 
 
   onAddContractor(bpNoContractor: string, professionalRegNo: string, name: string, surname: string, ContractorEmail: string, ContractorTell: string, contractorIDNo: string,  CIBRating: string, appUserId?: string | null ) {
-
+    debugger;
     //const newEnineer = {} as EngineerList;
     //newEnineer.ProfessinalType = "Engineer";:
     //newEnineer.bpNumber = this.bpNoApplicant;
@@ -398,13 +398,14 @@ export class SelectEngineerTableComponent implements OnInit {
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
+    debugger;
     if (appUserId != "") {
-
+      debugger;
       this.professionalService.addUpdateProfessional(0, "Contractor", name + " " + surname, bpNoContractor, false, ContractorEmail, ContractorTell.toString(), professionalRegNo, appUserId, contractorIDNo, this.CurrentUser.appUserId, CIBRating).subscribe((data: any) => {
-
+        debugger;
         if (data.responseCode == 1) {
           alert(data.responseMessage);
-
+          debugger;
           this.ProfessialList = [];
 
 
