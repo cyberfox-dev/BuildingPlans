@@ -5,6 +5,12 @@ import { UserService } from '../service//User/user.service';
 import { SharedService } from "src/app/shared/shared.service"
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
 import { NotificationsService } from "src/app/service/Notifications/notifications.service";
+import { NewProfileComponent } from 'src/app/new-user/new-profile/new-profile.component';
+import { HomeComponent } from 'src/app/home/home.component';
+
+
+
+
 
 
 @Component({
@@ -53,10 +59,17 @@ export class LoginComponent implements OnInit {
     Password: string;
 
   constructor(private router: Router, private elementRef: ElementRef, private formBuilder: FormBuilder, private userService: UserService, private sharedService: SharedService, private userPofileService: UserProfileService, private notification: NotificationsService) {
+  constructor(
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private userService: UserService,
+    private sharedService: SharedService,
+    private userPofileService: UserProfileService,
+    private notification: NotificationsService,
+    private newProfileComponent: NewProfileComponent,
+   // private homeComponent: HomeComponent,
 
-
-
-  }
+  ) {}
 
 
 
@@ -91,6 +104,43 @@ export class LoginComponent implements OnInit {
     clearTimeout(this.expirationTimer);
   }
 
+  onRegister(clientFullName?: string | null, clientEmail?: string | null, phoneNumber?: string | null, BpNo?: string | null, CompanyName?: string | null, CompanyRegNo?: string | null, PhyscialAddress?: string | null, ApplicantIDUpload?: string | null, ApplicantIDNumber?: string | null ) {
+    if (clientFullName != null || clientFullName != "" && clientEmail != null || clientEmail != "") {
+
+      // Use a regular expression to check if the email is valid
+      const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      if (clientEmail != null) {
+        if (!emailRegex.test(clientEmail)) {
+          alert("Please enter a valid email address!");
+          return;
+        }
+      } else {
+        alert("Please enter a valid email address!");
+        return;
+      }
+
+
+      // Count the number of spaces in the full name
+      let numberOfSpaces = 0;
+      if (clientFullName != null) {
+        numberOfSpaces = (clientFullName.split(" ").length - 1);
+      }
+      else {
+        alert("Please enter your first name and surname only!");
+        return;
+      }
+
+
+      if (numberOfSpaces >= 2 || numberOfSpaces == 0) {
+        alert("Please enter your first name and surname only!");
+      } else {
+        this.userService.register(clientFullName, clientEmail, "Password@" + clientFullName ).subscribe((data: any) => {
+          if (data.responseCode == 1) {
+            console.log("After Register", data.dateSet);
+            debugger;
+           // this.homeComponent.openXl('content');
+            this.newProfileComponent.onNewProfileCreate(data.dateSet.appUserId, clientFullName, clientEmail , phoneNumber, BpNo, CompanyName, CompanyRegNo, PhyscialAddress, ApplicantIDUpload, ApplicantIDNumber);
+
 
   startExpirationTimer() {
     this.expirationTimer = setTimeout(() => {
@@ -110,6 +160,26 @@ export class LoginComponent implements OnInit {
     let email = this.registerForm.controls["registerEmail"].value;
     let password = this.registerForm.controls["registerPassword"].value;
     let passwordConfirm = this.registerForm.controls["reenterPassword"].value;
+            this.sharedService.clientUserID = data.dateSet.appUserId;
+        
+           
+          } else {
+            //alert("Invalid Email or Password");
+            alert(data.responseMessage);
+          }
+          //console.log("reponse", data);
+        }, error => {
+          console.log("Error: ", error);
+        });
+      }
+    }
+    else {
+      this.notification.sendEmail("venolin@cyberfox.co.za", "Test", "testing 1, 2, 3...");
+
+      let fullName = this.registerForm.controls["fullName"].value;
+      let email = this.registerForm.controls["registerEmail"].value;
+      let password = this.registerForm.controls["registerPassword"].value;
+      let passwordConfirm = this.registerForm.controls["reenterPassword"].value;
 
 
 
@@ -151,6 +221,17 @@ export class LoginComponent implements OnInit {
       this.otp = '';
       return;
     }
+      // Use a regular expression to check if the email is valid
+      const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      if (email != null) {
+        if (!emailRegex.test(email)) {
+          alert("Please enter a valid email address!");
+          return;
+        }
+      } else {
+        alert("Please enter a valid email address!");
+        return;
+      }
 
     
 
@@ -165,6 +246,16 @@ export class LoginComponent implements OnInit {
 
   }
 
+      // Count the number of spaces in the full name
+      let numberOfSpaces = 0;
+      if (fullName != null) {
+        numberOfSpaces = (fullName.split(" ").length - 1);
+      }
+      else {
+        alert("Please enter your first name and surname only!");
+        return;
+      }
+
   onRegister() {
     let otpEntered = this.registerForm.controls["OTPField"].value;
 
@@ -173,6 +264,13 @@ export class LoginComponent implements OnInit {
      alert("OTP has expired. Please send a new OTP");
       return;
     }
+      //Check if passwords entered, match.
+      if (password != passwordConfirm) {
+        alert("The passwords entered do not match");
+        return;
+      }
+      else {
+      }
 
     if (this.otp == otpEntered) {
       
@@ -239,6 +337,26 @@ export class LoginComponent implements OnInit {
           console.log("Error: ", error);
         }
       );
+  }
+      if (numberOfSpaces >= 2 || numberOfSpaces == 0) {
+        alert("Please enter your first name and surname only!");
+      } else {
+        this.userService.register(fullName, email, password).subscribe((data: any) => {
+          if (data.responseCode == 1) {
+            console.log("After Register", data.dateSet);
+            localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
+            alert(data.responseMessage);
+            this.router.navigate(["/new-profile"]);
+          } else {
+            //alert("Invalid Email or Password");
+            alert(data.responseMessage);
+          }
+          //console.log("reponse", data);
+        }, error => {
+          console.log("Error: ", error);
+        });
+      }
+    }
   }
 
 

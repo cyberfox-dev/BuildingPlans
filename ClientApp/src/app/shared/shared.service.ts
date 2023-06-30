@@ -82,6 +82,10 @@ export class SharedService {
   checkEmail!: string;
 
   configShow!: any;
+  option: string;
+
+  //this is for if an internal user is applying for a client 
+  clientUserID?: string | null;
 
   userProfileData: any;
   FileDocument: FileDocument[] = [];

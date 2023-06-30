@@ -97,6 +97,8 @@ export class NewEgineerComponent implements OnInit {
     this.table?.renderRows();
     this.shared.setEngineerData(this.tempEngineerList);
     this.clearCreateComponent();
+
+
   }
   onDelete(position: any) {
     const deleteContractor = this.tempEngineerList[position];
