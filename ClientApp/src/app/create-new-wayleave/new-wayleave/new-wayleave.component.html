@@ -276,13 +276,13 @@
           <div class="card" *ngIf="isPlanning === false ">
             <h3><span>Please select an engineer</span></h3>
           </div>
-                <div class="container-fluid">
-    <div class="row">
+              <!--  <div class="container-fluid">-->
+    <!--<div class="row">
       <button type="button" class="createNewEngin" (click)="openXl(content)">
         Create New Engineer
       </button>
     </div>
-  </div>
+  </div>-->
           <!--Table displaying the engineers-->
           <app-select-engineer-table [UserID]='clientUserID' [PrfessionalType]='Engineer' *ngIf="isPlanning === false"></app-select-engineer-table>
 

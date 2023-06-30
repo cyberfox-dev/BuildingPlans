@@ -36,62 +36,63 @@
     </div>
   </div>
   <div class="cont2">
-  <div class="container-fluid">
-    <div class="container" id="container">
-      <div class="form-container sign-up-container">
-        <form action="#" [formGroup]="registerForm" autocomplete="off">
+    <div class="container-fluid">
+      <div class="container" id="container">
+        <div class="form-container sign-up-container">
+          <form action="#" [formGroup]="registerForm" autocomplete="off">
 
-          <h2>Create an account</h2>
-          <input type="text" formControlName="fullName" placeholder="Name & Surname" />
-          <!-- <input type="text" placeholder="Cell No." />-->
-          <input type="text" name="somthing" formControlName="registerEmail" placeholder="Email" />
-          <input type="password" formControlName="registerPassword" placeholder="Password">
-          <input type="password" formControlName="reenterPassword" placeholder="Re-enter password">
-          <button class="OTP" (click)="otp = generateOTP(6)" *ngIf="sendOTPBtn">Send OTP</button>
-          <input type="text" placeholder="Enter OTP" formControlName="OTPField"/>
-          <button type="submit" [disabled]="!registerForm.valid" [class.disabled]="!registerForm.valid" (click)="onRegister()">Verify & Continue</button>
-        </form>
-      </div>
-      <div class="form-container sign-in-container">
-        <form action="#" [formGroup]="loginForm" (ngSubmit)="onLogin()">
+            <h2>Create an account</h2>
+            <input type="text" formControlName="fullName" placeholder="Name & Surname" />
+            <!-- <input type="text" placeholder="Cell No." />-->
+            <input type="text" name="somthing" formControlName="registerEmail" placeholder="Email" />
+            <input type="password" formControlName="registerPassword" placeholder="Password">
+            <input type="password" formControlName="reenterPassword" placeholder="Re-enter password">
+            <button class="OTP" (click)="otp = generateOTP(6)" *ngIf="sendOTPBtn">Send OTP</button>
+            <input type="text" placeholder="Enter OTP" formControlName="OTPField" />
+            <button type="submit" [disabled]="!registerForm.valid" [class.disabled]="!registerForm.valid" (click)="onRegister()">Verify & Continue</button>
+            <p>{{otp}}</p>
+          </form>
+        </div>
+        <div class="form-container sign-in-container">
+          <form action="#" [formGroup]="loginForm" (ngSubmit)="onLogin()">
 
 
-          <h2>Login</h2>
-          <input type="text" name="somthingelse" formControlName="email" placeholder="Email" />
-          <input type="password" formControlName="password" placeholder="Password" />
-          <a href="#" *ngIf="!isLoading">Forgot your password?</a>
-          <button *ngIf="!isLoading" type="submit" [disabled]="!loginForm.valid" class="submit">Login</button> <!--(click)="login()"-->
+            <h2>Login</h2>
+            <input type="text" name="somthingelse" formControlName="email" placeholder="Email" />
+            <input type="password" formControlName="password" placeholder="Password" />
+            <a href="#" *ngIf="!isLoading">Forgot your password?</a>
+            <button *ngIf="!isLoading" type="submit" [disabled]="!loginForm.valid" class="submit">Login</button> <!--(click)="login()"-->
+            <div *ngIf="isLoading">
+              <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+            </div>
+          </form>
           <div *ngIf="isLoading">
             <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
           </div>
-        </form>
-        <div *ngIf="isLoading">
-          <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
         </div>
-      </div>
 
 
-      <div class="overlay-container">
-        <div class="overlay">
-          <div class="overlay-panel overlay-left">
-            <h1>Already have an account ?</h1>
-            <button (click)="remove()" class="ghost" id="login">Back To Login</button>
-          </div>
-          <div class="overlay-panel overlay-right">
-            <h1>Don't have an account ?</h1>
-            <button (click)="add()" class="ghost" id="signUp">Sign Up</button>
-            <p class="bprequired">* Please note a Business Partner (BP) number is required to use this portal. <a href="https://eservices.capetown.gov.za/irj/portal" target="_blank">Click here</a> to register with CCT eServices for a BP number</p>
-            <p class="link"> </p>
+        <div class="overlay-container">
+          <div class="overlay">
+            <div class="overlay-panel overlay-left">
+              <h1>Already have an account ?</h1>
+              <button (click)="remove()" class="ghost" id="login">Back To Login</button>
+            </div>
+            <div class="overlay-panel overlay-right">
+              <h1>Don't have an account ?</h1>
+              <button (click)="add()" class="ghost" id="signUp">Sign Up</button>
+              <p class="bprequired">* Please note a Business Partner (BP) number is required to use this portal. <a href="https://eservices.capetown.gov.za/irj/portal" target="_blank">Click here</a> to register with CCT eServices for a BP number</p>
+              <p class="link"> </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="alert alert-danger" *ngIf="error">
-      {{error}}
-    </div>
+      <div class="alert alert-danger" *ngIf="error">
+        {{error}}
+      </div>
 
+    </div>
   </div>
-    </div>
 
 </body>

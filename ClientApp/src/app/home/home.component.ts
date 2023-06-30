@@ -206,7 +206,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   createNewWayleaveBtn: boolean = true;
   createNewPlanningWayleaveBtn: boolean = true;
   date: any;
-    date: any;
+
     applicationType: boolean;
     isPlanning: boolean;
     userID: any;
@@ -952,6 +952,7 @@ export class HomeComponent implements OnInit,OnDestroy {
 
 
     if (this.option == "client") {
+      debugger;
       this.NewWayleaveComponent.onWayleaveCreate(this.userID, isPlanning);
      // this.NewWayleaveComponent.populateClientInfo(this.userID);
     }

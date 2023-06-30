@@ -919,7 +919,6 @@ export class NewWayleaveComponent implements OnInit {
     })
   }
 
-
   clientWayleaveCreate(appUserId: string, isPlanning: boolean): void {
 
     /*    this.shared.setApplicationID(this.notificationNumber);*/
@@ -1077,7 +1076,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
   onWayleaveCreate(appUserId, isPlanning: boolean) {
-
+    debugger;
 
     //get ApplicationID form Shared to check if must update
     this.applicationID = this.shared.getApplicationID();
@@ -1085,18 +1084,20 @@ export class NewWayleaveComponent implements OnInit {
     if (this.applicationID === 0) {
       this.shared.clearContractorData();
       this.shared.clearEngineerData();
-
+      debugger;
       this.applicationsService.addUpdateApplication(0, appUserId, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, isPlanning, null).subscribe((data: any) => {
         if (data.responseCode == 1) {
+          debugger;
 
           //Set ApplicationID to Update
           this.shared.setApplicationID(data.dateSet.applicationID);
           this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
         }
         else {
+          debugger;
           alert("GIS Error");
         }
-
+        debugger;
         console.log("responseAddApplication", data);
 
       }, error => {
