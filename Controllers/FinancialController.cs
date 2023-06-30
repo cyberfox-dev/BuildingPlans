@@ -55,10 +55,13 @@ namespace WayleaveManagementSystem.Controllers
                             DocumentName = model.FinancialDocumentName,
                             DocumentLocalPath = model.FinancialDocumentLocalPath,
                             ApplicationID = model.ApplicationID,
-
+                            DateCreated = DateTime.Now,
+                            DateUpdated = DateTime.Now,
+                            CreatedById = model.CreatedById,
+                            isActive = true,
                         };
 
-                        await _context.DepositRequired.AddAsync(tempFinancial);
+                        await _context.Financial.AddAsync(tempFinancial);
                         await _context.SaveChangesAsync();
 
                         result = tempFinancial;

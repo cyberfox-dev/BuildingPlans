@@ -242,7 +242,7 @@ getApplicationID(): any {
   pushFileForTempFileUpload(formData: any, uploadFor: any) {
 
     //TODO: Remember to clear this when invoice is generated
-  
+   
     if (this.FileDocument.length != 0) {
       for (var i = 0; i < this.FileDocument.length; i++) {
         if (this.FileDocument[i].UploadFor == uploadFor) {

@@ -12,6 +12,7 @@
         public string? FinancialDocumentLocalPath { get; set; }
 
         public int? ApplicationID { get; set; }
+        public string? CreatedById { get; set; }
 
 
     }

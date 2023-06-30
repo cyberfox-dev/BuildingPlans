@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { MatTable } from '@angular/material/table';
 import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentForComment/sub-department-for-comment.service';
 import { SharedService } from "src/app/shared/shared.service";
@@ -48,7 +48,7 @@ export class DepartmentCirculationComponent implements OnInit {
   SubDepartmentList: SubDepartmentList[] = [];
   applicationDataForView: any;
   Null = null;
-  
+  approveOrRejection = '';
 
   constructor(private subDepartmentForCommentService: SubDepartmentForCommentService, private sharedService: SharedService ){ }
   displayedColumns: string[] = ['subDepartmentName', 'indication'];
@@ -63,6 +63,17 @@ export class DepartmentCirculationComponent implements OnInit {
 
   setIcon() {
   
+  }
+
+
+  sendData() {
+
+   
+  }
+
+  checkForGeneratingPack() {
+
+
   }
 
 
@@ -96,7 +107,7 @@ export class DepartmentCirculationComponent implements OnInit {
           this.SubDepartmentList.push(tempSubDepartmentList);
         }
         this.SubDepartmentListTable?.renderRows();
-
+       
       }
       else {
 

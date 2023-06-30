@@ -32,6 +32,7 @@ export interface SubDepartmentList {
   dateCreated: any;
   subdepartmentForCommentID: number | null;
   UserAssaignedToComment: string | null;
+  commentStatus: string | null;
 }
 
 export interface ServiceItemList {
@@ -2176,6 +2177,9 @@ getAllCommentsByUserID() {
     })
 
   }
+  @Output() dataEvent = new EventEmitter<string>();
+
+
 
   getLinkedDepartments() {
 
@@ -2193,10 +2197,34 @@ getAllCommentsByUserID() {
           tempSubDepartmentList.departmentID = current.departmentID;
           tempSubDepartmentList.dateUpdated = current.dateUpdated;
           tempSubDepartmentList.dateCreated = current.dateCreated;
+          tempSubDepartmentList.commentStatus = current.commentStatus;
           this.selection.toggle(tempSubDepartmentList);
           this.selection.isSelected(tempSubDepartmentList);
 
         }
+
+        let hasRejected = false;
+        let hasPending = false;
+
+        for (let i = 0; i < this.SubDepartmentList.length; i++) {
+          if (this.SubDepartmentList[i].commentStatus === "Rejected") {
+            hasRejected = true;
+          } else if (this.SubDepartmentList[i].commentStatus !== "Final Approved") {
+            hasPending = true;
+          }
+        }
+
+        let approveOrRejection;
+        debugger;
+        if (hasRejected) {
+          approveOrRejection = 'Rejected';
+        } if (hasPending) {
+          approveOrRejection = 'Waiting';
+        } if (hasRejected == false && hasPending == false) {
+          approveOrRejection = 'Approved';
+        }
+
+        this.dataEvent.emit(approveOrRejection);
 
       }
       else {

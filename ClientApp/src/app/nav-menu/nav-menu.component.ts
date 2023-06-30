@@ -764,7 +764,7 @@ export class NavMenuComponent implements OnInit {
   message= '';
   save(repositoryModal) {
 
-    debugger;
+    
     const filesForUpload = this.shared.pullFilesForUpload();
     for (var i = 0; i < filesForUpload.length; i++) {
       const formData = new FormData();

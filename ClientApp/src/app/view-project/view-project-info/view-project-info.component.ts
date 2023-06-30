@@ -21,7 +21,8 @@ import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentFor
 import { SubDepartmentsService } from 'src/app/service/SubDepartments/sub-departments.service';
 import { AccessGroupsService } from '../../service/AccessGroups/access-groups.service';
 import { BusinessPartnerService } from '../../service/BusinessPartner/business-partner.service';
-import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpEventType } from '@angular/common/http';
+import { FinancialService } from '../../service/Financial/financial.service';
 
 
 
@@ -193,6 +194,9 @@ export class ViewProjectInfoComponent implements OnInit {
   public projectNo = "";
   createdByID: any | undefined;
 
+  rejected: boolean = false;
+  approved: boolean = false;
+
   canClarify: boolean;
   /*type of applicant*/
   isInternal = true;
@@ -293,11 +297,12 @@ export class ViewProjectInfoComponent implements OnInit {
   permitBtn: boolean = true;
   permitTextBox: boolean = false;
   startDate: string;
-    http: any;
-    apiUrl: string;
-    progress: number;
-    message: string;
-    response: any;
+
+
+
+
+
+    ApForUpload: string;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -368,7 +373,8 @@ export class ViewProjectInfoComponent implements OnInit {
     private subDepartmentService: SubDepartmentsService,
     private businessPartnerService: BusinessPartnerService,
     private documentUploadService: DocumentUploadService,
-
+    private http: HttpClient,
+    private financial: FinancialService
   ) { }
 
 
@@ -445,7 +451,25 @@ export class ViewProjectInfoComponent implements OnInit {
     this.checkIfCanReply();
     this.checkIfPermitExsist();
   }
+  receivedata: string;
 
+  receiveData(data: string) {
+    debugger;
+    this.receivedata = data;
+    console.log(this.receivedata);
+    if (this.receivedata == "Approved") {
+      this.approved = true;
+      this.onCreateApprovalPack();
+    }
+    else if (this.receivedata == "Rejected") {
+      this.rejected = true;
+      this.onCrreateRejectionPack();
+    }
+    else {
+
+    }
+
+  }
 
 
   //validate(): void {
@@ -1779,7 +1803,7 @@ export class ViewProjectInfoComponent implements OnInit {
       },
 
       columnStyles: {
-        0: { cellWidth: 50, fontStyle: 'bold' },
+        0: { cellWidth: 40, fontStyle: 'bold' },
         1: { cellWidth: 80 },
         2: { cellWidth: 40 },
       }
@@ -2285,10 +2309,93 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.addImage(footer, 'png', 7, 255, 205, 45);
 
     // Save PDF document
-    doc.save('Approval Pack');
+    doc.save("Approval Pack");
+    const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
+    const file = new File([pdfData], 'approval_pack.pdf', { type: 'application/pdf' });
+
+
+    // Prepare the form data
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.sharedService.pushFileForTempFileUpload(file, "Approval Pack" + ".pdf");
+    this.save();
+  }
+
+
+  response: { dbPath: ''; } | undefined
+  progress: number = 0;
+  message = '';
+  private readonly apiUrl: string = this.sharedService.getApiUrl();
+  save() {
+
+
+
+
+    const filesForUpload = this.sharedService.pullFilesForUpload();
+    for (var i = 0; i < filesForUpload.length; i++) {
+      const formData = new FormData();
+      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + null;
+      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+    
+
+
+      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+        .subscribe({
+          next: (event) => {
+
+
+            if (event.type === HttpEventType.UploadProgress && event.total)
+              this.progress = Math.round(100 * event.loaded / event.total);
+            else if (event.type === HttpEventType.Response) {
+              this.message = 'Upload success.';
+              this.uploadFinished(event.body);
+
+            }
+          },
+          error: (err: HttpErrorResponse) => console.log(err)
+        });
+    }
+
+  }
+
+
+  uploadFinished = (event: any) => {
+    ;
+    this.response = event;
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
+
+
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
+
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, "System Generated Pack", "System Generated Pack").subscribe((data: any) => {
+/*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
+      if (data.responseCode == 1) {
+      
+      }
+
+    }, error => {
+      console.log("Error: ", error);
+    })
 
 
   }
+  fileAttrs: string[] = [];
+
+  onPassFileName(event: { uploadFor: string; fileName: string }) {
+    const { uploadFor, fileName } = event;
+    const index = parseInt(uploadFor.substring('CoverLetter'.length));
+    this.fileAttrs[index] = fileName;
+  }
+
+
+
+
+
 
 
 
@@ -2470,7 +2577,8 @@ export class ViewProjectInfoComponent implements OnInit {
       this.wbsButton = false;
     }
   }
-
+  countApprove = 0;
+  countReject = 0;
 
   getLinkedDepartments() {
 
@@ -2497,12 +2605,17 @@ export class ViewProjectInfoComponent implements OnInit {
           tempSubDepartmentList.IsRefered = current.IsRefered;
           tempSubDepartmentList.commentStatus = current.commentStatus;
 
-
+          if (tempSubDepartmentList.commentStatus == "Final Approved") {
+            this.countApprove++;
+          }
+          if (tempSubDepartmentList.commentStatus == "Rejected") {
+            this.countReject++;
+          }
           
           this.SubDepartmentList.push(tempSubDepartmentList);
         }
 
-
+        this.checkIfApprovedOrRejected();
       }
       else {
 
@@ -2515,6 +2628,15 @@ export class ViewProjectInfoComponent implements OnInit {
       console.log("Error: ", error);
     })
 
+  }
+
+  checkIfApprovedOrRejected() {
+    if (this.countApprove == this.SubDepartmentList.length) {
+      alert("ALL FINAL APPROVED");
+    }
+    if (this.countReject > 0 ) {
+      
+    }
   }
 
   showApproveOrReject() {
@@ -2586,7 +2708,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
-  UploadDocuments(applicationData: any): void {
+/*  UploadDocuments(applicationData: any): void {
     //Pulling information from the share
     const filesForUpload = this.sharedService.pullFilesForUpload();
     for (var i = 0; i < filesForUpload.length; i++) {
@@ -2637,7 +2759,7 @@ export class ViewProjectInfoComponent implements OnInit {
     })
 
 
-  }
+  }*/
 
   getAllDocsForApplication() {
 
