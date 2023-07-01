@@ -23,6 +23,9 @@
 .row {
   justify-content: space-around;
 }
+.cont8789{
+
+}
 
 ::ng-deep .mat-horizontal-stepper-header {
   pointer-events: none !important;

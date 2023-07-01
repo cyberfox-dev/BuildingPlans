@@ -16,6 +16,7 @@ import { SelectEngineerTableComponent } from 'src/app/select-engineer-table/sele
 import { SelectContractorTableComponent } from 'src/app/select-contractor-table/select-contractor-table.component';
 import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
 import { LoginComponent } from 'src/app/login/login.component';
+import { MatStepper } from '@angular/material/stepper';
 
 
 
@@ -189,8 +190,8 @@ export class HomeComponent implements OnInit,OnDestroy {
   ContractorEmail = '';
 
   option = "";
-  clientactive: boolean = false;
-  internalactive: boolean = false;
+  btnActiveClient: boolean = true;
+  btnActiveInternal: boolean = false;
   @ViewChild("internalOpt", { static: true }) content!: ElementRef;
   @ViewChild("clientOption", { static: true }) clientOption!: ElementRef;
   @ViewChild("user", { static: true }) user!: ElementRef;
@@ -291,18 +292,16 @@ export class HomeComponent implements OnInit,OnDestroy {
 
   }
 
+
+
   cardchange(ids: any) {
+   
     this.option = ids;
     this.sharedService.option = this.option;
 
 
   }
-  client() {
-    this.clientactive = true;
-  }
-  internal() {
-    this.internalactive = true;
-  }
+ 
 
 
   sendOption() {
@@ -354,28 +353,45 @@ export class HomeComponent implements OnInit,OnDestroy {
   openXl(Prof: any) {
     this.modalService.open(Prof, {
       centered: true,
-      size: 'lg',
+      size: 'xl',
       backdrop: 'static', // Prevent clicking outside the modal to close it
       keyboard: false // Prevent pressing the ESC key to close the modal
     });
+
   }
 
   openNewClient(newClient: any) {
     this.modalService.open(newClient, {
       centered: true,
-      size: 'lg',
+      size: 'xl',
       backdrop: 'static', // Prevent clicking outside the modal to close it
       keyboard: false // Prevent pressing the ESC key to close the modal
     });
   }
 
   onAddNewClient() {
-    this.loginComponent.onRegister(this.clientName + " " + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientBpNumber, this.clientCompanyName, this.clientCompanyRegNo, this.clientPhysicalAddress, null, this.clientIDNumber);
-    if (this.sharedService.clientUserID != null || this.sharedService.clientUserID != "") {
-      this.openXl(this.Prof);
-    }
+    debugger;
 
+    this.loginComponent.onRegister(this.clientName + " " + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientBpNumber, this.clientCompanyName, this.clientCompanyRegNo, this.clientPhysicalAddress, null, this.clientIDNumber);
+    this.nextBtn = true;
   }
+  nextBtn: boolean;
+  nextBtn2: boolean;
+  stepper: MatStepper;
+  checkIfError(stepper: MatStepper) {
+    debugger;
+    if (this.sharedService.errorForRegister == true) {
+      alert("Please enter an email that is not already in use")
+    }
+    else if (this.clientEmail == "" || this.clientName =="" ) {
+      alert("Please fill out all information")
+
+    }
+    else {
+      stepper.next();
+    }
+  }
+ 
 
   onAddContractor() {
     debugger;

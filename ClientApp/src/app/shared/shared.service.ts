@@ -86,6 +86,8 @@ export class SharedService {
 
   //this is for if an internal user is applying for a client 
   clientUserID?: string | null;
+  errorForRegister?: boolean;
+  clientEmailAdress?: string | null;
 
   userProfileData: any;
   FileDocument: FileDocument[] = [];

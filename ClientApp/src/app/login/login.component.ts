@@ -243,9 +243,9 @@ export class LoginComponent implements OnInit {
   }
 
 
-  onRegister(clientFullName?: string | null, clientEmail?: string | null, phoneNumber?: string | null, BpNo?: string | null, CompanyName?: string | null, CompanyRegNo?: string | null, PhyscialAddress?: string | null, ApplicantIDUpload?: string | null, ApplicantIDNumber?: string | null) {
+ async onRegister(clientFullName?: string | null, clientEmail?: string | null, phoneNumber?: string | null, BpNo?: string | null, CompanyName?: string | null, CompanyRegNo?: string | null, PhyscialAddress?: string | null, ApplicantIDUpload?: string | null, ApplicantIDNumber?: string | null) {
     if (clientFullName != null || clientFullName != "" && clientEmail != null || clientEmail != "") {
-
+      this.sharedService.errorForRegister = false;
       // Use a regular expression to check if the email is valid
       const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       if (clientEmail != null) {
@@ -273,18 +273,22 @@ export class LoginComponent implements OnInit {
       if (numberOfSpaces >= 2 || numberOfSpaces == 0) {
         alert("Please enter your first name and surname only!");
       } else {
-        this.userService.register(clientFullName, clientEmail, "Password@" + clientFullName).subscribe((data: any) => {
+   
+       await this.userService.register(clientFullName, clientEmail, "Password@" + clientFullName).subscribe((data: any) => {
           if (data.responseCode == 1) {
             console.log("After Register", data.dateSet);
             debugger;
             // this.homeComponent.openXl('content');
+            
             this.newProfileComponent.onNewProfileCreate(data.dateSet.appUserId, clientFullName, clientEmail, phoneNumber, BpNo, CompanyName, CompanyRegNo, PhyscialAddress, ApplicantIDUpload, ApplicantIDNumber);
 
             this.sharedService.clientUserID = data.dateSet.appUserId;
-
+            
 
           } else {
             //alert("Invalid Email or Password");
+            debugger;
+            this.sharedService.errorForRegister = true;
             alert(data.responseMessage);
           }
           //console.log("reponse", data);
@@ -307,12 +311,16 @@ export class LoginComponent implements OnInit {
 
         this.userService.register(this.registerForm.controls["fullName"].value, this.registerForm.controls["registerEmail"].value, this.registerForm.controls["registerPassword"].value).subscribe((data: any) => {
           if (data.responseCode == 1) {
+            debugger;
+            this.sharedService.errorForRegister = false;
             console.log("After Register", data.dateSet);
             localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
             alert(data.responseMessage);
             this.router.navigate(["/new-profile"]);
           } else {
+            debugger;
             //alert("Invalid Email or Password");
+            this.sharedService.errorForRegister = true;
             alert(data.responseMessage);
           }
           //console.log("reponse", data);
