@@ -22,6 +22,7 @@ import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.
 import { ViewProjectInfoComponent } from 'src/app/view-project/view-project-info/view-project-info.component';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { RefreshService } from 'src/app/shared/refresh.service';
+import { StagesService } from 'src/app/service/Stages/stages.service';
 
 
 export interface SubDepartmentList {
@@ -42,6 +43,13 @@ export interface ServiceItemList {
   Rate: any;
   totalVat: number;
   dateCreated: any;
+}
+
+export interface StagesList {
+  StageID: number;
+  StageName: string;
+  StageOrderNumber: number;
+  CurrentUser: any
 }
 
 export interface ZoneList {
@@ -117,6 +125,10 @@ export class ActionCenterComponent implements OnInit {
     EMBUsers: any;
     developerUsers: any;
     canCommentSeniorReviewer: boolean;
+  countApprove = 0;
+    countReject = 0;
+  SubDepartmentListForCheck: SubDepartmentList[] = [];
+    assaignedToComment: number = 0;
    
   /*textfields*/
 
@@ -172,6 +184,7 @@ export class ActionCenterComponent implements OnInit {
   CommentDropDown: CommentDropDown[] = [];
   ServiceItemCodeDropdown: ServiceItemCodeDropdown[] = [];
   ServiceItemList: ServiceItemList[] = [];
+  StagesList: StagesList[] = [];
 
   ZoneList: ZoneList[] = [];
   ZoneLinkedList: ZoneList[] = [];
@@ -247,6 +260,7 @@ export class ActionCenterComponent implements OnInit {
     private viewProjectInfoComponent: ViewProjectInfoComponent,
     private router: Router,
     private refreshService: RefreshService,
+    private stagesService: StagesService,
   ) { }
   openEnd(content: TemplateRef<any>) {
     this.offcanvasService.open(content, { position: 'end' });
@@ -304,7 +318,7 @@ export class ActionCenterComponent implements OnInit {
       this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
     this.getLinkedZones();
     this.CanComment();
- 
+    this.getAllStages();
 
     
 
@@ -319,6 +333,37 @@ export class ActionCenterComponent implements OnInit {
 
   ngOnDestroy() {
     this.refreshService.disableRefreshNavigation();
+  }
+
+  getAllStages() {
+
+    this.StagesList.splice(0, this.StagesList.length);
+
+    this.stagesService.getAllStages().subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempStageList = {} as StagesList;
+          const current = data.dateSet[i];
+          tempStageList.StageID = current.stageID;
+          tempStageList.StageName = current.stageName;
+          tempStageList.StageOrderNumber = current.stageOrderNumber;
+
+          this.StagesList.push(tempStageList);
+          // this.sharedService.setStageData(this.StagesList);
+        }
+
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 
   onPassFileName(event: { uploadFor: string; fileName: string }) {
@@ -378,6 +423,7 @@ export class ActionCenterComponent implements OnInit {
                
                   this.viewProjectInfoComponent.getAllComments();
                   alert(data.responseMessage);
+                  this.CheckALLLinkedDepartmentsCommented();
 
                 }
                 else {
@@ -418,7 +464,7 @@ export class ActionCenterComponent implements OnInit {
            
                   this.viewProjectInfoComponent.getAllComments();
                   alert(data.responseMessage);
-
+                  this.CheckALLLinkedDepartmentsCommented();
                 }
                 else {
                   alert(data.responseMessage);
@@ -830,18 +876,20 @@ export class ActionCenterComponent implements OnInit {
   }
 
   onManuallyAssignUser() {
-
+    debugger;
 
     if (confirm("Are you sure you what to assign this project to " + this.UserSelectionForManualLink.selected[0].fullName + "?")) {
       this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.forManuallyAssignSubForCommentID, this.UserSelectionForManualLink.selected[0].id).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
-
+          debugger;
           alert(data.responseMessage);
           this.getLinkedZones();
           this.updateApplicationStatus();
+          this.MoveApplicationToAllocated();
           this.viewProjectInfoComponent.getAllComments();
-          this.refreshParent.emit(); 
+          this.refreshParent.emit();
+
         }
         else {
           alert(data.responseMessage);
@@ -2181,6 +2229,194 @@ getAllCommentsByUserID() {
 
 
 
+  CheckALLLinkedDepartmentsCommented() {
+
+
+    const currentApplication = this.sharedService.getViewApplicationIndex();
+
+
+
+    this.subDepartmentForCommentService.getSubDepartmentForComment(currentApplication.applicationID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+
+        for (var i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+
+          const tempSubDepartmentList = {} as SubDepartmentList;
+          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.departmentID = current.departmentID;
+          tempSubDepartmentList.dateUpdated = current.dateUpdated;
+          tempSubDepartmentList.dateCreated = current.dateCreated;
+          tempSubDepartmentList.commentStatus = current.commentStatus;
+
+          if (tempSubDepartmentList.commentStatus == "Final Approved") {
+            this.countApprove++;
+          }
+          if (tempSubDepartmentList.commentStatus == "Rejected") {
+            this.countReject++;
+          }
+
+          this.SubDepartmentListForCheck.push(tempSubDepartmentList);
+        }
+
+        if (this.SubDepartmentListForCheck.length == this.countApprove) {
+          this.viewProjectInfoComponent.onCreateApprovalPack();
+          this.countApprove = 0;
+          this.countReject = 0;
+          this.MoveToNextStage();
+        } else if (this.countReject++ >= 1 && this.SubDepartmentListForCheck.length == this.countApprove + this.countReject) {
+          //Rejection Pack
+          this.viewProjectInfoComponent.onCrreateRejectionPack();
+          this.countApprove = 0;
+          this.countReject = 0;
+          this.MoveToClosedStage();
+        }
+        else {
+          this.countApprove = 0;
+          this.countReject = 0;
+        }
+       
+      }
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForComment", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
+  MoveApplicationToAllocated() {
+    debugger;
+    const currentApplication = this.sharedService.getViewApplicationIndex();
+
+    this.subDepartmentForCommentService.getSubDepartmentForComment(currentApplication.applicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        debugger;
+
+        for (var i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+
+          const tempSubDepartmentList = {} as SubDepartmentList;
+          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.departmentID = current.departmentID;
+          tempSubDepartmentList.dateUpdated = current.dateUpdated;
+          tempSubDepartmentList.dateCreated = current.dateCreated;
+          tempSubDepartmentList.commentStatus = current.commentStatus;
+          tempSubDepartmentList.UserAssaignedToComment = current.userAssaignedToComment;
+
+
+          if (tempSubDepartmentList.UserAssaignedToComment != null) {
+            this.assaignedToComment++;
+          }
+        }
+        if (this.SubDepartmentListForCheck.length == this.assaignedToComment) {
+          this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "Distributed/Allocated", null, null, null).subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+              alert(data.responseMessage);
+              this.assaignedToComment = 0;
+            }
+            else {
+              /*          alert(data.responseMessage);*/
+            }
+
+            console.log("responseAddapplication", data);
+
+          }, error => {
+            console.log("Error", error);
+          })
+      
+        }
+        else {
+          this.assaignedToComment = 0;
+        }
+
+      }
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForComment", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+   
+  }
+
+  MoveToNextStage() {
+    debugger;
+
+    this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, "PTW Pending").subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+  
+        alert("Application moved to PTW");
+        this.router.navigate(["/home"]);
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("responseAddapplication", data);
+    }, error => {
+      console.log("Error", error);
+    })
+
+    //}
+
+    //else if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[2].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Distributing") {
+
+    //}
+    //else {
+    //  alert("Application Status Is Not Paid");
+    //}
+
+
+  }
+
+  MoveToClosedStage() {
+    debugger;
+
+    this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[this.StagesList.length].StageName, this.StagesList[this.StagesList.length].StageOrderNumber, this.StagesList[this.StagesList.length].StageName, this.StagesList[this.StagesList.length].StageOrderNumber, "Rejected & Closed").subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        alert("Application Rejected & Moved To Closed");
+        this.router.navigate(["/home"]);
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("responseAddapplication", data);
+    }, error => {
+      console.log("Error", error);
+    })
+
+    //}
+
+    //else if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[2].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Distributing") {
+
+    //}
+    //else {
+    //  alert("Application Status Is Not Paid");
+    //}
+
+
+  }
+
   getLinkedDepartments() {
 
 
@@ -2203,28 +2439,6 @@ getAllCommentsByUserID() {
 
         }
 
-        let hasRejected = false;
-        let hasPending = false;
-
-        for (let i = 0; i < this.SubDepartmentList.length; i++) {
-          if (this.SubDepartmentList[i].commentStatus === "Rejected") {
-            hasRejected = true;
-          } else if (this.SubDepartmentList[i].commentStatus !== "Final Approved") {
-            hasPending = true;
-          }
-        }
-
-        let approveOrRejection;
-        debugger;
-        if (hasRejected) {
-          approveOrRejection = 'Rejected';
-        } if (hasPending) {
-          approveOrRejection = 'Waiting';
-        } if (hasRejected == false && hasPending == false) {
-          approveOrRejection = 'Approved';
-        }
-
-        this.dataEvent.emit(approveOrRejection);
 
       }
       else {

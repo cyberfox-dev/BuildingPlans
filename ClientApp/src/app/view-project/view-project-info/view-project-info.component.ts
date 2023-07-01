@@ -1381,7 +1381,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
         if (data.responseCode == 1) {
           this.onAutoLinkDepartment();
-          alert("Application Moved to ${this.CurrentApplicationBeingViewed[0].CurrentStageName}");
+          alert("Application Moved to Distributed/Unallocated");
          // this.router.navigate(["/home"]);
 
         }

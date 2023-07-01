@@ -52,7 +52,7 @@ export class ApplicationsService {
 
 
   public updateApplicationStage(ApplicationID?: number | null, previousStageName?: string | null, previousStageNumber?: number | null, currentStageName?: string | null, currentStageNumber?: number | null, nextStageName?: string | null, nextStageNumber?: number | null, applicationStatus?: string | null, projectNumber?:string | null) {
-
+    debugger;
     const body = {
       ApplicationID: ApplicationID,
       PreviousStageName: previousStageName,
