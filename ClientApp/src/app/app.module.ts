@@ -65,7 +65,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CyberfoxConfigComponent } from './cyberfox-config/cyberfox-config.component';
 import { AccessGroupsConfigComponent } from './access-groups-config/access-groups-config.component';
-import { MatToolbarModule } from '@angular/material/toolbar'; 
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 import { MandatoryDocsConfigComponent } from './mandatory-docs-config/mandatory-docs-config.component';
 import { MatRadioModule } from '@angular/material/radio';
@@ -91,7 +91,7 @@ import { SharedService } from './shared/shared.service';
 
 @NgModule({
   declarations: [
-  //  Map,
+    //  Map,
     AppComponent,
     NavMenuComponent,
     HomeComponent,
@@ -115,7 +115,7 @@ import { SharedService } from './shared/shared.service';
     ExternalDetailsComponent,
     InternalDetailsComponent,
     InternalOptionComponent,
-  //  SelectEngineerTableComponent,
+    //  SelectEngineerTableComponent,
     SelectContractorTableComponent,
     ProjectDetailsComponent,
     ProjectDetailsMapComponent,
@@ -154,7 +154,7 @@ import { SharedService } from './shared/shared.service';
     TypeOfExcavationComponent,
     PermitComponentComponent,
 
-  
+
 
   ],
   imports: [
@@ -199,7 +199,7 @@ import { SharedService } from './shared/shared.service';
     DragDropModule,
     RouterModule.forRoot([
       { path: '', component: LoginComponent },
-      { path: 'home', component: HomeComponent},
+      { path: 'home', component: HomeComponent },
       { path: 'new-profile', component: NewProfileComponent },
       { path: 'new-wayleave', component: NewWayleaveComponent },
       { path: 'view-project-info', component: ViewProjectInfoComponent },
@@ -217,7 +217,10 @@ import { SharedService } from './shared/shared.service';
     SharedService,
     LoginComponent,
     NewProfileComponent,
-   // NewWayleaveComponent,
+    // NewWayleaveComponent,
+    DepartmentConfigComponent,
+    ActionCenterComponent,
+    ViewProjectInfoComponent
   ],
   bootstrap: [AppComponent]
 })
