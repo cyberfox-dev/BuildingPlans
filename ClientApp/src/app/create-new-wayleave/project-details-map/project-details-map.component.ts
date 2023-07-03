@@ -37,6 +37,11 @@ import { SharedService } from "src/app/shared/shared.service"
 import Query from '@arcgis/core/rest/support/Query';
 import * as SearchSource from '@arcgis/core/widgets/Search/SearchSource';
 import { useAnimation } from '@angular/animations';
+import { DepartmentConfigComponent } from "src/app/department-config/department-config.component";
+import { ZonesService } from "src/app/service/Zones/zones.service"
+import { ActionCenterComponent } from "src/app/action-center/action-center.component";
+import { SubDepartmentForCommentService } from "src/app/service/SubDepartmentForComment/sub-department-for-comment.service"
+import { ZoneForCommentService } from "src/app/service/ZoneForComment/zone-for-comment.service"
 
 /*import { Editor, EditorViewModel, FeatureFormViewModel } from "@arcgis/core/widgets/Editor";*/
 /*import * as FeatureForm from 'esri/widgets/FeatureForm';*/
@@ -99,8 +104,27 @@ interface LayerInfo {
   geometryUpdatesEnabled?: boolean;
 }
 
+export interface ZoneList {
+  zoneID: number;
+  zoneName: string;
+  departmentID: number;
+  subDepartmentID: number;
+  mapObjectID: number;
+}
 
+//export interface DistributionList {
 
+//  directorate: string;
+//  email: string;
+//  fullName: string;
+//  mapObjectID: number;
+//  subDepartmentID: number;
+//  subDepartmentName: string;
+//  userID: string;
+//  zoneID: number;
+//  zoneName: string;
+
+//}
 
 @Component({
   selector: 'app-project-details-map',
@@ -111,7 +135,13 @@ export class ProjectDetailsMapComponent implements OnInit {
   /*  @Input() data: string; //retrieves this data from the parent component*/
   @Input() data: any; //retrieves this data from the parent component
   constructor(
-    private sharedService: SharedService,
+    public sharedService: SharedService,
+    private departmentConfigComponent: DepartmentConfigComponent,
+    private zonesService: ZonesService,
+    private actionCenterComponent: ActionCenterComponent,
+    private subDepartmentForCommentService: SubDepartmentForCommentService,
+    private zoneForCommentService: ZoneForCommentService,
+
     /*    private query: Query,*/
     /*        @Inject(ARCGIS_CONFIG) private config: ArcgisConfig,*/
     //private deviceService: DeviceDetectorService,
@@ -145,6 +175,11 @@ export class ProjectDetailsMapComponent implements OnInit {
   private oldGraphics: any;
   private defaultZoom: number = 6;
   private assignTo: string = "";
+  ZoneList: ZoneList[] = [];
+  Zone: ZoneList;
+  /*  zoneAdminUsers: any;*/
+/*  DistributionList: DistributionList[] = []*/
+
 
   public stringifiedData: any;
   public CurrentUser: any;
@@ -159,6 +194,7 @@ export class ProjectDetailsMapComponent implements OnInit {
   ngOnInit(): void {
     this.positionAndMapLoad();
     let editConfigCrimeLayer, editConfigPoliceLayer;
+    this.departmentConfigComponent.getAllSubDepartments();
   }
 
   private async positionAndMapLoad() {
@@ -169,6 +205,10 @@ export class ProjectDetailsMapComponent implements OnInit {
     await this.setPosition();
     await this.initializeMap();
   }
+
+  //returntotalAddedFeatures(): number {
+  //  return this.totalAddedFeatures;
+  //}
 
   //private initializeData(): string {
   //  /*  this.sharedService.getApplicationID()*/
@@ -242,15 +282,19 @@ export class ProjectDetailsMapComponent implements OnInit {
     //});
 
     // Create the search source configuration for Cape Town, South Africa
-    //Use this tool to verify boundaries: http://bboxfinder.com
+    //Use this tool to verify boundaries: http://bboxfinder.com ymin,xmin,ymax,xmax
     const theExtent = new Extent({
-      xmin: 18.2562,
-      ymin: -34.358,
-      xmax: 18.855,
-      ymax: -33.3992,
-      //spatialReference: {
-      //  wkid: 3857
-      //}
+      //Cape Town
+      //ymin: -34.358,
+      //xmin: 18.2562,
+      //ymax: -33.3992,
+      //xmax: 18.855,
+
+      //Western Cape
+      ymin: -34.867905,
+      xmin: 17.314453,
+      ymax: -30.391830,
+      xmax: 24.268799,
     });
 
     const view = new MapView({
@@ -301,14 +345,27 @@ export class ProjectDetailsMapComponent implements OnInit {
 
     const sources = [{
       url: "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer",
-      name: 'Cape Town, South Africa',
-      placeholder: "Search Cape Town",
+      name: 'Western Cape, South Africa',
+      placeholder: "Search Western Cape",
       maxResults: 3,
       filter: searchExtent
+    }, {
+      layer: new FeatureLayer({
+        url: "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Land_Administration/MapServer/13",
+        outFields: ["*"]
+      }),
+      placeholder: "Find ERF",
+      suggestionsEnabled: true,
+      searchFields: ["PRTY_NMBR"],
+      displayField: "PRTY_NMBR",
+      /*        exactMatch: false,*/
+      outFields: ["*"],
+      name: "ERF",
+      filter: searchExtent,
+      maxResults: 3,
     }];
 
-
-
+    //Remove default search source: https://community.esri.com/t5/developers-questions/disable-quot-arcgis-world-grocoding-quot-in-search/m-p/806620#M5367
     const searchWidget = new Search({
       view: view,
       popupEnabled: true,
@@ -316,8 +373,9 @@ export class ProjectDetailsMapComponent implements OnInit {
       resultGraphicEnabled: true,
       container: this.searchDivEl.nativeElement,
       sources: sources,
-      activeSourceIndex: 1, //for some odd reasons, index 0 contains a source already.
-
+      /*      activeSourceIndex: 1, //for some odd reasons, index 0 contains a source already.*/
+      includeDefaultSources: false,
+      allPlaceholder: "Find address or ERF"
     });
 
     searchWidget.on('select-result', (event) => {
@@ -666,45 +724,55 @@ export class ProjectDetailsMapComponent implements OnInit {
         layerInfos: [{
           layer: featureLayer,
 
+          /*          maxAllowableArea: 1000000*/
         }],
         view: view as MapView,
+
         /*        allowedWorkflows: "update",*/
       });
       view.ui.add(editor, "top-right");
 
 
       // Listen to the create event of the Editor widget.
-      //editor.on('submit', (event) => {
-      //  // Get a reference to the feature that was just created.
-      //  //const graphic = event.graphic;
-      //  //// Set the values of the attributes for the new feature.
-      //  //graphic.attributes = {
-      //  //  LU_ACTV_STS: "9999",
-      //  //  /*          cREATED_bYid: "99",*/
-      //  //  // other attribute values
-      //  //};
+      editor.on('submit', (event) => {
+        // Get a reference to the feature that was just created.
+        //const graphic = event.graphic;
+        //// Set the values of the attributes for the new feature.
+        //graphic.attributes = {
+        //  LU_ACTV_STS: "9999",
+        //  /*          cREATED_bYid: "99",*/
+        //  // other attribute values
+        //};
 
-      //  console.log('submitted form')
-      //  // Save the new feature.
-      //  //const featureFormViewModel = editor.viewModel.featureFormViewModel;
-      //  //featureFormViewModel.submit();
-      //});
+        console.log('submitted form')
+        // Save the new feature.
+        //const featureFormViewModel = editor.viewModel.featureFormViewModel;
+        //featureFormViewModel.submit();
+      });
 
       /*      This code is hit when certain actions take place on the view area, regarding the editor. Actions such as deleting polygons. Draw actions aren't hit though :('.*/
       editor.viewModel.watch("state", (event) => {
         console.log(event);
       });
 
-
-
       featureLayer.on("edits", async (event) => {
-        console.log(event);
-        // Get the drawn polygon's geometry
+        //Clears the disribution list. This should be moved to when the application is successfully captured and on "Create new wayleave".
+        this.sharedService.distributionList.splice(0, this.sharedService.distributionList.length);
 
-        //Count the number of polygons drawn to prevent submitting the form without inserting a polygon.
+        //console.log(event);
+        //console.log(this.sharedService.subDepartmentList);
+
+        //Count the number of polygons drawn/deleted to prevent submitting the form without inserting a polygon.
         const countPolygon = event.addedFeatures.length;
+        const subtractPolygon = event.deletedFeatures.length;
 
-        const drawnPolygon = event.addedFeatures;
+        //Count all added features
+        this.sharedService.totalAddedFeatures += countPolygon;
+        console.log(this.sharedService.totalAddedFeatures);
+        this.sharedService.totalAddedFeatures -= subtractPolygon;
+        console.log("Total added features", this.sharedService.totalAddedFeatures);
+
+        /*        const drawnPolygon = event.addedFeatures;*/
 
         // Create a new Query object
         const query = new Query();
@@ -716,56 +784,250 @@ export class ProjectDetailsMapComponent implements OnInit {
         /*        query.geometry = event.editedFeatures.editedFeatures.adds[0].geometry;*/
 
         // Set the geometry of the query to the drawn polygon
+        //This part should be looped to account for multiple polygons drawn in one "Create"
         // @ts-ignore
         query.geometry = event.edits.addFeatures[0].geometry;
+        //Add objectID to the fields returned as it isn't returned by default
         query.outFields = ['OBJECTID'];
 
         // Set up the layer in the MapServer to query against
-        const mapServerLayerUrl = "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves_Regions/MapServer/0"; //this checks just the electricity layer.
-        const mapServerLayer = new FeatureLayer({
-          url: mapServerLayerUrl
-        });
+        const mapServerLayerUrl = []; //this checks just the electricity layer.
 
-        // Perform the spatial query
-        await mapServerLayer.queryFeatures(query).then((result) => {
-          // Handle the resulting features that intersect or are within the drawn polygon
-          const features = result.features;
-          // Do something with the features
+        //Start loop from here
+        for (var i = 0; i < this.sharedService.subDepartmentList.length; i++) {
 
-          // Iterate through the features
-          features.forEach((feature) => {
-            // Access the globalID attribute
-            /*              const OBJECTID = feature.attributes.OBJECTID;*/
+          //Get current mapLayerID
+          const mapLayerID = this.sharedService.subDepartmentList[i].mapLayerID
+          //Get subDepartmentID for the current
+          const SubDepartmentID = this.sharedService.subDepartmentList[i].subDepartmentID;
+          console.log(SubDepartmentID);
+          //Get list of managers by zone
+          this.actionCenterComponent.getUserBySubDepartmentAndRoleName(SubDepartmentID, "Department Admin").subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              const zoneAdminUsers = data.dateSet;
 
-            // @ts-ignore
-            const OBJECTID = feature.attributes.OBJECTID;
+              //Run this code if the department has only a single region, i.e., the entire city is the region
+              if (mapLayerID == null) {
+                /*            break;*/
+                //This code runs when a subdepartment consists of multiple regions
+              } else if (mapLayerID == -1) {
+                //Send too ALL Admin users in this subdepartment
+                this.sharedService.distributionList = this.sharedService.distributionList.concat(zoneAdminUsers);
+                /*                    this.sharedService.distributionList.push(tempDistributionList);*/
+                console.log("Distribution list", this.sharedService.distributionList);
 
-            switch (OBJECTID) {
-              case 3: //east
-                this.assignTo += "Andre.VanZyl@capetown.gov.za because region 3 (east) was selected.\r"
-                break;
-              case 1: //south
-                this.assignTo += "Andre.VanZyl@capetown.gov.za because region 1 (south) was selected.\r"
-                break;
-              case 2: //north
-                this.assignTo += "Andre.VanZyl@capetown.gov.za because region 2 (north) was selected.\r"
-                break;
-              default:
+
+              } else if (mapLayerID > -1) {
+                // Set up the layer in the MapServer to query against
+                mapServerLayerUrl[i] = "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves_Regions/MapServer/" + mapLayerID;
+
+                const mapServerLayer = new FeatureLayer({
+                  url: mapServerLayerUrl[i]
+                });
+
+                //Query the layer for the current subdepartment. The intersecting layer objectIDs should be returned.
+                mapServerLayer.queryFeatures(query).then((result) => {
+                  // Handle the resulting features that intersect or are within the drawn polygon
+                  const features = result.features;
+                  // Do something with the features
+
+                  //Get the number of OBJECTS here and their OBJECTIDs
+                  /*              const numOfObjects = result.features.length;*/
+
+                  // Iterate through the features
+                  features.forEach(async (feature) => {
+                    //Get the objectID for the current iterated polygon interception
+                    // @ts-ignore
+                    const OBJECTID = feature.attributes.OBJECTID;
+                    //Filter the list returned from the server to only include the departments that have been intercepted during polygon drawing.
+
+                    const filteredList = zoneAdminUsers.filter(obj => obj.mapObjectID === OBJECTID);
+                    // Access the globalID attribute
+                    /*              const OBJECTID = feature.attributes.OBJECTID;*/
+
+                    //Add to distribution list: This list is used upon application submission.
+                    //const tempDistributionList = {} as DistributionList;
+                    //tempDistributionList.directorate = filteredList.directorate;
+                    //tempDistributionList.email = filteredList.email;
+                    //tempDistributionList.fullName = filteredList.fullName;
+                    //tempDistributionList.mapObjectID = filteredList.mapObjectID;
+                    //tempDistributionList.subDepartmentID = filteredList.subDepartmentID;
+                    //tempDistributionList.subDepartmentName = filteredList.subDepartmentName;
+                    //tempDistributionList.userID = filteredList.userID;
+                    //tempDistributionList.zoneID = filteredList.zoneID;
+                    //tempDistributionList.zoneName = filteredList.zoneName;
+
+                    this.sharedService.distributionList = this.sharedService.distributionList.concat(filteredList);
+/*                    this.sharedService.distributionList.push(tempDistributionList);*/
+                    console.log("Distribution list",this.sharedService.distributionList);
+
+                    //Get the department managers
+                    //this.sharedService.subDepartmentList[i].subDepartmentID;
+
+                    //this.getZoneByMapObjectID(SubDepartmentID, OBJECTID);
+                    //console.log(this.ZoneList);
+
+                    //if (await this.ZoneList.length == 0) {
+                    //  console.log("Zones not linked to map objects or sub department has no zones");
+                    //} else {
+
+                    //}
+
+                    //switch (OBJECTID) {
+                    //  case 3: //east
+                    //    this.assignTo += "Andre.VanZyl@capetown.gov.za because region 3 (east) was selected.\r"
+                    //    break;
+                    //  case 1: //so uth
+                    //    this.assignTo += "Andre.VanZyl@capetown.gov.za because region 1 (south) was selected.\r"
+                    //    break;
+                    //  case 2: //north
+                    //    this.assignTo += "Andre.VanZyl@capetown.gov.za because region 2 (north) was selected.\r"
+                    //    break;
+                    //  default:
+                    //}
+
+                    // Do something with the globalID
+                    //console.log('OBJECTID:', OBJECTID);
+                    //console.log("This application will be assigned to the following managers: \r" + this.assignTo);
+
+                  });
+
+                });
+
+                //This code runs if the field is null or contains something unexpected
+              } else {
+
+              }
+
+/*              console.log(filteredList);*/
+              // Use the filteredList as needed
             }
-
-            // Do something with the globalID
-            console.log('OBJECTID:', OBJECTID);
-            console.log("This application will be assigned to the following managers: \r" + this.assignTo);
-
+            else {
+              //alert("Invalid Email or Password");
+/*              alert(data.responseMessage);*/
+              /*        return null;*/
+            }
+/*            console.log("reponse", data);*/
+            return null;
+          }, error => {
+            console.log("Error:", error);
           });
+          //Nullish coalescing
+          //if (mapLayerID !== null && mapLayerID !== undefined) {
+          //}
+/*          console.log("Number of subdepartments", i);*/
+        }
 
-        });
 
-        await alert("This application will be assigned to the following managers: \r" + this.assignTo);
-        this.assignTo = "";
+
+        //Energy
+        // Perform the spatial query
+
+        //await alert("This application will be assigned to the following managers: \r" + this.assignTo);
+
+        //console.log(this.sharedService.totalAddedFeatures);
+        //this.assignTo = "";
 
         //Now get the geometry of this polygon using the globalID
+
+        await this.addToSubDepartmentForComment();
       });
+
+/*      Async: This code can be deleted, but use it for referencing when using promises.*/
+      featureLayer.on("edits", async (event) => {
+        // Clear the distribution list. This should be moved to when the application is successfully captured and on "Create new wayleave".
+        this.sharedService.distributionList.splice(0, this.sharedService.distributionList.length);
+
+        // Count the number of polygons drawn/deleted to prevent submitting the form without inserting a polygon.
+        const countPolygon = event.addedFeatures.length;
+        const subtractPolygon = event.deletedFeatures.length;
+
+        // Count all added features
+        this.sharedService.totalAddedFeatures += countPolygon;
+        console.log(this.sharedService.totalAddedFeatures);
+        this.sharedService.totalAddedFeatures -= subtractPolygon;
+        console.log("Total added features", this.sharedService.totalAddedFeatures);
+
+        // Create a new Query object
+        const query = new Query();
+
+        // Set the spatial relationship to "intersects" or "contains" based on your requirement
+        query.spatialRelationship = "intersects";
+
+        // Set the geometry of the query to the drawn polygon
+        // @ts-ignore
+        query.geometry = event.edits.addFeatures[0].geometry;
+
+        // Set the fields to be returned by the query
+        query.outFields = ['OBJECTID'];
+
+        // Set up the layer in the MapServer to query against
+        const mapServerLayerUrl = []; // This checks just the electricity layer.
+
+        // Start loop from here
+        for (var i = 0; i < this.sharedService.subDepartmentList.length; i++) {
+          // Get current mapLayerID
+          const mapLayerID = this.sharedService.subDepartmentList[i].mapLayerID;
+          // Get subDepartmentID for the current
+          const SubDepartmentID = this.sharedService.subDepartmentList[i].subDepartmentID;
+          console.log(SubDepartmentID);
+
+          // Get list of managers by zone
+          await this.actionCenterComponent.getUserBySubDepartmentAndRoleName(SubDepartmentID, "Department Admin").toPromise().then((data: any) => {
+            if (data.responseCode == 1) {
+              const zoneAdminUsers = data.dateSet;
+
+              if (mapLayerID == null) {
+                /* This code runs when a subdepartment consists of multiple regions */
+              } else if (mapLayerID == -1) {
+                // Send to ALL Admin users in this subdepartment
+                this.sharedService.distributionList = this.sharedService.distributionList.concat(zoneAdminUsers);
+                console.log("Distribution list", this.sharedService.distributionList);
+              } else if (mapLayerID > -1) {
+                // Set up the layer in the MapServer to query against
+                mapServerLayerUrl[i] = "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves_Regions/MapServer/" + mapLayerID;
+
+                const mapServerLayer = new FeatureLayer({
+                  url: mapServerLayerUrl[i]
+                });
+
+                // Query the layer for the current subdepartment. The intersecting layer objectIDs should be returned.
+                mapServerLayer.queryFeatures(query).then((result) => {
+                  // Handle the resulting features that intersect or are within the drawn polygon
+                  const features = result.features;
+                  // Do something with the features
+
+                  features.forEach(async (feature) => {
+                    const OBJECTID = feature.attributes.OBJECTID;
+                    const filteredList = zoneAdminUsers.filter(obj => obj.mapObjectID === OBJECTID);
+
+                    this.sharedService.distributionList = this.sharedService.distributionList.concat(filteredList);
+                    console.log("Distribution list", this.sharedService.distributionList);
+                  });
+                });
+              } else {
+                // This code runs if the field is null or contains something unexpected
+              }
+            } else {
+              // alert("Invalid Email or Password");
+              // alert(data.responseMessage);
+            }
+          }).catch(error => {
+            console.log("Error:", error);
+          });
+        }
+
+        // Promise to ensure that addToSubDepartmentForComment() runs after all the other code
+        const promise = new Promise<void>((resolve) => {
+          // Run the code you want to execute after the other code is finished
+          this.addToSubDepartmentForComment();
+          resolve();
+        });
+
+        // Await the resolution of the promise before continuing
+        await promise;
+      });
+
 
       // Subscribe to the draw-complete event of the Editor widget
       editor.viewModel.featureFormViewModel.on("submit", (event) => {
@@ -867,7 +1129,7 @@ export class ProjectDetailsMapComponent implements OnInit {
 
       // Create the Form template and pass in elements
       const formTemplate = new FormTemplate({
-        title: "Inspector report",
+        title: "Application info",
         description: "Enter all relevant information below",
         /*      elements: [groupElement] // Add all elements to the template*/
       });
@@ -1244,6 +1506,51 @@ export class ProjectDetailsMapComponent implements OnInit {
     }
   };
 
+  private getZoneByMapObjectID(SubDepartmentID: number, MapObjectID: number) {
 
+    this.zonesService.getZoneByMapObjectID(SubDepartmentID, MapObjectID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempZoneList = {} as ZoneList;
+          const current = data.dateSet[i];
+          tempZoneList.departmentID = current.departmentID;
+          tempZoneList.mapObjectID = current.mapObjectID;
+          tempZoneList.subDepartmentID = current.subDepartmentID;
+          tempZoneList.zoneID = current.zoneID;
+          tempZoneList.zoneName = current.zoneName;
+          this.ZoneList.push(tempZoneList);
+          this.Zone = tempZoneList;
+
+          /*          return this.Zone;*/
+        }
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+        /*        return null;*/
+      }
+      console.log("reponse", data);
+      return null;
+    }, error => {
+      console.log("Error: ", error);
+      /*      return null;*/
+    })
+  }
+
+  private addToSubDepartmentForComment() {
+    const tempList = this.sharedService.distributionList;
+
+    tempList.forEach((obj) => {
+      this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.data.applicationID, obj.subDepartmentID, obj.subDepartmentName, obj.userID, null, "ESRI API");
+    });
+  }
+
+  private addToZoneForComment() {
+    const tempList = this.sharedService.distributionList;
+
+    tempList.forEach((obj) => {
+      this.zoneForCommentService.addUpdateZoneForComment(0, obj.subDepartmentID, this.data.applicationID, obj.zoneID, obj.zoneName, obj.userID);
+    });
+  }
 
 }

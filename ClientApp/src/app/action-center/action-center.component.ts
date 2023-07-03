@@ -23,6 +23,7 @@ import { ViewProjectInfoComponent } from 'src/app/view-project/view-project-info
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { RefreshService } from 'src/app/shared/refresh.service';
 import { StagesService } from 'src/app/service/Stages/stages.service';
+import { Observable } from 'rxjs';
 
 
 export interface SubDepartmentList {
@@ -1017,6 +1018,32 @@ export class ActionCenterComponent implements OnInit {
 
   }
 
+  //Same as the above code, only, instead of using the subdepartmentID of the logged in user, we are passing this parameter.
+  getUserBySubDepartmentAndRoleName(subDepartmentID?: number | null, roleName?: string | null): Observable<any> {
+    if (roleName == "Department Admin") {
+      return this.accessGroupsService.GetUserAndZoneBasedOnRoleName(roleName, subDepartmentID);
+    }
+    else if (roleName == "Senior Reviewer") {
+      return this.accessGroupsService.getUserBasedOnRoleName(roleName, subDepartmentID);
+    }
+    else if (roleName == "Final Approver") {
+      return this.accessGroupsService.getUserBasedOnRoleName(roleName, subDepartmentID);
+    }
+    else if (roleName == "Reviewer") {
+      return this.accessGroupsService.getUserBasedOnRoleName(roleName, subDepartmentID);
+    }
+    else if (roleName == "EMB") {
+      return this.accessGroupsService.getUserBasedOnRoleName(roleName, subDepartmentID);
+    }
+    else if (roleName == "Developer") {
+      return this.accessGroupsService.getUserBasedOnRoleName(roleName, subDepartmentID);
+    }
+    else {
+      alert("Could not find AG");
+      return null;
+    }
+  }
+
   //im here
   moveToFinalApprovalForDepartment() {
     //this.getUsersByRoleName("Department Admin");
@@ -1861,7 +1888,8 @@ export class ActionCenterComponent implements OnInit {
 
 
   getAllSubDepartments() {
-   
+
+
     this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
     this.SubDepartmentLinkedList.splice(0, this.SubDepartmentLinkedList.length);
 

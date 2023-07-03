@@ -396,7 +396,7 @@ export class NewWayleaveComponent implements OnInit {
     private modalService: NgbModal,
     private applicationsService: ApplicationsService,
     private professionalsLinksService: ProfessionalsLinksService,
-    private shared: SharedService,
+    public shared: SharedService,
     private formBuilder: FormBuilder,
     private professionalService: ProfessionalService,
     private userPofileService: UserProfileService,

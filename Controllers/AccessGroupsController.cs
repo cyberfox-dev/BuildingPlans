@@ -689,5 +689,49 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpPost("GetUserAndZoneBasedOnRoleName")]
+        public async Task<object> GetUserAndZoneBasedOnRoleName([FromBody] AccessGroupsBindingModel model)
+        {
+            try
+            {
+                var result = await (
+                    from accessGroups in _context.AccessGroups
+                    join accessGroupUserLink in _context.AccessGroupUserLink on accessGroups.AccessGroupID equals accessGroupUserLink.AccessGroupID into agul
+                    from agulItem in agul.DefaultIfEmpty()
+                    join userProfiles in _context.UserProfilesTable on agulItem.UserID equals userProfiles.UserID into up
+                    from upItem in up.DefaultIfEmpty()
+                    join zoneLinkTable in _context.ZoneLinkTable on upItem.UserID equals zoneLinkTable.AssignedUserID into zlt
+                    from zltItem in zlt.DefaultIfEmpty()
+                    join zonesTable in _context.ZonesTable on zltItem.ZoneID equals zonesTable.ZoneID into zt
+                    from ztItem in zt.DefaultIfEmpty()
+                    join subDepartmentTable in _context.SubDepartmentsTable on ztItem.SubDepartmentID equals subDepartmentTable.SubDepartmentID into sdt
+                    from sdtItem in sdt.DefaultIfEmpty()
+                    where accessGroups.AccessGroupName == model.AccessGroupName && upItem.SubDepartmentID == model.SubDepartmentID
+                    select new UserProfileDTO()
+                    {
+                        UserID = upItem.UserID,
+                        FullName = upItem.FullName,
+                        Email = upItem.Email,
+                        PhoneNumber = upItem.PhoneNumber,
+                        Directorate = upItem.Directorate,
+                        ZoneName = ztItem.ZoneName,
+                        MapObjectID = ztItem.MapObjectID,
+                        SubDepartmentID = ztItem.SubDepartmentID,
+                        zoneID = ztItem.ZoneID,
+                        SubDepartmentName = sdtItem.SubDepartmentName,
+                        // SubDepartmentID = upItem.SubDepartmentID,
+                    }
+                ).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Users that are linked", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+
+
     }
 }
