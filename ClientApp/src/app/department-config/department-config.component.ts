@@ -14,7 +14,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
-
+import { SharedService } from "src/app/shared/shared.service"
 
 
 export interface DepartmentList {
@@ -50,6 +50,7 @@ export interface ZoneList {
 export interface SubDepartmentList {
   subDepartmentID: number;
   subDepartmentName: string;
+  mapLayerID: number;
   departmentID: number;
   dateUpdated: any;
   dateCreated: any;
@@ -185,7 +186,7 @@ export class DepartmentConfigComponent implements OnInit {
   newSub: any;
 
   tabIndex: Tabs = Tabs.View_linked_sub_departments;
-  constructor(private matdialog: MatDialog, public dialog: MatDialog, private formBuilder: FormBuilder, private departmentService: DepartmentsService, private modalService: NgbModal, private zoneService: ZonesService, private subDepartment: SubDepartmentsService, private zoneLinkService: ZoneLinkService, private userProfileService: UserProfileService) { }
+  constructor(private matdialog: MatDialog, public dialog: MatDialog, private formBuilder: FormBuilder, private departmentService: DepartmentsService, private modalService: NgbModal, private zoneService: ZonesService, private subDepartment: SubDepartmentsService, private zoneLinkService: ZoneLinkService, private userProfileService: UserProfileService, public sharedService: SharedService) { }
 
 
   openNewSubDep(newSub: any, index: any,) {
@@ -323,21 +324,25 @@ export class DepartmentConfigComponent implements OnInit {
   getAllSubDepartments() {
    
     this.subDepartment.getSubDepartmentsList().subscribe((data: any) => {
+        this.sharedService.subDepartmentList.splice(0, this.sharedService.subDepartmentList.length);
 
       if (data.responseCode == 1) {
         
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempSubDepartmentList = {} as SubDepartmentList;
           const current = data.dateSet[i];
-          tempSubDepartmentList.subDepartmentID = current.SubDepartmentID;
-          tempSubDepartmentList.subDepartmentName = current.SubDepartmentName;
+          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
           tempSubDepartmentList.departmentID = current.departmentID;
+          tempSubDepartmentList.mapLayerID = current.mapLayerID;
           tempSubDepartmentList.dateUpdated = current.dateUpdated;
           tempSubDepartmentList.dateCreated = current.dateCreated;
           this.SubDepartmentList.push(tempSubDepartmentList);
            this.SubDepartmentListTable?.renderRows();
         }
-      
+
+          //Writes to the shared service
+        this.sharedService.subDepartmentList = this.SubDepartmentList;
         this.SubDepartmentListTable?.renderRows();
       }
       else {

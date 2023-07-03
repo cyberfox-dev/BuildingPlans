@@ -15,7 +15,7 @@ namespace WayleaveManagementSystem.IServices
 
         Task<List<ZonesDTO>> GetZoneBySubDepartmentID(int subDepartmentID);
         Task<List<ZonesDTO>> GetZoneByZoneID(int zoneID);
+        Task<List<ZonesDTO>> GetZoneByMapObjectID(int subDepartmentID, int mapObjectID);
 
-        
     }
 }

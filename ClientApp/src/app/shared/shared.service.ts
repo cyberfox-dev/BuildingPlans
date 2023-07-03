@@ -70,12 +70,32 @@ export interface RolesList {
   //RoleDescription: string;
 }
 
+export interface SubDepartmentList {
+  subDepartmentID: number;
+  subDepartmentName: string;
+  mapLayerID: number;
+  departmentID: number;
+  dateUpdated: any;
+  dateCreated: any;
+}
+
+export interface DistributionList {
+
+  directorate: string;
+  email: string;
+  fullName: string;
+  mapObjectID: number;
+  subDepartmentID: number;
+  subDepartmentName: string;
+  userID: string;
+  zoneID: number;
+  zoneName: string;
+
+}
+
 @Injectable({
   providedIn: 'root'
 })
-
- 
-
 
 export class SharedService {
 
@@ -91,11 +111,14 @@ export class SharedService {
   engineerData: ProfessionalList[] = [];
   StagesList: StagesList[] = [];
   RolesList: RolesList[] = [];
+  subDepartmentList: SubDepartmentList[] = [];
+  distributionList: DistributionList[] = [];
 
   ProjectNumber: string;
   canReapply: any = false;
   reapply: boolean = false;
   userRoles = '';
+  public totalAddedFeatures: number = 0;
 
   constructor() { }
 
@@ -142,7 +165,7 @@ export class SharedService {
   getApiUrl() {
         return "https://localhost:7123/api/";
     /*    return "http://172.29.166.10/api/";*/
-   /* return "https://wayleaveqa.capetown.gov.za/api/"; */
+/*    return "https://wayleaveqa.capetown.gov.za/api/"; */
 
     //this is the original ip address for venolin :)
   /*  return "https://197.242.150.226:7123/api/";*/

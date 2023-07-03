@@ -112,6 +112,7 @@ namespace WayleaveManagementSystem.Service
                     SubDepartmentID = SubDepartments.SubDepartmentID,
                     SubDepartmentName = SubDepartments.SubDepartmentName,
                     DepartmentID = SubDepartments.DepartmentID,
+                    MapLayerID = SubDepartments.MapLayerID,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     isActive = true

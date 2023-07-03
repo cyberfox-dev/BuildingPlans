@@ -208,7 +208,7 @@ import { PermitComponentComponent } from './permit-component/permit-component.co
       { path: 'internal-user-unassigned-department', component: InternalUserUnassignedDepartmentComponent },
     ])
   ],
-  providers: [],
+  providers: [DepartmentConfigComponent, ActionCenterComponent, ViewProjectInfoComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

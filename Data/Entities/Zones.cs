@@ -12,7 +12,7 @@ namespace WayleaveManagementSystem.Data.Entities
         public int DepartmentID { get; set; }
 
         public int SubDepartmentID { get; set; }
-
+        public int MapObjectID { get; set; }
 
     }
 }

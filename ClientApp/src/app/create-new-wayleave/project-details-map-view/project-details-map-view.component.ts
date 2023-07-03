@@ -228,6 +228,17 @@ export class ProjectDetailsMapViewComponent implements OnInit {
 
       map.add(featureLayer);
 
+      // At the very minimum, set the Editor's view
+      //const editor = new Editor({
+      //  layerInfos: [{
+      //    layer: featureLayer,
+
+      //  }],
+      //  view: view as MapView,
+      //  /*        allowedWorkflows: "update",*/
+      //});
+      //view.ui.add(editor, "top-right");
+
     })
   };
 

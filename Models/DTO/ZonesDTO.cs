@@ -6,7 +6,7 @@
         public string? ZoneName { get; set; }
         public int? DepartmentID { get; set; }
         public int? SubDepartmentID { get; set; }
-
+        public int MapObjectID { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
         public string? CreatedById { get; set; }

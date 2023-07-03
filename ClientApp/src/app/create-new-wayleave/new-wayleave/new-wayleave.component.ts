@@ -31,6 +31,7 @@ import { ConfigService } from 'src/app/service/Config/config.service';
 import { RefreshService } from '../../shared/refresh.service';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable'
+/*import { DepartmentConfigComponent } from "src/app/department-config/department-config.component";*/
 /*import { format } from 'path/win32';*/
 
 
@@ -388,7 +389,7 @@ export class NewWayleaveComponent implements OnInit {
     private modalService: NgbModal,
     private applicationsService: ApplicationsService,
     private professionalsLinksService: ProfessionalsLinksService,
-    private shared: SharedService,
+    public shared: SharedService,
     private formBuilder: FormBuilder,
     private professionalService: ProfessionalService,
     private userPofileService: UserProfileService,
@@ -410,6 +411,7 @@ export class NewWayleaveComponent implements OnInit {
     private route: ActivatedRoute,
     private configService: ConfigService,
     private refreshService: RefreshService,
+/*    private departmentConfigComponent: DepartmentConfigComponent,*/
   ) { }
 
   ngOnInit(): void {
@@ -500,8 +502,6 @@ export class NewWayleaveComponent implements OnInit {
       this.external = false;
       this.client = false;
     }
-
-   
 
     //const imagePath = 'assets/cctlogoblack.png';
     //this.logoUrl = this.sanitizer.bypassSecurityTrustUrl(imagePath);

@@ -9,5 +9,6 @@
 
         public string? CreatedById { get; set; }
         public string? AppUserID { get; set; }
+        public int MapObjectID { get; set; }
     }
 }

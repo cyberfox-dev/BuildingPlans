@@ -56,7 +56,9 @@ namespace WayleaveManagementSystem.Models.DTO
 
         public bool? depConfirmation { get; set; }
         public int? zoneID { get; set; }
-
+        public int? MapObjectID { get; set; }
+        public string? ZoneName { get; set; }
+        public string? SubDepartmentName { get; set; }
 
     }
 }

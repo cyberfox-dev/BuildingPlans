@@ -457,7 +457,7 @@
 
       <div class="cont">
         <button mat-raised-button color="primary" matStepperPrevious>Back</button>
-        <button mat-raised-button color="primary" matStepperNext>Next</button>
+        <button mat-raised-button color="primary" matStepperNext [disabled]="shared.totalAddedFeatures<1">Next</button>
       </div>
     </mat-step>
 

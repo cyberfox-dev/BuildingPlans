@@ -132,5 +132,13 @@ export class AccessGroupsService {
 
   }
   
+  public GetUserAndZoneBasedOnRoleName(accessGroupName: string, subDepartmentID: number) {
 
+    const body = {
+      AccessGroupName: accessGroupName,
+      SubDepartmentID: subDepartmentID,
+    }
+    return this.httpClient.post(this.baseURL + "GetUserAndZoneBasedOnRoleName", body);
+
+  }
 }
