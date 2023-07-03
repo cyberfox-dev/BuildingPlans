@@ -52,7 +52,7 @@ export class ApplicationsService {
 
 
   public updateApplicationStage(ApplicationID?: number | null, previousStageName?: string | null, previousStageNumber?: number | null, currentStageName?: string | null, currentStageNumber?: number | null, nextStageName?: string | null, nextStageNumber?: number | null, applicationStatus?: string | null, projectNumber?:string | null) {
-
+    debugger;
     const body = {
       ApplicationID: ApplicationID,
       PreviousStageName: previousStageName,
@@ -73,7 +73,7 @@ export class ApplicationsService {
 
   public deleteApplication(applicationID: number) {
 
-    return this.httpClient.post(this.baseURL + "DeleteApplications", applicationID);
+    return this.httpClient.post(this.baseURL + "DeleteApplication", applicationID);
 
   }
 

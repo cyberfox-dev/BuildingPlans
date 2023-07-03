@@ -287,7 +287,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ExcavationType")
@@ -300,7 +299,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FullName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Location")
@@ -345,11 +343,13 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<int?>("RejectCount")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("StageStartDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("TypeOfApplication")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserID")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("WBSNumber")
@@ -861,6 +861,46 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("Notification");
                 });
 
+            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.PermitSubForComment", b =>
+                {
+                    b.Property<int?>("PermitSubForCommentID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("PermitSubForCommentID"), 1L, 1);
+
+                    b.Property<int?>("ApplicationID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PermitComment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("SubDepartmentID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SubDepartmentName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserAssaignedToComment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("PermitSubForCommentID");
+
+                    b.ToTable("PermitSubForComment");
+                });
+
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Professionals", b =>
                 {
                     b.Property<int>("ProfessinalID")
@@ -870,11 +910,9 @@ namespace WayleaveManagementSystem.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProfessinalID"), 1L, 1);
 
                     b.Property<string>("AppUserID")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("BP_Number")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool?>("BpVerified")
@@ -893,26 +931,21 @@ namespace WayleaveManagementSystem.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IdNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProfessinalType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProfessionalRegNo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("isActive")
@@ -1226,11 +1259,9 @@ namespace WayleaveManagementSystem.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IdNumber")
@@ -1246,7 +1277,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UserID")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("VatNumber")
@@ -1261,7 +1291,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<bool?>("isDepartmentAdmin")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("isInternal")
+                    b.Property<bool?>("isInternal")
                         .HasColumnType("bit");
 
                     b.Property<bool?>("isZoneAdmin")
@@ -1587,9 +1617,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                 {
                     b.HasOne("WayleaveManagementSystem.Data.Entities.AppUser", "AppUser")
                         .WithMany("Professionals")
-                        .HasForeignKey("AppUserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AppUserID");
 
                     b.Navigation("AppUser");
                 });

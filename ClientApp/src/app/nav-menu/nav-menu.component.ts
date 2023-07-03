@@ -11,7 +11,26 @@ import { CommentBuilderService } from '../service/CommentBuilder/comment-builder
 import { UserProfileService } from '../service/UserProfile/user-profile.service';
 import { NotificationsService } from '../service/Notifications/notifications.service';
 import { AccessGroupsService } from '../service/AccessGroups/access-groups.service';
+import { ApplicationsService } from '../service/Applications/applications.service';
+import { HomeComponent } from 'src/app/home/home.component';
+import { DocumentUploadService } from '../service/DocumentUpload/document-upload.service';
+import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http';
 
+
+export interface DocumentsList {
+  DocumentID: number;
+  DocumentName: string;
+  DocumentLocalPath: string;
+  ApplicationID: number;
+  AssignedUserID: string;
+}
+
+export interface FileDocument {
+
+  fileName: string;
+  file: any;
+
+}
 
 export interface CommentList {
   CommentID: number;
@@ -47,6 +66,7 @@ export class NavMenuComponent implements OnInit {
   CommentList: CommentList[] = [];
   NotificationsList: NotificationsList[] = [];
   RolesList: RolesList[] = [];
+  FileDocument: FileDocument[] = [];
   forEditIndex: any;
 
   cyberfoxConfigs: boolean = false;
@@ -67,16 +87,24 @@ export class NavMenuComponent implements OnInit {
     applica: any;
     UserRoles: import("C:/CyberfoxProjects/WayleaveManagementSystem/ClientApp/src/app/shared/shared.service").RolesList[];
 
-  constructor(private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService) { }
+  constructor(private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private http: HttpClient, private documentUploadService: DocumentUploadService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private applicationsService: ApplicationsService) { }
+  DocumentsList: DocumentsList[] = [];
 
-  displayedColumns: string[] = ['Comment', 'actions'];
-  dataSource = this.CommentList;
+
+  displayedColumns: string[] = ['DocumentName', 'actions'];
+  dataSource = this.DocumentsList;
+
+  displayedColumnsComment: string[] = ['Comment', 'actions'];
+  dataSourceComment = this.CommentList;
 
 
   @ViewChild(MatTable) commentTable: MatTable<CommentList> | undefined;
+  @ViewChild(MatTable) DocumentsListTable: MatTable<DocumentsList> | undefined;
 
   stringifiedData: any;
   CurrentUser: any;
+
+  fileAttrs: string[] = [];
 
   ngOnInit() {
     
@@ -97,9 +125,12 @@ export class NavMenuComponent implements OnInit {
 
   }
 
+  uploadRepoDoc: boolean = false;
+  deleteRepoDoc: boolean = false;
+ 
   lockViewAccordingToRoles() {
   
-    console.log("werwerwerrwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwerwererwer", this.RolesList);
+   
     
     for (var i = 0; i < this.RolesList.length; i++) {
       
@@ -109,9 +140,21 @@ export class NavMenuComponent implements OnInit {
       if (this.RolesList[i].RoleName == "Developer Config" || this.RolesList[i].RoleName == "Configuration") {
         this.cyberfoxConfigs = true;
       }
+      
+      if (this.RolesList[i].RoleName == "Department Admin" || this.RolesList[i].RoleName == "EMB") {
+        this.uploadRepoDoc = true;
+        this.deleteRepoDoc = true;
+        this.CommentBuilder = true;
+      }
     }
 
 
+  }
+
+  onPassFileName(event: { uploadFor: string; fileName: string }) {
+    const { uploadFor, fileName } = event;
+    const index = parseInt(uploadFor.substring('CoverLetter'.length));
+    this.fileAttrs[index] = fileName;
   }
 
 
@@ -315,25 +358,41 @@ export class NavMenuComponent implements OnInit {
   //}
 
   LogoutUser() {
-    this.router.navigate(["/"]);
+/*    this.router.navigate(["/"]);
     localStorage.removeItem('LoggedInUserInfo');
-    localStorage.removeItem('userProfile');
+    localStorage.removeItem('userProfile');*/
+    this.deleteWayleaveWhenOnLogout();
 
   }
 /*routes for nav buttons*/
   goToConfig() {
-    this.router.navigate(["/configuration"]);
+/*    this.router.navigate(["/configuration"]);*/
+    this.deleteWayleaveWhenGoConfig();
   }
 
   goToSettings() {
-    this.router.navigate(["/user-settings"]);
+    /*this.router.navigate(["/user-settings"]);*/
+
+    this.deleteWayleaveWhenGoSettings();
   }
   goToCyberfoxCofig() {
-    this.router.navigate(["/cyberfox-config"]);
+/*    this.router.navigate(["/cyberfox-config"]);*/
+    this.deleteWayleaveWhenGoCyberfoxConfig();
   }
 /*This is to open the comment buider modal*/
   openCommentBuilder(commentBuilder:any) {
     this.modalService.open(commentBuilder, { centered:true,size: 'xl' });
+  }
+
+  /*Open Repository Modal*/
+  openRepositoryModal(repositoryModal: any) {
+    this.getAllDocsForRepository(repositoryModal);
+   
+  }
+
+  /*Open File Upload for repository*/
+  onUploadFile(fileUpload:any) {
+    this.modalService.open(fileUpload, { centered: true, size: 'lg', backdrop: 'static' });
   }
 
   closeCommentBuilder(commentBuilder: any) {
@@ -379,7 +438,9 @@ export class NavMenuComponent implements OnInit {
 
 
   goHome() {
-    this.router.navigate(["/home"]);
+    
+    this.deleteWayleaveWhenGoHome();
+
   }
 
   getAllNotifications() {
@@ -428,5 +489,356 @@ export class NavMenuComponent implements OnInit {
   }
 
 
+/*For something to to not something*/
+  deleteWayleaveWhenGoHome() {
+    
+    let appID = this.shared.getApplicationID();
+    if (appID != 0) {
+      this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          
+          this.shared.setApplicationID(0);
+/*          this.homeComponent.getAllApplicationsByUserID();*/
+          this.router.navigate(["/home"]);
+        }
+        else {
+          alert("RefreshService Delete Application Error");
+        }
+       
+        console.log("responseAddApplication", data);
+
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+    this.router.navigate(["/home"]);
+  }
+
+  deleteWayleaveWhenGoSettings() {
+    
+    let appID = this.shared.getApplicationID();
+    if (appID != 0) {
+      this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          
+          this.shared.setApplicationID(0);
+          /* this.homeComponent.getAllApplicationsByUserID();*/
+          this.router.navigate(["/user-settings"]);
+        }
+        else {
+          alert("RefreshService Delete Application Error");
+        }
+
+        console.log("responseAddApplication", data);
+
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+    this.router.navigate(["/user-settings"]);
+  }
+
+  deleteWayleaveWhenOnLogout() {
+    
+    let appID = this.shared.getApplicationID();
+    if (appID != 0) {
+      this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          
+          this.shared.setApplicationID(0);
+          /* this.homeComponent.getAllApplicationsByUserID();*/
+          this.router.navigate(["/"]);
+          localStorage.removeItem('LoggedInUserInfo');
+          localStorage.removeItem('userProfile');
+        }
+        else {
+          alert("RefreshService Delete Application Error");
+        }
+
+        console.log("responseAddApplication", data);
+
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+    this.router.navigate(["/"]);
+    localStorage.removeItem('LoggedInUserInfo');
+    localStorage.removeItem('userProfile');
+  }
+
+  deleteWayleaveWhenGoConfig() {
+    
+    let appID = this.shared.getApplicationID();
+    if (appID != 0) {
+      this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          
+          this.shared.setApplicationID(0);
+          /* this.homeComponent.getAllApplicationsByUserID();*/
+          this.router.navigate(["/configuration"]);
+        }
+        else {
+          alert("RefreshService Delete Application Error");
+        }
+
+        console.log("responseAddApplication", data);
+
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+    this.router.navigate(["/configuration"]);
+  }
+
+  deleteWayleaveWhenGoCyberfoxConfig() {
+    
+    let appID = this.shared.getApplicationID();
+    if (appID != 0) {
+      this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          
+          this.shared.setApplicationID(0);
+          /* this.homeComponent.getAllApplicationsByUserID();*/
+          this.router.navigate(["/cyberfox-config"]);
+        }
+        else {
+          alert("RefreshService Delete Application Error");
+        }
+
+        console.log("responseAddApplication", data);
+
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+    this.router.navigate(["/cyberfox-config"]);
+  }
+
+
+
+
+
+
+
+
+
+  /*Repository Section*/
+  getAllDocsForRepository(repositoryModal) {
+    this.DocumentsList.splice(0, this.DocumentsList.length);
+    this.documentUploadService.getAllDocumentsForRepository().subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempDocList = {} as DocumentsList;
+          const current = data.dateSet[i];
+          tempDocList.DocumentID = current.documentID;
+          tempDocList.DocumentName = current.documentName;
+          tempDocList.DocumentLocalPath = current.documentLocalPath;
+          tempDocList.ApplicationID = current.applicationID;
+          tempDocList.AssignedUserID = current.assignedUserID;
+
+
+
+          this.DocumentsList.push(tempDocList);
+        
+
+        }
+
+        this.DocumentsListTable?.renderRows();
+        this.modalService.open(repositoryModal, { centered: true, size: 'xl' });
+        console.log("GOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCS", this.DocumentsList[0]);
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponseGetAllDocsForApplication", data);
+
+    }, error => {
+      console.log("ErrorGetAllDocsForApplication: ", error);
+    })
+
+  }
+
+  private readonly apiUrl: string = this.shared.getApiUrl();
+
+  viewDocument(index: any) {
+
+    // Make an HTTP GET request to fetch the document
+    fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.DocumentsList[index].DocumentName}`)
+      .then(response => {
+        if (response.ok) {
+          // The response status is in the 200 range
+    
+          return response.blob(); // Extract the response body as a Blob
+      
+        } else {
+          throw new Error('Error fetching the document');
+        }
+      })
+      .then(blob => {
+        // Create a URL for the Blob object
+        const documentURL = URL.createObjectURL(blob);
+
+        // Display the document, for example, in an <iframe>
+        const iframe = document.createElement('iframe');
+        iframe.src = documentURL;
+        document.body.appendChild(iframe);
+      })
+      .catch(error => {
+        console.log(error);
+        // Handle the error appropriately
+      });
+
+  }
+  @ViewChild('fileInput')
+  fileInput!: ElementRef;
+  CoverLetterChooseFileText = 'Choose File';
+  uploadFileEvtCoverLetter(File: any) {
+
+    const tempFileDocumentList = {} as FileDocument;
+
+    tempFileDocumentList.fileName = File.target.files[0].name;
+    tempFileDocumentList.file = File.target.files[0];
+
+
+    this.FileDocument.push(tempFileDocumentList);
+    console.log("this.FileDocument", this.FileDocument);
+
+
+    // Check if one or more files were selected
+    if (File.target.files.length > 0) {
+      // Reset the fileAttr property
+      this.CoverLetterChooseFileText = '';
+      // Iterate over the selected files
+      Array.from(File.target.files).forEach((file: any) => {
+        // Create a new File object
+        let fileObject = new File([file], file.name);
+        // Concatenate the file names and add a separator
+        this.CoverLetterChooseFileText += file.name + ' - ';
+        // Create a new FileReader object
+        let reader = new FileReader();
+        // Set the onload event handler 
+        reader.onload = (e: any) => {
+          // Create a Byte[] array from the file contents
+          let fileBytes = new Uint8Array(e.target.result);
+          console.log("fileBytes", fileBytes);
+        };
+        // Start reading the file as an ArrayBuffer
+        reader.readAsArrayBuffer(fileObject);
+
+        console.log("fileObject", fileObject);
+        console.log("reader.readAsArrayBuffer(fileObject)", reader.readAsArrayBuffer(fileObject));
+
+      });
+      // Reset the value of the file input element
+      this.fileInput.nativeElement.value = '';
+    } else {
+      // If no file was selected, set fileAttr to the default value
+      this.CoverLetterChooseFileText = 'Choose File';
+    }
+  }
+
+  response: { dbPath: ''; } | undefined
+
+  uploadFileForRepository(repositoryModal) {
+   
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
+ 
+
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, null, this.CurrentUser.appUserId, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        alert("Uploaded Document");
+      }
+      this.getAllDocsForRepository(repositoryModal);
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+  progress: number = 0;
+  message= '';
+  save(repositoryModal) {
+
+    
+    const filesForUpload = this.shared.pullFilesForUpload();
+    for (var i = 0; i < filesForUpload.length; i++) {
+      const formData = new FormData();
+      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + null;
+      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+
+
+
+      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+        .subscribe({
+          next: (event) => {
+
+
+            if (event.type === HttpEventType.UploadProgress && event.total)
+              this.progress = Math.round(100 * event.loaded / event.total);
+            else if (event.type === HttpEventType.Response) {
+              this.message = 'Upload success.';
+              this.uploadFinished(event.body, repositoryModal);
+       
+            }
+          },
+          error: (err: HttpErrorResponse) => console.log(err)
+        });
+    }
+
+  }
+
+  uploadFinished = (event: any, repositoryModal) => {
+    ;
+    this.response = event;
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
+
+
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
+
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, null, this.CurrentUser.appUserId, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        this.modalService.dismissAll(repositoryModal);
+        this.getAllDocsForRepository(repositoryModal);
+      }
+
+
+
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+  }
+
+  onDeleteRepositoryDocument(index: any, repositoryModal: any) {
+    this.documentUploadService.deleteDocument(this.DocumentsList[index].DocumentID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        this.modalService.dismissAll(repositoryModal);
+        this.getAllDocsForRepository(repositoryModal);
+      }
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+
   
 }
+
+
+

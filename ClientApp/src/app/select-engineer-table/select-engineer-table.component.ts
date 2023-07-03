@@ -32,6 +32,7 @@ export class SelectEngineerTableComponent implements OnInit {
   //data!: any[];
  
   @Input() PrfessionalType: any;
+  @Input() UserID?: any | null;
   //Local storage userID
   CurrentUser: any;
   //Convert the local storage JSON data to an array object
@@ -47,7 +48,7 @@ export class SelectEngineerTableComponent implements OnInit {
   ngOnInit(): void {
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
-    this.getProfessionalsListByProfessionalType(this.PrfessionalType)
+    this.getProfessionalsListByProfessionalType(this.PrfessionalType,this.UserID)
 
 
   }
@@ -55,10 +56,76 @@ export class SelectEngineerTableComponent implements OnInit {
     this.ProfessialTable?.renderRows();
   }
 
-  getProfessionalsListByProfessionalType(professionalType: string) {
+  getProfessionalsListByProfessionalType(professionalType: string, appUserId?:string | null ) {
     /*    this.EngineerList.splice(0, this.EngineerList.length);*/
 
-    this.professionalService.getProfessionalsListByProfessionalType(this.CurrentUser.appUserId, professionalType).subscribe((data: any) => {
+    debugger;
+    if (appUserId == "") {
+      this.professionalService.getProfessionalsListByProfessionalType(this.CurrentUser.appUserId, professionalType).subscribe((data: any) => {
+        debugger;
+        if (data.responseCode == 1) {
+          console.log("data.dateSet get", data.dateSet);
+
+          for (let i = 0; i < data.dateSet.length; i++) {
+            debugger;
+            //Check if Engineer or Contractor
+            if (professionalType == "Engineer") {
+              const tempProfessionalList = {} as ProfessialList;
+              const current = data.dateSet[i];
+              tempProfessionalList.bpNumber = current.bP_Number;
+              tempProfessionalList.email = current.email;
+              tempProfessionalList.idNumber = current.idNumber;
+              tempProfessionalList.name = current.fullName.substring(0, current.fullName.indexOf(' '));
+              tempProfessionalList.surname = current.fullName.substring(current.fullName.indexOf(' ') + 1);
+              tempProfessionalList.phoneNumber = current.phoneNumber;
+              tempProfessionalList.ProfessinalType = current.professinalType;
+              tempProfessionalList.professionalRegNo = current.professionalRegNo;
+              tempProfessionalList.professinalID = current.professinalID;
+              this.ProfessialList.push(tempProfessionalList);
+              console.log("this.ProfessialList", this.ProfessialList);
+            } else {
+              debugger;
+              const tempProfessionalList = {} as ProfessialList;
+              const current = data.dateSet[i];
+              tempProfessionalList.bpNumber = current.bP_Number;
+              tempProfessionalList.email = current.email;
+              tempProfessionalList.idNumber = current.idNumber;
+              tempProfessionalList.name = current.fullName.substring(0, current.fullName.indexOf(' '));
+              tempProfessionalList.surname = current.fullName.substring(current.fullName.indexOf(' ') + 1);
+              tempProfessionalList.phoneNumber = current.phoneNumber;
+              tempProfessionalList.ProfessinalType = current.professinalType;
+              tempProfessionalList.professionalRegNo = current.professionalRegNo;
+              tempProfessionalList.professinalID = current.professinalID;
+              tempProfessionalList.CIBRating = current.cibRating;
+              this.ProfessialList.push(tempProfessionalList);
+
+            }
+
+          }
+
+          this.ProfessialTable?.renderRows();
+          if (professionalType == "Engineer") {
+            this.shared.setEngineerData(this.ProfessialList);
+          }
+          else {
+            this.shared.setContactorData(this.ProfessialList);
+          }
+        }
+
+        else {
+
+          alert(data.responseMessage);
+        }
+
+        console.log("reponse", data);
+
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+    else { 
+    this.professionalService.getProfessionalsListByProfessionalType(appUserId, professionalType).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         console.log("data.dateSet get", data.dateSet);
@@ -101,6 +168,7 @@ export class SelectEngineerTableComponent implements OnInit {
         this.ProfessialTable?.renderRows();
         if (professionalType == "Engineer") {
           this.shared.setEngineerData(this.ProfessialList);
+          //this.shared.clientUserID = null;
         }
         else {
           this.shared.setContactorData(this.ProfessialList);
@@ -118,6 +186,8 @@ export class SelectEngineerTableComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
+    }
+
   }
 
 
@@ -180,8 +250,8 @@ export class SelectEngineerTableComponent implements OnInit {
     this.pushToShared();
   }
 
-  onAddEngineer(bpNoApplicant: string, professionalRegNo: string, name: string, surname: string, applicantEmail: string, applicantTellNo: string, engineerIDNo: string) {
-    ;
+  onAddEngineer(bpNoApplicant: string, professionalRegNo: string, name: string, surname: string, applicantEmail: string, applicantTellNo: string, engineerIDNo: string, appUserId?:string | null ) {
+    
     //const newEnineer = {} as EngineerList;
     //newEnineer.ProfessinalType = "Engineer";:
     //newEnineer.bpNumber = this.bpNoApplicant;
@@ -193,14 +263,16 @@ export class SelectEngineerTableComponent implements OnInit {
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
-    this.professionalService.addUpdateProfessional(0, "Engineer", name + " " + surname, bpNoApplicant, false, applicantEmail, applicantTellNo.toString(), professionalRegNo, this.CurrentUser.appUserId, engineerIDNo, this.CurrentUser.appUserId, null).subscribe((data: any) => {
+    if (appUserId != "") {
+      
+      this.professionalService.addUpdateProfessional(0, "Engineer", name + " " + surname, bpNoApplicant, false, applicantEmail, applicantTellNo.toString(), professionalRegNo, appUserId, engineerIDNo, this.CurrentUser.appUserId, null).subscribe((data: any) => {
 
-      if (data.responseCode == 1) {
-        alert(data.responseMessage);
+        if (data.responseCode == 1) {
+          alert(data.responseMessage);
 
-        this.ProfessialList = [];
+          this.ProfessialList = [];
 
-    
+
           // code for adding an engineer
 
           // Clear the ProfessialList array before calling getProfessionalsListByProfessionalType
@@ -212,20 +284,20 @@ export class SelectEngineerTableComponent implements OnInit {
               console.log("data.dateSet get", data.dateSet);
               for (let i = 0; i < data.dateSet.length; i++) {
                 //Check if Engineer or Contractor
-               // if (professionalType == "Engineer") {
-                  const tempProfessionalList = {} as ProfessialList;
-                  const current = data.dateSet[i];
-                  tempProfessionalList.bpNumber = current.bP_Number;
-                  tempProfessionalList.email = current.email;
-                  tempProfessionalList.idNumber = current.idNumber;
-                  tempProfessionalList.name = current.fullName.substring(0, current.fullName.indexOf(' '));
-                  tempProfessionalList.surname = current.fullName.substring(current.fullName.indexOf(' ') + 1);
-                  tempProfessionalList.phoneNumber = current.phoneNumber;
-                  tempProfessionalList.ProfessinalType = current.professinalType;
-                  tempProfessionalList.professionalRegNo = current.professionalRegNo;
-                  tempProfessionalList.professinalID = current.professinalID;
-                  this.ProfessialList.push(tempProfessionalList);
-             //   }
+                // if (professionalType == "Engineer") {
+                const tempProfessionalList = {} as ProfessialList;
+                const current = data.dateSet[i];
+                tempProfessionalList.bpNumber = current.bP_Number;
+                tempProfessionalList.email = current.email;
+                tempProfessionalList.idNumber = current.idNumber;
+                tempProfessionalList.name = current.fullName.substring(0, current.fullName.indexOf(' '));
+                tempProfessionalList.surname = current.fullName.substring(current.fullName.indexOf(' ') + 1);
+                tempProfessionalList.phoneNumber = current.phoneNumber;
+                tempProfessionalList.ProfessinalType = current.professinalType;
+                tempProfessionalList.professionalRegNo = current.professionalRegNo;
+                tempProfessionalList.professinalID = current.professinalID;
+                this.ProfessialList.push(tempProfessionalList);
+                //   }
               }
             }
           });
@@ -234,19 +306,77 @@ export class SelectEngineerTableComponent implements OnInit {
         }
 
 
-    
 
-      
 
-      else {
 
-        alert(data.responseMessage);
-      }
-      console.log("reponse", data);
 
-    }, error => {
-      console.log("Error: ", error);
-    })
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    } else {
+      this.professionalService.addUpdateProfessional(0, "Engineer", name + " " + surname, bpNoApplicant, false, applicantEmail, applicantTellNo.toString(), professionalRegNo, this.CurrentUser.appUserId, engineerIDNo, this.CurrentUser.appUserId, null).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          alert(data.responseMessage);
+
+          this.ProfessialList = [];
+
+
+          // code for adding an engineer
+
+          // Clear the ProfessialList array before calling getProfessionalsListByProfessionalType
+          this.ProfessialList = [];
+
+          // retrieve the updated data for professionals of type 'Engineer'
+          this.professionalService.getProfessionalsListByProfessionalType(this.CurrentUser.appUserId, 'Engineer').subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              console.log("data.dateSet get", data.dateSet);
+              for (let i = 0; i < data.dateSet.length; i++) {
+                //Check if Engineer or Contractor
+                // if (professionalType == "Engineer") {
+                const tempProfessionalList = {} as ProfessialList;
+                const current = data.dateSet[i];
+                tempProfessionalList.bpNumber = current.bP_Number;
+                tempProfessionalList.email = current.email;
+                tempProfessionalList.idNumber = current.idNumber;
+                tempProfessionalList.name = current.fullName.substring(0, current.fullName.indexOf(' '));
+                tempProfessionalList.surname = current.fullName.substring(current.fullName.indexOf(' ') + 1);
+                tempProfessionalList.phoneNumber = current.phoneNumber;
+                tempProfessionalList.ProfessinalType = current.professinalType;
+                tempProfessionalList.professionalRegNo = current.professionalRegNo;
+                tempProfessionalList.professinalID = current.professinalID;
+                this.ProfessialList.push(tempProfessionalList);
+                //   }
+              }
+            }
+          });
+          // Re-render the table rows
+          this.ProfessialTable?.renderRows();
+        }
+
+
+
+
+
+
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+
+   
 
 
     this.ProfessialTable?.renderRows();
@@ -254,4 +384,139 @@ export class SelectEngineerTableComponent implements OnInit {
 
   }
 
+
+  onAddContractor(bpNoContractor: string, professionalRegNo: string, name: string, surname: string, ContractorEmail: string, ContractorTell: string, contractorIDNo: string,  CIBRating: string, appUserId?: string | null ) {
+    debugger;
+    //const newEnineer = {} as EngineerList;
+    //newEnineer.ProfessinalType = "Engineer";:
+    //newEnineer.bpNumber = this.bpNoApplicant;
+    //newEnineer.professionalRegNo = this.professionalRegNo;
+    //newEnineer.name = this.name;
+    //newEnineer.surname = this.surname;
+    //newEnineer.email = this.applicantEmail;
+    //newEnineer.phoneNumber = this.applicantTellNo;
+
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
+    debugger;
+    if (appUserId != "") {
+      debugger;
+      this.professionalService.addUpdateProfessional(0, "Contractor", name + " " + surname, bpNoContractor, false, ContractorEmail, ContractorTell.toString(), professionalRegNo, appUserId, contractorIDNo, this.CurrentUser.appUserId, CIBRating).subscribe((data: any) => {
+        debugger;
+        if (data.responseCode == 1) {
+          alert(data.responseMessage);
+          debugger;
+          this.ProfessialList = [];
+
+
+          // code for adding an engineer
+
+          // Clear the ProfessialList array before calling getProfessionalsListByProfessionalType
+          this.ProfessialList = [];
+
+          // retrieve the updated data for professionals of type 'Engineer'
+          this.professionalService.getProfessionalsListByProfessionalType(this.CurrentUser.appUserId, 'Contractor').subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              console.log("data.dateSet get", data.dateSet);
+              for (let i = 0; i < data.dateSet.length; i++) {
+                //Check if Engineer or Contractor
+                // if (professionalType == "Engineer") {
+                const tempProfessionalList = {} as ProfessialList;
+                const current = data.dateSet[i];
+                tempProfessionalList.bpNumber = current.bP_Number;
+                tempProfessionalList.email = current.email;
+                tempProfessionalList.idNumber = current.idNumber;
+                tempProfessionalList.name = current.fullName.substring(0, current.fullName.indexOf(' '));
+                tempProfessionalList.surname = current.fullName.substring(current.fullName.indexOf(' ') + 1);
+                tempProfessionalList.phoneNumber = current.phoneNumber;
+                tempProfessionalList.ProfessinalType = current.professinalType;
+                tempProfessionalList.professionalRegNo = current.professionalRegNo;
+                tempProfessionalList.professinalID = current.professinalID;
+                this.ProfessialList.push(tempProfessionalList);
+                //   }
+              }
+            }
+          });
+          // Re-render the table rows
+          this.ProfessialTable?.renderRows();
+        }
+
+
+
+
+
+
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    } else {
+      this.professionalService.addUpdateProfessional(0, "Contractor", name + " " + surname, bpNoContractor, false, ContractorEmail, ContractorTell.toString(), professionalRegNo, appUserId, contractorIDNo, this.CurrentUser.appUserId, CIBRating).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          alert(data.responseMessage);
+
+          this.ProfessialList = [];
+
+
+          // code for adding an engineer
+
+          // Clear the ProfessialList array before calling getProfessionalsListByProfessionalType
+          this.ProfessialList = [];
+
+          // retrieve the updated data for professionals of type 'Engineer'
+          this.professionalService.getProfessionalsListByProfessionalType(this.CurrentUser.appUserId, 'Contractor').subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              console.log("data.dateSet get", data.dateSet);
+              for (let i = 0; i < data.dateSet.length; i++) {
+                //Check if Engineer or Contractor
+                // if (professionalType == "Engineer") {
+                const tempProfessionalList = {} as ProfessialList;
+                const current = data.dateSet[i];
+                tempProfessionalList.bpNumber = current.bP_Number;
+                tempProfessionalList.email = current.email;
+                tempProfessionalList.idNumber = current.idNumber;
+                tempProfessionalList.name = current.fullName.substring(0, current.fullName.indexOf(' '));
+                tempProfessionalList.surname = current.fullName.substring(current.fullName.indexOf(' ') + 1);
+                tempProfessionalList.phoneNumber = current.phoneNumber;
+                tempProfessionalList.ProfessinalType = current.professinalType;
+                tempProfessionalList.professionalRegNo = current.professionalRegNo;
+                tempProfessionalList.professinalID = current.professinalID;
+                this.ProfessialList.push(tempProfessionalList);
+                //   }
+              }
+            }
+          });
+          // Re-render the table rows
+          this.ProfessialTable?.renderRows();
+        }
+
+
+
+
+
+
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+
+
+
+
+    this.ProfessialTable?.renderRows();
+
+
+  }
 }

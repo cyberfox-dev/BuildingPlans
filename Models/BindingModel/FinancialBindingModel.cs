@@ -4,12 +4,15 @@
     {
         public int? FinancialID { get; set; }
         public string? FinancialName { get; set; }
-        public string? FinancialType { get; set; }
-        public string? DocumentName { get; set; }
 
-        public string? DocumentLocalPath { get; set; }
+        //
+        public string? FinancialType { get; set; }
+        public string? FinancialDocumentName { get; set; }
+
+        public string? FinancialDocumentLocalPath { get; set; }
 
         public int? ApplicationID { get; set; }
+        public string? CreatedById { get; set; }
 
 
     }

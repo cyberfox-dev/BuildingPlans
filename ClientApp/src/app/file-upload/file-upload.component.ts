@@ -26,7 +26,7 @@ export class FileUploadComponent implements OnInit {
   @Output() public onUploadFinished = new EventEmitter();
   @Output() public passFileName = new EventEmitter<{ uploadFor: string, fileName: string }>();
   fileName: string = '';
-  
+  fileUploadName = '';
   constructor(private http: HttpClient, private shared: SharedService) { }
 
   ngOnInit(): void {
@@ -42,6 +42,7 @@ export class FileUploadComponent implements OnInit {
     let fileUploadName = fileToUpload.name.substring(0, fileToUpload.name.indexOf('.')) + this.UploadFor;
 
     this.passFileName.emit({ uploadFor: this.UploadFor, fileName: fileToUpload.name });
+    console.log("THIS IS THE FILE NAME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", fileUploadName);
 
     this.shared.pushFileForTempFileUpload(fileToUpload, fileUploadName + fileExtention);
   }

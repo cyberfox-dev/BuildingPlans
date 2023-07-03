@@ -7,6 +7,7 @@ import { ApplicationsService } from '../../service/Applications/applications.ser
 import { CommentsService } from '../../service/Comments/comments.service';
 import { DepositRequiredService } from 'src/app/service/DepositRequired/deposit-required.service';
 import jsPDF from 'jspdf';
+
 import autoTable from 'jspdf-autotable';
 import { DatePipe } from '@angular/common';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
@@ -20,6 +21,8 @@ import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentFor
 import { SubDepartmentsService } from 'src/app/service/SubDepartments/sub-departments.service';
 import { AccessGroupsService } from '../../service/AccessGroups/access-groups.service';
 import { BusinessPartnerService } from '../../service/BusinessPartner/business-partner.service';
+import { HttpClient, HttpErrorResponse, HttpEventType } from '@angular/common/http';
+import { FinancialService } from '../../service/Financial/financial.service';
 
 
 
@@ -67,6 +70,31 @@ export interface SubDepConditionalApproveList {
   Comment: string;
   CommentStatus: string;
   DateCreated: any;
+}
+export interface SubDepSubDepRejectList {
+  SubDepID: number;
+  SubDepName: string;
+  ApplicationID: number;
+  Comment: string;
+  CommentStatus: string;
+  DateCreated: any;
+}
+
+export interface SubDepFinalApproveList {
+  SubDepID: number;
+  SubDepName: string;
+  ApplicationID: number;
+  Comment: string;
+  CommentStatus: string;
+  DateCreated: any;
+}
+
+export interface DocumentsList {
+  DocumentID: number;
+  DocumentName: string;
+  DocumentLocalPath: string;
+  ApplicationID: number;
+  AssignedUserID: string;
 }
 
 export interface CommentsList {
@@ -166,6 +194,9 @@ export class ViewProjectInfoComponent implements OnInit {
   public projectNo = "";
   createdByID: any | undefined;
 
+  rejected: boolean = false;
+  approved: boolean = false;
+
   canClarify: boolean;
   /*type of applicant*/
   isInternal = true;
@@ -210,6 +241,8 @@ export class ViewProjectInfoComponent implements OnInit {
   StagesList: StagesList[] = [];
   CommentsList: CommentsList[] = [];
   SubDepConditionalApproveList: SubDepConditionalApproveList[] = [];
+  SubDepFinalApproveList: SubDepFinalApproveList[] = [];
+  SubDepSubDepRejectList: SubDepSubDepRejectList[] = [];
   RolesList: RolesList[] = [];
   SubDepartmentList: SubDepartmentList[] = [];
   SubDepartmentsList: SubDepartmentList[] = [];
@@ -217,6 +250,9 @@ export class ViewProjectInfoComponent implements OnInit {
   CurrentApplicationBeingViewed: ApplicationList[] = [];
   DepositRequired: DepositRequired[] = [];
   relatedApplications: ApplicationList[] = [];
+
+  DocumentsList: DocumentsList[] = [];
+
 
 
   @ViewChild('pdfTable', { static: false }) pdfTable: ElementRef;
@@ -261,6 +297,12 @@ export class ViewProjectInfoComponent implements OnInit {
   permitBtn: boolean = true;
   permitTextBox: boolean = false;
   startDate: string;
+
+
+
+
+
+    ApForUpload: string;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -290,7 +332,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   openEditCommentModal(commentEditorModal: any, index: any) {
-    debugger;
+    
 
     this.currentIndex = index;
 
@@ -302,10 +344,15 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
+  @ViewChild(MatTable) FinancialListTable: MatTable<DocumentsList> | undefined;
+
+
+  displayedColumns: string[] = ['name', 'actions'];
+  dataSourceDoc = this.DocumentsList;
+
 
   panelOpenState = false;
-  displayedColumns: string[] = ['name', 'actions'];
-  dataSource = ELEMENT_DATA;
+
 
 
 
@@ -325,7 +372,9 @@ export class ViewProjectInfoComponent implements OnInit {
     private router: Router,
     private subDepartmentService: SubDepartmentsService,
     private businessPartnerService: BusinessPartnerService,
-
+    private documentUploadService: DocumentUploadService,
+    private http: HttpClient,
+    private financial: FinancialService
   ) { }
 
 
@@ -390,17 +439,37 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getAllStages();
     this.setInterface();
     this.getAllRequiredDeposits();
-    /*    this.getAllSubDepFroConditionalApprove();*/
+    this.getAllSubDepFroConditionalApprove();
+    this.getAllSubDepForFinalApprove();
     this.getAllSubDepForReject();
+/*    this.getAllSubDepForReject();*/
     this.canReapply = this.sharedService.getCanReapply();
     console.log("canReapplyVen: ", this.canReapply);
     this.setProjectNumber();
-    this.getAllSubDepFroConditionalApprove();
+ 
     this.getLinkedDepartments();
     this.checkIfCanReply();
     this.checkIfPermitExsist();
   }
+  receivedata: string;
 
+  receiveData(data: string) {
+    debugger;
+    this.receivedata = data;
+    console.log(this.receivedata);
+    if (this.receivedata == "Approved") {
+      this.approved = true;
+      this.onCreateApprovalPack();
+    }
+    else if (this.receivedata == "Rejected") {
+      this.rejected = true;
+      this.onCrreateRejectionPack();
+    }
+    else {
+
+    }
+
+  }
 
 
   //validate(): void {
@@ -465,7 +534,17 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   setProjectNumber() {
-    this.projectNo = this.CurrentApplicationBeingViewed[0].ProjectNumber;
+    
+    if (this.CurrentApplicationBeingViewed[0].ProjectNumber == null) {
+      
+
+      this.projectNo = this.CurrentApplicationBeingViewed[0].applicationID.toString();
+    }
+    else {
+      
+      this.projectNo = this.CurrentApplicationBeingViewed[0].ProjectNumber;
+    }
+   
 
   }
 
@@ -544,7 +623,7 @@ export class ViewProjectInfoComponent implements OnInit {
   // await  this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, subDepID ).subscribe((data: any) => {
   //     if (data.responseCode == 1) {
   //       const current = data.dateSet[0];
-  //       debugger;
+  //       
 
   //       this.subDepartmentForComment = current.subDepartmentForCommentID;
 
@@ -610,7 +689,7 @@ export class ViewProjectInfoComponent implements OnInit {
     //    if (data.responseCode == 1) {
     //      this.getAllComments();
 
-    //      debugger;
+    //      
     //      this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, null, false, null, null, null).subscribe((data: any) => {
 
     //        if (data.responseCode == 1) {
@@ -675,7 +754,7 @@ export class ViewProjectInfoComponent implements OnInit {
           if (data.responseCode == 1) {
             this.getAllComments();
 
-            debugger;
+            
             this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, null, false, null, null, null).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
@@ -717,7 +796,7 @@ export class ViewProjectInfoComponent implements OnInit {
           if (data.responseCode == 1) {
             this.getAllComments();
 
-            debugger;
+            
             this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, null, false, null, null, null).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
@@ -764,7 +843,7 @@ export class ViewProjectInfoComponent implements OnInit {
     //    if (data.responseCode == 1) {
     //      this.getAllComments();
 
-    //      debugger;
+    //      
     //      this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, null, false, null, null, null).subscribe((data: any) => {
 
     //        if (data.responseCode == 1) {
@@ -1132,7 +1211,7 @@ export class ViewProjectInfoComponent implements OnInit {
           if (data.responseCode == 1) {
 
 
-            this.ChangeApplicationStatusToPaid()
+            this.ChangeApplicationStatusToPaid();
           }
           else {
             //alert("Invalid Email or Password");
@@ -1159,50 +1238,99 @@ export class ViewProjectInfoComponent implements OnInit {
     })
   }
 
+  onAutoLinkDepartment() {
+    
+    this.subDepartmentService.getAllSubDepartmentsForAutoDistribution().subscribe((data: any) => {
+      
+      if (data.responseCode == 1) {
+        
+        for (var i = 0; i < data.dateSet.length; i++) {
+          this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, data.dateSet[i].subDepartmentID, data.dateSet[i].subDepartmentName, null, null, this.CurrentUser.appUserId).subscribe((data: any) => {
 
+            if (data.responseCode == 1) {
+              
+              alert(data.dateSet.subDepartmentName + " assigned to this Application");
+
+            }
+            else {
+
+              alert(data.responseMessage);
+            }
+            console.log("reponseAddUpdateDepartmentForComment", data);
+
+
+          }, error => {
+            console.log("Error: ", error);
+          })
+        }
+      }
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponseAddUpdateDepartmentForComment", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
   ChangeApplicationStatusToPaid() {
 
     if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Unpaid") {
-      this.applicationsService.updateApplicationStage(this.CurrentApplicationBeingViewed[0].applicationID, this.CurrentApplicationBeingViewed[0].PreviousStageName, this.CurrentApplicationBeingViewed[0].PreviousStageNumber, this.CurrentApplicationBeingViewed[0].CurrentStageName, this.CurrentApplicationBeingViewed[0].CurrentStageNumber, this.CurrentApplicationBeingViewed[0].NextStageName, this.CurrentApplicationBeingViewed[0].NextStageNumber, "Paid").subscribe((data: any) => {
-
+   
+      this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
         if (data.responseCode == 1) {
-          alert("Application Status Updated to Paid");
 
-          //this.applicationsService.updateApplicationStage(null, null, null, null, null, null, null, null, " ").subscribe((data: any) => {
-          //  if (data.responseCode == 1) {
-          //   // const current = data.dateSet[0];
+          const current = data.dateSet[0];
+          this.configNumberOfProject = current.utilitySlot1;
+          this.configMonthYear = current.utilitySlot2;
+          this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
+            if (data.responseCode == 1) {
 
+              this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "Distributed/Unallocated", null, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, false).subscribe((data: any) => {
 
+                if (data.responseCode == 1) {
+                  alert(data.responseMessage);
 
+                  }
+                else {
+                  /*          alert(data.responseMessage);*/
+                }
+            
+                console.log("responseAddapplication", data);
 
-          //  }
-          //  else {
+              }, error => {
+                console.log("Error", error);
+              })
+            }
+            else {
+              //alert("Invalid Email or Password");
+              alert(data.responseMessage);
+            }
+            console.log("addUpdateConfigReponse", data);
 
-          //    alert(data.responseMessage);
-          //  }
-          //  console.log("reponseGetSubDepartmentForComment", data);
-
-
-          //}, error => {
-          //  console.log("Error: ", error);
-          //})
-
-
-
+          }, error => {
+            console.log("addUpdateConfigError: ", error);
+          })
+          this.MoveToNextStage();
+          this.router.navigate(["/home"]);
         }
         else {
+          //alert("Invalid Email or Password");
           alert(data.responseMessage);
         }
-        console.log("responseAddapplication", data);
+        console.log("getConfigsByConfigNameReponse", data);
+
       }, error => {
-        console.log("Error", error);
+        console.log("getConfigsByConfigNameError: ", error);
       })
 
-    }
-    else {
-      alert("Application Status Is Not Unpaid");
-    }
+        }
 
+    else {
+      alert("Application Status Needs to Be Unpaid");
+    }
 
   }
 
@@ -1219,10 +1347,10 @@ export class ViewProjectInfoComponent implements OnInit {
   updateStartDateForPermit() {
 
 
-    debugger;
+    
     this.applicationsService.addUpdateApplication(this.CurrentApplicationBeingViewed[0].applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.permitStartDate).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
 
       }
       else {
@@ -1248,11 +1376,13 @@ export class ViewProjectInfoComponent implements OnInit {
 
     //alert("ChangeApplicationStatusToPaid");
 
-    if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Paid") {
-      this.applicationsService.updateApplicationStage(this.CurrentApplicationBeingViewed[0].applicationID, this.CurrentApplicationBeingViewed[0].CurrentStageName, this.CurrentApplicationBeingViewed[0].CurrentStageNumber, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, "Distributing").subscribe((data: any) => {
+   /* if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Paid") {*/
+      this.applicationsService.updateApplicationStage(this.CurrentApplicationBeingViewed[0].applicationID, this.CurrentApplicationBeingViewed[0].CurrentStageName, this.CurrentApplicationBeingViewed[0].CurrentStageNumber, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, "Distributed/Unallocated").subscribe((data: any) => {
 
         if (data.responseCode == 1) {
-          alert("Application Moved to ${this.CurrentApplicationBeingViewed[0].CurrentStageName}");
+          this.onAutoLinkDepartment();
+          alert("Application Moved to Distributed/Unallocated");
+         // this.router.navigate(["/home"]);
 
         }
         else {
@@ -1263,14 +1393,14 @@ export class ViewProjectInfoComponent implements OnInit {
         console.log("Error", error);
       })
 
-    }
+    //}
 
-    else if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[2].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Distributing") {
+    //else if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[2].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Distributing") {
 
-    }
-    else {
-      alert("Application Status Is Not Paid");
-    }
+    //}
+    //else {
+    //  alert("Application Status Is Not Paid");
+    //}
 
 
   }
@@ -1314,6 +1444,10 @@ export class ViewProjectInfoComponent implements OnInit {
   /*CREATING THE APPROVAL PACK*/
 
   getUserDep() {
+    
+    if (this.depID != null) {
+
+
     this.subDepartmentService.getSubDepartmentsByDepartmentID(this.depID).subscribe((data: any) => {
 
 
@@ -1344,11 +1478,15 @@ export class ViewProjectInfoComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
+
+    }
+
+
   }
   getAllSubDepFroConditionalApprove() {
 
-    let commentS = "Approved(Conditional)";
-
+    let commentS = "Approved";
+    
     this.commentsService.getSubDepByCommentStatus(commentS, this.ApplicationID).subscribe((data: any) => {
 
 
@@ -1356,7 +1494,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
         for (var i = 0; i < data.dateSet.length; i++) {
           const tempSubDepCommentStatusList = {} as SubDepConditionalApproveList;
-
+          
           const current = data.dateSet[i];
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
           tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
@@ -1371,6 +1509,46 @@ export class ViewProjectInfoComponent implements OnInit {
         }
 
         console.log("THIS IS THE CUB DEP THAT HAS APPROVED THE APPLICATION CONDITIONALLY", data.dateSet);
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
+  getAllSubDepForFinalApprove() {
+
+    let commentS = "Final Approved";
+    
+    this.commentsService.getSubDepByCommentStatus(commentS, this.ApplicationID).subscribe((data: any) => {
+
+
+      if (data.responseCode == 1) {
+
+        for (var i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepCommentStatusList = {} as SubDepFinalApproveList;
+          
+          const current = data.dateSet[i];
+          tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
+          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
+          tempSubDepCommentStatusList.ApplicationID = current.applicationID;
+          tempSubDepCommentStatusList.Comment = current.comment;
+          tempSubDepCommentStatusList.DateCreated = current.dateCreated;
+          tempSubDepCommentStatusList.CommentStatus = current.commentStatus;
+
+          this.SubDepFinalApproveList.push(tempSubDepCommentStatusList);
+
+
+        }
+
+        console.log("THIS IS THE CUB DEP THAT HAS Final APPROVED THE APPLICATION ", data.dateSet);
       }
 
       else {
@@ -1386,16 +1564,15 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getAllSubDepForReject() {
-    let commentS = "Rejected";
 
-    this.commentsService.getSubDepByCommentStatus(commentS, this.ApplicationID).subscribe((data: any) => {
+    this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
 
 
       if (data.responseCode == 1) {
 
         for (var i = 0; i < data.dateSet.length; i++) {
-          const tempSubDepCommentStatusList = {} as SubDepConditionalApproveList;
-
+          const tempSubDepCommentStatusList = {} as SubDepSubDepRejectList;
+          
           const current = data.dateSet[i];
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
           tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
@@ -1404,12 +1581,12 @@ export class ViewProjectInfoComponent implements OnInit {
           tempSubDepCommentStatusList.DateCreated = current.dateCreated;
           tempSubDepCommentStatusList.CommentStatus = current.commentStatus;
 
-          this.SubDepConditionalApproveList.push(tempSubDepCommentStatusList);
+          this.SubDepSubDepRejectList.push(tempSubDepCommentStatusList);
 
 
         }
 
-        console.log("THIS IS THE CUB DEP THAT HAS APPROVED THE APPLICATION CONDITIONALLY", data.dateSet);
+        console.log("THIS IS THE CUB DEP THAT HAS Final APPROVED THE APPLICATION ", data.dateSet);
       }
 
       else {
@@ -1423,6 +1600,7 @@ export class ViewProjectInfoComponent implements OnInit {
     })
 
   }
+
   getApplicationDetailsForDocs() {
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     const setValues = this.applicationDataForView[0];
@@ -1591,6 +1769,17 @@ export class ViewProjectInfoComponent implements OnInit {
 
       data.push(row);
     });
+
+    this.SubDepFinalApproveList.forEach((deposit) => {
+      const row = [
+        deposit.SubDepName,
+        deposit.Comment,
+        deposit.CommentStatus,
+
+      ];
+
+      data.push(row);
+    });
     doc.setLineHeightFactor(60);
     doc.setFontSize(10); // add this line to set the font size
 
@@ -1614,7 +1803,7 @@ export class ViewProjectInfoComponent implements OnInit {
       },
 
       columnStyles: {
-        0: { cellWidth: 50, fontStyle: 'bold' },
+        0: { cellWidth: 40, fontStyle: 'bold' },
         1: { cellWidth: 80 },
         2: { cellWidth: 40 },
       }
@@ -2120,17 +2309,100 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.addImage(footer, 'png', 7, 255, 205, 45);
 
     // Save PDF document
-    doc.save('Approval Pack');
+    doc.save("Approval Pack");
+    const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
+    const file = new File([pdfData], 'approval_pack.pdf', { type: 'application/pdf' });
+
+
+    // Prepare the form data
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.sharedService.pushFileForTempFileUpload(file, "Approval Pack" + ".pdf");
+    this.save();
+  }
+
+
+  response: { dbPath: ''; } | undefined
+  progress: number = 0;
+  message = '';
+  private readonly apiUrl: string = this.sharedService.getApiUrl();
+  save() {
+
+
+
+
+    const filesForUpload = this.sharedService.pullFilesForUpload();
+    for (var i = 0; i < filesForUpload.length; i++) {
+      const formData = new FormData();
+      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + null;
+      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+    
+
+
+      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+        .subscribe({
+          next: (event) => {
+
+
+            if (event.type === HttpEventType.UploadProgress && event.total)
+              this.progress = Math.round(100 * event.loaded / event.total);
+            else if (event.type === HttpEventType.Response) {
+              this.message = 'Upload success.';
+              this.uploadFinished(event.body);
+
+            }
+          },
+          error: (err: HttpErrorResponse) => console.log(err)
+        });
+    }
+
+  }
+
+
+  uploadFinished = (event: any) => {
+    ;
+    this.response = event;
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
+
+
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
+
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, "System Generated Pack", "System Generated Pack").subscribe((data: any) => {
+/*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
+      if (data.responseCode == 1) {
+      
+      }
+
+    }, error => {
+      console.log("Error: ", error);
+    })
 
 
   }
+  fileAttrs: string[] = [];
+
+  onPassFileName(event: { uploadFor: string; fileName: string }) {
+    const { uploadFor, fileName } = event;
+    const index = parseInt(uploadFor.substring('CoverLetter'.length));
+    this.fileAttrs[index] = fileName;
+  }
+
+
+
+
+
 
 
 
 
   onCrreateRejectionPack() {
 
-    this.getAllSubDepFroConditionalApprove();
+    this.getAllSubDepForReject();
     const doc = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
@@ -2178,12 +2450,11 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.text('Status Summary:', 10, 105, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
 
 
-    this.SubDepConditionalApproveList.forEach((deposit) => {
+    this.SubDepSubDepRejectList.forEach((deposit) => {
       const row = [
         deposit.SubDepName,
         deposit.Comment,
         deposit.CommentStatus,
-
       ];
 
       data.push(row);
@@ -2306,7 +2577,8 @@ export class ViewProjectInfoComponent implements OnInit {
       this.wbsButton = false;
     }
   }
-
+  countApprove = 0;
+  countReject = 0;
 
   getLinkedDepartments() {
 
@@ -2314,15 +2586,15 @@ export class ViewProjectInfoComponent implements OnInit {
     const currentApplication = this.sharedService.getViewApplicationIndex();
 
 
-
+    
     this.subDepartmentForCommentService.getSubDepartmentForComment(currentApplication.applicationID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
-
+        
         for (var i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
-
+          
           const tempSubDepartmentList = {} as SubDepartmentList;
           tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
           tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
@@ -2333,12 +2605,17 @@ export class ViewProjectInfoComponent implements OnInit {
           tempSubDepartmentList.IsRefered = current.IsRefered;
           tempSubDepartmentList.commentStatus = current.commentStatus;
 
-
-
+          if (tempSubDepartmentList.commentStatus == "Final Approved") {
+            this.countApprove++;
+          }
+          if (tempSubDepartmentList.commentStatus == "Rejected") {
+            this.countReject++;
+          }
+          
           this.SubDepartmentList.push(tempSubDepartmentList);
         }
 
-
+        this.checkIfApprovedOrRejected();
       }
       else {
 
@@ -2351,6 +2628,15 @@ export class ViewProjectInfoComponent implements OnInit {
       console.log("Error: ", error);
     })
 
+  }
+
+  checkIfApprovedOrRejected() {
+    if (this.countApprove == this.SubDepartmentList.length) {
+      alert("ALL FINAL APPROVED");
+    }
+    if (this.countReject > 0 ) {
+      
+    }
   }
 
   showApproveOrReject() {
@@ -2411,9 +2697,103 @@ export class ViewProjectInfoComponent implements OnInit {
       if (this.RolesList[i].RoleName == "Department Admin") {
         this.auditTrail = true;
       }
+    
+      if (this.RolesList[i].RoleName == "Developer Config") {
+        this.ApprovalPackBtn = true;
+        this.RejectionPackBtn = true;
+      }
 
     }
 
+
+  }
+
+/*  UploadDocuments(applicationData: any): void {
+    //Pulling information from the share
+    const filesForUpload = this.sharedService.pullFilesForUpload();
+    for (var i = 0; i < filesForUpload.length; i++) {
+      const formData = new FormData();
+      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.ApplicationID;
+      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+
+
+      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+        .subscribe({
+          next: (event) => {
+
+            if (event.type === HttpEventType.UploadProgress && event.total)
+              this.progress = Math.round(100 * event.loaded / event.total);
+            else if (event.type === HttpEventType.Response) {
+              this.message = 'Upload success.';
+              this.uploadFinished(event.body, this.ApplicationID, applicationData);
+            }
+          },
+          error: (err: HttpErrorResponse) => console.log(err)
+        });
+    }
+  }
+
+  uploadFinished = (event: any, applicationID: any, applicationData: any) => {
+    ;
+    this.response = event;
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
+    console.log("applicationData", applicationData);
+
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, applicationID, applicationData.userID, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+      }
+
+
+
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+  }*/
+
+  getAllDocsForApplication() {
+
+    this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempDocList = {} as DocumentsList;
+          const current = data.dateSet[i];
+          tempDocList.DocumentID = current.documentID;
+          tempDocList.DocumentName = current.documentName;
+          tempDocList.DocumentLocalPath = current.documentLocalPath;
+          tempDocList.ApplicationID = current.applicationID;
+          tempDocList.AssignedUserID = current.assignedUserID;
+
+
+
+          this.DocumentsList.push(tempDocList);
+
+
+        }
+
+        this.FinancialListTable?.renderRows();
+        console.log("GOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCS", this.DocumentsList[0]);
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponseGetAllDocsForApplication", data);
+
+    }, error => {
+      console.log("ErrorGetAllDocsForApplication: ", error);
+    })
 
   }
 

@@ -2,16 +2,16 @@
 
 namespace WayleaveManagementSystem.Data.Entities
 {
-    public class Applications: BaseEntity
+    public class Applications : BaseEntity
     {
         [Key]
         public int? ApplicationID { get; set; }
-        public string UserID { get; set; }
-        public string FullName { get; set; }
-        public string Email { get; set;}
-        public string? PhoneNumber { get; set;}
+        public string? UserID { get; set; }
+        public string? FullName { get; set; }
+        public string? Email { get; set; }
+        public string? PhoneNumber { get; set; }
         public string? PhyscialAddress { get; set; }
-         public string? ReferenceNumber { get; set; }
+        public string? ReferenceNumber { get; set; }
         public string? CompanyRegNo { get; set; }
         public string? TypeOfApplication { get; set; }
         public string? NotificationNumber { get; set; }
@@ -44,6 +44,8 @@ namespace WayleaveManagementSystem.Data.Entities
         //for showing/hiding the escalate button
 
         public DateTime? PermitStartDate { get; set; }
+
+        public DateTime? StageStartDate{get;set;}
 
 
         /*Application Status Logic

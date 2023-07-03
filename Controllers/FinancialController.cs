@@ -52,13 +52,16 @@ namespace WayleaveManagementSystem.Controllers
                             // FinancialID = model.FinancialID
                             FinancialName = model.FinancialName,
                             FinancialType = model.FinancialType,
-                            DocumentName = model.DocumentName,
-                            DocumentLocalPath = model.DocumentLocalPath,
+                            DocumentName = model.FinancialDocumentName,
+                            DocumentLocalPath = model.FinancialDocumentLocalPath,
                             ApplicationID = model.ApplicationID,
-
+                            DateCreated = DateTime.Now,
+                            DateUpdated = DateTime.Now,
+                            CreatedById = model.CreatedById,
+                            isActive = true,
                         };
 
-                        await _context.DepositRequired.AddAsync(tempFinancial);
+                        await _context.Financial.AddAsync(tempFinancial);
                         await _context.SaveChangesAsync();
 
                         result = tempFinancial;
@@ -73,13 +76,13 @@ namespace WayleaveManagementSystem.Controllers
                         {
                             tempFinancial.FinancialType = model.FinancialType;
                         }
-                        if (model.DocumentName != null)
+                        if (model.FinancialDocumentName != null)
                         {
-                            tempFinancial.DocumentName = model.DocumentName;
+                            tempFinancial.DocumentName = model.FinancialDocumentName;
                         }
-                        if (model.DocumentLocalPath != null)
+                        if (model.FinancialDocumentLocalPath != null)
                         {
-                            tempFinancial.DocumentLocalPath = model.DocumentLocalPath;
+                            tempFinancial.DocumentLocalPath = model.FinancialDocumentLocalPath;
                         }
       
 

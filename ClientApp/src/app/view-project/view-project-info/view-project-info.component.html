@@ -49,15 +49,15 @@
 
 <h1 *ngIf="CurrentApplicationBeingViewed[0].isPlanning === false">Application Information</h1>
 <h1 *ngIf="CurrentApplicationBeingViewed[0].isPlanning === true">Application Planning Information</h1>
-<h2>Project number {{projectNo}}</h2>
+<h2>Project Number {{projectNo}}</h2>
 
 <div class="cont1">
 
   <app-action-center  [ApplicationID]="ApplicationID" (refreshParent)="ngOnInit()" *ngIf="isInternalUser" (optionEvent)="reciveOption($event)"></app-action-center>
   <button mat-button color="action" [matMenuTriggerFor]="actions"> <mat-icon>more_vert</mat-icon></button>
   <mat-menu #actions="matMenu">
-    <button mat-menu-item (click)="buildProjectNumber()" *ngIf="isInternalUser"> move to paid</button>
-    <button mat-menu-item (click)="MoveToNextStage()" *ngIf="isInternalUser">Move to Next stage</button>
+    <button mat-menu-item (click)="ChangeApplicationStatusToPaid()" *ngIf="isInternalUser"> Move to Paid</button>
+    <!--<button mat-menu-item (click)="MoveToNextStage()" *ngIf="isInternalUser">Move to Next Stage</button>-->
     <button mat-menu-item (click)="MoveToNextStage()"> <i class="fa fa-ban" aria-hidden="true"></i> Cancel Application</button>
     <button mat-menu-item (click)="goToNewWayleave(true)" *ngIf="canReapply"><i class="fa fa-repeat" aria-hidden="true"></i> Re-apply</button>
     <button mat-menu-item (click)="validate()"><i class="fa fa-repeat" aria-hidden="true"></i> Test BP</button>
@@ -95,7 +95,7 @@
       <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d55522.617408819875!2d30.405427199999995!3d-29.569843200000005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sza!4v1662643454248!5m2!1sen!2sza" width="100%" height="700" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>-->
       <app-project-details-map-view [data]="ARCGISAPIData"></app-project-details-map-view>
-      <app-department-circulation></app-department-circulation>
+      <app-department-circulation ></app-department-circulation>
     </mat-tab>
 
 
@@ -113,7 +113,7 @@
             <div class="row" *ngFor="let commentsList of CommentsList; let i = index">
               <div class="col s12 m12 l12">
 
-                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'Final Approved'" [class.Reject]="commentsList.CommentStatus === 'Reject'||commentsList.CommentStatus === 'Rejected'" [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'"  [class.refer]="commentsList.CommentStatus === 'Refer'">
+                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved' " [class.Reject]="commentsList.CommentStatus === 'Reject'||commentsList.CommentStatus === 'Rejected'" [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'" [class.refer]="commentsList.CommentStatus === 'Refer'">
 
                   <li class="event" data-date="">
 
@@ -129,9 +129,9 @@
                     <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarify' && canClarify" (click)="openReplyModal(replyModal,i)">Reply</button>
                     <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarified'&& canClarify" (click)="openReplyModal(replyModal,i)">Update Reply</button>
                     <div class="row" *ngIf="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null">
-                      <label  *ngIf="commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null">Applicants Reply :</label>
+                      <label *ngIf="commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null">Applicants Reply :</label>
                       <div class="form-floating mb-3 mt-3" *ngIf="commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null">
-                        <input type="text" class="form-control"  value="{{commentsList.isApplicantReplay}}" id="ApplicantReply" name="ApplicantReply" disabled> <!--[(ngModel)]="ApplicantReply"-->
+                        <input type="text" class="form-control" value="{{commentsList.isApplicantReplay}}" id="ApplicantReply" name="ApplicantReply" disabled> <!--[(ngModel)]="ApplicantReply"-->
 
                       </div>
                     </div>
@@ -142,14 +142,45 @@
               </div>
             </div>
           </div>
+
         </section>
 
         <br />
       </div>
-      <div class="cont3" *ngIf="isInternalUser">
+     <!-- <div class="cont3" *ngIf="isInternalUser">
         <button mat-raised-button color="green" (click)="onCreateApprovalPack()" *ngIf="ApprovalPackBtn">Approval Pack</button>
         <button mat-raised-button color="red" (click)="onCrreateRejectionPack()" *ngIf="RejectionPackBtn">Rejection Pack</button>
+      </div>-->
+
+      <div class="container-fluid" *ngIf="rejected">
+        <div class="alert alert-danger">
+          <h4>Your application has been rejected, Please reffer to the Rejection pack located in the documents tab.</h4>
+        </div>
       </div>
+      <div class="container-fluid " *ngIf="approved">
+        <div class="alert alert-success">
+          <h4>Your application has been approved, Please reffer to the approval pack located in the documents tab.</h4>
+        </div>
+      </div>
+
+      <!--<mat-form-field>
+  <div>
+    <mat-toolbar>-->
+      <!-- Display files names -->
+      <!--<input matInput [(ngModel)]="fileAttr" readonly name="name" />-->
+      <!-- Browse Button -->
+      <!--<button mat-flat-button color="blue">Browse File</button>
+  </mat-toolbar>-->
+      <!-- Fetch selected filed on change -->
+      <!--<input type="file"
+             #fileInput
+             id="uploadFile"
+             (change)="uploadFileEvt($event)"
+             name="uploadFile"
+             multiple="multiple"
+             accept="image/*" />
+    </div>
+  </mat-form-field>-->
 
 
     </mat-tab>
@@ -209,58 +240,31 @@
 
     <mat-tab label="Financial">
       <div class="container-fluid">
-        <br>
-        <div class="form-floating">
-          <select class="form-select" aria-label="Default select example" placeholder="Type of application">
-            <option selected>Type </option>
-            <option value="1">Deposit</option>
-            <option value="2">Transgression</option>
-            <option value="3">type 3</option>
-            <option value="4">type 4</option>
-          </select>
 
-          <br>
-          <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSourceDoc" class="mat-elevation-z8">
 
 
-            <ng-container matColumnDef="position">
-              <th mat-header-cell *matHeaderCellDef> No. </th>
-              <td mat-cell *matCellDef="let element"> {{element.position}} </td>
-            </ng-container>
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let element">  </td>
+    </ng-container>
 
 
-            <ng-container matColumnDef="name">
-              <th mat-header-cell *matHeaderCellDef> Name </th>
-              <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-            </ng-container>
-
-
-            <ng-container matColumnDef="weight">
-              <th mat-header-cell *matHeaderCellDef> Weight </th>
-              <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
-            </ng-container>
-
-
-            <ng-container matColumnDef="symbol">
-              <th mat-header-cell *matHeaderCellDef> Symbol </th>
-              <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef></th>
-              <td mat-cell *matCellDef="let i = index">
-                <button mat-raised-button color="blue" matTooltip="View" (click)="viewPDF()"><i class="fa fa-eye"></i></button>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let i = index">
+        <button mat-raised-button color="blue" matTooltip="View" (click)="viewPDF()"><i class="fa fa-eye"></i></button>
 
 
 
-              </td>
-              <td mat-cell *matCellDef="let element">  </td>
-            </ng-container>
+      </td>
+      <td mat-cell *matCellDef="let element">  </td>
+    </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          </table>
-        </div>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
         <div class="form-floating mb-3 mt-3" *ngIf="wbsRequired">
           <input type="text" class="form-control" id="wbsNumberRequested" placeholder="WBS Number" [(ngModel)]="wbsNumberRequested" readonly>
           <label for="wbsNumberRequested">WBS Number</label>

@@ -70,6 +70,10 @@ namespace WayleaveManagementSystem.Service
                 {
                     tempConfigTable.ConfigName = configName;
                 }
+                if(configDescription != null)
+                {
+                    tempConfigTable.ConfigDescription = configDescription;
+                }
                
                 tempConfigTable.DateUpdated = DateTime.Now;
                 tempConfigTable.isActive = true;

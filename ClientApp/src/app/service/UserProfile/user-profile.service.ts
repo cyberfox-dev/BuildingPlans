@@ -20,7 +20,7 @@ export class UserProfileService {
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
-  public addUpdateUserProfiles(userProfileID: number | null, userID: string | null, fullName: string, email: string, phoneNumber: string | null, isInternal: boolean, bp_Number: string | null, companyName: string | null, companyRegNo: string | null, physcialAddress: string | null, directorate: string | null, departmentID: number | null, subDepartmentID: number | null, branch: string | null, costCenterNumber: string | null, costCenterOwner: string | null, copyOfID: any | null, createdById: string | null, idNumber: string | null, zoneID: number | null) {
+  public addUpdateUserProfiles(userProfileID?: number | null, userID?: string | null, fullName?: string | null, email?: string | null, phoneNumber?: string | null, isInternal?: boolean | null, bp_Number?: string | null, companyName?: string | null, companyRegNo?: string | null, physcialAddress?: string | null, directorate?: string | null, departmentID?: number | null, subDepartmentID?: number | null, branch?: string | null, costCenterNumber?: string | null, costCenterOwner?: string | null, copyOfID?: any | null, createdById?: string | null, idNumber?: string | null, zoneID?: number | null) {
 
     const body = {
       UserProfileID: userProfileID,
@@ -41,7 +41,7 @@ export class UserProfileService {
       CostCenterOwner: costCenterOwner,
       CopyOfID: copyOfID,
       CreatedById: createdById,
-      idNumber: idNumber,
+      IdNumber: idNumber,
       isActive: true,
       depConfirmation: false,
       zoneID: zoneID,

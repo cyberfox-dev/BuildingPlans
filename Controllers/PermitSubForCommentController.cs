@@ -1,0 +1,223 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WayleaveManagementSystem.Data;
+using WayleaveManagementSystem.Data.Entities;
+using WayleaveManagementSystem.Models;
+using WayleaveManagementSystem.Models.BindingModel;
+using WayleaveManagementSystem.Models.DTO;
+
+namespace WayleaveManagementSystem.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class PermitSubForCommentController : Controller
+    {
+
+        private readonly AppDBContext _context;
+
+        public PermitSubForCommentController(AppDBContext context)
+        {
+            _context = context;
+        }
+        [HttpPost("AddUpdatePermitSubForComment")]
+        public async Task<object> AddUpdatePermitSubForComment([FromBody] PermitSubForCommentBindingModel model)
+        {
+            try
+            {
+                var result = new object();
+
+                if (model == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    if (model.PermitSubForCommentID == 0)
+                    {
+                        model.PermitSubForCommentID = null;
+                    }
+
+                    var tempPermitSubForComment = _context.PermitSubForComment.FirstOrDefault(x => x.PermitSubForCommentID == model.PermitSubForCommentID);
+
+
+                    if (tempPermitSubForComment == null)
+                    {
+                        tempPermitSubForComment = new PermitSubForComment()
+                        {
+
+                           // PermitSubForCommentID = model.PermitSubForCommentID,
+                            ApplicationID = model.ApplicationID,
+                            SubDepartmentID = model.SubDepartmentID,
+                            SubDepartmentName = model.SubDepartmentName,
+                            DateCreated = DateTime.Now,
+                            DateUpdated = DateTime.Now,
+                            isActive = true,
+                            UserAssaignedToComment = model.UserAssaignedToComment,
+                            CreatedById = model.CreatedById,
+                            PermitComment = model.PermitComment,
+           
+                        };
+
+                        await _context.PermitSubForComment.AddAsync(tempPermitSubForComment);
+                        await _context.SaveChangesAsync();
+
+                        result = tempPermitSubForComment;
+
+                    }
+                    else
+                    {
+                        if (tempPermitSubForComment.ApplicationID != null)
+                        {
+                            tempPermitSubForComment.ApplicationID = model.ApplicationID;
+                        }
+                        if (tempPermitSubForComment.SubDepartmentID != null)
+                        {
+                            tempPermitSubForComment.SubDepartmentID = model.SubDepartmentID;
+                        }
+                        if (tempPermitSubForComment.SubDepartmentName != null)
+                        {
+                            tempPermitSubForComment.SubDepartmentName = model.SubDepartmentName;
+                        }
+                        if (tempPermitSubForComment.UserAssaignedToComment != null)
+                        {
+                            tempPermitSubForComment.UserAssaignedToComment = model.UserAssaignedToComment;
+                        }
+                        if (tempPermitSubForComment.CreatedById != null)
+                        {
+                            tempPermitSubForComment.CreatedById = model.CreatedById;
+                        }
+                        if (tempPermitSubForComment.PermitComment != null)
+                        {
+                            tempPermitSubForComment.PermitComment = model.PermitComment;
+                        }
+
+                        _context.Update(tempPermitSubForComment);
+                        await _context.SaveChangesAsync();
+                        result = tempPermitSubForComment;
+                    }
+
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.PermitSubForCommentID > 0 ? "Updated Successfully" : "Created Successfully"), result));
+                }
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        [HttpPost("DeletePermitSubForCommentByID")]
+        public async Task<object> DeletePermitSubForCommentByID([FromBody] int permitSubForCommentID)
+        {
+            try
+            {
+
+                var tempPermitSubForComment = _context.PermitSubForComment.FirstOrDefault(x => x.PermitSubForCommentID == permitSubForCommentID);
+
+                if (tempPermitSubForComment == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", false));
+
+                }
+                else
+                {
+                    tempPermitSubForComment.DateUpdated = DateTime.Now;
+                    tempPermitSubForComment.isActive = false;
+                    _context.Update(tempPermitSubForComment);
+                    await _context.SaveChangesAsync();
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Deleted Successfully", true));
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        [HttpGet("GetAllPermitSubForComment")]
+        public async Task<object> GetAllPermitSubForComment()
+        {
+            try
+            {
+                var result = await (
+                from permitSubForComment in _context.PermitSubForComment
+                where permitSubForComment.isActive == true
+                select new PermitSubForCommentDTO()
+                {
+                    ApplicationID = permitSubForComment.ApplicationID,
+                    SubDepartmentID = permitSubForComment.SubDepartmentID,
+                    SubDepartmentName = permitSubForComment.SubDepartmentName,
+                    UserAssaignedToComment = permitSubForComment.UserAssaignedToComment,
+                    CreatedById = permitSubForComment.CreatedById,
+                    PermitComment = permitSubForComment.PermitComment,
+
+
+                }
+                ).ToListAsync();
+
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Service Items", result));
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+
+
+
+        [HttpPost("GetPermitSubForCommentByApplicationID")]
+        public async Task<object> GetPermitSubForCommentByApplicationID([FromBody] int applicationID)
+        {
+            try
+            {
+                var result = await (
+                from permitSubForComment in _context.PermitSubForComment
+                where permitSubForComment.ApplicationID == applicationID && permitSubForComment.isActive == true 
+                select new PermitSubForCommentDTO()
+                {
+                    ApplicationID = permitSubForComment.ApplicationID,
+                    SubDepartmentID = permitSubForComment.SubDepartmentID,
+                    SubDepartmentName = permitSubForComment.SubDepartmentName,
+                    UserAssaignedToComment = permitSubForComment.UserAssaignedToComment,
+                    CreatedById = permitSubForComment.CreatedById,
+                    PermitComment = permitSubForComment.PermitComment,
+
+
+                }
+                ).ToListAsync();
+
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All PermitSubForComment By ID", result));
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+
+    }
+
+ 
+}

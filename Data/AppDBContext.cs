@@ -51,6 +51,7 @@ namespace WayleaveManagementSystem.Data
         public DbSet<Config> Config { get; set; }
         public DbSet<AccessGroupUserLink> AccessGroupUserLink { get; set; }
         public DbSet<AccessGroupRoleLink> AccessGroupRoleLink { get; set; }
+        public DbSet<PermitSubForComment> PermitSubForComment { get; set; }
 
         // Virtual Db Sets for SPs go here
         public virtual DbSet<UserSpDTO> UserSpDTOs { get; set; }

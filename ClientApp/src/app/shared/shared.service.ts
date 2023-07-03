@@ -102,6 +102,12 @@ export class SharedService {
   checkEmail!: string;
 
   configShow!: any;
+  option: string;
+
+  //this is for if an internal user is applying for a client 
+  clientUserID?: string | null;
+  errorForRegister?: boolean;
+  clientEmailAdress?: string | null;
 
   userProfileData: any;
   FileDocument: FileDocument[] = [];
@@ -244,7 +250,10 @@ export class SharedService {
   }
 
 getApplicationID(): any {
-    console.log("getting ..." + this.applicationID);
+  console.log("getting ..." + this.applicationID);
+  if (this.applicationID == undefined || this.applicationID == null) {
+    this.applicationID = 0;
+  } 
     return this.applicationID;
   }
 
@@ -262,7 +271,7 @@ getApplicationID(): any {
   pushFileForTempFileUpload(formData: any, uploadFor: any) {
 
     //TODO: Remember to clear this when invoice is generated
-  
+   
     if (this.FileDocument.length != 0) {
       for (var i = 0; i < this.FileDocument.length; i++) {
         if (this.FileDocument[i].UploadFor == uploadFor) {

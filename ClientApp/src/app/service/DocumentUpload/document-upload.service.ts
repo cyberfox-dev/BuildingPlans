@@ -42,6 +42,11 @@ export class DocumentUploadService {
     return this.httpClient.get(this.baseURL + "GetAllDocuments");
 
   }
+  public getAllDocumentsForRepository() {
+
+    return this.httpClient.get(this.baseURL + "GetAllDocumentsForRepository");
+
+  }
 
 
   public getAllDocumentsForUser(assignedUserID: number) {

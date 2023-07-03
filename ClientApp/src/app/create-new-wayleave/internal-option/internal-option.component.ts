@@ -30,7 +30,7 @@ export class InternalOptionComponent implements OnInit {
 
   @Output() optionEvent = new EventEmitter<string>();
 
-  constructor(private modalService: NgbModal, private router: Router, private refreshService: RefreshService,) { }
+  constructor(private modalService: NgbModal, private router: Router, private refreshService: RefreshService) { }
 
   sendOption() {
     this.optionEvent.emit(this.option);
