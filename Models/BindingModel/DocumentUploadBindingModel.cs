@@ -17,6 +17,8 @@
         public string? CreatedById { get; set; }
 
         public bool isActive { get; set; }
-        
+        public string? DocumentGroupName { get; set; }
+        public int? SubDepartmentID { get; set; }
+
     }
 }

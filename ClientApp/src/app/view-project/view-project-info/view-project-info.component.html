@@ -270,7 +270,7 @@
           <label for="wbsNumberRequested">WBS Number</label>
         </div>
         <div class="cont" *ngIf="isInternalUser">
-          <button mat-raised-button (click)="enterWBSNumberModal(wbsNumberModal)" color="orange">WBS</button>
+          <button mat-raised-button (click)="enterWBSNumberModal(wbsNumberModal)" *ngIF="wbsBtn" color="orange">WBS</button>
           <button mat-raised-button color="orange" (click)="generateConsolidatedDepositInvoice()">Consolidate Deposits</button>
           <button mat-raised-button color="orange">Deposit Refund</button>
         </div>

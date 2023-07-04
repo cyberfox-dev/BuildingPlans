@@ -18,7 +18,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
         //Implementing the interface Methods
-        public async Task<DocumentUpload> AddUpdateDocument(int? documentID, string documentName, string? DocumentLocalPath, int? applicationID, string? assignedUserID, string createdById)
+        public async Task<DocumentUpload> AddUpdateDocument(int? documentID, string documentName, string? DocumentLocalPath, int? applicationID, string? assignedUserID, string createdById,string? groupName, int?subDepID)
         {
 
             if (documentID == 0)
@@ -41,8 +41,9 @@ namespace WayleaveManagementSystem.Service
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     CreatedById = createdById,
-                    isActive = true
-
+                    isActive = true,
+                    DocumentGroupName = groupName,
+                    SubDepartmentID = subDepID,
                 };
 
                 //After the inizlization add to the db
@@ -157,9 +158,9 @@ namespace WayleaveManagementSystem.Service
                   DateCreated = documentUpload.DateCreated,
                   DateUpdated = documentUpload.DateUpdated,
                   CreatedById = documentUpload.CreatedById,
-                  isActive = documentUpload.isActive
-
-
+                  isActive = documentUpload.isActive,
+                  GroupName = documentUpload.DocumentGroupName,
+                  SubDepartmentID = documentUpload.SubDepartmentID,
               }
               ).ToListAsync();
 

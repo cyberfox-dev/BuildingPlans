@@ -13,6 +13,8 @@ namespace WayleaveManagementSystem.Data.Entities
         public int? ApplicationID { get; set; }
 
         public string? AssignedUserID { get; set; }
+        public string? DocumentGroupName { get; set; }
+        public int? SubDepartmentID { get; set; }
 
     }
 

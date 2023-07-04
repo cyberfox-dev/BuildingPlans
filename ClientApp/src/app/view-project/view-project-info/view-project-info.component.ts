@@ -2579,6 +2579,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
   countApprove = 0;
   countReject = 0;
+  wbsBtn: boolean = false;
 
   getLinkedDepartments() {
 
@@ -2605,8 +2606,9 @@ export class ViewProjectInfoComponent implements OnInit {
           tempSubDepartmentList.IsRefered = current.IsRefered;
           tempSubDepartmentList.commentStatus = current.commentStatus;
 
-          if (tempSubDepartmentList.commentStatus == "Final Approved") {
+          if (tempSubDepartmentList.commentStatus == "Approved(Conditional)") {
             this.countApprove++;
+            this.wbsBtn = true;
           }
           if (tempSubDepartmentList.commentStatus == "Rejected") {
             this.countReject++;

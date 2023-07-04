@@ -325,18 +325,7 @@
   <div class="card">
     <h3><span>Project Details</span></h3>
   </div>
-  <!--enterning project details-->
-  <!--<app-project-details></app-project-details>-->
-  <!--        <div class="form-floating ">
-    <select class="form-select" [(ngModel)]="typeOfApplication" name="typeOfApplication" aria-label="Default select example" placeholder="Type of application">
-      <option value="TOA">Type of application</option>
-      <option value="Small">Small</option>
-      <option value="Medium">Medium</option>
-      <option value="Large">Large</option>
-      <option value="Emergency">Emergency</option>
-    </select>
 
-  </div>-->
 
   <mat-form-field appearance="fill">
     <mat-label>Select type of application</mat-label>
@@ -349,6 +338,9 @@
     </mat-select>
   </mat-form-field>
 
+
+<!--  <button mat-raised-button color="primary" (click)="openTypeOfApplicationModal()">Type Of Application</button>
+-->
 
   <div class="row">
     <!--          <div class="col">
@@ -630,3 +622,15 @@
   </div>
 </ng-template>
 
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Creating a new engineer</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+   
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click');onAddEngineer()">Save</button>
+  </div>
+</ng-template>
