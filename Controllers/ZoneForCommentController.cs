@@ -16,7 +16,7 @@ namespace WayleaveManagementSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ZoneForCommentController : Controller
+    public class ZoneForCommentController : ControllerBase
     {
 
         private readonly AppDBContext _context;

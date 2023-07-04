@@ -118,7 +118,6 @@ import { SharedService } from './shared/shared.service';
     //  SelectEngineerTableComponent,
     SelectContractorTableComponent,
     ProjectDetailsComponent,
-    ProjectDetailsMapComponent,
     ViewProjectInfoComponent,
     ViewProjectDetailsComponent,
     ActionCenterComponent,
@@ -220,7 +219,8 @@ import { SharedService } from './shared/shared.service';
     // NewWayleaveComponent,
     DepartmentConfigComponent,
     ActionCenterComponent,
-    ViewProjectInfoComponent
+    ViewProjectInfoComponent,
+/*    ProjectDetailsMapComponent*/
   ],
   bootstrap: [AppComponent]
 })

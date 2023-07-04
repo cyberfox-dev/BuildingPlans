@@ -930,103 +930,102 @@ export class ProjectDetailsMapComponent implements OnInit {
 
         //Now get the geometry of this polygon using the globalID
 
-        await this.addToSubDepartmentForComment();
       });
 
 /*      Async: This code can be deleted, but use it for referencing when using promises.*/
-      featureLayer.on("edits", async (event) => {
-        // Clear the distribution list. This should be moved to when the application is successfully captured and on "Create new wayleave".
-        this.sharedService.distributionList.splice(0, this.sharedService.distributionList.length);
+      //featureLayer.on("edits", async (event) => {
+      //  // Clear the distribution list. This should be moved to when the application is successfully captured and on "Create new wayleave".
+      //  this.sharedService.distributionList.splice(0, this.sharedService.distributionList.length);
 
-        // Count the number of polygons drawn/deleted to prevent submitting the form without inserting a polygon.
-        const countPolygon = event.addedFeatures.length;
-        const subtractPolygon = event.deletedFeatures.length;
+      //  // Count the number of polygons drawn/deleted to prevent submitting the form without inserting a polygon.
+      //  const countPolygon = event.addedFeatures.length;
+      //  const subtractPolygon = event.deletedFeatures.length;
 
-        // Count all added features
-        this.sharedService.totalAddedFeatures += countPolygon;
-        console.log(this.sharedService.totalAddedFeatures);
-        this.sharedService.totalAddedFeatures -= subtractPolygon;
-        console.log("Total added features", this.sharedService.totalAddedFeatures);
+      //  // Count all added features
+      //  this.sharedService.totalAddedFeatures += countPolygon;
+      //  console.log(this.sharedService.totalAddedFeatures);
+      //  this.sharedService.totalAddedFeatures -= subtractPolygon;
+      //  console.log("Total added features", this.sharedService.totalAddedFeatures);
 
-        // Create a new Query object
-        const query = new Query();
+      //  // Create a new Query object
+      //  const query = new Query();
 
-        // Set the spatial relationship to "intersects" or "contains" based on your requirement
-        query.spatialRelationship = "intersects";
+      //  // Set the spatial relationship to "intersects" or "contains" based on your requirement
+      //  query.spatialRelationship = "intersects";
 
-        // Set the geometry of the query to the drawn polygon
-        // @ts-ignore
-        query.geometry = event.edits.addFeatures[0].geometry;
+      //  // Set the geometry of the query to the drawn polygon
+      //  // @ts-ignore
+      //  query.geometry = event.edits.addFeatures[0].geometry;
 
-        // Set the fields to be returned by the query
-        query.outFields = ['OBJECTID'];
+      //  // Set the fields to be returned by the query
+      //  query.outFields = ['OBJECTID'];
 
-        // Set up the layer in the MapServer to query against
-        const mapServerLayerUrl = []; // This checks just the electricity layer.
+      //  // Set up the layer in the MapServer to query against
+      //  const mapServerLayerUrl = []; // This checks just the electricity layer.
 
-        // Start loop from here
-        for (var i = 0; i < this.sharedService.subDepartmentList.length; i++) {
-          // Get current mapLayerID
-          const mapLayerID = this.sharedService.subDepartmentList[i].mapLayerID;
-          // Get subDepartmentID for the current
-          const SubDepartmentID = this.sharedService.subDepartmentList[i].subDepartmentID;
-          console.log(SubDepartmentID);
+      //  // Start loop from here
+      //  for (var i = 0; i < this.sharedService.subDepartmentList.length; i++) {
+      //    // Get current mapLayerID
+      //    const mapLayerID = this.sharedService.subDepartmentList[i].mapLayerID;
+      //    // Get subDepartmentID for the current
+      //    const SubDepartmentID = this.sharedService.subDepartmentList[i].subDepartmentID;
+      //    console.log(SubDepartmentID);
 
-          // Get list of managers by zone
-          await this.actionCenterComponent.getUserBySubDepartmentAndRoleName(SubDepartmentID, "Department Admin").toPromise().then((data: any) => {
-            if (data.responseCode == 1) {
-              const zoneAdminUsers = data.dateSet;
+      //    // Get list of managers by zone
+      //    await this.actionCenterComponent.getUserBySubDepartmentAndRoleName(SubDepartmentID, "Department Admin").toPromise().then((data: any) => {
+      //      if (data.responseCode == 1) {
+      //        const zoneAdminUsers = data.dateSet;
 
-              if (mapLayerID == null) {
-                /* This code runs when a subdepartment consists of multiple regions */
-              } else if (mapLayerID == -1) {
-                // Send to ALL Admin users in this subdepartment
-                this.sharedService.distributionList = this.sharedService.distributionList.concat(zoneAdminUsers);
-                console.log("Distribution list", this.sharedService.distributionList);
-              } else if (mapLayerID > -1) {
-                // Set up the layer in the MapServer to query against
-                mapServerLayerUrl[i] = "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves_Regions/MapServer/" + mapLayerID;
+      //        if (mapLayerID == null) {
+      //          /* This code runs when a subdepartment consists of multiple regions */
+      //        } else if (mapLayerID == -1) {
+      //          // Send to ALL Admin users in this subdepartment
+      //          this.sharedService.distributionList = this.sharedService.distributionList.concat(zoneAdminUsers);
+      //          console.log("Distribution list", this.sharedService.distributionList);
+      //        } else if (mapLayerID > -1) {
+      //          // Set up the layer in the MapServer to query against
+      //          mapServerLayerUrl[i] = "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves_Regions/MapServer/" + mapLayerID;
 
-                const mapServerLayer = new FeatureLayer({
-                  url: mapServerLayerUrl[i]
-                });
+      //          const mapServerLayer = new FeatureLayer({
+      //            url: mapServerLayerUrl[i]
+      //          });
 
-                // Query the layer for the current subdepartment. The intersecting layer objectIDs should be returned.
-                mapServerLayer.queryFeatures(query).then((result) => {
-                  // Handle the resulting features that intersect or are within the drawn polygon
-                  const features = result.features;
-                  // Do something with the features
+      //          // Query the layer for the current subdepartment. The intersecting layer objectIDs should be returned.
+      //          mapServerLayer.queryFeatures(query).then((result) => {
+      //            // Handle the resulting features that intersect or are within the drawn polygon
+      //            const features = result.features;
+      //            // Do something with the features
 
-                  features.forEach(async (feature) => {
-                    const OBJECTID = feature.attributes.OBJECTID;
-                    const filteredList = zoneAdminUsers.filter(obj => obj.mapObjectID === OBJECTID);
+      //            features.forEach(async (feature) => {
+      //              const OBJECTID = feature.attributes.OBJECTID;
+      //              const filteredList = zoneAdminUsers.filter(obj => obj.mapObjectID === OBJECTID);
 
-                    this.sharedService.distributionList = this.sharedService.distributionList.concat(filteredList);
-                    console.log("Distribution list", this.sharedService.distributionList);
-                  });
-                });
-              } else {
-                // This code runs if the field is null or contains something unexpected
-              }
-            } else {
-              // alert("Invalid Email or Password");
-              // alert(data.responseMessage);
-            }
-          }).catch(error => {
-            console.log("Error:", error);
-          });
-        }
+      //              this.sharedService.distributionList = this.sharedService.distributionList.concat(filteredList);
+      //              console.log("Distribution list", this.sharedService.distributionList);
+      //            });
+      //          });
+      //        } else {
+      //          // This code runs if the field is null or contains something unexpected
+      //        }
+      //      } else {
+      //        // alert("Invalid Email or Password");
+      //        // alert(data.responseMessage);
+      //      }
+      //    }).catch(error => {
+      //      console.log("Error:", error);
+      //    });
+      //  }
 
-        // Promise to ensure that addToSubDepartmentForComment() runs after all the other code
-        const promise = new Promise<void>((resolve) => {
-          // Run the code you want to execute after the other code is finished
-          this.addToSubDepartmentForComment();
-          resolve();
-        });
+      //  // Promise to ensure that addToSubDepartmentForComment() runs after all the other code
+      //  const promise = new Promise<void>((resolve) => {
+      //    // Run the code you want to execute after the other code is finished
+      //    this.addToSubDepartmentForComment();
+      //    resolve();
+      //  });
 
-        // Await the resolution of the promise before continuing
-        await promise;
-      });
+      //  // Await the resolution of the promise before continuing
+      //  await promise;
+      //});
 
 
       // Subscribe to the draw-complete event of the Editor widget
@@ -1535,22 +1534,6 @@ export class ProjectDetailsMapComponent implements OnInit {
       console.log("Error: ", error);
       /*      return null;*/
     })
-  }
-
-  private addToSubDepartmentForComment() {
-    const tempList = this.sharedService.distributionList;
-
-    tempList.forEach((obj) => {
-      this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.data.applicationID, obj.subDepartmentID, obj.subDepartmentName, obj.userID, null, "ESRI API");
-    });
-  }
-
-  private addToZoneForComment() {
-    const tempList = this.sharedService.distributionList;
-
-    tempList.forEach((obj) => {
-      this.zoneForCommentService.addUpdateZoneForComment(0, obj.subDepartmentID, this.data.applicationID, obj.zoneID, obj.zoneName, obj.userID);
-    });
   }
 
 }

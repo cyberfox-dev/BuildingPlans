@@ -87,7 +87,7 @@ export class LoginComponent implements OnInit {
     if (this.registerForm.controls["registerEmail"] != null) {
       alert("OTP Sent, Please check your email");
       this.sendOTPBtn = false;
-      this.notification.sendEmail(this.registerForm.controls["registerEmail"].value, "OTP", "Hello, you have recently tried to create an account on the Wayleave Management System, here is your one-time pin for your account: " + otp + " . This code will be invalid in the next 2 hours.");
+      this.notification.sendEmail(this.registerForm.controls["registerEmail"].value, "OTP", "Hello, you have recently tried to create an account on the Wayleave Management System, here is your one-time pin for your account: " + otp + " . This code will be invalid in the next 2 hours.", "Hello, you have recently tried to create an account on the Wayleave Management System, here is your one-time pin for your account: " + otp + " . This code will be invalid in the next 2 hours.");
       this.startExpirationTimer();
     }
     else {

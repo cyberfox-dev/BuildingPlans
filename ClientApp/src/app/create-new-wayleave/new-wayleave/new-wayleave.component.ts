@@ -33,6 +33,7 @@ import { RefreshService } from '../../shared/refresh.service';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { HomeComponent } from 'src/app/home/home.component';
+import { ZoneForCommentService } from 'src/app/service/ZoneForComment/zone-for-comment.service';
 
 /*import { format } from 'path/win32';*/
 
@@ -420,8 +421,7 @@ export class NewWayleaveComponent implements OnInit {
     private refreshService: RefreshService,
     private selectEngineerTableComponent: SelectEngineerTableComponent,
     private selectContractorTableComponent: SelectContractorTableComponent,
-
-
+    private zoneForCommentService: ZoneForCommentService
   ) { }
 
   ngOnInit(): void {
@@ -890,7 +890,10 @@ export class NewWayleaveComponent implements OnInit {
               }
               this.onCreateNotification();
               this.router.navigate(["/home"]);
-              this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...");
+              this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + "<br><br><p>Your application (" + this.applicationID + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Thank you</p>");
+/*              this.addToSubDepartmentForComment();*/
+              this.addToZoneForComment();
+
               console.log("responseAddapplication", data);
             }, error => {
               console.log("Error", error);
@@ -961,11 +964,14 @@ export class NewWayleaveComponent implements OnInit {
         this.shared.clearContractorData();
         this.shared.clearEngineerData();
         alert("Client Application Created");
+        this.addToSubDepartmentForComment();
+        this.addToZoneForComment();
       }
       else {
         alert("Failed To Create Application");
       }
       this.onCreateNotification();
+      this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + "<br><br><p>Your application (" + this.applicationID + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Thank you</p>");
       this.router.navigate(["/home"]);
       console.log("responseAddapplication", data);
     }, error => {
@@ -1014,11 +1020,14 @@ export class NewWayleaveComponent implements OnInit {
         this.shared.clearContractorData();
         this.shared.clearEngineerData();
         alert("Application Created");
+        this.addToSubDepartmentForComment();
+        this.addToZoneForComment();
       }
       else {
         alert("Failed To Create Application");
       }
       this.onCreateNotification();
+      this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + "<br><br><p>Your application (" + this.applicationID + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Thank you</p>");
       this.router.navigate(["/home"]);
       console.log("responseAddapplication", data);
     }, error => {
@@ -1266,7 +1275,7 @@ export class NewWayleaveComponent implements OnInit {
                     this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
                   } else {
                     this.router.navigate(["/home"]);
-                    this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...");
+                    this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...", "<h1>New wayleave application</h1>");
                   };
 
                 }, error => {
@@ -1365,7 +1374,7 @@ export class NewWayleaveComponent implements OnInit {
             this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
           } else {
             this.router.navigate(["/home"]);
-            this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...");
+            this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...", "<h1>New wayleave application</h1>");
           };
 
         }, error => {
@@ -1415,7 +1424,7 @@ export class NewWayleaveComponent implements OnInit {
             this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
           } else {
             this.router.navigate(["/home"]);
-            this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...");
+            this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...", "<h1>New wayleave application</h1>");
           };
 
           //        this.shared.setApplicationID(0); //sets the applicationID back to zero when a new application is created.
@@ -1515,7 +1524,7 @@ export class NewWayleaveComponent implements OnInit {
             this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
           } else {
             this.router.navigate(["/home"]);
-            this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...");
+            this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...", "<h1>New wayleave application</h1>");
           };
 
         }, error => {
@@ -1618,7 +1627,7 @@ export class NewWayleaveComponent implements OnInit {
                     this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
                   } else {
                     this.router.navigate(["/home"]);
-                    this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...");
+                    this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...", "<h1>New wayleave application</h1>");
                   };
 
                 }, error => {
@@ -1750,7 +1759,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
             this.router.navigate(["/home"]);
-            this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...");
+            this.notificationsService.sendEmail("venolin@cyberfox.co.za", "test", "testing 1, 2, 3 ...", "<h1>New wayleave application</h1>");
           };
 
           //        this.shared.setApplicationID(0); //sets the applicationID back to zero when a new application is created.
@@ -2533,6 +2542,49 @@ export class NewWayleaveComponent implements OnInit {
 
   }
 
+  public addToSubDepartmentForComment() {
+    const tempList = this.shared.distributionList;
+
+    tempList.forEach((obj) => {
+      this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.applicationID, obj.subDepartmentID, obj.subDepartmentName, obj.userID, null, "ESRI API").subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          alert(data.responseMessage);
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+
+        console.log("response", data);
+      }, error => {
+        console.log("Error", error);
+      });
+    });
+  }
+
+  public addToZoneForComment() {
+    const tempList = this.shared.distributionList;
+
+
+
+    tempList.forEach((obj) => {
+      this.zoneForCommentService.addUpdateZoneForComment(0, obj.subDepartmentID, this.applicationID, obj.zoneID, obj.zoneName, obj.userID).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          alert(data.responseMessage);
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+
+        console.log("response", data);
+      }, error => {
+        console.log("Error", error);
+      });
+    });
+  }
 
 }
 

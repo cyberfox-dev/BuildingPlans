@@ -51,15 +51,23 @@ export class NotificationsService {
 
   }
 
-  public sendEmail(to :string,subject: string,text: string): void {
+  public sendEmail(to: string, subject: string, text: string, html: string): void {
     const emailData = {
       to: to,
       subject: subject,
       text: text,
-     
+      html: html,
     };
 
-    this.httpClient.post("http://localhost:7124" + "/send-email", emailData).subscribe(
+    //dev check
+    if (emailData.to !== 'venolin.naidoo@capetown.gov.za') {
+      emailData.to = 'venolin.naidoo@capetown.gov.za';
+    } else {
+
+    }
+
+    this.httpClient.post("https://wayleaveqa.capetown.gov.za/mailapi" + "/send-email", emailData).subscribe(
+/*      this.httpClient.post("http://localhost:7124" + "/send-email", emailData).subscribe(*/
 /*    this.httpClient.post("https://wayleaveqa.capetown.gov.za:7124" + "/send-email", emailData).subscribe(*/
       () => {
         console.log('Email sent successfully');
