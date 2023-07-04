@@ -23,6 +23,8 @@ import { AccessGroupsService } from '../../service/AccessGroups/access-groups.se
 import { BusinessPartnerService } from '../../service/BusinessPartner/business-partner.service';
 import { HttpClient, HttpErrorResponse, HttpEventType } from '@angular/common/http';
 import { FinancialService } from '../../service/Financial/financial.service';
+import {PermitService} from '../../service/Permit/permit.service';
+
 
 
 
@@ -294,7 +296,7 @@ export class ViewProjectInfoComponent implements OnInit {
   currentIndex: any;
   subDepartmentForComment: any;
     permitStartDate: Date;
-  permitBtn: boolean = true;
+  permitBtn: boolean;
   permitTextBox: boolean = false;
   startDate: string;
 
@@ -303,6 +305,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
     ApForUpload: string;
+    showPermitTab: boolean;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -374,7 +377,8 @@ export class ViewProjectInfoComponent implements OnInit {
     private businessPartnerService: BusinessPartnerService,
     private documentUploadService: DocumentUploadService,
     private http: HttpClient,
-    private financial: FinancialService
+    private financial: FinancialService,
+    private permitService: PermitService,
   ) { }
 
 
@@ -414,6 +418,12 @@ export class ViewProjectInfoComponent implements OnInit {
     else {
 
       this.router.navigate(["/home"]);
+    }
+
+    if (setValues.CurrentStageName == "PTW") {
+      this.showPermitTab = true;
+    } else {
+      this.showPermitTab = false;
     }
 
     this.getRolesLinkedToUser();
@@ -522,6 +532,8 @@ export class ViewProjectInfoComponent implements OnInit {
     );
   }
 
+
+
   checkIfCanReply() {
     if (this.CurrentApplicant == this.CurrentUser.appUserId) {
       this.canClarify = true;
@@ -529,6 +541,46 @@ export class ViewProjectInfoComponent implements OnInit {
     else {
       this.canClarify = false;
     }
+  }
+
+
+
+  onAutoLinkForPermit() {
+    debugger;
+    this.subDepartmentForCommentService.getSubDepartmentForComment(this.ApplicationID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        debugger;
+        for (var i = 0; i < data.dateSet.length; i++) {
+          this.permitService.addUpdatePermitSubForComment(0, this.ApplicationID, data.dateSet[i].subDepartmentID, data.dateSet[i].subDepartmentName, null, null,null ,this.CurrentUser.appUserId).subscribe((data: any) => {
+            debugger;
+            if (data.responseCode == 1) {
+              debugger;
+              // alert(data.dateSet.subDepartmentName + " assigned to this Application");
+
+            }
+            else {
+
+              alert(data.responseMessage);
+            }
+            console.log("reponseAddUpdateDepartmentForComment", data);
+
+
+          }, error => {
+            console.log("Error: ", error);
+          })
+        }
+      }
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponseAddUpdateDepartmentForComment", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 
 
@@ -753,8 +805,6 @@ export class ViewProjectInfoComponent implements OnInit {
 
           if (data.responseCode == 1) {
             this.getAllComments();
-
-            
             this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, null, false, null, null, null).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
@@ -1265,7 +1315,6 @@ export class ViewProjectInfoComponent implements OnInit {
         }
       }
       else {
-
         alert(data.responseMessage);
       }
       console.log("reponseAddUpdateDepartmentForComment", data);
@@ -1275,6 +1324,7 @@ export class ViewProjectInfoComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
+
   ChangeApplicationStatusToPaid() {
 
     if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Unpaid") {
@@ -1335,22 +1385,26 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   checkIfPermitExsist() {
-    if (this.applicationDataForView[0].permitStartDate != null) {
+    debugger;
+    if (this.applicationDataForView[0].CreatedById == this.CurrentUser.appUserId) {
+      this.permitBtn = true;
+      this.permitTextBox = false;
+    }
+   if (this.applicationDataForView[0].permitStartDate != null) {
       this.permitBtn = false;
       this.permitTextBox = true;
       this.startDate = this.applicationDataForView[0].permitStartDate.toString();
-      this.permitDate = "Permit has been applied, with a start date of: " + this.startDate.substring(0, this.startDate.indexOf('T'));;
+      this.permitDate = "Permit has been applied, with a start date of: " + this.startDate.substring(0, this.startDate.indexOf('T'));
 
     }
+    
+    
   }
 
   updateStartDateForPermit() {
-
-
-    
     this.applicationsService.addUpdateApplication(this.CurrentApplicationBeingViewed[0].applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.permitStartDate).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        
+        this.onAutoLinkForPermit();
 
       }
       else {

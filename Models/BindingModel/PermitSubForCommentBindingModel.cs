@@ -12,6 +12,8 @@
 
         public string? UserAssaignedToComment { get; set; }
         public string? PermitComment { get; set; }
+
+        public string? PermitCommentStatus { get; set; }
         public string? CreatedById { get; set; }
        
 

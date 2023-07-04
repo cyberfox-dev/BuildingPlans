@@ -15,7 +15,10 @@ namespace WayleaveManagementSystem.Data.Entities
         public string? SubDepartmentName { get; set; }
 
         public string? UserAssaignedToComment { get; set; }
+
         public string? PermitComment { get; set; }
+
+        public string? PermitCommentStatus { get; set; }
 
 
 

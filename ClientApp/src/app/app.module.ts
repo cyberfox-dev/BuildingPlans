@@ -220,7 +220,8 @@ import { SharedService } from './shared/shared.service';
     // NewWayleaveComponent,
     DepartmentConfigComponent,
     ActionCenterComponent,
-    ViewProjectInfoComponent
+    ViewProjectInfoComponent,
+    PermitComponentComponent,
   ],
   bootstrap: [AppComponent]
 })
