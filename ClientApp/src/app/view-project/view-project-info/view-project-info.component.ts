@@ -1339,7 +1339,7 @@ export class ViewProjectInfoComponent implements OnInit {
       this.permitBtn = false;
       this.permitTextBox = true;
       this.startDate = this.applicationDataForView[0].permitStartDate.toString();
-      this.permitDate = "Permit has been applied, with a start date of :" + this.startDate.substring(0, this.startDate.indexOf('T'));;
+      this.permitDate = "Permit has been applied, with a start date of: " + this.startDate.substring(0, this.startDate.indexOf('T'));;
 
     }
   }
@@ -2634,7 +2634,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   checkIfApprovedOrRejected() {
     if (this.countApprove == this.SubDepartmentList.length) {
-      alert("ALL FINAL APPROVED");
+     // alert("ALL FINAL APPROVED");
     }
     if (this.countReject > 0 ) {
       

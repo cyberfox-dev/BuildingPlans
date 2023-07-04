@@ -61,5 +61,14 @@ export class ZonesService {
 
   }
 
+  public getZoneByMapObjectID(subDepartmentID ,mapObjectID: number) {
 
+    const body = {
+      SubDepartmentID: subDepartmentID,
+      MapObjectID: mapObjectID,
+    }
+
+    return this.httpClient.post(this.baseURL + "GetZoneByMapObjectID", body);
+
+  }
 }

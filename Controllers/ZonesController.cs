@@ -174,5 +174,28 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpPost("GetZoneByMapObjectID")]
+        public async Task<object> GetZoneByMapObjectID([FromBody] ZonesBindingModel model)
+        {
+            try
+            {
+                //var result = await _zonesLinkingServices.GetUsersNotLinkedByUserID();
+                if (model == null || model.SubDepartmentID < -1)
+                    //if (mapObjectID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _zonesServices.GetZoneByMapObjectID(model.SubDepartmentID,model.MapObjectID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got assigned map object", result));
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
     }
 }
