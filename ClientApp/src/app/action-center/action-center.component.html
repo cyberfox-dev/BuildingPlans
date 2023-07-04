@@ -10,9 +10,9 @@
   </div>
   <div class="modal-body">
     <div class="cont">
-      <button mat-raised-button color="blue" *ngIf="CanAssignDepartment == true && canCommentFinalApprover == false" (click)="openAssignDepartment(assign)">Assign Department to Project</button>
-      <button mat-raised-button color="blue" *ngIf="AssignProjectToZone == true && canCommentFinalApprover == false" (click)="openAssignToZone(assignProjectToZone)">Assign Project to Zone</button>
-      <button mat-raised-button color="blue" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false" (click)="openAssignToUser(assignProjectToUser)">Assign User For Comment</button>
+      <button mat-raised-button color="blue" *ngIf="CanAssignDepartment == true && canCommentFinalApprover == false && showPermitTab === false" (click)="openAssignDepartment(assign)">Assign Department to Project</button>
+      <button mat-raised-button color="blue" *ngIf="AssignProjectToZone == true && canCommentFinalApprover == false && showPermitTab === false" (click)="openAssignToZone(assignProjectToZone)">Assign Project to Zone</button>
+      <button mat-raised-button color="blue" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && showPermitTab === false" (click)="openAssignToUser(assignProjectToUser)">Assign User For Comment</button>
       <!-- <button mat-raised-button color="blue" *ngIf="hopperButton == true" (click)="onHopperClick()">Hopper</button>-->
     </div>
 

@@ -147,6 +147,7 @@ export class ActionCenterComponent implements OnInit {
     assaignedToComment: number = 0;
     permitIssuer: any;
     canApprovePermit: boolean;
+    showPermitTab: boolean;
    
   /*textfields*/
 
@@ -342,7 +343,11 @@ export class ActionCenterComponent implements OnInit {
     this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
     if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
       this.getUsersByRoleName("Permit Issuer");
+      this.showPermitTab = true;
 
+    }
+    else {
+      this.showPermitTab = false;
     }
     this.getLinkedZones();
     this.CanComment();
@@ -442,6 +447,8 @@ export class ActionCenterComponent implements OnInit {
           this.PTCList.push(tempPTCList);
          
         }
+
+      
 
       }
       else {
