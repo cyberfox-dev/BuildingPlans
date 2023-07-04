@@ -11,6 +11,9 @@ body {
   height: 50px;
   cursor: pointer;
 }
+.container2{
+    display:flex;
+}
 
 
 .nav {
@@ -24,6 +27,8 @@ body {
 }
 .mat-form-field {
   width: 100%;
+  margin-top: 26px;
+
 }
 
   .nav > .nav-header {
@@ -151,9 +156,8 @@ body {
 
 
 .mat-green {
-  background-color: #2dd568;
+  background-color: #005870;
   color: #fff;
-  margin-bottom: 20px;
 }
 
 .cont2 {
@@ -192,6 +196,7 @@ a {
   background-color: #369cf4;
   color: #fff;
 }
+
 
 .mat-button {
   font-size: 16px;

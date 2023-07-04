@@ -1007,7 +1007,7 @@ export class HomeComponent implements OnInit,OnDestroy {
 
     for (var i = 0; i < this.applicationDataForView.length; i++) {
       const current = this.applicationDataForView[i];
-      if (current.ApplicationStatus == "Approved" || current.ApplicationStatus == "Final Approval") {
+      if (current.ApplicationStatus == "PTW Pending" || current.ApplicationStatus == "Final Approval") {
         this.approveCount++;
 
       }

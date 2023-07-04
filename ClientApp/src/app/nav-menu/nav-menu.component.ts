@@ -15,6 +15,20 @@ import { ApplicationsService } from '../service/Applications/applications.servic
 import { HomeComponent } from 'src/app/home/home.component';
 import { DocumentUploadService } from '../service/DocumentUpload/document-upload.service';
 import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http';
+import { MatSelectChange } from '@angular/material/select';
+import { DepartmentsService } from 'src/app/service/Departments/departments.service';
+import { SubDepartmentsService } from '../service/SubDepartments/sub-departments.service';
+import { NGB_DATEPICKER_TIME_ADAPTER_FACTORY } from '@ng-bootstrap/ng-bootstrap/timepicker/ngb-time-adapter';
+
+
+
+export interface SubDepartmentList {
+  subDepartmentID: number;
+  subDepartmentName: string;
+  departmentID: number;
+  dateUpdated: any;
+  dateCreated: any;
+}
 
 
 export interface DocumentsList {
@@ -23,6 +37,14 @@ export interface DocumentsList {
   DocumentLocalPath: string;
   ApplicationID: number;
   AssignedUserID: string;
+  DateCreated: any;
+  GroupName: string;
+  SubDepartmentID: number;
+}
+
+export interface UserList {
+  DepartmentID: number;
+  SubDepID: number;
 }
 
 export interface FileDocument {
@@ -67,11 +89,13 @@ export class NavMenuComponent implements OnInit {
   NotificationsList: NotificationsList[] = [];
   RolesList: RolesList[] = [];
   FileDocument: FileDocument[] = [];
+  UserList: UserList[] = [];
+  SubDepartmentList: SubDepartmentList[] = [];
   forEditIndex: any;
 
   cyberfoxConfigs: boolean = false;
   Configurations: boolean = false;
-  CommentBuilder: boolean = false;
+  CommentBuilder: boolean = true;
 
   public isInternalUser: boolean = false;
   Links: boolean = false;
@@ -86,11 +110,13 @@ export class NavMenuComponent implements OnInit {
   })
     applica: any;
     UserRoles: import("C:/CyberfoxProjects/WayleaveManagementSystem/ClientApp/src/app/shared/shared.service").RolesList[];
+    selectedOptionText: string;
 
-  constructor(private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private http: HttpClient, private documentUploadService: DocumentUploadService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private applicationsService: ApplicationsService) { }
+  constructor(private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private http: HttpClient, private documentUploadService: DocumentUploadService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private subDepartment: SubDepartmentsService, private applicationsService: ApplicationsService) { }
   DocumentsList: DocumentsList[] = [];
 
-
+  selected = 'none';
+  select = 0;
   displayedColumns: string[] = ['DocumentName', 'actions'];
   dataSource = this.DocumentsList;
 
@@ -123,10 +149,16 @@ export class NavMenuComponent implements OnInit {
       console.log(this.CurrentUser);
     }
 
+    this.getAllDepartments();
+
   }
 
   uploadRepoDoc: boolean = false;
   deleteRepoDoc: boolean = false;
+  groupName: boolean = true;
+  depSelect: boolean = true;
+  selectDepartmentForUpload: boolean = false;
+  selectDepForUpload = 0;
  
   lockViewAccordingToRoles() {
   
@@ -140,11 +172,14 @@ export class NavMenuComponent implements OnInit {
       if (this.RolesList[i].RoleName == "Developer Config" || this.RolesList[i].RoleName == "Configuration") {
         this.cyberfoxConfigs = true;
       }
-      
-      if (this.RolesList[i].RoleName == "Department Admin" || this.RolesList[i].RoleName == "EMB") {
+
+      if (this.RolesList[i].RoleName == "Department Admin" || this.RolesList[i].RoleName == "EMB" ) {
         this.uploadRepoDoc = true;
+        this.groupName = false;
+        this.depSelect = false;
         this.deleteRepoDoc = true;
         this.CommentBuilder = true;
+        this.selectDepartmentForUpload = true;
       }
     }
 
@@ -386,6 +421,8 @@ export class NavMenuComponent implements OnInit {
 
   /*Open Repository Modal*/
   openRepositoryModal(repositoryModal: any) {
+    this.selected = undefined;
+    this.selectedOptionText = "";
     this.getAllDocsForRepository(repositoryModal);
    
   }
@@ -636,9 +673,10 @@ export class NavMenuComponent implements OnInit {
           tempDocList.DocumentLocalPath = current.documentLocalPath;
           tempDocList.ApplicationID = current.applicationID;
           tempDocList.AssignedUserID = current.assignedUserID;
-
-
-
+          tempDocList.DateCreated = current.dateCreated;
+          tempDocList.GroupName = current.groupName;
+          tempDocList.SubDepartmentID = current.subDepartmentID;
+          console.log("THIS IS THE REPOSITY THINGSTHIS IS THE REPOSITY THINGSTHIS IS THE REPOSITY THINGSTHIS IS THE REPOSITY THINGSTHIS IS THE REPOSITY THINGSTHIS IS THE REPOSITY THINGS", current);
           this.DocumentsList.push(tempDocList);
         
 
@@ -646,7 +684,7 @@ export class NavMenuComponent implements OnInit {
 
         this.DocumentsListTable?.renderRows();
         this.modalService.open(repositoryModal, { centered: true, size: 'xl' });
-        console.log("GOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCS", this.DocumentsList[0]);
+       // console.log("GOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCS", this.DocumentsList[0]);
       }
       else {
         alert(data.responseMessage);
@@ -680,10 +718,13 @@ export class NavMenuComponent implements OnInit {
         // Create a URL for the Blob object
         const documentURL = URL.createObjectURL(blob);
 
-        // Display the document, for example, in an <iframe>
-        const iframe = document.createElement('iframe');
-        iframe.src = documentURL;
-        document.body.appendChild(iframe);
+        window.open(documentURL, '_blank');
+
+        // Download the document
+        const link = document.createElement('a');
+        link.href = documentURL;
+        link.download = this.DocumentsList[index].DocumentName; // Set the downloaded file name
+        link.click();
       })
       .catch(error => {
         console.log(error);
@@ -763,39 +804,45 @@ export class NavMenuComponent implements OnInit {
   progress: number = 0;
   message= '';
   save(repositoryModal) {
-
-    
-    const filesForUpload = this.shared.pullFilesForUpload();
-    for (var i = 0; i < filesForUpload.length; i++) {
-      const formData = new FormData();
-      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
-      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + null;
-      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
-
-
-
-
-      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
-        .subscribe({
-          next: (event) => {
-
-
-            if (event.type === HttpEventType.UploadProgress && event.total)
-              this.progress = Math.round(100 * event.loaded / event.total);
-            else if (event.type === HttpEventType.Response) {
-              this.message = 'Upload success.';
-              this.uploadFinished(event.body, repositoryModal);
-       
-            }
-          },
-          error: (err: HttpErrorResponse) => console.log(err)
-        });
+    if (this.selectDepartmentForUpload == undefined) {
+      alert("Please Select a department");
     }
+    else if (this.selected == "") {
+      alert("Please Select A Group For Your Document");
+    }
+    else {
 
+      const filesForUpload = this.shared.pullFilesForUpload();
+      for (var i = 0; i < filesForUpload.length; i++) {
+        const formData = new FormData();
+        let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+        let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + null;
+        formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+
+
+
+        this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+          .subscribe({
+            next: (event) => {
+
+
+              if (event.type === HttpEventType.UploadProgress && event.total)
+                this.progress = Math.round(100 * event.loaded / event.total);
+              else if (event.type === HttpEventType.Response) {
+                this.message = 'Upload success.';
+                this.uploadFinished(event.body, repositoryModal);
+
+              }
+            },
+            error: (err: HttpErrorResponse) => console.log(err)
+          });
+      }
+    }
   }
 
   uploadFinished = (event: any, repositoryModal) => {
-    ;
+
     this.response = event;
     console.log("this.response", this.response);
     console.log("this.response?.dbPath", this.response?.dbPath);
@@ -804,7 +851,7 @@ export class NavMenuComponent implements OnInit {
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
     console.log("documentName", documentName);
 
-    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, null, this.CurrentUser.appUserId, this.CurrentUser.appUserId).subscribe((data: any) => {
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, null, this.CurrentUser.appUserId, this.CurrentUser.appUserId, this.selectedOptionText, this.selectDepForUpload).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
@@ -824,20 +871,127 @@ export class NavMenuComponent implements OnInit {
   }
 
   onDeleteRepositoryDocument(index: any, repositoryModal: any) {
-    this.documentUploadService.deleteDocument(this.DocumentsList[index].DocumentID).subscribe((data: any) => {
+    const confirmation = confirm("Are you sure you want to delete this document?");
+
+    if (confirmation) {
+      this.documentUploadService.deleteDocument(this.DocumentsList[index].DocumentID).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          this.modalService.dismissAll(repositoryModal);
+          this.getAllDocsForRepository(repositoryModal);
+        }
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+  }
+
+  onOptionSelected(event: MatSelectChange) {
+    this.selectedOptionText = event.source.triggerValue;
+    console.log(this.selectedOptionText);
+    this.getCurrentUserInfo();
+  }
+
+
+  getCurrentUserInfo() {
+    this.UserList.splice(0, this.UserList.length);
+    this.userPofileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-
-        this.modalService.dismissAll(repositoryModal);
-        this.getAllDocsForRepository(repositoryModal);
+        const tempuserList = {} as UserList;
+        const current = data.dateSet[0];
+        tempuserList.DepartmentID = current.departmentID;
+        tempuserList.SubDepID = current.subDepartmentID;
+        this.UserList.push(tempuserList);
+        console.log("jjioegjiogjkljkljklfgjklfgjkljkljkljklfgjklfgjkldfgjklfgkjlfg", current);
       }
+      else {
+        alert(data.responseMessage);
+      }
+
     }, error => {
       console.log("Error: ", error);
     })
   }
 
+  getAllDepartments() {
+    this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
+    this.subDepartment.getSubDepartmentsList().subscribe((data: any) => {
 
-  
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepartmentList = {} as SubDepartmentList;
+          const current = data.dateSet[i];
+          console.log("DepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListh", current);
+          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.departmentID = current.departmentID;
+          tempSubDepartmentList.dateUpdated = current.dateUpdated;
+          tempSubDepartmentList.dateCreated = current.dateCreated;
+          this.SubDepartmentList.push(tempSubDepartmentList);
+
+        }
+
+        //this.DepartmentList = data.dateSet;
+
+
+        console.log("DepartmentListh", this.SubDepartmentList);
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+  filter = false;
+
+
+
+  filterDepartment() {
+
+    if (this.select == undefined) {
+      this.dataSource = this.DocumentsList.filter(df => df.DateCreated);
+      this.groupName = false;
+      this.selected = undefined;
+      this.selectedOptionText = "";
+    }
+    else {
+
+      this.groupName = true;
+      console.log(this.select);
+      this.dataSource = this.DocumentsList.filter(df => df.SubDepartmentID == this.select);
+      console.log("FilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilter", this.DocumentsList.filter(df => df.SubDepartmentID == this.select))
+    }
+  }
+  resetFilter() {
+    this.select = undefined;
+    this.selected = undefined;
+    this.groupName = false;
+    this.selectedOptionText = "";
+    this.dataSource = this.DocumentsList.filter(df => df.DateCreated);
+  }
+
+  filerGroupName() {
+    if (this.selectedOptionText == "") {
+      this.dataSource = this.DocumentsList.filter(df => df.DateCreated && df.SubDepartmentID == this.select);
+    }
+    else {
+      console.log(this.selectedOptionText);
+      this.dataSource = this.DocumentsList.filter(df => df.GroupName == this.selectedOptionText && df.SubDepartmentID == this.select );
+      console.log("FilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilter", this.DocumentsList.filter(df => df.SubDepartmentID == this.select))
+    }
+  }
+
+  selectDepartment() {
+
+  }
+
 }
 
 

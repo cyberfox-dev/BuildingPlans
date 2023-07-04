@@ -13,14 +13,16 @@ export class DocumentUploadService {
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
-  public addUpdateDocument(documentID?: number | null, documentName?: string | null, documentLocalPath?: any | null, applicationID?: number | null, assignedUserID?: string | null, createdById?: string | null ) {
+  public addUpdateDocument(documentID?: number | null, documentName?: string | null, documentLocalPath?: any | null, applicationID?: number | null, assignedUserID?: string | null, createdById?: string | null, groupName?: string | null, subDepID?: number | null ) {
     const body = {
       DocumentID: documentID,
       DocumentName: documentName,
       DocumentLocalPath: documentLocalPath,
       ApplicationID: applicationID,
       AssignedUserID: assignedUserID,
-      CreatedById: createdById
+      CreatedById: createdById,
+      DocumentGroupName: groupName,
+      SubDepartmentID: subDepID,
     }
     return this.httpClient.post(this.baseURL + "AddUpdateDocument", body);
   }
