@@ -76,7 +76,7 @@ export class ServiceItemsConfigComponent implements OnInit {
           tempServiceItemList.Description = current.description;
           tempServiceItemList.Rate = current.rate;
           tempServiceItemList.totalVat = current.totalVat;
-          tempServiceItemList.dateCreated = current.dateCreated;
+          tempServiceItemList.dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));;
           this.ServiceItemList.push(tempServiceItemList);
         }
         this.ServiceItemTable?.renderRows();

@@ -20,10 +20,13 @@ import { UserProfileService } from '../service/UserProfile/user-profile.service'
 import { SharedService } from 'src/app/shared/shared.service';
 import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
 import { ViewProjectInfoComponent } from 'src/app/view-project/view-project-info/view-project-info.component';
+import { PermitComponentComponent } from 'src/app/permit-component/permit-component.component';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { RefreshService } from 'src/app/shared/refresh.service';
+import { PermitService } from 'src/app/service/Permit/permit.service';
 import { StagesService } from 'src/app/service/Stages/stages.service';
 import { Observable } from 'rxjs';
+
 
 
 export interface SubDepartmentList {
@@ -51,6 +54,18 @@ export interface StagesList {
   StageName: string;
   StageOrderNumber: number;
   CurrentUser: any
+}
+
+//PTC = Permit To Comment
+export interface PTCList {
+  PermitSubForCommentID: number;
+  ApplicationID: number;
+  SubDepartmentID: number;
+  UserAssaignedToComment: string;
+  SubDepartmentName: string;
+  PermitComment: string;
+  PermitCommentStatus: string;
+
 }
 
 export interface ZoneList {
@@ -130,6 +145,8 @@ export class ActionCenterComponent implements OnInit {
     countReject = 0;
   SubDepartmentListForCheck: SubDepartmentList[] = [];
     assaignedToComment: number = 0;
+    permitIssuer: any;
+    canApprovePermit: boolean;
    
   /*textfields*/
 
@@ -192,6 +209,7 @@ export class ActionCenterComponent implements OnInit {
   UserZoneList: UserZoneList[] = [];
   LinkedUserToSub: UserZoneList[] = [];
   ReviewerUserList: UserZoneList[] = [];
+  PTCList: PTCList[] = [];
 
   selection = new SelectionModel<SubDepartmentList>(true, []);
   zoneSelection = new SelectionModel<ZoneList>(true, []);
@@ -262,6 +280,8 @@ export class ActionCenterComponent implements OnInit {
     private router: Router,
     private refreshService: RefreshService,
     private stagesService: StagesService,
+    private permitService: PermitService,
+    private permitComponentComponent: PermitComponentComponent,
   ) { }
   openEnd(content: TemplateRef<any>) {
     this.offcanvasService.open(content, { position: 'end' });
@@ -277,6 +297,7 @@ export class ActionCenterComponent implements OnInit {
   option = '';
 
   leaveAComment = "";
+  leaveACommentPermit = "";
   FileUpload = "Please Upload file";
   @ViewChild("internalOpt", { static: true }) content!: ElementRef;
   @Output() refreshParent: EventEmitter<void> = new EventEmitter<void>();
@@ -289,7 +310,7 @@ export class ActionCenterComponent implements OnInit {
 
 
       this.getAllSubDepartments();
-     
+
     
       if (this.CurrentUser == null) {
         console.log("Not");
@@ -302,7 +323,9 @@ export class ActionCenterComponent implements OnInit {
     this.getAllServiceItmesForDropdown();
 
 
-       this.CurrentApplication = this.viewProjectInfoComponent.getCurrentApplication();
+    this.CurrentApplication = this.viewProjectInfoComponent.getCurrentApplication();
+   
+    
 
    //// this giving some shit
    // this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
@@ -316,11 +339,16 @@ export class ActionCenterComponent implements OnInit {
     this.loggedInUsersIsAdmin = this.CurrentUserProfile[0].isDepartmentAdmin;
     this.loggedInUsersIsZoneAdmin = this.CurrentUserProfile[0].isZoneAdmin;
       this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
-      this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
+    this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
+    if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
+      this.getUsersByRoleName("Permit Issuer");
+
+    }
     this.getLinkedZones();
     this.CanComment();
     this.getAllStages();
-
+      this.canApprovePTW();
+    this.getAllPermitForComment();
     
 
    
@@ -334,6 +362,97 @@ export class ActionCenterComponent implements OnInit {
 
   ngOnDestroy() {
     this.refreshService.disableRefreshNavigation();
+  }
+
+
+  canApprovePTW() {
+
+
+    this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        let foundMatch = false;
+        let current = data.dateSet[0];// Flag to track if a match is found
+        debugger;
+        if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
+          debugger;
+          for (var i = 0; i < this.permitIssuer.length; i++) {
+            debugger;
+
+
+            if (this.permitIssuer[i].userID == this.CurrentUser.appUserId) {
+              debugger;
+
+
+              if (current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
+                debugger;
+
+
+                foundMatch = true;
+                break;
+              }
+
+            }
+
+
+            if (foundMatch) {
+              debugger;
+
+              // A match was found, no need to continue checking
+              break;
+            }
+          }
+        }
+       
+        else {
+          this.canApprovePermit = false;
+        }
+
+
+        this.canApprovePermit = foundMatch;
+      } else {
+        alert(data.responseMessage);
+      }
+
+      console.log("response", data);
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+  }
+
+  getAllPermitForComment() {
+
+    this.permitService.getPermitSubForCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempPTCList = {} as PTCList;
+          const current = data.dateSet[i];
+          debugger;
+          tempPTCList.PermitSubForCommentID = current.permitSubForCommentID;
+          tempPTCList.ApplicationID = current.applicationID;
+          tempPTCList.SubDepartmentID = current.subDepartmentID;
+          tempPTCList.SubDepartmentName = current.subDepartmentName;
+          tempPTCList.UserAssaignedToComment = current.userAssaignedToComment;
+          tempPTCList.PermitComment = current.permitComment;
+          tempPTCList.PermitCommentStatus = current.permitCommentStatus;
+
+          this.PTCList.push(tempPTCList);
+         
+        }
+
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 
   getAllStages() {
@@ -398,6 +517,97 @@ export class ActionCenterComponent implements OnInit {
     //    });
     //}
   }
+
+  PermitIssue(interact: string) {
+
+    let SubDepartmentName = "";
+    let PermitSubCommetID = 0;
+    debugger;
+    for (var i = 0; i < this.PTCList.length; i++) {
+      debugger;
+      if (this.PTCList[i].SubDepartmentID == this.loggedInUsersSubDepartmentID) {
+        debugger;
+        SubDepartmentName = this.PTCList[i].SubDepartmentName;
+        PermitSubCommetID = this.PTCList[i].PermitSubForCommentID;
+      }
+    }
+    switch (interact) {
+
+      case "Approve": {
+        if (confirm("Are you sure you want to approve permit this application?")) {
+          debugger;
+          this.permitService.addUpdatePermitSubForComment(PermitSubCommetID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              alert("Permit Approved");
+                this.router.navigate(["/home"]);
+             
+            }
+            else {
+              alert(data.responseMessage);
+
+            }
+            console.log("reponse", data);
+
+          }, error => {
+            console.log("Error: ", error);
+          })
+          this.modalService.dismissAll();
+        }
+        break;
+      }
+
+      case "MeetOnSite": {
+        if (confirm("Are you sure you want to meet applicant On site?")) {
+          this.permitService.addUpdatePermitSubForComment(PermitSubCommetID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "MeetOnSite", this.CurrentUser.appUserId).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              alert("Meet Applicant On Site");
+                this.router.navigate(["/home"]);
+
+            }
+            else {
+              alert(data.responseMessage);
+
+            }
+            console.log("reponse", data);
+
+          }, error => {
+            console.log("Error: ", error);
+          })
+          this.modalService.dismissAll();
+        }
+        break;
+      }
+
+      case "Reject": {
+        if (confirm("Are you sure you want to reject permit?")) {
+          this.permitService.addUpdatePermitSubForComment(PermitSubCommetID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Rejected", this.CurrentUser.appUserId).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              alert("Permit Rejected");
+                this.router.navigate(["/home"]);
+
+            }
+            else {
+              alert(data.responseMessage);
+
+            }
+            console.log("reponse", data);
+
+          }, error => {
+            console.log("Error: ", error);
+          })
+          this.modalService.dismissAll();
+        }
+
+        break;
+      }
+
+      default: {
+
+        break;
+      }
+    }
+  }
+
 
 
   FinalApprove(interact: string) {
@@ -998,6 +1208,23 @@ export class ActionCenterComponent implements OnInit {
 
         if (data.responseCode == 1) {
           this.developerUsers = data.dateSet;
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("getAllLinkedRolesReponse", data);
+
+      }, error => {
+        console.log("getAllLinkedRolesReponseError: ", error);
+      })
+    }
+    else if (roleName == "Permit Issuer") {
+      debugger;
+      this.accessGroupsService.getUserBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          debugger;
+          this.permitIssuer = data.dateSet;
         }
         else {
           alert(data.responseMessage);
@@ -1996,6 +2223,12 @@ export class ActionCenterComponent implements OnInit {
     let currnetComment = this.leaveAComment;
     console.log("commentName", commentName);
     this.leaveAComment = currnetComment+" "+commentName;
+  }
+
+  populateCommentPermit(commentName: any) {
+    let currnetComment = this.leaveACommentPermit;
+    console.log("commentName", commentName);
+    this.leaveACommentPermit = currnetComment + " " + commentName;
   }
 
 getAllCommentsByUserID() {

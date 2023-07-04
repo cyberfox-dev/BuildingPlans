@@ -220,7 +220,7 @@ import { SharedService } from './shared/shared.service';
     DepartmentConfigComponent,
     ActionCenterComponent,
     ViewProjectInfoComponent,
-/*    ProjectDetailsMapComponent*/
+    PermitComponentComponent,
   ],
   bootstrap: [AppComponent]
 })

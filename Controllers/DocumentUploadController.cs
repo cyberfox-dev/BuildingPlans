@@ -95,7 +95,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _documentUploadService.AddUpdateDocument(model.DocumentID, model.DocumentName, model.DocumentLocalPath, model.ApplicationID, model.AssignedUserID, model.CreatedById);
+                    var result = await _documentUploadService.AddUpdateDocument(model.DocumentID, model.DocumentName, model.DocumentLocalPath, model.ApplicationID, model.AssignedUserID, model.CreatedById,model.DocumentGroupName,model.SubDepartmentID);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.DocumentID > 0 ? "Professional Updated Successfully" : "Professional Added Successfully"), result));
                 }
 

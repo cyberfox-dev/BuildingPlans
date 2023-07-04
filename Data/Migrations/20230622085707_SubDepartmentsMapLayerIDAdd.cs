@@ -15,11 +15,11 @@ namespace WayleaveManagementSystem.Data.Migrations
                 type: "int",
                 nullable: true);
 
-            migrationBuilder.AddColumn<DateTime>(
-                name: "permitStartDate",
-                table: "ApplicationListDTO",
-                type: "datetime2",
-                nullable: true);
+            //migrationBuilder.AddColumn<DateTime>(
+            //    name: "permitStartDate",
+            //    table: "ApplicationListDTO",
+            //    type: "datetime2",
+            //    nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -28,9 +28,9 @@ namespace WayleaveManagementSystem.Data.Migrations
                 name: "MapLayerID",
                 table: "SubDepartmentsTable");
 
-            migrationBuilder.DropColumn(
-                name: "permitStartDate",
-                table: "ApplicationListDTO");
+            //migrationBuilder.DropColumn(
+            //    name: "permitStartDate",
+            //    table: "ApplicationListDTO");
         }
     }
 }

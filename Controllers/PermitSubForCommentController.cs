@@ -55,6 +55,7 @@ namespace WayleaveManagementSystem.Controllers
                             UserAssaignedToComment = model.UserAssaignedToComment,
                             CreatedById = model.CreatedById,
                             PermitComment = model.PermitComment,
+                            PermitCommentStatus = model.PermitCommentStatus,
            
                         };
 
@@ -66,29 +67,33 @@ namespace WayleaveManagementSystem.Controllers
                     }
                     else
                     {
-                        if (tempPermitSubForComment.ApplicationID != null)
+                        if (model.ApplicationID != null)
                         {
                             tempPermitSubForComment.ApplicationID = model.ApplicationID;
                         }
-                        if (tempPermitSubForComment.SubDepartmentID != null)
+                        if (model.SubDepartmentID != null)
                         {
                             tempPermitSubForComment.SubDepartmentID = model.SubDepartmentID;
                         }
-                        if (tempPermitSubForComment.SubDepartmentName != null)
+                        if (model.SubDepartmentName != null)
                         {
                             tempPermitSubForComment.SubDepartmentName = model.SubDepartmentName;
                         }
-                        if (tempPermitSubForComment.UserAssaignedToComment != null)
+                        if (model.UserAssaignedToComment != null)
                         {
                             tempPermitSubForComment.UserAssaignedToComment = model.UserAssaignedToComment;
                         }
-                        if (tempPermitSubForComment.CreatedById != null)
+                        if (model.CreatedById != null)
                         {
                             tempPermitSubForComment.CreatedById = model.CreatedById;
                         }
-                        if (tempPermitSubForComment.PermitComment != null)
+                        if (model.PermitComment != null)
                         {
                             tempPermitSubForComment.PermitComment = model.PermitComment;
+                        } 
+                        if (model.PermitCommentStatus != null)
+                        {
+                            tempPermitSubForComment.PermitCommentStatus = model.PermitCommentStatus;
                         }
 
                         _context.Update(tempPermitSubForComment);
@@ -157,6 +162,8 @@ namespace WayleaveManagementSystem.Controllers
                     UserAssaignedToComment = permitSubForComment.UserAssaignedToComment,
                     CreatedById = permitSubForComment.CreatedById,
                     PermitComment = permitSubForComment.PermitComment,
+                    PermitCommentStatus = permitSubForComment.PermitCommentStatus,
+                    
 
 
                 }
@@ -191,12 +198,51 @@ namespace WayleaveManagementSystem.Controllers
                 where permitSubForComment.ApplicationID == applicationID && permitSubForComment.isActive == true 
                 select new PermitSubForCommentDTO()
                 {
+                    PermitSubForCommentID = permitSubForComment.PermitSubForCommentID,
                     ApplicationID = permitSubForComment.ApplicationID,
                     SubDepartmentID = permitSubForComment.SubDepartmentID,
                     SubDepartmentName = permitSubForComment.SubDepartmentName,
                     UserAssaignedToComment = permitSubForComment.UserAssaignedToComment,
                     CreatedById = permitSubForComment.CreatedById,
                     PermitComment = permitSubForComment.PermitComment,
+                    PermitCommentStatus = permitSubForComment.PermitCommentStatus,
+
+
+                }
+                ).ToListAsync();
+
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All PermitSubForComment By ID", result));
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        [HttpPost("GetPermitSubForCommentBySubID")]
+        public async Task<object> GetPermitSubForCommentBySubID([FromBody] PermitSubForCommentBindingModel model)
+        {
+            try
+            {
+                var result = await (
+                from permitSubForComment in _context.PermitSubForComment
+                where permitSubForComment.ApplicationID == model.ApplicationID && permitSubForComment.isActive == true && permitSubForComment.SubDepartmentID == model.SubDepartmentID
+                select new PermitSubForCommentDTO()
+                {
+                    PermitSubForCommentID = permitSubForComment.PermitSubForCommentID,
+                    ApplicationID = permitSubForComment.ApplicationID,
+                    SubDepartmentID = permitSubForComment.SubDepartmentID,
+                    SubDepartmentName = permitSubForComment.SubDepartmentName,
+                    UserAssaignedToComment = permitSubForComment.UserAssaignedToComment,
+                    CreatedById = permitSubForComment.CreatedById,
+                    PermitComment = permitSubForComment.PermitComment,
+                    PermitCommentStatus = permitSubForComment.PermitCommentStatus,
 
 
                 }
