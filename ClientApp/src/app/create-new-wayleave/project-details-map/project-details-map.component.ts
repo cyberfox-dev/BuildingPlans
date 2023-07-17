@@ -42,6 +42,7 @@ import { ZonesService } from "src/app/service/Zones/zones.service"
 import { ActionCenterComponent } from "src/app/action-center/action-center.component";
 import { SubDepartmentForCommentService } from "src/app/service/SubDepartmentForComment/sub-department-for-comment.service"
 import { ZoneForCommentService } from "src/app/service/ZoneForComment/zone-for-comment.service"
+import Fullscreen from '@arcgis/core/widgets/Fullscreen';
 
 /*import { Editor, EditorViewModel, FeatureFormViewModel } from "@arcgis/core/widgets/Editor";*/
 /*import * as FeatureForm from 'esri/widgets/FeatureForm';*/
@@ -572,6 +573,11 @@ export class ProjectDetailsMapComponent implements OnInit {
 
       map.add(featureLayer);
 
+      const fullscreen = new Fullscreen({
+        view: view
+      });
+
+      view.ui.add(fullscreen, 'bottom-left');
 
       // Create a polygon feature in the layer
       //featureLayer.applyEdits({
