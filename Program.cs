@@ -75,15 +75,16 @@ builder.Services.Configure<FormOptions>(options =>
     options.MultipartHeadersLengthLimit = int.MaxValue;
 });
 
-builder.Services.AddCors(opt =>
+builder.Services.AddCors(options =>
 {
-    opt.AddPolicy("_loginOrigin", builder =>
-    {
-        builder.AllowAnyHeader();
-        builder.AllowAnyMethod();
-        builder.AllowAnyOrigin();
-
-    });
+    options.AddPolicy("AllowSpecificOrigin",
+        builder =>
+        {
+            builder
+                .WithOrigins("https://localhost:44440") // Replace with your Angular app's origin
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
 });
 
 var app = builder.Build();
@@ -96,7 +97,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("_loginOrigin");
+app.UseCors("AllowSpecificOrigin");
 
 app.UseStaticFiles();
 //This is to tell the app where to find the uploaded files

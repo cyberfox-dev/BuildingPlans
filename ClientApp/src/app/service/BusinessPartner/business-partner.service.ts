@@ -1,43 +1,33 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BusinessPartnerService {
-  private apiUrl = 'https://poqci01.capetown.gov.za:8151/RESTAdapter/WLMS_Q/BPValidation';
+  private apiUrl = 'https://orchestrationhubqa.capetown.gov.za/RESTAdapter/WLMS_Q/BPValidation';
 
   constructor(private http: HttpClient) { }
 
-
-  //validateBP(bpNumber: string): Observable<boolean> {
-  //  const url = `${this.apiUrl}?bpNumber=${encodeURIComponent(bpNumber)}`;
-
-  //  // Set up the request headers with the username and password
-  //  const headers = new HttpHeaders({
-  //    'Authorization': 'Basic ' + btoa(username + ':' + password)
-  //  });
-
-  //  return this.http.get<boolean>(url, { headers });
-  //}
-
-  //validateBP(): Observable<boolean> {
-  //  return this.http.get<boolean>(this.apiUrl);
-  //}
-  //validateBP(bpNumber: number): Observable<boolean> {
-  //  const url = `${this.apiUrl}?bpNumber=${encodeURIComponent(bpNumber)}`;
-  //  return this.http.get<boolean>(url);
-  //}
-
-
-
   validateBP(bpNumber: number): Observable<any> {
-    
-    const url = `${this.apiUrl}`;
-    const body = { "BusinessPartnerNumber": bpNumber };
+    const url = '/RESTAdapter/WLMS_Q/BPValidation'; 
+    const body = JSON.stringify({ BusinessPartnerNumber: bpNumber });
 
-    return this.http.post<any>(url, body);
+    const username = 'RFC_BPWLMS';
+    const password = 'B@sis1234';
+    const base64Auth = btoa(`${username}:${password}`);
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'text/plain',
+      'Authorization': `Basic ${base64Auth}`,
+    });
+
+    return this.http.post<any>(url, body, { headers }).pipe(
+      catchError(error => {
+        console.error('Error occurred:', error);
+        return throwError(error);
+      }),
+    );
   }
-
 }

@@ -7,6 +7,8 @@ import { UserProfileService } from 'src/app/service/UserProfile/user-profile.ser
 import { NotificationsService } from "src/app/service/Notifications/notifications.service";
 import { NewProfileComponent } from 'src/app/new-user/new-profile/new-profile.component';
 import { HomeComponent } from 'src/app/home/home.component';
+import { BusinessPartnerService } from 'src/app/service/BusinessPartner/business-partner.service';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -41,6 +43,7 @@ export class LoginComponent implements OnInit {
     registerPassword: ['', Validators.required],
     reenterPassword: ['', Validators.required],
     fullName: ['', Validators.required],
+    bpNumber: ['', Validators.required],
     OTPField: ['', Validators.required],
   })
   space1: number | undefined;
@@ -63,6 +66,7 @@ export class LoginComponent implements OnInit {
     private userPofileService: UserProfileService,
     private notification: NotificationsService,
     private newProfileComponent: NewProfileComponent,
+    private businessPartnerService: BusinessPartnerService,
     // private homeComponent: HomeComponent,
 
   ) { }
@@ -74,6 +78,7 @@ export class LoginComponent implements OnInit {
 
   }
   characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
   public generateOTP(length: number): string {
     let otp = '';
     const charactersLength = this.characters.length;
@@ -176,14 +181,35 @@ export class LoginComponent implements OnInit {
       );
   }
 
+
+  testBp(BpNo: any): Observable<boolean> {
+    return new Observable(observer => {
+      this.businessPartnerService.validateBP(Number(BpNo)).subscribe(
+        (response: any) => {
+          debugger;
+          const apiResponse = response.Response;
+          if (apiResponse == "X") {
+            observer.next(true);
+          } else {
+            observer.next(false);
+          }
+          observer.complete();
+        },
+        (error: any) => {
+          // Handle API error
+          console.error('API error:', error);
+          observer.next(false);
+          observer.complete();
+        }
+      );
+    });
+  }
+
   DoChecksForRegister() {
-
-
-
-
     /*    this.notification.sendEmail("jahdiel@cyberfox.co.za", "Test", "testing 1, 2, 3...");*/
 
     let fullName = this.registerForm.controls["fullName"].value;
+    let bpNumber = this.registerForm.controls["bpNumber"].value;
     let email = this.registerForm.controls["registerEmail"].value;
     let password = this.registerForm.controls["registerPassword"].value;
     let passwordConfirm = this.registerForm.controls["reenterPassword"].value;
@@ -243,10 +269,37 @@ export class LoginComponent implements OnInit {
   }
 
 
- async onRegister(clientFullName?: string | null, clientEmail?: string | null, phoneNumber?: string | null, BpNo?: string | null, CompanyName?: string | null, CompanyRegNo?: string | null, PhyscialAddress?: string | null, ApplicantIDUpload?: string | null, ApplicantIDNumber?: string | null) {
-    if (clientFullName != null || clientFullName != "" && clientEmail != null || clientEmail != "") {
+  async onRegister(
+    clientFullName?: string | null,
+    clientEmail?: string | null,
+    phoneNumber?: string | null,
+    BpNo?: string | null,
+    CompanyName?: string | null,
+    CompanyRegNo?: string | null,
+    PhyscialAddress?: string | null,
+    ApplicantIDUpload?: string | null,
+    ApplicantIDNumber?: string | null
+  ) {
+    // If the method is called without parameters, then get the values from the form
+    if (
+      clientFullName === undefined ||
+      clientEmail === undefined ||
+      BpNo === undefined
+    ) {
+      clientFullName = this.registerForm.controls["fullName"].value;
+      clientEmail = this.registerForm.controls["registerEmail"].value;
+      BpNo = this.registerForm.controls["bpNumber"].value;
+    }
+
+    this.testBp(BpNo).subscribe(isBpValid => {
+      if (!isBpValid) {
+        alert("Please enter a valid Business Partner (BP) Number!");
+        return;
+      }
+
       this.sharedService.errorForRegister = false;
-      // Use a regular expression to check if the email is valid
+
+      // Validate email
       const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       if (clientEmail != null) {
         if (!emailRegex.test(clientEmail)) {
@@ -258,7 +311,6 @@ export class LoginComponent implements OnInit {
         return;
       }
 
-
       // Count the number of spaces in the full name
       let numberOfSpaces = 0;
       if (clientFullName != null) {
@@ -269,71 +321,38 @@ export class LoginComponent implements OnInit {
         return;
       }
 
-
       if (numberOfSpaces >= 2 || numberOfSpaces == 0) {
         alert("Please enter your first name and surname only!");
       } else {
-   
-       await this.userService.register(clientFullName, clientEmail, "Password@" + clientFullName).subscribe((data: any) => {
+        // If BP Number is valid, proceed with user registration
+        this.userService.register(clientFullName, clientEmail, "Password@" + clientFullName).subscribe((data: any) => {
           if (data.responseCode == 1) {
             console.log("After Register", data.dateSet);
-            debugger;
-            // this.homeComponent.openXl('content');
-            
-            this.newProfileComponent.onNewProfileCreate(data.dateSet.appUserId, clientFullName, clientEmail, phoneNumber, BpNo, CompanyName, CompanyRegNo, PhyscialAddress, ApplicantIDUpload, ApplicantIDNumber);
+            this.newProfileComponent.onNewProfileCreate(
+              data.dateSet.appUserId,
+              clientFullName,
+              clientEmail,
+              phoneNumber,
+              BpNo,
+              CompanyName,
+              CompanyRegNo,
+              PhyscialAddress,
+              ApplicantIDUpload,
+              ApplicantIDNumber
+            );
 
             this.sharedService.clientUserID = data.dateSet.appUserId;
-            
-
           } else {
-            //alert("Invalid Email or Password");
-            debugger;
             this.sharedService.errorForRegister = true;
             alert(data.responseMessage);
           }
-          //console.log("reponse", data);
         }, error => {
           console.log("Error: ", error);
         });
       }
-    }
-    else {
-
-      let otpEntered = this.registerForm.controls["OTPField"].value;
-
-      /*if it is expired*/
-      if (this.isExpired) {
-        alert("OTP has expired. Please send a new OTP");
-        return;
-      }
-
-      if (this.otp == otpEntered) {
-
-        this.userService.register(this.registerForm.controls["fullName"].value, this.registerForm.controls["registerEmail"].value, this.registerForm.controls["registerPassword"].value).subscribe((data: any) => {
-          if (data.responseCode == 1) {
-            debugger;
-            this.sharedService.errorForRegister = false;
-            console.log("After Register", data.dateSet);
-            localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
-            alert(data.responseMessage);
-            this.router.navigate(["/new-profile"]);
-          } else {
-            debugger;
-            //alert("Invalid Email or Password");
-            this.sharedService.errorForRegister = true;
-            alert(data.responseMessage);
-          }
-          //console.log("reponse", data);
-        }, error => {
-          console.log("Error: ", error);
-        });
-      }
-
-      else {
-        alert("Invalid OTP");
-      }
-    }
+    });
   }
+
 
             //startExpirationTimer() {
             //  this.expirationTimer = setTimeout(() => {

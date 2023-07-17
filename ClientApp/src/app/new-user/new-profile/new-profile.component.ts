@@ -13,7 +13,9 @@ import { ZoneLinkService } from 'src/app/service/ZoneLink/zone-link.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
 import { ZonesService } from '../../service/Zones/zones.service';
-import { SubDepartmentsService} from 'src/app/service/SubDepartments/sub-departments.service';
+import { SubDepartmentsService } from 'src/app/service/SubDepartments/sub-departments.service';
+import { BusinessPartnerService } from '../../service/BusinessPartner/business-partner.service';
+import { Observable } from 'rxjs';
 
 export interface DepartmentList {
   departmentID: number;
@@ -153,7 +155,8 @@ export class NewProfileComponent implements OnInit {
     private notificationsService:NotificationsService,
     private zoneService: ZonesService,
     private zoneLinkService: ZoneLinkService,
-    private subDepartmentsService: SubDepartmentsService
+    private subDepartmentsService: SubDepartmentsService,
+    private businessPartnerService: BusinessPartnerService,
 
   ) { }
   open(content: any) {
@@ -234,6 +237,30 @@ export class NewProfileComponent implements OnInit {
           console.log("Error: ", error);
         }
       );
+  }
+
+
+  testBp(BpNo: any): Observable<boolean> {
+    return new Observable(observer => {
+      this.businessPartnerService.validateBP(Number(BpNo)).subscribe(
+        (response: any) => {
+          debugger;
+          const apiResponse = response.Response;
+          if (apiResponse == "X") {
+            observer.next(true);
+          } else {
+            observer.next(false);
+          }
+          observer.complete();
+        },
+        (error: any) => {
+          // Handle API error
+          console.error('API error:', error);
+          observer.next(false);
+          observer.complete();
+        }
+      );
+    });
   }
 
   onNewProfileCreate(userID?: string | null, fullName?: string | null, email?: string | null, phoneNumber?: string | null, BpNo?: string | null, CompanyName?: string | null, CompanyRegNo?: string | null, PhyscialAddress?: string | null, ApplicantIDUpload?: string | null, ApplicantIDNumber?: string | null) {
@@ -346,99 +373,118 @@ export class NewProfileComponent implements OnInit {
     else if (userID != null || userID != "") {
       this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
       this.CurrentUser = JSON.parse(this.stringifiedData);
-      debugger;
-      this.userPofileService.addUpdateUserProfiles(0, userID, fullName, email, phoneNumber, false, BpNo, CompanyName, CompanyRegNo, PhyscialAddress, null, null, null, null, null, null, ApplicantIDUpload, this.CurrentUser.appUserId, ApplicantIDNumber,null).subscribe((data: any) => {
-        debugger;
-        if (data.responseCode == 1) {
 
-          alert(data.responseMessage);
+      this.testBp(BpNo).subscribe(isValid => {
+        if (isValid) {
+          this.userPofileService.addUpdateUserProfiles(0, userID, fullName, email, phoneNumber, false, BpNo, CompanyName, CompanyRegNo, PhyscialAddress, null, null, null, null, null, null, ApplicantIDUpload, this.CurrentUser.appUserId, ApplicantIDNumber, null).subscribe((data: any) => {
+            debugger;
+            if (data.responseCode == 1) {
 
-        
+              alert(data.responseMessage);
+
+
+            }
+
+            else {
+
+              alert(data.responseMessage);
+            }
+            console.log("reponse", data);
+
+          }, error => {
+            console.log("Error: ", error);
+          })
+        } else {
+          alert("Not a vaild Business Partner Number");
         }
-
-        else {
-
-          alert(data.responseMessage);
-        }
-        console.log("reponse", data);
+      });
      
-      }, error => {
-        console.log("Error: ", error);
-      })
+
+
+
+   
     }
 
     else {
 
-      this.userPofileService.addUpdateUserProfiles(0, this.CurrentUser.appUserId, this.extApplicantName + " " + this.extApplicantSurname, this.CurrentUser.email, this.extApplicantTellNo, this.showInternal, this.extApplicantBpNoApplicant, this.extApplicantCompanyName, this.extApplicantCompanyRegNo, this.extApplicantPhyscialAddress, null, null, null, null, null, null, this.extApplicantIDUpload, this.CurrentUser.appUserId, this.extApplicantIDNumber, Number(this.selectedZone)).subscribe((data: any) => {
+      this.testBp(BpNo).subscribe(isValid => {
+        if (isValid) {
+          this.userPofileService.addUpdateUserProfiles(0, this.CurrentUser.appUserId, this.extApplicantName + " " + this.extApplicantSurname, this.CurrentUser.email, this.extApplicantTellNo, this.showInternal, this.extApplicantBpNoApplicant, this.extApplicantCompanyName, this.extApplicantCompanyRegNo, this.extApplicantPhyscialAddress, null, null, null, null, null, null, this.extApplicantIDUpload, this.CurrentUser.appUserId, this.extApplicantIDNumber, Number(this.selectedZone)).subscribe((data: any) => {
 
-        if (data.responseCode == 1) {
+            if (data.responseCode == 1) {
 
-          alert(data.responseMessage);
-
-          
-          const linkedContractors = this.shared.getContactorData();
-          const linkedEngineers = this.shared.getEngineerData();
+              alert(data.responseMessage);
 
 
-          for (let i = 0; i < linkedContractors.length; i++) {
-            const linkedContractor = this.shared.getContactorDataByIndex(i);
+              const linkedContractors = this.shared.getContactorData();
+              const linkedEngineers = this.shared.getEngineerData();
 
-            this.professionalService.addUpdateProfessional(null, linkedContractor.ProfessinalType, linkedContractor.name + " " + linkedContractor.surname, linkedContractor.bpNumber, false, linkedContractor.email, linkedContractor.phoneNumber?.toString(), linkedContractor.professionalRegNo, this.CurrentUser.appUserId, linkedContractor.idNumber, this.CurrentUser.appUserId, linkedContractor.CIBRating)
-              .subscribe((data: any) => {
 
-                if (data.responseCode == 1) {
-           
-                  //alert(data.responseMessage);
-                }
-                else {
-                  //alert("Invalid Email or Password");
-                  alert(data.responseMessage);
-             
-                }
-                console.log("reponse", data);
-           
-              }, error => {
-                console.log("Error: ", error);
-              })
-          }
+              for (let i = 0; i < linkedContractors.length; i++) {
+                const linkedContractor = this.shared.getContactorDataByIndex(i);
 
-          for (let i = 0; i < linkedEngineers.length; i++) {
-            const linkedEngineer = this.shared.getEngineerDataByIndex(i);
+                this.professionalService.addUpdateProfessional(null, linkedContractor.ProfessinalType, linkedContractor.name + " " + linkedContractor.surname, linkedContractor.bpNumber, false, linkedContractor.email, linkedContractor.phoneNumber?.toString(), linkedContractor.professionalRegNo, this.CurrentUser.appUserId, linkedContractor.idNumber, this.CurrentUser.appUserId, linkedContractor.CIBRating)
+                  .subscribe((data: any) => {
 
-            this.professionalService.addUpdateProfessional(null, linkedEngineer.ProfessinalType, linkedEngineer.name + " " + linkedEngineer.surname, linkedEngineer.bpNumber, false, linkedEngineer.email, linkedEngineer.phoneNumber?.toString(), linkedEngineer.professionalRegNo, this.CurrentUser.appUserId, linkedEngineer.idNumber, this.CurrentUser.appUserId, linkedEngineer.CIBRating)
-              .subscribe((data: any) => {
+                    if (data.responseCode == 1) {
 
-                if (data.responseCode == 1) {
-             
-                  //alert(data.responseMessage);
-                }
-                else {
-                  //alert("Invalid Email or Password");
-                  alert(data.responseMessage);
-            
-                }
-                console.log("reponse", data);
-        
-              }, error => {
-                console.log("Error: ", error);
-              })
-          }
+                      //alert(data.responseMessage);
+                    }
+                    else {
+                      //alert("Invalid Email or Password");
+                      alert(data.responseMessage);
+
+                    }
+                    console.log("reponse", data);
+
+                  }, error => {
+                    console.log("Error: ", error);
+                  })
+              }
+
+              for (let i = 0; i < linkedEngineers.length; i++) {
+                const linkedEngineer = this.shared.getEngineerDataByIndex(i);
+
+                this.professionalService.addUpdateProfessional(null, linkedEngineer.ProfessinalType, linkedEngineer.name + " " + linkedEngineer.surname, linkedEngineer.bpNumber, false, linkedEngineer.email, linkedEngineer.phoneNumber?.toString(), linkedEngineer.professionalRegNo, this.CurrentUser.appUserId, linkedEngineer.idNumber, this.CurrentUser.appUserId, linkedEngineer.CIBRating)
+                  .subscribe((data: any) => {
+
+                    if (data.responseCode == 1) {
+
+                      //alert(data.responseMessage);
+                    }
+                    else {
+                      //alert("Invalid Email or Password");
+                      alert(data.responseMessage);
+
+                    }
+                    console.log("reponse", data);
+
+                  }, error => {
+                    console.log("Error: ", error);
+                  })
+              }
+            }
+
+            else {
+
+              alert(data.responseMessage);
+              localStorage.removeItem('LoggedInUserInfo');
+              localStorage.removeItem('userProfile');
+              this.router.navigate(["/"]);
+            }
+            console.log("reponse", data);
+            localStorage.removeItem('LoggedInUserInfo');
+            localStorage.removeItem('userProfile');
+            this.router.navigate(["/"]);
+          }, error => {
+            console.log("Error: ", error);
+          })
+        } else {
+          alert("Not a vaild Business Partner Number");
         }
+      });
 
-        else {
-
-          alert(data.responseMessage);
-          localStorage.removeItem('LoggedInUserInfo');
-          localStorage.removeItem('userProfile');
-          this.router.navigate(["/"]);
-        }
-        console.log("reponse", data);
-        localStorage.removeItem('LoggedInUserInfo');
-        localStorage.removeItem('userProfile');
-        this.router.navigate(["/"]);
-      }, error => {
-        console.log("Error: ", error);
-      })
+    
 
 /*      const linkedEngineers = this.shared.getEngineerData;*/
 

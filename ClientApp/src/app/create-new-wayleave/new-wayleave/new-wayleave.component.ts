@@ -34,6 +34,10 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { HomeComponent } from 'src/app/home/home.component';
 import { ZoneForCommentService } from 'src/app/service/ZoneForComment/zone-for-comment.service';
+import { FinancialService } from 'src/app/service/Financial/financial.service';
+import { ServiceItemService } from 'src/app/service/ServiceItems/service-item.service';
+
+
 
 /*import { format } from 'path/win32';*/
 
@@ -192,7 +196,14 @@ const ELEMENT_DATATEst: PeriodicElementTest[] = [
   { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
 ];
 
-
+export interface ServiceItemList {
+  serviceItemID: number;
+  serviceItemCode: string;
+  Description: string;
+  Rate: any;
+  totalVat: number;
+  dateCreated: any;
+}
 
 @Component({
   selector: 'app-new-wayleave',
@@ -299,6 +310,7 @@ export class NewWayleaveComponent implements OnInit {
   MandatoryDocumentsLinkedStagesList: MandatoryDocumentsLinkedStagesList[] = [];
   TypeOfExcavationList: TypeOfExcavationList[] = [];
   ApplicationListForReapply: ApplicationList[] = [];
+  ServiceItemList: ServiceItemList[] = [];
 
   professionalList: any[];
 
@@ -380,6 +392,8 @@ export class NewWayleaveComponent implements OnInit {
 
   configNumberOfProject: any;
   configMonthYear: any;
+  accountNumber: any;
+  generatedInvoiceNumber: string;
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -421,7 +435,10 @@ export class NewWayleaveComponent implements OnInit {
     private refreshService: RefreshService,
     private selectEngineerTableComponent: SelectEngineerTableComponent,
     private selectContractorTableComponent: SelectContractorTableComponent,
-    private zoneForCommentService: ZoneForCommentService
+    private zoneForCommentService: ZoneForCommentService,
+    private serviceItemService: ServiceItemService,
+    private financialService: FinancialService,
+
   ) { }
 
   ngOnInit(): void {
@@ -514,6 +531,9 @@ export class NewWayleaveComponent implements OnInit {
     }
 
     this.reciveOption();
+    this.getServiceItem("001");
+    this.getServiceItem("002");
+    this.getServiceItem("003");
 
 
     //const imagePath = 'assets/cctlogoblack.png';
@@ -561,7 +581,7 @@ export class NewWayleaveComponent implements OnInit {
       this.client = true;
       this.external = false;
       this.internal = false;
-      this.map = false;
+      this.map = true;
       this.populateClientInfo(this.shared.clientUserID);
       this.clientUserID = this.shared.clientUserID;
 
@@ -636,6 +656,37 @@ export class NewWayleaveComponent implements OnInit {
       }
       else {
         //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  getServiceItem(serviceItemCode:string) {
+
+   
+
+    this.serviceItemService.getServiceItemByServiceItemCode(serviceItemCode).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempServiceItemList = {} as ServiceItemList;
+          const current = data.dateSet[i];
+          tempServiceItemList.serviceItemCode = current.serviceItemCode;
+          tempServiceItemList.Rate = current.rate;
+          tempServiceItemList.Description = current.description;
+
+          this.ServiceItemList.push(tempServiceItemList);
+        
+        }
+  
+
+      }
+      else {
         alert(data.responseMessage);
       }
       console.log("reponse", data);
@@ -891,7 +942,7 @@ export class NewWayleaveComponent implements OnInit {
               this.onCreateNotification();
               this.router.navigate(["/home"]);
               this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + "<br><br><p>Your application (" + this.applicationID + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Thank you</p>");
-/*              this.addToSubDepartmentForComment();*/
+              /*              this.addToSubDepartmentForComment();*/
               this.addToZoneForComment();
 
               console.log("responseAddapplication", data);
@@ -959,13 +1010,14 @@ export class NewWayleaveComponent implements OnInit {
           this.AddProfessinal(contractorData, engineerData);
         }
         this.UploadDocuments(data.dateSet);
-       // this.onAutoLinkDepartment();
+        // this.onAutoLinkDepartment();
         this.shared.setApplicationID(0);
         this.shared.clearContractorData();
         this.shared.clearEngineerData();
         alert("Client Application Created");
         this.addToSubDepartmentForComment();
         this.addToZoneForComment();
+        this.getCurrentInvoiceNumberForGen(this.clientName + ' ' + this.clientSurname);
       }
       else {
         alert("Failed To Create Application");
@@ -1015,13 +1067,14 @@ export class NewWayleaveComponent implements OnInit {
           this.AddProfessinal(contractorData, engineerData);
         }
         this.UploadDocuments(data.dateSet);
-       // this.onAutoLinkDepartment();
+        // this.onAutoLinkDepartment();
         this.shared.setApplicationID(0);
         this.shared.clearContractorData();
         this.shared.clearEngineerData();
         alert("Application Created");
         this.addToSubDepartmentForComment();
         this.addToZoneForComment();
+        this.getCurrentInvoiceNumberForGen(this.externalName + ' ' + this.externalSurname);
       }
       else {
         alert("Failed To Create Application");
@@ -1782,147 +1835,710 @@ export class NewWayleaveComponent implements OnInit {
   }
 
 
-  generateInvoice() {
-    if (this.internal = false) {
+  async getCurrentInvoiceNumberForGen(ClientName:string) {
+    await this.configService.getConfigsByConfigName("InvoiceNumber").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        const current = data.dateSet[0];
+        this.accountNumber = current.utilitySlot1;
+        let newInvoiceForConfig = Number(current.utilitySlot1) + 1;
 
-      //var pdf = 'http://197.242.150.226/Files/SampleInvoice.pdf';
-      //window.open(pdf, '_blank');
+        this.configService.addUpdateConfig(current.configID, null, null, newInvoiceForConfig.toString(), null, null, null).subscribe((data: any) => {
+          if (data.responseCode == 1) {
+
+            this.getCDV(ClientName);
+
+          }
+          else {
+            //alert("Invalid Email or Password");
+            alert(data.responseMessage);
+          }
+          console.log("addUpdateConfigReponse", data);
+
+        }, error => {
+          console.log("addUpdateConfigError: ", error);
+        })
 
 
-      console.log("downloadInvoice");
-      // Create a new instance of jsPDF
+
+
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("getConfigsByConfigNameReponse", data);
+
+    }, error => {
+      console.log("getConfigsByConfigNameError: ", error);
+    })
+  }
+
+
+
+  getCDV(ClientName: string) {
+
+    const accountString = this.accountNumber.toString();
+    const weights = [3, 2, 1, 2, 3, 4, 5, 6];
+
+    // Throw an error if the account number is not 8 digits long
+    if (accountString.length !== 8) {
+      throw new Error('Account number must be 8 digits long');
+    }
+
+    let sum = 0;
+
+    for (let i = 0; i < 8; i++) {
+      const digit = parseInt(accountString.charAt(i));
+      sum += digit * weights[i];
+    }
+
+    const cdv = sum % 9;
+
+    //alert(this.accountNumber.toString() + cdv.toString());
+    this.generatedInvoiceNumber = this.accountNumber.toString() + cdv.toString();
+
+    this.generateInvoice(ClientName);
+
+
+  }
+
+  generateInvoice(ClientName: string) {
+    if (!this.internal) {
+      // Create a new PDF
       const doc = new jsPDF();
 
+      // Add company logo
+      const logo = new Image();
+      logo.src = 'assets/cctlogoblack.png';
+      doc.addImage(logo, 'png', 10, 10, 60, 20);
 
-      const image = new Image();
-      image.src = this.logoUrl;
-      image.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = image.width;
-        canvas.height = image.height;
-        const context = canvas.getContext('2d');
-        context.drawImage(image, 0, 0);
-        const dataUrl = canvas.toDataURL('image/jpeg');
+      // Add invoice title
+      this.addInvoiceTitle(doc);
+
+      // Add client details
+      this.addClientDetails(doc, ClientName);
+
+      // Add company contact details
+      this.addCompanyDetails(doc);
+
+      // Calculate payable by date
+      const payableByDate = this.calculatePayableByDate();
+
+      // Set the starting Y position for the table
+      let startY = 100;
+
+      // Generate service items table, cost details and calculate total cost
+      startY = this.addServiceItemsAndCostDetails(doc, startY);
+
+      startY += 8; // adjust this value as needed
+
+      // Add account details
+      startY = this.addAccountDetails(doc, payableByDate, startY);
+
+      // Reduce the gap before the next section
+      startY -= 28; // adjust this value as needed
+
+      // Add payment options and consequences of non-payment
+      startY = this.addPaymentDetails(doc, startY);
+
+      // Increase the gap before the next section
+      startY += 20;
+
+      // Add pay points notice
+      startY = this.addPayPointsNotice(doc, startY);
+
+      startY -= 35; // adjust this value as needed
 
 
-        autoTable(doc, {
-          body: [
-            [
-              {
-                content: "Logo goes here",
+      // Add vendors image
+
+      //  const vendors = new Image();
+      //vendors.src = 'assets/vendors.jpg';
+
+      //const pageWidth = doc.internal.pageSize.getWidth();
+      //const aspectRatio = vendors.width / vendors.height; // assumes vendors Image object contains width and height properties
+      //const imgHeightOnPage = pageWidth / aspectRatio;
+
+      //doc.addImage(vendors, 'JPEG', 0, startY + 40, pageWidth, imgHeightOnPage);
 
 
-                styles: {
-                  halign: 'left',
-                  fontSize: 20,
-                  textColor: '#ffffff',
-                }
-              },
-              {
-                content: 'Wayleave Application Fee Invoice',
-                styles: {
-                  halign: 'right',
-                  fontSize: 15,
-                  textColor: '#ffffff',
-                }
+      const vendors = new Image();
+      vendors.src = 'assets/vendors.jpg';
+      doc.addImage(vendors, 'JPEG', 15, startY + 25, 180, 20);
+
+      // Save the PDF as a blob object and push it for temporary upload
+      this.saveAndUploadPDF(doc);
+
+      // Navigate to home page
+      this.router.navigate(["/home"]);
+    }
+  }
+
+  addInvoiceTitle(doc) {
+    autoTable(doc, {
+      body: [['Wayleave Application Fee Invoice']],
+      styles: { halign: 'right', fontSize: 20, textColor: '#000000' },
+      theme: 'plain'
+    });
+  }
+
+  addClientDetails(doc, ClientName) {
+    autoTable(doc, {
+      body: [['Invoice to:  ' + ClientName
+        + '\nWayleave Reference: ' + this.applicationID
+        + '\nTax invoice number: ' + this.generatedInvoiceNumber
+        + '\nDate: ' + this.formattedDate
+        + '\nCustomer VAT registration number: No.4500193497'
+        + '\nBusiness partner number: No.4500193497']],
+      styles: { halign: 'right' },
+      theme: 'plain'
+    });
+  }
+
+  addCompanyDetails(doc) {
+    autoTable(doc, {
+      body: [['Civic Centre'
+        + '\n12 Hertzog Boulevard 8001'
+        + '\nPO Box 655 Cape Town 8000'
+        + '\nVAT registration number: 4500193497'
+        + '\nEmail: wayleaves@capetown.gov.za'
+        + '\nWeb address: www.capetown.gov.za']],
+      styles: { halign: 'left' },
+      theme: 'plain'
+    });
+  }
+
+  calculatePayableByDate() {
+    function addBusinessDays(date, days) {
+      date = new Date(date);
+      let count = 0;
+      while (count < days) {
+        date.setDate(date.getDate() + 1);
+        if (date.getDay() !== 0 && date.getDay() !== 6) { // not a weekend, so increment count
+          count++;
+        }
+      }
+      return date;
+    }
+
+    const formattedDateObj = new Date(this.formattedDate);
+    return addBusinessDays(formattedDateObj, 7);
+  }
+
+  addServiceItemsAndCostDetails(doc, startY) {
+    // Generate table body based on ServiceItemList data and calculate the total cost
+    let totalCost = 0;
+    let tableBody = this.ServiceItemList.map(item => {
+      const amount = item.Rate + ".00"; // Assuming amount equals rate for each item
+      totalCost += parseFloat(amount);
+      return ['1', item.serviceItemCode, item.Description, amount, amount];
+    });
+
+    // Calculate the VAT and total amount due
+    const vat = totalCost * 0.15;
+    const totalAmountDue = totalCost + vat;
+
+    // Add cost details directly to the table body
+    tableBody.push(
+      ['Amount Due', '', '', '', totalCost.toFixed(2)],
+      ['VAT (15%)', '', '', '', vat.toFixed(2)],
+      ['Total Amount Due', '', '', '', totalAmountDue.toFixed(2)]
+    );
+
+    // Add the combined table to the document
+    autoTable(doc, {
+      head: [['Quantity', 'Unit', 'Description', 'Rate', 'Amount']],
+      body: tableBody,
+      theme: 'grid',
+      styles: { cellPadding: 1, lineWidth: 0.1, lineColor: [220, 220, 220], cellWidth: 'wrap', fillColor: [255, 255, 255] }, // setting cell color to white
+      headStyles: { fillColor: [180, 180, 180] }, // setting header color to a darker grey
+      startY: startY,
+      margin: { top: 20 }
+    });
+
+    // Return the new startY value
+    return startY + 40; // decreased from 60 + 20
+  }
+
+  addAccountDetails(doc, payableByDate, startY) {
+    const boxContent = 'Profit Centre: P19070051'
+      + '\nGL Acc: 845180'
+      + '\nPayable by: ' + payableByDate.toISOString().slice(0, 10); // Format date as YYYY-MM-DD
+
+    autoTable(doc, {
+      body: [[boxContent]],
+      styles: { halign: 'center', valign: 'middle', fillColor: [255, 255, 255] }, // white fill color
+      theme: 'grid',
+      startY: startY,
+    });
+
+    return startY + 30; // adjust this value as needed
+  }
+
+
+
+  addPaymentDetails(doc, startY) {
+    autoTable(doc, {
+      body: [['Please Note:\n\n'
+        + '1. Payment options:\n\n'
+        + '(a) Electronic payments (EFT): Select the City of Cape Town as a bank-listed beneficiary on your bank\'s website. Use the reference number provided above.\n'
+        + '(b) Direct deposit at Nedbank: Please present your reference number to the bank teller.\n'
+        + '(c) Cash, debit card, credit card and other: Please present your reference number to the cashier.\n\n'
+        + '2. Failure to pay could result in:\n\n'
+        + '(a) The lapse of your application, resulting in the need for re-application\n'
+        + '(b) Necessity for re-application with no guarantee of similar conditions / requirements']],
+      styles: { halign: 'left' },
+      theme: 'plain',
+      startY: startY + 20 // adjust this value to create space between the tables
+    });
+    return startY + 20 + 20; // decreased from 100 + 20
+  }
+
+  addPayPointsNotice(doc, startY) {
+    autoTable(doc, {
+      body: [['Pay points: City of Cape Town cash offices or the vendors below:']],
+      styles: { halign: 'left' },
+      theme: 'plain',
+      startY: startY + 20 // adjust this value to create space between the tables
+    });
+    return startY + 20 + 20; // decreased from 100 + 20
+  }
+
+  saveAndUploadPDF(doc) {
+    doc.save("invoice.pdf");
+    const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
+    const file = new File([pdfData], 'Wayleave Application Fee Invoice.pdf', { type: 'application/pdf' });
+
+    // Prepare the form data
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.shared.pushFileForTempFileUpload(file, "Wayleave Application Fee Invoice" + ".pdf");
+    this.save();
+  }
+
+
+
+
+  //generateInvoice(ClientName: string) {
+  //  if (!this.internal) {
+  //    const doc = new jsPDF();
+
+  //    // Logo
+  //    const img = new Image();
+  //    img.src = 'assets/cctlogoblack.png';
+
+  //    // Add logo to PDF document
+  //    doc.addImage(img, 'png', 10, 10, 60, 20);
+
+  //    autoTable(doc, {
+  //      body: [
+  //        [
+            
+  //          {
+  //            content: 'Wayleave Application Fee Invoice',
+  //            styles: {
+  //              halign: 'right',
+  //              fontSize: 20,
+  //              textColor: '#000000',
+  //            }
+  //          },
+  //        ],
+  //      ],
+  //      theme: 'plain',
+  //      styles: {
+  //        //fillColor: '#3366ff',
+          
+  //      },
+  //     // startY: 40,
+  //    });
+
+  //    autoTable(doc, {
+  //      body: [
+  //        [
+  //          {
+  //            content: 'Invoice to:  ' + ClientName
+  //              + '\nWayleave Reference: ' + this.applicationID
+  //              + '\nTax invoice number: ' + this.generatedInvoiceNumber
+  //              + '\nDate: ' + this.formattedDate
+  //              + '\nCustomer VAT registration number: No.4500193497'
+  //              + '\nBusiness partner number: No.4500193497',
+                
+              
+
+  //            styles: {
+  //              halign: 'right',
+  //            }
+  //          }
+  //        ],
+  //      ],
+  //      theme: 'plain',
+  //    });
+
+  //    autoTable(doc, {
+  //      body: [
+  //        [
+  //          {
+  //            content: 'Civic Centre'
+  //              + '\n12 Hertzog Boulevard 8001'
+  //              + '\nPO Box 655 Cape Town 8000 VAT registration number: 4500193497'
+  //              + '\nEmail: wayleaves@capetown.gov.za'
+  //              + '\nWeb address: www.capetown.gov.za',
+
+  //            styles: {
+  //              halign: 'left',
+  //            }
+  //          }
+  //        ],
+  //      ],
+  //      theme: 'plain',
+  //    });
+
+  //    const startY = 100; // set the starting Y position for the table
+
+  //    // Helper function to add business days
+  //    function addBusinessDays(date, days) {
+  //      date = new Date(date);
+  //      let count = 0;
+  //      while (count < days) {
+  //        date.setDate(date.getDate() + 1);
+  //        if (date.getDay() !== 0 && date.getDay() !== 6) {
+  //          // not a weekend, so increment count
+  //          count++;
+  //        }
+  //      }
+  //      return date;
+  //    }
+
+  //    // Calculate the payable by date
+  //    const formattedDateObj = new Date(this.formattedDate);
+  //    const payableByDate = addBusinessDays(formattedDateObj, 7);
+
+
+  //    // Generate table body based on ServiceItemList data and calculate the total cost
+  //    let totalCost = 0;
+  //    const tableBody = this.ServiceItemList.map(item => {
+  //      const amount = item.Rate + ".00"; // Assuming amount equals rate for each item
+  //      totalCost += parseFloat(amount);
+  //      return [
+  //        '1', // Assuming quantity is 1 for each item
+  //        item.serviceItemCode,
+  //        item.Description,
+  //        amount,
+  //        amount,
+  //      ];
+  //    });
+
+  //    // Calculate the VAT and total amount due
+  //    const vat = totalCost * 0.15;
+  //    const totalAmountDue = totalCost + vat;
+
+  //    // Existing code to add the table of service items...
+  //    autoTable(doc, {
+  //      head: [['Quantity', 'Unit', 'Description', 'Rate', 'Amount']],
+  //      body: tableBody,
+  //      theme: 'grid',
+  //      startY: startY,
+  //      margin: { top: 20 }
+  //    });
+
+  //    // Add a table for the total cost, VAT, and total amount due
+  //    autoTable(doc, {
+  //      body: [
+  //        ['Amount Due', totalCost.toFixed(2)],
+  //        ['VAT (15%)', vat.toFixed(2)],
+  //        ['Total Amount Due', totalAmountDue.toFixed(2)],
+  //        ['Payable by', payableByDate.toISOString().slice(0, 10)], // Format date as YYYY-MM-DD
+  //      ],
+  //      theme: 'grid',
+  //      startY: startY + 60, // adjust this value to create space between the tables
+  //    });
+
+
+  //    //autoTable(doc, {
+  //    //  body: [
+  //    //    [
+  //    //      {
+  //    //        content: 'USE THIS REF NO: ' + this.generatedInvoiceNumber
+  //    //          + '\nTO MAKE EFT PAYMENTS FOR THIS INVOICE ONLY',
+
+  //    //        styles: {
+  //    //          halign: 'center',
+  //    //        }
+  //    //      }
+  //    //    ],
+  //    //  ],
+  //    //  theme: 'grid',
+  //    //});
+
+  //    autoTable(doc, {
+  //      body: [
+  //        [
+  //          {
+  //            content: 'Profit Centre: ' + 'P19070051'
+  //              + '\nGL Acc: ' + "845180",
+  //            styles: {
+  //              halign: 'left',
+  //            }
+  //          }
+  //        ],
+  //      ],
+  //      theme: 'plain',
+  //      startY: startY + 30, // add 30 units of Y position to create space between the tables
+  //    });
+  //    // Add payment options and failure to pay consequences
+  //    autoTable(doc, {
+  //      body: [
+  //        [
+  //          {
+  //            content: 'Please Note: 1. Payment options:\n\n'
+  //              + '(a) Electronic payments (EFT): Select the City of Cape Town as a bank-listed beneficiary on your bank\'s website. Use the reference number provided above.\n'
+  //              + '(b) Direct deposit at Nedbank: Please present your reference number to the bank teller.\n'
+  //              + '(c) Cash, debit card, credit card and other: Please present your reference number to the cashier.\n\n'
+  //              + '2. Failure to pay could result in:\n\n'
+  //              + '(a) The lapse of your application, resulting in the need for re-application\n'
+  //              + '(b) Necessity for re-application with no guarantee of similar conditions / requirements',
+  //            styles: {
+  //              halign: 'left',
+  //            },
+  //          },
+  //        ],
+  //      ],
+  //      theme: 'plain',
+  //      startY: startY + 100, // adjust this value to create space between the tables
+  //    });
+
+  //    autoTable(doc, {
+  //      body: [
+  //        [
+  //          {
+  //            content: 'Pay points: City of Cape Town cash offices or the vendors below:',
+  //            styles: {
+  //              halign: 'left',
+  //            },
+  //          },
+  //        ],
+  //      ],
+  //      theme: 'plain',
+  //      startY: startY + 100, // adjust this value to create space between the tables
+  //    });
+  //    const vendors = new Image();
+  //    vendors.src = 'assets/vendors.jpg';
+
+  //    // Add logo to PDF document
+  //    doc.addImage(img, 'jpg', 10, 10, 60, 20);
+
+  //    doc.save("invoice.pdf");
+  //    const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
+  //    const file = new File([pdfData], 'Wayleave Application Fee Invoice.pdf', { type: 'application/pdf' });
+
+
+  //    // Prepare the form data
+  //    const formData = new FormData();
+  //    formData.append('file', file);
+
+  //    this.shared.pushFileForTempFileUpload(file, "Wayleave Application Fee Invoice" + ".pdf");
+  //    this.save();
+  //   // window.open(pdfUrl, '_blank')
+  //  }
+
+  //  this.router.navigate(["/home"]);
+  //}
+
+
+  generateInvoiceWithSplitGL(ClientName: string) {
+    if (!this.internal) {
+      const doc = new jsPDF();
+
+      // Logo
+      const img = new Image();
+      img.src = 'assets/cctlogoblack.png';
+
+      // Add logo to PDF document
+      doc.addImage(img, 'png', 10, 10, 60, 20);
+
+      autoTable(doc, {
+        body: [
+          [
+
+            {
+              content: 'Wayleave Application Fee Invoice',
+              styles: {
+                halign: 'right',
+                fontSize: 20,
+                textColor: '#000000',
               }
-            ],
+            },
           ],
-          theme: 'plain',
-          styles: {
-            fillColor: '#3366ff',
-          }
-        });
+        ],
+        theme: 'plain',
+        styles: {
+          //fillColor: '#3366ff',
 
-        autoTable(doc, {
-          body: [
-            [
-              {
-                content: 'Wayleave Ref No.:  1/23'
-                  + '\nBTW Reg. Nr./VAT Reg. No.4500193497'
-                  + '\nDate: ' + this.formattedDate
-                  + '\nInvoice Number: ' + "845396789",
+        },
+        // startY: 40,
+      });
 
-                styles: {
-                  halign: 'right',
-                }
+      autoTable(doc, {
+        body: [
+          [
+            {
+              content: 'Applicant Name: ' + ClientName
+                + '\nWayleave Ref No.: ' + this.applicationID
+                + '\nBTW Reg. Nr./VAT Reg. No.4500193497'
+                + '\nDate: ' + this.formattedDate
+                + '\nInvoice Number: ' + this.generatedInvoiceNumber,
+
+              styles: {
+                halign: 'right',
               }
-            ],
+            }
           ],
-          theme: 'plain',
-        });
+        ],
+        theme: 'plain',
+      });
 
+      autoTable(doc, {
+        body: [
+          [
+            {
+              content: 'City of Cape Town'
+                + '\nPost Box / Posbus / iShokisi 655'
+                + '\nCAPE TOWN'
+                + '\n8001',
 
-        autoTable(doc, {
-          body: [
-            [
-              {
-                content: 'City of Cape Town'
-                  + '\nPost Box / Posbus / iShokisi 655'
-                  + '\nCAPE TOWN'
-                  + '\n8001',
-
-                styles: {
-                  halign: 'left',
-                }
+              styles: {
+                halign: 'left',
               }
-            ],
+            }
           ],
-          theme: 'plain',
-        });
-        const startY = 100; // set the starting Y position for the table
+        ],
+        theme: 'plain',
+      });
 
-        autoTable(doc, {
-          head: [['Service Item Code', 'Description', 'Rate', 'Quantity', 'Amount']],
-          body: [
-            ['001', 'Wayleave Application Fees', 'R100 000.00', '1', 'R100 000.00'],
+      const startY = 100; // set the starting Y position for the table
 
-          ],
-          theme: 'grid',
-          startY: startY,
-          margin: { top: 20 }
-        });
+      // Generate table body based on ServiceItemList data
+      const tableBody = this.ServiceItemList.map(item => {
+        return [
+          item.serviceItemCode,
+          item.Description,
+          item.Rate + ".00",
+          '1', // Assuming quantity is 1 for each item
+          item.Rate + ".00" // Assuming amount equals rate for each item
+        ];
+      });
 
-        autoTable(doc, {
-          body: [
-            [
-              {
-                content: 'USE THIS REF NO: 845396789'
-                  + '\nTO MAKE EFT PAYMENTS FOR THIS INVOICE ONLY',
+      autoTable(doc, {
+        head: [['Service Item Code', 'Description', 'Rate', 'Quantity', 'Amount', 'Department Name', 'GL Code', 'Profit Centre']],
+        body: this.ServiceItemList.map(item => {
+          return [
+            item.serviceItemCode,
+            item.Description,
+            item.Rate + ".00",
+            '1', // Assuming quantity is 1 for each item
+            item.Rate + ".00", // Assuming amount equals rate for each item
+            //item.DepartmentName, // Assuming item contains 'DepartmentName' property
+           // item.GLCode, // Assuming item contains 'GLCode' property
+          //  item.ProfitCentre // Assuming item contains 'ProfitCentre' property
+          ];
+        }),
+        theme: 'grid',
+        startY: startY,
+        margin: { top: 20 }
+      });
 
-                styles: {
-                  halign: 'center',
-                }
+      autoTable(doc, {
+        body: [
+          [
+            {
+              content: 'Profit Centre: ' + 'P19070051'
+                + '\nGL Acc: ' + "845180",
+              styles: {
+                halign: 'left',
               }
-            ],
+            }
           ],
-          theme: 'grid',
-        });
+        ],
+        theme: 'plain',
+        startY: startY + 30, // add 30 units of Y position to create space between the tables
+      });
 
-        autoTable(doc, {
-          body: [
-            [
-              {
-                content: 'Profit Centre: ' + 'P19070051'
-                  + '\nGL Acc: ' + "845180",
-                styles: {
-                  halign: 'left',
-                }
-              }
-            ],
-          ],
-          theme: 'plain',
-          startY: startY + 30, // add 30 units of Y position to create space between the tables
-        });
 
-        doc.save("invoice.pdf");
-        const pdf = doc.output('blob');
-        const pdfUrl = URL.createObjectURL(pdf);
-        window.open(pdfUrl, '_blank')
+    
+
+      doc.save("invoice.pdf");
+      const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
+      const file = new File([pdfData], 'Wayleave Application Fee Invoice.pdf', { type: 'application/pdf' });
+
+
+      // Prepare the form data
+      const formData = new FormData();
+      formData.append('file', file);
+
+      this.shared.pushFileForTempFileUpload(file, "Wayleave Application Fee Invoice" + ".pdf");
+      this.save();
+      // window.open(pdfUrl, '_blank')
+    }
+
+    this.router.navigate(["/home"]);
+  }
+
+  save() {
+
+
+
+
+    const filesForUpload = this.shared.pullFilesForUpload();
+    for (var i = 0; i < filesForUpload.length; i++) {
+      const formData = new FormData();
+      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.applicationID;
+      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+
+
+
+      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+        .subscribe({
+          next: (event) => {
+
+
+            if (event.type === HttpEventType.UploadProgress && event.total)
+              this.progress = Math.round(100 * event.loaded / event.total);
+            else if (event.type === HttpEventType.Response) {
+              this.message = 'Upload success.';
+              this.uploadFinishedF(event.body);
+
+            }
+          },
+          error: (err: HttpErrorResponse) => console.log(err)
+        });
+    }
+
+  }
+
+  uploadFinishedF = (event: any) => {
+    debugger;
+    this.response = event;
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
+
+
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
+    debugger;
+    this.financialService.addUpdateFinancial(0, documentName, "Wayleave Application Fee Invoice", documentName, this.response?.dbPath, this.applicationID, "System Generated Invoice").subscribe((data: any) => {
+      /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
+      if (data.responseCode == 1) {
+
       }
 
-    }
-    this.router.navigate(["/home"]);
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
   }
 
   coverLetterUpload(event: any) {
@@ -2260,7 +2876,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
   uploadFinished = (event: any, applicationID: any, applicationData: any) => {
-    ;
+    
     this.response = event;
     console.log("this.response", this.response);
     console.log("this.response?.dbPath", this.response?.dbPath);
