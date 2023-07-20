@@ -31,8 +31,7 @@ import autoTable from 'jspdf-autotable';
 import { DatePipe } from '@angular/common';
 import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http';
 import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-upload.service';
-import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http';
-import { DocumentUploadService } from '../service/DocumentUpload/document-upload.service';
+
 
 
 
@@ -148,17 +147,6 @@ export class ActionCenterComponent implements OnInit {
   EMBUsers: any;
   developerUsers: any;
   canCommentSeniorReviewer: boolean;
-    roles: string;
-  CurrentApplication: any;
-  loading: boolean = false;
-  fileAttrs: string[] = [];
-    departmentAdminUsers: any;
-    seniorReviewerUsers: any;
-    finalApproverUsers: any;
-    reviewerUsers: any;
-    EMBUsers: any;
-    developerUsers: any;
-    canCommentSeniorReviewer: boolean;
   countApprove = 0;
   countReject = 0;
   SubDepartmentListForCheck: SubDepartmentList[] = [];
@@ -309,11 +297,9 @@ export class ActionCenterComponent implements OnInit {
     private router: Router,
     private refreshService: RefreshService,
     private stagesService: StagesService,
-    private http: HttpClient,
     private permitService: PermitService,
     private permitComponentComponent: PermitComponentComponent,
     private http: HttpClient,
-    private documentUploadService: DocumentUploadService,
     private documentUploadService: DocumentUploadService,
   ) { }
   openEnd(content: TemplateRef<any>) {
@@ -322,9 +308,7 @@ export class ActionCenterComponent implements OnInit {
 
   stringifiedData: any;
   CurrentUser: any;
-  private readonly apiUrl: string = this.sharedService.getApiUrl();
-  progress: number = 0;
-  message: string | undefined;
+
 
   ReticulationID = 1025;
 
@@ -965,7 +949,7 @@ export class ActionCenterComponent implements OnInit {
                
                   this.viewProjectInfoComponent.getAllComments();
                   alert(data.responseMessage);
-                  this.CheckALLLinkedDepartmentsCommented();
+              
                   this.router.navigate(["/home"]);
                   this.CheckALLLinkedDepartmentsCommented(false);
 
@@ -1008,7 +992,7 @@ export class ActionCenterComponent implements OnInit {
            
                   this.viewProjectInfoComponent.getAllComments();
                   alert(data.responseMessage);
-                  this.CheckALLLinkedDepartmentsCommented();
+            
                   this.router.navigate(["/home"]);
                   this.CheckALLLinkedDepartmentsCommented(false);
                 }
@@ -3264,14 +3248,14 @@ getAllCommentsByUserID() {
 
   progress: number = 0;
   message = '';
-  response: { dbPath: ''; } | undefined
+
   fileName: string = '';
   fileUploadName = '';
   @Input() UploadFor: any;
   fileExtention = '';
   fileToUpload : any;
   fName = '';
-
+  loading: boolean = false;
   uploadFile = (files: any) => {
     debugger;
     if (files.length === 0) {

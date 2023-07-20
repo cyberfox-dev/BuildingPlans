@@ -8,7 +8,7 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
+           /* migrationBuilder.AddColumn<string>(
                 name: "GLCode",
                 table: "SubDepartmentsTable",
                 type: "nvarchar(max)",
@@ -24,12 +24,12 @@ namespace WayleaveManagementSystem.Data.Migrations
                 name: "MandatoryDocumentCategory",
                 table: "MandatoryDocumentUploads",
                 type: "nvarchar(max)",
-                nullable: true);
+                nullable: true);*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+            /*migrationBuilder.DropColumn(
                 name: "GLCode",
                 table: "SubDepartmentsTable");
 
@@ -39,7 +39,7 @@ namespace WayleaveManagementSystem.Data.Migrations
 
             migrationBuilder.DropColumn(
                 name: "MandatoryDocumentCategory",
-                table: "MandatoryDocumentUploads");
+                table: "MandatoryDocumentUploads");*/
         }
     }
 }

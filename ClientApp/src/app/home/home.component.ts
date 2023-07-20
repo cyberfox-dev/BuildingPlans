@@ -139,8 +139,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.function();
   }*/
 
-export class HomeComponent implements OnInit,OnDestroy {
-  1111111111111111
+
   Applications: ApplicationsList[] = [];
   applicationDataForView: ApplicationList[] = [];
   applicationDataForViewToShared: ApplicationList[] = [];
