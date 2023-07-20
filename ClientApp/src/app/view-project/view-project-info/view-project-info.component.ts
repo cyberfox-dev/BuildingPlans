@@ -98,6 +98,16 @@ export interface DocumentsList {
   AssignedUserID: string;
 }
 
+export interface FinancialDocumentsList {
+  FinancialID: number;
+  FinancialDocumentName: string;
+  FinancialName: string;
+  FinancialType: string;
+  FinancialDocumentLocalPath: string;
+  ApplicationID: number;
+  CreatedById: string;
+}
+
 export interface CommentsList {
   CommentID: number;
   ApplicationID: number;
@@ -253,6 +263,7 @@ export class ViewProjectInfoComponent implements OnInit {
   relatedApplications: ApplicationList[] = [];
 
   DocumentsList: DocumentsList[] = [];
+  FinancialDocumentsList: FinancialDocumentsList[] = [];
 
 
 
@@ -349,8 +360,8 @@ export class ViewProjectInfoComponent implements OnInit {
   @ViewChild(MatTable) FinancialListTable: MatTable<DocumentsList> | undefined;
 
 
-  displayedColumns: string[] = ['name', 'actions'];
-  dataSourceDoc = this.DocumentsList;
+  displayedColumns: string[] = ['FinancialName','FinancialDocumentName' ,'actions'];
+  dataSourceDoc = this.FinancialDocumentsList;
 
 
   panelOpenState = false;
@@ -459,6 +470,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getLinkedDepartments();
     this.checkIfCanReply();
     this.checkIfPermitExsist();
+    this.getFinancial();
   }
   receivedata: string;
 
@@ -619,12 +631,10 @@ export class ViewProjectInfoComponent implements OnInit {
 
     this.CommentsList.splice(0, this.CommentsList.length);
     this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
-
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempCommentList = {} as CommentsList;
           const current = data.dateSet[i];
-
           tempCommentList.ApplicationID = current.applicationID;
           tempCommentList.Comment = current.comment;
           tempCommentList.CommentID = current.commentID;
@@ -633,16 +643,9 @@ export class ViewProjectInfoComponent implements OnInit {
           tempCommentList.SubDepartmentName = current.subDepartmentName;
           tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
           tempCommentList.isApplicantReplay = current.isApplicantReplay;
-
-
-
           this.CommentsList.push(tempCommentList);
-
           // this.sharedService.setStageData(this.StagesList);
         }
-
-
-
       }
       else {
         alert(data.responseMessage);
@@ -943,11 +946,13 @@ export class ViewProjectInfoComponent implements OnInit {
     }
   }
 
-
+  
 
 
 
   getAllStages() {
+
+
 
     this.StagesList.splice(0, this.StagesList.length);
 
@@ -2432,7 +2437,7 @@ export class ViewProjectInfoComponent implements OnInit {
     for (var i = 0; i < filesForUpload.length; i++) {
       const formData = new FormData();
       let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
-      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + null;
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.ApplicationID;
       formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
 
     
@@ -2893,6 +2898,74 @@ export class ViewProjectInfoComponent implements OnInit {
       console.log("ErrorGetAllDocsForApplication: ", error);
     })
 
+  }
+
+  viewDocument(index: any) {
+
+    // Make an HTTP GET request to fetch the document
+    fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.FinancialDocumentsList[index].FinancialDocumentName}`)
+      .then(response => {
+        if (response.ok) {
+          // The response status is in the 200 range
+          return response.blob(); // Extract the response body as a Blob
+        } else {
+          throw new Error('Error fetching the document');
+        }
+      })
+      .then(blob => {
+        // Create a URL for the Blob object
+        const documentURL = URL.createObjectURL(blob);
+
+        // Display the document, for example, in an <iframe>
+        const iframe = document.createElement('iframe');
+        iframe.src = documentURL;
+        document.body.appendChild(iframe);
+      })
+      .catch(error => {
+        console.log(error);
+        // Handle the error appropriately
+      });
+
+  }
+
+  getFinancial() {
+    this.financial.getFinancialByApplicationID(this.ApplicationID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempDocList = {} as FinancialDocumentsList;
+          const current = data.dateSet[i];
+          debugger;
+          tempDocList.FinancialID = current.financialID;
+          tempDocList.ApplicationID = current.applicationID;
+          tempDocList.CreatedById = current.createdById;
+          tempDocList.FinancialDocumentLocalPath = current.documentLocalPath;
+          tempDocList.ApplicationID = current.applicationID;
+          tempDocList.FinancialDocumentName = current.documentName;
+          tempDocList.FinancialType = current.financialType;
+          
+
+
+
+          this.FinancialDocumentsList.push(tempDocList);
+
+
+        }
+        debugger;
+
+        this.FinancialListTable?.renderRows();
+        console.log("FinancialListTablethis.FinancialDocumentsListthis.FinancialDocumentsListthis.FinancialDocumentsListthis.FinancialDocumentsListthis.FinancialDocumentsListthis.FinancialDocumentsList", this.FinancialDocumentsList);
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponseGetAllDocsForApplication", data);
+
+    }, error => {
+      console.log("ErrorGetAllDocsForApplication: ", error);
+    })
+    
   }
 
 

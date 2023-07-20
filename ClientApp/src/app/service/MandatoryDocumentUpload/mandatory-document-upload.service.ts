@@ -12,12 +12,13 @@ export class MandatoryDocumentUploadService {
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
-  public addUpdateMandatoryDocument(mandatoryDocumentID: number | null, mandatoryDocumentName: string | null, createdByID: string | null) {
+  public addUpdateMandatoryDocument(mandatoryDocumentID: number | null, mandatoryDocumentName: string | null, createdByID: string | null, mandatoryDocumentCategory?: string | null) {
 
     const body = {
       mandatoryDocumentID: mandatoryDocumentID,
       mandatoryDocumentName: mandatoryDocumentName,
       CreatedByID: createdByID,
+      MandatoryDocumentCategory: mandatoryDocumentCategory,
 
     }
     return this.httpClient.post(this.baseURL + "AddUpdateMandatoryDocument", body);
@@ -35,6 +36,14 @@ export class MandatoryDocumentUploadService {
     //  StageID: stageID,
     //}
     return this.httpClient.post(this.baseURL + "GetAllMandatoryDocumentsByID", mandatoryDocumentID);
+
+  }
+
+  public GetAllByMandatoryDocumentCategory(mandatoryDocumentCategory: any) {
+    const body = {
+      MandatoryDocumentCategory: mandatoryDocumentCategory,
+    }
+    return this.httpClient.post(this.baseURL + "GetAllByMandatoryDocumentCategory", body);
 
   }
 

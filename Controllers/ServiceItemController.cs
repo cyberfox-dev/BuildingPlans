@@ -203,6 +203,44 @@ namespace WayleaveManagementSystem.Controllers
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
 
             }
+
+        } 
+        
+        
+        [HttpPost("GetServiceItemByServiceItemCode")]
+        public async Task<object> GetServiceItemByServiceItemCode([FromBody] ServiceItemBindingModel model)
+        {
+            try
+            {
+                var result = await (
+               from serviceItem in _context.ServiceItem
+               where serviceItem.ServiceItemCode == model.ServiceItemCode && serviceItem.isActive == true
+               select new ServiceItemDTO()
+               {
+                   ServiceItemID = serviceItem.ServiceItemID,
+                   ServiceItemCode = serviceItem.ServiceItemCode,
+                   Description = serviceItem.Description,
+                   Rate = serviceItem.Rate,
+                   TotalVat = serviceItem.TotalVat,
+                   DateCreated = serviceItem.DateCreated,
+                   DateUpdated = serviceItem.DateUpdated,
+                   isActive = serviceItem.isActive,
+
+               }
+               ).ToListAsync();
+
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Service Items By ID", result));
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
         }
 
         [HttpPost("GetServiceItemByDepID")]

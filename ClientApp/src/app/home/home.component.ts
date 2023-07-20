@@ -139,6 +139,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.function();
   }*/
 
+export class HomeComponent implements OnInit,OnDestroy {
+  1111111111111111
   Applications: ApplicationsList[] = [];
   applicationDataForView: ApplicationList[] = [];
   applicationDataForViewToShared: ApplicationList[] = [];
@@ -339,7 +341,8 @@ dataSource = this.Applications;
       this.createWayleave(this.applicationType, this.isPlanning);
       //this.NewWayleaveComponent.reciveOption(this.option);
 
-    } else {
+    }
+    else {
       this.openClientOption(this.clientOption);
     }
 
@@ -667,14 +670,14 @@ dataSource = this.Applications;
 
 
 
-  getAllApplicationsByUserID() {
+  async getAllApplicationsByUserID() {
 
 
     
     this.Applications.splice(0, this.Applications.length);
 
     if (this.CurrentUserProfile[0].isInternal) {
-      this.applicationService.getApplicationsList(this.CurrentUser.appUserId, true).subscribe((data: any) => {
+    await  this.applicationService.getApplicationsList(this.CurrentUser.appUserId, true).subscribe((data: any) => {
 
 
         if (data.responseCode == 1) {
@@ -809,7 +812,7 @@ dataSource = this.Applications;
       })
     }
     else {
-      this.applicationService.getApplicationsList(this.CurrentUser.appUserId, false).subscribe((data: any) => {
+      await this.applicationService.getApplicationsList(this.CurrentUser.appUserId, false).subscribe((data: any) => {
      
 
         if (data.responseCode == 1) {
@@ -984,9 +987,16 @@ dataSource = this.Applications;
   }
 
   goToNewWayleave(applicationType: boolean, isPlanning: boolean) { //application type refers to whether it is a brand new application or if it is a reapply.
+    debugger;
     this.applicationType = applicationType;
     this.isPlanning = isPlanning;
-    this.openSm(this.content);
+    if (this.CurrentUserProfile[0].isInternal === true) {
+      this.openSm(this.content);
+    } else {
+      this.createWayleave(this.applicationType, this.isPlanning);
+    }
+
+   
   }
 
   createWayleave(applicationType: boolean, isPlanning: boolean) {

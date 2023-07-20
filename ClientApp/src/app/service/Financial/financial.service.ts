@@ -23,7 +23,14 @@ export class FinancialService {
       ApplicationID: applicationID,
       CreatedById: createdById,
     }
-    return this.httpClient.post(this.baseURL + "AddUpdateDepositRequired", body);
+    return this.httpClient.post(this.baseURL + "AddUpdateFinancial", body);
+  }
+
+
+  public getFinancialByApplicationID(ApplicationID: number) {
+
+    return this.httpClient.post(this.baseURL + "GetFinancialByApplicationID", ApplicationID);
+
   }
 
 }

@@ -47,6 +47,13 @@ export class ServiceItemService {
     return this.httpClient.post(this.baseURL + "GetServiceItemByServiceItemID", ServiceItemID);
 
   }
+  public getServiceItemByServiceItemCode(ServiceItemCode: string) {
+    const body = {
+      ServiceItemCode: ServiceItemCode,
+    }
+    return this.httpClient.post(this.baseURL + "GetServiceItemByServiceItemCode", body);
+
+  }
 
   public getServiceItemByDepID(depID: number) {
 

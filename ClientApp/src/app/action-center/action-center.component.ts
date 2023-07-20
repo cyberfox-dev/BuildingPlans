@@ -26,6 +26,11 @@ import { RefreshService } from 'src/app/shared/refresh.service';
 import { PermitService } from 'src/app/service/Permit/permit.service';
 import { StagesService } from 'src/app/service/Stages/stages.service';
 import { Observable } from 'rxjs';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { DatePipe } from '@angular/common';
+import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http';
+import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-upload.service';
 import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http';
 import { DocumentUploadService } from '../service/DocumentUpload/document-upload.service';
 
@@ -133,6 +138,16 @@ export class ActionCenterComponent implements OnInit {
   fileAttr = 'Choose File';
   @Input() ApplicationID: any;
   @Input() CurrentApplicant: any;
+  roles: string;
+  CurrentApplication: any;
+  fileAttrs: any;
+  departmentAdminUsers: any;
+  seniorReviewerUsers: any;
+  finalApproverUsers: any;
+  reviewerUsers: any;
+  EMBUsers: any;
+  developerUsers: any;
+  canCommentSeniorReviewer: boolean;
     roles: string;
   CurrentApplication: any;
   loading: boolean = false;
@@ -145,13 +160,20 @@ export class ActionCenterComponent implements OnInit {
     developerUsers: any;
     canCommentSeniorReviewer: boolean;
   countApprove = 0;
-    countReject = 0;
+  countReject = 0;
   SubDepartmentListForCheck: SubDepartmentList[] = [];
-    assaignedToComment: number = 0;
-    permitIssuer: any;
-    canApprovePermit: boolean;
-    showPermitTab: boolean;
-   
+  assaignedToComment: number = 0;
+  permitIssuer: any;
+  canApprovePermit: boolean;
+  showPermitTab: boolean;
+
+
+
+
+  currentDate = new Date();
+  datePipe = new DatePipe('en-ZA');
+  formattedDate = this.datePipe.transform(this.currentDate, 'yyyy-MM-dd');
+  response: { dbPath: ''; } | undefined
   /*textfields*/
 
   uploadFileEvt(imgFile: any) {
@@ -214,6 +236,7 @@ export class ActionCenterComponent implements OnInit {
   LinkedUserToSub: UserZoneList[] = [];
   ReviewerUserList: UserZoneList[] = [];
   PTCList: PTCList[] = [];
+  PTCListForCheck: PTCList[] = [];
 
   selection = new SelectionModel<SubDepartmentList>(true, []);
   zoneSelection = new SelectionModel<ZoneList>(true, []);
@@ -252,18 +275,18 @@ export class ActionCenterComponent implements OnInit {
   loggedInUsersSubDepartmentID: any;
   loggedInUsersSubDepartmentName: any;
   AssignProjectToZone: boolean;
-    hopperButton: boolean;
-    SubForCommentIDForHopper: any;
-    forManuallyAssignSubForCommentID: any;
-    loggedInUsersIsZoneAdmin: any;
-    AssignUserForComment: boolean;
-    applicationDataForView: any;
-    CurrentApplicationBeingViewed: any;
-    subDepartmentID: any;
-    userID: any;
-    canComment: boolean;
-    CanAssignDepartment: boolean;
-    canCommentFinalApprover: boolean;
+  hopperButton: boolean;
+  SubForCommentIDForHopper: any;
+  forManuallyAssignSubForCommentID: any;
+  loggedInUsersIsZoneAdmin: any;
+  AssignUserForComment: boolean;
+  applicationDataForView: any;
+  CurrentApplicationBeingViewed: any;
+  subDepartmentID: any;
+  userID: any;
+  canComment: boolean;
+  CanAssignDepartment: boolean;
+  canCommentFinalApprover: boolean;
   constructor(
     private offcanvasService: NgbOffcanvas,
     private modalService: NgbModal,
@@ -289,6 +312,8 @@ export class ActionCenterComponent implements OnInit {
     private http: HttpClient,
     private permitService: PermitService,
     private permitComponentComponent: PermitComponentComponent,
+    private http: HttpClient,
+    private documentUploadService: DocumentUploadService,
     private documentUploadService: DocumentUploadService,
   ) { }
   openEnd(content: TemplateRef<any>) {
@@ -297,6 +322,9 @@ export class ActionCenterComponent implements OnInit {
 
   stringifiedData: any;
   CurrentUser: any;
+  private readonly apiUrl: string = this.sharedService.getApiUrl();
+  progress: number = 0;
+  message: string | undefined;
 
   ReticulationID = 1025;
 
@@ -314,21 +342,24 @@ export class ActionCenterComponent implements OnInit {
   @Output() refreshParent: EventEmitter<void> = new EventEmitter<void>();
 
   ngOnInit(): void {
-   // setTimeout(() => {
-   //this.getDepartmentManagerUserID();
+    // setTimeout(() => {
+    //this.getDepartmentManagerUserID();
     //Get Current Application Infomation 
- 
 
 
-      this.getAllSubDepartments();
 
-    
-      if (this.CurrentUser == null) {
-        console.log("Not");
-      }
-      else {
-        console.log(this.CurrentUser);
+    this.getAllSubDepartments();
+
+
+    if (this.CurrentUser == null) {
+      console.log("Not");
     }
+    else {
+      console.log(this.CurrentUser);
+    }
+
+    /*  this.getAllServiceItmes();*/
+    this.getAllServiceItmesForDropdown();
  
       /*  this.getAllServiceItmes();*/
     this.getServicesByDepID();
@@ -336,23 +367,28 @@ export class ActionCenterComponent implements OnInit {
    
     this.CurrentApplication = this.viewProjectInfoComponent.getCurrentApplication();
 
+
+
     if (this.CurrentApplication.isPlanning === true) {
    
      this.planningWayleave = true;
     }
 
-   //// this giving some shit
-   // this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
-   // this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
+    //// this giving some shit
+    // this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
+    // this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
 
     //end of shit
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
+    this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
+    this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
       this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
     console.log("WTFWTFWTFWTFWTFWTWFTWFWTFWTFWTWTF", this.CurrentUserProfile[0]);
     this.loggedInUsersIsAdmin = this.CurrentUserProfile[0].isDepartmentAdmin;
     this.loggedInUsersIsZoneAdmin = this.CurrentUserProfile[0].isZoneAdmin;
+    this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
     this.loggedInUsersSubDepartmentName = this.CurrentUserProfile[0].subDepartmentName;
     this.loggedInUsersDepartmentID = this.CurrentUserProfile[0].departmentID;
@@ -369,13 +405,13 @@ export class ActionCenterComponent implements OnInit {
     this.getLinkedZones();
     this.CanComment();
     this.getAllStages();
-      this.canApprovePTW();
+    this.canApprovePTW();
     this.getAllPermitForComment();
-    
 
-   
-      //this.CheckIfCurrentUserCanUseHopper();
-   // }, 1000);
+
+
+    //this.CheckIfCurrentUserCanUseHopper();
+    // }, 1000);
 
     this.getUserRoles();
 
@@ -424,7 +460,7 @@ export class ActionCenterComponent implements OnInit {
             }
           }
         }
-       
+
         else {
           this.canApprovePermit = false;
         }
@@ -462,10 +498,10 @@ export class ActionCenterComponent implements OnInit {
           tempPTCList.PermitCommentStatus = current.permitCommentStatus;
 
           this.PTCList.push(tempPTCList);
-         
+
         }
 
-      
+
 
       }
       else {
@@ -512,9 +548,305 @@ export class ActionCenterComponent implements OnInit {
 
   onPassFileName(event: { uploadFor: string; fileName: string }) {
     const { uploadFor, fileName } = event;
+
+
+
+
+
+    //for (var i = 0; i < filesForUpload.length; i++) {
+    //  const formData = new FormData();
+    //  let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+    //  let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.applicationID;
+    //  formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+
+
+    //  this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+    //    .subscribe({
+    //      next: (event) => {
+
+    //        if (event.type === HttpEventType.UploadProgress && event.total)
+    //          this.progress = Math.round(100 * event.loaded / event.total);
+    //        else if (event.type === HttpEventType.Response) {
+    //          this.message = 'Upload success.';
+    //          this.uploadFinished(event.body, this.applicationID, data.dateSet);
+    //        }
+    //      },
+    //      error: (err: HttpErrorResponse) => console.log(err)
+    //    });
+    //}
     const index = parseInt(uploadFor.substring('CoverLetter'.length));
     this.fileAttrs[index] = fileName;
   }
+
+  generatePTW(ClientName: string) {
+
+    const doc = new jsPDF();
+
+    // Logo
+    const img = new Image();
+    img.src = 'assets/cctlogoblack.png';
+
+    // Add logo to PDF document
+    doc.addImage(img, 'png', 10, 10, 60, 20);
+
+    autoTable(doc, {
+      body: [
+        [
+
+          {
+            content: 'Permit To Work',
+            styles: {
+              halign: 'right',
+              fontSize: 20,
+              textColor: '#000000',
+            }
+          },
+        ],
+      ],
+      theme: 'plain',
+      styles: {
+        //fillColor: '#3366ff',
+
+      },
+      // startY: 40,
+    });
+
+    autoTable(doc, {
+      body: [
+        [
+          {
+            content: 'ApplicationID: ' + this.ApplicationID
+              + '\nWayleave Ref No.: ' + ClientName
+              + '\nDate: ' + this.formattedDate,
+
+            styles: {
+              halign: 'right',
+            }
+          }
+        ],
+      ],
+      theme: 'plain',
+    });
+
+    autoTable(doc, {
+      body: [
+        [
+          {
+            content: 'City of Cape Town'
+              + '\nPost Box / Posbus / iShokisi 655'
+              + '\nCAPE TOWN'
+              + '\n8001',
+
+            styles: {
+              halign: 'left',
+            }
+          }
+        ],
+      ],
+      theme: 'plain',
+    });
+
+    const startY = 100; // set the starting Y position for the table
+
+    // Generate table body based on ServiceItemList data
+    const tableBody = this.PTCListForCheck.map(item => {
+      return [
+        item.SubDepartmentName,
+        item.PermitComment,
+        //item.PermitCommentStatus,
+      ];
+    });
+
+    autoTable(doc, {
+      head: [['Department Name', 'Comment']],
+      body: tableBody,
+      theme: 'grid',
+      startY: startY,
+      margin: { top: 20 }
+    });
+
+    autoTable(doc, {
+      body: [
+        [
+          {
+            content: 'ALL Department Approved PTW' /*+ this.generatedInvoiceNumber*/
+              + '',
+
+            styles: {
+              halign: 'center',
+            }
+          }
+        ],
+      ],
+      theme: 'grid',
+    });
+
+    //autoTable(doc, {
+    //  body: [
+    //    [
+    //      {
+    //        content: 'Profit Centre: ' + 'P19070051'
+    //          + '\nGL Acc: ' + "845180",
+    //        styles: {
+    //          halign: 'left',
+    //        }
+    //      }
+    //    ],
+    //  ],
+    //  theme: 'plain',
+    //  startY: startY + 30, // add 30 units of Y position to create space between the tables
+    //});
+
+    doc.save("Permit.pdf");
+    const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
+    const file = new File([pdfData], 'Permit', { type: 'application/pdf' });
+
+
+    // Prepare the form data
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.sharedService.pushFileForTempFileUpload(file, "Permit" + ".pdf");
+     this.save();
+    // window.open(pdfUrl, '_blank')
+
+   // this.router.navigate(["/home"]);
+
+  }
+
+
+
+  save() {
+
+   
+
+
+    const filesForUpload = this.sharedService.pullFilesForUpload();
+    for (var i = 0; i < filesForUpload.length; i++) {
+      const formData = new FormData();
+      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.ApplicationID;
+      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+
+
+
+      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+        .subscribe({
+          next: (event) => {
+
+
+            if (event.type === HttpEventType.UploadProgress && event.total)
+              this.progress = Math.round(100 * event.loaded / event.total);
+            else if (event.type === HttpEventType.Response) {
+              this.message = 'Upload success.';
+              this.uploadFinishedF(event.body);
+
+            }
+          },
+          error: (err: HttpErrorResponse) => console.log(err)
+        });
+    }
+
+  }
+
+  uploadFinishedF = (event: any) => {
+    const currentApplication = this.sharedService.getViewApplicationIndex();
+    debugger;
+    this.response = event;
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
+
+
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
+    debugger;
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, this.CurrentUser.appUserId).subscribe((data: any) => {
+      /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
+      if (data.responseCode == 1) {
+
+      }
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+  }
+
+
+
+  CheckAllLinkedDepartmentsApproved() {
+
+
+    const currentApplication = this.sharedService.getViewApplicationIndex();
+
+
+    this.countApprove = 0;
+    this.countReject = 0;
+
+      this.permitService.getPermitSubForCommentByApplicationID(currentApplication.applicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+        for (var i = 0; i < data.dateSet.length; i++) {
+          const tempPTCList = {} as PTCList;
+          const current = data.dateSet[i];
+          debugger;
+          tempPTCList.PermitSubForCommentID = current.permitSubForCommentID;
+          tempPTCList.ApplicationID = current.applicationID;
+          tempPTCList.SubDepartmentID = current.subDepartmentID;
+          tempPTCList.SubDepartmentName = current.subDepartmentName;
+          tempPTCList.UserAssaignedToComment = current.userAssaignedToComment;
+          tempPTCList.PermitComment = current.permitComment;
+          tempPTCList.PermitCommentStatus = current.permitCommentStatus;
+
+          
+
+          if (tempPTCList.PermitCommentStatus == "Approved") {
+            this.countApprove++;
+          }
+          if (tempPTCList.PermitCommentStatus == "Rejected") {
+            this.countReject++;
+          }
+
+          this.PTCListForCheck.push(tempPTCList);
+        }
+
+        if (this.PTCListForCheck.length == this.countApprove) {
+          this.generatePTW(currentApplication.ProjectNumber)
+          this.countApprove = 0;
+          this.countReject = 0;
+         // this.MoveToNextStage();
+        } else if (this.countReject++ >= 1 && this.SubDepartmentListForCheck.length == this.countApprove + this.countReject) {
+          //Rejection Pack
+        
+          this.countApprove = 0;
+          this.countReject = 0;
+       //   this.MoveToClosedStage();
+        }
+        else {
+          this.countApprove = 0;
+          this.countReject = 0;
+        }
+
+      }
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForComment", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
+
+
+
 
   PermitIssue(interact: string) {
 
@@ -537,6 +869,7 @@ export class ActionCenterComponent implements OnInit {
           this.permitService.addUpdatePermitSubForComment(PermitSubCommetID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
             if (data.responseCode == 1) {
               alert("Permit Approved");
+              this.CheckAllLinkedDepartmentsApproved();
                 this.router.navigate(["/home"]);
              
             }
@@ -632,6 +965,8 @@ export class ActionCenterComponent implements OnInit {
                
                   this.viewProjectInfoComponent.getAllComments();
                   alert(data.responseMessage);
+                  this.CheckALLLinkedDepartmentsCommented();
+                  this.router.navigate(["/home"]);
                   this.CheckALLLinkedDepartmentsCommented(false);
 
                 }
@@ -673,6 +1008,8 @@ export class ActionCenterComponent implements OnInit {
            
                   this.viewProjectInfoComponent.getAllComments();
                   alert(data.responseMessage);
+                  this.CheckALLLinkedDepartmentsCommented();
+                  this.router.navigate(["/home"]);
                   this.CheckALLLinkedDepartmentsCommented(false);
                 }
                 else {

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel;
 using System;
 using WayleaveManagementSystem.Models.DTO;
+using WayleaveManagementSystem.Data.Migrations;
 
 namespace WayleaveManagementSystem.Service
 {
@@ -19,7 +20,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<MandatoryDocumentUpload> AddUpdateMandatoryDocument(int? mandatoryDocumentID, string mandatoryDocumentName, string? createdByID)
+        public async Task<MandatoryDocumentUpload> AddUpdateMandatoryDocument(int? mandatoryDocumentID, string mandatoryDocumentName, string? createdByID, string? mandatoryDocumentCategory)
         {
 
             if (mandatoryDocumentID == 0)
@@ -39,6 +40,7 @@ namespace WayleaveManagementSystem.Service
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     CreatedById = createdByID,
+                    MandatoryDocumentCategory = mandatoryDocumentCategory,
                     isActive = true
                 };
 
@@ -51,12 +53,19 @@ namespace WayleaveManagementSystem.Service
             }
             else //if it is not null then user is doing an update 
             {
-                tempMandatoryDocumentTable.MandatoryDocumentName = mandatoryDocumentName;
 
-
-                tempMandatoryDocumentTable.DateUpdated = DateTime.Now;
-                tempMandatoryDocumentTable.isActive = true;
-
+                if (mandatoryDocumentName != null)
+                {
+                    tempMandatoryDocumentTable.MandatoryDocumentName = mandatoryDocumentName;
+                }  
+                if (mandatoryDocumentCategory != null)
+                {
+                    tempMandatoryDocumentTable.MandatoryDocumentCategory = mandatoryDocumentCategory;
+                }  
+             
+                    tempMandatoryDocumentTable.DateUpdated = DateTime.Now;
+    
+  
                 _context.Update(tempMandatoryDocumentTable);
                 await _context.SaveChangesAsync();
                 return tempMandatoryDocumentTable;
@@ -98,8 +107,27 @@ namespace WayleaveManagementSystem.Service
                 select new MandatoryDocumentUploadDTO()
                 {
                     MandatoryDocumentName = MandatoryDocumentUpload.MandatoryDocumentName,
+                    MandatoryDocumentCategory = MandatoryDocumentUpload.MandatoryDocumentCategory,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
+                    CreatedById = MandatoryDocumentUpload.CreatedById,
+                    isActive = true
+
+                }
+                ).ToListAsync();
+        }
+      
+        public async Task<List<MandatoryDocumentUploadDTO>> GetAllByMandatoryDocumentCategory(string? mandatoryDocumentCategory)
+        {
+            return await (
+                from MandatoryDocumentUpload in _context.MandatoryDocumentUploads
+                where MandatoryDocumentUpload.MandatoryDocumentCategory == mandatoryDocumentCategory && MandatoryDocumentUpload.isActive == true
+                select new MandatoryDocumentUploadDTO()
+                {
+                    MandatoryDocumentName = MandatoryDocumentUpload.MandatoryDocumentName,
+                    DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,
+                    MandatoryDocumentCategory = MandatoryDocumentUpload.MandatoryDocumentCategory,
                     CreatedById = MandatoryDocumentUpload.CreatedById,
                     isActive = true
 
@@ -119,6 +147,7 @@ namespace WayleaveManagementSystem.Service
                      MandatoryDocumentName = mandatoryDocumentUpload.MandatoryDocumentName,
                      DateCreated = DateTime.Now,
                      DateUpdated = DateTime.Now,
+                     MandatoryDocumentCategory = mandatoryDocumentUpload.MandatoryDocumentCategory,
                      CreatedById = mandatoryDocumentUpload.CreatedById,
                      isActive = true
 

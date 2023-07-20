@@ -16,6 +16,8 @@ namespace WayleaveManagementSystem.DTO
 
         public bool isActive { get; set; }
 
+        public string? MandatoryDocumentCategory { get; set; }
+
 
 
     }

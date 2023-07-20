@@ -18,6 +18,30 @@
 
       </div>
 
+      <div class="row">
+        <mat-form-field appearance="fill">
+          <mat-label>Select type of application</mat-label>
+          <mat-select formControlName="mandatoryDocumentCategory" name="mandatoryDocumentCategory">
+            <mat-option value="">Other</mat-option>
+            <mat-option value="Small">Small</mat-option>
+            <mat-option value="Medium">Medium</mat-option>
+            <mat-option value="Large">Large</mat-option>
+            <mat-option value="Emergency">Emergency</mat-option>
+
+
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+
+      <!--<div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" id="mandatoryDocumentCategory" formControlName="mandatoryDocumentCategory" placeholder="Mandatory Document Category">
+        <label for="mandatoryDocumentCategory">Mandatory Document Category</label>
+      </div>-->
+
+
+      
+
 
     </form>
 
@@ -153,3 +177,5 @@
 </ng-template>
 
 <!--end-->
+
+

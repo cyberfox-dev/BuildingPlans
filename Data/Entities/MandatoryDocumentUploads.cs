@@ -7,6 +7,9 @@ namespace WayleaveManagementSystem.Data.Entities
         [Key]
         public int? MandatoryDocumentID { get; set; }
         public string? MandatoryDocumentName { get; set; }
+        public string? MandatoryDocumentCategory { get; set; }
+
+
      /*   public int? StageID { get; set; }*/
 
     }

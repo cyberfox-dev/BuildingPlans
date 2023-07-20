@@ -398,7 +398,7 @@ namespace WayleaveManagementSystem.Service
             {
                 return await (
                    from Applications in _context.Application
-                   where Applications.isActive == true && Applications.FullName != ""
+                   where Applications.isActive == true && Applications.FullName != "" && Applications.FullName != null
                    orderby Applications.DateCreated descending
                    select new ApplicationsDTO()
                    {
@@ -442,7 +442,7 @@ namespace WayleaveManagementSystem.Service
             {
                 return await (
                    from Applications in _context.Application
-                   where Applications.UserID == userId && Applications.isActive == true && Applications.FullName != ""
+                   where Applications.UserID == userId && Applications.isActive == true && Applications.FullName != "" && Applications.FullName != null
                    orderby Applications.DateCreated descending
                    select new ApplicationsDTO()
                    {
