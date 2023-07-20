@@ -588,6 +588,7 @@ export class NewWayleaveComponent implements OnInit {
     this.getServiceItem("001");
     this.getServiceItem("002");
     this.getServiceItem("003");
+    
 
 
     //const imagePath = 'assets/cctlogoblack.png';
@@ -2092,7 +2093,7 @@ export class NewWayleaveComponent implements OnInit {
     let tableBody = this.ServiceItemList.map(item => {
       const amount = item.Rate + ".00"; // Assuming amount equals rate for each item
       totalCost += parseFloat(amount);
-      return ['1', item.serviceItemCode, item.Description, amount, amount];
+      return ['1', item.Description, amount, amount];
     });
 
     // Calculate the VAT and total amount due
@@ -2101,14 +2102,14 @@ export class NewWayleaveComponent implements OnInit {
 
     // Add cost details directly to the table body
     tableBody.push(
-      ['Amount Due', '', '', '', totalCost.toFixed(2)],
-      ['VAT (15%)', '', '', '', vat.toFixed(2)],
-      ['Total Amount Due', '', '', '', totalAmountDue.toFixed(2)]
+      ['Amount Due', '', '', totalCost.toFixed(2)],
+      ['VAT (15%)', '', '', vat.toFixed(2)],
+      ['Total Amount Due', '', '', totalAmountDue.toFixed(2)]
     );
 
     // Add the combined table to the document
     autoTable(doc, {
-      head: [['Quantity', 'Unit', 'Description', 'Rate', 'Amount']],
+      head: [['Quantity', 'Description', 'Unit', 'Amount']],
       body: tableBody,
       theme: 'grid',
       styles: { cellPadding: 1, lineWidth: 0.1, lineColor: [220, 220, 220], cellWidth: 'wrap', fillColor: [255, 255, 255] }, // setting cell color to white
