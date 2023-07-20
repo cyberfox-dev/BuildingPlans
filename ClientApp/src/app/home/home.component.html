@@ -76,51 +76,51 @@
 
   <div class="table container-fluid">
     <!--  <table class="table table-hover table-xl border_bottom">
-    <thead>
-      <tr class="tableheader">
-        <th scope="col" class="border-top-0">Status</th>
-        <th scope="col" class="border-top-0">Project#</th>
-        <th scope="col" class="border-top-0">Item Location</th>
-        <th scope="col" class="border-top-0">Item Name</th>
-        <th scope="col" class="border-top-0">Application Type</th>
-        <th scope="col" class="border-top-0">Current Stage</th>
-        <th scope="col" class="border-top-0">Date Created</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="text-truncate row_padding">
-          <i class="la la-dot-circle-o  font-medium-1 mr-1"></i>
-          Test
-        </td>
-        <td class="text-truncate row_padding">
-          <a href="javascript:void(0);" (click)="viewProject()">TEST</a>
-        </td>
+  <thead>
+    <tr class="tableheader">
+      <th scope="col" class="border-top-0">Status</th>
+      <th scope="col" class="border-top-0">Project#</th>
+      <th scope="col" class="border-top-0">Item Location</th>
+      <th scope="col" class="border-top-0">Item Name</th>
+      <th scope="col" class="border-top-0">Application Type</th>
+      <th scope="col" class="border-top-0">Current Stage</th>
+      <th scope="col" class="border-top-0">Date Created</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="text-truncate row_padding">
+        <i class="la la-dot-circle-o  font-medium-1 mr-1"></i>
+        Test
+      </td>
+      <td class="text-truncate row_padding">
+        <a href="javascript:void(0);" (click)="viewProject()">TEST</a>
+      </td>
 
-        <td class="text-truncate row_padding">
-          <span>TEST</span>
-        </td>
+      <td class="text-truncate row_padding">
+        <span>TEST</span>
+      </td>
 
-        <td class="text-truncate row_padding">
-          <span>TEST</span>
-        </td>
-        <td class="text-truncate row_padding">
-          <span>
-            TEST
-          </span>
-        </td>
-        <td class="text-truncate row_padding">
-          <span>TEST</span>
-        </td>
-        <td class="text-truncate row_padding">TEST</td>
-      </tr>
-    </tbody>-->
+      <td class="text-truncate row_padding">
+        <span>TEST</span>
+      </td>
+      <td class="text-truncate row_padding">
+        <span>
+          TEST
+        </span>
+      </td>
+      <td class="text-truncate row_padding">
+        <span>TEST</span>
+      </td>
+      <td class="text-truncate row_padding">TEST</td>
+    </tr>
+  </tbody>-->
     <!--ProjectNumber-->
     <!--</table>-->
     <!--    <mat-form-field>
-          <mat-label>Filter</mat-label>
-          <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
-        </mat-form-field>-->
+      <mat-label>Filter</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+    </mat-form-field>-->
 
     <mat-form-field appearance="outline">
       <mat-label>Search</mat-label>
@@ -167,7 +167,7 @@
       </ng-container>
 
       <ng-container matColumnDef="TypeOfApplication">
-        <th mat-header-cell *matHeaderCellDef>Type Of Application</th>
+        <th mat-header-cell *matHeaderCellDef>Type</th>
         <td mat-cell *matCellDef="let element"> {{element.TypeOfApplication}} </td>
       </ng-container>
 
@@ -202,7 +202,9 @@
       <tr class="mat-row" *matNoDataRow>
         <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
       </tr>
+
     </table>
+    <!--<mat-paginator [pageSize]="10" [length]="dataSource?.data.length" [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>-->
 
 
 

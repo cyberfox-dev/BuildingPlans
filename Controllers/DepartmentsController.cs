@@ -93,5 +93,28 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+
+        [HttpPost("GetDepartmentByDepartmentID")]
+        public async Task<object> GetDepartmentByDepartmentID([FromBody] int DepartmentID)
+        {
+            try
+            {
+
+                if (DepartmentID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _departmentsService.DeleteDepartments(DepartmentID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Department", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
     }
 }

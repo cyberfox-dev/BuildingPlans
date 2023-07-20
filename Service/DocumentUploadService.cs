@@ -18,7 +18,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
         //Implementing the interface Methods
-        public async Task<DocumentUpload> AddUpdateDocument(int? documentID, string documentName, string? DocumentLocalPath, int? applicationID, string? assignedUserID, string createdById,string? groupName, int?subDepID)
+        public async Task<DocumentUpload> AddUpdateDocument(int? documentID, string documentName, string? DocumentLocalPath, int? applicationID, string? assignedUserID, string createdById,string? groupName, int?subDepID, string? subDepName, bool? isPlanning)
         {
 
             if (documentID == 0)
@@ -44,6 +44,8 @@ namespace WayleaveManagementSystem.Service
                     isActive = true,
                     DocumentGroupName = groupName,
                     SubDepartmentID = subDepID,
+                    SubDepartmentName = subDepName,
+                    isPlanning = isPlanning,
                 };
 
                 //After the inizlization add to the db
@@ -133,8 +135,36 @@ namespace WayleaveManagementSystem.Service
                   DateCreated = documentUpload.DateCreated,
                   DateUpdated = documentUpload.DateUpdated,
                   CreatedById = documentUpload.CreatedById,
-                  isActive = documentUpload.isActive
+                  isActive = documentUpload.isActive,
 
+
+              }
+              ).ToListAsync();
+
+        } 
+        
+        
+        
+        public async Task<List<DocumentUploadDTO>> GetAllDocumentsForApplicationForPlanning(int? applicationID)
+        {
+
+
+            return await (
+              from documentUpload in _context.DocumentUpload
+              where documentUpload.ApplicationID == applicationID && documentUpload.isActive == true && documentUpload.isPlanning == true
+              select new DocumentUploadDTO()
+              {
+                  DocumentID = documentUpload.DocumentID,
+                  DocumentName = documentUpload.DocumentName,
+                  DocumentLocalPath = documentUpload.DocumentLocalPath,
+                  ApplicationID = documentUpload.ApplicationID,
+                  AssignedUserID = documentUpload.AssignedUserID,
+                  DateCreated = documentUpload.DateCreated,
+                  DateUpdated = documentUpload.DateUpdated,
+                  CreatedById = documentUpload.CreatedById,
+                  isActive = documentUpload.isActive,
+                  SubDepartmentID = documentUpload.SubDepartmentID,
+                  SubDepartmentName = documentUpload.SubDepartmentName,
 
               }
               ).ToListAsync();

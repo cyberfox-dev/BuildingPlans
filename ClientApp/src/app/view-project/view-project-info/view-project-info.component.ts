@@ -7,7 +7,6 @@ import { ApplicationsService } from '../../service/Applications/applications.ser
 import { CommentsService } from '../../service/Comments/comments.service';
 import { DepositRequiredService } from 'src/app/service/DepositRequired/deposit-required.service';
 import jsPDF from 'jspdf';
-
 import autoTable from 'jspdf-autotable';
 import { DatePipe } from '@angular/common';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
@@ -464,7 +463,7 @@ export class ViewProjectInfoComponent implements OnInit {
   receivedata: string;
 
   receiveData(data: string) {
-    debugger;
+    
     this.receivedata = data;
     console.log(this.receivedata);
     if (this.receivedata == "Approved") {
@@ -546,16 +545,16 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   onAutoLinkForPermit() {
-    debugger;
+    
     this.subDepartmentForCommentService.getSubDepartmentForComment(this.ApplicationID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        debugger;
+        
         for (var i = 0; i < data.dateSet.length; i++) {
           this.permitService.addUpdatePermitSubForComment(0, this.ApplicationID, data.dateSet[i].subDepartmentID, data.dateSet[i].subDepartmentName, null, null,null ,this.CurrentUser.appUserId).subscribe((data: any) => {
-            debugger;
+            
             if (data.responseCode == 1) {
-              debugger;
+              
               // alert(data.dateSet.subDepartmentName + " assigned to this Application");
 
             }
@@ -800,7 +799,7 @@ export class ViewProjectInfoComponent implements OnInit {
     }
 
     if (currentComment.isClarifyCommentID == null) {
-      if (confirm("Are you sure you want to add this replay?")) {
+      if (confirm("Are you sure you want to add this reply?")) {
         this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, null, "Clarified", null, numberOfComments, Currentreply).subscribe((data: any) => {
 
           if (data.responseCode == 1) {
@@ -1385,7 +1384,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   checkIfPermitExsist() {
-    debugger;
+    
     if (this.applicationDataForView[0].CreatedById == this.CurrentUser.appUserId) {
       this.permitBtn = true;
       this.permitTextBox = false;
@@ -1689,11 +1688,19 @@ export class ViewProjectInfoComponent implements OnInit {
     const headers = [
       [
         'Department',
-        'Comment',
         'Status'
       ]
     ];
+
+    const headers1 = [
+      [
+        'Department',
+        'Comment',
+      ]
+    ];
+
     const data: any[] = [];
+    const data2: any[] = [];
 
     const img = new Image();
     const footer = new Image();
@@ -1816,28 +1823,14 @@ export class ViewProjectInfoComponent implements OnInit {
     this.SubDepConditionalApproveList.forEach((deposit) => {
       const row = [
         deposit.SubDepName,
-        deposit.Comment,
         deposit.CommentStatus,
-
       ];
-
-      data.push(row);
-    });
-
-    this.SubDepFinalApproveList.forEach((deposit) => {
-      const row = [
-        deposit.SubDepName,
-        deposit.Comment,
-        deposit.CommentStatus,
-
-      ];
-
       data.push(row);
     });
     doc.setLineHeightFactor(60);
     doc.setFontSize(10); // add this line to set the font size
 
-    doc.text("Based on the summary above, the wayleave application is approved. Kindly proceed to apply for a permit to work before commencement of any work on site.", 10, 190, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.text("Based on the summary above, the wayleave application is approved. Kindly proceed to apply for a permit to work before commencement of any work on site.", 10, 190, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });//
     doc.setFontSize(12);
     doc.text("CITY OF CAPE TOWN, Future Planning and Resilience Directorate", 10, 220, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
     doc.addImage(footer, 'png', 7, 255, 205, 45);
@@ -1854,17 +1847,66 @@ export class ViewProjectInfoComponent implements OnInit {
         fontSize: 10,
         valign: 'middle',
 
+
       },
 
       columnStyles: {
-        0: { cellWidth: 40, fontStyle: 'bold' },
+        0: { cellWidth: 90, fontStyle: 'bold' },
         1: { cellWidth: 80 },
-        2: { cellWidth: 40 },
+
       }
 
 
     });
 
+    //Special conditions page
+    doc.addPage();
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+    doc.setFontSize(16);
+    doc.text('Special Conditions', 10, 45, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+
+
+
+    this.SubDepConditionalApproveList.forEach((deposit) => {
+      const row = [
+        deposit.SubDepName,
+        deposit.Comment,
+      ];
+
+      data2.push(row);
+    });
+
+
+    autoTable(doc, {
+      
+      startY: 60,
+      body: data2,
+      styles: {
+        overflow: 'visible',
+        halign: 'justify',
+        fontSize: 10,
+        valign: 'middle',
+        fillColor: false, // Remove background color
+        textColor: [0, 0, 0], // Set text color to black
+      },
+      alternateRowStyles: {
+        fillColor: false, // Remove fill color for alternate rows
+      },
+      columnStyles: {
+        0: { cellWidth: 90, fontStyle: 'bold' },
+        1: { cellWidth: 'auto', cellPadding: { top: 2, right: 2, bottom: 2, left: 2 }, overflow: 'visible' },
+      },
+      didDrawCell: (data) => {
+        if (data.section === 'body' && data.column.index === 1) {
+          doc.setTextColor(100, 100, 100); // Change text color for comment column
+          doc.setFont('italic'); // Set font style to italic for comment column
+        }
+      },
+    });
+
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
     //PAGE 1
     doc.addPage();
 

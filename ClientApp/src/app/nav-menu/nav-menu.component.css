@@ -2,6 +2,7 @@
   box-sizing: border-box;
 }
 
+
 body {
   margin: 0px;
   font-family: 'segoe ui';
@@ -15,33 +16,31 @@ body {
     display:flex;
 }
 
-
 .nav {
   height: 68px;
   width: 100%;
   background-color: #ffffff;
-  position: relative;
+  position: fixed;
   margin-bottom: -59px;
   display: flex;
   justify-content: space-between;
+  top: 0;
+  z-index: 2;
+  box-shadow: 0 2px 20px 0 rgb(0 0 0 / 27%);
 }
 .mat-form-field {
   width: 100%;
   margin-top: 26px;
-
 }
-
   .nav > .nav-header {
     display: inline;
   }
-
     .nav > .nav-header > .nav-title {
       display: inline-block;
       font-size: 22px;
       color: #fff;
       padding: 10px 10px 10px 10px;
     }
-
   .nav > .nav-btn {
     display: none;
   }
@@ -55,18 +54,15 @@ body {
     align-items: center;
     justify-content: right;
   }
-
     .nav > .nav-links > a {
       display: inline-block;
       padding: 13px 10px 13px 10px;
       text-decoration: none;
       color: #efefef;
     }
-
       .nav > .nav-links > a:hover {
         background-color: rgba(0, 0, 0, 0.3);
       }
-
   .nav > #nav-check {
     display: none;
   }

@@ -1085,7 +1085,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
   onWayleaveCreate(appUserId, isPlanning: boolean) {
-    debugger;
+    
 
     //get ApplicationID form Shared to check if must update
     this.applicationID = this.shared.getApplicationID();
@@ -1093,20 +1093,20 @@ export class NewWayleaveComponent implements OnInit {
     if (this.applicationID === 0) {
       this.shared.clearContractorData();
       this.shared.clearEngineerData();
-      debugger;
-      this.applicationsService.addUpdateApplication(0, appUserId, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, isPlanning, null).subscribe((data: any) => {
+      
+      this.applicationsService.addUpdateApplication(0, appUserId, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, isPlanning, null).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          debugger;
+          
 
           //Set ApplicationID to Update
           this.shared.setApplicationID(data.dateSet.applicationID);
           this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
         }
         else {
-          debugger;
+          
           alert("GIS Error");
         }
-        debugger;
+        
         console.log("responseAddApplication", data);
 
       }, error => {
@@ -2099,12 +2099,12 @@ export class NewWayleaveComponent implements OnInit {
 
 
   populateClientProfessional(professionalType: string, userID: string) {
-    debugger;
+    
     if (professionalType === "Engineer") {
-      debugger;
+      
       this.selectEngineerTableComponent.getProfessionalsListByProfessionalType(professionalType, userID);
     } else {
-      debugger;
+      
       this.selectContractorTableComponent.getProfessionalsListByProfessionalType(professionalType, userID);
     }
 
@@ -2116,16 +2116,16 @@ export class NewWayleaveComponent implements OnInit {
 
     this.disabled = true;
     this.newClient = false;
-    debugger;
+    
     this.userPofileService.getUserProfileById(userID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        debugger;
+        
         this.UserListTable?.renderRows();
 
         const tempUserList = {} as UserList;
         const current = data.dateSet[0];
-        debugger;
+        
         const fullname = current.fullName;
         this.clientUserID = current.userID;
         this.clientName = fullname.substring(0, fullname.indexOf(' '));
@@ -2178,7 +2178,7 @@ export class NewWayleaveComponent implements OnInit {
 
     let refreshTable = new SelectEngineerTableComponent(this.professionalService, this.shared);
 
-    debugger;
+    
     const newEnineer = {} as EngineerList;
     newEnineer.ProfessinalType = "Engineer";
     newEnineer.bpNumber = this.bpNoApplicant;

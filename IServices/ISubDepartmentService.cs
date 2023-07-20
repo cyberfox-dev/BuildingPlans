@@ -22,6 +22,7 @@ namespace WayleaveManagementSystem.IServices
 
 
         Task<List<SubDepartmentsDTO>> GetAllSubDepartmentsBydepartmentID(int departmentID);
+        Task<List<SubDepartmentsDTO>> GetSubDepartmentBySubDepartmentID(int? subDepID);
         Task<List<SubDepartmentsDTO>> GetAllSubDepartmentsForAutoDistribution();
 
 

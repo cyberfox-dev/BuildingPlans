@@ -16,6 +16,7 @@ namespace WayleaveManagementSystem.DTO
         public string? AssignedUserID { get; set; }
         public string? GroupName { get; set; }
         public int? SubDepartmentID { get; set; }
+        public string? SubDepartmentName { get; set; }
 
         
     }

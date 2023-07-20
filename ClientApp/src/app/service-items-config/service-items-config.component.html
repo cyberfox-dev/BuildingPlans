@@ -1,7 +1,7 @@
 <div class="container-fluid">
 
-  <button mat-raised-button color="create" (click)="createNewServiceModal(addServiceItem)" >Create a new service item </button>
-
+  <button mat-raised-button color="create" (click)="createNewServiceModal(addServiceItem)">Create a new service item </button>
+  
   <table mat-table [dataSource]="dataSourceServiceItems" class="mat-elevation-z8">
 
 
@@ -17,9 +17,9 @@
 
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef></th>
-      <td mat-cell *matCellDef="let element">
+      <td mat-cell *matCellDef="let i = index">
 
-        <button mat-raised-button color="blue"><i class="fa fa-eye"></i></button>
+        <button mat-raised-button color="blue" (click)="openViewServiceItem(viewServiceItem,i)"><i class="fa fa-eye"></i></button>
         <button mat-raised-button color="warn"><i class="fa fa-trash"></i></button>
 
       </td>
@@ -35,28 +35,45 @@
 <ng-template #addServiceItem let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Creating a new service item</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)=" resetServiceItem();modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
     <form>
       <div class="container-fluid">
-
         <div class="row">
           <div class="col">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="serviceItemCodeName" name="serviceItemCodeName" [(ngModel)]="serviceItemCodeName" placeholder="Enter Service Item Code">
+                <input type="text" class="form-control" id="serviceItemCodeName" name="serviceItemCodeName" [(ngModel)]="serviceItemCodeName" placeholder="Enter Service Item Code" disabled>
                 <label for="serviceItemCodeName">Service Item Code</label>
               </div>
             </div>
           </div>
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="description" name="description" [(ngModel)]="description" placeholder="Description">
-              <label for="description">Description</label>
-            </div>
-          </div>
+          <!-- <div class="col">
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" id="description" name="description" [(ngModel)]="description" placeholder="Description">
+        <label for="description">Description</label>
+      </div>
+    </div>-->
         </div>
+
+
+        <div class="row">
+          <mat-form-field>
+            <mat-label>Select A Department</mat-label>
+            <mat-select [(value)]="selectDep">
+              <mat-option *ngFor="let department of DepartmentList" value="{{department.departmentID}}">{{department.departmentName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field class="example-full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput [(ngModel)]="description" id="description" name="description"></textarea>
+          </mat-form-field>
+        </div>
+
         <div class="row">
           <div class="col">
             <div class="col">
@@ -68,20 +85,23 @@
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="quantity" name="quantity" [(ngModel)]="quantity" placeholder="Enter Quantity">
-              <label for="quantity">Quantity</label>
+              <input type="text" class="form-control" id="category" name="category" [(ngModel)]="category" placeholder="Enter category">
+              <label for="category">Category</label>
             </div>
           </div>
         </div>
-        <div class="row">
-
-          <div class="form-floating mb-3 mt-3">
-            <input type="number" class="form-control" id="total" name="total" [(ngModel)]="total" placeholder="Enter Total" >
-            <label for="total">Total exc. Vat</label>
+        <button mat-raised-button (click)="hasVat()" color="blue" *ngIf="addVatOption">Vat Applicable</button>
+        <button mat-raised-button (click)="hasNoVat()" color="warn" *ngIf="removeVatOption">Not Vat Applicable</button>
+      
+   
+        <div class="row" *ngIf="hasVatt">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="number" class="form-control" id="total" name="total" [(ngModel)]="total" placeholder="Enter Total">
+              <label for="total">Total incl. Vat</label>
+            </div>
           </div>
-
         </div>
-
       </div>
     </form>
   </div>
@@ -99,52 +119,70 @@
   <div class="modal-body">
     <form>
       <div class="container-fluid">
+        <div class="row">
+          <div class="col">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="serviceItemCodeNameV" name="serviceItemCodeNameV" [(ngModel)]="serviceItemCodeNameV" placeholder="Enter Service Item Code" disabled>
+                <label for="serviceItemCodeName">Service Item Code</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" id="depNameV" name="depNameV" [(ngModel)]="depNameV" placeholder="Enter Service Item Code" disabled>
+            <label for="depNameV">Department Name</label>
+          </div>
+        </div>
+
+        <div class="row">
+          <mat-form-field class="example-full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput [(ngModel)]="descriptionV" id="descriptionV" name="descriptionV" disabled></textarea >
+          </mat-form-field>
+        </div>
 
         <div class="row">
           <div class="col">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="serviceItemCodeName" name="serviceItemCodeName" [(ngModel)]="serviceItemCodeName" placeholder="Enter Service Item Code">
-                <label for="serviceItemCodeName">Service Item Code</label>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="description" name="description" [(ngModel)]="description" placeholder="Description">
-              <label for="description">Description</label>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="number" class="form-control" id="rate" name="rate" [(ngModel)]="rate" placeholder="Enter Rate">
+                <input type="number" class="form-control" id="rateV" name="rateV" [(ngModel)]="rateV" placeholder="Enter Rate" disabled>
                 <label for="rate">Rate</label>
               </div>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="quantity" name="quantity" [(ngModel)]="quantity" placeholder="Enter Quantity">
-              <label for="quantity">Quantity</label>
+              <input type="text" class="form-control" id="categoryV" name="categoryV" [(ngModel)]="categoryV" placeholder="Enter category" disabled>
+              <label for="category">Category</label>
             </div>
           </div>
         </div>
-        <div class="row">
 
-          <div class="form-floating mb-3 mt-3">
-            <input type="number" class="form-control" id="total" name="total" [(ngModel)]="total" placeholder="Enter Total">
-            <label for="total">Total exc. Vat</label>
-          </div>
 
+        <div class="alert alert-danger" role="alert" *ngIf="vatApp2">
+          Not Vat Applicable
         </div>
 
+        <div class="alert alert-info" role="alert" *ngIf="vatApp">
+           Vat Applicable
+        </div>
+
+        <div class="row" *ngIf="vatApp"> 
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="number" class="form-control" id="totalV" name="totalV" [(ngModel)]="totalV" placeholder="Enter Total" disabled>
+              <label for="total">Total incl. Vat</label>
+            </div>
+          </div>
+        </div>
       </div>
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-success" (click)="onServiceItemCreate();modal.close('Save click')">Save</button>
+    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click')">Close</button>
   </div>
 </ng-template>

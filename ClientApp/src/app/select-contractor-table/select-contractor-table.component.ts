@@ -64,12 +64,12 @@ export class SelectContractorTableComponent implements OnInit {
 
 
     if (appUserId == null) {
-      debugger;
+      
       this.professionalService.getProfessionalsListByProfessionalType(this.CurrentUser.appUserId, professionalType).subscribe((data: any) => {
-        debugger;
+        
         if (data.responseCode == 1) {
           console.log("data.dateSet get", data.dateSet);
-          debugger;
+          
           for (let i = 0; i < data.dateSet.length; i++) {
             //Check if Engineer or Contractor
             if (professionalType == "Engineer") {
@@ -87,7 +87,7 @@ export class SelectContractorTableComponent implements OnInit {
               this.ProfessialList.push(tempProfessionalList);
               console.log("this.ProfessialList", this.ProfessialList);
             } else {
-              debugger;
+              
               const tempProfessionalList = {} as ProfessialList;
               const current = data.dateSet[i];
               tempProfessionalList.bpNumber = current.bP_Number;
@@ -132,9 +132,9 @@ export class SelectContractorTableComponent implements OnInit {
       })
     }
     else {
-      debugger;
+      
       this.professionalService.getProfessionalsListByProfessionalType(appUserId, professionalType).subscribe((data: any) => {
-        debugger;
+        
         if (data.responseCode == 1) {
           console.log("data.dateSet get", data.dateSet);
 
@@ -155,7 +155,7 @@ export class SelectContractorTableComponent implements OnInit {
               this.ProfessialList.push(tempProfessionalList);
               console.log("this.ProfessialList", this.ProfessialList);
             } else {
-              debugger;
+              
               const tempProfessionalList = {} as ProfessialList;
               const current = data.dateSet[i];
               tempProfessionalList.bpNumber = current.bP_Number;

@@ -91,7 +91,7 @@ export class LoginComponent implements OnInit {
       this.startExpirationTimer();
     }
     else {
-      alert("There was an error")
+      alert("There was an error");
     }
     return otp;
 
@@ -277,7 +277,7 @@ export class LoginComponent implements OnInit {
        await this.userService.register(clientFullName, clientEmail, "Password@" + clientFullName).subscribe((data: any) => {
           if (data.responseCode == 1) {
             console.log("After Register", data.dateSet);
-            debugger;
+            
             // this.homeComponent.openXl('content');
             
             this.newProfileComponent.onNewProfileCreate(data.dateSet.appUserId, clientFullName, clientEmail, phoneNumber, BpNo, CompanyName, CompanyRegNo, PhyscialAddress, ApplicantIDUpload, ApplicantIDNumber);
@@ -287,7 +287,7 @@ export class LoginComponent implements OnInit {
 
           } else {
             //alert("Invalid Email or Password");
-            debugger;
+            
             this.sharedService.errorForRegister = true;
             alert(data.responseMessage);
           }
@@ -311,14 +311,14 @@ export class LoginComponent implements OnInit {
 
         this.userService.register(this.registerForm.controls["fullName"].value, this.registerForm.controls["registerEmail"].value, this.registerForm.controls["registerPassword"].value).subscribe((data: any) => {
           if (data.responseCode == 1) {
-            debugger;
+            
             this.sharedService.errorForRegister = false;
             console.log("After Register", data.dateSet);
             localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
             alert(data.responseMessage);
             this.router.navigate(["/new-profile"]);
           } else {
-            debugger;
+            
             //alert("Invalid Email or Password");
             this.sharedService.errorForRegister = true;
             alert(data.responseMessage);
@@ -586,7 +586,7 @@ export class LoginComponent implements OnInit {
             //      this.userService.register(clientFullName, clientEmail, "Password@" + clientFullName).subscribe((data: any) => {
             //        if (data.responseCode == 1) {
             //          console.log("After Register", data.dateSet);
-            //          debugger;
+            //          
             //          // this.homeComponent.openXl('content');
             //          this.newProfileComponent.onNewProfileCreate(data.dateSet.appUserId, clientFullName, clientEmail, phoneNumber, BpNo, CompanyName, CompanyRegNo, PhyscialAddress, ApplicantIDUpload, ApplicantIDNumber);
 

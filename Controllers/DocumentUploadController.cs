@@ -95,7 +95,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _documentUploadService.AddUpdateDocument(model.DocumentID, model.DocumentName, model.DocumentLocalPath, model.ApplicationID, model.AssignedUserID, model.CreatedById,model.DocumentGroupName,model.SubDepartmentID);
+                    var result = await _documentUploadService.AddUpdateDocument(model.DocumentID, model.DocumentName, model.DocumentLocalPath, model.ApplicationID, model.AssignedUserID, model.CreatedById,model.DocumentGroupName,model.SubDepartmentID, model.SubDepartmentName,model.isPlanning);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.DocumentID > 0 ? "Professional Updated Successfully" : "Professional Added Successfully"), result));
                 }
 
@@ -170,6 +170,32 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _documentUploadService.GetAllDocumentsForApplication(applicationID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Department For Comment Deleted Successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        [HttpPost("GetAllDocumentsForApplicationForPlanning")]
+        public async Task<object> GetAllDocumentsForApplicationForPlanning([FromBody] int applicationID)
+        {
+            try
+            {
+
+                if (applicationID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _documentUploadService.GetAllDocumentsForApplicationForPlanning(applicationID);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Department For Comment Deleted Successfully", result));
                 }
 

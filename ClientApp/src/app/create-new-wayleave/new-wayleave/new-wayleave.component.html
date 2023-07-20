@@ -49,7 +49,7 @@
     <mat-step>
 
       <form>
-        <ng-template matStepLabel>Application details</ng-template>
+        <ng-template matStepLabel>Application Details</ng-template>
         <div class="detials">
           <div class="card">
             <h3><span>Applicant details</span></h3>
@@ -384,12 +384,12 @@
     <div class="typeOfExcavation">
 
       <div class="card">
-        <h3><span>Type of excavation</span></h3>
+        <h3><span>Type Of Excavation</span></h3>
       </div>
       <div class="container-fluid">
 
         <mat-form-field>
-          <mat-label>Types of excavation</mat-label>
+          <mat-label>Types Of Excavation</mat-label>
           <mat-select [(ngModel)]="TOENAMES" multiple>
             <mat-option *ngFor="let TOE of TypeOfExcavationList" [value]="TOE.typeOfExcavationName">{{TOE.typeOfExcavationName}}</mat-option>
           </mat-select>
@@ -467,7 +467,7 @@
 
 <mat-step>
   <form>
-    <ng-template matStepLabel>document uploads</ng-template>
+    <ng-template matStepLabel>Document Uploads</ng-template>
   </form>
   <mat-list *ngFor="let manDoc of MandatoryDocumentsLinkedStagesList; let i=index" [attr.data-index]="i">
     <mat-list-item> {{manDoc.mandatoryDocumentName}}</mat-list-item>
@@ -489,7 +489,7 @@
   </mat-list>
   <div class="row">
 
-    <button mat-raised-button color="green" (click)="onWayleaveCreate(CurrentUser.appUserId,false);">Create Application</button>
+    <button mat-raised-button color="green" (click)="onWayleaveCreate(CurrentUser.appUserId,isPlanning);">Create Application</button>
   </div>
 
   <div class="cont">

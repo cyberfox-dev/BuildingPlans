@@ -31,6 +31,12 @@ export class DepartmentsService {
 
   }
 
+  public getDepartmentByDepartmentID(departmentID: number) {
+
+    return this.httpClient.post(this.baseURL + "GetDepartmentByDepartmentID", departmentID);
+
+  }
+
   public getDepartmentsList() {
 
     return this.httpClient.get(this.baseURL + "GetDepartmentsList");

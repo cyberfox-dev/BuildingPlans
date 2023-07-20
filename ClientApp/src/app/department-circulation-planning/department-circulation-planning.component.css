@@ -1,0 +1,70 @@
+
+
+table {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.mat-column-dep {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 28% !important;
+  width: 60% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  text-align: center;
+}
+
+.greenThumbsUp {
+  color: #68d017;
+  font-size: 29px;
+}
+
+.blueThumbsUp {
+  color: #00a4ff;
+  font-size: 29px;
+}
+
+.redThumbsDown {
+  color: #d01717;
+  font-size: 29px;
+}
+
+.yellowTimer {
+  color: #d0c400bd;
+  font-size: 29px;
+}
+
+.orangeSpeech {
+  color: #ff9600;
+  font-size: 29px;
+}
+
+.blueRefer {
+  color: #00a4ff;
+  font-size: 29px;
+}
+
+.mat-column-indication {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 28% !important;
+  width: 40% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  text-align: center;
+}
+
+.approve {
+  background-color: #9ef5c1c7;
+}

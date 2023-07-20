@@ -237,7 +237,7 @@ export class NewProfileComponent implements OnInit {
   }
 
   onNewProfileCreate(userID?: string | null, fullName?: string | null, email?: string | null, phoneNumber?: string | null, BpNo?: string | null, CompanyName?: string | null, CompanyRegNo?: string | null, PhyscialAddress?: string | null, ApplicantIDUpload?: string | null, ApplicantIDNumber?: string | null) {
-    debugger;
+    
     if (this.showInternal) {
       ///// 
       
@@ -346,9 +346,9 @@ export class NewProfileComponent implements OnInit {
     else if (userID != null || userID != "") {
       this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
       this.CurrentUser = JSON.parse(this.stringifiedData);
-      debugger;
+      
       this.userPofileService.addUpdateUserProfiles(0, userID, fullName, email, phoneNumber, false, BpNo, CompanyName, CompanyRegNo, PhyscialAddress, null, null, null, null, null, null, ApplicantIDUpload, this.CurrentUser.appUserId, ApplicantIDNumber,null).subscribe((data: any) => {
-        debugger;
+        
         if (data.responseCode == 1) {
 
           alert(data.responseMessage);
