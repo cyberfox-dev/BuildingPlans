@@ -10,6 +10,7 @@ namespace WayleaveManagementSystem.IServices
         Task<Departments> AddUpdateDepartments(int? DepartmentID, string DepartmentName,bool hasSubDepartment, string? createdById);
         //this will return T/F 
         public Task<bool> DeleteDepartments(int DepartmentID);
+        Task<List<DepartmentsDTO>> GetDepartmentByDepartmentID(int DepartmentID);
         
         Task<List<DepartmentsDTO>> GetAllDepartments();
         

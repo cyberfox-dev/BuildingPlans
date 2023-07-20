@@ -16,7 +16,7 @@
   <div class="nav-links" *ngIf="Icons">
     <button mat-button matTooltip="Cyberfox configs" (click)="goToCyberfoxCofig()" *ngIf="cyberfoxConfigs"><i class="fa fa-superpowers"></i></button>
     <button mat-button matTooltip="Repository" (click)="openRepositoryModal(repositoryModal)"><i class="fa fa-files-o" aria-hidden="true"></i></button>
-    <button mat-button matTooltip="Comment Builder" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="CommentBuilder"><i class="fa fa-comment"></i></button>
+    <button mat-button matTooltip="Comment Builder" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><i class="fa fa-comment"></i></button>
     <button mat-button matTooltip="Configurations" (click)="goToConfig()" *ngIf="Configurations"><i class="fa fa-cogs"></i></button>
     <button mat-button matTooltip="Notifications" (click)="getAllNotifications();openNotificationsModal(notificationsCenter)"><i class="fa fa-bell"></i> <span *ngIf="notiBell" class="indicator"></span></button>
     <button mat-button [matMenuTriggerFor]="user"><img src="https://img.icons8.com/dusk/100/000000/user-male-circle.png" alt="" class="user-avatar-md rounded-circle"></button>

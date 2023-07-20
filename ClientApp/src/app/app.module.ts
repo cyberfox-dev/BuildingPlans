@@ -84,6 +84,7 @@ import { DocumentsComponentComponent } from './documents-component/documents-com
 import { TypeOfExcavationComponent } from './type-of-excavation/type-of-excavation.component';
 import { PermitComponentComponent } from './permit-component/permit-component.component';
 import { SharedService } from './shared/shared.service';
+import { DepartmentCirculationPlanningComponent } from './department-circulation-planning/department-circulation-planning.component';
 
 
 //import { MapModule } from 'arcgis-js-api';
@@ -152,6 +153,7 @@ import { SharedService } from './shared/shared.service';
     DocumentsComponentComponent,
     TypeOfExcavationComponent,
     PermitComponentComponent,
+    DepartmentCirculationPlanningComponent,
 
 
 

@@ -59,15 +59,15 @@ export class SelectEngineerTableComponent implements OnInit {
   getProfessionalsListByProfessionalType(professionalType: string, appUserId?:string | null ) {
     /*    this.EngineerList.splice(0, this.EngineerList.length);*/
 
-    debugger;
+    
     if (appUserId == "") {
       this.professionalService.getProfessionalsListByProfessionalType(this.CurrentUser.appUserId, professionalType).subscribe((data: any) => {
-        debugger;
+        
         if (data.responseCode == 1) {
           console.log("data.dateSet get", data.dateSet);
 
           for (let i = 0; i < data.dateSet.length; i++) {
-            debugger;
+            
             //Check if Engineer or Contractor
             if (professionalType == "Engineer") {
               const tempProfessionalList = {} as ProfessialList;
@@ -84,7 +84,7 @@ export class SelectEngineerTableComponent implements OnInit {
               this.ProfessialList.push(tempProfessionalList);
               console.log("this.ProfessialList", this.ProfessialList);
             } else {
-              debugger;
+              
               const tempProfessionalList = {} as ProfessialList;
               const current = data.dateSet[i];
               tempProfessionalList.bpNumber = current.bP_Number;
@@ -386,7 +386,7 @@ export class SelectEngineerTableComponent implements OnInit {
 
 
   onAddContractor(bpNoContractor: string, professionalRegNo: string, name: string, surname: string, ContractorEmail: string, ContractorTell: string, contractorIDNo: string,  CIBRating: string, appUserId?: string | null ) {
-    debugger;
+    
     //const newEnineer = {} as EngineerList;
     //newEnineer.ProfessinalType = "Engineer";:
     //newEnineer.bpNumber = this.bpNoApplicant;
@@ -398,14 +398,14 @@ export class SelectEngineerTableComponent implements OnInit {
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
-    debugger;
+    
     if (appUserId != "") {
-      debugger;
+      
       this.professionalService.addUpdateProfessional(0, "Contractor", name + " " + surname, bpNoContractor, false, ContractorEmail, ContractorTell.toString(), professionalRegNo, appUserId, contractorIDNo, this.CurrentUser.appUserId, CIBRating).subscribe((data: any) => {
-        debugger;
+        
         if (data.responseCode == 1) {
           alert(data.responseMessage);
-          debugger;
+          
           this.ProfessialList = [];
 
 

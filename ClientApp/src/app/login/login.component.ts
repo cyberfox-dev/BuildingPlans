@@ -96,7 +96,7 @@ export class LoginComponent implements OnInit {
       this.startExpirationTimer();
     }
     else {
-      alert("There was an error")
+      alert("There was an error");
     }
     return otp;
 
@@ -611,7 +611,7 @@ export class LoginComponent implements OnInit {
             //      this.userService.register(clientFullName, clientEmail, "Password@" + clientFullName).subscribe((data: any) => {
             //        if (data.responseCode == 1) {
             //          console.log("After Register", data.dateSet);
-            //          debugger;
+            //          
             //          // this.homeComponent.openXl('content');
             //          this.newProfileComponent.onNewProfileCreate(data.dateSet.appUserId, clientFullName, clientEmail, phoneNumber, BpNo, CompanyName, CompanyRegNo, PhyscialAddress, ApplicantIDUpload, ApplicantIDNumber);
 

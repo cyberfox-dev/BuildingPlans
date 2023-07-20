@@ -14,7 +14,7 @@ export class ServiceItemService {
 
 
 
-  public addUpdateServiceItem(ServiceItemID: number | null, ServiceItemCode: string | null, Description: string | null, Rate: number | null, totalVat:number| null, createdById: string) {
+  public addUpdateServiceItem(ServiceItemID: number | null, ServiceItemCode: string | null, Description: string | null, Rate: number | null, totalVat: number | null, createdById: string, category: string | null, vatApplicable: boolean | null, subDepID: number | null) {
 
     const body = {
       ServiceItemID: ServiceItemID,
@@ -23,6 +23,9 @@ export class ServiceItemService {
       Rate: Rate,
       TotalVat: totalVat,
       CreatedById: createdById,
+      SubDepartmentID: subDepID,
+      VatApplicable: vatApplicable,
+      Category: category,
     }
     return this.httpClient.post(this.baseURL + "AddUpdateServiceItemCode", body);
 
@@ -49,6 +52,12 @@ export class ServiceItemService {
       ServiceItemCode: ServiceItemCode,
     }
     return this.httpClient.post(this.baseURL + "GetServiceItemByServiceItemCode", body);
+
+  }
+
+  public getServiceItemByDepID(depID: number) {
+
+    return this.httpClient.post(this.baseURL + "GetServiceItemByDepID", depID);
 
   }
 }

@@ -189,6 +189,36 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpPost("GetSubDepartmentBySubDepartmentID")]
+        public async Task<object> GetSubDepartmentBySubDepartmentID([FromBody] SubDepartmentsBindingModel model)
+        {
+            try
+            {
+
+                if (model.SubDepartmentID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _subDepartmentService.GetSubDepartmentBySubDepartmentID(model.SubDepartmentID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got all Sub Departments for given department", result));
+                }
+
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
         [HttpGet("GetAllSubDepartmentsForAutoDistribution")]
         public async Task<object> GetAllSubDepartmentsForAutoDistribution()
         {

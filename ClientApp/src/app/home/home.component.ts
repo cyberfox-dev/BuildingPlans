@@ -17,6 +17,8 @@ import { SelectContractorTableComponent } from 'src/app/select-contractor-table/
 import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
 import { LoginComponent } from 'src/app/login/login.component';
 import { MatStepper } from '@angular/material/stepper';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 
 
@@ -122,8 +124,22 @@ export interface ClientUserList {
 
 
 
-export class HomeComponent implements OnInit,OnDestroy {
-  1111111111111111
+export class HomeComponent implements OnInit, OnDestroy {
+
+
+
+  /*paginator stuff*/
+
+/*  @ViewChild(MatPaginator) paginator: MatPaginator;
+  dataSource: MatTableDataSource<any>;
+  initializeTableData() {
+    // Assuming you have an array called 'applications' with the table data
+    this.dataSource = new MatTableDataSource(this.Applications);
+    this.dataSource.paginator = this.paginator;
+    this.function();
+  }*/
+
+
   Applications: ApplicationsList[] = [];
   applicationDataForView: ApplicationList[] = [];
   applicationDataForViewToShared: ApplicationList[] = [];
@@ -188,7 +204,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   Surname = '';
   ContractorTell?: number;
   ContractorEmail = '';
-
+  defaultPageSize : number;
   option = "";
   btnActiveClient: boolean = true;
   btnActiveInternal: boolean = false;
@@ -243,7 +259,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   previousMonth: number;
   @ViewChild(MatTable) applicationsTable: MatTable<ApplicationsList> | undefined;
   displayedColumns: string[] = ['ProjectNumber','FullName', 'Stage','Status', 'TypeOfApplication','AplicationAge','StageAge','DateCreated', 'actions'];
-  dataSource = this.Applications;
+dataSource = this.Applications;
 
 
   applyFilter(event: Event) {
@@ -260,11 +276,14 @@ export class HomeComponent implements OnInit,OnDestroy {
       this.dataSource = this.dataSource.filter(user => {
         const sanitizedProjectNumber = user.ProjectNumber.replace(/[^\w\s]/g, '');
         return regex.test(sanitizedProjectNumber.toUpperCase());
-      });
-
+      
+});
       this.applicationsTable?.renderRows();
     }
   }
+
+
+
 
 
 
@@ -285,21 +304,30 @@ export class HomeComponent implements OnInit,OnDestroy {
       this.getRolesLinkedToUser();
       this.onCheckIfUserHasAccess();
       this.getAllExternalUsers();
-
+ 
+     
+      //this.function();
     }, 100);
+    //this.dataSource.paginator = this.paginator;
+    //this.defaultPageSize = 10;
 
-    
+  }
 
+  ngAfterViewInit() {
+    //this.dataSource.paginator = this.paginator;
+    //this.defaultPageSize = 10;
+  }
+
+  function() {
+   /* this.dataSource.paginator = this.paginator;
+    this.defaultPageSize = 10;*/
   }
 
 
 
   cardchange(ids: any) {
-   
     this.option = ids;
     this.sharedService.option = this.option;
-
-
   }
  
 
@@ -371,7 +399,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   }
 
   onAddNewClient() {
-    debugger;
+    
 
     this.loginComponent.onRegister(this.clientName + " " + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientBpNumber, this.clientCompanyName, this.clientCompanyRegNo, this.clientPhysicalAddress, null, this.clientIDNumber);
     this.nextBtn = true;
@@ -380,7 +408,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   nextBtn2: boolean;
   stepper: MatStepper;
   checkIfError(stepper: MatStepper) {
-    debugger;
+    
     if (this.sharedService.errorForRegister == true) {
       alert("Please enter an email that is not already in use")
     }
@@ -395,12 +423,12 @@ export class HomeComponent implements OnInit,OnDestroy {
  
 
   onAddContractor() {
-    debugger;
+    
     let refreshTable = new SelectEngineerTableComponent(this.professionalService, this.sharedService);
 
-    debugger;
+    
     if (this.sharedService.clientUserID != null || this.sharedService.clientUserID != "") {
-      debugger;
+      
       refreshTable.onAddContractor(this.bpNoContractor, this.professionalRegNo, this.Name, this.Surname, this.ContractorEmail, this.ContractorTell.toString(), this.contractorIDNo, this.CIBRating ,this.sharedService.clientUserID);
 
 
@@ -445,7 +473,7 @@ export class HomeComponent implements OnInit,OnDestroy {
 
     let refreshTable = new SelectEngineerTableComponent(this.professionalService, this.sharedService);
     if (this.sharedService.clientUserID != null || this.sharedService.clientUserID != "") {
-      debugger;
+      
       const newEnineer = {} as EngineerList;
       newEnineer.ProfessinalType = "Engineer";
       newEnineer.bpNumber = this.bpNoApplicant;
@@ -465,7 +493,7 @@ export class HomeComponent implements OnInit,OnDestroy {
       this.applicantTellNo = "";
       this.engineerIDNo = "";
     } else {
-      debugger;
+      
       const newEnineer = {} as EngineerList;
       newEnineer.ProfessinalType = "Engineer";
       newEnineer.bpNumber = this.bpNoApplicant;
@@ -875,10 +903,11 @@ export class HomeComponent implements OnInit,OnDestroy {
 
       })
     }
-
+    
     const userId = this.CurrentUser.appUserId;
     const isInternal = this.CurrentUserProfile[0].isInternal;
     this.checkForEscalation();
+    
     // Store the subscription in the subscriptions array
     const subscription = this.applicationService.getApplicationsList(userId, isInternal)
       .subscribe((data: any) => {
@@ -976,7 +1005,7 @@ export class HomeComponent implements OnInit,OnDestroy {
 
 
     if (this.option == "client") {
-      debugger;
+      
       this.NewWayleaveComponent.onWayleaveCreate(this.userID, isPlanning);
      // this.NewWayleaveComponent.populateClientInfo(this.userID);
     }
@@ -1084,7 +1113,7 @@ export class HomeComponent implements OnInit,OnDestroy {
 
     filterByApproved() {
       if (this.filter == false) {
-        this.dataSource = this.Applications.filter(df => df.ApplicationStatus == "Approved" || df.ApplicationStatus == "Final Approval");
+        this.dataSource = this.Applications.filter(df => df.ApplicationStatus == "Approved" || df.ApplicationStatus == "Final Approval" || df.ApplicationStatus == "PTW Pending");
         this.filter = true;
       }
       else {

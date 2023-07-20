@@ -75,7 +75,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _subDepartmentForCommentService.DepartmentForCommentUserAssaignedToComment(model.SubDepartmentForCommentID,model.UserAssaignedToComment);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "User Assaigned Successfully", result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "User Assigned Successfully", result));
                 }
 
             }

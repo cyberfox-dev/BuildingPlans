@@ -73,7 +73,9 @@ export class DocumentsComponentComponent implements OnInit {
       .then(response => {
         if (response.ok) {
           // The response status is in the 200 range
+
           return response.blob(); // Extract the response body as a Blob
+
         } else {
           throw new Error('Error fetching the document');
         }
@@ -82,10 +84,13 @@ export class DocumentsComponentComponent implements OnInit {
         // Create a URL for the Blob object
         const documentURL = URL.createObjectURL(blob);
 
-        // Display the document, for example, in an <iframe>
-        const iframe = document.createElement('iframe');
-        iframe.src = documentURL;
-        document.body.appendChild(iframe);
+        window.open(documentURL, '_blank');
+
+        // Download the document
+        const link = document.createElement('a');
+        link.href = documentURL;
+        link.download = this.DocumentsList[index].DocumentName; // Set the downloaded file name
+        link.click();
       })
       .catch(error => {
         console.log(error);

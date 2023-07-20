@@ -19,6 +19,8 @@
         public bool isActive { get; set; }
         public string? DocumentGroupName { get; set; }
         public int? SubDepartmentID { get; set; }
+        public string? SubDepartmentName { get; set; }
+        public bool? isPlanning { get; set; }
 
     }
 }

@@ -30,6 +30,14 @@ export interface SubDepartmentList {
   dateCreated: any;
 }
 
+export interface SubDepartmentListFORDOCUMENTS {
+  subDepartmentID: number;
+  subDepartmentName: string;
+  departmentID: number;
+  dateUpdated: any;
+  dateCreated: any;
+}
+
 
 export interface DocumentsList {
   DocumentID: number;
@@ -91,11 +99,12 @@ export class NavMenuComponent implements OnInit {
   FileDocument: FileDocument[] = [];
   UserList: UserList[] = [];
   SubDepartmentList: SubDepartmentList[] = [];
+  SubDepartmentListFORDOCUMENTS: SubDepartmentListFORDOCUMENTS[] = [];
   forEditIndex: any;
 
   cyberfoxConfigs: boolean = false;
   Configurations: boolean = false;
-  CommentBuilder: boolean = true;
+  CommentBuilder: boolean = false;
 
   public isInternalUser: boolean = false;
   Links: boolean = false;
@@ -135,9 +144,10 @@ export class NavMenuComponent implements OnInit {
   ngOnInit() {
     
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
-/*    this.getUserProfileByUserID();*/
+
 
     this.CurrentUser = JSON.parse(this.stringifiedData);
+    this.getUserProfileByUserID();
     this.getRolesLinkedToUser();
 /*    this.UserRoles = this.shared.getCurrentUserRoles();*/
     /*    this.setCurrentUserRoles();*/
@@ -251,7 +261,7 @@ export class NavMenuComponent implements OnInit {
 
         const currentUserProfile = data.dateSet[0];
         const fullname = currentUserProfile.fullName;
-
+    
         if (currentUserProfile.isInternal == true) {
 
           this.isInternalUser = true;
@@ -851,7 +861,7 @@ export class NavMenuComponent implements OnInit {
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
     console.log("documentName", documentName);
 
-    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, null, this.CurrentUser.appUserId, this.CurrentUser.appUserId, this.selectedOptionText, this.selectDepForUpload).subscribe((data: any) => {
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, null, this.CurrentUser.appUserId, this.CurrentUser.appUserId, this.selectedOptionText, this.selectDepForUpload, this.SubDepartmentListFORDOCUMENTS[0].subDepartmentName).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
@@ -989,7 +999,24 @@ export class NavMenuComponent implements OnInit {
   }
 
   selectDepartment() {
+    this.subDepartment.getSubDepartmentBySubDepartmentID(this.selectDepForUpload).subscribe((data: any) => {
+      const tempSubDocList = {} as SubDepartmentListFORDOCUMENTS;
+      const current = data.dateSet[0];
+      console.log("flkgdokfjgldkfjglkdfjglkdfjglkdfjglkjdfgkljdklfgjfg", current);
+      console.log("flkgdokfjgldkfjglkdfjglkdfjglkdfjglkjdfgkljdklfgjfg", this.selectDepForUpload);
+      if (data.responseCode == 1) {
+        tempSubDocList.subDepartmentName = current.subDepartmentName
+        this.SubDepartmentListFORDOCUMENTS.push(tempSubDocList);
+        console.log("flkgdokfjgldkfjglkdfjglkdfjglkdfjglkjdfgkljdklfgjfg",this.SubDepartmentListFORDOCUMENTS);
 
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 
 }

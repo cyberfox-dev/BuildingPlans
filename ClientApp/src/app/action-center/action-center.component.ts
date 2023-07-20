@@ -34,6 +34,7 @@ import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-u
 
 
 
+
 export interface SubDepartmentList {
   subDepartmentID: number;
   subDepartmentName: string;
@@ -258,7 +259,9 @@ export class ActionCenterComponent implements OnInit {
   CurrentUserProfile: any;
   loggedInUsersIsAdmin: any;
   loggedInUsersDepartment: void;
+  loggedInUsersDepartmentID: number;
   loggedInUsersSubDepartmentID: any;
+  loggedInUsersSubDepartmentName: any;
   AssignProjectToZone: boolean;
   hopperButton: boolean;
   SubForCommentIDForHopper: any;
@@ -305,15 +308,16 @@ export class ActionCenterComponent implements OnInit {
 
   stringifiedData: any;
   CurrentUser: any;
-  private readonly apiUrl: string = this.sharedService.getApiUrl();
-  progress: number = 0;
-  message: string | undefined;
+
 
   ReticulationID = 1025;
 
   public isInternalUser: boolean = false;
   public isExternalUser: boolean = false;
+
+  saveBtn: boolean = true;
   option = '';
+  planningWayleave: boolean = false;
 
   leaveAComment = "";
   leaveACommentPermit = "";
@@ -340,11 +344,19 @@ export class ActionCenterComponent implements OnInit {
 
     /*  this.getAllServiceItmes();*/
     this.getAllServiceItmesForDropdown();
+ 
+      /*  this.getAllServiceItmes();*/
+    this.getServicesByDepID();
 
-
+   
     this.CurrentApplication = this.viewProjectInfoComponent.getCurrentApplication();
 
 
+
+    if (this.CurrentApplication.isPlanning === true) {
+   
+     this.planningWayleave = true;
+    }
 
     //// this giving some shit
     // this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
@@ -355,9 +367,16 @@ export class ActionCenterComponent implements OnInit {
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
+      this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
+    this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
+    console.log("WTFWTFWTFWTFWTFWTWFTWFWTFWTFWTWTF", this.CurrentUserProfile[0]);
     this.loggedInUsersIsAdmin = this.CurrentUserProfile[0].isDepartmentAdmin;
     this.loggedInUsersIsZoneAdmin = this.CurrentUserProfile[0].isZoneAdmin;
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
+    this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
+    this.loggedInUsersSubDepartmentName = this.CurrentUserProfile[0].subDepartmentName;
+    this.loggedInUsersDepartmentID = this.CurrentUserProfile[0].departmentID;
+    this.getCurrentUserSubDepName();
     this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
     if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
       this.getUsersByRoleName("Permit Issuer");
@@ -395,19 +414,19 @@ export class ActionCenterComponent implements OnInit {
       if (data.responseCode == 1) {
         let foundMatch = false;
         let current = data.dateSet[0];// Flag to track if a match is found
-        debugger;
+        
         if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
-          debugger;
+          
           for (var i = 0; i < this.permitIssuer.length; i++) {
-            debugger;
+            
 
 
             if (this.permitIssuer[i].userID == this.CurrentUser.appUserId) {
-              debugger;
+              
 
 
               if (current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
-                debugger;
+                
 
 
                 foundMatch = true;
@@ -418,7 +437,7 @@ export class ActionCenterComponent implements OnInit {
 
 
             if (foundMatch) {
-              debugger;
+              
 
               // A match was found, no need to continue checking
               break;
@@ -453,7 +472,7 @@ export class ActionCenterComponent implements OnInit {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempPTCList = {} as PTCList;
           const current = data.dateSet[i];
-          debugger;
+          
           tempPTCList.PermitSubForCommentID = current.permitSubForCommentID;
           tempPTCList.ApplicationID = current.applicationID;
           tempPTCList.SubDepartmentID = current.subDepartmentID;
@@ -512,7 +531,6 @@ export class ActionCenterComponent implements OnInit {
   }
 
   onPassFileName(event: { uploadFor: string; fileName: string }) {
-    console.log("............................................onPassFileNameEvent", event);
     const { uploadFor, fileName } = event;
 
 
@@ -541,6 +559,8 @@ export class ActionCenterComponent implements OnInit {
     //      error: (err: HttpErrorResponse) => console.log(err)
     //    });
     //}
+    const index = parseInt(uploadFor.substring('CoverLetter'.length));
+    this.fileAttrs[index] = fileName;
   }
 
   generatePTW(ClientName: string) {
@@ -816,11 +836,11 @@ export class ActionCenterComponent implements OnInit {
 
     let SubDepartmentName = "";
     let PermitSubCommetID = 0;
-    debugger;
+    
     for (var i = 0; i < this.PTCList.length; i++) {
-      debugger;
+      
       if (this.PTCList[i].SubDepartmentID == this.loggedInUsersSubDepartmentID) {
-        debugger;
+        
         SubDepartmentName = this.PTCList[i].SubDepartmentName;
         PermitSubCommetID = this.PTCList[i].PermitSubForCommentID;
       }
@@ -829,7 +849,7 @@ export class ActionCenterComponent implements OnInit {
 
       case "Approve": {
         if (confirm("Are you sure you want to approve permit this application?")) {
-          debugger;
+          
           this.permitService.addUpdatePermitSubForComment(PermitSubCommetID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
             if (data.responseCode == 1) {
               alert("Permit Approved");
@@ -929,8 +949,9 @@ export class ActionCenterComponent implements OnInit {
                
                   this.viewProjectInfoComponent.getAllComments();
                   alert(data.responseMessage);
-                  this.CheckALLLinkedDepartmentsCommented();
+              
                   this.router.navigate(["/home"]);
+                  this.CheckALLLinkedDepartmentsCommented(false);
 
                 }
                 else {
@@ -971,8 +992,9 @@ export class ActionCenterComponent implements OnInit {
            
                   this.viewProjectInfoComponent.getAllComments();
                   alert(data.responseMessage);
-                  this.CheckALLLinkedDepartmentsCommented();
+            
                   this.router.navigate(["/home"]);
+                  this.CheckALLLinkedDepartmentsCommented(false);
                 }
                 else {
                   alert(data.responseMessage);
@@ -1384,13 +1406,13 @@ export class ActionCenterComponent implements OnInit {
   }
 
   onManuallyAssignUser() {
-    debugger;
+    
 
     if (confirm("Are you sure you what to assign this project to " + this.UserSelectionForManualLink.selected[0].fullName + "?")) {
       this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.forManuallyAssignSubForCommentID, this.UserSelectionForManualLink.selected[0].id).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
-          debugger;
+          
           alert(data.responseMessage);
           this.getLinkedZones();
           this.updateApplicationStatus();
@@ -1516,11 +1538,11 @@ export class ActionCenterComponent implements OnInit {
       })
     }
     else if (roleName == "Permit Issuer") {
-      debugger;
+      
       this.accessGroupsService.getUserBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
-          debugger;
+          
           this.permitIssuer = data.dateSet;
         }
         else {
@@ -2787,8 +2809,10 @@ getAllCommentsByUserID() {
 
 
 
-  CheckALLLinkedDepartmentsCommented() {
+  CheckALLLinkedDepartmentsCommented(isPlanning: boolean) {
 
+
+    if (isPlanning === false) {
 
     const currentApplication = this.sharedService.getViewApplicationIndex();
 
@@ -2830,13 +2854,13 @@ getAllCommentsByUserID() {
           this.viewProjectInfoComponent.onCrreateRejectionPack();
           this.countApprove = 0;
           this.countReject = 0;
-          this.MoveToClosedStage();
+          this.MoveToClosedStage(false);
         }
         else {
           this.countApprove = 0;
           this.countReject = 0;
         }
-       
+
       }
       else {
 
@@ -2850,14 +2874,69 @@ getAllCommentsByUserID() {
     })
 
   }
+    else {
+
+      /*planning application moves to closed*/
+      const currentApplication = this.sharedService.getViewApplicationIndex();
+
+
+
+      this.subDepartmentForCommentService.getSubDepartmentForComment(currentApplication.applicationID).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+
+          for (var i = 0; i < data.dateSet.length; i++) {
+            const current = data.dateSet[i];
+
+            const tempSubDepartmentList = {} as SubDepartmentList;
+            tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+            tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+            tempSubDepartmentList.departmentID = current.departmentID;
+            tempSubDepartmentList.dateUpdated = current.dateUpdated;
+            tempSubDepartmentList.dateCreated = current.dateCreated;
+            tempSubDepartmentList.commentStatus = current.commentStatus;
+
+            if (tempSubDepartmentList.commentStatus == "Final Approved") {
+              this.countApprove++;
+            }
+            if (tempSubDepartmentList.commentStatus == "Rejected") {
+              this.countReject++;
+            }
+
+            this.SubDepartmentListForCheck.push(tempSubDepartmentList);
+          }
+
+          if (this.SubDepartmentListForCheck.length == this.countApprove) {
+
+            this.countApprove = 0;
+            this.countReject = 0;
+            this.MoveToClosedStage(true);
+          } 
+
+        }
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForComment", data);
+
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+}
+
+  }
 
   MoveApplicationToAllocated() {
-    debugger;
+    
     const currentApplication = this.sharedService.getViewApplicationIndex();
 
     this.subDepartmentForCommentService.getSubDepartmentForComment(currentApplication.applicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
 
         for (var i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
@@ -2914,12 +2993,13 @@ getAllCommentsByUserID() {
   }
 
   MoveToNextStage() {
-    debugger;
+    
+
 
     this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, "PTW Pending").subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-  
+        
         alert("Application moved to PTW");
         this.router.navigate(["/home"]);
 
@@ -2944,24 +3024,48 @@ getAllCommentsByUserID() {
 
   }
 
-  MoveToClosedStage() {
+  MoveToClosedStage(isPlanning: boolean) {
+    
     debugger;
+    if (isPlanning === false) {
+      this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[this.StagesList.length].StageName, this.StagesList[this.StagesList.length].StageOrderNumber, this.StagesList[this.StagesList.length].StageName, this.StagesList[this.StagesList.length].StageOrderNumber, "Rejected & Closed").subscribe((data: any) => {
 
-    this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[this.StagesList.length].StageName, this.StagesList[this.StagesList.length].StageOrderNumber, this.StagesList[this.StagesList.length].StageName, this.StagesList[this.StagesList.length].StageOrderNumber, "Rejected & Closed").subscribe((data: any) => {
+        if (data.responseCode == 1) {
+            alert("Application Rejected & Moved To Closed");
 
-      if (data.responseCode == 1) {
 
-        alert("Application Rejected & Moved To Closed");
-        this.router.navigate(["/home"]);
+          this.router.navigate(["/home"]);
 
-      }
-      else {
-        alert(data.responseMessage);
-      }
-      console.log("responseAddapplication", data);
-    }, error => {
-      console.log("Error", error);
-    })
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("responseAddapplication", data);
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+    else {
+      this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[5].StageName, this.StagesList[5].StageOrderNumber, this.StagesList[5].StageName, this.StagesList[5].StageOrderNumber, "Closed",null).subscribe((data: any) => {
+        debugger;
+        if (data.responseCode == 1) {
+          debugger;
+
+          alert("Application Moved To Closed");
+          this.modalService.dismissAll();
+          this.router.navigate(["/home"]);
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("responseAddapplication", data);
+      }, error => {
+        console.log("Error", error);
+      })
+
+    }
+   
 
     //}
 
@@ -3137,9 +3241,180 @@ getAllCommentsByUserID() {
     }
   }
 
+  /*This is for the planning wayleave for deps to upload documents*/
+  private readonly apiUrl: string = this.sharedService.getApiUrl();
 
 
 
+  progress: number = 0;
+  message = '';
+
+  fileName: string = '';
+  fileUploadName = '';
+  @Input() UploadFor: any;
+  fileExtention = '';
+  fileToUpload : any;
+  fName = '';
+  loading: boolean = false;
+  uploadFile = (files: any) => {
+    debugger;
+    if (files.length === 0) {
+      return;
+    }
+
+    this.fileToUpload = <File>files[0];
+    this.fileExtention =this.fileToUpload.name.substring(this.fileToUpload.name.indexOf('.'));
+    this.fileUploadName = this.fileToUpload.name.substring(0, this.fileToUpload.name.indexOf('.')) + this.UploadFor;
+    let fName = this.fileUploadName;
+    this.fileAttrs[0] = fName;
+  }
+
+
+
+  saveDocument() {
+    this.loading = true;
+    this.saveBtn = false;
+
+    debugger;
+
+    const formData = new FormData();
+    formData.append('file', this.fileToUpload, this.fileUploadName + this.fileExtention);
+
+
+
+   /* const filesForUpload = this.sharedService.pullFilesForUpload();
+
+      const formData = new FormData();
+      let fileExtention = filesForUpload[0].UploadFor.substring(filesForUpload[0].UploadFor.indexOf('.'));
+      let fileUploadName = filesForUpload[0].UploadFor.substring(0, filesForUpload[0].UploadFor.indexOf('.')) + "-appID-" + this.ApplicationID;
+      formData.append('file', filesForUpload[0].formData, fileUploadName + fileExtention);*/
+
+
+
+
+      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+        .subscribe({
+          next: (event) => {
+
+            
+            if (event.type === HttpEventType.UploadProgress && event.total) {
+              this.progress = Math.round(100 * event.loaded / event.total);
+            }
+            else if (event.type === HttpEventType.Response) {
+              this.message = 'Upload success.';
+              this.uploadFinished(event.body);
+
+            }
+          },
+          error: (err: HttpErrorResponse) => console.log(err)
+        });
+ 
+   
+  }
+
+  uploadFinished = (event: any) => {
+    debugger;
+    this.response = event;
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
+
+
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
+
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, this.CurrentUser.appUserId, null, this.loggedInUsersSubDepartmentID, this.loggedInUserSubDepartmentName,true).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        this.loading = false;
+        this.saveBtn = true;
+        alert("Document Has Uploaded");
+        this.fileAttrs[0] = '';
+        this.Approve();
+
+      }
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+  }
+  loggedInUserSubDepartmentName = '';
+  getCurrentUserSubDepName() {
+    this.subDepartment.getSubDepartmentBySubDepartmentID(this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+     
+      const current = data.dateSet[0];
+      if (data.responseCode == 1) {
+        this.loggedInUserSubDepartmentName = current.subDepartmentName
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  Approve(){
+    this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Final Approved", null, null, "EndOfCommentProcess", true).subscribe((data: any) => {
+      
+      if (data.responseCode == 1) {
+
+        alert(data.responseMessage);
+        //commentsService
+        this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, this.loggedInUserSubDepartmentName, this.leaveAComment, "Final Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+            
+
+            alert(data.responseMessage);
+            this.CheckALLLinkedDepartmentsCommented(true);
+/*            this.MoveToClosedStage(true);*/
+
+          }
+          else {
+            alert(data.responseMessage);
+
+          }
+          console.log("reponse", data);
+
+        }, error => {
+          console.log("Error: ", error);
+        })
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+}
+  
+  getServicesByDepID() {
+    this.serviceItemService.getServiceItemByDepID(this.loggedInUsersDepartmentID).subscribe((data: any) => {
+
+      const current = data.dateSet[0];
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempServiceItemList = {} as ServiceItemCodeDropdown;
+          const current = data.dateSet[i];
+          tempServiceItemList.serviceItemID = current.serviceItemID;
+          tempServiceItemList.serviceItemCode = current.serviceItemCode;
+
+          this.ServiceItemCodeDropdown.push(tempServiceItemList);
+        }
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
 
 
 }

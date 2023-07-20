@@ -275,7 +275,7 @@ export class NewProfileComponent implements OnInit {
   }
 
   onNewProfileCreate(userID?: string | null, fullName?: string | null, email?: string | null, phoneNumber?: string | null, BpNo?: string | null, CompanyName?: string | null, CompanyRegNo?: string | null, PhyscialAddress?: string | null, ApplicantIDUpload?: string | null, ApplicantIDNumber?: string | null) {
-    debugger;
+    
     if (this.showInternal) {
       ///// 
 

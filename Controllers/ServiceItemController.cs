@@ -55,6 +55,9 @@ namespace WayleaveManagementSystem.Controllers
                             DateCreated = DateTime.Now,
                             DateUpdated = DateTime.Now,
                             isActive = true,
+                            Category = model.Category,
+                            DepartmentID = model.DepartmentID,
+                            VatApplicable = model.VatApplicable, 
                         };
 
                         await _context.ServiceItem.AddAsync(tempServiceItemTable);
@@ -71,14 +74,12 @@ namespace WayleaveManagementSystem.Controllers
                         tempServiceItemTable.TotalVat = model.TotalVat;
                         tempServiceItemTable.DateUpdated = DateTime.Now;
                         tempServiceItemTable.isActive = true;
-                        
-
                         _context.Update(tempServiceItemTable);
                         await _context.SaveChangesAsync();
                         result = tempServiceItemTable;
                     }
 
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ServiceItemID > 0 ? "Zone Link Updated Successfully" : "Service Item Created Successfully"), result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ServiceItemID > 0 ? "Service Item Updated Successfully" : "Service Item Created Successfully"), result));
                 }
             }
             catch (Exception ex)
@@ -141,7 +142,9 @@ namespace WayleaveManagementSystem.Controllers
                     DateCreated = serviceItem.DateCreated,
                     DateUpdated = serviceItem.DateUpdated,
                     isActive = serviceItem.isActive,
-                    
+                    DepartmentID = serviceItem.DepartmentID,
+                    VatApplicable = serviceItem.VatApplicable,
+                    Category = serviceItem.Category,
                 }
                 ).ToListAsync();
 
@@ -182,7 +185,9 @@ namespace WayleaveManagementSystem.Controllers
                    DateCreated = serviceItem.DateCreated,
                    DateUpdated = serviceItem.DateUpdated,
                    isActive = serviceItem.isActive,
-
+                   DepartmentID = serviceItem.DepartmentID,
+                   VatApplicable = serviceItem.VatApplicable,
+                   Category = serviceItem.Category,
                }
                ).ToListAsync();
 
@@ -238,7 +243,43 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-        
+        [HttpPost("GetServiceItemByDepID")]
+        public async Task<object> GetServiceItemByDepID([FromBody] int depID)
+        {
+            try
+            {
+                var result = await (
+               from serviceItem in _context.ServiceItem
+               where serviceItem.DepartmentID == depID && serviceItem.isActive == true
+               select new ServiceItemDTO()
+               {
+                   ServiceItemID = serviceItem.ServiceItemID,
+                   ServiceItemCode = serviceItem.ServiceItemCode,
+                   Description = serviceItem.Description,
+                   Rate = serviceItem.Rate,
+                   TotalVat = serviceItem.TotalVat,
+                   DateCreated = serviceItem.DateCreated,
+                   DateUpdated = serviceItem.DateUpdated,
+                   isActive = serviceItem.isActive,
+                   DepartmentID = serviceItem.DepartmentID,
+                   VatApplicable = serviceItem.VatApplicable,
+                   Category = serviceItem.Category,
+               }
+               ).ToListAsync();
+
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Service Items For Sub Department", result));
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
 
 
     }

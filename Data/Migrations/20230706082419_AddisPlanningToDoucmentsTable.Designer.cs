@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WayleaveManagementSystem.Data;
 
@@ -11,9 +12,10 @@ using WayleaveManagementSystem.Data;
 namespace WayleaveManagementSystem.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230706082419_AddisPlanningToDoucmentsTable")]
+    partial class AddisPlanningToDoucmentsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -822,9 +824,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<DateTime>("DateUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("MandatoryDocumentCategory")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("MandatoryDocumentName")
                         .HasColumnType("nvarchar(max)");
 
@@ -1007,40 +1006,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("ProfessionalsLink");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.ProjectSizeCheckList", b =>
-                {
-                    b.Property<int?>("ProjectSizeCheckListID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("ProjectSizeCheckListID"), 1L, 1);
-
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("MandatoryDocumentCategory")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProjectSizeCheckListActivity")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProjectSizeCheckListRowNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("isActive")
-                        .HasColumnType("bit");
-
-                    b.HasKey("ProjectSizeCheckListID");
-
-                    b.ToTable("ProjectSizeCheckList");
-                });
-
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Roles", b =>
                 {
                     b.Property<int>("RoleID")
@@ -1083,9 +1048,6 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("ServiceItemID"), 1L, 1);
 
-                    b.Property<string>("Category")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(max)");
 
@@ -1095,23 +1057,17 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<DateTime>("DateUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("DepartmentID")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("Rate")
-                        .HasColumnType("float");
+                    b.Property<int?>("Rate")
+                        .HasColumnType("int");
 
                     b.Property<string>("ServiceItemCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("TotalVat")
-                        .HasColumnType("float");
-
-                    b.Property<bool?>("VatApplicable")
-                        .HasColumnType("bit");
+                    b.Property<int?>("TotalVat")
+                        .HasColumnType("int");
 
                     b.Property<bool>("isActive")
                         .HasColumnType("bit");
@@ -1224,20 +1180,8 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<int?>("DepartmentID")
                         .HasColumnType("int");
 
-                    b.Property<string>("GlCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("GLCode")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("MapLayerID")
                         .HasColumnType("int");
-
-                    b.Property<string>("ProfitCenter")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProfitCentre")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SubDepartmentAdminUserID")
                         .HasColumnType("nvarchar(max)");
