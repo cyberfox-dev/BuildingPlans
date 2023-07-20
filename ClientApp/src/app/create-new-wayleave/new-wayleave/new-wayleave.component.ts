@@ -36,6 +36,9 @@ import { HomeComponent } from 'src/app/home/home.component';
 import { ZoneForCommentService } from 'src/app/service/ZoneForComment/zone-for-comment.service';
 import { FinancialService } from 'src/app/service/Financial/financial.service';
 import { ServiceItemService } from 'src/app/service/ServiceItems/service-item.service';
+import {  ProjectSizeCheckListService} from 'src/app/service/ProjectSizeCheckList/project-size-check-list.service';
+import { SelectionModel } from '@angular/cdk/collections';
+import { BehaviorSubject } from 'rxjs';
 
 
 
@@ -57,6 +60,15 @@ export interface TypeOfExcavationList {
   dateCreated: any;
 }
 
+export interface MandatoryDocumentUploadList {
+  mandatoryDocumentID: number;
+  mandatoryDocumentName: string;
+  stageID: number;
+  dateCreated: any;
+  mandatoryDocumentCategory: string;
+}
+
+
 export interface NotificationsList {
   NotificationID: number;
   NotificationName: string;
@@ -64,6 +76,13 @@ export interface NotificationsList {
   ApplicationID: number;
   UserID: number;
   DateCreated: string;
+}
+
+export interface ProjectSizeCheckList {
+  ProjectSizeCheckListID: number;
+  ProjectSizeCheckListRowNumber: number;
+  ProjectSizeCheckListActivity: string;
+  MandatoryDocumentCategory: string;
 }
 
 export interface EngineerList {
@@ -307,10 +326,27 @@ export class NewWayleaveComponent implements OnInit {
   StagesList: StagesList[] = [];
   DepartmentAdminList: DepartmentAdminList[] = [];
   MandatoryDocumentUploadList: MandatoryDocumentUploadList[] = [];
-  MandatoryDocumentsLinkedStagesList: MandatoryDocumentsLinkedStagesList[] = [];
+  /*MandatoryDocumentsLinkedStagesList: MandatoryDocumentsLinkedStagesList[] = [];*/
+  MandatoryDocumentsLinkedStagesList = new BehaviorSubject<MandatoryDocumentsLinkedStagesList[]>([]);
+
   TypeOfExcavationList: TypeOfExcavationList[] = [];
   ApplicationListForReapply: ApplicationList[] = [];
   ServiceItemList: ServiceItemList[] = [];
+
+  //MandatoryDocumentUpload
+  MandatoryDocumentUploadListSmall: MandatoryDocumentUploadList[] = [];
+  MandatoryDocumentUploadListMedium: MandatoryDocumentUploadList[] = [];
+  MandatoryDocumentUploadListLarge: MandatoryDocumentUploadList[] = [];
+  MandatoryDocumentUploadListEmergency: MandatoryDocumentUploadList[] = [];
+
+  ProjectSizeCheckList: ProjectSizeCheckList[] = [];
+
+
+  selectionProjectSizeCheck = new SelectionModel<ProjectSizeCheckList>(true, []);
+  selectionSmall = new SelectionModel<MandatoryDocumentsLinkedStagesList>(true, []);
+  selectionMedium = new SelectionModel<MandatoryDocumentsLinkedStagesList>(true, []);
+  selectionLarge = new SelectionModel<MandatoryDocumentsLinkedStagesList>(true, []);
+  selectionEmergency = new SelectionModel<MandatoryDocumentsLinkedStagesList>(true, []);
 
   professionalList: any[];
 
@@ -364,6 +400,23 @@ export class NewWayleaveComponent implements OnInit {
   displayedColumnsContractors: string[] = ['ProfessinalType', 'professionalRegNo', 'bpNumber', 'name', 'surname', 'email', 'phoneNumber', 'idNumber'];
   dataSourceEngineers = this.EngineerList;
   dataSourceContractors = this.ContractorList;
+
+  ProjectSizeCheckListColumns: string[] = ['ProjectSizeCheckListRowNumber', 'ProjectSizeCheckListActivity', 'actions'];
+  dataSourceProjectSizeCheckList = this.ProjectSizeCheckList;
+  //displayedColumnsMedium: string[] = ['mandatoryDocumentName', 'actions'];
+  //dataSourceMedium = this.MandatoryDocumentUploadListMedium;
+  //displayedColumnsLarge: string[] = ['mandatoryDocumentName', 'actions'];
+  //dataSourceLarge = this.MandatoryDocumentUploadListLarge;
+  //displayedColumnsEmergency: string[] = ['mandatoryDocumentName', 'actions'];
+  //dataSourceEmergency = this.MandatoryDocumentUploadListEmergency;
+
+  @ViewChild(MatTable) MandatoryDocumentUploadListSmallTable: MatTable<MandatoryDocumentsLinkedStagesList> | undefined;
+  @ViewChild(MatTable) MandatoryDocumentUploadListMediumTable: MatTable<MandatoryDocumentsLinkedStagesList> | undefined;
+  @ViewChild(MatTable) MandatoryDocumentUploadListLargeTable: MatTable<MandatoryDocumentsLinkedStagesList> | undefined;
+  @ViewChild(MatTable) MandatoryDocumentUploadListEmergencyTable: MatTable<MandatoryDocumentsLinkedStagesList> | undefined;
+
+
+
   @ViewChild(MatTable) EngineerTable: MatTable<EngineerList> | undefined;
   @ViewChild(MatTable) ContractorTable: MatTable<ContractorList> | undefined;
   @ViewChild(MatPaginator)
@@ -438,6 +491,7 @@ export class NewWayleaveComponent implements OnInit {
     private zoneForCommentService: ZoneForCommentService,
     private serviceItemService: ServiceItemService,
     private financialService: FinancialService,
+    private projectSizeCheckListService: ProjectSizeCheckListService,
 
   ) { }
 
@@ -538,7 +592,11 @@ export class NewWayleaveComponent implements OnInit {
 
     //const imagePath = 'assets/cctlogoblack.png';
     //this.logoUrl = this.sanitizer.bypassSecurityTrustUrl(imagePath);
-
+    this.getAllProjectSizeCheckList();
+    this.getAllByMandatoryDocumentCategory("Small");
+    this.getAllByMandatoryDocumentCategory("Medium");
+    this.getAllByMandatoryDocumentCategory("Large");
+    this.getAllByMandatoryDocumentCategory("Emergency");
   }
 
 
@@ -651,7 +709,7 @@ export class NewWayleaveComponent implements OnInit {
           this.StagesList.push(tempStageList);
           // this.sharedService.setStageData(this.StagesList);
         }
-        this.getAllManDocsByStageID();
+        //this.getAllManDocsByStageID();
 
       }
       else {
@@ -2961,38 +3019,38 @@ export class NewWayleaveComponent implements OnInit {
   }
 
 
-  getAllManDocsByStageID() {
+  //getAllManDocsByStageID() {
 
-    this.MandatoryDocumentsLinkedStagesList.splice(0, this.MandatoryDocumentsLinkedStagesList.length);
+  //  this.MandatoryDocumentsLinkedStagesList.splice(0, this.MandatoryDocumentsLinkedStagesList.length);
 
-    this.mandatoryDocumentStageLink.getAllMandatoryDocumentsByStageID(this.StagesList[0].StageID).subscribe((data: any) => {
-      if (data.responseCode == 1) {
+  //  this.mandatoryDocumentStageLink.getAllMandatoryDocumentsByStageID(this.StagesList[0].StageID).subscribe((data: any) => {
+  //    if (data.responseCode == 1) {
 
 
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
-          const current = data.dateSet[i];
-          tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
-          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = current.mandatoryDocumentStageLinkID;
-          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
-          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
-          tempMandatoryDocumentsLinkedStagesList.stageName = current.stageName;
-          tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+  //      for (let i = 0; i < data.dateSet.length; i++) {
+  //        const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
+  //        const current = data.dateSet[i];
+  //        tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+  //        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = current.mandatoryDocumentStageLinkID;
+  //        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+  //        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+  //        tempMandatoryDocumentsLinkedStagesList.stageName = current.stageName;
+  //        tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
 
-          this.MandatoryDocumentsLinkedStagesList.push(tempMandatoryDocumentsLinkedStagesList);
+  //        this.MandatoryDocumentsLinkedStagesList.push(tempMandatoryDocumentsLinkedStagesList);
 
-        }
-      }
-      else {
+  //      }
+  //    }
+  //    else {
 
-        alert(data.responseMessage);
-      }
-      console.log("reponse", data);
+  //      alert(data.responseMessage);
+  //    }
+  //    console.log("reponse", data);
 
-    }, error => {
-      console.log("Error: ", error);
-    })
-  }
+  //  }, error => {
+  //    console.log("Error: ", error);
+  //  })
+  //}
 
   getAllTOE() {
 
@@ -3201,6 +3259,428 @@ export class NewWayleaveComponent implements OnInit {
       });
     });
   }
+
+  async openMandatoryDocumentCategory(MandatoryDocumentCategory: any) {
+
+    this.modalService.open(MandatoryDocumentCategory, { centered: true, size: 'lg' });
+
+  }
+
+
+
+  selectedProjectSizeCheckList(ProjectSizeCheckList: any) {
+
+    this.selectionProjectSizeCheck.toggle(ProjectSizeCheckList);
+
+  }
+
+  selectedSmall(mandatoryDocumentCategory: any) {
+
+    this.selectionSmall.toggle(mandatoryDocumentCategory);
+
+  }
+  selectedMedium(mandatoryDocumentCategory: any) {
+
+    this.selectionMedium.toggle(mandatoryDocumentCategory);
+
+  }
+  selectedLarge(mandatoryDocumentCategory: any) {
+
+    this.selectionLarge.toggle(mandatoryDocumentCategory);
+
+  }
+  selectedEmergency(mandatoryDocumentCategory: any) {
+
+    this.selectionEmergency.toggle(mandatoryDocumentCategory);
+
+  }
+
+  getAllByMandatoryDocumentCategory(ManDocCat:string) {
+
+
+    this.mandatoryUploadDocsService.GetAllByMandatoryDocumentCategory(ManDocCat).subscribe((data: any) => {
+      debugger;
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          debugger;
+          const tempMandatoryDocList = {} as MandatoryDocumentUploadList;
+          const current = data.dateSet[i];
+          tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
+          tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
+          tempMandatoryDocList.stageID = current.stageID;
+          tempMandatoryDocList.mandatoryDocumentCategory = current.mandatoryDocumentCategory;
+          tempMandatoryDocList.dateCreated = current.dateCreated;
+          switch (tempMandatoryDocList.mandatoryDocumentCategory) {
+            case "Small": {
+              debugger;
+              this.MandatoryDocumentUploadListSmall.push(tempMandatoryDocList);
+              this.MandatoryDocumentUploadListSmallTable?.renderRows();
+              break;
+            }
+            case "Medium": {
+              debugger;
+              this.MandatoryDocumentUploadListMedium.push(tempMandatoryDocList);
+              this.MandatoryDocumentUploadListMediumTable?.renderRows();
+              break;
+            }
+            case "Large": {
+              debugger;
+              this.MandatoryDocumentUploadListLarge.push(tempMandatoryDocList);
+              this.MandatoryDocumentUploadListLargeTable?.renderRows();
+              break;
+            }
+            case "Emergency": {
+              debugger;
+              this.MandatoryDocumentUploadListEmergency.push(tempMandatoryDocList);
+              this.MandatoryDocumentUploadListEmergencyTable?.renderRows();
+              break;
+            }
+            default:
+          }
+        }
+
+
+        this.MandatoryDocumentUploadListSmallTable?.renderRows();
+        this.MandatoryDocumentUploadListMediumTable?.renderRows();
+        this.MandatoryDocumentUploadListLargeTable?.renderRows();
+        this.MandatoryDocumentUploadListEmergencyTable?.renderRows();
+        console.log("Got ALL MANDATORY DOCS", this.MandatoryDocumentUploadList);
+
+        console.log("datadatadatadata", data);
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("response", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  getAllProjectSizeCheckList() {
+    this.ProjectSizeCheckList.splice(0, this.ProjectSizeCheckList.length);
+
+    this.projectSizeCheckListService.getAllProjectSizeCheckList().subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempProjectSizeCheckList = {} as ProjectSizeCheckList;
+          const current = data.dateSet[i];
+          tempProjectSizeCheckList.ProjectSizeCheckListID = current.projectSizeCheckListID;
+          tempProjectSizeCheckList.ProjectSizeCheckListRowNumber = current.projectSizeCheckListRowNumber;
+          tempProjectSizeCheckList.ProjectSizeCheckListActivity = current.projectSizeCheckListActivity;
+          tempProjectSizeCheckList.MandatoryDocumentCategory = current.mandatoryDocumentCategory;
+
+          this.ProjectSizeCheckList.push(tempProjectSizeCheckList);
+          
+        }
+
+
+      }
+      else {
+       
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+
+  updateMandatoryDocumentsLinkedStagesList(list: any[]) {
+    const newList = list.map(current => {
+      const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
+      tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+      tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
+      tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+      tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+      tempMandatoryDocumentsLinkedStagesList.stageName = null;
+      tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+      return tempMandatoryDocumentsLinkedStagesList;
+    });
+
+    this.MandatoryDocumentsLinkedStagesList.next(newList);
+  }
+
+  CheckToPopulateManDoc() {
+    let smallCount = 0;
+    let mediumCount = 0;
+    let largeCount = 0;
+    let emergencyCount = 0;
+
+    for (var i = 0; i < this.ProjectSizeCheckList.length; i++) {
+      const current = this.ProjectSizeCheckList[i];
+      if (this.selectionProjectSizeCheck.isSelected(current)) {
+        if (current.MandatoryDocumentCategory == "Small") {
+          smallCount++;
+        }
+        else if (current.MandatoryDocumentCategory == "Medium") {
+          mediumCount++;
+        }
+        else if (current.MandatoryDocumentCategory == "Large") {
+          largeCount++;
+        }
+        else {
+          emergencyCount++;
+        }
+      }
+      
+    }
+
+    if (smallCount > 0) {
+      if (mediumCount > 0 || largeCount > 0 || emergencyCount > 0) {
+        if (largeCount > 0 || emergencyCount > 0) {
+          if (emergencyCount > 0 ) {
+            this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
+          } else {
+            this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
+          }
+        } else {
+          this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListMedium);
+        }
+      } else {
+        this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListSmall);
+      }
+    } else if (mediumCount > 0 || largeCount > 0 || emergencyCount > 0) {
+      if (largeCount > 0 || emergencyCount > 0) {
+        if (emergencyCount > 0) {
+          this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
+        } else {
+          this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
+        }
+      } else {
+        this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListMedium);
+      }
+    } else if (largeCount > 0 || emergencyCount > 0) {
+      if (emergencyCount > 0) {
+        this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
+      } else {
+        this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
+      }
+    } else {
+      this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
+    }
+
+  }
+
+  //CheckToPopulateManDoc() {
+  //  if (this.selectionSmall.hasValue()) {
+  //    if (this.selectionMedium.hasValue()) {
+  //      if (this.selectionLarge.hasValue()) {
+  //        if (this.selectionEmergency.hasValue()) {
+  //          this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
+  //        } else {
+  //          this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
+  //        }
+  //      } else {
+  //        this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListMedium);
+  //      }
+  //    } else {
+  //      this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListSmall);
+  //    }
+  //  } else if (this.selectionMedium.hasValue()) {
+  //    if (this.selectionLarge.hasValue()) {
+  //      if (this.selectionEmergency.hasValue()) {
+  //        this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
+  //      } else {
+  //        this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
+  //      }
+  //    } else {
+  //      this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListMedium);
+  //    }
+  //  } else if (this.selectionLarge.hasValue()) {
+  //    if (this.selectionEmergency.hasValue()) {
+  //      this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
+  //    } else {
+  //      this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
+  //    }
+  //  } else {
+  //    this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
+  //  }
+  //}
+
+
+  //CheckToPopulateManDoc() {
+  //  if (this.selectionSmall.hasValue()) {
+  //    if (this.selectionMedium.hasValue()) {
+  //      if (this.selectionLarge.hasValue()) {
+  //        if (this.selectionEmergency.hasValue()) {
+  //          for (var i = 0; i < this.MandatoryDocumentUploadListEmergency.length; i++) {
+  //            const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
+  //            const current = this.MandatoryDocumentUploadListEmergency[i];
+  //            tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+  //            tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
+  //            tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+  //            tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+  //            tempMandatoryDocumentsLinkedStagesList.stageName = null;
+  //            tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+
+  //            this.MandatoryDocumentsLinkedStagesList.push(tempMandatoryDocumentsLinkedStagesList);
+  //          }
+
+
+  //        }
+  //        else {
+  //          for (var i = 0; i < this.MandatoryDocumentUploadListLarge.length; i++) {
+  //            const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
+  //            const current = this.MandatoryDocumentUploadListLarge[i];
+  //            tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+  //            tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
+  //            tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+  //            tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+  //            tempMandatoryDocumentsLinkedStagesList.stageName = null;
+  //            tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+
+  //            this.MandatoryDocumentsLinkedStagesList.push(tempMandatoryDocumentsLinkedStagesList);
+  //          }
+
+           
+  //        }
+
+
+  //      }
+  //      else {
+  //        for (var i = 0; i < this.MandatoryDocumentUploadListMedium.length; i++) {
+  //          const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
+  //          const current = this.MandatoryDocumentUploadListMedium[i];
+  //          tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+  //          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
+  //          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+  //          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+  //          tempMandatoryDocumentsLinkedStagesList.stageName = null;
+  //          tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+
+  //          this.MandatoryDocumentsLinkedStagesList.push(tempMandatoryDocumentsLinkedStagesList);
+  //        }
+  //      }
+
+  //    }
+  //    else {
+  //      for (var i = 0; i < this.MandatoryDocumentUploadListSmall.length; i++) {
+  //        const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
+  //        const current = this.MandatoryDocumentUploadListSmall[i];
+  //        tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+  //        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
+  //        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+  //        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+  //        tempMandatoryDocumentsLinkedStagesList.stageName = null;
+  //        tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+
+  //        this.MandatoryDocumentsLinkedStagesList.push(tempMandatoryDocumentsLinkedStagesList);
+  //      }
+  //    }
+
+  //  }
+  //  else if (this.selectionMedium.hasValue()) {
+  //    if (this.selectionLarge.hasValue()) {
+  //      if (this.selectionEmergency.hasValue()) {
+  //        for (var i = 0; i < this.MandatoryDocumentUploadListEmergency.length; i++) {
+  //          const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
+  //          const current = this.MandatoryDocumentUploadListEmergency[i];
+  //          tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+  //          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
+  //          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+  //          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+  //          tempMandatoryDocumentsLinkedStagesList.stageName = null;
+  //          tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+
+  //          this.MandatoryDocumentsLinkedStagesList.push(tempMandatoryDocumentsLinkedStagesList);
+  //        }
+
+
+  //      }
+  //      else {
+  //        for (var i = 0; i < this.MandatoryDocumentUploadListLarge.length; i++) {
+  //          const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
+  //          const current = this.MandatoryDocumentUploadListLarge[i];
+  //          tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+  //          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
+  //          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+  //          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+  //          tempMandatoryDocumentsLinkedStagesList.stageName = null;
+  //          tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+
+  //          this.MandatoryDocumentsLinkedStagesList.push(tempMandatoryDocumentsLinkedStagesList);
+  //        }
+
+
+  //      }
+
+
+  //    }
+  //    else {
+  //      for (var i = 0; i < this.MandatoryDocumentUploadListMedium.length; i++) {
+  //        const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
+  //        const current = this.MandatoryDocumentUploadListMedium[i];
+  //        tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+  //        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
+  //        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+  //        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+  //        tempMandatoryDocumentsLinkedStagesList.stageName = null;
+  //        tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+
+  //        this.MandatoryDocumentsLinkedStagesList.push(tempMandatoryDocumentsLinkedStagesList);
+  //      }
+  //    }
+
+  //  }
+  //  else if (this.selectionLarge.hasValue()) {
+  //    if (this.selectionEmergency.hasValue()) {
+  //      for (var i = 0; i < this.MandatoryDocumentUploadListEmergency.length; i++) {
+  //        const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
+  //        const current = this.MandatoryDocumentUploadListEmergency[i];
+  //        tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+  //        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
+  //        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+  //        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+  //        tempMandatoryDocumentsLinkedStagesList.stageName = null;
+  //        tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+
+  //        this.MandatoryDocumentsLinkedStagesList.push(tempMandatoryDocumentsLinkedStagesList);
+  //      }
+
+
+  //    }
+  //    else {
+  //      for (var i = 0; i < this.MandatoryDocumentUploadListLarge.length; i++) {
+  //        const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
+  //        const current = this.MandatoryDocumentUploadListLarge[i];
+  //        tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+  //        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
+  //        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+  //        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+  //        tempMandatoryDocumentsLinkedStagesList.stageName = null;
+  //        tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+
+  //        this.MandatoryDocumentsLinkedStagesList.push(tempMandatoryDocumentsLinkedStagesList);
+  //      }
+
+
+  //    }
+  //  }
+  //  else {
+  //    //Emergency
+  //    for (var i = 0; i < this.MandatoryDocumentUploadListEmergency.length; i++) {
+  //      const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
+  //      const current = this.MandatoryDocumentUploadListEmergency[i];
+  //      tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+  //      tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
+  //      tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+  //      tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+  //      tempMandatoryDocumentsLinkedStagesList.stageName = null;
+  //      tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+
+  //      this.MandatoryDocumentsLinkedStagesList.push(tempMandatoryDocumentsLinkedStagesList);
+  //    }
+  //  }
+
+  //}
+
+ 
 
 }
 

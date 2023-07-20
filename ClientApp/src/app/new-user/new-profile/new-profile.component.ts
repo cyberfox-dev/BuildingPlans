@@ -207,12 +207,23 @@ export class NewProfileComponent implements OnInit {
     this.checkEmail = this.checke.substring(this.checke.indexOf('@'));
     console.log(this.checkEmail);
     if (this.checkEmail === "@capetown.gov.za") {
-      this.showInternal = true;
+      this.showInternal = true; 
     }
     else {
       this.showExternal = true;
+      if (this.shared.newUserProfileBp != null || this.shared.newUserProfileBp != "" || this.shared.newUserProfileBp != undefined) {
+        this.extApplicantBpNoApplicant = this.shared.newUserProfileBp;
+      }
+      else {
+        this.extApplicantBpNoApplicant = '';
+      }
+
     }
     this.getAllDeps();
+
+
+
+
   }
 
   ngDoCheck() {
@@ -267,7 +278,7 @@ export class NewProfileComponent implements OnInit {
     debugger;
     if (this.showInternal) {
       ///// 
-      
+
       this.subDepartmentsService.getSubDepartmentsByDepartmentID(Number(this.internalApplicantDepartment)).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
@@ -290,19 +301,16 @@ export class NewProfileComponent implements OnInit {
 
 
 
-      /////
-
-
       this.userPofileService.addUpdateUserProfiles(null, this.CurrentUser.appUserId, this.internalApplicantName + " " + this.internalApplicantSurname, this.CurrentUser.email, this.internalApplicantTellNo, this.showInternal, null, null, null, null,/*THE DIRECTORATE IS NOW SENDING THROUGH THE DEPSRTMENT NAME*/ this.internalApplicantDirectorate, Number(this.internalApplicantDepartment), 1, this.internalApplicantBranch, this.internalApplicantCostCenterNo, this.internalApplicantCostCenterOwner, null, this.CurrentUser.appUserId, null, Number(this.selectedZone)).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 
           alert(data.responseMessage);
 
-          
+
           const linkedContractors = this.shared.getContactorData();
           const linkedEngineers = this.shared.getEngineerData();
-         
+
 
           for (let i = 0; i < linkedContractors.length; i++) {
             const linkedContractor = this.shared.getContactorDataByIndex(i);
@@ -311,16 +319,16 @@ export class NewProfileComponent implements OnInit {
               .subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-               
+
                   //alert(data.responseMessage);
                 }
                 else {
                   //alert("Invalid Email or Password");
                   alert(data.responseMessage);
-                  
+
                 }
                 console.log("reponse", data);
-             
+
               }, error => {
                 console.log("Error: ", error);
               })
@@ -333,7 +341,7 @@ export class NewProfileComponent implements OnInit {
               .subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-                
+
                   //alert(data.responseMessage);
                 }
                 else {
@@ -343,7 +351,7 @@ export class NewProfileComponent implements OnInit {
 
                 }
                 console.log("reponse", data);
-           
+
               }, error => {
                 console.log("Error: ", error);
               })
@@ -351,12 +359,12 @@ export class NewProfileComponent implements OnInit {
         }
 
         else {
-          
+
           alert(data.responseMessage);
           localStorage.removeItem('LoggedInUserInfo');
           localStorage.removeItem('userProfile');
           this.router.navigate(["/"]);
-        
+
         }
         console.log("reponse", data);
         localStorage.removeItem('LoggedInUserInfo');
@@ -370,132 +378,95 @@ export class NewProfileComponent implements OnInit {
 
     }
 
-    else if (userID != null || userID != "") {
-      this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
-      this.CurrentUser = JSON.parse(this.stringifiedData);
-
-      this.testBp(BpNo).subscribe(isValid => {
-        if (isValid) {
-          this.userPofileService.addUpdateUserProfiles(0, userID, fullName, email, phoneNumber, false, BpNo, CompanyName, CompanyRegNo, PhyscialAddress, null, null, null, null, null, null, ApplicantIDUpload, this.CurrentUser.appUserId, ApplicantIDNumber, null).subscribe((data: any) => {
-            debugger;
-            if (data.responseCode == 1) {
-
-              alert(data.responseMessage);
 
 
-            }
+    else if (this.showInternal === false) {
 
-            else {
 
-              alert(data.responseMessage);
-            }
-            console.log("reponse", data);
+      this.userPofileService.addUpdateUserProfiles(0, this.CurrentUser.appUserId, this.extApplicantName + " " + this.extApplicantSurname, this.CurrentUser.email, this.extApplicantTellNo, this.showInternal, this.extApplicantBpNoApplicant, this.extApplicantCompanyName, this.extApplicantCompanyRegNo, this.extApplicantPhyscialAddress, null, null, null, null, null, null, this.extApplicantIDUpload, this.CurrentUser.appUserId, this.extApplicantIDNumber, Number(this.selectedZone)).subscribe((data: any) => {
 
-          }, error => {
-            console.log("Error: ", error);
-          })
-        } else {
-          alert("Not a vaild Business Partner Number");
+        if (data.responseCode == 1) {
+
+          alert(data.responseMessage);
+
+
+          const linkedContractors = this.shared.getContactorData();
+          const linkedEngineers = this.shared.getEngineerData();
+
+
+          for (let i = 0; i < linkedContractors.length; i++) {
+            const linkedContractor = this.shared.getContactorDataByIndex(i);
+
+            this.professionalService.addUpdateProfessional(null, linkedContractor.ProfessinalType, linkedContractor.name + " " + linkedContractor.surname, linkedContractor.bpNumber, false, linkedContractor.email, linkedContractor.phoneNumber?.toString(), linkedContractor.professionalRegNo, this.CurrentUser.appUserId, linkedContractor.idNumber, this.CurrentUser.appUserId, linkedContractor.CIBRating)
+              .subscribe((data: any) => {
+
+                if (data.responseCode == 1) {
+
+                  //alert(data.responseMessage);
+                }
+                else {
+                  //alert("Invalid Email or Password");
+                  alert(data.responseMessage);
+
+                }
+                console.log("reponse", data);
+
+              }, error => {
+                console.log("Error: ", error);
+              })
+          }
+
+          for (let i = 0; i < linkedEngineers.length; i++) {
+            const linkedEngineer = this.shared.getEngineerDataByIndex(i);
+
+            this.professionalService.addUpdateProfessional(null, linkedEngineer.ProfessinalType, linkedEngineer.name + " " + linkedEngineer.surname, linkedEngineer.bpNumber, false, linkedEngineer.email, linkedEngineer.phoneNumber?.toString(), linkedEngineer.professionalRegNo, this.CurrentUser.appUserId, linkedEngineer.idNumber, this.CurrentUser.appUserId, linkedEngineer.CIBRating)
+              .subscribe((data: any) => {
+
+                if (data.responseCode == 1) {
+
+                  //alert(data.responseMessage);
+                }
+                else {
+                  //alert("Invalid Email or Password");
+                  alert(data.responseMessage);
+
+                }
+                console.log("reponse", data);
+
+              }, error => {
+                console.log("Error: ", error);
+              })
+          }
         }
-      });
-     
 
+        else {
 
-
-   
-    }
-
-    else {
-
-      this.testBp(BpNo).subscribe(isValid => {
-        if (isValid) {
-          this.userPofileService.addUpdateUserProfiles(0, this.CurrentUser.appUserId, this.extApplicantName + " " + this.extApplicantSurname, this.CurrentUser.email, this.extApplicantTellNo, this.showInternal, this.extApplicantBpNoApplicant, this.extApplicantCompanyName, this.extApplicantCompanyRegNo, this.extApplicantPhyscialAddress, null, null, null, null, null, null, this.extApplicantIDUpload, this.CurrentUser.appUserId, this.extApplicantIDNumber, Number(this.selectedZone)).subscribe((data: any) => {
-
-            if (data.responseCode == 1) {
-
-              alert(data.responseMessage);
-
-
-              const linkedContractors = this.shared.getContactorData();
-              const linkedEngineers = this.shared.getEngineerData();
-
-
-              for (let i = 0; i < linkedContractors.length; i++) {
-                const linkedContractor = this.shared.getContactorDataByIndex(i);
-
-                this.professionalService.addUpdateProfessional(null, linkedContractor.ProfessinalType, linkedContractor.name + " " + linkedContractor.surname, linkedContractor.bpNumber, false, linkedContractor.email, linkedContractor.phoneNumber?.toString(), linkedContractor.professionalRegNo, this.CurrentUser.appUserId, linkedContractor.idNumber, this.CurrentUser.appUserId, linkedContractor.CIBRating)
-                  .subscribe((data: any) => {
-
-                    if (data.responseCode == 1) {
-
-                      //alert(data.responseMessage);
-                    }
-                    else {
-                      //alert("Invalid Email or Password");
-                      alert(data.responseMessage);
-
-                    }
-                    console.log("reponse", data);
-
-                  }, error => {
-                    console.log("Error: ", error);
-                  })
-              }
-
-              for (let i = 0; i < linkedEngineers.length; i++) {
-                const linkedEngineer = this.shared.getEngineerDataByIndex(i);
-
-                this.professionalService.addUpdateProfessional(null, linkedEngineer.ProfessinalType, linkedEngineer.name + " " + linkedEngineer.surname, linkedEngineer.bpNumber, false, linkedEngineer.email, linkedEngineer.phoneNumber?.toString(), linkedEngineer.professionalRegNo, this.CurrentUser.appUserId, linkedEngineer.idNumber, this.CurrentUser.appUserId, linkedEngineer.CIBRating)
-                  .subscribe((data: any) => {
-
-                    if (data.responseCode == 1) {
-
-                      //alert(data.responseMessage);
-                    }
-                    else {
-                      //alert("Invalid Email or Password");
-                      alert(data.responseMessage);
-
-                    }
-                    console.log("reponse", data);
-
-                  }, error => {
-                    console.log("Error: ", error);
-                  })
-              }
-            }
-
-            else {
-
-              alert(data.responseMessage);
-              localStorage.removeItem('LoggedInUserInfo');
-              localStorage.removeItem('userProfile');
-              this.router.navigate(["/"]);
-            }
-            console.log("reponse", data);
-            localStorage.removeItem('LoggedInUserInfo');
-            localStorage.removeItem('userProfile');
-            this.router.navigate(["/"]);
-          }, error => {
-            console.log("Error: ", error);
-          })
-        } else {
-          alert("Not a vaild Business Partner Number");
+          alert(data.responseMessage);
+          localStorage.removeItem('LoggedInUserInfo');
+          localStorage.removeItem('userProfile');
+          this.router.navigate(["/"]);
         }
-      });
-
-    
-
-/*      const linkedEngineers = this.shared.getEngineerData;*/
-
-
-
-
+        console.log("reponse", data);
+        localStorage.removeItem('LoggedInUserInfo');
+        localStorage.removeItem('userProfile');
+        this.router.navigate(["/"]);
+      }, error => {
+        console.log("Error: ", error);
+      })
 
 
 
 
-/*this is some other type of code im not sure*/
+      /*      const linkedEngineers = this.shared.getEngineerData;*/
+
+
+
+
+
+
+
+
+      /*this is some other type of code im not sure*/
       //const newExternalUserProfile = {} as ExternalList;
       //this.extApplicantBpNoApplicant;
       //this.extApplicantCompanyName;
@@ -508,6 +479,34 @@ export class NewProfileComponent implements OnInit {
       //this.extApplicantPhyscialAddress;
       //this.extApplicantIDNumber;
       //this.extApplicantIDUpload;
+    }
+
+    else if (userID != null || userID != "") {
+      this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+      this.CurrentUser = JSON.parse(this.stringifiedData);
+
+      this.userPofileService.addUpdateUserProfiles(0, userID, fullName, email, phoneNumber, false, BpNo, CompanyName, CompanyRegNo, PhyscialAddress, null, null, null, null, null, null, ApplicantIDUpload, this.CurrentUser.appUserId, ApplicantIDNumber, null).subscribe((data: any) => {
+        debugger;
+        if (data.responseCode == 1) {
+
+          alert(data.responseMessage);
+
+
+        }
+
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+
+    else {
+      alert("Error Saving User Profile Infomation");
     }
 
 

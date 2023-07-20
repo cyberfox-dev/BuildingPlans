@@ -13,6 +13,7 @@ export interface MandatoryDocumentUploadList {
   mandatoryDocumentName: string;
   stageID: number;
   dateCreated: any;
+  mandatoryDocumentCategory: string;
 }
 
 export interface StagesList {
@@ -42,7 +43,8 @@ export class MandatoryDocsConfigComponent implements OnInit {
   header: any;
 
   public addManDoc = this.formBuilder.group({
-    newManDocName: ['', Validators.required]
+    newManDocName: ['', Validators.required],
+    mandatoryDocumentCategory: ['', ]
 
   })
 
@@ -53,6 +55,7 @@ export class MandatoryDocsConfigComponent implements OnInit {
   stringifiedData: any;
 
   MandatoryDocumentUploadList: MandatoryDocumentUploadList[] = [];
+
   StagesList: StagesList[] = [];
   MandatoryDocumentsLinkedStagesList: MandatoryDocumentsLinkedStagesList[] = [];
 
@@ -74,6 +77,7 @@ export class MandatoryDocsConfigComponent implements OnInit {
   @ViewChild(MatTable) MandatoryDocumentsLinkedStagesTable: MatTable<MandatoryDocumentsLinkedStagesList> | undefined;
 
   selection = new SelectionModel<StagesList>(true, []);
+ 
 
 
   constructor(private modalService: NgbModal, private mandatoryUploadDocsService: MandatoryDocumentUploadService, private stagesService: StagesService, private formBuilder: FormBuilder, private mandatoryDocumentStageLink: MandatoryDocumentStageLinkService) { }
@@ -85,53 +89,78 @@ export class MandatoryDocsConfigComponent implements OnInit {
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData); this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
+
+  
   }
 
 
 
   displayedColumns: string[] = ['mandatoryDocumentName','dateCreated', 'actions'];
   dataSource = this.MandatoryDocumentUploadList;
+ 
 
   displayedColumnsAddStage: string[] = ['StageName', 'actions'];
   dataSourceAddStage = this.StagesList;
 
   displayedColumnsViewLinkedStages: string[] = ['stageName', 'dateCreated','actions'];
   dataSourceViewLinkedStages = this.MandatoryDocumentsLinkedStagesList;
-  
-
-  getAllMandatoryDocs() {
-
-    this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);
-   
-    this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);
-    this.mandatoryUploadDocsService.getAllMandatoryDocuments().subscribe((data: any) => {
-     
-      if (data.responseCode == 1) {
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempMandatoryDocList = {} as MandatoryDocumentUploadList;
-          const current = data.dateSet[i];
-          tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
-          tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
-          tempMandatoryDocList.stageID = current.stageID;
-          tempMandatoryDocList.dateCreated = current.dateCreated;
-          this.MandatoryDocumentUploadList.push(tempMandatoryDocList);
-        }
-        this.MandatoryDocumentUploadTable?.renderRows();
-        console.log("Got ALL MANDATORY DOCS", this.MandatoryDocumentUploadList);
-
-        console.log("datadatadatadata", data);
-      }
-      else {
-        alert(data.responseMessage);
-
-      }
-      console.log("response", data);
 
 
-    }, error => {
-      console.log("Error: ", error);
-    })
-  }
+
+  //getAllByMandatoryDocumentCategory(ManDocCat:string) {
+
+  // // this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);
+
+  // // this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);
+  //  this.mandatoryUploadDocsService.GetAllByMandatoryDocumentCategory(ManDocCat).subscribe((data: any) => {
+
+  //    if (data.responseCode == 1) {
+  //      for (let i = 0; i < data.dateSet.length; i++) {
+  //        const tempMandatoryDocList = {} as MandatoryDocumentUploadList;
+  //        const current = data.dateSet[i];
+  //        tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
+  //        tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
+  //        tempMandatoryDocList.stageID = current.stageID;
+  //        tempMandatoryDocList.mandatoryDocumentCategory = current.mandatoryDocumentCategory;
+  //        tempMandatoryDocList.dateCreated = current.dateCreated;
+  //        switch (tempMandatoryDocList.mandatoryDocumentCategory) {
+  //          case "Small": {
+  //            this.MandatoryDocumentUploadListSmall.push(tempMandatoryDocList);
+  //            break;
+  //          }
+  //          case "Medium": {
+  //            this.MandatoryDocumentUploadListMedium.push(tempMandatoryDocList);
+  //            break;
+  //          }
+  //          case "Large": {
+  //            this.MandatoryDocumentUploadListLarge.push(tempMandatoryDocList);
+  //            break;
+  //          }
+  //          case "Emergency": {
+  //            this.MandatoryDocumentUploadListEmergency.push(tempMandatoryDocList);
+  //            break;
+  //          }
+  //          default:
+  //        }
+  //      }
+
+      
+  //      this.MandatoryDocumentUploadTable?.renderRows();
+  //      console.log("Got ALL MANDATORY DOCS", this.MandatoryDocumentUploadList);
+
+  //      console.log("datadatadatadata", data);
+  //    }
+  //    else {
+  //      alert(data.responseMessage);
+
+  //    }
+  //    console.log("response", data);
+
+
+  //  }, error => {
+  //    console.log("Error: ", error);
+  //  })
+  //}
 
   getAllLinkedStages(index: any, viewLinkedStages: any) {
 
@@ -170,6 +199,41 @@ export class MandatoryDocsConfigComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
+
+  getAllMandatoryDocs() {
+
+    this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);
+
+    this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);
+    this.mandatoryUploadDocsService.getAllMandatoryDocuments().subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempMandatoryDocList = {} as MandatoryDocumentUploadList;
+          const current = data.dateSet[i];
+          tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
+          tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
+          tempMandatoryDocList.stageID = current.stageID;
+          tempMandatoryDocList.dateCreated = current.dateCreated;
+          this.MandatoryDocumentUploadList.push(tempMandatoryDocList);
+        }
+        this.MandatoryDocumentUploadTable?.renderRows();
+        console.log("Got ALL MANDATORY DOCS", this.MandatoryDocumentUploadList);
+
+        console.log("datadatadatadata", data);
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("response", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
 
   getAllStages() {
 
@@ -213,11 +277,12 @@ export class MandatoryDocsConfigComponent implements OnInit {
 
   
     let newMandatoryDocumentName = this.addManDoc.controls["newManDocName"].value;
+    let mandatoryDocumentCategory = this.addManDoc.controls["mandatoryDocumentCategory"].value;
 
 /*    for (let i = 0; i < this.selection.selected.length; i++) {*/
 /*      const current = this.selection.selected[i];
       console.log("THIS IS THE STAGE ID", current.StageID);*/
-      this.mandatoryUploadDocsService.addUpdateMandatoryDocument(0, newMandatoryDocumentName, this.CurrentUser.appUserId).subscribe((data: any) => {
+    this.mandatoryUploadDocsService.addUpdateMandatoryDocument(0, newMandatoryDocumentName, this.CurrentUser.appUserId, mandatoryDocumentCategory).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 

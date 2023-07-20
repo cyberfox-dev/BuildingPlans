@@ -280,15 +280,16 @@ export class LoginComponent implements OnInit {
     ApplicantIDUpload?: string | null,
     ApplicantIDNumber?: string | null
   ) {
+    let onLoginForm = true;
+
     // If the method is called without parameters, then get the values from the form
-    if (
-      clientFullName === undefined ||
-      clientEmail === undefined ||
-      BpNo === undefined
-    ) {
+    if (clientFullName === undefined || clientEmail === undefined || BpNo === undefined || clientFullName == null || clientEmail == null || BpNo == null || clientFullName == "" || clientEmail == "" || BpNo == "") {
       clientFullName = this.registerForm.controls["fullName"].value;
       clientEmail = this.registerForm.controls["registerEmail"].value;
       BpNo = this.registerForm.controls["bpNumber"].value;
+
+    } else {
+      onLoginForm = false;
     }
 
     this.testBp(BpNo).subscribe(isBpValid => {
@@ -327,21 +328,26 @@ export class LoginComponent implements OnInit {
         // If BP Number is valid, proceed with user registration
         this.userService.register(clientFullName, clientEmail, "Password@" + clientFullName).subscribe((data: any) => {
           if (data.responseCode == 1) {
-            console.log("After Register", data.dateSet);
-            this.newProfileComponent.onNewProfileCreate(
-              data.dateSet.appUserId,
-              clientFullName,
-              clientEmail,
-              phoneNumber,
-              BpNo,
-              CompanyName,
-              CompanyRegNo,
-              PhyscialAddress,
-              ApplicantIDUpload,
-              ApplicantIDNumber
-            );
-
+            if (onLoginForm === false) {
+              this.newProfileComponent.onNewProfileCreate(
+                data.dateSet.appUserId,
+                clientFullName,
+                clientEmail,
+                phoneNumber,
+                BpNo,
+                CompanyName,
+                CompanyRegNo,
+                PhyscialAddress,
+                ApplicantIDUpload,
+                ApplicantIDNumber
+              );
+              this.sharedService.errorForRegister = false;
+            }
+           
             this.sharedService.clientUserID = data.dateSet.appUserId;
+            localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
+            this.sharedService.newUserProfileBp = BpNo;
+            this.router.navigate(["/new-profile"]);
           } else {
             this.sharedService.errorForRegister = true;
             alert(data.responseMessage);

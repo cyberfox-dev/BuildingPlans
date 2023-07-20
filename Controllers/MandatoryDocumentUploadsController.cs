@@ -38,7 +38,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _mandatoryDocumentUploadsService.AddUpdateMandatoryDocument(model.MandatoryDocumentID, model.MandatoryDocumentName, model.CreatedById);
+                    var result = await _mandatoryDocumentUploadsService.AddUpdateMandatoryDocument(model.MandatoryDocumentID, model.MandatoryDocumentName, model.CreatedById,model.MandatoryDocumentCategory);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.MandatoryDocumentID > 0 ? "Mandatory Document Updated Successfully" : "Mandatory Document Added Successfully"), result));
                 }
 
@@ -124,6 +124,33 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+
+        [HttpPost("GetAllByMandatoryDocumentCategory")]
+        public async Task<object> GetAllByMandatoryDocumentCategory([FromBody] MandatoryDocumentUploadsBindingModel model)
+        {
+            try
+            {
+             
+                if (model.MandatoryDocumentCategory == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _mandatoryDocumentUploadsService.GetAllByMandatoryDocumentCategory(model.MandatoryDocumentCategory);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Comments List Created", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
 
     }
 

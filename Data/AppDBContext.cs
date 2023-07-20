@@ -37,6 +37,7 @@ namespace WayleaveManagementSystem.Data
         public DbSet<Comments> Comments { get; set; }
 
         public DbSet<MandatoryDocumentUpload> MandatoryDocumentUploads { get; set; }
+        public DbSet<ProjectSizeCheckList> ProjectSizeCheckList { get; set; }
 
         public DbSet<MandatoryDocumentStageLink> MandatoryDocumentStageLink { get; set; }
         public DbSet<ServiceItems> ServiceItem { get; set; }

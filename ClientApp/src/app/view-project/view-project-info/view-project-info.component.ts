@@ -947,11 +947,13 @@ export class ViewProjectInfoComponent implements OnInit {
     }
   }
 
-
+  
 
 
 
   getAllStages() {
+
+
 
     this.StagesList.splice(0, this.StagesList.length);
 
