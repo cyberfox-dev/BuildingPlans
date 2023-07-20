@@ -318,6 +318,7 @@ export class ActionCenterComponent implements OnInit {
   saveBtn: boolean = true;
   option = '';
   planningWayleave: boolean = false;
+  selectSI = 0;
 
   leaveAComment = "";
   leaveACommentPermit = "";
@@ -343,10 +344,10 @@ export class ActionCenterComponent implements OnInit {
     }
 
     /*  this.getAllServiceItmes();*/
-    this.getAllServiceItmesForDropdown();
+  /*  this.getAllServiceItmesForDropdown();*/
  
       /*  this.getAllServiceItmes();*/
-    this.getServicesByDepID();
+
 
    
     this.CurrentApplication = this.viewProjectInfoComponent.getCurrentApplication();
@@ -398,7 +399,7 @@ export class ActionCenterComponent implements OnInit {
     // }, 1000);
 
     this.getUserRoles();
-
+    this.getServicesByDepID();
   }
 
 
@@ -737,7 +738,7 @@ export class ActionCenterComponent implements OnInit {
 
   uploadFinishedF = (event: any) => {
     const currentApplication = this.sharedService.getViewApplicationIndex();
-    debugger;
+    
     this.response = event;
     console.log("this.response", this.response);
     console.log("this.response?.dbPath", this.response?.dbPath);
@@ -745,7 +746,7 @@ export class ActionCenterComponent implements OnInit {
 
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
     console.log("documentName", documentName);
-    debugger;
+    
     this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, this.CurrentUser.appUserId).subscribe((data: any) => {
       /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
       if (data.responseCode == 1) {
@@ -776,7 +777,7 @@ export class ActionCenterComponent implements OnInit {
         for (var i = 0; i < data.dateSet.length; i++) {
           const tempPTCList = {} as PTCList;
           const current = data.dateSet[i];
-          debugger;
+          
           tempPTCList.PermitSubForCommentID = current.permitSubForCommentID;
           tempPTCList.ApplicationID = current.applicationID;
           tempPTCList.SubDepartmentID = current.subDepartmentID;
@@ -2650,7 +2651,7 @@ getAllCommentsByUserID() {
   //}
 
   onPopulateDeposit(event: any) {
-    let selectedServiceItem = Number(this.depositRequired.controls["selectServiceItemCode"].value);
+    let selectedServiceItem = Number(this.selectSI);
 
     console.log("THIS IS THE SERVICE ITEM CODE", selectedServiceItem);
 
@@ -3026,7 +3027,7 @@ getAllCommentsByUserID() {
 
   MoveToClosedStage(isPlanning: boolean) {
     
-    debugger;
+    
     if (isPlanning === false) {
       this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[this.StagesList.length].StageName, this.StagesList[this.StagesList.length].StageOrderNumber, this.StagesList[this.StagesList.length].StageName, this.StagesList[this.StagesList.length].StageOrderNumber, "Rejected & Closed").subscribe((data: any) => {
 
@@ -3047,9 +3048,9 @@ getAllCommentsByUserID() {
     }
     else {
       this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[5].StageName, this.StagesList[5].StageOrderNumber, this.StagesList[5].StageName, this.StagesList[5].StageOrderNumber, "Closed",null).subscribe((data: any) => {
-        debugger;
+        
         if (data.responseCode == 1) {
-          debugger;
+          
 
           alert("Application Moved To Closed");
           this.modalService.dismissAll();
@@ -3257,7 +3258,7 @@ getAllCommentsByUserID() {
   fName = '';
   loading: boolean = false;
   uploadFile = (files: any) => {
-    debugger;
+    
     if (files.length === 0) {
       return;
     }
@@ -3275,7 +3276,7 @@ getAllCommentsByUserID() {
     this.loading = true;
     this.saveBtn = false;
 
-    debugger;
+    
 
     const formData = new FormData();
     formData.append('file', this.fileToUpload, this.fileUploadName + this.fileExtention);
@@ -3313,7 +3314,7 @@ getAllCommentsByUserID() {
   }
 
   uploadFinished = (event: any) => {
-    debugger;
+    
     this.response = event;
     console.log("this.response", this.response);
     console.log("this.response?.dbPath", this.response?.dbPath);
@@ -3394,9 +3395,9 @@ getAllCommentsByUserID() {
 }
   
   getServicesByDepID() {
+    debugger;
     this.serviceItemService.getServiceItemByDepID(this.loggedInUsersDepartmentID).subscribe((data: any) => {
 
-      const current = data.dateSet[0];
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempServiceItemList = {} as ServiceItemCodeDropdown;

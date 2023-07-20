@@ -982,7 +982,7 @@ export class NewWayleaveComponent implements OnInit {
         this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
           if (data.responseCode == 1) {
 
-            this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, null, this.CurrentUser.appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributed/Unallocated", false, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, isPlanning, null).subscribe((data: any) => {
+            this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, null, this.CurrentUser.appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributed/Unallocated", false, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, isPlanning, null).subscribe((data: any) => {
               if (data.responseCode == 1) {
                 alert("Application Created");
                 if (isPlanning == false) {
@@ -1060,7 +1060,7 @@ export class NewWayleaveComponent implements OnInit {
 
     }
 
-    this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, null, isPlanning, null).subscribe((data: any) => {
+    this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, null, isPlanning, null).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
@@ -1119,7 +1119,7 @@ export class NewWayleaveComponent implements OnInit {
     }
 
 
-    this.applicationsService.addUpdateApplication(this.applicationID, this.CurrentUser.appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, "Phone", this.externalAddress, null, null, this.typeOfApplication, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.externalAddress, appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, null, isPlanning, null).subscribe((data: any) => {
+    this.applicationsService.addUpdateApplication(this.applicationID, this.CurrentUser.appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, "Phone", this.externalAddress, null, null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.externalAddress, appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, null, isPlanning, null).subscribe((data: any) => {
       if (data.responseCode == 1) {
         if (isPlanning == false) {
           this.AddProfessinal(contractorData, engineerData);
@@ -2577,7 +2577,7 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   uploadFinishedF = (event: any) => {
-    debugger;
+    
     this.response = event;
     console.log("this.response", this.response);
     console.log("this.response?.dbPath", this.response?.dbPath);
@@ -2585,7 +2585,7 @@ export class NewWayleaveComponent implements OnInit {
 
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
     console.log("documentName", documentName);
-    debugger;
+    
     this.financialService.addUpdateFinancial(0, documentName, "Wayleave Application Fee Invoice", documentName, this.response?.dbPath, this.applicationID, "System Generated Invoice").subscribe((data: any) => {
       /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
       if (data.responseCode == 1) {
@@ -3299,10 +3299,10 @@ export class NewWayleaveComponent implements OnInit {
 
 
     this.mandatoryUploadDocsService.GetAllByMandatoryDocumentCategory(ManDocCat).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
-          debugger;
+          
           const tempMandatoryDocList = {} as MandatoryDocumentUploadList;
           const current = data.dateSet[i];
           tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
@@ -3312,25 +3312,25 @@ export class NewWayleaveComponent implements OnInit {
           tempMandatoryDocList.dateCreated = current.dateCreated;
           switch (tempMandatoryDocList.mandatoryDocumentCategory) {
             case "Small": {
-              debugger;
+              
               this.MandatoryDocumentUploadListSmall.push(tempMandatoryDocList);
               this.MandatoryDocumentUploadListSmallTable?.renderRows();
               break;
             }
             case "Medium": {
-              debugger;
+              
               this.MandatoryDocumentUploadListMedium.push(tempMandatoryDocList);
               this.MandatoryDocumentUploadListMediumTable?.renderRows();
               break;
             }
             case "Large": {
-              debugger;
+              
               this.MandatoryDocumentUploadListLarge.push(tempMandatoryDocList);
               this.MandatoryDocumentUploadListLargeTable?.renderRows();
               break;
             }
             case "Emergency": {
-              debugger;
+              
               this.MandatoryDocumentUploadListEmergency.push(tempMandatoryDocList);
               this.MandatoryDocumentUploadListEmergencyTable?.renderRows();
               break;
@@ -3406,6 +3406,9 @@ export class NewWayleaveComponent implements OnInit {
     this.MandatoryDocumentsLinkedStagesList.next(newList);
   }
 
+
+  projectSizeAlert = false;
+  ProjectSizeMessage = "";
   CheckToPopulateManDoc() {
     let smallCount = 0;
     let mediumCount = 0;
@@ -3436,33 +3439,53 @@ export class NewWayleaveComponent implements OnInit {
         if (largeCount > 0 || emergencyCount > 0) {
           if (emergencyCount > 0 ) {
             this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
+            this.projectSizeAlert = true;
+            this.ProjectSizeMessage = "Emergency Application";
           } else {
             this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
+            this.projectSizeAlert = true;
+            this.ProjectSizeMessage = "Large Application";
           }
         } else {
           this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListMedium);
+          this.projectSizeAlert = true;
+          this.ProjectSizeMessage = "Medium Application";
         }
       } else {
         this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListSmall);
+        this.projectSizeAlert = true;
+        this.ProjectSizeMessage = "Small Application";
       }
     } else if (mediumCount > 0 || largeCount > 0 || emergencyCount > 0) {
       if (largeCount > 0 || emergencyCount > 0) {
         if (emergencyCount > 0) {
           this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
+          this.projectSizeAlert = true;
+          this.ProjectSizeMessage = "Emergency Application";
         } else {
           this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
+          this.projectSizeAlert = true;
+          this.ProjectSizeMessage = "Large Application";
         }
       } else {
         this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListMedium);
+        this.projectSizeAlert = true;
+        this.ProjectSizeMessage = "Medium Application";
       }
     } else if (largeCount > 0 || emergencyCount > 0) {
       if (emergencyCount > 0) {
         this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
+        this.projectSizeAlert = true;
+        this.ProjectSizeMessage = "Emergency Application";
       } else {
         this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
+        this.projectSizeAlert = true;
+        this.ProjectSizeMessage = "Large Application";
       }
     } else {
       this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
+      this.projectSizeAlert = true;
+      this.ProjectSizeMessage = "Emergency Application";
     }
 
   }
