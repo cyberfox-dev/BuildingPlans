@@ -13,7 +13,9 @@ import { ZoneLinkService } from 'src/app/service/ZoneLink/zone-link.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
 import { ZonesService } from '../../service/Zones/zones.service';
-import { SubDepartmentsService} from 'src/app/service/SubDepartments/sub-departments.service';
+import { SubDepartmentsService } from 'src/app/service/SubDepartments/sub-departments.service';
+import { BusinessPartnerService } from '../../service/BusinessPartner/business-partner.service';
+import { Observable } from 'rxjs';
 
 export interface DepartmentList {
   departmentID: number;
@@ -153,7 +155,8 @@ export class NewProfileComponent implements OnInit {
     private notificationsService:NotificationsService,
     private zoneService: ZonesService,
     private zoneLinkService: ZoneLinkService,
-    private subDepartmentsService: SubDepartmentsService
+    private subDepartmentsService: SubDepartmentsService,
+    private businessPartnerService: BusinessPartnerService,
 
   ) { }
   open(content: any) {
@@ -204,12 +207,23 @@ export class NewProfileComponent implements OnInit {
     this.checkEmail = this.checke.substring(this.checke.indexOf('@'));
     console.log(this.checkEmail);
     if (this.checkEmail === "@capetown.gov.za") {
-      this.showInternal = true;
+      this.showInternal = true; 
     }
     else {
       this.showExternal = true;
+      if (this.shared.newUserProfileBp != null || this.shared.newUserProfileBp != "" || this.shared.newUserProfileBp != undefined) {
+        this.extApplicantBpNoApplicant = this.shared.newUserProfileBp;
+      }
+      else {
+        this.extApplicantBpNoApplicant = '';
+      }
+
     }
     this.getAllDeps();
+
+
+
+
   }
 
   ngDoCheck() {
@@ -236,11 +250,35 @@ export class NewProfileComponent implements OnInit {
       );
   }
 
+
+  testBp(BpNo: any): Observable<boolean> {
+    return new Observable(observer => {
+      this.businessPartnerService.validateBP(Number(BpNo)).subscribe(
+        (response: any) => {
+          debugger;
+          const apiResponse = response.Response;
+          if (apiResponse == "X") {
+            observer.next(true);
+          } else {
+            observer.next(false);
+          }
+          observer.complete();
+        },
+        (error: any) => {
+          // Handle API error
+          console.error('API error:', error);
+          observer.next(false);
+          observer.complete();
+        }
+      );
+    });
+  }
+
   onNewProfileCreate(userID?: string | null, fullName?: string | null, email?: string | null, phoneNumber?: string | null, BpNo?: string | null, CompanyName?: string | null, CompanyRegNo?: string | null, PhyscialAddress?: string | null, ApplicantIDUpload?: string | null, ApplicantIDNumber?: string | null) {
     debugger;
     if (this.showInternal) {
       ///// 
-      
+
       this.subDepartmentsService.getSubDepartmentsByDepartmentID(Number(this.internalApplicantDepartment)).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
@@ -263,19 +301,16 @@ export class NewProfileComponent implements OnInit {
 
 
 
-      /////
-
-
       this.userPofileService.addUpdateUserProfiles(null, this.CurrentUser.appUserId, this.internalApplicantName + " " + this.internalApplicantSurname, this.CurrentUser.email, this.internalApplicantTellNo, this.showInternal, null, null, null, null,/*THE DIRECTORATE IS NOW SENDING THROUGH THE DEPSRTMENT NAME*/ this.internalApplicantDirectorate, Number(this.internalApplicantDepartment), 1, this.internalApplicantBranch, this.internalApplicantCostCenterNo, this.internalApplicantCostCenterOwner, null, this.CurrentUser.appUserId, null, Number(this.selectedZone)).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 
           alert(data.responseMessage);
 
-          
+
           const linkedContractors = this.shared.getContactorData();
           const linkedEngineers = this.shared.getEngineerData();
-         
+
 
           for (let i = 0; i < linkedContractors.length; i++) {
             const linkedContractor = this.shared.getContactorDataByIndex(i);
@@ -284,16 +319,16 @@ export class NewProfileComponent implements OnInit {
               .subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-               
+
                   //alert(data.responseMessage);
                 }
                 else {
                   //alert("Invalid Email or Password");
                   alert(data.responseMessage);
-                  
+
                 }
                 console.log("reponse", data);
-             
+
               }, error => {
                 console.log("Error: ", error);
               })
@@ -306,7 +341,7 @@ export class NewProfileComponent implements OnInit {
               .subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-                
+
                   //alert(data.responseMessage);
                 }
                 else {
@@ -316,7 +351,7 @@ export class NewProfileComponent implements OnInit {
 
                 }
                 console.log("reponse", data);
-           
+
               }, error => {
                 console.log("Error: ", error);
               })
@@ -324,12 +359,12 @@ export class NewProfileComponent implements OnInit {
         }
 
         else {
-          
+
           alert(data.responseMessage);
           localStorage.removeItem('LoggedInUserInfo');
           localStorage.removeItem('userProfile');
           this.router.navigate(["/"]);
-        
+
         }
         console.log("reponse", data);
         localStorage.removeItem('LoggedInUserInfo');
@@ -343,31 +378,10 @@ export class NewProfileComponent implements OnInit {
 
     }
 
-    else if (userID != null || userID != "") {
-      this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
-      this.CurrentUser = JSON.parse(this.stringifiedData);
-      debugger;
-      this.userPofileService.addUpdateUserProfiles(0, userID, fullName, email, phoneNumber, false, BpNo, CompanyName, CompanyRegNo, PhyscialAddress, null, null, null, null, null, null, ApplicantIDUpload, this.CurrentUser.appUserId, ApplicantIDNumber,null).subscribe((data: any) => {
-        debugger;
-        if (data.responseCode == 1) {
 
-          alert(data.responseMessage);
 
-        
-        }
+    else if (this.showInternal === false) {
 
-        else {
-
-          alert(data.responseMessage);
-        }
-        console.log("reponse", data);
-     
-      }, error => {
-        console.log("Error: ", error);
-      })
-    }
-
-    else {
 
       this.userPofileService.addUpdateUserProfiles(0, this.CurrentUser.appUserId, this.extApplicantName + " " + this.extApplicantSurname, this.CurrentUser.email, this.extApplicantTellNo, this.showInternal, this.extApplicantBpNoApplicant, this.extApplicantCompanyName, this.extApplicantCompanyRegNo, this.extApplicantPhyscialAddress, null, null, null, null, null, null, this.extApplicantIDUpload, this.CurrentUser.appUserId, this.extApplicantIDNumber, Number(this.selectedZone)).subscribe((data: any) => {
 
@@ -375,7 +389,7 @@ export class NewProfileComponent implements OnInit {
 
           alert(data.responseMessage);
 
-          
+
           const linkedContractors = this.shared.getContactorData();
           const linkedEngineers = this.shared.getEngineerData();
 
@@ -387,16 +401,16 @@ export class NewProfileComponent implements OnInit {
               .subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-           
+
                   //alert(data.responseMessage);
                 }
                 else {
                   //alert("Invalid Email or Password");
                   alert(data.responseMessage);
-             
+
                 }
                 console.log("reponse", data);
-           
+
               }, error => {
                 console.log("Error: ", error);
               })
@@ -409,16 +423,16 @@ export class NewProfileComponent implements OnInit {
               .subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-             
+
                   //alert(data.responseMessage);
                 }
                 else {
                   //alert("Invalid Email or Password");
                   alert(data.responseMessage);
-            
+
                 }
                 console.log("reponse", data);
-        
+
               }, error => {
                 console.log("Error: ", error);
               })
@@ -440,7 +454,10 @@ export class NewProfileComponent implements OnInit {
         console.log("Error: ", error);
       })
 
-/*      const linkedEngineers = this.shared.getEngineerData;*/
+
+
+
+      /*      const linkedEngineers = this.shared.getEngineerData;*/
 
 
 
@@ -449,7 +466,7 @@ export class NewProfileComponent implements OnInit {
 
 
 
-/*this is some other type of code im not sure*/
+      /*this is some other type of code im not sure*/
       //const newExternalUserProfile = {} as ExternalList;
       //this.extApplicantBpNoApplicant;
       //this.extApplicantCompanyName;
@@ -462,6 +479,34 @@ export class NewProfileComponent implements OnInit {
       //this.extApplicantPhyscialAddress;
       //this.extApplicantIDNumber;
       //this.extApplicantIDUpload;
+    }
+
+    else if (userID != null || userID != "") {
+      this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+      this.CurrentUser = JSON.parse(this.stringifiedData);
+
+      this.userPofileService.addUpdateUserProfiles(0, userID, fullName, email, phoneNumber, false, BpNo, CompanyName, CompanyRegNo, PhyscialAddress, null, null, null, null, null, null, ApplicantIDUpload, this.CurrentUser.appUserId, ApplicantIDNumber, null).subscribe((data: any) => {
+        debugger;
+        if (data.responseCode == 1) {
+
+          alert(data.responseMessage);
+
+
+        }
+
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+
+    else {
+      alert("Error Saving User Profile Infomation");
     }
 
 

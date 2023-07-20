@@ -6,10 +6,12 @@ const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_H
 const PROXY_CONFIG = [
   {
     context: [
-      "/weatherforecast",
-   ],
-    target: target,
+      "/RESTAdapter/WLMS_Q/BPValidation",
+      // Add other API endpoints here as needed
+    ],
+    target: "https://orchestrationhubqa.capetown.gov.za",
     secure: false,
+    changeOrigin: true,
     headers: {
       Connection: 'Keep-Alive'
     }

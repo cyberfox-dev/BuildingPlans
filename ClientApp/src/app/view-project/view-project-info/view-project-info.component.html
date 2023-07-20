@@ -244,26 +244,30 @@
         <table mat-table [dataSource]="dataSourceDoc" class="mat-elevation-z8">
 
 
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef> Name </th>
-      <td mat-cell *matCellDef="let element">  </td>
-    </ng-container>
+          <ng-container matColumnDef="FinancialName">
+            <th mat-header-cell *matHeaderCellDef> Name </th>
+            <td mat-cell *matCellDef="let element"> {{element.FinancialType}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="FinancialDocumentName">
+            <th mat-header-cell *matHeaderCellDef> Document Name </th>
+            <td mat-cell *matCellDef="let element"> {{element.FinancialDocumentName}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let i = index">
+              <button mat-raised-button color="blue" matTooltip="View" (click)="viewDocument(i)"><i class="fa fa-eye"></i></button>
 
 
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef></th>
-      <td mat-cell *matCellDef="let i = index">
-        <button mat-raised-button color="blue" matTooltip="View" (click)="viewPDF()"><i class="fa fa-eye"></i></button>
 
+            </td>
+            <td mat-cell *matCellDef="let element">  </td>
+          </ng-container>
 
-
-      </td>
-      <td mat-cell *matCellDef="let element">  </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
 
         <div class="form-floating mb-3 mt-3" *ngIf="wbsRequired">
           <input type="text" class="form-control" id="wbsNumberRequested" placeholder="WBS Number" [(ngModel)]="wbsNumberRequested" readonly>
@@ -277,6 +281,15 @@
 
 
       </div>
+
+
+
+
+
+
+
+
+
 
     </mat-tab>
 

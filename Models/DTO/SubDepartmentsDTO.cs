@@ -10,9 +10,12 @@
         public string? UserAssaignedToComment { get; set; }
         public int? SubDepartmentForCommentID { get; set; }
         public int? MapLayerID { get; set; }
+        public string? GLCode { get; set; }
+        public string? ProfitCentre { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
         public int? CreatedById { get; set; }
         public bool isActive { get; set; }
+        
     }
 }

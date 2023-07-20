@@ -103,6 +103,7 @@ export class SharedService {
 
   configShow!: any;
   option: string;
+  newUserProfileBp: any;
 
   //this is for if an internal user is applying for a client 
   clientUserID?: string | null;

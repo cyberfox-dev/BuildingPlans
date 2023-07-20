@@ -4,6 +4,7 @@ using System;
 using System.Security.Policy;
 using WayleaveManagementSystem.Data;
 using WayleaveManagementSystem.Data.Entities;
+using WayleaveManagementSystem.DTO;
 using WayleaveManagementSystem.IServices;
 using WayleaveManagementSystem.Models;
 using WayleaveManagementSystem.Models.BindingModel;
@@ -24,8 +25,8 @@ namespace WayleaveManagementSystem.Controllers
         {
             _context = context;
         }
-        [HttpPost("AddUpdateDepositRequired")]
-        public async Task<object> AddUpdateDepositRequired([FromBody] FinancialBindingModel model)
+        [HttpPost("AddUpdateFinancial")]
+        public async Task<object> AddUpdateFinancial([FromBody] FinancialBindingModel model)
         {
             try
             {
@@ -184,31 +185,23 @@ namespace WayleaveManagementSystem.Controllers
 
 
 
-        [HttpPost("GetDepositRequiredByApplicationID")]
-        public async Task<object> GetDepositRequiredByApplicationID([FromBody] int applicationID)
+        [HttpPost("GetFinancialByApplicationID")]
+        public async Task<object> GetFinancialByApplicationID([FromBody] int applicationID)
         {
             try
             {
                 var result = await (
-               from depositRequired in _context.DepositRequired
-               where depositRequired.ApplicationID == applicationID && depositRequired.isActive == true
-               select new DepositRequiredDTO()
+               from financial in _context.Financial
+               where financial.ApplicationID == applicationID && financial.isActive == true
+               select new FinancialDTO()
                {
-                   DepositRequiredID = depositRequired.DepositRequiredID,
-                   SubDepartmentForCommentID = depositRequired.SubDepartmentForCommentID,
-                   Rate = depositRequired.Rate,
-                   Quantity = depositRequired.Quantity,
-                   ApplicationID = depositRequired.ApplicationID,
-                   SubDepartmentID = depositRequired.SubDepartmentID,
-                   Desciption = depositRequired.Desciption,
-                   CreatedById = depositRequired.CreatedById,
-                   DateCreated = depositRequired.DateCreated,
-                   DateUpdated = depositRequired.DateUpdated,
-                   isActive = depositRequired.isActive,
-                   SubDepartmentName = depositRequired.SubDepartmentName,
-                   ServiceItemCode = depositRequired.ServiceItemCode,
-                   WBS = depositRequired.WBS
-
+                   FinancialID = financial.FinancialID,
+                   FinancialName = financial.FinancialName,
+                   FinancialType = financial.FinancialType,
+                   DocumentName = financial.DocumentName,
+                   ApplicationID = financial.ApplicationID,
+                   DocumentLocalPath = financial.DocumentLocalPath,
+                   CreatedById = financial.CreatedById,
                }
                ).ToListAsync();
 
