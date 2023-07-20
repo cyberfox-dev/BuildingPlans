@@ -326,47 +326,49 @@
         <h3><span>Project Details</span></h3>
       </div>
 
-      <button mat-raised-button color="primary" (click)=" openMandatoryDocumentCategory(MandatoryDocumentCategory)">Determine Type of Application</button>
+      <button mat-raised-button color="projectSize" (click)=" openMandatoryDocumentCategory(MandatoryDocumentCategory)">Determine Project Size</button>
+
+      <div class="alert alert-info" role="alert" *ngIf="projectSizeAlert">{{ProjectSizeMessage}}</div>
       <!--Out with the old-->
       <!--<mat-form-field appearance="fill">
-        <mat-label>Select type of application</mat-label>
-        <mat-select [(ngModel)]="typeOfApplication" name="typeOfApplication">
-          <mat-option value="Small">Small</mat-option>
-          <mat-option value="Medium">Medium</mat-option>
-          <mat-option value="Large">Large</mat-option>
-          <mat-option value="Emergency">Emergency</mat-option>
+    <mat-label>Select type of application</mat-label>
+    <mat-select [(ngModel)]="typeOfApplication" name="typeOfApplication">
+      <mat-option value="Small">Small</mat-option>
+      <mat-option value="Medium">Medium</mat-option>
+      <mat-option value="Large">Large</mat-option>
+      <mat-option value="Emergency">Emergency</mat-option>
 
-        </mat-select>
-      </mat-form-field>-->
+    </mat-select>
+  </mat-form-field>-->
       <!--  <button mat-raised-button color="primary" (click)="openTypeOfApplicationModal()">Type Of Application</button>
-      -->
+  -->
 
       <div class="row">
         <!--          <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="notificationNumber" id="NotificationNo" placeholder="Enter Notification Number" name="notificationNo">
-                  <label for="name">Notification Number</label>
-                </div>
-              </div>-->
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="notificationNumber" id="NotificationNo" placeholder="Enter Notification Number" name="notificationNo">
+              <label for="name">Notification Number</label>
+            </div>
+          </div>-->
 
         <div class="col">
           <!--  <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="wbsNumber" id="WBSNo" placeholder="Enter WBS Number" name="wbsNo">
-            <label for="name">WBS Number</label>
-          </div>-->
+        <input type="text" class="form-control" [(ngModel)]="wbsNumber" id="WBSNo" placeholder="Enter WBS Number" name="wbsNo">
+        <label for="name">WBS Number</label>
+      </div>-->
           <!--            <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control" [(ngModel)]="descriptionOfProject" id="Description" placeholder="Enter Description" name="descriptionOfProject">
-                    <label for="name">Description of Proposed Construction Work</label>
-                  </div>-->
+                <input type="text" class="form-control" [(ngModel)]="descriptionOfProject" id="Description" placeholder="Enter Description" name="descriptionOfProject">
+                <label for="name">Description of Proposed Construction Work</label>
+              </div>-->
         </div>
       </div>
       <div class="row">
         <!--          <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="physicalAddressOfProject" id="Address" placeholder="Enter Address" name="physicalAddressOfProject">
-                  <label for="name">Physical Address</label>
-                </div>
-              </div>-->
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="physicalAddressOfProject" id="Address" placeholder="Enter Address" name="physicalAddressOfProject">
+              <label for="name">Physical Address</label>
+            </div>
+          </div>-->
 
         <div class="form-floating mb-3 mt-3">
           <input type="text" class="form-control" [(ngModel)]="natureOfWork" id="Email" placeholder="Enter Email" name="natureOfWork">
@@ -426,12 +428,12 @@
       <!--<app-project-details-map *ngIf="map"></app-project-details-map>-->
       <div *ngIf="map">
         <!--<div class="row">
-        <div class="form-floating mb-3 mt-3">-->
+    <div class="form-floating mb-3 mt-3">-->
         <!--<input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address">-->
         <!--<input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" />
-            <label for="applicantTellNo">Physical Address</label>
-          </div>
-        </div>-->
+        <label for="applicantTellNo">Physical Address</label>
+      </div>
+    </div>-->
         <div class="container-fluid">
           <div class="alert alert-warning">
             <h4>Please draw a polygon around the area of interest, Below you will find buttons relating to their function. Please select draw to begin drawing. Once you are done drawing you may click save to commit this drawing or if you feel that you have made a mistake feel free to retry by clicking edit, and then on save.</h4>

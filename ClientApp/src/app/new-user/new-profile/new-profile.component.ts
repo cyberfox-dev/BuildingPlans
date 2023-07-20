@@ -255,7 +255,7 @@ export class NewProfileComponent implements OnInit {
     return new Observable(observer => {
       this.businessPartnerService.validateBP(Number(BpNo)).subscribe(
         (response: any) => {
-          debugger;
+          
           const apiResponse = response.Response;
           if (apiResponse == "X") {
             observer.next(true);
@@ -486,7 +486,7 @@ export class NewProfileComponent implements OnInit {
       this.CurrentUser = JSON.parse(this.stringifiedData);
 
       this.userPofileService.addUpdateUserProfiles(0, userID, fullName, email, phoneNumber, false, BpNo, CompanyName, CompanyRegNo, PhyscialAddress, null, null, null, null, null, null, ApplicantIDUpload, this.CurrentUser.appUserId, ApplicantIDNumber, null).subscribe((data: any) => {
-        debugger;
+        
         if (data.responseCode == 1) {
 
           alert(data.responseMessage);
