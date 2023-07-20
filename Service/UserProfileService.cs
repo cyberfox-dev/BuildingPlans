@@ -6,6 +6,9 @@ using WayleaveManagementSystem.Data.Entities;
 using WayleaveManagementSystem.Models.DTO;
 using WayleaveManagementSystem.Data;
 using System.Net.NetworkInformation;
+using Microsoft.AspNetCore.Mvc;
+using WayleaveManagementSystem.Models.BindingModel;
+using WayleaveManagementSystem.Models;
 
 namespace WayleaveManagementSystem.Service
 {
@@ -18,7 +21,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string? userID, string? fullName, string? email, string? phoneNumber, bool? isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string? createdById, string? IdNumber,int?zoneID)
+        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string? userID, string? fullName, string? email, string? phoneNumber, bool? isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string? createdById, string? IdNumber, int? zoneID)
         {
             if (userProfileID == 0)
             {
@@ -56,10 +59,10 @@ namespace WayleaveManagementSystem.Service
                     isActive = true,
                     IdNumber = IdNumber,
                     depConfirmation = false,
-                    zoneID=zoneID,
+                    zoneID = zoneID,
 
-      
-                    
+
+
                 };
 
                 //After the inizlization add to the db
@@ -71,7 +74,7 @@ namespace WayleaveManagementSystem.Service
             }
             else //if it is not null then user is doing an update 
             {
-                if(userProfileID != null)
+                if (userProfileID != null)
                 {
                     tempUserProfile.UserProfileID = userProfileID;
                 }
@@ -150,10 +153,10 @@ namespace WayleaveManagementSystem.Service
 
                 //tempUserProfile.DateCreated = DateTime.Now;
                 tempUserProfile.DateUpdated = DateTime.Now;
-               // tempUserProfile.CreatedById = createdById;
+                // tempUserProfile.CreatedById = createdById;
                 tempUserProfile.isActive = true;
                 tempUserProfile.depConfirmation = true;
-              
+
 
                 _context.Update(tempUserProfile);
                 await _context.SaveChangesAsync();
@@ -205,7 +208,7 @@ namespace WayleaveManagementSystem.Service
 
         public async Task<List<UserProfileDTO>> GetUserByUserID(string userId)
         {
-            return await(
+            return await (
                from UserProfile in _context.UserProfilesTable
                where UserProfile.UserID == userId && UserProfile.isActive == true
                select new UserProfileDTO()
@@ -267,7 +270,7 @@ namespace WayleaveManagementSystem.Service
                    DateCreated = UserProfile.DateCreated,
                    DateUpdated = UserProfile.DateUpdated,
                    CreatedById = UserProfile.CreatedById,
-                  // isDepartmentAdmin = UserProfile.isDepartmentAdmin,
+                   // isDepartmentAdmin = UserProfile.isDepartmentAdmin,
                    VatNumber = UserProfile.VatNumber,
                    IdNumber = UserProfile.IdNumber,
 
@@ -307,7 +310,7 @@ namespace WayleaveManagementSystem.Service
                    isDepartmentAdmin = UserProfile.isDepartmentAdmin,
                    VatNumber = UserProfile.VatNumber,
                    IdNumber = UserProfile.IdNumber,
-                  isZoneAdmin = UserProfile.isZoneAdmin,
+                   isZoneAdmin = UserProfile.isZoneAdmin,
 
                }
 
@@ -354,7 +357,7 @@ namespace WayleaveManagementSystem.Service
         {
             return await (
                from UserProfile in _context.UserProfilesTable
-               where UserProfile.isActive == true  && UserProfile.depConfirmation == false && UserProfile.DepartmentID == departmentID
+               where UserProfile.isActive == true && UserProfile.depConfirmation == false && UserProfile.DepartmentID == departmentID
                select new UserProfileDTO()
                {
                    UserProfileID = UserProfile.UserProfileID,
@@ -369,7 +372,7 @@ namespace WayleaveManagementSystem.Service
                    PhyscialAddress = UserProfile.PhyscialAddress,
                    Directorate = UserProfile.Directorate,
                    DepartmentID = UserProfile.DepartmentID,
-                   SubDepartmentID = UserProfile.SubDepartmentID, 
+                   SubDepartmentID = UserProfile.SubDepartmentID,
                    Branch = UserProfile.Branch,
                    CostCenterNumber = UserProfile.CostCenterNumber,
                    CostCenterOwner = UserProfile.CostCenterOwner,
@@ -380,15 +383,76 @@ namespace WayleaveManagementSystem.Service
                    isDepartmentAdmin = UserProfile.isDepartmentAdmin,
                    VatNumber = UserProfile.VatNumber,
                    IdNumber = UserProfile.IdNumber,
-                   depConfirmation= UserProfile.depConfirmation,
+                   depConfirmation = UserProfile.depConfirmation,
                    zoneID = UserProfile.zoneID
                }
 
                ).ToListAsync();
         }
 
+        public async Task<object> GetUserAndZoneBasedOnRoleName([FromBody] AccessGroupsBindingModel model)
+        {
+            try
+            {
+                var result = await (
+                    from accessGroups in _context.AccessGroups
+                    join accessGroupUserLink in _context.AccessGroupUserLink on accessGroups.AccessGroupID equals accessGroupUserLink.AccessGroupID into agul
+                    from agulItem in agul.DefaultIfEmpty()
+                    join userProfiles in _context.UserProfilesTable on agulItem.UserID equals userProfiles.UserID into up
+                    from upItem in up.DefaultIfEmpty()
+                    join zoneLinkTable in _context.ZoneLinkTable on upItem.UserID equals zoneLinkTable.AssignedUserID into zlt
+                    from zltItem in zlt.DefaultIfEmpty()
+                    join zonesTable in _context.ZonesTable on zltItem.ZoneID equals zonesTable.ZoneID into zt
+                    from ztItem in zt.DefaultIfEmpty()
+                    join subDepartmentTable in _context.SubDepartmentsTable on ztItem.SubDepartmentID equals subDepartmentTable.SubDepartmentID into sdt
+                    from sdtItem in sdt.DefaultIfEmpty()
+                    where accessGroups.AccessGroupName == model.AccessGroupName && upItem.SubDepartmentID == model.SubDepartmentID
+                    select new UserProfileDTO()
+                    {
+                        UserID = upItem.UserID,
+                        FullName = upItem.FullName,
+                        Email = upItem.Email,
+                        PhoneNumber = upItem.PhoneNumber,
+                        Directorate = upItem.Directorate,
+                        ZoneName = ztItem.ZoneName,
+                        MapObjectID = ztItem.MapObjectID,
+                        SubDepartmentID = ztItem.SubDepartmentID,
+                        zoneID = ztItem.ZoneID,
+                        SubDepartmentName = sdtItem.SubDepartmentName,
+                        // SubDepartmentID = upItem.SubDepartmentID,
+                    }
+                ).ToListAsync();
 
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Users that are linked", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+
+        public async Task<List<UserProfileDTO>> GetUsersBySubDepartmentName(string SubDepartmentName)
+        {
+            return await (
+
+                                    from SubDepartments in _context.SubDepartmentsTable
+                                    join UserProfile in _context.UserProfilesTable on SubDepartments.SubDepartmentID equals UserProfile.SubDepartmentID into newtable
+                                    from newtableItem in newtable.DefaultIfEmpty()
+                                    where SubDepartments.SubDepartmentName == SubDepartmentName && SubDepartments.isActive == true
+                                    select new UserProfileDTO()
+                                    {
+                                        UserID = newtableItem.UserID,
+                                        FullName = newtableItem.FullName,
+                                        Email = newtableItem.Email,
+                                        PhoneNumber = newtableItem.PhoneNumber,
+                                        Directorate = newtableItem.Directorate,
+                                        SubDepartmentID = newtableItem.SubDepartmentID,
+                                        SubDepartmentName = SubDepartments.SubDepartmentName,
+                                    }
+                ).ToListAsync();
+        }
 
     }
-    
+
 }

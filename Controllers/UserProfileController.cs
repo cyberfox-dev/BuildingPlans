@@ -231,5 +231,34 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+
+        [HttpPost("GetUsersBySubDepartmentName")]
+        public async Task<object> GetUsersBySubDepartmentName([FromBody] AccessGroupsBindingModel model)
+        {
+            try
+            {
+
+                if (model.SubDepartmentName.Length < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _userProfileService.GetUsersBySubDepartmentName(model.SubDepartmentName);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "UserProfile List fetched", result));
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+
     }
 }

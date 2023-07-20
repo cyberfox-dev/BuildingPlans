@@ -98,7 +98,15 @@ export class UserProfileService {
 
   }
 
-  
+  public getUsersBySubDepartmentName(subDepartmentName: string) {
+
+    const body = {
+      SubDepartmentName: subDepartmentName,
+    }
+
+    return this.httpClient.post(this.baseURL + "GetUsersBySubDepartmentName", body);
+
+  } 
 
 
 }
