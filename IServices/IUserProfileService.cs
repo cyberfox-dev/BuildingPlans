@@ -22,7 +22,7 @@ namespace WayleaveManagementSystem.IServices
 
         Task<List<UserProfileDTO>> GetAllUsersToLinkToDep(int depID);
 
-
+        Task<List<UserProfileDTO>> GetUsersBySubDepartmentName(string subDepartmentName);
 
     }
 }

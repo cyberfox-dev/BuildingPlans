@@ -891,7 +891,7 @@ export class NewWayleaveComponent implements OnInit {
               this.onCreateNotification();
               this.router.navigate(["/home"]);
               this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + "<br><br><p>Your application (" + this.applicationID + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Thank you</p>");
-/*              this.addToSubDepartmentForComment();*/
+
               this.addToZoneForComment();
 
               console.log("responseAddapplication", data);
@@ -959,19 +959,22 @@ export class NewWayleaveComponent implements OnInit {
           this.AddProfessinal(contractorData, engineerData);
         }
         this.UploadDocuments(data.dateSet);
-       // this.onAutoLinkDepartment();
+        // this.onAutoLinkDepartment();
         this.shared.setApplicationID(0);
         this.shared.clearContractorData();
         this.shared.clearEngineerData();
         alert("Client Application Created");
-        this.addToSubDepartmentForComment();
+
         this.addToZoneForComment();
       }
       else {
         alert("Failed To Create Application");
       }
       this.onCreateNotification();
+      //Sends notification to applying user.
       this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + "<br><br><p>Your application (" + this.applicationID + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Thank you</p>");
+      //Sends emails to the entire EMB department, as per process flow.
+      this.sendEmailToDepartment("EMB");
       this.router.navigate(["/home"]);
       console.log("responseAddapplication", data);
     }, error => {
@@ -1015,12 +1018,12 @@ export class NewWayleaveComponent implements OnInit {
           this.AddProfessinal(contractorData, engineerData);
         }
         this.UploadDocuments(data.dateSet);
-       // this.onAutoLinkDepartment();
+        // this.onAutoLinkDepartment();
         this.shared.setApplicationID(0);
         this.shared.clearContractorData();
         this.shared.clearEngineerData();
         alert("Application Created");
-        this.addToSubDepartmentForComment();
+
         this.addToZoneForComment();
       }
       else {
@@ -2542,6 +2545,7 @@ export class NewWayleaveComponent implements OnInit {
 
   }
 
+  //This function is defunct because the subdepartment table is used for assigning users. Even subepartments without subzones, have at least 1 zone, usually representing the entire city.
   public addToSubDepartmentForComment() {
     const tempList = this.shared.distributionList;
 
@@ -2586,6 +2590,30 @@ export class NewWayleaveComponent implements OnInit {
     });
   }
 
+  public sendEmailToDepartment(subDepartmentName: string) {
+
+
+    this.userPofileService.getUsersBySubDepartmentName(subDepartmentName).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        data.forEach((obj) => {
+          this.notificationsService.sendEmail(obj.email, "New wayleave application submission", "check html", "Dear " + subDepartmentName + "User" + "<br><br><p>An application with ID " + this.applicationID + " for wayleave has just been captured.<br><br>Thank you</p>");
+          
+      })
+
+        alert(data.responseMessage);
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+      console.log("response", data);
+    }, error => {
+      console.log("Error", error);
+    });
+  }
 }
 
 
