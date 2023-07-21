@@ -49,12 +49,6 @@
               </div>
             </div>
           </div>
-          <!-- <div class="col">
-      <div class="form-floating mb-3 mt-3">
-        <input type="text" class="form-control" id="description" name="description" [(ngModel)]="description" placeholder="Description">
-        <label for="description">Description</label>
-      </div>
-    </div>-->
         </div>
 
 
@@ -71,6 +65,13 @@
           <mat-form-field class="example-full-width">
             <mat-label>Description</mat-label>
             <textarea matInput [(ngModel)]="description" id="description" name="description"></textarea>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field class="example-full-width">
+            <mat-label>Remarks</mat-label>
+            <textarea matInput [(ngModel)]="remarks" id="remarks" name="remarks"></textarea>
           </mat-form-field>
         </div>
 
@@ -92,8 +93,8 @@
         </div>
         <button mat-raised-button (click)="hasVat()" color="blue" *ngIf="addVatOption">Vat Applicable</button>
         <button mat-raised-button (click)="hasNoVat()" color="warn" *ngIf="removeVatOption">Not Vat Applicable</button>
-      
-   
+
+
         <div class="row" *ngIf="hasVatt">
           <div class="col">
             <div class="form-floating mb-3 mt-3">

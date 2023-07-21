@@ -2935,7 +2935,7 @@ export class ViewProjectInfoComponent implements OnInit {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDocList = {} as FinancialDocumentsList;
           const current = data.dateSet[i];
-          debugger;
+          
           tempDocList.FinancialID = current.financialID;
           tempDocList.ApplicationID = current.applicationID;
           tempDocList.CreatedById = current.createdById;
@@ -2951,7 +2951,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
         }
-        debugger;
+        
 
         this.FinancialListTable?.renderRows();
         console.log("FinancialListTablethis.FinancialDocumentsListthis.FinancialDocumentsListthis.FinancialDocumentsListthis.FinancialDocumentsListthis.FinancialDocumentsListthis.FinancialDocumentsList", this.FinancialDocumentsList);

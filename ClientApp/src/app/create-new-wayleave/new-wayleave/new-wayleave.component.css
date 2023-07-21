@@ -15,6 +15,13 @@
 .mat-radio-container {
   transform: scale(2.85);
 }
+
+.mat-projectSize {
+  background-color: #005870;
+  margin-top:10px;
+  margin-bottom:10px;
+  color:white;
+}
 /*.mat-form-field
 {
     min-width: 300px;

@@ -15,7 +15,10 @@ namespace WayleaveManagementSystem.Data.Entities
         public int? DepartmentID { get; set; }
         public bool? isSetForAutomaticDistribution { get; set; }
         public int? MapLayerID { get; set; }
-        public string? GlCode { get; set; }
+
+        public string? GLCode { get; set; }
         public string? ProfitCenter { get; set; }
+
+
     }
 }

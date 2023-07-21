@@ -186,7 +186,7 @@ export class LoginComponent implements OnInit {
     return new Observable(observer => {
       this.businessPartnerService.validateBP(Number(BpNo)).subscribe(
         (response: any) => {
-          debugger;
+          
           const apiResponse = response.Response;
           if (apiResponse == "X") {
             observer.next(true);

@@ -61,6 +61,9 @@ namespace WayleaveManagementSystem.Controllers
                             isActive = true,
                             SubDepartmentName = model.SubDepartmentName,
                             ServiceItemCode = model.ServiceItemCode,
+                            ServiceItemCodeID = model.ServiceItemCodeID,
+                            TotalAmount = model.TotalAmount,
+                            Remarks = model.Remarks,
                             WBS = model.WBS
                         };
 
@@ -149,6 +152,9 @@ namespace WayleaveManagementSystem.Controllers
                     isActive = depositRequired.isActive,
                     SubDepartmentName = depositRequired.SubDepartmentName,
                     ServiceItemCode = depositRequired.ServiceItemCode,
+                    TotalAmount = depositRequired.TotalAmount,
+                    ServiceItemCodeID = depositRequired.ServiceItemCodeID,  
+                    Remarks = depositRequired.Remarks,
                     WBS = depositRequired.WBS
 
 
@@ -196,7 +202,7 @@ namespace WayleaveManagementSystem.Controllers
                    DateUpdated = depositRequired.DateUpdated,
                    isActive = depositRequired.isActive,
                    SubDepartmentName = depositRequired.SubDepartmentName,
-                   ServiceItemCode = depositRequired.ServiceItemCode,
+                   /*ServiceItemCode = depositRequired.ServiceItemCode,*/
                    WBS = depositRequired.WBS
 
                }

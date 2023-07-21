@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WayleaveManagementSystem.Data;
 
@@ -11,9 +12,10 @@ using WayleaveManagementSystem.Data;
 namespace WayleaveManagementSystem.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230721063927_depositRequired")]
+    partial class depositRequired
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -616,16 +618,13 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("Desciption")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("Quantity")
-                        .HasColumnType("float");
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int");
 
-                    b.Property<double?>("Rate")
-                        .HasColumnType("float");
+                    b.Property<int?>("Rate")
+                        .HasColumnType("int");
 
                     b.Property<string>("Remarks")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ServiceItemCode")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ServiceItemCodeID")
@@ -640,8 +639,8 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("SubDepartmentName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("TotalAmount")
-                        .HasColumnType("float");
+                    b.Property<int?>("TotalAmount")
+                        .HasColumnType("int");
 
                     b.Property<string>("WBS")
                         .HasColumnType("nvarchar(max)");
@@ -1237,14 +1236,12 @@ namespace WayleaveManagementSystem.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("GlCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("MapLayerID")
                         .HasColumnType("int");
 
                     b.Property<string>("ProfitCenter")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SubDepartmentAdminUserID")

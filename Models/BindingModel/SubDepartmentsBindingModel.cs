@@ -9,9 +9,9 @@
         public int? DepartmentID { get; set; }
 
         public string? SubDepartmentAdminUserID { get; set; }
-        public string? GLCode { get; set; }
-        public string? ProfitCentre { get; set; }
+        public string? GlCode { get; set; }
+        public string? ProfitCenter { get; set; }
         public string? CreatedById { get; set; }
-        public bool isActive { get; set; }
+        public bool? isActive { get; set; }
     }
 }

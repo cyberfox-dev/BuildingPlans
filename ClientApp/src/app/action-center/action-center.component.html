@@ -85,7 +85,7 @@
 
 
       <!--this is for the deposit required  (click)="saveDeposit(deposit)"-->
-      <mat-checkbox class="example-margin" [(ngModel)]="checked" (click)="depositReqModal(deposit)" >Deposit Required</mat-checkbox>
+      <mat-checkbox class="example-margin" [(ngModel)]="checked" (click)="depositReqModal(deposit)">Deposit Required</mat-checkbox>
     </div>
 
 
@@ -129,21 +129,29 @@
   </div>
   <div class="modal-body">
     <form [formGroup]="depositRequired">
+
       <div class="row">
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <select class="form-select" aria-label="Default select example" formControlName="selectServiceItemCode" (change)="onPopulateDeposit($event)">
-              <option selected value="0">Select Service Item Code</option>
-              <option *ngFor="let serviceItemCode of ServiceItemCodeDropdown" value="{{serviceItemCode.serviceItemID}}">{{serviceItemCode.serviceItemCode}}</option>
-            </select>
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" formControlName="description" placeholder="Description">
-            <label for="description">Description</label>
-          </div>
-        </div>
+        <mat-form-field>
+          <mat-label>Select A Service Item</mat-label>
+          <mat-select [(value)]="selectSI" (selectionChange)="onPopulateDeposit()">
+            <mat-option *ngFor="let serviceItemCode of ServiceItemCodeDropdown" value="{{serviceItemCode.serviceItemID}}">{{serviceItemCode.serviceItemCode}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+
+      <div class="row">
+        <mat-form-field class="example-full-width">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" readonly></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="row">
+        <mat-form-field class="example-full-width">
+          <mat-label>Remarks</mat-label>
+          <textarea matInput formControlName="remarks"></textarea>
+        </mat-form-field>
       </div>
       <div class="row">
         <div class="col">
@@ -167,14 +175,21 @@
           <input type="text" class="form-control" formControlName="total" placeholder="Enter Total" readonly>
           <label for="total">Total exc. Vat</label>
         </div>
-
+        <div class="form-floating mb-3 mt-3" hidden>
+          <input type="text" class="form-control" formControlName="vatApplicable" placeholder="Enter Total" hidden>
+          <label for="total">VatApplicable</label>
+        </div>
+        <div class="alert alert-info" role="alert" *ngIf="totalCheck">Your Total Is : R{{totalAmount}}</div>
+        <div class="alert alert-info" role="alert" *ngIf="totalCheckVat">Your Total Is : R{{totalAmount}}, Vat incl.</div>
       </div>
+
+      <button mat-raised-button color="save" (click)="calculateTotalAmount()">Calculate Total</button>
     </form>
   </div>
 
   <div class="cont4">
     <button mat-raised-button color="warn" (click)="uncheck();modal.dismiss('Cross click')">Cancel</button>
-    <button mat-raised-button color="save" (click)="check();modal.close('Save click')">Save</button>
+    <button mat-raised-button color="save" (click)="onDepositRequiredClick();modal.close('Save click')">Save</button>
 
   </div>
 

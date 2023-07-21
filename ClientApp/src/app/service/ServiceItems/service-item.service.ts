@@ -14,7 +14,7 @@ export class ServiceItemService {
 
 
 
-  public addUpdateServiceItem(ServiceItemID: number | null, ServiceItemCode: string | null, Description: string | null, Rate: number | null, totalVat: number | null, createdById: string, category: string | null, vatApplicable: boolean | null, subDepID: number | null) {
+  public addUpdateServiceItem(ServiceItemID: number | null, ServiceItemCode: string | null, Description: string | null, Rate: number | null, totalVat: number | null, createdById: string, category: string | null, vatApplicable: boolean | null, subDepID: number | null, remarks:string|null) {
 
     const body = {
       ServiceItemID: ServiceItemID,
@@ -26,6 +26,7 @@ export class ServiceItemService {
       SubDepartmentID: subDepID,
       VatApplicable: vatApplicable,
       Category: category,
+      Remarks: remarks,
     }
     return this.httpClient.post(this.baseURL + "AddUpdateServiceItemCode", body);
 
