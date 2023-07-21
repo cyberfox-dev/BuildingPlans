@@ -3094,11 +3094,11 @@ export class NewWayleaveComponent implements OnInit {
       this.zoneForCommentService.addUpdateZoneForComment(0, obj.subDepartmentID, this.applicationID, obj.zoneID, obj.zoneName, obj.userID).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
-          alert(data.responseMessage);
+/*          alert(data.responseMessage);*/
 
         }
         else {
-          alert(data.responseMessage);
+/*          alert(data.responseMessage);*/
         }
 
         console.log("response", data);
