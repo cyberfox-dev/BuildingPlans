@@ -42,6 +42,7 @@ import { BehaviorSubject } from 'rxjs';
 
 
 
+
 /*import { format } from 'path/win32';*/
 
 
@@ -156,6 +157,21 @@ export interface ARCGISAPIData {
   isActive: string;
   applicationID: number;
 }
+
+export interface SubDepartmentList {
+  subDepartmentID: number;
+  subDepartmentName: string;
+  departmentID: number;
+  dateUpdated: any;
+  dateCreated: any;
+  subdepartmentForCommentID: number | null;
+  UserAssaignedToComment: string | null;
+  commentStatus: string | null;
+  GLCode: string | null;
+  ProfitCenter: string | null;
+}
+
+
 
 const ELEMENT_DATA: PeriodicElement[] = [
   { fileType: "Cover letter explaning the extent of the work" },
@@ -347,6 +363,10 @@ export class NewWayleaveComponent implements OnInit {
   selectionMedium = new SelectionModel<MandatoryDocumentsLinkedStagesList>(true, []);
   selectionLarge = new SelectionModel<MandatoryDocumentsLinkedStagesList>(true, []);
   selectionEmergency = new SelectionModel<MandatoryDocumentsLinkedStagesList>(true, []);
+
+
+
+  SubDepartmentList: SubDepartmentList[] = [];
 
   professionalList: any[];
 
@@ -585,6 +605,7 @@ export class NewWayleaveComponent implements OnInit {
     }
 
     this.reciveOption();
+    this.getAllSubDepartments();
     this.getServiceItem("001");
     this.getServiceItem("002");
     this.getServiceItem("003");
@@ -598,6 +619,8 @@ export class NewWayleaveComponent implements OnInit {
     this.getAllByMandatoryDocumentCategory("Medium");
     this.getAllByMandatoryDocumentCategory("Large");
     this.getAllByMandatoryDocumentCategory("Emergency");
+
+   
   }
 
 
@@ -1964,6 +1987,57 @@ export class NewWayleaveComponent implements OnInit {
 
   }
 
+
+  getAllSubDepartments() {
+    this.subDepartmentsService.getSubDepartmentsList().subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          debugger;
+          const tempSubDepartmentLinkedList = {} as SubDepartmentList;
+          const current = data.dateSet[i];
+
+          tempSubDepartmentLinkedList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentLinkedList.UserAssaignedToComment = current.userAssaignedToComment;
+          tempSubDepartmentLinkedList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentLinkedList.departmentID = current.departmentID;
+          tempSubDepartmentLinkedList.dateUpdated = current.dateUpdated;
+          tempSubDepartmentLinkedList.dateCreated = current.dateCreated;
+          tempSubDepartmentLinkedList.subdepartmentForCommentID = current.subDepartmentForCommentID;
+          tempSubDepartmentLinkedList.GLCode = current.glCode;
+          tempSubDepartmentLinkedList.ProfitCenter = current.profitCenter;
+
+
+          this.SubDepartmentList.push(tempSubDepartmentLinkedList);
+       
+        }
+
+    
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+  
+
+      }
+      console.log("reponseGetAllLinkedSubDepartmentsForComment", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  getSubByName(subDepName: string) {
+    for (let i = 0; i < this.SubDepartmentList.length; i++) {
+      if (this.SubDepartmentList[i].subDepartmentName === subDepName) {
+        return this.SubDepartmentList[i];
+      }
+    }
+    return null;  // or you might want to throw an error
+  }
+
+
   generateInvoice(ClientName: string) {
     if (!this.internal) {
       // Create a new PDF
@@ -2030,6 +2104,7 @@ export class NewWayleaveComponent implements OnInit {
 
       // Save the PDF as a blob object and push it for temporary upload
       this.saveAndUploadPDF(doc);
+      this.generateInvoiceSplit(ClientName, payableByDate,);
 
       // Navigate to home page
       this.router.navigate(["/home"]);
@@ -2123,8 +2198,8 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   addAccountDetails(doc, payableByDate, startY) {
-    const boxContent = 'Profit Centre: P19070051'
-      + '\nGL Acc: 845180'
+    const boxContent = 'Profit Centre: ' + this.getSubByName("EMB").ProfitCenter
+      + '\nGL Acc: ' + this.getSubByName("EMB").GLCode
       + '\nPayable by: ' + payableByDate.toISOString().slice(0, 10); // Format date as YYYY-MM-DD
 
     autoTable(doc, {
@@ -2181,6 +2256,126 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
+  addServiceItemsAndCostDetailsSJ(doc, startY) {
+    // Generate table body based on ServiceItemList data and calculate the total cost
+    let totalCost = 0;
+    let tableBody = this.ServiceItemList.map(item => {
+      const amount = item.Rate + ".00"; // Assuming amount equals rate for each item
+      totalCost += parseFloat(amount);
+
+      let profitCenter = '';
+      let glCode = '';
+      if (item.Description === 'RIM Admin Fee') {
+        profitCenter = this.getSubByName("Roads & Infrastructure Management").ProfitCenter;
+        glCode = this.getSubByName("Roads & Infrastructure Management").GLCode;
+      } else if (item.Description === 'Water & Sanitation Admin Fee') {
+        profitCenter = this.getSubByName("Waste Water and Treatment").ProfitCenter;
+        glCode = this.getSubByName("Waste Water and Treatment").GLCode;
+      } else {
+        profitCenter = this.getSubByName("EMB").ProfitCenter;
+        glCode = this.getSubByName("EMB").GLCode;
+      }
+
+      return ['1', item.Description, amount, amount, profitCenter, glCode];
+    });
+
+    // Calculate the VAT and total amount due
+    const vat = totalCost * 0.15;
+    const totalAmountDue = totalCost + vat;
+
+    // Add cost details directly to the table body
+    tableBody.push(
+      ['Amount Due', '', '', totalCost.toFixed(2), '', ''],
+      ['VAT (15%)', '', '', vat.toFixed(2), '', ''],
+      ['Total Amount Due', '', '', totalAmountDue.toFixed(2), '', '']
+    );
+
+    // Add the combined table to the document
+    autoTable(doc, {
+      head: [['Quantity', 'Description', 'Unit', 'Amount', 'Profit Center', 'GL Code']],
+      body: tableBody,
+      theme: 'grid',
+      styles: { cellPadding: 1, lineWidth: 0.1, lineColor: [220, 220, 220], cellWidth: 'wrap', fillColor: [255, 255, 255] }, // setting cell color to white
+      headStyles: { fillColor: [180, 180, 180] }, // setting header color to a darker grey
+      startY: startY,
+      margin: { top: 20 }
+    });
+
+    // Return the new startY value
+    return startY + 40; // decreased from 60 + 20
+  }
+
+  
+
+  generateInvoiceSplit(ClientName: string, payableByDate: string) {
+    if (!this.internal) {
+      // Create a new PDF
+      const doc = new jsPDF();
+
+      // Add company logo
+      const logo = new Image();
+      logo.src = 'assets/cctlogoblack.png';
+      doc.addImage(logo, 'png', 10, 10, 60, 20);
+
+      // Add invoice title
+      this.addInvoiceTitle(doc);
+
+      // Add client details
+      this.addClientDetails(doc, ClientName);
+
+      // Add company contact details
+      this.addCompanyDetails(doc);
+
+   
+      // Set the starting Y position for the table
+      let startY = 100;
+
+      // Generate service items table, cost details and calculate total cost
+      startY = this.addServiceItemsAndCostDetailsSJ(doc, startY);
+
+      startY += 8; // adjust this value as needed
+
+      // Add account details
+      startY = this.addAccountDetails(doc, payableByDate, startY);
+
+      // Reduce the gap before the next section
+      startY -= 28; // adjust this value as needed
+
+      // Add payment options and consequences of non-payment
+      startY = this.addPaymentDetails(doc, startY);
+
+      // Increase the gap before the next section
+      startY += 20;
+
+      // Add pay points notice
+      startY = this.addPayPointsNotice(doc, startY);
+
+      startY -= 35; // adjust this value as needed
+
+
+      // Add vendors image
+
+      //  const vendors = new Image();
+      //vendors.src = 'assets/vendors.jpg';
+
+      //const pageWidth = doc.internal.pageSize.getWidth();
+      //const aspectRatio = vendors.width / vendors.height; // assumes vendors Image object contains width and height properties
+      //const imgHeightOnPage = pageWidth / aspectRatio;
+
+      //doc.addImage(vendors, 'JPEG', 0, startY + 40, pageWidth, imgHeightOnPage);
+
+
+      const vendors = new Image();
+      vendors.src = 'assets/vendors.jpg';
+      doc.addImage(vendors, 'JPEG', 15, startY + 25, 180, 20);
+
+      // Save the PDF as a blob object and push it for temporary upload
+      this.saveAndUploadPDF(doc);
+
+      // Navigate to home page
+      this.router.navigate(["/home"]);
+    }
+  }
 
   //generateInvoice(ClientName: string) {
   //  if (!this.internal) {
