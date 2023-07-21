@@ -385,12 +385,12 @@
         <div class="typeOfExcavation">
 
           <div class="card">
-            <h3><span>Type of excavation</span></h3>
+            <h3><span>Type Of Excavation</span></h3>
           </div>
           <div class="container-fluid">
 
             <mat-form-field>
-              <mat-label>Types of excavation</mat-label>
+              <mat-label>Types Of Excavation</mat-label>
               <mat-select [(ngModel)]="TOENAMES" multiple>
                 <mat-option *ngFor="let TOE of TypeOfExcavationList" [value]="TOE.typeOfExcavationName">{{TOE.typeOfExcavationName}}</mat-option>
               </mat-select>
@@ -468,7 +468,7 @@
 
     <mat-step>
       <form>
-        <ng-template matStepLabel>document uploads</ng-template>
+        <ng-template matStepLabel>Document Uploads</ng-template>
       </form>
       <mat-list *ngFor="let manDoc of MandatoryDocumentsLinkedStagesList | async; let i=index" [attr.data-index]="i">
         <mat-list-item> {{manDoc.mandatoryDocumentName}}</mat-list-item>

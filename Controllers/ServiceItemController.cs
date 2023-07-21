@@ -58,6 +58,7 @@ namespace WayleaveManagementSystem.Controllers
                             Category = model.Category,
                             DepartmentID = model.DepartmentID,
                             VatApplicable = model.VatApplicable, 
+                            Remarks = model.Remarks,
                         };
 
                         await _context.ServiceItem.AddAsync(tempServiceItemTable);
@@ -145,22 +146,15 @@ namespace WayleaveManagementSystem.Controllers
                     DepartmentID = serviceItem.DepartmentID,
                     VatApplicable = serviceItem.VatApplicable,
                     Category = serviceItem.Category,
+                    Remarks = serviceItem.Remarks,
                 }
                 ).ToListAsync();
 
-
-
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Service Items", result));
-
-
-
             }
             catch (Exception ex)
             {
-
-
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
-
             }
         }
 
@@ -188,6 +182,7 @@ namespace WayleaveManagementSystem.Controllers
                    DepartmentID = serviceItem.DepartmentID,
                    VatApplicable = serviceItem.VatApplicable,
                    Category = serviceItem.Category,
+                   Remarks = serviceItem.Remarks,
                }
                ).ToListAsync();
 
@@ -225,6 +220,7 @@ namespace WayleaveManagementSystem.Controllers
                    DateCreated = serviceItem.DateCreated,
                    DateUpdated = serviceItem.DateUpdated,
                    isActive = serviceItem.isActive,
+                   Remarks = serviceItem.Remarks,
 
                }
                ).ToListAsync();
@@ -264,6 +260,7 @@ namespace WayleaveManagementSystem.Controllers
                    DepartmentID = serviceItem.DepartmentID,
                    VatApplicable = serviceItem.VatApplicable,
                    Category = serviceItem.Category,
+                   Remarks = serviceItem.Remarks,
                }
                ).ToListAsync();
 

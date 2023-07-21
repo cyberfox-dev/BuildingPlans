@@ -17,6 +17,7 @@ export interface ServiceItemList {
   Rate: any;
   totalVat: number;
   dateCreated: any;
+  remarks: string;
 }
 
 export interface DepartmentList {
@@ -45,6 +46,7 @@ export class ServiceItemsConfigComponent implements OnInit {
   serviceItemCodeNameV = '';
   descriptionV = '';
   rateV = '';
+  remarks = '';
   categoryV = '';
   totalV = '';
   subDep = 0;
@@ -121,7 +123,8 @@ export class ServiceItemsConfigComponent implements OnInit {
   }
   
   onServiceItemCreate() {
-    this.serviceItemService.addUpdateServiceItem(0, this.serviceItemCodeName, this.description, Number(this.rate), Number(this.total), this.CurrentUser.appUserId, this.category, this.hasVatt, this.selectDep).subscribe((data: any) => {
+    debugger;
+    this.serviceItemService.addUpdateServiceItem(0, this.serviceItemCodeName, this.description, Number(this.rate), Number(this.total), this.CurrentUser.appUserId, this.category, this.hasVatt, this.selectDep, this.remarks).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         alert(data.responseMessage);
@@ -134,7 +137,7 @@ export class ServiceItemsConfigComponent implements OnInit {
           tempServiceItemList.Description = current.Description;
           tempServiceItemList.Rate = current.Rate;
           tempServiceItemList.totalVat = current.TotalVat;
-
+          tempServiceItemList.remarks = current.Remarks;
           this.ServiceItemList.push(tempServiceItemList);
         
         

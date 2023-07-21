@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WayleaveManagementSystem.Data;
 
@@ -11,9 +12,10 @@ using WayleaveManagementSystem.Data;
 namespace WayleaveManagementSystem.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230721045024_serviceItemTableUpdateAddRemarks")]
+    partial class serviceItemTableUpdateAddRemarks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -622,14 +624,8 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<int?>("Rate")
                         .HasColumnType("int");
 
-                    b.Property<string>("Remarks")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ServiceItemCode")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ServiceItemCodeID")
-                        .HasColumnType("int");
 
                     b.Property<int?>("SubDepartmentForCommentID")
                         .HasColumnType("int");
@@ -639,9 +635,6 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.Property<string>("SubDepartmentName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("TotalAmount")
-                        .HasColumnType("int");
 
                     b.Property<string>("WBS")
                         .HasColumnType("nvarchar(max)");

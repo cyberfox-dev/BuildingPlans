@@ -12,11 +12,16 @@
         public string? SubDepartmentName { get; set; }
      
 
-        public int? Rate { get; set; }
+        public double? Rate { get; set; }
 
-        public int? Quantity { get; set; }
+        public double? Quantity { get; set; }
 
         public string? CreatedById { get; set; }
+
+        public double? TotalAmount { get; set; }
+
+        public string? Remarks { get; set; }
+        public int? ServiceItemCodeID { get; set; }
 
         //WBS 
 

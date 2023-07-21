@@ -13,8 +13,7 @@ namespace WayleaveManagementSystem.Data.Entities
         public int? DepartmentID { get; set; }
         public string? Category { get; set; }
         public bool? VatApplicable { get; set; }
-
-
+        public string? Remarks { get; set; }
 
     }
 }

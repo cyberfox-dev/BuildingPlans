@@ -53,6 +53,7 @@ export interface ServiceItemList {
   Rate: any;
   totalVat: number;
   dateCreated: any;
+  vatApplicable: boolean;
 }
 
 export interface StagesList {
@@ -195,7 +196,8 @@ export class ActionCenterComponent implements OnInit {
     rate: ['', Validators.required],
     quantity: ['', Validators.required],
     total: ['', Validators.required],
-
+    remarks: ['', Validators.required],
+    vatApplicable: ['', Validators.required],
 
   })
 
@@ -1765,27 +1767,64 @@ export class ActionCenterComponent implements OnInit {
 
 
   //}
+  totalAmount = 0;
+  rate: number;
+  description: string;
+  quantity: number;
+  totalCheckVat: boolean = false;
+  totalCheck: boolean = false;
+  remarks = '';
+  vatApp = '';
+  calculateTotalAmount() {
+    debugger;
+    let rateVat = this.depositRequired.controls["total"].value;
+    this.vatApp = this.depositRequired.controls["vatApplicable"].value;
+     this.rate = Number(this.depositRequired.controls["rate"].value);
+    this.description = this.depositRequired.controls["description"].value;
+    this.quantity = Number(this.depositRequired.controls["quantity"].value);
+    if (this.vatApp == "true") {
+      this.totalAmount = this.quantity * Number(rateVat);
+      this.totalCheckVat = true;
+      console.log(this.totalAmount);
+    }
+    else {
+      this.totalAmount = Number(this.rate) * Number(this.quantity);
+      console.log(this.totalAmount);
+      this.totalCheck = true;
+    }
 
+  }
 
   onDepositRequiredClick() {
+    debugger;
     let SubDepartmentName = "";
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
         SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
       }
     }
-    let serviceItemCode = this.depositRequired.controls["selectServiceItemCode"].value;
-    let rate = this.depositRequired.controls["rate"].value;
-    let description = this.depositRequired.controls["description"].value;
-    let quantity = this.depositRequired.controls["quantity"].value;
+    let serviceItemCode = this.selectSI;
+    this.rate = Number(this.depositRequired.controls["rate"].value);
+    this.description = this.depositRequired.controls["description"].value;
+    this.quantity = Number(this.depositRequired.controls["quantity"].value);
+   this.remarks = this.depositRequired.controls["remarks"].value;
+    let rateVat = this.depositRequired.controls["total"].value;
+   let vatApp = this.depositRequired.controls["vatApplicable"].value
     //let total = this.depositRequired.controls["total"].value;
 
+    if (vatApp === "True") {
+      this.totalAmount = this.quantity * Number(rateVat);
+    }
+    else {
+      this.totalAmount = Number(this.rate) * Number(this.quantity);
+    }
 
-    this.depositRequiredService.addUpdateDepositRequired(0 , this.forManuallyAssignSubForCommentID, Number(rate), this.ApplicationID, description, this.loggedInUsersSubDepartmentID, Number(quantity), this.CurrentUser.appUserId, SubDepartmentName, serviceItemCode).subscribe((data: any) => {
+
+    this.depositRequiredService.addUpdateDepositRequired(0, this.forManuallyAssignSubForCommentID, this.rate, this.ApplicationID, this.description, this.loggedInUsersSubDepartmentID, this.quantity, this.CurrentUser.appUserId, SubDepartmentName, null, null, this.totalAmount, this.remarks, this.selectSI).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
-        alert(data.responseMessage);
+        alert("Deposit Required");
         this.hopperButton = false;
       }
       else {
@@ -1797,6 +1836,8 @@ export class ActionCenterComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
+    console.log(this.selectSI);
+    alert(this.selectSI);
 
   }
 
@@ -2650,7 +2691,7 @@ getAllCommentsByUserID() {
 
   //}
 
-  onPopulateDeposit(event: any) {
+  onPopulateDeposit() {
     let selectedServiceItem = Number(this.selectSI);
 
     console.log("THIS IS THE SERVICE ITEM CODE", selectedServiceItem);
@@ -2663,11 +2704,11 @@ getAllCommentsByUserID() {
           const current = data.dateSet[i];
           tempServiceItemList.serviceItemID = current.serviceItemID;
           tempServiceItemList.serviceItemCode = current.serviceItemCode;
-
+          this.depositRequired.controls["vatApplicable"].setValue(current.vatApplicable);
           this.depositRequired.controls["description"].setValue(current.description);
           this.depositRequired.controls["rate"].setValue(current.rate);
           this.depositRequired.controls["total"].setValue(current.totalVat);
-
+          this.depositRequired.controls["remarks"].setValue(current.remarks);
         }
       }
       else {
@@ -3395,7 +3436,7 @@ getAllCommentsByUserID() {
 }
   
   getServicesByDepID() {
-    debugger;
+
     this.serviceItemService.getServiceItemByDepID(this.loggedInUsersDepartmentID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
