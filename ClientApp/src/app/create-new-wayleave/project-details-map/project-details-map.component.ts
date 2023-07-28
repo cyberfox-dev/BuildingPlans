@@ -765,7 +765,7 @@ export class ProjectDetailsMapComponent implements OnInit {
       });
 
       featureLayer.on("edits", async (event) => {
-        //Clears the disribution list. This should be moved to when the application is successfully captured and on "Create new wayleave".
+        //Clears the distribution list. This should be moved to when the application is successfully captured and on "Create new wayleave".
         this.sharedService.distributionList.splice(0, this.sharedService.distributionList.length);
         console.log("This is the subdepatmentlist", this.sharedService.subDepartmentList);
 
@@ -818,7 +818,7 @@ export class ProjectDetailsMapComponent implements OnInit {
 
           //}
 
-            //Get list of managers by zone
+            //Get list of managers by zone. Managers are Depatment Admins, 'Department Admins' includes both Zone and Subdepartment admins.
             this.actionCenterComponent.getUserBySubDepartmentAndRoleName(SubDepartmentID, "Department Admin").subscribe((data: any) => {
               if (data.responseCode == 1) {
                 const zoneAdminUsers = data.dateSet;
