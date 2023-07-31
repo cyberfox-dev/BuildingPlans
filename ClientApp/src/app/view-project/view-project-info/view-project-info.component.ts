@@ -40,7 +40,7 @@ export interface MFTList {
   DocumentLocalPath: string;
   DateCreated: Date;
   ApplicationNumber: number;
-
+  FullName: string;
 }
 
 export interface SubDepartmentList {
@@ -3003,7 +3003,7 @@ export class ViewProjectInfoComponent implements OnInit {
           tempMFTList.DocumentName = current.documentName;
           tempMFTList.DocumentLocalPath = current.documentLocalPath;
           tempMFTList.ApplicationNumber = current.applicationID;
-
+          tempMFTList.FullName = current.fullName;
        
           console.log("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT", current);
           console.log("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT", this.MFTList);
@@ -3062,11 +3062,11 @@ export class ViewProjectInfoComponent implements OnInit {
 
   
     const filesForUpload = this.sharedService.pullFilesForUpload();
-    debugger;
+    
 
     if (filesForUpload.length === 0) {
 
-      this.MFTService.addUpdateMFT(0, this.mftNote, this.ApplicationID, null, null, this.CurrentUser.appUserId).subscribe((data: any) => {
+      this.MFTService.addUpdateMFT(0, this.mftNote, this.ApplicationID, null, null, this.CurrentUser.appUserId, this.CurrentUser.fullName).subscribe((data: any) => {
         /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
         if (data.responseCode == 1) {
           alert(data.responseMessage);
@@ -3119,7 +3119,7 @@ export class ViewProjectInfoComponent implements OnInit {
   const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
   console.log("documentName", documentName);
 
-    this.MFTService.addUpdateMFT(0, this.mftNote, this.ApplicationID, documentName, this.response?.dbPath,this.CurrentUser.appUserId).subscribe((data: any) => {
+    this.MFTService.addUpdateMFT(0, this.mftNote, this.ApplicationID, documentName, this.response?.dbPath, this.CurrentUser.appUserId, this.CurrentUser.fullName).subscribe((data: any) => {
     /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
       if (data.responseCode == 1) {
         alert(data.responseMessage);
@@ -3133,13 +3133,13 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   viewImage(index: any) {
-
+    
     // Make an HTTP GET request to fetch the document
     fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.MFTList[index].DocumentName}`)
       .then(response => {
         if (response.ok) {
           // The response status is in the 200 range
-
+          
           return response.blob(); // Extract the response body as a Blob
 
         } else {
@@ -3147,11 +3147,12 @@ export class ViewProjectInfoComponent implements OnInit {
         }
       })
       .then(blob => {
+        
         // Create a URL for the Blob object
         const documentURL = URL.createObjectURL(blob);
 
         window.open(documentURL, '_blank');
-
+        
 
       })
       .catch(error => {
@@ -3160,5 +3161,5 @@ export class ViewProjectInfoComponent implements OnInit {
       });
 
   }
-
+  
 }

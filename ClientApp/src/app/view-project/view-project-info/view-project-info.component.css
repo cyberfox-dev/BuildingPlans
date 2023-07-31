@@ -49,7 +49,7 @@ img {
 .card {
   background-color: white;
   border-radius: 0.25rem;
-  box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);
+  box-shadow: -1px 4px 20px 0px rgb(0 0 0 / 0%);
   display: flex;
   flex-direction: row;
   overflow: hidden;
@@ -58,9 +58,8 @@ img {
 
 .card_content {
   padding: 1rem;
-  background: #a4b8bb;
+  background: #ffffff;
   width: 100%;
-
 }
 
 .card_title {
@@ -74,13 +73,13 @@ img {
 
 .card_text {
   color: #323a40;
-  font-size: 17px;
-  line-height: 1.5;
-  margin-bottom: 1.25rem;
-  font-weight: 400;
+
 }
-.cont89{
-    display:flex;
+.cont89 {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
 }
 /*//////////////////*/
 .cont1 {

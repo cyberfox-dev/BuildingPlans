@@ -14,7 +14,7 @@ export class MobileFieldTrackingService {
 
 
 
-  public addUpdateMFT(mftID: number | null, mftNote: string | null, applicationID: number | null, documentName: string | null, documentLocalPath: string | null, createdBy: string | null) {
+  public addUpdateMFT(mftID: number | null, mftNote: string | null, applicationID: number | null, documentName: string | null, documentLocalPath: string | null, createdBy: string | null, fullName: string | null) {
     const body = {
       MFTID: mftID,
       ApplicationID: applicationID,
@@ -22,6 +22,7 @@ export class MobileFieldTrackingService {
       DocumentName: documentName,
       DocumentLocalPath: documentLocalPath,
       CreatedById: createdBy,
+      FullName: fullName,
     }
     return this.httpClient.post(this.baseURL + "AddUpdateMFT", body);
   }

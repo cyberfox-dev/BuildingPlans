@@ -10,7 +10,7 @@
 
         public string? CreatedById { get; set; }
 
-
+        public string? FullName { get; set; }
 
     }
 }

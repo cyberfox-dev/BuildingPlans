@@ -30,6 +30,7 @@ export class FileUploadComponent implements OnInit {
   constructor(private http: HttpClient, private shared: SharedService) { }
 
   ngOnInit(): void {
+    
   }
  
   uploadFile = (files: any) => {

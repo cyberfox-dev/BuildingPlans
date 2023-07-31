@@ -56,6 +56,7 @@ namespace WayleaveManagementSystem.Controllers
                             DateUpdated = DateTime.Now, 
                             DocumentLocalPath = model.DocumentLocalPath,    
                             DocumentName = model.DocumentName,  
+                            FullName = model.FullName,
                             isActive = true
                         };
 
@@ -145,6 +146,7 @@ namespace WayleaveManagementSystem.Controllers
                 CreatedById = mft.CreatedById,  
                 DateCreated = mft.DateCreated,
                 DateUpdated = mft.DateUpdated,
+                FullName = mft.FullName,
                }
                ).ToListAsync();
 

@@ -10,5 +10,7 @@ namespace WayleaveManagementSystem.Data.Entities
         public string? MFTNote { get; set; }
         public string? DocumentName { get; set; }
         public string? DocumentLocalPath { get; set; }
+
+        public string? FullName { get; set; }
     }
 }

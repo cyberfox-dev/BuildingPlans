@@ -1994,7 +1994,7 @@ export class NewWayleaveComponent implements OnInit {
       if (data.responseCode == 1) {
 
         for (let i = 0; i < data.dateSet.length; i++) {
-          debugger;
+          
           const tempSubDepartmentLinkedList = {} as SubDepartmentList;
           const current = data.dateSet[i];
 

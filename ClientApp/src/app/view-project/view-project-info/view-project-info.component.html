@@ -505,10 +505,11 @@
         <li class="cards_item">
         <div class="card">
           <div class="card_content">
+            <p class="card_text">Note Created By : {{mftList.FullName}}</p>
             <p class="card_text">{{mftList.MFTNote}}</p>
             <div class="cont89">
             <p class="card_text">{{mftList.DateCreated}}</p>
-            <button class="btn card_btn" *ngIf="mftList.DocumentName !== null " (click)="viewImage(i)">View Image</button>
+            <button mat-raised-button color="blue" *ngIf="mftList.DocumentName !== null " (click)="viewImage(i)">View Image</button>
               </div>
           </div>
         </div>
