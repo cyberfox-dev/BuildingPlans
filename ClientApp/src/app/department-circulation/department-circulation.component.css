@@ -22,6 +22,30 @@ table {
   color: #68d017;
   font-size: 29px;
 }
+.greenThumbsUpText {
+  color: #68d017;
+  font-size: 13px;
+}
+.blueThumbsUpText {
+  color: #00a4ff;
+  font-size: 13px;
+}
+.redThumbsDownText {
+  color: #d01717;
+  font-size: 13px;
+}
+.yellowTimerText {
+  color: #d0c400bd;
+  font-size: 13px;
+}
+.orangeSpeechText {
+  color: #ff9600;
+  font-size: 13px;
+}
+.contIndication {
+  display: flex;
+  flex-direction: column;
+}
 .blueThumbsUp {
   color: #00a4ff;
   font-size: 29px;

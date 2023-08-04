@@ -36,8 +36,8 @@
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="CIBDrating" [(ngModel)]="CIBRating" placeholder="Enter Rating" name="CIBRating">
-              <label for="CIBDrating">CIDB Rating</label>
+              <input type="text" class="form-control" id="CIBDrating" [(ngModel)]="CIBRating" placeholder="Enter Grading" name="CIBRating">
+              <label for="CIBDrating">CIDB Grading</label>
             </div>
           </div>
         </div>
@@ -121,8 +121,8 @@
 
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="editCIBDrating" [(ngModel)]="editCIBDrating" placeholder="Enter Rating" name="editCIBDrating">
-              <label for="CIBDrating">CIDB Rating</label>
+              <input type="text" class="form-control" id="editCIBDrating" [(ngModel)]="editCIBDrating" placeholder="Enter Grading" name="editCIBDrating">
+              <label for="CIBDrating">CIDB Grading</label>
             </div>
           </div>
         </div>
@@ -199,7 +199,7 @@
 
   <!-- Symbol Column -->
   <ng-container matColumnDef="CIBRating">
-    <th mat-header-cell *matHeaderCellDef>CIDB Rating</th>
+    <th mat-header-cell *matHeaderCellDef>CIDB Grading</th>
     <td mat-cell *matCellDef="let element"> {{element.CIBRating}} </td>
   </ng-container>
 

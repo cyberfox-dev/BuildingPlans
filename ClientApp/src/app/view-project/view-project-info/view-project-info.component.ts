@@ -3161,5 +3161,10 @@ export class ViewProjectInfoComponent implements OnInit {
       });
 
   }
+
+
+  openFAQModal(FAQModal: any) {
+    this.modalService.open(FAQModal, { centered: true, size: 'xl' })
+  }
   
 }

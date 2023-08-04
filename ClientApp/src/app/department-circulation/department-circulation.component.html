@@ -10,12 +10,20 @@
   <ng-container matColumnDef="indication">
     <th mat-header-cell *matHeaderCellDef>Indication</th>
     <td mat-cell *matCellDef="let element">
-      <i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true" *ngIf=" element.commentStatus === FinalApproved"></i>
-      <i class="fa fa-thumbs-up blueThumbsUp" aria-hidden="true" *ngIf="element.commentStatus === ApprovedConditional ||element.commentStatus === Approved"></i>
-      <i class="fa fa-thumbs-down redThumbsDown" aria-hidden="true" *ngIf="element.commentStatus === Rejected"></i>
-      <i class="fa fa-clock-o yellowTimer" aria-hidden="true" *ngIf="element.commentStatus !== FinalApproved && element.commentStatus !== ApprovedConditional && element.commentStatus !== Approved && element.isAwaitingClarity === false && element.IsRefered === false && element.commentStatus !== Rejected || element.commentStatus === Null"></i>
-      <i class="fa fa-commenting-o orangeSpeech" aria-hidden="true" *ngIf="element.isAwaitingClarity"></i>
-      <i class="fa fa-retweet blueRefer" aria-hidden="true" *ngIf="element.IsRefered"></i>
+      <div class="contIndication">
+        <i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true" *ngIf=" element.commentStatus === FinalApproved"></i>
+        <i class="fa fa-thumbs-up blueThumbsUp" aria-hidden="true" *ngIf="element.commentStatus === ApprovedConditional ||element.commentStatus === Approved"></i>
+        <i class="fa fa-thumbs-down redThumbsDown" aria-hidden="true" *ngIf="element.commentStatus === Rejected"></i>
+        <i class="fa fa-clock-o yellowTimer" aria-hidden="true" *ngIf="element.commentStatus !== FinalApproved && element.commentStatus !== ApprovedConditional && element.commentStatus !== Approved && element.isAwaitingClarity === false && element.IsRefered === false && element.commentStatus !== Rejected || element.commentStatus === Null"></i>
+        <i class="fa fa-commenting-o orangeSpeech" aria-hidden="true" *ngIf="element.isAwaitingClarity"></i>
+        <i class="fa fa-retweet blueRefer" aria-hidden="true" *ngIf="element.IsRefered"></i>
+        <p class="greenThumbsUpText" *ngIf=" element.commentStatus === FinalApproved" >Final Approved</p>
+        <p class="blueThumbsUpText" *ngIf="element.commentStatus === ApprovedConditional ||element.commentStatus === Approved" >Prov. Approved</p>
+        <p class="redThumbsDownText" *ngIf="element.commentStatus === Rejected">Rejected</p>
+        <p class="yellowTimerText" *ngIf="element.commentStatus !== FinalApproved && element.commentStatus !== ApprovedConditional && element.commentStatus !== Approved && element.isAwaitingClarity === false && element.IsRefered === false && element.commentStatus !== Rejected || element.commentStatus === Null" >Waiting</p>
+        <p class="orangeSpeechText" *ngIf="element.isAwaitingClarity" >Awaiting Clarity</p>
+        <p class="blueReferText" *ngIf="element.IsRefered" >Refered</p>
+      </div>
     </td>
   </ng-container>
 
