@@ -8,7 +8,8 @@ import { NotificationsService } from "src/app/service/Notifications/notification
 import { NewProfileComponent } from 'src/app/new-user/new-profile/new-profile.component';
 import { HomeComponent } from 'src/app/home/home.component';
 import { BusinessPartnerService } from 'src/app/service/BusinessPartner/business-partner.service';
-import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 
 
 @Component({
@@ -135,51 +136,107 @@ export class LoginComponent implements OnInit {
     }, this.expirationTime * 1000);
   }
 
-  onLogin() {
-    this.isLoading = true;
-    let email = this.loginForm.controls["email"].value;
-    let password = this.loginForm.controls["password"].value;
+  getUserProfile(): Observable<any> {
+    const currentUser = JSON.parse(localStorage.getItem("LoggedInUserInfo"));
+    return this.userPofileService.getUserProfileById(currentUser.appUserId);
+  }
 
-    this.userService.login(email, password).subscribe(
-      (data: any) => {
+  onLogin() {
+    debugger;
+    this.isLoading = true;
+    const email = this.loginForm.controls["email"].value;
+    const password = this.loginForm.controls["password"].value;
+
+    this.userService.login(email, password).pipe(
+      switchMap((data: any) => {
         if (data.responseCode === 1) {
           localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
-          this.getUserProfile();
-
-          this.isLoading = false;
+          return this.getUserProfile();
+        } else {
+          // Throw error if login failed
+          throw new Error(data.responseMessage);
+        }
+      }),
+      switchMap((profileData: any) => {
+        debugger;
+        localStorage.setItem("userProfile", JSON.stringify(profileData.dateSet));
+        const isInternal = profileData.dateSet[0].isInternal; // assuming isInternal is part of the dateSet at index 0
+        const bpNo = profileData.dateSet[0].bP_Number;  // assuming bpNumber is part of the dateSet at index 0
+        debugger;
+        // Only test the bpNumber if isInternal is false
+        if (!isInternal) {
+          debugger;
+          return this.testBp(bpNo);
+        } else {
+          // If isInternal is true, return an Observable of true to proceed with login
+          return of(true);
+        }
+      })
+    ).subscribe(
+      (isValidBp: boolean) => {
+        this.isLoading = false;
+        if (isValidBp) {
+          debugger;
           this.router.navigate(["/home"]);
         } else {
-          this.isLoading = false;
-
-          this.error = "" + data.responseMessage;
-
+          this.error = "Invalid Business Partner (BP) Number! Please contact CCT eServices for more information.";
         }
       },
       (error) => {
         console.log("Error: ", error);
+        this.isLoading = false;
+        this.error = error.message;
       }
     );
-
   }
 
 
 
-  getUserProfile() {
-    let stringifiedData = JSON.parse(
-      JSON.stringify(localStorage.getItem("LoggedInUserInfo"))
-    );
-    let currentUser = JSON.parse(stringifiedData);
-    this.userPofileService
-      .getUserProfileById(currentUser.appUserId)
-      .subscribe(
-        (data: any) => {
-          localStorage.setItem("userProfile", JSON.stringify(data.dateSet));
-        },
-        (error) => {
-          console.log("Error: ", error);
-        }
-      );
-  }
+  //onLogin() {
+  //  this.isLoading = true;
+  //  let email = this.loginForm.controls["email"].value;
+  //  let password = this.loginForm.controls["password"].value;
+
+  //  this.userService.login(email, password).subscribe(
+  //    (data: any) => {
+  //      if (data.responseCode === 1) {
+  //        localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
+  //        this.getUserProfile();
+
+  //        this.isLoading = false;
+  //        this.router.navigate(["/home"]);
+  //      } else {
+  //        this.isLoading = false;
+
+  //        this.error = "" + data.responseMessage;
+
+  //      }
+  //    },
+  //    (error) => {
+  //      console.log("Error: ", error);
+  //    }
+  //  );
+
+  //}
+
+
+
+  //getUserProfile() {
+  //  let stringifiedData = JSON.parse(
+  //    JSON.stringify(localStorage.getItem("LoggedInUserInfo"))
+  //  );
+  //  let currentUser = JSON.parse(stringifiedData);
+  //  this.userPofileService
+  //    .getUserProfileById(currentUser.appUserId)
+  //    .subscribe(
+  //      (data: any) => {
+  //        localStorage.setItem("userProfile", JSON.stringify(data.dateSet));
+  //      },
+  //      (error) => {
+  //        console.log("Error: ", error);
+  //      }
+  //    );
+  //}
 
 
   testBp(BpNo: any): Observable<boolean> {

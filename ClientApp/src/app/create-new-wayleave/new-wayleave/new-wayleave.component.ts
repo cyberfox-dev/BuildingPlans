@@ -421,7 +421,7 @@ export class NewWayleaveComponent implements OnInit {
   dataSourceEngineers = this.EngineerList;
   dataSourceContractors = this.ContractorList;
 
-  ProjectSizeCheckListColumns: string[] = ['ProjectSizeCheckListRowNumber', 'ProjectSizeCheckListActivity', 'actions'];
+  ProjectSizeCheckListColumns: string[] = ['ProjectSizeCheckListActivity', 'actions'];
   dataSourceProjectSizeCheckList = this.ProjectSizeCheckList;
   //displayedColumnsMedium: string[] = ['mandatoryDocumentName', 'actions'];
   //dataSourceMedium = this.MandatoryDocumentUploadListMedium;
@@ -467,6 +467,7 @@ export class NewWayleaveComponent implements OnInit {
   configMonthYear: any;
   accountNumber: any;
   generatedInvoiceNumber: string;
+    totalDocs: number;
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -3222,13 +3223,16 @@ export class NewWayleaveComponent implements OnInit {
           tempProjectSizeCheckList.MandatoryDocumentCategory = current.mandatoryDocumentCategory;
 
           this.ProjectSizeCheckList.push(tempProjectSizeCheckList);
-          
+
         }
 
-
+        for (let i = this.ProjectSizeCheckList.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [this.ProjectSizeCheckList[i], this.ProjectSizeCheckList[j]] = [this.ProjectSizeCheckList[j], this.ProjectSizeCheckList[i]];
+        }
       }
       else {
-       
+
         alert(data.responseMessage);
       }
       console.log("reponse", data);
@@ -3237,7 +3241,6 @@ export class NewWayleaveComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
-
 
   updateMandatoryDocumentsLinkedStagesList(list: any[]) {
     const newList = list.map(current => {
@@ -3252,6 +3255,8 @@ export class NewWayleaveComponent implements OnInit {
     });
 
     this.MandatoryDocumentsLinkedStagesList.next(newList);
+    // set totalDocs to the length of the list
+    this.totalDocs = newList.length;
   }
 
   public sendEmailToDepartment(subDepartmentName: string) {
