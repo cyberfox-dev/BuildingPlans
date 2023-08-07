@@ -683,3 +683,24 @@ h4 {
   display: flex;
 }
 
+/*FAQ*/
+/*::ng-deep .mat-expansion-panel-body {
+  padding: 30px;
+  height: 100%;
+  background-color: moccasin;
+}*/
+
+.mat-expansion-panel-header {
+  padding: 20px;
+  height: 100%;
+  margin: 10px;
+  font-weight: bold;
+}
+.mat-expansion-panel {
+  margin: 30px;
+  height: 100%;
+}
+
+
+
+

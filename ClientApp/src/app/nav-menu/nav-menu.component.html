@@ -14,11 +14,12 @@
   </div>
 
   <div class="nav-links" *ngIf="Icons">
+    <button mat-button matTooltip="Frequently Asked Questions" (click)="openFAQModal(FAQModal)"><i class="fa fa-question" aria-hidden="true"></i></button>
     <button mat-button matTooltip="Cyberfox configs" (click)="goToCyberfoxCofig()" *ngIf="cyberfoxConfigs"><i class="fa fa-superpowers"></i></button>
     <button mat-button matTooltip="Repository" (click)="openRepositoryModal(repositoryModal)"><i class="fa fa-files-o" aria-hidden="true"></i></button>
     <button mat-button matTooltip="Comment Builder" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><i class="fa fa-comment"></i></button>
     <button mat-button matTooltip="Configurations" (click)="goToConfig()" *ngIf="Configurations"><i class="fa fa-cogs"></i></button>
-    <button mat-button matTooltip="Notifications" (click)="getAllNotifications();openNotificationsModal(notificationsCenter)"><i class="fa fa-bell"></i> <span *ngIf="notiBell" class="indicator"></span></button>
+    <button mat-button matTooltip="Notifications" (click)="getAllNotifications();openNotificationsModal(notificationsCenter)"><i class="fa fa-bell"></i></button>
     <button mat-button [matMenuTriggerFor]="user"><img src="https://img.icons8.com/dusk/100/000000/user-male-circle.png" alt="" class="user-avatar-md rounded-circle"></button>
     <mat-menu #user="matMenu">
       <button mat-menu-item (click)="goToSettings()">Settings</button>
@@ -203,28 +204,28 @@
 
     <div class="container2">
 
-    <!--This is to select the group from that department-->
-    <mat-form-field >
-      <mat-label>Filter by selecting a department</mat-label>
-      <mat-select [(value)]="select" (selectionChange)="filterDepartment()">
-        <mat-option>None</mat-option>
-        <mat-option *ngFor="let department of SubDepartmentList" value="{{department.subDepartmentID}}">{{department.subDepartmentName}}</mat-option>
-      </mat-select>
-    </mat-form-field>
+      <!--This is to select the group from that department-->
+      <mat-form-field>
+        <mat-label>Filter by selecting a department</mat-label>
+        <mat-select [(value)]="select" (selectionChange)="filterDepartment()">
+          <mat-option>None</mat-option>
+          <mat-option *ngFor="let department of SubDepartmentList" value="{{department.subDepartmentID}}">{{department.subDepartmentName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
 
 
-    <!--This is to select the department-->
-    <mat-form-field *ngIf="groupName">
-      <mat-label>Filter</mat-label>
-      <mat-select [(value)]="selected" (selectionChange)="onOptionSelected($event);filerGroupName()">
-        <mat-option>None</mat-option>
-        <mat-option value="option1">General Documents</mat-option>
-        <mat-option value="option2">Terms and conditions</mat-option>
-        <mat-option value="option3">Layout Plans</mat-option>
-      </mat-select>
-    </mat-form-field>
+      <!--This is to select the department-->
+      <mat-form-field *ngIf="groupName">
+        <mat-label>Filter</mat-label>
+        <mat-select [(value)]="selected" (selectionChange)="onOptionSelected($event);filerGroupName()">
+          <mat-option>None</mat-option>
+          <mat-option value="option1">General Documents</mat-option>
+          <mat-option value="option2">Terms and conditions</mat-option>
+          <mat-option value="option3">Layout Plans</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-      </div>
+    </div>
 
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
@@ -298,5 +299,30 @@
   </div>
   <div class="modal-footer">
     <button type="submit" class="btn btn-outline-success" (click)="save(repositoryModal);modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+
+
+
+<!--FAQ-->
+<ng-template #FAQModal let-modal>
+
+  <div class="modal-body">
+    <h1>Frequently Asked Questions (FAQ's)</h1>
+    <mat-expansion-panel  *ngFor="let faqList of FAQList; let i = index">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Question : {{faqList.Question}}
+        </mat-panel-title>
+       
+      </mat-expansion-panel-header>
+
+        <mat-label>Answer : {{faqList.Answer}}</mat-label>
+
+
+    </mat-expansion-panel>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-light" (click)="modal.dismiss('Cross click')">Close</button>
   </div>
 </ng-template>

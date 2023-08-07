@@ -29,13 +29,64 @@ h1 {
   margin-top: 30px;
   margin-bottom: 40px;
 }
+.card_image{
+    width:50px;
+}
+/*MFT*/
+img {
+  height: auto;
+  max-width: 100%;
+  vertical-align: middle;
+}
+.cards {
+  /* display: flex; */
+  flex-wrap: nowrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
 
+.card {
+  background-color: white;
+  border-radius: 0.25rem;
+  box-shadow: -1px 4px 20px 0px rgb(0 0 0 / 0%);
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  margin: 45px;
+}
+
+.card_content {
+  padding: 1rem;
+  background: #ffffff;
+  width: 100%;
+}
+
+.card_title {
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: capitalize;
+  margin: 0px;
+}
+
+.card_text {
+  color: #323a40;
+
+}
+.cont89 {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+}
+/*//////////////////*/
 .cont1 {
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
   align-items: baseline;
-
 }
 .cont {
   display: flex;
@@ -615,7 +666,7 @@ a {
   }
 
 .mat-blue {
-  background-color: #369cf4;
+  background-color: #005a71;
   color: #fff;
   margin: 10px;
 }

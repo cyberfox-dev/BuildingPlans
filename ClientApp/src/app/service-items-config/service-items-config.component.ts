@@ -123,7 +123,7 @@ export class ServiceItemsConfigComponent implements OnInit {
   }
   
   onServiceItemCreate() {
-    debugger;
+    
     this.serviceItemService.addUpdateServiceItem(0, this.serviceItemCodeName, this.description, Number(this.rate), Number(this.total), this.CurrentUser.appUserId, this.category, this.hasVatt, this.selectDep, this.remarks).subscribe((data: any) => {
 
       if (data.responseCode == 1) {

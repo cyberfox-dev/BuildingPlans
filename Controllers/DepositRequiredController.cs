@@ -203,7 +203,7 @@ namespace WayleaveManagementSystem.Controllers
                    isActive = depositRequired.isActive,
                    SubDepartmentName = depositRequired.SubDepartmentName,
                    /*ServiceItemCode = depositRequired.ServiceItemCode,*/
-                   WBS = depositRequired.WBS
+                   WBS = depositRequired.WBS,
 
                }
                ).ToListAsync();
