@@ -16,6 +16,7 @@
         public DateTime? DateUpdated { get; set; }
         public int? CreatedById { get; set; }
         public bool? isActive { get; set; }
-        
+        public bool? isSetForAutomaticDistribution { get; set; }
+
     }
 }

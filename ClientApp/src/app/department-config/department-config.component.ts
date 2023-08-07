@@ -54,6 +54,7 @@ export interface SubDepartmentList {
   departmentID: number;
   dateUpdated: any;
   dateCreated: any;
+  isSetForAutomaticDistribution: boolean;
 }
 
 
@@ -337,6 +338,7 @@ export class DepartmentConfigComponent implements OnInit {
           tempSubDepartmentList.mapLayerID = current.mapLayerID;
           tempSubDepartmentList.dateUpdated = current.dateUpdated;
           tempSubDepartmentList.dateCreated = current.dateCreated;
+          tempSubDepartmentList.isSetForAutomaticDistribution = current.isSetForAutomaticDistribution;
           this.SubDepartmentList.push(tempSubDepartmentList);
            this.SubDepartmentListTable?.renderRows();
         }

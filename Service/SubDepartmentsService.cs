@@ -7,6 +7,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel;
 using System;
+using WayleaveManagementSystem.Data.Migrations;
 
 namespace WayleaveManagementSystem.Service
 {
@@ -117,9 +118,8 @@ namespace WayleaveManagementSystem.Service
                     GlCode = SubDepartments.GLCode,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
-                    isActive = true
-
-
+                    isActive = true,
+                    isSetForAutomaticDistribution = SubDepartments.isSetForAutomaticDistribution
                 }
                 ).ToListAsync();
         }

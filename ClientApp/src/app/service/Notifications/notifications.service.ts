@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { SharedService } from 'src/app/shared/shared.service';
 
 
@@ -66,7 +66,17 @@ export class NotificationsService {
 
     }
 
-    this.httpClient.post("https://wayleaveqa.capetown.gov.za/mailapi" + "/send-email", emailData).subscribe(
+    const username = 'venolin'; // Replace with your actual username
+    const password = '%VUkrO9@5a^0TO4k'; // Replace with your actual password
+    const credentials = `${username}:${password}`;
+    const encodedCredentials = btoa(credentials);
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Basic ${encodedCredentials}`, // Set the Authorization header
+    });
+
+    this.httpClient.post("https://wayleaveqa.capetown.gov.za/mailapi" + "/send-email", emailData, { headers }).subscribe(
 /*      this.httpClient.post("http://localhost:7124" + "/send-email", emailData).subscribe(*/
 /*    this.httpClient.post("https://wayleaveqa.capetown.gov.za:7124" + "/send-email", emailData).subscribe(*/
       () => {

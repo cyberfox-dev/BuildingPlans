@@ -77,6 +77,7 @@ export interface SubDepartmentList {
   departmentID: number;
   dateUpdated: any;
   dateCreated: any;
+  isSetForAutomaticDistribution: boolean;
 }
 
 export interface DistributionList {
