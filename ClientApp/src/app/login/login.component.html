@@ -42,11 +42,11 @@
           <form action="#" [formGroup]="registerForm" autocomplete="off">
 
             <h2>Create an account</h2>
-            <input type="text" formControlName="fullName" placeholder="Name & Surname" />
-            <input type="text" formControlName="bpNumber" placeholder="Business Partner No." />
-            <input type="text" name="somthing" formControlName="registerEmail" placeholder="Email" />
-            <input type="password" formControlName="registerPassword" placeholder="Password">
-            <input type="password" formControlName="reenterPassword" placeholder="Re-enter password">
+            <input type="text" formControlName="fullName" placeholder="Name & Surname *" required/>
+            <input type="text" formControlName="bpNumber" placeholder="Business Partner No. *" required/>
+            <input type="text" name="somthing" formControlName="registerEmail" placeholder="Email *" required/>
+            <input type="password" formControlName="registerPassword" placeholder="Password *" required>
+            <input type="password" formControlName="reenterPassword" placeholder="Re-enter password *" required>
             <button class="OTP" (click)="otp = generateOTP(6)" *ngIf="sendOTPBtn">Send OTP</button>
             <input type="text" placeholder="Enter OTP" formControlName="OTPField" />
             <button type="submit" [disabled]="!registerForm.valid" [class.disabled]="!registerForm.valid" (click)="onRegister()">Verify & Continue</button>
@@ -75,13 +75,13 @@
         <div class="overlay-container">
           <div class="overlay">
             <div class="overlay-panel overlay-left">
-              <h1>Already have an account ?</h1>
+              <h1>Already have a wayleave system profile ?</h1>
               <button (click)="remove()" class="ghost" id="login">Back To Login</button>
             </div>
             <div class="overlay-panel overlay-right">
-              <h1>Don't have an account ?</h1>
+              <h1>Don't have a wayleave system profile ?</h1>
               <button (click)="add()" class="ghost" id="signUp">Sign Up</button>
-              <p class="bprequired">* Please note a Business Partner (BP) number is required to use this portal. <a href="https://eservices.capetown.gov.za/irj/portal" target="_blank">Click here</a> to register with CCT eServices for a BP number</p>
+              <p class="bprequired">* Please note a Business Partner (BP) number is required to use this portal. <a href="https://eservices.capetown.gov.za/irj/portal" target="_blank">Click here</a> to register with CCT eServices for a BP number. Your BP number can be found on the top right hand side comer of your municipal account. </p>
               <p class="link"> </p>
             </div>
           </div>
