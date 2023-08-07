@@ -191,7 +191,7 @@ export class NavMenuComponent implements OnInit {
         this.cyberfoxConfigs = true;
       }
 
-      if (this.RolesList[i].RoleName == "Department Admin" || this.RolesList[i].RoleName == "EMB" ) {
+      if (this.RolesList[i].RoleName == "Department Admin" || this.RolesList[i].RoleName == "EMB" || this.RolesList[i].RoleName == "Developer Config") {
         this.uploadRepoDoc = true;
         this.groupName = false;
         this.depSelect = false;
