@@ -285,8 +285,6 @@ dataSource = this.Applications;
 
 
 
-
-
   ngOnInit(): void {
     
    
