@@ -18,6 +18,7 @@ import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/ht
 import { MatSelectChange } from '@angular/material/select';
 import { DepartmentsService } from 'src/app/service/Departments/departments.service';
 import { SubDepartmentsService } from '../service/SubDepartments/sub-departments.service';
+import { FrequentlyAskedQuestionsService} from '../service/FAQ/frequently-asked-questions.service';
 import { NGB_DATEPICKER_TIME_ADAPTER_FACTORY } from '@ng-bootstrap/ng-bootstrap/timepicker/ngb-time-adapter';
 
 
@@ -55,11 +56,17 @@ export interface UserList {
   SubDepID: number;
 }
 
-export interface FileDocument {
+export interface FAQList {
+  FAQID: number;
+  Question: string;
+  Answer: string;
+  DateCreated: Date;
+  DateUpdated: any;
+}
 
+export interface FileDocument {
   fileName: string;
   file: any;
-
 }
 
 export interface CommentList {
@@ -100,6 +107,7 @@ export class NavMenuComponent implements OnInit {
   UserList: UserList[] = [];
   SubDepartmentList: SubDepartmentList[] = [];
   SubDepartmentListFORDOCUMENTS: SubDepartmentListFORDOCUMENTS[] = [];
+  FAQList: FAQList[] = [];
   forEditIndex: any;
 
   cyberfoxConfigs: boolean = false;
@@ -121,7 +129,7 @@ export class NavMenuComponent implements OnInit {
     UserRoles: import("C:/CyberfoxProjects/WayleaveManagementSystem/ClientApp/src/app/shared/shared.service").RolesList[];
     selectedOptionText: string;
 
-  constructor(private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private http: HttpClient, private documentUploadService: DocumentUploadService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private subDepartment: SubDepartmentsService, private applicationsService: ApplicationsService) { }
+  constructor(private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private http: HttpClient, private documentUploadService: DocumentUploadService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private subDepartment: SubDepartmentsService, private applicationsService: ApplicationsService, private faq: FrequentlyAskedQuestionsService) { }
   DocumentsList: DocumentsList[] = [];
 
   selected = 'none';
@@ -160,7 +168,7 @@ export class NavMenuComponent implements OnInit {
     }
 
     this.getAllDepartments();
-
+    this.getAllFAQ();
   }
 
   uploadRepoDoc: boolean = false;
@@ -455,6 +463,10 @@ export class NavMenuComponent implements OnInit {
 
   openCreateNewComment(createNewComment : any) {
     this.modalService.open(createNewComment, { centered: true, size: 'lg' });
+  }
+
+  openFAQModal(FAQModal: any) {
+    this.modalService.open(FAQModal, { centered: true, size: 'xl' });
   }
   viewEditComment(editComment: any, index: any) {
     this.editComments.controls["editCommentName"].setValue(this.CommentList[index].Comment);
@@ -1014,6 +1026,36 @@ export class NavMenuComponent implements OnInit {
         //alert("Invalid Email or Password");
         alert(data.responseMessage);
       }
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  /*FAQ*/
+  getAllFAQ() {
+    this.faq.getAllFAQ().subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempfaqList = {} as FAQList;
+          const current = data.dateSet[i];
+          tempfaqList.FAQID = current.faqID;
+          tempfaqList.Question = current.question;
+          tempfaqList.Answer = current.answer;
+          tempfaqList.DateCreated = current.dateCreated;
+          tempfaqList.DateUpdated = current.dateUpdated;
+          this.FAQList.push(tempfaqList);
+        }
+
+        console.log("FAQLIST", this.FAQList);
+      }
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
     }, error => {
       console.log("Error: ", error);
     })

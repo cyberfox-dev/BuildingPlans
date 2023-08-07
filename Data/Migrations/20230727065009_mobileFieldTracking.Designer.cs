@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WayleaveManagementSystem.Data;
 
@@ -11,9 +12,10 @@ using WayleaveManagementSystem.Data;
 namespace WayleaveManagementSystem.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230727065009_mobileFieldTracking")]
+    partial class mobileFieldTracking
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -703,37 +705,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("DocumentUpload");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.FAQ", b =>
-                {
-                    b.Property<int>("FAQID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FAQID"), 1L, 1);
-
-                    b.Property<string>("Answer")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Question")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("isActive")
-                        .HasColumnType("bit");
-
-                    b.HasKey("FAQID");
-
-                    b.ToTable("FAQ");
-                });
-
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Financial", b =>
                 {
                     b.Property<int>("FinancialID")
@@ -874,46 +845,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.HasKey("MandatoryDocumentID");
 
                     b.ToTable("MandatoryDocumentUploads");
-                });
-
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.MFT", b =>
-                {
-                    b.Property<int>("MFTID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MFTID"), 1L, 1);
-
-                    b.Property<int?>("ApplicationID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DocumentLocalPath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DocumentName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MFTNote")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("isActive")
-                        .HasColumnType("bit");
-
-                    b.HasKey("MFTID");
-
-                    b.ToTable("MFT");
                 });
 
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Notification", b =>

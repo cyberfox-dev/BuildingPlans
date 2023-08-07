@@ -1,47 +1,38 @@
 <app-nav-menu></app-nav-menu>
 
-<ng-template #content let-modal>
+<ng-template #MFTModal let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Creating a access group</h4>
+    <h4 class="modal-title" id="modal-basic-title">New Note For Mobile Field Tracking</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
     <form>
 
+      <mat-form-field class="example-full-width" >
+        <mat-label>Type A Note</mat-label>
+        <input matInput [(ngModel)]="mftNote"  id="mftNote" name="mftNote">
+      </mat-form-field>
+      <mat-form-field>
+        <div>
+          <mat-toolbar>
 
-      <div class="row">
+            <input matInput [(ngModel)]="fileAttrs[0]" readonly name="name" placeholder="Select An Image" />
 
-        <div class="form-floating mb-3 mt-3">
-          <input type="text" class="form-control" id="accessGroupName" placeholder="Enter the access group name">
-          <label for="accessGroupName">Enter a description</label>
+            <div class="row" style="margin-bottom:15px;">
+              <div class="container-fluid">
+                <app-file-upload [UploadFor]="'CoverLetter'+0" (passFileName)="onPassFileName($event)"></app-file-upload>
+
+              </div>
+            </div>
+          </mat-toolbar>
         </div>
-
-        <!--<mat-form-field>
-          <div>
-            <mat-toolbar>-->
-              <!-- Display files names -->
-              <!--<input matInput [(ngModel)]="fileAttr" readonly name="name" />-->
-              <!-- Browse Button -->
-              <!--<button mat-flat-button color="blue">Upload Image</button>
-            </mat-toolbar>-->
-            <!-- Fetch selected filed on change -->
-            <!--<input type="file"
-                   #fileInput
-                   id="uploadFile"
-                   (change)="uploadFileEvt($event)"
-                   name="uploadFile"
-                   multiple="multiple"
-                   accept="image/*" />
-          </div>
-        </mat-form-field>-->
-
-      </div>
+      </mat-form-field>
 
 
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+    <button type="button" class="btn btn-outline-success" (click)="saveNote();modal.close('Save click')">Save</button>
   </div>
 </ng-template>
 
@@ -53,7 +44,7 @@
 
 <div class="cont1">
 
-  <app-action-center  [ApplicationID]="ApplicationID" (refreshParent)="ngOnInit()" *ngIf="isInternalUser" (optionEvent)="reciveOption($event)"></app-action-center>
+  <app-action-center [ApplicationID]="ApplicationID" (refreshParent)="ngOnInit()" *ngIf="isInternalUser" (optionEvent)="reciveOption($event)"></app-action-center>
   <button mat-button color="action" [matMenuTriggerFor]="actions"> <mat-icon>more_vert</mat-icon></button>
   <mat-menu #actions="matMenu">
     <button mat-menu-item (click)="ChangeApplicationStatusToPaid()" *ngIf="isInternalUser"> Move to Paid</button>
@@ -62,7 +53,7 @@
     <button mat-menu-item (click)="goToNewWayleave(true)" *ngIf="canReapply"><i class="fa fa-repeat" aria-hidden="true"></i> Re-apply</button>
     <button mat-menu-item (click)="validate()"><i class="fa fa-repeat" aria-hidden="true"></i> Test BP</button>
 
-    
+
   </mat-menu>
 
 </div>
@@ -77,27 +68,27 @@
 
       <app-view-project-details></app-view-project-details>
       <!--<nav class="menu">
-      <input type="checkbox" href="#" class="menu-open" name="menu-open" id="menu-open" />
-      <label class="menu-open-button" for="menu-open">
-        <span class="hamburger hamburger-1"></span>
-        <span class="hamburger hamburger-2"></span>
-        <span class="hamburger hamburger-3"></span>
-      </label>
+        <input type="checkbox" href="#" class="menu-open" name="menu-open" id="menu-open" />
+        <label class="menu-open-button" for="menu-open">
+          <span class="hamburger hamburger-1"></span>
+          <span class="hamburger hamburger-2"></span>
+          <span class="hamburger hamburger-3"></span>
+        </label>
 
-      <a class="menu-item" matTooltipPosition="left" matTooltip="Show applicant layer"> <i class="fa fa-user"></i> </a>
-      <a class="menu-item" matTooltipPosition="left" matTooltip="Show department layer"><i class="fa fa-building"></i> </a>
-      <a class="menu-item" matTooltipPosition="left" matTooltip="Show all layers"> <i class="fa fa-eye"></i> </a>
-      <a class="menu-item" matTooltipPosition="left" matTooltip="Hide all layers"> <i class="fa fa-eye-slash"></i> </a>
+        <a class="menu-item" matTooltipPosition="left" matTooltip="Show applicant layer"> <i class="fa fa-user"></i> </a>
+        <a class="menu-item" matTooltipPosition="left" matTooltip="Show department layer"><i class="fa fa-building"></i> </a>
+        <a class="menu-item" matTooltipPosition="left" matTooltip="Show all layers"> <i class="fa fa-eye"></i> </a>
+        <a class="menu-item" matTooltipPosition="left" matTooltip="Hide all layers"> <i class="fa fa-eye-slash"></i> </a>
 
 
-    </nav>-->
+      </nav>-->
       <!--<div class="maps">
-      <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d55522.617408819875!2d30.405427199999995!3d-29.569843200000005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sza!4v1662643454248!5m2!1sen!2sza" width="100%" height="700" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div>-->
+        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d55522.617408819875!2d30.405427199999995!3d-29.569843200000005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sza!4v1662643454248!5m2!1sen!2sza" width="100%" height="700" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>-->
       <app-project-details-map-view [data]="ARCGISAPIData"></app-project-details-map-view>
-      <app-department-circulation ></app-department-circulation>
-     <!-- <app-department-circulation-planning *ngIf="CurrentApplicationBeingViewed[0].isPlanning === true"></app-department-circulation-planning>-->
-</mat-tab>
+      <app-department-circulation></app-department-circulation>
+      <!-- <app-department-circulation-planning *ngIf="CurrentApplicationBeingViewed[0].isPlanning === true"></app-department-circulation-planning>-->
+    </mat-tab>
 
 
     <!--------------------------------------------------------Comments--------------------------------------------------->
@@ -148,10 +139,10 @@
 
         <br />
       </div>
-     <!-- <div class="cont3" *ngIf="isInternalUser">
-        <button mat-raised-button color="green" (click)="onCreateApprovalPack()" *ngIf="ApprovalPackBtn">Approval Pack</button>
-        <button mat-raised-button color="red" (click)="onCrreateRejectionPack()" *ngIf="RejectionPackBtn">Rejection Pack</button>
-      </div>-->
+      <!-- <div class="cont3" *ngIf="isInternalUser">
+         <button mat-raised-button color="green" (click)="onCreateApprovalPack()" *ngIf="ApprovalPackBtn">Approval Pack</button>
+         <button mat-raised-button color="red" (click)="onCrreateRejectionPack()" *ngIf="RejectionPackBtn">Rejection Pack</button>
+       </div>-->
 
       <div class="container-fluid" *ngIf="rejected">
         <div class="alert alert-danger">
@@ -165,23 +156,23 @@
       </div>
 
       <!--<mat-form-field>
-  <div>
-    <mat-toolbar>-->
+      <div>
+        <mat-toolbar>-->
       <!-- Display files names -->
       <!--<input matInput [(ngModel)]="fileAttr" readonly name="name" />-->
       <!-- Browse Button -->
       <!--<button mat-flat-button color="blue">Browse File</button>
-  </mat-toolbar>-->
+      </mat-toolbar>-->
       <!-- Fetch selected filed on change -->
       <!--<input type="file"
-             #fileInput
-             id="uploadFile"
-             (change)="uploadFileEvt($event)"
-             name="uploadFile"
-             multiple="multiple"
-             accept="image/*" />
-    </div>
-  </mat-form-field>-->
+                 #fileInput
+                 id="uploadFile"
+                 (change)="uploadFileEvt($event)"
+                 name="uploadFile"
+                 multiple="multiple"
+                 accept="image/*" />
+        </div>
+      </mat-form-field>-->
 
 
     </mat-tab>
@@ -206,7 +197,7 @@
       </div>
     </ng-template>
 
-    <!--this is the modal for when the line dep user wants to edit their comment made-->
+    <!--this is the modal for when the line dep user wants to edit their comment made -->
     <ng-template #commentEditorModal let-modal>
       <div class="modal-header">
         <h4 class="modal-title" id="modal-basic-title">Update Your Comment</h4>
@@ -219,7 +210,7 @@
           <div class="row">
 
             <div class="form-floating mb-3 mt-3">
-              <input type="text" [(ngModel)]="commentEdit"  name="commentEdit" class="form-control" id="commentEdit" placeholder="Update Comment">
+              <input type="text" [(ngModel)]="commentEdit" name="commentEdit" class="form-control" id="commentEdit" placeholder="Update Comment">
               <label for="commentEdit">Update Comment</label>
             </div>
 
@@ -236,7 +227,7 @@
     <!--------------------------------------------------------Messaging--------------------------------------------------->
     <!--     <mat-tab label="Messaging">
 
-  </mat-tab>-->
+    </mat-tab>-->
     <!--------------------------------------------------------Financial--------------------------------------------------->
 
     <mat-tab label="Financial">
@@ -275,7 +266,7 @@
           <label for="wbsNumberRequested">WBS Number</label>
         </div>
         <div class="cont" *ngIf="isInternalUser">
-          <button mat-raised-button (click)="enterWBSNumberModal(wbsNumberModal)" *ngIF="wbsBtn" color="orange">WBS</button>
+          <button mat-raised-button (click)="enterWBSNumberModal(wbsNumberModal)" *ngIf="wbsBtn" color="orange">WBS</button>
           <button mat-raised-button color="orange" (click)="generateConsolidatedDepositInvoice()">Consolidate Deposits</button>
           <button mat-raised-button color="orange">Deposit Refund</button>
         </div>
@@ -489,67 +480,110 @@
 
 
     <mat-tab label="Tracking" *ngIf="isInternalUser">
-      <button mat-raised-button color="blue" (click)="openXl(content)">Create New Note</button>
-    </mat-tab>
+      <button mat-raised-button color="blue" (click)="openXl(MFTModal)">Create New Note</button>
+
+      <!--      <div class="row" *ngFor="let mftList of MFTList; let i = index">
+        <div class="col s12 m12 l12">
+
+          <ul class="timeline">
+
+            <li class="event" data-date="">
 
 
+              <h3>{{mftList.MFTNote}} - {{mftList.DateCreated}}</h3>
+              <p>
 
-    <!--------------------------------------------------------Audit Trail--------------------------------------------------->
+                {{mftList.DocumentName}}
+              </p>
 
+            </li>
 
-    <mat-tab label="Audit Trail" *ngIf="auditTrail">
-
-      <app-audit-trail></app-audit-trail>
-
-    </mat-tab>
-
-
-
-    <!--------------------------------------------------------Permits--------------------------------------------------->
-
-    <mat-tab label="Permits" *ngIf="showPermitTab" >
-
-
-      <button mat-raised-button color="permit" (click)="openPermitModal(permitModal)" *ngIf="permitBtn">Apply For Permit</button>
-      <br>
-      <br>
-      <input type="text" class="form-control" [(ngModel)]="permitDate" id="permitDate" *ngIf="permitTextBox" disabled>
-
-      <ng-template #permitModal let-modal>
-        <div class="modal-header">
-          <h4 class="modal-title" id="modal-basic-title">Please select a date for your permit</h4>
-          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+          </ul>
         </div>
-        <div class="modal-body">
-
-
-
-          <div class="row">
-
-            <div class="form-floating mb-3 mt-3">
-              <input type="date" class="form-control" [(ngModel)]="permitStartDate" id="permitStartDate" [min]="minDate" placeholder="Enter the start date for the permit">
-              <label for="permitStartDate">Select Start Date</label>
-            </div>
-
+      </div>-->
+      <div class="cards" *ngFor="let mftList of MFTList; let i = index">
+        <li class="cards_item">
+        <div class="card">
+          <div class="card_content">
+            <p class="card_text">Note Created By : {{mftList.FullName}}</p>
+            <p class="card_text">{{mftList.MFTNote}}</p>
+            <div class="cont89">
+            <p class="card_text">{{mftList.DateCreated}}</p>
+            <button mat-raised-button color="blue" *ngIf="mftList.DocumentName !== null " (click)="viewImage(i)">View Image</button>
+              </div>
           </div>
-
-
-
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-success" (click)="updateStartDateForPermit();modal.close('Save click')">Save</button>
+      </li>
         </div>
-      </ng-template>
+      
 
-      <app-permit-component [ApplicationID]="ApplicationID"></app-permit-component>
+
 
     </mat-tab>
+
+
+
+<!--------------------------------------------------------Audit Trail--------------------------------------------------->
+
+
+<mat-tab label="Audit Trail" *ngIf="auditTrail">
+
+  <app-audit-trail></app-audit-trail>
+
+</mat-tab>
+
+
+
+<!--------------------------------------------------------Permits--------------------------------------------------->
+
+<mat-tab label="Permits" *ngIf="showPermitTab">
+
+
+  <button mat-raised-button color="permit" (click)="openPermitModal(permitModal)" *ngIf="permitBtn">Apply For Permit</button>
+  <br>
+  <br>
+  <input type="text" class="form-control" [(ngModel)]="permitDate" id="permitDate" *ngIf="permitTextBox" disabled>
+
+  <ng-template #permitModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Please select a date for your permit</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+
+
+
+      <div class="row">
+
+        <div class="form-floating mb-3 mt-3">
+          <input type="date" class="form-control" [(ngModel)]="permitStartDate" id="permitStartDate" [min]="minDate" placeholder="Enter the start date for the permit">
+          <label for="permitStartDate">Select Start Date</label>
+        </div>
+
+      </div>
+
+
+
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-success" (click)="updateStartDateForPermit();modal.close('Save click')">Save</button>
+    </div>
+  </ng-template>
+
+  <app-permit-component [ApplicationID]="ApplicationID"></app-permit-component>
+
+</mat-tab>
+
+
+
 
   </mat-tab-group>
 
 
 
 </div>
+
+
 
 <!--This is for the wbs number-->
 
@@ -570,5 +604,9 @@
     <button type="submit" class="btn btn-outline-success" (click)="onCreateWBSNumber();modal.close('Save click')">Save</button>
   </div>
 </ng-template>
+
+
+
+<!--FAQ-->
 
 

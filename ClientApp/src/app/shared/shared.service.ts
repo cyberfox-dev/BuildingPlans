@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 
 export interface FileDocument {
+  fileName: string;
 
   formData: any;
   UploadFor: string;
@@ -270,6 +271,8 @@ getApplicationID(): any {
   }
   //ESRI Data END
 
+  
+
   pushFileForTempFileUpload(formData: any, uploadFor: any) {
 
     //TODO: Remember to clear this when invoice is generated
@@ -297,6 +300,13 @@ getApplicationID(): any {
       this.FileDocument.push(tempFileDocument);
     }
     
+  }
+
+
+  DeleteUploadedFile() {
+
+    this.FileDocument.splice(0, this.FileDocument.length);
+
   }
 
   pullFilesForUpload() {

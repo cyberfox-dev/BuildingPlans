@@ -116,7 +116,8 @@ export class TypeOfExcavationComponent implements OnInit {
   onTOEDelete(index: any) {
 
 
-    if (confirm("Are you sure to delete " + this.TypeOfExcavationList[index].typeOfExcavationName+ "?")) {
+    if (confirm("Are you sure to delete " + this.TypeOfExcavationList[index].typeOfExcavationName + "?"))
+    {
 
       this.typeOfExcavationService.deleteTypesOfExcavationByID(this.TypeOfExcavationList[index].typeOfExcavationID).subscribe((data: any) => {
         this.TypeOfExcavationList.splice(0, this.TypeOfExcavationList.length);

@@ -50,7 +50,7 @@ export interface ServiceItemList {
   serviceItemID: number;
   serviceItemCode: string;
   Description: string;
-  Rate: any;
+  Rate: number;
   totalVat: number;
   dateCreated: any;
   vatApplicable: boolean;
@@ -334,7 +334,7 @@ export class ActionCenterComponent implements OnInit {
     //Get Current Application Infomation 
 
 
-
+   
     this.getAllSubDepartments();
 
 
@@ -395,13 +395,9 @@ export class ActionCenterComponent implements OnInit {
     this.canApprovePTW();
     this.getAllPermitForComment();
 
-
-
-    //this.CheckIfCurrentUserCanUseHopper();
-    // }, 1000);
-
     this.getUserRoles();
     this.getServicesByDepID();
+   
   }
 
 
@@ -1767,7 +1763,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   //}
-  totalAmount = 0;
+  totalAmount:number;
   rate: number;
   description: string;
   quantity: number;
@@ -2692,6 +2688,7 @@ getAllCommentsByUserID() {
   //}
 
   onPopulateDeposit() {
+    debugger;
     let selectedServiceItem = Number(this.selectSI);
 
     console.log("THIS IS THE SERVICE ITEM CODE", selectedServiceItem);

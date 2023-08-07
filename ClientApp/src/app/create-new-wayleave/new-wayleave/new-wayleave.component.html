@@ -490,7 +490,7 @@
       </mat-list>
       <div class="row">
 
-        <button mat-raised-button color="green" (click)="onWayleaveCreate(CurrentUser.appUserId,false);">Create Application</button>
+        <button mat-raised-button color="green" (click)="onWayleaveCreate(CurrentUser.appUserId,isPlanning);">Create Application</button>
       </div>
 
       <div class="cont">
@@ -645,11 +645,11 @@
     <table mat-table [dataSource]="dataSourceProjectSizeCheckList" class="mat-elevation-z8">
 
 
-      <ng-container matColumnDef="ProjectSizeCheckListRowNumber">
+      <!--<ng-container matColumnDef="ProjectSizeCheckListRowNumber">
         <th mat-header-cell *matHeaderCellDef> Row Number </th>
 
         <td mat-cell *matCellDef="let element"> {{element.ProjectSizeCheckListRowNumber}} </td>
-      </ng-container>
+      </ng-container>-->
 
       <ng-container matColumnDef="ProjectSizeCheckListActivity">
         <th mat-header-cell *matHeaderCellDef> Activity </th>

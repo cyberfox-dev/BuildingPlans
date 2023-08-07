@@ -39,6 +39,20 @@
   hyphens: auto;
   text-align: center;
 }
+.mat-FAQ {
+  margin: 10px;
+  background-color: #005a71;
+  color: white;
+}
+
+.mat-warn{
+    margin:10px;
+    color:white;
+    background-color:darkred;
+    width:50px;
+    height:36px;
+
+}
 
 table {
   width: 100%;
@@ -209,4 +223,24 @@ h3 {
   z-index: 0;
   transition: transform 0.3s ease-out;
 }
+
+/*FAQ*/
+.mat-expansion-panel-header {
+  padding: 20px;
+  height: 100%;
+  white-space: initial;
+  font-weight: bold;
+}
+
+.mat-expansion-panel {
+  margin-bottom: 13px;
+}
+
+/*::ng-deep .mat-tab-list .mat-tab-labels .mat-tab-label-active {
+  color: white;
+  background-color: #0098c5;
+  transition: width 0.3s ease-out;
+}*/
+
+
 

@@ -6,7 +6,7 @@
 <!-----------------------------------------------------Roles configuration-------------------------------------------------------------->
 <div class="container-fluid">
 
-  <mat-tab-group>
+  <mat-tab-group >
 
     <mat-tab label="Roles">
 
@@ -113,9 +113,60 @@
       <app-type-of-excavation></app-type-of-excavation>
     </mat-tab>
 
+
+
+    <!-----------------------------------------------------------FAQ-------------------------------------------------------------->
+
+    <mat-tab label="FAQ">
+
+      <button mat-raised-button color="FAQ" (click)="openFAQModal(FAQModal)">Create New FAQ</button>
+
+      
+      <mat-expansion-panel *ngFor="let faqList of FAQList;let i = index">
+
+        <mat-expansion-panel-header >
+          <div class="container-fluid" >
+          <mat-panel-title >
+            Question : {{faqList.Question}}
+          </mat-panel-title>
+            </div>
+          <!--<button mat-raised-button color="warn" ><i class="fa fa-trash" aria-hidden="true"></i></button>-->
+        </mat-expansion-panel-header>
+
+        <mat-label>Answer : {{faqList.Answer}}</mat-label>
+
+
+      </mat-expansion-panel>
+
+
+    </mat-tab>
+
+
   </mat-tab-group>
 
 
 </div>
 
+<!--FAQ-->
+<ng-template #FAQModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">WBS Number</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
 
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" placeholder="Question" [(ngModel)]="question" id="question" name="question">
+      <label for="question">Question</label>
+    </div>
+
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" placeholder="Answer" [(ngModel)]="answer" id="answer" name="answer">
+      <label for="answer">Answer</label>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="addFAQ();modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
