@@ -6,11 +6,7 @@
     </div>
   </div>
   <div class="nav-btn">
-    <label for="nav-check" (click)="disableIcons()">
-      <span></span>
-      <span></span>
-      <span></span>
-    </label>
+    <button mat-button matTooltip="Menu" (click)="openEnd(content)"><i class="fa fa-bars" aria-hidden="true"></i></button>
   </div>
 
   <div class="nav-links" *ngIf="Icons">
@@ -28,14 +24,6 @@
     </mat-menu>-->
   </div>
 
-  <div class="nav-links" *ngIf="Links">
-    <a (click)="goToCyberfoxCofig()" *ngIf="cyberfoxConfigs">Cyberfox config</a>
-    <a (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser">Comment Builder</a>
-    <a (click)="goToConfig()" *ngIf="Configurations">Configurations</a>
-    <a (click)="getAllNotifications();openNotificationsModal(notificationsCenter)">Notifications</a>
-    <a (click)="goToSettings()">User Settings</a>
-    <a (click)="LogoutUser()">Log Out</a>
-  </div>
 </div>
 
 

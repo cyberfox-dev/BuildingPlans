@@ -619,6 +619,13 @@ h2 {
   width: 100%;
   text-align: inherit;
 }
+.modal, .offcanvas {
+  overflow: hidden;
+}
+
+body.modal-open, body.offcanvas-open {
+  overflow: hidden;
+}
 h5 {
 
   display: block;
