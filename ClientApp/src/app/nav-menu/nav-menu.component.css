@@ -136,8 +136,14 @@ body {
   }
 }
 
+.sideNav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.offcanvas{
 
-
+}
 
 
 
@@ -600,14 +606,32 @@ h2 {
   left: -368px;
 }
 
-.fa-cogs {
-  width: 100%
+.offcanvas {
+  width: 300px;
 }
 
+.fa{
+    font-size:20px;
+}
+
+.sideNavIcons {
+  height: 56px;
+  width: 100%;
+  text-align: inherit;
+}
+h5 {
+
+  display: block;
+  font-size: 30px;
+  margin-top: 20px;
+  font-weight: 700;
+}
+
+  .sideNavIcons:hover {
+    background-color: #ccdee2;
+  }
 
 /*NOTIFICATIONS SECTION*/
-
-
 body {
   font-size: 15px;
   font-family: 'Poppins', sans-serif;

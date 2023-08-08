@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild,TemplateRef } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DepartmentConfigComponent } from 'src/app/department-config/department-config.component';
@@ -20,7 +20,7 @@ import { DepartmentsService } from 'src/app/service/Departments/departments.serv
 import { SubDepartmentsService } from '../service/SubDepartments/sub-departments.service';
 import { FrequentlyAskedQuestionsService} from '../service/FAQ/frequently-asked-questions.service';
 import { NGB_DATEPICKER_TIME_ADAPTER_FACTORY } from '@ng-bootstrap/ng-bootstrap/timepicker/ngb-time-adapter';
-
+import { NgbDatepickerModule, NgbOffcanvas, OffcanvasDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 
 
 export interface SubDepartmentList {
@@ -129,7 +129,7 @@ export class NavMenuComponent implements OnInit {
     UserRoles: import("C:/CyberfoxProjects/WayleaveManagementSystem/ClientApp/src/app/shared/shared.service").RolesList[];
     selectedOptionText: string;
 
-  constructor(private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private http: HttpClient, private documentUploadService: DocumentUploadService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private subDepartment: SubDepartmentsService, private applicationsService: ApplicationsService, private faq: FrequentlyAskedQuestionsService) { }
+  constructor(private offcanvasService: NgbOffcanvas,private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private http: HttpClient, private documentUploadService: DocumentUploadService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private subDepartment: SubDepartmentsService, private applicationsService: ApplicationsService, private faq: FrequentlyAskedQuestionsService) { }
   DocumentsList: DocumentsList[] = [];
 
   selected = 'none';
@@ -1059,6 +1059,27 @@ export class NavMenuComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
+  }
+ 
+  openEnd(content: TemplateRef<any>) {
+    this.offcanvasService.open(content, { position: 'end' });
+  }
+
+  private getDismissReason(reason: any): string {
+    if (reason === OffcanvasDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === OffcanvasDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on the backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
+  }
+
+  dismiss() {
+ 
+    this.modalService.dismissAll();
+    this.offcanvasService.open("");
+    this.offcanvasService.dismiss();
   }
 
 }

@@ -1772,7 +1772,7 @@ export class ActionCenterComponent implements OnInit {
   remarks = '';
   vatApp = '';
   calculateTotalAmount() {
-    debugger;
+    
     let rateVat = this.depositRequired.controls["total"].value;
     this.vatApp = this.depositRequired.controls["vatApplicable"].value;
      this.rate = Number(this.depositRequired.controls["rate"].value);
@@ -1792,7 +1792,7 @@ export class ActionCenterComponent implements OnInit {
   }
 
   onDepositRequiredClick() {
-    debugger;
+    
     let SubDepartmentName = "";
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
@@ -2688,7 +2688,7 @@ getAllCommentsByUserID() {
   //}
 
   onPopulateDeposit() {
-    debugger;
+    
     let selectedServiceItem = Number(this.selectSI);
 
     console.log("THIS IS THE SERVICE ITEM CODE", selectedServiceItem);
