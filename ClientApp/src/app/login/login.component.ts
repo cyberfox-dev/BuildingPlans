@@ -10,6 +10,7 @@ import { HomeComponent } from 'src/app/home/home.component';
 import { BusinessPartnerService } from 'src/app/service/BusinessPartner/business-partner.service';
 import { switchMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
+import { BpNumberService } from 'src/app/service/BPNumber/bp-number.service'
 
 
 @Component({
@@ -69,6 +70,7 @@ export class LoginComponent implements OnInit {
     private newProfileComponent: NewProfileComponent,
     private businessPartnerService: BusinessPartnerService,
     // private homeComponent: HomeComponent,
+    private bpNumberService: BpNumberService,
 
   ) { }
 
@@ -262,6 +264,17 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  VerifyBP(BpNo: any) {
+    const requestBody = "{'BusinessPartnerNumber': " + BpNo + "},";
+
+    this.bpNumberService.makeApiCall(requestBody)
+      .subscribe(response => {
+        console.log('bpNumber:',response);
+        // Handle the response data here
+      });
+  }
+
+
   DoChecksForRegister() {
     /*    this.notification.sendEmail("jahdiel@cyberfox.co.za", "Test", "testing 1, 2, 3...");*/
 
@@ -348,6 +361,8 @@ export class LoginComponent implements OnInit {
     } else {
       onLoginForm = false;
     }
+
+    this.VerifyBP(BpNo);
 
     this.testBp(BpNo).subscribe(isBpValid => {
       if (!isBpValid) {

@@ -3094,7 +3094,9 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   public addToZoneForComment() {
-    const tempList = this.shared.distributionList;
+    //const tempList = this.shared.distributionList;
+    //Filters list so that only one link is created in the zoneforcomment table per zone.
+    const tempList = [...new Set(this.shared.distributionList)];
 
 
 
