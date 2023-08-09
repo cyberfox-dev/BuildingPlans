@@ -144,7 +144,7 @@ export class LoginComponent implements OnInit {
   }
 
   onLogin() {
-    debugger;
+    
     this.isLoading = true;
     const email = this.loginForm.controls["email"].value;
     const password = this.loginForm.controls["password"].value;
@@ -160,14 +160,14 @@ export class LoginComponent implements OnInit {
         }
       }),
       switchMap((profileData: any) => {
-        debugger;
+        
         localStorage.setItem("userProfile", JSON.stringify(profileData.dateSet));
         const isInternal = profileData.dateSet[0].isInternal; // assuming isInternal is part of the dateSet at index 0
         const bpNo = profileData.dateSet[0].bP_Number;  // assuming bpNumber is part of the dateSet at index 0
-        debugger;
+        
         // Only test the bpNumber if isInternal is false
         if (!isInternal) {
-          debugger;
+          
           return this.testBp(bpNo);
         } else {
           // If isInternal is true, return an Observable of true to proceed with login
@@ -178,7 +178,7 @@ export class LoginComponent implements OnInit {
       (isValidBp: boolean) => {
         this.isLoading = false;
         if (isValidBp) {
-          debugger;
+          
           this.router.navigate(["/home"]);
         } else {
           this.error = "Invalid Business Partner (BP) Number! Please contact CCT eServices for more information.";
