@@ -354,6 +354,7 @@ export class NewWayleaveComponent implements OnInit {
   MandatoryDocumentUploadListMedium: MandatoryDocumentUploadList[] = [];
   MandatoryDocumentUploadListLarge: MandatoryDocumentUploadList[] = [];
   MandatoryDocumentUploadListEmergency: MandatoryDocumentUploadList[] = [];
+  MandatoryDocumentUploadListDrilling: MandatoryDocumentUploadList[] = [];
 
   ProjectSizeCheckList: ProjectSizeCheckList[] = [];
 
@@ -387,6 +388,8 @@ export class NewWayleaveComponent implements OnInit {
   Contractor = "Contractor";
 
 
+  isLoading = false;
+  public successfulUploads = 0;
 
 
   //Initialize the interface for ARCGIS
@@ -433,6 +436,7 @@ export class NewWayleaveComponent implements OnInit {
   @ViewChild(MatTable) MandatoryDocumentUploadListSmallTable: MatTable<MandatoryDocumentsLinkedStagesList> | undefined;
   @ViewChild(MatTable) MandatoryDocumentUploadListMediumTable: MatTable<MandatoryDocumentsLinkedStagesList> | undefined;
   @ViewChild(MatTable) MandatoryDocumentUploadListLargeTable: MatTable<MandatoryDocumentsLinkedStagesList> | undefined;
+  @ViewChild(MatTable) MandatoryDocumentUploadListDrillingTable: MatTable<MandatoryDocumentsLinkedStagesList> | undefined;
   @ViewChild(MatTable) MandatoryDocumentUploadListEmergencyTable: MatTable<MandatoryDocumentsLinkedStagesList> | undefined;
 
 
@@ -620,6 +624,7 @@ export class NewWayleaveComponent implements OnInit {
     this.getAllByMandatoryDocumentCategory("Medium");
     this.getAllByMandatoryDocumentCategory("Large");
     this.getAllByMandatoryDocumentCategory("Emergency");
+    this.getAllByMandatoryDocumentCategory("Drilling");
 
    
   }
@@ -1013,7 +1018,7 @@ export class NewWayleaveComponent implements OnInit {
                 if (isPlanning == false) {
                   this.AddProfessinal(contractorData, engineerData);
                 }
-                this.UploadDocuments(data.dateSet);
+               // this.UploadDocuments(data.dateSet);
                 this.onAutoLinkDepartment();
                 this.shared.setApplicationID(0);
                 this.shared.clearContractorData();
@@ -1092,7 +1097,7 @@ export class NewWayleaveComponent implements OnInit {
         if (isPlanning == false) {
           this.AddProfessinal(contractorData, engineerData);
         }
-        this.UploadDocuments(data.dateSet);
+        //this.UploadDocuments(data.dateSet);
         // this.onAutoLinkDepartment();
         this.shared.setApplicationID(0);
         this.shared.clearContractorData();
@@ -1152,7 +1157,7 @@ export class NewWayleaveComponent implements OnInit {
         if (isPlanning == false) {
           this.AddProfessinal(contractorData, engineerData);
         }
-        this.UploadDocuments(data.dateSet);
+       // this.UploadDocuments(data.dateSet);
         // this.onAutoLinkDepartment();
         this.shared.setApplicationID(0);
         this.shared.clearContractorData();
@@ -1194,6 +1199,17 @@ export class NewWayleaveComponent implements OnInit {
       //  alert("This Application have no engineers linked");
     }
   }
+  onFileDelete(event: any, index: number) {
+    debugger;
+    this.fileAttrs[index] = '';
+    this.successfulUploads--;
+
+  }
+
+  onFileUpload(event: any) {
+    debugger;
+    this.successfulUploads++;
+  }
 
   UploadDocuments(applicationData: any): void {
     //Pulling information from the share
@@ -1220,6 +1236,39 @@ export class NewWayleaveComponent implements OnInit {
           error: (err: HttpErrorResponse) => console.log(err)
         });
     }
+  }
+
+
+  CheckTOES() {
+    debugger;
+    let tempList = []; // Temporary list to collect all new entries
+
+    for (var i = 0; i < this.TOENAMES.length; i++) {
+      let current = this.TOENAMES[i].toString();
+      if (current == "Drilling") {
+        const newList = this.MandatoryDocumentUploadListDrilling.map(current => {
+          const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
+          tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
+          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+          tempMandatoryDocumentsLinkedStagesList.stageName = null;
+          tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+          return tempMandatoryDocumentsLinkedStagesList;
+        });
+
+        tempList = tempList.concat(newList);
+      }
+    }
+
+    // Assuming MandatoryDocumentsLinkedStagesList is an observable, extract its current value
+    const currentList = this.MandatoryDocumentsLinkedStagesList.getValue();
+
+    // Concatenate currentList and tempList
+    const updatedList = currentList.concat(tempList);
+
+    this.MandatoryDocumentsLinkedStagesList.next(updatedList);
+    this.totalDocs = updatedList.length;
   }
 
 
@@ -3182,6 +3231,12 @@ export class NewWayleaveComponent implements OnInit {
               
               this.MandatoryDocumentUploadListEmergency.push(tempMandatoryDocList);
               this.MandatoryDocumentUploadListEmergencyTable?.renderRows();
+              break;
+            }
+            case "Drilling": {
+
+              this.MandatoryDocumentUploadListDrilling.push(tempMandatoryDocList);
+              this.MandatoryDocumentUploadListDrillingTable?.renderRows();
               break;
             }
             default:

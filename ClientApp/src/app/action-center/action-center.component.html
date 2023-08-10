@@ -9,7 +9,7 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body" *ngIf="CurrentApplication.isPlanning != true">
-    <div class="cont" >
+    <div class="cont">
       <!--<button mat-raised-button color="blue" *ngIf="CanAssignDepartment == true && canCommentFinalApprover == false && showPermitTab === false" (click)="openAssignDepartment(assign)">Assign Department to Project</button>-->
       <!--<button mat-raised-button color="blue" *ngIf="AssignProjectToZone == true && canCommentFinalApprover == false && showPermitTab === false" (click)="openAssignToZone(assignProjectToZone)">Assign Project to Zone</button>-->
       <button mat-raised-button color="blue" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && showPermitTab === false" (click)="openAssignToUser(assignProjectToUser)">Assign User For Comment</button>
@@ -66,7 +66,7 @@
                 <div class="row" style="margin-bottom:15px;">
                   <div class="container-fluid">
 
-                    <input type="file" #file placeholder="{{fName}}" (change)="uploadFile(file.files)" style="display:none;" >
+                    <input type="file" #file placeholder="{{fName}}" (change)="uploadFile(file.files)" style="display:none;">
                     <button mat-raised-button color="btn" matTooltip="Upload File" matTooltipPosition="above" type="button" class="btn btn-info" (click)="file.click()"><i class="fa fa-upload" style="font-size: 1em;"></i></button>
 
 
@@ -105,6 +105,11 @@
       </mat-menu>
 
 
+    </div>
+    <div class="cont6" *ngIf="permit && canApprovePermit">
+      <button mat-raised-button color="approvePermit" *ngIf="canApprovePermit" (click)="PermitIssue('Approve')">Approve Permit</button>
+      <button mat-raised-button color="meetOnSite" *ngIf="canApprovePermit" (click)="PermitIssue('MeetOnSite')">Meet On Site</button>
+      <button mat-raised-button color="rejectPermit" *ngIf="canApprovePermit" (click)="PermitIssue('Reject')">Reject Permit</button>
     </div>
     <div class="cont6" *ngIf="permit && canApprovePermit">
       <button mat-raised-button color="approvePermit" *ngIf="canApprovePermit" (click)="PermitIssue('Approve')">Approve Permit</button>
