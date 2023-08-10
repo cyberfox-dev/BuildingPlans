@@ -229,8 +229,8 @@
 
     </mat-tab>-->
     <!--------------------------------------------------------Financial--------------------------------------------------->
-
-    <mat-tab label="Financial">
+   
+    <mat-tab label="Financials">
       <div class="container-fluid">
 
         <table mat-table [dataSource]="dataSourceDoc" class="mat-elevation-z8">
@@ -289,7 +289,7 @@
     <!--------------------------------------------------------Documents--------------------------------------------------->
 
 
-    <mat-tab label="Documents">
+    <mat-tab label="Documents Upload">
 
       <app-documents-component [ApplicationID]="ApplicationID"></app-documents-component>
 
@@ -479,7 +479,7 @@
     <!--------------------------------------------------------Tracking--------------------------------------------------->
 
 
-    <mat-tab label="Tracking" *ngIf="isInternalUser">
+    <mat-tab label="Status of Works" *ngIf="isInternalUser">
       <button mat-raised-button color="blue" (click)="openXl(MFTModal)">Create New Note</button>
 
       <!--      <div class="row" *ngFor="let mftList of MFTList; let i = index">
@@ -574,7 +574,11 @@
 
 </mat-tab>
 
+<mat-tab label="Process Flow" *ngIf="auditTrail">
 
+  
+
+</mat-tab>
 
 
   </mat-tab-group>
