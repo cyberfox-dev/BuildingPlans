@@ -3094,11 +3094,29 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   public addToZoneForComment() {
+    //const tempList = this.shared.distributionList;
+    //Filters list so that only one link is created in the zoneforcomment table per zone.
+    //const tempList = [...new Set(this.shared.distributionList)];
+
+    // Assuming your array is named dataArray
     const tempList = this.shared.distributionList;
 
+    const seenCombinations = {}; // To keep track of seen combinations
 
+    const uniqueArray = tempList.filter(item => {
+      const key = `${item.subDepartmentID}-${item.zoneID}`;
 
-    tempList.forEach((obj) => {
+      if (!seenCombinations[key]) {
+        seenCombinations[key] = true;
+        return true;
+      }
+
+      return false;
+    });
+
+    console.log("uniqueArray:", uniqueArray);
+
+    uniqueArray.forEach((obj) => {
       this.zoneForCommentService.addUpdateZoneForComment(0, obj.subDepartmentID, this.applicationID, obj.zoneID, obj.zoneName, obj.userID).subscribe((data: any) => {
 
         if (data.responseCode == 1) {

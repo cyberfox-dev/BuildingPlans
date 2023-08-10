@@ -293,16 +293,16 @@ export class ProjectDetailsMapComponent implements OnInit {
     //Use this tool to verify boundaries: http://bboxfinder.com ymin,xmin,ymax,xmax
     const theExtent = new Extent({
 /*      Cape Town*/
-      //ymin: -34.358,
-      //xmin: 18.2562,
-      //ymax: -33.3992,
-      //xmax: 18.855,
+      ymin: -34.358,
+      xmin: 18.2562,
+      ymax: -33.3992,
+      xmax: 18.855,
 
       //Western Cape
-      ymin: -34.867905,
-      xmin: 17.314453,
-      ymax: -30.391830,
-      xmax: 24.268799,
+      //ymin: -34.867905,
+      //xmin: 17.314453,
+      //ymax: -30.391830,
+      //xmax: 24.268799,
     });
 
     const view = new MapView({
