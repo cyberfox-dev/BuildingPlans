@@ -44,6 +44,7 @@ import { SubDepartmentForCommentService } from "src/app/service/SubDepartmentFor
 import { ZoneForCommentService } from "src/app/service/ZoneForComment/zone-for-comment.service"
 import Fullscreen from '@arcgis/core/widgets/Fullscreen';
 import LabelClass from '@arcgis/core/layers/support/LabelClass';
+import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
 //import * as FeatureLayerView from 'esri/views/layers/FeatureLayerView';
 
 /*import { Editor, EditorViewModel, FeatureFormViewModel } from "@arcgis/core/widgets/Editor";*/
@@ -145,6 +146,7 @@ export class ProjectDetailsMapComponent implements OnInit {
     private actionCenterComponent: ActionCenterComponent,
     private subDepartmentForCommentService: SubDepartmentForCommentService,
     private zoneForCommentService: ZoneForCommentService,
+    private notificationsService: NotificationsService,
 
     /*    private query: Query,*/
     /*        @Inject(ARCGIS_CONFIG) private config: ArcgisConfig,*/
@@ -290,17 +292,17 @@ export class ProjectDetailsMapComponent implements OnInit {
     // Create the search source configuration for Cape Town, South Africa
     //Use this tool to verify boundaries: http://bboxfinder.com ymin,xmin,ymax,xmax
     const theExtent = new Extent({
-      //Cape Town
-      //ymin: -34.358,
-      //xmin: 18.2562,
-      //ymax: -33.3992,
-      //xmax: 18.855,
+/*      Cape Town*/
+      ymin: -34.358,
+      xmin: 18.2562,
+      ymax: -33.3992,
+      xmax: 18.855,
 
       //Western Cape
-      ymin: -34.867905,
-      xmin: 17.314453,
-      ymax: -30.391830,
-      xmax: 24.268799,
+      //ymin: -34.867905,
+      //xmin: 17.314453,
+      //ymax: -30.391830,
+      //xmax: 24.268799,
     });
 
     const view = new MapView({
@@ -351,10 +353,11 @@ export class ProjectDetailsMapComponent implements OnInit {
 
     const sources = [{
       url: "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer",
-      name: 'Western Cape, South Africa',
-      placeholder: "Search Western Cape",
-      maxResults: 3,
-      filter: searchExtent
+      name: 'Cape Town, South Africa',
+      placeholder: "Search Cape Town",
+/*      maxResults: 3,*/
+      filter: searchExtent,
+      location: view.center
     }, {
       layer: new FeatureLayer({
         url: "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Land_Administration/MapServer/13",
@@ -368,7 +371,8 @@ export class ProjectDetailsMapComponent implements OnInit {
       outFields: ["*"],
       name: "ERF",
       filter: searchExtent,
-      maxResults: 3,
+ /*     maxResults: 3,*/
+      location: view.center // Set the location to the center of the view
     }];
 
     //Remove default search source: https://community.esri.com/t5/developers-questions/disable-quot-arcgis-world-grocoding-quot-in-search/m-p/806620#M5367
@@ -817,8 +821,8 @@ export class ProjectDetailsMapComponent implements OnInit {
 
         //Start loop from here
         for (var i = 0; i < this.sharedService.subDepartmentList.length; i++) {
-
-          if (this.sharedService.subDepartmentList[i].isSetForAutomaticDistribution) {
+          //The ZoneAdminUsers for Bulk water and Waste Water and Treatment must always be returned - this code can be improved later - this is merely a fix that was hardcoded in.
+          if (this.sharedService.subDepartmentList[i].isSetForAutomaticDistribution || this.sharedService.subDepartmentList[i].subDepartmentName == "Bulk Water" || this.sharedService.subDepartmentList[i].subDepartmentName == "Waste Water and Treatment") {
             //Get current mapLayerID
             const mapLayerID = this.sharedService.subDepartmentList[i].mapLayerID
             //Get subDepartmentID for the current
@@ -848,7 +852,7 @@ export class ProjectDetailsMapComponent implements OnInit {
                   //This code runs when a subdepartment consists of multiple regions
                 } else if (mapLayerID > -1) {
 
-                  //Here, also query bulk water (layer 3), if the drawn polygon crosses any bulkwater unfrustructure. The bulkwater infrustructure includes all the layers below.
+                  //Here, also query bulk water (layer 3), if the drawn polygon crosses any bulkwater infrustructure. The bulkwater infrustructure includes all the layers below.
                   if (mapLayerID == 3) {
                     let numOfInterceptions = 0;
 
@@ -887,6 +891,7 @@ export class ProjectDetailsMapComponent implements OnInit {
                       'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/52', //8
                       'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/57', //7
                       'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/59', //1
+
                     ];
 
                     // Perform queries on each layer
@@ -907,7 +912,7 @@ export class ProjectDetailsMapComponent implements OnInit {
                             //Remove bulkwater from the array
                             exclusionsList = exclusionsList.filter(item => item !== 1022);
                             //Exclude reticulation subdepartment
-                            exclusionsList.push(1025);
+                            //exclusionsList.push(1025); //reticulation must never be excluded
 
                             //  console.log("For department " + this.sharedService.subDepartmentList[i].subDepartmentName + " the application will be distributed to the following Admin users, as this department has no zones, therefore we assume it is the entire city", this.sharedService.distributionList);
                           } else {
@@ -974,6 +979,9 @@ export class ProjectDetailsMapComponent implements OnInit {
                       this.sharedService.distributionList = this.sharedService.distributionList.concat(filteredList);
                       //Removes all the excluded departments
                       this.sharedService.distributionList = this.sharedService.distributionList.filter(item => !exclusionsList.includes(item.subDepartmentID));
+
+                      //Removes duplicates caused by multiple component initializations. This is a hack and should be fixed at some point.
+                      this.sharedService.distributionList = [...new Set(this.sharedService.distributionList)];
 
                       /*                    this.sharedService.distributionList.push(tempDistributionList);*/
                       console.log("Distribution list", this.sharedService.distributionList);

@@ -59,12 +59,12 @@ export class NotificationsService {
       html: html,
     };
 
-    //dev check
-    if (emailData.to !== 'venolin.naidoo@capetown.gov.za') {
-      emailData.to = 'venolin.naidoo@capetown.gov.za';
-    } else {
+    ////dev check
+    //if (emailData.to !== 'venolin.naidoo@capetown.gov.za') {
+    //  emailData.to = 'venolin.naidoo@capetown.gov.za';
+    //} else {
 
-    }
+    //}
 
     const username = 'venolin'; // Replace with your actual username
     const password = '%VUkrO9@5a^0TO4k'; // Replace with your actual password

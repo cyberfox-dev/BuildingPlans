@@ -1029,8 +1029,15 @@ export class NewWayleaveComponent implements OnInit {
               }
               this.onCreateNotification();
               this.router.navigate(["/home"]);
-              this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + "<br><br><p>Your application (" + this.applicationID + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Thank you</p>");
+              this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + this.applicationID + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
               /*              this.addToSubDepartmentForComment();*/
+
+              //Send emails to zone department admins
+              this.shared.distributionList.forEach((obj) => {
+                this.notificationsService.sendEmail(obj.email, "New wayleave application submission", "check html", 'Dear ' + obj.fullName + ',<br><br><p>An application with ID ' + this.applicationID + ' for wayleave has just been captured. As the zone admin of ' + obj.zoneName + ' in department ' + obj.subDepartmentName + ', please assign a reviewer to the application.</p><br><br>Regards,<br><b>Wayleave Management System<b><br><img src="https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png">');
+
+              })
+
               this.addToZoneForComment();
 
               console.log("responseAddapplication", data);
@@ -3136,11 +3143,29 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   public addToZoneForComment() {
+    //const tempList = this.shared.distributionList;
+    //Filters list so that only one link is created in the zoneforcomment table per zone.
+    //const tempList = [...new Set(this.shared.distributionList)];
+
+    // Assuming your array is named dataArray
     const tempList = this.shared.distributionList;
 
+    const seenCombinations = {}; // To keep track of seen combinations
 
+    const uniqueArray = tempList.filter(item => {
+      const key = `${item.subDepartmentID}-${item.zoneID}`;
 
-    tempList.forEach((obj) => {
+      if (!seenCombinations[key]) {
+        seenCombinations[key] = true;
+        return true;
+      }
+
+      return false;
+    });
+
+    console.log("uniqueArray:", uniqueArray);
+
+    uniqueArray.forEach((obj) => {
       this.zoneForCommentService.addUpdateZoneForComment(0, obj.subDepartmentID, this.applicationID, obj.zoneID, obj.zoneName, obj.userID).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
@@ -3322,7 +3347,7 @@ export class NewWayleaveComponent implements OnInit {
       if (data.responseCode == 1) {
 
         data.forEach((obj) => {
-          this.notificationsService.sendEmail(obj.email, "New wayleave application submission", "check html", "Dear " + subDepartmentName + "User" + "<br><br><p>An application with ID " + this.applicationID + " for wayleave has just been captured.<br><br>Thank you</p>");
+          this.notificationsService.sendEmail(obj.email, "New wayleave application submission", "check html", "Dear " + subDepartmentName + "User" + "<br><br>An application with ID " + this.applicationID + " for wayleave has just been captured.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
           
       })
 

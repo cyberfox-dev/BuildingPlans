@@ -6,35 +6,24 @@
     </div>
   </div>
   <div class="nav-btn">
-    <label for="nav-check" (click)="disableIcons()">
-      <span></span>
-      <span></span>
-      <span></span>
-    </label>
+    <button mat-button matTooltip="Menu" (click)="openEnd(content)"><i class="fa fa-bars" aria-hidden="true"></i></button>
   </div>
 
   <div class="nav-links" *ngIf="Icons">
-    <button mat-button matTooltip="Frequently Asked Questions" (click)="openFAQModal(FAQModal)"><i class="fa fa-question" aria-hidden="true"></i></button>
+<!--    <button mat-button matTooltip="Frequently Asked Questions" (click)="openFAQModal(FAQModal)"><i class="fa fa-question" aria-hidden="true"></i></button>
     <button mat-button matTooltip="Cyberfox configs" (click)="goToCyberfoxCofig()" *ngIf="cyberfoxConfigs"><i class="fa fa-superpowers"></i></button>
     <button mat-button matTooltip="Repository" (click)="openRepositoryModal(repositoryModal)"><i class="fa fa-files-o" aria-hidden="true"></i></button>
     <button mat-button matTooltip="Comment Builder" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><i class="fa fa-comment"></i></button>
     <button mat-button matTooltip="Configurations" (click)="goToConfig()" *ngIf="Configurations"><i class="fa fa-cogs"></i></button>
-    <button mat-button matTooltip="Notifications" (click)="getAllNotifications();openNotificationsModal(notificationsCenter)"><i class="fa fa-bell"></i></button>
-    <button mat-button [matMenuTriggerFor]="user"><img src="https://img.icons8.com/dusk/100/000000/user-male-circle.png" alt="" class="user-avatar-md rounded-circle"></button>
-    <mat-menu #user="matMenu">
+    <button mat-button matTooltip="Notifications" (click)="getAllNotifications();openNotificationsModal(notificationsCenter)"><i class="fa fa-bell"></i></button>-->
+    <button mat-button matTooltip="Menu" (click)="openEnd(content)"><i class="fa fa-bars" aria-hidden="true"></i></button>
+<!--    <button mat-button [matMenuTriggerFor]="user"><img src="https://img.icons8.com/dusk/100/000000/user-male-circle.png" alt="" class="user-avatar-md rounded-circle"></button>-->
+<!--    <mat-menu #user="matMenu">
       <button mat-menu-item (click)="goToSettings()">Settings</button>
       <a><button mat-menu-item (click)="LogoutUser()">Log Out</button></a>
-    </mat-menu>
+    </mat-menu>-->
   </div>
 
-  <div class="nav-links" *ngIf="Links">
-    <a (click)="goToCyberfoxCofig()" *ngIf="cyberfoxConfigs">Cyberfox config</a>
-    <a (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser">Comment Builder</a>
-    <a (click)="goToConfig()" *ngIf="Configurations">Configurations</a>
-    <a (click)="getAllNotifications();openNotificationsModal(notificationsCenter)">Notifications</a>
-    <a (click)="goToSettings()">User Settings</a>
-    <a (click)="LogoutUser()">Log Out</a>
-  </div>
 </div>
 
 
@@ -197,7 +186,7 @@
 <ng-template #repositoryModal let-modal>
   <div class="modal-header">
     <h1 class="modal-title" id="modal-basic-title">Repository</h1>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click');resetFilter()"></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="dismiss();resetFilter()"></button>
   </div>
   <div class="modal-body">
     <button mat-raised-button color="green" (click)="onUploadFile(fileUpload)" *ngIf="uploadRepoDoc">Upload Document</button>
@@ -257,7 +246,7 @@
 <ng-template #fileUpload let-modal>
   <div class="modal-header">
     <h1 class="modal-title" id="modal-basic-title">Upload Document</h1>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()"></button>
 
   </div>
   <div class="modal-body">
@@ -324,5 +313,29 @@
   </div>
   <div class="modal-footer">
     <button type="submit" class="btn btn-light" (click)="modal.dismiss('Cross click')">Close</button>
+  </div>
+</ng-template>
+
+
+
+
+<!--Side Nav-->
+
+<ng-template #content let-offcanvas>
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvas-basic-title">Menu</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
+  </div>
+  <div class="offcanvas-body">
+      <div class="sideNav" *ngIf="Icons">
+      <button mat-button class ="sideNavIcons" (click)="offcanvas.dismiss('Cross click');openFAQModal(FAQModal)"><i class="fa fa-question" aria-hidden="true"></i>   Frequently Asked Questions</button>
+      <button mat-button class ="sideNavIcons" (click)="goToCyberfoxCofig();offcanvas.dismiss('Cross click')" *ngIf="cyberfoxConfigs"><i class="fa fa-superpowers"></i>   Cyberfox Configs</button>
+      <button mat-button class ="sideNavIcons" (click)="openRepositoryModal(repositoryModal);offcanvas.dismiss('Cross click')"><i class="fa fa-files-o" aria-hidden="true"></i>   Repository</button>
+      <button mat-button class ="sideNavIcons" (click)="getAllCommentsByUserID(commentBuilder);offcanvas.dismiss('Cross click')" *ngIf="isInternalUser"><i class="fa fa-comment"></i>   Comment Builder</button>
+      <button mat-button class ="sideNavIcons" (click)="goToConfig();offcanvas.dismiss('Cross click')" *ngIf="Configurations"><i class="fa fa-cogs"></i>   Configurations</button>
+      <button mat-button class ="sideNavIcons" (click)="getAllNotifications();openNotificationsModal(notificationsCenter);offcanvas.dismiss('Cross click')"><i class="fa fa-bell"></i>   Notifications</button>
+      <button mat-button class ="sideNavIcons" (click)="goToSettings();offcanvas.dismiss('Cross click')"><i class="fa fa-user-circle-o" aria-hidden="true"></i>   User Settings</button>
+      <button mat-button class ="sideNavIcons" (click)="LogoutUser();offcanvas.dismiss('Cross click')"><i class="fa fa-sign-out" aria-hidden="true"></i>   Log Out</button>
+    </div>
   </div>
 </ng-template>

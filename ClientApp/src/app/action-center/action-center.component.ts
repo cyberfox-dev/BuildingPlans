@@ -264,6 +264,7 @@ export class ActionCenterComponent implements OnInit {
   loggedInUsersDepartmentID: number;
   loggedInUsersSubDepartmentID: any;
   loggedInUsersSubDepartmentName: any;
+  loggedInUserName: any;
   AssignProjectToZone: boolean;
   hopperButton: boolean;
   SubForCommentIDForHopper: any;
@@ -379,6 +380,7 @@ export class ActionCenterComponent implements OnInit {
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
     this.loggedInUsersSubDepartmentName = this.CurrentUserProfile[0].subDepartmentName;
     this.loggedInUsersDepartmentID = this.CurrentUserProfile[0].departmentID;
+    this.loggedInUserName = this.CurrentUserProfile[0].fullName;
     this.getCurrentUserSubDepName();
     this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
     if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
@@ -942,7 +944,7 @@ export class ActionCenterComponent implements OnInit {
 
               alert(data.responseMessage);
               //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Final Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Final Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
                
@@ -985,7 +987,7 @@ export class ActionCenterComponent implements OnInit {
 
               alert(data.responseMessage);
               //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "FinalReject", this.CurrentUser.appUserId).subscribe((data: any) => {
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "FinalReject", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
            
@@ -1772,7 +1774,7 @@ export class ActionCenterComponent implements OnInit {
   remarks = '';
   vatApp = '';
   calculateTotalAmount() {
-    debugger;
+    
     let rateVat = this.depositRequired.controls["total"].value;
     this.vatApp = this.depositRequired.controls["vatApplicable"].value;
      this.rate = Number(this.depositRequired.controls["rate"].value);
@@ -1792,7 +1794,7 @@ export class ActionCenterComponent implements OnInit {
   }
 
   onDepositRequiredClick() {
-    debugger;
+    
     let SubDepartmentName = "";
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
@@ -1864,7 +1866,7 @@ export class ActionCenterComponent implements OnInit {
                   alert(data.responseMessage);
 
                   //commentsService
-                  this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId).subscribe((data: any) => {
+                  this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
 
                     if (data.responseCode == 1) {
 
@@ -1945,7 +1947,7 @@ export class ActionCenterComponent implements OnInit {
                 
                 alert(data.responseMessage);
                 //commentsService
-                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
 
@@ -1990,7 +1992,7 @@ export class ActionCenterComponent implements OnInit {
 
               alert(data.responseMessage);
               //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Rejected", this.CurrentUser.appUserId).subscribe((data: any) => {
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Rejected", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
 
@@ -2034,7 +2036,7 @@ export class ActionCenterComponent implements OnInit {
 
               alert(data.responseMessage);
               //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId).subscribe((data: any) => {
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
 
@@ -2079,7 +2081,7 @@ export class ActionCenterComponent implements OnInit {
                 
                 alert(data.responseMessage);
                 //commentsService
-                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Referred", this.CurrentUser.appUserId).subscribe((data: any) => {
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Referred", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
 
@@ -2156,7 +2158,7 @@ export class ActionCenterComponent implements OnInit {
                 alert(data.responseMessage);
 
                 //commentsService
-                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId).subscribe((data: any) => {
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
                     
@@ -2239,7 +2241,7 @@ export class ActionCenterComponent implements OnInit {
                 
                 alert(data.responseMessage);
                 //commentsService
-                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
 
@@ -2288,7 +2290,7 @@ export class ActionCenterComponent implements OnInit {
 
               alert(data.responseMessage);
               //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Rejected", this.CurrentUser.appUserId).subscribe((data: any) => {
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Rejected", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
 
@@ -2331,7 +2333,7 @@ export class ActionCenterComponent implements OnInit {
 
               alert(data.responseMessage);
               //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId).subscribe((data: any) => {
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
 
@@ -2688,7 +2690,7 @@ getAllCommentsByUserID() {
   //}
 
   onPopulateDeposit() {
-    debugger;
+    
     let selectedServiceItem = Number(this.selectSI);
 
     console.log("THIS IS THE SERVICE ITEM CODE", selectedServiceItem);
@@ -3401,7 +3403,7 @@ getAllCommentsByUserID() {
 
         alert(data.responseMessage);
         //commentsService
-        this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, this.loggedInUserSubDepartmentName, this.leaveAComment, "Final Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
+        this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, this.loggedInUserSubDepartmentName, this.leaveAComment, "Final Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
 
           if (data.responseCode == 1) {
             
