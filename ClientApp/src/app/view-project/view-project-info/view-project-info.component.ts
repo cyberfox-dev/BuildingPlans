@@ -7,7 +7,7 @@ import { ApplicationsService } from '../../service/Applications/applications.ser
 import { CommentsService } from '../../service/Comments/comments.service';
 import { DepositRequiredService } from 'src/app/service/DepositRequired/deposit-required.service';
 import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import autoTable, { UserOptions } from 'jspdf-autotable';
 import { DatePipe } from '@angular/common';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
 import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component';
@@ -24,7 +24,7 @@ import { HttpClient, HttpErrorResponse, HttpEventType } from '@angular/common/ht
 import { FinancialService } from '../../service/Financial/financial.service';
 import { PermitService } from '../../service/Permit/permit.service';
 import { MobileFieldTrackingService } from 'src/app/service/MFT/mobile-field-tracking.service';
-
+import 'jspdf-autotable';
 
 
 export interface RolesList {
@@ -80,6 +80,7 @@ export interface SubDepConditionalApproveList {
   Comment: string;
   CommentStatus: string;
   DateCreated: any;
+  UserName: string;
 }
 export interface SubDepSubDepRejectList {
   SubDepID: number;
@@ -187,6 +188,10 @@ export interface DepositRequired {
 
 var img = new Image();
 img.src = 'assets/cctlogoblack.png';
+
+interface jsPDFWithPlugin extends jsPDF {
+  autotable: (options: UserOptions) => jsPDF;
+}
 
 @Component({
   selector: 'app-view-project-info',
@@ -1573,7 +1578,7 @@ export class ViewProjectInfoComponent implements OnInit {
           tempSubDepCommentStatusList.Comment = current.comment;
           tempSubDepCommentStatusList.DateCreated = current.dateCreated;
           tempSubDepCommentStatusList.CommentStatus = current.commentStatus;
-
+          tempSubDepCommentStatusList.UserName = current.userName;
           this.SubDepConditionalApproveList.push(tempSubDepCommentStatusList);
 
 
@@ -1691,7 +1696,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
 
-
+ 
   onCreateApprovalPack() {
 
     this.getAllSubDepFroConditionalApprove();
@@ -1701,12 +1706,16 @@ export class ViewProjectInfoComponent implements OnInit {
       format: 'a4'
     });
 
+/*    const doc = new jsPDF('portrait', 'px', 'a4') as jsPDFWithPlugin;*/
+
     // Set up table
     const startY = 50; // set the starting Y position for the table
     const headers = [
       [
         'Department',
-        'Status'
+        'Status',
+        'People Who Interacted',
+        'Signature',
       ]
     ];
 
@@ -1720,6 +1729,7 @@ export class ViewProjectInfoComponent implements OnInit {
     const data: any[] = [];
     const data2: any[] = [];
 
+    const sig = new Image();
     const img = new Image();
     const footer = new Image();
     const page1 = new Image();
@@ -1814,7 +1824,7 @@ export class ViewProjectInfoComponent implements OnInit {
     page43.src = 'assets/Packs/page43.PNG';
     page44.src = 'assets/Packs/page44.PNG';
     page45.src = 'assets/Packs/page45.PNG';
-
+    sig.src = 'assets/signature-stamp-signature-round-isolated-sign-signature-label-set-2C38RT2.jpg';
 
     // Add logo to PDF document
 
@@ -1842,11 +1852,21 @@ export class ViewProjectInfoComponent implements OnInit {
       const row = [
         deposit.SubDepName,
         deposit.CommentStatus,
+        deposit.UserName,
+        '',
       ];
       data.push(row);
     });
     doc.setLineHeightFactor(60);
     doc.setFontSize(10); // add this line to set the font size
+
+    data.forEach((row) => {
+      
+      const imageWidth = 6;
+      const imageHeight = sig.height * 6 / sig.width;
+      row[3] = { image: sig, width: imageWidth, height: imageHeight };
+    });
+
 
     doc.text("Based on the summary above, the wayleave application is approved. Kindly proceed to apply for a permit to work before commencement of any work on site.", 10, 190, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });//
     doc.setFontSize(12);
@@ -1862,16 +1882,18 @@ export class ViewProjectInfoComponent implements OnInit {
       styles: {
         overflow: 'visible',
         halign: 'justify',
-        fontSize: 10,
+        fontSize: 8,
         valign: 'middle',
-
+        
 
       },
 
       columnStyles: {
-        0: { cellWidth: 90, fontStyle: 'bold' },
-        1: { cellWidth: 80 },
-
+        0: { cellWidth: 70, fontStyle: 'bold' },
+        1: { cellWidth: 30 },
+        2: { cellWidth: 50 },
+        3: { cellWidth: 30 },
+        
       }
 
 
@@ -1883,7 +1905,7 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.setFontSize(10);
     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
     doc.setFontSize(16);
-    doc.text('Special Conditions', 10, 45, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.text('Special Conditions', 10, 45, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' ,});
 
 
 
@@ -1897,34 +1919,32 @@ export class ViewProjectInfoComponent implements OnInit {
     });
 
 
-    autoTable(doc, {
-      
-      startY: 60,
-      body: data2,
-      styles: {
-        overflow: 'visible',
-        halign: 'justify',
-        fontSize: 10,
-        valign: 'middle',
-        fillColor: false, // Remove background color
-        textColor: [0, 0, 0], // Set text color to black
-      },
-      alternateRowStyles: {
-        fillColor: false, // Remove fill color for alternate rows
-      },
-      columnStyles: {
-        0: { cellWidth: 90, fontStyle: 'bold' },
-        1: { cellWidth: 'auto', cellPadding: { top: 2, right: 2, bottom: 2, left: 2 }, overflow: 'visible' },
-      },
-      didDrawCell: (data) => {
-        if (data.section === 'body' && data.column.index === 1) {
-          doc.setTextColor(100, 100, 100); // Change text color for comment column
-          doc.setFont('italic'); // Set font style to italic for comment column
-        }
-      },
+    doc.setFontSize(10);
+    let yOffset = 60; // Starting Y-coordinate for the list
+
+    // Iterate through the SubDepConditionalApproveList and create a list
+    this.SubDepConditionalApproveList.forEach((deposit) => {
+      doc.text(deposit.SubDepName + ': \n' + deposit.Comment+'\n', 10, yOffset, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
+      yOffset += 10; // Increase Y-coordinate for the next item
     });
+    doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+
+    //Contact information Page
+    doc.addPage();
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+    doc.setFontSize(16);
+    doc.text('Contact Detials', 10, 45, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+
+
+
+    
+
 
     doc.addImage(footer, 'png', 7, 255, 205, 45);
+
     //PAGE 1
     doc.addPage();
 

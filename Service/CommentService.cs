@@ -19,7 +19,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Comments> AddUpdateComment(int? commentID, int? applicationID, int? subDepartmentForCommentID,int? subDepartmentID , string? subDepartmentName , string commentName,string? commentStatus ,string? creadtedByID, int? isClarifyCommentID,string? isApplicantReplay)
+        public async Task<Comments> AddUpdateComment(int? commentID, int? applicationID, int? subDepartmentForCommentID,int? subDepartmentID , string? subDepartmentName , string commentName,string? commentStatus ,string? creadtedByID, int? isClarifyCommentID,string? isApplicantReplay, string? UserName)
         {
 
             if (commentID == 0)
@@ -46,7 +46,8 @@ namespace WayleaveManagementSystem.Service
                     SubDepartmentName = subDepartmentName,
                     isActive = true,
                     isClarifyCommentID = isClarifyCommentID,
-                    isApplicantReplay = isApplicantReplay
+                    isApplicantReplay = isApplicantReplay,
+                    UserName = UserName,
                 };
 
                 //After the inizlization add to the db
@@ -131,7 +132,7 @@ namespace WayleaveManagementSystem.Service
                     SubDepartmentName = comment.SubDepartmentName,
                     isClarifyCommentID = comment.isClarifyCommentID,
                     isApplicantReplay = comment.isApplicantReplay,
-
+                    UserName = comment.UserName,
                 }
                 ).ToListAsync();
         }
@@ -155,7 +156,7 @@ namespace WayleaveManagementSystem.Service
                     SubDepartmentName = comment.SubDepartmentName,
                     isClarifyCommentID = comment.isClarifyCommentID,
                     isApplicantReplay = comment.isApplicantReplay,
-
+                    UserName = comment.UserName,
                 }
                 ).ToListAsync();
         }

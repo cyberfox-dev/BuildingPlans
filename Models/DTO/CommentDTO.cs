@@ -21,6 +21,8 @@ namespace WayleaveManagementSystem.DTO
 
         public int? isClarifyCommentID { get; set; }
         public string? isApplicantReplay { get; set; }
+
+        public string? UserName { get; set; }
     }
 
 }
