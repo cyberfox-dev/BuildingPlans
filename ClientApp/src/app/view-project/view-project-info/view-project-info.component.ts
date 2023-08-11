@@ -1919,13 +1919,18 @@ export class ViewProjectInfoComponent implements OnInit {
     });
 
 
-    doc.setFontSize(10);
+
     let yOffset = 60; // Starting Y-coordinate for the list
 
     // Iterate through the SubDepConditionalApproveList and create a list
     this.SubDepConditionalApproveList.forEach((deposit) => {
-      doc.text(deposit.SubDepName + ': \n' + deposit.Comment+'\n', 10, yOffset, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
-      yOffset += 10; // Increase Y-coordinate for the next item
+      doc.setFontSize(14);
+      doc.setFont('helvetica','bold'); // Set the font to Helvetica bold
+      doc.text(deposit.SubDepName + ': \n', 10, yOffset, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' ,});
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal'); // Set the font to Helvetica bold
+      doc.text(deposit.Comment, 10, yOffset += 10, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
+      yOffset += 20; // Increase Y-coordinate for the next item
     });
     doc.addImage(footer, 'png', 7, 255, 205, 45);
 
