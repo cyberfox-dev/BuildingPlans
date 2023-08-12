@@ -24,13 +24,20 @@ export class FileUploadComponent implements OnInit {
     CurrentUser: any;
     fileUploadName: string;
     fileExtention: string;
+    currentApplication: any;
 
   constructor(private http: HttpClient, private shared: SharedService, private documentUploadService: DocumentUploadService,) { }
 
   ngOnInit(): void {
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
-    this.ApplicationID = this.shared.getApplicationID();
+    this.currentApplication = this.shared.getViewApplicationIndex();
+    if (this.UploadFor == "Doc" || this.UploadFor == "") {
+      this.ApplicationID = this.currentApplication.applicationID;
+    } else {
+      this.ApplicationID = this.shared.getApplicationID();
+    }
+    
   }
 
   uploadFile(files: any) {
@@ -39,13 +46,23 @@ export class FileUploadComponent implements OnInit {
     }
     
     let fileToUpload = <File>files[0];
-    this.fileExtention = fileToUpload.name.substring(fileToUpload.name.indexOf('.'));
-    if (this.fileExtention == ".webp") {
-      alert("You cannot upload .webp files!");
-      return;
-    }
+  const fileNameParts = fileToUpload.name.split('.');
+    this.fileExtention = fileNameParts.length > 1 ? `.${fileNameParts[fileNameParts.length - 1].toLowerCase()}` : "";
 
-     this.fileUploadName = this.UploadFor.substring(' ') + "-appID-"  + this.ApplicationID;
+    if (fileNameParts.length > 2 || this.fileExtention === ".webp") {
+      if (this.fileExtention === ".webp") {
+    alert("You cannot upload .webp files!");
+  } else {
+    alert("Invalid file name.");
+  }
+  return;
+}
+    if (this.UploadFor == "Doc" || this.UploadFor == "") {
+      this.fileUploadName = fileNameParts[0] + "-appID-" + this.ApplicationID;
+    } else {
+      this.fileUploadName = this.UploadFor.substring(' ') + "-appID-" + this.ApplicationID;
+    }
+    
 
     this.fileName = fileToUpload.name; // Set the fileName property with the selected file name
 

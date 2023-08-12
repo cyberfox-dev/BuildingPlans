@@ -25,18 +25,23 @@ export class DocumentsComponentComponent implements OnInit {
   DocumentsList: DocumentsList[] = [];
   private readonly apiUrl: string = this.shared.getApiUrl();
 
+  fileAttrs = "Upload File:";
+  fileAttrsName = "Doc";
+
   @ViewChild(MatTable) DocumentsListTable: MatTable<DocumentsList> | undefined;
 
   fileAttr = 'Choose File';
   displayedColumnsDocs: string[] = ['DocumentName', 'actions'];
   dataSourceDoc = this.DocumentsList;
+    currentApplication: any;
+    applicationDataForView: any;
 
 
   constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService) { }
 
   ngOnInit(): void {
-
-
+    this.currentApplication = this.shared.getViewApplicationIndex();
+    this.ApplicationID = this.currentApplication.applicationID;
 
     this.getAllDocsForApplication();
   }
@@ -65,8 +70,40 @@ export class DocumentsComponentComponent implements OnInit {
     }
   }
 
+  lastUploadEvent: any;
 
-  viewDocument(index:any) {
+  onUploadFinished(event: any) {
+    this.lastUploadEvent = event;  // Store the event data
+    // Other logic (if any)...
+  }
+
+  ConfirmUpload() {
+    if (!window.confirm("Are you sure you want to upload the file?")) {
+      // Use the stored event data
+      this.onFileDelete(this.lastUploadEvent, 0);
+    }
+    // Rest of the logic...
+  }
+
+  onPassFileName(event: { uploadFor: string; fileName: string }) {
+    debugger;
+    const { uploadFor, fileName } = event;
+    const index = parseInt(uploadFor.substring('CoverLetter'.length));
+    this.fileAttrsName = fileName;
+  }
+  onFileDelete(event: any, index: number) {
+
+    this.fileAttrsName = '';
+    //this.getAllDocsForApplication();
+
+  }
+
+  onFileUpload(event: any) {
+    debugger;
+
+  }
+
+  viewDocument(index: any) {
 
     // Make an HTTP GET request to fetch the document
     fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.DocumentsList[index].DocumentName}`)
@@ -101,7 +138,7 @@ export class DocumentsComponentComponent implements OnInit {
 
 
   getAllDocsForApplication() {
-    
+    debugger;
     this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
