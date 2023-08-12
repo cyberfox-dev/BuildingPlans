@@ -24,6 +24,8 @@ import { HttpClient, HttpErrorResponse, HttpEventType } from '@angular/common/ht
 import { FinancialService } from '../../service/Financial/financial.service';
 import { PermitService } from '../../service/Permit/permit.service';
 import { MobileFieldTrackingService } from 'src/app/service/MFT/mobile-field-tracking.service';
+import { FileUploadComponent } from 'src/app/file-upload/file-upload.component';
+
 import 'jspdf-autotable';
 
 
@@ -327,10 +329,12 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
 
-
+  fileAttrs = "Upload File:";
+  fileAttrsName = "Doc";
 
     ApForUpload: string;
     showPermitTab: boolean;
+    hasFile: boolean;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -358,6 +362,8 @@ export class ViewProjectInfoComponent implements OnInit {
   openDocUpload(newSub: any) {
     this.modalService.open(newSub, { backdrop: 'static', centered: true, size: 'lg' });
   }
+
+  isFinancial = true;
 
   openEditCommentModal(commentEditorModal: any, index: any) {
     
@@ -405,6 +411,8 @@ export class ViewProjectInfoComponent implements OnInit {
     private financial: FinancialService,
     private permitService: PermitService,
     private MFTService: MobileFieldTrackingService,
+    private fileUploadComponent: FileUploadComponent,
+    
   ) { }
 
 
@@ -509,6 +517,22 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
+  onCloseFile() {
+    if (this.hasFile) {
+      if (confirm("If you don't delete file it will still be uploaded! Click Cancel botton to delete file before proceeding or Ok botton to upload and exit.")) {
+        this.modalService.dismissAll();
+      }
+      else {
+
+      }
+
+    } else {
+      this.modalService.dismissAll();
+    }
+   
+
+  }
+
 
   //validate(): void {
   //  //this.businessPartnerService.validateBP().subscribe(
@@ -571,6 +595,18 @@ export class ViewProjectInfoComponent implements OnInit {
     }
   }
 
+  onFileDelete(event: any, index: number) {
+
+    this.fileAttrsName = '';
+    this.hasFile = false;
+    //this.getAllDocsForApplication();
+
+  }
+
+  onFileUpload(event: any) {
+    debugger;
+
+  }
 
 
   onAutoLinkForPermit() {
@@ -2523,7 +2559,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   }
-  fileAttrs: string[] = [];
+  //fileAttrs: string[] = [];
 
 
 
@@ -2963,6 +2999,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getFinancial() {
+    this.FinancialDocumentsList.splice(0, this.FinancialDocumentsList.length);
     this.financial.getFinancialByApplicationID(this.ApplicationID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -3006,9 +3043,11 @@ export class ViewProjectInfoComponent implements OnInit {
 
   /*Mobile Field Tracking*/
   onPassFileName(event: { uploadFor: string; fileName: string }) {
+    debugger;
     const { uploadFor, fileName } = event;
-    const index = parseInt(uploadFor.substring('CoverLetter'.length));
-    this.fileAttrs[index] = fileName;
+    this.fileAttrsName = fileName;
+
+    this.hasFile = true;
   }
 
 

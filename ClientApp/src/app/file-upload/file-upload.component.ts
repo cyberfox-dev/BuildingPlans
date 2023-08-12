@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http';
 import { SharedService } from 'src/app/shared/shared.service';
 import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-upload.service';
+import { FinancialService } from 'src/app/service/Financial/financial.service';
 
 
 @Component({
@@ -12,9 +13,11 @@ import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-u
 export class FileUploadComponent implements OnInit {
   @Input() UploadFor: any;
   @Input() ApplicationID: any;
+  @Input() isFinancial: boolean | null;
   @Output() public onUploadFinished = new EventEmitter();
   @Output() public passFileName = new EventEmitter<{ uploadFor: string; fileName: string }>();
   @Output() onUploadSuccess: EventEmitter<any> = new EventEmitter();
+
   private readonly apiUrl: string = this.shared.getApiUrl();
   progress: number = 0;
   message: string | undefined;
@@ -26,7 +29,7 @@ export class FileUploadComponent implements OnInit {
     fileExtention: string;
     currentApplication: any;
 
-  constructor(private http: HttpClient, private shared: SharedService, private documentUploadService: DocumentUploadService,) { }
+  constructor(private http: HttpClient, private shared: SharedService, private documentUploadService: DocumentUploadService, private financialService: FinancialService,) { }
 
   ngOnInit(): void {
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
@@ -64,14 +67,64 @@ export class FileUploadComponent implements OnInit {
     }
     
 
-    this.fileName = fileToUpload.name; // Set the fileName property with the selected file name
+   
 
-    this.passFileName.emit({ uploadFor: this.UploadFor, fileName: fileToUpload.name });
+    if (this.isFinancial) {
+      this.financialService.getFinancialByApplicationID(this.ApplicationID).subscribe((data: any) => {
+        if (data && data.responseCode == 1) {
+          debugger;
+          // Searching for a match in the dataset
+          let matchedDocument = data.dateSet.find(doc => doc.documentName === this.fileUploadName + this.fileExtention);
+          debugger;
+          if (matchedDocument) {
+            debugger;
+            alert('Oops, you cannot upload files with the same name!');
+          } else
+          {
+            this.fileName = fileToUpload.name; // Set the fileName property with the selected file name
 
-    console.log("THIS IS THE FILE NAME!", this.fileUploadName);
-    debugger;
-    // Instead of pushing the file for a temporary upload, immediately call UploadDocuments
-    this.UploadDocuments(fileToUpload, this.fileUploadName + this.fileExtention);
+            this.passFileName.emit({ uploadFor: this.UploadFor, fileName: fileToUpload.name });
+            // Instead of pushing the file for a temporary upload, immediately call UploadDocuments
+            this.UploadDocuments(fileToUpload, this.fileUploadName + this.fileExtention);
+
+
+          }
+        } else {
+          alert(data.responseMessage);
+          console.log("Response:", data);
+        }
+      }, error => {
+        console.log("Error: ", error);
+      });
+    }
+    else {
+      this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
+        if (data && data.responseCode == 1) {
+          debugger;
+          // Searching for a match in the dataset
+          let matchedDocument = data.dateSet.find(doc => doc.documentName === this.fileUploadName + this.fileExtention);
+          debugger;
+          if (matchedDocument) {
+            debugger;
+            alert('Oops, you cannot upload files with the same name!');
+          } else {// If a match is found
+            this.passFileName.emit({ uploadFor: this.UploadFor, fileName: fileToUpload.name });
+            // Instead of pushing the file for a temporary upload, immediately call UploadDocuments
+            this.UploadDocuments(fileToUpload, this.fileUploadName + this.fileExtention);
+
+          }
+        } else {
+          alert(data.responseMessage);
+          console.log("Response:", data);
+        }
+      }, error => {
+        console.log("Error: ", error);
+      });
+    }
+   
+
+
+
   }
 
 
@@ -133,7 +186,13 @@ export class FileUploadComponent implements OnInit {
             this.progress = Math.round(100 * event.loaded / event.total);
           else if (event.type === HttpEventType.Response) {
             this.message = 'Upload success.';
-            this.uploadFinished(event.body, this.ApplicationID, this.CurrentUser); // Pass CurrentUser assuming it contains relevant user data. Adjust as needed.
+            if (this.isFinancial) {
+              this.financialuploadFinished(event.body, this.ApplicationID, this.CurrentUser); // Pass CurrentUser assuming it contains relevant user data. Adjust as needed.
+            }
+            else {
+              this.uploadFinished(event.body, this.ApplicationID, this.CurrentUser); // Pass CurrentUser assuming it contains relevant user data. Adjust as needed.
+            }
+           
             
           }
         },
@@ -169,5 +228,37 @@ export class FileUploadComponent implements OnInit {
 
 
   }
+
+
+  financialuploadFinished = (event: any, applicationID: any, applicationData: any) => {
+    debugger;
+    this.response = event;
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
+    console.log("applicationData", applicationData);
+    debugger;
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
+    debugger;
+    this.financialService.addUpdateFinancial(0, documentName, "Financial", documentName, this.response?.dbPath, applicationID, "System Generated Invoice").subscribe((data: any) => {
+  
+
+      if (data.responseCode == 1) {
+        debugger;
+        // Emit the onUploadSuccess event after a successful upload
+        this.onUploadSuccess.emit(event.body);
+      }
+
+
+
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+  }
+
 
 }
