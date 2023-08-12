@@ -3369,6 +3369,7 @@ export class NewWayleaveComponent implements OnInit {
 
   projectSizeAlert = false;
   ProjectSizeMessage = "";
+  PSM = "";
   CheckToPopulateManDoc() {
     let smallCount = 0;
     let mediumCount = 0;
@@ -3400,52 +3401,62 @@ export class NewWayleaveComponent implements OnInit {
           if (emergencyCount > 0 ) {
             this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
             this.projectSizeAlert = true;
-            this.ProjectSizeMessage = "Emergency Application";
+            this.ProjectSizeMessage = "Emergency";
+            this.PSM = "Emergency Application";
           } else {
             this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
             this.projectSizeAlert = true;
-            this.ProjectSizeMessage = "Large Application";
+            this.ProjectSizeMessage = "Large";
+            this.PSM = "Large Application";
           }
         } else {
           this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListMedium);
           this.projectSizeAlert = true;
-          this.ProjectSizeMessage = "Medium Application";
+          this.ProjectSizeMessage = "Medium";
+          this.PSM = "Medium Application";
         }
       } else {
         this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListSmall);
         this.projectSizeAlert = true;
-        this.ProjectSizeMessage = "Small Application";
+        this.ProjectSizeMessage = "Small";
+        this.PSM = "Small Application";
       }
     } else if (mediumCount > 0 || largeCount > 0 || emergencyCount > 0) {
       if (largeCount > 0 || emergencyCount > 0) {
         if (emergencyCount > 0) {
           this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
           this.projectSizeAlert = true;
-          this.ProjectSizeMessage = "Emergency Application";
+          this.ProjectSizeMessage = "Emergency";
+          this.PSM = "Emergency Application";
         } else {
           this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
           this.projectSizeAlert = true;
-          this.ProjectSizeMessage = "Large Application";
+          this.ProjectSizeMessage = "Large";
+          this.PSM = "Large Application";
         }
       } else {
         this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListMedium);
         this.projectSizeAlert = true;
-        this.ProjectSizeMessage = "Medium Application";
+        this.ProjectSizeMessage = "Medium";
+        this.PSM = "Medium Application";
       }
     } else if (largeCount > 0 || emergencyCount > 0) {
       if (emergencyCount > 0) {
         this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
         this.projectSizeAlert = true;
-        this.ProjectSizeMessage = "Emergency Application";
+        this.ProjectSizeMessage = "Emergency";
+        this.PSM = "Emergency Application";
       } else {
         this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
         this.projectSizeAlert = true;
-        this.ProjectSizeMessage = "Large Application";
+        this.ProjectSizeMessage = "Large";
+        this.PSM = "Large Application";
       }
     } else {
       this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
       this.projectSizeAlert = true;
-      this.ProjectSizeMessage = "Emergency Application";
+      this.ProjectSizeMessage = "Emergency";
+      this.PSM = "Emergency Application";
     }
 
   }
