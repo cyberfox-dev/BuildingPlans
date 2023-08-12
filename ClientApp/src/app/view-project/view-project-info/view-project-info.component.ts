@@ -1750,8 +1750,7 @@ export class ViewProjectInfoComponent implements OnInit {
       [
         'Department',
         'Status',
-        'People Who Interacted',
-        'Signature',
+        'Approved By:',
       ]
     ];
 
@@ -1889,20 +1888,12 @@ export class ViewProjectInfoComponent implements OnInit {
         deposit.SubDepName,
         deposit.CommentStatus,
         deposit.UserName,
-        '',
+
       ];
       data.push(row);
     });
     doc.setLineHeightFactor(60);
     doc.setFontSize(10); // add this line to set the font size
-
-    data.forEach((row) => {
-      
-      const imageWidth = 6;
-      const imageHeight = sig.height * 6 / sig.width;
-      row[3] = { image: sig, width: imageWidth, height: imageHeight };
-    });
-
 
     doc.text("Based on the summary above, the wayleave application is approved. Kindly proceed to apply for a permit to work before commencement of any work on site.", 10, 190, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });//
     doc.setFontSize(12);
@@ -1977,7 +1968,7 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.setFontSize(10);
     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
     doc.setFontSize(16);
-    doc.text('Contact Detials', 10, 45, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.text('Contact Details', 10, 45, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
 
 
 
