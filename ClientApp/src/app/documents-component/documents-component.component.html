@@ -14,7 +14,7 @@
     <th mat-header-cell *matHeaderCellDef>actions</th>
     <td mat-cell *matCellDef="let i = index">
       <button mat-raised-button color="blue" (click)="viewDocument(i)" matTooltip="View document"><i class="fa fa-eye"></i></button>
-      <button mat-raised-button color="warn" matTooltip="Delete document"><i class="fa fa-trash"></i></button>
+      <!--<button mat-raised-button color="warn" matTooltip="Delete document"><i class="fa fa-trash"></i></button>-->
     </td>
     <td mat-cell *matCellDef="let element">  </td>
   </ng-container>
@@ -26,32 +26,29 @@
 
 <ng-template #newSub let-modal>
   <div class="modal-header">
-    <h4 class="modal-title">Upload Document </h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    <h4 class="modal-title">Upload Document: Please Name your files appropriately for reviewer to understand!</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="onCloseFile()"></button>
   </div>
   <div class="modal-body">
     <form>
       <mat-form-field>
-        <div>
-          <mat-toolbar>
-            <!-- Display files names -->
-            <input matInput [(ngModel)]="fileAttr" readonly name="name" />
-            <!-- Browse Button -->
-            <button mat-flat-button color="blue">Browse File</button>
-          </mat-toolbar>
-          <!-- Fetch selected filed on change -->
-          <input type="file"
-                 #fileInput
-                 id="uploadFile"
-                 (change)="uploadFileEvt($event)"
-                 name="uploadFile"
-                 multiple="multiple"
-                 accept="image/*" />
+        <!-- Display files names -->
+        <input matInput [(ngModel)]="fileAttrs" readonly name="name" />
+        <!-- app-file-upload Component -->
+        <div class="row" style="margin-bottom:15px;">
+          <div class="container-fluid">
+            <app-file-upload [ApplicationID]="ApplicationID"
+                             [UploadFor]="fileAttrsName"
+                             (passFileName)="onPassFileName($event)"
+                             (onUploadFinished)="onFileDelete($event, 0)"
+                             (onUploadSuccess)="onFileUpload($event)">
+            </app-file-upload>
+          </div>
         </div>
       </mat-form-field>
     </form>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Close click')">Save</button>
+    <button type="submit" class="btn btn-outline-success" (click)="getAllDocsForApplication();modal.close('Close click')">Save</button>
   </div>
 </ng-template>

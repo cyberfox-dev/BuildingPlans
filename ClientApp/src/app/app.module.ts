@@ -223,6 +223,7 @@ import { DepartmentCirculationPlanningComponent } from './department-circulation
     ActionCenterComponent,
     ViewProjectInfoComponent,
     PermitComponentComponent,
+    FileUploadComponent,
   ],
   bootstrap: [AppComponent]
 })

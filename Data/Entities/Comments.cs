@@ -24,7 +24,7 @@ namespace WayleaveManagementSystem.Data.Entities
         public int? isClarifyCommentID { get; set; }
         public string? isApplicantReplay { get; set; }
 
-
+        public string? UserName { get; set; }
 
         //The CreatedBy is the user who created the comment
         // public string? UserCommentedID { get; set; }

@@ -73,23 +73,37 @@ namespace WayleaveManagementSystem.Service
 
         public async Task<bool> DeleteDocument(int documentID)
         {
-            //this checks is the record exists in the db
             var tempDocumentUpload = _context.DocumentUpload.FirstOrDefault(x => x.DocumentID == documentID);
 
             if (tempDocumentUpload == null)
             {
-                return await Task.FromResult(false);
-
+                return false;  // No need to wrap false in Task.FromResult, you can just return false directly in an async method.
             }
             else
             {
+                var dbPath = tempDocumentUpload.DocumentLocalPath;
+               
+                var fullPath = Path.Combine(Directory.GetCurrentDirectory(), dbPath);
+                if (File.Exists(fullPath))
+                {
+                    File.Delete(fullPath);
+                }
+
+
+
+                // Update the database record
                 tempDocumentUpload.DateUpdated = DateTime.Now;
                 tempDocumentUpload.isActive = false;
-                _context.Update(tempDocumentUpload);
+                _context.Remove(tempDocumentUpload);
+                //_context.Update(tempDocumentUpload);
                 await _context.SaveChangesAsync();
+
                 return true;
             }
+
+            
         }
+
 
         public async Task<List<DocumentUploadDTO>> GetAllDocuments()
         {

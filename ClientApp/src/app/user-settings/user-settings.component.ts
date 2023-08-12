@@ -146,6 +146,9 @@ extApplicantVatNumber='';
           this.extApplicantTellNo = currentUserProfile.phoneNumber;
           this.extApplicantEmail = currentUserProfile.email;
           this.extApplicantPhyscialAddress = currentUserProfile.physcialAddress;
+          /*this.extApplicantCompanyType = currentUserProfile.idNumber;*/
+          this.extApplicantIDNumber = currentUserProfile.idNumber;
+          this.extApplicantVatNumber = currentUserProfile.vatNumber;
          /* this.extApplicantIDNumber = currentUserProfile.;*/
           this.isInternal = false;
         }

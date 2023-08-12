@@ -25,18 +25,25 @@ export class DocumentsComponentComponent implements OnInit {
   DocumentsList: DocumentsList[] = [];
   private readonly apiUrl: string = this.shared.getApiUrl();
 
+  fileAttrs = "Upload File:";
+  fileAttrsName = "Doc";
+
   @ViewChild(MatTable) DocumentsListTable: MatTable<DocumentsList> | undefined;
 
   fileAttr = 'Choose File';
   displayedColumnsDocs: string[] = ['DocumentName', 'actions'];
   dataSourceDoc = this.DocumentsList;
+    currentApplication: any;
+    applicationDataForView: any;
+    hasFile: boolean;
+    fileCount = 0;
 
 
   constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService) { }
 
   ngOnInit(): void {
-
-
+    this.currentApplication = this.shared.getViewApplicationIndex();
+    this.ApplicationID = this.currentApplication.applicationID;
 
     this.getAllDocsForApplication();
   }
@@ -65,8 +72,57 @@ export class DocumentsComponentComponent implements OnInit {
     }
   }
 
+  lastUploadEvent: any;
 
-  viewDocument(index:any) {
+  onUploadFinished(event: any) {
+    this.lastUploadEvent = event;  // Store the event data
+    // Other logic (if any)...
+  }
+
+  ConfirmUpload() {
+    if (!window.confirm("Are you sure you want to upload the file?")) {
+      // Use the stored event data
+      this.onFileDelete(this.lastUploadEvent, 0);
+    }
+    // Rest of the logic...
+  }
+  onCloseFile() {
+    if (this.hasFile && this.fileCount < 1) {
+      if (confirm("If you don't delete file it will still be uploaded! Click Cancel botton to delete file before proceeding or Ok botton to upload and exit.")) {
+        this.modalService.dismissAll();
+      }
+      else {
+                    
+      }
+
+    } else {
+      this.modalService.dismissAll();
+    }
+
+
+  }
+  onPassFileName(event: { uploadFor: string; fileName: string }) {
+    debugger;
+    const { uploadFor, fileName } = event;
+    const index = parseInt(uploadFor.substring('CoverLetter'.length));
+    this.fileAttrsName = fileName;
+    this.hasFile = true;
+    this.fileCount = this.fileCount + 1;
+  }
+  onFileDelete(event: any, index: number) {
+
+    this.fileAttrsName = '';
+    this.hasFile = false;
+    //this.getAllDocsForApplication();
+    this.fileCount = this.fileCount - 1;
+  }
+
+  onFileUpload(event: any) {
+    
+
+  }
+
+  viewDocument(index: any) {
 
     // Make an HTTP GET request to fetch the document
     fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.DocumentsList[index].DocumentName}`)

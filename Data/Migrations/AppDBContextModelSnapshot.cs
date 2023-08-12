@@ -507,6 +507,9 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("SubDepartmentName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("isActive")
                         .HasColumnType("bit");
 

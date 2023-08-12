@@ -16,7 +16,7 @@
         <div>
           <mat-toolbar>
 
-            <input matInput [(ngModel)]="fileAttrs[0]" readonly name="name" placeholder="Select An Image" />
+            <input matInput [(ngModel)]="fileAttrs" readonly name="name" placeholder="Select An Image" />
 
             <div class="row" style="margin-bottom:15px;">
               <div class="container-fluid">
@@ -105,7 +105,7 @@
             <div class="row" *ngFor="let commentsList of CommentsList; let i = index">
               <div class="col s12 m12 l12">
 
-                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved' " [class.Reject]="commentsList.CommentStatus === 'Reject'||commentsList.CommentStatus === 'Rejected'" [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'" [class.refer]="commentsList.CommentStatus === 'Refer'">
+                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved' " [class.Reject]="commentsList.CommentStatus === 'Reject'||commentsList.CommentStatus === 'Rejected'" [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'" [class.refer]="commentsList.CommentStatus === 'Referred'">
 
                   <li class="event" data-date="">
 
@@ -229,10 +229,12 @@
 
     </mat-tab>-->
     <!--------------------------------------------------------Financial--------------------------------------------------->
-
-    <mat-tab label="Financial">
+   
+    <mat-tab label="Financials">
       <div class="container-fluid">
-
+        <div class="container-fluid">
+          <button mat-raised-button color="action" (click)="openDocUpload(newSub)">Upload document</button>
+        </div>
         <table mat-table [dataSource]="dataSourceDoc" class="mat-elevation-z8">
 
 
@@ -289,7 +291,7 @@
     <!--------------------------------------------------------Documents--------------------------------------------------->
 
 
-    <mat-tab label="Documents">
+    <mat-tab label="Documents Upload">
 
       <app-documents-component [ApplicationID]="ApplicationID"></app-documents-component>
 
@@ -479,7 +481,7 @@
     <!--------------------------------------------------------Tracking--------------------------------------------------->
 
 
-    <mat-tab label="Tracking" *ngIf="isInternalUser">
+    <mat-tab label="Status of Works" *ngIf="isInternalUser">
       <button mat-raised-button color="blue" (click)="openXl(MFTModal)">Create New Note</button>
 
       <!--      <div class="row" *ngFor="let mftList of MFTList; let i = index">
@@ -574,7 +576,11 @@
 
 </mat-tab>
 
+<mat-tab label="Process Flow" *ngIf="auditTrail">
 
+  
+
+</mat-tab>
 
 
   </mat-tab-group>
@@ -605,7 +611,35 @@
   </div>
 </ng-template>
 
-
+<ng-template #newSub let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Upload Document: Please Name your files appropriately for reviewer to understand!</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="onCloseFile()"></button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <mat-form-field>
+        <!-- Display files names -->
+        <input matInput [(ngModel)]="fileAttrs" readonly name="name" />
+        <!-- app-file-upload Component -->
+        <div class="row" style="margin-bottom:15px;">
+          <div class="container-fluid">
+            <app-file-upload [ApplicationID]="ApplicationID"
+                             [UploadFor]="fileAttrsName"
+                             [isFinancial]="isFinancial"
+                             (passFileName)="onPassFileName($event)"
+                             (onUploadFinished)="onFileDelete($event, 0)"
+                             (onUploadSuccess)="onFileUpload($event)">
+            </app-file-upload>
+          </div>
+        </div>
+      </mat-form-field>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="getFinancial();modal.close('Close click')">Save</button>
+  </div>
+</ng-template>
 
 <!--FAQ-->
 

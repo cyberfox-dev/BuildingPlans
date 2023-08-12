@@ -265,6 +265,8 @@ export class NewWayleaveComponent implements OnInit {
 
   })
 
+
+
   CurrentStageName = '';
   /*Client details*/
   clientUserID = '';
@@ -354,6 +356,7 @@ export class NewWayleaveComponent implements OnInit {
   MandatoryDocumentUploadListMedium: MandatoryDocumentUploadList[] = [];
   MandatoryDocumentUploadListLarge: MandatoryDocumentUploadList[] = [];
   MandatoryDocumentUploadListEmergency: MandatoryDocumentUploadList[] = [];
+  MandatoryDocumentUploadListDrilling: MandatoryDocumentUploadList[] = [];
 
   ProjectSizeCheckList: ProjectSizeCheckList[] = [];
 
@@ -387,6 +390,8 @@ export class NewWayleaveComponent implements OnInit {
   Contractor = "Contractor";
 
 
+  isLoading = false;
+  public successfulUploads = 0;
 
 
   //Initialize the interface for ARCGIS
@@ -433,6 +438,7 @@ export class NewWayleaveComponent implements OnInit {
   @ViewChild(MatTable) MandatoryDocumentUploadListSmallTable: MatTable<MandatoryDocumentsLinkedStagesList> | undefined;
   @ViewChild(MatTable) MandatoryDocumentUploadListMediumTable: MatTable<MandatoryDocumentsLinkedStagesList> | undefined;
   @ViewChild(MatTable) MandatoryDocumentUploadListLargeTable: MatTable<MandatoryDocumentsLinkedStagesList> | undefined;
+  @ViewChild(MatTable) MandatoryDocumentUploadListDrillingTable: MatTable<MandatoryDocumentsLinkedStagesList> | undefined;
   @ViewChild(MatTable) MandatoryDocumentUploadListEmergencyTable: MatTable<MandatoryDocumentsLinkedStagesList> | undefined;
 
 
@@ -620,6 +626,7 @@ export class NewWayleaveComponent implements OnInit {
     this.getAllByMandatoryDocumentCategory("Medium");
     this.getAllByMandatoryDocumentCategory("Large");
     this.getAllByMandatoryDocumentCategory("Emergency");
+    this.getAllByMandatoryDocumentCategory("Drilling");
 
    
   }
@@ -1013,7 +1020,7 @@ export class NewWayleaveComponent implements OnInit {
                 if (isPlanning == false) {
                   this.AddProfessinal(contractorData, engineerData);
                 }
-                this.UploadDocuments(data.dateSet);
+               // this.UploadDocuments(data.dateSet);
                 this.onAutoLinkDepartment();
                 this.shared.setApplicationID(0);
                 this.shared.clearContractorData();
@@ -1099,7 +1106,7 @@ export class NewWayleaveComponent implements OnInit {
         if (isPlanning == false) {
           this.AddProfessinal(contractorData, engineerData);
         }
-        this.UploadDocuments(data.dateSet);
+        //this.UploadDocuments(data.dateSet);
         // this.onAutoLinkDepartment();
         this.shared.setApplicationID(0);
         this.shared.clearContractorData();
@@ -1159,7 +1166,7 @@ export class NewWayleaveComponent implements OnInit {
         if (isPlanning == false) {
           this.AddProfessinal(contractorData, engineerData);
         }
-        this.UploadDocuments(data.dateSet);
+       // this.UploadDocuments(data.dateSet);
         // this.onAutoLinkDepartment();
         this.shared.setApplicationID(0);
         this.shared.clearContractorData();
@@ -1201,6 +1208,17 @@ export class NewWayleaveComponent implements OnInit {
       //  alert("This Application have no engineers linked");
     }
   }
+  onFileDelete(event: any, index: number) {
+    
+    this.fileAttrs[index] = '';
+    this.successfulUploads--;
+
+  }
+
+  onFileUpload(event: any) {
+    
+    this.successfulUploads++;
+  }
 
   UploadDocuments(applicationData: any): void {
     //Pulling information from the share
@@ -1227,6 +1245,39 @@ export class NewWayleaveComponent implements OnInit {
           error: (err: HttpErrorResponse) => console.log(err)
         });
     }
+  }
+
+
+  CheckTOES() {
+    
+    let tempList = []; // Temporary list to collect all new entries
+
+    for (var i = 0; i < this.TOENAMES.length; i++) {
+      let current = this.TOENAMES[i].toString();
+      if (current == "Drilling") {
+        const newList = this.MandatoryDocumentUploadListDrilling.map(current => {
+          const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
+          tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
+          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+          tempMandatoryDocumentsLinkedStagesList.stageName = null;
+          tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+          return tempMandatoryDocumentsLinkedStagesList;
+        });
+
+        tempList = tempList.concat(newList);
+      }
+    }
+
+    // Assuming MandatoryDocumentsLinkedStagesList is an observable, extract its current value
+    const currentList = this.MandatoryDocumentsLinkedStagesList.getValue();
+
+    // Concatenate currentList and tempList
+    const updatedList = currentList.concat(tempList);
+
+    this.MandatoryDocumentsLinkedStagesList.next(updatedList);
+    this.totalDocs = updatedList.length;
   }
 
 
@@ -2116,6 +2167,7 @@ export class NewWayleaveComponent implements OnInit {
 
       // Navigate to home page
       this.router.navigate(["/home"]);
+      alert("Your Invoice Has Been Created. You may find it in your Financials tab within your application");
     }
   }
 
@@ -3209,6 +3261,12 @@ export class NewWayleaveComponent implements OnInit {
               this.MandatoryDocumentUploadListEmergencyTable?.renderRows();
               break;
             }
+            case "Drilling": {
+
+              this.MandatoryDocumentUploadListDrilling.push(tempMandatoryDocList);
+              this.MandatoryDocumentUploadListDrillingTable?.renderRows();
+              break;
+            }
             default:
           }
         }
@@ -3311,6 +3369,7 @@ export class NewWayleaveComponent implements OnInit {
 
   projectSizeAlert = false;
   ProjectSizeMessage = "";
+  PSM = "";
   CheckToPopulateManDoc() {
     let smallCount = 0;
     let mediumCount = 0;
@@ -3342,55 +3401,76 @@ export class NewWayleaveComponent implements OnInit {
           if (emergencyCount > 0 ) {
             this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
             this.projectSizeAlert = true;
-            this.ProjectSizeMessage = "Emergency Application";
+            this.ProjectSizeMessage = "Emergency";
+            this.PSM = "Emergency Application";
           } else {
             this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
             this.projectSizeAlert = true;
-            this.ProjectSizeMessage = "Large Application";
+            this.ProjectSizeMessage = "Large";
+            this.PSM = "Large Application";
           }
         } else {
           this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListMedium);
           this.projectSizeAlert = true;
-          this.ProjectSizeMessage = "Medium Application";
+          this.ProjectSizeMessage = "Medium";
+          this.PSM = "Medium Application";
         }
       } else {
         this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListSmall);
         this.projectSizeAlert = true;
-        this.ProjectSizeMessage = "Small Application";
+        this.ProjectSizeMessage = "Small";
+        this.PSM = "Small Application";
       }
     } else if (mediumCount > 0 || largeCount > 0 || emergencyCount > 0) {
       if (largeCount > 0 || emergencyCount > 0) {
         if (emergencyCount > 0) {
           this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
           this.projectSizeAlert = true;
-          this.ProjectSizeMessage = "Emergency Application";
+          this.ProjectSizeMessage = "Emergency";
+          this.PSM = "Emergency Application";
         } else {
           this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
           this.projectSizeAlert = true;
-          this.ProjectSizeMessage = "Large Application";
+          this.ProjectSizeMessage = "Large";
+          this.PSM = "Large Application";
         }
       } else {
         this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListMedium);
         this.projectSizeAlert = true;
-        this.ProjectSizeMessage = "Medium Application";
+        this.ProjectSizeMessage = "Medium";
+        this.PSM = "Medium Application";
       }
     } else if (largeCount > 0 || emergencyCount > 0) {
       if (emergencyCount > 0) {
         this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
         this.projectSizeAlert = true;
-        this.ProjectSizeMessage = "Emergency Application";
+        this.ProjectSizeMessage = "Emergency";
+        this.PSM = "Emergency Application";
       } else {
         this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
         this.projectSizeAlert = true;
-        this.ProjectSizeMessage = "Large Application";
+        this.ProjectSizeMessage = "Large";
+        this.PSM = "Large Application";
       }
     } else {
       this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
       this.projectSizeAlert = true;
-      this.ProjectSizeMessage = "Emergency Application";
+      this.ProjectSizeMessage = "Emergency";
+      this.PSM = "Emergency Application";
     }
 
   }
+  getCurrentDate(): string {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+    const day = currentDate.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+
+}
+
 
   //CheckToPopulateManDoc() {
   //  if (this.selectionSmall.hasValue()) {
@@ -3607,7 +3687,7 @@ export class NewWayleaveComponent implements OnInit {
 
  
 
-}
+
 
 
 

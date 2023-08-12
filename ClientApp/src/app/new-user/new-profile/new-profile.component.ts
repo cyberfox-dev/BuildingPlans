@@ -790,5 +790,9 @@ export class NewProfileComponent implements OnInit {
     }
   }
 
+  checkValue() {
+    alert(this.extApplicantCompanyType);
+  }
+
 
 }
