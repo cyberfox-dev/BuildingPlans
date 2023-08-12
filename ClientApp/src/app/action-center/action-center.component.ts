@@ -31,6 +31,7 @@ import autoTable from 'jspdf-autotable';
 import { DatePipe } from '@angular/common';
 import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http';
 import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-upload.service';
+import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
 
 
 
@@ -75,6 +76,38 @@ export interface PTCList {
 
 }
 
+export interface ApplicationList {
+  applicationID: number,
+  clientName: string,
+  clientEmail: string,
+  clientAddress: string,
+  clientRefNo: string,
+  CompanyRegNo: string,
+  TypeOfApplication: string,
+  NotificationNumber: string,
+  WBSNumber: string,
+  PhysicalAddressOfProject: string,
+  DescriptionOfProject: string,
+  NatureOfWork: string,
+  ExcavationType: string,
+  ExpectedStartDate: Date,
+  ExpectedEndDate: Date,
+  Location: string,
+  clientCellNo: string,
+  CreatedById: number,
+  ApplicationStatus: string,
+  CurrentStageName: string,
+  CurrentStageNumber: number,
+  CurrentStageStartDate: Date,
+  NextStageName: string,
+  NextStageNumber: number,
+  PreviousStageName: string,
+  PreviousStageNumber: number,
+  ProjectNumber: string,
+  isPlanning?: boolean,
+  permitStartDate: Date,
+}
+
 export interface ZoneList {
   zoneID: number;
   zoneName: string;
@@ -109,7 +142,8 @@ export interface ZoneList {
 export interface UserZoneList {
   id: string;
   fullName: string;
-  zoneLinkID?: any;
+  zoneLinkID?: any
+  Email: string;
 }
 
 export interface RolesList {
@@ -155,7 +189,7 @@ export class ActionCenterComponent implements OnInit {
   permitIssuer: any;
   canApprovePermit: boolean;
   showPermitTab: boolean;
-
+  applicationData: ApplicationList;
 
 
 
@@ -163,6 +197,8 @@ export class ActionCenterComponent implements OnInit {
   datePipe = new DatePipe('en-ZA');
   formattedDate = this.datePipe.transform(this.currentDate, 'yyyy-MM-dd');
   response: { dbPath: ''; } | undefined
+    loggedInUsersEmail: any;
+    loggedInUserName: any;
   /*textfields*/
 
   uploadFileEvt(imgFile: any) {
@@ -293,7 +329,7 @@ export class ActionCenterComponent implements OnInit {
     private depositRequiredService: DepositRequiredService,
     private commentsService: CommentsService,
     private applicationsService: ApplicationsService,
-    private sharedService: SharedService,
+    public sharedService: SharedService,
     private accessGroupsService: AccessGroupsService,
     private viewProjectInfoComponent: ViewProjectInfoComponent,
     private router: Router,
@@ -303,6 +339,8 @@ export class ActionCenterComponent implements OnInit {
     private permitComponentComponent: PermitComponentComponent,
     private http: HttpClient,
     private documentUploadService: DocumentUploadService,
+    private notificationsService: NotificationsService,
+
   ) { }
   openEnd(content: TemplateRef<any>) {
     this.offcanvasService.open(content, { position: 'end' });
@@ -334,7 +372,8 @@ export class ActionCenterComponent implements OnInit {
     //Get Current Application Infomation 
 
 
-   
+    this.applicationData = this.sharedService.getViewApplicationIndex();
+    console.log("venApplicationData:",this.applicationData);
     this.getAllSubDepartments();
 
 
@@ -379,6 +418,8 @@ export class ActionCenterComponent implements OnInit {
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
     this.loggedInUsersSubDepartmentName = this.CurrentUserProfile[0].subDepartmentName;
     this.loggedInUsersDepartmentID = this.CurrentUserProfile[0].departmentID;
+    this.loggedInUsersEmail = this.CurrentUserProfile[0].email;
+    this.loggedInUserName = this.CurrentUserProfile[0].fullName;
     this.getCurrentUserSubDepName();
     this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
     if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
@@ -939,6 +980,8 @@ export class ActionCenterComponent implements OnInit {
           this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Final Approved", null, null, "EndOfCommentProcess", true).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
+              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have approved application " + this.ApplicationID + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+
 
               alert(data.responseMessage);
               //commentsService
@@ -1382,7 +1425,8 @@ export class ActionCenterComponent implements OnInit {
             tempUserList.fullName = this.UserZoneList[i].fullName;
             tempUserList.id = this.UserZoneList[i].id;
             tempUserList.zoneLinkID = this.UserZoneList[i].zoneLinkID;
-            
+            tempUserList.Email = this.UserZoneList[i].Email
+
             this.LinkedUserToSub.push(tempUserList);
           }
         }
@@ -1418,7 +1462,7 @@ export class ActionCenterComponent implements OnInit {
           this.MoveApplicationToAllocated();
           this.viewProjectInfoComponent.getAllComments();
           this.refreshParent.emit();
-
+          this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "New Wayleave Application", "check html", "Dear " + this.UserSelectionForManualLink.selected[0].fullName + ",<br><br>You have been assigned to application " + this.ApplicationID + " please approve or disapprove this application after reviewing it.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
         }
         else {
           alert(data.responseMessage);
@@ -1679,7 +1723,7 @@ export class ActionCenterComponent implements OnInit {
           tempZoneList.id = current.id;
           tempZoneList.fullName = current.fullName;
           tempZoneList.zoneLinkID = current.zoneLinkID;
-
+          tempZoneList.Email = current.email;
 
           this.UserZoneList.push(tempZoneList);
         }
@@ -1860,6 +1904,7 @@ export class ActionCenterComponent implements OnInit {
               this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved(Conditional)", null, null, "All users in Subdepartment FA", false).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
+                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have approved application " + this.ApplicationID + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
 
                   alert(data.responseMessage);
 
@@ -1942,7 +1987,9 @@ export class ActionCenterComponent implements OnInit {
             this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved", null, null, "All users in Subdepartment FA", false).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
-                
+                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have approved application " + this.ApplicationID + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+
+
                 alert(data.responseMessage);
                 //commentsService
                 this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
@@ -1987,6 +2034,8 @@ export class ActionCenterComponent implements OnInit {
           this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Rejected", null, null,"All users in Subdepartment FA",false).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
+              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application disapproved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have disapproved application " + this.ApplicationID + "with comment: <br><br><i>" + this.leaveAComment  + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+
 
               alert(data.responseMessage);
               //commentsService
@@ -2031,6 +2080,9 @@ export class ActionCenterComponent implements OnInit {
           this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
+              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+
 
               alert(data.responseMessage);
               //commentsService
@@ -2076,6 +2128,7 @@ export class ActionCenterComponent implements OnInit {
             this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Referred", false, true, "Senior Reviewer to comment",false).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
+                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application escalated", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have escalated application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
                 
                 alert(data.responseMessage);
                 //commentsService
@@ -2151,7 +2204,8 @@ export class ActionCenterComponent implements OnInit {
             this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved(Conditional)", null, false, "All users in Subdepartment FA", false).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
-                
+                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You, as a senior reviewer, have approved application " + this.ApplicationID + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+
 
                 alert(data.responseMessage);
 
@@ -2291,6 +2345,8 @@ export class ActionCenterComponent implements OnInit {
               this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Rejected", this.CurrentUser.appUserId).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
+                  this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application disapproved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You, as a senior reviewer, have disapproved application " + this.ApplicationID + "with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+
 
                   alert(data.responseMessage);
                   this.viewProjectInfoComponent.getAllComments();
@@ -2328,6 +2384,9 @@ export class ActionCenterComponent implements OnInit {
           this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
+              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You, as a senior reviewer, have asked the applicant to clarify the application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+
 
               alert(data.responseMessage);
               //commentsService
@@ -3038,8 +3097,10 @@ getAllCommentsByUserID() {
     this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, "PTW Pending").subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        
-        alert("Application moved to PTW");
+
+        this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Congratulations, your application has been approved. Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+
+        alert("Application moved to PTW"); //Permit to work
         this.router.navigate(["/home"]);
 
       }
