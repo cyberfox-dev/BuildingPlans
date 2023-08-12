@@ -36,6 +36,7 @@ export class DocumentsComponentComponent implements OnInit {
     currentApplication: any;
     applicationDataForView: any;
     hasFile: boolean;
+    fileCount = 0;
 
 
   constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService) { }
@@ -86,12 +87,12 @@ export class DocumentsComponentComponent implements OnInit {
     // Rest of the logic...
   }
   onCloseFile() {
-    if (this.hasFile) {
+    if (this.hasFile && this.fileCount < 1) {
       if (confirm("If you don't delete file it will still be uploaded! Click Cancel botton to delete file before proceeding or Ok botton to upload and exit.")) {
         this.modalService.dismissAll();
       }
       else {
-
+                    
       }
 
     } else {
@@ -106,17 +107,18 @@ export class DocumentsComponentComponent implements OnInit {
     const index = parseInt(uploadFor.substring('CoverLetter'.length));
     this.fileAttrsName = fileName;
     this.hasFile = true;
+    this.fileCount = this.fileCount + 1;
   }
   onFileDelete(event: any, index: number) {
 
     this.fileAttrsName = '';
     this.hasFile = false;
     //this.getAllDocsForApplication();
-
+    this.fileCount = this.fileCount - 1;
   }
 
   onFileUpload(event: any) {
-    debugger;
+    
 
   }
 
@@ -155,7 +157,7 @@ export class DocumentsComponentComponent implements OnInit {
 
 
   getAllDocsForApplication() {
-    debugger;
+    
     this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {

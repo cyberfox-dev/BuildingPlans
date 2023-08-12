@@ -72,12 +72,12 @@ export class FileUploadComponent implements OnInit {
     if (this.isFinancial) {
       this.financialService.getFinancialByApplicationID(this.ApplicationID).subscribe((data: any) => {
         if (data && data.responseCode == 1) {
-          debugger;
+          
           // Searching for a match in the dataset
           let matchedDocument = data.dateSet.find(doc => doc.documentName === this.fileUploadName + this.fileExtention);
-          debugger;
+          
           if (matchedDocument) {
-            debugger;
+            
             alert('Oops, you cannot upload files with the same name!');
           } else
           {
@@ -100,12 +100,12 @@ export class FileUploadComponent implements OnInit {
     else {
       this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
         if (data && data.responseCode == 1) {
-          debugger;
+          
           // Searching for a match in the dataset
           let matchedDocument = data.dateSet.find(doc => doc.documentName === this.fileUploadName + this.fileExtention);
-          debugger;
+          
           if (matchedDocument) {
-            debugger;
+            
             alert('Oops, you cannot upload files with the same name!');
           } else {// If a match is found
             this.passFileName.emit({ uploadFor: this.UploadFor, fileName: fileToUpload.name });
@@ -231,20 +231,20 @@ export class FileUploadComponent implements OnInit {
 
 
   financialuploadFinished = (event: any, applicationID: any, applicationData: any) => {
-    debugger;
+    
     this.response = event;
     console.log("this.response", this.response);
     console.log("this.response?.dbPath", this.response?.dbPath);
     console.log("applicationData", applicationData);
-    debugger;
+    
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
     console.log("documentName", documentName);
-    debugger;
+    
     this.financialService.addUpdateFinancial(0, documentName, "Financial", documentName, this.response?.dbPath, applicationID, "System Generated Invoice").subscribe((data: any) => {
   
 
       if (data.responseCode == 1) {
-        debugger;
+        
         // Emit the onUploadSuccess event after a successful upload
         this.onUploadSuccess.emit(event.body);
       }

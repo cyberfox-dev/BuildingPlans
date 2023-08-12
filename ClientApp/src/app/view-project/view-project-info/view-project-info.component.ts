@@ -387,7 +387,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   panelOpenState = false;
 
-
+  fileCount = 0;
 
 
   constructor(private modalService: NgbModal,
@@ -518,7 +518,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   onCloseFile() {
-    if (this.hasFile) {
+    if (this.hasFile && this.fileCount < 1) {
       if (confirm("If you don't delete file it will still be uploaded! Click Cancel botton to delete file before proceeding or Ok botton to upload and exit.")) {
         this.modalService.dismissAll();
       }
@@ -600,11 +600,12 @@ export class ViewProjectInfoComponent implements OnInit {
     this.fileAttrsName = '';
     this.hasFile = false;
     //this.getAllDocsForApplication();
+    this.fileCount = this.fileCount - 1;
 
   }
 
   onFileUpload(event: any) {
-    debugger;
+    
 
   }
 
@@ -3034,11 +3035,12 @@ export class ViewProjectInfoComponent implements OnInit {
 
   /*Mobile Field Tracking*/
   onPassFileName(event: { uploadFor: string; fileName: string }) {
-    debugger;
+    
     const { uploadFor, fileName } = event;
     this.fileAttrsName = fileName;
 
     this.hasFile = true;
+    this.fileCount = this.fileCount + 1;
   }
 
 
