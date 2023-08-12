@@ -834,10 +834,20 @@ dataSource = this.Applications;
               tempApplicationList.ProjectNumber = (current.applicationID).toString();
             }
 
-            tempApplicationList.TestApplicationAge = Math.floor(Math.random() * 30) + 1;
-            do {
-              tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
-            } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);
+            tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
+            /*cal application age*/
+
+            const currentDate = new Date();
+            const dateCreated = new Date(tempApplicationList.DateCreated);
+            const timeDiff = currentDate.getTime() - dateCreated.getTime();
+            const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationAge = daysDiff;
+
+            /*cal stage age*/
+            const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
+            const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+            const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationStageAge = stageDateDiff;
             //save here to send to the shared
 
             //tempApplicationListShared.applicationID = current. ;
