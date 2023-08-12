@@ -37,7 +37,7 @@ export class FileUploadComponent implements OnInit {
     if (files.length === 0) {
       return;
     }
-    debugger;
+    
     let fileToUpload = <File>files[0];
     this.fileExtention = fileToUpload.name.substring(fileToUpload.name.indexOf('.'));
     if (this.fileExtention == ".webp") {
@@ -52,7 +52,7 @@ export class FileUploadComponent implements OnInit {
     this.passFileName.emit({ uploadFor: this.UploadFor, fileName: fileToUpload.name });
 
     console.log("THIS IS THE FILE NAME!", this.fileUploadName);
-    debugger;
+    
     // Instead of pushing the file for a temporary upload, immediately call UploadDocuments
     this.UploadDocuments(fileToUpload, this.fileUploadName + this.fileExtention);
   }
@@ -62,20 +62,20 @@ export class FileUploadComponent implements OnInit {
     if (!this.fileName) {
       return; // No file selected, nothing to delete
     }
-    debugger;
+    
     const confirmDelete = confirm(`Are you sure you want to delete the file "${this.fileName}"?`);
     if (!confirmDelete) {
       return; // User cancelled the delete operation
     }
-    debugger;
+    
     this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
       if (data && data.responseCode == 1) {
-        debugger;
+        
         // Searching for a match in the dataset
         let matchedDocument = data.dateSet.find(doc => doc.documentName === this.fileUploadName + this.fileExtention);
-        debugger;
+        
         if (matchedDocument) {
-          debugger;
+          
           // If a match is found, delete using the documentID
           this.documentUploadService.deleteDocument(matchedDocument.documentID).subscribe(response => {
             if (response) { // Assuming server responds with true on successful deletion
@@ -104,14 +104,14 @@ export class FileUploadComponent implements OnInit {
 
   // Modify UploadDocuments to accept File and fileName parameters:
   UploadDocuments(file: File, fileName: string): void {
-    debugger;
+    
     const formData = new FormData();
     formData.append('file', file, fileName);
-    debugger;
+    
     this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
       .subscribe({
         next: (event) => {
-          debugger;
+          
           if (event.type === HttpEventType.UploadProgress && event.total)
             this.progress = Math.round(100 * event.loaded / event.total);
           else if (event.type === HttpEventType.Response) {
@@ -125,19 +125,19 @@ export class FileUploadComponent implements OnInit {
   }
 
   uploadFinished = (event: any, applicationID: any, applicationData: any) => {
-    debugger;
+    
     this.response = event;
     console.log("this.response", this.response);
     console.log("this.response?.dbPath", this.response?.dbPath);
     console.log("applicationData", applicationData);
-    debugger;
+    
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
     console.log("documentName", documentName);
-    debugger;
+    
     this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, applicationID, applicationData.appUserId, this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        debugger;
+        
         // Emit the onUploadSuccess event after a successful upload
         this.onUploadSuccess.emit(event.body); 
       }

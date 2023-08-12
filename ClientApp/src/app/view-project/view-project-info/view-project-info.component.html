@@ -105,7 +105,7 @@
             <div class="row" *ngFor="let commentsList of CommentsList; let i = index">
               <div class="col s12 m12 l12">
 
-                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved' " [class.Reject]="commentsList.CommentStatus === 'Reject'||commentsList.CommentStatus === 'Rejected'" [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'" [class.refer]="commentsList.CommentStatus === 'Refer'">
+                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved' " [class.Reject]="commentsList.CommentStatus === 'Reject'||commentsList.CommentStatus === 'Rejected'" [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'" [class.refer]="commentsList.CommentStatus === 'Referred'">
 
                   <li class="event" data-date="">
 

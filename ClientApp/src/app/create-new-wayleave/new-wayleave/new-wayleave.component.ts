@@ -1209,14 +1209,14 @@ export class NewWayleaveComponent implements OnInit {
     }
   }
   onFileDelete(event: any, index: number) {
-    debugger;
+    
     this.fileAttrs[index] = '';
     this.successfulUploads--;
 
   }
 
   onFileUpload(event: any) {
-    debugger;
+    
     this.successfulUploads++;
   }
 
@@ -1249,7 +1249,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
   CheckTOES() {
-    debugger;
+    
     let tempList = []; // Temporary list to collect all new entries
 
     for (var i = 0; i < this.TOENAMES.length; i++) {
@@ -2167,6 +2167,7 @@ export class NewWayleaveComponent implements OnInit {
 
       // Navigate to home page
       this.router.navigate(["/home"]);
+      alert("Your Invoice Has Been Created. You may find it in your Financials tab within your application");
     }
   }
 
