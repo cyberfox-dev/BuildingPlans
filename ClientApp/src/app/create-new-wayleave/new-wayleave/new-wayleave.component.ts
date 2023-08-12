@@ -265,6 +265,8 @@ export class NewWayleaveComponent implements OnInit {
 
   })
 
+
+
   CurrentStageName = '';
   /*Client details*/
   clientUserID = '';
@@ -3446,6 +3448,17 @@ export class NewWayleaveComponent implements OnInit {
     }
 
   }
+  getCurrentDate(): string {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+    const day = currentDate.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+
+}
+
 
   //CheckToPopulateManDoc() {
   //  if (this.selectionSmall.hasValue()) {
@@ -3662,7 +3675,7 @@ export class NewWayleaveComponent implements OnInit {
 
  
 
-}
+
 
 
 

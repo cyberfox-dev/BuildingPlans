@@ -408,14 +408,14 @@
       <div class="row">
         <div class="col">
           <div class="form-floating mb-3 mt-3">
-            <input type="date" class="form-control" [(ngModel)]="expectedStartDate" id="startDate" placeholder="Enter Start Date" name="expectedStartDate">
+            <input type="date" class="form-control" [(ngModel)]="expectedStartDate" id="startDate" placeholder="Enter Start Date" name="expectedStartDate"  [min]="getCurrentDate()">
             <label for="name">Start Date</label>
           </div>
         </div>
 
         <div class="col">
           <div class="form-floating mb-3 mt-3">
-            <input type="date" class="form-control" [(ngModel)]="expectedEndType" id="endDate" placeholder="" name="expectedEndType">
+            <input type="date" class="form-control" [(ngModel)]="expectedEndType" id="endDate" placeholder="" name="expectedEndType" [min]="expectedStartDate">
             <label for="name">Completion Date</label>
           </div>
         </div>

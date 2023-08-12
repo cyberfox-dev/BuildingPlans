@@ -111,11 +111,6 @@
       <button mat-raised-button color="meetOnSite" *ngIf="canApprovePermit" (click)="PermitIssue('MeetOnSite')">Meet On Site</button>
       <button mat-raised-button color="rejectPermit" *ngIf="canApprovePermit" (click)="PermitIssue('Reject')">Reject Permit</button>
     </div>
-    <div class="cont6" *ngIf="permit && canApprovePermit">
-      <button mat-raised-button color="approvePermit" *ngIf="canApprovePermit" (click)="PermitIssue('Approve')">Approve Permit</button>
-      <button mat-raised-button color="meetOnSite" *ngIf="canApprovePermit" (click)="PermitIssue('MeetOnSite')">Meet On Site</button>
-      <button mat-raised-button color="rejectPermit" *ngIf="canApprovePermit" (click)="PermitIssue('Reject')">Reject Permit</button>
-    </div>
 
   </div>
 
