@@ -1,6 +1,6 @@
 <div class="container-fluid" style="display: grid; grid-template-columns: 1fr auto auto;">
   <span *ngIf="fileName" style="grid-column: 1;">{{ fileName }}</span>
-  <input type="file" #file style="display: none;" (change)="uploadFile(file.files)">
+  <input type="file" #file style="display: none;" (change)="uploadFile(file.files)" [value]="''">
   <button *ngIf="!fileName" mat-raised-button color="btn" matTooltip="Upload File" matTooltipPosition="above"
           type="button" class="btn btn-info" style="grid-column: 2;" (click)="file.click()">
     <i class="fa fa-upload" style="font-size: 1em;"></i>

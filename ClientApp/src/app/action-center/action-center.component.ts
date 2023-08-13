@@ -163,6 +163,7 @@ export class ActionCenterComponent implements OnInit {
   datePipe = new DatePipe('en-ZA');
   formattedDate = this.datePipe.transform(this.currentDate, 'yyyy-MM-dd');
   response: { dbPath: ''; } | undefined
+  fileAttrsName = "Doc";
   /*textfields*/
 
   uploadFileEvt(imgFile: any) {
@@ -407,6 +408,24 @@ export class ActionCenterComponent implements OnInit {
     this.refreshService.disableRefreshNavigation();
   }
 
+  onPassFileName(event: { uploadFor: string; fileName: string }) {
+    debugger;
+    const { uploadFor, fileName } = event;
+
+    this.fileAttrsName = "Doc";
+
+
+  }
+  onFileDelete(event: any, index: number) {
+
+    this.fileAttrsName = "Doc";
+
+  }
+
+  onFileUpload(event: any) {
+
+
+  }
 
   canApprovePTW() {
 
@@ -531,38 +550,38 @@ export class ActionCenterComponent implements OnInit {
     })
   }
 
-  onPassFileName(event: { uploadFor: string; fileName: string }) {
-    const { uploadFor, fileName } = event;
+  //onPassFileName(event: { uploadFor: string; fileName: string }) {
+  //  const { uploadFor, fileName } = event;
 
 
 
 
 
-    //for (var i = 0; i < filesForUpload.length; i++) {
-    //  const formData = new FormData();
-    //  let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
-    //  let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.applicationID;
-    //  formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+  //  //for (var i = 0; i < filesForUpload.length; i++) {
+  //  //  const formData = new FormData();
+  //  //  let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+  //  //  let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.applicationID;
+  //  //  formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
 
 
 
-    //  this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
-    //    .subscribe({
-    //      next: (event) => {
+  //  //  this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+  //  //    .subscribe({
+  //  //      next: (event) => {
 
-    //        if (event.type === HttpEventType.UploadProgress && event.total)
-    //          this.progress = Math.round(100 * event.loaded / event.total);
-    //        else if (event.type === HttpEventType.Response) {
-    //          this.message = 'Upload success.';
-    //          this.uploadFinished(event.body, this.applicationID, data.dateSet);
-    //        }
-    //      },
-    //      error: (err: HttpErrorResponse) => console.log(err)
-    //    });
-    //}
-    const index = parseInt(uploadFor.substring('CoverLetter'.length));
-    this.fileAttrs[index] = fileName;
-  }
+  //  //        if (event.type === HttpEventType.UploadProgress && event.total)
+  //  //          this.progress = Math.round(100 * event.loaded / event.total);
+  //  //        else if (event.type === HttpEventType.Response) {
+  //  //          this.message = 'Upload success.';
+  //  //          this.uploadFinished(event.body, this.applicationID, data.dateSet);
+  //  //        }
+  //  //      },
+  //  //      error: (err: HttpErrorResponse) => console.log(err)
+  //  //    });
+  //  //}
+  //  const index = parseInt(uploadFor.substring('CoverLetter'.length));
+  //  this.fileAttrs[index] = fileName;
+  //}
 
   generatePTW(ClientName: string) {
 

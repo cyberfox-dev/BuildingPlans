@@ -518,8 +518,8 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   onCloseFile() {
-    if (this.hasFile && this.fileCount < 1) {
-      if (confirm("If you don't delete file it will still be uploaded! Click Cancel botton to delete file before proceeding or Ok botton to upload and exit.")) {
+    if (this.hasFile) {
+      if (confirm("The file will be uploaded if you proceed. Click 'OK' to upload or 'Cancel' to delete the file before proceeding.")) {
         this.modalService.dismissAll();
       }
       else {
@@ -529,10 +529,9 @@ export class ViewProjectInfoComponent implements OnInit {
     } else {
       this.modalService.dismissAll();
     }
-   
+
 
   }
-
 
   //validate(): void {
   //  //this.businessPartnerService.validateBP().subscribe(
@@ -596,14 +595,20 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   onFileDelete(event: any, index: number) {
-
-    this.fileAttrsName = '';
     this.hasFile = false;
+    this.fileAttrsName = "Doc";
+
     //this.getAllDocsForApplication();
     this.fileCount = this.fileCount - 1;
 
   }
-
+  changeHasFile() {
+    if (this.hasFile) {
+      this.hasFile = false;
+    } else {
+      this.hasFile = true;
+    }
+  }
   onFileUpload(event: any) {
     
 
@@ -3037,7 +3042,7 @@ export class ViewProjectInfoComponent implements OnInit {
   onPassFileName(event: { uploadFor: string; fileName: string }) {
     
     const { uploadFor, fileName } = event;
-    this.fileAttrsName = fileName;
+    this.fileAttrsName = "Doc";
 
     this.hasFile = true;
     this.fileCount = this.fileCount + 1;
