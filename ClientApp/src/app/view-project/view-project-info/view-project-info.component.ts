@@ -224,7 +224,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   rejected: boolean = false;
   approved: boolean = false;
-
+ 
   canClarify: boolean;
   /*type of applicant*/
   isInternal = true;
@@ -327,7 +327,7 @@ export class ViewProjectInfoComponent implements OnInit {
   permitBtn: boolean;
   permitTextBox: boolean = false;
   startDate: string;
-
+  selectPaidDate: Date;
 
 
   fileAttrs = "Upload File:";
@@ -1364,7 +1364,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
             if (data.responseCode == 1) {
               
-              alert(data.dateSet.subDepartmentName + " assigned to this Application");
+              //alert(data.dateSet.subDepartmentName + " assigned to this Application");
 
             }
             else {
@@ -1403,7 +1403,7 @@ export class ViewProjectInfoComponent implements OnInit {
           this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
             if (data.responseCode == 1) {
 
-              this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "Distributed/Unallocated", null, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, false).subscribe((data: any) => {
+              this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "Distributed/Unallocated", null, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, false,null,this.selectPaidDate).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
                   alert(data.responseMessage);
@@ -1488,6 +1488,11 @@ export class ViewProjectInfoComponent implements OnInit {
   openPermitModal(permitModal: any) {
 
     this.modalService.open(permitModal, { size: 'lg' });
+  }
+
+  openPaidDate(paidDateModal: any) {
+
+    this.modalService.open(paidDateModal, { size: 'lg' });
   }
 
   MoveToNextStage() {

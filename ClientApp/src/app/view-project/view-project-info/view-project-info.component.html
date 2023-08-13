@@ -8,9 +8,9 @@
   <div class="modal-body">
     <form>
 
-      <mat-form-field class="example-full-width" >
+      <mat-form-field class="example-full-width">
         <mat-label>Type A Note</mat-label>
-        <input matInput [(ngModel)]="mftNote"  id="mftNote" name="mftNote">
+        <input matInput [(ngModel)]="mftNote" id="mftNote" name="mftNote">
       </mat-form-field>
       <mat-form-field>
         <div>
@@ -47,7 +47,7 @@
   <app-action-center [ApplicationID]="ApplicationID" (refreshParent)="ngOnInit()" *ngIf="isInternalUser" (optionEvent)="reciveOption($event)"></app-action-center>
   <button mat-button color="action" [matMenuTriggerFor]="actions"> <mat-icon>more_vert</mat-icon></button>
   <mat-menu #actions="matMenu">
-    <button mat-menu-item (click)="ChangeApplicationStatusToPaid()" *ngIf="isInternalUser"> Move to Paid</button>
+    <button mat-menu-item (click)="openPaidDate(paidDateModal)" *ngIf="isInternalUser"> Move to Paid</button>
     <!--<button mat-menu-item (click)="MoveToNextStage()" *ngIf="isInternalUser">Move to Next Stage</button>-->
     <button mat-menu-item (click)="MoveToNextStage()"> <i class="fa fa-ban" aria-hidden="true"></i> Cancel Application</button>
     <button mat-menu-item (click)="goToNewWayleave(true)" *ngIf="canReapply"><i class="fa fa-repeat" aria-hidden="true"></i> Re-apply</button>
@@ -57,6 +57,9 @@
   </mat-menu>
 
 </div>
+
+
+
 
 <div class="container-fluid cont6">
 
@@ -229,7 +232,7 @@
 
     </mat-tab>-->
     <!--------------------------------------------------------Financial--------------------------------------------------->
-   
+
     <mat-tab label="Financials">
       <div class="container-fluid">
         <div class="container-fluid">
@@ -482,7 +485,10 @@
 
 
     <mat-tab label="Status of Works" *ngIf="isInternalUser">
-      <button mat-raised-button color="blue" (click)="openXl(MFTModal)">Create New Note</button>
+      is
+      
+      bu
+      <button mat-raised-button color="blue" (click)="openXl(MFTModal)">>Create New Noteon</button>
 
       <!--      <div class="row" *ngFor="let mftList of MFTList; let i = index">
         <div class="col s12 m12 l12">
@@ -504,20 +510,20 @@
         </div>
       </div>-->
       <div class="cards" *ngFor="let mftList of MFTList; let i = index">
-        <li class="cards_item">
+      <li class="cards_item">
         <div class="card">
           <div class="card_content">
             <p class="card_text">Note Created By : {{mftList.FullName}}</p>
             <p class="card_text">{{mftList.MFTNote}}</p>
             <div class="cont89">
-            <p class="card_text">{{mftList.DateCreated}}</p>
-            <button mat-raised-button color="blue" *ngIf="mftList.DocumentName !== null " (click)="viewImage(i)">View Image</button>
-              </div>
+              <p class="card_text">{{mftList.DateCreated}}</p>
+              <button mat-raised-button color="blue" *ngIf="mftList.DocumentName !== null " (click)="viewImage(i)">View Image</button>
+            </div>
           </div>
         </div>
       </li>
-        </div>
-      
+</div>
+
 
 
 
@@ -578,7 +584,7 @@
 
 <mat-tab label="Process Flow" *ngIf="auditTrail">
 
-  
+
 
 </mat-tab>
 
@@ -641,6 +647,30 @@
   </div>
 </ng-template>
 
+
+<ng-template #paidDateModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Please select the date client paid fot this application</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+
+
+
+    <div class="row">
+
+      <div class="form-floating mb-3 mt-3">
+        <input type="date" class="form-control" [(ngModel)]="selectPaidDate" id="selectPaidDate" placeholder="Enter the date this application was paid for...">
+        <label for="selectPaidDate">Select Paid Date</label>
+      </div>
+
+    </div>
+
+
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="ChangeApplicationStatusToPaid();modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
 <!--FAQ-->
-
-

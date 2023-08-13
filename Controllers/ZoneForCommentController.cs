@@ -133,27 +133,58 @@ namespace WayleaveManagementSystem.Controllers
         {
             try
             {
-                var result = await (
-                from zoneForComment in _context.ZoneForComment
-                   where zoneForComment.isActive == true && zoneForComment.SubDepartmentID == model.SubDepartmentID && zoneForComment.ApplicationID == model.ApplicationID
-                select new ZonesForCommentDTO()
+                if (model.SubDepartmentID != null)
                 {
-                    ZoneForCommentID = zoneForComment.ZoneForCommentID,
-                    ApplicationID = zoneForComment.ApplicationID,
-                    SubDepartmentID = zoneForComment.SubDepartmentID,
-                    ZoneID = zoneForComment.ZoneID,
-                    ZoneName = zoneForComment.ZoneName,
-                    CreatedById = zoneForComment.CreatedById,
-                    DateCreated = zoneForComment.DateCreated,
-                    DateUpdated = zoneForComment.DateUpdated,
-                    isActive = zoneForComment.isActive
+                    var result = await (
+               from zoneForComment in _context.ZoneForComment
+               where zoneForComment.isActive == true && zoneForComment.SubDepartmentID == model.SubDepartmentID && zoneForComment.ApplicationID == model.ApplicationID
+               select new ZonesForCommentDTO()
+               {
+                   ZoneForCommentID = zoneForComment.ZoneForCommentID,
+                   ApplicationID = zoneForComment.ApplicationID,
+                   SubDepartmentID = zoneForComment.SubDepartmentID,
+                   ZoneID = zoneForComment.ZoneID,
+                   ZoneName = zoneForComment.ZoneName,
+                   CreatedById = zoneForComment.CreatedById,
+                   DateCreated = zoneForComment.DateCreated,
+                   DateUpdated = zoneForComment.DateUpdated,
+                   isActive = zoneForComment.isActive
 
+               }
+               ).ToListAsync();
+
+
+
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Service Items", result));
                 }
-                ).ToListAsync();
+
+                else
+                {
+                    var result = await (
+            from zoneForComment in _context.ZoneForComment
+            join subDepartment in _context.SubDepartmentsTable
+            on zoneForComment.SubDepartmentID equals subDepartment.SubDepartmentID
+            where zoneForComment.isActive == true && zoneForComment.ApplicationID == model.ApplicationID
+            select new ZonesForCommentDTO()
+            {
+                ZoneForCommentID = zoneForComment.ZoneForCommentID,
+                ApplicationID = zoneForComment.ApplicationID,
+                SubDepartmentID = zoneForComment.SubDepartmentID,
+                SubDepartmentName = subDepartment.SubDepartmentName, 
+                ZoneID = zoneForComment.ZoneID,
+                ZoneName = zoneForComment.ZoneName,
+                CreatedById = zoneForComment.CreatedById,
+                DateCreated = zoneForComment.DateCreated,
+                DateUpdated = zoneForComment.DateUpdated,
+                isActive = zoneForComment.isActive
+            }
+        ).ToListAsync();
 
 
 
-                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Service Items", result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Linked Zones", result));
+                }
+               
 
 
 

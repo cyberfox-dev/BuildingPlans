@@ -19,6 +19,7 @@ import { LoginComponent } from 'src/app/login/login.component';
 import { MatStepper } from '@angular/material/stepper';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { ZoneForCommentService } from '../service/ZoneForComment/zone-for-comment.service';
 
 
 
@@ -101,6 +102,15 @@ export interface RolesList {
   //RoleDescription: string;
 }
 
+export interface ZoneList {
+  subDepartmentName: any;
+  zoneID: number;
+  zoneName: string;
+  departmentID: number;
+  subDepartmentID: number;
+  zoneForCommentID: number | null;
+}
+
 export interface UserList {
   userID: number;
   fullName: string;
@@ -148,7 +158,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   RolesList: RolesList[] = [];
   UserList: UserList[] = [];
   ClientUserList: ClientUserList[] = [];
+  ZoneLinkedList: ZoneList[] = [];
 
+  @ViewChild(MatTable) ZoneListTable: MatTable<ZoneList> | undefined;
+
+  displayedColumnsViewLinkedZones: string[] = ['subDepartmentName', 'zoneName'];
+  dataSourceViewLinkedZones = this.ZoneLinkedList;
 
   filterValue = '';
 
@@ -246,6 +261,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private selectContractorTableComponent: SelectContractorTableComponent,
     private professionalService: ProfessionalService,
     private loginComponent: LoginComponent,
+    private zoneForCommentService: ZoneForCommentService,
   ) {
     this.currentDate = new Date();
     this.previousMonth = this.currentDate.getMonth();
@@ -424,6 +440,48 @@ dataSource = this.Applications;
     }
   }
  
+  getLinkedZones(ApplicationID: any, processFlow: any) {
+
+   // this.ZoneLinkedList.splice(0, this.ZoneLinkedList.length);
+
+    this.zoneForCommentService.getZonesForComment(ApplicationID, null).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempZoneList = {} as ZoneList;
+          const current = data.dateSet[i];
+          tempZoneList.zoneID = current.zoneID;
+          tempZoneList.zoneName = current.zoneName;
+          tempZoneList.subDepartmentID = current.subDepartmentID;
+          tempZoneList.departmentID = current.departmentID;
+          tempZoneList.zoneForCommentID = current.zoneForCommentID;
+          tempZoneList.subDepartmentName = current.subDepartmentName;
+
+
+          this.ZoneLinkedList.push(tempZoneList);
+          this.ZoneListTable?.renderRows();
+
+        }
+
+
+        this.ZoneListTable?.renderRows();
+    
+        this.modalService.open(processFlow, { backdrop: 'static', centered: true, size: 'lg' });
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+      this.ZoneListTable?.renderRows();
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
 
   onAddContractor() {
     
