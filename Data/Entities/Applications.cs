@@ -46,7 +46,7 @@ namespace WayleaveManagementSystem.Data.Entities
         public DateTime? PermitStartDate { get; set; }
 
         public DateTime? StageStartDate{get;set;}
-
+        public DateTime? DatePaid { get; set; }
 
         /*Application Status Logic
         Verification Stage

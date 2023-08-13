@@ -979,6 +979,7 @@ export class NewWayleaveComponent implements OnInit {
 
   internalWayleaveCreate(appUserId: string, isPlanning: boolean): void {
     /*    this.shared.setApplicationID(this.notificationNumber);*/
+    debugger;
     this.physicalAddressOfProject = this.shared.getAddressData();
     const contractorData = this.shared.getContactorData();
     const engineerData = this.shared.getEngineerData();
@@ -1007,21 +1008,23 @@ export class NewWayleaveComponent implements OnInit {
 
     this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
       if (data.responseCode == 1) {
-
+        debugger;
         const current = data.dateSet[0];
         this.configNumberOfProject = current.utilitySlot1;
         this.configMonthYear = current.utilitySlot2;
         this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
           if (data.responseCode == 1) {
-
+            debugger;
             this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, null, this.CurrentUser.appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributed/Unallocated", false, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, isPlanning, null).subscribe((data: any) => {
               if (data.responseCode == 1) {
+                debugger;
                 alert("Application Created");
                 if (isPlanning == false) {
                   this.AddProfessinal(contractorData, engineerData);
                 }
                // this.UploadDocuments(data.dateSet);
                 this.onAutoLinkDepartment();
+                debugger;
                 this.shared.setApplicationID(0);
                 this.shared.clearContractorData();
                 this.shared.clearEngineerData();
@@ -1071,7 +1074,7 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   clientWayleaveCreate(appUserId: string, isPlanning: boolean): void {
-
+    debugger;
     /*    this.shared.setApplicationID(this.notificationNumber);*/
     this.physicalAddressOfProject = this.shared.getAddressData();
     const contractorData = this.shared.getContactorData();
@@ -1102,7 +1105,7 @@ export class NewWayleaveComponent implements OnInit {
     this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, null, isPlanning, null).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-
+        debugger;
         if (isPlanning == false) {
           this.AddProfessinal(contractorData, engineerData);
         }
@@ -1115,6 +1118,7 @@ export class NewWayleaveComponent implements OnInit {
 
         this.addToZoneForComment();
         this.getCurrentInvoiceNumberForGen(this.clientName + ' ' + this.clientSurname);
+        debugger;
       }
       else {
         alert("Failed To Create Application");
@@ -1133,6 +1137,7 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   externalWayleaveCreate(appUserId: string, isPlanning: boolean): void {
+    debugger;
     /*    this.shared.setApplicationID(this.notificationNumber);*/
     this.physicalAddressOfProject = this.shared.getAddressData();
     const contractorData = this.shared.getContactorData();
@@ -1146,7 +1151,7 @@ export class NewWayleaveComponent implements OnInit {
     let NextStageNameIn = "";
 
     for (var i = 0; i < this.StagesList.length; i++) {
-      ;
+   
       if (this.StagesList[i].StageOrderNumber == 1) {
         previousStageName = this.StagesList[i - 1].StageName
         CurrentStageName = this.StagesList[i].StageName;
@@ -1163,6 +1168,7 @@ export class NewWayleaveComponent implements OnInit {
 
     this.applicationsService.addUpdateApplication(this.applicationID, this.CurrentUser.appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, "Phone", this.externalAddress, null, null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.externalAddress, appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, null, isPlanning, null).subscribe((data: any) => {
       if (data.responseCode == 1) {
+        debugger;
         if (isPlanning == false) {
           this.AddProfessinal(contractorData, engineerData);
         }

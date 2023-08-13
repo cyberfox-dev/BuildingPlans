@@ -42,6 +42,7 @@
         public bool? isPlanning { get; set; }
 
         public DateTime? PermitStartDate { get; set; }
+        public DateTime? DatePaid { get; set; }
 
 
     }
