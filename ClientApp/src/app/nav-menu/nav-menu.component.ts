@@ -466,6 +466,7 @@ export class NavMenuComponent implements OnInit {
   }
 
   openFAQModal(FAQModal: any) {
+    this.offcanvasService.dismiss();
     this.modalService.open(FAQModal, { centered: true, size: 'xl' });
   }
   viewEditComment(editComment: any, index: any) {

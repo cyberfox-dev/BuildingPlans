@@ -100,6 +100,7 @@ export interface SubDepFinalApproveList {
   Comment: string;
   CommentStatus: string;
   DateCreated: any;
+  UserName: string;
 }
 
 export interface DocumentsList {
@@ -1655,7 +1656,7 @@ export class ViewProjectInfoComponent implements OnInit {
           tempSubDepCommentStatusList.Comment = current.comment;
           tempSubDepCommentStatusList.DateCreated = current.dateCreated;
           tempSubDepCommentStatusList.CommentStatus = current.commentStatus;
-
+          tempSubDepCommentStatusList.UserName = current.userName;
           this.SubDepFinalApproveList.push(tempSubDepCommentStatusList);
 
 
@@ -1884,7 +1885,7 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.text('Status Summary:', 10, 105, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
 
 
-    this.SubDepConditionalApproveList.forEach((deposit) => {
+    this.SubDepFinalApproveList.forEach((deposit) => {
       const row = [
         deposit.SubDepName,
         deposit.CommentStatus,
