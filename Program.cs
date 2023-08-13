@@ -83,7 +83,8 @@ builder.Services.AddCors(options =>
             builder
                 .WithOrigins("https://wayleaveqa.capetown.gov.za")
                 .AllowAnyHeader()
-                .AllowAnyMethod();
+                .AllowAnyMethod()
+                .AllowCredentials();
         });
 });
 
