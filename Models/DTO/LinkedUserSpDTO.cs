@@ -13,6 +13,7 @@ namespace WayleaveManagementSystem.DTO
 
         public int ZoneLinkID { get; set; }
 
+        public string Email { get; set; }
     }
 
 }
