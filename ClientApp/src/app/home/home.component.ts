@@ -442,7 +442,7 @@ dataSource = this.Applications;
  
   getLinkedZones(ApplicationID: any, processFlow: any) {
 
-   // this.ZoneLinkedList.splice(0, this.ZoneLinkedList.length);
+    this.ZoneLinkedList.splice(0, this.ZoneLinkedList.length);
 
     this.zoneForCommentService.getZonesForComment(ApplicationID, null).subscribe((data: any) => {
 
