@@ -144,7 +144,13 @@ export class LoginComponent implements OnInit {
   }
 
   onLogin() {
-    
+    let isValidBP = this.checkBPValidity();
+
+    // We will still display the warning if it's not valid but not halt the login.
+    if (!isValidBP) {
+      console.warn("Invalid Business Partner (BP) Number! Please contact CCT eServices.");
+      // Notice the "return;" line is removed/commented out.
+    }
     this.isLoading = true;
     const email = this.loginForm.controls["email"].value;
     const password = this.loginForm.controls["password"].value;
@@ -192,7 +198,10 @@ export class LoginComponent implements OnInit {
     );
   }
 
-
+  checkBPValidity(): boolean {
+    // Some code here to check validity
+    return true; // Placeholder
+  }
 
   //onLogin() {
   //  this.isLoading = true;
@@ -365,10 +374,10 @@ export class LoginComponent implements OnInit {
     this.VerifyBP(BpNo);
 
     this.testBp(BpNo).subscribe(isBpValid => {
-      if (!isBpValid) {
-        alert("Please enter a valid Business Partner (BP) Number!");
-        return;
-      }
+      //if (!isBpValid) {
+      //  alert("Please enter a valid Business Partner (BP) Number!");
+      //  return;
+      //}
 
       this.sharedService.errorForRegister = false;
 
