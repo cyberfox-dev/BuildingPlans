@@ -21,153 +21,165 @@ export class FileUploadComponent implements OnInit {
   private readonly apiUrl: string = this.shared.getApiUrl();
   progress: number = 0;
   message: string | undefined;
-  response: { dbPath: ''; } | undefined
+  response: { dbPath: string; } | undefined = { dbPath: '' };
   fileName: string = '';
-    stringifiedData: any;
-    CurrentUser: any;
-    fileUploadName: string;
-    fileExtention: string;
-    currentApplication: any;
+  stringifiedData: any;
+  CurrentUser: any;
+  fileUploadName: string;
+  fileExtention: string;
+  currentApplication: any;
 
-  constructor(private http: HttpClient, private shared: SharedService, private documentUploadService: DocumentUploadService, private financialService: FinancialService,) { }
+  constructor(private http: HttpClient, private shared: SharedService, private documentUploadService: DocumentUploadService, private financialService: FinancialService) { }
 
   ngOnInit(): void {
-    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
-    this.CurrentUser = JSON.parse(this.stringifiedData);
+    this.CurrentUser = JSON.parse(localStorage.getItem('LoggedInUserInfo') || '{}');
     this.currentApplication = this.shared.getViewApplicationIndex();
-    if (this.UploadFor == "Doc" || this.UploadFor == "") {
-      this.ApplicationID = this.currentApplication.applicationID;
+
+    if (this.UploadFor === "Doc" || !this.UploadFor) {
+      this.ApplicationID = this.currentApplication?.applicationID;
     } else {
       this.ApplicationID = this.shared.getApplicationID();
     }
-    
   }
 
   uploadFile(files: any) {
+    debugger;
     if (files.length === 0) {
       return;
     }
-    
+    debugger;
     let fileToUpload = <File>files[0];
-  const fileNameParts = fileToUpload.name.split('.');
+    const fileNameParts = fileToUpload.name.split('.');
     this.fileExtention = fileNameParts.length > 1 ? `.${fileNameParts[fileNameParts.length - 1].toLowerCase()}` : "";
-
+    debugger;
     if (fileNameParts.length > 2 || this.fileExtention === ".webp") {
-      if (this.fileExtention === ".webp") {
-    alert("You cannot upload .webp files!");
-  } else {
-    alert("Invalid file name.");
-  }
-  return;
-}
-    if (this.UploadFor == "Doc" || this.UploadFor == "") {
-      this.fileUploadName = fileNameParts[0] + "-appID-" + this.ApplicationID;
-    } else {
-      this.fileUploadName = this.UploadFor.substring(' ') + "-appID-" + this.ApplicationID;
-    }
-    
-
-   
-
-    if (this.isFinancial) {
-      this.financialService.getFinancialByApplicationID(this.ApplicationID).subscribe((data: any) => {
-        if (data && data.responseCode == 1) {
-          
-          // Searching for a match in the dataset
-          let matchedDocument = data.dateSet.find(doc => doc.documentName === this.fileUploadName + this.fileExtention);
-          
-          if (matchedDocument) {
-            
-            alert('Oops, you cannot upload files with the same name!');
-          } else
-          {
-            this.fileName = fileToUpload.name; // Set the fileName property with the selected file name
-
-            this.passFileName.emit({ uploadFor: this.UploadFor, fileName: fileToUpload.name });
-            // Instead of pushing the file for a temporary upload, immediately call UploadDocuments
-            this.UploadDocuments(fileToUpload, this.fileUploadName + this.fileExtention);
-
-
-          }
+        if (this.fileExtention === ".webp") {
+          alert("You cannot upload .webp files!");
+          debugger;
         } else {
-          alert(data.responseMessage);
-          console.log("Response:", data);
+          alert("Invalid file name.");
+          debugger;
         }
-      }, error => {
-        console.log("Error: ", error);
-      });
+        return;
+    }
+
+    if (this.UploadFor == "Doc") {
+      debugger;
+        this.fileUploadName = fileNameParts[0] + "-appID-" + this.ApplicationID;
     }
     else {
-      this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
-        if (data && data.responseCode == 1) {
-          
-          // Searching for a match in the dataset
-          let matchedDocument = data.dateSet.find(doc => doc.documentName === this.fileUploadName + this.fileExtention);
-          
-          if (matchedDocument) {
-            
-            alert('Oops, you cannot upload files with the same name!');
-          } else {// If a match is found
-            this.passFileName.emit({ uploadFor: this.UploadFor, fileName: fileToUpload.name });
-            // Instead of pushing the file for a temporary upload, immediately call UploadDocuments
-            this.UploadDocuments(fileToUpload, this.fileUploadName + this.fileExtention);
-
-          }
-        } else {
-          alert(data.responseMessage);
-          console.log("Response:", data);
-        }
-      }, error => {
-        console.log("Error: ", error);
-      });
+      debugger;
+        this.fileUploadName = this.UploadFor.substring(' ') + "-appID-" + this.ApplicationID;
     }
-   
 
+    const handleResponse = (data: any) => {
+      debugger;
+      if (data?.responseCode == 1) {
+        debugger;
+            const matchedDocument = data.dateSet.find(doc => doc.documentName === this.fileUploadName + this.fileExtention);
+            
+        if (matchedDocument) {
+          debugger;
+                alert('Oops, you cannot upload files with the same name!');
+            } else {
+                this.fileName = fileToUpload.name;
+                this.passFileName.emit({ uploadFor: this.UploadFor, fileName: fileToUpload.name });
+          this.UploadDocuments(fileToUpload, this.fileUploadName + this.fileExtention);
+          debugger;
+            }
+        } else {
+            alert(data?.responseMessage);
+            console.error("Response:", data);
+        }
+    };
 
+    const handleError = (error: any) => {
+        console.error("Error: ", error);
+    };
 
-  }
+    const serviceCall = (this.isFinancial || this.isFinancial === null)
+
+        ? () => this.financialService.getFinancialByApplicationID(this.ApplicationID)
+        : () => this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID);
+
+    serviceCall().subscribe(handleResponse, handleError);
+}
+
 
 
   onDeleteFile() {
+    debugger;
     if (!this.fileName) {
       return; // No file selected, nothing to delete
     }
-    
+    debugger;
     const confirmDelete = confirm(`Are you sure you want to delete the file "${this.fileName}"?`);
+    debugger;
     if (!confirmDelete) {
       return; // User cancelled the delete operation
     }
-    
-    this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
-      if (data && data.responseCode == 1) {
-        
-        // Searching for a match in the dataset
-        let matchedDocument = data.dateSet.find(doc => doc.documentName === this.fileUploadName + this.fileExtention);
-        
+    debugger;
+
+
+    const handleResponse = (data: any) => {
+      debugger;
+      if (data?.responseCode == 1) {
+        debugger;
+        const matchedDocument = data.dateSet.find(doc => doc.documentName === this.fileUploadName + this.fileExtention);
+
         if (matchedDocument) {
-          
-          // If a match is found, delete using the documentID
-          this.documentUploadService.deleteDocument(matchedDocument.documentID).subscribe(response => {
-            if (response) { // Assuming server responds with true on successful deletion
-              this.fileName = '';
-              this.onUploadFinished.emit();
-            } else {
-              alert('Failed to delete the file from the server.');
-            }
-          }, error => {
-            console.log("Error:", error);
-            alert('An error occurred while deleting the file.');
-          });
+          debugger;
+          if (this.isFinancial) {
+            this.financialService.deleteFinancial(matchedDocument.financialID).subscribe(response => {
+              if (response) { // Assuming server responds with true on successful deletion
+                this.fileName = '';
+                this.onUploadFinished.emit();
+              } else {
+                alert('Failed to delete the file from the server.');
+              }
+            }, error => {
+              console.log("Error:", error);
+              alert('An error occurred while deleting the file.');
+            });
+          }
+          else {
+            this.documentUploadService.deleteDocument(matchedDocument.documentID).subscribe(response => {
+              if (response) { // Assuming server responds with true on successful deletion
+                this.fileName = '';
+                this.onUploadFinished.emit();
+              } else {
+                alert('Failed to delete the file from the server.');
+              }
+            }, error => {
+              console.log("Error:", error);
+              alert('An error occurred while deleting the file.');
+            });
+          }
+
+         
         } else {
           alert('No matching file found in the server database.');
+          debugger;
         }
       } else {
-        alert(data.responseMessage);
-        console.log("Response:", data);
+        alert(data?.responseMessage);
+        console.error("Response:", data);
       }
-    }, error => {
-      console.log("Error: ", error);
-    });
+    };
+
+    const handleError = (error: any) => {
+      console.error("Error: ", error);
+    };
+
+    const serviceCall = (this.isFinancial || this.isFinancial === null)
+
+      ? () => this.financialService.getFinancialByApplicationID(this.ApplicationID)
+      : () => this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID);
+
+    serviceCall().subscribe(handleResponse, handleError);
+
+
+  
   }
 
 
@@ -201,7 +213,7 @@ export class FileUploadComponent implements OnInit {
   }
 
   uploadFinished = (event: any, applicationID: any, applicationData: any) => {
-    
+    debugger;
     this.response = event;
     console.log("this.response", this.response);
     console.log("this.response?.dbPath", this.response?.dbPath);
@@ -213,7 +225,7 @@ export class FileUploadComponent implements OnInit {
     this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, applicationID, applicationData.appUserId, this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        
+        debugger;
         // Emit the onUploadSuccess event after a successful upload
         this.onUploadSuccess.emit(event.body); 
       }
@@ -231,7 +243,7 @@ export class FileUploadComponent implements OnInit {
 
 
   financialuploadFinished = (event: any, applicationID: any, applicationData: any) => {
-    
+    debugger;
     this.response = event;
     console.log("this.response", this.response);
     console.log("this.response?.dbPath", this.response?.dbPath);
@@ -244,7 +256,7 @@ export class FileUploadComponent implements OnInit {
   
 
       if (data.responseCode == 1) {
-        
+
         // Emit the onUploadSuccess event after a successful upload
         this.onUploadSuccess.emit(event.body);
       }

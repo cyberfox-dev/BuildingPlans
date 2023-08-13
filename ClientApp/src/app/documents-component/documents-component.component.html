@@ -26,7 +26,7 @@
 
 <ng-template #newSub let-modal>
   <div class="modal-header">
-    <h4 class="modal-title">Upload Document: Please Name your files appropriately for reviewer to understand!</h4>
+    <h4 class="modal-title">Upload Document: Please name your files in a clear and descriptive manner to assist the reviewer. Thank you!</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="onCloseFile()"></button>
   </div>
   <div class="modal-body">
@@ -49,6 +49,6 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" (click)="getAllDocsForApplication();modal.close('Close click')">Save</button>
+    <button type="submit" class="btn btn-outline-success" (click)="getAllDocsForApplication();changeHasFile();modal.close('Close click')">Save</button>
   </div>
 </ng-template>

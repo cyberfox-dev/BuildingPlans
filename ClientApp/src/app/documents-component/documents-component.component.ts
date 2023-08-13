@@ -87,8 +87,8 @@ export class DocumentsComponentComponent implements OnInit {
     // Rest of the logic...
   }
   onCloseFile() {
-    if (this.hasFile && this.fileCount < 1) {
-      if (confirm("If you don't delete file it will still be uploaded! Click Cancel botton to delete file before proceeding or Ok botton to upload and exit.")) {
+    if (this.hasFile) {
+      if (confirm("The file will be uploaded if you proceed. Click 'OK' to upload or 'Cancel' to delete the file before proceeding.")) {
         this.modalService.dismissAll();
       }
       else {
@@ -101,17 +101,25 @@ export class DocumentsComponentComponent implements OnInit {
 
 
   }
+
+  changeHasFile() {
+    if (this.hasFile) {
+      this.hasFile = false;
+    } else {
+      this.hasFile = true;
+    }
+  }
   onPassFileName(event: { uploadFor: string; fileName: string }) {
     debugger;
     const { uploadFor, fileName } = event;
     const index = parseInt(uploadFor.substring('CoverLetter'.length));
-    this.fileAttrsName = fileName;
+    this.fileAttrsName = "Doc";
     this.hasFile = true;
     this.fileCount = this.fileCount + 1;
   }
   onFileDelete(event: any, index: number) {
 
-    this.fileAttrsName = '';
+    this.fileAttrsName = "Doc";
     this.hasFile = false;
     //this.getAllDocsForApplication();
     this.fileCount = this.fileCount - 1;
@@ -157,7 +165,7 @@ export class DocumentsComponentComponent implements OnInit {
 
 
   getAllDocsForApplication() {
-    
+    this.DocumentsList.splice(0, this.DocumentsList.length);
     this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {

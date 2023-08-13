@@ -1,16 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Security.Policy;
 using WayleaveManagementSystem.Data;
 using WayleaveManagementSystem.Data.Entities;
 using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.IServices;
 using WayleaveManagementSystem.Models;
 using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
 using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.Service;
+
 
 namespace WayleaveManagementSystem.Controllers
 {
@@ -20,7 +16,7 @@ namespace WayleaveManagementSystem.Controllers
     {
 
         private readonly AppDBContext _context;
-
+       
         public FinancialController(AppDBContext context)
         {
             _context = context;
@@ -104,26 +100,34 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-        [HttpPost("DeleteServiceItemID")]
-        public async Task<object> DeleteDepositRequiredByID([FromBody] int depositRequiredID)
+        [HttpPost("DeleteFinancial")]
+        public async Task<object> DeleteFinancial([FromBody] int financialID)
         {
             try
             {
+                var tempFinancial = _context.Financial.FirstOrDefault(x => x.FinancialID == financialID);
 
-                var tempDepositRequired = _context.DepositRequired.FirstOrDefault(x => x.DepositRequiredID == depositRequiredID);
-
-                if (tempDepositRequired == null)
+                if (tempFinancial == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", false));
 
                 }
                 else
                 {
-                    tempDepositRequired.DateUpdated = DateTime.Now;
-                    tempDepositRequired.isActive = false;
-                    _context.Update(tempDepositRequired);
+                    var dbPath = tempFinancial.DocumentLocalPath;
+
+                    var fullPath = Path.Combine(Directory.GetCurrentDirectory(), dbPath);
+                    if (System.IO.File.Exists(fullPath))
+                    {
+                        System.IO.File.Delete(fullPath);
+                    }
+
+
+                    tempFinancial.DateUpdated = DateTime.Now;
+                    tempFinancial.isActive = false;
+                    _context.Remove(tempFinancial);
                     await _context.SaveChangesAsync();
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Deposit Information Deleted Successfully", true));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Financial Deleted Successfully", true));
                 }
 
 

@@ -77,16 +77,28 @@ builder.Services.Configure<FormOptions>(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigin",
+    options.AddPolicy("AllowWayleaveOrigin",
         builder =>
         {
             builder
-                .WithOrigins("https://localhost:44440") // Replace with your Angular app's origin
+                .WithOrigins("https://wayleaveqa.capetown.gov.za")
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
 });
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder =>
+        {
+            builder
+                .WithOrigins("https://localhost:44440")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -98,6 +110,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AllowSpecificOrigin");
+app.UseCors("AllowWayleaveOrigin");
 
 app.UseStaticFiles();
 //This is to tell the app where to find the uploaded files

@@ -1209,9 +1209,9 @@ export class NewWayleaveComponent implements OnInit {
     }
   }
   onFileDelete(event: any, index: number) {
-    
-    this.fileAttrs[index] = '';
     this.successfulUploads--;
+    this.fileAttrs[index] = this.MandatoryDocumentsLinkedStagesList[index].mandatoryDocumentName;
+    
 
   }
 
@@ -2837,7 +2837,7 @@ export class NewWayleaveComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
-
+  
 
 
   uploadFinished = (event: any, applicationID: any, applicationData: any) => {
@@ -2867,10 +2867,11 @@ export class NewWayleaveComponent implements OnInit {
   }
 
 
-  onPassFileName(event: { uploadFor: string; fileName: string }) {
+  onPassFileName(event: { uploadFor: string; fileName: string }, index: any) {
+    debugger;
     const { uploadFor, fileName } = event;
-    const index = parseInt(uploadFor.substring('CoverLetter'.length));
-    this.fileAttrs[index] = fileName;
+   // const index = parseInt(uploadFor.substring('CoverLetter'.length));
+    this.fileAttrs[index] = this.MandatoryDocumentsLinkedStagesList[index].mandatoryDocumentName;
   }
 
   //onPassFileName = (CoverLetterFileName: any) => {

@@ -59,15 +59,25 @@
         <div>
           <mat-toolbar>
 
-            <input matInput [(ngModel)]="fileAttrs[0]" readonly name="name" />
+          <!-- <input matInput [(ngModel)]="fileAttrs[0]" readonly name="name" />-->
 
             <div class="row">
               <div class="container-fluid">
                 <div class="row" style="margin-bottom:15px;">
                   <div class="container-fluid">
 
-                    <input type="file" #file placeholder="{{fName}}" (change)="uploadFile(file.files)" style="display:none;">
-                    <button mat-raised-button color="btn" matTooltip="Upload File" matTooltipPosition="above" type="button" class="btn btn-info" (click)="file.click()"><i class="fa fa-upload" style="font-size: 1em;"></i></button>
+                    <input matInput [(ngModel)]="fileAttrs" readonly name="name" />
+                    <!-- app-file-upload Component -->
+                    <div class="row" style="margin-bottom:15px;">
+                      <div class="container-fluid">
+                        <app-file-upload [ApplicationID]="ApplicationID"
+                                         [UploadFor]="fileAttrsName"
+                                         (passFileName)="onPassFileName($event)"
+                                         (onUploadFinished)="onFileDelete($event, 0)"
+                                         (onUploadSuccess)="onFileUpload($event)">
+                        </app-file-upload>
+                      </div>
+                    </div>
 
 
 

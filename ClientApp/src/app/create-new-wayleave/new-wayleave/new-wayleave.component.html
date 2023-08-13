@@ -476,14 +476,14 @@
           <div>
             <mat-toolbar>
               <!-- Display files names -->
-              <input matInput [(ngModel)]="fileAttrs[i]" readonly name="name" />
+              <input matInput  readonly name="name" /> <!--[(ngModel)]="fileAttrs[i]"-->
 
               <!-- app-file-upload Component -->
               <div class="row" style="margin-bottom:15px;">
                 <div class="container-fluid">
                   <app-file-upload [ApplicationID]="applicationID"
                                    [UploadFor]="manDoc.mandatoryDocumentName"
-                                   (passFileName)="onPassFileName($event)"
+                                   (passFileName)="onPassFileName($event,i)"
                                    (onUploadFinished)="onFileDelete($event, i)"
                                    (onUploadSuccess)="onFileUpload($event)">
                   </app-file-upload>

@@ -27,6 +27,13 @@ export class FinancialService {
   }
 
 
+  public deleteFinancial(financialID: number) {
+
+    return this.httpClient.post(this.baseURL + "DeleteFinancial", financialID);
+
+  }
+  DeleteFinancial
+
   public getFinancialByApplicationID(ApplicationID: number) {
 
     return this.httpClient.post(this.baseURL + "GetFinancialByApplicationID", ApplicationID);
