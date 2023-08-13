@@ -2487,7 +2487,7 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.addImage(footer, 'png', 7, 255, 205, 45);
 
     // Save PDF document
-    doc.save("Approval Pack");
+ /*   doc.save("Approval Pack");*/
     const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
     const file = new File([pdfData], 'approval_pack.pdf', { type: 'application/pdf' });
 
