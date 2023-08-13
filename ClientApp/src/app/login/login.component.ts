@@ -160,7 +160,10 @@ export class LoginComponent implements OnInit {
           throw new Error(data.responseMessage);
         }
       }),
-      // Removed the switchMap that checks for bpNumber and isInternal, instead just navigate to home
+      switchMap((profileData: any) => {
+        localStorage.setItem("userProfile", JSON.stringify(profileData.dateSet));
+        return of(true); // Return an observable of true to proceed with the rest of the flow
+      })
     ).subscribe(
       // Since we're no longer expecting a boolean for bp validity, adjust accordingly
       () => {
@@ -174,6 +177,7 @@ export class LoginComponent implements OnInit {
       }
     );
   }
+
 
   //onLogin() {
   //  let isValidBP = this.checkBPValidity();
