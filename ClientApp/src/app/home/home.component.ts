@@ -396,6 +396,11 @@ dataSource = this.Applications;
     });
   }
 
+
+  openProcessFlowModal(processFlow: any) {
+    this.modalService.open(processFlow, { centered: true, size: 'xl' });
+  }
+
   onAddNewClient() {
     
 

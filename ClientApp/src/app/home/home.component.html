@@ -143,7 +143,9 @@
 
       <ng-container matColumnDef="ProjectNumber">
         <th mat-header-cell *matHeaderCellDef>Project Number</th>
-        <td mat-cell *matCellDef="let element"> {{element.ProjectNumber}} </td>
+        <td mat-cell *matCellDef="let element">
+          <span class="processFlow" (click)="openProcessFlowModal(processFlow)">{{element.ProjectNumber}}</span>
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="AplicationAge">
@@ -735,4 +737,42 @@
 </div>
 
  
+</ng-template>
+
+
+<ng-template #processFlow let-modal>
+  <div class="modal-header">
+    <h6 class="modal-title" id="modal-basic-title">Process Flow</h6>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+<!--    <div class="container-fluid">
+
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="">
+          <th mat-header-cell *matHeaderCellDef>Sub Departments</th>
+          <td mat-cell *matCellDef="let element"> {{element.}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="">
+          <th mat-header-cell *matHeaderCellDef>Zones</th>
+          <td mat-cell *matCellDef="let element"> {{element.}} </td>
+        </ng-container>
+
+
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+
+    </div>-->
+  </div>
+  <div class="modal-footer">
+
+    <button type="button" class="btn btn-light" (click)="modal.dismiss('Cross click')">Close</button>
+  </div>
+
 </ng-template>
