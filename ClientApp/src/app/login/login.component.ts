@@ -144,13 +144,8 @@ export class LoginComponent implements OnInit {
   }
 
   onLogin() {
-    let isValidBP = this.checkBPValidity();
+    // Removed the checkBPValidity and its warning
 
-    // We will still display the warning if it's not valid but not halt the login.
-    if (!isValidBP) {
-      console.warn("Invalid Business Partner (BP) Number! Please contact CCT eServices.");
-      // Notice the "return;" line is removed/commented out.
-    }
     this.isLoading = true;
     const email = this.loginForm.controls["email"].value;
     const password = this.loginForm.controls["password"].value;
@@ -165,30 +160,12 @@ export class LoginComponent implements OnInit {
           throw new Error(data.responseMessage);
         }
       }),
-      switchMap((profileData: any) => {
-        
-        localStorage.setItem("userProfile", JSON.stringify(profileData.dateSet));
-        const isInternal = profileData.dateSet[0].isInternal; // assuming isInternal is part of the dateSet at index 0
-        const bpNo = profileData.dateSet[0].bP_Number;  // assuming bpNumber is part of the dateSet at index 0
-        
-        // Only test the bpNumber if isInternal is false
-        if (!isInternal) {
-          
-          return this.testBp(bpNo);
-        } else {
-          // If isInternal is true, return an Observable of true to proceed with login
-          return of(true);
-        }
-      })
+      // Removed the switchMap that checks for bpNumber and isInternal, instead just navigate to home
     ).subscribe(
-      (isValidBp: boolean) => {
+      // Since we're no longer expecting a boolean for bp validity, adjust accordingly
+      () => {
         this.isLoading = false;
-        if (isValidBp) {
-          
-          this.router.navigate(["/home"]);
-        } else {
-          this.error = "Invalid Business Partner (BP) Number! Please contact CCT eServices for more information.";
-        }
+        this.router.navigate(["/home"]);
       },
       (error) => {
         console.log("Error: ", error);
@@ -197,6 +174,61 @@ export class LoginComponent implements OnInit {
       }
     );
   }
+
+  //onLogin() {
+  //  let isValidBP = this.checkBPValidity();
+
+  //  // We will still display the warning if it's not valid but not halt the login.
+  //  if (!isValidBP) {
+  //    console.warn("Invalid Business Partner (BP) Number! Please contact CCT eServices.");
+  //    // Notice the "return;" line is removed/commented out.
+  //  }
+  //  this.isLoading = true;
+  //  const email = this.loginForm.controls["email"].value;
+  //  const password = this.loginForm.controls["password"].value;
+
+  //  this.userService.login(email, password).pipe(
+  //    switchMap((data: any) => {
+  //      if (data.responseCode === 1) {
+  //        localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
+  //        return this.getUserProfile();
+  //      } else {
+  //        // Throw error if login failed
+  //        throw new Error(data.responseMessage);
+  //      }
+  //    }),
+  //    switchMap((profileData: any) => {
+        
+  //      localStorage.setItem("userProfile", JSON.stringify(profileData.dateSet));
+  //      const isInternal = profileData.dateSet[0].isInternal; // assuming isInternal is part of the dateSet at index 0
+  //      const bpNo = profileData.dateSet[0].bP_Number;  // assuming bpNumber is part of the dateSet at index 0
+        
+  //      // Only test the bpNumber if isInternal is false
+  //      if (!isInternal) {
+          
+  //        return this.testBp(bpNo);
+  //      } else {
+  //        // If isInternal is true, return an Observable of true to proceed with login
+  //        return of(true);
+  //      }
+  //    })
+  //  ).subscribe(
+  //    (isValidBp: boolean) => {
+  //      this.isLoading = false;
+  //      if (isValidBp) {
+          
+  //        this.router.navigate(["/home"]);
+  //      } else {
+  //        this.error = "Invalid Business Partner (BP) Number! Please contact CCT eServices for more information.";
+  //      }
+  //    },
+  //    (error) => {
+  //      console.log("Error: ", error);
+  //      this.isLoading = false;
+  //      this.error = error.message;
+  //    }
+  //  );
+  //}
 
   checkBPValidity(): boolean {
     // Some code here to check validity
