@@ -2825,7 +2825,7 @@ getAllCommentsByUserID() {
 
 
     for (var i = 0; i < selectDepartments.length; i++) {
-      this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, selectDepartments[i].subDepartmentID, selectDepartments[i].subDepartmentName, null, null, this.CurrentUser.appUserId).subscribe((data: any) => {
+      this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, selectDepartments[i].subDepartmentID, selectDepartments[i].subDepartmentName, null, null, this.CurrentUser.appUserId,null,null).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 

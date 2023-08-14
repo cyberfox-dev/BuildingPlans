@@ -5,6 +5,7 @@ using WayleaveManagementSystem.IServices;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel;
+using System.Security.Policy;
 
 namespace WayleaveManagementSystem.Service
 {
@@ -17,7 +18,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<SubDepartmentForComment> AddUpdateDepartmentForComment(int? subDepartmentForCommentID, int? applicationID, int? subDepartmentID, string subDepartmentName, string? userAssaignedToComment, string? commentStatus, string? creadtedByID)
+        public async Task<SubDepartmentForComment> AddUpdateDepartmentForComment(int? subDepartmentForCommentID, int? applicationID, int? subDepartmentID, string subDepartmentName, string? userAssaignedToComment, string? commentStatus, string? creadtedByID, int? zoneID, string zoneName)
         {
 
             if (subDepartmentForCommentID == 0)
@@ -43,7 +44,9 @@ namespace WayleaveManagementSystem.Service
                     ReferedToUserID = null,
                     CreatedById = creadtedByID,
                     DateCreated = DateTime.Now,
-                    isActive = true
+                    isActive = true,
+                    ZoneID = zoneID,
+                    ZoneName = zoneName,
                 };
 
 
@@ -56,15 +59,35 @@ namespace WayleaveManagementSystem.Service
 
             else
             {
-                tempSubDepForCommentTable.ApplicationID = applicationID;
-                tempSubDepForCommentTable.SubDepartmentID = subDepartmentID;
-                tempSubDepForCommentTable.SubDepartmentName = subDepartmentName;
-                tempSubDepForCommentTable.UserAssaignedToComment = null;
-                tempSubDepForCommentTable.CommentStatus = commentStatus;
+                if (applicationID != null)
+                {
+                    tempSubDepForCommentTable.ApplicationID = applicationID;
+                }
+                if (subDepartmentID != null)
+                {
+                    tempSubDepForCommentTable.SubDepartmentID = subDepartmentID;
+                }
+                if (subDepartmentName != null)
+                {
+                    tempSubDepForCommentTable.SubDepartmentName = subDepartmentName;
+                }
+                if (userAssaignedToComment != null)
+                {
+                    tempSubDepForCommentTable.UserAssaignedToComment = userAssaignedToComment;
+                }
+                if (zoneID != null)
+                {
+                    tempSubDepForCommentTable.ZoneID = zoneID;
+                }
+                if (zoneName != null)
+                {
+                    tempSubDepForCommentTable.ZoneName = zoneName;
+                }
+
                 tempSubDepForCommentTable.isAwaitingClarity = false;
                 tempSubDepForCommentTable.IsRefered = false;
                 tempSubDepForCommentTable.ReferedToUserID = null;
-                tempSubDepForCommentTable.CreatedById = creadtedByID;
+
                 tempSubDepForCommentTable.DateCreated = DateTime.Now;
                 tempSubDepForCommentTable.isActive = true;
 
@@ -165,8 +188,9 @@ namespace WayleaveManagementSystem.Service
                     isAwaitingClarity = subDepartmentForComment.isAwaitingClarity,
                     IsRefered = subDepartmentForComment.IsRefered,
                     ReferedToUserID = subDepartmentForComment.ReferedToUserID,
-                    CreatedById = subDepartmentForComment.CreatedById
-
+                    CreatedById = subDepartmentForComment.CreatedById,
+                    ZoneID = subDepartmentForComment.ZoneID,
+                    ZoneName = subDepartmentForComment.ZoneName,
 
                 }
                 ).ToListAsync();
@@ -188,8 +212,9 @@ namespace WayleaveManagementSystem.Service
                     isAwaitingClarity = subDepartmentForComment.isAwaitingClarity,
                     IsRefered = subDepartmentForComment.IsRefered,
                     ReferedToUserID = subDepartmentForComment.ReferedToUserID,
-                    CreatedById = subDepartmentForComment.CreatedById
-
+                    CreatedById = subDepartmentForComment.CreatedById,
+                      ZoneID = subDepartmentForComment.ZoneID,
+                    ZoneName = subDepartmentForComment.ZoneName,
 
                 }
                 ).ToListAsync();
@@ -214,8 +239,9 @@ namespace WayleaveManagementSystem.Service
                     isAwaitingClarity = subDepartmentForComment.isAwaitingClarity,
                     IsRefered = subDepartmentForComment.IsRefered,
                     ReferedToUserID = subDepartmentForComment.ReferedToUserID,
-                    CreatedById = subDepartmentForComment.CreatedById
-
+                    CreatedById = subDepartmentForComment.CreatedById,
+                      ZoneID = subDepartmentForComment.ZoneID,
+                    ZoneName = subDepartmentForComment.ZoneName,
 
                 }
                 ).ToListAsync();

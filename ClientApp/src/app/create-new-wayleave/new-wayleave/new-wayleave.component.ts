@@ -855,43 +855,22 @@ export class NewWayleaveComponent implements OnInit {
     /*    this.shared.setCreatedByID(this.CurrentUser.appUserId)*/
   }
 
-  onAutoLinkDepartment() {
+  onAutoLinkDepartment(subDepartmentID: any, subDepartmentName: any, zoneID: any, zoneName: any) {
 
-    this.subDepartmentsService.getAllSubDepartmentsForAutoDistribution().subscribe((data: any) => {
-
-      if (data.responseCode == 1) {
-
-        for (var i = 0; i < data.dateSet.length; i++) {
-          this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.applicationID, data.dateSet[i].subDepartmentID, data.dateSet[i].subDepartmentName, null, null, this.CurrentUser.appUserId).subscribe((data: any) => {
-
-            if (data.responseCode == 1) {
-
-              // alert(data.dateSet.subDepartmentName + " assigned to this Application");
-
-            }
-            else {
-
-              alert(data.responseMessage);
-            }
-            console.log("reponseAddUpdateDepartmentForComment", data);
-
-
-          }, error => {
+    this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.applicationID, subDepartmentID, subDepartmentName, null, null, this.CurrentUser.appUserId, zoneID, zoneName)
+        .subscribe((data: any) => {
+          if (data.responseCode == 1) {
+            //alert(data.responseMessage);
+          }
+          console.log("reponseAddUpdateDepartmentForComment", data);
+        },
+          error => {
             console.log("Error: ", error);
-          })
-        }
-      }
-      else {
-
-        alert(data.responseMessage);
-      }
-      console.log("reponseAddUpdateDepartmentForComment", data);
-
-
-    }, error => {
-      console.log("Error: ", error);
-    })
+          }
+        );
+    
   }
+
 
   //onLinkDepartmentForComment() {
 
@@ -1017,14 +996,13 @@ export class NewWayleaveComponent implements OnInit {
             debugger;
             this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, null, this.CurrentUser.appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributed/Unallocated", false, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, isPlanning, null).subscribe((data: any) => {
               if (data.responseCode == 1) {
-                debugger;
+                   debugger;
                 alert("Application Created");
                 if (isPlanning == false) {
                   this.AddProfessinal(contractorData, engineerData);
                 }
                // this.UploadDocuments(data.dateSet);
-                this.onAutoLinkDepartment();
-                debugger;
+              
                 this.shared.setApplicationID(0);
                 this.shared.clearContractorData();
                 this.shared.clearEngineerData();
@@ -1044,7 +1022,7 @@ export class NewWayleaveComponent implements OnInit {
               })
 
               this.addToZoneForComment();
-
+             
               console.log("responseAddapplication", data);
             }, error => {
               console.log("Error", error);
@@ -1428,7 +1406,7 @@ export class NewWayleaveComponent implements OnInit {
                   if (data.responseCode == 1) {
                     alert(data.responseMessage);
 
-                    this.onAutoLinkDepartment();
+                   // this.onAutoLinkDepartment();
                     console.log(data);
                     this.shared.setApplicationID(this.applicationID);
                     this.ARCGISAPIData.applicationID = this.applicationID;
@@ -1763,7 +1741,7 @@ export class NewWayleaveComponent implements OnInit {
                   if (data.responseCode == 1) {
                     alert(data.responseMessage);
 
-                    this.onAutoLinkDepartment();
+                   // this.onAutoLinkDepartment();
                     console.log(data);
                     this.shared.setApplicationID(this.applicationID);
                     this.ARCGISAPIData.applicationID = this.applicationID;
@@ -3135,7 +3113,7 @@ export class NewWayleaveComponent implements OnInit {
     const tempList = this.shared.distributionList;
 
     tempList.forEach((obj) => {
-      this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.applicationID, obj.subDepartmentID, obj.subDepartmentName, obj.userID, null, "ESRI API").subscribe((data: any) => {
+      this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.applicationID, obj.subDepartmentID, obj.subDepartmentName, obj.userID, null, "ESRI API",obj.zoneID,obj.zoneName).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           alert(data.responseMessage);
@@ -3180,7 +3158,8 @@ export class NewWayleaveComponent implements OnInit {
 
         if (data.responseCode == 1) {
 /*          alert(data.responseMessage);*/
-
+          this.onAutoLinkDepartment(obj.subDepartmentID, obj.subDepartmentName, obj.zoneID, obj.zoneName);
+          
         }
         else {
 /*          alert(data.responseMessage);*/

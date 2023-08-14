@@ -19,6 +19,8 @@ export interface SubDepartmentList {
   subdepartmentForCommentID: number | null;
   UserAssaignedToComment: string | null;
   commentStatus: string | null;
+  zoneID: number;
+  zoneName: string;
 }
 const ELEMENT_DATA: PeriodicElement[] = [
   { dep: 'Water & Sanitation', indication:'green' },
@@ -51,7 +53,7 @@ export class DepartmentCirculationComponent implements OnInit {
   approveOrRejection = '';
 
   constructor(private subDepartmentForCommentService: SubDepartmentForCommentService, private sharedService: SharedService ){ }
-  displayedColumns: string[] = ['subDepartmentName', 'indication'];
+  displayedColumns: string[] = ['subDepartmentName','zoneName' ,'indication'];
   dataSource = this.SubDepartmentList;
   @ViewChild(MatTable) SubDepartmentListTable: MatTable<SubDepartmentList> | undefined;
   ngOnInit(): void {
@@ -101,7 +103,13 @@ export class DepartmentCirculationComponent implements OnInit {
           tempSubDepartmentList.isAwaitingClarity = current.isAwaitingClarity;
           tempSubDepartmentList.IsRefered = current.isRefered;
           tempSubDepartmentList.commentStatus = current.commentStatus;
-   
+          tempSubDepartmentList.zoneID = current.zoneID;
+          if (tempSubDepartmentList.subDepartmentName == "IS&T" || tempSubDepartmentList.subDepartmentName == "Bulk Water") {
+            tempSubDepartmentList.zoneName = "CCT";
+          } else {
+            tempSubDepartmentList.zoneName = current.zoneName;
+          }
+          
           
 
           this.SubDepartmentList.push(tempSubDepartmentList);

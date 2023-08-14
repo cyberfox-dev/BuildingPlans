@@ -36,7 +36,9 @@ namespace WayleaveManagementSystem.Data.Entities
         public bool? FinalApproval { get; set; }
 
 
+        public int? ZoneID { get; set; }
 
+        public string? ZoneName { get; set; }
 
 
 

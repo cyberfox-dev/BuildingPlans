@@ -23,6 +23,10 @@
         //Is Set for final Approval
         public bool? FinalApproval { get; set; }
 
+        public int? ZoneID { get; set; }
+
+        public string? ZoneName { get; set; }
+
 
     }
 }

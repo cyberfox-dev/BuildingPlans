@@ -29,6 +29,10 @@ namespace WayleaveManagementSystem.DTO
 
         public bool isActive { get; set; }
 
+        public int? ZoneID { get; set; }
+
+        public string? ZoneName { get; set; }
+
 
 
 

@@ -13,7 +13,7 @@ export class SubDepartmentForCommentService {
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
-  public addUpdateDepartmentForComment(subDepartmentForCommentID: number | null, applicationID: number | null, subDepartmentID: number | null, subDepartmentName: string | null, userAssaignedToComment: string | null, commentStatus: string | null,createdByID: string | null) {
+  public addUpdateDepartmentForComment(subDepartmentForCommentID: number | null, applicationID: number | null, subDepartmentID: number | null, subDepartmentName: string | null, userAssaignedToComment: string | null, commentStatus: string | null, createdByID: string | null, zoneID: number | null, zoneName: string | null) {
 
     const body = {
       SubDepartmentForCommentID: subDepartmentForCommentID,
@@ -23,6 +23,8 @@ export class SubDepartmentForCommentService {
       UserAssaignedToComment: userAssaignedToComment,
       CommentStatus: commentStatus,
       CreatedById: createdByID,
+      ZoneID: zoneID,
+      ZoneName: zoneName,
 
     }
     return this.httpClient.post(this.baseURL + "AddUpdateDepartmentForComment", body);
