@@ -1360,7 +1360,7 @@ export class ViewProjectInfoComponent implements OnInit {
       if (data.responseCode == 1) {
         
         for (var i = 0; i < data.dateSet.length; i++) {
-          this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, data.dateSet[i].subDepartmentID, data.dateSet[i].subDepartmentName, null, null, this.CurrentUser.appUserId).subscribe((data: any) => {
+          this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, data.dateSet[i].subDepartmentID, data.dateSet[i].subDepartmentName, null, null, this.CurrentUser.appUserId, null, null).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
               
@@ -1504,7 +1504,7 @@ export class ViewProjectInfoComponent implements OnInit {
       this.applicationsService.updateApplicationStage(this.CurrentApplicationBeingViewed[0].applicationID, this.CurrentApplicationBeingViewed[0].CurrentStageName, this.CurrentApplicationBeingViewed[0].CurrentStageNumber, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, "Distributed/Unallocated").subscribe((data: any) => {
 
         if (data.responseCode == 1) {
-          this.onAutoLinkDepartment();
+         // this.onAutoLinkDepartment();
           alert("Application Moved to Distributed/Unallocated");
          // this.router.navigate(["/home"]);
 

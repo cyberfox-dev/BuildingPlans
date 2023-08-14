@@ -396,11 +396,12 @@ export class LoginComponent implements OnInit {
     ApplicantIDNumber?: string | null
   ) {
     let onLoginForm = true;
-
+    let clientRegisterPassword = null;
     // If the method is called without parameters, then get the values from the form
     if (clientFullName === undefined || clientEmail === undefined || BpNo === undefined || clientFullName == null || clientEmail == null || BpNo == null || clientFullName == "" || clientEmail == "" || BpNo == "") {
       clientFullName = this.registerForm.controls["fullName"].value;
       clientEmail = this.registerForm.controls["registerEmail"].value;
+      clientRegisterPassword = this.registerForm.controls["registerPassword"].value;
       BpNo = this.registerForm.controls["bpNumber"].value;
 
     } else {
@@ -441,7 +442,39 @@ export class LoginComponent implements OnInit {
 
       if (numberOfSpaces >= 2 || numberOfSpaces == 0) {
         alert("Please enter your first name and surname only!");
-      } else {
+      }
+      else if (clientRegisterPassword != null){
+        this.userService.register(clientFullName, clientEmail, clientRegisterPassword).subscribe((data: any) => {
+          if (data.responseCode == 1) {
+            if (onLoginForm === false) {
+              this.newProfileComponent.onNewProfileCreate(
+                data.dateSet.appUserId,
+                clientFullName,
+                clientEmail,
+                phoneNumber,
+                BpNo,
+                CompanyName,
+                CompanyRegNo,
+                PhyscialAddress,
+                ApplicantIDUpload,
+                ApplicantIDNumber
+              );
+              this.sharedService.errorForRegister = false;
+            }
+
+            this.sharedService.clientUserID = data.dateSet.appUserId;
+            localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
+            this.sharedService.newUserProfileBp = BpNo;
+            this.router.navigate(["/new-profile"]);
+          } else {
+            this.sharedService.errorForRegister = true;
+            alert(data.responseMessage);
+          }
+        }, error => {
+          console.log("Error: ", error);
+        });
+      }
+      else {
         // If BP Number is valid, proceed with user registration
         this.userService.register(clientFullName, clientEmail, "Password@" + clientFullName).subscribe((data: any) => {
           if (data.responseCode == 1) {
