@@ -8,9 +8,10 @@ import { NotificationsService } from "src/app/service/Notifications/notification
 import { NewProfileComponent } from 'src/app/new-user/new-profile/new-profile.component';
 import { HomeComponent } from 'src/app/home/home.component';
 import { BusinessPartnerService } from 'src/app/service/BusinessPartner/business-partner.service';
-import { switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { BpNumberService } from 'src/app/service/BPNumber/bp-number.service'
+import { tap } from 'rxjs/operators';
 
 
 @Component({
@@ -82,28 +83,68 @@ export class LoginComponent implements OnInit {
   }
   characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-  public generateOTP(length: number): string {
+  // Assuming this.characters is initialized somewhere above
+  generateOTP(length: number): Observable<string> {
+    const email = this.registerForm.controls["registerEmail"].value;
+
+    return this.userService.emailExists(email).pipe(
+      tap(exists => {
+        if (exists) {
+          this.handleEmailExists();
+          throw new Error('Email exists'); // throw an error to skip the following logic
+        }
+      }),
+      map(() => this.createOTP(length)),
+      tap(otp => this.handleNewEmail(otp, email)),
+      catchError((error) => {
+        this.handleErrorCheckingEmail(error);
+        return of(''); // Return an empty string if there's an error
+      })
+    );
+  }
+
+  onSendOTP(): void {
+    this.generateOTP(6).subscribe(otp => {
+      this.otp = otp;
+    });
+  }
+
+  createOTP(length: number): string {
     let otp = '';
     const charactersLength = this.characters.length;
 
     for (let i = 0; i < length; i++) {
       const randomIndex = Math.floor(Math.random() * charactersLength);
       otp += this.characters.charAt(randomIndex);
-
-    }
-    this.DoChecksForRegister();
-    if (this.registerForm.controls["registerEmail"] != null) {
-      alert("OTP Sent, Please check your email");
-      this.sendOTPBtn = false;
-      this.notification.sendEmail(this.registerForm.controls["registerEmail"].value, "OTP", "Hello, you have recently tried to create an account on the Wayleave Management System, here is your one-time pin for your account: " + otp + " . This code will be invalid in the next 2 hours.", "Hello, you have recently tried to create an account on the Wayleave Management System, here is your one-time pin for your account: " + otp + " . This code will be invalid in the next 2 hours.");
-      this.startExpirationTimer();
-    }
-    else {
-      alert("There was an error");
     }
     return otp;
-
   }
+
+  handleEmailExists(): void {
+    alert('Email already exists. Please login or use another email.');
+  }
+
+  handleNewEmail(otp: string, email: string): void {
+    this.DoChecksForRegister();
+
+    if (this.registerForm.controls["registerEmail"]) {
+      alert("OTP Sent, Please check your email");
+      this.sendOTPBtn = false;
+      this.notification.sendEmail(email, "OTP",
+        `Hello, you have recently tried to create an account on the Wayleave Management System, here is your one-time pin for your account: ${otp} . This code will be invalid in the next 2 hours.`,
+        `Hello, you have recently tried to create an account on the Wayleave Management System, here is your one-time pin for your account: ${otp} . This code will be invalid in the next 2 hours.`);
+      this.startExpirationTimer();
+    } else {
+      alert("There was an error");
+    }
+  }
+
+  handleErrorCheckingEmail(error: any): void {
+    console.error("Error checking email:", error);
+    alert('There was an error. Please try again.');
+  }
+
+  
   // characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   //public generateOTP(length: number): string {
   //  let otp = '';
