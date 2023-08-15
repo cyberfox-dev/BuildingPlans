@@ -25,6 +25,7 @@ import { FinancialService } from '../../service/Financial/financial.service';
 import { PermitService } from '../../service/Permit/permit.service';
 import { MobileFieldTrackingService } from 'src/app/service/MFT/mobile-field-tracking.service';
 import { FileUploadComponent } from 'src/app/file-upload/file-upload.component';
+import { ServiceItemService } from 'src/app/service/ServiceItems/service-item.service';
 
 import 'jspdf-autotable';
 
@@ -174,6 +175,15 @@ const ELEMENT_DATA: PeriodicElement[] = [
   { name: 'deposit DS456' },
 ];
 
+export interface ServiceItemList {
+  serviceItemID: number;
+  serviceItemCode: string;
+  Description: string;
+  Rate: any;
+  totalVat: number;
+  dateCreated: any;
+}
+
 
 export interface DepositRequired {
   DepositRequiredID: number;
@@ -188,6 +198,19 @@ export interface DepositRequired {
   WBS?: string;
 }
 
+
+export interface AllSubDepartmentList {
+  subDepartmentID: number;
+  subDepartmentName: string;
+  departmentID: number;
+  dateUpdated: any;
+  dateCreated: any;
+  subdepartmentForCommentID: number | null;
+  UserAssaignedToComment: string | null;
+  commentStatus: string | null;
+  GLCode: string | null;
+  ProfitCenter: string | null;
+}
 
 var img = new Image();
 img.src = 'assets/cctlogoblack.png';
@@ -283,7 +306,8 @@ export class ViewProjectInfoComponent implements OnInit {
   DocumentsList: DocumentsList[] = [];
   FinancialDocumentsList: FinancialDocumentsList[] = [];
 
-
+  ServiceItemList: ServiceItemList[] = [];
+  AllSubDepartmentList: AllSubDepartmentList[] = [];
 
   @ViewChild('pdfTable', { static: false }) pdfTable: ElementRef;
 
@@ -336,6 +360,11 @@ export class ViewProjectInfoComponent implements OnInit {
     ApForUpload: string;
     showPermitTab: boolean;
     hasFile: boolean;
+    EMBUsers: any;
+    loggedInUsersSubDepartmentID: number;
+    CurrentUserProfile: any;
+    stringifiedDataUserProfile: any;
+    isEMBUser: boolean;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -413,6 +442,7 @@ export class ViewProjectInfoComponent implements OnInit {
     private permitService: PermitService,
     private MFTService: MobileFieldTrackingService,
     private fileUploadComponent: FileUploadComponent,
+    private serviceItemService: ServiceItemService,
     
   ) { }
 
@@ -428,7 +458,12 @@ export class ViewProjectInfoComponent implements OnInit {
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
 
-
+ 
+    this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
+    this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
+    console.log("WTFWTFWTFWTFWTFWTWFTWFWTFWTFWTWTF", this.CurrentUserProfile[0]);
+    this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
+    this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
 
 
     const today = new Date();
@@ -497,6 +532,12 @@ export class ViewProjectInfoComponent implements OnInit {
     this.checkIfPermitExsist();
     this.getFinancial();
     this.getMFTForApplication();
+    this.getEMBUsers();
+    this.getServiceItem("001");
+    this.getServiceItem("002");
+    this.getServiceItem("003");
+    this.getAllSubDepartments();
+
   }
   receivedata: string;
 
@@ -533,6 +574,318 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   }
+
+  getAllSubDepartments() {
+    this.subDepartmentService.getSubDepartmentsList().subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+
+          const tempSubDepartmentLinkedList = {} as AllSubDepartmentList;
+          const current = data.dateSet[i];
+
+          tempSubDepartmentLinkedList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentLinkedList.UserAssaignedToComment = current.userAssaignedToComment;
+          tempSubDepartmentLinkedList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentLinkedList.departmentID = current.departmentID;
+          tempSubDepartmentLinkedList.dateUpdated = current.dateUpdated;
+          tempSubDepartmentLinkedList.dateCreated = current.dateCreated;
+          tempSubDepartmentLinkedList.subdepartmentForCommentID = current.subDepartmentForCommentID;
+          tempSubDepartmentLinkedList.GLCode = current.glCode;
+          tempSubDepartmentLinkedList.ProfitCenter = current.profitCenter;
+
+
+          this.AllSubDepartmentList.push(tempSubDepartmentLinkedList);
+
+        }
+
+
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+
+
+      }
+      console.log("reponseGetAllLinkedSubDepartmentsForComment", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  getSubByName(subDepName: string) {
+    for (let i = 0; i < this.AllSubDepartmentList.length; i++) {
+      if (this.AllSubDepartmentList[i].subDepartmentName === subDepName) {
+        return this.AllSubDepartmentList[i];
+      }
+    }
+    return null;  // or you might want to throw an error
+  }
+
+  getServiceItem(serviceItemCode: string) {
+
+
+
+    this.serviceItemService.getServiceItemByServiceItemCode(serviceItemCode).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempServiceItemList = {} as ServiceItemList;
+          const current = data.dateSet[i];
+          tempServiceItemList.serviceItemCode = current.serviceItemCode;
+          tempServiceItemList.Rate = current.rate;
+          tempServiceItemList.Description = current.description;
+
+          this.ServiceItemList.push(tempServiceItemList);
+
+        }
+
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  addInvoiceTitle(doc) {
+    autoTable(doc, {
+      body: [['Wayleave Application Fee Invoice']],
+      styles: { halign: 'right', fontSize: 20, textColor: '#000000' },
+      theme: 'plain'
+    });
+  }
+
+  addClientDetails(doc) {
+    autoTable(doc, {
+      body: [['Wayleave Reference: ' + this.ApplicationID
+        + '\nCustomer VAT registration number: No.4500193497'
+        + '\nBusiness partner number: No.4500193497']],
+      styles: { halign: 'right' },
+      theme: 'plain'
+    });
+  }
+
+  addCompanyDetails(doc) {
+    autoTable(doc, {
+      body: [['Civic Centre'
+        + '\n12 Hertzog Boulevard 8001'
+        + '\nPO Box 655 Cape Town 8000'
+        + '\nVAT registration number: 4500193497'
+        + '\nEmail: wayleaves@capetown.gov.za'
+        + '\nWeb address: www.capetown.gov.za']],
+      styles: { halign: 'left' },
+      theme: 'plain'
+    });
+  }
+
+  addServiceItemsAndCostDetailsSJ(doc, startY) {
+    // Generate table body based on ServiceItemList data and calculate the total cost
+    let totalCost = 0;
+    let tableBody = this.ServiceItemList.map(item => {
+      const amount = item.Rate; // Assuming amount equals rate for each item
+      totalCost += parseFloat(amount);
+
+      let profitCenter = '';
+      let glCode = '';
+      if (item.Description === 'RIM Admin Fee') {
+        profitCenter = this.getSubByName("Roads & Infrastructure Management").ProfitCenter;
+        glCode = this.getSubByName("Roads & Infrastructure Management").GLCode;
+      } else if (item.Description === 'Water & Sanitation Admin Fee') {
+        profitCenter = this.getSubByName("Waste Water and Treatment").ProfitCenter;
+        glCode = this.getSubByName("Waste Water and Treatment").GLCode;
+      } else {
+        profitCenter = this.getSubByName("EMB").ProfitCenter;
+        glCode = this.getSubByName("EMB").GLCode;
+      }
+
+      return ['1', item.Description, amount, amount, profitCenter, glCode];
+    });
+
+    // Calculate the VAT and total amount due
+    const vat = totalCost * 0.15;
+    const totalAmountDue = totalCost + vat;
+
+    // Add cost details directly to the table body
+    tableBody.push(
+      ['Amount Due', '', '', totalCost.toFixed(2), '', ''],
+      ['VAT (15%)', '', '', vat.toFixed(2), '', ''],
+      ['Total Amount Due', '', '', totalAmountDue.toFixed(2), '', '']
+    );
+
+    // Add the combined table to the document
+    autoTable(doc, {
+      head: [['Quantity', 'Description', 'Unit', 'Amount', 'Profit Center', 'GL Code']],
+      body: tableBody,
+      theme: 'grid',
+      styles: { cellPadding: 1, lineWidth: 0.1, lineColor: [220, 220, 220], cellWidth: 'wrap', fillColor: [255, 255, 255] }, // setting cell color to white
+      headStyles: { fillColor: [180, 180, 180] }, // setting header color to a darker grey
+      startY: startY,
+      margin: { top: 20 }
+    });
+
+    // Return the new startY value
+    return startY + 40; // decreased from 60 + 20
+  }
+
+  addAccountDetails(doc, startY) {
+    const boxContent = 'Profit Centre: ' + this.getSubByName("EMB").ProfitCenter
+      + '\nGL Acc: ' + this.getSubByName("EMB").GLCode
+    
+
+    autoTable(doc, {
+      body: [[boxContent]],
+      styles: { halign: 'center', valign: 'middle', fillColor: [255, 255, 255] }, // white fill color
+      theme: 'grid',
+      startY: startY,
+    });
+
+    return startY + 30; // adjust this value as needed
+  }
+
+  addPayPointsNotice(doc, startY) {
+    autoTable(doc, {
+      body: [['Pay points: City of Cape Town cash offices or the vendors below:']],
+      styles: { halign: 'left' },
+      theme: 'plain',
+      startY: startY + 20 // adjust this value to create space between the tables
+    });
+    return startY + 20 + 20; // decreased from 100 + 20
+  }
+
+  addPaymentDetails(doc, startY) {
+    autoTable(doc, {
+      body: [['Please Note:\n\n'
+        + '1. Payment options:\n\n'
+        + '(a) Electronic payments (EFT): Select the City of Cape Town as a bank-listed beneficiary on your bank\'s website. Use the reference number provided above.\n'
+        + '(b) Direct deposit at Nedbank: Please present your reference number to the bank teller.\n'
+        + '(c) Cash, debit card, credit card and other: Please present your reference number to the cashier.\n\n'
+        + '2. Failure to pay could result in:\n\n'
+        + '(a) The lapse of your application, resulting in the need for re-application\n'
+        + '(b) Necessity for re-application with no guarantee of similar conditions / requirements']],
+      styles: { halign: 'left' },
+      theme: 'plain',
+      startY: startY + 20 // adjust this value to create space between the tables
+    });
+    return startY + 20 + 20; // decreased from 100 + 20
+  }
+
+  generateInvoiceSplit() {
+
+      // Create a new PDF
+      const doc = new jsPDF();
+
+      // Add company logo
+      const logo = new Image();
+      logo.src = 'assets/cctlogoblack.png';
+      doc.addImage(logo, 'png', 10, 10, 60, 20);
+
+      // Add invoice title
+      this.addInvoiceTitle(doc);
+
+      // Add client details
+      this.addClientDetails(doc);
+
+      // Add company contact details
+      this.addCompanyDetails(doc);
+
+
+      // Set the starting Y position for the table
+      let startY = 100;
+
+      // Generate service items table, cost details and calculate total cost
+      startY = this.addServiceItemsAndCostDetailsSJ(doc, startY);
+
+      startY += 8; // adjust this value as needed
+
+      // Add account details
+      startY = this.addAccountDetails(doc, startY);
+
+      // Reduce the gap before the next section
+      startY -= 28; // adjust this value as needed
+
+      // Add payment options and consequences of non-payment
+      startY = this.addPaymentDetails(doc, startY);
+
+      // Increase the gap before the next section
+      startY += 20;
+
+      // Add pay points notice
+      startY = this.addPayPointsNotice(doc, startY);
+
+      startY -= 35; // adjust this value as needed
+
+
+      // Add vendors image
+
+      //  const vendors = new Image();
+      //vendors.src = 'assets/vendors.jpg';
+
+      //const pageWidth = doc.internal.pageSize.getWidth();
+      //const aspectRatio = vendors.width / vendors.height; // assumes vendors Image object contains width and height properties
+      //const imgHeightOnPage = pageWidth / aspectRatio;
+
+      //doc.addImage(vendors, 'JPEG', 0, startY + 40, pageWidth, imgHeightOnPage);
+
+
+      const vendors = new Image();
+      vendors.src = 'assets/vendors.jpg';
+      doc.addImage(vendors, 'JPEG', 15, startY + 25, 180, 20);
+
+      // Save the PDF as a blob object and push it for temporary upload
+      this.saveAndUploadPDFSplit(doc);
+
+      // Navigate to home page
+     // this.router.navigate(["/home"]);
+    
+  }
+
+  saveAndUploadPDFSplit(doc) {
+    this.sharedService.FileDocument = [];
+    doc.save("invoiceSplit.pdf");
+   // const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
+  //  const file = new File([pdfData], 'Wayleave Application Fee Invoice Split.pdf', { type: 'application/pdf' });
+
+    // Prepare the form data
+ //   const formData = new FormData();
+ //   formData.append('file', file);
+
+   // this.sharedService.pushFileForTempFileUpload(file, "Wayleave Application Fee Invoice Split" + ".pdf");
+   // this.save();
+  }
+
+   getEMBUsers() {
+     this.accessGroupsService.getUserBasedOnRoleName("EMB", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+
+    if (data.responseCode == 1) {
+      this.EMBUsers = data.dateSet;
+      debugger;
+      for (var i = 0; i < this.EMBUsers.length; i++) {
+        const currentEMBUser = this.EMBUsers[i].userID;
+        if (currentEMBUser == this.CurrentUser.appUserId) {
+          this.isEMBUser = true;
+        } else {
+          this.isEMBUser = false;
+        }
+      }
+    
+    }
+    else {
+      alert(data.responseMessage);
+    }
+    console.log("getAllLinkedRolesReponse", data);
+
+  }, error => {
+    console.log("getAllLinkedRolesReponseError: ", error);
+  })
+}
 
   //validate(): void {
   //  //this.businessPartnerService.validateBP().subscribe(

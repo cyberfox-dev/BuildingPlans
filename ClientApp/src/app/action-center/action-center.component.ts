@@ -2704,7 +2704,7 @@ getAllCommentsByUserID() {
 
   }
 
-  getAllServiceItmesForDropdown() {
+  getAllServiceItmesForDropdown(deposit:any) {
 
 
     this.serviceItemService.getAllServiceItem().subscribe((data: any) => {
@@ -2719,7 +2719,7 @@ getAllCommentsByUserID() {
 
           this.ServiceItemCodeDropdown.push(tempServiceItemList);
         }
-
+        this.modalService.open(deposit, { backdrop: 'static', size: 'xl' });
       }
       else {
         //alert("Invalid Email or Password");
