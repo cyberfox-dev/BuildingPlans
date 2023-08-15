@@ -65,7 +65,12 @@ export class FileUploadComponent implements OnInit {
 
     if (this.UploadFor == "Doc") {
       debugger;
+      if (this.ApplicationID === undefined) {
+        this.fileUploadName = fileNameParts[0] + "_appID";
+      } else {
         this.fileUploadName = fileNameParts[0] + "_appID" + this.ApplicationID;
+      }
+       
     }
     else {
       debugger;

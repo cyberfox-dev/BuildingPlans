@@ -278,7 +278,12 @@
 
           <div class="row" style="margin-bottom:15px;">
             <div class="container-fluid">
-              <app-file-upload [UploadFor]="'CoverLetter'+0" (passFileName)="onPassFileName($event)"></app-file-upload>
+              <app-file-upload [ApplicationID]="0"
+                               [UploadFor]="fileAttrsName"
+                               (passFileName)="onPassFileName($event)"
+                               (onUploadFinished)="onFileDelete($event, 0)"
+                               (onUploadSuccess)="onFileUpload($event)">
+              </app-file-upload>
 
             </div>
           </div>

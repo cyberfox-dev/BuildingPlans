@@ -117,6 +117,7 @@ export class NavMenuComponent implements OnInit {
   public isInternalUser: boolean = false;
   Links: boolean = false;
   Icons: boolean = true;
+  fileAttrsName = "Doc";
   public addComment = this.formBuilder.group({
     newCommentName: ['', Validators.required],
 
@@ -205,9 +206,25 @@ export class NavMenuComponent implements OnInit {
   }
 
   onPassFileName(event: { uploadFor: string; fileName: string }) {
+    debugger;
     const { uploadFor, fileName } = event;
     const index = parseInt(uploadFor.substring('CoverLetter'.length));
-    this.fileAttrs[index] = fileName;
+    this.fileAttrsName = "Doc";
+    //this.hasFile = true;
+    //this.fileCount = this.fileCount + 1;
+  }
+
+  onFileDelete(event: any, index: number) {
+
+    this.fileAttrsName = "Doc";
+  //  this.hasFile = false;
+    //this.getAllDocsForApplication();
+//this.fileCount = this.fileCount - 1;
+  }
+
+  onFileUpload(event: any) {
+
+
   }
 
 
