@@ -1210,7 +1210,7 @@ export class NewWayleaveComponent implements OnInit {
     for (var i = 0; i < filesForUpload.length; i++) {
       const formData = new FormData();
       let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
-      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.applicationID;
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "_appID" + this.applicationID;
       formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
 
 
@@ -1419,7 +1419,7 @@ export class NewWayleaveComponent implements OnInit {
                     for (var i = 0; i < filesForUpload.length; i++) {
                       const formData = new FormData();
                       let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
-                      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.applicationID;
+                      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "_appID" + this.applicationID;
                       formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
 
 
@@ -1523,7 +1523,7 @@ export class NewWayleaveComponent implements OnInit {
             const filesForUpload = this.shared.pullFilesForUpload();
             for (var i = 0; i < filesForUpload.length; i++) {
               const formData = new FormData();
-              formData.append('file', filesForUpload[i].formData, filesForUpload[i].UploadFor + "-appID-" + data.dateSet.applicationID);
+              formData.append('file', filesForUpload[i].formData, filesForUpload[i].UploadFor + "_appID" + data.dateSet.applicationID);
 
 
 
@@ -1673,7 +1673,7 @@ export class NewWayleaveComponent implements OnInit {
             const filesForUpload = this.shared.pullFilesForUpload();
             for (var i = 0; i < filesForUpload.length; i++) {
               const formData = new FormData();
-              formData.append('file', filesForUpload[i].formData, filesForUpload[i].UploadFor + "-appID-" + data.dateSet.applicationID);
+              formData.append('file', filesForUpload[i].formData, filesForUpload[i].UploadFor + "_appID" + data.dateSet.applicationID);
 
 
 
@@ -1771,7 +1771,7 @@ export class NewWayleaveComponent implements OnInit {
                     for (var i = 0; i < filesForUpload.length; i++) {
                       const formData = new FormData();
                       let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
-                      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.applicationID;
+                      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "_appID" + this.applicationID;
                       formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
 
 
@@ -1895,7 +1895,7 @@ export class NewWayleaveComponent implements OnInit {
             for (var i = 0; i < filesForUpload.length; i++) {
               const formData = new FormData();
               let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
-              let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.applicationID;
+              let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "_appID" + this.applicationID;
               formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
 
 
@@ -2147,11 +2147,11 @@ export class NewWayleaveComponent implements OnInit {
 
       // Save the PDF as a blob object and push it for temporary upload
       this.saveAndUploadPDF(doc);
-      this.generateInvoiceSplit(ClientName, payableByDate,);
+     // this.generateInvoiceSplit(ClientName, payableByDate,);
 
       // Navigate to home page
       this.router.navigate(["/home"]);
-      alert("Your Invoice Has Been Created. You may find it in your Financials tab within your application");
+      alert("Your invoice has been created. You may find it in your 'Financials' tab within your application");
     }
   }
 
@@ -2210,7 +2210,7 @@ export class NewWayleaveComponent implements OnInit {
     // Generate table body based on ServiceItemList data and calculate the total cost
     let totalCost = 0;
     let tableBody = this.ServiceItemList.map(item => {
-      const amount = item.Rate + ".00"; // Assuming amount equals rate for each item
+      const amount = item.Rate; // Assuming amount equals rate for each item
       totalCost += parseFloat(amount);
       return ['1', item.Description, amount, amount];
     });
@@ -2298,6 +2298,7 @@ export class NewWayleaveComponent implements OnInit {
     this.save();
   }
   saveAndUploadPDFSplit(doc) {
+    this.shared.FileDocument = [];
     doc.save("invoiceSplit.pdf");
     const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
     const file = new File([pdfData], 'Wayleave Application Fee Invoice Split.pdf', { type: 'application/pdf' });
@@ -2315,7 +2316,7 @@ export class NewWayleaveComponent implements OnInit {
     // Generate table body based on ServiceItemList data and calculate the total cost
     let totalCost = 0;
     let tableBody = this.ServiceItemList.map(item => {
-      const amount = item.Rate + ".00"; // Assuming amount equals rate for each item
+      const amount = item.Rate; // Assuming amount equals rate for each item
       totalCost += parseFloat(amount);
 
       let profitCenter = '';
@@ -2442,7 +2443,7 @@ export class NewWayleaveComponent implements OnInit {
     for (var i = 0; i < filesForUpload.length; i++) {
       const formData = new FormData();
       let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
-      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.applicationID;
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "_appID" + this.applicationID;
       formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
 
 
