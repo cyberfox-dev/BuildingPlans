@@ -40,7 +40,7 @@
             <div class="col">
               <div class="form-floating mb-3 mt-3">
                 <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyName" placeholder="Enter Company Name">
-                <label for="address">Company Name *</label>
+                <label for="address">Company Name</label>
               </div>
             </div>
           </div>
@@ -48,13 +48,13 @@
             <div class="col">
               <div class="form-floating mb-3 mt-3">
                 <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyRegNo" placeholder="Enter Company Reg No">
-                <label for="address">Company Reg No. *</label>
+                <label for="address">Company Reg No.</label>
               </div>
             </div>
             <div class="col">
 
               <mat-form-field>
-                <mat-label>Company Type *</mat-label>
+                <mat-label>Company Type</mat-label>
                 <mat-select [(ngModel)]="extApplicantCompanyType">
                   <mat-option value="Company Limited by Shares">Company Limited by Shares</mat-option>
                   <mat-option value="Company Limited by Guarantee">Company Limited by Guarantee</mat-option>
@@ -74,11 +74,6 @@
                 </mat-select>
               </mat-form-field>
 
-
-              <div class="form-floating mb-3 mt-3" hidden>
-                <input type="email" class="form-control"  placeholder="Select Company Type">
-                <label for="applicantEmail">Company Type *</label>
-              </div>
             </div>
           </div>
 
@@ -125,14 +120,8 @@
             <div class="col">
               <div class="form-floating mb-3 mt-3">
                 <!--<input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address">-->
-                <input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" />
+                <input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" [(ngModel)]="extApplicantPhyscialAddress" />
                 <label for="applicantTellNo">Physical Address *</label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="extApplicantIDNumber" placeholder="Enter ID Number">
-                <label for="extApplicantIDNumber">ID Number *</label>
               </div>
             </div>
 
@@ -140,17 +129,8 @@
           <div class="row">
             <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" [(ngModel)]="extApplicantVatNumber" placeholder="Enter Vat Number">
-              <label for="extApplicantIDNumber">Vat Number *</label>
+              <label for="extApplicantIDNumber">Vat Number </label>
             </div>
-          </div>
-
-          <div class="row">
-            <h5>Please upload a copy of your ID *</h5>
-            <div class="input-group">
-              <input type="file" class="form-control" [(ngModel)]="extApplicantIDUpload" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-
-            </div>
-
           </div>
 
 
@@ -180,7 +160,7 @@
               <div class="form-floating mb-3 mt-3">
                 <select class="form-select" aria-label="Default select example" [(ngModel)]="internalApplicantDepartment" (change)="onSelectToPopulateZone($event)">
                   <option selected value="0">Select a department *</option>
-                  <option *ngFor="let department of DepartmentDropdown" value="{{department.departmentID}}">{{department.departmentName}}</option>
+                  <option *ngFor="let subDepartment of SubDepartmentList" value="{{subDepartment.subDepartmentID}}">{{subDepartment.subDepartmentName}}</option>
                 </select>
 
 
@@ -233,7 +213,7 @@
         <button mat-raised-button color="primary" matStepperPrevious disabled>Back</button>
         <div class="cont5">
           <i class="fa fa-info-circle" aria-hidden="true" matTooltip="Please fill out all of the fields. Please enter N/A to fields that are not applicable"></i>
-          <button mat-raised-button color="primary" *ngIf="showExternal" matStepperNext [disabled]="!extApplicantVatNumber || !extApplicantBpNoApplicant || !extApplicantCompanyName || !extApplicantCompanyRegNo || !extApplicantCompanyType || !extApplicantTellNo || !extApplicantIDNumber || !extApplicantVatNumber || !extApplicantIDUpload">Next</button>
+          <button mat-raised-button color="primary" *ngIf="showExternal" matStepperNext [disabled]="!extApplicantBpNoApplicant ||   !extApplicantTellNo ||   !extApplicantTellNo  || !extApplicantPhyscialAddress ">Next</button>
           <button mat-raised-button color="primary" *ngIf="showInternal" matStepperNext [disabled]="!internalApplicantDepartment || !selectedZone || !internalApplicantCostCenterOwner || !internalApplicantBranch || !internalApplicantCostCenterNo || !internalApplicantDirectorate">Next</button>
 
         </div>

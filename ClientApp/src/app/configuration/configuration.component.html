@@ -6,7 +6,7 @@
 <!-----------------------------------------------------Roles configuration-------------------------------------------------------------->
 <div class="container-fluid">
 
-  <mat-tab-group >
+  <mat-tab-group>
 
     <mat-tab label="Roles">
 
@@ -121,15 +121,15 @@
 
       <button mat-raised-button color="FAQ" (click)="openFAQModal(FAQModal)">Create New FAQ</button>
 
-      
+
       <mat-expansion-panel *ngFor="let faqList of FAQList;let i = index">
 
-        <mat-expansion-panel-header >
-          <div class="container-fluid" >
-          <mat-panel-title >
-            Question : {{faqList.Question}}
-          </mat-panel-title>
-            </div>
+        <mat-expansion-panel-header>
+          <div class="container-fluid">
+            <mat-panel-title>
+              Question : {{faqList.Question}}
+            </mat-panel-title>
+          </div>
           <!--<button mat-raised-button color="warn" ><i class="fa fa-trash" aria-hidden="true"></i></button>-->
         </mat-expansion-panel-header>
 
@@ -139,6 +139,12 @@
       </mat-expansion-panel>
 
 
+    </mat-tab>
+
+    <!-----------------------------------------------------------Contact Details-------------------------------------------------------------->
+
+    <mat-tab label="Contact Details">
+      <button mat-raised-button color="FAQ" >Add New Contact</button>
     </mat-tab>
 
 

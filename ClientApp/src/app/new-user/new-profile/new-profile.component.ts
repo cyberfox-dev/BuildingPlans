@@ -28,6 +28,14 @@ export interface ZoneDropdown {
   zoneName: string;
 }
 
+export interface SubDepartmentList {
+  subDepartmentID: number;
+  subDepartmentName: string;
+  departmentID: number;
+  dateUpdated: any;
+  dateCreated: any;
+}
+
 export interface DepartmentAdminList {
   userId: any;
   idNumber: string;
@@ -104,6 +112,8 @@ export class NewProfileComponent implements OnInit {
 
   ZoneDropdown: ZoneDropdown[] = [];
   DepartmentAdminList: DepartmentAdminList[] = [];
+  SubDepartmentList: SubDepartmentList[] = [];
+
   public showExternal: boolean = false;
   public showInternal: boolean = false;
   public External: boolean = false;
@@ -219,8 +229,8 @@ export class NewProfileComponent implements OnInit {
       }
 
     }
-    this.getAllDeps();
-
+  /*  this.getAllDeps();*/
+    this.getAllSubDepartments();
 
 
 
@@ -696,7 +706,7 @@ export class NewProfileComponent implements OnInit {
             const current = data.dateSet[i];
             tempZoneList.zoneID = current.zoneID;
             tempZoneList.zoneName = current.zoneName;
-
+            console.log("THISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONES",current);
             this.ZoneDropdown.push(tempZoneList);
 
           }
@@ -792,6 +802,44 @@ export class NewProfileComponent implements OnInit {
 
   checkValue() {
     alert(this.extApplicantCompanyType);
+  }
+
+
+
+  /*getAllDepartmentsforZonesDropDown*/
+  getAllSubDepartments() {
+    this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
+    this.subDepartmentsService.getSubDepartmentsList().subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepartmentList = {} as SubDepartmentList;
+          const current = data.dateSet[i];
+          console.log("DepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListh", current);
+          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.departmentID = current.departmentID;
+          tempSubDepartmentList.dateUpdated = current.dateUpdated;
+          tempSubDepartmentList.dateCreated = current.dateCreated;
+          this.SubDepartmentList.push(tempSubDepartmentList);
+
+        }
+
+        //this.DepartmentList = data.dateSet;
+
+
+        console.log("DepartmentListh", this.SubDepartmentList);
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 
 
