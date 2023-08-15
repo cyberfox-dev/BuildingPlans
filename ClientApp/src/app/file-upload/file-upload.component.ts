@@ -65,11 +65,11 @@ export class FileUploadComponent implements OnInit {
 
     if (this.UploadFor == "Doc") {
       debugger;
-        this.fileUploadName = fileNameParts[0] + "-appID-" + this.ApplicationID;
+        this.fileUploadName = fileNameParts[0] + "_appID" + this.ApplicationID;
     }
     else {
       debugger;
-        this.fileUploadName = this.UploadFor.substring(' ') + "-appID-" + this.ApplicationID;
+      this.fileUploadName = this.UploadFor.substring(' ') + "_appID" + this.ApplicationID;
     }
 
     const handleResponse = (data: any) => {
