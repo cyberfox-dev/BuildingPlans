@@ -124,7 +124,6 @@
                 <label for="applicantTellNo">Physical Address *</label>
               </div>
             </div>
-
           </div>
           <div class="row">
             <div class="form-floating mb-3 mt-3">
@@ -132,14 +131,11 @@
               <label for="extApplicantIDNumber">Vat Number </label>
             </div>
           </div>
-
-
         </div>
         <!--END-->
         <!--Internal Applicant-->
         <div class="internal" *ngIf="showInternal">
           <h5>Please enter your details as an Internal Applicant</h5>
-
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
@@ -154,7 +150,6 @@
               </div>
             </div>
           </div>
-
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
@@ -162,8 +157,6 @@
                   <option selected value="0">Select a department *</option>
                   <option *ngFor="let subDepartment of SubDepartmentList" value="{{subDepartment.subDepartmentID}}">{{subDepartment.subDepartmentName}}</option>
                 </select>
-
-
               </div>
             </div>
             <div class="col">
@@ -172,14 +165,12 @@
                   <option selected value="0">Select a zone *</option>
                   <option *ngFor="let zone of ZoneDropdown" value="{{zone.zoneID}}">{{zone.zoneName}}</option>
                 </select>
-
               </div>
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
                 <input type="text" class="form-control" [(ngModel)]="internalApplicantCostCenterOwner" placeholder="Enter Cost Center Owner">
                 <label for="applicantTellNo">Cost Center Owner *</label>
-
               </div>
             </div>
           </div>
@@ -214,7 +205,7 @@
         <div class="cont5">
           <i class="fa fa-info-circle" aria-hidden="true" matTooltip="Please fill out all of the fields. Please enter N/A to fields that are not applicable"></i>
           <button mat-raised-button color="primary" *ngIf="showExternal" matStepperNext [disabled]="!extApplicantBpNoApplicant ||   !extApplicantTellNo ||   !extApplicantTellNo  || !extApplicantPhyscialAddress ">Next</button>
-          <button mat-raised-button color="primary" *ngIf="showInternal" matStepperNext [disabled]="!internalApplicantDepartment || !selectedZone || !internalApplicantCostCenterOwner || !internalApplicantBranch || !internalApplicantCostCenterNo || !internalApplicantDirectorate">Next</button>
+          <button mat-raised-button color="primary" *ngIf="showInternal" matStepperNext [disabled]="!internalApplicantDepartment || !selectedZone || !internalApplicantCostCenterOwner || !internalApplicantBranch || !internalApplicantCostCenterNo">Next</button>
 
         </div>
       </div>
