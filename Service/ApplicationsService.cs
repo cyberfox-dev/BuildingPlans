@@ -438,6 +438,7 @@ namespace WayleaveManagementSystem.Service
                        ProjectNumber = Applications.ProjectNumber,
                        isPlanning = Applications.isPlanning,
                        permitStartDate = Applications.PermitStartDate,
+                       DatePaid = Applications.DatePaid,
                    }
                    ).ToListAsync();
             }
@@ -482,6 +483,7 @@ namespace WayleaveManagementSystem.Service
                              isPlanning = Applications.isPlanning,
                        ProjectNumber = Applications.ProjectNumber,
                        permitStartDate = Applications.PermitStartDate,
+                       DatePaid = Applications.DatePaid,
                    }
                    ).ToListAsync();
             }

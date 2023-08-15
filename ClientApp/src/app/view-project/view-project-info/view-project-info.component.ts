@@ -165,6 +165,7 @@ export interface ApplicationList {
   ProjectNumber: string,
   isPlanning?: boolean,
   permitStartDate: Date,
+  DatePaid: Date;
 }
 
 
@@ -365,6 +366,8 @@ export class ViewProjectInfoComponent implements OnInit {
     CurrentUserProfile: any;
     stringifiedDataUserProfile: any;
     isEMBUser: boolean;
+    datePaid: string;
+  Paid: string;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -461,7 +464,7 @@ export class ViewProjectInfoComponent implements OnInit {
  
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
-    console.log("WTFWTFWTFWTFWTFWTWFTWFWTFWTFWTWTF", this.CurrentUserProfile[0]);
+    console.log("000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", this.applicationDataForView[0]);
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
 
@@ -2093,6 +2096,8 @@ export class ViewProjectInfoComponent implements OnInit {
     this.ExcavationType = (setValues.ExcavationType);
     this.ProjectNum = (setValues.ProjectNumber);
     this.clientName = (setValues.clientName);
+    this.datePaid = (setValues.DatePaid).toString();
+    this.Paid = this.datePaid.substring(0, this.datePaid.indexOf('T'));
   }
 
 

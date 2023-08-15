@@ -67,7 +67,7 @@ export class ViewProjectDetailsComponent implements OnInit {
     this.viewProjectDetails.controls["typeOfExcavation"].setValue(setValues.ExcavationType);
     this.viewProjectDetails.controls["expectedStartDate"].setValue(setValues.ExpectedStartDate.toString().substring(0, setValues.ExpectedStartDate.toString().indexOf('T')));
     this.viewProjectDetails.controls["expectedEndDate"].setValue(setValues.ExpectedEndDate.toString().substring(0, setValues.ExpectedEndDate.toString().indexOf('T')));
-
+    
 
 
    // this.viewProjectDetails.controls["typeOfApplication"].setValue(this.applicationDataForView.)

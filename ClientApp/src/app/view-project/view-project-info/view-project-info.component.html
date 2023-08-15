@@ -273,10 +273,11 @@
         <div class="cont" *ngIf="isInternalUser">
           <button mat-raised-button (click)="enterWBSNumberModal(wbsNumberModal)" *ngIf="wbsBtn" color="orange">WBS</button>
           <button mat-raised-button color="orange" *ngIf="isEMBUser" (click)="generateConsolidatedDepositInvoice()">Consolidate Deposits</button>
-          <button mat-raised-button color="orange" *ngIf="isEMBUser" >Deposit Refund</button>
+          <button mat-raised-button color="orange" *ngIf="isEMBUser">Deposit Refund</button>
           <button mat-raised-button color="orange" *ngIf="isEMBUser" (click)="generateInvoiceSplit()">Invoice Split</button>
         </div>
-
+<!--        <input type="text" id="datePaid" placeholder="DatePaid" [(ngModel)]="datePaid" readonly>-->
+        <div class="alert alert-info" role="alert">This application has been paid on the : {{Paid}}</div>
 
       </div>
 

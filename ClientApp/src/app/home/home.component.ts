@@ -90,6 +90,7 @@ export interface ApplicationList {
   ProjectNumber: string,
   isPlanning?: boolean,
   permitStartDate: Date,
+  DatePaid: Date;
 }
 
 
@@ -818,6 +819,7 @@ dataSource = this.Applications;
             tempApplicationListShared.NextStageNumber = current.nextStageNumber;
             tempApplicationListShared.PreviousStageName = current.previousStageName;
             tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+            tempApplicationListShared.DatePaid = current.datePaid;
             if (current.projectNumber != null) {
               tempApplicationListShared.ProjectNumber = current.projectNumber;
             } else {
@@ -940,7 +942,7 @@ dataSource = this.Applications;
             tempApplicationListShared.NextStageNumber = current.nextStageNumber;
             tempApplicationListShared.PreviousStageName = current.previousStageName;
             tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
-            
+            tempApplicationListShared.DatePaid = current.datePaid;
             if (current.projectNumber != null) {
               tempApplicationListShared.ProjectNumber = current.projectNumber;
             } else {
@@ -948,6 +950,7 @@ dataSource = this.Applications;
             }
            
             tempApplicationListShared.isPlanning = current.isPlanning;
+           
 
 
             this.applicationDataForView.push(tempApplicationListShared);
