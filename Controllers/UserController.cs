@@ -93,6 +93,29 @@ namespace WayleaveManagementSystem.Controllers
 
         }
 
+
+        [HttpPost("EmailExists")]
+        public async Task<bool> EmailExists([FromBody] AddUpdateRegisterUserBindingModel model)
+        {
+            try
+            {
+                var User = await _userManager.FindByEmailAsync(model.Email);
+                if (User != null)
+                {
+                    return true; // Email exists
+                }
+                else
+                {
+                    return false; // Email doesn't exist
+                }
+            }
+            catch (Exception)
+            {
+                return false; // Ideally, you might want to handle exceptions differently, maybe log them.
+            }
+        }
+
+
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("GetAllUser")]
         public async Task<object> GetAllUser()

@@ -36,4 +36,13 @@ export class UserService {
 
   }
 
+  public emailExists(email: string | null) {
+
+    const body = {
+      Email: email,
+    }
+    return this.httpClient.post(this.baseURL + "EmailExists", body);
+
+  }
+
 }

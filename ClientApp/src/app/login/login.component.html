@@ -47,7 +47,7 @@
             <input type="text" name="somthing" formControlName="registerEmail" placeholder="Email *" required/>
             <input type="password" formControlName="registerPassword" placeholder="Password *" required>
             <input type="password" formControlName="reenterPassword" placeholder="Re-enter password *" required>
-            <button class="OTP" (click)="otp = generateOTP(6)" *ngIf="sendOTPBtn">Send OTP</button>
+            <button class="OTP" (click)="onSendOTP()" *ngIf="sendOTPBtn">Send OTP</button>
             <input type="text" placeholder="Enter OTP" formControlName="OTPField" />
             <button type="submit" [disabled]="!registerForm.valid" [class.disabled]="!registerForm.valid" (click)="onRegister()">Verify & Continue</button>
             <p>{{otp}}</p>
