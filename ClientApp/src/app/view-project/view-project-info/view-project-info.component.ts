@@ -504,7 +504,7 @@ export class ViewProjectInfoComponent implements OnInit {
     
     this.receivedata = data;
     console.log(this.receivedata);
-    if (this.receivedata == "Approved") {
+    if (this.receivedata == "Final Approved") {
       this.approved = true;
       this.onCreateApprovalPack();
     }
@@ -1648,7 +1648,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getAllSubDepForFinalApprove() {
-
+    debugger;
     let commentS = "Final Approved";
     
     this.commentsService.getSubDepByCommentStatus(commentS, this.ApplicationID).subscribe((data: any) => {
@@ -1658,8 +1658,9 @@ export class ViewProjectInfoComponent implements OnInit {
 
         for (var i = 0; i < data.dateSet.length; i++) {
           const tempSubDepCommentStatusList = {} as SubDepFinalApproveList;
-          
+          debugger;
           const current = data.dateSet[i];
+          console.log("THIS IS THE CUB DEP THAT HAS Final APPROVED THE APPLICATION ", current);
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
           tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
           tempSubDepCommentStatusList.ApplicationID = current.applicationID;
@@ -1667,6 +1668,7 @@ export class ViewProjectInfoComponent implements OnInit {
           tempSubDepCommentStatusList.DateCreated = current.dateCreated;
           tempSubDepCommentStatusList.CommentStatus = current.commentStatus;
           tempSubDepCommentStatusList.UserName = current.userName;
+
           this.SubDepFinalApproveList.push(tempSubDepCommentStatusList);
 
 
@@ -1824,6 +1826,7 @@ export class ViewProjectInfoComponent implements OnInit {
     const page43 = new Image();
     const page44 = new Image();
     const page45 = new Image();
+    const table = new Image();
     img.src = 'assets/cctlogoblack.png';
     footer.src = 'assets/Packs/footer.PNG';
     page1.src = 'assets/Packs/page1.PNG';
@@ -1872,7 +1875,7 @@ export class ViewProjectInfoComponent implements OnInit {
     page44.src = 'assets/Packs/page44.PNG';
     page45.src = 'assets/Packs/page45.PNG';
     sig.src = 'assets/signature-stamp-signature-round-isolated-sign-signature-label-set-2C38RT2.jpg';
-
+    table.src = 'assets/table.PNG'
     // Add logo to PDF document
 
     // Add logo to PDF document
@@ -1929,9 +1932,9 @@ export class ViewProjectInfoComponent implements OnInit {
 
       columnStyles: {
         0: { cellWidth: 70, fontStyle: 'bold' },
-        1: { cellWidth: 30 },
-        2: { cellWidth: 50 },
-        3: { cellWidth: 30 },
+        1: { cellWidth: 50 },
+        2: { cellWidth: 60 },
+
         
       }
 
@@ -1982,11 +1985,12 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.setFontSize(16);
     doc.text('Contact Details', 10, 45, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
 
+    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.setFontSize(10);
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
 
 
-    
-
-
+    doc.addImage(table, 'png', 10, 40, 190, 215);
     doc.addImage(footer, 'png', 7, 255, 205, 45);
 
     //PAGE 1
