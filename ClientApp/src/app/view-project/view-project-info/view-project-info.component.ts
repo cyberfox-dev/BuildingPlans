@@ -2874,6 +2874,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     this.sharedService.pushFileForTempFileUpload(file, "Approval Pack" + ".pdf");
     this.save();
+    alert("Your Approval Pack Has Been Saved To The Documents Tab");
   }
 
 
