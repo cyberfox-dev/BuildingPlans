@@ -3126,7 +3126,7 @@ getAllCommentsByUserID() {
 
         this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Congratulations, your application has been approved. Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
 
-        alert("Application moved to PTW"); //Permit to work
+        alert("Application moved to PTW. Applicant may now apply for permit!"); //Permit to work
         this.router.navigate(["/home"]);
 
       }
