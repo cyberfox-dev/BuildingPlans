@@ -307,7 +307,7 @@ dataSource = this.Applications;
    
 
     setTimeout(() => {
-     
+
       this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
       this.CurrentUser = JSON.parse(this.stringifiedData);
       this.getAllStages();
@@ -337,6 +337,7 @@ dataSource = this.Applications;
    /* this.dataSource.paginator = this.paginator;
     this.defaultPageSize = 10;*/
   }
+
 
 
 
