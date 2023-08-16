@@ -277,6 +277,8 @@ export class ViewProjectInfoComponent implements OnInit {
 
   permitDate = '';
 
+  ExternalPaid: boolean = false;
+
   option: any;
 
   wbsNumberRequested = '';
@@ -2096,8 +2098,20 @@ export class ViewProjectInfoComponent implements OnInit {
     this.ExcavationType = (setValues.ExcavationType);
     this.ProjectNum = (setValues.ProjectNumber);
     this.clientName = (setValues.clientName);
-    this.datePaid = (setValues.DatePaid).toString();
-    this.Paid = this.datePaid.substring(0, this.datePaid.indexOf('T'));
+    if (setValues.DatePaid != null) {
+      this.datePaid = (setValues.DatePaid).toString();
+      this.Paid = this.datePaid.substring(0, this.datePaid.indexOf('T'));
+      if (this.Paid != null) {
+        this.ExternalPaid = true;
+      }
+      else {
+        this.ExternalPaid = false;
+      }
+    }
+    else {
+
+    }
+   
   }
 
 
