@@ -33,7 +33,7 @@ export class ViewContractorsTableComponent implements OnInit {
   @Input() ApplicationID: any;
   professionalsType = "Contractor";
 
-  displayedColumns: string[] = ['ProfessinalType', 'name', 'surname', 'phoneNumber', 'email', 'actions'];
+  displayedColumns: string[] = ['ProfessinalType', 'name', 'surname', 'phoneNumber', 'email'];
   dataSource = this.ProfessionalsList;
 
   @ViewChild(MatTable) ContractorsTable: MatTable<ProfessionalsList> | undefined;
