@@ -1008,11 +1008,12 @@ export class ActionCenterComponent implements OnInit {
               this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Final Approved", this.CurrentUser.appUserId, null,null,this.loggedInUserName).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-               
-                  this.viewProjectInfoComponent.getAllComments();
+                  debugger;
+
                   alert(data.responseMessage);
               
                   this.router.navigate(["/home"]);
+                  this.viewProjectInfoComponent.getAllComments();
                   this.CheckALLLinkedDepartmentsCommented(false);
 
                 }
@@ -2939,7 +2940,7 @@ getAllCommentsByUserID() {
     this.subDepartmentForCommentService.getSubDepartmentForComment(currentApplication.applicationID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-
+        debugger;
 
         for (var i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
@@ -2963,12 +2964,17 @@ getAllCommentsByUserID() {
         }
 
         if (this.SubDepartmentListForCheck.length == this.countApprove) {
-          this.viewProjectInfoComponent.onCreateApprovalPack();
+          this.viewProjectInfoComponent.getAllSubDepForFinalApprove();
+          this.viewProjectInfoComponent.getAllComments();
+
+
           this.countApprove = 0;
           this.countReject = 0;
+/*          this.viewProjectInfoComponent.onCreateApprovalPack();*/
           this.MoveToNextStage();
         } else if (this.countReject++ >= 1 && this.SubDepartmentListForCheck.length == this.countApprove + this.countReject) {
           //Rejection Pack
+          this.viewProjectInfoComponent.getAllComments();
           this.viewProjectInfoComponent.onCrreateRejectionPack();
           this.countApprove = 0;
           this.countReject = 0;
