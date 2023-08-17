@@ -1,19 +1,19 @@
 const { env } = require('process');
 
-const PROXY_CONFIG = [
-  {
-    context: ["/RESTAdapter/WLMS_Q/BPValidation"],
-    target: "https://orchestrationhubqa.capetown.gov.za",
-    pathRewrite: { '^/RESTAdapter/WLMS_Q/BPValidation': '/RESTAdapter/WLMS_Q/BPValidation' },
-    secure: false,
-    changeOrigin: true,
-    headers: {
-      Connection: 'Keep-Alive'
-    }
-  }
-]
+//const PROXY_CONFIG = [
+//  {
+//    context: ["/RESTAdapter/WLMS_Q/BPValidation"],
+//    target: "https://orchestrationhubqa.capetown.gov.za",
+//    pathRewrite: { '^/RESTAdapter/WLMS_Q/BPValidation': '/RESTAdapter/WLMS_Q/BPValidation' },
+//    secure: false,
+//    changeOrigin: true,
+//    headers: {
+//      Connection: 'Keep-Alive'
+//    }
+//  }
+//]
 
-module.exports = PROXY_CONFIG;
+//module.exports = PROXY_CONFIG;
 
 
 
