@@ -76,9 +76,6 @@
 
 
   </div>
-  <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
-  </div>
 </ng-template>
 
 <!--create a new comment-->
@@ -317,7 +314,7 @@
     </mat-expansion-panel>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-light" (click)="modal.dismiss('Cross click')">Close</button>
+    <button type="submit" class="btn btn-light" (click)="closeModal()">Close</button>
   </div>
 </ng-template>
 
@@ -333,12 +330,12 @@
   </div>
   <div class="offcanvas-body">
       <div class="sideNav" *ngIf="Icons">
-      <button mat-button class ="sideNavIcons" (click)="offcanvas.dismiss('Cross click');openFAQModal(FAQModal)"><i class="fa fa-question" aria-hidden="true"></i>   Frequently Asked Questions</button>
+      <button mat-button class ="sideNavIcons" (click)="openFAQModal(FAQModal)"><i class="fa fa-question" aria-hidden="true"></i>   Frequently Asked Questions</button>
       <button mat-button class ="sideNavIcons" (click)="goToCyberfoxCofig();offcanvas.dismiss('Cross click')" *ngIf="cyberfoxConfigs"><i class="fa fa-superpowers"></i>   Cyberfox Configs</button>
-      <button mat-button class ="sideNavIcons" (click)="openRepositoryModal(repositoryModal);offcanvas.dismiss('Cross click')"><i class="fa fa-files-o" aria-hidden="true"></i>   Repository</button>
-      <button mat-button class ="sideNavIcons" (click)="getAllCommentsByUserID(commentBuilder);offcanvas.dismiss('Cross click')" *ngIf="isInternalUser"><i class="fa fa-comment"></i>   Comment Builder</button>
+      <button mat-button class ="sideNavIcons" (click)="openRepositoryModal(repositoryModal)"><i class="fa fa-files-o" aria-hidden="true"></i>   Repository</button>
+      <button mat-button class ="sideNavIcons" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><i class="fa fa-comment"></i>   Comment Builder</button>
       <button mat-button class ="sideNavIcons" (click)="goToConfig();offcanvas.dismiss('Cross click')" *ngIf="Configurations"><i class="fa fa-cogs"></i>   Configurations</button>
-      <button mat-button class ="sideNavIcons" (click)="getAllNotifications();openNotificationsModal(notificationsCenter);offcanvas.dismiss('Cross click')"><i class="fa fa-bell"></i>   Notifications</button>
+      <button mat-button class ="sideNavIcons" (click)="getAllNotifications();openNotificationsModal(notificationsCenter)"><i class="fa fa-bell"></i>   Notifications</button>
       <button mat-button class ="sideNavIcons" (click)="goToSettings();offcanvas.dismiss('Cross click')"><i class="fa fa-user-circle-o" aria-hidden="true"></i>   User Settings</button>
       <button mat-button class ="sideNavIcons" (click)="LogoutUser();offcanvas.dismiss('Cross click')"><i class="fa fa-sign-out" aria-hidden="true"></i>   Log Out</button>
     </div>
