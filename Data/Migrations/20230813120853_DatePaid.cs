@@ -16,11 +16,11 @@ namespace WayleaveManagementSystem.Data.Migrations
             //    nullable: false,
             //    defaultValue: "");
 
-            migrationBuilder.AddColumn<DateTime>(
-                name: "DatePaid",
-                table: "ApplicationListDTO",
-                type: "datetime2",
-                nullable: true);
+            //migrationBuilder.AddColumn<DateTime>(
+            //    name: "DatePaid",
+            //    table: "ApplicationListDTO",
+            //    type: "datetime2",
+            //    nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "DatePaid",
@@ -35,9 +35,9 @@ namespace WayleaveManagementSystem.Data.Migrations
             //    name: "Email",
             //    table: "LinkedUserSpDTOs");
 
-            migrationBuilder.DropColumn(
-                name: "DatePaid",
-                table: "ApplicationListDTO");
+            //migrationBuilder.DropColumn(
+            //    name: "DatePaid",
+            //    table: "ApplicationListDTO");
 
             migrationBuilder.DropColumn(
                 name: "DatePaid",
