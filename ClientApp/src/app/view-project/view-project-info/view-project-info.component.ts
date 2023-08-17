@@ -525,8 +525,8 @@ export class ViewProjectInfoComponent implements OnInit {
     this.setInterface();
     this.getAllRequiredDeposits();
     this.getAllSubDepFroConditionalApprove();
-    this.getAllSubDepForFinalApprove();
-    this.getAllSubDepForReject();
+
+/*    this.getAllSubDepForReject();*/
 /*    this.getAllSubDepForReject();*/
     this.canReapply = this.sharedService.getCanReapply();
     console.log("canReapplyVen: ", this.canReapply);
@@ -1062,8 +1062,10 @@ export class ViewProjectInfoComponent implements OnInit {
           tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
           tempCommentList.isApplicantReplay = current.isApplicantReplay;
           this.CommentsList.push(tempCommentList);
-          // this.sharedService.setStageData(this.StagesList);
+          console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", current);
+
         }
+
       }
       else {
         alert(data.responseMessage);
@@ -1761,7 +1763,7 @@ export class ViewProjectInfoComponent implements OnInit {
           this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
             if (data.responseCode == 1) {
 
-              this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "Distributed", null, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, false,null,this.selectPaidDate).subscribe((data: any) => {
+              this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, null, null, "Distributed", null, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, false,null,this.selectPaidDate).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
                   alert(data.responseMessage);
@@ -2018,7 +2020,7 @@ export class ViewProjectInfoComponent implements OnInit {
           const tempSubDepCommentStatusList = {} as SubDepFinalApproveList;
           debugger;
           const current = data.dateSet[i];
-          console.log("THIS IS THE CUB DEP THAT HAS Final APPROVED THE APPLICATION ", current);
+          console.log("FINAL APPROVED THE APPLICATION ", current);
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
           tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
           tempSubDepCommentStatusList.ApplicationID = current.applicationID;
@@ -2031,8 +2033,8 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
         }
-
-        console.log("THIS IS THE CUB DEP THAT HAS Final APPROVED THE APPLICATION ", data.dateSet);
+        this.onCreateApprovalPack();
+        console.log("THIS IS THE CUB DEP THAT HAS Final APPROVED THE APPLICATION ", this.SubDepFinalApproveList);
       }
 
       else {
@@ -2070,7 +2072,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
         }
 
-        console.log("THIS IS THE CUB DEP THAT HAS Final APPROVED THE APPLICATION ", data.dateSet);
+        console.log("THIS IS THE CUB DEP THAT HAS REJECTED THE APPLICATION ", data.dateSet);
       }
 
       else {
@@ -2122,6 +2124,8 @@ export class ViewProjectInfoComponent implements OnInit {
   onCreateApprovalPack() {
 
     this.getAllSubDepFroConditionalApprove();
+
+
     const doc = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
@@ -2344,6 +2348,8 @@ export class ViewProjectInfoComponent implements OnInit {
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal'); // Set the font to Helvetica bold
       doc.text(deposit.Comment, 10, yOffset += 10, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
+      doc.setLineWidth(0.2); // Set line width for the separator line
+      doc.line(10, yOffset + 10, 200, yOffset + 10); // Draw a line below the SubDepName
       yOffset += 20; // Increase Y-coordinate for the next item
     });
     doc.addImage(footer, 'png', 7, 255, 205, 45);
@@ -2362,7 +2368,7 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
 
 
-    doc.addImage(table, 'png', 10, 40, 190, 215);
+    doc.addImage(table, 'png', 10, 70, 190, 215);
     doc.addImage(footer, 'png', 7, 255, 205, 45);
 
     //PAGE 1

@@ -51,7 +51,7 @@
     </div>
     <div class="cont3">
       <!--this is for the wbs number -->
-      <mat-checkbox class="example-margin" *ngIf="canComment == true && canCommentFinalApprover == false || canCommentSeniorReviewer == true" [(ngModel)]="checked">WBS Number</mat-checkbox>
+      <mat-checkbox class="example-margin" *ngIf="canComment == true || canCommentSeniorReviewer == true && canCommentFinalApprover == false" [(ngModel)]="checked">WBS Number</mat-checkbox>
 
       <!--This is for the document upload-->
 
@@ -95,7 +95,7 @@
 
 
       <!--this is for the deposit required  (click)="saveDeposit(deposit)"-->
-      <mat-checkbox class="example-margin" [(ngModel)]="checked" (click)="getAllServiceItmesForDropdown(deposit)">Deposit Required</mat-checkbox>
+      <mat-checkbox class="example-margin" *ngIf="canComment == true || canCommentSeniorReviewer == true && canCommentFinalApprover == false" [(ngModel)]="checked" (click)="getAllServiceItmesForDropdown(deposit)">Deposit Required</mat-checkbox>
     </div>
 
 
@@ -183,7 +183,7 @@
 
         <div class="form-floating mb-3 mt-3">
           <input type="text" class="form-control" formControlName="total" placeholder="Enter Total" readonly>
-          <label for="total">Total exc. Vat</label>
+          <label for="total">Total Amount(Vat Not Applicable)</label>
         </div>
         <div class="form-floating mb-3 mt-3" hidden>
           <input type="text" class="form-control" formControlName="vatApplicable" placeholder="Enter Total" hidden>

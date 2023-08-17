@@ -452,10 +452,10 @@ export class LoginComponent implements OnInit {
     this.VerifyBP(BpNo);
 
     this.testBp(BpNo).subscribe(isBpValid => {
-      //if (!isBpValid) {
-      //  alert("Please enter a valid Business Partner (BP) Number!");
-      //  return;
-      //}
+      if (!isBpValid) {
+        alert("Please enter a valid Business Partner (BP) Number!");
+        return;
+      }
 
       this.sharedService.errorForRegister = false;
 
