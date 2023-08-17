@@ -548,11 +548,11 @@ export class ProjectDetailsMapComponent implements OnInit {
       //map.add(testlayer);
 
       /*      External layers*/
-      var streetlights = new MapImageLayer({
-        url: "https://citymaps.capetown.gov.za/agsext/rest/services/Theme_Based/Basic_Services_Infrastructure/MapServer",
-      });
+      //var streetlights = new MapImageLayer({
+      //  url: "https://citymaps.capetown.gov.za/agsext/rest/services/Theme_Based/Basic_Services_Infrastructure/MapServer",
+      //});
 
-      map.add(streetlights);
+      //map.add(streetlights);
 
       var zones = new MapImageLayer({
         url: "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves_Regions/MapServer",
@@ -1292,8 +1292,8 @@ export class ProjectDetailsMapComponent implements OnInit {
       //});
 
       //Zooms into Cape Town, or rather, shows the 'fullExtent of the layer'
-      streetlights.when(() => {
-        view.goTo(streetlights.fullExtent);
+      zones.when(() => {
+        view.goTo(zones.fullExtent);
       });
 
       // Create the Form template and pass in elements
