@@ -1,0 +1,70 @@
+<button mat-raised-button color="FAQ" (click)="openContactDetailsModal(ContactDetailsModal)">Add New Contact</button>
+
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+
+
+  <ng-container matColumnDef="FullName">
+    <th mat-header-cell *matHeaderCellDef> Name </th>
+    <td mat-cell *matCellDef="let element"> {{element.FullName}} </td>
+  </ng-container>
+  <ng-container matColumnDef="Email">
+    <th mat-header-cell *matHeaderCellDef>Email</th>
+    <td mat-cell *matCellDef="let element"> {{element.Email}} </td>
+  </ng-container>
+  <ng-container matColumnDef="CellNumber">
+    <th mat-header-cell *matHeaderCellDef>Cell Number</th>
+    <td mat-cell *matCellDef="let element"> {{element.CellNo}} </td>
+  </ng-container>
+
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>Actions</th>
+    <td mat-cell *matCellDef="let i = index">
+      <button mat-raised-button color="warn" matTooltip="Delete GL Code" (click)="deleteContactDetail(i)"><i class="fa fa-trash"></i></button>
+    </td>
+    <td mat-cell *matCellDef="let element">  </td>
+  </ng-container>
+
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+
+
+
+
+
+
+
+<ng-template #ContactDetailsModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Create New Contact</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" placeholder="Full Name" [(ngModel)]="name" id="name" name="name">
+      <label for="name">Full Name</label>
+    </div>
+
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" placeholder="Email" [(ngModel)]="email" id="email" name="email">
+      <label for="email">Email</label>
+    </div>
+
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" placeholder="Number" [(ngModel)]="number" id="number" name="number">
+      <label for="number">Cell Number</label>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="addContactDetail();modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+
+

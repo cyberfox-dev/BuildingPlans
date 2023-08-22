@@ -26,6 +26,7 @@ import { PermitService } from '../../service/Permit/permit.service';
 import { MobileFieldTrackingService } from 'src/app/service/MFT/mobile-field-tracking.service';
 import { FileUploadComponent } from 'src/app/file-upload/file-upload.component';
 import { ServiceItemService } from 'src/app/service/ServiceItems/service-item.service';
+import { ContactDetailsService } from 'src/app/service/ContactDetails/contact-details.service';
 
 import 'jspdf-autotable';
 
@@ -95,6 +96,15 @@ export interface SubDepSubDepRejectList {
 }
 
 export interface SubDepFinalApproveList {
+  SubDepID: number;
+  SubDepName: string;
+  ApplicationID: number;
+  Comment: string;
+  CommentStatus: string;
+  DateCreated: any;
+  UserName: string;
+}
+export interface SubDepCommentsForSpecialConditions {
   SubDepID: number;
   SubDepName: string;
   ApplicationID: number;
@@ -184,6 +194,14 @@ export interface ServiceItemList {
   totalVat: number;
   dateCreated: any;
 }
+
+export interface ContactDetailsList {
+  ContactDetailID: number;
+  FullName: string;
+  CellNo: string;
+  Email: Date;
+}
+
 
 
 export interface DepositRequired {
@@ -295,6 +313,7 @@ export class ViewProjectInfoComponent implements OnInit {
   StagesList: StagesList[] = [];
   CommentsList: CommentsList[] = [];
   SubDepConditionalApproveList: SubDepConditionalApproveList[] = [];
+  SubDepCommentsForSpecialConditions: SubDepCommentsForSpecialConditions[] = [];
   SubDepFinalApproveList: SubDepFinalApproveList[] = [];
   SubDepSubDepRejectList: SubDepSubDepRejectList[] = [];
   RolesList: RolesList[] = [];
@@ -305,6 +324,7 @@ export class ViewProjectInfoComponent implements OnInit {
   DepositRequired: DepositRequired[] = [];
   relatedApplications: ApplicationList[] = [];
   MFTList: MFTList[] = [];
+  ContactDetailsList: ContactDetailsList[] = [];
 
   DocumentsList: DocumentsList[] = [];
   FinancialDocumentsList: FinancialDocumentsList[] = [];
@@ -448,7 +468,7 @@ export class ViewProjectInfoComponent implements OnInit {
     private MFTService: MobileFieldTrackingService,
     private fileUploadComponent: FileUploadComponent,
     private serviceItemService: ServiceItemService,
-    
+    private contactDetails: ContactDetailsService,
   ) { }
 
 
@@ -470,6 +490,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
 
+   
 
     const today = new Date();
     const twoWeeksFromNow = new Date();
@@ -525,7 +546,8 @@ export class ViewProjectInfoComponent implements OnInit {
     this.setInterface();
     this.getAllRequiredDeposits();
     this.getAllSubDepFroConditionalApprove();
-
+    this.getAllCommentsForSpecialConditions();
+    this.getContactDetails();
 /*    this.getAllSubDepForReject();*/
 /*    this.getAllSubDepForReject();*/
     this.canReapply = this.sharedService.getCanReapply();
@@ -1967,6 +1989,45 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   }
+
+  getAllCommentsForSpecialConditions() {
+    debugger;
+    console.log("This is all the special comments from the subdepartments", this.ApplicationID);
+    this.commentsService.getCommentsForSpecialConditions(this.ApplicationID).subscribe((data: any) => {
+      debugger;
+
+      if (data.responseCode == 1) {
+        debugger;
+        for (var i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepCommentStatusList = {} as SubDepCommentsForSpecialConditions;
+          debugger;
+          const current = data.dateSet[i];
+          tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
+          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
+          tempSubDepCommentStatusList.ApplicationID = current.applicationID;
+          tempSubDepCommentStatusList.Comment = current.comment;
+          tempSubDepCommentStatusList.DateCreated = current.dateCreated;
+          tempSubDepCommentStatusList.CommentStatus = current.commentStatus;
+          tempSubDepCommentStatusList.UserName = current.userName;
+          this.SubDepCommentsForSpecialConditions.push(tempSubDepCommentStatusList);
+
+
+        }
+
+        console.log("This is all the special comments from the subdepartments", data.dateSet);
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
   getAllSubDepFroConditionalApprove() {
 
     let commentS = "Approved";
@@ -2005,6 +2066,37 @@ export class ViewProjectInfoComponent implements OnInit {
       console.log("Error: ", error);
     })
 
+  }
+
+  getContactDetails() {
+    this.ContactDetailsList.splice(0, this.ContactDetailsList.length);
+    this.contactDetails.getAllContactDetials().subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempContactDetailsList = {} as ContactDetailsList;
+          const current = data.dateSet[i];
+          tempContactDetailsList.ContactDetailID = current.contactDetailID;
+          tempContactDetailsList.FullName = current.fullName;
+          tempContactDetailsList.CellNo = current.cellNo;
+          tempContactDetailsList.Email = current.email;
+
+          this.ContactDetailsList.push(tempContactDetailsList);
+
+        }
+
+        console.log("ContactDetailsList", this.ContactDetailsList);
+      }
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 
   getAllSubDepForFinalApprove() {
@@ -2124,7 +2216,7 @@ export class ViewProjectInfoComponent implements OnInit {
   onCreateApprovalPack() {
 
     this.getAllSubDepFroConditionalApprove();
-
+    this.getAllCommentsForSpecialConditions();
 
     const doc = new jsPDF({
       orientation: 'portrait',
@@ -2151,8 +2243,18 @@ export class ViewProjectInfoComponent implements OnInit {
       ]
     ];
 
+
+    const Page3headers = [
+      [
+        'Full Name',
+        'Email',
+        'Cell Number',
+      ]
+    ];
+
     const data: any[] = [];
     const data2: any[] = [];
+    const page3Data: any[] = [];
 
     const sig = new Image();
     const img = new Image();
@@ -2327,7 +2429,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
 
-    this.SubDepConditionalApproveList.forEach((deposit) => {
+    this.SubDepCommentsForSpecialConditions.forEach((deposit) => {
       const row = [
         deposit.SubDepName,
         deposit.Comment,
@@ -2341,8 +2443,8 @@ export class ViewProjectInfoComponent implements OnInit {
     let yOffset = 60; // Starting Y-coordinate for the list
 
     // Iterate through the SubDepConditionalApproveList and create a list
-    this.SubDepConditionalApproveList.forEach((deposit) => {
-      doc.setFontSize(14);
+    this.SubDepCommentsForSpecialConditions.forEach((deposit) => {
+      doc.setFontSize(12);
       doc.setFont('helvetica','bold'); // Set the font to Helvetica bold
       doc.text(deposit.SubDepName + ': \n', 10, yOffset, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' ,});
       doc.setFontSize(10);
@@ -2363,12 +2465,43 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.setFontSize(16);
     doc.text('Contact Details', 10, 45, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
 
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+    this.ContactDetailsList.forEach((deposit) => {
+      const row = [
+        deposit.FullName,
+        deposit.Email,
+        deposit.CellNo,
+
+      ];
+      page3Data.push(row);
+    });
+    autoTable(doc, {
+      head: Page3headers,
+
+      startY: 60,
+      body: page3Data,
+      styles: {
+        overflow: 'visible',
+        halign: 'justify',
+        fontSize: 8,
+        valign: 'middle',
 
 
-    doc.addImage(table, 'png', 10, 70, 190, 215);
+      },
+
+      columnStyles: {
+        0: { cellWidth: 70, fontStyle: 'bold' },
+        1: { cellWidth: 50 },
+        2: { cellWidth: 60 },
+
+
+      }
+
+
+    });
+
+
+
+
     doc.addImage(footer, 'png', 7, 255, 205, 45);
 
     //PAGE 1

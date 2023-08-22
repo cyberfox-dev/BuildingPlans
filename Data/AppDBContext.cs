@@ -48,6 +48,7 @@ namespace WayleaveManagementSystem.Data
         public DbSet<DepositRequired> DepositRequired { get; set; }
         public DbSet<MFT> MFT { get; set; }
         public DbSet<FAQ> FAQ { get; set; }
+        public DbSet<ContactDetails> ContactDetails { get; set; }
 
         public DbSet<AccessGroups> AccessGroups { get; set; }
         public DbSet<TypeOfExcavation> TypesOfExcavation { get; set; }

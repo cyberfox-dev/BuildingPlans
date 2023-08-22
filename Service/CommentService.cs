@@ -161,5 +161,29 @@ namespace WayleaveManagementSystem.Service
                 ).ToListAsync();
         }
 
+        public async Task<List<CommentDTO>> GetCommentsForSpecialConditions(int? applicationID)
+        {
+            return await (
+                from comment in _context.Comments
+                where comment.ApplicationID == applicationID && comment.CommentStatus == "Approved" || comment.ApplicationID == applicationID && comment.CommentStatus == "Final Approved" 
+                select new CommentDTO()
+                {
+                    CommentID = comment.CommentID,
+                    Comment = comment.Comment,
+                    ApplicationID = comment.ApplicationID,
+                    SubDepartmentForCommentID = comment.SubDepartmentForCommentID,
+                    CommentStatus = comment.CommentStatus,
+                    DateCreated = comment.DateCreated,
+                    DateUpdated = comment.DateUpdated,
+                    CreatedById = comment.CreatedById,
+                    SubDepartmentID = comment.SubDepartmentID,
+                    SubDepartmentName = comment.SubDepartmentName,
+                    isClarifyCommentID = comment.isClarifyCommentID,
+                    isApplicantReplay = comment.isApplicantReplay,
+                    UserName = comment.UserName,
+                }
+                ).ToListAsync();
+        }
+
     }
 }
