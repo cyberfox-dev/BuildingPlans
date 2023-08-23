@@ -25,18 +25,21 @@ import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { RefreshService } from 'src/app/shared/refresh.service';
 import { PermitService } from 'src/app/service/Permit/permit.service';
 import { StagesService } from 'src/app/service/Stages/stages.service';
-import { Observable } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { DatePipe } from '@angular/common';
 import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http';
 import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-upload.service';
 import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
+import { tap } from 'rxjs/operators';
+
 
 
 
 
 export interface SubDepartmentList {
+  zoneID: any;
   subDepartmentID: number;
   subDepartmentName: string;
   departmentID: number;
@@ -199,6 +202,7 @@ export class ActionCenterComponent implements OnInit {
   response: { dbPath: ''; } | undefined
   fileAttrsName = "Doc";
     loggedInUsersEmail: any;
+    ACHeader: string;
   //  loggedInUserName: any;
   /*textfields*/
 
@@ -433,14 +437,14 @@ export class ActionCenterComponent implements OnInit {
       this.showPermitTab = false;
     }
     this.getLinkedZones();
-    this.CanComment();
+  
     this.getAllStages();
     this.canApprovePTW();
     this.getAllPermitForComment();
 
     this.getUserRoles();
     this.getServicesByDepID();
-   
+    this.getUsersByRoleName("Final Approver");
   }
 
 
@@ -577,7 +581,7 @@ export class ActionCenterComponent implements OnInit {
           this.StagesList.push(tempStageList);
           // this.sharedService.setStageData(this.StagesList);
         }
-
+        this.CanComment();
       }
       else {
         //alert("Invalid Email or Password");
@@ -1093,18 +1097,19 @@ export class ActionCenterComponent implements OnInit {
 
 
   getReviewerForLink() {
-   
+    debugger;
     this.ReviewerUserList.splice(0, this.ReviewerUserList.length);
    // this.ReviewerUserList = []; // Initialize the new list
-    
+    debugger;
     for (var i = 0; i < this.reviewerUsers.length; i++) {
-      
+      debugger;
       var reviewer = this.reviewerUsers[i];
-
+      debugger;
       for (var j = 0; j < this.UserZoneList.length; j++) {
         var userZone = this.UserZoneList[j];
-        
+        debugger;
         if (reviewer.userID === userZone.id) {
+          debugger;
           this.ReviewerUserList.push(userZone); // Save the matching userZone in the new list
         }
       }
@@ -1113,33 +1118,83 @@ export class ActionCenterComponent implements OnInit {
 
 
   
-
   setRoles() {
-  
 
+    debugger;
+    this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        debugger;
+        for (var i = 0; i < data.dateSet.length; i++) {
+          debugger;
+          let current = data.dateSet[i];
+          if (this.loggedInUsersIsAdmin == true) {
+            debugger;
+            this.AssignProjectToZone = true;
+            debugger;
+          }
+          if (this.loggedInUsersIsZoneAdmin == true) {
+            debugger;
+            for (var j = 0; j < this.UserZoneList.length; j++) {
+              debugger;
+              if (this.UserZoneList[j].id == this.CurrentUser.appUserId) {
+                debugger;
+                this.AssignUserForComment = true; debugger;
+                this.getUsersByRoleName("Reviewer");
+
+                break; // Exit the loop once a match is found
+              }
+            }
+          }
+
+          if (this.loggedInUsersSubDepartmentID == this.ReticulationID) {
+
+            this.CanAssignDepartment = true;
+          } else {
+
+            this.CanAssignDepartment = false;
+          }
+        }
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponse", data);
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  
+  }
+  OldsetRoles() {
+  
+    debugger;
     // this.getUsersByRoleName("Department Admin");
 
     console.log("this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].", this.departmentAdminUsers);
     
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
-      
-      if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.loggedInUsersIsAdmin == true) {
-        
+      debugger;
+      if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.SubDepartmentLinkedList[i].zoneID && this.loggedInUsersIsAdmin == true) {
+        debugger;
         this.AssignProjectToZone = true;
-        
+        debugger;
       }
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.loggedInUsersIsZoneAdmin == true) {
-        
+        debugger;
         for (var j = 0; j < this.UserZoneList.length; j++) {
+          debugger;
           if (this.UserZoneList[j].id == this.CurrentUser.appUserId) {
-            this.AssignUserForComment = true;
+            debugger;
+            this.AssignUserForComment = true; debugger;
             this.getUsersByRoleName("Reviewer");
   
             break; // Exit the loop once a match is found
           }
         }
       }
-
+      debugger;
       ////////////////////
       if (this.loggedInUsersSubDepartmentID == this.ReticulationID) {
         
@@ -1151,7 +1206,7 @@ export class ActionCenterComponent implements OnInit {
     }
   }
 
-  //OLD Code 
+  //OLDer Code 
   //setRoles() {
   // //Im here
 
@@ -1184,34 +1239,56 @@ export class ActionCenterComponent implements OnInit {
   //    }
   //  }
   //}
+  getCurrentUsersZoneID(subID: number): Observable<number> {
+    debugger;
+  return this.zoneLinkService.getBySubAndUserID(subID, this.CurrentUser.appUserId).pipe(
+    tap((data: any) => {
+      console.log("reponse", data);
+    }),
+    map((data: any) => {
+      if (data.responseCode === 1 && data.dateSet && data.dateSet.length > 0) {
+        return data.dateSet[0].zoneID;
+      } else {
+        alert(data.responseMessage || "An unknown error occurred.");
+        return 0;
+      }
+    }),
+    catchError(error => {
+      console.error("Error fetching Zone ID:", error);
+      this.ACHeader = "You Don't have anything to do on this project!";
+      this.canComment = false;
+      return of(0);
+    })
+  );
+}
 
-  
+
+
 
   CanComment() {
    // this.getDepartmentManagerUserID("Senior Reviewer");
-   
-    this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+    debugger;
+    //getBySubAndUserID
+    ///let zoneID = Number(this.getCurrentUsersZoneID(this.loggedInUsersSubDepartmentID));
+
+    this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
       
       if (data.responseCode == 1) {
+        debugger;
         for (var i = 0; i < data.dateSet.length; i++) {
-          
+          debugger;
           let current = data.dateSet[i];
-         
           if (current.userAssaignedToComment == this.CurrentUser.appUserId) { /*&& current.userAssaignedToComment != this.userID*/
             this.canComment = true;
-            
-            //console.log("vvvvvvvcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent",current);
+            this.ACHeader = "You can interact :D";
+        
             return;
           }
           else {
-            
+            this.ACHeader = "You don't have anything to do on this application!";
             this.canComment = false;
           } 
         }
-       
-
-      
-
       }
       else {
         alert(data.responseMessage);
@@ -1219,7 +1296,7 @@ export class ActionCenterComponent implements OnInit {
       }
       console.log("reponse", data);
       this.getUsersByRoleName("Senior Reviewer");
-      this.getUsersByRoleName("Final Approver");
+      
      // this.CanCommentFinalApprover();
     }, error => {
       console.log("Error: ", error);
@@ -1227,11 +1304,11 @@ export class ActionCenterComponent implements OnInit {
   }
 
  
-  CanCommentSeniorReviewer() {
+  async CanCommentSeniorReviewer() {
     
+    debugger;
 
-
-    this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+    await this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
       if (data.responseCode == 1) {
         let foundMatch = false;
         let current = data.dateSet[0];// Flag to track if a match is found
@@ -1281,12 +1358,13 @@ export class ActionCenterComponent implements OnInit {
   }
 
 
-  CanCommentFinalApprover() {
+ async CanCommentFinalApprover() {
     
-   
+    debugger;
 
-    this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+   await this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
       if (data.responseCode == 1) {
+        debugger;
         let foundMatch = false;
         let current = data.dateSet[0];// Flag to track if a match is found
         
@@ -1430,19 +1508,22 @@ export class ActionCenterComponent implements OnInit {
 
   viewSelectedUserForApplication() {
     
-
+    debugger;
     this.LinkedUserToSub.splice(0, this.LinkedUserToSub.length);
-    this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+    debugger;
+    this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
       if (data.responseCode == 1) {
+        debugger;
         const current = data.dateSet[0];
-        
+        debugger;
 
         this.forManuallyAssignSubForCommentID = current.subDepartmentForCommentID;
-
+        debugger;
         for (var i = 0; i < this.UserZoneList.length; i++) {
-          
+          debugger;
           if (this.UserZoneList[i].id == current.userAssaignedToComment) {
             const tempUserList = {} as UserZoneList;
+            debugger;
             tempUserList.fullName = this.UserZoneList[i].fullName;
             tempUserList.id = this.UserZoneList[i].id;
             tempUserList.zoneLinkID = this.UserZoneList[i].zoneLinkID;
@@ -1451,9 +1532,11 @@ export class ActionCenterComponent implements OnInit {
             this.LinkedUserToSub.push(tempUserList);
           }
         }
+        debugger;
         this.CanCommentSeniorReviewer();
+        debugger;
         this.CanCommentFinalApprover();
-       
+        debugger;
 
       }
       else {
@@ -1680,7 +1763,7 @@ export class ActionCenterComponent implements OnInit {
 
   onHopperClick() {
     
-    this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+    this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
@@ -1728,49 +1811,60 @@ export class ActionCenterComponent implements OnInit {
 }
 
   getAllUsersLinkedToZoneByZoneID() {
-     
-    this.UserZoneList.splice(0, this.UserZoneList.length);
-    for (var i = 0; i < this.ZoneLinkedList.length; i++) {
+    debugger;
 
-
-      this.zoneService.getUsersLinkedByZoneID(this.ZoneLinkedList[i].zoneID).subscribe((data: any) => {
-
-     
+    this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
       if (data.responseCode == 1) {
+        debugger;
+        const current = data.dateSet[0];
+        debugger;
 
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempZoneList = {} as UserZoneList;
-          const current = data.dateSet[i];
-          tempZoneList.id = current.id;
-          tempZoneList.fullName = current.fullName;
-          tempZoneList.zoneLinkID = current.zoneLinkID;
-          tempZoneList.Email = current.email;
+        this.zoneService.getUsersLinkedByZoneID(current.zoneID).subscribe((data: any) => {
 
-          this.UserZoneList.push(tempZoneList);
-        }
-        this.setRoles();
-        this.CheckIfCurrentUserCanUseHopper();
-       
-        //for (var i = 0; i < this.UserZoneList.length; i++) {
-        //  if (this.CurrentUser.appUserId == this.UserZoneList[i].id) {
-        //    this.hopperButton = true;
-        //  }
-        //  else {
-        //    this.hopperButton = false;
-        //  }
-        //}
+          debugger;
+          if (data.responseCode == 1) {
+
+            for (let i = 0; i < data.dateSet.length; i++) {
+              const tempZoneList = {} as UserZoneList;
+              const current = data.dateSet[i];
+              tempZoneList.id = current.id;
+              tempZoneList.fullName = current.fullName;
+              tempZoneList.zoneLinkID = current.zoneLinkID;
+              tempZoneList.Email = current.email;
+              debugger;
+              this.UserZoneList.push(tempZoneList);
+            }
+            this.setRoles();
+            this.CheckIfCurrentUserCanUseHopper(); 
+          }
+          else {
+            alert(data.responseMessage);
+          }
+          console.log("reponse", data);
+
+
+
+        }, error => {
+          console.log("Error: ", error);
+        })
+
+
+
       }
       else {
+
         alert(data.responseMessage);
       }
-      console.log("reponse", data);
-
+      console.log("reponseGetSubDepartmentForComment", data);
 
 
     }, error => {
       console.log("Error: ", error);
     })
-    }
+
+      debugger;
+  
+    
 
   }
 
@@ -1922,7 +2016,7 @@ export class ActionCenterComponent implements OnInit {
           //SubDepartmentForCommentService
             this.onDepositRequiredClick();
             if (confirm("Are you sure you want to approve this application?")) {
-              this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved(Conditional)", null, null, "All users in Subdepartment FA", false).subscribe((data: any) => {
+              this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved(Conditional)", null, false, "All users in Subdepartment FA", false).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
                 this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have approved application " + this.ApplicationID + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
@@ -2222,7 +2316,7 @@ export class ActionCenterComponent implements OnInit {
           
           if (confirm("Are you sure you want to approve this application?")) {
             
-            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved(Conditional)", null, false, "All users in Subdepartment FA", false).subscribe((data: any) => {
+            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved(Conditional)", false, false, "All users in Subdepartment FA", false).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
                 this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You, as a senior reviewer, have approved application " + this.ApplicationID + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
@@ -2308,7 +2402,7 @@ export class ActionCenterComponent implements OnInit {
           
           if (confirm("Are you sure you want to approve this application?")) {
             
-            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved", null, false, "All users in Subdepartment FA", false).subscribe((data: any) => {
+            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved", false, false, "All users in Subdepartment FA", false).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
                 
@@ -2357,7 +2451,7 @@ export class ActionCenterComponent implements OnInit {
 
       case "Reject": {
         if (confirm("Are you sure you want to reject this application?")) {
-          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Rejected", null, false, "All users in Subdepartment FA",false).subscribe((data: any) => {
+          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Rejected", false, false, "All users in Subdepartment FA",false).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
 
@@ -2605,6 +2699,7 @@ export class ActionCenterComponent implements OnInit {
           tempSubDepartmentLinkedList.departmentID = current.departmentID;
           tempSubDepartmentLinkedList.dateUpdated = current.dateUpdated;
           tempSubDepartmentLinkedList.dateCreated = current.dateCreated;
+          tempSubDepartmentLinkedList.zoneID = current.zoneID;
           tempSubDepartmentLinkedList.subdepartmentForCommentID = current.subDepartmentForCommentID;
 
           this.SubDepartmentLinkedList.push(tempSubDepartmentLinkedList);
@@ -3376,7 +3471,7 @@ getAllCommentsByUserID() {
   message = '';
 
   fileName: string = '';
-  fileUploadName = '';
+  fileUploadName = '';  
   @Input() UploadFor: any;
   fileExtention = '';
   fileToUpload : any;
@@ -3482,7 +3577,7 @@ getAllCommentsByUserID() {
   }
 
   Approve(){
-    this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Final Approved", null, null, "EndOfCommentProcess", true).subscribe((data: any) => {
+    this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Final Approved", false, false, "EndOfCommentProcess", true).subscribe((data: any) => {
       
       if (data.responseCode == 1) {
 

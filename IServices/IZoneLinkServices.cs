@@ -12,6 +12,7 @@ namespace WayleaveManagementSystem.IServices
         public Task<bool> DeleteZoneLink(int zoneID);
 
         public Task<List<ZoneLinkDTO>> GetAllZoneLinks();
+        public Task<List<ZoneLinkDTO>> GetBySubAndUserID(int subDepartmentID, string userID);
 
         Task<List<UserZoneLinkDTO>> GetUsersNotLinkedByUserID();
 

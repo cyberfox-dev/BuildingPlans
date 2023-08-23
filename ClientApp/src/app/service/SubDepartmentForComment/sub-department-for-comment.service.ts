@@ -68,11 +68,12 @@ export class SubDepartmentForCommentService {
     return this.httpClient.post(this.baseURL + "GetSubDepartmentForComment", body);
 
   }
-  public getSubDepartmentForCommentBySubID(applicationID: number | null, subDepartmentID: number|null) {
+  public getSubDepartmentForCommentBySubID(applicationID: number | null, subDepartmentID: number | null, userID?: number | null) {
 
     const body = {
       ApplicationID: applicationID,
       SubDepartmentID: subDepartmentID,
+      UserAssaignedToComment: userID,
     }
     return this.httpClient.post(this.baseURL + "GetSubDepartmentForCommentBySubID", body);
 

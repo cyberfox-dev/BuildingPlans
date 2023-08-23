@@ -2,7 +2,7 @@
 {
     public class SubDepartmentForCommentBindingModel
     {
-        public int SubDepartmentForCommentID { get; set; }
+        public int? SubDepartmentForCommentID { get; set; }
         
         public int? ApplicationID { get; set; }
 

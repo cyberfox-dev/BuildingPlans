@@ -171,7 +171,7 @@ namespace WayleaveManagementSystem.Controllers
 
 
         [HttpPost("GetSubDepartmentForCommentBySubID")]
-        public async Task<object> GetSubDepartmentForCommentBySubID([FromBody] GetByApplicationID model)
+        public async Task<object> GetSubDepartmentForCommentBySubID([FromBody] SubDepartmentForCommentBindingModel model)
         {
             try
             {
@@ -182,7 +182,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _subDepartmentForCommentService.GetSubDepartmentForCommentBySubID(model.ApplicationID,model.SubDepartmentID);
+                    var result = await _subDepartmentForCommentService.GetSubDepartmentForCommentBySubID((int)model.ApplicationID,model.SubDepartmentID, model.UserAssaignedToComment);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Department For Comment List Created", result));
                 }
 
