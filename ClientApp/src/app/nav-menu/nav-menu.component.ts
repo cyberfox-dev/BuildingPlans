@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild,TemplateRef } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DepartmentConfigComponent } from 'src/app/department-config/department-config.component';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
@@ -483,13 +483,20 @@ export class NavMenuComponent implements OnInit {
   }
 
   openFAQModal(FAQModal: any) {
-    this.offcanvasService.dismiss();
-    this.modalService.open(FAQModal, { centered: true, size: 'xl' });
+
+    this.modalReference = this.modalService.open(FAQModal, { centered: true, size: 'xl', backdrop: 'static' });
   }
+  modalReference: NgbModalRef | undefined;
   viewEditComment(editComment: any, index: any) {
     this.editComments.controls["editCommentName"].setValue(this.CommentList[index].Comment);
     this.forEditIndex = index;
-    this.modalService.open(editComment, { centered: true, size: 'lg' });
+   this.modalService.open(editComment, { centered: true, size: 'lg' });
+  }
+
+  closeModal() {
+    if (this.modalReference) {
+      this.modalReference.close();
+    }
   }
 
   collapse() {

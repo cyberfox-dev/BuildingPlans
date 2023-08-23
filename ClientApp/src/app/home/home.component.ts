@@ -319,13 +319,10 @@ dataSource = this.Applications;
       this.getRolesLinkedToUser();
       this.onCheckIfUserHasAccess();
       this.getAllExternalUsers();
- 
-     
       //this.function();
     }, 100);
     //this.dataSource.paginator = this.paginator;
     //this.defaultPageSize = 10;
-
   }
 
   ngAfterViewInit() {

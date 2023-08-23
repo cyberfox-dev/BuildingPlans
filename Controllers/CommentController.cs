@@ -138,6 +138,32 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpPost("GetCommentsForSpecialConditions")]
+        public async Task<object> GetCommentsForSpecialConditions([FromBody] int applicationID)
+        {
+            try
+            {
+
+                if (applicationID < 3)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _commentService.GetCommentsForSpecialConditions(applicationID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Comments List Created", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        //GetCommentsForSpecialConditions
+
     }
 
 

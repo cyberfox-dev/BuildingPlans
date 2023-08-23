@@ -48,4 +48,11 @@ export class CommentsService {
 
   }
 
+
+  public getCommentsForSpecialConditions(applicationID: number) {
+
+    return this.httpClient.post(this.baseURL + "GetCommentsForSpecialConditions", applicationID);
+
+  }
+
 }

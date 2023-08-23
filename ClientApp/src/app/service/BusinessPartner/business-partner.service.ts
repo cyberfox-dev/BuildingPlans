@@ -6,12 +6,14 @@ import { catchError, Observable, throwError } from 'rxjs';
   providedIn: 'root'
 })
 export class BusinessPartnerService {
-  private apiUrl = 'https://orchestrationhubqa.capetown.gov.za/RESTAdapter/WLMS_Q/BPValidation';
+/*  private apiUrl = 'https://orchestrationhubqa.capetown.gov.za/RESTAdapter/WLMS_Q/BPValidation';*/
 
   constructor(private http: HttpClient) { }
 
   validateBP(bpNumber: number): Observable<any> {
-    const url = '/RESTAdapter/WLMS_Q/BPValidation'; 
+/*    const url = '/RESTAdapter/WLMS_Q/BPValidation'; //proxy*/
+/*    const url = 'https://orchestrationhubqa.capetown.gov.za/RESTAdapter/WLMS_Q/BPValidation'; */
+    const url = 'https://wayleaveqa.capetown.gov.za/venapi/BPValidation'; 
     const body = JSON.stringify({ BusinessPartnerNumber: bpNumber });
 
     const username = 'RFC_BPWLMS';

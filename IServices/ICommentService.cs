@@ -12,6 +12,7 @@ namespace WayleaveManagementSystem.IServices
 
         Task<List<CommentDTO>> GetCommentByApplicationID(int? applicationID);
         Task<List<CommentDTO>> GetSubDepByCommentStatus(string? commentStatus, int? applicationID);
+        Task<List<CommentDTO>> GetCommentsForSpecialConditions(int? applicationID);
 
     }
 }
