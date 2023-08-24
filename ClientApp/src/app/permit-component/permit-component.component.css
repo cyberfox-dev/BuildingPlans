@@ -93,3 +93,20 @@ table {
   background-color: limegreen;
   color: white;
 }
+
+.blueArrow {
+  color: #00a4ff;
+  font-size: 29px;
+}
+.greenThumbsUp {
+  color: #68d017;
+  font-size: 29px;
+}
+.redThumbsDown {
+  color: #d01717;
+  font-size: 29px;
+}
+.yellowTimer {
+  color: #d0c400bd;
+  font-size: 29px;
+}

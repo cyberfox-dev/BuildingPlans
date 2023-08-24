@@ -54,6 +54,11 @@ namespace WayleaveManagementSystem.Controllers
                             Email = model.Email, 
                             DateCreated = DateTime.Now,
                             DateUpdated = DateTime.Now, 
+                            SubDepartmentID = model.SubDepartmentID,
+                            SubDepartmentName = model.SubDepartmentName,
+                            ZoneID = model.ZoneID,
+                            ZoneName = model.ZoneName,
+                            CreatedById = model.CreatedByID, 
                             isActive = true
                         };
 
@@ -69,7 +74,10 @@ namespace WayleaveManagementSystem.Controllers
                         tempContactDetails.CellNo = model.CellNo;
                         tempContactDetails.Email = model.Email;
                         tempContactDetails.DateUpdated = DateTime.Now;
-
+                        tempContactDetails.SubDepartmentID = model.SubDepartmentID;
+                        tempContactDetails.SubDepartmentName = model.SubDepartmentName;
+                        tempContactDetails.ZoneID = model.ZoneID;
+                        tempContactDetails.ZoneName = model.ZoneName;
                         _context.Update(tempContactDetails);
                         await _context.SaveChangesAsync();
                         result = tempContactDetails;
@@ -141,10 +149,13 @@ namespace WayleaveManagementSystem.Controllers
                 CreatedById = contactDetials.CreatedById,  
                 DateCreated = contactDetials.DateCreated,
                 DateUpdated = contactDetials.DateUpdated,
+                SubDepartmentID = contactDetials.SubDepartmentID,
+                SubDepartmentName = contactDetials.SubDepartmentName,
+                ZoneID = contactDetials.ZoneID,
+                ZoneName = contactDetials.ZoneName,
 
                }
                ).ToListAsync();
-
 
 
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Contact Details", result));

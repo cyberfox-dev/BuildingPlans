@@ -11,6 +11,12 @@ namespace WayleaveManagementSystem.Data.Entities
         public string? Email { get; set; }
         public string? CellNo { get; set; }
 
+        public int? SubDepartmentID { get; set; }   
+        public string? SubDepartmentName { get; set; }
+
+        public int?ZoneID { get; set; }
+        public string? ZoneName { get; set; }   
+
 
     }
 }

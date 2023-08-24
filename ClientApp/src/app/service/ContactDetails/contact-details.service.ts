@@ -12,12 +12,18 @@ export class ContactDetailsService {
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
-  public addUpdateContactDetail(contactDetailID: number | null, fullName: string | null, cellNo: string | null, email: string | null) {
+  public addUpdateContactDetail(contactDetailID: number | null, fullName: string | null, cellNo: string | null, email: string | null, subDepID: number | null, subDepName: string | null, zoneID: number | null, zoneName: string | null, createdByID: string | null) {
     const body = {
       ContactDetailID: contactDetailID,
       FullName: fullName,
       CellNo: cellNo,
       Email: email,
+      SubDepartmentID: subDepID,
+      SubDepartmentName: subDepName,
+      ZoneID: zoneID,
+      ZoneName: zoneName,
+      CreatedById: createdByID,
+
     }
     return this.httpClient.post(this.baseURL + "AddUpdateContactDetail", body);
   }

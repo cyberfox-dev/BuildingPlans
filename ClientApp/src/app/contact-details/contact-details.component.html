@@ -46,6 +46,22 @@
   </div>
   <div class="modal-body">
 
+
+      <div class="form-floating mb-3 mt-3">
+        <select class="form-select" aria-label="Default select example" [(ngModel)]="Department" (change)="onSelectToPopulateZone($event)" name="Department" id="Department">
+          <option  value="0">Select a department *</option>
+          <option *ngFor="let subDepartment of SubDepartmentList" value="{{subDepartment.subDepartmentID}}">{{subDepartment.subDepartmentName}}</option>
+        </select>
+      </div>
+
+      <div class="form-floating mb-3 mt-3">
+        <select class="form-select" aria-label="Default select example" [(ngModel)]="selectedZone" name="selectedZone" id="selectedZone">
+          <option  value="0">Select a zone *</option>
+          <option *ngFor="let zone of ZoneDropdown" value="{{zone.zoneID}}">{{zone.zoneName}}</option>
+        </select>
+      </div>
+
+
     <div class="form-floating mb-3 mt-3">
       <input type="text" class="form-control" placeholder="Full Name" [(ngModel)]="name" id="name" name="name">
       <label for="name">Full Name</label>

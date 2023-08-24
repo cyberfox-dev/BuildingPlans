@@ -55,7 +55,7 @@ export class ZonesService {
 
   }
 
-  public getZoneByZoneID(zoneID: any) {
+  public getZoneByZoneID(zoneID: number) {
 
     return this.httpClient.post(this.baseURL + "GetZoneByZoneID", zoneID);
 

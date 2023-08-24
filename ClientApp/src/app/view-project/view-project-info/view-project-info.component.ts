@@ -27,6 +27,9 @@ import { MobileFieldTrackingService } from 'src/app/service/MFT/mobile-field-tra
 import { FileUploadComponent } from 'src/app/file-upload/file-upload.component';
 import { ServiceItemService } from 'src/app/service/ServiceItems/service-item.service';
 import { ContactDetailsService } from 'src/app/service/ContactDetails/contact-details.service';
+import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
+import { MatDialog } from '@angular/material/dialog';
+
 
 import 'jspdf-autotable';
 
@@ -45,6 +48,21 @@ export interface MFTList {
   DateCreated: Date;
   ApplicationNumber: number;
   FullName: string;
+}
+
+export interface SubDepartmentListFORAPPROVAL {
+  IsRefered: any;
+  isAwaitingClarity: any;
+  subDepartmentID: number;
+  subDepartmentName: string;
+  departmentID: number;
+  dateUpdated: any;
+  dateCreated: any;
+  subdepartmentForCommentID: number | null;
+  UserAssaignedToComment: string | null;
+  commentStatus: string | null;
+  zoneID: number;
+  zoneName: string;
 }
 
 export interface SubDepartmentList {
@@ -200,6 +218,10 @@ export interface ContactDetailsList {
   FullName: string;
   CellNo: string;
   Email: Date;
+  SubDepID: number;
+  SubDepName: string;
+  ZoneID: number;
+  ZoneName: string;
 }
 
 
@@ -331,6 +353,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   ServiceItemList: ServiceItemList[] = [];
   AllSubDepartmentList: AllSubDepartmentList[] = [];
+  SubDepartmentListFORAPPROVAL: SubDepartmentListFORAPPROVAL[] = [];
 
   @ViewChild('pdfTable', { static: false }) pdfTable: ElementRef;
 
@@ -382,6 +405,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     ApForUpload: string;
     showPermitTab: boolean;
+    generateApproval: boolean;
     hasFile: boolean;
     EMBUsers: any;
     loggedInUsersSubDepartmentID: number;
@@ -443,7 +467,8 @@ export class ViewProjectInfoComponent implements OnInit {
   panelOpenState = false;
 
   fileCount = 0;
-
+  ApprovalDoqnload = true;
+  generateApprovalbtn = false;
 
   constructor(private modalService: NgbModal,
     private sharedService: SharedService,
@@ -469,13 +494,28 @@ export class ViewProjectInfoComponent implements OnInit {
     private fileUploadComponent: FileUploadComponent,
     private serviceItemService: ServiceItemService,
     private contactDetails: ContactDetailsService,
+    private notificationsService: NotificationsService,
+    private dialog: MatDialog,
   ) { }
 
 
 
   ngOnInit(): void {
 
-    this.getAllSubDepFroConditionalApprove();
+
+
+    this.applicationData = this.sharedService.getViewApplicationIndex();
+    console.log("venApplicationData:", this.applicationData);
+    this.getAllSubDepartments();
+
+
+    if (this.CurrentUser == null) {
+      console.log("Not");
+    }
+    else {
+      console.log(this.CurrentUser);
+    }
+
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
@@ -522,6 +562,19 @@ export class ViewProjectInfoComponent implements OnInit {
       this.showPermitTab = false;
     }
 
+    if (setValues.CurrentStageName == "Approval Pack Generation") {
+      this.generateApproval = true;
+    } else {
+      this.generateApproval = false;
+    }
+
+    if (setValues.CurrentStageName == "Approval Pack Generation" && this.CurrentUser.appUserId == this.applicationDataForView[0].CreatedById) {
+      this.generateApprovalbtn = true;
+    } else {
+      this.generateApprovalbtn = false;
+    }
+
+
     this.getRolesLinkedToUser();
     this.CurrentApplicant = setValues.CreatedById;
 
@@ -545,9 +598,9 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getAllStages();
     this.setInterface();
     this.getAllRequiredDeposits();
-    this.getAllSubDepFroConditionalApprove();
-    this.getAllCommentsForSpecialConditions();
-    this.getContactDetails();
+
+
+
 /*    this.getAllSubDepForReject();*/
 /*    this.getAllSubDepForReject();*/
     this.canReapply = this.sharedService.getCanReapply();
@@ -564,7 +617,8 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getServiceItem("002");
     this.getServiceItem("003");
     this.getAllSubDepartments();
-
+    this.getLinkedDepartmentsFORAPPROVAL();
+    this.CheckForApprovalPackDownload();
   }
   receivedata: string;
 
@@ -893,7 +947,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     if (data.responseCode == 1) {
       this.EMBUsers = data.dateSet;
-      debugger;
+      
       for (var i = 0; i < this.EMBUsers.length; i++) {
         const currentEMBUser = this.EMBUsers[i].userID;
         if (currentEMBUser == this.CurrentUser.appUserId) {
@@ -1773,7 +1827,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   ChangeApplicationStatusToPaid() {
-    debugger;
+    
     if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Unpaid") {
    
       this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
@@ -1990,22 +2044,22 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
-  getAllCommentsForSpecialConditions() {
+  async getAllCommentsForSpecialConditions() {
     debugger;
     console.log("This is all the special comments from the subdepartments", this.ApplicationID);
     this.commentsService.getCommentsForSpecialConditions(this.ApplicationID).subscribe((data: any) => {
-      debugger;
+      
 
       if (data.responseCode == 1) {
-        debugger;
+        
         for (var i = 0; i < data.dateSet.length; i++) {
           const tempSubDepCommentStatusList = {} as SubDepCommentsForSpecialConditions;
-          debugger;
+          
           const current = data.dateSet[i];
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
           tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
           tempSubDepCommentStatusList.ApplicationID = current.applicationID;
-          tempSubDepCommentStatusList.Comment = current.comment;
+          tempSubDepCommentStatusList.Comment = current.comment;;
           tempSubDepCommentStatusList.DateCreated = current.dateCreated;
           tempSubDepCommentStatusList.CommentStatus = current.commentStatus;
           tempSubDepCommentStatusList.UserName = current.userName;
@@ -2013,7 +2067,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
         }
-
+        this.onCreateApprovalPack();
         console.log("This is all the special comments from the subdepartments", data.dateSet);
       }
 
@@ -2029,7 +2083,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getAllSubDepFroConditionalApprove() {
-
+    debugger;
     let commentS = "Approved";
     
     this.commentsService.getSubDepByCommentStatus(commentS, this.ApplicationID).subscribe((data: any) => {
@@ -2052,6 +2106,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
         }
+        this.getAllCommentsForSpecialConditions()
 
         console.log("THIS IS THE CUB DEP THAT HAS APPROVED THE APPLICATION CONDITIONALLY", data.dateSet);
       }
@@ -2066,9 +2121,13 @@ export class ViewProjectInfoComponent implements OnInit {
       console.log("Error: ", error);
     })
 
+
+
   }
 
   getContactDetails() {
+
+    debugger;
     this.ContactDetailsList.splice(0, this.ContactDetailsList.length);
     this.contactDetails.getAllContactDetials().subscribe((data: any) => {
 
@@ -2077,14 +2136,19 @@ export class ViewProjectInfoComponent implements OnInit {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempContactDetailsList = {} as ContactDetailsList;
           const current = data.dateSet[i];
+          console.log("getContactDetailsgetContactDetailsgetContactDetailsgetContactDetailsgetContactDetailsgetContactDetails ", current);
           tempContactDetailsList.ContactDetailID = current.contactDetailID;
           tempContactDetailsList.FullName = current.fullName;
           tempContactDetailsList.CellNo = current.cellNo;
           tempContactDetailsList.Email = current.email;
-
+          tempContactDetailsList.ZoneID = current.zoneID;
+          tempContactDetailsList.SubDepName = current.subDepartmentName;
+          tempContactDetailsList.ZoneName = current.zoneName
           this.ContactDetailsList.push(tempContactDetailsList);
 
         }
+
+        this.getAllSubDepForFinalApprove();
 
         console.log("ContactDetailsList", this.ContactDetailsList);
       }
@@ -2100,7 +2164,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getAllSubDepForFinalApprove() {
-    debugger;
+    
     let commentS = "Final Approved";
     
     this.commentsService.getSubDepByCommentStatus(commentS, this.ApplicationID).subscribe((data: any) => {
@@ -2110,7 +2174,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
         for (var i = 0; i < data.dateSet.length; i++) {
           const tempSubDepCommentStatusList = {} as SubDepFinalApproveList;
-          debugger;
+          
           const current = data.dateSet[i];
           console.log("FINAL APPROVED THE APPLICATION ", current);
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
@@ -2118,14 +2182,18 @@ export class ViewProjectInfoComponent implements OnInit {
           tempSubDepCommentStatusList.ApplicationID = current.applicationID;
           tempSubDepCommentStatusList.Comment = current.comment;
           tempSubDepCommentStatusList.DateCreated = current.dateCreated;
-          tempSubDepCommentStatusList.CommentStatus = current.commentStatus;
+          if (current.commentStatus == "Final Approved") {
+            tempSubDepCommentStatusList.CommentStatus = "Approved";
+          }
           tempSubDepCommentStatusList.UserName = current.userName;
 
           this.SubDepFinalApproveList.push(tempSubDepCommentStatusList);
-
+        
 
         }
-        this.onCreateApprovalPack();
+
+        this.getAllSubDepFroConditionalApprove();
+        this.ApprovalDoqnload = true;
         console.log("THIS IS THE CUB DEP THAT HAS Final APPROVED THE APPLICATION ", this.SubDepFinalApproveList);
       }
 
@@ -2214,9 +2282,9 @@ export class ViewProjectInfoComponent implements OnInit {
 
  
   onCreateApprovalPack() {
-
-    this.getAllSubDepFroConditionalApprove();
-    this.getAllCommentsForSpecialConditions();
+    debugger;
+/*    this.getAllSubDepFroConditionalApprove();*/
+    const subDepCommentsMap = new Map();
 
     const doc = new jsPDF({
       orientation: 'portrait',
@@ -2246,16 +2314,15 @@ export class ViewProjectInfoComponent implements OnInit {
 
     const Page3headers = [
       [
+        'Department',
+        'Region',
         'Full Name',
         'Email',
-        'Cell Number',
+        'Number',
       ]
     ];
 
     const data: any[] = [];
-    const data2: any[] = [];
-    const page3Data: any[] = [];
-
     const sig = new Image();
     const img = new Image();
     const footer = new Image();
@@ -2425,34 +2492,36 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.setFontSize(10);
     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
     doc.setFontSize(16);
-    doc.text('Special Conditions', 10, 45, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' ,});
+    doc.text('Special Conditions', 10, 45, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify', });
 
-
-
+    debugger;
+    console.log(this.SubDepCommentsForSpecialConditions);
     this.SubDepCommentsForSpecialConditions.forEach((deposit) => {
-      const row = [
-        deposit.SubDepName,
-        deposit.Comment,
-      ];
-
-      data2.push(row);
+      if (subDepCommentsMap.has(deposit.SubDepName)) {
+        console.log(`Adding comment to existing sub-department: ${deposit.SubDepName}`);
+        subDepCommentsMap.get(deposit.SubDepName).push(deposit.Comment);
+      } else {
+        console.log(`Creating new entry for sub-department: ${deposit.SubDepName}`);
+        subDepCommentsMap.set(deposit.SubDepName, [deposit.Comment]);
+      }
     });
 
-
-
+    console.log(subDepCommentsMap);
     let yOffset = 60; // Starting Y-coordinate for the list
-
-    // Iterate through the SubDepConditionalApproveList and create a list
-    this.SubDepCommentsForSpecialConditions.forEach((deposit) => {
+    subDepCommentsMap.forEach((comments, subDepName) => {
       doc.setFontSize(12);
-      doc.setFont('helvetica','bold'); // Set the font to Helvetica bold
-      doc.text(deposit.SubDepName + ': \n', 10, yOffset, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' ,});
+      doc.setFont('helvetica', 'bold'); // Set the font to Helvetica bold
+      doc.text(subDepName + ': \n', 10, yOffset, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
       doc.setFontSize(10);
-      doc.setFont('helvetica', 'normal'); // Set the font to Helvetica bold
-      doc.text(deposit.Comment, 10, yOffset += 10, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
-      doc.setLineWidth(0.2); // Set line width for the separator line
-      doc.line(10, yOffset + 10, 200, yOffset + 10); // Draw a line below the SubDepName
-      yOffset += 20; // Increase Y-coordinate for the next item
+      doc.setFont('helvetica', 'normal'); // Set the font to Helvetica normal
+
+      // Combine and join the comments for the same sub-department name
+      const combinedComments = comments.join('\n');
+
+      doc.text(combinedComments, 10, yOffset += 10, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
+      doc.setLineWidth(0.2);
+      doc.line(10, yOffset + 10, 200, yOffset + 10);
+      yOffset += 20;
     });
     doc.addImage(footer, 'png', 7, 255, 205, 45);
 
@@ -2464,19 +2533,32 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
     doc.setFontSize(16);
     doc.text('Contact Details', 10, 45, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    
+    const uniqueZoneIDs = [...new Set(this.SubDepartmentListFORAPPROVAL.map(item => item.zoneID))];
 
-    this.ContactDetailsList.forEach((deposit) => {
-      const row = [
-        deposit.FullName,
-        deposit.Email,
-        deposit.CellNo,
+    // Create an array to hold the filtered contact details for matching zone IDs
+    const filteredContacts = [];
 
-      ];
-      page3Data.push(row);
+    // Loop through each unique zone ID
+    uniqueZoneIDs.forEach(targetZoneID => {
+      // Filter the ContactDetailsList array based on the current zone ID
+      const matchingContacts = this.ContactDetailsList.filter(deposit => deposit.ZoneID === targetZoneID);
+
+      // Add the matching contacts to the filteredContacts array
+      filteredContacts.push(...matchingContacts);
     });
+    
+    // Create the table data for the filtered contact details
+    const page3Data = filteredContacts.map(deposit => [
+      deposit.SubDepName,
+      deposit.ZoneName,
+      deposit.FullName,
+      deposit.Email,
+      deposit.CellNo,
+    ]);
+
     autoTable(doc, {
       head: Page3headers,
-
       startY: 60,
       body: page3Data,
       styles: {
@@ -2484,19 +2566,14 @@ export class ViewProjectInfoComponent implements OnInit {
         halign: 'justify',
         fontSize: 8,
         valign: 'middle',
-
-
       },
-
       columnStyles: {
-        0: { cellWidth: 70, fontStyle: 'bold' },
-        1: { cellWidth: 50 },
-        2: { cellWidth: 60 },
-
-
+        0: { cellWidth: 60, fontStyle: 'bold' },
+        1: { cellWidth: 25 },
+        2: { cellWidth: 30 },
+        3: { cellWidth: 35 },
+        4: { cellWidth: 30 },
       }
-
-
     });
 
 
@@ -3007,6 +3084,18 @@ export class ViewProjectInfoComponent implements OnInit {
     const file = new File([pdfData], 'approval_pack.pdf', { type: 'application/pdf' });
 
 
+    // Debugging: Print the contents of SubDepCommentsForSpecialConditions array
+    console.log(this.SubDepCommentsForSpecialConditions);
+
+    // Debugging: Check if the PDF document is being created
+    console.log(doc);
+
+    // Debugging: Print the subDepCommentsMap to verify its contents
+    console.log(subDepCommentsMap);
+
+    // Debugging: Print the yOffset value to verify its progression
+    console.log(yOffset);
+
     // Prepare the form data
     const formData = new FormData();
     formData.append('file', file);
@@ -3069,7 +3158,9 @@ export class ViewProjectInfoComponent implements OnInit {
     this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, "System Generated Pack", "System Generated Pack").subscribe((data: any) => {
 /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
       if (data.responseCode == 1) {
-      
+        this.LoadingApproval = true;
+        this.MoveToPermitStage();
+
       }
 
     }, error => {
@@ -3750,5 +3841,117 @@ export class ViewProjectInfoComponent implements OnInit {
   openFAQModal(FAQModal: any) {
     this.modalService.open(FAQModal, { centered: true, size: 'xl' })
   }
+
+  getLinkedDepartmentsFORAPPROVAL() {
+
+
+    const currentApplication = this.sharedService.getViewApplicationIndex();
+
+
+
+    this.subDepartmentForCommentService.getSubDepartmentForComment(currentApplication.applicationID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+
+        for (var i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+
+          const tempSubDepartmentList = {} as SubDepartmentListFORAPPROVAL;
+          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.departmentID = current.departmentID;
+          tempSubDepartmentList.dateUpdated = current.dateUpdated;
+          tempSubDepartmentList.dateCreated = current.dateCreated;
+          tempSubDepartmentList.isAwaitingClarity = current.isAwaitingClarity;
+          tempSubDepartmentList.IsRefered = current.isRefered;
+          tempSubDepartmentList.commentStatus = current.commentStatus;
+          tempSubDepartmentList.zoneID = current.zoneID;
+          if (tempSubDepartmentList.subDepartmentName == "IS&T" || tempSubDepartmentList.subDepartmentName == "Bulk Water") {
+            tempSubDepartmentList.zoneName = "CCT";
+          } else {
+            tempSubDepartmentList.zoneName = current.zoneName;
+          }
+
+
+
+          this.SubDepartmentListFORAPPROVAL.push(tempSubDepartmentList);
+        }
+
+
+      }
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponseGetSubDepartmentForComment", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
+
+  LoadingApproval= false;
+  CheckForApprovalPackDownload() {
+    debugger;
+
+    if (this.CurrentUser.appUserId == this.applicationDataForView[0].CreatedById && this.generateApproval == true) {
+      this.LoadingApproval = true;
+/*      this.getContactDetails();*/
+
+    }
+
+
+  }
+
+  OpenLoadingModal(approvalPackLoading: any) {
+
+
+    this.modalService.open(approvalPackLoading, { centered: true, size: 'xl', backdrop: 'static' })
+    this.getContactDetails();
+    
+
+  }
+
+  applicationData: ApplicationList;
+  MoveToPermitStage() {
+
+    console.log(this.StagesList);
+    debugger;
+    this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, this.StagesList[5].StageName, this.StagesList[5].StageOrderNumber, "PTW Pending").subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+        this.modalService.dismissAll();
+        alert("Application moved to PTW");
+        this.router.navigate(["/home"]);
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("responseAddapplication", data);
+    }, error => {
+      console.log("Error", error);
+    })
+
+    //}
+
+    //else if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[2].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Distributing") {
+
+    //}
+    //else {
+    //  alert("Application Status Is Not Paid");
+    //}
+
+
+  }
+
+
+         
   
 }
