@@ -6,6 +6,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel;
 using System.Security.Policy;
+using WayleaveManagementSystem.Models.DTO;
 
 namespace WayleaveManagementSystem.Service
 {
@@ -196,28 +197,68 @@ namespace WayleaveManagementSystem.Service
                 ).ToListAsync();
         }
 
-        public async Task<List<SubDepartmentForCommentDTO>> GetSubDepartmentForCommentBySubID(int applicationID, int? subDepartmentID)
+        public async Task<List<SubDepartmentForCommentDTO>> GetSubDepartmentForCommentBySubID(int applicationID, int? subDepartmentID, string? userID)
         {
-            return await (
-                from subDepartmentForComment in _context.SubDepartmentForComment
-                where subDepartmentForComment.ApplicationID == applicationID && subDepartmentForComment.isActive == true && subDepartmentForComment.SubDepartmentID == subDepartmentID
-                select new SubDepartmentForCommentDTO()
-                {
-                    SubDepartmentForCommentID = subDepartmentForComment.SubDepartmentForCommentID,
-                    ApplicationID = subDepartmentForComment.ApplicationID,
-                    SubDepartmentID = subDepartmentForComment.SubDepartmentID,
-                    SubDepartmentName = subDepartmentForComment.SubDepartmentName,
-                    UserAssaignedToComment = subDepartmentForComment.UserAssaignedToComment,
-                    CommentStatus = subDepartmentForComment.CommentStatus,
-                    isAwaitingClarity = subDepartmentForComment.isAwaitingClarity,
-                    IsRefered = subDepartmentForComment.IsRefered,
-                    ReferedToUserID = subDepartmentForComment.ReferedToUserID,
-                    CreatedById = subDepartmentForComment.CreatedById,
-                      ZoneID = subDepartmentForComment.ZoneID,
-                    ZoneName = subDepartmentForComment.ZoneName,
 
-                }
-                ).ToListAsync();
+            if (userID != null)
+            {
+                // Step 1: Get the list of ZoneIDs associated with the user
+                var zoneIds = await _context.ZoneLinkTable
+                                      .Where(z => z.SubDepartmentID == subDepartmentID
+                                                  && z.AssignedUserID == userID
+                                                  && z.isActive)
+                                      .Select(z => z.ZoneID)
+                                      .ToListAsync();
+
+                // Step 2: Use the retrieved ZoneIDs in the SubDepartmentForComment query
+                return await _context.SubDepartmentForComment
+                                    .Where(s => s.ApplicationID == applicationID
+                                                && s.isActive
+                                                && s.SubDepartmentID == subDepartmentID
+                                                && zoneIds.Contains(s.ZoneID)) // Use Contains to filter by ZoneIDs
+                                    .Select(s => new SubDepartmentForCommentDTO()
+                                    {
+                                        SubDepartmentForCommentID = s.SubDepartmentForCommentID,
+                                        ApplicationID = s.ApplicationID,
+                                        SubDepartmentID = s.SubDepartmentID,
+                                        SubDepartmentName = s.SubDepartmentName,
+                                        UserAssaignedToComment = s.UserAssaignedToComment,
+                                        CommentStatus = s.CommentStatus,
+                                        isAwaitingClarity = s.isAwaitingClarity,
+                                        IsRefered = s.IsRefered,
+                                        ReferedToUserID = s.ReferedToUserID,
+                                        CreatedById = s.CreatedById,
+                                        ZoneID = s.ZoneID,
+                                        ZoneName = s.ZoneName,
+                                    })
+                                    .ToListAsync();
+            }
+            else
+            {
+                return await (
+           from subDepartmentForComment in _context.SubDepartmentForComment
+           where subDepartmentForComment.ApplicationID == applicationID && subDepartmentForComment.isActive == true && subDepartmentForComment.SubDepartmentID == subDepartmentID
+           select new SubDepartmentForCommentDTO()
+           {
+               SubDepartmentForCommentID = subDepartmentForComment.SubDepartmentForCommentID,
+               ApplicationID = subDepartmentForComment.ApplicationID,
+               SubDepartmentID = subDepartmentForComment.SubDepartmentID,
+               SubDepartmentName = subDepartmentForComment.SubDepartmentName,
+               UserAssaignedToComment = subDepartmentForComment.UserAssaignedToComment,
+               CommentStatus = subDepartmentForComment.CommentStatus,
+               isAwaitingClarity = subDepartmentForComment.isAwaitingClarity,
+               IsRefered = subDepartmentForComment.IsRefered,
+               ReferedToUserID = subDepartmentForComment.ReferedToUserID,
+               CreatedById = subDepartmentForComment.CreatedById,
+               ZoneID = subDepartmentForComment.ZoneID,
+               ZoneName = subDepartmentForComment.ZoneName,
+
+           }
+           ).ToListAsync();
+            }
+           
+           
+
         }
 
 

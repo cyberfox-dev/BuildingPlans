@@ -5,9 +5,9 @@
         public int? ZoneLinkID { get; set; }
 
         public int? ZoneID { get; set; }
-        public int DepartmentID { get; set; }
+        public int? DepartmentID { get; set; }
 
-        public int SubDepartmentID { get; set; }
+        public int? SubDepartmentID { get; set; }
 
         public string? AssignedUserID { get; set; }
 

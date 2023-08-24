@@ -1,17 +1,34 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using WayleaveManagementSystem.IServices;
+using WayleaveManagementSystem.Models.BindingModel;
+using WayleaveManagementSystem.Models;
+using WayleaveManagementSystem.Service;
+using WayleaveManagementSystem.Models.DTO;
+using WayleaveManagementSystem.DTO;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using WayleaveManagementSystem.BindingModel;
+using WayleaveManagementSystem.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Models.BindingModel;
+using System.Threading.Tasks;
+using System;
+using System.Linq;
+using System.Data;
 using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
-using WayleaveManagementSystem.Service;
 
 namespace WayleaveManagementSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ZoneLinkingController : Controller
+    public class ZoneLinkingController : ControllerBase
     {
         private readonly IZoneLinkServices _zonesLinkingServices;
         private readonly AppDBContext _context;
@@ -33,7 +50,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _zonesLinkingServices.AddUpdateZoneLink(model.ZoneLinkID,model.ZoneID ,model.DepartmentID, model.SubDepartmentID, model.AssignedUserID, model.UserType,model.CreatedById);
+                    var result = await _zonesLinkingServices.AddUpdateZoneLink(model.ZoneLinkID,model.ZoneID , (int)model.DepartmentID, (int)model.SubDepartmentID, model.AssignedUserID, model.UserType,model.CreatedById);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ZoneLinkID > 0 ? "Zone Link Updated Successfully" : "User Linked Successfully"), result));
                 }
             }
@@ -80,6 +97,62 @@ namespace WayleaveManagementSystem.Controllers
                 var result = await _zonesLinkingServices.GetAllZoneLinks();
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Zone Link List Created", result));
 
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }  
+        
+        [HttpPost("GetBySubAndUserID")]
+        public async Task<object> GetBySubAndUserID([FromBody] ZoneLinkBindingModel model)
+        {
+            try
+            {
+                if (model == null || model.ZoneLinkID < 0)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _zonesLinkingServices.GetBySubAndUserID((int)model.SubDepartmentID, model.AssignedUserID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Zone Link List Created", result));
+                }
+                
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        [HttpGet("FindME")]
+        public async Task<object> FindME()
+        {
+            try
+            {
+                //if (model == null || model.ZoneLinkID < 0)
+                //{
+                //    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                //}
+                //else
+                //{
+                //    var result = await _zonesLinkingServices.GetBySubAndUserID((int)model.SubDepartmentID, model.AssignedUserID);
+                //    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Zone Link List Created", result));
+                //}
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
 
 
             }

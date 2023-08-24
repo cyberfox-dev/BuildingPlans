@@ -32,6 +32,22 @@ export class ZoneLinkService {
 
   }
 
+  //public getBySubAndUserID(subDepartmentID: number | null, assignedUserID: string | null) {
+  //  debugger;
+  //  const body = {
+
+  //    SubDepartmentID: subDepartmentID,
+  //    AssignedUserID: assignedUserID,
+  //  }
+  //  return this.httpClient.post(this.baseURL + "FindME", body);
+
+  //}
+  public getBySubAndUserID(subDepartmentID: number | null, assignedUserID: string | null) {
+    debugger;
+    return this.httpClient.get(this.baseURL + "FindME");
+
+  }
+
   public deleteZoneLink(zoneLinkID: number) {
 
     return this.httpClient.post(this.baseURL + "DeleteZoneLink", zoneLinkID);

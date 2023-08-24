@@ -101,6 +101,27 @@ namespace WayleaveManagementSystem.Service
                 ).ToListAsync();
         }
 
+
+        public async Task<List<ZoneLinkDTO>> GetBySubAndUserID(int subDepartmentID, string userID)
+        {
+            return await (
+                from ZoneLink in _context.ZoneLinkTable
+                    where ZoneLink.SubDepartmentID == subDepartmentID && ZoneLink.AssignedUserID == userID && ZoneLink.isActive == true
+                select new ZoneLinkDTO()
+                {
+                    ZoneLinkID = ZoneLink.ZoneLinkID,
+                    DepartmentID = ZoneLink.DepartmentID,
+                    SubDepartmentID = ZoneLink.SubDepartmentID,
+
+                    AssignedUserID = ZoneLink.AssignedUserID,
+                    UserType = ZoneLink.UserType,
+
+                    DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,
+
+                }
+                ).ToListAsync();
+        }
         public async Task<List<UserZoneLinkDTO>> GetUsersNotLinkedByUserID()
         {
             return await (
