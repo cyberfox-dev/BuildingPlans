@@ -87,6 +87,7 @@ img {
   flex-wrap: nowrap;
   justify-content: center;
   align-items: baseline;
+  margin-bottom: -36px;
 }
 .cont {
   display: flex;
@@ -748,3 +749,24 @@ button {
   text-align: center;
 }
 
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-content: space-around;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.loadingText{
+    font-size:16px;
+}
+
+.cont7 {
+  display: flex;
+  justify-content: center;
+}
+.mat-generatePackBtn{
+  background-color: #f48a36;
+  color: #fff;
+  margin-left: 22px;
+}

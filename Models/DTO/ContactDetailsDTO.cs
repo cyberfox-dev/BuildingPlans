@@ -15,6 +15,11 @@
 
         public bool? isActive { get; set; }
 
+        public int? SubDepartmentID { get; set; }
+        public string? SubDepartmentName { get; set; }
+
+        public int? ZoneID { get; set; }
+        public string? ZoneName { get; set; }
 
 
     }

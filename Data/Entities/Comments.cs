@@ -26,6 +26,10 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public string? UserName { get; set; }
 
+        public string? ZoneName { get; set; }
+
+        
+
         //The CreatedBy is the user who created the comment
         // public string? UserCommentedID { get; set; }
 

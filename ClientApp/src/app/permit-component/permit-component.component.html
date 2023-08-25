@@ -17,7 +17,7 @@
   <ng-container matColumnDef="indication">
     <th mat-header-cell *matHeaderCellDef>Indication</th>
     <td mat-cell *matCellDef="let element">
-      <i class="fa fa-location-arrow" aria-hidden="true" *ngIf=" element.PermitCommentStatus === MeetOnSite"></i>
+      <i class="fa fa-location-arrow blueArrow" aria-hidden="true" *ngIf=" element.PermitCommentStatus === MeetOnSite"></i>
       <i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true" *ngIf="element.PermitCommentStatus === Approved"></i>
       <i class="fa fa-thumbs-down redThumbsDown" aria-hidden="true" *ngIf="element.PermitCommentStatus === Rejected"></i>
       <i class="fa fa-clock-o yellowTimer" aria-hidden="true" *ngIf="element.PermitCommentStatus !== MeetOnSite && element.PermitCommentStatus !== Approved && element.PermitCommentStatus !== Rejected"></i>

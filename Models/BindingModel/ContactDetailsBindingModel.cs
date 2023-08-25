@@ -9,5 +9,10 @@
         public string? CellNo { get; set; }
         public string? CreatedByID { get; set; }
 
+        public int? SubDepartmentID { get; set; }
+        public string? SubDepartmentName { get; set; }
+
+        public int? ZoneID { get; set; }
+        public string? ZoneName { get; set; }
     }
 }

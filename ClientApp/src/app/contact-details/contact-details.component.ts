@@ -2,8 +2,33 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTable } from '@angular/material/table';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ContactDetailsService } from '../service/ContactDetails/contact-details.service';
+import { SubDepartmentsService } from 'src/app/service/SubDepartments/sub-departments.service';
+import { ZonesService } from 'src/app/service/Zones/zones.service';
 
+export interface ZoneDropdown {
+  zoneID: number;
+  zoneName: string;
+}
+export interface ZoneDropdownForName {
+  zoneID: number;
+  zoneName: string;
+}
 
+export interface SubDepartmentList {
+  subDepartmentID: number;
+  subDepartmentName: string;
+  departmentID: number;
+  dateUpdated: any;
+  dateCreated: any;
+}
+
+export interface SubDepartmentListForName {
+  subDepartmentID: number;
+  subDepartmentName: string;
+  departmentID: number;
+  dateUpdated: any;
+  dateCreated: any;
+}
 export interface ContactDetailsList {
   ContactDetailID: number;
   FullName: string;
@@ -21,15 +46,28 @@ export interface ContactDetailsList {
 
 
 export class ContactDetailsComponent implements OnInit {
-
+  SubDepartmentList: SubDepartmentList[] = [];
+  SubDepartmentListForName: SubDepartmentListForName[] = [];
+  ZoneDropdown: ZoneDropdown[] = [];
+  ZoneDropdownForName: ZoneDropdownForName[] = [];
   ContactDetailsList: ContactDetailsList[] = [];
 
   name = '';
   email= '';
   number = '';
-  constructor(private modalService: NgbModal, private contactDetails: ContactDetailsService) { }
+  selectedZone: number;
+  Department :number;
+    selectedSubDepartmentName: string;
+    selectedZoneName: string;
+    selectedSubDep: any;
 
+  constructor(private modalService: NgbModal, private contactDetails: ContactDetailsService, private zoneService: ZonesService, private subDepartmentsService: SubDepartmentsService,) { }
+  CurrentUser: any;
+  stringifiedData: any;  
   ngOnInit(): void {
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
+    this.getAllSubDepartments();
     this.getAllContactDetails();
   }
 
@@ -37,7 +75,12 @@ export class ContactDetailsComponent implements OnInit {
   dataSource = this.ContactDetailsList;
 
   openContactDetailsModal(ContactDetailsModal:any)
- {
+  {
+    this.name = '';
+    this.email = '';
+    this.number = '';
+    this.selectedZone = 0;
+    this.Department = 0;
     this.modalService.open(ContactDetailsModal, { centered: true, size: 'xl' });
   }
   @ViewChild(MatTable) ContactDetailsTable: MatTable<ContactDetailsList> | undefined;
@@ -73,24 +116,82 @@ export class ContactDetailsComponent implements OnInit {
     })
   }
 
+
+  selectedZone7 = 0;
+  select = 0;
   addContactDetail() {
 
-    if (!this.isValidPhoneNumber(this.number)) {
-      alert("Please enter a valid phone number.");
-      return; // Stop further execution
-    }
-    if (!this.isValidEmail(this.email)) {
-      alert("Please enter a valid email address.");
-      return; // Stop further execution
-    }
 
-    this.contactDetails.addUpdateContactDetail(0, this.name, this.number, this.email).subscribe((data: any) => {
+
+    this.subDepartmentsService.getSubDepartmentBySubDepartmentID(this.Department).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        alert(data.responseMessage);
 
-        this.getAllContactDetails();
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepartmentList = {} as SubDepartmentListForName;
+          const current = data.dateSet[i];
+          console.log("DepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListh", current);
+          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.departmentID = current.departmentID;
+          tempSubDepartmentList.dateUpdated = current.dateUpdated;
+          tempSubDepartmentList.dateCreated = current.dateCreated;
+          this.SubDepartmentListForName.push(tempSubDepartmentList);
 
+        }
+
+        this.zoneService.getZoneByZoneID(Number(this.selectedZone)).subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+
+            for (let i = 0; i < data.dateSet.length; i++) {
+              const tempZoneList = {} as ZoneDropdownForName;
+              const current = data.dateSet[i];
+              tempZoneList.zoneID = current.zoneID;
+              tempZoneList.zoneName = current.zoneName;
+              console.log("THISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONES", current);
+              this.ZoneDropdownForName.push(tempZoneList);
+
+            }
+            if (!this.isValidPhoneNumber(this.number)) {
+              alert("Please enter a valid phone number.");
+              return; // Stop further execution
+            }
+            if (!this.isValidEmail(this.email)) {
+              alert("Please enter a valid email address.");
+              return; // Stop further execution
+            }
+
+            this.contactDetails.addUpdateContactDetail(0, this.name, this.number, this.email, this.Department, this.SubDepartmentListForName[0].subDepartmentName, Number(this.selectedZone), this.ZoneDropdownForName[0].zoneName, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+                alert(data.responseMessage);
+                this.SubDepartmentListForName = [];
+                this.ZoneDropdownForName = [];
+                
+                this.getAllContactDetails();
+
+              }
+              else {
+                //alert("Invalid Email or Password");
+                alert(data.responseMessage);
+              }
+              console.log("reponse", data);
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+
+          }
+          else {
+            alert(data.responseMessage);
+          }
+          console.log("reponse", data);
+
+
+        }, error => {
+          console.log("Error: ", error);
+        })
       }
       else {
         //alert("Invalid Email or Password");
@@ -101,6 +202,9 @@ export class ContactDetailsComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
+
+
+   
   }
 
   isValidPhoneNumber(phoneNumber: string): boolean {
@@ -138,6 +242,90 @@ export class ContactDetailsComponent implements OnInit {
         console.log("Error: ", error);
       })
     }
+  }
+
+  /*getAllDepartmentsforZonesDropDown*/
+  getAllSubDepartments() {
+    this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
+    this.subDepartmentsService.getSubDepartmentsList().subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepartmentList = {} as SubDepartmentList;
+          const current = data.dateSet[i];
+          console.log("DepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListhDepartmentListh", current);
+          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.departmentID = current.departmentID;
+          tempSubDepartmentList.dateUpdated = current.dateUpdated;
+          tempSubDepartmentList.dateCreated = current.dateCreated;
+          this.SubDepartmentList.push(tempSubDepartmentList);
+
+        }
+
+        //this.DepartmentList = data.dateSet;
+
+
+        console.log("DepartmentListh", this.SubDepartmentList);
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  onSelectToPopulateZone(event: any) {
+    this.selectedSubDep = event.target.value;
+
+    if (event.target.value > 0) {
+
+      this.ZoneDropdown.splice(0, this.ZoneDropdown.length);
+      this.zoneService.getZonesBySubDepartmentsID(event.target.value).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempZoneList = {} as ZoneDropdown;
+            const current = data.dateSet[i];
+            tempZoneList.zoneID = current.zoneID;
+            tempZoneList.zoneName = current.zoneName;
+            console.log("THISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONESTHISTHEZONES", current);
+            this.ZoneDropdown.push(tempZoneList);
+            const selectedSubDepartment = this.SubDepartmentList.find(subDept => subDept.subDepartmentID === this.Department);
+            this.selectedSubDepartmentName = selectedSubDepartment ? selectedSubDepartment.subDepartmentName : '';
+
+            // Find the selected zone
+            const selectedZone = this.ZoneDropdown.find(zone => zone.zoneID === this.selectedZone);
+            this.selectedZoneName = selectedZone ? selectedZone.zoneName : '';
+          }
+
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+    }
+
+    else {
+
+
+    }
+
+
+
   }
   
 
