@@ -54,7 +54,7 @@ export class FileUploadComponent implements OnInit {
     debugger;
     if (fileNameParts.length > 2 || this.fileExtention === ".webp") {
         if (this.fileExtention === ".webp") {
-          alert("You cannot upload .webp files!");
+          alert("You cannot upload .webp files!"); 
           debugger;
         } else {
           alert("Invalid file name.");

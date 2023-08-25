@@ -6,7 +6,7 @@ namespace WayleaveManagementSystem.IServices
 {
     public interface ICommentService
     {
-        Task<Comments> AddUpdateComment(int? commentID,int? applicationID,int? subDepartmentForCommentID, int? subDepartmentID, string? subDepartmentName, string commentName, string? commentStatus, string? creadtedByID, int? isClarifyCommentID, string? isApplicantReplay,string? UserName);
+        Task<Comments> AddUpdateComment(int? commentID,int? applicationID,int? subDepartmentForCommentID, int? subDepartmentID, string? subDepartmentName, string commentName, string? commentStatus, string? creadtedByID, int? isClarifyCommentID, string? isApplicantReplay,string? UserName, string? zoneName);
       
         public Task<bool> DeleteComment(int commentID);
 

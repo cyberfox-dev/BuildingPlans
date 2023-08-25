@@ -10,8 +10,13 @@ using WayleaveManagementSystem.Data.Entities;
 using WayleaveManagementSystem.IServices;
 using WayleaveManagementSystem.Models;
 using WayleaveManagementSystem.Service;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Logging.AddConsole(); // Logs to console
+builder.Logging.AddDebug();
 
 
 // Add services to the container.

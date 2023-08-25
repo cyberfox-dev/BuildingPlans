@@ -2057,9 +2057,12 @@ export class ViewProjectInfoComponent implements OnInit {
           
           const current = data.dateSet[i];
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
-          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
+
+      
+
+          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName + " : "+current.zoneName;
           tempSubDepCommentStatusList.ApplicationID = current.applicationID;
-          tempSubDepCommentStatusList.Comment = current.comment;;
+          tempSubDepCommentStatusList.Comment = current.comment;
           tempSubDepCommentStatusList.DateCreated = current.dateCreated;
           tempSubDepCommentStatusList.CommentStatus = current.commentStatus;
           tempSubDepCommentStatusList.UserName = current.userName;
@@ -2511,15 +2514,16 @@ export class ViewProjectInfoComponent implements OnInit {
     subDepCommentsMap.forEach((comments, subDepName) => {
       doc.setFontSize(12);
       doc.setFont('helvetica', 'bold'); // Set the font to Helvetica bold
-      doc.text(subDepName + ': \n', 10, yOffset, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
+      doc.text(subDepName + ' \n', 10, yOffset, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal'); // Set the font to Helvetica normal
 
       // Combine and join the comments for the same sub-department name
-      const combinedComments = comments.join('\n');
+      const combinedComments = comments.join('. ');
 
       doc.text(combinedComments, 10, yOffset += 10, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
       doc.setLineWidth(0.2);
+      yOffset += 5;
       doc.line(10, yOffset + 10, 200, yOffset + 10);
       yOffset += 20;
     });
