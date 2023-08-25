@@ -25,7 +25,7 @@ import FormTemplate from "@arcgis/core/form/FormTemplate";
 import * as esri from 'esri-leaflet';
 import Layer from "@arcgis/core/layers/Layer"
 import Draw from '@arcgis/core/views/draw/Draw';
-import { Extent, Polygon } from '@arcgis/core/geometry';
+import { Extent, Point, Polygon } from '@arcgis/core/geometry';
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import * as Geometry from '@arcgis/core/geometry/Geometry';
 import FeatureForm from '@arcgis/core/widgets/FeatureForm';
@@ -45,6 +45,7 @@ import { ZoneForCommentService } from "src/app/service/ZoneForComment/zone-for-c
 import Fullscreen from '@arcgis/core/widgets/Fullscreen';
 import LabelClass from '@arcgis/core/layers/support/LabelClass';
 import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
+import Popup from '@arcgis/core/widgets/Popup';
 //import * as FeatureLayerView from 'esri/views/layers/FeatureLayerView';
 
 /*import { Editor, EditorViewModel, FeatureFormViewModel } from "@arcgis/core/widgets/Editor";*/
@@ -161,6 +162,8 @@ export class ProjectDetailsMapComponent implements OnInit {
   //@ViewChild('peopelTableDiv', { static: true }) private peopleTableDivEl!: ElementRef;
   //@ViewChild('languageTableDiv', { static: true }) private languageTableDivEl!: ElementRef;
   @ViewChild('searchDiv', { static: true }) private searchDivEl!: ElementRef;
+  @ViewChild('coordinateText', { static: true }) public coordinateTextEl!: ElementRef;
+  @ViewChild('coordinateSearchBtn', { static: true }) private coordinateSearchBtnEl!: ElementRef;
   private helper: any;
   public view!: MapView;
   public slideToggleScript: string = 'Show Feature Table';
@@ -344,6 +347,57 @@ export class ProjectDetailsMapComponent implements OnInit {
     //  zoom: this.defaultZoom,
     //  center: this.position
     //});
+
+    // Create a GraphicsLayer to add the search result point
+    const graphicsLayer = new GraphicsLayer();
+    map.add(graphicsLayer);
+
+    // Create a Popup Instance
+    const customPopup = new Popup({
+      content: "Latitude: {latitude}<br>Longitude: {longitude}",
+/*      visible: true, // Set to true when showing,*/
+      title: "Coordinate Search Result",
+    });
+    //view.ui.add(customPopup); // Add popup to the view's UI
+
+    // Handle the custom search button click
+    const coordinateSearchBtn = this.coordinateSearchBtnEl.nativeElement;
+    const element = this.coordinateTextEl.nativeElement;
+
+    coordinateSearchBtn.addEventListener("click", function () {
+      const coordinateText = element.value;
+      const [x, y] = coordinateText.split(",");
+
+      if (x && y) {
+        const point = new Point({
+          longitude: parseFloat(x),
+          latitude: parseFloat(y),
+          spatialReference: view.spatialReference
+        });
+
+        graphicsLayer.removeAll();
+        graphicsLayer.add(new Graphic({
+          geometry: point,
+//          symbol: {
+///*            type: "simple-marker",*/
+//            color: [0, 255, 0],
+///*            size: "12px",*/
+//          }
+        }));
+
+        //customPopup.viewModel.content = {
+        //  latitude: parseFloat(y),
+        //  longitude: parseFloat(x)
+        //};
+
+        customPopup.open({
+          location: point, // Display the popup at the searched point
+          shouldFocus:true
+        });
+
+        view.goTo(point); // Center the view on the searched point
+      }
+    });
 
 
 
@@ -778,6 +832,13 @@ export class ProjectDetailsMapComponent implements OnInit {
       editor.viewModel.watch("state", (event) => {
         console.log(event);
       });
+
+      //view.whenLayerView(zones).then((layerView) => {
+      //  layerView.on('layerview-create', (event) => {
+      //    // The layer view has been created, you can now execute queries
+      //    console.log('Layer view created:', event.layerView);
+      //  });
+      //});
 
       featureLayer.on("edits", async (event) => {
         //Clears the distribution list. This should be moved to when the application is successfully captured and on "Create new wayleave".
