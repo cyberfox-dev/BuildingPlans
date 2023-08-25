@@ -2288,7 +2288,6 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   saveAndUploadPDF(doc) {
-    doc.save("invoice.pdf");
     const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
     const file = new File([pdfData], 'Wayleave Application Fee Invoice.pdf', { type: 'application/pdf' });
 
@@ -2299,6 +2298,33 @@ export class NewWayleaveComponent implements OnInit {
     this.shared.pushFileForTempFileUpload(file, "Wayleave Application Fee Invoice" + ".pdf");
     this.save();
   }
+
+
+  save() {
+    const filesForUpload = this.shared.pullFilesForUpload();
+    for (let i = 0; i < filesForUpload.length; i++) {
+      const formData = new FormData();
+      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "_appID" + this.applicationID;
+      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+        .subscribe({
+          next: (event) => {
+            if (event.type === HttpEventType.UploadProgress && event.total) {
+              this.progress = Math.round(100 * event.loaded / event.total);
+            } else if (event.type === HttpEventType.Response) {
+              this.message = 'Upload success.';
+              this.uploadFinishedF(event.body);
+            }
+          },
+          error: (err: HttpErrorResponse) => console.log(err)
+        });
+    }
+
+  }
+
+
   saveAndUploadPDFSplit(doc) {
     this.shared.FileDocument = [];
     doc.save("invoiceSplit.pdf");
@@ -2436,39 +2462,7 @@ export class NewWayleaveComponent implements OnInit {
   }
 
 
-  save() {
-
-
-
-
-    const filesForUpload = this.shared.pullFilesForUpload();
-    for (var i = 0; i < filesForUpload.length; i++) {
-      const formData = new FormData();
-      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
-      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "_appID" + this.applicationID;
-      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
-
-
-
-
-      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
-        .subscribe({
-          next: (event) => {
-
-
-            if (event.type === HttpEventType.UploadProgress && event.total)
-              this.progress = Math.round(100 * event.loaded / event.total);
-            else if (event.type === HttpEventType.Response) {
-              this.message = 'Upload success.';
-              this.uploadFinishedF(event.body);
-
-            }
-          },
-          error: (err: HttpErrorResponse) => console.log(err)
-        });
-    }
-
-  }
+ 
 
   uploadFinishedF = (event: any) => {
     
