@@ -445,6 +445,7 @@ export class ActionCenterComponent implements OnInit {
     this.getUserRoles();
     this.getServicesByDepID();
     this.getUsersByRoleName("Final Approver");
+    this.getZoneForCurrentUser();
   }
 
 
@@ -1012,7 +1013,7 @@ export class ActionCenterComponent implements OnInit {
 
               alert(data.responseMessage);
               //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Final Approved", this.CurrentUser.appUserId, null,null,this.loggedInUserName).subscribe((data: any) => {
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Final Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
                   debugger;
@@ -1056,7 +1057,7 @@ export class ActionCenterComponent implements OnInit {
 
               alert(data.responseMessage);
               //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "FinalReject", this.CurrentUser.appUserId, null, this.loggedInUserName).subscribe((data: any) => {
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "FinalReject", this.CurrentUser.appUserId, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
            
@@ -2028,7 +2029,7 @@ export class ActionCenterComponent implements OnInit {
                   alert(data.responseMessage);
 
                   //commentsService
-                  this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
+                  this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
                     if (data.responseCode == 1) {
 
@@ -2111,7 +2112,7 @@ export class ActionCenterComponent implements OnInit {
 
                 alert(data.responseMessage);
                 //commentsService
-                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
 
@@ -2158,7 +2159,7 @@ export class ActionCenterComponent implements OnInit {
 
               alert(data.responseMessage);
               //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Rejected", this.CurrentUser.appUserId, null,null, this.loggedInUserName).subscribe((data: any) => {
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Rejected", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
 
@@ -2329,7 +2330,7 @@ export class ActionCenterComponent implements OnInit {
                 alert(data.responseMessage);
 
                 //commentsService
-                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId, null,null, this.loggedInUserName).subscribe((data: any) => {
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
                     
@@ -2412,7 +2413,7 @@ export class ActionCenterComponent implements OnInit {
                 
                 alert(data.responseMessage);
                 //commentsService
-                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved", this.CurrentUser.appUserId, null,null, this.loggedInUserName).subscribe((data: any) => {
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
 
@@ -3593,7 +3594,7 @@ getAllCommentsByUserID() {
 
         alert(data.responseMessage);
         //commentsService
-        this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, this.loggedInUserSubDepartmentName, this.leaveAComment, "Final Approved", this.CurrentUser.appUserId, null, this.loggedInUserName).subscribe((data: any) => {
+        this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, this.loggedInUserSubDepartmentName, this.leaveAComment, "Final Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
           if (data.responseCode == 1) {
             
@@ -3646,6 +3647,35 @@ getAllCommentsByUserID() {
       console.log("Error: ", error);
     })
   }
+
+  CurrentUserZoneName = '';
+
+  getZoneForCurrentUser() {
+    this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        debugger;
+       
+          let current = data.dateSet[0];
+        alert(current.zoneID + " " + current.zoneName);
+        this.CurrentUserZoneName = current.zoneName;
+    
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponse", data);
+
+
+      // this.CanCommentFinalApprover();
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+    
+  }
+
 
 
 }
