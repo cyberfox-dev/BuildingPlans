@@ -1200,8 +1200,9 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   onFileUpload(event: any) {
-    
+
     this.successfulUploads++;
+    console.log("this.successfulUploads;this.successfulUploads",this.successfulUploads);
   }
 
   UploadDocuments(applicationData: any): void {
@@ -1262,6 +1263,7 @@ export class NewWayleaveComponent implements OnInit {
 
     this.MandatoryDocumentsLinkedStagesList.next(updatedList);
     this.totalDocs = updatedList.length;
+    console.log("this.totalDocs;this.totalDocs", this.totalDocs);
   }
 
 

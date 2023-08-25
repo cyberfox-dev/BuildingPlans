@@ -1139,7 +1139,13 @@ export class ActionCenterComponent implements OnInit {
               debugger;
               if (this.UserZoneList[j].id == this.CurrentUser.appUserId) {
                 debugger;
-                this.AssignUserForComment = true; debugger;
+                this.AssignUserForComment = true;
+                if (this.ACHeader == "You can comment!" || this.canCommentFinalApprover === true) {
+
+                } else {
+                  this.ACHeader = "You can assign reviewer for comment!";
+                }
+              
                 this.getUsersByRoleName("Reviewer");
 
                 break; // Exit the loop once a match is found
@@ -1255,7 +1261,7 @@ export class ActionCenterComponent implements OnInit {
     }),
     catchError(error => {
       console.error("Error fetching Zone ID:", error);
-      this.ACHeader = "You Don't have anything to do on this project!";
+  /*    this.ACHeader = "You Don't have anything to do on this project!";*/
       this.canComment = false;
       return of(0);
     })
@@ -1280,13 +1286,15 @@ export class ActionCenterComponent implements OnInit {
           let current = data.dateSet[i];
           if (current.userAssaignedToComment == this.CurrentUser.appUserId) { /*&& current.userAssaignedToComment != this.userID*/
             this.canComment = true;
-            this.ACHeader = "You can interact :D";
-        
+          
+            //if (this.canComment == true && this.canCommentFinalApprover == false) {
+            //  this.ACHeader = "You can comment!";
+            //}
             return;
           }
           else {
-            this.ACHeader = "You don't have anything to do on this application!";
-            this.canComment = false;
+            //this.ACHeader = "You can't comment!";
+            //this.canComment = false;
           } 
         }
       }
@@ -1347,6 +1355,10 @@ export class ActionCenterComponent implements OnInit {
 
         
         this.canCommentSeniorReviewer = foundMatch;
+       
+  /*        this.ACHeader = "You can comment!";*/
+   
+       
       } else {
         alert(data.responseMessage);
       }
@@ -1402,6 +1414,10 @@ export class ActionCenterComponent implements OnInit {
         
         
         this.canCommentFinalApprover = foundMatch;
+        //if (this.ACHeader != "You can comment!") {
+        //  this.ACHeader = "You can final approve!";
+        //}
+        
       } else {
         alert(data.responseMessage);
       }
