@@ -2153,7 +2153,7 @@ export class NewWayleaveComponent implements OnInit {
 
       // Navigate to home page
       this.router.navigate(["/home"]);
-      alert("Your invoice has been created. It will now download to your device. Please ensure that your brower is not blocking popups for this site. You may also find the invoice in the 'Financial' tab within your application");
+      alert("Your invoice has been created. You may find the invoice in the 'Financial' tab within your application");
     }
   }
 

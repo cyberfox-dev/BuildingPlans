@@ -3083,30 +3083,15 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.addImage(footer, 'png', 7, 255, 205, 45);
 
     // Save PDF document
-    doc.save("Approval Pack");
+ 
     const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
     const file = new File([pdfData], 'approval_pack.pdf', { type: 'application/pdf' });
 
-
-    // Debugging: Print the contents of SubDepCommentsForSpecialConditions array
-    console.log(this.SubDepCommentsForSpecialConditions);
-
-    // Debugging: Check if the PDF document is being created
-    console.log(doc);
-
-    // Debugging: Print the subDepCommentsMap to verify its contents
-    console.log(subDepCommentsMap);
-
-    // Debugging: Print the yOffset value to verify its progression
-    console.log(yOffset);
-
-    // Prepare the form data
     const formData = new FormData();
     formData.append('file', file);
 
     this.sharedService.pushFileForTempFileUpload(file, "Approval Pack" + ".pdf");
     this.save();
-    alert("Your Approval Pack Has Been Saved To The Documents Tab");
   }
 
 
@@ -3116,30 +3101,21 @@ export class ViewProjectInfoComponent implements OnInit {
   private readonly apiUrl: string = this.sharedService.getApiUrl();
   save() {
 
-
-
-
     const filesForUpload = this.sharedService.pullFilesForUpload();
-    for (var i = 0; i < filesForUpload.length; i++) {
+    for (let i = 0; i < filesForUpload.length; i++) {
       const formData = new FormData();
       let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
-      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.ApplicationID;
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "_appID" + this.ApplicationID;
       formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
-
-    
-
 
       this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
         .subscribe({
           next: (event) => {
-
-
-            if (event.type === HttpEventType.UploadProgress && event.total)
+            if (event.type === HttpEventType.UploadProgress && event.total) {
               this.progress = Math.round(100 * event.loaded / event.total);
-            else if (event.type === HttpEventType.Response) {
+            } else if (event.type === HttpEventType.Response) {
               this.message = 'Upload success.';
               this.uploadFinished(event.body);
-
             }
           },
           error: (err: HttpErrorResponse) => console.log(err)
@@ -3150,7 +3126,6 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   uploadFinished = (event: any) => {
-    ;
     this.response = event;
     console.log("this.response", this.response);
     console.log("this.response?.dbPath", this.response?.dbPath);
