@@ -1,4 +1,41 @@
 <div class="container-fluid" style="display: grid; grid-template-columns: 1fr auto auto;">
+
+  <!-- Display File Name -->
+  <span *ngIf="fileName" style="grid-column: 1;" class="fileName">{{ fileName }}</span>
+
+  <!-- Drag and Drop Section -->
+  <div class="drop-section" [ngClass]="{'drag-over': isActiveDropArea}"
+       (dragover)="dragOver($event)"
+       (dragenter)="dragEnter($event)"
+       (dragleave)="dragLeave($event)"
+       (drop)="drop($event)"
+       *ngIf="!fileName"
+       style="grid-column: 1;">
+    <div class="icon-area" *ngIf="isActiveDropArea">
+      <mat-icon>cloud_upload</mat-icon>
+    </div>
+    <div class="text-area">
+      <span *ngIf="!isActiveDropArea">Click or drag file here to upload</span>
+      <span *ngIf="isActiveDropArea">Release to upload file</span>
+    </div>
+  </div>
+
+  <!-- Input File Element -->
+  <input type="file" #file style="display: none;" (change)="uploadFile(file.files)" [value]="''">
+
+  <!-- Upload Button -->
+  <button *ngIf="!fileName" mat-raised-button color="btn" matTooltip="Upload File" matTooltipPosition="above"
+          type="button" class="btn btn-info" style="grid-column: 2;" (click)="file.click()">
+    <i class="fa fa-upload" style="font-size: 1em;"></i>
+  </button>
+
+  <!-- Delete Button -->
+  <button *ngIf="fileName" mat-icon-button color="warn" style="grid-column: 3;" (click)="onDeleteFile()">
+    <mat-icon>delete</mat-icon>
+  </button>
+</div>
+
+<!--<div class="container-fluid" style="display: grid; grid-template-columns: 1fr auto auto;">
   <span *ngIf="fileName" style="grid-column: 1;">{{ fileName }}</span>
   <input type="file" #file style="display: none;" (change)="uploadFile(file.files)" [value]="''">
   <button *ngIf="!fileName" mat-raised-button color="btn" matTooltip="Upload File" matTooltipPosition="above"
@@ -8,13 +45,7 @@
   <button *ngIf="fileName" mat-icon-button color="warn" style="grid-column: 3;" (click)="onDeleteFile()">
     <mat-icon>delete</mat-icon>
   </button>
-</div>
-
-
-
-
-
-
+</div>-->
 <!--<div class="row" style="margin-bottom:15px;">
   <div class="container-fluid">-->
 <!--<span class="upload" *ngIf="progress > 0">
