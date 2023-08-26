@@ -456,7 +456,7 @@
 
       <div class="cont">
         <button mat-raised-button color="primary" matStepperPrevious>Back</button>
-        <button mat-raised-button color="primary" matStepperNext [disabled]="shared.totalAddedFeatures<1" (click)="CheckTOES()">Next</button>
+        <button mat-raised-button color="primary" matStepperNext  [disabled]="shared.totalAddedFeatures<1" (click)="CheckTOES()">Next</button>
       </div>
     </mat-step>
 
@@ -476,10 +476,10 @@
           <div>
             <mat-toolbar>
               <!-- Display files names -->
-              <input matInput  readonly name="name" /> <!--[(ngModel)]="fileAttrs[i]"-->
+              <input matInput  readonly name="name" class="textFuckingBox" /> <!--[(ngModel)]="fileAttrs[i]"-->
 
               <!-- app-file-upload Component -->
-              <div class="row" style="margin-bottom:15px;">
+
                 <div class="container-fluid">
                   <app-file-upload [ApplicationID]="applicationID"
                                    [UploadFor]="manDoc.mandatoryDocumentName"
@@ -488,7 +488,7 @@
                                    (onUploadSuccess)="onFileUpload($event)">
                   </app-file-upload>
                 </div>
-              </div>
+          
             </mat-toolbar>
           </div>
         </mat-form-field>

@@ -8,7 +8,7 @@
 .btn {
   background-color: #005870;
   color: white;
-  top: 19px;
+  top: 26px;
   height: 64px;
   margin-left: 13px;
 }
@@ -42,7 +42,9 @@
   text-align: center;
   transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
   cursor: pointer;
-  margin-top: 19px;
+  margin-top: 25px;
+  margin-bottom: 10px;
+  height: 65px;
 }
 
 .drag-over {
@@ -61,8 +63,7 @@
 }
 
 mat-icon {
-  font-size: 48px;
-  color: #00bfff;
+  color: #ff1e1e;
 }
 
 .drop-section.ng-hide {

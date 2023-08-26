@@ -561,6 +561,14 @@ mat-button-toggle {
   border: 1px solid #005870;
 }
 
+.textFuckingBox{
+    display:none;
+}
+.mat-list-item {
+
+  position: absolute;
+  margin-bottom: 10px;
+}
 /*check buttons for water and sanitation type of excavtion*/
 
 

@@ -2307,13 +2307,6 @@ export class ViewProjectInfoComponent implements OnInit {
       ]
     ];
 
-    const headers1 = [
-      [
-        'Department',
-        'Comment',
-      ]
-    ];
-
 
     const Page3headers = [
       [
@@ -2326,7 +2319,7 @@ export class ViewProjectInfoComponent implements OnInit {
     ];
 
     const data: any[] = [];
-    const sig = new Image();
+
     const img = new Image();
     const footer = new Image();
     const page1 = new Image();
@@ -2374,7 +2367,7 @@ export class ViewProjectInfoComponent implements OnInit {
     const page43 = new Image();
     const page44 = new Image();
     const page45 = new Image();
-    const table = new Image();
+
     img.src = 'assets/cctlogoblack.png';
     footer.src = 'assets/Packs/footer.PNG';
     page1.src = 'assets/Packs/page1.PNG';
@@ -2422,8 +2415,7 @@ export class ViewProjectInfoComponent implements OnInit {
     page43.src = 'assets/Packs/page43.PNG';
     page44.src = 'assets/Packs/page44.PNG';
     page45.src = 'assets/Packs/page45.PNG';
-    sig.src = 'assets/signature-stamp-signature-round-isolated-sign-signature-label-set-2C38RT2.jpg';
-    table.src = 'assets/table.PNG'
+
     // Add logo to PDF document
 
     // Add logo to PDF document
@@ -3146,7 +3138,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
             this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
             this.modalService.dismissAll();
-            alert("Application moved to PTW");
+            alert("Application moved to PTW. You may now apply for permit.");
             this.router.navigate(["/home"]);
 
           }
