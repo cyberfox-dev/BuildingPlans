@@ -3673,7 +3673,7 @@ getAllCommentsByUserID() {
         debugger;
        
           let current = data.dateSet[0];
-        alert(current.zoneID + " " + current.zoneName);
+
         this.CurrentUserZoneName = current.zoneName;
     
       }
