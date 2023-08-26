@@ -2044,7 +2044,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
-  async getAllCommentsForSpecialConditions() {
+  getAllCommentsForSpecialConditions() {
     debugger;
     console.log("This is all the special comments from the subdepartments", this.ApplicationID);
     this.commentsService.getCommentsForSpecialConditions(this.ApplicationID).subscribe((data: any) => {
@@ -2196,7 +2196,7 @@ export class ViewProjectInfoComponent implements OnInit {
         }
 
         this.getAllSubDepFroConditionalApprove();
-        this.ApprovalDoqnload = true;
+
         console.log("THIS IS THE CUB DEP THAT HAS Final APPROVED THE APPLICATION ", this.SubDepFinalApproveList);
       }
 
@@ -3137,8 +3137,26 @@ export class ViewProjectInfoComponent implements OnInit {
     this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, "System Generated Pack", "System Generated Pack").subscribe((data: any) => {
 /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
       if (data.responseCode == 1) {
-        this.LoadingApproval = true;
-        this.MoveToPermitStage();
+
+        console.log(this.StagesList);
+        debugger;
+        this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, this.StagesList[5].StageName, this.StagesList[5].StageOrderNumber, "PTW Pending").subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+
+            this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+            this.modalService.dismissAll();
+            alert("Application moved to PTW");
+            this.router.navigate(["/home"]);
+
+          }
+          else {
+            alert(data.responseMessage);
+          }
+          console.log("responseAddapplication", data);
+        }, error => {
+          console.log("Error", error);
+        })
 
       }
 
@@ -3873,12 +3891,12 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
 
-  LoadingApproval= false;
+
   CheckForApprovalPackDownload() {
     debugger;
 
     if (this.CurrentUser.appUserId == this.applicationDataForView[0].CreatedById && this.generateApproval == true) {
-      this.LoadingApproval = true;
+ 
 /*      this.getContactDetails();*/
 
     }
