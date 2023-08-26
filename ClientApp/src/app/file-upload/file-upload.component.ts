@@ -5,6 +5,7 @@ import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-u
 import { FinancialService } from 'src/app/service/Financial/financial.service';
 
 
+
 @Component({
   selector: 'app-file-upload',
   templateUrl: './file-upload.component.html',
@@ -17,6 +18,8 @@ export class FileUploadComponent implements OnInit {
   @Output() public onUploadFinished = new EventEmitter();
   @Output() public passFileName = new EventEmitter<{ uploadFor: string; fileName: string }>();
   @Output() onUploadSuccess: EventEmitter<any> = new EventEmitter();
+  isDragging: boolean = false;
+  isActiveDropArea: boolean = false;
 
   private readonly apiUrl: string = this.shared.getApiUrl();
   progress: number = 0;
@@ -42,13 +45,48 @@ export class FileUploadComponent implements OnInit {
     }
   }
 
+  // New drag and drop handlers
+  dragOver(event: DragEvent): void {
+    event.preventDefault();
+    this.isActiveDropArea = true;
+  }
+
+  dragEnter(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragging = true;
+  }
+
+  dragLeave(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragging = false;
+    this.isActiveDropArea = false;
+  }
+
+  drop(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragging = false;
+    this.isActiveDropArea = false;
+    if (event.dataTransfer && event.dataTransfer.files.length > 0) {
+      this.uploadFile(event.dataTransfer.files);
+    }
+  }
+
   uploadFile(files: any) {
     debugger;
-    if (files.length === 0) {
+    if (files && files.length === 0) {
       return;
     }
-    debugger;
-    let fileToUpload = <File>files[0];
+
+    if (files && files.length === 0) {
+      return;
+    }
+
+    let fileToUpload = files ? <File>files[0] : null;
+
+    if (fileToUpload === null) {
+      return;
+    }
+
     const fileNameParts = fileToUpload.name.split('.');
     this.fileExtention = fileNameParts.length > 1 ? `.${fileNameParts[fileNameParts.length - 1].toLowerCase()}` : "";
     debugger;
