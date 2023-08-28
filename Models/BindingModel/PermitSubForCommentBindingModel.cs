@@ -15,8 +15,10 @@
 
         public string? PermitCommentStatus { get; set; }
         public string? CreatedById { get; set; }
-       
 
+        public int? ZoneID { get; set; }
+
+        public string? ZoneName { get; set; }
 
     }
 }

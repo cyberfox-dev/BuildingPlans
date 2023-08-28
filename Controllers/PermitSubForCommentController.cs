@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Data;
 using WayleaveManagementSystem.Data.Entities;
+using WayleaveManagementSystem.DTO;
 using WayleaveManagementSystem.Models;
 using WayleaveManagementSystem.Models.BindingModel;
 using WayleaveManagementSystem.Models.DTO;
@@ -44,8 +45,6 @@ namespace WayleaveManagementSystem.Controllers
                     {
                         tempPermitSubForComment = new PermitSubForComment()
                         {
-
-                           // PermitSubForCommentID = model.PermitSubForCommentID,
                             ApplicationID = model.ApplicationID,
                             SubDepartmentID = model.SubDepartmentID,
                             SubDepartmentName = model.SubDepartmentName,
@@ -56,7 +55,9 @@ namespace WayleaveManagementSystem.Controllers
                             CreatedById = model.CreatedById,
                             PermitComment = model.PermitComment,
                             PermitCommentStatus = model.PermitCommentStatus,
-           
+                            ZoneID = model.ZoneID,
+                            ZoneName = model.ZoneName,
+
                         };
 
                         await _context.PermitSubForComment.AddAsync(tempPermitSubForComment);
@@ -90,10 +91,18 @@ namespace WayleaveManagementSystem.Controllers
                         if (model.PermitComment != null)
                         {
                             tempPermitSubForComment.PermitComment = model.PermitComment;
-                        } 
+                        }
                         if (model.PermitCommentStatus != null)
                         {
                             tempPermitSubForComment.PermitCommentStatus = model.PermitCommentStatus;
+                        }
+                        if (model.ZoneID != null)
+                        {
+                            tempPermitSubForComment.ZoneID = model.ZoneID;
+                        }
+                        if (model.ZoneName != null)
+                        {
+                            tempPermitSubForComment.ZoneName = model.ZoneName;
                         }
 
                         _context.Update(tempPermitSubForComment);
@@ -163,7 +172,9 @@ namespace WayleaveManagementSystem.Controllers
                     CreatedById = permitSubForComment.CreatedById,
                     PermitComment = permitSubForComment.PermitComment,
                     PermitCommentStatus = permitSubForComment.PermitCommentStatus,
-                    
+                    ZoneID = permitSubForComment.ZoneID,
+                    ZoneName = permitSubForComment.ZoneName,
+
 
 
                 }
@@ -195,7 +206,7 @@ namespace WayleaveManagementSystem.Controllers
             {
                 var result = await (
                 from permitSubForComment in _context.PermitSubForComment
-                where permitSubForComment.ApplicationID == applicationID && permitSubForComment.isActive == true 
+                where permitSubForComment.ApplicationID == applicationID && permitSubForComment.isActive == true
                 select new PermitSubForCommentDTO()
                 {
                     PermitSubForCommentID = permitSubForComment.PermitSubForCommentID,
@@ -206,6 +217,8 @@ namespace WayleaveManagementSystem.Controllers
                     CreatedById = permitSubForComment.CreatedById,
                     PermitComment = permitSubForComment.PermitComment,
                     PermitCommentStatus = permitSubForComment.PermitCommentStatus,
+                    ZoneID = permitSubForComment.ZoneID,
+                    ZoneName = permitSubForComment.ZoneName,
 
 
                 }
@@ -230,7 +243,38 @@ namespace WayleaveManagementSystem.Controllers
         {
             try
             {
-                var result = await (
+                if (model.UserAssaignedToComment != null)
+                {
+                    var zoneIds = await _context.ZoneLinkTable
+                                    .Where(z => z.SubDepartmentID == model.SubDepartmentID
+                                                && z.AssignedUserID == model.UserAssaignedToComment
+                                                && z.isActive)
+                                    .Select(z => z.ZoneID)
+                                    .ToListAsync();
+
+                    var result = await _context.PermitSubForComment
+              .Where(s => s.ApplicationID == model.ApplicationID
+                                              && s.isActive
+                                              && s.SubDepartmentID == model.SubDepartmentID
+                                              && zoneIds.Contains(s.ZoneID)) // Use Contains to filter by ZoneIDs
+                                  .Select(s => new PermitSubForCommentDTO()
+                                  {
+                                      PermitSubForCommentID = s.PermitSubForCommentID,
+                                      ApplicationID = s.ApplicationID,
+                                      SubDepartmentID = s.SubDepartmentID,
+                                      SubDepartmentName = s.SubDepartmentName,
+                                      UserAssaignedToComment = s.UserAssaignedToComment,
+                                      PermitCommentStatus = s.PermitCommentStatus,
+                                      CreatedById = s.CreatedById,
+                                      ZoneID = s.ZoneID,
+                                      ZoneName = s.ZoneName,
+                                  })
+                                  .ToListAsync();
+
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All PermitSubForComment By ID", result));
+                }
+                else { 
+                    var result = await (
                 from permitSubForComment in _context.PermitSubForComment
                 where permitSubForComment.ApplicationID == model.ApplicationID && permitSubForComment.isActive == true && permitSubForComment.SubDepartmentID == model.SubDepartmentID
                 select new PermitSubForCommentDTO()
@@ -243,14 +287,16 @@ namespace WayleaveManagementSystem.Controllers
                     CreatedById = permitSubForComment.CreatedById,
                     PermitComment = permitSubForComment.PermitComment,
                     PermitCommentStatus = permitSubForComment.PermitCommentStatus,
+                    ZoneID = permitSubForComment.ZoneID,
+                    ZoneName = permitSubForComment.ZoneName,
 
 
                 }
                 ).ToListAsync();
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All PermitSubForComment By ID", result));
+                }
 
-
-
-                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All PermitSubForComment By ID", result));
+               
 
             }
             catch (Exception ex)
@@ -265,5 +311,5 @@ namespace WayleaveManagementSystem.Controllers
 
     }
 
- 
+
 }

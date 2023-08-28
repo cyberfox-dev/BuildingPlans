@@ -1,4 +1,4 @@
-<div class="container-fluid" style="display: grid; grid-template-columns: 1fr auto auto;">
+<div class="main">
 
   <!-- Display File Name -->
   <span *ngIf="fileName" style="grid-column: 1;" class="fileName">{{ fileName }}</span>
@@ -25,7 +25,7 @@
 
   <!-- Upload Button -->
   <button *ngIf="!fileName" mat-raised-button color="btn" matTooltip="Upload File" matTooltipPosition="above"
-          type="button" class="btn btn-info" style="grid-column: 2;" (click)="file.click()">
+          type="button" (click)="file.click()">
     <i class="fa fa-upload" style="font-size: 1em;"></i>
   </button>
 

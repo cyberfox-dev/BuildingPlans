@@ -5,18 +5,18 @@
   /* line-height: 36px;*/
  
 }
-.btn {
+.main {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: baseline;
+}
+.mat-btn {
   background-color: #005870;
   color: white;
-  top: 26px;
-  height: 64px;
+  /* top: -2px; */
+  height: 63px;
   margin-left: 13px;
 }
-  .btn:active {
-    background-color: #005870;
-    color: white;
-    top: 13px;
-  }
 
 .droppable-container {
   width: 100%;
@@ -58,9 +58,7 @@
   margin-bottom: 15px;
 }
 
-.text-area {
-  font-size: 18px;
-}
+
 
 mat-icon {
   color: #ff1e1e;

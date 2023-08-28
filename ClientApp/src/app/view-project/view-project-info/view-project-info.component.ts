@@ -1057,7 +1057,7 @@ export class ViewProjectInfoComponent implements OnInit {
       if (data.responseCode == 1) {
         
         for (var i = 0; i < data.dateSet.length; i++) {
-          this.permitService.addUpdatePermitSubForComment(0, this.ApplicationID, data.dateSet[i].subDepartmentID, data.dateSet[i].subDepartmentName, null, null,null ,this.CurrentUser.appUserId).subscribe((data: any) => {
+          this.permitService.addUpdatePermitSubForComment(0, this.ApplicationID, data.dateSet[i].subDepartmentID, data.dateSet[i].subDepartmentName, null, null, null, this.CurrentUser.appUserId, data.dateSet[i].zoneID, data.dateSet[i].zoneName).subscribe((data: any) => {
             
             if (data.responseCode == 1) {
               
