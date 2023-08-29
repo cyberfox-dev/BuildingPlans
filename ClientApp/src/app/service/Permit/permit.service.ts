@@ -13,7 +13,7 @@ export class PermitService {
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
 
-  public addUpdatePermitSubForComment(permitSubForCommentID: number | null, applicationID: number | null, subDepartmentID: number | null, subDepartmentName: string | null, userAssaignedToComment: string | null, permitComment: string | null, permitCommentStatus: string | null, createdByID: string | null) {
+  public addUpdatePermitSubForComment(permitSubForCommentID: number | null, applicationID: number | null, subDepartmentID: number | null, subDepartmentName: string | null, userAssaignedToComment: string | null, permitComment: string | null, permitCommentStatus: string | null, createdByID: string | null, zoneID?: number | null, zoneName?: string | null) {
 
     const body = {
       PermitSubForCommentID: permitSubForCommentID,
@@ -24,6 +24,9 @@ export class PermitService {
       PermitComment: permitComment,
       PermitCommentStatus: permitCommentStatus,
       CreatedById: createdByID,
+      ZoneID: zoneID,
+      ZoneName: zoneName,
+
 
     }
     return this.httpClient.post(this.baseURL + "AddUpdatePermitSubForComment", body);
@@ -40,11 +43,12 @@ export class PermitService {
   }
 
 
-  public getPermitForCommentBySubID(applicationID: number | null, subDepartmentID: number | null) {
+  public getPermitForCommentBySubID(applicationID: number | null, subDepartmentID: number | null, userAssaignedToComment?: string | null) {
 
     const body = {
       ApplicationID: applicationID,
       SubDepartmentID: subDepartmentID,
+      UserAssaignedToComment: userAssaignedToComment,
     }
     return this.httpClient.post(this.baseURL + "GetPermitSubForCommentBySubID", body);
 

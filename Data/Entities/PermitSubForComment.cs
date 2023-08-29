@@ -20,35 +20,9 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public string? PermitCommentStatus { get; set; }
 
+        public int? ZoneID { get; set; }
 
-
-
-        //Waiting
-        //Approved
-        //Rejected
-        //Clarify
-        //Clarified
-        //Refered 
-       // public string? CommentStatus { get; set; }
-
-      //  public bool? isAwaitingClarity { get; set; }
-
-        //public bool? IsRefered { get; set; }
-
-       // public string? ReferedToUserID { get; set; }
-
-
-        //Is Set for final Approval
-       // public bool? FinalApproval { get; set; }
-
-
-
-
-
-
-
-
-
+        public string? ZoneName { get; set; }
 
     }
 }

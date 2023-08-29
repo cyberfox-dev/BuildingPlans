@@ -213,6 +213,14 @@ export class ProjectDetailsMapViewComponent implements OnInit {
 
       map.add(internalLayer);
 
+   /*   Regions*/
+      var zones = new MapImageLayer({
+        url: "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves_Regions/MapServer",
+
+      })
+
+      map.add(zones);
+
       /*      Add layerlist and legend*/
       var layerList = new LayerList({
         view: view

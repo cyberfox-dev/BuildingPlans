@@ -7,6 +7,8 @@ import {PermitService } from  'src/app/service/Permit/permit.service'
 
 //PTC = Permit To Comment
 export interface PTCList {
+  ZoneName: any;
+  ZoneID: any;
   PermitSubForCommentID: number;
   ApplicationID: number;
   SubDepartmentID: number;
@@ -26,7 +28,7 @@ export interface PTCList {
 export class PermitComponentComponent implements OnInit {
 
   PTCList: PTCList[] = [];
-  displayedColumns: string[] = ['subDepartmentName', 'comment' ,'indication'];
+  displayedColumns: string[] = ['subDepartmentName','zoneName' ,'comment' ,'indication'];
   dataSource = this.PTCList;
   MeetOnSite = "MeetOnSite";
   Approved = "Approved";
@@ -68,6 +70,8 @@ export class PermitComponentComponent implements OnInit {
           }
           
           tempPTCList.PermitCommentStatus = current.permitCommentStatus;
+          tempPTCList.ZoneID = current.zoneID;
+          tempPTCList.ZoneName = current.zoneName;
 
 
           this.PTCList.push(tempPTCList);

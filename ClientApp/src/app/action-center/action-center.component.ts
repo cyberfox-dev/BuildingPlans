@@ -444,6 +444,7 @@ export class ActionCenterComponent implements OnInit {
 
     this.getUserRoles();
     this.getServicesByDepID();
+    this.getUsersByRoleName("Senior Reviewer");
     this.getUsersByRoleName("Final Approver");
     this.getZoneForCurrentUser();
   }
@@ -474,56 +475,117 @@ export class ActionCenterComponent implements OnInit {
 
   canApprovePTW() {
 
+    this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
-    this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        let foundMatch = false;
-        let current = data.dateSet[0];// Flag to track if a match is found
-        
-        if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
-          
-          for (var i = 0; i < this.permitIssuer.length; i++) {
-            
+        debugger;
+        for (var i = 0; i < data.dateSet.length; i++) {
+          debugger;
+          let foundMatch = false;
+          let current = data.dateSet[i];
+          if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
+
+            for (var i = 0; i < this.permitIssuer.length; i++) {
+
+              debugger;
+
+              if (this.permitIssuer[i].userID == this.CurrentUser.appUserId) {
 
 
-            if (this.permitIssuer[i].userID == this.CurrentUser.appUserId) {
-              
+                debugger;
+                if (current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
 
 
-              if (current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
-                
+                  debugger;
+                  foundMatch = true;
+                  break;
+                }
 
-
-                foundMatch = true;
-                break;
               }
 
-            }
+
+              if (foundMatch) {
 
 
-            if (foundMatch) {
-              
-
-              // A match was found, no need to continue checking
-              break;
+                // A match was found, no need to continue checking
+                break;
+              }
             }
           }
+
+          else {
+            debugger;
+            this.canApprovePermit = false;
+          }
+
+          debugger;
+          this.canApprovePermit = foundMatch;
         }
-
-        else {
-          this.canApprovePermit = false;
-        }
-
-
-        this.canApprovePermit = foundMatch;
-      } else {
-        alert(data.responseMessage);
       }
+      else {
+        alert(data.responseMessage);
 
-      console.log("response", data);
+      }
+      console.log("reponse", data);
+
     }, error => {
       console.log("Error: ", error);
     })
+
+
+
+
+
+
+    //this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+    //  if (data.responseCode == 1) {
+    //    let foundMatch = false;
+    //    let current = data.dateSet[0];// Flag to track if a match is found
+        
+    //    if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
+          
+    //      for (var i = 0; i < this.permitIssuer.length; i++) {
+            
+
+
+    //        if (this.permitIssuer[i].userID == this.CurrentUser.appUserId) {
+              
+
+
+    //          if (current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
+                
+
+
+    //            foundMatch = true;
+    //            break;
+    //          }
+
+    //        }
+
+
+    //        if (foundMatch) {
+              
+
+    //          // A match was found, no need to continue checking
+    //          break;
+    //        }
+    //      }
+    //    }
+
+    //    else {
+    //      this.canApprovePermit = false;
+    //    }
+
+
+    //    this.canApprovePermit = foundMatch;
+    //  } else {
+    //    alert(data.responseMessage);
+    //  }
+
+    //  console.log("response", data);
+    //}, error => {
+    //  console.log("Error: ", error);
+    //})
 
 
   }
@@ -905,90 +967,111 @@ export class ActionCenterComponent implements OnInit {
     let SubDepartmentName = "";
     let PermitSubCommetID = 0;
     
-    for (var i = 0; i < this.PTCList.length; i++) {
+    //for (var i = 0; i < this.PTCList.length; i++) {
       
-      if (this.PTCList[i].SubDepartmentID == this.loggedInUsersSubDepartmentID) {
+    //  if (this.PTCList[i].SubDepartmentID == this.loggedInUsersSubDepartmentID) {
         
-        SubDepartmentName = this.PTCList[i].SubDepartmentName;
-        PermitSubCommetID = this.PTCList[i].PermitSubForCommentID;
-      }
-    }
-    switch (interact) {
+    //    SubDepartmentName = this.PTCList[i].SubDepartmentName;
+    //    PermitSubCommetID = this.PTCList[i].PermitSubForCommentID;
+    //  }
+    //}
 
-      case "Approve": {
-        if (confirm("Are you sure you want to approve permit this application?")) {
-          
-          this.permitService.addUpdatePermitSubForComment(PermitSubCommetID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
-            if (data.responseCode == 1) {
-              alert("Permit Approved");
-              this.CheckAllLinkedDepartmentsApproved();
-                this.router.navigate(["/home"]);
-             
+
+    this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+          let current = data.dateSet[0];
+        switch (interact) {
+
+          case "Approve": {
+            if (confirm("Are you sure you want to approve permit this application?")) {
+
+              this.permitService.addUpdatePermitSubForComment(current.permitSubCommetID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
+                if (data.responseCode == 1) {
+                  alert("Permit Approved");
+                  this.CheckAllLinkedDepartmentsApproved();
+                  this.router.navigate(["/home"]);
+
+                }
+                else {
+                  alert(data.responseMessage);
+
+                }
+                console.log("reponse", data);
+
+              }, error => {
+                console.log("Error: ", error);
+              })
+              this.modalService.dismissAll();
             }
-            else {
-              alert(data.responseMessage);
+            break;
+          }
 
+          case "MeetOnSite": {
+            if (confirm("Are you sure you want to meet applicant On site?")) {
+              this.permitService.addUpdatePermitSubForComment(current.permitSubCommetID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "MeetOnSite", this.CurrentUser.appUserId).subscribe((data: any) => {
+                if (data.responseCode == 1) {
+                  alert("Meet Applicant On Site");
+                  this.router.navigate(["/home"]);
+
+                }
+                else {
+                  alert(data.responseMessage);
+
+                }
+                console.log("reponse", data);
+
+              }, error => {
+                console.log("Error: ", error);
+              })
+              this.modalService.dismissAll();
             }
-            console.log("reponse", data);
+            break;
+          }
 
-          }, error => {
-            console.log("Error: ", error);
-          })
-          this.modalService.dismissAll();
+          case "Reject": {
+            if (confirm("Are you sure you want to reject permit?")) {
+              this.permitService.addUpdatePermitSubForComment(current.permitSubCommetID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Rejected", this.CurrentUser.appUserId).subscribe((data: any) => {
+                if (data.responseCode == 1) {
+                  alert("Permit Rejected");
+                  this.router.navigate(["/home"]);
+
+                }
+                else {
+                  alert(data.responseMessage);
+
+                }
+                console.log("reponse", data);
+
+              }, error => {
+                console.log("Error: ", error);
+              })
+              this.modalService.dismissAll();
+            }
+
+            break;
+          }
+
+          default: {
+
+            break;
+          }
         }
-        break;
+        
       }
+      else {
+        alert(data.responseMessage);
 
-      case "MeetOnSite": {
-        if (confirm("Are you sure you want to meet applicant On site?")) {
-          this.permitService.addUpdatePermitSubForComment(PermitSubCommetID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "MeetOnSite", this.CurrentUser.appUserId).subscribe((data: any) => {
-            if (data.responseCode == 1) {
-              alert("Meet Applicant On Site");
-                this.router.navigate(["/home"]);
-
-            }
-            else {
-              alert(data.responseMessage);
-
-            }
-            console.log("reponse", data);
-
-          }, error => {
-            console.log("Error: ", error);
-          })
-          this.modalService.dismissAll();
-        }
-        break;
       }
+      console.log("reponse", data);
+    }, error => {
+      console.log("Error: ", error);
+    })
 
-      case "Reject": {
-        if (confirm("Are you sure you want to reject permit?")) {
-          this.permitService.addUpdatePermitSubForComment(PermitSubCommetID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Rejected", this.CurrentUser.appUserId).subscribe((data: any) => {
-            if (data.responseCode == 1) {
-              alert("Permit Rejected");
-                this.router.navigate(["/home"]);
 
-            }
-            else {
-              alert(data.responseMessage);
 
-            }
-            console.log("reponse", data);
-
-          }, error => {
-            console.log("Error: ", error);
-          })
-          this.modalService.dismissAll();
-        }
-
-        break;
-      }
-
-      default: {
-
-        break;
-      }
-    }
+    
   }
 
 
@@ -1326,17 +1409,17 @@ export class ActionCenterComponent implements OnInit {
         let foundMatch = false;
         let current = data.dateSet[0];// Flag to track if a match is found
         
-
+        debugger;
 
         if (current.userAssaignedToComment == "Senior Reviewer to comment") {
           
-
+          debugger;
 
           for (var i = 0; i < this.seniorReviewerUsers.length; i++) {
-
+            debugger;
 
             if (this.seniorReviewerUsers[i].userID == this.CurrentUser.appUserId) {
-              
+              debugger;
              
               if (current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
 
@@ -1630,8 +1713,9 @@ export class ActionCenterComponent implements OnInit {
     }
     else if (roleName == "Senior Reviewer") {
       this.accessGroupsService.getUserBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
-
+        debugger;
         if (data.responseCode == 1) {
+          debugger;
           this.seniorReviewerUsers = data.dateSet;
         }
         else {
