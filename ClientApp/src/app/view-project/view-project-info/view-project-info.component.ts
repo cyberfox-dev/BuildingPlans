@@ -2370,36 +2370,36 @@ export class ViewProjectInfoComponent implements OnInit {
 
     img.src = 'assets/cctlogoblack.png';
     footer.src = 'assets/Packs/footer.PNG';
-    page1.src = 'assets/Packs/page1.PNG';
-    page2.src = 'assets/Packs/page2.PNG';
-    page3.src = 'assets/Packs/page3.PNG';
-    page4.src = 'assets/Packs/page4.PNG';
-    page5.src = 'assets/Packs/page5.PNG';
-    page6.src = 'assets/Packs/page6.PNG';
-    page7.src = 'assets/Packs/page7.PNG';
-    page8.src = 'assets/Packs/page8.PNG';
-    page9.src = 'assets/Packs/page9.PNG';
-    page10.src = 'assets/Packs/page10.PNG';
-    page11.src = 'assets/Packs/page11.PNG';
-    page12.src = 'assets/Packs/page12.PNG';
-    page13.src = 'assets/Packs/page13.PNG';
-    page14.src = 'assets/Packs/page14.PNG';
-    page15.src = 'assets/Packs/page15.PNG';
-    page16.src = 'assets/Packs/page16.PNG';
-    page17.src = 'assets/Packs/page17.PNG';
-    page18.src = 'assets/Packs/page18.PNG';
-    page19.src = 'assets/Packs/page19.PNG';
-    page20.src = 'assets/Packs/page20.PNG';
-    page21.src = 'assets/Packs/page21.PNG';
-    page22.src = 'assets/Packs/page22.PNG';
-    page23.src = 'assets/Packs/page23.PNG';
-    page24.src = 'assets/Packs/page24.PNG';
-    page25.src = 'assets/Packs/page25.PNG';
-    page26.src = 'assets/Packs/page26.PNG';
-    page27.src = 'assets/Packs/page27.PNG';
-    page28.src = 'assets/Packs/page28.PNG';
-    page29.src = 'assets/Packs/page29.PNG';
-    page30.src = 'assets/Packs/page30.PNG';
+    page1.src = 'assets/Packs/Updated/1.PNG';
+    page2.src = 'assets/Packs/Updated/2.PNG';
+    page3.src = 'assets/Packs/Updated/3.PNG';
+    page4.src = 'assets/Packs/Updated/4.PNG';
+    page5.src = 'assets/Packs/Updated/5.PNG';
+    page6.src = 'assets/Packs/Updated/6.PNG';
+    page7.src = 'assets/Packs/Updated/7.PNG';
+    page8.src = 'assets/Packs/Updated/8.PNG';
+    page9.src = 'assets/Packs/Updated/9.PNG';
+    page10.src = 'assets/Packs/Updated/10.PNG';
+    page11.src = 'assets/Packs/Updated/11.PNG';
+    page12.src = 'assets/Packs/Updated/12.PNG';
+    page13.src = 'assets/Packs/Updated/13.PNG';
+    page14.src = 'assets/Packs/Updated/14.PNG';
+    page15.src = 'assets/Packs/Updated/15.PNG';
+    page16.src = 'assets/Packs/Updated/16.PNG';
+    page17.src = 'assets/Packs/Updated/17.PNG';
+    page18.src = 'assets/Packs/Updated/18.PNG';
+    page19.src = 'assets/Packs/Updated/19.PNG';
+    page20.src = 'assets/Packs/Updated/20.PNG';
+    page21.src = 'assets/Packs/Updated/21.PNG';
+    page22.src = 'assets/Packs/Updated/22.PNG';
+    page23.src = 'assets/Packs/Updated/23.PNG';
+    page24.src = 'assets/Packs/Updated/24.PNG';
+    page25.src = 'assets/Packs/Updated/25.PNG';
+    page26.src = 'assets/Packs/Updated/26.PNG';
+    page27.src = 'assets/Packs/Updated/27.PNG';
+    page28.src = 'assets/Packs/Updated/28.PNG';
+    page29.src = 'assets/Packs/Updated/29.PNG';
+/*    page30.src = 'assets/Packs/page30.PNG';
     page31.src = 'assets/Packs/page31.PNG';
     page32.src = 'assets/Packs/page32.PNG';
     page33.src = 'assets/Packs/page33.PNG';
@@ -2414,7 +2414,7 @@ export class ViewProjectInfoComponent implements OnInit {
     page42.src = 'assets/Packs/page42.PNG';
     page43.src = 'assets/Packs/page43.PNG';
     page44.src = 'assets/Packs/page44.PNG';
-    page45.src = 'assets/Packs/page45.PNG';
+    page45.src = 'assets/Packs/page45.PNG';*/
 
     // Add logo to PDF document
 
@@ -2899,7 +2899,7 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.addImage(footer, 'png', 7, 255, 205, 45);
 
     //PAGE 30
-    doc.addPage();
+   /* doc.addPage();
 
     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
     doc.setFontSize(10);
@@ -3072,7 +3072,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
     doc.addImage(page45, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
+    doc.addImage(footer, 'png', 7, 255, 205, 45);*/
 
     // Save PDF document
  

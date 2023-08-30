@@ -141,13 +141,11 @@ img {
 }
 
 .mat-action {
-  /* margin-bottom: 10px; */
   background-color: #ffffff00;
   color: #282828;
-  /* margin-bottom: 32px; */
-  /* width: 226px; */
   height: 59px;
   font-size: 19px;
+  margin-bottom: 76px;
 }
 
 
