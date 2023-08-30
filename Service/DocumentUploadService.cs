@@ -18,7 +18,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
         //Implementing the interface Methods
-        public async Task<DocumentUpload> AddUpdateDocument(int? documentID, string documentName, string? DocumentLocalPath, int? applicationID, string? assignedUserID, string createdById,string? groupName, int?subDepID, string? subDepName, bool? isPlanning)
+        public async Task<DocumentUpload> AddUpdateDocument(int? documentID, string documentName, string? DocumentLocalPath, int? applicationID, string? assignedUserID, string createdById,string? groupName, int?subDepID, string? subDepName, bool? isPlanning, bool? isRepository)
         {
 
             if (documentID == 0)
@@ -46,6 +46,7 @@ namespace WayleaveManagementSystem.Service
                     SubDepartmentID = subDepID,
                     SubDepartmentName = subDepName,
                     isPlanning = isPlanning,
+                    isRepository = isRepository,
                 };
 
                 //After the inizlization add to the db
@@ -59,8 +60,10 @@ namespace WayleaveManagementSystem.Service
             {
 
 
-                tempDocumentUpload.DocumentName = documentName;
-             //   tempDocumentUpload.DocumentData = documentData;
+                
+                tempDocumentUpload.DocumentGroupName = groupName;
+                tempDocumentUpload.SubDepartmentID = subDepID;
+                tempDocumentUpload.SubDepartmentName = subDepName;
                 tempDocumentUpload.DateUpdated = DateTime.Now;
 
                 _context.Update(tempDocumentUpload);
@@ -191,7 +194,7 @@ namespace WayleaveManagementSystem.Service
 
             return await (
               from documentUpload in _context.DocumentUpload
-              where documentUpload.ApplicationID == null && documentUpload.isActive == true
+              where documentUpload.isRepository == true && documentUpload.isActive == true
               select new DocumentUploadDTO()
               {
                   DocumentID = documentUpload.DocumentID,

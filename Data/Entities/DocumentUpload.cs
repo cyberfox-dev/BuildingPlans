@@ -17,6 +17,7 @@ namespace WayleaveManagementSystem.Data.Entities
         public int? SubDepartmentID { get; set; }
         public string? SubDepartmentName { get; set; }
         public bool? isPlanning { get; set; }
+        public bool? isRepository { get; set; }
 
     }
 

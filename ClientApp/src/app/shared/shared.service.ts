@@ -130,6 +130,10 @@ export class SharedService {
   userRoles = '';
   public totalAddedFeatures: number = 0;
 
+  RepFileUploadSubName?: any | null;
+  RepFileUploadSubID?: any | null;
+  RepFileUploadCat?: any | null;
+
   constructor() { }
 
   setCheckEmail(data:any) {

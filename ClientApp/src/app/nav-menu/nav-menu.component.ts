@@ -129,6 +129,7 @@ export class NavMenuComponent implements OnInit {
     applica: any;
     UserRoles: import("C:/CyberfoxProjects/WayleaveManagementSystem/ClientApp/src/app/shared/shared.service").RolesList[];
     selectedOptionText: string;
+    lastUploadEvent: any;
 
   constructor(private offcanvasService: NgbOffcanvas,private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private http: HttpClient, private documentUploadService: DocumentUploadService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private subDepartment: SubDepartmentsService, private applicationsService: ApplicationsService, private faq: FrequentlyAskedQuestionsService) { }
   DocumentsList: DocumentsList[] = [];
@@ -149,6 +150,8 @@ export class NavMenuComponent implements OnInit {
   CurrentUser: any;
 
   fileAttrs: string[] = [];
+  isRep = "isRep";
+ 
 
   ngOnInit() {
     
@@ -205,28 +208,53 @@ export class NavMenuComponent implements OnInit {
 
   }
 
+  onUploadFinished(event: any) {
+    this.lastUploadEvent = event;  // Store the event data
+    // Other logic (if any)...
+  }
+
+  ConfirmUpload() {
+    if (!window.confirm("Are you sure you want to upload the file?")) {
+      // Use the stored event data
+      this.onFileDelete(this.lastUploadEvent, 0);
+    }
+    // Rest of the logic...
+  }
+  changeHasFile() {
+
+  }
   onPassFileName(event: { uploadFor: string; fileName: string }) {
     debugger;
     const { uploadFor, fileName } = event;
     const index = parseInt(uploadFor.substring('CoverLetter'.length));
     this.fileAttrsName = "Doc";
-    //this.hasFile = true;
-    //this.fileCount = this.fileCount + 1;
-  }
+    debugger;
 
+    this.shared.RepFileUploadCat = this.selected;
+
+    for (var i = 0; i < this.SubDepartmentList.length; i++) {
+      const current = this.SubDepartmentList[i];
+      if (current.subDepartmentID == this.selectDepForUpload) {
+        this.shared.RepFileUploadSubID = current.subDepartmentID;
+        this.shared.RepFileUploadSubName = current.subDepartmentName;
+      }
+    
+    }
+    
+    
+
+    
+  }
   onFileDelete(event: any, index: number) {
 
     this.fileAttrsName = "Doc";
-  //  this.hasFile = false;
-    //this.getAllDocsForApplication();
-//this.fileCount = this.fileCount - 1;
+
   }
 
   onFileUpload(event: any) {
 
 
   }
-
 
   getRolesLinkedToUser() {
    
@@ -851,41 +879,44 @@ export class NavMenuComponent implements OnInit {
   progress: number = 0;
   message= '';
   save(repositoryModal) {
-    if (this.selectDepartmentForUpload == undefined) {
-      alert("Please Select a department");
-    }
-    else if (this.selected == "") {
-      alert("Please Select A Group For Your Document");
-    }
-    else {
+    this.modalService.dismissAll();
+    this.getAllDocsForRepository(repositoryModal);
 
-      const filesForUpload = this.shared.pullFilesForUpload();
-      for (var i = 0; i < filesForUpload.length; i++) {
-        const formData = new FormData();
-        let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
-        let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + null;
-        formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+    //if (this.selectDepartmentForUpload == undefined) {
+    //  alert("Please Select a department");
+    //}
+    //else if (this.selected == "") {
+    //  alert("Please Select A Group For Your Document");
+    //}
+    //else {
 
-
-
-
-        this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
-          .subscribe({
-            next: (event) => {
+    //  //const filesForUpload = this.shared.pullFilesForUpload();
+    //  //for (var i = 0; i < filesForUpload.length; i++) {
+    //  //  const formData = new FormData();
+    //  //  let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+    //  //  let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + null;
+    //  //  formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
 
 
-              if (event.type === HttpEventType.UploadProgress && event.total)
-                this.progress = Math.round(100 * event.loaded / event.total);
-              else if (event.type === HttpEventType.Response) {
-                this.message = 'Upload success.';
-                this.uploadFinished(event.body, repositoryModal);
 
-              }
-            },
-            error: (err: HttpErrorResponse) => console.log(err)
-          });
-      }
-    }
+
+    //  //  this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+    //  //    .subscribe({
+    //  //      next: (event) => {
+
+
+    //  //        if (event.type === HttpEventType.UploadProgress && event.total)
+    //  //          this.progress = Math.round(100 * event.loaded / event.total);
+    //  //        else if (event.type === HttpEventType.Response) {
+    //  //          this.message = 'Upload success.';
+    //  //          this.uploadFinished(event.body, repositoryModal);
+
+    //  //        }
+    //  //      },
+    //  //      error: (err: HttpErrorResponse) => console.log(err)
+    //  //    });
+      
+    //}
   }
 
   uploadFinished = (event: any, repositoryModal) => {
