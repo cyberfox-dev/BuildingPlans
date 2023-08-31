@@ -91,6 +91,7 @@ export interface ApplicationList {
   isPlanning?: boolean,
   permitStartDate: Date,
   DatePaid: Date;
+  wbsrequired: boolean;
 }
 
 
@@ -818,6 +819,7 @@ dataSource = this.Applications;
             tempApplicationListShared.PreviousStageName = current.previousStageName;
             tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
             tempApplicationListShared.DatePaid = current.datePaid;
+            tempApplicationListShared.wbsrequired = current.wbsRequired;
             if (current.projectNumber != null) {
               tempApplicationListShared.ProjectNumber = current.projectNumber;
             } else {
@@ -941,6 +943,7 @@ dataSource = this.Applications;
             tempApplicationListShared.PreviousStageName = current.previousStageName;
             tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
             tempApplicationListShared.DatePaid = current.datePaid;
+            tempApplicationListShared.wbsrequired = current.wbsRequired;
             if (current.projectNumber != null) {
               tempApplicationListShared.ProjectNumber = current.projectNumber;
             } else {
