@@ -265,6 +265,9 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("CompanyRegNo")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Coordinates")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(max)");
 
@@ -357,6 +360,9 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.Property<string>("WBSNumber")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("WBSRequired")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("isActive")
                         .HasColumnType("bit");

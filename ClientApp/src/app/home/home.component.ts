@@ -232,7 +232,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   displayedColumnsLinkUsers: string[] = ['idNumber', 'fullName', 'actions'];
   dataSourceLinkUsers = this.ClientUserList;
-
+  isDarkTheme: boolean = true;
 
   private subscriptions: Subscription[] = [];
 

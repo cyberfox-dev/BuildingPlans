@@ -58,7 +58,7 @@
   
 </div>
 <div class="cont7">
-<button mat-raised-button color="generatePackBtn"   (click)="OpenLoadingModal(approvalPackLoading)">Generate My Approval Pack</button>
+<button mat-raised-button color="generatePackBtn" *ngIf="generateApprovalbtn" (click)="OpenLoadingModal(approvalPackLoading)">Generate My Approval Pack</button>
   </div>
 
 
@@ -267,12 +267,12 @@
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
 
-        <div class="form-floating mb-3 mt-3" *ngIf="wbsRequired">
-          <input type="text" class="form-control" id="wbsNumberRequested" placeholder="WBS Number" [(ngModel)]="wbsNumberRequested" readonly>
+        <div class="form-floating mb-3 mt-3" >
+          <input type="text" class="form-control" id="wbsNumberRequested" placeholder="WBS Number" [(ngModel)]="wbsNumberRequested" >
           <label for="wbsNumberRequested">WBS Number</label>
         </div>
         <div class="cont" *ngIf="isInternalUser">
-          <button mat-raised-button (click)="enterWBSNumberModal(wbsNumberModal)" *ngIf="wbsBtn" color="orange">WBS</button>
+          <button mat-raised-button (click)="enterWBSNumberModal(wbsNumberModal)"  color="orange">WBS</button>
           <button mat-raised-button color="orange" *ngIf="isEMBUser" (click)="generateConsolidatedDepositInvoice()">Consolidate Deposits</button>
           <button mat-raised-button color="orange" *ngIf="isEMBUser">Deposit Refund</button>
           <button mat-raised-button color="orange" *ngIf="isEMBUser" (click)="generateInvoiceSplit()">Invoice Split</button>

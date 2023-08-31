@@ -1483,7 +1483,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     
     this.depositRequiredService.getDepositRequiredByApplicationID(this.ApplicationID).subscribe((data: any) => {
-     
+                              
       if (data.responseCode == 1) {
 
         for (let i = 0; i < data.dateSet.length; i++) {
@@ -1498,7 +1498,8 @@ export class ViewProjectInfoComponent implements OnInit {
           tempDepositRequired.SubDepartmentForCommentID = current.subDepartmentForCommentID;
           tempDepositRequired.SubDepartmentID = current.subDepartmentID;
           tempDepositRequired.SubDepartmentName = current.subDepartmentName;
-
+          tempDepositRequired.WBS = current.wbs;
+          this.wbsNumberRequested = current.wbs;
 
 
           this.DepositRequired.push(tempDepositRequired);
@@ -1842,7 +1843,10 @@ export class ViewProjectInfoComponent implements OnInit {
               this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, null, null, "Distributed", null, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, false,null,this.selectPaidDate).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
+
                   alert(data.responseMessage);
+                  this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application payment", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + this.ApplicationID + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+
 
                   }
                 else {
