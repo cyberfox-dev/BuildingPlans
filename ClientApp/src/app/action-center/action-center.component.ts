@@ -976,19 +976,20 @@ export class ActionCenterComponent implements OnInit {
     //  }
     //}
 
-
+    debugger;
     this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-
+        debugger;
           let current = data.dateSet[0];
         switch (interact) {
 
           case "Approve": {
             if (confirm("Are you sure you want to approve permit this application?")) {
-
-              this.permitService.addUpdatePermitSubForComment(current.permitSubCommetID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
+              debugger;
+              this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
                 if (data.responseCode == 1) {
+                  debugger;
                   alert("Permit Approved");
                   this.CheckAllLinkedDepartmentsApproved();
                   this.router.navigate(["/home"]);
@@ -1010,7 +1011,7 @@ export class ActionCenterComponent implements OnInit {
 
           case "MeetOnSite": {
             if (confirm("Are you sure you want to meet applicant On site?")) {
-              this.permitService.addUpdatePermitSubForComment(current.permitSubCommetID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "MeetOnSite", this.CurrentUser.appUserId).subscribe((data: any) => {
+              this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "MeetOnSite", this.CurrentUser.appUserId).subscribe((data: any) => {
                 if (data.responseCode == 1) {
                   alert("Meet Applicant On Site");
                   this.router.navigate(["/home"]);
@@ -1032,7 +1033,7 @@ export class ActionCenterComponent implements OnInit {
 
           case "Reject": {
             if (confirm("Are you sure you want to reject permit?")) {
-              this.permitService.addUpdatePermitSubForComment(current.permitSubCommetID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Rejected", this.CurrentUser.appUserId).subscribe((data: any) => {
+              this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Rejected", this.CurrentUser.appUserId).subscribe((data: any) => {
                 if (data.responseCode == 1) {
                   alert("Permit Rejected");
                   this.router.navigate(["/home"]);
