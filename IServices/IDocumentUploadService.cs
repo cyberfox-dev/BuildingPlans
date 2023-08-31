@@ -9,7 +9,7 @@ namespace WayleaveManagementSystem.IServices
     public interface IDocumentUploadService
     {
 
-        Task<DocumentUpload> AddUpdateDocument(int? documentID,string documentName, string? DocumentLocalPath, int? applicationID, string? assignedUserID,string createdById, string? groupName, int?subDepID, string? subDepName, bool? isPlanning);
+        Task<DocumentUpload> AddUpdateDocument(int? documentID,string documentName, string? DocumentLocalPath, int? applicationID, string? assignedUserID,string createdById, string? groupName, int?subDepID, string? subDepName, bool? isPlanning, bool? isRepository);
         //this will return T/F 
         public Task<bool> DeleteDocument(int documentID);
 

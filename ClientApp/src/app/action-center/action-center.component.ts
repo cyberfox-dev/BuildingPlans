@@ -1231,7 +1231,7 @@ export class ActionCenterComponent implements OnInit {
                 if (this.ACHeader == "You can comment!" || this.canCommentFinalApprover === true) {
 
                 } else {
-                  this.ACHeader = "You can assign reviewer for comment!";
+                  this.ACHeader = "Assign to Reviewer for comment";
                 }
               
                 this.getUsersByRoleName("Reviewer");
