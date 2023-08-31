@@ -48,6 +48,10 @@ namespace WayleaveManagementSystem.Data.Entities
         public DateTime? StageStartDate{get;set;}
         public DateTime? DatePaid { get; set; }
 
+        public string? Coordinates { get; set; }    
+
+        public bool? WBSRequired { get; set; }
+
         /*Application Status Logic
         Verification Stage
         Unpaid

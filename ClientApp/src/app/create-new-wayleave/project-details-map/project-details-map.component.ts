@@ -378,6 +378,11 @@ export class ProjectDetailsMapComponent implements OnInit {
         graphicsLayer.removeAll();
         graphicsLayer.add(new Graphic({
           geometry: point,
+          symbol: {
+
+            color: [0, 255, 0],
+            
+            }
 //          symbol: {
 ///*            type: "simple-marker",*/
 //            color: [0, 255, 0],
@@ -396,6 +401,7 @@ export class ProjectDetailsMapComponent implements OnInit {
         });
 
         view.goTo(point); // Center the view on the searched point
+        view.zoom = 20
       }
     });
 

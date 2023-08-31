@@ -44,6 +44,10 @@
         public DateTime? PermitStartDate { get; set; }
         public DateTime? DatePaid { get; set; }
 
+        public string? Coordinates { get; set; }
+
+        public bool? WBSRequired { get; set; }
+
 
     }
 }

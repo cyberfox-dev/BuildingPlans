@@ -9,6 +9,36 @@
     margin: 0;
     height: 100%;
     width: 100%;
+/*    background-color: rgba(255, 255, 255, 0.75);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);*/
+  }
+
+  #coordinateInput {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(255, 255, 255, 0.75);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+  }
+
+  #coordinateText {
+    width: 184px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+
+  #coordinateSearchBtn {
+    background-color: #0079c1;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 5px 10px;
+    cursor: pointer;
   }
 </style>
 
@@ -20,6 +50,7 @@
     margin: 0;
     height: 100%;
     width: 100%;
+
   }
 
   #formDiv {
@@ -278,12 +309,22 @@
     </div>
   </div>-->
 
-    <div #searchDiv></div>
-    <div #viewDiv style="height:550px" class="Map"></div>
-    <div hidden id="coordinateInput">
-      <input #coordinateText type="text" placeholder="Enter coordinates">
-      <button #coordinateSearchBtn>Search</button>
+    <div class="container-fluid">
+      <div class="alert alert-warning">
+        <h4>Please draw a polygon around the area of interest, Below you will find buttons relating to their function. Please select draw to begin drawing. Once you are done drawing you may click save to commit this drawing or if you feel that you have made a mistake feel free to retry by clicking edit, and then on save. This polygon cannot be edited after final submission of this application</h4>
+        <h5>Shortcuts</h5>
+        <p>Z: Undo<br />R: Redo<br />A: Rotate left <br />D: Rotate right<br />Enter: Complete the drawing<br />Double click: Complete the drawing<br />Mouse scroll wheel: Zoom-in/Zoom-out<br /></p>
+      </div>
     </div>
+    <div id="coordinateInput" style="position: sticky;">
+      Enter co-ordinates (x,y) or search by address or ERF in the field provide below.
+      <input id="coordinateText" #coordinateText type="text" placeholder="Enter coordinates">
+      <button id="coordinateSearchBtn" #coordinateSearchBtn>Search</button>
+    </div>
+    <div #searchDiv></div>
+    <div id="Map" #viewDiv style="height:550px" class="Map"></div>
+
+    
   </div>
 
   <!--<div #mapViewNode

@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
   sendOTPBtn: boolean = true;
 
   isExpired: boolean = false;
-  expirationTime: number = 7200; // Time limit in seconds (5 minutes)
+  expirationTime: number = 900; // Time limit in seconds (15 minutes)
   expirationTimer: any;
 
   public container = document.getElementById('container');
@@ -130,9 +130,48 @@ export class LoginComponent implements OnInit {
     if (this.registerForm.controls["registerEmail"]) {
       alert("OTP Sent, Please check your email");
       this.sendOTPBtn = false;
-      this.notification.sendEmail(email, "OTP",
-        `Hello, you have recently tried to create an account on the Wayleave Management System, here is your one-time pin for your account: ${otp} . This code will be invalid in the next 2 hours.`,
-        `Hello, you have recently tried to create an account on the Wayleave Management System, here is your one-time pin for your account: ${otp} . This code will be invalid in the next 2 hours.`);
+      const emailContent = `
+      <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+              font-family: Arial, sans-serif;
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear Applicant,</p>
+            <p>Please enter the following one-time pin to create your account on the City of Cape Town Wayleave Management System: <strong>${otp}</strong>. This code will be valid for the next 15 minutes.</p>
+            <p>Should you have any queries, please contact us at <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+          </div>
+          <div class="footer">
+
+            <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+            <p>Regards,<br>Wayleave Management System</p>
+            <p>
+              <a href="#">CCT Web</a> | <a href="#">Contacts</a> | <a href="#">Media</a> | <a href="#">Report a fault</a> | <a href="#">Accounts</a>
+            </p>
+          </div>
+        </body>
+      </html>
+    `;
+
+      this.notification.sendEmail(email, "OTP", emailContent, emailContent);
       this.startExpirationTimer();
     } else {
       alert("There was an error");
