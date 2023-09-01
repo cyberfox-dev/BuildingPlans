@@ -402,8 +402,10 @@ export class ActionCenterComponent implements OnInit {
 
    
     this.CurrentApplication = this.viewProjectInfoComponent.getCurrentApplication();
-
-
+    debugger;
+    if (!this.CurrentApplication.ProjectNumber.startsWith("WL") ) {
+      return;
+    }
 
     if (this.CurrentApplication.isPlanning === true) {
    
