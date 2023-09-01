@@ -1226,5 +1226,32 @@ h6 {
   text-decoration: underline;
   font-weight: 800;
 }
+.heading {
+  display: flex;
+  padding: 5px;
+  margin-top: 33px;
+  border: 2px solid #00000012;
+}
+.mat-select ::ng-deep .mat-select-trigger {
+  text-align: center; /* Center align the text */
+  background-color: transparent !important; /* Remove active color */
+  width: 40%;
+  padding-right: 0;
+}
 
 
+
+
+.mat-form-field ::ng-deep .mat-form-field-underline {
+  display: none; /* Hide the underline */
+}
+.mat-select ::ng-deep .mat-select-arrow {
+display:none;
+}
+.mat-select {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  font-size: 18px;
+}

@@ -27,10 +27,23 @@
   <!--Tabs-->
 
   <div class="main-container">
-    <div class="heading">
-      <h3><span>Recent Projects</span></h3>
+  
+      <div class="heading">
+       
 
-    </div>
+          <mat-form-field>
+
+            <mat-select value="option3" [(value)]="select" (selectionChange)="onFilterApplications()">
+              <mat-option value="option1">My Applications</mat-option>
+              <mat-option value="option2">My Reviews</mat-option>
+              <mat-option value="option3">Recent Projects</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+      
+
+      </div>
+    
     <div class="cards">
       <div class="card card-5" (click)="filterByUnpaid()">
         <h4>Unpaid</h4>
@@ -121,96 +134,102 @@
       <mat-label>Filter</mat-label>
       <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
     </mat-form-field>-->
+    <div class="">
+      <mat-form-field appearance="outline">
+        <mat-label>Search</mat-label>
+        <div class="cont6">
 
-    <mat-form-field appearance="outline">
-      <mat-label>Search</mat-label>
-      <div class="cont6">
+          <input matInput placeholder="Search By Project Number Or Application Number" (keyup)="applyFilter($event)" #input>
+          <i class="fa fa-search" aria-hidden="true"></i>
+        </div>
 
-        <input matInput placeholder="Search By Project Number Or Application Number" (keyup)="applyFilter($event)" #input>
-        <i class="fa fa-search" aria-hidden="true"></i>
-      </div>
-    </mat-form-field>
-
-
-
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
-
-      <ng-container matColumnDef="Stage">
-        <th mat-header-cell *matHeaderCellDef>Stage</th>
-        <td mat-cell *matCellDef="let element"> {{element.CurrentStage}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="ProjectNumber">
-        <th mat-header-cell *matHeaderCellDef>Project Number</th>
-        <td mat-cell *matCellDef="let element">
-          <span class="processFlow" (click)="getLinkedZones(element.ApplicationID,processFlow);">{{element.ProjectNumber}}</span>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="AplicationAge">
-        <th mat-header-cell *matHeaderCellDef>Application Age</th>
-        <td mat-cell *matCellDef="let element"> {{element.TestApplicationAge}} Days</td>
-      </ng-container>
-
-      <ng-container matColumnDef="Status">
-        <th mat-header-cell *matHeaderCellDef>Status</th>
-        <td mat-cell *matCellDef="let element"> {{element.ApplicationStatus}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="StageAge">
-        <th mat-header-cell *matHeaderCellDef>Stage Age</th>
-        <td mat-cell *matCellDef="let element"> {{element.TestApplicationStageAge}} Days</td>
-      </ng-container>
-
-      <ng-container matColumnDef="FullName">
-        <th mat-header-cell *matHeaderCellDef>Full Name</th>
-        <td mat-cell *matCellDef="let element"> {{element.FullName}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="TypeOfApplication">
-        <th mat-header-cell *matHeaderCellDef>Type</th>
-        <td mat-cell *matCellDef="let element"> {{element.TypeOfApplication}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="DateCreated">
-        <th mat-header-cell *matHeaderCellDef>Date Created</th>
-        <td mat-cell *matCellDef="let element"> {{element.DateCreated}} </td>
-      </ng-container>
-
-
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
-        <td mat-cell *matCellDef="let applications of ApplicationsList ; let i = index">
-          <div class="buttons">
-            <button mat-raised-button color="blue" matTooltip="View Application" (click)="CheckIfCanReapply(i)"><i class="fa fa-eye"></i></button>
-            <button mat-raised-button color="warn" matTooltip="Escalate" *ngIf="applications.TestApplicationAge >= this.viewEscalateDate"><i class="fa fa-arrow-circle-up"></i></button>
-          </div>
-          <div class="menu">
-            <button mat-button color="action" [matMenuTriggerFor]="actions"> <i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
-            <mat-menu #actions="matMenu">
-              <button mat-menu-item (click)="CheckIfCanReapply(i)"> View Project</button>
-              <button mat-menu-item>Escalate Project</button>
-            </mat-menu>
-          </div>
-        </td>
-        <td mat-cell *matCellDef="let element">  </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-      <!-- Row shown when there is no matching data. -->
-      <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
-      </tr>
-
-    </table>
-    <!--<mat-paginator [pageSize]="10" [length]="dataSource?.data.length" [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>-->
+      </mat-form-field>
 
 
 
-  </div>
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+
+        <ng-container matColumnDef="Stage">
+          <th mat-header-cell *matHeaderCellDef>Stage</th>
+          <td mat-cell *matCellDef="let element"> {{element.CurrentStage}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="ProjectNumber">
+          <th mat-header-cell *matHeaderCellDef>Project Number</th>
+          <td mat-cell *matCellDef="let element">
+            <span class="processFlow"
+                  (click)="element.ProjectNumber.startsWith('WL') ? getLinkedZones(element.ApplicationID, processFlow) : null;"
+                  [class.disabled]="!element.ProjectNumber.startsWith('WL')">
+              {{element.ProjectNumber}}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="AplicationAge">
+          <th mat-header-cell *matHeaderCellDef>Application Age</th>
+          <td mat-cell *matCellDef="let element"> {{element.TestApplicationAge}} Days</td>
+        </ng-container>
+
+        <ng-container matColumnDef="Status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let element"> {{element.ApplicationStatus}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="StageAge">
+          <th mat-header-cell *matHeaderCellDef>Stage Age</th>
+          <td mat-cell *matCellDef="let element"> {{element.TestApplicationStageAge}} Days</td>
+        </ng-container>
+
+        <ng-container matColumnDef="FullName">
+          <th mat-header-cell *matHeaderCellDef>Full Name</th>
+          <td mat-cell *matCellDef="let element"> {{element.FullName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="TypeOfApplication">
+          <th mat-header-cell *matHeaderCellDef>Type</th>
+          <td mat-cell *matCellDef="let element"> {{element.TypeOfApplication}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="DateCreated">
+          <th mat-header-cell *matHeaderCellDef>Date Created</th>
+          <td mat-cell *matCellDef="let element"> {{element.DateCreated}} </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let applications of ApplicationsList ; let i = index">
+            <div class="buttons">
+              <button mat-raised-button color="blue" matTooltip="View Application" (click)="CheckIfCanReapply(i)"><i class="fa fa-eye"></i></button>
+
+              <button mat-raised-button color="warn" matTooltip="Escalate" *ngIf="applications.TestApplicationAge >= this.viewEscalateDate"><i class="fa fa-arrow-circle-up"></i></button>
+            </div>
+            <div class="menu">
+              <button mat-button color="action" [matMenuTriggerFor]="actions"> <i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
+              <mat-menu #actions="matMenu">
+                <button mat-menu-item (click)="CheckIfCanReapply(i)"> View Project</button>
+                <button mat-menu-item>Escalate Project</button>
+              </mat-menu>
+            </div>
+          </td>
+          <td mat-cell *matCellDef="let element">  </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+        </tr>
+
+      </table>
+      <!--<mat-paginator [pageSize]="10" [length]="dataSource?.data.length" [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>-->
+
+
+
+    </div>
 </div>
 
 <ng-template #internalOpt let-modal>

@@ -62,6 +62,7 @@ export interface ApplicationList {
   isPlanning?: boolean,
   permitStartDate: Date,
   DatePaid: Date;
+  wbsrequired: boolean;
   Coordinates: string
 }
 

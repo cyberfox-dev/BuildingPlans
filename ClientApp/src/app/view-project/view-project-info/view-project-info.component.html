@@ -267,12 +267,12 @@
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
 
-        <div class="form-floating mb-3 mt-3" >
-          <input type="text" class="form-control" id="wbsNumberRequested" placeholder="WBS Number" [(ngModel)]="wbsNumberRequested" >
+        <div class="form-floating mb-3 mt-3" *ngIf="WBSField">
+          <input type="text" class="form-control" id="wbsNumberRequested" placeholder="WBS Number" [(ngModel)]="wbsNumberRequested" readonly>
           <label for="wbsNumberRequested">WBS Number</label>
         </div>
         <div class="cont" *ngIf="isInternalUser">
-          <button mat-raised-button (click)="enterWBSNumberModal(wbsNumberModal)"  color="orange">WBS</button>
+          <button mat-raised-button (click)="enterWBSNumberModal(wbsNumberModal)"  color="orange" *ngIf="WBSBtn">WBS</button>
           <button mat-raised-button color="orange" *ngIf="isEMBUser" (click)="generateConsolidatedDepositInvoice()">Consolidate Deposits</button>
           <button mat-raised-button color="orange" *ngIf="isEMBUser">Deposit Refund</button>
           <button mat-raised-button color="orange" *ngIf="isEMBUser" (click)="generateInvoiceSplit()">Invoice Split</button>
