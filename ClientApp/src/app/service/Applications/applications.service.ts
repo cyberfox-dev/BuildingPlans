@@ -12,7 +12,7 @@ export class ApplicationsService {
 
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
-  public addUpdateApplication(ApplicationID?: number | null, userID?: string | null, fullName?: string | null, email?: string | null, phoneNumber?: string | null, physicalAddress?: string | null, referenceNumber?: string | null, companyRegNo?: string | null, typeOfApplication?: string | null, notificationNumber?: string | null, wbsNumber?: string | null, physicalAddressOfProject?: string | null, descriptionOfProject?: string | null, natureOfWork?: string | null, excavationType?: string | null, expectedStartDate?: Date | null, expectedEndDate?: Date | null, location?: string | null, createdById?: string | null, previousStageName?: string | null, previousStageNumber?: number | null, currentStageName?: string | null, currentStageNumber?: number | null, nextStageName?: string | null, nextStageNumber?: number | null, applicationStatus?: string | null, isDrafted?: boolean, projectNumber?: string | null, isPlanning?: boolean | null, permitStartDate?: Date | null, datePaid?: Date | null) {
+  public addUpdateApplication(ApplicationID?: number | null, userID?: string | null, fullName?: string | null, email?: string | null, phoneNumber?: string | null, physicalAddress?: string | null, referenceNumber?: string | null, companyRegNo?: string | null, typeOfApplication?: string | null, notificationNumber?: string | null, wbsNumber?: string | null, physicalAddressOfProject?: string | null, descriptionOfProject?: string | null, natureOfWork?: string | null, excavationType?: string | null, expectedStartDate?: Date | null, expectedEndDate?: Date | null, location?: string | null, createdById?: string | null, previousStageName?: string | null, previousStageNumber?: number | null, currentStageName?: string | null, currentStageNumber?: number | null, nextStageName?: string | null, nextStageNumber?: number | null, applicationStatus?: string | null, isDrafted?: boolean, projectNumber?: string | null, isPlanning?: boolean | null, permitStartDate?: Date | null, datePaid?: Date | null, coordinates?: string) {
 
     const body = {
       ApplicationID: ApplicationID,
@@ -45,6 +45,7 @@ export class ApplicationsService {
       isPlanning: isPlanning,
       PermitStartDate: permitStartDate,
       DatePaid: datePaid,
+      Coordinates: coordinates
   
     }
     return this.httpClient.post(this.baseURL + "AddUpdateApplication", body);

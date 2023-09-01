@@ -91,6 +91,7 @@ export interface ApplicationList {
   isPlanning?: boolean,
   permitStartDate: Date,
   DatePaid: Date;
+  Coordinates: string
 }
 
 
