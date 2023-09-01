@@ -63,6 +63,7 @@ export interface ApplicationList {
   permitStartDate: Date,
   DatePaid: Date;
   wbsrequired: boolean;
+  Coordinates: string
 }
 
 
@@ -242,6 +243,7 @@ export class SharedService {
   esriAddress!: string;
   applicationID!: number;
   createdByID!: string;
+  coordinates!: string;
 
   setAddressData(data: any) {
     this.esriAddress = data;
@@ -249,6 +251,14 @@ export class SharedService {
 
   getAddressData() {
     return this.esriAddress;
+  }
+
+  setCoordinateData(data: any) {
+    this.coordinates = data;
+  }
+
+  getCoordinateData() {
+    return this.coordinates;
   }
 
   //Using NotificationNumber for now, until the ApplicationID is created

@@ -92,6 +92,7 @@ export interface ApplicationList {
   permitStartDate: Date,
   DatePaid: Date;
   wbsrequired: boolean;
+  Coordinates: string
 }
 
 
@@ -1300,7 +1301,34 @@ dataSource = this.Applications;
   checkForEscalation() {
  
      
+  }
+  select='';
+  onFilterApplications() {
+
+    debugger;
+    if (this.select == "option1") {
+
+      let count = 0;
+
+      for (let i = 0; i < this.applicationDataForView.length; i++) {
+        const current = this.applicationDataForView[i];
+
+        if (current.CreatedById === this.CurrentUser.appUserId) {
+          count++;
+        }
+      }
+      this.countUnpaid();
+      this.countDistributed();
+      this.countApproved();
+      this.countEMBStage();
+      this.countRejection();
+
+
+
+
+     
     }
+  }
 
   
 

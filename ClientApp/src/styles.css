@@ -9,6 +9,13 @@ code {
   color: #e01a76;
 }
 
+.backgroundWLMS {
+  width: 100%;
+  height: 938px;
+  position: absolute;
+  top: 27px;
+}
+
 .btn-primary {
   color: #fff;
   background-color: #1b6ec2;
