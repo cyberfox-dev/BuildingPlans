@@ -55,8 +55,8 @@
     <div class="cont3">
       <!--this is for the wbs number -->
       <div *ngIf="WBSCHeckBox">
-      <mat-checkbox class="example-margin" *ngIf="canComment == true || canCommentSeniorReviewer == true && canCommentFinalApprover == false" [(ngModel)]="WBSCheck">WBS Number</mat-checkbox>
-        </div>
+        <mat-checkbox class="example-margin" *ngIf="canComment == true || canCommentSeniorReviewer == true && canCommentFinalApprover == false" [(ngModel)]="WBSCheck">WBS Number</mat-checkbox>
+      </div>
       <div *ngIf="WBSRequestedAlreadyLabel">
         <label *ngIf="canComment == true || canCommentSeniorReviewer == true && canCommentFinalApprover == false">WBS Has Been Requested By A Department Already </label>
       </div>
@@ -104,34 +104,36 @@
   checked: boolean = false;
   DepositCheck: boolean = false;-->
       <!--this is for the deposit required  (click)="saveDeposit(deposit)"-->
-      <mat-checkbox class="example-margin" *ngIf="canComment == true || canCommentSeniorReviewer == true && canCommentFinalApprover == false" [(ngModel)]="DepositCheck" (click)="getAllServiceItmesForDropdown(deposit)">Deposit Required</mat-checkbox>
+      <div *ngIf="DepositCHeckBox">
+        <mat-checkbox class="example-margin" *ngIf="canComment == true || canCommentSeniorReviewer == true && canCommentFinalApprover == false" [(ngModel)]="DepositCheck" (click)="getAllServiceItmesForDropdown(deposit)">Deposit Required</mat-checkbox>
+        </div>
+      </div>
+
+
+      <mat-spinner [diameter]="20" *ngIf="loading"></mat-spinner>
+      <button mat-raised-button color="saveDoc" (click)="saveDocument()" *ngIf="CurrentApplication.isPlanning === true && saveBtn">Save</button>
+      <div class="cont4" *ngIf="permit && canApprovePermit">
+        <mat-form-field class="example-full-width">
+          <!--|| canCommentFinalApprover == true-->
+          <mat-label>Type new comment</mat-label>
+          <textarea matInput [(ngModel)]="leaveACommentPermit" placeholder="Eg. This is good"></textarea>
+
+        </mat-form-field>
+        <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()"><i class="fa fa-comment" aria-hidden="true"></i></button>
+        <mat-menu #menu="matMenu" xPosition="before">
+          <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateCommentPermit(comment.commentName)">{{comment.commentName}} </button>
+
+        </mat-menu>
+
+
+      </div>
+      <div class="cont6" *ngIf="permit && canApprovePermit">
+        <button mat-raised-button color="approvePermit" *ngIf="canApprovePermit" (click)="PermitIssue('Approve')">Approve Permit</button>
+        <button mat-raised-button color="meetOnSite" *ngIf="canApprovePermit" (click)="PermitIssue('MeetOnSite')">Meet On Site</button>
+        <button mat-raised-button color="rejectPermit" *ngIf="canApprovePermit" (click)="PermitIssue('Reject')">Reject Permit</button>
+      </div>
+
     </div>
-
-
-    <mat-spinner [diameter]="20" *ngIf="loading"></mat-spinner>
-    <button mat-raised-button color="saveDoc" (click)="saveDocument()" *ngIf="CurrentApplication.isPlanning === true && saveBtn">Save</button>
-    <div class="cont4" *ngIf="permit && canApprovePermit">
-      <mat-form-field class="example-full-width">
-        <!--|| canCommentFinalApprover == true-->
-        <mat-label>Type new comment</mat-label>
-        <textarea matInput [(ngModel)]="leaveACommentPermit" placeholder="Eg. This is good"></textarea>
-
-      </mat-form-field>
-      <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()"><i class="fa fa-comment" aria-hidden="true"></i></button>
-      <mat-menu #menu="matMenu" xPosition="before">
-        <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateCommentPermit(comment.commentName)">{{comment.commentName}} </button>
-
-      </mat-menu>
-
-
-    </div>
-    <div class="cont6" *ngIf="permit && canApprovePermit">
-      <button mat-raised-button color="approvePermit" *ngIf="canApprovePermit" (click)="PermitIssue('Approve')">Approve Permit</button>
-      <button mat-raised-button color="meetOnSite" *ngIf="canApprovePermit" (click)="PermitIssue('MeetOnSite')">Meet On Site</button>
-      <button mat-raised-button color="rejectPermit" *ngIf="canApprovePermit" (click)="PermitIssue('Reject')">Reject Permit</button>
-    </div>
-
-  </div>
 
 </ng-template>
 

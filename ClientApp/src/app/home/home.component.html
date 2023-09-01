@@ -27,10 +27,23 @@
   <!--Tabs-->
 
   <div class="main-container">
-    <div class="heading">
-      <h3><span>Recent Projects</span></h3>
+  
+      <div class="heading">
+       
 
-    </div>
+          <mat-form-field>
+
+            <mat-select value="option3" [(value)]="select" (selectionChange)="onFilterApplications()">
+              <mat-option value="option1">My Applications</mat-option>
+              <mat-option value="option2">My Reviews</mat-option>
+              <mat-option value="option3">Recent Projects</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+      
+
+      </div>
+    
     <div class="cards">
       <div class="card card-5" (click)="filterByUnpaid()">
         <h4>Unpaid</h4>

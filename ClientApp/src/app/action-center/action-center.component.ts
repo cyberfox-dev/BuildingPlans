@@ -452,6 +452,7 @@ export class ActionCenterComponent implements OnInit {
     this.getUsersByRoleName("Final Approver");
     this.getZoneForCurrentUser();
     this.checkIfWbsRequired();
+    this.CheckApplicant();
   }
 
 
@@ -3811,6 +3812,21 @@ getAllCommentsByUserID() {
     }
     else {
 
+    }
+  }
+  checkEmail = '';
+  DepositCHeckBox: boolean = false;
+  CheckApplicant() {
+    debugger
+    this.checkEmail = this.applicationData.clientEmail.substring(this.applicationData.clientEmail.indexOf('@'));
+    console.log(this.checkEmail);
+    if (this.checkEmail === "@capetown.gov.za") {
+      this.WBSCHeckBox = true;
+      this.DepositCHeckBox = false;
+    }
+    else {
+      this.WBSCHeckBox = false;
+      this.DepositCHeckBox = true;
     }
   }
 
