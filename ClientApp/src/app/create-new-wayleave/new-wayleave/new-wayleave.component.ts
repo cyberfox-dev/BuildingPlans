@@ -214,7 +214,8 @@ export interface ApplicationList {
   NextStageNumber: number,
   PreviousStageName: string,
   PreviousStageNumber: number,
-  ProjectNumber: string
+  ProjectNumber: string,
+  Coordinates: string
 }
 
 
@@ -309,6 +310,7 @@ export class NewWayleaveComponent implements OnInit {
   excavationType = '';
   expectedStartDate: Date = new Date();
   expectedEndType: Date = new Date();
+  coordinates = '';
 
   TOENAMES = '';
 
@@ -960,6 +962,7 @@ export class NewWayleaveComponent implements OnInit {
     /*    this.shared.setApplicationID(this.notificationNumber);*/
     debugger;
     this.physicalAddressOfProject = this.shared.getAddressData();
+    this.coordinates = this.shared.getCoordinateData();
     const contractorData = this.shared.getContactorData();
     const engineerData = this.shared.getEngineerData();
     let previousStageName = "";
@@ -994,7 +997,7 @@ export class NewWayleaveComponent implements OnInit {
         this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
           if (data.responseCode == 1) {
             debugger;
-            this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, null, this.CurrentUser.appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributed", false, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, isPlanning, null).subscribe((data: any) => {
+            this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, null, this.CurrentUser.appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributed", false, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
               if (data.responseCode == 1) {
                    debugger;
                 alert("Application Created");
@@ -1015,10 +1018,97 @@ export class NewWayleaveComponent implements OnInit {
               this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + this.applicationID + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
               /*              this.addToSubDepartmentForComment();*/
 
+              const emailContent = `
+      <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+              font-family: Arial, sans-serif;
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.CurrentUser.fullName},</p>
+            <p>A Wayleave application with ID ${this.applicationID} has just been captured. You will be notified once your application has reached the next stage in the process.</p>
+            <p>Should you have any queries, please contact us at <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+          </div>
+          <div class="footer">
+
+            <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+            <p>Regards,<br>Wayleave Management System</p>
+            <p>
+              <a href="#">CCT Web</a> | <a href="#">Contacts</a> | <a href="#">Media</a> | <a href="#">Report a fault</a> | <a href="#">Accounts</a>
+            </p>
+          </div>
+        </body>
+      </html>
+    `;
+
+              this.notificationsService.sendEmail(this.CurrentUser.email, "New wayleave application", emailContent, emailContent);
+              /*              this.addToSubDepartmentForComment();*/
+
+
               //Send emails to zone department admins
               this.shared.distributionList.forEach((obj) => {
-                this.notificationsService.sendEmail(obj.email, "New wayleave application submission", "check html", 'Dear ' + obj.fullName + ',<br><br><p>An application with ID ' + this.applicationID + ' for wayleave has just been captured. As the zone admin of ' + obj.zoneName + ' in department ' + obj.subDepartmentName + ', please assign a reviewer to the application.</p><br><br>Regards,<br><b>Wayleave Management System<b><br><img src="https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png">');
+              
 
+                const emailContent2 = `
+      <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+              font-family: Arial, sans-serif;
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${obj.fullName},</p>
+            <p>A Wayleave application with ID ${this.applicationID} has just been captured. As the zone admin of ${obj.zoneName} in department ${obj.subDepartmentName}, please assign a reviewer to the application.</p>
+            <p>Should you have any queries, please contact us at <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+          </div>
+          <div class="footer">
+
+            <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+            <p>Regards,<br>Wayleave Management System</p>
+            <p>
+              <a href="#">CCT Web</a> | <a href="#">Contacts</a> | <a href="#">Media</a> | <a href="#">Report a fault</a> | <a href="#">Accounts</a>
+            </p>
+          </div>
+        </body>
+      </html>
+    `;
+
+                this.notificationsService.sendEmail(obj.email, "New wayleave application", emailContent2, emailContent2);
               })
 
               this.addToZoneForComment();
@@ -1055,6 +1145,7 @@ export class NewWayleaveComponent implements OnInit {
     debugger;
     /*    this.shared.setApplicationID(this.notificationNumber);*/
     this.physicalAddressOfProject = this.shared.getAddressData();
+    this.coordinates = this.shared.getCoordinateData();
     const contractorData = this.shared.getContactorData();
     const engineerData = this.shared.getEngineerData();
     let previousStageName = "";
@@ -1080,7 +1171,7 @@ export class NewWayleaveComponent implements OnInit {
 
     }
 
-    this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, null, isPlanning, null).subscribe((data: any) => {
+    this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, null, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         debugger;
@@ -1118,6 +1209,7 @@ export class NewWayleaveComponent implements OnInit {
     debugger;
     /*    this.shared.setApplicationID(this.notificationNumber);*/
     this.physicalAddressOfProject = this.shared.getAddressData();
+    this.coordinates = this.shared.getCoordinateData();
     const contractorData = this.shared.getContactorData();
     const engineerData = this.shared.getEngineerData();
     let previousStageName = "";
@@ -1144,7 +1236,7 @@ export class NewWayleaveComponent implements OnInit {
     }
 
 
-    this.applicationsService.addUpdateApplication(this.applicationID, this.CurrentUser.appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, "Phone", this.externalAddress, null, null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.externalAddress, appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, null, isPlanning, null).subscribe((data: any) => {
+    this.applicationsService.addUpdateApplication(this.applicationID, this.CurrentUser.appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, "Phone", this.externalAddress, null, null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.externalAddress, appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", false, null, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
       if (data.responseCode == 1) {
         debugger;
         if (isPlanning == false) {
@@ -1277,7 +1369,7 @@ export class NewWayleaveComponent implements OnInit {
       this.shared.clearContractorData();
       this.shared.clearEngineerData();
       
-      this.applicationsService.addUpdateApplication(0, appUserId, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, isPlanning, null).subscribe((data: any) => {
+      this.applicationsService.addUpdateApplication(0, appUserId, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, isPlanning, null, null, null).subscribe((data: any) => {
         if (data.responseCode == 1) {
           
 
@@ -1311,13 +1403,15 @@ export class NewWayleaveComponent implements OnInit {
       if (this.internal) {
 
         this.internalWayleaveCreate(appUserId, isPlanning);
+        console.log('Co-ordinates:', this.coordinates);
       }
       else if (this.client) {
         this.clientWayleaveCreate(appUserId, isPlanning);
+        console.log('Co-ordinates:', this.coordinates);
       }
       else { //External
         this.externalWayleaveCreate(appUserId, isPlanning);
-
+        console.log('Co-ordinates:', this.coordinates);
       }
 
 

@@ -194,6 +194,7 @@ export interface ApplicationList {
   isPlanning?: boolean,
   permitStartDate: Date,
   DatePaid: Date;
+  wbsrequired: boolean;
 }
 
 
@@ -322,8 +323,8 @@ export class ViewProjectInfoComponent implements OnInit {
   option: any;
 
   wbsNumberRequested = '';
-
-
+  WBSBtn: boolean = false;
+  WBSField: boolean = false;
   logoUrl: any;
   try: any;
   currentDate = new Date();
@@ -530,7 +531,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
 
-   
+
 
     const today = new Date();
     const twoWeeksFromNow = new Date();
@@ -600,7 +601,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getAllRequiredDeposits();
 
 
-
+    this.checkIfWbsRequired();
 /*    this.getAllSubDepForReject();*/
 /*    this.getAllSubDepForReject();*/
     this.canReapply = this.sharedService.getCanReapply();
@@ -618,7 +619,8 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getServiceItem("003");
     this.getAllSubDepartments();
     this.getLinkedDepartmentsFORAPPROVAL();
-    this.CheckForApprovalPackDownload();
+    this.CheckForApprovalPackDownload(); 
+
   }
   receivedata: string;
 
@@ -1483,7 +1485,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     
     this.depositRequiredService.getDepositRequiredByApplicationID(this.ApplicationID).subscribe((data: any) => {
-     
+                              
       if (data.responseCode == 1) {
 
         for (let i = 0; i < data.dateSet.length; i++) {
@@ -1498,6 +1500,7 @@ export class ViewProjectInfoComponent implements OnInit {
           tempDepositRequired.SubDepartmentForCommentID = current.subDepartmentForCommentID;
           tempDepositRequired.SubDepartmentID = current.subDepartmentID;
           tempDepositRequired.SubDepartmentName = current.subDepartmentName;
+          tempDepositRequired.WBS = current.wbs;
 
 
 
@@ -1842,7 +1845,10 @@ export class ViewProjectInfoComponent implements OnInit {
               this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, null, null, "Distributed", null, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, false,null,this.selectPaidDate).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
+
                   alert(data.responseMessage);
+                  this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application payment", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + this.ApplicationID + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+
 
                   }
                 else {
@@ -3292,40 +3298,17 @@ export class ViewProjectInfoComponent implements OnInit {
 
     let WBS = this.addWBSNumber.controls["wbsnumber"].value;
 
-    this.depositRequiredService.addUpdateWBSNUmber(this.DepositRequired[0].DepositRequiredID, this.CurrentUser.appUserId, WBS).subscribe((data: any) => {
+    this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, WBS, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-
+        alert("Updated Applications WBS");
         alert(data.responseMessage);
-        this.wbsRequired = true;
-
-        this.depositRequiredService.getDepositRequiredByApplicationID(this.ApplicationID).subscribe((data: any) => {
-
-          if (data.responseCode == 1) {
-            const tempDepositReq = {} as DepositRequired;
-            const current = data.dateSet[0];
-            tempDepositReq.WBS = current.wbs;
-            this.wbsNumberRequested = current.wbs;
-
-            this.DepositRequired.push(tempDepositReq);
-
-            alert(data.responseMessage);
 
 
-          }
-          else {
-            alert(data.responseMessage);
-
-          }
-          console.log("reponse", data);
-
-        }, error => {
-          console.log("Error: ", error);
-        })
       }
       else {
         alert(data.responseMessage);
-        this.wbsRequired = false;
+
       }
       console.log("reponse", data);
 
@@ -3939,6 +3922,25 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   }
+
+  checkIfWbsRequired() {
+    debugger;
+    if (this.CurrentApplicationBeingViewed[0].wbsrequired == true) {
+
+      if (this.CurrentApplicationBeingViewed[0].WBSNumber != null) {
+        this.wbsNumberRequested = this.CurrentApplicationBeingViewed[0].WBSNumber;
+        this.WBSField = true;
+      }
+      else if (this.CurrentApplicationBeingViewed[0].CreatedById == this.CurrentUser.appUserId) {
+        this.WBSBtn = true;
+      }
+    }
+    else {
+      
+    }
+  }
+
+
 
 
          

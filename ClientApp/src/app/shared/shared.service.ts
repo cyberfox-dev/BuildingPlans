@@ -62,6 +62,8 @@ export interface ApplicationList {
   isPlanning?: boolean,
   permitStartDate: Date,
   DatePaid: Date;
+  wbsrequired: boolean;
+  Coordinates: string
 }
 
 
@@ -130,9 +132,13 @@ export class SharedService {
   userRoles = '';
   public totalAddedFeatures: number = 0;
 
+  RepFileUploadSubName?: any | null;
+  RepFileUploadSubID?: any | null;
+  RepFileUploadCat?: any | null;
+
   constructor() { }
 
-  setCheckEmail(data:any) {
+  setCheckEmail(data: any) {
     this.checkEmail = data;
     console.log("Set method" + this.checkEmail);
   }
@@ -141,20 +147,20 @@ export class SharedService {
   }
 
 
- setConfigShow(data:any){
-   this.configShow = data;
- }
- getConfigShow(){
-  return this.configShow;
+  setConfigShow(data: any) {
+    this.configShow = data;
+  }
+  getConfigShow() {
+    return this.configShow;
   }
 
   setCurrentUserRole(data: any) {
     this.RolesList = data;
   }
 
-  getCurrentUserRoles(){
+  getCurrentUserRoles() {
     return this.RolesList;
-}
+  }
   setUserProfileData(data: any) {
     this.userProfileData = data;
   }
@@ -163,7 +169,7 @@ export class SharedService {
   }
 
   setStageData(data: any) {
-    
+
     this.StagesList = data;
 
   }
@@ -173,19 +179,19 @@ export class SharedService {
   }
 
   getApiUrl() {
-        return "https://localhost:7123/api/";
+      return "https://localhost:7123/api/";
     /*    return "http://172.29.166.10/api/";*/
-/*    return "https://wayleaveqa.capetown.gov.za/api/"; */
-/*    return "https://wayleave.capetown.gov.za/api/"; */
+/*        return "https://wayleaveqa.capetown.gov.za/api/"; */
+    /*    return "https://wayleave.capetown.gov.za/api/"; */
     //this is the original ip address for venolin :)
-  /*  return "https://197.242.150.226:7123/api/";*/
+    /*  return "https://197.242.150.226:7123/api/";*/
   }
 
   setContactorData(data: any) {
-   
-   // this.contactorData.splice(0, this.contactorData.length);
-    
-/*        this.contactorData.splice(0, this.contactorData.length);*/
+
+    // this.contactorData.splice(0, this.contactorData.length);
+
+    /*        this.contactorData.splice(0, this.contactorData.length);*/
     this.contactorData = data;
 
     console.log("Shared this.contactorData ", this.contactorData);
@@ -194,11 +200,11 @@ export class SharedService {
     return this.contactorData[index];
   }
   getContactorData() {
- 
+
     return this.contactorData;
   }
   setEngineerData(data: any) {
- //   this.engineerData.splice(0, this.engineerData.length);
+    //   this.engineerData.splice(0, this.engineerData.length);
     this.engineerData = data;
     console.log("Shared this.engineerData ", this.engineerData);
   }
@@ -220,7 +226,7 @@ export class SharedService {
   }
 
   setApplicationData(data: ApplicationList[]) {
-    
+
     this.applicationData = data;
   }
 
@@ -229,7 +235,7 @@ export class SharedService {
     console.log("THIS IS THE LIST", this.applicationDataForView);
   }
   getViewApplicationIndex() {
-   
+
     return this.applicationDataForView[0];
   }
 
@@ -237,6 +243,7 @@ export class SharedService {
   esriAddress!: string;
   applicationID!: number;
   createdByID!: string;
+  coordinates!: string;
 
   setAddressData(data: any) {
     this.esriAddress = data;
@@ -246,18 +253,26 @@ export class SharedService {
     return this.esriAddress;
   }
 
+  setCoordinateData(data: any) {
+    this.coordinates = data;
+  }
+
+  getCoordinateData() {
+    return this.coordinates;
+  }
+
   //Using NotificationNumber for now, until the ApplicationID is created
   setApplicationID(data: any) {
- 
+
     this.applicationID = data;
     console.log("setting ..." + this.applicationID);
   }
 
-getApplicationID(): any {
-  console.log("getting ..." + this.applicationID);
-  if (this.applicationID == undefined || this.applicationID == null) {
-    this.applicationID = 0;
-  } 
+  getApplicationID(): any {
+    console.log("getting ..." + this.applicationID);
+    if (this.applicationID == undefined || this.applicationID == null) {
+      this.applicationID = 0;
+    }
     return this.applicationID;
   }
 
@@ -272,12 +287,12 @@ getApplicationID(): any {
   }
   //ESRI Data END
 
-  
+
 
   pushFileForTempFileUpload(formData: any, uploadFor: any) {
 
     //TODO: Remember to clear this when invoice is generated
-   
+
     if (this.FileDocument.length != 0) {
       for (var i = 0; i < this.FileDocument.length; i++) {
         if (this.FileDocument[i].UploadFor == uploadFor) {
@@ -300,7 +315,7 @@ getApplicationID(): any {
 
       this.FileDocument.push(tempFileDocument);
     }
-    
+
   }
 
 
@@ -321,7 +336,7 @@ getApplicationID(): any {
   }
 
   getProjectNumber() {
-    
+
     return this.ProjectNumber;
   }
 

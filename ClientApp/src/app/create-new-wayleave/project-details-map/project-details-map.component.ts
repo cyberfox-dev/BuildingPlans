@@ -162,8 +162,9 @@ export class ProjectDetailsMapComponent implements OnInit {
   //@ViewChild('peopelTableDiv', { static: true }) private peopleTableDivEl!: ElementRef;
   //@ViewChild('languageTableDiv', { static: true }) private languageTableDivEl!: ElementRef;
   @ViewChild('searchDiv', { static: true }) private searchDivEl!: ElementRef;
-  @ViewChild('coordinateText', { static: true }) public coordinateTextEl!: ElementRef;
-  @ViewChild('coordinateSearchBtn', { static: true }) private coordinateSearchBtnEl!: ElementRef;
+  @ViewChild('coordinateTextX', { static: true }) public coordinateTextXEl!: ElementRef;
+  @ViewChild('coordinateTextY', { static: true }) public coordinateTextYEl!: ElementRef;
+  @ViewChild('coordinateSearchBtn', { static: true }) public coordinateSearchBtnEl!: ElementRef;
   private helper: any;
   public view!: MapView;
   public slideToggleScript: string = 'Show Feature Table';
@@ -362,11 +363,15 @@ export class ProjectDetailsMapComponent implements OnInit {
 
     // Handle the custom search button click
     const coordinateSearchBtn = this.coordinateSearchBtnEl.nativeElement;
-    const element = this.coordinateTextEl.nativeElement;
+    const elementx = this.coordinateTextXEl.nativeElement;
+    const elementy = this.coordinateTextYEl.nativeElement;
 
-    coordinateSearchBtn.addEventListener("click", function () {
-      const coordinateText = element.value;
-      const [x, y] = coordinateText.split(",");
+    coordinateSearchBtn.addEventListener("click", () => {
+      const x = elementx.value;
+      const y = elementy.value;
+      /*const [x, y] = coordinateTextX.split(",");*/
+      //const x = coordinateTextX.split(",");
+      //const y = coordinateTextY.split(",");
 
       if (x && y) {
         const point = new Point({
@@ -378,6 +383,11 @@ export class ProjectDetailsMapComponent implements OnInit {
         graphicsLayer.removeAll();
         graphicsLayer.add(new Graphic({
           geometry: point,
+          symbol: {
+
+            color: [0, 255, 0],
+            
+            }
 //          symbol: {
 ///*            type: "simple-marker",*/
 //            color: [0, 255, 0],
@@ -396,7 +406,11 @@ export class ProjectDetailsMapComponent implements OnInit {
         });
 
         view.goTo(point); // Center the view on the searched point
+        view.zoom = 20
+        this.sharedService.setCoordinateData(x + "," + y);
+        
       }
+
     });
 
 

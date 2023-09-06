@@ -91,6 +91,8 @@ export interface ApplicationList {
   isPlanning?: boolean,
   permitStartDate: Date,
   DatePaid: Date;
+  wbsrequired: boolean;
+  Coordinates: string
 }
 
 
@@ -232,7 +234,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   displayedColumnsLinkUsers: string[] = ['idNumber', 'fullName', 'actions'];
   dataSourceLinkUsers = this.ClientUserList;
-
+  isDarkTheme: boolean = true;
 
   private subscriptions: Subscription[] = [];
 
@@ -818,6 +820,7 @@ dataSource = this.Applications;
             tempApplicationListShared.PreviousStageName = current.previousStageName;
             tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
             tempApplicationListShared.DatePaid = current.datePaid;
+            tempApplicationListShared.wbsrequired = current.wbsRequired;
             if (current.projectNumber != null) {
               tempApplicationListShared.ProjectNumber = current.projectNumber;
             } else {
@@ -941,6 +944,7 @@ dataSource = this.Applications;
             tempApplicationListShared.PreviousStageName = current.previousStageName;
             tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
             tempApplicationListShared.DatePaid = current.datePaid;
+            tempApplicationListShared.wbsrequired = current.wbsRequired;
             if (current.projectNumber != null) {
               tempApplicationListShared.ProjectNumber = current.projectNumber;
             } else {
@@ -1297,7 +1301,34 @@ dataSource = this.Applications;
   checkForEscalation() {
  
      
+  }
+  select='';
+  onFilterApplications() {
+
+    debugger;
+    if (this.select == "option1") {
+
+      let count = 0;
+
+      for (let i = 0; i < this.applicationDataForView.length; i++) {
+        const current = this.applicationDataForView[i];
+
+        if (current.CreatedById === this.CurrentUser.appUserId) {
+          count++;
+        }
+      }
+      this.countUnpaid();
+      this.countDistributed();
+      this.countApproved();
+      this.countEMBStage();
+      this.countRejection();
+
+
+
+
+     
     }
+  }
 
   
 

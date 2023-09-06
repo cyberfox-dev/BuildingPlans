@@ -252,7 +252,7 @@
     <mat-form-field>
       <mat-label>Filter by selecting a department</mat-label>
       <mat-select [(value)]="selectDepForUpload" (selectionChange)="selectDepartment()">
-        <mat-option>None</mat-option>
+        <mat-option>All Departments</mat-option>
         <mat-option *ngFor="let department of SubDepartmentList" value="{{department.subDepartmentID}}">{{department.subDepartmentName}}</mat-option>
       </mat-select>
     </mat-form-field>
@@ -261,9 +261,9 @@
       <mat-label>Select an option</mat-label>
       <mat-select [(value)]="selected" (selectionChange)="onOptionSelected($event)">
         <mat-option>None</mat-option>
-        <mat-option value="option1">General Documents</mat-option>
-        <mat-option value="option2">Terms and conditions</mat-option>
-        <mat-option value="option3">Layout Plans</mat-option>
+        <mat-option value="General Documents">General Documents</mat-option>
+        <mat-option value="Terms and conditions">Terms and conditions</mat-option>
+        <mat-option value="Layout Plans">Layout Plans</mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -271,17 +271,17 @@
       <div>
         <mat-toolbar>
 
-          <input matInput [(ngModel)]="fileAttrs[0]" readonly name="name" />
-
+          <!-- Display files names -->
+          <input matInput [(ngModel)]="fileAttrs" readonly name="name" />
+          <!-- app-file-upload Component -->
           <div class="row" style="margin-bottom:15px;">
             <div class="container-fluid">
-              <app-file-upload [ApplicationID]="0"
+              <app-file-upload [ApplicationID]="isRep"
                                [UploadFor]="fileAttrsName"
                                (passFileName)="onPassFileName($event)"
                                (onUploadFinished)="onFileDelete($event, 0)"
-                               (onUploadSuccess)="onFileUpload($event)">
+                               (onUploadSuccess)="onFileUpload($event)"  *ngIf="selectDepForUpload != 0 && selected != 'none' && selected != undefined">
               </app-file-upload>
-
             </div>
           </div>
         </mat-toolbar>
