@@ -35,7 +35,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(opt => {
     opt.Password.RequiredLength = 4;
 
     opt.User.RequireUniqueEmail = true;
-}).AddEntityFrameworkStores<AppDBContext>();
+}).AddEntityFrameworkStores<AppDBContext>().AddDefaultTokenProviders(); // Make sure you have AddDefaultTokenProviders here
 builder.Services.AddScoped<IProfessionalsService, ProfessionalsService>();
 builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 builder.Services.AddScoped<IDepartmentsService, DepartmentsService>();

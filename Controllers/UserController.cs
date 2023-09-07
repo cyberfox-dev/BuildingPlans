@@ -235,9 +235,45 @@ namespace WayleaveManagementSystem.Controllers
 
         }
 
+        [HttpPost("UpdatePassword")]
+        public async Task<object> UpdatePassword([FromBody] LoginBindingModel model)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+
+                if (user == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "User not found", null));
+                }
+
+                // Generate a password reset token and reset the user's password
+                var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                //var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var resetResult = await _userManager.ResetPasswordAsync(user, resetToken, model.Password);
+
+                if (resetResult.Succeeded)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Password updated successfully", null));
+                }
+                else
+                {
+                    // Convert errors to an array then return them by Description
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Password update failed",
+                        resetResult.Errors.Select(x => x.Description).ToArray()));
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
 
 
-      
+
+
+
 
     }
 }

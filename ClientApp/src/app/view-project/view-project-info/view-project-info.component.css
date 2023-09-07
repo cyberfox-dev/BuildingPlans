@@ -23,6 +23,11 @@ h1 {
   background-color: #005a71;
   color: white;
 }
+h5 {
+  opacity: 50%;
+  font-size: 14px;
+  margin-top: -13px;
+}
 .maps {
   position: center;
   text-align: center;

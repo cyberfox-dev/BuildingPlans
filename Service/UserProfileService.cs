@@ -21,7 +21,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string? userID, string? fullName, string? email, string? phoneNumber, bool? isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string? createdById, string? IdNumber, int? zoneID)
+        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string? userID, string? fullName, string? email, string? phoneNumber, bool? isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string? createdById, string? IdNumber, int? zoneID, string? vatNumber)
         {
             if (userProfileID == 0)
             {
@@ -60,7 +60,7 @@ namespace WayleaveManagementSystem.Service
                     IdNumber = IdNumber,
                     depConfirmation = false,
                     zoneID = zoneID,
-
+                    VatNumber = vatNumber,
 
 
                 };
@@ -149,6 +149,10 @@ namespace WayleaveManagementSystem.Service
                 if (IdNumber != null)
                 {
                     tempUserProfile.IdNumber = IdNumber;
+                }
+                if (vatNumber != null)
+                {
+                    tempUserProfile.VatNumber = vatNumber;
                 }
 
                 //tempUserProfile.DateCreated = DateTime.Now;

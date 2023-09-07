@@ -19,6 +19,8 @@
         public string Token { get; set; }
 
         public string AppUserId { get; set; }
+
+
         //public List<string> Roles { get; set; }
     }
 

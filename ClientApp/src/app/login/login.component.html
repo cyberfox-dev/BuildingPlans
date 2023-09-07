@@ -22,14 +22,14 @@
           <form action="#" [formGroup]="registerForm" autocomplete="off">
 
             <h2>Create an account</h2>
-            <input type="text" formControlName="fullName" placeholder="Name & Surname *" required/>
-            <input type="text" formControlName="bpNumber" placeholder="Business Partner No. *" required/>
-            <input type="text" name="somthing" formControlName="registerEmail" placeholder="Email *" required/>
-            <input type="password" formControlName="registerPassword" placeholder="Password *" required>
-            <input type="password" formControlName="reenterPassword" placeholder="Re-enter password *" required>
-            <button class="OTP" (click)="onSendOTP()" *ngIf="sendOTPBtn">Send OTP</button>
-            <input type="text" placeholder="Enter OTP" formControlName="OTPField" />
-            <button type="submit" [disabled]="!registerForm.valid" [class.disabled]="!registerForm.valid" (click)="onRegister()">Verify & Continue</button>
+            <input class="input" type="text" formControlName="fullName" placeholder="Name & Surname *" required />
+            <input class="input" type="text" formControlName="bpNumber" placeholder="Business Partner No. *" required />
+            <input class="input" type="text" name="somthing" formControlName="registerEmail" placeholder="Email *" required />
+            <input class="input" type="password" formControlName="registerPassword" placeholder="Password *" required>
+            <input class="input" type="password" formControlName="reenterPassword" placeholder="Re-enter password *" required>
+            <button class="button2 OTP" (click)="onSendOTP()" *ngIf="sendOTPBtn">Send OTP</button>
+            <input class="input" type="text" placeholder="Enter OTP" formControlName="OTPField" />
+            <button type="submit" [disabled]="!registerForm.valid" [class.disabled]="!registerForm.valid" class="button2" (click)="onRegister()">Verify & Continue</button>
             <p>{{otp}}</p>
           </form>
         </div>
@@ -38,9 +38,9 @@
 
 
             <h2>Login</h2>
-            <input type="text" name="somthingelse" formControlName="email" placeholder="Email" />
-            <input type="password" formControlName="password" placeholder="Password" />
-            <a href="#" *ngIf="!isLoading">Forgot your password?</a>
+            <input class="input" type="text" name="somthingelse" formControlName="email" placeholder="Email" />
+            <input class="input" type="password" formControlName="password" placeholder="Password" />
+            <a (click)="openForgotPassModal(forgotPasswordModal)" *ngIf="!isLoading">Forgot your password?</a>
             <button *ngIf="!isLoading" type="submit" [disabled]="!loginForm.valid" class="submit">Login</button> <!--(click)="login()"-->
             <div *ngIf="isLoading">
               <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
@@ -56,11 +56,11 @@
           <div class="overlay">
             <div class="overlay-panel overlay-left">
               <h1>Already Have A Wayleave System Profile?</h1>
-              <button (click)="remove()" class="ghost" id="login">Back To Login</button>
+              <button (click)="remove()" class="button2 ghost" id="login">Back To Login</button>
             </div>
             <div class="overlay-panel overlay-right">
               <h1>Don't Have A Wayleave System Profile?</h1>
-              <button (click)="add()" class="ghost" id="signUp">Sign Up</button>
+              <button (click)="add()" class="button2 ghost" id="signUp">Sign Up</button>
               <p class="bprequired">* Please note a Business Partner (BP) number is required to use this portal. Your BP number can be found on the top right hand side corner of your municipal account.</p>
               <br>
               <p class="bprequired"><a href="https://eservices.capetown.gov.za/irj/portal" target="_blank">Click here</a> to register with CCT eServices for a BP number.</p>
@@ -78,3 +78,67 @@
   </div>
 
 </body>
+
+
+
+<ng-template #forgotPasswordModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Forgot Your Password?</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="dismissAll();modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf="beforeSentOTP">
+      <p>If you have forgotten your password, a One-Time-Pin will be sent to the email you will provide. You will then be allowed to change your password.</p>
+      <br>
+      <mat-form-field>
+        <mat-label>Enter Your Email</mat-label>
+        <input matInput [(ngModel)]="emailPasswordReset">
+      </mat-form-field>
+      <br>
+      <div class="cont3">
+        <button mat-raised-button color="blue" (click)="sendOTPForPasswordReset()">Send OTP To My Email</button>
+      </div>
+    </div>
+    <div *ngIf="sentOTP">
+      <p>OTP Sent. Please check your email and enter in the OTP</p>
+      <mat-form-field>
+        <mat-label>Enter Your OTP</mat-label>
+        <input matInput [(ngModel)]="otpPasswordReset">
+      </mat-form-field>
+      <button mat-raised-button color="blue" (click)="validateOTP(newPasswordModal)">Validate</button>
+    </div>
+  </div>
+</ng-template>
+
+
+
+<ng-template #newPasswordModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Forgot Your Password?</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="dismissAll();modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+    <p>Please enter in your <strong>NEW</strong> password.</p>
+    <mat-form-field>
+      <mat-label>Enter your password</mat-label>
+      <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="newPassword">
+      <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <br>
+    <mat-form-field>
+      <mat-label>Re-enter your password</mat-label>
+      <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="newReEnterPassword">
+      <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="changePassword()">Save</button>
+  </div>
+</ng-template>
+

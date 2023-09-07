@@ -3,7 +3,8 @@ import { UserProfileService } from 'src/app/service/UserProfile/user-profile.ser
 import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DepartmentsService } from '../service/Departments/departments.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
+import { UserService } from '../service//User/user.service';
+import { catchError, map, switchMap } from 'rxjs/operators';
 export interface DepartmentList {
   departmentID: number;
   departmentName: string;
@@ -35,7 +36,7 @@ export class UserSettingsComponent implements OnInit {
 
   CurrentUser: any;
   stringifiedData: any;  
-
+  hide = true;
 
   /*type of applicant*/
   isInternal:boolean ;
@@ -92,15 +93,27 @@ extApplicantVatNumber='';
   internalApplicantCostCenterOwnerEdit = '';
 
 
+  //Passwords
+  currentPassword = '';
+  newPassword = '';
+  newReEnterPassword = '';
+  stringifiedDataUserProfile: any;
+
   //public currentUser = this.formBuilder.group({
   //  userID: ['', Validators.required],
   //})
-  constructor(private userPofileService: UserProfileService, private formBuilder: FormBuilder, private departmentService: DepartmentsService, private modalService: NgbModal) { }
+  constructor(private userPofileService: UserProfileService, private formBuilder: FormBuilder, private departmentService: DepartmentsService, private modalService: NgbModal, private userService: UserService) { }
 
   ngOnInit(): void {
 
+
+
+
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
+
+    this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
+    this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
    /*this.getAllDepartments();*/
 
     this.getUserProfileByUserID();
@@ -195,6 +208,15 @@ extApplicantVatNumber='';
     this.modalService.open(userProfileEditModal,{ centered: true, size: 'lg' });
   }
 
+
+  openEditPasswordModal(passwordEditModal:any) {
+    this.modalService.open(passwordEditModal, { centered: true, size: 'lg' });
+  }
+
+  openNewPasswordModal(newPasswordModal:any) {
+    this.modalService.open(newPasswordModal, { centered: true, size: 'lg' });
+  }
+
   updateUserProfileDetails() {
     
     if (this.isInternal == true) {
@@ -236,5 +258,71 @@ extApplicantVatNumber='';
 
   }
 
+
+  CurrentUserProfile: any;
+  loggedInUsersEmail = '';
+  updatePassword(newPasswordModal:any) {
+    this.loggedInUsersEmail = this.CurrentUserProfile[0].email;
+
+    const email = this.loggedInUsersEmail;
+    const password = this.currentPassword;
+
+    this.userService.login(email, password).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+  
+        this.modalService.dismissAll();
+        this.modalService.open(newPasswordModal, { centered: true, size: 'lg' });
+      }
+
+      else {
+        alert(data.responseMessage);
+  
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+  }
+
+  changePassword() {
+
+    if (this.newPassword === this.newReEnterPassword) {
+
+
+      this.userService.updatePassword(this.loggedInUsersEmail, this.newPassword).subscribe((data: any) => {
+        debugger;
+        if (data.responseCode === 1) {
+
+
+          this.modalService.dismissAll();
+          alert("Password Changed Successfully");
+          this.newPassword = '';
+          this.newReEnterPassword = '';
+          this.currentPassword = '';
+
+        }
+
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+
+    else if (this.newPassword !== this.newReEnterPassword && this.newPassword != null || this.newReEnterPassword != null) {
+      alert("The passwords do not match");
+    }
+    else {
+      alert("Please enter in both fields");
+    }
+  }
 
 }

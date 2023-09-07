@@ -45,4 +45,14 @@ export class UserService {
 
   }
 
+  public updatePassword(email: string | null, password: string | null) {
+
+    const body = {
+      Email: email,
+      Password: password
+    }
+    return this.httpClient.post(this.baseURL + "UpdatePassword", body);
+
+  }
+
 }
