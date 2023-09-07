@@ -9,6 +9,7 @@ namespace WayleaveManagementSystem.Data.Entities
         public string? ProjectSizeCheckListRowNumber { get; set; }
         public string? ProjectSizeCheckListActivity { get; set; }
         public string? MandatoryDocumentCategory { get; set; }
+        public string? ProjectSizeCheckListActivityType { get; set; }
 
 
 
