@@ -1012,7 +1012,7 @@ export class LoginComponent implements OnInit {
     this.startExpirationTimer();
     this.sentOTP = true;
     this.beforeSentOTP = false;
-    alert(this.otpPassword);
+
   }
 
   validateOTP(newPasswordModal: any) {
