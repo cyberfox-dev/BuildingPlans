@@ -25,8 +25,8 @@
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
   }
 
-  #coordinateText {
-    width: 184px;
+  .coordinateText {
+    width: 150px;
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 3px;
@@ -317,9 +317,10 @@
       </div>
     </div>
     <div id="coordinateInput" style="position: sticky;">
-      Enter co-ordinates (x,y) or search by address or ERF in the field provide below.
-      <input id="coordinateText" #coordinateText type="text" placeholder="Enter coordinates">
-      <button id="coordinateSearchBtn" #coordinateSearchBtn>Search</button>
+      Enter co-ordinates (x,y) or search by address or ERF in the field provided below.
+      <input class="coordinateText" id="coordinateTextX" #coordinateTextX type="text" placeholder="x">, 
+      <input class="coordinateText" id="coordinateTextY" #coordinateTextY type="text" placeholder="y">
+      <button id="coordinateSearchBtn" #coordinateSearchBtn>Go to</button>
     </div>
     <div #searchDiv></div>
     <div id="Map" #viewDiv style="height:550px" class="Map"></div>

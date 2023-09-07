@@ -239,3 +239,4 @@ _Pvt_Extensions
 /ClientApp/src/app/service
 /.config/dotnet-tools.json
 /Resources/DocumentUpload
+/ClientApp/.env.local
