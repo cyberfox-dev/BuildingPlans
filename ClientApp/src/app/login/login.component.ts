@@ -1012,7 +1012,7 @@ export class LoginComponent implements OnInit {
     this.startExpirationTimer();
     this.sentOTP = true;
     this.beforeSentOTP = false;
-    alert(this.otpPassword);
+
   }
 
   validateOTP(newPasswordModal: any) {
@@ -1047,52 +1047,6 @@ export class LoginComponent implements OnInit {
           this.sentOTP = false;
           this.beforeSentOTP = true;
           alert("Password Changed Successfully");
-
-          const emailContent = `
-      <html>
-        <head>
-          <style>
-            /* Define your font and styles here */
-            body {
-              font-family: Arial, sans-serif;
-            }
-            .email-content {
-              padding: 20px;
-              border: 1px solid #ccc;
-              border-radius: 5px;
-            }
-            .footer {
-              margin-top: 20px;
-              color: #777;
-            }
-            .footer-logo {
-              display: inline-block;
-              vertical-align: middle;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="email-content">
-            <p>Dear User,</p>
-            <p>You have successfully updated your password. You may now log in with the new password</p>
-            <p>Should you have any queries, please contact us at <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
-          </div>
-          <div class="footer">
-
-            <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
-            <p>Regards,<br>Wayleave Management System</p>
-            <p>
-              <a href="#">CCT Web</a> | <a href="#">Contacts</a> | <a href="#">Media</a> | <a href="#">Report a fault</a> | <a href="#">Accounts</a>
-            </p>
-          </div>
-        </body>
-      </html>
-    `;
-
-          this.notification.sendEmail(this.emailPasswordReset, "Password Reset", emailContent, emailContent);
-          this.startExpirationTimer();
-
-
         }
 
         else {

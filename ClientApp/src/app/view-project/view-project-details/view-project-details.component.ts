@@ -29,7 +29,7 @@ export interface ApplicationList {
   NextStageNumber: number,
   PreviousStageName: string,
   PreviousStageNumber: number,
-
+  Coordinates: string,
 }
 
 @Component({
@@ -49,7 +49,8 @@ export class ViewProjectDetailsComponent implements OnInit {
     typeOfExcavation: ['', Validators.required],
     expectedStartDate: ['', Validators.required],
     expectedEndDate: ['', Validators.required],
-
+    physicalAddressOfProject: ['', Validators.required],
+    coordinates: ['', Validators.required],
   }) 
   applicationDataForView: ApplicationList[] = [];
   constructor(private sharedService: SharedService, private formBuilder: FormBuilder) { }
@@ -67,7 +68,8 @@ export class ViewProjectDetailsComponent implements OnInit {
     this.viewProjectDetails.controls["typeOfExcavation"].setValue(setValues.ExcavationType);
     this.viewProjectDetails.controls["expectedStartDate"].setValue(setValues.ExpectedStartDate.toString().substring(0, setValues.ExpectedStartDate.toString().indexOf('T')));
     this.viewProjectDetails.controls["expectedEndDate"].setValue(setValues.ExpectedEndDate.toString().substring(0, setValues.ExpectedEndDate.toString().indexOf('T')));
-    
+    this.viewProjectDetails.controls["physicalAddressOfProject"].setValue(setValues.PhysicalAddressOfProject);
+    this.viewProjectDetails.controls["coordinates"].setValue(setValues.Coordinates);
 
 
    // this.viewProjectDetails.controls["typeOfApplication"].setValue(this.applicationDataForView.)
