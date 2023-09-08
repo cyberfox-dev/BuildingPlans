@@ -1237,7 +1237,7 @@ export class ActionCenterComponent implements OnInit {
               if (this.UserZoneList[j].id == this.CurrentUser.appUserId) {
                
                 this.AssignUserForComment = true;
-                if (this.ACHeader == "You can comment!" || this.canCommentFinalApprover === true) {
+                if (this.ACHeader == "You can comment" || this.canCommentFinalApprover === true) {
 
                 } else {
                   this.ACHeader = "Assign to Reviewer for comment";

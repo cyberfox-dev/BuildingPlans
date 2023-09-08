@@ -139,7 +139,7 @@ export class LoginComponent implements OnInit {
           <style>
             /* Define your font and styles here */
             body {
-              font-family: Arial, sans-serif;
+              font-family: 'Century Gothic';
             }
             .email-content {
               padding: 20px;
