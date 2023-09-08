@@ -86,6 +86,7 @@ import { PermitComponentComponent } from './permit-component/permit-component.co
 import { SharedService } from './shared/shared.service';
 import { DepartmentCirculationPlanningComponent } from './department-circulation-planning/department-circulation-planning.component';
 import { ContactDetailsComponent } from './contact-details/contact-details.component';
+import { ProjectSizeConfigComponent } from './project-size-config/project-size-config.component';
 //import { MatExpansionModule } from '@angular/material/expansion';
 
 //import { MapModule } from 'arcgis-js-api';
@@ -157,6 +158,7 @@ import { ContactDetailsComponent } from './contact-details/contact-details.compo
     DepartmentCirculationPlanningComponent,
     ContactDetailsComponent,
     //MatExpansionModule,
+    ProjectSizeConfigComponent,
 
 
 

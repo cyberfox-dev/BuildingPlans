@@ -1,7 +1,6 @@
-<app-nav-menu ></app-nav-menu>
+<app-nav-menu></app-nav-menu>
 
 <h1>Configuration</h1>
-
 
 <!-----------------------------------------------------Roles configuration-------------------------------------------------------------->
 <div class="container-fluid">
@@ -13,10 +12,7 @@
       <!-- <app-new-role></app-new-role>-->
 
       <app-roles-config></app-roles-config>
-
     </mat-tab>
-
-
 
     <!-----------------------------------------------------------Line Departments configuration-------------------------------------------------------------->
 
@@ -29,7 +25,7 @@
     <!--<mat-tab label="Zones">-->
     <!--      <app-new-zone></app-new-zone>-->
     <!--<app-zone-config></app-zone-config>
-  </mat-tab>-->
+    </mat-tab>-->
     <!-----------------------------------------------------------Acess Groups configuration-------------------------------------------------------------->
 
     <mat-tab label="Access Groups">
@@ -44,25 +40,23 @@
     <!-----------------------------------------------------------GL Code configuration-------------------------------------------------------------->
     <mat-tab label="GL Code">
       <app-gl-code-config></app-gl-code-config>
-
     </mat-tab>
-
 
     <!-----------------------------------------------------------Service Items configuration-------------------------------------------------------------->
     <mat-tab label="Service Items">
 
       <app-service-items-config></app-service-items-config>
-
-
-
     </mat-tab>
 
+    <!----------------------------------------------------------Project Size Config------------------------------------------------------------------------->
+    <mat-tab label="Project Size">
 
+      <app-project-size-config></app-project-size-config>
+    </mat-tab>
 
     <!-----------------------------------------------------------CSV configuration-------------------------------------------------------------->
     <!-----------------------------------------------------------CSV configuration-------------------------------------------------------------->
     <mat-tab label="CSV">
-
 
       <div class="container-fluid">
 
@@ -74,11 +68,8 @@
                 <i class="faa fa-download" aria-hidden="true"></i>
               </div>
               <p>Importing</p>
-
             </div>
-
           </div>
-
 
           <div class="col">
 
@@ -87,25 +78,17 @@
               <div class="overlay"></div>
               <div class="circle">
                 <i class="faa fa-upload" aria-hidden="true"></i>
-
               </div>
               <p>Exporting</p>
             </div>
           </div>
-
-
         </div>
       </div>
-
     </mat-tab>
 
     <!-----------------------------------------------------------User/department Manager configuration-------------------------------------------------------------->
     <mat-tab label="Department Manager">
       <app-user-management></app-user-management>
-
-
-
-
     </mat-tab>
 
     <!-----------------------------------------------------------Types Of Excavation-------------------------------------------------------------->
@@ -113,14 +96,11 @@
       <app-type-of-excavation></app-type-of-excavation>
     </mat-tab>
 
-
-
     <!-----------------------------------------------------------FAQ-------------------------------------------------------------->
 
     <mat-tab label="FAQ">
 
       <button mat-raised-button color="FAQ" (click)="openFAQModal(FAQModal)">Create New FAQ</button>
-
 
       <mat-expansion-panel *ngFor="let faqList of FAQList;let i = index">
 
@@ -134,23 +114,15 @@
         </mat-expansion-panel-header>
 
         <mat-label>Answer : {{faqList.Answer}}</mat-label>
-
-
       </mat-expansion-panel>
-
-
     </mat-tab>
 
     <!-----------------------------------------------------------Contact Details-------------------------------------------------------------->
 
     <mat-tab label="Contact Details">
       <app-contact-details></app-contact-details>
-</mat-tab>
-
-
+    </mat-tab>
   </mat-tab-group>
-
-
 </div>
 
 <!--FAQ-->
@@ -170,7 +142,6 @@
       <input type="text" class="form-control" placeholder="Answer" [(ngModel)]="answer" id="answer" name="answer">
       <label for="answer">Answer</label>
     </div>
-
   </div>
   <div class="modal-footer">
     <button type="submit" class="btn btn-outline-success" (click)="addFAQ();modal.close('Save click')">Save</button>
