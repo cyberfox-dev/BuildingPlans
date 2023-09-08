@@ -8,9 +8,9 @@ import { SharedService } from 'src/app/shared/shared.service';
 })
 export class NotificationsService {
   //Send emails
-  to = 'venolin@outlook.com';
+/*  to = 'venolin@outlook.com';
   subject = 'Test';
-  text = 'testing 1, 2, 3 ...';
+  text = 'testing 1, 2, 3 ...';*/
 
   private readonly apiUrl: string = this.sharedService.getApiUrl();
   private readonly baseURL: string = this.apiUrl + "notification/";
