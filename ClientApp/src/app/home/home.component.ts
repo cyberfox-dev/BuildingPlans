@@ -837,6 +837,7 @@ dataSource = this.Applications;
             tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
             tempApplicationListShared.DatePaid = current.datePaid;
             tempApplicationListShared.wbsrequired = current.wbsRequired;
+            tempApplicationListShared.Coordinates = current.coordinates;
             if (current.projectNumber != null) {
               tempApplicationListShared.ProjectNumber = current.projectNumber;
             } else {
@@ -961,6 +962,7 @@ dataSource = this.Applications;
             tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
             tempApplicationListShared.DatePaid = current.datePaid;
             tempApplicationListShared.wbsrequired = current.wbsRequired;
+            tempApplicationListShared.Coordinates = current.coordinates;
             if (current.projectNumber != null) {
               tempApplicationListShared.ProjectNumber = current.projectNumber;
             } else {

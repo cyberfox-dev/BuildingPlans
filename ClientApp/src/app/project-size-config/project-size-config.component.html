@@ -1,0 +1,106 @@
+<!-- This is what should be displayed:
+  ProjectSizeCheckListActivity
+  MandatoryDocumentCategory
+  ProjectSizeCheckListActivityType-->
+<ng-template #createNewCheckListItem let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Creating a new check list item</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="addProjectCheckListItem">
+
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" id="activity" formControlName="newActivity" placeholder="Enter a project size check list activity">
+        <label for="activity">Project size check-list activity</label>
+      </div>
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" id="activityType" formControlName="newActivityType" placeholder="Enter a project size check list activity type">
+        <label for="activityType">Project size check-list activity type</label>
+      </div>
+
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" id="checkManDoc" formControlName="newMandatoryDocument" placeholder="Enter a mandatory document category">
+        <label for="checkManDoc">Mandatory document category </label>
+      </div>
+
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="onAddCheckListItem();modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+<!--Why isn't my button blue?'-->
+<button mat-raised-button color="create" (click)="openCreateNewCheckListItem(createNewCheckListItem)">Create a new check-list Item </button>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+
+
+  <ng-container matColumnDef="projectSizeCheckListActivity">
+    <th mat-header-cell *matHeaderCellDef> Project Size CheckList Activity </th>
+    <td mat-cell *matCellDef="let element"> {{element.projectSizeCheckListActivity}} </td>
+  </ng-container>
+  <!--The Project Size CheckList Activity Type is EMPTY??-->
+
+  <ng-container matColumnDef="projectSizeCheckListActivityType">
+    <th mat-header-cell *matHeaderCellDef>Project Size CheckList Activity Type </th>
+    <td mat-cell *matCellDef="let element"> {{element.projectSizeCheckListActivityType}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="mandatoryDocumentCategory">
+    <th mat-header-cell *matHeaderCellDef>Mandatory Document Category </th>
+    <td mat-cell *matCellDef="let element"> {{element.mandatoryDocumentCategory}} </td>
+  </ng-container>
+
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>Actions</th>
+    <td mat-cell *matCellDef="let i = index">
+      <button mat-raised-button color="orange" matTooltip="Edit check-list item" (click)="openEditCheckListItem(editProjectCheckListItem,i)"><i class="fa fa-pencil"></i></button>
+      <button mat-raised-button color="warn" matTooltip="Delete project size check-list item" (click)="onPSCheckListDelete(i)"><i class="fa fa-trash"></i></button>
+
+
+    </td>
+    <td mat-cell *matCellDef="let element">  </td>
+  </ng-container>
+
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<ng-template #editProjectCheckListItem let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Editing project size check-list item</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="editingProjectCheckListItem">
+
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" id="activity" formControlName="editActivity" placeholder="Enter an Activity">
+        <label for="activity">Activity Name</label>
+      </div>
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" id="activityType" formControlName="editActivityType" placeholder="Enter the Activity Type">
+        <label for="activityType">Activity Type</label>
+      </div>
+
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" id="mandatoryDocument" formControlName="editMandatoryDocument" placeholder="Specify the mandatory document">
+        <label for="mandatoryDocument">Mandatory Document </label>
+      </div>
+
+    </form>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="onPSCheckListEdit();modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+
+
+<!--
+  
+-->

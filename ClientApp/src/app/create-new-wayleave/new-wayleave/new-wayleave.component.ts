@@ -3499,6 +3499,77 @@ export class NewWayleaveComponent implements OnInit {
   projectSizeAlert = false;
   ProjectSizeMessage = "";
   PSM = "";
+
+  //2.0 CheckToPopulateManDoc needs work
+
+  //CheckToPopulateManDoc() {
+  //  const countMap = {
+  //    'Small': 0,
+  //    'Medium': 0,
+  //    'Large': 0,
+  //    'Emergency': 0,
+  //    'LUM': 0
+  //  };
+
+  //  // Counting categories
+  //  for (let current of this.ProjectSizeCheckList) {
+  //    if (this.selectionProjectSizeCheck.isSelected(current)) {
+  //      countMap[current.MandatoryDocumentCategory]++;
+  //    }
+  //  }
+
+  //  const setProjectDetails = (type, applicationName, listName) => {
+  //    this.updateMandatoryDocumentsLinkedStagesList(this[listName]);
+  //    this.projectSizeAlert = true;
+  //    this.ProjectSizeMessage = type;
+  //    this.PSM = `${type} Application`;
+  //  }
+
+  //  const populateList = (listName) => {
+  //    let tempList = [];
+
+  //    const newList = this[listName].map(current => {
+  //      return {
+  //        stageID: current.stageID,
+  //        mandatoryDocumentStageLinkID: null,
+  //        mandatoryDocumentID: current.mandatoryDocumentID,
+  //        mandatoryDocumentName: current.mandatoryDocumentName,
+  //        stageName: null,
+  //        dateCreated: current.dateCreated
+  //      };
+  //    });
+
+  //    tempList = tempList.concat(newList);
+  //    const currentList = this.MandatoryDocumentsLinkedStagesList.getValue();
+  //    const updatedList = currentList.concat(tempList);
+  //    this.MandatoryDocumentsLinkedStagesList.next(updatedList);
+  //    this.totalDocs = updatedList.length;
+  //    console.log("this.totalDocs", this.totalDocs);
+  //  }
+
+  //  // Update logic
+  //  if (countMap['Small'] > 0) {
+  //    if (countMap['Medium'] > 0 || countMap['Large'] > 0) {
+  //      setProjectDetails('Large', 'Large Application', 'MandatoryDocumentUploadListLarge');
+  //    } else {
+  //      setProjectDetails('Small', 'Small Application', 'MandatoryDocumentUploadListSmall');
+  //    }
+  //  } else if (countMap['Medium'] > 0 || countMap['Large'] > 0) {
+  //    setProjectDetails('Large', 'Large Application', 'MandatoryDocumentUploadListLarge');
+  //  }
+
+  //  if (countMap['Emergency'] > 0) {
+  //    setProjectDetails('Emergency', 'Emergency Application', 'MandatoryDocumentUploadListEmergency');
+  //    populateList('MandatoryDocumentUploadListEmergency');
+  //  }
+
+  //  if (countMap['LUM'] > 0) {
+  //    populateList('MandatoryDocumentUploadListLUM');
+  //  }
+  //}
+
+
+  //1.2
   CheckToPopulateManDoc() {
     let smallCount = 0;
     let mediumCount = 0;
@@ -3525,24 +3596,19 @@ export class NewWayleaveComponent implements OnInit {
           emergencyCount++;
         }
       }
-      
+
     }
-   
+
 
     if (smallCount > 0) {
-      if (mediumCount > 0 || largeCount > 0 || emergencyCount > 0) {
-        if (largeCount > 0 || emergencyCount > 0) {
-          if (emergencyCount > 0 ) {
-            this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
-            this.projectSizeAlert = true;
-            this.ProjectSizeMessage = "Emergency";
-            this.PSM = "Emergency Application";
-          } else {
-            this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
-            this.projectSizeAlert = true;
-            this.ProjectSizeMessage = "Large";
-            this.PSM = "Large Application";
-          }
+      if (mediumCount > 0 || largeCount > 0) {
+        if (largeCount > 0) {
+
+          this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
+          this.projectSizeAlert = true;
+          this.ProjectSizeMessage = "Large";
+          this.PSM = "Large Application";
+
         } else {
           this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListMedium);
           this.projectSizeAlert = true;
@@ -3556,43 +3622,60 @@ export class NewWayleaveComponent implements OnInit {
         this.PSM = "Small Application";
       }
     } else if (mediumCount > 0 || largeCount > 0 || emergencyCount > 0) {
-      if (largeCount > 0 || emergencyCount > 0) {
-        if (emergencyCount > 0) {
-          this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
-          this.projectSizeAlert = true;
-          this.ProjectSizeMessage = "Emergency";
-          this.PSM = "Emergency Application";
-        } else {
-          this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
-          this.projectSizeAlert = true;
-          this.ProjectSizeMessage = "Large";
-          this.PSM = "Large Application";
-        }
+      if (largeCount > 0) {
+
+        this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
+        this.projectSizeAlert = true;
+        this.ProjectSizeMessage = "Large";
+        this.PSM = "Large Application";
+
       } else {
         this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListMedium);
         this.projectSizeAlert = true;
         this.ProjectSizeMessage = "Medium";
         this.PSM = "Medium Application";
       }
-    } else if (largeCount > 0 || emergencyCount > 0) {
-      if (emergencyCount > 0) {
-        this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
-        this.projectSizeAlert = true;
-        this.ProjectSizeMessage = "Emergency";
-        this.PSM = "Emergency Application";
-      } else {
-        this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
-        this.projectSizeAlert = true;
-        this.ProjectSizeMessage = "Large";
-        this.PSM = "Large Application";
-      }
-    } else {
-      this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
+    } else if (largeCount > 0) {
+
+      this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
+      this.projectSizeAlert = true;
+      this.ProjectSizeMessage = "Large";
+      this.PSM = "Large Application";
+
+    }
+
+
+
+    if (emergencyCount > 0) {
+      let tempList = []; // Temporary list to collect all new entries
+
+      const newList = this.MandatoryDocumentUploadListEmergency.map(current => {
+        debugger;
+        const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
+        tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
+        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+        tempMandatoryDocumentsLinkedStagesList.stageName = null;
+        tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+        return tempMandatoryDocumentsLinkedStagesList;
+      });
+
+      tempList = tempList.concat(newList);
+
+      // Assuming MandatoryDocumentsLinkedStagesList is an observable, extract its current value
+      const currentList = this.MandatoryDocumentsLinkedStagesList.getValue();
+
+      // Concatenate currentList and tempList
+      const updatedList = currentList.concat(tempList);
+      debugger;
+      this.MandatoryDocumentsLinkedStagesList.next(updatedList);
       this.projectSizeAlert = true;
       this.ProjectSizeMessage = "Emergency";
       this.PSM = "Emergency Application";
+      this.totalDocs = updatedList.length;
+      console.log("this.totalDocs;this.totalDocs", this.totalDocs);
     }
-
 
     debugger;
     if (LUMCount > 0) {
@@ -3624,6 +3707,140 @@ export class NewWayleaveComponent implements OnInit {
     }
 
   }
+
+
+
+
+
+
+
+  //1.1CheckToPopulateManDoc() {
+  //  let smallCount = 0;
+  //  let mediumCount = 0;
+  //  let largeCount = 0;
+  //  let emergencyCount = 0;
+  //  let LUMCount = 0;
+
+  //  for (var i = 0; i < this.ProjectSizeCheckList.length; i++) {
+  //    const current = this.ProjectSizeCheckList[i];
+  //    if (this.selectionProjectSizeCheck.isSelected(current)) {
+  //      if (current.MandatoryDocumentCategory == "Small") {
+  //        smallCount++;
+  //      }
+  //      else if (current.MandatoryDocumentCategory == "Medium") {
+  //        mediumCount++;
+  //      }
+  //      else if (current.MandatoryDocumentCategory == "Large") {
+  //        largeCount++;
+  //      }
+  //      else if (current.MandatoryDocumentCategory == "LUM") {
+  //        LUMCount++;
+  //      }
+  //      else {
+  //        emergencyCount++;
+  //      }
+  //    }
+      
+  //  }
+   
+
+  //  if (smallCount > 0) {
+  //    if (mediumCount > 0 || largeCount > 0 || emergencyCount > 0) {
+  //      if (largeCount > 0 || emergencyCount > 0) {
+  //        if (emergencyCount > 0 ) {
+  //          this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
+  //          this.projectSizeAlert = true;
+  //          this.ProjectSizeMessage = "Emergency";
+  //          this.PSM = "Emergency Application";
+  //        } else {
+  //          this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
+  //          this.projectSizeAlert = true;
+  //          this.ProjectSizeMessage = "Large";
+  //          this.PSM = "Large Application";
+  //        }
+  //      } else {
+  //        this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListMedium);
+  //        this.projectSizeAlert = true;
+  //        this.ProjectSizeMessage = "Medium";
+  //        this.PSM = "Medium Application";
+  //      }
+  //    } else {
+  //      this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListSmall);
+  //      this.projectSizeAlert = true;
+  //      this.ProjectSizeMessage = "Small";
+  //      this.PSM = "Small Application";
+  //    }
+  //  } else if (mediumCount > 0 || largeCount > 0 || emergencyCount > 0) {
+  //    if (largeCount > 0 || emergencyCount > 0) {
+  //      if (emergencyCount > 0) {
+  //        this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
+  //        this.projectSizeAlert = true;
+  //        this.ProjectSizeMessage = "Emergency";
+  //        this.PSM = "Emergency Application";
+  //      } else {
+  //        this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
+  //        this.projectSizeAlert = true;
+  //        this.ProjectSizeMessage = "Large";
+  //        this.PSM = "Large Application";
+  //      }
+  //    } else {
+  //      this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListMedium);
+  //      this.projectSizeAlert = true;
+  //      this.ProjectSizeMessage = "Medium";
+  //      this.PSM = "Medium Application";
+  //    }
+  //  } else if (largeCount > 0 || emergencyCount > 0) {
+  //    if (emergencyCount > 0) {
+  //      this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
+  //      this.projectSizeAlert = true;
+  //      this.ProjectSizeMessage = "Emergency";
+  //      this.PSM = "Emergency Application";
+  //    } else {
+  //      this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
+  //      this.projectSizeAlert = true;
+  //      this.ProjectSizeMessage = "Large";
+  //      this.PSM = "Large Application";
+  //    }
+  //  } else {
+  //    this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListEmergency);
+  //    this.projectSizeAlert = true;
+  //    this.ProjectSizeMessage = "Emergency";
+  //    this.PSM = "Emergency Application";
+  //  }
+
+
+  //  debugger;
+  //  if (LUMCount > 0) {
+  //    let tempList = []; // Temporary list to collect all new entries
+
+  //    const newList = this.MandatoryDocumentUploadListLUM.map(current => {
+  //      debugger;
+  //      const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
+  //      tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+  //      tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
+  //      tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+  //      tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+  //      tempMandatoryDocumentsLinkedStagesList.stageName = null;
+  //      tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+  //      return tempMandatoryDocumentsLinkedStagesList;
+  //    });
+
+  //    tempList = tempList.concat(newList);
+
+  //    // Assuming MandatoryDocumentsLinkedStagesList is an observable, extract its current value
+  //    const currentList = this.MandatoryDocumentsLinkedStagesList.getValue();
+
+  //    // Concatenate currentList and tempList
+  //    const updatedList = currentList.concat(tempList);
+  //    debugger;
+  //    this.MandatoryDocumentsLinkedStagesList.next(updatedList);
+  //    this.totalDocs = updatedList.length;
+  //    console.log("this.totalDocs;this.totalDocs", this.totalDocs);
+  //  }
+
+  //}
+
+
   getCurrentDate(): string {
     const currentDate = new Date();
     const year = currentDate.getFullYear();

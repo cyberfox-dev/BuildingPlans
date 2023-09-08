@@ -46,6 +46,7 @@ import Fullscreen from '@arcgis/core/widgets/Fullscreen';
 import LabelClass from '@arcgis/core/layers/support/LabelClass';
 import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
 import Popup from '@arcgis/core/widgets/Popup';
+import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 //import * as FeatureLayerView from 'esri/views/layers/FeatureLayerView';
 
 /*import { Editor, EditorViewModel, FeatureFormViewModel } from "@arcgis/core/widgets/Editor";*/
@@ -169,7 +170,10 @@ export class ProjectDetailsMapComponent implements OnInit {
   public view!: MapView;
   public slideToggleScript: string = 'Show Feature Table';
   public isChecked: boolean = false;
-  public isLoading = true;
+  public isLoading = false;
+
+  //For maps
+  isLoading2: boolean = false;
   /*  private isMobile: boolean = this.deviceService.isMobile();*/
   private map!: Map;
   private pointPeopleLayer!: FeatureLayer;
@@ -207,6 +211,7 @@ export class ProjectDetailsMapComponent implements OnInit {
     this.departmentConfigComponent.getAllSubDepartments();
 
     this.sharedService.distributionList.splice(0, this.sharedService.distributionList.length);
+    this.sharedService.totalAddedFeatures = 0;
   }
 
   private async positionAndMapLoad() {
@@ -351,7 +356,9 @@ export class ProjectDetailsMapComponent implements OnInit {
 
     // Create a GraphicsLayer to add the search result point
     const graphicsLayer = new GraphicsLayer();
-    map.add(graphicsLayer);
+    graphicsLayer.title = "Co-ordinate result"
+
+
 
     // Create a Popup Instance
     const customPopup = new Popup({
@@ -380,20 +387,27 @@ export class ProjectDetailsMapComponent implements OnInit {
           spatialReference: view.spatialReference
         });
 
+        map.add(graphicsLayer);
+
+        const symbol = new SimpleMarkerSymbol ({
+          
+/*          type: "simple-marker",*/
+          style: "circle", // or "square", "diamond", etc., depending on your preferred style
+          color: [255, 0, 0], // Red color, change the RGB values to the desired color
+          size: "12px", // Size of the symbol
+          outline: {
+            color: [0, 0, 0], // Color of the outline
+            width: 1 // Width of the outline
+          }
+        });
+
         graphicsLayer.removeAll();
         graphicsLayer.add(new Graphic({
           geometry: point,
-          symbol: {
+          symbol: symbol
 
-            color: [0, 255, 0],
-            
-            }
-//          symbol: {
-///*            type: "simple-marker",*/
-//            color: [0, 255, 0],
-///*            size: "12px",*/
-//          }
         }));
+
 
         //customPopup.viewModel.content = {
         //  latitude: parseFloat(y),
@@ -855,6 +869,8 @@ export class ProjectDetailsMapComponent implements OnInit {
       //});
 
       featureLayer.on("edits", async (event) => {
+        this.toggleLoadingIndicator(true); // Show loading indicator
+
         //Clears the distribution list. This should be moved to when the application is successfully captured and on "Create new wayleave".
         this.sharedService.distributionList.splice(0, this.sharedService.distributionList.length);
         console.log("This is the subdepatmentlist", this.sharedService.subDepartmentList);
@@ -871,6 +887,12 @@ export class ProjectDetailsMapComponent implements OnInit {
         console.log(this.sharedService.totalAddedFeatures);
         this.sharedService.totalAddedFeatures -= subtractPolygon;
         console.log("Total added features", this.sharedService.totalAddedFeatures);
+
+        //hack to hide loading screen
+        if (subtractPolygon >=1) {
+          this.toggleLoadingIndicator(false); // Show loading indicator
+
+        }
 
         /*        const drawnPolygon = event.addedFeatures;*/
 
@@ -892,7 +914,7 @@ export class ProjectDetailsMapComponent implements OnInit {
 
         // Set up the layer in the MapServer to query against
         const mapServerLayerUrl = [];
-        let exclusionsList = [];
+        let exclusionsList: number[] = [];
 
         //Start loop from here
         for (var i = 0; i < this.sharedService.subDepartmentList.length; i++) {
@@ -902,6 +924,7 @@ export class ProjectDetailsMapComponent implements OnInit {
             const mapLayerID = this.sharedService.subDepartmentList[i].mapLayerID
             //Get subDepartmentID for the current
             const SubDepartmentID = this.sharedService.subDepartmentList[i].subDepartmentID;
+            const SubDepartmentName = this.sharedService.subDepartmentList[i].subDepartmentName;
             console.log(SubDepartmentID);
 
             //Check if department is excluded either due to routing or other reasons
@@ -910,7 +933,7 @@ export class ProjectDetailsMapComponent implements OnInit {
             //}
 
             //Get list of managers by zone. Managers are Depatment Admins, 'Department Admins' includes both Zone and Subdepartment admins. Subdepartments have at least one zone - zone1.
-            this.actionCenterComponent.getUserBySubDepartmentAndRoleName(SubDepartmentID, "Department Admin").subscribe((data: any) => {
+            this.actionCenterComponent.getUserBySubDepartmentAndRoleName(SubDepartmentID, "Department Admin").subscribe(async (data: any) => {
               if (data.responseCode == 1) {
                 const zoneAdminUsers = data.dateSet;
 
@@ -919,96 +942,30 @@ export class ProjectDetailsMapComponent implements OnInit {
 
                   //Run this code if the department has only a single region, i.e., the entire city is the region
                 } else if (mapLayerID == -1) {
+
+                  //Bulk water
+                  const bulkWaterExclusions = await this.InterceptInfrustructureChecker(SubDepartmentName, 'Bulk Water', query, 1022, 'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/', [70, 134, 68, 55, 56, 69, 75, 130, 54, 76, 77, 135, 71, 136, 58, 53, 60, 131, 138, 61, 73, 137, 51, 63, 50, 62, 132, 133, 78, 52, 57, 59]);
+
+                  //Join lists
+                  exclusionsList = exclusionsList.concat(bulkWaterExclusions);
+
+                  //Effluent
+                  const effluentExclusions = await this.InterceptInfrustructureChecker(SubDepartmentName, 'Water Demand Management', query, 1023, 'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/', [100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114]);
+
+                  //Join lists
+                  exclusionsList = exclusionsList.concat(effluentExclusions);
+                  console.log(exclusionsList);
+
                   //Send too ALL Admin users in this subdepartment
                   this.sharedService.distributionList = this.sharedService.distributionList.concat(zoneAdminUsers);
+
+                  //Removes all the excluded departments
+                  this.sharedService.distributionList = this.sharedService.distributionList.filter(item => !exclusionsList.includes(item.subDepartmentID));
                   /*                    this.sharedService.distributionList.push(tempDistributionList);*/
                   //console.log("For department " + this.sharedService.subDepartmentList[i].subDepartmentName + " the application will be distributed to the following Admin users, as this department has no zones, therefore we assume it is the entire city", this.sharedService.distributionList);
 
                   //This code runs when a subdepartment consists of multiple regions
                 } else if (mapLayerID > -1) {
-
-                  //Here, also query bulk water (layer 3), if the drawn polygon crosses any bulkwater infrustructure. The bulkwater infrustructure includes all the layers below.
-                  if (mapLayerID == 3) {
-                    let numOfInterceptions = 0;
-
-                    // Define an array of layer URLs to query for bulkwater
-                    //To help reduce load time, I could find the layer with the most objects and query this, followed by the layer with the second most and so on. To optimize the procedure, exit it once the first instance is found.
-                    const layerURLs = [
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/70', //4625
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/134', //4625
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/68', //3974
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/55', //1344
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/56', //1344
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/69', //644
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/75', //518
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/130', //518
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/54', //396
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/76', //388
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/77', //238
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/135', //238
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/71', //71
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/136', //71
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/58', //44
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/53', //36
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/60', //36
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/131', //36
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/138', //36
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/61', //32
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/73', //32
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/137', //32
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/51', //30
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/63', //17
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/50', //15
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/62', //15
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/132', //15
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/133', //15
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/78', //11
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/52', //8
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/57', //7
-                      'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/59', //1
-
-                    ];
-
-                    // Perform queries on each layer
-                    layerURLs.forEach(async (layerURL) => {
-                      const mapServerLayer = new FeatureLayer({
-                        url: layerURL
-                      });
-
-                      /*                    console.log(layerURL, this.getCount(layerURL, ""));*/
-
-                      //To optimize this procedure, check if any interception with the bulkwater layer have already been detected
-                      if (numOfInterceptions < 1) {
-                        mapServerLayer.queryFeatures(query).then((result) => {
-                          numOfInterceptions += result.features.length;
-                          console.log(numOfInterceptions);
-
-                          if (numOfInterceptions >= 1) {
-                            //Remove bulkwater from the array
-                            exclusionsList = exclusionsList.filter(item => item !== 1022);
-                            //Exclude reticulation subdepartment
-                            //exclusionsList.push(1025); //reticulation must never be excluded
-
-                            //  console.log("For department " + this.sharedService.subDepartmentList[i].subDepartmentName + " the application will be distributed to the following Admin users, as this department has no zones, therefore we assume it is the entire city", this.sharedService.distributionList);
-                          } else {
-                            //Remove reticulation from the array
-                            exclusionsList = exclusionsList.filter(item => item !== 1025);
-                            //Exclude bulkwater subdepartment
-                            exclusionsList.push(1022);
-                          }
-
-                        });
-
-                      } else {
-
-                      }
-
-                    });
-
-                  } else {
-
-                  }
-
                   // Set up the layer in the MapServer to query against
                   mapServerLayerUrl[i] = "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves_Regions/MapServer/" + mapLayerID;
 
@@ -1126,7 +1083,7 @@ export class ProjectDetailsMapComponent implements OnInit {
 
         }
 
-
+        //this.toggleLoadingIndicator(false); // Hide loading indicator when done
 
         //Energy
         // Perform the spatial query
@@ -1139,8 +1096,6 @@ export class ProjectDetailsMapComponent implements OnInit {
         //Now get the geometry of this polygon using the globalID
 
       });
-
-
 
       // Listen to the 'before-apply-edits' event of the Editor widget
       editor.on('create', (event) => {
@@ -1781,4 +1736,71 @@ export class ProjectDetailsMapComponent implements OnInit {
     })
   }
 
+  //Checks if a drawn object intercepts an infrustructure in a given set of layers
+  private async InterceptInfrustructureChecker(currentSubDepartmentName: string, subDepartmentContainingInfrustructure: string, query: Query, exclusionUponInterception: number, baseURL: string, numbers: number[]): Promise<number[]> {
+    this.toggleLoadingIndicator(true); // Show loading indicator
+
+    return new Promise<number[]>((resolve, reject) => {
+      this.toggleLoadingIndicator(true); // Show loading indicator
+
+      if (currentSubDepartmentName === subDepartmentContainingInfrustructure) {
+        let numOfInterceptions = 0;
+        const exclusionsList: number[] = [];
+        const layerURLs = numbers.map(number => `${baseURL}${number}`);
+
+        const checkInterceptions = async (index: number) => {
+          if (index >= layerURLs.length) {
+            // All layers have been checked, resolve with the final exclusionsList
+            resolve(exclusionsList);
+            return;
+          }
+
+          if (numOfInterceptions >= 1) {
+            // Stop checking if an interception has already been found
+            resolve(exclusionsList);
+            return;
+          }
+
+          const layerURL = layerURLs[index];
+          const mapServerLayer = new FeatureLayer({
+            url: layerURL
+          });
+
+          try {
+            const result = await mapServerLayer.queryFeatures(query);
+            numOfInterceptions += result.features.length;
+
+            if (numOfInterceptions >= 1) {
+              // Remove bulkwater from the exclusions list
+              exclusionsList.splice(exclusionsList.indexOf(exclusionUponInterception), 1);
+            } else {
+              // Remove subdepartment first to prevent duplication of exclusions
+              exclusionsList.splice(exclusionsList.indexOf(exclusionUponInterception), 1);
+              // Exclude bulkwater subdepartment
+              exclusionsList.push(exclusionUponInterception);
+            }
+
+            // Continue with the next layer
+            checkInterceptions(index + 1);
+          } catch (error) {
+            reject(error);
+          }
+        };
+
+        // Start checking interceptions
+        checkInterceptions(0);
+      } else {
+        // Handle other mapLayerID cases here
+        resolve([]);
+    this.toggleLoadingIndicator(false); // Show loading indicator
+
+      }
+    });
+
+  }
+
+  // Method to toggle the loading indicator
+  toggleLoadingIndicator(isLoading: boolean) {
+    this.isLoading = isLoading;
+  }
 }

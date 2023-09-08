@@ -111,6 +111,38 @@
   .esri-feature-templates__scroller {
     max-height: 200px;
   }
+
+  /*Loading screen*/
+  .loading-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+    z-index: 9999; /* Place it above other content */
+  }
+
+  .spinner {
+    /* Use a CSS spinner of your choice or an image */
+  }
+
+  .text {
+    font-size: 24px;
+    color: white;
+    margin-top: 20px;
+  }
+
+  .text2 {
+    font-size: 12px;
+    color: white;
+    margin-top: 10px;
+  }
+
 </style>
 
 <!--<script>
@@ -281,33 +313,33 @@
 
   <div>
     <!--<div id="editArea" class="editArea-container esri-widget--panel">
-    <div id="addFeatureDiv" style="display:block;">
-      <h3 class="list-heading">Report Incidents</h3>
-      <ul style="font-size: 13px; padding-left: 1.5em;">
-        <li>Select template from the list</li>
-        <li>Click on the map to create a new feature</li>
-        <li>Update associated attribute data</li>
-        <li>Click <i>Update Incident Info</i></li>
-      </ul>
-      <div #addTemplatesDiv id="addTemplatesDiv" style="background:#fff;"></div>
-    </div>
-
-    <div id="featureUpdateDiv" style="display:none; margin-top: 1em;">
-      <div id="attributeArea">
-        <div #formDiv id="formDiv"></div>
-        <input type="button" class="esri-button" value="Update incident info" id="btnUpdate" />
+      <div id="addFeatureDiv" style="display:block;">
+        <h3 class="list-heading">Report Incidents</h3>
+        <ul style="font-size: 13px; padding-left: 1.5em;">
+          <li>Select template from the list</li>
+          <li>Click on the map to create a new feature</li>
+          <li>Update associated attribute data</li>
+          <li>Click <i>Update Incident Info</i></li>
+        </ul>
+        <div #addTemplatesDiv id="addTemplatesDiv" style="background:#fff;"></div>
       </div>
-      <br />
-      <div id="deleteArea">
-        <input type="button" class="esri-button" value="Delete incident" id="btnDelete" />
-      </div>
-    </div>
 
-    <div id="updateInstructionDiv" style="text-align:center; display:block">
-      <p class="or-wrap"><span class="or-text">Or</span></p>
-      <p id="selectHeader">Select an incident to edit or delete.</p>
-    </div>
-  </div>-->
+      <div id="featureUpdateDiv" style="display:none; margin-top: 1em;">
+        <div id="attributeArea">
+          <div #formDiv id="formDiv"></div>
+          <input type="button" class="esri-button" value="Update incident info" id="btnUpdate" />
+        </div>
+        <br />
+        <div id="deleteArea">
+          <input type="button" class="esri-button" value="Delete incident" id="btnDelete" />
+        </div>
+      </div>
+
+      <div id="updateInstructionDiv" style="text-align:center; display:block">
+        <p class="or-wrap"><span class="or-text">Or</span></p>
+        <p id="selectHeader">Select an incident to edit or delete.</p>
+      </div>
+    </div>-->
 
     <div class="container-fluid">
       <div class="alert alert-warning">
@@ -318,16 +350,27 @@
     </div>
     <div id="coordinateInput" style="position: sticky;">
       Enter co-ordinates (x,y) or search by address or ERF in the field provided below.
-      <input class="coordinateText" id="coordinateTextX" #coordinateTextX type="text" placeholder="x">, 
+      <input class="coordinateText" id="coordinateTextX" #coordinateTextX type="text" placeholder="x">,
       <input class="coordinateText" id="coordinateTextY" #coordinateTextY type="text" placeholder="y">
       <button id="coordinateSearchBtn" #coordinateSearchBtn>Go to</button>
     </div>
     <div #searchDiv></div>
     <div id="Map" #viewDiv style="height:550px" class="Map"></div>
 
-    
+
   </div>
 
+  <!--<div *ngIf="isLoading" class="loading-indicator" style="position: fixed;top: 20%;z-index: 0;left: 9%;height: 69%;width: 80%;background-color: white;opacity: 50%;border-style: groove;text-align: center;">-->
+    <!-- You can customize the loading indicator UI here -->
+    <!--<p>Loading...</p>
+    <mat-spinner></mat-spinner>
+  </div>-->
+
+  <div class="loading-screen" *ngIf="isLoading" id="loadingScreen">
+    <mat-spinner></mat-spinner>
+    <div class="text">Saving drawing</div>
+    <div class="text2">Taking too long? Your internet connection may be slow.</div>
+  </div>
   <!--<div #mapViewNode
        class="mapViewNode"></div>-->
   <!--<div class="row">

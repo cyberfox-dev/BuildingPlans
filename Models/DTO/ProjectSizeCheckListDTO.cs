@@ -1,13 +1,11 @@
-﻿namespace WayleaveManagementSystem.Models.BindingModel
+﻿namespace WayleaveManagementSystem.Models.DTO
 {
-    public class ProjectSizeCheckListBindingModel
+    public class ProjectSizeCheckListDTO
     {
-
         public int? ProjectSizeCheckListID { get; set; }
         public string? ProjectSizeCheckListRowNumber { get; set; }
         public string? ProjectSizeCheckListActivity { get; set; }
         public string? MandatoryDocumentCategory { get; set; }
         public string? ProjectSizeCheckListActivityType { get; set; }
-        public string? CreatedById { get; set; }
     }
 }
