@@ -12,7 +12,7 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { BpNumberService } from 'src/app/service/BPNumber/bp-number.service'
 import { tap } from 'rxjs/operators';
-
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-login',
@@ -27,12 +27,14 @@ export class LoginComponent implements OnInit {
   error!: string;
   checkEmail = "";
   otp = '';
+  otpPassword = '';
   sendOTPBtn: boolean = true;
-
+  otpPasswordReset = '';
   isExpired: boolean = false;
   expirationTime: number = 900; // Time limit in seconds (15 minutes)
   expirationTimer: any;
-
+  sentOTP: boolean = false;
+  beforeSentOTP: boolean = true;
   public container = document.getElementById('container');
 
   public loginForm = this.formBuilder.group({
@@ -54,12 +56,12 @@ export class LoginComponent implements OnInit {
 
   CurrentUser: any;
   stringifiedData: any;
-
+  hide = true;
   @Output() checkForInternalOption = new EventEmitter<string>();
   FullName: string;
   Email: string;
   Password: string;
-
+  emailPasswordReset = '';
 
   constructor(
     private router: Router,
@@ -71,6 +73,7 @@ export class LoginComponent implements OnInit {
     private newProfileComponent: NewProfileComponent,
     private businessPartnerService: BusinessPartnerService,
     // private homeComponent: HomeComponent,
+    private modalService: NgbModal,
     private bpNumberService: BpNumberService,
 
   ) { }
@@ -948,7 +951,132 @@ export class LoginComponent implements OnInit {
   }
 
 
-          }
+  //forgot password
+
+  openForgotPassModal(forgotPasswordModal: any) {
+    this.modalService.open(forgotPasswordModal, { centered: true, size: 'lg', backdrop: 'static' });
+  }
+
+  sendOTPForPasswordReset() {
+    debugger;
+    this.otpPassword = '';
+    const digits = 5; // Specify the number of digits for your OTP
+
+    for (let i = 0; i < digits; i++) {
+      const randomIndex = Math.floor(Math.random() * this.characters.length);
+      this.otpPassword += this.characters.charAt(randomIndex);
+    }
+
+    const emailContent = `
+      <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+              font-family: Arial, sans-serif;
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear User,</p>
+            <p>You are trying to reset your password. Your OTP code is : <strong>${this.otpPassword}</strong>. This code will be valid for the next 15 minutes.</p>
+            <p>Should you have any queries, please contact us at <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+          </div>
+          <div class="footer">
+
+            <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+            <p>Regards,<br>Wayleave Management System</p>
+            <p>
+              <a href="#">CCT Web</a> | <a href="#">Contacts</a> | <a href="#">Media</a> | <a href="#">Report a fault</a> | <a href="#">Accounts</a>
+            </p>
+          </div>
+        </body>
+      </html>
+    `;
+
+    this.notification.sendEmail(this.emailPasswordReset, "Password Reset", emailContent, emailContent);
+    this.startExpirationTimer();
+    this.sentOTP = true;
+    this.beforeSentOTP = false;
+
+  }
+
+  validateOTP(newPasswordModal: any) {
+    debugger;
+    if (this.otpPasswordReset === this.otpPassword) {
+      this.modalService.dismissAll();
+      this.modalService.open(newPasswordModal, { centered: true, size: 'lg', backdrop: 'static' });
+    }
+    else {
+      alert("OTP Incorrect");
+    }
+  }
+  newPassword = '';
+  newReEnterPassword = '';
+
+  changePassword() {
+    if (this.newPassword === this.newReEnterPassword) {
+
+
+      this.userService.updatePassword(this.emailPasswordReset, this.newPassword).subscribe((data: any) => {
+        debugger;
+        if (data.responseCode === 1) {
+
+
+          this.modalService.dismissAll();
+
+          this.newPassword = '';
+          this.newReEnterPassword = '';
+          this.otpPassword = '';
+          this.otpPasswordReset = '';
+          this.emailPasswordReset = '';
+          this.sentOTP = false;
+          this.beforeSentOTP = true;
+          alert("Password Changed Successfully");
+        }
+
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+
+    else if (this.newPassword !== this.newReEnterPassword && this.newPassword != null || this.newReEnterPassword != null) {
+      alert("The passwords do not match");
+    }
+    else {
+      alert("Please enter in both fields");
+    }
+  }
+
+  dismissAll() {
+    this.newPassword = '';
+    this.newReEnterPassword = '';
+    this.otpPassword = '';
+    this.otpPasswordReset = '';
+    this.emailPasswordReset = '';
+    this.sentOTP = false;
+    this.beforeSentOTP = true;
+  }
+}
 
 
 

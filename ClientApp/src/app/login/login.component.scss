@@ -16,113 +16,12 @@ body{
 }
 
 
-#stripes {
-  width: 100%;
-  height: 50em;
-  top: -50px;
-  overflow: hidden;
-  transform-origin: 0;
-  transform: skewY(-12deg);
-  right: 0px;
-  background: -webkit-linear-gradient(300deg,#53f 15%,#05d5ff 70%,#a6ffcb 94%);
-  background: linear-gradient(150deg,#53f 15%,#05d5ff 70%,#a6ffcb 94%);
-}
 
-#stripes, #stripes span {
-  position: absolute;
-}
 .spinner{
     text-align:center;
     display:flex;
 }
 
-#stripes span {
-  height: 40px;
-}
-
-#stripes :nth-child(1) {
-  width: 50%;
-  left: 50%;
-  top: 40px;
-  background: #4c29ff;
-}
-
-#stripes :nth-child(2) {
-  width: 14%;
-  right: 0;
-  bottom: 40px;
-  background: #2be7ff;
-}
-
-#stripes :nth-child(3) {
-  width: 25%;
-  bottom: 0;
-  right: 0;
-  background: #a1ffc8;
-}
-
-@media (min-width:670px) {
-  #stripes span {
-    height: 300px;
-  }
-
-  #stripes :nth-child(1) {
-    top: 0;
-  }
-
-  #stripes :nth-child(2) {
-    width: 16.66667%;
-    top: 300px;
-    bottom: auto;
-    background: #0dcfff;
-  }
-
-  #stripes :nth-child(3) {
-    width: 33.33333%;
-    right: auto;
-    background: #11bdff;
-  }
-}
-
-@media (min-width: 880px) {
-  #stripes span {
-    height: 190px;
-  }
-
-  #stripes :nth-child(1) {
-    width: 33.33333%;
-    left: -16.66666%;
-    background: #53f;
-  }
-
-  #stripes :nth-child(2) {
-    width: 33.33333%;
-    top: 0;
-    left: 16.66666%;
-    right: auto;
-    background: #4553ff;
-  }
-
-  #stripes :nth-child(3) {
-    width: 33.33333%;
-    left: 49.99999%;
-    bottom: auto;
-    background: #4f40ff;
-  }
-
-  #stripes :nth-child(4) {
-    width: 33.33333%;
-    top: 380px;
-    right: -16.66666%;
-    background: #25ddf5;
-  }
-
-  #stripes :nth-child(5) {
-    width: 33.33333%;
-    bottom: 0;
-    background: #1fa2ff;
-  }
-}
 
 h1 {
   font-weight: bold;
@@ -150,6 +49,7 @@ a {
   color: #005870;
   font-size: 14px;
   margin: 15px 0;
+  cursor:pointer;
 }
 .submit {
   border-radius: 20px;
@@ -167,7 +67,7 @@ a {
   background-color: #001216;
 }
 
-button {
+.button2 {
   border-radius: 20px;
   border: 1px solid #005870;
   background-color: #005870;
@@ -180,20 +80,22 @@ button {
   transition: transform 80ms ease-in;
 }
 
-button:active {
+.button2:active {
   transform: scale(0.95);
 }
 
-button:focus {
+.button2:focus {
   outline: none;
 }
 
-button.ghost {
+.button2.ghost {
   background-color: transparent;
   border-color: #343a40;
   color: #343a40;
   margin: 50px;
 }
+
+
 
 form {
   background-color: #FFFFFF;
@@ -206,7 +108,7 @@ form {
   text-align: center;
 }
 
-input {
+.input {
   background-color: #eee;
   border: none;
   padding: 12px 15px;
@@ -215,6 +117,10 @@ input {
 }
 .cont2 {
   margin-bottom: 30px;
+}
+.cont3 {
+  display: flex;
+  justify-content: center;
 }
 .container {
   background-color: #fff;
@@ -838,19 +744,10 @@ h8 {
     transition: transform 0.6s ease-in-out;
   }
 
-  button {
-    border-radius: 20px;
-    border: 1px solid #005870;
-    background-color: #005870;
-    color: #FFFFFF;
-    font-size: 12px;
-    font-weight: bold;
-    height: 46px;
-    width: 154px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    transition: transform 80ms ease-in;
-  }
 
+}
 
+.mat-form-field {
+  background-color:none;
+  width: 100%;
 }

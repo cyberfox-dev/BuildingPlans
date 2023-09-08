@@ -159,7 +159,7 @@ export interface CommentsList {
   SubDepartmentName?: string;
   isClarifyCommentID?: number; 
   isApplicantReplay?: string; 
-
+  UserName: string;
 
 }
 
@@ -407,6 +407,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     ApForUpload: string;
     showPermitTab: boolean;
+  showStatusOfWorksTab: boolean;
     generateApproval: boolean;
     hasFile: boolean;
     EMBUsers: any;
@@ -562,6 +563,12 @@ export class ViewProjectInfoComponent implements OnInit {
       this.showPermitTab = true;
     } else {
       this.showPermitTab = false;
+    }
+
+    if (setValues.CurrentStageName == "Monitoring") {
+      this.showStatusOfWorksTab = true;
+    } else {
+      this.showStatusOfWorksTab = false;
     }
 
     if (setValues.CurrentStageName == "Approval Pack Generation") {
@@ -1140,6 +1147,7 @@ export class ViewProjectInfoComponent implements OnInit {
           tempCommentList.SubDepartmentName = current.subDepartmentName;
           tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
           tempCommentList.isApplicantReplay = current.isApplicantReplay;
+          tempCommentList.UserName = current.userName;
           this.CommentsList.push(tempCommentList);
           console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", current);
 
@@ -3450,7 +3458,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     for (var i = 0; i < this.RolesList.length; i++) {
 
-      if (this.RolesList[i].RoleName == "Department Admin") {
+      if (this.RolesList[i].RoleName == "EMB") {
         this.auditTrail = true;
       }
     
@@ -3464,7 +3472,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
-/*  UploadDocuments(applicationData: any): void {
+/*  UploadDocuments(applicationData: any): void { 
     //Pulling information from the share
     const filesForUpload = this.sharedService.pullFilesForUpload();
     for (var i = 0; i < filesForUpload.length; i++) {

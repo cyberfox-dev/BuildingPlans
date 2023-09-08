@@ -10,6 +10,7 @@
     <mat-tab label="User Profile">
       <div class="container-fluid">
         <button mat-raised-button color="blue" (click)="openEditModal(userProfileEditModal)">Edit My Details</button>
+        <button mat-raised-button color="blue" (click)="openEditPasswordModal(passwordEditModal)">Edit My Password</button>
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
@@ -73,19 +74,19 @@
           </div>
 
           <div class="row">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="extApplicantIDNumber" placeholder="Enter ID Number" readonly>
-                <label for="extApplicantIDNumber">ID Number</label>
-              </div>
+            <!--            <div class="col">
+                          <div class="form-floating mb-3 mt-3">
+                            <input type="text" class="form-control" [(ngModel)]="extApplicantIDNumber" placeholder="Enter ID Number" readonly>
+                            <label for="extApplicantIDNumber">ID Number</label>
+                          </div>
 
+                        </div>-->
+            <!--  <div class="col">-->
+            <div class="form-floating mb-3 mt-3">
+              <input type="email" class="form-control" [(ngModel)]="extApplicantEmail" placeholder="Enter Email" readonly>
+              <label for="applicantEmail">Email</label>
             </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control" [(ngModel)]="extApplicantEmail" placeholder="Enter Email" readonly>
-                <label for="applicantEmail">Email</label>
-              </div>
-            </div>
+            <!-- </div>-->
           </div>
 
 
@@ -177,13 +178,13 @@
 
     <mat-tab label="Engineers">
       <app-edit-engineer></app-edit-engineer>
-</mat-tab>
+    </mat-tab>
 
     <!-----------------------------------------------------------Contractors-------------------------------------------------------------->
 
     <mat-tab label="Contractors">
       <app-edit-contractor></app-edit-contractor>
-</mat-tab>
+    </mat-tab>
 
 
   </mat-tab-group>
@@ -294,7 +295,7 @@
       <div class="row">
         <div class="col">
           <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="internalApplicantNameEdit" placeholder="Enter First Name" >
+            <input type="text" class="form-control" [(ngModel)]="internalApplicantNameEdit" placeholder="Enter First Name">
             <label for="name">Name</label>
           </div>
         </div>
@@ -342,5 +343,53 @@
   </div>
   <div class="modal-footer">
     <button type="submit" class="btn btn-outline-success" (click)=" updateUserProfileDetails();modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+
+<ng-template #passwordEditModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Please enter in your <strong>CURRENT</strong> password.</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <mat-form-field>
+      <mat-label>Enter your password</mat-label>
+      <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="currentPassword">
+      <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide" >
+        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="updatePassword(newPasswordModal)">Save</button>
+  </div>
+</ng-template>
+
+
+<ng-template #newPasswordModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Please enter in your <strong>NEW</strong> password.</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <mat-form-field>
+      <mat-label>Enter your password</mat-label>
+      <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="newPassword">
+      <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <br>
+    <mat-form-field>
+      <mat-label>Re-enter your password</mat-label>
+      <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="newReEnterPassword">
+      <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="changePassword()">Save</button>
   </div>
 </ng-template>

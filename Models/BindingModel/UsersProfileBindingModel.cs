@@ -29,6 +29,7 @@
 
         public string? IdNumber { get; set; }
         public int? zoneID { get; set; }
+        public string? vatNumber { get; set; }
 
 
     }

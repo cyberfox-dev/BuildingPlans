@@ -160,6 +160,7 @@ namespace WayleaveManagementSystem.Controllers
                     ProjectSizeCheckListRowNumber = projectSizeCheckList.ProjectSizeCheckListRowNumber,
                     ProjectSizeCheckListActivity = projectSizeCheckList.ProjectSizeCheckListActivity,
                     MandatoryDocumentCategory = projectSizeCheckList.MandatoryDocumentCategory,
+                    ProjectSizeCheckListActivityType = projectSizeCheckList.ProjectSizeCheckListActivityType,
                 }
                 ).ToListAsync();
 
