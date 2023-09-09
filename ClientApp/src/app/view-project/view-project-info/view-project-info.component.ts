@@ -3936,11 +3936,12 @@ export class ViewProjectInfoComponent implements OnInit {
     debugger;
     if (this.CurrentApplicationBeingViewed[0].wbsrequired == true) {
 
-      if (this.CurrentApplicationBeingViewed[0].WBSNumber != null) {
+      if ( this.CurrentApplicationBeingViewed[0].WBSNumber.length >0) {
         this.wbsNumberRequested = this.CurrentApplicationBeingViewed[0].WBSNumber;
         this.WBSField = true;
+        this.WBSBtn = false;
       }
-      else if (this.CurrentApplicationBeingViewed[0].CreatedById == this.CurrentUser.appUserId) {
+      if (this.CurrentApplicationBeingViewed[0].CreatedById == this.CurrentUser.appUserId && this.CurrentApplicationBeingViewed[0].WBSNumber.length < 1) {
         this.WBSBtn = true;
       }
     }
