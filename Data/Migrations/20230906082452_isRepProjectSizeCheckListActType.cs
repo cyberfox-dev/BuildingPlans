@@ -14,17 +14,17 @@ namespace WayleaveManagementSystem.Data.Migrations
                 type: "nvarchar(max)",
                 nullable: true);
 
-            migrationBuilder.AddColumn<string>(
-                name: "Coordinates",
-                table: "ApplicationListDTO",
-                type: "nvarchar(max)",
-                nullable: true);
+            //migrationBuilder.AddColumn<string>(
+            //    name: "Coordinates",
+            //    table: "ApplicationListDTO",
+            //    type: "nvarchar(max)",
+            //    nullable: true);
 
-            migrationBuilder.AddColumn<bool>(
-                name: "WBSRequired",
-                table: "ApplicationListDTO",
-                type: "bit",
-                nullable: true);
+            //migrationBuilder.AddColumn<bool>(
+            //    name: "WBSRequired",
+            //    table: "ApplicationListDTO",
+            //    type: "bit",
+            //    nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -33,13 +33,13 @@ namespace WayleaveManagementSystem.Data.Migrations
                 name: "ProjectSizeCheckListActivityType",
                 table: "ProjectSizeCheckList");
 
-            migrationBuilder.DropColumn(
-                name: "Coordinates",
-                table: "ApplicationListDTO");
+            //migrationBuilder.DropColumn(
+            //    name: "Coordinates",
+            //    table: "ApplicationListDTO");
 
-            migrationBuilder.DropColumn(
-                name: "WBSRequired",
-                table: "ApplicationListDTO");
+            //migrationBuilder.DropColumn(
+            //    name: "WBSRequired",
+            //    table: "ApplicationListDTO");
         }
     }
 }
