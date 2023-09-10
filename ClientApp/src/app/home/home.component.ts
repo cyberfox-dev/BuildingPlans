@@ -20,6 +20,7 @@ import { MatStepper } from '@angular/material/stepper';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { ZoneForCommentService } from '../service/ZoneForComment/zone-for-comment.service';
+import { ZoneLinkService } from '../service/ZoneLink/zone-link.service';
 import { SubDepartmentsService } from '../service/SubDepartments/sub-departments.service';
 
 
@@ -280,6 +281,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private loginComponent: LoginComponent,
     private zoneForCommentService: ZoneForCommentService,
     private subDepartmentService: SubDepartmentsService,
+    private zoneLinkService: ZoneLinkService,
   ) {
     this.currentDate = new Date();
     this.previousMonth = this.currentDate.getMonth();
@@ -337,6 +339,7 @@ dataSource = this.Applications;
       this.onCheckIfUserHasAccess();
       this.getAllExternalUsers();
       this.getAllSubDepartments();
+      this.getAllUserLinks();
       //this.function();
     }, 100);
     //this.dataSource.paginator = this.paginator;
@@ -359,6 +362,46 @@ dataSource = this.Applications;
   cardchange(ids: any) {
     this.option = ids;
     this.sharedService.option = this.option;
+  }
+
+
+  getAllUserLinks() {
+    debugger;
+    this.zoneLinkService.getAllUserLinks(this.CurrentUser.appUserId).subscribe((data: any) => {
+      debugger;
+      if (data.responseCode == 1) {
+        debugger;
+       // const current = 
+        for (let i = 0; i < data.dateSet.length; i++) {
+          debugger;
+          if (this.AllSubDepartmentList) {
+
+          }
+
+
+        }
+
+
+    
+
+    
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
+  ChangeActingDepartment() {
+
   }
  
 
