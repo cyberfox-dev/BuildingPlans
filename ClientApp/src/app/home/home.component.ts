@@ -355,6 +355,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.getAllExternalUsers();
       this.getAllSubDepartments();
       this.getAllUserLinks();
+      this.getAllMapData();
       //this.function();
     }, 100);
     //this.dataSource.paginator = this.paginator;
