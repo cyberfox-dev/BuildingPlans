@@ -20,6 +20,7 @@ import { MatStepper } from '@angular/material/stepper';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { ZoneForCommentService } from '../service/ZoneForComment/zone-for-comment.service';
+import { ZoneLinkService } from '../service/ZoneLink/zone-link.service';
 import { SubDepartmentsService } from '../service/SubDepartments/sub-departments.service';
 
 
@@ -278,28 +279,29 @@ export class HomeComponent implements OnInit, OnDestroy {
     viewEscalateDate = 0;
 
 
-    constructor(
-        private router: Router,
-        private applicationService: ApplicationsService,
-        private sharedService: SharedService,
-        private viewContainerRef: ViewContainerRef,
-        private stagesService: StagesService,
-        private NewWayleaveComponent: NewWayleaveComponent,
-        private accessGroupsService: AccessGroupsService,
-        private configService: ConfigService,
-        private userPofileService: UserProfileService,
-        private modalService: NgbModal,
-        private selectEngineerTableComponent: SelectEngineerTableComponent,
-        private selectContractorTableComponent: SelectContractorTableComponent,
-        private professionalService: ProfessionalService,
-        private loginComponent: LoginComponent,
-        private zoneForCommentService: ZoneForCommentService,
-        private subDepartmentService: SubDepartmentsService,
-    ) {
-        this.currentDate = new Date();
-        this.previousMonth = this.currentDate.getMonth();
-        this.previousYear = this.currentDate.getFullYear();
-    }
+  constructor(
+    private router: Router,
+    private applicationService: ApplicationsService,
+    private sharedService: SharedService,
+    private viewContainerRef: ViewContainerRef,
+    private stagesService: StagesService,
+    private NewWayleaveComponent: NewWayleaveComponent,
+    private accessGroupsService: AccessGroupsService,
+    private configService: ConfigService,
+    private userPofileService: UserProfileService,
+    private modalService: NgbModal,
+    private selectEngineerTableComponent: SelectEngineerTableComponent,
+    private selectContractorTableComponent: SelectContractorTableComponent,
+    private professionalService: ProfessionalService,
+    private loginComponent: LoginComponent,
+    private zoneForCommentService: ZoneForCommentService,
+    private subDepartmentService: SubDepartmentsService,
+    private zoneLinkService: ZoneLinkService,
+  ) {
+    this.currentDate = new Date();
+    this.previousMonth = this.currentDate.getMonth();
+    this.previousYear = this.currentDate.getFullYear();
+  }
 
 
 
@@ -340,24 +342,24 @@ export class HomeComponent implements OnInit, OnDestroy {
 
         setTimeout(() => {
 
-            this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
-            this.CurrentUser = JSON.parse(this.stringifiedData);
-            this.getAllStages();
-            this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
-            this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
-            this.UpdateProjectNumberConfig();
-            this.getAllApplicationsByUserID();
-
-            this.getRolesLinkedToUser();
-            this.onCheckIfUserHasAccess();
-            this.getAllExternalUsers();
-            this.getAllSubDepartments();
-            this.getAllMapData();
-            //this.function();
-        }, 100);
-        //this.dataSource.paginator = this.paginator;
-        //this.defaultPageSize = 10;
-    }
+      this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+      this.CurrentUser = JSON.parse(this.stringifiedData);
+      this.getAllStages();
+      this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
+      this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
+      this.UpdateProjectNumberConfig();
+      this.getAllApplicationsByUserID();
+ 
+      this.getRolesLinkedToUser();
+      this.onCheckIfUserHasAccess();
+      this.getAllExternalUsers();
+      this.getAllSubDepartments();
+      this.getAllUserLinks();
+      //this.function();
+    }, 100);
+    //this.dataSource.paginator = this.paginator;
+    //this.defaultPageSize = 10;
+  }
 
     ngAfterViewInit() {
         //this.dataSource.paginator = this.paginator;
@@ -372,11 +374,51 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
 
-    cardchange(ids: any) {
-        this.option = ids;
-        this.sharedService.option = this.option;
-    }
+  cardchange(ids: any) {
+    this.option = ids;
+    this.sharedService.option = this.option;
+  }
 
+
+  getAllUserLinks() {
+    debugger;
+    this.zoneLinkService.getAllUserLinks(this.CurrentUser.appUserId).subscribe((data: any) => {
+      debugger;
+      if (data.responseCode == 1) {
+        debugger;
+       // const current = 
+        for (let i = 0; i < data.dateSet.length; i++) {
+          debugger;
+          if (this.AllSubDepartmentList) {
+
+          }
+
+
+        }
+
+
+    
+
+    
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
+  ChangeActingDepartment() {
+
+  }
+ 
 
 
     sendOption() {
