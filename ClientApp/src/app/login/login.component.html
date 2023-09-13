@@ -30,7 +30,7 @@
             <button class="button2 OTP" (click)="onSendOTP()" *ngIf="sendOTPBtn">Send OTP</button>
             <input class="input" type="text" placeholder="Enter OTP" formControlName="OTPField" />
             <button type="submit" [disabled]="!registerForm.valid" [class.disabled]="!registerForm.valid" class="button2" (click)="onRegister()">Verify & Continue</button>
-<!-- <p>{{otp}}</p>-->
+<!--<p>{{otp}}</p>-->
           </form>
         </div>
         <div class="form-container sign-in-container">
