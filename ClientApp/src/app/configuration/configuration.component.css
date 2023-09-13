@@ -242,5 +242,9 @@ h3 {
   transition: width 0.3s ease-out;
 }*/
 
-
+:host ::ng-deep .mat-tab-label-active {
+  background-color: #ccdee2;
+  color: #005870;
+  user-select: none;
+}
 

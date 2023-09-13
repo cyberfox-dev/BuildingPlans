@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output, ViewChild, ViewContainerRef } from '@angular/core';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { ApplicationsService } from '../service/Applications/applications.service';
 import { MatTable } from '@angular/material/table';
@@ -21,7 +21,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { ZoneForCommentService } from '../service/ZoneForComment/zone-for-comment.service';
 import { SubDepartmentsService } from '../service/SubDepartments/sub-departments.service';
-
+import { trigger, state, style, animate, transition } from '@angular/animations';
 
 
 
@@ -146,6 +146,13 @@ export interface ClientUserList {
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ["./home.component.scss"],
+  animations: [
+    trigger('backgroundFadeInOut', [
+      state('transparent', style({ 'background-color': 'rgba(255, 255, 255, 0)' })),
+      state('solid', style({ 'background-color': 'rgba(255, 255, 255, 0.8)' })),
+      transition('transparent <=> solid', animate('1s ease-in-out')), // Adjust duration and easing
+    ]),
+  ],
 })
 
 
@@ -1344,7 +1351,7 @@ dataSource = this.Applications;
       console.log("Error: ", error);
     })
   }
-
+  page = 4;
   goToWaitScreen() {
 
   }
@@ -1673,6 +1680,20 @@ tempApplicationList.TestApplicationAge = daysDiff;
     }, error => {
       console.log("Error: ", error);
     })
+  }
+
+  isTransparent: boolean = true; // Initialize as true if you want the navbar to be transparent initially
+
+  @HostListener('window:scroll', ['$event'])
+  checkScroll() {
+    // Calculate the scroll position
+    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+
+    // You can adjust this threshold value as needed
+    const threshold = 100;
+
+    // Update the isTransparent property based on the scroll position
+    this.isTransparent = scrollPosition < threshold;
   }
 
   }

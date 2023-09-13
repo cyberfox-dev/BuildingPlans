@@ -1,4 +1,4 @@
-<app-nav-menu></app-nav-menu>
+<app-nav-menu [@fadeInOut]="isTransparent ? 'transparent' : 'solid'"></app-nav-menu>
 <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700,800&display=swap" rel="stylesheet">
 <link _ngcontent-ng-cli-universal-c545="" href="https://fonts.googleapis.com/css?family=Roboto:300italic,400italic,400,100,300,600,700" rel="stylesheet" type="text/css">
 
@@ -131,9 +131,9 @@
     <!--ProjectNumber-->
     <!--</table>-->
     <!--    <mat-form-field>
-      <mat-label>Filter</mat-label>
-      <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
-    </mat-form-field>-->
+    <mat-label>Filter</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+  </mat-form-field>-->
     <div class="">
       <mat-form-field appearance="outline">
         <mat-label>Search</mat-label>
@@ -229,8 +229,10 @@
 
 
 
+
     </div>
-</div>
+
+  </div>
 
 <ng-template #internalOpt let-modal>
   <div class="modal-header">
