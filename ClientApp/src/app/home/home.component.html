@@ -11,7 +11,9 @@
 
   <h1>Hi, {{CurrentUser.fullName}}</h1>
   <h2>Welcome to your Dashboard</h2>
-
+  <div style="background: red; text-align: center; font-size: xx-large; color: white; padding: 10px; line-height: 0.8;" *ngIf="ServerType === 'QA'">
+Please note, you've accessed the test server, nothing captured to this server will be processed. Please go to wayleave.capetown.gov.za to access the live site.
+  </div>
 
   <!--  <button class="btn" (click)="goToNewWayleave()"><a><i class="fa fa-plus"></i> Create New Wayleave</a></button>-->
   <div class="cont3">
@@ -27,25 +29,25 @@
   <!--Tabs-->
 
   <div class="main-container">
-  
-      <div class="heading">
-       
 
-          <mat-form-field>
+    <div class="heading">
 
-            <mat-select value="option3" [(value)]="select" (selectionChange)="onFilterApplications()">
-              <mat-option value="option1">My Applications</mat-option>
-              <mat-option value="option2">My Reviews</mat-option>
-              <mat-option value="option3">Recent Projects</mat-option>
-            </mat-select>
-          </mat-form-field>
 
-      
+      <mat-form-field>
 
-      </div>
-    
+        <mat-select value="option3" [(value)]="select" (selectionChange)="onFilterApplications()">
+          <mat-option value="option1">My Applications</mat-option>
+          <mat-option value="option2">My Reviews</mat-option>
+          <mat-option value="option3">Recent Projects</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+
+
+    </div>
+
     <div class="cards">
-      <div class="card card-5" >
+      <div class="card card-5">
         <h4>Unpaid</h4>
         <h1 class="num">{{unpaidcount}}</h1>
         <p class="card__apply">
@@ -89,45 +91,45 @@
 
   <div class="table container-fluid">
     <!--  <table class="table table-hover table-xl border_bottom">
-  <thead>
-    <tr class="tableheader">
-      <th scope="col" class="border-top-0">Status</th>
-      <th scope="col" class="border-top-0">Project#</th>
-      <th scope="col" class="border-top-0">Item Location</th>
-      <th scope="col" class="border-top-0">Item Name</th>
-      <th scope="col" class="border-top-0">Application Type</th>
-      <th scope="col" class="border-top-0">Current Stage</th>
-      <th scope="col" class="border-top-0">Date Created</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td class="text-truncate row_padding">
-        <i class="la la-dot-circle-o  font-medium-1 mr-1"></i>
-        Test
-      </td>
-      <td class="text-truncate row_padding">
-        <a href="javascript:void(0);" (click)="viewProject()">TEST</a>
-      </td>
+    <thead>
+      <tr class="tableheader">
+        <th scope="col" class="border-top-0">Status</th>
+        <th scope="col" class="border-top-0">Project#</th>
+        <th scope="col" class="border-top-0">Item Location</th>
+        <th scope="col" class="border-top-0">Item Name</th>
+        <th scope="col" class="border-top-0">Application Type</th>
+        <th scope="col" class="border-top-0">Current Stage</th>
+        <th scope="col" class="border-top-0">Date Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="text-truncate row_padding">
+          <i class="la la-dot-circle-o  font-medium-1 mr-1"></i>
+          Test
+        </td>
+        <td class="text-truncate row_padding">
+          <a href="javascript:void(0);" (click)="viewProject()">TEST</a>
+        </td>
 
-      <td class="text-truncate row_padding">
-        <span>TEST</span>
-      </td>
+        <td class="text-truncate row_padding">
+          <span>TEST</span>
+        </td>
 
-      <td class="text-truncate row_padding">
-        <span>TEST</span>
-      </td>
-      <td class="text-truncate row_padding">
-        <span>
-          TEST
-        </span>
-      </td>
-      <td class="text-truncate row_padding">
-        <span>TEST</span>
-      </td>
-      <td class="text-truncate row_padding">TEST</td>
-    </tr>
-  </tbody>-->
+        <td class="text-truncate row_padding">
+          <span>TEST</span>
+        </td>
+        <td class="text-truncate row_padding">
+          <span>
+            TEST
+          </span>
+        </td>
+        <td class="text-truncate row_padding">
+          <span>TEST</span>
+        </td>
+        <td class="text-truncate row_padding">TEST</td>
+      </tr>
+    </tbody>-->
     <!--ProjectNumber-->
     <!--</table>-->
     <!--    <mat-form-field>
@@ -230,6 +232,7 @@
 
 
     </div>
+  </div>
 </div>
 
 <ng-template #internalOpt let-modal>
@@ -791,3 +794,4 @@
 
   <p>Loading</p>
 </ng-template>
+

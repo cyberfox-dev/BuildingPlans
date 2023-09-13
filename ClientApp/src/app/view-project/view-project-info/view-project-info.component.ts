@@ -3105,7 +3105,7 @@ export class ViewProjectInfoComponent implements OnInit {
   response: { dbPath: ''; } | undefined
   progress: number = 0;
   message = '';
-  private readonly apiUrl: string = this.sharedService.getApiUrl();
+  private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
   save() {
 
     const filesForUpload = this.sharedService.pullFilesForUpload();

@@ -13,6 +13,20 @@ import { Observable, of } from 'rxjs';
 import { BpNumberService } from 'src/app/service/BPNumber/bp-number.service'
 import { tap } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ConfigService } from 'src/app/service/Config/config.service';
+
+  export interface ConfigList {
+  ConfigID: number,
+  ConfigName: string,
+  ConfigDescription: string,
+  DateCreated: Date,
+  DateUpdated: Date,
+  CreatedById: string,
+  isActive: boolean,
+  UtilitySlot1: string,
+  UtilitySlot2: string,
+  UtilitySlot3: string,
+}
 
 @Component({
   selector: 'app-login',
@@ -63,6 +77,10 @@ export class LoginComponent implements OnInit {
   Password: string;
   emailPasswordReset = '';
 
+  //Gets all configuration data
+  AllConfig: ConfigList[] = [];
+  ServerType: string;
+
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
@@ -75,10 +93,12 @@ export class LoginComponent implements OnInit {
     // private homeComponent: HomeComponent,
     private modalService: NgbModal,
     private bpNumberService: BpNumberService,
+    private configService: ConfigService,
+  ) {     //Run this before anything else because weaccess the apiURL from it.
+    this.getAllConfigData();
+  }
 
-  ) { }
-
-
+  ng
 
   ngOnInit() {
 
@@ -1076,6 +1096,52 @@ export class LoginComponent implements OnInit {
     this.sentOTP = false;
     this.beforeSentOTP = true;
   }
+
+  getAllConfigData() {
+    this.AllConfig.splice(0, this.AllConfig.length);
+
+
+    this.configService.getAllConfigs().subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempConfigList = {} as ConfigList;
+          const current = data.dateSet[i];
+
+          tempConfigList.ConfigID = current.configID;
+          tempConfigList.ConfigName = current.configName;
+          tempConfigList.ConfigDescription = current.configDescription;
+          tempConfigList.DateCreated = current.dateCreated;
+          tempConfigList.DateUpdated = current.dateUpdated;
+          tempConfigList.CreatedById = current.createdById;
+          tempConfigList.isActive = current.isActive;
+          tempConfigList.UtilitySlot1 = current.utilitySlot1;
+          tempConfigList.UtilitySlot2 = current.utilitySlot2;
+          tempConfigList.UtilitySlot3 = current.utilitySlot3;
+
+          console.log("MapConfig:", tempConfigList);
+
+          this.AllConfig.push(tempConfigList);
+
+          //    this.sharedService.MapConfig(tempConfigList);
+        }
+        this.sharedService.setAllConfig(this.AllConfig);
+        this.ServerType = this.AllConfig.find((config) => config.ConfigName === 'ServerType').UtilitySlot1;
+        this.sharedService.setAPIURL(this.AllConfig.find((config) => config.ConfigName === 'APIURL').UtilitySlot1);
+      }
+      else {
+        alert("Error");
+      }
+
+      console.log("response", data);
+    }, error => {
+      console.log("Error", error);
+    })
+
+  }
+
+
 }
 
 

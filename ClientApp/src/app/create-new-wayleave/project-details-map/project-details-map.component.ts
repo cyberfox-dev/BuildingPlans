@@ -204,7 +204,9 @@ export class ProjectDetailsMapComponent implements OnInit {
   private assignTo: string = "";
   ZoneList: ZoneList[] = [];
   Zone: ZoneList;
+  AllConfig: ConfigList[] = [];
   MapConfig: ConfigList[] = [];
+  ServerType: string;
   /*  zoneAdminUsers: any;*/
   /*  DistributionList: DistributionList[] = []*/
 
@@ -239,7 +241,7 @@ export class ProjectDetailsMapComponent implements OnInit {
 
     this.sharedService.distributionList.splice(0, this.sharedService.distributionList.length);
     this.sharedService.totalAddedFeatures = 0;
-    this.MapConfig = this.sharedService.getMapConfig();
+    this.AllConfig = this.sharedService.getAllConfig();
     this.mapURLLoader();
 
 
@@ -901,7 +903,7 @@ export class ProjectDetailsMapComponent implements OnInit {
 
       featureLayer.on("edits", async (event) => {
         this.toggleLoadingIndicator(true); // Show loading indicator
-        console.log("MapConfig:",this.MapConfig)
+/*        console.log("MapConfig:",this.AllConfig)*/
 
         //Clears the distribution list. This should be moved to when the application is successfully captured and on "Create new wayleave".
         this.sharedService.distributionList.splice(0, this.sharedService.distributionList.length);
@@ -1837,10 +1839,12 @@ export class ProjectDetailsMapComponent implements OnInit {
   }
 
   mapURLLoader() {
+    this.MapConfig = this.AllConfig.filter((config) => config.ConfigName === 'Map');
+
 
     // Filter the list so that only the first row with 'ServerType', is returned.
-    const serverType = this.MapConfig.find((config) => config.UtilitySlot1 === 'ServerType').UtilitySlot2;
-    const MapConfigForServer = this.MapConfig.filter((config) => config.UtilitySlot1 === serverType);
+    this.ServerType = this.AllConfig.find((config) => config.ConfigName === 'ServerType').UtilitySlot1;
+    const MapConfigForServer = this.MapConfig.filter((config) => config.UtilitySlot1 === this.ServerType);
 
 
     //Check if user is internal or external

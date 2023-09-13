@@ -15,6 +15,6 @@ namespace WayleaveManagementSystem.IServices
 
         Task<List<ConfigDTO>> GetConfigsByUserID(string? userID);
 
-       
+        Task<List<ConfigDTO>> GetAllConfigs();
     }
 }

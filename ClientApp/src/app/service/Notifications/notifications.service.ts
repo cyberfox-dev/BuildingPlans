@@ -12,7 +12,7 @@ export class NotificationsService {
   subject = 'Test';
   text = 'testing 1, 2, 3 ...';*/
 
-  private readonly apiUrl: string = this.sharedService.getApiUrl();
+  private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
   private readonly baseURL: string = this.apiUrl + "notification/";
 
 
