@@ -7,7 +7,7 @@ import { SharedService } from 'src/app/shared/shared.service';
 })
 export class StagesService {
 
-  private readonly apiUrl: string = this.sharedService.getApiUrl();
+  private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
   private readonly baseURL: string = this.apiUrl + "stage/";
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }

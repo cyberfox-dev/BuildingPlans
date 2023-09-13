@@ -469,7 +469,7 @@ export class NewWayleaveComponent implements OnInit {
   notiName: string;
   notiDescription: string;
   //CoverLetterFileName = "Choose file";
-  private readonly apiUrl: string = this.shared.getApiUrl();
+  private readonly apiUrl: string = this.shared.getApiUrl() + '/api/';
 
   fileAttrs: string[] = [];
   TOE = "";

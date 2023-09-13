@@ -23,7 +23,7 @@ export class DocumentsComponentComponent implements OnInit {
   @Input() ApplicationID: number;
 
   DocumentsList: DocumentsList[] = [];
-  private readonly apiUrl: string = this.shared.getApiUrl();
+  private readonly apiUrl: string = this.shared.getApiUrl() + '/api/';
 
   fileAttrs = "Upload File:";
   fileAttrsName = "Doc";

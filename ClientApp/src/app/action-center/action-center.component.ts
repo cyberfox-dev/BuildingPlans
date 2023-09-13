@@ -3623,7 +3623,7 @@ getAllCommentsByUserID() {
   }
 
   /*This is for the planning wayleave for deps to upload documents*/
-  private readonly apiUrl: string = this.sharedService.getApiUrl();
+  private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
 
 
 

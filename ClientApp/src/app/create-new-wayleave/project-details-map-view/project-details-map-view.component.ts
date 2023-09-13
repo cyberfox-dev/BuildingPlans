@@ -139,13 +139,15 @@ export class ProjectDetailsMapViewComponent implements OnInit {
   basicServicesInfrustructureSanitized: string;
   basicServicesInfrustructureUnsanitized: string;
 
+  AllConfig: ConfigList[] = [];
   MapConfig: ConfigList[] = [];
 
 
   ngOnInit(): void {
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
-    this.MapConfig = this.sharedService.getMapConfig();
+    this.AllConfig = this.sharedService.getAllConfig();
+    this.mapURLLoader();
 
     if (this.data.applicationID != null && this.data.applicationID != undefined) {
     } else {
@@ -165,8 +167,15 @@ export class ProjectDetailsMapViewComponent implements OnInit {
     console.log("IsActive " + this.data.isActive)
     console.log("CreatedByID " + this.data.createdByID)
 
+    //const map = new Map({
+    //  basemap: 'gray-vector',
+    //});
+
     const map = new Map({
-      basemap: 'gray-vector',
+      basemap: 'hybrid',
+      /*      layers: [graphicsLayer]*/
+      /*      layers: [pointLayer, lineLayer, polygonLayer]*/
+
     });
 
     const view = new MapView({
@@ -184,26 +193,27 @@ export class ProjectDetailsMapViewComponent implements OnInit {
     const toggle = new BasemapToggle({
       // 2 - Set properties
       view: view, // view that provides access to the map's 'topo-vector' basemap
-      nextBasemap: "hybrid" // allows for toggling to the 'hybrid' basemap
+      nextBasemap: "gray-vector" // allows for toggling to the 'hybrid' basemap
     });
 
     view.ui.add(toggle, "bottom-right");
 
-    const searchWidget = new Search({
-      view: view,
-      popupEnabled: true,
-      locationEnabled: false,
-      resultGraphicEnabled: true,
-      container: this.searchDivEl.nativeElement
-    });
-    searchWidget.on('select-result', (event) => {
-      console.log("The selected search result: ", event.result.name);
-      this.sharedService.setAddressData(event.result.name)
-    });
-    view.ui.add(searchWidget, {
-      position: 'top-left',
-      index: 1,
-    });
+    //const searchWidget = new Search({
+    //  view: view,
+    //  popupEnabled: true,
+    //  locationEnabled: false,
+    //  resultGraphicEnabled: true,
+    //  container: this.searchDivEl.nativeElement
+    //});
+
+    //searchWidget.on('select-result', (event) => {
+    //  console.log("The selected search result: ", event.result.name);
+    //  this.sharedService.setAddressData(event.result.name)
+    //});
+    //view.ui.add(searchWidget, {
+    //  position: 'top-left',
+    //  index: 1,
+    //});
 
     this.view = view;
     this.map = map;
@@ -291,6 +301,7 @@ export class ProjectDetailsMapViewComponent implements OnInit {
   };
 
   mapURLLoader() {
+    this.MapConfig = this.AllConfig.filter((config) => config.ConfigName === 'Map');
 
     // Filter the list so that only the first row with 'ServerType', is returned.
     const serverType = this.MapConfig.find((config) => config.UtilitySlot1 === 'ServerType').UtilitySlot2;
@@ -316,9 +327,9 @@ export class ProjectDetailsMapViewComponent implements OnInit {
             console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
             // Add your code here for this case
             break;
-          case 'basicServicesInfrustructure':
+          case 'BasicServicesInfrastructure':
             // Handle the case when UtilitySlot3 is 'Zones'
-            this.basicServicesInfrustructureUnsanitized = config.ConfigDescription
+            this.basicServicesInfrustructureSanitized = config.ConfigDescription
 
             console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
             // Add your code here for this case
@@ -349,7 +360,7 @@ export class ProjectDetailsMapViewComponent implements OnInit {
             console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
             // Add your code here for this case
             break;
-          case 'basicServicesInfrustructure':
+          case 'BasicServicesInfrastructure':
             // Handle the case when UtilitySlot3 is 'Zones'
             this.basicServicesInfrustructureUnsanitized = config.ConfigDescription
 
@@ -359,27 +370,29 @@ export class ProjectDetailsMapViewComponent implements OnInit {
           // Add more cases as needed
           default:
             // Handle the case when UtilitySlot3 is not matched with any specific case
-            //Add all "Other" maps
-            const MapConfigForServerForUserForTypeOther = MapConfigForServerForUserI.filter((config) => config.UtilitySlot3 === 'Other');
-
-            MapConfigForServerForUserForTypeOther.forEach((config) => {
-              // Perform the action for each configuration with UtilitySlot3 equal to 'Other'
-              /*      Internal layers*/
-              var otherLayer = new MapImageLayer({
-                url: config.ConfigDescription,
-                visible: false
-              })
-
-              this.map.add(otherLayer);
-
-              console.log(`Performing action for ConfigID ${config.ConfigID}`);
-              // Add your code here to perform the action
-            });
 
             console.log(`Handling default case for ConfigID ${config.ConfigID}`);
             // Add your default code here
             break;
         }
+
+        //Add all "Other" maps
+        const MapConfigForServerForUserForTypeOther = MapConfigForServerForUserI.filter((config) => config.UtilitySlot3 === 'Other');
+
+        MapConfigForServerForUserForTypeOther.forEach((config) => {
+          // Perform the action for each configuration with UtilitySlot3 equal to 'Other'
+          /*      Internal layers*/
+          var otherLayer = new MapImageLayer({
+            url: config.ConfigDescription,
+            visible: false
+          })
+
+          this.map.add(otherLayer);
+
+          console.log(`Performing action for ConfigID ${config.ConfigID}`);
+          // Add your code here to perform the action
+        });
+
       });
 
     } else if (!this.CurrentUserProfile[0].isInternal) {
@@ -400,7 +413,7 @@ export class ProjectDetailsMapViewComponent implements OnInit {
             console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
             // Add your code here for this case
             break;
-          case 'basicServicesInfrustructure':
+          case 'BasicServicesInfrastructure':
             // Handle the case when UtilitySlot3 is 'Zones'
             this.basicServicesInfrustructureSanitized = config.ConfigDescription
 
@@ -421,6 +434,5 @@ export class ProjectDetailsMapViewComponent implements OnInit {
       //do nothing
     }
   }
-
 
 }

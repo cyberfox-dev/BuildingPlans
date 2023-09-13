@@ -5,6 +5,7 @@ using WayleaveManagementSystem.IServices;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel;
+using WayleaveManagementSystem.Models.DTO;
 
 namespace WayleaveManagementSystem.Service
 {
@@ -17,7 +18,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Config> AddUpdateConfig(int? configID, string configName,string configDescription, string? utilitySlot1, string? utilitySlot2, string? utilitySlot3, string? creadtedByID)
+        public async Task<Config> AddUpdateConfig(int? configID, string configName, string configDescription, string? utilitySlot1, string? utilitySlot2, string? utilitySlot3, string? creadtedByID)
         {
 
             if (configID == 0)
@@ -38,9 +39,9 @@ namespace WayleaveManagementSystem.Service
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     CreatedById = creadtedByID,
-                    UtilitySlot1= utilitySlot1,
-                    UtilitySlot2= utilitySlot2,
-                    UtilitySlot3= utilitySlot3,
+                    UtilitySlot1 = utilitySlot1,
+                    UtilitySlot2 = utilitySlot2,
+                    UtilitySlot3 = utilitySlot3,
 
                     isActive = true
                 };
@@ -70,11 +71,11 @@ namespace WayleaveManagementSystem.Service
                 {
                     tempConfigTable.ConfigName = configName;
                 }
-                if(configDescription != null)
+                if (configDescription != null)
                 {
                     tempConfigTable.ConfigDescription = configDescription;
                 }
-               
+
                 tempConfigTable.DateUpdated = DateTime.Now;
                 tempConfigTable.isActive = true;
 
@@ -95,7 +96,7 @@ namespace WayleaveManagementSystem.Service
             if (tempConfigTable == null)
             {
                 return await Task.FromResult(false);
-                
+
             }
             else
             {
@@ -159,8 +160,9 @@ namespace WayleaveManagementSystem.Service
         //this method gets all the professionals linked to a partcular user 
         public async Task<List<ConfigDTO>> GetConfigsByUserID(string? userID)
         {
-            return await(
-                from config in _context.Config where config.CreatedById == userID && config.isActive == true
+            return await (
+                from config in _context.Config
+                where config.CreatedById == userID && config.isActive == true
                 select new ConfigDTO()
                 {
                     ConfigID = config.ConfigID,
@@ -176,8 +178,28 @@ namespace WayleaveManagementSystem.Service
                 ).ToListAsync();
         }
 
+        public async Task<List<ConfigDTO>> GetAllConfigs()
+        {
+            return await (
+                from config in _context.Config
+                where config.isActive == true
+                select new ConfigDTO()
+                {
+                    ConfigID = config.ConfigID,
+                    ConfigName = config.ConfigName,
+                    ConfigDescription = config.ConfigDescription,
+                    DateCreated = config.DateCreated,
+                    DateUpdated = config.DateUpdated,
+                    CreatedById = config.CreatedById,
+                    UtilitySlot1 = config.UtilitySlot1,
+                    UtilitySlot2 = config.UtilitySlot2,
+                    UtilitySlot3 = config.UtilitySlot3,
 
-      
+                }
+                ).ToListAsync();
+        }
+
+
 
 
     }

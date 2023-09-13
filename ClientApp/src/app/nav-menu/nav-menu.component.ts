@@ -800,7 +800,7 @@ export class NavMenuComponent implements OnInit {
 
   }
 
-  private readonly apiUrl: string = this.shared.getApiUrl();
+  private readonly apiUrl: string = this.shared.getApiUrl() + '/api/';
 
   viewDocument(index: any) {
 
