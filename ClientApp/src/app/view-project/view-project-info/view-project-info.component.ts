@@ -1856,7 +1856,7 @@ export class ViewProjectInfoComponent implements OnInit {
                 if (data.responseCode == 1) {
 
                   alert(data.responseMessage);
-                  this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application payment", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + this.ApplicationID + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application payment", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" +"WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
 
 
                   }
@@ -3132,6 +3132,9 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
 
+
+
+
   uploadFinished = (event: any) => {
     this.response = event;
     console.log("this.response", this.response);
@@ -3151,7 +3154,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
           if (data.responseCode == 1) {
 
-            this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+            this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.projectNo, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
             this.modalService.dismissAll();
             alert("Application moved to PTW. You may now apply for permit.");
             this.router.navigate(["/home"]);
@@ -3906,7 +3909,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
       if (data.responseCode == 1) {
 
-        this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+        this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.projectNo, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
         this.modalService.dismissAll();
         alert("Application moved to PTW");
         this.router.navigate(["/home"]);
@@ -3936,11 +3939,12 @@ export class ViewProjectInfoComponent implements OnInit {
     debugger;
     if (this.CurrentApplicationBeingViewed[0].wbsrequired == true) {
 
-      if (this.CurrentApplicationBeingViewed[0].WBSNumber != null) {
+      if ( this.CurrentApplicationBeingViewed[0].WBSNumber.length >0) {
         this.wbsNumberRequested = this.CurrentApplicationBeingViewed[0].WBSNumber;
         this.WBSField = true;
+        this.WBSBtn = false;
       }
-      else if (this.CurrentApplicationBeingViewed[0].CreatedById == this.CurrentUser.appUserId) {
+      if (this.CurrentApplicationBeingViewed[0].CreatedById == this.CurrentUser.appUserId && this.CurrentApplicationBeingViewed[0].WBSNumber.length < 1) {
         this.WBSBtn = true;
       }
     }

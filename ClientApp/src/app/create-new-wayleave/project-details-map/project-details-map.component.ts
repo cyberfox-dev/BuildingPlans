@@ -47,6 +47,7 @@ import LabelClass from '@arcgis/core/layers/support/LabelClass';
 import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
 import Popup from '@arcgis/core/widgets/Popup';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
+
 //import * as FeatureLayerView from 'esri/views/layers/FeatureLayerView';
 
 /*import { Editor, EditorViewModel, FeatureFormViewModel } from "@arcgis/core/widgets/Editor";*/
@@ -118,6 +119,18 @@ export interface ZoneList {
   mapObjectID: number;
 }
 
+export interface ConfigList {
+  ConfigID: number,
+  ConfigName: string,
+  ConfigDescription: string,
+  DateCreated: Date,
+  DateUpdated: Date,
+  CreatedById: string,
+  isActive: boolean,
+  UtilitySlot1: string,
+  UtilitySlot2: string,
+  UtilitySlot3: string,
+}
 //export interface DistributionList {
 
 //  directorate: string;
@@ -191,12 +204,23 @@ export class ProjectDetailsMapComponent implements OnInit {
   private assignTo: string = "";
   ZoneList: ZoneList[] = [];
   Zone: ZoneList;
+  MapConfig: ConfigList[] = [];
   /*  zoneAdminUsers: any;*/
   /*  DistributionList: DistributionList[] = []*/
 
 
-  public stringifiedData: any;
-  public CurrentUser: any;
+  stringifiedData: any;
+  stringifiedDataUserProfile: any;
+  CurrentUserProfile: any;
+
+  //MapURLs
+  featureServerEditURL: string;
+  zonesURL: string;
+  infrustructureURL: string;
+  searchERFURL: string;
+
+
+
   //public isActive: string = "1";
   //public applicationID: string = "1";
 
@@ -206,12 +230,19 @@ export class ProjectDetailsMapComponent implements OnInit {
   /*  public createdByID: string = "123344";*/
 
   ngOnInit(): void {
+    this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
+    this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
+
     this.positionAndMapLoad();
     let editConfigCrimeLayer, editConfigPoliceLayer;
     this.departmentConfigComponent.getAllSubDepartments();
 
     this.sharedService.distributionList.splice(0, this.sharedService.distributionList.length);
     this.sharedService.totalAddedFeatures = 0;
+    this.MapConfig = this.sharedService.getMapConfig();
+    this.mapURLLoader();
+
+
   }
 
   private async positionAndMapLoad() {
@@ -442,7 +473,7 @@ export class ProjectDetailsMapComponent implements OnInit {
       location: view.center
     }, {
       layer: new FeatureLayer({
-        url: "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Land_Administration/MapServer/13",
+        url: this.searchERFURL,
         outFields: ["*"]
       }),
       placeholder: "Find ERF",
@@ -510,7 +541,7 @@ export class ProjectDetailsMapComponent implements OnInit {
     //}
 
     const featureLayer = new FeatureLayer({
-      url: "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves/FeatureServer",
+      url: this.featureServerEditURL,
       title: "Wayleaves edit layer",
       /*        definitionExpression: "OBJECTID = 1"*/
       /*            definitionExpression: "CRTD_BY_ID = 777"*/
@@ -637,18 +668,18 @@ export class ProjectDetailsMapComponent implements OnInit {
       //map.add(streetlights);
 
       var zones = new MapImageLayer({
-        url: "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves_Regions/MapServer",
+        url: this.zonesURL,
 
       })
 
       map.add(zones);
 
-      var bulkwater = new MapImageLayer({
-        url: "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer",
+      var infrustructure = new MapImageLayer({
+        url: this.infrustructureURL,
 
       })
 
-      map.add(bulkwater);
+      map.add(infrustructure);
 
 
       /*      Add layerlist and legend*/
@@ -870,6 +901,7 @@ export class ProjectDetailsMapComponent implements OnInit {
 
       featureLayer.on("edits", async (event) => {
         this.toggleLoadingIndicator(true); // Show loading indicator
+        console.log("MapConfig:",this.MapConfig)
 
         //Clears the distribution list. This should be moved to when the application is successfully captured and on "Create new wayleave".
         this.sharedService.distributionList.splice(0, this.sharedService.distributionList.length);
@@ -944,13 +976,13 @@ export class ProjectDetailsMapComponent implements OnInit {
                 } else if (mapLayerID == -1) {
 
                   //Bulk water
-                  const bulkWaterExclusions = await this.InterceptInfrustructureChecker(SubDepartmentName, 'Bulk Water', query, 1022, 'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/', [70, 134, 68, 55, 56, 69, 75, 130, 54, 76, 77, 135, 71, 136, 58, 53, 60, 131, 138, 61, 73, 137, 51, 63, 50, 62, 132, 133, 78, 52, 57, 59]);
+                  const bulkWaterExclusions = await this.InterceptInfrustructureChecker(SubDepartmentName, 'Bulk Water', query, 1022, this.infrustructureURL + '/', [70, 134, 68, 55, 56, 69, 75, 130, 54, 76, 77, 135, 71, 136, 58, 53, 60, 131, 138, 61, 73, 137, 51, 63, 50, 62, 132, 133, 78, 52, 57, 59]);
 
                   //Join lists
                   exclusionsList = exclusionsList.concat(bulkWaterExclusions);
 
                   //Effluent
-                  const effluentExclusions = await this.InterceptInfrustructureChecker(SubDepartmentName, 'Water Demand Management', query, 1023, 'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/', [100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114]);
+                  const effluentExclusions = await this.InterceptInfrustructureChecker(SubDepartmentName, 'Water Demand Management', query, 1023, this.infrustructureURL + '/', [100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114]);
 
                   //Join lists
                   exclusionsList = exclusionsList.concat(effluentExclusions);
@@ -967,7 +999,7 @@ export class ProjectDetailsMapComponent implements OnInit {
                   //This code runs when a subdepartment consists of multiple regions
                 } else if (mapLayerID > -1) {
                   // Set up the layer in the MapServer to query against
-                  mapServerLayerUrl[i] = "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves_Regions/MapServer/" + mapLayerID;
+                  mapServerLayerUrl[i] = this.zonesURL + "/" + mapLayerID;
 
                   const mapServerLayer = new FeatureLayer({
                     url: mapServerLayerUrl[i]
@@ -1802,5 +1834,104 @@ export class ProjectDetailsMapComponent implements OnInit {
   // Method to toggle the loading indicator
   toggleLoadingIndicator(isLoading: boolean) {
     this.isLoading = isLoading;
+  }
+
+  mapURLLoader() {
+
+    // Filter the list so that only the first row with 'ServerType', is returned.
+    const serverType = this.MapConfig.find((config) => config.UtilitySlot1 === 'ServerType').UtilitySlot2;
+    const MapConfigForServer = this.MapConfig.filter((config) => config.UtilitySlot1 === serverType);
+
+
+    //Check if user is internal or external
+    if (this.CurrentUserProfile[0].isInternal) {
+      //Internal users have access to both Internal and external layers
+      const MapConfigForServerForUser = MapConfigForServer.filter((config) => config.UtilitySlot2 === 'External');
+
+      MapConfigForServerForUser.forEach((config) => {
+        switch (config.UtilitySlot3) {
+          case 'FeatureServer(Edit)':
+            // Handle the case when UtilitySlot3 is 'FeatureServer(Edit)'
+            this.featureServerEditURL = config.ConfigDescription
+            console.log(`Handling FeatureServer(Edit) for ConfigID ${config.ConfigID}`);
+            // Add your code here for this case
+            break;
+
+          case 'Zones':
+            // Handle the case when UtilitySlot3 is 'Zones'
+            this.zonesURL = config.ConfigDescription
+            console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
+            // Add your code here for this case
+            break;
+          case 'Infrustructure':
+            // Handle the case when UtilitySlot3 is 'Zones'
+            this.infrustructureURL = config.ConfigDescription
+
+            console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
+            // Add your code here for this case
+            break;
+          case 'SearchERF':
+            // Handle the case when UtilitySlot3 is 'Zones'
+            this.searchERFURL = config.ConfigDescription
+
+            console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
+            // Add your code here for this case
+            break;
+
+          // Add more cases as needed
+          default:
+            // Handle the case when UtilitySlot3 is not matched with any specific case
+            console.log(`Handling default case for ConfigID ${config.ConfigID}`);
+            // Add your default code here
+            break;
+        }
+      });
+
+    } else if (!this.CurrentUserProfile[0].isInternal) {
+      const MapConfigForServerForUser = MapConfigForServer.filter((config) => config.UtilitySlot2 === 'External');
+
+      MapConfigForServerForUser.forEach((config) => {
+        switch (config.UtilitySlot3) {
+          case 'FeatureServer(Edit)':
+            // Handle the case when UtilitySlot3 is 'FeatureServer(Edit)'
+            this.featureServerEditURL = config.ConfigDescription
+            console.log(`Handling FeatureServer(Edit) for ConfigID ${config.ConfigID}`);
+            // Add your code here for this case
+            break;
+
+          case 'Zones':
+            // Handle the case when UtilitySlot3 is 'Zones'
+            this.zonesURL = config.ConfigDescription
+            console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
+            // Add your code here for this case
+            break;
+          case 'Infrustructure':
+            // Handle the case when UtilitySlot3 is 'Zones'
+            this.infrustructureURL = config.ConfigDescription
+
+            console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
+            // Add your code here for this case
+            break;
+          case 'SearchERF':
+            // Handle the case when UtilitySlot3 is 'Zones'
+            this.searchERFURL = config.ConfigDescription
+
+            console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
+            // Add your code here for this case
+            break;
+
+          // Add more cases as needed
+          default:
+            // Handle the case when UtilitySlot3 is not matched with any specific case
+            console.log(`Handling default case for ConfigID ${config.ConfigID}`);
+            // Add your default code here
+            break;
+        }
+      });
+
+
+    } else {
+      //do nothing
+    }
   }
 }

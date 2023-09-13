@@ -78,6 +78,19 @@ interface LayerInfo {
   geometryUpdatesEnabled?: boolean;
 }
 
+export interface ConfigList {
+  ConfigID: number,
+  ConfigName: string,
+  ConfigDescription: string,
+  DateCreated: Date,
+  DateUpdated: Date,
+  CreatedById: string,
+  isActive: boolean,
+  UtilitySlot1: string,
+  UtilitySlot2: string,
+  UtilitySlot3: string,
+}
+
 @Component({
   selector: 'app-project-details-map-view',
   templateUrl: './project-details-map-view.component.html',
@@ -116,10 +129,24 @@ export class ProjectDetailsMapViewComponent implements OnInit {
   private oldGraphics: any;
   private defaultZoom: number = 6;
 
-  public stringifiedData: any;
-  public CurrentUser: any;
+  stringifiedData: any;
+  stringifiedDataUserProfile: any;
+  CurrentUserProfile: any;
+
+  //MapURLs
+  featureServerViewURL: string;
+  zonesURL: string;
+  basicServicesInfrustructureSanitized: string;
+  basicServicesInfrustructureUnsanitized: string;
+
+  MapConfig: ConfigList[] = [];
+
 
   ngOnInit(): void {
+    this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
+    this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
+    this.MapConfig = this.sharedService.getMapConfig();
+
     if (this.data.applicationID != null && this.data.applicationID != undefined) {
     } else {
       this.data.applicationID = this.sharedService.getApplicationID();
@@ -182,7 +209,7 @@ export class ProjectDetailsMapViewComponent implements OnInit {
     this.map = map;
 
     const featureLayer = new FeatureLayer({
-      url: "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves/FeatureServer",
+      url: this.featureServerViewURL,
       title: "Client's polygon",
       /*        definitionExpression: "OBJECTID = 1"*/
       /*            definitionExpression: "CRTD_BY_ID = 777"*/
@@ -200,22 +227,22 @@ export class ProjectDetailsMapViewComponent implements OnInit {
       })
 
       /*      External layers*/
-      //var streetlights = new MapImageLayer({
-      //  url: "https://citymaps.capetown.gov.za/agsext/rest/services/Theme_Based/Basic_Services_Infrastructure/MapServer"
-      //})
+      var externalLayer = new MapImageLayer({
+        url: this.basicServicesInfrustructureSanitized,
+      })
 
-      //map.add(streetlights);
+      map.add(externalLayer);
 
       /*      Internal layers*/
       var internalLayer = new MapImageLayer({
-        url: "https://isap.capetown.gov.za/agsint/rest/services/Theme_Based/Basic_Services_Infrastructure/MapServer"
+        url: this.basicServicesInfrustructureUnsanitized,
       })
 
       map.add(internalLayer);
 
    /*   Regions*/
       var zones = new MapImageLayer({
-        url: "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves_Regions/MapServer",
+        url: this.zonesURL,
 
       })
 
@@ -263,6 +290,137 @@ export class ProjectDetailsMapViewComponent implements OnInit {
     }
   };
 
+  mapURLLoader() {
+
+    // Filter the list so that only the first row with 'ServerType', is returned.
+    const serverType = this.MapConfig.find((config) => config.UtilitySlot1 === 'ServerType').UtilitySlot2;
+    const MapConfigForServer = this.MapConfig.filter((config) => config.UtilitySlot1 === serverType);
+
+    //Check if user is internal or external
+    if (this.CurrentUserProfile[0].isInternal) {
+      //Internal users have access to both Internal and external layers
+      const MapConfigForServerForUserE = MapConfigForServer.filter((config) => config.UtilitySlot2 === 'External');
+
+      MapConfigForServerForUserE.forEach((config) => {
+        switch (config.UtilitySlot3) {
+          case 'FeatureServer(View)':
+            // Handle the case when UtilitySlot3 is 'FeatureServer(Edit)'
+            this.featureServerViewURL = config.ConfigDescription
+            console.log(`Handling FeatureServer(View) for ConfigID ${config.ConfigID}`);
+            // Add your code here for this case
+            break;
+
+          case 'Zones':
+            // Handle the case when UtilitySlot3 is 'Zones'
+            this.zonesURL = config.ConfigDescription
+            console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
+            // Add your code here for this case
+            break;
+          case 'basicServicesInfrustructure':
+            // Handle the case when UtilitySlot3 is 'Zones'
+            this.basicServicesInfrustructureUnsanitized = config.ConfigDescription
+
+            console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
+            // Add your code here for this case
+            break;
+          // Add more cases as needed
+          default:
+            // Handle the case when UtilitySlot3 is not matched with any specific case
+            console.log(`Handling default case for ConfigID ${config.ConfigID}`);
+            // Add your default code here
+            break;
+        }
+      });
+
+      const MapConfigForServerForUserI = MapConfigForServer.filter((config) => config.UtilitySlot2 === 'Internal');
+
+      MapConfigForServerForUserI.forEach((config) => {
+        switch (config.UtilitySlot3) {
+          case 'FeatureServer(View)':
+            // Handle the case when UtilitySlot3 is 'FeatureServer(Edit)'
+            this.featureServerViewURL = config.ConfigDescription
+            console.log(`Handling FeatureServer(View) for ConfigID ${config.ConfigID}`);
+            // Add your code here for this case
+            break;
+
+          case 'Zones':
+            // Handle the case when UtilitySlot3 is 'Zones'
+            this.zonesURL = config.ConfigDescription
+            console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
+            // Add your code here for this case
+            break;
+          case 'basicServicesInfrustructure':
+            // Handle the case when UtilitySlot3 is 'Zones'
+            this.basicServicesInfrustructureUnsanitized = config.ConfigDescription
+
+            console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
+            // Add your code here for this case
+            break;
+          // Add more cases as needed
+          default:
+            // Handle the case when UtilitySlot3 is not matched with any specific case
+            //Add all "Other" maps
+            const MapConfigForServerForUserForTypeOther = MapConfigForServerForUserI.filter((config) => config.UtilitySlot3 === 'Other');
+
+            MapConfigForServerForUserForTypeOther.forEach((config) => {
+              // Perform the action for each configuration with UtilitySlot3 equal to 'Other'
+              /*      Internal layers*/
+              var otherLayer = new MapImageLayer({
+                url: config.ConfigDescription,
+                visible: false
+              })
+
+              this.map.add(otherLayer);
+
+              console.log(`Performing action for ConfigID ${config.ConfigID}`);
+              // Add your code here to perform the action
+            });
+
+            console.log(`Handling default case for ConfigID ${config.ConfigID}`);
+            // Add your default code here
+            break;
+        }
+      });
+
+    } else if (!this.CurrentUserProfile[0].isInternal) {
+      const MapConfigForServerForUser = MapConfigForServer.filter((config) => config.UtilitySlot2 === 'External');
+
+      MapConfigForServerForUser.forEach((config) => {
+        switch (config.UtilitySlot3) {
+          case 'FeatureServer(View)':
+            // Handle the case when UtilitySlot3 is 'FeatureServer(Edit)'
+            this.featureServerViewURL = config.ConfigDescription
+            console.log(`Handling FeatureServer(Edit) for ConfigID ${config.ConfigID}`);
+            // Add your code here for this case
+            break;
+
+          case 'Zones':
+            // Handle the case when UtilitySlot3 is 'Zones'
+            this.zonesURL = config.ConfigDescription
+            console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
+            // Add your code here for this case
+            break;
+          case 'basicServicesInfrustructure':
+            // Handle the case when UtilitySlot3 is 'Zones'
+            this.basicServicesInfrustructureSanitized = config.ConfigDescription
+
+            console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
+            // Add your code here for this case
+            break;
+          // Add more cases as needed
+          default:
+            // Handle the case when UtilitySlot3 is not matched with any specific case
+            console.log(`Handling default case for ConfigID ${config.ConfigID}`);
+            // Add your default code here
+            break;
+        }
+      });
+
+
+    } else {
+      //do nothing
+    }
+  }
 
 
 }

@@ -643,6 +643,9 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
+    <br />
+    <p>Inaccuracy of information provided in this section may result in a delay in Wayleave approval.</p>
+    <br />
     <mat-accordion>
       <!-- Loop through each activity type -->
       <mat-expansion-panel *ngFor="let activityType of categorizedProjectSizeCheckList | keyvalue">
