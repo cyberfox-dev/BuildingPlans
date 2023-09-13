@@ -97,10 +97,10 @@ export interface NotificationsList {
   templateUrl: './nav-menu.component.html',
   styleUrls: ['./nav-menu.component.css'],
   animations: [
-    trigger('backgroundFadeInOut', [
-      state('transparent', style({ 'background-color': 'rgba(255, 255, 255, 0)' })),
-      state('solid', style({ 'background-color': 'rgba(255, 255, 255, 0.8)' })),
-
+    trigger('swipeAnimation', [
+      state('transparent', style({ transform: 'translateX(0)' })), // No translation
+      state('solid', style({ transform: 'translateX(100%)' })), // Full translation (off-screen)
+      transition('transparent <=> solid', animate('2s ease-in-out')), // Adjust duration and easing
     ]),
   ],
 })
@@ -1170,7 +1170,7 @@ export class NavMenuComponent implements OnInit {
   @HostListener('window:scroll', [])
   onWindowScroll() {
     const scrollY = window.scrollY || document.documentElement.scrollTop;
-    this.isTransparent = scrollY < 100; // Adjust the scroll threshold as needed
+    this.isTransparent = scrollY < 460; // Adjust the scroll threshold as needed
   }
 
 }
