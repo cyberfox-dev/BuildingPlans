@@ -37,6 +37,7 @@ import { ConfigService } from 'src/app/service/Config/config.service';
 
 
 export class LoginComponent implements OnInit {
+  hide2 = true;
   isLoading = false;
   error!: string;
   checkEmail = "";
