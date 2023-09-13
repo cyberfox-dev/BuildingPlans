@@ -107,6 +107,26 @@ namespace WayleaveManagementSystem.Controllers
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
 
             }
+        }   
+        
+        [HttpPost("GetAllUserLinks")]
+        public async Task<object> GetAllUserLinks([FromBody] ZoneLinkBindingModel model)
+        {
+            try
+            {
+                var result = await _zonesLinkingServices.GetAllUserLinks(model.AssignedUserID);
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Zone Link List Created", result));
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
         }  
         
         [HttpPost("GetBySubAndUserID")]

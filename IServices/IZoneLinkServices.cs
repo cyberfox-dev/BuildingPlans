@@ -13,6 +13,7 @@ namespace WayleaveManagementSystem.IServices
 
         public Task<List<ZoneLinkDTO>> GetAllZoneLinks();
         public Task<List<ZoneLinkDTO>> GetBySubAndUserID(int subDepartmentID, string userID);
+        public Task<List<ZoneLinkDTO>> GetAllUserLinks(string userID);
 
         Task<List<UserZoneLinkDTO>> GetUsersNotLinkedByUserID();
 

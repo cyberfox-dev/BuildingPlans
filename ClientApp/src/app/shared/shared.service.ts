@@ -98,6 +98,19 @@ export interface DistributionList {
 
 }
 
+export interface ConfigList {
+  ConfigID: number,
+  ConfigName: string,
+  ConfigDescription: string,
+  DateCreated: Date,
+  DateUpdated: Date,
+  CreatedById: string,
+  isActive: boolean,
+  UtilitySlot1: string,
+  UtilitySlot2: string,
+  UtilitySlot3: string,
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -125,6 +138,7 @@ export class SharedService {
   RolesList: RolesList[] = [];
   subDepartmentList: SubDepartmentList[] = [];
   distributionList: DistributionList[] = [];
+  public MapConfig: ConfigList[] = [];
 
   ProjectNumber: string;
   canReapply: any = false;
@@ -176,6 +190,16 @@ export class SharedService {
 
   getStageData() {
     return this.StagesList;
+  }
+
+  setMapConfig(data: any) {
+
+    this.MapConfig = data;
+
+  }
+
+  getMapConfig() {
+    return this.MapConfig;
   }
 
   getApiUrl() {

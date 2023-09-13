@@ -121,6 +121,70 @@ namespace WayleaveManagementSystem.Service
 
                 }
                 ).ToListAsync();
+        } 
+        
+        public async Task<List<ZoneLinkDTO>> GetAllUserLinks(string userID)
+        {
+
+
+
+
+            //var zoneIds = await _context.ZoneLinkTable
+            //                       .Where(z => z.AssignedUserID == userID
+            //                                   && z.isActive)
+            //                       .Select(z => z.SubDepartmentID)
+            //                       .ToListAsync();
+
+            //// Step 2: Use the retrieved ZoneIDs in the SubDepartmentForComment query
+            //return await _context.SubDepartmentsTable
+            //                    .Where(s => s.isActive
+            //                           && zoneIds.Contains(s.ZoneID)) // Use Contains to filter by ZoneIDs
+            //                    .Select(s => new SubDepartmentForCommentDTO()
+            //                    {
+            //                        SubDepartmentForCommentID = s.SubDepartmentForCommentID,
+            //                        ApplicationID = s.ApplicationID,
+            //                        SubDepartmentID = s.SubDepartmentID,
+            //                        SubDepartmentName = s.SubDepartmentName,
+            //                        UserAssaignedToComment = s.UserAssaignedToComment,
+            //                        CommentStatus = s.CommentStatus,
+            //                        isAwaitingClarity = s.isAwaitingClarity,
+            //                        IsRefered = s.IsRefered,
+            //                        ReferedToUserID = s.ReferedToUserID,
+            //                        CreatedById = s.CreatedById,
+            //                        ZoneID = s.ZoneID,
+            //                        ZoneName = s.ZoneName,
+            //                    })
+            //                    .ToListAsync();
+
+
+
+
+
+
+
+
+
+
+
+
+
+            return await (
+                from ZoneLink in _context.ZoneLinkTable
+                    where ZoneLink.AssignedUserID == userID && ZoneLink.isActive == true
+                select new ZoneLinkDTO()
+                {
+                    ZoneLinkID = ZoneLink.ZoneLinkID,
+                    DepartmentID = ZoneLink.DepartmentID,
+                    SubDepartmentID = ZoneLink.SubDepartmentID,
+
+                    AssignedUserID = ZoneLink.AssignedUserID,
+                    UserType = ZoneLink.UserType,
+
+                    DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,
+
+                }
+                ).ToListAsync();
         }
         public async Task<List<UserZoneLinkDTO>> GetUsersNotLinkedByUserID()
         {

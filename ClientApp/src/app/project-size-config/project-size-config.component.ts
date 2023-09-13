@@ -12,6 +12,22 @@ export interface ProjectSizeCheckList {
   mandatoryDocumentCategory: string;
   projectSizeCheckListActivityType: string;
 }
+
+export enum ActivityTypeList {
+  "General",
+  "Trenching",
+  "Roadworks",
+  "Carriageway Crossings, Pedestrian Footways & Universal Access",
+  "Emergency"
+}
+export enum ManDocCategoryList {
+  "Small",
+  "Medium",
+  "Large",
+  "Emergency",
+  "Drilling",
+  "LUM" //What does this mean? It was next to "Services installation as part of a development approved through a Land Use Management Application"
+}
 @Component({
   selector: 'app-project-size-config',
   templateUrl: './project-size-config.component.html',
@@ -22,6 +38,25 @@ export interface ProjectSizeCheckList {
 export class ProjectSizeConfigComponent implements OnInit {
 
   ProjectSizeCheckList: ProjectSizeCheckList[] = [];
+
+  mandatoryDocumentCategory: '';
+  projectSizeCheckListActivityType: '';
+
+  selectType: ActivityTypeList;
+  selectManDocCat: ManDocCategoryList;
+
+  selectedType: string;
+  selectedManDocCat: string;
+
+  // Create arrays from the enum values
+  activityTypeArray = Object.keys(ActivityTypeList).filter(
+    (type) => isNaN(Number(type))
+  );
+
+  manDocCategoryArray = Object.keys(ManDocCategoryList).filter(
+    (category) => isNaN(Number(category))
+  );
+
   stringifiedData: any;
   CurrentUser: any;
   forEditIndex: any;
@@ -31,9 +66,12 @@ export class ProjectSizeConfigComponent implements OnInit {
   psSelectedView: any;
 
   public addProjectCheckListItem = this.formBuilder.group({
-    newActivityType: ['', Validators.required],
     newActivity: ['', Validators.required],
-    newMandatoryDocument: ['', Validators.required]
+    //newActivityType: ['', Validators.required],
+    //newMandatoryDocument: ['', Validators.required],
+
+    projectSizeCheckListActivityType: ['', Validators.required],
+    mandatoryDocumentCategory: ['', Validators.required],
   })
   public editingProjectCheckListItem = this.formBuilder.group({
     editActivityType: ['', Validators.required],
@@ -44,6 +82,8 @@ export class ProjectSizeConfigComponent implements OnInit {
   constructor(private formBuilder: FormBuilder, private modalService: NgbModal, private psCheckListService : ProjectSizeCheckListService) { }
 
   ngOnInit(): void {
+
+
     this.getAllProjectSizeCheckList();
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData); this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
@@ -55,8 +95,17 @@ export class ProjectSizeConfigComponent implements OnInit {
 
   onAddCheckListItem() {
     let newActivity = this.addProjectCheckListItem.controls["newActivity"].value;
-    let newActivityType = this.addProjectCheckListItem.controls["newActivityType"].value;
-    let newMandatoryDocument = this.addProjectCheckListItem.controls["newMandatoryDocument"].value;
+
+    //let newActivityType = this.addProjectCheckListItem.controls["newActivityType"].value;
+    //let newMandatoryDocument = this.addProjectCheckListItem.controls["newMandatoryDocument"].value
+
+    let newActivityType = this.addProjectCheckListItem.controls["projectSizeCheckListActivityType"].value;
+    let newMandatoryDocument = this.addProjectCheckListItem.controls["mandatoryDocumentCategory"].value
+
+    //let newActivityType = this.projectSizeCheckListActivityType;
+    //let newMandatoryDocument = this.mandatoryDocumentCategory;
+    
+
     this.psCheckListService.addUpdatedProjectSizeCheckList(this.CurrentUser.appUserId, newMandatoryDocument, newActivityType, newActivity,  null).subscribe((data: any) => {
       if (data.responseCode == 1) {
 
@@ -97,6 +146,7 @@ export class ProjectSizeConfigComponent implements OnInit {
     }
   }
   openCreateNewCheckListItem(createNewCheckListItem: any) {
+    
     this.modalService.open(createNewCheckListItem, { size: 'xl' });
   }
 

@@ -60,7 +60,18 @@ export class ZoneLinkService {
 
   }
 
-  public getUsersNotLinkedByUserID(zoneID:any) {
+  public getAllUserLinks(assignedUserID: any) {
+    const body = {
+
+      AssignedUserID: assignedUserID,
+   
+    }
+   
+    return this.httpClient.post(this.baseURL + "GetAllUserLinks", body);
+
+  }
+
+  public getUsersNotLinkedByUserID(zoneID: any) {
    
     return this.httpClient.post(this.baseURL + "GetUsersNotLinkedByUserID", zoneID);
 

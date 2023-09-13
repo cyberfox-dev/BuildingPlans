@@ -22,15 +22,20 @@
           <form action="#" [formGroup]="registerForm" autocomplete="off">
 
             <h2>Create an account</h2>
-            <input class="input" type="text" formControlName="fullName" placeholder="Name & Surname *" required />
-            <input class="input" type="text" formControlName="bpNumber" placeholder="Business Partner No. *" required />
-            <input class="input" type="text" name="somthing" formControlName="registerEmail" placeholder="Email *" required />
-            <input class="input" type="password" formControlName="registerPassword" placeholder="Password *" required>
-            <input class="input" type="password" formControlName="reenterPassword" placeholder="Re-enter password *" required>
-            <button class="button2 OTP" (click)="onSendOTP()" *ngIf="sendOTPBtn">Send OTP</button>
-            <input class="input" type="text" placeholder="Enter OTP" formControlName="OTPField" />
-            <button type="submit" [disabled]="!registerForm.valid" [class.disabled]="!registerForm.valid" class="button2" (click)="onRegister()">Verify & Continue</button>
-<!--<p>{{otp}}</p>-->
+            <input class="input" type="text" formControlName="fullName" placeholder="Name & Surname *" required [readonly]="regFormReadOnly"/>
+
+
+            <input class="input" type="text" name="somthing" formControlName="registerEmail" placeholder="Email *" required [readonly]="regFormReadOnly" />
+            <!-- Conditionally display and thereafter validate BP Number input -->
+            <input class="input" type="text" formControlName="bpNumber" placeholder="Business Partner No. *" *ngIf="showBPNumber" [readonly]="regFormReadOnly"  />
+
+            <input class="input" type="password" formControlName="registerPassword" placeholder="Password *" required [readonly]="regFormReadOnly" />
+            <input class="input" type="password" formControlName="reenterPassword" placeholder="Re-enter password *" required *ngIf="showDuplicatePassInput"/>
+            <button class="button2 OTP" (click)="onSendiOTP()" *ngIf="showDuplicatePassInput sendOTPBtn">Send OTP</button>
+            <input class="input" type="text" placeholder="Enter OTP" formControlName="OTPField" *ngIf="!showDuplicatePassInput"/>
+            <button type="submit" [disabled]="!registerForm.valid" [class.disabled]="!registerForm.valid" class="button2" (click)="onVerifyOTPRegister()" *ngIf="!showDuplicatePassInput">Verify & Register</button>
+            <!--Be sure to remove this paragraph when the app is finalized!!-->
+            <p>{{otp}}</p>
           </form>
         </div>
         <div class="form-container sign-in-container">
