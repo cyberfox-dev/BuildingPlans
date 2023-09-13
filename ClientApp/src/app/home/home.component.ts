@@ -168,9 +168,6 @@ export interface ConfigList {
       transition('transparent <=> solid', animate('1s ease-in-out')), // Adjust duration and easing
     ]),
   ],
-    selector: 'app-home',
-    templateUrl: './home.component.html',
-    styleUrls: ["./home.component.scss"],
 })
 
 
@@ -1413,16 +1410,10 @@ export class HomeComponent implements OnInit, OnDestroy {
       console.log("Error: ", error);
     })
   }
+
+
   page = 4;
-  goToWaitScreen() {
-        }, error => {
-            console.log("Error: ", error);
-        })
-    }
 
-    goToWaitScreen() {
-
-    }
 
     onCheckIfUserHasAccess() {
 
@@ -1809,8 +1800,5 @@ tempApplicationList.TestApplicationAge = daysDiff;
   }
 
   }
-
-}
-
 
 
