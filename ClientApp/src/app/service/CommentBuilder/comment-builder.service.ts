@@ -8,7 +8,7 @@ import { SharedService } from 'src/app/shared/shared.service';
 export class CommentBuilderService {
 
 
-  private readonly apiUrl: string = this.sharedService.getApiUrl();
+  private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
   private readonly baseURL: string = this.apiUrl + "commentBuilder/";
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }

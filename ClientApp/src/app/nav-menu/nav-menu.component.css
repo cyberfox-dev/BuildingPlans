@@ -15,6 +15,31 @@ body {
 .container2{
     display:flex;
 }
+.nav.transparent {
+  background-color: transparent;
+  color: black; /* Change the text color when transparent, if needed */
+  box-shadow:none;
+}
+
+@keyframes fadeInOut {
+  0% {
+    background-color: rgba(255, 255, 255, 0); /* Fully transparent */
+  }
+
+  100% {
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent */
+  }
+}
+@keyframes swipeIn {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
 
 .nav {
   height: 68px;
@@ -27,7 +52,9 @@ body {
   top: 0;
   z-index: 2;
   box-shadow: 0 2px 20px 0 rgb(0 0 0 / 27%);
+  animation: fadeInOut 0.3s ease;/* Apply both animations */
 }
+
 .mat-form-field {
   width: 100%;
   margin-top: 26px;

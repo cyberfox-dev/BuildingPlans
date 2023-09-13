@@ -13,7 +13,7 @@ export class UserProfileService {
 
   options = { headers: this.headers };
 
-  private readonly apiUrl: string = this.sharedService.getApiUrl();
+  private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
   private readonly baseURL: string = this.apiUrl + "userprofile/";
 
 

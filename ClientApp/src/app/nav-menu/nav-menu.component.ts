@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild,TemplateRef } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild,TemplateRef, HostListener } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DepartmentConfigComponent } from 'src/app/department-config/department-config.component';
@@ -21,7 +21,8 @@ import { SubDepartmentsService } from '../service/SubDepartments/sub-departments
 import { FrequentlyAskedQuestionsService} from '../service/FAQ/frequently-asked-questions.service';
 import { NGB_DATEPICKER_TIME_ADAPTER_FACTORY } from '@ng-bootstrap/ng-bootstrap/timepicker/ngb-time-adapter';
 import { NgbDatepickerModule, NgbOffcanvas, OffcanvasDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-
+import { Input } from '@angular/core';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 
 export interface SubDepartmentList {
   subDepartmentID: number;
@@ -94,9 +95,19 @@ export interface NotificationsList {
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
-  styleUrls: ['./nav-menu.component.css']
+  styleUrls: ['./nav-menu.component.css'],
+  animations: [
+    trigger('backgroundFadeInOut', [
+      state('transparent', style({ 'background-color': 'rgba(255, 255, 255, 0)' })),
+      state('solid', style({ 'background-color': 'rgba(255, 255, 255, 0.8)' })),
+
+    ]),
+  ],
 })
 export class NavMenuComponent implements OnInit {
+
+  @Input() isTransparent: boolean = true;
+
   isExpanded = false;
   configShow: number | undefined;
   notiBell = true;
@@ -188,7 +199,7 @@ export class NavMenuComponent implements OnInit {
     
     for (var i = 0; i < this.RolesList.length; i++) {
       
-      if (this.RolesList[i].RoleName == "Developer Config") {
+      if (this.RolesList[i].RoleName == "Developer Config"|| this.RolesList[i].RoleName == "Department Admin") {
         this.Configurations = true;
       }
       if (this.RolesList[i].RoleName == "Developer Config" || this.RolesList[i].RoleName == "Configuration") {
@@ -207,6 +218,22 @@ export class NavMenuComponent implements OnInit {
 
 
   }
+
+  isAtTop: boolean = true;
+  @HostListener('window:scroll', ['$event'])
+  checkScroll() {
+    // Detect the scroll position
+    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    debugger;
+    // You can adjust this threshold value as needed
+    const threshold = 100;
+
+    // Update the isAtTop variable based on the scroll position
+    this.isAtTop = scrollPosition < threshold;
+  }
+
+
+
 
   onUploadFinished(event: any) {
     this.lastUploadEvent = event;  // Store the event data
@@ -773,7 +800,7 @@ export class NavMenuComponent implements OnInit {
 
   }
 
-  private readonly apiUrl: string = this.shared.getApiUrl();
+  private readonly apiUrl: string = this.shared.getApiUrl() + '/api/';
 
   viewDocument(index: any) {
 
@@ -1136,6 +1163,14 @@ export class NavMenuComponent implements OnInit {
     this.modalService.dismissAll();
     this.offcanvasService.open("");
     this.offcanvasService.dismiss();
+  }
+
+ 
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    const scrollY = window.scrollY || document.documentElement.scrollTop;
+    this.isTransparent = scrollY < 100; // Adjust the scroll threshold as needed
   }
 
 }

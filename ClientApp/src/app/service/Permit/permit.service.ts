@@ -6,7 +6,7 @@ import { SharedService } from 'src/app/shared/shared.service';
   providedIn: 'root'
 })
 export class PermitService {
-    private readonly apiUrl: string = this.sharedService.getApiUrl();
+  private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
   private readonly baseURL: string = this.apiUrl + "permitSubForComment/";
 
 
