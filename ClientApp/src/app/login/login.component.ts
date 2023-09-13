@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output, ElementRef } from '@angular/core';
-import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { UserService } from '../service//User/user.service';
 import { SharedService } from "src/app/shared/shared.service"
@@ -37,20 +37,29 @@ export class LoginComponent implements OnInit {
   beforeSentOTP: boolean = true;
   public container = document.getElementById('container');
 
+  //Creating an account things:
+  showBPNumber: boolean;
+  registerForm: FormGroup;
+  regFormReadOnly: boolean;
+  showDuplicatePassInput: boolean; //This will also hide the OTP button || It should hopefully reveal OTP textbox, and register button!
+
+
+
   public loginForm = this.formBuilder.group({
     email: ['', Validators.required], /**/
     password: ['', Validators.required],
 
   })
 
-  public registerForm = this.formBuilder.group({
+  /*public registerForm = this.formBuilder.group({
     registerEmail: ['', Validators.required],
     registerPassword: ['', Validators.required],
     reenterPassword: ['', Validators.required],
     fullName: ['', Validators.required],
     bpNumber: ['', Validators.required],
     OTPField: ['', Validators.required],
-  })
+  })*/
+
   space1: number | undefined;
   space2: number | undefined;
 
@@ -82,8 +91,31 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
 
+    // Initialize the registration form
+    this.registerForm = this.formBuilder.group({
+      registerEmail: ['', [Validators.required, Validators.email]],
+      registerPassword: ['', Validators.required],
+      reenterPassword: ['', Validators.required],
+      fullName: ['', Validators.required],
+      bpNumber: [''], 
+      OTPField: ['', Validators.required],
+    });
 
+    this.showBPNumber = true; // Set showBPNumber to true initially
+    this.regFormReadOnly = false; //form editable at first
+    this.showDuplicatePassInput = true;
+
+    // Subscribe to changes in the email field to toggle the BP number field
+    this.registerForm.get('registerEmail').valueChanges.subscribe((email) => {
+      if (email.toLowerCase().endsWith('@capetown.gov.za')) {
+        this.showBPNumber = false; // Email is empty, so hide BP number textbox || The user is internal, so hide BP number textbox
+      }
+      else {
+        this.showBPNumber = true;
+      }
+    });
   }
+
   characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
   // Assuming this.characters is initialized somewhere above
@@ -93,7 +125,7 @@ export class LoginComponent implements OnInit {
     return this.userService.emailExists(email).pipe(
       tap(exists => {
         if (exists) {
-          this.handleEmailExists();
+          this.handleEmailExists();//It seems like this means that the email exists in wayleave system
           throw new Error('Email exists'); // throw an error to skip the following logic
         }
       }),
@@ -402,7 +434,150 @@ export class LoginComponent implements OnInit {
       });
   }
 
+  //REGISTERREGISTERREGISTERREGISTERREGISTERREGISTERREGISTERREGISTERREGISTERREGISTERREGISTERREGISTER
+  validNameSurname: boolean;
+  validEmail: boolean;
+  matchingRegPasswords: boolean;
+  internalUserNoBP: boolean;
+  externalWValidBP: boolean;
 
+  SindiChecksRegistration() {
+    let fullName = this.registerForm.controls["fullName"].value;
+    let email = this.registerForm.controls["registerEmail"].value;
+    let bpNumber = this.registerForm.controls["bpNumber"].value;
+    let password = this.registerForm.controls["registerPassword"].value;
+    let passwordConfirm = this.registerForm.controls["reenterPassword"].value;
+
+    const nameParts = fullName.split(' ');
+
+    if (nameParts.length !== 2) {
+      alert("Please enter your first name and surname only");
+      this.validNameSurname = false;
+    } else {
+      // Check if both parts are non-empty
+      if (nameParts[0].trim() === '' || nameParts[1].trim() === '') {
+        alert("Both first name and last name should be non-empty.");
+        this.validNameSurname = false;
+      } else {
+        this.validNameSurname = true;
+      }
+    }
+
+    const emailRegex: RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    if (email === null || !emailRegex.test(email)) {
+      alert("Please enter a valid email address");
+      this.validEmail = false;
+    } else {
+      this.validEmail = true;
+
+      if (email.endsWith("@capetown.gov.za")) {
+        this.internalUserNoBP = true;
+        bpNumber = ''; // Leave it empty for internal folks -- OKAY, I CAN'T DO THAT! OR CAN I?
+
+      } else {
+        // Check if the email already exists in the wayleave system
+        this.userService.emailExists(email).subscribe((exists: boolean) => {
+          if (exists) {
+            alert("Email already exists in wayleave system. Consider changing your password");
+            this.validEmail = false;
+          } else {
+            // Email doesn't exist, proceed with BP Number validation
+            this.testBp(bpNumber).subscribe((isValidBP: boolean) => {
+              if (isValidBP) {
+                // BP Number is valid
+                this.internalUserNoBP = false;
+                this.externalWValidBP = true;
+              } else {
+                alert("Please enter a valid BP Number");
+                this.internalUserNoBP = false;
+              }
+            });
+          }
+        });
+      }
+    }
+
+    if (password !== passwordConfirm) {
+      alert("Passwords do not match");
+      this.matchingRegPasswords = false;
+    } else {
+      this.matchingRegPasswords = true;
+    }
+  }
+
+  onSendiOTP() {
+    this.SindiChecksRegistration();
+
+    if (this.validNameSurname && this.validEmail && this.matchingRegPasswords && (this.internalUserNoBP || this.externalWValidBP)) {
+      this.onSendOTP();
+      this.regFormReadOnly = true;
+      this.showDuplicatePassInput = false;
+    }
+    else {
+      alert("OTP not sent: make sure to fill-in all fields appropriately.");
+      return;
+    }
+  }
+
+  async onVerifyOTPRegister(
+    clientFullName?: string | null,
+    clientEmail?: string | null,
+    phoneNumber?: string | null, //Create new account doesn't have?
+    BpNo?: string | null,
+    CompanyName?: string | null, //Create new account doesn't have?
+    CompanyRegNo?: string | null, //Create new account doesn't have?
+    PhyscialAddress?: string | null, //Create new account doesn't have?
+    ApplicantIDUpload?: string | null, //Create new account doesn't have?
+    ApplicantIDNumber?: string | null //Create new account doesn't have?
+  ) {
+
+    let onLoginForm = true;
+    let clientRegisterPassword = this.registerForm.controls["registerPassword"].value;
+    let otpEntered = this.registerForm.controls["OTPField"].value;
+
+    clientFullName = this.registerForm.controls["fullName"].value;
+    clientEmail = this.registerForm.controls["registerEmail"].value;
+    
+    BpNo = this.registerForm.controls["bpNumber"].value;
+
+    if (this.otp != otpEntered) {
+      alert("Invalid OTP");
+    }
+    else { 
+    //Not sure what this does TBH
+    this.sharedService.errorForRegister = false;
+    this.userService.register(clientFullName, clientEmail, "Password@" + clientFullName).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        if (onLoginForm === false) {
+          this.newProfileComponent.onNewProfileCreate(
+            data.dateSet.appUserId,
+            clientFullName,
+            clientEmail,
+            phoneNumber,
+            BpNo,
+            CompanyName,
+            CompanyRegNo,
+            PhyscialAddress,
+            ApplicantIDUpload,
+            ApplicantIDNumber
+          );
+          this.sharedService.errorForRegister = false;
+        }
+
+        this.sharedService.clientUserID = data.dateSet.appUserId;
+        localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
+        this.sharedService.newUserProfileBp = BpNo;
+        this.router.navigate(["/new-profile"]);
+      } else {
+        this.sharedService.errorForRegister = true;
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error: ", error);
+    });
+    }
+  }
   DoChecksForRegister() {
     /*    this.notification.sendEmail("jahdiel@cyberfox.co.za", "Test", "testing 1, 2, 3...");*/
 
