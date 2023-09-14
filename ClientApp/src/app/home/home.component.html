@@ -351,6 +351,24 @@
         <mat-tab-group dynamicHeight>
           <mat-tab label="Creating a new engineer">
             <!--<form>-->
+<!--end-->
+
+  <!--Before just adding a contractor and engineer, need to be able to check which professionals are already in the system-->
+  <!--Should the external mans be able to select one?-->
+
+
+
+<!--This is for adding contractor & engineer-->
+<ng-template #Prof let-modal>
+  <div class="modal-header">
+    <h6 class="modal-title" id="modal-basic-title">Add New Professional</h6>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div class="container-fluid">
+      <mat-tab-group dynamicHeight>
+        <mat-tab label="Creating a new engineer">
+          <!--<form>-->
 
 
             <div class="row">

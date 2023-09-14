@@ -334,7 +334,7 @@ export class ProjectDetailsMapComponent implements OnInit {
     // Create the search source configuration for Cape Town, South Africa
     //Use this tool to verify boundaries: http://bboxfinder.com ymin,xmin,ymax,xmax
     const theExtent = new Extent({
-/*      Cape Town*/
+      /*      Cape Town*/
       ymin: -34.358,
       xmin: 18.2562,
       ymax: -33.3992,
@@ -396,7 +396,7 @@ export class ProjectDetailsMapComponent implements OnInit {
     // Create a Popup Instance
     const customPopup = new Popup({
       content: "Latitude: {latitude}<br>Longitude: {longitude}",
-/*      visible: true, // Set to true when showing,*/
+      /*      visible: true, // Set to true when showing,*/
       title: "Coordinate Search Result",
     });
     //view.ui.add(customPopup); // Add popup to the view's UI
@@ -422,9 +422,9 @@ export class ProjectDetailsMapComponent implements OnInit {
 
         map.add(graphicsLayer);
 
-        const symbol = new SimpleMarkerSymbol ({
-          
-/*          type: "simple-marker",*/
+        const symbol = new SimpleMarkerSymbol({
+
+          /*          type: "simple-marker",*/
           style: "circle", // or "square", "diamond", etc., depending on your preferred style
           color: [255, 0, 0], // Red color, change the RGB values to the desired color
           size: "12px", // Size of the symbol
@@ -449,13 +449,13 @@ export class ProjectDetailsMapComponent implements OnInit {
 
         customPopup.open({
           location: point, // Display the popup at the searched point
-          shouldFocus:true
+          shouldFocus: true
         });
 
         view.goTo(point); // Center the view on the searched point
         view.zoom = 20
         this.sharedService.setCoordinateData(x + "," + y);
-        
+
       }
 
     });
@@ -470,7 +470,7 @@ export class ProjectDetailsMapComponent implements OnInit {
       url: "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer",
       name: 'Cape Town, South Africa',
       placeholder: "Search Cape Town",
-/*      maxResults: 3,*/
+      /*      maxResults: 3,*/
       filter: searchExtent,
       location: view.center
     }, {
@@ -486,7 +486,7 @@ export class ProjectDetailsMapComponent implements OnInit {
       outFields: ["*"],
       name: "ERF",
       filter: searchExtent,
- /*     maxResults: 3,*/
+      /*     maxResults: 3,*/
       location: view.center // Set the location to the center of the view
     }];
 
@@ -903,7 +903,7 @@ export class ProjectDetailsMapComponent implements OnInit {
 
       featureLayer.on("edits", async (event) => {
         this.toggleLoadingIndicator(true); // Show loading indicator
-/*        console.log("MapConfig:",this.AllConfig)*/
+        /*        console.log("MapConfig:",this.AllConfig)*/
 
         //Clears the distribution list. This should be moved to when the application is successfully captured and on "Create new wayleave".
         this.sharedService.distributionList.splice(0, this.sharedService.distributionList.length);
@@ -923,7 +923,7 @@ export class ProjectDetailsMapComponent implements OnInit {
         console.log("Total added features", this.sharedService.totalAddedFeatures);
 
         //hack to hide loading screen
-        if (subtractPolygon >=1) {
+        if (subtractPolygon >= 1) {
           this.toggleLoadingIndicator(false); // Show loading indicator
 
         }
@@ -952,8 +952,12 @@ export class ProjectDetailsMapComponent implements OnInit {
 
         //Start loop from here
         for (var i = 0; i < this.sharedService.subDepartmentList.length; i++) {
+          this.toggleLoadingIndicator(true); // Show loading indicator
+
           //The ZoneAdminUsers for Bulk water and Waste Water and Treatment must always be returned - this code can be improved later - this is merely a fix that was hardcoded in.
           if (this.sharedService.subDepartmentList[i].isSetForAutomaticDistribution || this.sharedService.subDepartmentList[i].subDepartmentName == "Bulk Water" || this.sharedService.subDepartmentList[i].subDepartmentName == "Waste Water and Treatment") {
+            this.toggleLoadingIndicator(true); // Show loading indicator
+
             //Get current mapLayerID
             const mapLayerID = this.sharedService.subDepartmentList[i].mapLayerID
             //Get subDepartmentID for the current
@@ -976,7 +980,7 @@ export class ProjectDetailsMapComponent implements OnInit {
 
                   //Run this code if the department has only a single region, i.e., the entire city is the region
                 } else if (mapLayerID == -1) {
-
+                  this.toggleLoadingIndicator(true); // Show loading indicator
                   //Bulk water
                   const bulkWaterExclusions = await this.InterceptInfrustructureChecker(SubDepartmentName, 'Bulk Water', query, 1022, this.infrustructureURL + '/', [70, 134, 68, 55, 56, 69, 75, 130, 54, 76, 77, 135, 71, 136, 58, 53, 60, 131, 138, 61, 73, 137, 51, 63, 50, 62, 132, 133, 78, 52, 57, 59]);
 
@@ -989,6 +993,7 @@ export class ProjectDetailsMapComponent implements OnInit {
                   //Join lists
                   exclusionsList = exclusionsList.concat(effluentExclusions);
                   console.log(exclusionsList);
+                  this.toggleLoadingIndicator(false); // Show loading indicator
 
                   //Send too ALL Admin users in this subdepartment
                   this.sharedService.distributionList = this.sharedService.distributionList.concat(zoneAdminUsers);
@@ -1009,6 +1014,8 @@ export class ProjectDetailsMapComponent implements OnInit {
 
                   //Query the layer for the current subdepartment. The intersecting layer objectIDs should be returned.
                   mapServerLayer.queryFeatures(query).then((result) => {
+                    this.toggleLoadingIndicator(true); // Show loading indicator
+
                     // Handle the resulting features that intersect or are within the drawn polygon
                     const features = result.features;
                     // Do something with the features
@@ -1018,6 +1025,8 @@ export class ProjectDetailsMapComponent implements OnInit {
 
                     // Iterate through the features
                     features.forEach(async (feature) => {
+                      this.toggleLoadingIndicator(true); // Show loading indicator
+
                       //Get the objectID for the current iterated polygon interception
                       // @ts-ignore
                       const OBJECTID = feature.attributes.OBJECTID;
@@ -1088,13 +1097,14 @@ export class ProjectDetailsMapComponent implements OnInit {
 
                   //This code runs if the field is null or contains something unexpected
                 } else {
-
+                  this.toggleLoadingIndicator(false); // Show loading indicator
                 }
 
                 /*              console.log(filteredList);*/
                 // Use the filteredList as needed
               }
               else {
+                this.toggleLoadingIndicator(false); // Show loading indicator
                 //alert("Invalid Email or Password");
                 /*              alert(data.responseMessage);*/
                 /*        return null;*/
@@ -1102,6 +1112,7 @@ export class ProjectDetailsMapComponent implements OnInit {
               /*            console.log("reponse", data);*/
               return null;
             }, error => {
+              this.toggleLoadingIndicator(false); // Show loading indicator
               console.log("Error:", error);
             });
 
@@ -1114,7 +1125,7 @@ export class ProjectDetailsMapComponent implements OnInit {
             //do not distribute to this department.
           }
 
-
+          this.toggleLoadingIndicator(false); // Show loading indicator
         }
 
         //this.toggleLoadingIndicator(false); // Hide loading indicator when done
@@ -1128,7 +1139,7 @@ export class ProjectDetailsMapComponent implements OnInit {
         //this.assignTo = "";
 
         //Now get the geometry of this polygon using the globalID
-
+        this.toggleLoadingIndicator(false); // Show loading indicator
       });
 
       // Listen to the 'before-apply-edits' event of the Editor widget
@@ -1807,6 +1818,8 @@ export class ProjectDetailsMapComponent implements OnInit {
             if (numOfInterceptions >= 1) {
               // Remove bulkwater from the exclusions list
               exclusionsList.splice(exclusionsList.indexOf(exclusionUponInterception), 1);
+              this.toggleLoadingIndicator(false); // Show loading indicator
+
             } else {
               // Remove subdepartment first to prevent duplication of exclusions
               exclusionsList.splice(exclusionsList.indexOf(exclusionUponInterception), 1);
@@ -1823,14 +1836,16 @@ export class ProjectDetailsMapComponent implements OnInit {
 
         // Start checking interceptions
         checkInterceptions(0);
+        this.toggleLoadingIndicator(true); // Show loading indicator
+
       } else {
         // Handle other mapLayerID cases here
         resolve([]);
-    this.toggleLoadingIndicator(false); // Show loading indicator
+        this.toggleLoadingIndicator(true); // Show loading indicator
 
       }
+      this.toggleLoadingIndicator(true); // Show loading indicator
     });
-
   }
 
   // Method to toggle the loading indicator

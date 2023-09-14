@@ -304,7 +304,7 @@ export class ProjectDetailsMapViewComponent implements OnInit {
     this.MapConfig = this.AllConfig.filter((config) => config.ConfigName === 'Map');
 
     // Filter the list so that only the first row with 'ServerType', is returned.
-    const serverType = this.MapConfig.find((config) => config.UtilitySlot1 === 'ServerType').UtilitySlot2;
+    const serverType = this.AllConfig.find((config) => config.ConfigName === 'ServerType').UtilitySlot1;
     const MapConfigForServer = this.MapConfig.filter((config) => config.UtilitySlot1 === serverType);
 
     //Check if user is internal or external
