@@ -52,7 +52,7 @@ body {
   top: 0;
   z-index: 2;
   box-shadow: 0 2px 20px 0 rgb(0 0 0 / 27%);
-  animation: fadeInOut 0.3s ease;/* Apply both animations */
+
 }
 
 .mat-form-field {

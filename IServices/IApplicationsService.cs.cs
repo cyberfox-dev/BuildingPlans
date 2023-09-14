@@ -22,6 +22,8 @@ namespace WayleaveManagementSystem.IServices
         Task<List<ApplicationsDTO>> GetAllDraftedApplications(string userId, bool isInternal, bool isDrafted);
 
         Task<List<ApplicationsDTO>> GetApplicationsByProjectNumber(string projectNumber);
+        Task<List<ApplicationsDTO>> GetApplicationsForReviewer(int? ZoneID, string UserID);
+
 
     }
 }

@@ -398,10 +398,20 @@
     }
   }
 
-  .logo {
-    width: 100%;
-    height: 50px;
+.logo {
+  width: 321px;
+  height: 321px;
+  animation: spin 9s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
 
   .card {
     padding-top: 20px;
@@ -1254,4 +1264,33 @@ display:none;
   align-items: center;
   justify-content: space-evenly;
   font-size: 18px;
+}
+
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(255 255 255);
+  z-index: 9999;
+}
+.logo {
+  width: 321px;
+  height: 321px;
+  animation: spin 9s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }

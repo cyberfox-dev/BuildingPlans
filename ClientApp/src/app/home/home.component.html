@@ -1,4 +1,4 @@
-<app-nav-menu [@fadeInOut]="isTransparent ? 'transparent' : 'solid'"></app-nav-menu>
+<app-nav-menu ></app-nav-menu>
 <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700,800&display=swap" rel="stylesheet">
 <link _ngcontent-ng-cli-universal-c545="" href="https://fonts.googleapis.com/css?family=Roboto:300italic,400italic,400,100,300,600,700" rel="stylesheet" type="text/css">
 
@@ -11,20 +11,16 @@
 
   <h1>Hi, {{CurrentUser.fullName}}</h1>
   <h2>Welcome to your Dashboard</h2>
-  <div style="background: red; text-align: center; font-size: xx-large; color: white; padding: 10px; line-height: 0.8;" *ngIf="ServerType === 'QA'">
-Please note, you've accessed the test server, nothing captured to this server will be processed. Please go to wayleave.capetown.gov.za to access the live site.
-  </div>
+<!--  <div style="background: red; text-align: center; font-size: xx-large; color: white; padding: 10px; line-height: 0.8;" *ngIf="ServerType === 'QA'">
+    Please note, you've accessed the test server, nothing captured to this server will be processed. Please go to wayleave.capetown.gov.za to access the live site.
+  </div>-->
 
   <!--  <button class="btn" (click)="goToNewWayleave()"><a><i class="fa fa-plus"></i> Create New Wayleave</a></button>-->
   <div class="cont3">
     <button mat-raised-button color="createWayleave" (click)="goToNewWayleave(false,false)"><i class="fa fa-plus"></i> Create New Wayleave</button>
     <button mat-raised-button color="createWayleave" (click)="goToNewWayleave(false,true)"><i class="fa fa-plus"></i> Request for Services Information</button>
+ 
   </div>
-
-
-
-
-
 
   <!--Tabs-->
 
@@ -46,7 +42,7 @@ Please note, you've accessed the test server, nothing captured to this server wi
 
     </div>
 
-    <div class="cards">
+    <div class="cards" *ngIf="cardFilters">
       <div class="card card-5">
         <h4>Unpaid</h4>
         <h1 class="num">{{unpaidcount}}</h1>
@@ -133,9 +129,9 @@ Please note, you've accessed the test server, nothing captured to this server wi
     <!--ProjectNumber-->
     <!--</table>-->
     <!--    <mat-form-field>
-    <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
-  </mat-form-field>-->
+      <mat-label>Filter</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+    </mat-form-field>-->
     <div class="">
       <mat-form-field appearance="outline">
         <mat-label>Search</mat-label>
@@ -236,125 +232,376 @@ Please note, you've accessed the test server, nothing captured to this server wi
 
   </div>
 
-<ng-template #internalOpt let-modal>
-  <div class="modal-header">
-    <h6 class="modal-title" id="modal-basic-title">As an internal applicant are you applying for :</h6>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-  </div>
-  <div class="modal-body">
-    <form>
-      <div class="container-fluid">
+  <ng-template #internalOpt let-modal>
+    <div class="modal-header">
+      <h6 class="modal-title" id="modal-basic-title">As an internal applicant are you applying for :</h6>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="container-fluid">
 
 
-        <div class="cont2">
-          <button mat-raised-button color="client" [class.matactive]="option ==='internal'" (click)="cardchange('internal')"><i class="fa fa-user" aria-hidden="true"></i> Yourself</button>
-          <button mat-raised-button color="client" [class.matactive]="option ==='client'" (click)="cardchange('client')"> <i class="fa fa-user-plus" aria-hidden="true"></i> Client</button>
+          <div class="cont2">
+            <button mat-raised-button color="client" [class.matactive]="option ==='internal'" (click)="cardchange('internal')"><i class="fa fa-user" aria-hidden="true"></i> Yourself</button>
+            <button mat-raised-button color="client" [class.matactive]="option ==='client'" (click)="cardchange('client')"> <i class="fa fa-user-plus" aria-hidden="true"></i> Client</button>
 
+          </div>
         </div>
-      </div>
 
-    </form>
-  </div>
-  <div class="modal-footer">
+      </form>
+    </div>
+    <div class="modal-footer">
 
-    <button type="button" class="btn btn-outline-success" (click)="sendOption();modal.dismiss('Cross click')">Continue</button>
-  </div>
+      <button type="button" class="btn btn-outline-success" (click)="sendOption();modal.dismiss('Cross click')">Continue</button>
+    </div>
 
-</ng-template>
+  </ng-template>
 
 
-<ng-template #clientOption let-modal>
-  <div class="modal-header">
-    <h6 class="modal-title" id="modal-basic-title">Who Are You Applying For?</h6>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-  </div>
-  <div class="modal-body">
-    <form>
-      <div class="container-fluid">
-
+  <ng-template #clientOption let-modal>
+    <div class="modal-header">
+      <h6 class="modal-title" id="modal-basic-title">Who Are You Applying For?</h6>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="container-fluid">
 
 
 
-        <div class="cont2">
-          <button mat-raised-button color="client" [class.cardactive]="option ==='client'" (click)="cardchange('client');modal.dismiss('Cross click'); openNewClient(newClient)"> <i class="fa fa-user-plus" aria-hidden="true"></i> New Client</button>
-          <button mat-raised-button color="internal" (click)="openUser(user);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'"><i class="fa fa-user" aria-hidden="true"></i> Existing Client</button>
+
+          <div class="cont2">
+            <button mat-raised-button color="client" [class.cardactive]="option ==='client'" (click)="cardchange('client');modal.dismiss('Cross click'); openNewClient(newClient)"> <i class="fa fa-user-plus" aria-hidden="true"></i> New Client</button>
+            <button mat-raised-button color="internal" (click)="openUser(user);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'"><i class="fa fa-user" aria-hidden="true"></i> Existing Client</button>
+          </div>
         </div>
-      </div>
 
-    </form>
-  </div>
-  <div class="modal-footer">
-    <!--  <button mat-raised-button color="save" (click)="sendOption();modal.dismiss('Cross click')"> Continue</button>-->
-
-  </div>
-
-</ng-template>
-
-
-<!--choose existing-->
-<ng-template #user let-modal>
-  <div class="modal-header">
-    <h6 class="modal-title" id="modal-basic-title">Choose the user</h6>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-  </div>
-  <div class="modal-body">
-
-    <div class="container-fluid">
-      <mat-form-field>
-        <mat-label>Filter</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
-      </mat-form-field>
-
-      <table mat-table [dataSource]="dataSourceLinkUsers" class="mat-elevation-z8">
-        <!--*ngIf="showZoneUserTable"-->
-
-        <ng-container matColumnDef="idNumber">
-          <th mat-header-cell *matHeaderCellDef> ID Number </th>
-          <td mat-cell *matCellDef="let element"> {{element.idNumber}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="fullName">
-          <th mat-header-cell *matHeaderCellDef> User Name </th>
-          <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
-        </ng-container>
-
-
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Select</th>
-          <td mat-cell *matCellDef="let i = index">
-
-            <mat-radio-button class="example-margin" (click)="getUserID(i)"></mat-radio-button>
-          </td>
-
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumnsLinkUsers"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumnsLinkUsers;"></tr>
-      </table>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <!--  <button mat-raised-button color="save" (click)="sendOption();modal.dismiss('Cross click')"> Continue</button>-->
 
     </div>
-    <div class="container-fluid">
 
+  </ng-template>
+
+
+  <!--choose existing-->
+  <ng-template #user let-modal>
+    <div class="modal-header">
+      <h6 class="modal-title" id="modal-basic-title">Choose the user</h6>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
+    <div class="modal-body">
+
+      <div class="container-fluid">
+        <mat-form-field>
+          <mat-label>Filter</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+        </mat-form-field>
+
+        <table mat-table [dataSource]="dataSourceLinkUsers" class="mat-elevation-z8">
+          <!--*ngIf="showZoneUserTable"-->
+
+          <ng-container matColumnDef="idNumber">
+            <th mat-header-cell *matHeaderCellDef> ID Number </th>
+            <td mat-cell *matCellDef="let element"> {{element.idNumber}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="fullName">
+            <th mat-header-cell *matHeaderCellDef> User Name </th>
+            <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Select</th>
+            <td mat-cell *matCellDef="let i = index">
+
+              <mat-radio-button class="example-margin" (click)="getUserID(i)"></mat-radio-button>
+            </td>
+
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsLinkUsers"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumnsLinkUsers;"></tr>
+        </table>
+
+      </div>
+      <div class="container-fluid">
+
+      </div>
     </div>
 
     <div class="modal-footer">
       <button type="submit" class="btn btn-outline-success" (click)="openXl(Prof);modal.close('Save click')">Save</button>
     </div>
-</ng-template>
+  </ng-template>
 
-<!--end-->
-<!--This is for adding contractor & engineer-->
-<ng-template #Prof let-modal>
-  <div class="modal-header">
-    <h6 class="modal-title" id="modal-basic-title">Add New Professional</h6>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-  </div>
-  <div class="modal-body">
-    <div class="container-fluid">
-      <mat-tab-group dynamicHeight>
-        <mat-tab label="Creating a new engineer">
-          <!--<form>-->
+  <!--end-->
+  <!--This is for adding contractor & engineer-->
+  <ng-template #Prof let-modal>
+    <div class="modal-header">
+      <h6 class="modal-title" id="modal-basic-title">Add New Professional</h6>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <div class="container-fluid">
+        <mat-tab-group dynamicHeight>
+          <mat-tab label="Creating a new engineer">
+            <!--<form>-->
+
+
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" id="BpNoApplicant" [(ngModel)]="bpNoApplicant" placeholder="Enter BP Number" name="bpNoApplicant">
+                  <label for="bpNoApplicant">BP Number</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" id="professionalRegNo" [(ngModel)]="professionalRegNo" placeholder="Professional Reg No" name="professionalRegNo">
+                  <label for="professionalRegNo">Professional Reg No.</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" id="engineerIDNo" [(ngModel)]="engineerIDNo" placeholder="Engineer ID Number" name="engineerIDNo">
+                  <label for="engineerIDNo">ID Number</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" id="Name" [(ngModel)]="name" placeholder="Enter First Name" name="name">
+                  <label for="name">Name</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" id="Surname" [(ngModel)]="surname" placeholder="Enter Surname" name="surname">
+                  <label for="surname">Surname</label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="tel" class="form-control" id="ApplicantTel" [(ngModel)]="applicantTellNo" placeholder="Enter Tell No." name="applicantTellNo">
+                  <label for="applicantTellNo">Cell No.</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="email" class="form-control" id="ApplicantEmail" [(ngModel)]="applicantEmail" placeholder="Enter Email" name="applicantEmail">
+                  <label for="applicantEmail">Email</label>
+                </div>
+              </div>
+            </div>
+            <!--          <button type="button" class="btn btn-outline-success" (click)="onAddEngineer()">Save</button>
+            -->
+            <button mat-raised-button color="green" (click)="onAddEngineer()">Save</button>
+
+          </mat-tab>
+          <mat-tab label="Creating a New Contractor">
+            <div class="mb-3">
+
+              <!--<div class="row">-->
+              <!--<div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" id="bpNoContractor" [(ngModel)]="bpNoContractor" placeholder="Enter BP Number" name="bpNoContractor">
+                  <label for="bpNoContractor">BP Number</label>
+                </div>
+              </div>-->
+              <!--          <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" id="ProfessionalRegNo" [(ngModel)]="ProfessionalRegNo" placeholder="Enter Professional Reg No" name="professionalRegNo">
+                  <label for="professionalRegNo">CIDB Number</label>
+                </div>
+              </div>-->
+              <!--</div>-->
+              <div class="row">
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" id="contractorIDNo" [(ngModel)]="contractorIDNo" placeholder="Enter ID Number" name="contractorIDNo">
+                    <label for="contractorIDNo">Company Name</label>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" id="ProfessionalRegNo" [(ngModel)]="ProfessionalRegNo" placeholder="Enter Professional Reg No" name="professionalRegNo">
+                    <label for="professionalRegNo">CIDB Number</label>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" id="CIBDrating" [(ngModel)]="CIBRating" placeholder="Enter Grading" name="CIBRating">
+                    <label for="CIBDrating">CIDB Grading</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" id="Name" [(ngModel)]="Name" placeholder="Enter First Name" name="name">
+                    <label for="name">Name</label>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" id="Surname" [(ngModel)]="Surname" placeholder="Enter Surname" name="surname">
+                    <label for="surname">Surname</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="tel" class="form-control" id="ContractorTell" [(ngModel)]="ContractorTell" placeholder="Enter Tell No." name="contractorTell">
+                    <label for="contractorTell">Cell No.</label>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="email" class="form-control" id="ContractorEmail" [(ngModel)]="ContractorEmail" placeholder="Enter Email" name="contractorEmail">
+                    <label for="contractorEmail">Email</label>
+                  </div>
+                </div>
+              </div>
+
+              <!--            <button type="button" class="btn btn-outline-success" (click)="onAddContractor()">Save</button>
+              -->
+              <button mat-raised-button color="green" (click)="onAddContractor()">Save</button>
+            </div>
+          </mat-tab>
+          <!--</form>-->
+        </mat-tab-group>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click');populateClientInfo();modal.close('Save click');">Next</button>
+    </div>
+  </ng-template>
+
+
+
+
+  <!--end contractor & engineer-->
+
+
+
+
+
+  <ng-template #newClient let-modal>
+    <div class="modal-header">
+      <h6 class="modal-title">Add New Client Information</h6>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+
+      <mat-horizontal-stepper #stepper>
+
+
+        <mat-step label="User Information">
+
+          <form>
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="clientName" name="clientName" placeholder="Enter First Name">
+                  <label for="clientName">Name</label>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="clientSurname" name="clientSurname" placeholder="Enter Surname">
+                  <label for="clientSurname">Surname</label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="clientEmail" name="clientEmail" placeholder="Enter Email">
+                  <label for="clientEmail">Email</label>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="clientCellNo" name="clientCellNo" placeholder="Enter Cell Number">
+                  <label for="clientCellNo">Cell Number</label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+
+
+
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="clientRefNo" name="clientRefNo" placeholder="Enter Ref No">
+                <label for="clientRefNo">Reference Number</label>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="email" class="form-control" [(ngModel)]="clientBpNumber" name="clientBpNumber" placeholder="Bp Number">
+                  <label for="clientBpNumber">Bp Number</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="clientCompanyName" name="clientCompanyName" placeholder="Enter Company Name">
+                  <label for="address">Company Name</label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="clientCompanyRegNo" name="clientCompanyRegNo" placeholder="Enter Company Reg No">
+                  <label for="address">Company Reg No.</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="email" class="form-control" [(ngModel)]="clientCompanyType" name="clientCompanyType" placeholder="Select Company Type">
+                  <label for="applicantEmail">Company Type</label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-floating mb-3 mt-3">
+                <input type="email" class="form-control" [(ngModel)]="clientPhysicalAddress" name="clientPhysicalAddress" placeholder="Select Address">
+                <label for="applicantEmail">Address</label>
+              </div>
+
+
+
+            </div>
+
+          </form>
+
+          <br>
+          <button mat-raised-button color="green" (click)="onAddNewClient()">Save</button>
+          <div class="cont889">
+
+            <button mat-raised-button color="primary" *ngIf="nextBtn" (click)="checkIfError(stepper)">Next</button>
+
+
+          </div>
+
+        </mat-step>
+        <mat-step label="Engineer Information">
 
 
           <div class="row">
@@ -406,26 +653,32 @@ Please note, you've accessed the test server, nothing captured to this server wi
               </div>
             </div>
           </div>
-<!--          <button type="button" class="btn btn-outline-success" (click)="onAddEngineer()">Save</button>
--->          <button mat-raised-button color="green" (click)="onAddEngineer()">Save</button>
+          <!--          <button type="button" class="btn btn-outline-success" (click)="onAddEngineer()">Save</button>
+          -->
+          <button mat-raised-button color="green" (click)="onAddEngineer()">Save</button>
+          <div class="cont889">
 
-        </mat-tab>
-        <mat-tab label="Creating a New Contractor">
+            <button mat-raised-button color="primary" matStepperNext>Next</button>
+
+
+          </div>
+        </mat-step>
+        <mat-step label="Contractor Information">
           <div class="mb-3">
 
             <!--<div class="row">-->
             <!--<div class="col">
-    <div class="form-floating mb-3 mt-3">
-      <input type="text" class="form-control" id="bpNoContractor" [(ngModel)]="bpNoContractor" placeholder="Enter BP Number" name="bpNoContractor">
-      <label for="bpNoContractor">BP Number</label>
-    </div>
-  </div>-->
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="bpNoContractor" [(ngModel)]="bpNoContractor" placeholder="Enter BP Number" name="bpNoContractor">
+                <label for="bpNoContractor">BP Number</label>
+              </div>
+            </div>-->
             <!--          <div class="col">
-    <div class="form-floating mb-3 mt-3">
-      <input type="text" class="form-control" id="ProfessionalRegNo" [(ngModel)]="ProfessionalRegNo" placeholder="Enter Professional Reg No" name="professionalRegNo">
-      <label for="professionalRegNo">CIDB Number</label>
-    </div>
-  </div>-->
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="ProfessionalRegNo" [(ngModel)]="ProfessionalRegNo" placeholder="Enter Professional Reg No" name="professionalRegNo">
+                <label for="professionalRegNo">CIDB Number</label>
+              </div>
+            </div>-->
             <!--</div>-->
             <div class="row">
               <div class="col">
@@ -477,322 +730,73 @@ Please note, you've accessed the test server, nothing captured to this server wi
               </div>
             </div>
 
-<!--            <button type="button" class="btn btn-outline-success" (click)="onAddContractor()">Save</button>
--->            <button mat-raised-button color="green" (click)="onAddContractor()">Save</button>
+            <!--            <button type="button" class="btn btn-outline-success" (click)="onAddContractor()">Save</button>
+            -->
+            <button mat-raised-button color="green" (click)="onAddContractor()">Save</button>
           </div>
-        </mat-tab>
+          <div class="cont8789">
+            <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+            <button mat-raised-button color="primary" (click)="populateClientInfo();modal.dismiss('Cross click')">Finish</button>
+
+          </div>
+        </mat-step>
         <!--</form>-->
-      </mat-tab-group>
-      </div>
+      </mat-horizontal-stepper>
     </div>
 
+
+  </ng-template>
+
+
+  <ng-template #processFlow let-modal>
+    <div class="modal-header">
+      <h6 class="modal-title" id="modal-basic-title">Process Flow</h6>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <div class="container-fluid">
+
+        <table mat-table [dataSource]="dataSourceViewLinkedZones" class="mat-elevation-z8">
+
+
+          <ng-container matColumnDef="subDepartmentName">
+            <th mat-header-cell *matHeaderCellDef>Sub Departments</th>
+            <td mat-cell *matCellDef="let element"> {{element.subDepartmentName}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="zoneName">
+            <th mat-header-cell *matHeaderCellDef>Zones</th>
+            <td mat-cell *matCellDef="let element"> {{element.zoneName}} </td>
+          </ng-container>
+
+
+
+
+
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsViewLinkedZones"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumnsViewLinkedZones;"></tr>
+        </table>
+
+
+      </div>
+    </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click');populateClientInfo();modal.close('Save click');">Next</button>
+
+      <button type="button" class="btn btn-light" (click)="modal.dismiss('Cross click')">Close</button>
     </div>
-</ng-template>
+
+  </ng-template>
 
 
+  <ng-template #loadModal let-modal>
+
+    <p>Loading</p>
+  </ng-template>
 
 
-<!--end contractor & engineer-->
-
-
-
-
-
-<ng-template #newClient let-modal>
-  <div class="modal-header">
-    <h6 class="modal-title">Add New Client Information</h6>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  <div class="loading-screen" *ngIf="isLoading" id="loadingScreen"  [@fade]="isLoading ? 'visible' : 'hidden'">>
+    <img src="assets/Loading.png" alt="" class="logo">
+    <div class="text">Saving drawing</div>
+    <div class="text2">Taking too long? Your internet connection may be slow.</div>
   </div>
-  <div class="modal-body">
-
-    <mat-horizontal-stepper  #stepper>
-
-
-      <mat-step label="User Information">
-
-        <form>
-          <div class="row">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="clientName" name="clientName" placeholder="Enter First Name">
-                <label for="clientName">Name</label>
-              </div>
-            </div>
-
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="clientSurname" name="clientSurname" placeholder="Enter Surname">
-                <label for="clientSurname">Surname</label>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="clientEmail" name="clientEmail" placeholder="Enter Email">
-                <label for="clientEmail">Email</label>
-              </div>
-            </div>
-
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="clientCellNo" name="clientCellNo" placeholder="Enter Cell Number">
-                <label for="clientCellNo">Cell Number</label>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-
-
-         
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="clientRefNo" name="clientRefNo" placeholder="Enter Ref No">
-                <label for="clientRefNo">Reference Number</label>
-              </div>
-          
-          </div>
-          <div class="row">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control" [(ngModel)]="clientBpNumber" name="clientBpNumber" placeholder="Bp Number">
-                <label for="clientBpNumber">Bp Number</label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="clientCompanyName" name="clientCompanyName" placeholder="Enter Company Name">
-                <label for="address">Company Name</label>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="clientCompanyRegNo" name="clientCompanyRegNo" placeholder="Enter Company Reg No">
-                <label for="address">Company Reg No.</label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control" [(ngModel)]="clientCompanyType" name="clientCompanyType" placeholder="Select Company Type">
-                <label for="applicantEmail">Company Type</label>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-floating mb-3 mt-3">
-              <input type="email" class="form-control" [(ngModel)]="clientPhysicalAddress" name="clientPhysicalAddress" placeholder="Select Address">
-              <label for="applicantEmail">Address</label>
-            </div>
-
-
-
-          </div>
-        
-        </form>
-
-        <br>
-        <button mat-raised-button color="green" (click)="onAddNewClient()">Save</button>
-        <div class="cont889">
-
-            <button mat-raised-button color="primary" *ngIf="nextBtn" (click)="checkIfError(stepper)" >Next</button>
-
-
-          </div>
-
-      </mat-step>
-      <mat-step label="Engineer Information">
-
-
-        <div class="row">
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="BpNoApplicant" [(ngModel)]="bpNoApplicant" placeholder="Enter BP Number" name="bpNoApplicant">
-              <label for="bpNoApplicant">BP Number</label>
-            </div>
-          </div>
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="professionalRegNo" [(ngModel)]="professionalRegNo" placeholder="Professional Reg No" name="professionalRegNo">
-              <label for="professionalRegNo">Professional Reg No.</label>
-            </div>
-          </div>
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="engineerIDNo" [(ngModel)]="engineerIDNo" placeholder="Engineer ID Number" name="engineerIDNo">
-              <label for="engineerIDNo">ID Number</label>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="Name" [(ngModel)]="name" placeholder="Enter First Name" name="name">
-              <label for="name">Name</label>
-            </div>
-          </div>
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" id="Surname" [(ngModel)]="surname" placeholder="Enter Surname" name="surname">
-              <label for="surname">Surname</label>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="tel" class="form-control" id="ApplicantTel" [(ngModel)]="applicantTellNo" placeholder="Enter Tell No." name="applicantTellNo">
-              <label for="applicantTellNo">Cell No.</label>
-            </div>
-          </div>
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="email" class="form-control" id="ApplicantEmail" [(ngModel)]="applicantEmail" placeholder="Enter Email" name="applicantEmail">
-              <label for="applicantEmail">Email</label>
-            </div>
-          </div>
-        </div>
-        <!--          <button type="button" class="btn btn-outline-success" (click)="onAddEngineer()">Save</button>
-  -->
-        <button mat-raised-button color="green" (click)="onAddEngineer()">Save</button>
-        <div class="cont889">
-
-          <button mat-raised-button color="primary" matStepperNext>Next</button>
-
-
-        </div>
-      </mat-step>
-      <mat-step label="Contractor Information">
-        <div class="mb-3">
-
-          <!--<div class="row">-->
-          <!--<div class="col">
-      <div class="form-floating mb-3 mt-3">
-        <input type="text" class="form-control" id="bpNoContractor" [(ngModel)]="bpNoContractor" placeholder="Enter BP Number" name="bpNoContractor">
-        <label for="bpNoContractor">BP Number</label>
-      </div>
-    </div>-->
-          <!--          <div class="col">
-      <div class="form-floating mb-3 mt-3">
-        <input type="text" class="form-control" id="ProfessionalRegNo" [(ngModel)]="ProfessionalRegNo" placeholder="Enter Professional Reg No" name="professionalRegNo">
-        <label for="professionalRegNo">CIDB Number</label>
-      </div>
-    </div>-->
-          <!--</div>-->
-          <div class="row">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="contractorIDNo" [(ngModel)]="contractorIDNo" placeholder="Enter ID Number" name="contractorIDNo">
-                <label for="contractorIDNo">Company Name</label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="ProfessionalRegNo" [(ngModel)]="ProfessionalRegNo" placeholder="Enter Professional Reg No" name="professionalRegNo">
-                <label for="professionalRegNo">CIDB Number</label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="CIBDrating" [(ngModel)]="CIBRating" placeholder="Enter Grading" name="CIBRating">
-                <label for="CIBDrating">CIDB Grading</label>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="Name" [(ngModel)]="Name" placeholder="Enter First Name" name="name">
-                <label for="name">Name</label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="Surname" [(ngModel)]="Surname" placeholder="Enter Surname" name="surname">
-                <label for="surname">Surname</label>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="tel" class="form-control" id="ContractorTell" [(ngModel)]="ContractorTell" placeholder="Enter Tell No." name="contractorTell">
-                <label for="contractorTell">Cell No.</label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control" id="ContractorEmail" [(ngModel)]="ContractorEmail" placeholder="Enter Email" name="contractorEmail">
-                <label for="contractorEmail">Email</label>
-              </div>
-            </div>
-          </div>
-
-          <!--            <button type="button" class="btn btn-outline-success" (click)="onAddContractor()">Save</button>
-    -->
-          <button mat-raised-button color="green" (click)="onAddContractor()">Save</button>
-        </div>
-        <div class="cont8789">
-          <button mat-raised-button color="primary" matStepperPrevious>Back</button>
-          <button mat-raised-button color="primary" (click)="populateClientInfo();modal.dismiss('Cross click')">Finish</button>
-
-        </div>
-      </mat-step>
-      <!--</form>-->
-    </mat-horizontal-stepper>
-</div>
-
- 
-</ng-template>
-
-
-<ng-template #processFlow let-modal>
-  <div class="modal-header">
-    <h6 class="modal-title" id="modal-basic-title">Process Flow</h6>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-  </div>
-  <div class="modal-body">
-        <div class="container-fluid">
-
-          <table mat-table [dataSource]="dataSourceViewLinkedZones" class="mat-elevation-z8">
-
-
-            <ng-container matColumnDef="subDepartmentName">
-              <th mat-header-cell *matHeaderCellDef>Sub Departments</th>
-              <td mat-cell *matCellDef="let element"> {{element.subDepartmentName}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="zoneName">
-              <th mat-header-cell *matHeaderCellDef>Zones</th>
-              <td mat-cell *matCellDef="let element"> {{element.zoneName}} </td>
-            </ng-container>
-
-
-
-
-
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumnsViewLinkedZones"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumnsViewLinkedZones;"></tr>
-          </table>
-
-
-  </div>
-  </div>
-  <div class="modal-footer">
-
-    <button type="button" class="btn btn-light" (click)="modal.dismiss('Cross click')">Close</button>
-  </div>
-
-</ng-template>
-
-
-<ng-template #loadModal let-modal>
-
-  <p>Loading</p>
-</ng-template>
-

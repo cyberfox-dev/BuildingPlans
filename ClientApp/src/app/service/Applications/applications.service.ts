@@ -114,4 +114,13 @@ export class ApplicationsService {
     return this.httpClient.post(this.baseURL + "GetApplicationsByProjectNumber", body);
 
   }
+  public getApplicationsForReviewer(ZoneID: number, UserID: string){
+    const body = {
+      ZoneID: ZoneID,
+      UserID: UserID
+    };
+    return this.httpClient.post(this.baseURL + "GetApplicationsForReviewer", body);
+  }
+
+
 }
