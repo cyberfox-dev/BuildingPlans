@@ -9,7 +9,7 @@ import { NewProfileComponent } from 'src/app/new-user/new-profile/new-profile.co
 import { HomeComponent } from 'src/app/home/home.component';
 import { BusinessPartnerService } from 'src/app/service/BusinessPartner/business-partner.service';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError} from 'rxjs';
 import { BpNumberService } from 'src/app/service/BPNumber/bp-number.service'
 import { tap } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -456,13 +456,27 @@ export class LoginComponent implements OnInit {
   }
 
   //REGISTERREGISTERREGISTERREGISTERREGISTERREGISTERREGISTERREGISTERREGISTERREGISTERREGISTERREGISTER
-  validNameSurname: boolean;
-  validEmail: boolean;
-  matchingRegPasswords: boolean;
-  internalUserNoBP: boolean;
+  testBp2(BpNo: any): Promise<boolean> {
+    return this.businessPartnerService.validateBP(Number(BpNo))
+      .toPromise()
+      .then((response: any) => {
+        const apiResponse = response.Response;
+        return apiResponse === "X";
+      })
+      .catch((error: any) => {
+        // Handle API error
+        console.error('API error:', error);
+        return false; // Return false in case of an error
+      });
+  }
+
+  validNameSurname: boolean = false;
+  validEmail: boolean = false;
+  matchingRegPasswords: boolean = false;
+  internalUserNoBP: boolean = false;
   externalWValidBP: boolean;
 
-  SindiChecksRegistration() {
+  async onChecksRegistration() {
     let fullName = this.registerForm.controls["fullName"].value;
     let email = this.registerForm.controls["registerEmail"].value;
     let bpNumber = this.registerForm.controls["bpNumber"].value;
@@ -483,7 +497,7 @@ export class LoginComponent implements OnInit {
         this.validNameSurname = true;
       }
     }
-
+    console.log("Full Name: " + this.validNameSurname);
     const emailRegex: RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     if (email === null || !emailRegex.test(email)) {
@@ -495,52 +509,79 @@ export class LoginComponent implements OnInit {
       if (email.endsWith("@capetown.gov.za")) {
         this.internalUserNoBP = true;
         bpNumber = ''; // Leave it empty for internal folks -- OKAY, I CAN'T DO THAT! OR CAN I?
+        this.externalWValidBP = false; // Make sure this is false for internal users
 
       } else {
         // Check if the email already exists in the wayleave system
-        this.userService.emailExists(email).subscribe((exists: boolean) => {
+        try {
+          const exists = await this.userService.emailExists(email).toPromise();
           if (exists) {
             alert("Email already exists in wayleave system. Consider changing your password");
             this.validEmail = false;
           } else {
-            // Email doesn't exist, proceed with BP Number validation
-            this.testBp(bpNumber).subscribe((isValidBP: boolean) => {
+            console.log("Testing BP Number");
+            // Ensure bpNumber is not empty before validating it
+            if (bpNumber.trim() === '') {
+              alert("Please enter a valid BP Number");
+              this.internalUserNoBP = false;
+              this.externalWValidBP = false;
+            } else {
+              console.log("Testing BP number now...");
+              const isValidBP = await this.testBp2(bpNumber);
               if (isValidBP) {
-                // BP Number is valid
                 this.internalUserNoBP = false;
                 this.externalWValidBP = true;
               } else {
+                // Handle invalid BP Number
                 alert("Please enter a valid BP Number");
+                console.log("ngathi this BP is not valid.");
                 this.internalUserNoBP = false;
+                this.externalWValidBP = false; // Set this to false in case of an invalid BP Number
               }
-            });
+            }
           }
-        });
+        } catch (error) {
+          console.error("An error occurred: ", error);
+          this.validEmail = false;
+          this.internalUserNoBP = false;
+          this.externalWValidBP = false;
+        }
       }
     }
-
+    console.log("Email is okay?" + this.validEmail);
+    console.log("Is User Internal? " + this.internalUserNoBP);
+    console.log("User has valid BP Num " + this.externalWValidBP);
     if (password !== passwordConfirm) {
       alert("Passwords do not match");
       this.matchingRegPasswords = false;
     } else {
       this.matchingRegPasswords = true;
     }
+    console.log("Passwords are: " + this.matchingRegPasswords);
   }
 
-  onSendiOTP() {
-    this.SindiChecksRegistration();
+  async onSendiOTP() {
 
-    if (this.validNameSurname && this.validEmail && this.matchingRegPasswords && (this.internalUserNoBP || this.externalWValidBP)) {
-      this.onSendOTP();
-      this.regFormReadOnly = true;
-      this.showDuplicatePassInput = false;
+    try {
+      await this.onChecksRegistration();
+
+      if (this.validNameSurname && this.validEmail && this.matchingRegPasswords && ((this.internalUserNoBP && !this.externalWValidBP) || (this.externalWValidBP && !this.internalUserNoBP))) {
+        this.regFormReadOnly = true;
+        this.showDuplicatePassInput = false;
+        this.onSendOTP();
+
+      }
+      else {
+        alert("OTP not sent: make sure to fill-in all fields appropriately.");
+        return;
+      }
     }
-    else {
-      alert("OTP not sent: make sure to fill-in all fields appropriately.");
-      return;
+    catch (error) {
+      console.error("Error in onChecksRegistration:", error);
     }
+  
   }
-
+  
   async onVerifyOTPRegister(
     clientFullName?: string | null,
     clientEmail?: string | null,
@@ -599,6 +640,7 @@ export class LoginComponent implements OnInit {
     });
     }
   }
+  //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   DoChecksForRegister() {
     /*    this.notification.sendEmail("jahdiel@cyberfox.co.za", "Test", "testing 1, 2, 3...");*/
 

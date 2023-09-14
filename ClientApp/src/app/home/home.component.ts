@@ -702,7 +702,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   getUserID(index: any) {
+    console.log("Turtle Speed is too fast for me");
+    debugger;
     this.userID = this.ClientUserList[index].userId;
+    console.log("You selected: " + this.userID);
+    //The right UserID is acquired - then what?!
   }
 
 
