@@ -440,6 +440,7 @@ export class ActionCenterComponent implements OnInit {
     this.loggedInUsersIsZoneAdmin = this.CurrentUserProfile[0].isZoneAdmin;
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
+    debugger;
     this.loggedInUsersSubDepartmentName = this.CurrentUserProfile[0].subDepartmentName;
     this.loggedInUsersDepartmentID = this.CurrentUserProfile[0].departmentID;
     this.loggedInUsersEmail = this.CurrentUserProfile[0].email;
@@ -1440,66 +1441,64 @@ export class ActionCenterComponent implements OnInit {
   }
 
 
+
+
   getPreviousReviewerUserID() {
 
 
-      this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
-        if (data.responseCode == 1) {
-          for (let i = 0; i < data.dateSet.length; i++) {
-            const tempCommentList = {} as CommentsList;
+    this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        let tempReferCommentList;
+        for (let i = 0; i < data.dateSet.length; i++) {
 
-            debugger;
-            const current = data.dateSet[i];
-          //  const preDate = "";
 
-            if (current.commentStatus == "Referred" && current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
-              this.previousReviewer = current.createdById;
+          debugger;
+          const current = data.dateSet[i];
 
-              this.userPofileService.getUserProfileById(this.previousReviewer).subscribe((data: any) => {
-                if (data.responseCode == 1) {
+          if (current.commentStatus == "Referred" && current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
 
-                  this.previousReviewer = data.dateSet[0];
-                  console.log("YOthis.previousReviewerthis.previousReviewerthis.previousReviewerthis.previousReviewerthis.previousReviewerthis.previousReviewerthis.previousReviewerthis.previousReviewer", this.previousReviewer);
-
-                }
-                else {
-                  alert(data.responseMessage);
-      
-                }
-                console.log("reponse", data);
-
-              }, error => {
-         
-                console.log("Error: ", error);
-              });
-              return;
-    
-
-            }
-            else {
-              this.previousReviewer = null;
-              debugger;
-            }
-
+            this.previousReviewer = current.createdById;
+          }
+          else {
+            this.previousReviewer = null;
           }
 
         }
-        else {
-          alert(data.responseMessage);
-          debugger;
-        }
-        console.log("reponse", data);
 
-      }, error => {
+        if (this.previousReviewer != null) {
+          this.userPofileService.getUserProfileById(this.previousReviewer).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              this.previousReviewer = data.dateSet[0];
+            }
+            else {
+              alert(data.responseMessage);
+
+            }
+            console.log("reponse", data);
+
+          }, error => {
+
+            console.log("Error: ", error);
+          });
+        }
+        else {
+
+        }
+
+      }
+      else {
+        alert(data.responseMessage);
         debugger;
-        console.log("Error: ", error);
-      })
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      debugger;
+      console.log("Error: ", error);
+    })
 
 
   }
-
-
-
 
 
   //Here B
@@ -1515,13 +1514,22 @@ export class ActionCenterComponent implements OnInit {
 
           alert(data.responseMessage);
 
+          let SubDepartmentName = "";
+          for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
+            if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
+              SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
+            }
+          }
           //commentsService
-          this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, null, this.leaveAComment, null, this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
+          debugger;
+          this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Returned", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
 
               alert(data.responseMessage);
               this.viewProjectInfoComponent.getAllComments();
+              this.modalService.dismissAll();
+              this.router.navigate(["/home"]);
 
             }
             else {

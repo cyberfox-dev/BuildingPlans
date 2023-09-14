@@ -162,12 +162,12 @@ export interface ConfigList {
   templateUrl: './home.component.html',
   styleUrls: ["./home.component.scss"],
   animations: [
-    trigger('backgroundFadeInOut', [
-      state('transparent', style({ 'background-color': 'rgba(255, 255, 255, 0)' })),
-      state('solid', style({ 'background-color': 'rgba(255, 255, 255, 0.8)' })),
-      transition('transparent <=> solid', animate('1s ease-in-out')), // Adjust duration and easing
+    trigger('swipeAnimation', [
+      state('transparent', style({ transform: 'translateX(0)' })), // No translation
+      state('solid', style({ transform: 'translateX(100%)' })), // Full translation (off-screen)
+      transition('transparent <=> solid', animate('0.5s ease-in-out')), // Adjust duration and easing
     ]),
-  ],
+  ]
 })
 
 
@@ -1799,7 +1799,7 @@ tempApplicationList.TestApplicationAge = daysDiff;
     const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
 
     // You can adjust this threshold value as needed
-    const threshold = 100;
+    const threshold = 20;
 
     // Update the isTransparent property based on the scroll position
     this.isTransparent = scrollPosition < threshold;
