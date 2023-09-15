@@ -526,7 +526,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  getLinkedZones(processFlow: any, ApplicationID: any,) {
+  getLinkedZones(ApplicationID: any, processFlow: any) {
 
     this.ZoneLinkedList.splice(0, this.ZoneLinkedList.length);
 
