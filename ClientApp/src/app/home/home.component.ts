@@ -379,9 +379,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     //this.defaultPageSize = 10;
   }
 
-  function() {
-    this.isLoading = true;
-  }
+
+
 
 
 
@@ -527,7 +526,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  getLinkedZones(ApplicationID: any, processFlow: any) {
+  getLinkedZones(processFlow: any, ApplicationID: any,) {
 
     this.ZoneLinkedList.splice(0, this.ZoneLinkedList.length);
 
@@ -2237,10 +2236,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.isTransparent = scrollPosition < threshold;
   }
 
-
-  getAllApplicationsForReviewer() {
-  
-  }
 
   }
 

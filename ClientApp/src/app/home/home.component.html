@@ -1,4 +1,4 @@
-<app-nav-menu ></app-nav-menu>
+<app-nav-menu [@fadeInOut]="isTransparent ? 'transparent' : 'solid'"></app-nav-menu>
 <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700,800&display=swap" rel="stylesheet">
 <link _ngcontent-ng-cli-universal-c545="" href="https://fonts.googleapis.com/css?family=Roboto:300italic,400italic,400,100,300,600,700" rel="stylesheet" type="text/css">
 
@@ -19,8 +19,12 @@
   <div class="cont3">
     <button mat-raised-button color="createWayleave" (click)="goToNewWayleave(false,false)"><i class="fa fa-plus"></i> Create New Wayleave</button>
     <button mat-raised-button color="createWayleave" (click)="goToNewWayleave(false,true)"><i class="fa fa-plus"></i> Request for Services Information</button>
- 
   </div>
+
+
+
+
+
 
   <!--Tabs-->
 
@@ -340,6 +344,8 @@
   </ng-template>
 
   <!--end-->
+  <!--Before just adding a contractor and engineer, need to be able to check which professionals are already in the system-->
+  <!--Should the external mans be able to select one?-->
   <!--This is for adding contractor & engineer-->
   <ng-template #Prof let-modal>
     <div class="modal-header">
@@ -351,24 +357,6 @@
         <mat-tab-group dynamicHeight>
           <mat-tab label="Creating a new engineer">
             <!--<form>-->
-<!--end-->
-
-  <!--Before just adding a contractor and engineer, need to be able to check which professionals are already in the system-->
-  <!--Should the external mans be able to select one?-->
-
-
-
-<!--This is for adding contractor & engineer-->
-<ng-template #Prof let-modal>
-  <div class="modal-header">
-    <h6 class="modal-title" id="modal-basic-title">Add New Professional</h6>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-  </div>
-  <div class="modal-body">
-    <div class="container-fluid">
-      <mat-tab-group dynamicHeight>
-        <mat-tab label="Creating a new engineer">
-          <!--<form>-->
 
 
             <div class="row">
@@ -812,9 +800,3 @@
     <p>Loading</p>
   </ng-template>
 
-
-  <div class="loading-screen" *ngIf="isLoading" id="loadingScreen"  [@fade]="isLoading ? 'visible' : 'hidden'">>
-    <img src="assets/Loading.png" alt="" class="logo">
-    <div class="text">Saving drawing</div>
-    <div class="text2">Taking too long? Your internet connection may be slow.</div>
-  </div>
