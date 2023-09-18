@@ -252,7 +252,7 @@
     <mat-form-field>
       <mat-label>Filter by selecting a department</mat-label>
       <mat-select [(value)]="selectDepForUpload" (selectionChange)="selectDepartment()">
-        <mat-option>All Departments</mat-option>
+        <mat-option value="All Departments">All Departments</mat-option>
         <mat-option *ngFor="let department of SubDepartmentList" value="{{department.subDepartmentID}}">{{department.subDepartmentName}}</mat-option>
       </mat-select>
     </mat-form-field>

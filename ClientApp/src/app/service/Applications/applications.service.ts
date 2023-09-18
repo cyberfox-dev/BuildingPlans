@@ -108,6 +108,7 @@ export class ApplicationsService {
 
   /*Get all the applications that share a ProjectNumber (an application is assigned a ProjectNumber once it is paid for)*/
   public getApplicationsByProjectNumber(ProjectNumber: string) {
+  
     const body = {
       ProjectNumber: ProjectNumber
       }

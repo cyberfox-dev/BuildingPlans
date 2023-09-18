@@ -2,6 +2,7 @@
 .mat-form-field {
   font-size: 14px;
   width: 100%;
+  padding: 0;
 }
 .cont6 {
   display: flex;
@@ -413,9 +414,10 @@
   }
 }
 
-  .card {
-    padding-top: 20px;
-  }
+.card {
+  padding-top: 20px;
+ 
+}
 
 
   .cards {
@@ -426,21 +428,35 @@
     margin: 1px;
   }
 
-  .card {
-    cursor: pointer;
-    margin-top: 40px;
-    padding: 20px;
-    width: 288px;
-    margin-bottom: 20px;
-    margin-right: 9px;
-    margin-left: 9px;
-    height: 151px;
-    display: grid;
-    grid-template-rows: 20px 50px 1fr 50px;
-    border-radius: 10px;
-    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.25);
-    transition: all 0.2s;
+.card {
+/*  animation: fade-in-bottom 0.5s ease-out;*/
+
+  cursor: pointer;
+  margin-top: 40px;
+  padding: 20px;
+  width: 288px;
+  margin-bottom: 20px;
+  margin-right: 9px;
+  margin-left: 9px;
+  height: 151px;
+  display: grid;
+  grid-template-rows: 20px 50px 1fr 50px;
+  border-radius: 10px;
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.25);
+  transition: all 0.2s;
+}
+
+@keyframes fade-in-bottom {
+  0% {
+    opacity: 0;
+    transform: translateY(20px); /* Optional: Add a slide-up effect */
   }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
   .card:hover {
     box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.4);
@@ -497,25 +513,32 @@
   }
   /* CARD BACKGROUNDS */
 
-  .card-1 {
-    background: #ccdee2;
-  }
+.card-1 {
 
-  .card-2 {
-    background: #ccdee2;
-  }
+  background: #ccdee2;
+  animation-delay: 0.9s;
 
-  .card-3 {
-    background: #ccdee2;
-  }
+}
 
-  .card-4 {
-    background: #ebd3d7;
-  }
+.card-2 {
+  background: #ccdee2;
+  animation-delay: 0.7s;
+}
 
-  .card-5 {
-    background: #ccdee2;
-  }
+.card-3 {
+  background: #ccdee2;
+  animation-delay: 1.3s;
+}
+
+.card-4 {
+  background: #ebd3d7;
+  animation-delay: 1.1s;
+}
+
+.card-5 {
+  background: #ccdee2;
+  animation-delay: 0.5s;
+}
 
   h4 {
     color: #005870;
@@ -1294,3 +1317,32 @@ display:none;
     transform: rotate(360deg);
   }
 }
+
+.container02 {
+  display: flex;
+  align-items: baseline;
+  align-content: center;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.mat-filter {
+  font-size:14px;
+  text-align:center;
+}
+.mat-button-toggle-group {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.mat-button-toggle-checked {
+  background-color: #005870;
+  color: white;
+}
+
+mat-button-toggle {
+  width: 100%;
+}
+
+
+
