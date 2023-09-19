@@ -25,7 +25,7 @@ import { SubDepartmentsService } from '../service/SubDepartments/sub-departments
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
-
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 export interface EngineerList {
@@ -178,16 +178,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   FiterValue = "";
   isLoading: boolean = false;
 
-  /*paginator stuff*/
 
-  /*  @ViewChild(MatPaginator) paginator: MatPaginator;
-    dataSource: MatTableDataSource<any>;
-    initializeTableData() {
-      // Assuming you have an array called 'applications' with the table data
-      this.dataSource = new MatTableDataSource(this.Applications);
-      this.dataSource.paginator = this.paginator;
-      this.function();
-    }*/
 
   AllSubDepartmentList: AllSubDepartmentList[] = [];
   Applications: ApplicationsList[] = [];
@@ -287,6 +278,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   userID: any;
   FilterBtn: boolean = false;
   viewEscalateDate = 0;
+  
 
 
   constructor(
@@ -322,7 +314,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild(MatTable) applicationsTable: MatTable<ApplicationsList> | undefined;
   displayedColumns: string[] = ['ProjectNumber', 'FullName', 'Stage', 'Status', 'TypeOfApplication', 'AplicationAge', 'StageAge', 'DateCreated', 'actions'];
   dataSource = this.Applications;
-
+ 
 
   applyFilter(event: Event): string[] {
     const filterValue = (event.target as HTMLInputElement).value.toUpperCase();
@@ -394,7 +386,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 /*      this.initializeApp();*/
       //this.function();
     }, 100);
-    //this.dataSource.paginator = this.paginator;
+  
     //this.defaultPageSize = 10;
   }
 
@@ -553,6 +545,10 @@ export class HomeComponent implements OnInit, OnDestroy {
       stepper.next();
     }
   }
+
+    /*paginator stuff*/
+
+
 
   getLinkedZones(ApplicationID: any, processFlow: any) {
 
@@ -1703,7 +1699,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.notNyProjects = true;
     this.MyProjects = false;
     this.FiterValue = "";
-    this.FiterValue = "My Reviews";
+    this.FiterValue = "Your Reviews";
     this.cardFilters = false;
     this.applicationDataForView = [];
     this.Applications = [];
@@ -1855,7 +1851,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.MyProjects = true;
     
     this.FiterValue = "";
-    this.FiterValue = "My Applications";
+    this.FiterValue = "Your Applications";
     this.cardFilters = false;
     this.applicationDataForView = [];
     this.Applications = [];
@@ -1999,6 +1995,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
 
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+      
   onFilterAPplicationsForRecentApplications() {
     this.isTableLoading = true;
     this.onFilterButtonClick();
@@ -2135,6 +2134,8 @@ export class HomeComponent implements OnInit, OnDestroy {
             })
           }
           this.dataSource = this.Applications.filter(df => df.DateCreated);
+    
+          
           this.applicationsTable?.renderRows();
           //for card filters
           /* this.select = "option3";*/
