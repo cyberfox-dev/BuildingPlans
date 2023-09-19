@@ -15,13 +15,13 @@ import { tap } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ConfigService } from 'src/app/service/Config/config.service';
 import { delay } from 'rxjs/operators';
-  export interface ConfigList {
-  ConfigID: number,
-  ConfigName: string,
-  ConfigDescription: string,
-  DateCreated: Date,
-  DateUpdated: Date,
-  CreatedById: string,
+export interface ConfigList {
+  configID: number,
+  configName: string,
+  configDescription: string,
+  dateCreated: Date,
+  dateUpdated: Date,
+  createdById: string,
   isActive: boolean,
   utilitySlot1: string,
   utilitySlot2: string,
