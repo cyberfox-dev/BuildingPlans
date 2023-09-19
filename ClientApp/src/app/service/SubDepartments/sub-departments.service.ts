@@ -14,13 +14,15 @@ export class SubDepartmentsService {
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
 
-  public addUpdateSubDepartment(subDepartmentID: number | null, subDepartmentName: string | null, departmentID: number | null, createdById: string | null) {
+  public addUpdateSubDepartment(subDepartmentID: number | null, subDepartmentName: string | null, departmentID: number | null, createdById: string | null ,glCode: string| null, profitCenter: string| null ) {
     
     const body = {
       SubDepartmentID: subDepartmentID,
       SubDepartmentName: subDepartmentName,
       DepartmentID: departmentID,
-      CreatedById: createdById
+      CreatedById: createdById,
+      GlCode: glCode,
+      ProfitCenter: profitCenter
     }
     return this.httpClient.post(this.baseURL + "AddUpdateSubDepartments", body);
 
@@ -61,7 +63,7 @@ export class SubDepartmentsService {
 
   }
 
-  public getSubDepartmentsByDepartmentID(departmentId : number) {
+  public getSubDepartmentsByDepartmentID(departmentId : number ) {
   
     const body = {
  
@@ -75,7 +77,7 @@ export class SubDepartmentsService {
   public getSubDepartmentBySubDepartmentID(subDepID: number) {
 
     const body = {
-
+     
       SubDepartmentID: subDepID,
 
     }
@@ -88,5 +90,14 @@ export class SubDepartmentsService {
     return this.httpClient.get(this.baseURL + "GetAllSubDepartmentsForAutoDistribution");
 
   }
+  public GetSubDepartmentID(selectedSubDepartment: number) {
 
+    const body = {
+
+      SubDepartmentID: selectedSubDepartment,
+
+    }
+    return this.httpClient.post(this.baseURL + " GetSubDepartmentID", body);
+  }
+ 
 }

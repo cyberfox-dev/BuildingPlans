@@ -81,6 +81,8 @@ export interface SubDepartmentList {
   departmentID: number;
   dateUpdated: any;
   dateCreated: any;
+  glCode: string;
+  profitCenter: string;
   isSetForAutomaticDistribution: boolean;
 }
 

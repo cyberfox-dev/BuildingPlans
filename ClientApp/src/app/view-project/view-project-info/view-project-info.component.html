@@ -55,11 +55,11 @@
 
 
   </mat-menu>
-  
+
 </div>
 <div class="cont7">
-<button mat-raised-button color="generatePackBtn" *ngIf="generateApprovalbtn" (click)="OpenLoadingModal(approvalPackLoading)">Generate My Approval Pack</button>
-  </div>
+  <button mat-raised-button color="generatePackBtn" *ngIf="generateApprovalbtn" (click)="OpenLoadingModal(approvalPackLoading)">Generate My Approval Pack</button>
+</div>
 
 
 <div class="container-fluid cont6">
@@ -72,23 +72,23 @@
 
       <app-view-project-details></app-view-project-details>
       <!--<nav class="menu">
-      <input type="checkbox" href="#" class="menu-open" name="menu-open" id="menu-open" />
-      <label class="menu-open-button" for="menu-open">
-        <span class="hamburger hamburger-1"></span>
-        <span class="hamburger hamburger-2"></span>
-        <span class="hamburger hamburger-3"></span>
-      </label>
+        <input type="checkbox" href="#" class="menu-open" name="menu-open" id="menu-open" />
+        <label class="menu-open-button" for="menu-open">
+          <span class="hamburger hamburger-1"></span>
+          <span class="hamburger hamburger-2"></span>
+          <span class="hamburger hamburger-3"></span>
+        </label>
 
-      <a class="menu-item" matTooltipPosition="left" matTooltip="Show applicant layer"> <i class="fa fa-user"></i> </a>
-      <a class="menu-item" matTooltipPosition="left" matTooltip="Show department layer"><i class="fa fa-building"></i> </a>
-      <a class="menu-item" matTooltipPosition="left" matTooltip="Show all layers"> <i class="fa fa-eye"></i> </a>
-      <a class="menu-item" matTooltipPosition="left" matTooltip="Hide all layers"> <i class="fa fa-eye-slash"></i> </a>
+        <a class="menu-item" matTooltipPosition="left" matTooltip="Show applicant layer"> <i class="fa fa-user"></i> </a>
+        <a class="menu-item" matTooltipPosition="left" matTooltip="Show department layer"><i class="fa fa-building"></i> </a>
+        <a class="menu-item" matTooltipPosition="left" matTooltip="Show all layers"> <i class="fa fa-eye"></i> </a>
+        <a class="menu-item" matTooltipPosition="left" matTooltip="Hide all layers"> <i class="fa fa-eye-slash"></i> </a>
 
 
-    </nav>-->
+      </nav>-->
       <!--<div class="maps">
-      <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d55522.617408819875!2d30.405427199999995!3d-29.569843200000005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sza!4v1662643454248!5m2!1sen!2sza" width="100%" height="700" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div>-->
+        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d55522.617408819875!2d30.405427199999995!3d-29.569843200000005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sza!4v1662643454248!5m2!1sen!2sza" width="100%" height="700" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>-->
       <app-project-details-map-view [data]="ARCGISAPIData"></app-project-details-map-view>
       <app-department-circulation></app-department-circulation>
       <!-- <app-department-circulation-planning *ngIf="CurrentApplicationBeingViewed[0].isPlanning === true"></app-department-circulation-planning>-->
@@ -145,9 +145,9 @@
         <br />
       </div>
       <!-- <div class="cont3" *ngIf="isInternalUser">
-       <button mat-raised-button color="green" (click)="onCreateApprovalPack()" *ngIf="ApprovalPackBtn">Approval Pack</button>
-       <button mat-raised-button color="red" (click)="onCrreateRejectionPack()" *ngIf="RejectionPackBtn">Rejection Pack</button>
-     </div>-->
+        <button mat-raised-button color="green" (click)="onCreateApprovalPack()" *ngIf="ApprovalPackBtn">Approval Pack</button>
+        <button mat-raised-button color="red" (click)="onCrreateRejectionPack()" *ngIf="RejectionPackBtn">Rejection Pack</button>
+      </div>-->
 
       <div class="container-fluid" *ngIf="rejected">
         <div class="alert alert-danger">
@@ -161,23 +161,23 @@
       </div>
 
       <!--<mat-form-field>
-    <div>
-      <mat-toolbar>-->
+      <div>
+        <mat-toolbar>-->
       <!-- Display files names -->
       <!--<input matInput [(ngModel)]="fileAttr" readonly name="name" />-->
       <!-- Browse Button -->
       <!--<button mat-flat-button color="blue">Browse File</button>
-    </mat-toolbar>-->
+      </mat-toolbar>-->
       <!-- Fetch selected filed on change -->
       <!--<input type="file"
-               #fileInput
-               id="uploadFile"
-               (change)="uploadFileEvt($event)"
-               name="uploadFile"
-               multiple="multiple"
-               accept="image/*" />
-      </div>
-    </mat-form-field>-->
+                 #fileInput
+                 id="uploadFile"
+                 (change)="uploadFileEvt($event)"
+                 name="uploadFile"
+                 multiple="multiple"
+                 accept="image/*" />
+        </div>
+      </mat-form-field>-->
 
 
     </mat-tab>
@@ -232,7 +232,7 @@
     <!--------------------------------------------------------Messaging--------------------------------------------------->
     <!--     <mat-tab label="Messaging">
 
-  </mat-tab>-->
+    </mat-tab>-->
     <!--------------------------------------------------------Financial--------------------------------------------------->
 
     <mat-tab label="Financials">
@@ -470,7 +470,6 @@
     </mat-tab>
 
 
-
     <!--------------------------------------------------------Tracking--------------------------------------------------->
 
 
@@ -478,24 +477,24 @@
       <button mat-raised-button color="blue" (click)="openXl(MFTModal)">Create New Note</button>
 
       <!--      <div class="row" *ngFor="let mftList of MFTList; let i = index">
-      <div class="col s12 m12 l12">
+        <div class="col s12 m12 l12">
 
-        <ul class="timeline">
+          <ul class="timeline">
 
-          <li class="event" data-date="">
+            <li class="event" data-date="">
 
 
-            <h3>{{mftList.MFTNote}} - {{mftList.DateCreated}}</h3>
-            <p>
+              <h3>{{mftList.MFTNote}} - {{mftList.DateCreated}}</h3>
+              <p>
 
-              {{mftList.DocumentName}}
-            </p>
+                {{mftList.DocumentName}}
+              </p>
 
-          </li>
+            </li>
 
-        </ul>
-      </div>
-    </div>-->
+          </ul>
+        </div>
+      </div>-->
       <div class="cards" *ngFor="let mftList of MFTList; let i = index">
       <li class="cards_item">
         <div class="card">
@@ -574,7 +573,14 @@
 
 
 </mat-tab>-->
+<!--------------------------------------------------------Service Items---------------------------------------------->
+<mat-tab label="Service Items">
+  <div class="container-fluid">
 
+    <app-service-items-config></app-service-items-config>
+
+  </div>
+</mat-tab>
 
   </mat-tab-group>
 
@@ -669,10 +675,10 @@
   <div class="modal-body">
     <div class="loading">
 
-    <mat-spinner [diameter]="150"></mat-spinner>
+      <mat-spinner [diameter]="150"></mat-spinner>
       <br>
       <p class="loadingText">Please wait while your approval pack is being generated. This may take several minutes</p>
-</div>
+    </div>
   </div>
 
 </ng-template>
