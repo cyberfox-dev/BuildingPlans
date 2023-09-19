@@ -46,7 +46,7 @@
   <div class="modal-body">
 
     <select class="form-select" aria-label="Default select example"  (change)="getAccesGroupID($event)">
-      <option selected value="0">select a zone</option>
+      <option selected value="0">Select An Access Group For The User</option>
       <option *ngFor="let accessGroup of AccessGroupList" value="{{accessGroup.AccessGroupID}}">{{accessGroup.AccessGroupName}}</option>
     </select>
 

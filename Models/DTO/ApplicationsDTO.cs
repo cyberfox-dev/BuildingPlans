@@ -53,5 +53,9 @@ namespace WayleaveManagementSystem.Models.DTO
 
         public bool? WBSRequired { get; set; }
 
+
+   
+
+        public int? ZoneID { get; set; }
     }
 }

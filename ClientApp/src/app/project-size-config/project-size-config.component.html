@@ -14,15 +14,63 @@
         <input type="text" class="form-control" id="activity" formControlName="newActivity" placeholder="Enter a project size check list activity">
         <label for="activity">Project size check-list activity</label>
       </div>
-      <div class="form-floating mb-3 mt-3">
-        <input type="text" class="form-control" id="activityType" formControlName="newActivityType" placeholder="Enter a project size check list activity type">
-        <label for="activityType">Project size check-list activity type</label>
-      </div>
+      <!--<div class="form-floating mb-3 mt-3">
+    <input type="text" class="form-control" id="activityType" formControlName="newActivityType" placeholder="Select a project size check list activity type">
+    <label for="activityType">Project size check-list activity type</label>
+  </div>
 
-      <div class="form-floating mb-3 mt-3">
-        <input type="text" class="form-control" id="checkManDoc" formControlName="newMandatoryDocument" placeholder="Enter a mandatory document category">
-        <label for="checkManDoc">Mandatory document category </label>
-      </div>
+  <div class="form-floating mb-3 mt-3">
+    <input type="text" class="form-control" id="checkManDoc" formControlName="newMandatoryDocument" placeholder="Select a mandatory document category">
+    <label for="checkManDoc">Mandatory document category </label>
+  </div>-->
+      <!--<div class="row">
+    <mat-form-field>
+      <mat-label>Select a project size check list activity type</mat-label>
+      <mat-select [(value)]="selectType">
+        <mat-option *ngFor="let type of activityTypeArray; let i=index" value="type">type(i)</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field>
+      <mat-label>Select a mandatory document category</mat-label>
+      <mat-select [(value)]="selectManDocCat">
+        <mat-option *ngFor="let manDocCat of manDocCategoryArray" value="manDocCat">{{manDocCat}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>-->
+
+
+    <div class="row">
+      <mat-form-field>
+        <mat-label>Select a project size check list activity type</mat-label>
+        <mat-select name="projectSizeCheckListActivityType" formControlName="projectSizeCheckListActivityType">
+          <mat-option value="General">General</mat-option>
+          <mat-option value="Trenching">Trenching</mat-option>
+          <mat-option value="Roadworks">Roadworks</mat-option>
+          <mat-option value="Carriageway Crossings, Pedestrian Footways & Universal Access">Carriageway Crossings, Pedestrian Footways & Universal Access</mat-option>
+          <mat-option value="Emergency">Emergency</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="row">
+
+      <mat-form-field>
+        <mat-label>Select a mandatory document category</mat-label>
+        <mat-select name="mandatoryDocumentCategory" formControlName="mandatoryDocumentCategory">
+          <mat-option value="Small">Small</mat-option>
+          <mat-option value="Medium">Medium</mat-option>
+          <mat-option value="Large">Large</mat-option>
+          <mat-option value="Emergency">Emergency</mat-option>
+          <mat-option value="LUM">LUM</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </div>
+ 
+  
+   
+
 
     </form>
   </div>
@@ -30,7 +78,6 @@
     <button type="button" class="btn btn-outline-success" (click)="onAddCheckListItem();modal.close('Save click')">Save</button>
   </div>
 </ng-template>
-<!--Why isn't my button blue?'-->
 <button mat-raised-button color="create" (click)="openCreateNewCheckListItem(createNewCheckListItem)">Create a new check-list Item </button>
 
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">

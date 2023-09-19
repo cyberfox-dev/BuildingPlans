@@ -27,7 +27,8 @@ builder.Services.AddDbContext<AppDBContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-builder.Services.AddIdentity<AppUser, IdentityRole>(opt => {
+builder.Services.AddIdentity<AppUser, IdentityRole>(opt =>
+{
     opt.Password.RequireDigit = false;
     opt.Password.RequireLowercase = false;
     opt.Password.RequireNonAlphanumeric = false;
@@ -61,7 +62,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     var key = Encoding.ASCII.GetBytes(builder.Configuration["JWTConfig:Key"]);
     var issuer = builder.Configuration["JWTConfig:Issuer"];
     var audience = builder.Configuration["JWTConfig:Audience"];
-    options.TokenValidationParameters = new TokenValidationParameters() 
+    options.TokenValidationParameters = new TokenValidationParameters()
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(key),
@@ -86,7 +87,8 @@ builder.Services.AddCors(options =>
         builder =>
         {
             builder
-                .WithOrigins("https://wayleaveqa.capetown.gov.za")
+                 //.WithOrigins("https://wayleaveqa.capetown.gov.za")
+                .WithOrigins("https://wayleave.capetown.gov.za")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
@@ -123,7 +125,7 @@ app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
-    RequestPath = new PathString("/Resources") 
+    RequestPath = new PathString("/Resources")
 });
 app.UseRouting();
 app.UseAuthentication();

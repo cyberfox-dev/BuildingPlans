@@ -13,7 +13,8 @@ export class BusinessPartnerService {
   validateBP(bpNumber: number): Observable<any> {
 /*    const url = '/RESTAdapter/WLMS_Q/BPValidation'; //proxy*/
 /*    const url = 'https://orchestrationhubqa.capetown.gov.za/RESTAdapter/WLMS_Q/BPValidation'; */
-    const url = 'https://wayleaveqa.capetown.gov.za/venapi/BPValidation'; 
+    //const url = 'https://wayleaveqa.capetown.gov.za/venapi/BPValidation';
+    const url = 'https://wayleave.capetown.gov.za/venapi/BPValidation';
     const body = JSON.stringify({ BusinessPartnerNumber: bpNumber });
 
     const username = 'RFC_BPWLMS';

@@ -21,7 +21,7 @@ export class FileUploadComponent implements OnInit {
   isDragging: boolean = false;
   isActiveDropArea: boolean = false;
 
-  private readonly apiUrl: string = this.shared.getApiUrl();
+  private readonly apiUrl: string = this.shared.getApiUrl() + '/api/';
   progress: number = 0;
   message: string | undefined;
   response: { dbPath: string; } | undefined = { dbPath: '' };

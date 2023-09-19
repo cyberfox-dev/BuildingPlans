@@ -12,7 +12,7 @@ export class NotificationsService {
   subject = 'Test';
   text = 'testing 1, 2, 3 ...';*/
 
-  private readonly apiUrl: string = this.sharedService.getApiUrl();
+  private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
   private readonly baseURL: string = this.apiUrl + "notification/";
 
 
@@ -76,9 +76,8 @@ export class NotificationsService {
       Authorization: `Basic ${encodedCredentials}`, // Set the Authorization header
     });
 
-    this.httpClient.post("https://wayleaveqa.capetown.gov.za/mailapi" + "/send-email", emailData, { headers }).subscribe(
-/*      this.httpClient.post("http://localhost:7124" + "/send-email", emailData).subscribe(*/
-/*    this.httpClient.post("https://wayleaveqa.capetown.gov.za:7124" + "/send-email", emailData).subscribe(*/
+    this.httpClient.post("https://wayleave.capetown.gov.za/mailapi" + "/send-email", emailData, { headers }).subscribe(
+/*      this.httpClient.post("https://wayleaveqa.capetown.gov.za/mailapi" + "/send-email", emailData, { headers }).subscribe(*/
       () => {
         console.log('Email sent successfully');
         // Handle success, e.g., show a success message

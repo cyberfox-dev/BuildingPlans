@@ -155,6 +155,7 @@ export class NewProfileComponent implements OnInit {
   linkedContractors: ContractorList[] = [];
   selection = new SelectionModel<UserZoneList>(true, []);
     subDepartmentID: any;
+    departmentID: any;
 
   constructor(private modalService: NgbModal,
     private shared: SharedService,
@@ -285,17 +286,95 @@ export class NewProfileComponent implements OnInit {
   }
 
   onNewProfileCreate(userID?: string | null, fullName?: string | null, email?: string | null, phoneNumber?: string | null, BpNo?: string | null, CompanyName?: string | null, CompanyRegNo?: string | null, PhyscialAddress?: string | null, ApplicantIDUpload?: string | null, ApplicantIDNumber?: string | null) {
-    
+    debugger;
     if (this.showInternal) {
       ///// 
 
-      this.subDepartmentsService.getSubDepartmentsByDepartmentID(Number(this.internalApplicantDepartment)).subscribe((data: any) => {
+      this.subDepartmentsService.getSubDepartmentBySubDepartmentID(Number(this.internalApplicantDepartment)).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
+
           const current = data.dateSet[0];
 
           this.subDepartmentID = current.subDepartmentID;
-          console.log("reponse this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID", this.subDepartmentID);
+          this.departmentID = current.departmentID;
+          console.log("reponse this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID", this.subDepartmentID, this.departmentID);
+          this.userPofileService.addUpdateUserProfiles(null, this.CurrentUser.appUserId, this.internalApplicantName + " " + this.internalApplicantSurname, this.CurrentUser.email,
+            this.internalApplicantTellNo, this.showInternal, null, null, null, null,/*THE DIRECTORATE IS NOW SENDING THROUGH THE DEPSRTMENT NAME*/ this.internalApplicantDirectorate,
+            this.departmentID, this.subDepartmentID, this.internalApplicantBranch, this.internalApplicantCostCenterNo, this.internalApplicantCostCenterOwner, null, this.CurrentUser.appUserId,
+            null, Number(this.selectedZone)).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+
+                alert(data.responseMessage);
+
+
+                const linkedContractors = this.shared.getContactorData();
+                const linkedEngineers = this.shared.getEngineerData();
+
+
+                for (let i = 0; i < linkedContractors.length; i++) {
+                  const linkedContractor = this.shared.getContactorDataByIndex(i);
+
+                  this.professionalService.addUpdateProfessional(null, linkedContractor.ProfessinalType, linkedContractor.name + " " + linkedContractor.surname, linkedContractor.bpNumber, false, linkedContractor.email, linkedContractor.phoneNumber?.toString(), linkedContractor.professionalRegNo, this.CurrentUser.appUserId, linkedContractor.idNumber, this.CurrentUser.appUserId, linkedContractor.CIBRating)
+                    .subscribe((data: any) => {
+
+                      if (data.responseCode == 1) {
+
+                        //alert(data.responseMessage);
+                      }
+                      else {
+                        //alert("Invalid Email or Password");
+                        alert(data.responseMessage);
+
+                      }
+                      console.log("reponse", data);
+
+                    }, error => {
+                      console.log("Error: ", error);
+                    })
+                }
+
+                for (let i = 0; i < linkedEngineers.length; i++) {
+                  const linkedEngineer = this.shared.getEngineerDataByIndex(i);
+
+                  this.professionalService.addUpdateProfessional(null, linkedEngineer.ProfessinalType, linkedEngineer.name + " " + linkedEngineer.surname, linkedEngineer.bpNumber, false, linkedEngineer.email, linkedEngineer.phoneNumber?.toString(), linkedEngineer.professionalRegNo, this.CurrentUser.appUserId, linkedEngineer.idNumber, this.CurrentUser.appUserId, linkedEngineer.CIBRating)
+                    .subscribe((data: any) => {
+
+                      if (data.responseCode == 1) {
+
+                        //alert(data.responseMessage);
+                      }
+                      else {
+                        //alert("Invalid Email or Password");
+                        alert(data.responseMessage);
+                        console.log("comeshere")
+
+                      }
+                      console.log("reponse", data);
+
+                    }, error => {
+                      console.log("Error: ", error);
+                    })
+                }
+              }
+
+              else {
+
+                alert(data.responseMessage);
+                localStorage.removeItem('LoggedInUserInfo');
+                localStorage.removeItem('userProfile');
+                this.router.navigate(["/"]);
+
+              }
+              console.log("reponse", data);
+              localStorage.removeItem('LoggedInUserInfo');
+              localStorage.removeItem('userProfile');
+              this.router.navigate(["/"]);
+            }, error => {
+              console.log("Error: ", error);
+            })
+
         }
 
         else {
@@ -311,78 +390,6 @@ export class NewProfileComponent implements OnInit {
 
 
 
-      this.userPofileService.addUpdateUserProfiles(null, this.CurrentUser.appUserId, this.internalApplicantName + " " + this.internalApplicantSurname, this.CurrentUser.email, this.internalApplicantTellNo, this.showInternal, null, null, null, null,/*THE DIRECTORATE IS NOW SENDING THROUGH THE DEPSRTMENT NAME*/ this.internalApplicantDirectorate, Number(this.internalApplicantDepartment), 1, this.internalApplicantBranch, this.internalApplicantCostCenterNo, this.internalApplicantCostCenterOwner, null, this.CurrentUser.appUserId, null, Number(this.selectedZone)).subscribe((data: any) => {
-
-        if (data.responseCode == 1) {
-
-          alert(data.responseMessage);
-
-
-          const linkedContractors = this.shared.getContactorData();
-          const linkedEngineers = this.shared.getEngineerData();
-
-
-          for (let i = 0; i < linkedContractors.length; i++) {
-            const linkedContractor = this.shared.getContactorDataByIndex(i);
-
-            this.professionalService.addUpdateProfessional(null, linkedContractor.ProfessinalType, linkedContractor.name + " " + linkedContractor.surname, linkedContractor.bpNumber, false, linkedContractor.email, linkedContractor.phoneNumber?.toString(), linkedContractor.professionalRegNo, this.CurrentUser.appUserId, linkedContractor.idNumber, this.CurrentUser.appUserId, linkedContractor.CIBRating)
-              .subscribe((data: any) => {
-
-                if (data.responseCode == 1) {
-
-                  //alert(data.responseMessage);
-                }
-                else {
-                  //alert("Invalid Email or Password");
-                  alert(data.responseMessage);
-
-                }
-                console.log("reponse", data);
-
-              }, error => {
-                console.log("Error: ", error);
-              })
-          }
-
-          for (let i = 0; i < linkedEngineers.length; i++) {
-            const linkedEngineer = this.shared.getEngineerDataByIndex(i);
-
-            this.professionalService.addUpdateProfessional(null, linkedEngineer.ProfessinalType, linkedEngineer.name + " " + linkedEngineer.surname, linkedEngineer.bpNumber, false, linkedEngineer.email, linkedEngineer.phoneNumber?.toString(), linkedEngineer.professionalRegNo, this.CurrentUser.appUserId, linkedEngineer.idNumber, this.CurrentUser.appUserId, linkedEngineer.CIBRating)
-              .subscribe((data: any) => {
-
-                if (data.responseCode == 1) {
-
-                  //alert(data.responseMessage);
-                }
-                else {
-                  //alert("Invalid Email or Password");
-                  alert(data.responseMessage);
-                  console.log("comeshere")
-
-                }
-                console.log("reponse", data);
-
-              }, error => {
-                console.log("Error: ", error);
-              })
-          }
-        }
-
-        else {
-
-          alert(data.responseMessage);
-          localStorage.removeItem('LoggedInUserInfo');
-          localStorage.removeItem('userProfile');
-          this.router.navigate(["/"]);
-
-        }
-        console.log("reponse", data);
-        localStorage.removeItem('LoggedInUserInfo');
-        localStorage.removeItem('userProfile');
-        this.router.navigate(["/"]);
-      }, error => {
-        console.log("Error: ", error);
-      })
 
       //Engineer goes here
 

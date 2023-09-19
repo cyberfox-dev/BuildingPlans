@@ -7,7 +7,7 @@ import { SharedService } from 'src/app/shared/shared.service';
 })
 export class ApplicationsService {
 
-  private readonly apiUrl: string = this.sharedService.getApiUrl();
+  private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
   private readonly baseURL: string = this.apiUrl + "applications/";
 
 
@@ -108,10 +108,20 @@ export class ApplicationsService {
 
   /*Get all the applications that share a ProjectNumber (an application is assigned a ProjectNumber once it is paid for)*/
   public getApplicationsByProjectNumber(ProjectNumber: string) {
+  
     const body = {
       ProjectNumber: ProjectNumber
       }
     return this.httpClient.post(this.baseURL + "GetApplicationsByProjectNumber", body);
 
   }
+  public getApplicationsForReviewer(ZoneID: number, UserID: string){
+    const body = {
+      ZoneID: ZoneID,
+      UserID: UserID
+    };
+    return this.httpClient.post(this.baseURL + "GetApplicationsForReviewer", body);
+  }
+
+
 }

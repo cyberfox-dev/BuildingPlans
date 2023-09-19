@@ -20,3 +20,9 @@ h1 {
 .mat-form-field{
     width:100%;
 }
+
+:host ::ng-deep .mat-tab-label-active {
+  background-color: #ccdee2;
+  color: #005870;
+  user-select: none;
+}

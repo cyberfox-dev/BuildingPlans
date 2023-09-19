@@ -19,7 +19,7 @@ import { ApplicationsService} from '../service/Applications/applications.service
 import { UserProfileService } from '../service/UserProfile/user-profile.service';
 import { SharedService } from 'src/app/shared/shared.service';
 import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
-import { ViewProjectInfoComponent } from 'src/app/view-project/view-project-info/view-project-info.component';
+import { CommentsList, ViewProjectInfoComponent } from 'src/app/view-project/view-project-info/view-project-info.component';
 import { PermitComponentComponent } from 'src/app/permit-component/permit-component.component';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { RefreshService } from 'src/app/shared/refresh.service';
@@ -124,6 +124,13 @@ export interface CommentList {
   Comment: string;
   DateCreated: string;
   createdBy: any;
+  ApplicationID: number;
+  CommentStatus: string;
+  SubDepartmentForCommentID: number;
+  SubDepartmentName?: string;
+  isClarifyCommentID?: number;
+  isApplicantReplay?: string;
+  UserName: string;
 }
 
 export interface CommentDropDown {
@@ -207,6 +214,7 @@ export class ActionCenterComponent implements OnInit {
   projectNo: any;
 
     WBSCHeckBox: boolean = true;
+    previousReviewer: any;
   //  loggedInUserName: any;
   /*textfields*/
 
@@ -266,6 +274,8 @@ export class ActionCenterComponent implements OnInit {
   ServiceItemCodeDropdown: ServiceItemCodeDropdown[] = [];
   ServiceItemList: ServiceItemList[] = [];
   StagesList: StagesList[] = [];
+  CommentsList: CommentsList[] = [];
+
 
   ZoneList: ZoneList[] = [];
   ZoneLinkedList: ZoneList[] = [];
@@ -430,6 +440,7 @@ export class ActionCenterComponent implements OnInit {
     this.loggedInUsersIsZoneAdmin = this.CurrentUserProfile[0].isZoneAdmin;
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
+    debugger;
     this.loggedInUsersSubDepartmentName = this.CurrentUserProfile[0].subDepartmentName;
     this.loggedInUsersDepartmentID = this.CurrentUserProfile[0].departmentID;
     this.loggedInUsersEmail = this.CurrentUserProfile[0].email;
@@ -455,9 +466,11 @@ export class ActionCenterComponent implements OnInit {
     this.getUsersByRoleName("Senior Reviewer");
     this.getUsersByRoleName("Final Approver");
     this.getZoneForCurrentUser();
+    this.getPreviousReviewerUserID();
     this.checkIfWbsRequired();
     this.CheckApplicant();
     this.setProjectNumber();
+
   }
 
 
@@ -1425,6 +1438,185 @@ export class ActionCenterComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
+  }
+
+
+
+
+  getPreviousReviewerUserID() {
+
+
+    this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        let tempReferCommentList;
+        for (let i = 0; i < data.dateSet.length; i++) {
+
+
+          debugger;
+          const current = data.dateSet[i];
+
+          if (current.commentStatus == "Referred" && current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
+
+            this.previousReviewer = current.createdById;
+          }
+          else {
+            this.previousReviewer = null;
+          }
+
+        }
+
+        if (this.previousReviewer != null) {
+          this.userPofileService.getUserProfileById(this.previousReviewer).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              this.previousReviewer = data.dateSet[0];
+            }
+            else {
+              alert(data.responseMessage);
+
+            }
+            console.log("reponse", data);
+
+          }, error => {
+
+            console.log("Error: ", error);
+          });
+        }
+        else {
+
+        }
+
+      }
+      else {
+        alert(data.responseMessage);
+        debugger;
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      debugger;
+      console.log("Error: ", error);
+    })
+
+
+  }
+
+
+
+  onReviewerClarityClick() {
+    let SubDepartmentName = "";
+    for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
+      if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
+        SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
+      }
+    }
+    //commentsService
+    debugger;
+    this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Reviewer Clarity", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        alert(data.responseMessage);
+        this.viewProjectInfoComponent.getAllComments();
+        this.modalService.dismissAll();
+        this.router.navigate(["/home"]);
+
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+  }
+
+
+  onReturnToReviewerClick() {
+    if (confirm("Are you sure you what return to previous reviewer?")) {
+      debugger;
+
+
+      this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, null, null, false, this.previousReviewer.userID, false).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          this.notificationsService.sendEmail(this.previousReviewer.email, "Application Returned By Senior Reviewer", "Check html", "Dear " + this.previousReviewer.fullName + ",<br><br>Application: " + this.projectNo + ", Returned By Senior Reviewer"    + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+
+          alert(data.responseMessage);
+
+          let SubDepartmentName = "";
+          for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
+            if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
+              SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
+            }
+          }
+          //commentsService
+          debugger;
+          this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Returned", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+
+              alert(data.responseMessage);
+              this.viewProjectInfoComponent.getAllComments();
+              this.modalService.dismissAll();
+              this.router.navigate(["/home"]);
+
+            }
+            else {
+              alert(data.responseMessage);
+
+            }
+            console.log("reponse", data);
+
+          }, error => {
+            console.log("Error: ", error);
+          })
+
+
+        }
+        else {
+          alert(data.responseMessage);
+
+        }
+        console.log("reponse", data);
+
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+
+
+
+
+
+    //  this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.forManuallyAssignSubForCommentID, this.previousReviewer).subscribe((data: any) => {
+
+    //    if (data.responseCode == 1) {
+
+    //      debugger;
+    //      this.viewProjectInfoComponent.getAllComments();
+    //      debugger;
+    //      this.refreshParent.emit();
+    //      //this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "New Wayleave Application", "check html", "Dear " + this.UserSelectionForManualLink.selected[0].fullName + ",<br><br>You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+    //    }
+    //    else {
+    //      alert(data.responseMessage);
+
+    //    }
+    //    console.log("reponse", data);
+    //    this.modalService.dismissAll();
+    //    this.router.navigate(["/home"]);
+
+
+    //  }, error => {
+    //    console.log("Error: ", error);
+    //  })
+
+    }
   }
 
  
@@ -3623,7 +3815,7 @@ getAllCommentsByUserID() {
   }
 
   /*This is for the planning wayleave for deps to upload documents*/
-  private readonly apiUrl: string = this.sharedService.getApiUrl();
+  private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
 
 
 
@@ -3851,6 +4043,7 @@ getAllCommentsByUserID() {
       this.DepositCHeckBox = true;
     }
   }
+
 
 
 

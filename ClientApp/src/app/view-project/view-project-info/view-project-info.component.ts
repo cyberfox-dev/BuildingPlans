@@ -417,6 +417,8 @@ export class ViewProjectInfoComponent implements OnInit {
     isEMBUser: boolean;
     datePaid: string;
   Paid: string;
+  canReviewerClarify: boolean;
+    previousReviewer: any;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -505,12 +507,12 @@ export class ViewProjectInfoComponent implements OnInit {
 
   ngOnInit(): void {
 
-
+    debugger;
 
     this.applicationData = this.sharedService.getViewApplicationIndex();
     console.log("venApplicationData:", this.applicationData);
     this.getAllSubDepartments();
-
+    debugger;
 
     if (this.CurrentUser == null) {
       console.log("Not");
@@ -518,27 +520,27 @@ export class ViewProjectInfoComponent implements OnInit {
     else {
       console.log(this.CurrentUser);
     }
-
+    debugger;
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
-
+    debugger;
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
-
+    debugger;
  
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
     console.log("000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", this.applicationDataForView[0]);
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
-
+    debugger;
 
 
     const today = new Date();
     const twoWeeksFromNow = new Date();
     twoWeeksFromNow.setDate(today.getDate() + 14); // Add 14 days to the current date
-
+    debugger;
     this.minDate = twoWeeksFromNow.toISOString().split('T')[0];
 
 
@@ -546,7 +548,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
 
-
+    debugger;
 
     const setValues = this.applicationDataForView[0];
 
@@ -558,32 +560,32 @@ export class ViewProjectInfoComponent implements OnInit {
 
       this.router.navigate(["/home"]);
     }
-
+    debugger;
     if (setValues.CurrentStageName == "PTW") {
       this.showPermitTab = true;
     } else {
       this.showPermitTab = false;
     }
-
+    debugger;
     if (setValues.CurrentStageName == "Monitoring") {
       this.showStatusOfWorksTab = true;
     } else {
       this.showStatusOfWorksTab = false;
     }
-
+    debugger;
     if (setValues.CurrentStageName == "Approval Pack Generation") {
       this.generateApproval = true;
     } else {
       this.generateApproval = false;
     }
-
+    debugger;
     if (setValues.CurrentStageName == "Approval Pack Generation" && this.CurrentUser.appUserId == this.applicationDataForView[0].CreatedById) {
       this.generateApprovalbtn = true;
     } else {
       this.generateApprovalbtn = false;
     }
 
-
+    debugger;
     this.getRolesLinkedToUser();
     this.CurrentApplicant = setValues.CreatedById;
 
@@ -591,12 +593,12 @@ export class ViewProjectInfoComponent implements OnInit {
     console.log("this is the created by ID", setValues);
     this.createdByID = setValues.CreatedById;
     this.getApplicationDetailsForDocs();
-
+    debugger;
 
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
-
+    debugger;
     //Assigns the below values to the variable that will be passed to the map component.
     this.ARCGISAPIData.createdByID = this.CurrentUser.appUserId;
     this.ARCGISAPIData.isActive = "1";
@@ -607,7 +609,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getAllStages();
     this.setInterface();
     this.getAllRequiredDeposits();
-
+    debugger;
 
     this.checkIfWbsRequired();
 /*    this.getAllSubDepForReject();*/
@@ -615,9 +617,10 @@ export class ViewProjectInfoComponent implements OnInit {
     this.canReapply = this.sharedService.getCanReapply();
     console.log("canReapplyVen: ", this.canReapply);
     this.setProjectNumber();
- 
+    debugger;
     this.getLinkedDepartments();
     this.checkIfCanReply();
+    this.checkIfCanReviwerReply();
     this.checkIfPermitExsist();
     this.getFinancial();
     this.getMFTForApplication();
@@ -628,7 +631,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getAllSubDepartments();
     this.getLinkedDepartmentsFORAPPROVAL();
     this.CheckForApprovalPackDownload(); 
-
+    debugger;
   }
   receivedata: string;
 
@@ -1037,6 +1040,68 @@ export class ViewProjectInfoComponent implements OnInit {
     else {
       this.canClarify = false;
     }
+  }
+
+  checkIfCanReviwerReply() {
+    debugger;
+    this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        debugger;
+        let tempReferCommentList;
+        for (let i = 0; i < data.dateSet.length; i++) {
+
+          debugger;
+          debugger;
+          const current = data.dateSet[i];
+          debugger;
+          if (current.commentStatus == "Referred" && current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
+            debugger;
+            if (current.createdById == this.CurrentUser.appUserId) {
+              debugger;
+              this.canReviewerClarify = true;
+            }
+            else {
+              debugger;
+              this.canReviewerClarify = false;
+            }
+
+
+          }
+
+
+        }
+
+      }
+      else {
+        alert(data.responseMessage);
+        debugger;
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      debugger;
+      console.log("Error: ", error);
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+    if (this.CurrentApplicant == this.CurrentUser.appUserId) {
+      this.canReviewerClarify = true;
+    }
+    else {
+      this.canReviewerClarify = false;
+    }
+  
   }
 
   onFileDelete(event: any, index: number) {
@@ -2518,27 +2583,98 @@ export class ViewProjectInfoComponent implements OnInit {
 
     console.log(subDepCommentsMap);
     let yOffset = 60; // Starting Y-coordinate for the list
+    let currentPage = 1;
+    let maxPageHeight = doc.internal.pageSize.height - 50; // Adjust as needed
+
+    const headerHeight = 60; // Height of the header (image and project number)
+    const footerHeight = 45; // Height of the footer
+
+    // Initialize variables to track available space and Y-coordinate
+    let remainingPageSpace = maxPageHeight - yOffset - footerHeight;
+
     subDepCommentsMap.forEach((comments, subDepName) => {
       doc.setFontSize(12);
       doc.setFont('helvetica', 'bold'); // Set the font to Helvetica bold
-      doc.text(subDepName + ' \n', 10, yOffset, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
+
+      // Check if there's enough space for sub-department name and comments on the current page
+      const subDepHeight = doc.getTextDimensions(subDepName).h + 10; // Additional padding
+      if (yOffset + subDepHeight > maxPageHeight - footerHeight) {
+        doc.addPage();
+        currentPage++;
+        yOffset = headerHeight; // Reset the Y-coordinate for the new page, leaving space for the header
+        remainingPageSpace = maxPageHeight - yOffset - footerHeight;
+        doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+        doc.setFontSize(10);
+        doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+        doc.addImage(footer, 'png', 7, 255, 205, 45);
+      }
+
+      doc.text(subDepName, 10, yOffset, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
+      yOffset += subDepHeight; // Update Y-coordinate
+
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal'); // Set the font to Helvetica normal
 
       // Combine and join the comments for the same sub-department name
       const combinedComments = comments.join('. ');
 
-      doc.text(combinedComments, 10, yOffset += 10, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
+      // Check if there's enough space for comments on the current page
+      const commentDimensions = doc.getTextDimensions(combinedComments);
+      if (commentDimensions.h > remainingPageSpace) {
+        doc.addPage();
+        currentPage++;
+        yOffset = headerHeight; // Reset the Y-coordinate for the new page, leaving space for the header
+        remainingPageSpace = maxPageHeight - yOffset - footerHeight;
+      }
+      const originalFontSize = doc.getFontSize(); // Store the original font size
+      doc.setFontSize(8); // Set a smaller font size for comments
+      // Handle text wrapping for comments
+      const lineHeight = 1.2; // Adjust the line height as needed
+      const lineHeightFactor = doc.getLineHeightFactor() ;
+      doc.setLineHeightFactor(lineHeightFactor);
+
+      // Handle text wrapping for comments with reduced line spacing
+      let commentLines = doc.splitTextToSize(combinedComments, 190);
+      for (const line of commentLines) {
+        if (yOffset + doc.getTextDimensions(line).h > maxPageHeight - footerHeight) {
+          doc.addPage();
+          currentPage++;
+          yOffset = headerHeight; // Reset the Y-coordinate for the new page, leaving space for the header
+          remainingPageSpace = maxPageHeight - yOffset - footerHeight;
+        }
+
+        doc.text(line, 10, yOffset, { maxWidth: 190, align: 'left' });
+        yOffset += doc.getTextDimensions(line).h + 5; // Adjust the line spacing here
+        remainingPageSpace -= doc.getTextDimensions(line).h + 5;
+      }
+
+      // Restore the original font size
+      doc.setFontSize(originalFontSize);
+      // Reset the line height
+      doc.setLineHeightFactor(1.5); // Reset to the original line height
+
+      // Add a line separator
       doc.setLineWidth(0.2);
       yOffset += 5;
-      doc.line(10, yOffset + 10, 200, yOffset + 10);
+      doc.line(10, yOffset, 200, yOffset);
       yOffset += 20;
     });
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
 
+    // Optionally, you can add a page count in the footer
+    for (let i = 1; i <= currentPage; i++) {
+      doc.setPage(i);
+      doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+      doc.setFontSize(10);
+      doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+      doc.addImage(footer, 'png', 7, 255, 205, 45);
+
+    }
+
+    // Reset the page to the last page
+    doc.setPage(currentPage);
 
     //Contact information Page
-    doc.addPage();
+/*    doc.addPage();
     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
     doc.setFontSize(10);
     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
@@ -2591,7 +2727,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
     doc.addImage(footer, 'png', 7, 255, 205, 45);
-
+*/
     //PAGE 1
     doc.addPage();
 
@@ -3105,7 +3241,7 @@ export class ViewProjectInfoComponent implements OnInit {
   response: { dbPath: ''; } | undefined
   progress: number = 0;
   message = '';
-  private readonly apiUrl: string = this.sharedService.getApiUrl();
+  private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
   save() {
 
     const filesForUpload = this.sharedService.pullFilesForUpload();

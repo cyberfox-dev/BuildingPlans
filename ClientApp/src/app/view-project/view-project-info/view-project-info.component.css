@@ -9,6 +9,34 @@ h1 {
   font-weight: bold;
   margin-top: 70px
 }
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+  z-index: 9999; /* Place it above other content */
+}
+.text {
+  font-size: 24px;
+  color: white;
+  margin-top: 20px;
+}
+
+.text2 {
+  font-size: 12px;
+  color: white;
+  margin-top: 10px;
+}
+
+.timeline .event:nth-child(2n) {
+  margin-left: 20px; /* Adjust this value as needed to control the offset to the right */
+}
 
 .cont2 {
   display: flex;
@@ -522,6 +550,143 @@ h1.header {
       top: 5px;
     }
 /**/
+
+
+/*reviewerClarify*/
+
+.reviewerClarify {
+  border-left: 8px solid #ffb100;
+  border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  color: #333;
+  margin: 15px auto;
+  letter-spacing: 0.5px;
+  position: relative;
+  line-height: 1.4em;
+  padding: 21px;
+  list-style: none;
+  text-align: left;
+}
+
+  .reviewerClarify h1,
+  .reviewerClarify h2,
+  .reviewerClarify h3 {
+    font-size: 1.4em;
+  }
+
+  .reviewerClarify .event {
+    border-bottom: 1px solid rgba(160, 160, 160, 0.2);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+    .reviewerClarify .event:last-of-type {
+      padding-bottom: 0;
+      margin-bottom: 0;
+      border: none;
+    }
+
+    .reviewerClarify .event:before,
+    .reviewerClarify .event:after {
+      position: absolute;
+      display: block;
+      top: 0;
+    }
+
+    .reviewerClarify .event:before {
+      left: -177.5px;
+      color: #212121;
+      content: attr(data-date);
+      text-align: right;
+      /*  font-weight: 100;*/
+
+      font-size: 16px;
+      min-width: 120px;
+    }
+
+    .reviewerClarify .event:after {
+      box-shadow: 0 0 0 8px #ffb100;
+      left: -30px;
+      background: #212121;
+      border-radius: 50%;
+      height: 11px;
+      width: 11px;
+      content: "";
+      top: 5px;
+    }
+/**/
+
+
+
+
+/*returned*/
+.returned {
+  border-left: 8px solid #bc76fb;
+  border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  color: #333;
+  margin: 15px auto;
+  letter-spacing: 0.5px;
+  position: relative;
+  line-height: 1.4em;
+  padding: 21px;
+  list-style: none;
+  text-align: left;
+}
+
+  .returned h1,
+  .returned h2,
+  .returned h3 {
+    font-size: 1.4em;
+  }
+
+  .returned .event {
+    border-bottom: 1px solid rgba(160, 160, 160, 0.2);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+    .returned .event:last-of-type {
+      padding-bottom: 0;
+      margin-bottom: 0;
+      border: none;
+    }
+
+    .returned .event:before,
+    .returned .event:after {
+      position: absolute;
+      display: block;
+      top: 0;
+    }
+
+    .returned .event:before {
+      left: -177.5px;
+      color: #212121;
+      content: attr(data-date);
+      text-align: right;
+      /*  font-weight: 100;*/
+
+      font-size: 16px;
+      min-width: 120px;
+    }
+
+    .returned .event:after {
+      box-shadow: 0 0 0 8px #bc76fb;
+      left: -30px;
+      background: #212121;
+      border-radius: 50%;
+      height: 11px;
+      width: 11px;
+      content: "";
+      top: 5px;
+    }
+/**/
+
+
 /*——————————————
 Responsive Stuff
 ———————————————*/
@@ -772,4 +937,10 @@ button {
   background-color: #f48a36;
   color: #fff;
   margin-left: 22px;
+}
+
+:host ::ng-deep .mat-tab-label-active {
+  background-color: #ccdee2;
+  color: #005870;
+  user-select: none;
 }

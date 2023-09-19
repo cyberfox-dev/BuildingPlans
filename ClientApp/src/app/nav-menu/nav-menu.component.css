@@ -15,6 +15,31 @@ body {
 .container2{
     display:flex;
 }
+.nav.transparent {
+  background-color: transparent;
+  color: black; /* Change the text color when transparent, if needed */
+  box-shadow:none;
+}
+
+@keyframes fadeInOut {
+  0% {
+    background-color: rgba(255, 255, 255, 0); /* Fully transparent */
+  }
+
+  100% {
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent */
+  }
+}
+@keyframes swipeIn {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
 
 .nav {
   height: 68px;
@@ -27,7 +52,9 @@ body {
   top: 0;
   z-index: 2;
   box-shadow: 0 2px 20px 0 rgb(0 0 0 / 27%);
+
 }
+
 .mat-form-field {
   width: 100%;
   margin-top: 26px;
@@ -733,5 +760,29 @@ h4 {
 }
 
 
+/* CSS Transition for search bar and table container heights */
+.search-bar-container,
+.table-container {
+  transition: height 0.5s ease-in-out; /* Customize the duration and timing function */
+  overflow: hidden; /* Ensure overflow is hidden when the content is hidden */
+}
+
+/* Define the heights for the search bar and table container */
+.search-bar-container {
+  height: 50px; /* Adjust the initial height of the search bar container */
+}
+
+.table-container {
+  height: calc(100% - 50px); /* Adjust the initial height of the table container */
+}
+
+/* Adjust the heights when cards are visible */
+.cards-visible .search-bar-container {
+  height: 0;
+}
+
+.cards-visible .table-container {
+  height: 100%;
+}
 
 

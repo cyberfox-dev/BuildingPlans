@@ -191,6 +191,27 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpGet("GetAllConfigs")]
+        public async Task<object> GetAllConfigs()
+        {
+            try
+            {
+                List<ConfigDTO> configDTOs = new List<ConfigDTO>();
+                var result = await _configService.GetAllConfigs();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Configuration data", result));
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
     }
 
 }

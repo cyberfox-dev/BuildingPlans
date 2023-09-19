@@ -1,4 +1,4 @@
-<div class="nav">
+<div class="nav"  [ngClass]="{'transparent': isTransparent}">
   <input type="checkbox" id="nav-check">
   <div class="nav-header">
     <div class="nav-title" (click)="goHome()">
@@ -183,7 +183,7 @@
 <ng-template #repositoryModal let-modal>
   <div class="modal-header">
     <h1 class="modal-title" id="modal-basic-title">Document Repository</h1>
-    <button type="button" class="btn-close" aria-label="Close" (click)="dismiss();resetFilter()"></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click');resetFilter()"></button>
   </div>
   <div class="modal-body">
     <button mat-raised-button color="green" (click)="onUploadFile(fileUpload)" *ngIf="uploadRepoDoc">Upload Document</button>
@@ -204,7 +204,7 @@
       <mat-form-field *ngIf="groupName">
         <mat-label>Filter</mat-label>
         <mat-select [(value)]="selected" (selectionChange)="onOptionSelected($event);filerGroupName()">
-          <mat-option>None</mat-option>
+          <mat-option>General</mat-option>
           <mat-option value="option1">General Documents</mat-option>
           <mat-option value="option2">Terms and conditions</mat-option>
           <mat-option value="option3">Layout Plans</mat-option>
@@ -243,7 +243,7 @@
 <ng-template #fileUpload let-modal>
   <div class="modal-header">
     <h1 class="modal-title" id="modal-basic-title">Upload Document</h1>
-    <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()"></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
 
   </div>
   <div class="modal-body">
@@ -252,7 +252,7 @@
     <mat-form-field>
       <mat-label>Filter by selecting a department</mat-label>
       <mat-select [(value)]="selectDepForUpload" (selectionChange)="selectDepartment()">
-        <mat-option>All Departments</mat-option>
+        <mat-option value="All Departments">All Departments</mat-option>
         <mat-option *ngFor="let department of SubDepartmentList" value="{{department.subDepartmentID}}">{{department.subDepartmentName}}</mat-option>
       </mat-select>
     </mat-form-field>
@@ -314,7 +314,7 @@
     </mat-expansion-panel>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-light" (click)="closeModal()">Close</button>
+    <button type="submit" class="btn btn-light" (click)="modal.dismiss('Cross click')">Close</button>
   </div>
 </ng-template>
 
@@ -332,7 +332,7 @@
       <div class="sideNav" *ngIf="Icons">
       <button mat-button class ="sideNavIcons" (click)="openFAQModal(FAQModal)"><i class="fa fa-question" aria-hidden="true"></i>   Frequently Asked Questions</button>
       <button mat-button class ="sideNavIcons" (click)="goToCyberfoxCofig();offcanvas.dismiss('Cross click')" *ngIf="cyberfoxConfigs"><i class="fa fa-superpowers"></i>   Cyberfox Configs</button>
-      <button mat-button class ="sideNavIcons" (click)="openRepositoryModal(repositoryModal)"><i class="fa fa-files-o" aria-hidden="true"></i>   Repository</button>
+      <button mat-button class ="sideNavIcons" (click)="openRepositoryModal(repositoryModal)"><i class="fa fa-files-o" aria-hidden="true"></i>   Document Repository</button>
       <button mat-button class ="sideNavIcons" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><i class="fa fa-comment"></i>   Comment Builder</button>
       <button mat-button class ="sideNavIcons" (click)="goToConfig();offcanvas.dismiss('Cross click')" *ngIf="Configurations"><i class="fa fa-cogs"></i>   Configurations</button>
       <button mat-button class ="sideNavIcons" (click)="getAllNotifications();openNotificationsModal(notificationsCenter)"><i class="fa fa-bell"></i>   Notifications</button>

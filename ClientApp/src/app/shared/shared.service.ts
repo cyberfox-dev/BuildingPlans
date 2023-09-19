@@ -140,13 +140,14 @@ export class SharedService {
   RolesList: RolesList[] = [];
   subDepartmentList: SubDepartmentList[] = [];
   distributionList: DistributionList[] = [];
-  public MapConfig: ConfigList[] = [];
+  public AllConfig: ConfigList[] = [];
 
   ProjectNumber: string;
   canReapply: any = false;
   reapply: boolean = false;
   userRoles = '';
   public totalAddedFeatures: number = 0;
+  public APIURL: string;
 
   RepFileUploadSubName?: any | null;
   RepFileUploadSubID?: any | null;
@@ -194,21 +195,26 @@ export class SharedService {
     return this.StagesList;
   }
 
-  setMapConfig(data: any) {
+  setAllConfig(data: any) {
 
-    this.MapConfig = data;
+    this.AllConfig = data;
 
   }
 
-  getMapConfig() {
-    return this.MapConfig;
+  getAllConfig() {
+    return this.AllConfig;
+  }
+
+  setAPIURL(data: any) {
+    this.APIURL = data;
   }
 
   getApiUrl() {
-      return "https://localhost:7123/api/";
+/*    return this.APIURL;*/
+      return "https://localhost:7123";
     /*    return "http://172.29.166.10/api/";*/
-/*        return "https://wayleaveqa.capetown.gov.za/api/"; */
-    /*    return "https://wayleave.capetown.gov.za/api/"; */
+/*        return "https://wayleaveqa.capetown.gov.za"; */
+/*        return "https://wayleave.capetown.gov.za"; */
     //this is the original ip address for venolin :)
     /*  return "https://197.242.150.226:7123/api/";*/
   }
@@ -257,11 +263,12 @@ export class SharedService {
   }
 
   setViewApplicationIndex(ApplicationList: ApplicationList[]) {
+    debugger;
     this.applicationDataForView = ApplicationList;
     console.log("THIS IS THE LIST", this.applicationDataForView);
   }
   getViewApplicationIndex() {
-
+    debugger;
     return this.applicationDataForView[0];
   }
 
@@ -356,7 +363,7 @@ export class SharedService {
   }
 
   setProjectNumber(data: any) {
-
+ 
     this.ProjectNumber = data;
 
   }

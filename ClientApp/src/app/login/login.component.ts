@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output, ElementRef } from '@angular/core';
-import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { UserService } from '../service//User/user.service';
 import { SharedService } from "src/app/shared/shared.service"
@@ -9,10 +9,24 @@ import { NewProfileComponent } from 'src/app/new-user/new-profile/new-profile.co
 import { HomeComponent } from 'src/app/home/home.component';
 import { BusinessPartnerService } from 'src/app/service/BusinessPartner/business-partner.service';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError} from 'rxjs';
 import { BpNumberService } from 'src/app/service/BPNumber/bp-number.service'
 import { tap } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ConfigService } from 'src/app/service/Config/config.service';
+import { delay } from 'rxjs/operators';
+  export interface ConfigList {
+  ConfigID: number,
+  ConfigName: string,
+  ConfigDescription: string,
+  DateCreated: Date,
+  DateUpdated: Date,
+  CreatedById: string,
+  isActive: boolean,
+  UtilitySlot1: string,
+  UtilitySlot2: string,
+  UtilitySlot3: string,
+}
 
 @Component({
   selector: 'app-login',
@@ -23,6 +37,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 
 export class LoginComponent implements OnInit {
+  hide2 = true;
   isLoading = false;
   error!: string;
   checkEmail = "";
@@ -37,20 +52,29 @@ export class LoginComponent implements OnInit {
   beforeSentOTP: boolean = true;
   public container = document.getElementById('container');
 
+  //Creating an account things:
+  showBPNumber: boolean;
+  registerForm: FormGroup;
+  regFormReadOnly: boolean;
+  showDuplicatePassInput: boolean; //This will also hide the OTP button || It should hopefully reveal OTP textbox, and register button!
+
+
+
   public loginForm = this.formBuilder.group({
     email: ['', Validators.required], /**/
     password: ['', Validators.required],
 
   })
 
-  public registerForm = this.formBuilder.group({
+  /*public registerForm = this.formBuilder.group({
     registerEmail: ['', Validators.required],
     registerPassword: ['', Validators.required],
     reenterPassword: ['', Validators.required],
     fullName: ['', Validators.required],
     bpNumber: ['', Validators.required],
     OTPField: ['', Validators.required],
-  })
+  })*/
+
   space1: number | undefined;
   space2: number | undefined;
 
@@ -62,6 +86,10 @@ export class LoginComponent implements OnInit {
   Email: string;
   Password: string;
   emailPasswordReset = '';
+
+  //Gets all configuration data
+  AllConfig: ConfigList[] = [];
+  ServerType: string;
 
   constructor(
     private router: Router,
@@ -75,15 +103,40 @@ export class LoginComponent implements OnInit {
     // private homeComponent: HomeComponent,
     private modalService: NgbModal,
     private bpNumberService: BpNumberService,
+    private configService: ConfigService,
+  ) {     //Run this before anything else because weaccess the apiURL from it.
+    this.getAllConfigData();
+  }
 
-  ) { }
-
-
+  ng
 
   ngOnInit() {
 
+    // Initialize the registration form
+    this.registerForm = this.formBuilder.group({
+      registerEmail: ['', [Validators.required, Validators.email]],
+      registerPassword: ['', Validators.required],
+      reenterPassword: ['', Validators.required],
+      fullName: ['', Validators.required],
+      bpNumber: [''], 
+      OTPField: ['', Validators.required],
+    });
 
+    this.showBPNumber = true; // Set showBPNumber to true initially
+    this.regFormReadOnly = false; //form editable at first
+    this.showDuplicatePassInput = true;
+
+    // Subscribe to changes in the email field to toggle the BP number field
+    this.registerForm.get('registerEmail').valueChanges.subscribe((email) => {
+      if (email.toLowerCase().endsWith('@capetown.gov.za')) {
+        this.showBPNumber = false; // Email is empty, so hide BP number textbox || The user is internal, so hide BP number textbox
+      }
+      else {
+        this.showBPNumber = true;
+      }
+    });
   }
+
   characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
   // Assuming this.characters is initialized somewhere above
@@ -93,7 +146,7 @@ export class LoginComponent implements OnInit {
     return this.userService.emailExists(email).pipe(
       tap(exists => {
         if (exists) {
-          this.handleEmailExists();
+          this.handleEmailExists();//It seems like this means that the email exists in wayleave system
           throw new Error('Email exists'); // throw an error to skip the following logic
         }
       }),
@@ -218,13 +271,14 @@ export class LoginComponent implements OnInit {
     this.expirationTimer = setTimeout(() => {
       this.isExpired = true;
       this.sendOTPBtn = true;
-    }, this.expirationTime * 1000);
+    }, this.expirationTime * 20);
   }
 
   getUserProfile(): Observable<any> {
     const currentUser = JSON.parse(localStorage.getItem("LoggedInUserInfo"));
     return this.userPofileService.getUserProfileById(currentUser.appUserId);
   }
+
 
   onLogin() {
     // Removed the checkBPValidity and its warning
@@ -246,12 +300,16 @@ export class LoginComponent implements OnInit {
       switchMap((profileData: any) => {
         localStorage.setItem("userProfile", JSON.stringify(profileData.dateSet));
         return of(true); // Return an observable of true to proceed with the rest of the flow
-      })
+      }),
+      delay(5000) // Delay for 5 seconds after successful login and profile retrieval
     ).subscribe(
-      // Since we're no longer expecting a boolean for bp validity, adjust accordingly
       () => {
-        this.isLoading = false;
         this.router.navigate(["/home"]);
+
+        // Wait for an additional 5 seconds before setting isLoading to false
+        
+          this.isLoading = false;
+      
       },
       (error) => {
         console.log("Error: ", error);
@@ -402,7 +460,192 @@ export class LoginComponent implements OnInit {
       });
   }
 
+  //REGISTERREGISTERREGISTERREGISTERREGISTERREGISTERREGISTERREGISTERREGISTERREGISTERREGISTERREGISTER
+  testBp2(BpNo: any): Promise<boolean> {
+    return this.businessPartnerService.validateBP(Number(BpNo))
+      .toPromise()
+      .then((response: any) => {
+        const apiResponse = response.Response;
+        return apiResponse === "X";
+      })
+      .catch((error: any) => {
+        // Handle API error
+        console.error('API error:', error);
+        return false; // Return false in case of an error
+      });
+  }
 
+  validNameSurname: boolean = false;
+  validEmail: boolean = false;
+  matchingRegPasswords: boolean = false;
+  internalUserNoBP: boolean = false;
+  externalWValidBP: boolean;
+
+  async onChecksRegistration() {
+    let fullName = this.registerForm.controls["fullName"].value;
+    let email = this.registerForm.controls["registerEmail"].value;
+    let bpNumber = this.registerForm.controls["bpNumber"].value;
+    let password = this.registerForm.controls["registerPassword"].value;
+    let passwordConfirm = this.registerForm.controls["reenterPassword"].value;
+
+    const nameParts = fullName.split(' ');
+
+    if (nameParts.length !== 2) {
+      alert("Please enter your first name and surname only");
+      this.validNameSurname = false;
+    } else {
+      // Check if both parts are non-empty
+      if (nameParts[0].trim() === '' || nameParts[1].trim() === '') {
+        alert("Both first name and last name should be non-empty.");
+        this.validNameSurname = false;
+      } else {
+        this.validNameSurname = true;
+      }
+    }
+    console.log("Full Name: " + this.validNameSurname);
+    const emailRegex: RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    if (email === null || !emailRegex.test(email)) {
+      alert("Please enter a valid email address");
+      this.validEmail = false;
+    } else {
+      this.validEmail = true;
+
+      if (email.endsWith("@capetown.gov.za")) {
+        this.internalUserNoBP = true;
+        bpNumber = ''; // Leave it empty for internal folks -- OKAY, I CAN'T DO THAT! OR CAN I?
+        this.externalWValidBP = false; // Make sure this is false for internal users
+
+      } else {
+        // Check if the email already exists in the wayleave system
+        try {
+          const exists = await this.userService.emailExists(email).toPromise();
+          if (exists) {
+            alert("Email already exists in wayleave system. Consider changing your password");
+            this.validEmail = false;
+          } else {
+            console.log("Testing BP Number");
+            // Ensure bpNumber is not empty before validating it
+            if (bpNumber.trim() === '') {
+              alert("Please enter a valid BP Number");
+              this.internalUserNoBP = false;
+              this.externalWValidBP = false;
+            } else {
+              console.log("Testing BP number now...");
+              const isValidBP = await this.testBp2(bpNumber);
+              if (isValidBP) {
+                this.internalUserNoBP = false;
+                this.externalWValidBP = true;
+              } else {
+                // Handle invalid BP Number
+                alert("Please enter a valid BP Number");
+                console.log("ngathi this BP is not valid.");
+                this.internalUserNoBP = false;
+                this.externalWValidBP = false; // Set this to false in case of an invalid BP Number
+              }
+            }
+          }
+        } catch (error) {
+          console.error("An error occurred: ", error);
+          this.validEmail = false;
+          this.internalUserNoBP = false;
+          this.externalWValidBP = false;
+        }
+      }
+    }
+    console.log("Email is okay?" + this.validEmail);
+    console.log("Is User Internal? " + this.internalUserNoBP);
+    console.log("User has valid BP Num " + this.externalWValidBP);
+    if (password !== passwordConfirm) {
+      alert("Passwords do not match");
+      this.matchingRegPasswords = false;
+    } else {
+      this.matchingRegPasswords = true;
+    }
+    console.log("Passwords are: " + this.matchingRegPasswords);
+  }
+
+  async onSendiOTP() {
+
+    try {
+      await this.onChecksRegistration();
+
+      if (this.validNameSurname && this.validEmail && this.matchingRegPasswords && ((this.internalUserNoBP && !this.externalWValidBP) || (this.externalWValidBP && !this.internalUserNoBP))) {
+        this.regFormReadOnly = true;
+        this.showDuplicatePassInput = false;
+        this.onSendOTP();
+
+      }
+      else {
+        alert("OTP not sent: make sure to fill-in all fields appropriately.");
+        return;
+      }
+    }
+    catch (error) {
+      console.error("Error in onChecksRegistration:", error);
+    }
+  
+  }
+  
+  async onVerifyOTPRegister(
+    clientFullName?: string | null,
+    clientEmail?: string | null,
+    phoneNumber?: string | null, //Create new account doesn't have?
+    BpNo?: string | null,
+    CompanyName?: string | null, //Create new account doesn't have?
+    CompanyRegNo?: string | null, //Create new account doesn't have?
+    PhyscialAddress?: string | null, //Create new account doesn't have?
+    ApplicantIDUpload?: string | null, //Create new account doesn't have?
+    ApplicantIDNumber?: string | null //Create new account doesn't have?
+  ) {
+
+    let onLoginForm = true;
+    let clientRegisterPassword = this.registerForm.controls["registerPassword"].value;
+    let otpEntered = this.registerForm.controls["OTPField"].value;
+
+    clientFullName = this.registerForm.controls["fullName"].value;
+    clientEmail = this.registerForm.controls["registerEmail"].value;
+    
+    BpNo = this.registerForm.controls["bpNumber"].value;
+
+    if (this.otp != otpEntered) {
+      alert("Invalid OTP");
+    }
+    else { 
+    //Not sure what this does TBH
+    this.sharedService.errorForRegister = false;
+    this.userService.register(clientFullName, clientEmail, "Password@" + clientFullName).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        if (onLoginForm === false) {
+          this.newProfileComponent.onNewProfileCreate(
+            data.dateSet.appUserId,
+            clientFullName,
+            clientEmail,
+            phoneNumber,
+            BpNo,
+            CompanyName,
+            CompanyRegNo,
+            PhyscialAddress,
+            ApplicantIDUpload,
+            ApplicantIDNumber
+          );
+          this.sharedService.errorForRegister = false;
+        }
+
+        this.sharedService.clientUserID = data.dateSet.appUserId;
+        localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
+        this.sharedService.newUserProfileBp = BpNo;
+        this.router.navigate(["/new-profile"]);
+      } else {
+        this.sharedService.errorForRegister = true;
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error: ", error);
+    });
+    }
+  }
+  //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   DoChecksForRegister() {
     /*    this.notification.sendEmail("jahdiel@cyberfox.co.za", "Test", "testing 1, 2, 3...");*/
 
@@ -1076,6 +1319,52 @@ export class LoginComponent implements OnInit {
     this.sentOTP = false;
     this.beforeSentOTP = true;
   }
+
+  getAllConfigData() {
+    this.AllConfig.splice(0, this.AllConfig.length);
+
+
+    this.configService.getAllConfigs().subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempConfigList = {} as ConfigList;
+          const current = data.dateSet[i];
+
+          tempConfigList.ConfigID = current.configID;
+          tempConfigList.ConfigName = current.configName;
+          tempConfigList.ConfigDescription = current.configDescription;
+          tempConfigList.DateCreated = current.dateCreated;
+          tempConfigList.DateUpdated = current.dateUpdated;
+          tempConfigList.CreatedById = current.createdById;
+          tempConfigList.isActive = current.isActive;
+          tempConfigList.UtilitySlot1 = current.utilitySlot1;
+          tempConfigList.UtilitySlot2 = current.utilitySlot2;
+          tempConfigList.UtilitySlot3 = current.utilitySlot3;
+
+          console.log("MapConfig:", tempConfigList);
+
+          this.AllConfig.push(tempConfigList);
+
+          //    this.sharedService.MapConfig(tempConfigList);
+        }
+        this.sharedService.setAllConfig(this.AllConfig);
+        this.ServerType = this.AllConfig.find((config) => config.ConfigName === 'ServerType').UtilitySlot1;
+        this.sharedService.setAPIURL(this.AllConfig.find((config) => config.ConfigName === 'APIURL').UtilitySlot1);
+      }
+      else {
+        alert("Error");
+      }
+
+      console.log("response", data);
+    }, error => {
+      console.log("Error", error);
+    })
+
+  }
+
+
 }
 
 

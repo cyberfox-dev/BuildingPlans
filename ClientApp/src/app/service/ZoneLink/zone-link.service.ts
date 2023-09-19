@@ -8,7 +8,7 @@ import { SharedService } from 'src/app/shared/shared.service';
 export class ZoneLinkService {
 
   
-  private readonly apiUrl: string = this.sharedService.getApiUrl();
+  private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
   private readonly baseURL: string = this.apiUrl + "zoneLinking/";
 
 
