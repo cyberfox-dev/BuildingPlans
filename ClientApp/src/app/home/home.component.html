@@ -1,4 +1,4 @@
-<app-nav-menu></app-nav-menu>
+<app-nav-menu class="animationSlideUp"></app-nav-menu>
 <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700,800&display=swap" rel="stylesheet">
 <link _ngcontent-ng-cli-universal-c545="" href="https://fonts.googleapis.com/css?family=Roboto:300italic,400italic,400,100,300,600,700" rel="stylesheet" type="text/css">
 
@@ -9,16 +9,16 @@
 
 <div class="container-fluid main">
 
-  <h1 >Hi, {{CurrentUser.fullName}}</h1>
-  <h2>Welcome to your Dashboard</h2>
+  <h1 class="animationSlideUp">Hi, {{CurrentUser.fullName}}</h1>
+  <h2 class="animationSlideUp">Welcome to your Dashboard</h2>
 <!--  <div style="background: red; text-align: center; font-size: xx-large; color: white; padding: 10px; line-height: 0.8;" *ngIf="ServerType === 'QA'">
     Please note, you've accessed the test server, nothing captured to this server will be processed. Please go to wayleave.capetown.gov.za to access the live site.
   </div>-->
 
   <!--  <button class="btn" (click)="goToNewWayleave()"><a><i class="fa fa-plus"></i> Create New Wayleave</a></button>-->
   <div class="cont3 ">
-    <button mat-raised-button color="createWayleave" (click)="goToNewWayleave(false,false)"><i class="fa fa-plus"></i> Create New Wayleave</button>
-    <button mat-raised-button color="createWayleave" (click)="goToNewWayleave(false,true)"><i class="fa fa-plus"></i> Request for Services Information</button>
+    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToNewWayleave(false,false)"><i class="fa fa-plus"></i> Create New Wayleave</button>
+    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToNewWayleave(false,true)"><i class="fa fa-plus"></i> Request for Services Information</button>
   </div>
 
 
@@ -28,7 +28,7 @@
 
   <!--Tabs-->
 
-  <div class="main-container">
+  <div class="main-container animationFadeIn">
 
     <!--<div class="heading">-->
 
@@ -94,7 +94,7 @@
   </div>
   <!--END OF TABS-->
 
-  <div class="table container-fluid">
+  <div class="table container-fluid animationFadeIn">
     <!--  <table class="table table-hover table-xl border_bottom">
     <thead>
       <tr class="tableheader">
@@ -143,7 +143,7 @@
     </mat-form-field>-->
     <div class="">
       <div class="container02">
-        <button mat-button [matMenuTriggerFor]="menu" matTooltip="Filter Applications" color="filter" aria-label="Example icon-button with a menu">
+        <button mat-button [matMenuTriggerFor]="menu" matTooltip="Filter Applications" color="filter" aria-label="Example icon-button with a menu" (click)="onFilterButtonClick()" *ngIf="FilterBtn">
           <i class="fa fa-filter" aria-hidden="true"></i>
         </button>
         <mat-menu #menu="matMenu" yPosition="below">
@@ -169,7 +169,14 @@
 
 
       </div>
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <div class="filterValue">
+        <p *ngIf="notNyProjects">You Are Currently Viewing {{FiterValue}}</p>
+        <p *ngIf="MyProjects">You Are Currently Viewing My Applications</p>
+      </div>
+      <div class="container003">
+      <img src="assets/Loading.png" *ngIf="isTableLoading" class="logo2">
+        </div>
+      <table mat-table [dataSource]="dataSource" *ngIf="isTableLoading == false" class="mat-elevation-z8 animationFadeIn">
 
 
         <ng-container matColumnDef="Stage">
@@ -327,7 +334,7 @@
           <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
         </mat-form-field>
 
-        <table mat-table [dataSource]="dataSourceLinkUsers" class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSourceLinkUsers" class="mat-elevation-z8 fade-out">
           <!--*ngIf="showZoneUserTable"-->
 
           <ng-container matColumnDef="idNumber">

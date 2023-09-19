@@ -271,7 +271,7 @@ export class LoginComponent implements OnInit {
     this.expirationTimer = setTimeout(() => {
       this.isExpired = true;
       this.sendOTPBtn = true;
-    }, this.expirationTime * 1000);
+    }, this.expirationTime * 20);
   }
 
   getUserProfile(): Observable<any> {
