@@ -1501,7 +1501,40 @@ export class ActionCenterComponent implements OnInit {
   }
 
 
-  //Here B
+
+  onReviewerClarityClick() {
+    let SubDepartmentName = "";
+    for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
+      if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
+        SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
+      }
+    }
+    //commentsService
+    debugger;
+    this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Reviewer Clarity", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        alert(data.responseMessage);
+        this.viewProjectInfoComponent.getAllComments();
+        this.modalService.dismissAll();
+        this.router.navigate(["/home"]);
+
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+  }
+
+
   onReturnToReviewerClick() {
     if (confirm("Are you sure you what return to previous reviewer?")) {
       debugger;

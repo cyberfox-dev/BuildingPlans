@@ -417,6 +417,8 @@ export class ViewProjectInfoComponent implements OnInit {
     isEMBUser: boolean;
     datePaid: string;
   Paid: string;
+  canReviewerClarify: boolean;
+    previousReviewer: any;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -618,6 +620,7 @@ export class ViewProjectInfoComponent implements OnInit {
  
     this.getLinkedDepartments();
     this.checkIfCanReply();
+    this.checkIfCanReviwerReply();
     this.checkIfPermitExsist();
     this.getFinancial();
     this.getMFTForApplication();
@@ -1037,6 +1040,68 @@ export class ViewProjectInfoComponent implements OnInit {
     else {
       this.canClarify = false;
     }
+  }
+
+  checkIfCanReviwerReply() {
+    debugger;
+    this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        debugger;
+        let tempReferCommentList;
+        for (let i = 0; i < data.dateSet.length; i++) {
+
+          debugger;
+          debugger;
+          const current = data.dateSet[i];
+          debugger;
+          if (current.commentStatus == "Referred" && current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
+            debugger;
+            if (current.createdById == this.CurrentUser.appUserId) {
+              debugger;
+              this.canReviewerClarify = true;
+            }
+            else {
+              debugger;
+              this.canReviewerClarify = false;
+            }
+
+
+          }
+
+
+        }
+
+      }
+      else {
+        alert(data.responseMessage);
+        debugger;
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      debugger;
+      console.log("Error: ", error);
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+    if (this.CurrentApplicant == this.CurrentUser.appUserId) {
+      this.canReviewerClarify = true;
+    }
+    else {
+      this.canReviewerClarify = false;
+    }
+  
   }
 
   onFileDelete(event: any, index: number) {
