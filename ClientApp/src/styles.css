@@ -42,7 +42,7 @@ code {
   transform-origin: 0;
   transform: skewY(0deg);
   z-index: -1;
-  background: #ccdee2;
+  background: white;
 }
 
   #stripes, #stripes span {

@@ -261,11 +261,12 @@ export class SharedService {
   }
 
   setViewApplicationIndex(ApplicationList: ApplicationList[]) {
+    debugger;
     this.applicationDataForView = ApplicationList;
     console.log("THIS IS THE LIST", this.applicationDataForView);
   }
   getViewApplicationIndex() {
-
+    debugger;
     return this.applicationDataForView[0];
   }
 
@@ -360,7 +361,7 @@ export class SharedService {
   }
 
   setProjectNumber(data: any) {
-
+ 
     this.ProjectNumber = data;
 
   }

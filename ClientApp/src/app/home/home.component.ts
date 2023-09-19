@@ -23,7 +23,8 @@ import { ZoneForCommentService } from '../service/ZoneForComment/zone-for-commen
 import { ZoneLinkService } from '../service/ZoneLink/zone-link.service';
 import { SubDepartmentsService } from '../service/SubDepartments/sub-departments.service';
 import { trigger, state, style, animate, transition } from '@angular/animations';
-
+import { ChangeDetectorRef } from '@angular/core';
+import { MatSelect } from '@angular/material/select';
 
 
 
@@ -174,8 +175,8 @@ export interface ConfigList {
 
 
 export class HomeComponent implements OnInit, OnDestroy {
-
-
+  FiterValue = "";
+  isLoading: boolean = false;
 
   /*paginator stuff*/
 
@@ -192,6 +193,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   Applications: ApplicationsList[] = [];
   applicationDataForView: ApplicationList[] = [];
   applicationDataForViewToShared: ApplicationList[] = [];
+  filteredApplications: ApplicationList[] = [];
   StagesList: StagesList[] = [];
   relatedApplications: ApplicationList[] = [];
   RolesList: RolesList[] = [];
@@ -283,7 +285,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   applicationType: boolean;
   isPlanning: boolean;
   userID: any;
-
+  FilterBtn: boolean = false;
   viewEscalateDate = 0;
 
 
@@ -305,15 +307,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     private zoneForCommentService: ZoneForCommentService,
     private subDepartmentService: SubDepartmentsService,
     private zoneLinkService: ZoneLinkService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     this.currentDate = new Date();
     this.previousMonth = this.currentDate.getMonth();
     this.previousYear = this.currentDate.getFullYear();
   }
 
+  isTableLoading: boolean = true;
 
-
-
+  newList = [];
   currentDate: Date;
   previousMonth: number;
   @ViewChild(MatTable) applicationsTable: MatTable<ApplicationsList> | undefined;
@@ -321,24 +324,43 @@ export class HomeComponent implements OnInit, OnDestroy {
   dataSource = this.Applications;
 
 
-  applyFilter(event: Event) {
-  
+  applyFilter(event: Event): string[] {
     const filterValue = (event.target as HTMLInputElement).value.toUpperCase();
-    if (filterValue == "") {
+    if (filterValue === "") {
+      
+      // If the filter is empty, reset the dataSource to the original data
+      this.dataSource = [...this.Applications];
+      this.newList = [];
       this.applicationsTable?.renderRows();
-      this.dataSource = this.Applications.filter(df => df.DateCreated);
-    }
-    else {
+      return this.dataSource.map(user => user.ProjectNumber || "");
+    
+ 
+;
+    } else {
+      
       const sanitizedFilterValue = filterValue.replace(/[^\w\s]/g, '');
       const regex = new RegExp(sanitizedFilterValue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-
-      this.dataSource = this.dataSource.filter(user => {
-        const sanitizedProjectNumber = user.ProjectNumber.replace(/[^\w\s]/g, '');
-        return regex.test(sanitizedProjectNumber.toUpperCase());
+      // Render the rows after applying the filter
       
-});
+      // Apply the filter to the dataSource based on the ProjectNumber property
+      this.dataSource = this.Applications.filter(user => {
+        
+        const sanitizedProjectNumber = (user.ProjectNumber || '').replace(/[^\w\s]/g, '');
+        return regex.test(sanitizedProjectNumber.toUpperCase());
+      });
+      
       this.applicationsTable?.renderRows();
+      this.newList = [...this.dataSource];
+      console.log(this.newList);
+      // Extract and return the filtered project numbers
+      return this.newList.map(user => user.ProjectNumber || "");
     }
+   
+    
+
+  
+
+   
   }
 
 
@@ -357,13 +379,18 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
       this.UpdateProjectNumberConfig();
       this.getAllApplicationsByUserID();
+      /* this.select = "option3";*/
 
       this.getRolesLinkedToUser();
       this.onCheckIfUserHasAccess();
       this.getAllExternalUsers();
+      
+
       this.getAllSubDepartments();
       this.getAllUserLinks();
       this.getAllConfigData();
+
+
 
       //this.function();
     }, 100);
@@ -374,12 +401,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngAfterViewInit() {
     //this.dataSource.paginator = this.paginator;
     //this.defaultPageSize = 10;
+
+/*          const myDropdown = document.getElementById("myDropdown") as HTMLSelectElement;
+          this.select = "option1";
+          myDropdown.disabled = true;*/
   }
 
-  function() {
-    /* this.dataSource.paginator = this.paginator;
-     this.defaultPageSize = 10;*/
-  }
+
+
 
 
 
@@ -391,14 +420,14 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   getAllUserLinks() {
-    debugger;
+    
     this.zoneLinkService.getAllUserLinks(this.CurrentUser.appUserId).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         // const current = 
         for (let i = 0; i < data.dateSet.length; i++) {
-          debugger;
+          
           if (this.AllSubDepartmentList) {
 
           }
@@ -703,7 +732,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   getUserID(index: any) {
     console.log("Turtle Speed is too fast for me");
-    debugger;
+    
     this.userID = this.ClientUserList[index].userId;
     console.log("You selected: " + this.userID);
     //The right UserID is acquired - then what?!
@@ -720,6 +749,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   UpdateProjectNumberConfig() {
+
+/*    if (this.CurrentUserProfile[0].isInternal == false) {
+      
+
+      this.getAllApplicationsByUserID();
+    }*/
 
     let currentMonth = this.currentDate.getMonth() + 1;
     let changeUtility = ("/" + this.currentDate.getFullYear() % 100).toString();
@@ -818,15 +853,16 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
 
+  @ViewChild('mySelect') mySelect: MatSelect;
+   getAllApplicationsByUserID() {
 
-  async getAllApplicationsByUserID() {
 
-
-
+     
     this.Applications.splice(0, this.Applications.length);
 
-    if (this.CurrentUserProfile[0].isInternal) {
-      await this.applicationService.getApplicationsList(this.CurrentUser.appUserId, true).subscribe((data: any) => {
+     if (this.CurrentUserProfile[0].isInternal) {
+  
+      /* this.applicationService.getApplicationsList(this.CurrentUser.appUserId, true).subscribe((data: any) => {
 
 
         if (data.responseCode == 1) {
@@ -851,7 +887,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
             tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
 
-            /*cal application age*/
+            *//*cal application age*//*
 
             const currentDate = new Date();
             const dateCreated = new Date(tempApplicationList.DateCreated);
@@ -859,7 +895,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
             tempApplicationList.TestApplicationAge = daysDiff;
 
-            /*cal stage age*/
+            *//*cal stage age*//*
             const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
             const stageDate = currentDate.getTime() - stageDateCreated.getTime();
             const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
@@ -875,9 +911,9 @@ export class HomeComponent implements OnInit, OnDestroy {
             }
 
 
-            /*            do {
+            *//*            do {
                           tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
-                        } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
+                        } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*//*
             //save here to send to the shared
 
             //tempApplicationListShared.applicationID = current. ;
@@ -923,7 +959,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
             this.Applications.push(tempApplicationList);
-            /*Cehcing the escaltion date*/
+            *//*Cehcing the escaltion date*//*
             this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
 
               if (data.responseCode == 1) {
@@ -948,7 +984,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
           this.applicationsTable?.renderRows();
           //for card filters
-          this.select = "option3";
+         *//* this.select = "option3";*//*
           this.recentUnpaidCount();
           this.recentDistributedCount();
           this.recentApprovedCount();
@@ -961,14 +997,24 @@ export class HomeComponent implements OnInit, OnDestroy {
           alert(data.responseMessage);
         }
 
-      })
+      })*/
+
+
+       this.FilterBtn = true;
+       this.onFilterApplicationForMyReviews();
+ 
     }
     else {
-      await this.applicationService.getApplicationsList(this.CurrentUser.appUserId, false).subscribe((data: any) => {
+     
+      
+
+      /*this.select = "option3";*/
+      
+     
+       this.applicationService.getApplicationsList(this.CurrentUser.appUserId, false).subscribe((data: any) => {
 
 
         if (data.responseCode == 1) {
-
 
           for (let i = 0; i < data.dateSet.length; i++) {
             const tempApplicationList = {} as ApplicationsList;
@@ -1051,9 +1097,9 @@ export class HomeComponent implements OnInit, OnDestroy {
             this.Applications.push(tempApplicationList);
 
           }
-
+         /* this.mySelect.disabled = true;*/
           this.applicationsTable?.renderRows();
-
+          this.cardFilters = false;
 
           console.log("Got all applications", data.dateSet);
 
@@ -1063,12 +1109,13 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
 
         //for card filters
-        this.select = "option3";
+       /* this.select = "option3";*/
         this.recentUnpaidCount();
         this.recentDistributedCount();
         this.recentApprovedCount();
         this.recentejectedCount();
-        this.recentWIPCount();
+         this.recentWIPCount();
+         this.isTableLoading = false;
 
       })
     }
@@ -1142,16 +1189,42 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   viewProject(index: any) {
-
+    
     console.log("FIND", this.applicationDataForView[index]);
+    if (this.newList.length > 0) {
+      
+      for (var i = 0; i < this.newList.length; i++) {
+        // Assuming this.applicationDataForView and newList are your arrays
+
+        const desiredApplicationID = this.newList[i].ApplicationID; // Replace [0] with the specific index you want to match
+
+        const foundRow = this.applicationDataForView.find(item => item.applicationID === desiredApplicationID);
+
+        if (foundRow) {
+          this.applicationDataForViewToShared.push(foundRow);
+          break;
+          // Do something with the found row
+          console.log(foundRow);
+        } else {
+          console.log("No matching row found.");
+        }
+
+      }
 
 
-    this.applicationDataForViewToShared.push(this.applicationDataForView[index])
+    } else {
+      
+      this.applicationDataForViewToShared.push(this.applicationDataForView[index]);
+    }
+    
+    
     console.log("this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]", this.applicationDataForView[index]);
     this.sharedService.setViewApplicationIndex(this.applicationDataForViewToShared);
     /*    this.CheckIfCanReapply();*/
+    
     this.viewContainerRef.clear();
     this.router.navigate(["/view-project-info"]);
+    
   }
 
   goToNewWayleave(applicationType: boolean, isPlanning: boolean) { //application type refers to whether it is a brand new application or if it is a reapply.
@@ -1159,6 +1232,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.applicationType = applicationType;
     this.isPlanning = isPlanning;
     if (this.CurrentUserProfile[0].isInternal === true) {
+      this.openSm(this.content);
+    } else {
+      this.createWayleave(this.applicationType, this.isPlanning);
+    } if (this.CurrentUserProfile[0].isInternal === true) {
       this.openSm(this.content);
     } else {
       this.createWayleave(this.applicationType, this.isPlanning);
@@ -1376,45 +1453,101 @@ export class HomeComponent implements OnInit, OnDestroy {
     }*/
 
   //Checks if user can re-apply
-  async CheckIfCanReapply(index: any) {
+  async CheckIfCanReapply(element: any, index:any) {
+    
+
+
+
+
     this.relatedApplications.splice(0, this.relatedApplications.length);
 
     //this.sharedService.getProjectNumber() i removed this
-    this.sharedService.setProjectNumber(this.applicationDataForView[index].ProjectNumber);
-    await this.applicationService.getApplicationsByProjectNumber(this.applicationDataForView[index].ProjectNumber).subscribe((data: any) => {
-      if (data.responseCode == 1) {
 
 
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempRelatedApplications = {} as ApplicationList;
-          const current = data.dateSet[i];
-          tempRelatedApplications.ProjectNumber = current.projectNumber;
+    if (this.newList.length <= 0) {
+      this.sharedService.setProjectNumber(element.ProjectNumber);
+      
+      await this.applicationService.getApplicationsByProjectNumber(element.ProjectNumber).subscribe((data: any) => {
+        if (data.responseCode == 1) {
 
-          this.relatedApplications.push(tempRelatedApplications);
-          // this.sharedService.setStageData(this.StagesList);
+          
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempRelatedApplications = {} as ApplicationList;
+            const current = data.dateSet[i];
+            tempRelatedApplications.ProjectNumber = current.projectNumber;
+            
+            this.relatedApplications.push(tempRelatedApplications);
+            // this.sharedService.setStageData(this.StagesList);
+          }
+
+
+
+          if (data.dateSet.length < 3) {
+            
+            this.canReapply = true;
+            this.sharedService.setCanReapply(true);
+          } else {
+            this.canReapply = false;
+            this.sharedService.setCanReapply(false);
+          }
         }
-
-
-
-        if (data.dateSet.length < 3) {
-          this.canReapply = true;
-          this.sharedService.setCanReapply(true);
-        } else {
-          this.canReapply = false;
-          this.sharedService.setCanReapply(false);
+        else {
+          //alert("Invalid Email or Password");
+          alert(data.responseMessage);
         }
-      }
-      else {
-        //alert("Invalid Email or Password");
-        alert(data.responseMessage);
-      }
-      console.log("reponse", data);
+        console.log("reponse", data);
+        
+        this.viewProject(index);
 
-      this.viewProject(index);
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+    else {
 
-    }, error => {
-      console.log("Error: ", error);
-    })
+      this.sharedService.setProjectNumber(this.newList[index].ProjectNumber);
+      
+      await this.applicationService.getApplicationsByProjectNumber(this.newList[index].ProjectNumber).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+
+          
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempRelatedApplications = {} as ApplicationList;
+            const current = data.dateSet[i];
+            tempRelatedApplications.ProjectNumber = current.projectNumber;
+            
+            this.relatedApplications.push(tempRelatedApplications);
+            // this.sharedService.setStageData(this.StagesList);
+          }
+
+
+
+          if (data.dateSet.length < 3) {
+            
+            this.canReapply = true;
+            this.sharedService.setCanReapply(true);
+          } else {
+            this.canReapply = false;
+            this.sharedService.setCanReapply(false);
+          }
+        }
+        else {
+          //alert("Invalid Email or Password");
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+        
+        this.viewProject(index);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+      
+    }
+
+
+
+
   }
 
 
@@ -1454,7 +1587,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   myApplicaitonsUnpaidCount() {
-    debugger;
+    
     const unpaidApplications = this.Applications.filter((element) => {
       return element.ApplicationStatus === 'Unpaid' && element.FullName == this.CurrentUser.fullName;
     });
@@ -1505,7 +1638,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   recentUnpaidCount() {
-    debugger;
+    
     const unpaidApplications = this.Applications.filter((element) => {
       return element.ApplicationStatus === 'Unpaid';
     });
@@ -1559,145 +1692,1156 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
 
-
+  notNyProjects = false;
+  MyProjects = false;
   select = '';
+  cardFilters: boolean = true;
+
+  onFilterApplicationForMyReviews() {
+    this.isTableLoading = true;
+    this.onFilterButtonClick();
+    this.notNyProjects = true;
+    this.MyProjects = false;
+    this.FiterValue = "";
+    this.FiterValue = "My Reviews";
+    this.cardFilters = false;
+    this.applicationDataForView = [];
+    this.Applications = [];
+    let number = 21;
+    
+    this.applicationService.getApplicationsForReviewer(21, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+
+      if (data.responseCode == 1) {
+        
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempApplicationList = {} as ApplicationsList;
+          const tempApplicationListShared = {} as ApplicationList;
+          const current = data.dateSet[i];
+
+          
+
+
+
+          console.log("current", current)
+          tempApplicationList.ApplicationID = current.applicationID;
+          tempApplicationList.FullName = current.fullName;
+          tempApplicationList.TypeOfApplication = current.typeOfApplication;
+          tempApplicationList.CurrentStage = current.currentStageName;
+          tempApplicationList.ApplicationStatus = current.applicationStatus;
+
+          tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+          tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
+
+          /*cal application age*/
+
+          const currentDate = new Date();
+          const dateCreated = new Date(tempApplicationList.DateCreated);
+          const timeDiff = currentDate.getTime() - dateCreated.getTime();
+          const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+          tempApplicationList.TestApplicationAge = daysDiff;
+
+          /*cal stage age*/
+          const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
+          const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+          const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+          tempApplicationList.TestApplicationStageAge = stageDateDiff;
+          console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
+
+
+
+          if (current.projectNumber != null) {
+            tempApplicationList.ProjectNumber = current.projectNumber;
+          } else {
+            tempApplicationList.ProjectNumber = (current.applicationID).toString();
+          }
+
+
+          /*            do {
+                        tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
+                      } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
+          //save here to send to the shared
+
+          //tempApplicationListShared.applicationID = current. ;
+          tempApplicationListShared.applicationID = current.applicationID;
+          tempApplicationListShared.clientName = current.fullName;
+          tempApplicationListShared.clientEmail = current.email;
+          tempApplicationListShared.clientAddress = current.physicalAddress;
+          tempApplicationListShared.clientRefNo = current.referenceNumber;
+          tempApplicationListShared.CompanyRegNo = current.companyRegNo;
+          tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
+          tempApplicationListShared.NotificationNumber = current.notificationNumber;
+          tempApplicationListShared.WBSNumber = current.wbsNumber;
+          tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
+          tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
+          tempApplicationListShared.NatureOfWork = current.natureOfWork;
+          tempApplicationListShared.ExcavationType = current.excavationType;
+          tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
+          tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
+          tempApplicationListShared.Location = current.location;
+          tempApplicationListShared.clientCellNo = current.phoneNumber;
+          tempApplicationListShared.CreatedById = current.createdById;
+          tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+          tempApplicationListShared.CurrentStageName = current.currentStageName;
+          tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+
+          tempApplicationListShared.NextStageName = current.nextStageName;
+          tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+          tempApplicationListShared.PreviousStageName = current.previousStageName;
+          tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+          tempApplicationListShared.DatePaid = current.datePaid;
+          tempApplicationListShared.wbsrequired = current.wbsRequired;
+          tempApplicationListShared.Coordinates = current.coordinates;
+          if (current.projectNumber != null) {
+            tempApplicationListShared.ProjectNumber = current.projectNumber;
+          } else {
+            tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+          }
+
+          tempApplicationListShared.isPlanning = current.isPlanning;
+          tempApplicationListShared.permitStartDate = current.permitStartDate;
+
+
+          this.applicationDataForView.push(tempApplicationListShared);
+          console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+          this.Applications.push(tempApplicationList);
+          /*Cehcing the escaltion date*/
+          this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+
+              const current = data.dateSet[0];
+              console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
+              this.viewEscalateDate = current.configDescription;
+              if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
+                this.escalateBtn = true;
+              }
+
+            }
+            else {
+              alert("Error");
+            }
+
+            console.log("response", data);
+          }, error => {
+            console.log("Error", error);
+          })
+        }
+        this.changeDetectorRef.detectChanges();
+        this.dataSource = this.Applications.filter(df => df.DateCreated);
+        this.applicationsTable?.renderRows();
+        //for card filters
+
+        this.recentUnpaidCount();
+        this.recentDistributedCount();
+        this.recentApprovedCount();
+        this.recentejectedCount();
+        this.recentWIPCount();
+        this.isTableLoading = false;
+        console.log("Got all applications", data.dateSet);
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+    })
+  }
+
+  onFilterApplicationsFprMyApplications() {
+    this.isTableLoading = true;
+    this.onFilterButtonClick();
+    this.notNyProjects = false;
+    this.MyProjects = true;
+    
+    this.FiterValue = "";
+    this.FiterValue = "My Applications";
+    this.cardFilters = false;
+    this.applicationDataForView = [];
+    this.Applications = [];
+/*    this.getAllApplicationsByUserID();*/
+
+    this.applicationService.getApplicationsList(this.CurrentUser.appUserId, true).subscribe((data: any) => {
+
+
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempApplicationList = {} as ApplicationsList;
+          const tempApplicationListShared = {} as ApplicationList;
+          const current = data.dateSet[i];
+
+
+
+
+
+          console.log("current", current)
+          tempApplicationList.ApplicationID = current.applicationID;
+          tempApplicationList.FullName = current.fullName;
+          tempApplicationList.TypeOfApplication = current.typeOfApplication;
+          tempApplicationList.CurrentStage = current.currentStageName;
+          tempApplicationList.ApplicationStatus = current.applicationStatus;
+
+          tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+          tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
+
+          /*cal application age*/
+
+          const currentDate = new Date();
+          const dateCreated = new Date(tempApplicationList.DateCreated);
+          const timeDiff = currentDate.getTime() - dateCreated.getTime();
+          const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+          tempApplicationList.TestApplicationAge = daysDiff;
+
+          /*cal stage age*/
+          const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
+          const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+          const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+          tempApplicationList.TestApplicationStageAge = stageDateDiff;
+          console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
+
+
+
+          if (current.projectNumber != null) {
+            tempApplicationList.ProjectNumber = current.projectNumber;
+          } else {
+            tempApplicationList.ProjectNumber = (current.applicationID).toString();
+          }
+
+
+          /*            do {
+                        tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
+                      } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
+          //save here to send to the shared
+
+          //tempApplicationListShared.applicationID = current. ;
+          tempApplicationListShared.applicationID = current.applicationID;
+          tempApplicationListShared.clientName = current.fullName;
+          tempApplicationListShared.clientEmail = current.email;
+          tempApplicationListShared.clientAddress = current.physicalAddress;
+          tempApplicationListShared.clientRefNo = current.referenceNumber;
+          tempApplicationListShared.CompanyRegNo = current.companyRegNo;
+          tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
+          tempApplicationListShared.NotificationNumber = current.notificationNumber;
+          tempApplicationListShared.WBSNumber = current.wbsNumber;
+          tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
+          tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
+          tempApplicationListShared.NatureOfWork = current.natureOfWork;
+          tempApplicationListShared.ExcavationType = current.excavationType;
+          tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
+          tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
+          tempApplicationListShared.Location = current.location;
+          tempApplicationListShared.clientCellNo = current.phoneNumber;
+          tempApplicationListShared.CreatedById = current.createdById;
+          tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+          tempApplicationListShared.CurrentStageName = current.currentStageName;
+          tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+
+          tempApplicationListShared.NextStageName = current.nextStageName;
+          tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+          tempApplicationListShared.PreviousStageName = current.previousStageName;
+          tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+          tempApplicationListShared.DatePaid = current.datePaid;
+          tempApplicationListShared.wbsrequired = current.wbsRequired;
+          tempApplicationListShared.Coordinates = current.coordinates;
+          if (current.projectNumber != null) {
+            tempApplicationListShared.ProjectNumber = current.projectNumber;
+          } else {
+            tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+          }
+
+          tempApplicationListShared.isPlanning = current.isPlanning;
+          tempApplicationListShared.permitStartDate = current.permitStartDate;
+
+
+          this.applicationDataForView.push(tempApplicationListShared);
+          console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+          this.Applications.push(tempApplicationList);
+          /*Cehcing the escaltion date*/
+          this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+
+              const current = data.dateSet[0];
+              console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
+              this.viewEscalateDate = current.configDescription;
+              if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
+                this.escalateBtn = true;
+              }
+
+            }
+            else {
+              alert("Error");
+            }
+
+            console.log("response", data);
+          }, error => {
+            console.log("Error", error);
+          })
+        }
+        this.dataSource = this.Applications.filter(df => df.FullName == this.CurrentUser.fullName);
+        this.applicationsTable?.renderRows();
+        //for card filters
+        /* this.select = "option3";*/
+        this.recentUnpaidCount();
+        this.recentDistributedCount();
+        this.recentApprovedCount();
+        this.recentejectedCount();
+        this.recentWIPCount();
+        this.isTableLoading = false;
+        console.log("Got all applications", data.dateSet);
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+    })
+  }
+
+  onFilterAPplicationsForRecentApplications() {
+    this.isTableLoading = true;
+    this.onFilterButtonClick();
+    this.notNyProjects = true;
+    this.MyProjects = false;
+    this.FiterValue = "";
+    this.FiterValue = "All Applications";
+    this.cardFilters = true;
+
+    this.applicationDataForView = [];
+    this.Applications = [];
+
+
+    this.Applications.splice(0, this.Applications.length);
+
+    if (this.CurrentUserProfile[0].isInternal) {
+      this.applicationService.getApplicationsList(this.CurrentUser.appUserId, true).subscribe((data: any) => {
+
+
+        if (data.responseCode == 1) {
+
+
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempApplicationList = {} as ApplicationsList;
+            const tempApplicationListShared = {} as ApplicationList;
+            const current = data.dateSet[i];
+
+
+
+
+
+            console.log("current", current)
+            tempApplicationList.ApplicationID = current.applicationID;
+            tempApplicationList.FullName = current.fullName;
+            tempApplicationList.TypeOfApplication = current.typeOfApplication;
+            tempApplicationList.CurrentStage = current.currentStageName;
+            tempApplicationList.ApplicationStatus = current.applicationStatus;
+
+            tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+            tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
+
+            /*cal application age*/
+
+            const currentDate = new Date();
+            const dateCreated = new Date(tempApplicationList.DateCreated);
+            const timeDiff = currentDate.getTime() - dateCreated.getTime();
+            const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationAge = daysDiff;
+
+            /*cal stage age*/
+            const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
+            const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+            const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationStageAge = stageDateDiff;
+            console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
+
+
+
+            if (current.projectNumber != null) {
+              tempApplicationList.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationList.ProjectNumber = (current.applicationID).toString();
+            }
+
+
+            /*            do {
+                          tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
+                        } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
+            //save here to send to the shared
+
+            //tempApplicationListShared.applicationID = current. ;
+            tempApplicationListShared.applicationID = current.applicationID;
+            tempApplicationListShared.clientName = current.fullName;
+            tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAddress = current.physicalAddress;
+            tempApplicationListShared.clientRefNo = current.referenceNumber;
+            tempApplicationListShared.CompanyRegNo = current.companyRegNo;
+            tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
+            tempApplicationListShared.NotificationNumber = current.notificationNumber;
+            tempApplicationListShared.WBSNumber = current.wbsNumber;
+            tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
+            tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
+            tempApplicationListShared.NatureOfWork = current.natureOfWork;
+            tempApplicationListShared.ExcavationType = current.excavationType;
+            tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
+            tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
+            tempApplicationListShared.Location = current.location;
+            tempApplicationListShared.clientCellNo = current.phoneNumber;
+            tempApplicationListShared.CreatedById = current.createdById;
+            tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+            tempApplicationListShared.CurrentStageName = current.currentStageName;
+            tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+
+            tempApplicationListShared.NextStageName = current.nextStageName;
+            tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+            tempApplicationListShared.PreviousStageName = current.previousStageName;
+            tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+            tempApplicationListShared.DatePaid = current.datePaid;
+            tempApplicationListShared.wbsrequired = current.wbsRequired;
+            tempApplicationListShared.Coordinates = current.coordinates;
+            if (current.projectNumber != null) {
+              tempApplicationListShared.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+            }
+
+            tempApplicationListShared.isPlanning = current.isPlanning;
+            tempApplicationListShared.permitStartDate = current.permitStartDate;
+
+
+            this.applicationDataForView.push(tempApplicationListShared);
+            console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+            this.Applications.push(tempApplicationList);
+            /*Cehcing the escaltion date*/
+            this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+
+                const current = data.dateSet[0];
+                console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
+                this.viewEscalateDate = current.configDescription;
+                if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
+                  this.escalateBtn = true;
+                }
+
+              }
+              else {
+                alert("Error");
+              }
+
+              console.log("response", data);
+            }, error => {
+              console.log("Error", error);
+            })
+          }
+          this.dataSource = this.Applications.filter(df => df.DateCreated);
+          this.applicationsTable?.renderRows();
+          //for card filters
+          /* this.select = "option3";*/
+          this.recentUnpaidCount();
+          this.recentDistributedCount();
+          this.recentApprovedCount();
+          this.recentejectedCount();
+          this.recentWIPCount();
+          this.isTableLoading = false;
+          console.log("Got all applications", data.dateSet);
+        }
+        else {
+          alert(data.responseMessage);
+        }
+
+      })
+    }
+    else {
+      this.applicationService.getApplicationsList(this.CurrentUser.appUserId, false).subscribe((data: any) => {
+
+
+        if (data.responseCode == 1) {
+
+
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempApplicationList = {} as ApplicationsList;
+            const tempApplicationListShared = {} as ApplicationList;
+            const current = data.dateSet[i];
+            console.log("current", current)
+            tempApplicationList.ApplicationID = current.applicationID;
+            tempApplicationList.FullName = current.fullName;
+            tempApplicationList.TypeOfApplication = current.typeOfApplication;
+            tempApplicationList.CurrentStage = current.currentStageName;
+            tempApplicationList.ApplicationStatus = current.applicationStatus;
+            this.date = current.dateCreated;
+            tempApplicationList.DateCreated = this.date.substring(0, current.dateCreated.indexOf('T'));;;
+
+            if (current.projectNumber != null) {
+              tempApplicationList.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationList.ProjectNumber = (current.applicationID).toString();
+            }
+
+            tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
+            /*cal application age*/
+
+            const currentDate = new Date();
+            const dateCreated = new Date(tempApplicationList.DateCreated);
+            const timeDiff = currentDate.getTime() - dateCreated.getTime();
+            const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationAge = daysDiff;
+
+            /*cal stage age*/
+            const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
+            const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+            const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationStageAge = stageDateDiff;
+            //save here to send to the shared
+
+            //tempApplicationListShared.applicationID = current. ;
+            tempApplicationListShared.applicationID = current.applicationID;
+            tempApplicationListShared.clientName = current.fullName;
+            tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAddress = current.physicalAddress;
+            tempApplicationListShared.clientRefNo = current.referenceNumber;
+            tempApplicationListShared.CompanyRegNo = current.companyRegNo;
+            tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
+            tempApplicationListShared.NotificationNumber = current.notificationNumber;
+            tempApplicationListShared.WBSNumber = current.wbsNumber;
+            tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
+            tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
+            tempApplicationListShared.NatureOfWork = current.natureOfWork;
+            tempApplicationListShared.ExcavationType = current.excavationType;
+            tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
+            tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
+            tempApplicationListShared.Location = current.location;
+            tempApplicationListShared.clientCellNo = current.phoneNumber;
+            tempApplicationListShared.CreatedById = current.createdById;
+            tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+            tempApplicationListShared.CurrentStageName = current.currentStageName;
+            tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+            tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate;
+            tempApplicationListShared.NextStageName = current.nextStageName;
+            tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+            tempApplicationListShared.PreviousStageName = current.previousStageName;
+            tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+            tempApplicationListShared.DatePaid = current.datePaid;
+            tempApplicationListShared.wbsrequired = current.wbsRequired;
+            tempApplicationListShared.Coordinates = current.coordinates;
+            if (current.projectNumber != null) {
+              tempApplicationListShared.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+            }
+
+            tempApplicationListShared.isPlanning = current.isPlanning;
+
+
+
+            this.applicationDataForView.push(tempApplicationListShared);
+            console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+
+            this.Applications.push(tempApplicationList);
+
+          }
+          this.dataSource = this.Applications.filter(df => df.DateCreated);
+          this.applicationsTable?.renderRows();
+
+
+          console.log("Got all applications", data.dateSet);
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+
+        //for card filters
+        this.select = "option3";
+        this.recentUnpaidCount();
+        this.recentDistributedCount();
+        this.recentApprovedCount();
+        this.recentejectedCount();
+        this.recentWIPCount();
+
+      })
+    }
+
+    const userId = this.CurrentUser.appUserId;
+    const isInternal = this.CurrentUserProfile[0].isInternal;
+
+
+    // Store the subscription in the subscriptions array
+    const subscription = this.applicationService.getApplicationsList(userId, isInternal)
+      .subscribe((data: any) => {
+        // Handle data
+      });
+    this.subscriptions.push(subscription);
+
+
+
+  }
+
 
   onFilterApplications() {
 
-
+    
     if (this.select == "option1") {
+      this.cardFilters = false;
+      this.applicationDataForView = [];
+      this.Applications = [];
+      this.getAllApplicationsByUserID();
+  
+      this.applicationService.getApplicationsList(this.CurrentUser.appUserId, true).subscribe((data: any) => {
 
-      this.dataSource = this.Applications.filter(df => df.FullName == this.CurrentUser.fullName);
-      this.myApplicaitonsUnpaidCount();
-      this.myApplicaitonsWIPCount();
-      this.myApplicaitonsejectedCount();
-      this.myApplicaitonsApprovedCount();
-      this.myApplicaitonsDistributedCount();
 
-      /*      this.filterByUnpaid();
-            this.filterByDistribution();
-            this.filterByApproved();
-            this.filterByRejected();
-            this.filterByWIP();*/
-      /* this.Applications = [];
-       this.applicationDataForView = [];
- 
-       this.applicationService.getApplicationsList(this.CurrentUser.appUserId, false).subscribe((data: any) => {
- 
- 
-         if (data.responseCode == 1) {
- 
- 
-           for (let i = 0; i < data.dateSet.length; i++) {
-             const tempApplicationList = {} as ApplicationsList;
-             const tempApplicationListShared = {} as ApplicationList;
-             const current = data.dateSet[i];
-             console.log("current", current)
-             tempApplicationList.ApplicationID = current.applicationID;
-             tempApplicationList.FullName = current.fullName;
-             tempApplicationList.TypeOfApplication = current.typeOfApplication;
-             tempApplicationList.CurrentStage = current.currentStageName;
-             tempApplicationList.ApplicationStatus = current.applicationStatus;
-             this.date = current.dateCreated;
-             tempApplicationList.DateCreated = this.date.substring(0, current.dateCreated.indexOf('T'));;;
- 
-             if (current.projectNumber != null) {
-               tempApplicationList.ProjectNumber = current.projectNumber;
-             } else {
-               tempApplicationList.ProjectNumber = (current.applicationID).toString();
-             }
- 
-             tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
-             *//*cal application age*//*
+        if (data.responseCode == 1) {
 
-const currentDate = new Date();
-const dateCreated = new Date(tempApplicationList.DateCreated);
-const timeDiff = currentDate.getTime() - dateCreated.getTime();
-const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
-tempApplicationList.TestApplicationAge = daysDiff;
 
-*//*cal stage age*//*
-                              const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
-                              const stageDate = currentDate.getTime() - stageDateCreated.getTime();
-                              const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
-                              tempApplicationList.TestApplicationStageAge = stageDateDiff;
-                              //save here to send to the shared
-                        
-                              //tempApplicationListShared.applicationID = current. ;
-                              tempApplicationListShared.applicationID = current.applicationID;
-                              tempApplicationListShared.clientName = current.fullName;
-                              tempApplicationListShared.clientEmail = current.email;
-                              tempApplicationListShared.clientAddress = current.physicalAddress;
-                              tempApplicationListShared.clientRefNo = current.referenceNumber;
-                              tempApplicationListShared.CompanyRegNo = current.companyRegNo;
-                              tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
-                              tempApplicationListShared.NotificationNumber = current.notificationNumber;
-                              tempApplicationListShared.WBSNumber = current.wbsNumber;
-                              tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
-                              tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
-                              tempApplicationListShared.NatureOfWork = current.natureOfWork;
-                              tempApplicationListShared.ExcavationType = current.excavationType;
-                              tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
-                              tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
-                              tempApplicationListShared.Location = current.location;
-                              tempApplicationListShared.clientCellNo = current.phoneNumber;
-                              tempApplicationListShared.CreatedById = current.createdById;
-                              tempApplicationListShared.ApplicationStatus = current.applicationStatus;
-                              tempApplicationListShared.CurrentStageName = current.currentStageName;
-                              tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
-                              tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate;
-                              tempApplicationListShared.NextStageName = current.nextStageName;
-                              tempApplicationListShared.NextStageNumber = current.nextStageNumber;
-                              tempApplicationListShared.PreviousStageName = current.previousStageName;
-                              tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
-                              tempApplicationListShared.DatePaid = current.datePaid;
-                              tempApplicationListShared.wbsrequired = current.wbsRequired;
-                              if (current.projectNumber != null) {
-                                tempApplicationListShared.ProjectNumber = current.projectNumber;
-                              } else {
-                                tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
-                              }
-                        
-                              tempApplicationListShared.isPlanning = current.isPlanning;
-                        
-                        
-                        
-                              this.applicationDataForView.push(tempApplicationListShared);
-                              console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
-                        
-                        
-                        
-                            }
-                        
-                            this.applicationsTable?.renderRows();
-                        
-                            console.log("Got all applications", data.dateSet);
-                        
-                          }
-                          else {
-                            alert(data.responseMessage);
-                          }
-                          this.countUnpaid();
-                          this.countDistributed();
-                          this.countApproved();
-                          this.countEMBStage();
-                          this.countRejection();
-                        
-                        })*/
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempApplicationList = {} as ApplicationsList;
+            const tempApplicationListShared = {} as ApplicationList;
+            const current = data.dateSet[i];
+
+
+
+
+
+            console.log("current", current)
+            tempApplicationList.ApplicationID = current.applicationID;
+            tempApplicationList.FullName = current.fullName;
+            tempApplicationList.TypeOfApplication = current.typeOfApplication;
+            tempApplicationList.CurrentStage = current.currentStageName;
+            tempApplicationList.ApplicationStatus = current.applicationStatus;
+
+            tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+            tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
+
+            /*cal application age*/
+
+            const currentDate = new Date();
+            const dateCreated = new Date(tempApplicationList.DateCreated);
+            const timeDiff = currentDate.getTime() - dateCreated.getTime();
+            const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationAge = daysDiff;
+
+            /*cal stage age*/
+            const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
+            const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+            const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationStageAge = stageDateDiff;
+            console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
+
+
+
+            if (current.projectNumber != null) {
+              tempApplicationList.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationList.ProjectNumber = (current.applicationID).toString();
+            }
+
+
+            /*            do {
+                          tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
+                        } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
+            //save here to send to the shared
+
+            //tempApplicationListShared.applicationID = current. ;
+            tempApplicationListShared.applicationID = current.applicationID;
+            tempApplicationListShared.clientName = current.fullName;
+            tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAddress = current.physicalAddress;
+            tempApplicationListShared.clientRefNo = current.referenceNumber;
+            tempApplicationListShared.CompanyRegNo = current.companyRegNo;
+            tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
+            tempApplicationListShared.NotificationNumber = current.notificationNumber;
+            tempApplicationListShared.WBSNumber = current.wbsNumber;
+            tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
+            tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
+            tempApplicationListShared.NatureOfWork = current.natureOfWork;
+            tempApplicationListShared.ExcavationType = current.excavationType;
+            tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
+            tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
+            tempApplicationListShared.Location = current.location;
+            tempApplicationListShared.clientCellNo = current.phoneNumber;
+            tempApplicationListShared.CreatedById = current.createdById;
+            tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+            tempApplicationListShared.CurrentStageName = current.currentStageName;
+            tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+
+            tempApplicationListShared.NextStageName = current.nextStageName;
+            tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+            tempApplicationListShared.PreviousStageName = current.previousStageName;
+            tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+            tempApplicationListShared.DatePaid = current.datePaid;
+            tempApplicationListShared.wbsrequired = current.wbsRequired;
+            tempApplicationListShared.Coordinates = current.coordinates;
+            if (current.projectNumber != null) {
+              tempApplicationListShared.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+            }
+
+            tempApplicationListShared.isPlanning = current.isPlanning;
+            tempApplicationListShared.permitStartDate = current.permitStartDate;
+
+
+            this.applicationDataForView.push(tempApplicationListShared);
+            console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+            this.Applications.push(tempApplicationList);
+            /*Cehcing the escaltion date*/
+            this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+
+                const current = data.dateSet[0];
+                console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
+                this.viewEscalateDate = current.configDescription;
+                if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
+                  this.escalateBtn = true;
+                }
+
+              }
+              else {
+                alert("Error");
+              }
+
+              console.log("response", data);
+            }, error => {
+              console.log("Error", error);
+            })
+          }
+          this.dataSource = this.Applications.filter(df => df.FullName == this.CurrentUser.fullName);
+          this.applicationsTable?.renderRows();
+          //for card filters
+          /* this.select = "option3";*/
+          this.recentUnpaidCount();
+          this.recentDistributedCount();
+          this.recentApprovedCount();
+          this.recentejectedCount();
+          this.recentWIPCount();
+
+          console.log("Got all applications", data.dateSet);
+        }
+        else {
+          alert(data.responseMessage);
+        }
+
+      })
 
     }
     else if (this.select == "option2") {
-      /* this.Applications = [];
-       this.applicationDataForView = [];
-       this.applicationsTable?.renderRows();*/
+      this.cardFilters = false;
+      this.applicationDataForView = [];
+      this.Applications = [];
+      let number = 21;
+      
+      this.applicationService.getApplicationsForReviewer(21, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+
+        if (data.responseCode == 1) {
+          
+
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempApplicationList = {} as ApplicationsList;
+            const tempApplicationListShared = {} as ApplicationList;
+            const current = data.dateSet[i];
+
+            
+
+
+
+            console.log("current", current)
+            tempApplicationList.ApplicationID = current.applicationID;
+            tempApplicationList.FullName = current.fullName;
+            tempApplicationList.TypeOfApplication = current.typeOfApplication;
+            tempApplicationList.CurrentStage = current.currentStageName;
+            tempApplicationList.ApplicationStatus = current.applicationStatus;
+
+            tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+            tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
+
+            /*cal application age*/
+
+            const currentDate = new Date();
+            const dateCreated = new Date(tempApplicationList.DateCreated);
+            const timeDiff = currentDate.getTime() - dateCreated.getTime();
+            const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationAge = daysDiff;
+
+            /*cal stage age*/
+            const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
+            const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+            const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationStageAge = stageDateDiff;
+            console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
+
+
+
+            if (current.projectNumber != null) {
+              tempApplicationList.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationList.ProjectNumber = (current.applicationID).toString();
+            }
+
+
+            /*            do {
+                          tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
+                        } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
+            //save here to send to the shared
+
+            //tempApplicationListShared.applicationID = current. ;
+            tempApplicationListShared.applicationID = current.applicationID;
+            tempApplicationListShared.clientName = current.fullName;
+            tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAddress = current.physicalAddress;
+            tempApplicationListShared.clientRefNo = current.referenceNumber;
+            tempApplicationListShared.CompanyRegNo = current.companyRegNo;
+            tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
+            tempApplicationListShared.NotificationNumber = current.notificationNumber;
+            tempApplicationListShared.WBSNumber = current.wbsNumber;
+            tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
+            tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
+            tempApplicationListShared.NatureOfWork = current.natureOfWork;
+            tempApplicationListShared.ExcavationType = current.excavationType;
+            tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
+            tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
+            tempApplicationListShared.Location = current.location;
+            tempApplicationListShared.clientCellNo = current.phoneNumber;
+            tempApplicationListShared.CreatedById = current.createdById;
+            tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+            tempApplicationListShared.CurrentStageName = current.currentStageName;
+            tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+
+            tempApplicationListShared.NextStageName = current.nextStageName;
+            tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+            tempApplicationListShared.PreviousStageName = current.previousStageName;
+            tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+            tempApplicationListShared.DatePaid = current.datePaid;
+            tempApplicationListShared.wbsrequired = current.wbsRequired;
+            tempApplicationListShared.Coordinates = current.coordinates;
+            if (current.projectNumber != null) {
+              tempApplicationListShared.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+            }
+
+            tempApplicationListShared.isPlanning = current.isPlanning;
+            tempApplicationListShared.permitStartDate = current.permitStartDate;
+
+
+            this.applicationDataForView.push(tempApplicationListShared);
+            console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+            this.Applications.push(tempApplicationList);
+            /*Cehcing the escaltion date*/
+            this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+
+                const current = data.dateSet[0];
+                console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
+                this.viewEscalateDate = current.configDescription;
+                if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
+                  this.escalateBtn = true;
+                }
+
+              }
+              else {
+                alert("Error");
+              }
+
+              console.log("response", data);
+            }, error => {
+              console.log("Error", error);
+            })
+          }
+          this.changeDetectorRef.detectChanges();
+          this.dataSource = this.Applications.filter(df => df.DateCreated);
+          this.applicationsTable?.renderRows();
+          //for card filters
+       
+          this.recentUnpaidCount();
+          this.recentDistributedCount();
+          this.recentApprovedCount();
+          this.recentejectedCount();
+          this.recentWIPCount();
+
+          console.log("Got all applications", data.dateSet);
+        }
+        else {
+          alert(data.responseMessage);
+        }
+
+      })
     }
-    else {
-      this.dataSource = this.Applications.filter(df => df.DateCreated);
-      this.recentUnpaidCount();
-      this.recentDistributedCount();
-      this.recentApprovedCount();
-      this.recentejectedCount();
-      this.recentWIPCount();
+    else if (this.select == "option3") {
+
+      this.cardFilters = true;
+     
+      this.applicationDataForView = [];
+      this.Applications = [];
+
+
+      this.Applications.splice(0, this.Applications.length);
+
+      if (this.CurrentUserProfile[0].isInternal) {
+        this.applicationService.getApplicationsList(this.CurrentUser.appUserId, true).subscribe((data: any) => {
+
+
+          if (data.responseCode == 1) {
+
+
+            for (let i = 0; i < data.dateSet.length; i++) {
+              const tempApplicationList = {} as ApplicationsList;
+              const tempApplicationListShared = {} as ApplicationList;
+              const current = data.dateSet[i];
+
+
+
+
+
+              console.log("current", current)
+              tempApplicationList.ApplicationID = current.applicationID;
+              tempApplicationList.FullName = current.fullName;
+              tempApplicationList.TypeOfApplication = current.typeOfApplication;
+              tempApplicationList.CurrentStage = current.currentStageName;
+              tempApplicationList.ApplicationStatus = current.applicationStatus;
+
+              tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+              tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
+
+              /*cal application age*/
+
+              const currentDate = new Date();
+              const dateCreated = new Date(tempApplicationList.DateCreated);
+              const timeDiff = currentDate.getTime() - dateCreated.getTime();
+              const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+              tempApplicationList.TestApplicationAge = daysDiff;
+
+              /*cal stage age*/
+              const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
+              const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+              const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+              tempApplicationList.TestApplicationStageAge = stageDateDiff;
+              console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
+
+
+
+              if (current.projectNumber != null) {
+                tempApplicationList.ProjectNumber = current.projectNumber;
+              } else {
+                tempApplicationList.ProjectNumber = (current.applicationID).toString();
+              }
+
+
+              /*            do {
+                            tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
+                          } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
+              //save here to send to the shared
+
+              //tempApplicationListShared.applicationID = current. ;
+              tempApplicationListShared.applicationID = current.applicationID;
+              tempApplicationListShared.clientName = current.fullName;
+              tempApplicationListShared.clientEmail = current.email;
+              tempApplicationListShared.clientAddress = current.physicalAddress;
+              tempApplicationListShared.clientRefNo = current.referenceNumber;
+              tempApplicationListShared.CompanyRegNo = current.companyRegNo;
+              tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
+              tempApplicationListShared.NotificationNumber = current.notificationNumber;
+              tempApplicationListShared.WBSNumber = current.wbsNumber;
+              tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
+              tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
+              tempApplicationListShared.NatureOfWork = current.natureOfWork;
+              tempApplicationListShared.ExcavationType = current.excavationType;
+              tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
+              tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
+              tempApplicationListShared.Location = current.location;
+              tempApplicationListShared.clientCellNo = current.phoneNumber;
+              tempApplicationListShared.CreatedById = current.createdById;
+              tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+              tempApplicationListShared.CurrentStageName = current.currentStageName;
+              tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+
+              tempApplicationListShared.NextStageName = current.nextStageName;
+              tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+              tempApplicationListShared.PreviousStageName = current.previousStageName;
+              tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+              tempApplicationListShared.DatePaid = current.datePaid;
+              tempApplicationListShared.wbsrequired = current.wbsRequired;
+              tempApplicationListShared.Coordinates = current.coordinates;
+              if (current.projectNumber != null) {
+                tempApplicationListShared.ProjectNumber = current.projectNumber;
+              } else {
+                tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+              }
+
+              tempApplicationListShared.isPlanning = current.isPlanning;
+              tempApplicationListShared.permitStartDate = current.permitStartDate;
+
+
+              this.applicationDataForView.push(tempApplicationListShared);
+              console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+              this.Applications.push(tempApplicationList);
+              /*Cehcing the escaltion date*/
+              this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
+
+                if (data.responseCode == 1) {
+
+                  const current = data.dateSet[0];
+                  console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
+                  this.viewEscalateDate = current.configDescription;
+                  if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
+                    this.escalateBtn = true;
+                  }
+
+                }
+                else {
+                  alert("Error");
+                }
+
+                console.log("response", data);
+              }, error => {
+                console.log("Error", error);
+              })
+            }
+            this.dataSource = this.Applications.filter(df => df.DateCreated);
+            this.applicationsTable?.renderRows();
+            //for card filters
+            /* this.select = "option3";*/
+            this.recentUnpaidCount();
+            this.recentDistributedCount();
+            this.recentApprovedCount();
+            this.recentejectedCount();
+            this.recentWIPCount();
+
+            console.log("Got all applications", data.dateSet);
+          }
+          else {
+            alert(data.responseMessage);
+          }
+
+        })
+      }
+      else {
+        this.applicationService.getApplicationsList(this.CurrentUser.appUserId, false).subscribe((data: any) => {
+
+
+          if (data.responseCode == 1) {
+
+
+            for (let i = 0; i < data.dateSet.length; i++) {
+              const tempApplicationList = {} as ApplicationsList;
+              const tempApplicationListShared = {} as ApplicationList;
+              const current = data.dateSet[i];
+              console.log("current", current)
+              tempApplicationList.ApplicationID = current.applicationID;
+              tempApplicationList.FullName = current.fullName;
+              tempApplicationList.TypeOfApplication = current.typeOfApplication;
+              tempApplicationList.CurrentStage = current.currentStageName;
+              tempApplicationList.ApplicationStatus = current.applicationStatus;
+              this.date = current.dateCreated;
+              tempApplicationList.DateCreated = this.date.substring(0, current.dateCreated.indexOf('T'));;;
+
+              if (current.projectNumber != null) {
+                tempApplicationList.ProjectNumber = current.projectNumber;
+              } else {
+                tempApplicationList.ProjectNumber = (current.applicationID).toString();
+              }
+
+              tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
+              /*cal application age*/
+
+              const currentDate = new Date();
+              const dateCreated = new Date(tempApplicationList.DateCreated);
+              const timeDiff = currentDate.getTime() - dateCreated.getTime();
+              const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+              tempApplicationList.TestApplicationAge = daysDiff;
+
+              /*cal stage age*/
+              const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
+              const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+              const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+              tempApplicationList.TestApplicationStageAge = stageDateDiff;
+              //save here to send to the shared
+
+              //tempApplicationListShared.applicationID = current. ;
+              tempApplicationListShared.applicationID = current.applicationID;
+              tempApplicationListShared.clientName = current.fullName;
+              tempApplicationListShared.clientEmail = current.email;
+              tempApplicationListShared.clientAddress = current.physicalAddress;
+              tempApplicationListShared.clientRefNo = current.referenceNumber;
+              tempApplicationListShared.CompanyRegNo = current.companyRegNo;
+              tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
+              tempApplicationListShared.NotificationNumber = current.notificationNumber;
+              tempApplicationListShared.WBSNumber = current.wbsNumber;
+              tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
+              tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
+              tempApplicationListShared.NatureOfWork = current.natureOfWork;
+              tempApplicationListShared.ExcavationType = current.excavationType;
+              tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
+              tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
+              tempApplicationListShared.Location = current.location;
+              tempApplicationListShared.clientCellNo = current.phoneNumber;
+              tempApplicationListShared.CreatedById = current.createdById;
+              tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+              tempApplicationListShared.CurrentStageName = current.currentStageName;
+              tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+              tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate;
+              tempApplicationListShared.NextStageName = current.nextStageName;
+              tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+              tempApplicationListShared.PreviousStageName = current.previousStageName;
+              tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+              tempApplicationListShared.DatePaid = current.datePaid;
+              tempApplicationListShared.wbsrequired = current.wbsRequired;
+              tempApplicationListShared.Coordinates = current.coordinates;
+              if (current.projectNumber != null) {
+                tempApplicationListShared.ProjectNumber = current.projectNumber;
+              } else {
+                tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+              }
+
+              tempApplicationListShared.isPlanning = current.isPlanning;
+
+
+
+              this.applicationDataForView.push(tempApplicationListShared);
+              console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+
+              this.Applications.push(tempApplicationList);
+
+            }
+            this.dataSource = this.Applications.filter(df => df.DateCreated);
+            this.applicationsTable?.renderRows();
+
+
+            console.log("Got all applications", data.dateSet);
+
+          }
+          else {
+            alert(data.responseMessage);
+          }
+
+          //for card filters
+          this.select = "option3";
+          this.recentUnpaidCount();
+          this.recentDistributedCount();
+          this.recentApprovedCount();
+          this.recentejectedCount();
+          this.recentWIPCount();
+
+        })
+      }
+
+      const userId = this.CurrentUser.appUserId;
+      const isInternal = this.CurrentUserProfile[0].isInternal;
+
+
+      // Store the subscription in the subscriptions array
+      const subscription = this.applicationService.getApplicationsList(userId, isInternal)
+        .subscribe((data: any) => {
+          // Handle data
+        });
+      this.subscriptions.push(subscription);
+
+      
+
+    }
+    else{
 
     }
 
@@ -1778,7 +2922,9 @@ tempApplicationList.TestApplicationAge = daysDiff;
           //    this.sharedService.MapConfig(tempConfigList);
         }
         this.sharedService.setAllConfig(this.AllConfig);
-          this.ServerType = this.AllConfig.find((config) => config.ConfigName === 'ServerType').UtilitySlot1;
+        this.ServerType = this.AllConfig.find((config) => config.ConfigName === 'ServerType').UtilitySlot1;
+
+
       }
       else {
         alert("Error");
@@ -1804,6 +2950,23 @@ tempApplicationList.TestApplicationAge = daysDiff;
     // Update the isTransparent property based on the scroll position
     this.isTransparent = scrollPosition < threshold;
   }
+
+  onFilterButtonClick() {
+/*    
+    const table = document.querySelector('.mat-elevation-z8');
+
+    // Remove the fade-out class to trigger fade-in
+    table.classList.remove('fade-out');
+
+    // Add the fade-in class to start the fade-in animation
+    table.classList.add('fade-in');
+
+    // After the animation completes, remove the fade-in class
+    setTimeout(() => {
+      table.classList.remove('fade-in');
+    }, 3000); */// Wait for 3 seconds (3000 milliseconds) for the fade-in animation to complete
+  }
+
 
   }
 
