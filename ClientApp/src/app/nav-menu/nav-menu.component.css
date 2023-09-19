@@ -52,7 +52,7 @@ body {
   top: 0;
   z-index: 2;
   box-shadow: 0 2px 20px 0 rgb(0 0 0 / 27%);
-  animation: fadeInOut 0.3s ease;/* Apply both animations */
+
 }
 
 .mat-form-field {
@@ -760,5 +760,29 @@ h4 {
 }
 
 
+/* CSS Transition for search bar and table container heights */
+.search-bar-container,
+.table-container {
+  transition: height 0.5s ease-in-out; /* Customize the duration and timing function */
+  overflow: hidden; /* Ensure overflow is hidden when the content is hidden */
+}
+
+/* Define the heights for the search bar and table container */
+.search-bar-container {
+  height: 50px; /* Adjust the initial height of the search bar container */
+}
+
+.table-container {
+  height: calc(100% - 50px); /* Adjust the initial height of the table container */
+}
+
+/* Adjust the heights when cards are visible */
+.cards-visible .search-bar-container {
+  height: 0;
+}
+
+.cards-visible .table-container {
+  height: 100%;
+}
 
 

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel;
 using System;
 using WayleaveManagementSystem.Data.Migrations;
+using System.Diagnostics;
 
 namespace WayleaveManagementSystem.Service
 {
@@ -20,7 +21,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }  
 
-        public async Task<SubDepartments> AddUpdateSubDepartments(int? subDepartmentID, string? subDepartmentName, int? DepartmentID, string? createdByID) 
+        public async Task<SubDepartments> AddUpdateSubDepartments(int? subDepartmentID, string? subDepartmentName, int? DepartmentID, string? createdByID, string? profitCenter, string? GlCode) 
         {
             if(subDepartmentID == 0) 
             { 
@@ -28,7 +29,7 @@ namespace WayleaveManagementSystem.Service
             }
 
             var tempSubDepartmentsTable = _context.SubDepartmentsTable.FirstOrDefault(x => x.SubDepartmentID == subDepartmentID);
-
+            
             if(tempSubDepartmentsTable == null) 
             {
                 tempSubDepartmentsTable = new SubDepartments()
@@ -37,7 +38,9 @@ namespace WayleaveManagementSystem.Service
                     DepartmentID = DepartmentID,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
-                    CreatedById = createdByID,
+                    CreatedById = createdByID, 
+                    ProfitCenter = profitCenter,
+                    GLCode = GlCode,
                     isActive = true
 
                 };
@@ -50,10 +53,27 @@ namespace WayleaveManagementSystem.Service
             }
             else
             {
-                tempSubDepartmentsTable.SubDepartmentName = subDepartmentName;
-                tempSubDepartmentsTable.DepartmentID = DepartmentID;
-                tempSubDepartmentsTable.DateUpdated = DateTime.Now;
-                tempSubDepartmentsTable.isActive = true;
+                
+                if (subDepartmentName != null)
+                {
+                    tempSubDepartmentsTable.SubDepartmentName = subDepartmentName;
+                }
+                if(DepartmentID != null)
+                {
+                    tempSubDepartmentsTable.DepartmentID = DepartmentID;
+                }
+                if(GlCode != null)
+                {
+                    tempSubDepartmentsTable.GLCode = GlCode;
+                }
+                if(profitCenter != null)
+                {
+                    tempSubDepartmentsTable.ProfitCenter = profitCenter;
+                }
+                    tempSubDepartmentsTable.DateUpdated = DateTime.Now;
+                
+               
+               
 
                 _context.Update(tempSubDepartmentsTable);
                 await _context.SaveChangesAsync();
@@ -178,7 +198,7 @@ namespace WayleaveManagementSystem.Service
                 where subDepartmentID == subDepartmentForComment.SubDepartmentID && subDepartmentForComment.FinalApproval == true
                 select new SubDepartmentsDTO()
                 {
-                  
+
                     UserAssaignedToComment = subDepartmentForComment.UserAssaignedToComment,
                     SubDepartmentForCommentID = subDepartmentForComment.SubDepartmentForCommentID,
                     DateCreated = DateTime.Now,
@@ -198,7 +218,8 @@ namespace WayleaveManagementSystem.Service
                 {
                     SubDepartmentID = SubDepartments.SubDepartmentID,
                     SubDepartmentName = SubDepartments.SubDepartmentName,
-                 
+                    GlCode = SubDepartments.GLCode,
+                    ProfitCenter = SubDepartments.ProfitCenter,
                     DepartmentID = SubDepartments.DepartmentID,
                     DateCreated = SubDepartments.DateCreated,
                     DateUpdated = SubDepartments.DateUpdated,
@@ -219,6 +240,8 @@ namespace WayleaveManagementSystem.Service
                     SubDepartmentID = SubDepartments.SubDepartmentID,
                     SubDepartmentName = SubDepartments.SubDepartmentName,
                     DepartmentID = SubDepartments.DepartmentID,
+                    GlCode = SubDepartments.GLCode,
+                    ProfitCenter = SubDepartments.ProfitCenter,
                     DateCreated = SubDepartments.DateCreated,
                     DateUpdated = SubDepartments.DateUpdated,
                     isActive = true
@@ -237,7 +260,8 @@ namespace WayleaveManagementSystem.Service
                 {
                     SubDepartmentID = SubDepartments.SubDepartmentID,
                     SubDepartmentName = SubDepartments.SubDepartmentName,
-
+                    GlCode = SubDepartments.GLCode,
+                    ProfitCenter = SubDepartments.ProfitCenter,
                     DepartmentID = SubDepartments.DepartmentID,
                     DateCreated = SubDepartments.DateCreated,
                     DateUpdated = SubDepartments.DateUpdated,

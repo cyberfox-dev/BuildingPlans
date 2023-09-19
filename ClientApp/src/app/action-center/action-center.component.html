@@ -43,7 +43,7 @@
       <button mat-raised-button color="rejectBTN" (click)="onCommentSR('Reject')"><i class="fa fa-thumbs-down redThumbsDown" aria-hidden="true"></i>  Not Approved</button>
       <button mat-raised-button color="clarifyBTN" (click)="onCommentSR('Clarify');sendOption()"><i class="fa fa-commenting-o orangeSpeech" aria-hidden="true"></i>  Clarify</button>
       <button mat-raised-button color="returnToReviewerBTN" (click)="onReturnToReviewerClick()"><i class="fa fa-reply" aria-hidden="true"></i>  Return To Reviewer</button>
-      <button mat-raised-button color="consultWithReviewerBTN"><i class="fa fa-comments" aria-hidden="true"></i>  Consult With Reviewer</button> <!--(click)="onReturnToReviewerClick()"-->
+      <button mat-raised-button color="consultWithReviewerBTN" (click)="onReviewerClarityClick()"  ><i class="fa fa-comments" aria-hidden="true"></i>  Consult With Reviewer</button> <!---->
 
     </div>
     <div class="cont2" *ngIf="canCommentFinalApprover == true">

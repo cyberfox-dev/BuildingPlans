@@ -37,7 +37,6 @@
   <h3><span>Departments</span></h3>
 </div>-->
 <!--create modal button-->
-
 <!--<button type="button" class="btn btn-primary createNewDep" (click)="openXl(content)">Create a new department</button>-->
 <button mat-raised-button color="create" (click)="openXl(content)">Create a new department</button>
 
@@ -57,8 +56,8 @@
     <th mat-header-cell *matHeaderCellDef>Sub Departments</th>
     <td mat-cell *matCellDef="let i = index">
       <button mat-raised-button color="success" matTooltip="Add Sub Department" (click)="openNewSubDep(newSub,i);setCurrentDepartmentID(i)"><i class="fa fa-plus"></i></button>
-      <button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="getSubDemartmentByDepartmentID(i,viewSub);setCurrentDepartmentID(i)"><i class="fa fa-eye"></i></button>
-    <!--  <button mat-raised-button color="orange" matTooltip="View all sub Depertments"><i class="fa fa-eye"></i></button>-->
+      <button mat-raised-button color="blue" matTooltip="View all sub Departments" (click)="getSubDemartmentByDepartmentID(i,viewSub);setCurrentDepartmentID(i)"><i class="fa fa-eye"></i></button>
+      <button mat-raised-button color="orange" matTooltip="Edit Gl Code and Profit Center" (click)="forViewPopulateSubDepartmentDropDown(i,editGlCode);setCurrentDepartmentID(i)"><i class="fa fa-book"></i></button>
 
 
 
@@ -71,7 +70,7 @@
       <button mat-raised-button color="success" matTooltip="Link Sub to zone" (click)="populateSubDepartmentDropDown(i,newZone);setCurrentDepartmentID(i)"><i class="fa fa-plus"></i></button>
       <button mat-raised-button color="orange" matTooltip="Link User to zone" (click)="openNewUserlinkedToZone(newUserLinkedToZone,i);setCurrentDepartmentID(i)"><i class="fa fa-link"></i></button>
       <button mat-raised-button color="blue" matTooltip="View all sub Depertments" (click)="forViewPopulateSubDepartmentDropDown(i,viewlinkedZones);setCurrentDepartmentID(i)"><i class="fa fa-eye"></i></button>
-      <button mat-raised-button color="another" matTooltip="Add map layer" (click)="openNewUserlinkedToZone(newUserLinkedToZone,i);setCurrentDepartmentID(i)"><i class="fa fa-map"></i></button>
+      <button mat-raised-button color="another" matTooltip="Add map layer" (click)="openNewUserlinkedToZone(newUserLinkedToZone,i)"><i class="fa fa-map"></i></button>
 
     </td>
     <td mat-cell *matCellDef="let element">  </td>
@@ -110,7 +109,7 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Close click');onSubDepartmentCreate()">Save</button>
+    <button type="submit" class="btn btn-outline-success" (click)="  modal.close('Close click');onSubDepartmentCreate()">Save</button>
   </div>
 </ng-template>
 
@@ -137,12 +136,12 @@
 
       <ng-container matColumnDef="dateUpdated">
         <th mat-header-cell *matHeaderCellDef> dateUpdated </th>
-        <td mat-cell *matCellDef="let element"> {{element.dateUpdated}} </td>
+        <td mat-cell *matCellDef="let element"> {{element.dateUpdated | date:'short'}} </td>
       </ng-container>
 
       <ng-container matColumnDef="dateCreated">
         <th mat-header-cell *matHeaderCellDef> dateCreated </th>
-        <td mat-cell *matCellDef="let element"> {{element.dateCreated}} </td>
+        <td mat-cell *matCellDef="let element"> {{element.dateCreated | date:'short' }} </td>
       </ng-container>
 
       <ng-container matColumnDef="departmentID">
@@ -150,6 +149,15 @@
         <td mat-cell *matCellDef="let element"> {{element.departmentID}} </td>
       </ng-container>
 
+      <ng-container matColumnDef="glCode">
+        <th mat-header-cell *matHeaderCellDef> glCode </th>
+        <td mat-cell *matCellDef="let element"> {{element.glCode}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="profitCenter">
+        <th mat-header-cell *matHeaderCellDef> profitCenter </th>
+        <td mat-cell *matCellDef="let element"> {{element.profitCenter}} </td>
+      </ng-container>
 
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Actions</th>
@@ -170,6 +178,59 @@
   </div>
 </ng-template>
 <!--end-->
+<!--edit Gl Code and Profit Center-->
+
+<ng-template #editGlCode let-modal class="mat-elevation-z8">
+
+  <div class="modal-header">
+    <h4 class="modal-title">Select a Sub Department</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+
+    <select class="form-select" [(ngModel)]="subDepID">
+
+      <option *ngFor="let subDemartment of SubDepartmentDropdown " value="{{subDemartment.subDepartmentID}}">{{subDemartment.subDepartmentName}} </option>
+    </select>
+
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-outline-success" (click)="openGlCodeEdit(makeChanges);modal.close('Close click')  ;getSubDemartmentBySubDepartmentID(subDepID) ">select</button>
+    </div>
+  </div>
+
+
+</ng-template>
+
+<ng-template #makeChanges let-modal>
+
+  <div class="modal-header" [(ngModel)]="selectedSubDepartment">
+    <h4 class="modal-title">Edit Gl Code and Profit Center for {{selectedSubDepartment.subDepartmentName}}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body" [(ngModel)]="selectedSubDepartment">
+
+    <div class="form-floating mb-3 mt-3">
+      <textarea class="form-control" type="text" [(ngModel)]="selectedSubDepartment.glCode"></textarea>
+      <label>Edit Gl Code</label>
+    </div>
+
+    <div class="form-floating mb-3 mt-3">
+      <textarea class="form-control" type="text" [(ngModel)]="selectedSubDepartment.profitCenter "></textarea>
+      <label>Edit Profit Center</label>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Close click');onSaveForEditGlCodeAndProfitCenter(selectedSubDepartment)">Save</button>
+  </div>
+
+</ng-template>
+
+
+<!--end-->
 <!-------------------------------------------------------------------zones-------------------------------------------------------------->
 <!--<div class="card">
   <h3><span>Zones Config</span></h3>
@@ -188,7 +249,7 @@
 
         <div class="form-floating mb-3 mt-3">
           <input type="text" class="form-control" id="ZoneName" formControlName="newZoneName" placeholder="Enter a zone name" name="newZoneName">
-          <label for="newZoneName">Zone Name</label>
+          <label for="newZoneNam">Zone Name</label>
         </div>
 
 
@@ -499,7 +560,7 @@
       <div class="form-floating mb-3 mt-3" *ngIf="ifDepHasSubUserDropDown">
         <select class="form-select" aria-label="Default select example" formControlName="SetSubDemartmentAdmin">
           <option selected value="0">Select a SubDepartment</option>
-          <option *ngFor="let subDemartment of SubDepartmentDropdown"  value="{{subDemartment.subDepartmentID}}">{{subDemartment.subDepartmentName}}</option>
+          <option *ngFor="let subDemartment of SubDepartmentDropdown" value="{{subDemartment.subDepartmentID}}">{{subDemartment.subDepartmentName}}</option>
         </select>
       </div>
     </form>

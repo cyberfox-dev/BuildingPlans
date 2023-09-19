@@ -14,14 +14,14 @@ import { BpNumberService } from 'src/app/service/BPNumber/bp-number.service'
 import { tap } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ConfigService } from 'src/app/service/Config/config.service';
-
-export interface ConfigList {
-  configID: number,
-  configName: string,
-  configDescription: string,
-  dateCreated: Date,
-  dateUpdated: Date,
-  createdById: string,
+import { delay } from 'rxjs/operators';
+  export interface ConfigList {
+  ConfigID: number,
+  ConfigName: string,
+  ConfigDescription: string,
+  DateCreated: Date,
+  DateUpdated: Date,
+  CreatedById: string,
   isActive: boolean,
   utilitySlot1: string,
   utilitySlot2: string,
@@ -270,13 +270,14 @@ export class LoginComponent implements OnInit {
     this.expirationTimer = setTimeout(() => {
       this.isExpired = true;
       this.sendOTPBtn = true;
-    }, this.expirationTime * 1000);
+    }, this.expirationTime * 20);
   }
 
   getUserProfile(): Observable<any> {
     const currentUser = JSON.parse(localStorage.getItem("LoggedInUserInfo"));
     return this.userPofileService.getUserProfileById(currentUser.appUserId);
   }
+
 
   onLogin() {
     // Removed the checkBPValidity and its warning
@@ -298,12 +299,16 @@ export class LoginComponent implements OnInit {
       switchMap((profileData: any) => {
         localStorage.setItem("userProfile", JSON.stringify(profileData.dateSet));
         return of(true); // Return an observable of true to proceed with the rest of the flow
-      })
+      }),
+      delay(5000) // Delay for 5 seconds after successful login and profile retrieval
     ).subscribe(
-      // Since we're no longer expecting a boolean for bp validity, adjust accordingly
       () => {
-        this.isLoading = false;
         this.router.navigate(["/home"]);
+
+        // Wait for an additional 5 seconds before setting isLoading to false
+        
+          this.isLoading = false;
+      
       },
       (error) => {
         console.log("Error: ", error);

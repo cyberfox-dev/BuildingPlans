@@ -1083,7 +1083,7 @@ export class NavMenuComponent implements OnInit {
   }
 
   filerGroupName() {
-    if (this.selectedOptionText == "") {
+    if (this.selectedOptionText == "" || this.selectedOptionText == "All Departments") {
       this.dataSource = this.DocumentsList.filter(df => df.DateCreated && df.SubDepartmentID == this.select);
     }
     else {

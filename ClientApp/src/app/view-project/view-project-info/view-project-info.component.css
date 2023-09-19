@@ -551,6 +551,76 @@ h1.header {
     }
 /**/
 
+
+/*reviewerClarify*/
+
+.reviewerClarify {
+  border-left: 8px solid #ffb100;
+  border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  color: #333;
+  margin: 15px auto;
+  letter-spacing: 0.5px;
+  position: relative;
+  line-height: 1.4em;
+  padding: 21px;
+  list-style: none;
+  text-align: left;
+}
+
+  .reviewerClarify h1,
+  .reviewerClarify h2,
+  .reviewerClarify h3 {
+    font-size: 1.4em;
+  }
+
+  .reviewerClarify .event {
+    border-bottom: 1px solid rgba(160, 160, 160, 0.2);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+    .reviewerClarify .event:last-of-type {
+      padding-bottom: 0;
+      margin-bottom: 0;
+      border: none;
+    }
+
+    .reviewerClarify .event:before,
+    .reviewerClarify .event:after {
+      position: absolute;
+      display: block;
+      top: 0;
+    }
+
+    .reviewerClarify .event:before {
+      left: -177.5px;
+      color: #212121;
+      content: attr(data-date);
+      text-align: right;
+      /*  font-weight: 100;*/
+
+      font-size: 16px;
+      min-width: 120px;
+    }
+
+    .reviewerClarify .event:after {
+      box-shadow: 0 0 0 8px #ffb100;
+      left: -30px;
+      background: #212121;
+      border-radius: 50%;
+      height: 11px;
+      width: 11px;
+      content: "";
+      top: 5px;
+    }
+/**/
+
+
+
+
 /*returned*/
 .returned {
   border-left: 8px solid #bc76fb;
