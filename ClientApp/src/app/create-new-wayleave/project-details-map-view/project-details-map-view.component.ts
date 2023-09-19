@@ -79,16 +79,16 @@ interface LayerInfo {
 }
 
 export interface ConfigList {
-  ConfigID: number,
-  ConfigName: string,
-  ConfigDescription: string,
-  DateCreated: Date,
-  DateUpdated: Date,
-  CreatedById: string,
+  configID: number,
+  configName: string,
+  configDescription: string,
+  dateCreated: Date,
+  dateUpdated: Date,
+  createdById: string,
   isActive: boolean,
-  UtilitySlot1: string,
-  UtilitySlot2: string,
-  UtilitySlot3: string,
+  utilitySlot1: string,
+  utilitySlot2: string,
+  utilitySlot3: string,
 }
 
 @Component({
@@ -301,129 +301,129 @@ export class ProjectDetailsMapViewComponent implements OnInit {
   };
 
   mapURLLoader() {
-    this.MapConfig = this.AllConfig.filter((config) => config.ConfigName === 'Map');
+    this.MapConfig = this.AllConfig.filter((config) => config.configName === 'Map');
 
     // Filter the list so that only the first row with 'ServerType', is returned.
-    const serverType = this.AllConfig.find((config) => config.ConfigName === 'ServerType').UtilitySlot1;
-    const MapConfigForServer = this.MapConfig.filter((config) => config.UtilitySlot1 === serverType);
+    const serverType = this.AllConfig.find((config) => config.configName === 'ServerType').utilitySlot1;
+    const MapConfigForServer = this.MapConfig.filter((config) => config.utilitySlot1 === serverType);
 
     //Check if user is internal or external
     if (this.CurrentUserProfile[0].isInternal) {
       //Internal users have access to both Internal and external layers
-      const MapConfigForServerForUserE = MapConfigForServer.filter((config) => config.UtilitySlot2 === 'External');
+      const MapConfigForServerForUserE = MapConfigForServer.filter((config) => config.utilitySlot2 === 'External');
 
       MapConfigForServerForUserE.forEach((config) => {
-        switch (config.UtilitySlot3) {
+        switch (config.utilitySlot3) {
           case 'FeatureServer(View)':
             // Handle the case when UtilitySlot3 is 'FeatureServer(Edit)'
-            this.featureServerViewURL = config.ConfigDescription
-            console.log(`Handling FeatureServer(View) for ConfigID ${config.ConfigID}`);
+            this.featureServerViewURL = config.configDescription
+            console.log(`Handling FeatureServer(View) for ConfigID ${config.configID}`);
             // Add your code here for this case
             break;
 
           case 'Zones':
             // Handle the case when UtilitySlot3 is 'Zones'
-            this.zonesURL = config.ConfigDescription
-            console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
+            this.zonesURL = config.configDescription
+            console.log(`Handling Zones for ConfigID ${config.configID}`);
             // Add your code here for this case
             break;
           case 'BasicServicesInfrastructure':
             // Handle the case when UtilitySlot3 is 'Zones'
-            this.basicServicesInfrustructureSanitized = config.ConfigDescription
+            this.basicServicesInfrustructureSanitized = config.configDescription
 
-            console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
+            console.log(`Handling Zones for ConfigID ${config.configID}`);
             // Add your code here for this case
             break;
           // Add more cases as needed
           default:
             // Handle the case when UtilitySlot3 is not matched with any specific case
-            console.log(`Handling default case for ConfigID ${config.ConfigID}`);
+            console.log(`Handling default case for ConfigID ${config.configID}`);
             // Add your default code here
             break;
         }
       });
 
-      const MapConfigForServerForUserI = MapConfigForServer.filter((config) => config.UtilitySlot2 === 'Internal');
+      const MapConfigForServerForUserI = MapConfigForServer.filter((config) => config.utilitySlot2 === 'Internal');
 
       MapConfigForServerForUserI.forEach((config) => {
-        switch (config.UtilitySlot3) {
+        switch (config.utilitySlot3) {
           case 'FeatureServer(View)':
             // Handle the case when UtilitySlot3 is 'FeatureServer(Edit)'
-            this.featureServerViewURL = config.ConfigDescription
-            console.log(`Handling FeatureServer(View) for ConfigID ${config.ConfigID}`);
+            this.featureServerViewURL = config.configDescription
+            console.log(`Handling FeatureServer(View) for ConfigID ${config.configID}`);
             // Add your code here for this case
             break;
 
           case 'Zones':
             // Handle the case when UtilitySlot3 is 'Zones'
-            this.zonesURL = config.ConfigDescription
-            console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
+            this.zonesURL = config.configDescription
+            console.log(`Handling Zones for ConfigID ${config.configID}`);
             // Add your code here for this case
             break;
           case 'BasicServicesInfrastructure':
             // Handle the case when UtilitySlot3 is 'Zones'
-            this.basicServicesInfrustructureUnsanitized = config.ConfigDescription
+            this.basicServicesInfrustructureUnsanitized = config.configDescription
 
-            console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
+            console.log(`Handling Zones for ConfigID ${config.configID}`);
             // Add your code here for this case
             break;
           // Add more cases as needed
           default:
             // Handle the case when UtilitySlot3 is not matched with any specific case
 
-            console.log(`Handling default case for ConfigID ${config.ConfigID}`);
+            console.log(`Handling default case for ConfigID ${config.configID}`);
             // Add your default code here
             break;
         }
 
         //Add all "Other" maps
-        const MapConfigForServerForUserForTypeOther = MapConfigForServerForUserI.filter((config) => config.UtilitySlot3 === 'Other');
+        const MapConfigForServerForUserForTypeOther = MapConfigForServerForUserI.filter((config) => config.utilitySlot3 === 'Other');
 
         MapConfigForServerForUserForTypeOther.forEach((config) => {
           // Perform the action for each configuration with UtilitySlot3 equal to 'Other'
           /*      Internal layers*/
           var otherLayer = new MapImageLayer({
-            url: config.ConfigDescription,
+            url: config.configDescription,
             visible: false
           })
 
           this.map.add(otherLayer);
 
-          console.log(`Performing action for ConfigID ${config.ConfigID}`);
+          console.log(`Performing action for ConfigID ${config.configID}`);
           // Add your code here to perform the action
         });
 
       });
 
     } else if (!this.CurrentUserProfile[0].isInternal) {
-      const MapConfigForServerForUser = MapConfigForServer.filter((config) => config.UtilitySlot2 === 'External');
+      const MapConfigForServerForUser = MapConfigForServer.filter((config) => config.utilitySlot2 === 'External');
 
       MapConfigForServerForUser.forEach((config) => {
-        switch (config.UtilitySlot3) {
+        switch (config.utilitySlot3) {
           case 'FeatureServer(View)':
             // Handle the case when UtilitySlot3 is 'FeatureServer(Edit)'
-            this.featureServerViewURL = config.ConfigDescription
-            console.log(`Handling FeatureServer(Edit) for ConfigID ${config.ConfigID}`);
+            this.featureServerViewURL = config.configDescription
+            console.log(`Handling FeatureServer(Edit) for ConfigID ${config.configID}`);
             // Add your code here for this case
             break;
 
           case 'Zones':
             // Handle the case when UtilitySlot3 is 'Zones'
-            this.zonesURL = config.ConfigDescription
-            console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
+            this.zonesURL = config.configDescription
+            console.log(`Handling Zones for ConfigID ${config.configID}`);
             // Add your code here for this case
             break;
           case 'BasicServicesInfrastructure':
             // Handle the case when UtilitySlot3 is 'Zones'
-            this.basicServicesInfrustructureSanitized = config.ConfigDescription
+            this.basicServicesInfrustructureSanitized = config.configDescription
 
-            console.log(`Handling Zones for ConfigID ${config.ConfigID}`);
+            console.log(`Handling Zones for ConfigID ${config.configID}`);
             // Add your code here for this case
             break;
           // Add more cases as needed
           default:
             // Handle the case when UtilitySlot3 is not matched with any specific case
-            console.log(`Handling default case for ConfigID ${config.ConfigID}`);
+            console.log(`Handling default case for ConfigID ${config.configID}`);
             // Add your default code here
             break;
         }

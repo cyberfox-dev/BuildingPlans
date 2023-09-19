@@ -10,7 +10,7 @@ import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/n
 import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
 import { ConfigService } from 'src/app/service/Config/config.service';
-import { Subscription } from 'rxjs';
+import { Subscription, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SelectEngineerTableComponent } from 'src/app/select-engineer-table/select-engineer-table.component';
 import { SelectContractorTableComponent } from 'src/app/select-contractor-table/select-contractor-table.component';
@@ -145,16 +145,16 @@ export interface ClientUserList {
 }
 
 export interface ConfigList {
-  ConfigID: number,
-  ConfigName: string,
-  ConfigDescription: string,
-  DateCreated: Date,
-  DateUpdated: Date,
-  CreatedById: string,
+  configID: number,
+  configName: string,
+  configDescription: string,
+  dateCreated: Date,
+  dateUpdated: Date,
+  createdById: string,
   isActive: boolean,
-  UtilitySlot1: string,
-  UtilitySlot2: string,
-  UtilitySlot3: string,
+  utilitySlot1: string,
+  utilitySlot2: string,
+  utilitySlot3: string,
 }
 
 
@@ -380,11 +380,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
       this.getAllSubDepartments();
       this.getAllUserLinks();
-      this.getAllConfigData();
+      this.getConfig();
+      //this.ServerType = this.sharedService.getServerType();
 
-
-
-
+/*      this.initializeApp();*/
       //this.function();
     }, 100);
   
@@ -2893,40 +2892,17 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
 
-  //Method is duplicated in the login.component.ts
-  getAllConfigData() {
+  getConfig() {
     this.AllConfig.splice(0, this.AllConfig.length);
-
 
     this.configService.getAllConfigs().subscribe((data: any) => {
 
-      if (data.responseCode == 1) {
+      if (data) {
+        this.AllConfig = data.dateSet;
 
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempConfigList = {} as ConfigList;
-          const current = data.dateSet[i];
-
-          tempConfigList.ConfigID = current.configID;
-          tempConfigList.ConfigName = current.configName;
-          tempConfigList.ConfigDescription = current.configDescription;
-          tempConfigList.DateCreated = current.dateCreated;
-          tempConfigList.DateUpdated = current.dateUpdated;
-          tempConfigList.CreatedById = current.createdById;
-          tempConfigList.isActive = current.isActive;
-          tempConfigList.UtilitySlot1 = current.utilitySlot1;
-          tempConfigList.UtilitySlot2 = current.utilitySlot2;
-          tempConfigList.UtilitySlot3 = current.utilitySlot3;
-
-          console.log("MapConfig:", tempConfigList);
-
-          this.AllConfig.push(tempConfigList);
-
-          //    this.sharedService.MapConfig(tempConfigList);
-        }
         this.sharedService.setAllConfig(this.AllConfig);
-        this.ServerType = this.AllConfig.find((config) => config.ConfigName === 'ServerType').UtilitySlot1;
-
-
+        this.ServerType = this.AllConfig.find((Config) => Config.configName === 'ServerType').utilitySlot1;
+        this.sharedService.setAPIURL(this.AllConfig.find((Config) => Config.configName === 'BaseUrl').utilitySlot2);
       }
       else {
         alert("Error");
@@ -2938,6 +2914,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
 
   }
+
 
   isTransparent: boolean = true; // Initialize as true if you want the navbar to be transparent initially
 
@@ -2969,7 +2946,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     }, 3000); */// Wait for 3 seconds (3000 milliseconds) for the fade-in animation to complete
   }
 
+  //delet dis
+  initializeApp(): Promise<any> {
+    return this.configService.getBaseUrl().pipe(
+      tap((baseUrl: string) => {
+        // Store the base URL in a variable or service accessible to all components
+        // Example: this.configService.setBaseUrl(baseUrl);
+        console.log("BaseURL:", baseUrl)
+      })
+    ).toPromise();
 
   }
-
+}
 

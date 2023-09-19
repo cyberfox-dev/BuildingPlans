@@ -198,9 +198,5 @@ namespace WayleaveManagementSystem.Service
                 }
                 ).ToListAsync();
         }
-
-
-
-
     }
 }

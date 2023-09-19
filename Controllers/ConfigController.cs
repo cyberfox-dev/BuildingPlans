@@ -18,6 +18,12 @@ using WayleaveManagementSystem.BindingModel;
 using WayleaveManagementSystem.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using WayleaveManagementSystem.Data;
+using SixLabors.ImageSharp;
 
 namespace WayleaveManagementSystem.Controllers
 {
@@ -27,13 +33,17 @@ namespace WayleaveManagementSystem.Controllers
     public class ConfigController : ControllerBase
     {
         private readonly IConfigService _configService;
-    
+
+        private readonly AppDBContext _context;
+        private readonly IConfiguration _configuration;
 
 
-        public ConfigController(IConfigService configService)
+        public ConfigController(AppDBContext context, IConfigService configService, IConfiguration configuration)
         {
             _configService = configService;
-        
+            _context = context;
+            _configuration = configuration;
+
         }
 
         [HttpPost("AddUpdateConfig")]
@@ -212,6 +222,49 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        //[HttpGet("GetAllConfig")]
+        //public async Task<ActionResult<IEnumerable<Config>>> GetAllConfigs()
+        //{
+        //    try
+        //    {
+        //        var connectionString = _configuration.GetConnectionString("DefaultConnection");
+        //        // Use the connectionString to establish a database connection and fetch config data
+
+        //        var configData = await _context.Config.ToListAsync();
+
+        //        return Ok(configData);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(new { error = ex.Message });
+        //    }
+
+
+        //}
+
+        [HttpGet("GetBaseUrl")]
+        public async Task<ActionResult<string>> GetBaseUrl()
+        {
+            try
+            {
+                // Fetch the base URL from the database
+                var baseUrl = await _context.Config
+                    .Where(c => c.ConfigName == "BaseUrl") // Adjust this to match your configuration
+                    .Select(c => c.UtilitySlot2)
+                    .FirstOrDefaultAsync();
+
+                if (string.IsNullOrWhiteSpace(baseUrl))
+                {
+                    return BadRequest(new { error = "Base URL not found in the database" });
+                }
+
+                return Ok(baseUrl);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
     }
 
 }

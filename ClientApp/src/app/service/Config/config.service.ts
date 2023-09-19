@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SharedService } from 'src/app/shared/shared.service';
+import { Observable } from 'rxjs';
+//import { InitializationService } from 'src/app/service/Initialization/initialization.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigService {
 
-  private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
+    private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
+  //private readonly apiUrl: string = this.initializationService.baseUrl + '/api/';
   private readonly baseURL: string = this.apiUrl + "config/";
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
@@ -71,5 +74,10 @@ export class ConfigService {
 
     return this.httpClient.get(this.baseURL + "GetAllConfigs");
 
+  }
+
+  // Fetch the base URL from the API
+  public getBaseUrl(): Observable<string> {
+    return this.httpClient.get('https://localhost:7123/api/config/GetBaseUrl', { responseType: 'text' });
   }
 }

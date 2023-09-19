@@ -15,17 +15,17 @@ import { tap } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ConfigService } from 'src/app/service/Config/config.service';
 import { delay } from 'rxjs/operators';
-  export interface ConfigList {
-  ConfigID: number,
-  ConfigName: string,
-  ConfigDescription: string,
-  DateCreated: Date,
-  DateUpdated: Date,
-  CreatedById: string,
+export interface ConfigList {
+  configID: number,
+  configName: string,
+  configDescription: string,
+  dateCreated: Date,
+  dateUpdated: Date,
+  createdById: string,
   isActive: boolean,
-  UtilitySlot1: string,
-  UtilitySlot2: string,
-  UtilitySlot3: string,
+  utilitySlot1: string,
+  utilitySlot2: string,
+  utilitySlot3: string,
 }
 
 @Component({
@@ -89,7 +89,7 @@ export class LoginComponent implements OnInit {
 
   //Gets all configuration data
   AllConfig: ConfigList[] = [];
-  ServerType: string;
+  public ServerType: string;
 
   constructor(
     private router: Router,
@@ -104,11 +104,10 @@ export class LoginComponent implements OnInit {
     private modalService: NgbModal,
     private bpNumberService: BpNumberService,
     private configService: ConfigService,
+    private route: ActivatedRoute
   ) {     //Run this before anything else because weaccess the apiURL from it.
-    this.getAllConfigData();
+    this.getConfig();
   }
-
-  ng
 
   ngOnInit() {
 
@@ -1320,38 +1319,17 @@ export class LoginComponent implements OnInit {
     this.beforeSentOTP = true;
   }
 
-  getAllConfigData() {
+  getConfig() {
     this.AllConfig.splice(0, this.AllConfig.length);
-
 
     this.configService.getAllConfigs().subscribe((data: any) => {
 
-      if (data.responseCode == 1) {
+      if (data) {
+        this.AllConfig = data.dateSet;
 
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempConfigList = {} as ConfigList;
-          const current = data.dateSet[i];
-
-          tempConfigList.ConfigID = current.configID;
-          tempConfigList.ConfigName = current.configName;
-          tempConfigList.ConfigDescription = current.configDescription;
-          tempConfigList.DateCreated = current.dateCreated;
-          tempConfigList.DateUpdated = current.dateUpdated;
-          tempConfigList.CreatedById = current.createdById;
-          tempConfigList.isActive = current.isActive;
-          tempConfigList.UtilitySlot1 = current.utilitySlot1;
-          tempConfigList.UtilitySlot2 = current.utilitySlot2;
-          tempConfigList.UtilitySlot3 = current.utilitySlot3;
-
-          console.log("MapConfig:", tempConfigList);
-
-          this.AllConfig.push(tempConfigList);
-
-          //    this.sharedService.MapConfig(tempConfigList);
-        }
         this.sharedService.setAllConfig(this.AllConfig);
-        this.ServerType = this.AllConfig.find((config) => config.ConfigName === 'ServerType').UtilitySlot1;
-        this.sharedService.setAPIURL(this.AllConfig.find((config) => config.ConfigName === 'APIURL').UtilitySlot1);
+        this.ServerType = this.AllConfig.find((Config) => Config.configName === 'ServerType').utilitySlot1;
+        this.sharedService.setAPIURL(this.AllConfig.find((Config) => Config.configName === 'BaseUrl').utilitySlot2);
       }
       else {
         alert("Error");
@@ -1363,7 +1341,6 @@ export class LoginComponent implements OnInit {
     })
 
   }
-
 
 }
 
