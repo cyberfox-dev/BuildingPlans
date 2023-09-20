@@ -575,6 +575,27 @@ mat-button-toggle {
   color: #474747;
   border: none;
 }
+
+.logo2 {
+  width: 180px;
+  height: 180px;
+  animation: spin 3.5s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.container003 {
+  display: flex;
+  justify-content: space-evenly;
+}
 /*check buttons for water and sanitation type of excavtion*/
 
 
