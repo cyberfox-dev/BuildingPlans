@@ -54,9 +54,10 @@ export interface SubDepartmentList {
   departmentID: number;
   dateUpdated: any;
   dateCreated: any;
+  glCode: string;
+  profitCenter: string;
   isSetForAutomaticDistribution: boolean;
 }
-
 
 
 export interface SubDepartmentDropdown {
@@ -124,7 +125,9 @@ export class DepartmentConfigComponent implements OnInit {
   showZoneUserTable = false;
   showZoneUsersLinkedTable = false;
   showViewSubLinkedToZone = false;
-
+  subDepID: number;
+  selectedSubDepartment: any;
+ 
   public addDepartment = this.formBuilder.group({
     newDepName: ['', Validators.required]
 
@@ -160,15 +163,16 @@ export class DepartmentConfigComponent implements OnInit {
   })
 
 
-  displayedColumns: string[] = [ 'departmentName', 'actions','actionsZone','actionsDep'];
+  displayedColumns: string[] = ['departmentName', 'actions', 'actionsZone', 'actionsDep'];
   dataSource = this.DepartmentList;
 
 
-    //Which is populated with subDepartments
-  displayedColumnsSubDepartment: string[] = ['subDepartmentID', 'subDepartmentName', 'departmentID', 'dateUpdated', 'dateCreated', 'actions'  ];
+  //Which is populated with subDepartments
+  displayedColumnsSubDepartment: string[] = ['subDepartmentID', 'subDepartmentName', 'departmentID', 'dateUpdated', 'dateCreated', 'glCode', 'profitCenter', 'actions'];
   dataSourceSubDepartment = this.SubDepartmentList;
 
-  displayedColumnsLinkUsers: string[] = ['fullName','actions'];
+  
+  displayedColumnsLinkUsers: string[] = ['fullName', 'actions'];
   dataSourceLinkUsers = this.UserDepartmentAdminList;
 
 
@@ -181,8 +185,8 @@ export class DepartmentConfigComponent implements OnInit {
   @ViewChild(MatTable) DepartmentListTable: MatTable<DepartmentList> | undefined;
   @ViewChild(MatTable) ZoneListTable: MatTable<ZoneList> | undefined;
   @ViewChild(MatTable) SubDepartmentListTable: MatTable<SubDepartmentList> | undefined;
-  @ViewChild(MatTable) UserZoneListTable:  MatTable<UserZoneList> | undefined;
-  
+  @ViewChild(MatTable) UserZoneListTable: MatTable<UserZoneList> | undefined;
+
   header: any;
   newSub: any;
 
@@ -192,7 +196,7 @@ export class DepartmentConfigComponent implements OnInit {
 
   openNewSubDep(newSub: any, index: any,) {
 
-    
+
     if (this.DepartmentList[index].hasSubDepartment == false) {
       alert("This department cannot add sub departments");
     }
@@ -202,13 +206,17 @@ export class DepartmentConfigComponent implements OnInit {
     }
   }
 
+  openGlCodeEdit(makeChanges: any) {
+    this.modalService.open(makeChanges, { backdrop: 'static', centered: true, size: 'xl' });
+  }
+
   openViewSubDep(viewSub: any) {
     this.modalService.open(viewSub, { backdrop: 'static', centered: true, size: 'xl' });
   }
   openViewZones(viewlinkedZones: any) {
-    
+
     this.modalService.open(viewlinkedZones, { backdrop: 'static', centered: true, size: 'xl' });
-    
+
   }
 
   setTab(tab: Tabs) {
@@ -224,7 +232,7 @@ export class DepartmentConfigComponent implements OnInit {
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData); this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
-    
+
     this.getAllDepartments();
 
     this.addZone.controls["newZoneSubDemartment"].setValue("0");
@@ -239,8 +247,8 @@ export class DepartmentConfigComponent implements OnInit {
 
   display = 'none';
 
-  onChange(value: MatSlideToggleChange, content:any) {
-   this.openXl(content)
+  onChange(value: MatSlideToggleChange, content: any) {
+    this.openXl(content)
 
   }
   openModal() {
@@ -258,28 +266,28 @@ export class DepartmentConfigComponent implements OnInit {
   getAllUsersForDepartmentAdminLink() {
     this.userProfileService.getInternalUsers().subscribe((data: any) => {
 
-        if (data.responseCode == 1) {
+      if (data.responseCode == 1) {
 
-          for (let i = 0; i < data.dateSet.length; i++) {
-            const tempInternalList = {} as UserDepartmentAdminList;
-            const current = data.dateSet[i];
-            tempInternalList.id = current.userID;
-            tempInternalList.fullName = current.fullName;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempInternalList = {} as UserDepartmentAdminList;
+          const current = data.dateSet[i];
+          tempInternalList.id = current.userID;
+          tempInternalList.fullName = current.fullName;
 
 
 
-            this.UserDepartmentAdminList.push(tempInternalList);
-          }
-
+          this.UserDepartmentAdminList.push(tempInternalList);
         }
-        else {
-          alert(data.responseMessage);
-        }
-        console.log("reponse", data);
 
-      }, error => {
-        console.log("Error: ", error);
-      })
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
 
   }
 
@@ -313,9 +321,9 @@ export class DepartmentConfigComponent implements OnInit {
 
       alert("Please select a sundepartment");
     }
-  
-         
-   // this..controls["selectedZone"].setValue("0");
+
+
+    // this..controls["selectedZone"].setValue("0");
 
 
   }
@@ -323,12 +331,12 @@ export class DepartmentConfigComponent implements OnInit {
 
 
   getAllSubDepartments() {
-   
+
     this.subDepartment.getSubDepartmentsList().subscribe((data: any) => {
-        this.sharedService.subDepartmentList.splice(0, this.sharedService.subDepartmentList.length);
+      this.sharedService.subDepartmentList.splice(0, this.sharedService.subDepartmentList.length);
 
       if (data.responseCode == 1) {
-        
+
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempSubDepartmentList = {} as SubDepartmentList;
           const current = data.dateSet[i];
@@ -338,12 +346,14 @@ export class DepartmentConfigComponent implements OnInit {
           tempSubDepartmentList.mapLayerID = current.mapLayerID;
           tempSubDepartmentList.dateUpdated = current.dateUpdated;
           tempSubDepartmentList.dateCreated = current.dateCreated;
+          tempSubDepartmentList.glCode = current.glCode;
+          tempSubDepartmentList.profitCenter = current.profitCenter;
           tempSubDepartmentList.isSetForAutomaticDistribution = current.isSetForAutomaticDistribution;
           this.SubDepartmentList.push(tempSubDepartmentList);
-           this.SubDepartmentListTable?.renderRows();
+          this.SubDepartmentListTable?.renderRows();
         }
 
-          //Writes to the shared service
+        //Writes to the shared service
         this.sharedService.subDepartmentList = this.SubDepartmentList;
         this.SubDepartmentListTable?.renderRows();
       }
@@ -364,10 +374,10 @@ export class DepartmentConfigComponent implements OnInit {
     /*this is for viewing linked users to reset*/
     this.viewZonesLinkedtoSub.controls["viewSelectedSubDep2"].setValue("0");
     this.viewZonesLinkedtoSub.controls["viewSelectedZone"].setValue("0");
-    this.showZoneTableUsers = false; 
+    this.showZoneTableUsers = false;
     this.showZone2 = false;
 
-/*this is for linking new users to reset*/
+    /*this is for linking new users to reset*/
     this.showZoneUserTable = false;
     this.userZoneLink.controls["selectedSubDep"].setValue("0");
     this.userZoneLink.controls["selectedZone"].setValue("0");
@@ -383,7 +393,7 @@ export class DepartmentConfigComponent implements OnInit {
 
 
   getSubDepsForDep(index: number) {
-     if (this.SubDepartmentList.length > 0) {
+    if (this.SubDepartmentList.length > 0) {
       if (this.DepartmentList[index].departmentName == this.SubDepartmentList[0].subDepartmentName) {
         this.subHasDep = false;
       }
@@ -444,79 +454,80 @@ export class DepartmentConfigComponent implements OnInit {
       console.log("Error: ", error);
     })
 
-  
+
 
   }
 
-  
-
-  getSubDemartmentByDepartmentID(index: number, viewSub:any) {
 
 
- 
+  getSubDemartmentByDepartmentID(index: number, viewSub: any) {
+
+
+
     this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
+    debugger;
+    this.subDepartment.getSubDepartmentsByDepartmentID(this.DepartmentList[index].departmentID).subscribe((data: any) => {
 
-      this.subDepartment.getSubDepartmentsByDepartmentID(this.DepartmentList[index].departmentID).subscribe((data: any) => {
-      
-        console.log("Got SubDepartments", data.dateSet);
-        if (data.responseCode == 1) {
+      console.log("Got SubDepartments", data.dateSet);
+      if (data.responseCode == 1) {
+        this.SubDepartmentListTable?.renderRows();
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepartmentList = {} as SubDepartmentList;
+          const current = data.dateSet[i];
+          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.departmentID = current.departmentID;
+          tempSubDepartmentList.dateUpdated = current.dateUpdated;
+          tempSubDepartmentList.dateCreated = current.dateCreated;
+          tempSubDepartmentList.glCode = current.glCode;
+          tempSubDepartmentList.profitCenter = current.profitCenter;
 
-          this.SubDepartmentListTable?.renderRows();
-          for (let i = 0; i < data.dateSet.length; i++) {
-            const tempSubDepartmentList = {} as SubDepartmentList;
-            const current = data.dateSet[i];
-            tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
-            tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
-            tempSubDepartmentList.departmentID = current.departmentID;
-            tempSubDepartmentList.dateUpdated = current.dateUpdated;
-            tempSubDepartmentList.dateCreated = current.dateCreated;
+          this.SubDepartmentList.push(tempSubDepartmentList);
 
-            this.SubDepartmentList.push(tempSubDepartmentList);
-
-          }
-          console.log("this.SubDepartmentList", this.SubDepartmentList);
-
-
-          this.getSubDepsForDep(index);
-
-          if (this.DepartmentList[index].hasSubDepartment == false) {
-            alert("This department cannot view sub departments");
-          }
-          else {
-            this.openViewSubDep(viewSub);
-          }
-/*          if (this.SubDepartmentList.length > 0) {
-            if ( this.DepartmentList[index].departmentName == this.SubDepartmentList[0].subDepartmentName) {
-              alert("This department cannot view sub departments");
-            }
-            else if (this.SubDepartmentList[0].subDepartmentName == undefined) {
-              this.openViewSubDep(viewSub);
-            }
-            else {
-              this.openViewSubDep(viewSub);
-            }
-          }
-          else {
-            this.openViewSubDep(viewSub);
-          }*/
-          this.SubDepartmentListTable?.renderRows();
+        }
+        console.log("this.SubDepartmentList", this.SubDepartmentList);
 
 
+        this.getSubDepsForDep(index);
 
-
+        if (this.DepartmentList[index].hasSubDepartment == false) {
+          alert("This department cannot view sub departments");
         }
         else {
-          //alert("Invalid Email or Password");
-          alert(data.responseMessage);
+          this.openViewSubDep(viewSub);
         }
-        console.log("reponse", data);
+        /*          if (this.SubDepartmentList.length > 0) {
+                    if ( this.DepartmentList[index].departmentName == this.SubDepartmentList[0].subDepartmentName) {
+                      alert("This department cannot view sub departments");
+                    }
+                    else if (this.SubDepartmentList[0].subDepartmentName == undefined) {
+                      this.openViewSubDep(viewSub);
+                    }
+                    else {
+                      this.openViewSubDep(viewSub);
+                    }
+                  }
+                  else {
+                    this.openViewSubDep(viewSub);
+                  }*/
+        this.SubDepartmentListTable?.renderRows();
 
 
-      }, error => {
-        console.log("Error: ", error);
-      })
 
-   
+
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
 
 
   }
@@ -547,7 +558,7 @@ export class DepartmentConfigComponent implements OnInit {
         this.DepartmentListTable?.renderRows();
         //this.DepartmentList = data.dateSet;
 
-        
+
         console.log("DepartmentListh", this.DepartmentList);
       }
       else {
@@ -583,14 +594,14 @@ export class DepartmentConfigComponent implements OnInit {
 
   onDepartmentCreate() {
 
-   
+
 
     let newDepName = this.addDepartment.controls["newDepName"].value;
 
 
 
     if (this.hasSub == true) {
-      this.departmentService.addUpdateDepartment(0, newDepName, this.hasSub ,this.CurrentUser.appUserId).subscribe((data: any) => {
+      this.departmentService.addUpdateDepartment(0, newDepName, this.hasSub, this.CurrentUser.appUserId).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 
@@ -608,24 +619,25 @@ export class DepartmentConfigComponent implements OnInit {
         console.log("Error: ", error);
       })
 
-      }
+    }
     else {
 
-      this.departmentService.addUpdateDepartment(0, newDepName, this.hasSub,this.CurrentUser.appUserId).subscribe((data: any) => {
+      this.departmentService.addUpdateDepartment(0, newDepName, this.hasSub, this.CurrentUser.appUserId).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
-    
+
           alert(data.responseMessage);
           this.getAllDepartments();
 
-         
-         
+
+
           let newSubDepName = this.addDepartment.controls["newDepName"].value;
+          let GlCode = this.SubDepartmentList["GlCode"].value;
+          let ProfitCenter = this.subDepartment["ProfitCenter"].value;
 
-     
 
 
-          this.subDepartment.addUpdateSubDepartment(0, newSubDepName,data.dateSet.departmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
+          this.subDepartment.addUpdateSubDepartment(0, newSubDepName, data.dateSet.departmentID, this.CurrentUser.appUserId, GlCode, ProfitCenter).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
 
@@ -664,7 +676,7 @@ export class DepartmentConfigComponent implements OnInit {
     console.log("IM USING THIS CODE", this.CurrentDepartmentID);
     this.header = this.DepartmentList[index].departmentName;
   }
-
+  
 
 
 
@@ -676,28 +688,29 @@ export class DepartmentConfigComponent implements OnInit {
 
 
 
-      let newSubDepName = this.addSubDepartment.controls["newSubDepName"].value;
+    let newSubDepName = this.addSubDepartment.controls["newSubDepName"].value;
 
-      this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
-      console.log("this.SubDepartmentList", this.SubDepartmentList);
 
-      this.subDepartment.addUpdateSubDepartment(0, newSubDepName, this.CurrentDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
+    this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
+    console.log("this.SubDepartmentList", this.SubDepartmentList);
 
-        if (data.responseCode == 1) {
+    this.subDepartment.addUpdateSubDepartment(0, newSubDepName, this.CurrentDepartmentID, this.CurrentUser.appUserId, null, null).subscribe((data: any) => {
 
-          alert(data.responseMessage);
+      if (data.responseCode == 1) {
 
-        }
-        else {
-          //alert("Invalid Email or Password");
-          alert(data.responseMessage);
-        }
-        console.log("reponse", data);
+        alert(data.responseMessage);
 
-      }, error => {
-        console.log("Error: ", error);
-      })
-    
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
   }
 
 
@@ -711,7 +724,7 @@ export class DepartmentConfigComponent implements OnInit {
           alert(data.responseMessage);
           this.getAllDepartments();
         }
-        else {         
+        else {
           alert(data.responseMessage);
         }
         console.log("reponse", data);
@@ -724,18 +737,18 @@ export class DepartmentConfigComponent implements OnInit {
     }
   }
 
-  onDeleteSubDepartment(index: any, viewSub:any) {
- 
+  onDeleteSubDepartment(index: any, viewSub: any) {
+
     if (confirm("Are you sure to delete " + this.SubDepartmentList[index].subDepartmentName + "?")) {
 
       this.subDepartment.deleteSubDepartment(this.SubDepartmentList[index].subDepartmentID).subscribe((data: any) => {
-        
+
         if (data.responseCode == 1) {
           this.SubDepartmentList.splice(index, 1);
           this.SubDepartmentListTable?.renderRows();
           //this.openViewSubDep("viewSub");
           alert(data.responseMessage);
-         
+
 
           this.openViewSubDep(viewSub);
         }
@@ -757,9 +770,9 @@ export class DepartmentConfigComponent implements OnInit {
 
     let newZoneName = this.addZone.controls["newZoneName"].value;
     let newZoneSubDemartment = Number(this.addZone.controls["newZoneSubDemartment"].value);
-    
+
     if (newZoneSubDemartment != 0) {
-      
+
 
       this.zoneService.addUpdateZone(0, newZoneName, this.CurrentDepartmentID, newZoneSubDemartment, this.CurrentUser.appUserId).subscribe((data: any) => {
 
@@ -844,7 +857,7 @@ export class DepartmentConfigComponent implements OnInit {
     })
   }
   onSelectToPopulateZoneTable(event: any, viewlinkedZones: any) {
-    
+
     let viewSelectedSubDep = Number(this.viewZonesLinkedtoSub.controls["viewSelectedSubDep"].value);
     this.ZoneList.splice(0, this.ZoneList.length);
     this.zoneService.getZonesBySubDepartmentsID(viewSelectedSubDep).subscribe((data: any) => {
@@ -880,7 +893,7 @@ export class DepartmentConfigComponent implements OnInit {
 
   }
 
-  onZoneDelete(index: any, viewlinkedZones:any) {
+  onZoneDelete(index: any, viewlinkedZones: any) {
     if (confirm("Are you sure to delete " + this.ZoneList[index].zoneName + "?")) {
 
       this.zoneService.deleteZone(this.ZoneList[index].zoneID).subscribe((data: any) => {
@@ -909,14 +922,14 @@ export class DepartmentConfigComponent implements OnInit {
       this.viewZonesLinkedtoSub.controls["viewSelectedSubDep2"].setValue("0");
       this.viewZonesLinkedtoSub.controls["viewSelectedZone"].setValue("0");
 
-     
+
       this.showZone2 = false;
       this.showZoneTableUsers = false;
       this.zoneLinkService.deleteZoneLink(this.UserZoneList[index].zoneLinkID).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           alert(data.responseMessage);
-      
+
         }
         else {
           alert(data.responseMessage);
@@ -937,14 +950,14 @@ export class DepartmentConfigComponent implements OnInit {
   }
 
 
-  populateSubDepartmentDropDown(index: any, newZone:any) {
+  populateSubDepartmentDropDown(index: any, newZone: any) {
 
     this.SubDepartmentDropdown.splice(0, this.SubDepartmentDropdown.length);
     this.subDepartment.getSubDepartmentsByDepartmentID(this.DepartmentList[index].departmentID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
-        
+
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempSubDepartmentList = {} as SubDepartmentDropdown;
           const current = data.dateSet[i];
@@ -973,7 +986,7 @@ export class DepartmentConfigComponent implements OnInit {
     if (event.target.value > 0) {
       console.log(event.target.value);
       this.zoneService.getUsersLinkedByZoneID(Number(event.target.value)).subscribe((data: any) => {
-      
+
         if (data.responseCode == 1) {
 
           for (let i = 0; i < data.dateSet.length; i++) {
@@ -1003,9 +1016,9 @@ export class DepartmentConfigComponent implements OnInit {
       this.showZoneTableUsers = true;
     }
     else {
-/*      this.viewZonesLinkedtoSub.controls["viewSelectedSubDep2"].setValue("0");
-      this.viewZonesLinkedtoSub.controls["viewSelectedZone"].setValue("0");*/
-      
+      /*      this.viewZonesLinkedtoSub.controls["viewSelectedSubDep2"].setValue("0");
+            this.viewZonesLinkedtoSub.controls["viewSelectedZone"].setValue("0");*/
+
       alert("Please Select a Zone");
       this.showZone2 = false;
       this.showZoneTableUsers = false;
@@ -1017,9 +1030,9 @@ export class DepartmentConfigComponent implements OnInit {
     this.ZoneDropdown.splice(0, this.ZoneDropdown.length);
     if (event.target.value > 0) {
 
-      
+
       this.zoneService.getZonesBySubDepartmentsID(event.target.value).subscribe((data: any) => {
-        
+
         if (data.responseCode == 1) {
 
           for (let i = 0; i < data.dateSet.length; i++) {
@@ -1078,7 +1091,7 @@ export class DepartmentConfigComponent implements OnInit {
       console.log("555");
       return `with: ${reason}`;
     }
-    
+
   }
 
 
@@ -1090,13 +1103,13 @@ export class DepartmentConfigComponent implements OnInit {
     console.log("this.selection.selectedthis.selection.selectedthis.selection.selectedthis.selection.selectedthis.selection.selectedthis.selection.selectedthis.selection.selected", this.selection.selected);
 
 
-    for (let i = 0; i < this.selection.selected.length; i++) {      
+    for (let i = 0; i < this.selection.selected.length; i++) {
       const current = this.selection.selected[i];
 
       this.zoneLinkService.getAllRecordsByUserIdIfDeleted(current.id).subscribe((data: any) => {
-        
+
         if (data.responseCode == 1) {
-          if (data.dateSet.length > 0 ) {
+          if (data.dateSet.length > 0) {
             this.zoneLinkService.addUpdateZoneLink(data.dateSet[0].zoneLinkID, this.CurrentDepartmentID, selectedZone, selectedSubDep, current.id, null, this.CurrentUser.appUserId,).subscribe((data: any) => {
               ;
               if (data.responseCode == 1) {
@@ -1133,7 +1146,7 @@ export class DepartmentConfigComponent implements OnInit {
               console.log("Error: ", error);
             })
           }
-         
+
 
 
         }
@@ -1159,7 +1172,7 @@ export class DepartmentConfigComponent implements OnInit {
     this.UserZoneList.splice(0, this.UserZoneList.length);
     this.userZoneLink.controls["selectedSubDep"].setValue("0");
     this.userZoneLink.controls["selectedZone"].setValue("0");
-    
+
 
   }
 
@@ -1213,8 +1226,8 @@ export class DepartmentConfigComponent implements OnInit {
   userSelectedForDepartmentLink(user: any) {
     this.selectionUserDepartmentAdminList.clear();
     this.selectionUserDepartmentAdminList.select(user);
-   
-    
+
+
     //if (this.selectionUserDepartmentAdminList.selected.length < 1) {
     //  this.selectionUserDepartmentAdminList.toggle(user);
 
@@ -1276,7 +1289,7 @@ export class DepartmentConfigComponent implements OnInit {
 
         }
         else {
-          
+
           alert(data.responseMessage);
         }
         console.log("reponse", data);
@@ -1297,7 +1310,7 @@ export class DepartmentConfigComponent implements OnInit {
     }
   }
 
-/*Sub dep*/
+  /*Sub dep*/
 
 
 
@@ -1308,8 +1321,8 @@ export class DepartmentConfigComponent implements OnInit {
   }
 
   /*link sub dep to zone*/
-  linkSubDep(linkSub:any) {
-    this.modalService.open(linkSub, { backdrop: 'static', centered: true,size: 'lg' });
+  linkSubDep(linkSub: any) {
+    this.modalService.open(linkSub, { backdrop: 'static', centered: true, size: 'lg' });
   }
 
   /*view linked sub to zone*/
@@ -1335,7 +1348,7 @@ export class DepartmentConfigComponent implements OnInit {
           this.SubDepartmentDropdown.push(tempSubDepartmentList);
 
         }
-        
+
 
       }
       else {
@@ -1355,15 +1368,65 @@ export class DepartmentConfigComponent implements OnInit {
     this.check = !this.check;
     console.log("1")
   }
+  
 
+  getSubDemartmentBySubDepartmentID(subDepID:number ) {
+
+    this.subDepartment.getSubDepartmentBySubDepartmentID( subDepID).subscribe((data: any) => {
+     
+      console.log("Got SubDepartment", data.dateSet);
+     
+
+      if (data.responseCode == 1) {
+        
+          const tempSubDepartmentList = {} as SubDepartmentList;
+          const current = data.dateSet[0];
+          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.glCode = current.glCode;
+          tempSubDepartmentList.profitCenter = current.profitCenter;
+
+          this.selectedSubDepartment = tempSubDepartmentList;
+          
+
+        
+       
+          console.log("this.SubDepartSource", this.SubDepartmentList);
+      
+      }
+      else {
+        
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+  onSaveForEditGlCodeAndProfitCenter(selectedSubDepartment:any )
+  {
+    debugger;
+    this.subDepartment.addUpdateSubDepartment(selectedSubDepartment.subDepartmentID, selectedSubDepartment.subDepartmentName, null, null, selectedSubDepartment.glCode, selectedSubDepartment.profitCenter).subscribe((data: any) => {
+     
+      if (data.responseCode == 1) {
+        debugger;
+        alert("Update for " + selectedSubDepartment.subDepartmentName+ " Successful");
+
+      }
+      else {
+        debugger;
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
 }
-
-
-
-
-
-
-
 enum Tabs {
   View_linked_sub_departments = 0,
   View_linked_users = 1

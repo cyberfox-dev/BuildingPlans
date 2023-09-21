@@ -417,6 +417,9 @@ export class ViewProjectInfoComponent implements OnInit {
     isEMBUser: boolean;
     datePaid: string;
   Paid: string;
+  canReviewerClarify: boolean;
+    previousReviewer: any;
+    referComment: boolean;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -505,12 +508,12 @@ export class ViewProjectInfoComponent implements OnInit {
 
   ngOnInit(): void {
 
-
+    debugger;
 
     this.applicationData = this.sharedService.getViewApplicationIndex();
     console.log("venApplicationData:", this.applicationData);
     this.getAllSubDepartments();
-
+    debugger;
 
     if (this.CurrentUser == null) {
       console.log("Not");
@@ -518,27 +521,27 @@ export class ViewProjectInfoComponent implements OnInit {
     else {
       console.log(this.CurrentUser);
     }
-
+    debugger;
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
-
+    debugger;
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
-
+    debugger;
  
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
     console.log("000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", this.applicationDataForView[0]);
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
-
+    debugger;
 
 
     const today = new Date();
     const twoWeeksFromNow = new Date();
     twoWeeksFromNow.setDate(today.getDate() + 14); // Add 14 days to the current date
-
+    debugger;
     this.minDate = twoWeeksFromNow.toISOString().split('T')[0];
 
 
@@ -546,7 +549,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
 
-
+    debugger;
 
     const setValues = this.applicationDataForView[0];
 
@@ -558,32 +561,36 @@ export class ViewProjectInfoComponent implements OnInit {
 
       this.router.navigate(["/home"]);
     }
-
+    debugger;
     if (setValues.CurrentStageName == "PTW") {
       this.showPermitTab = true;
     } else {
       this.showPermitTab = false;
     }
-
+    debugger;
     if (setValues.CurrentStageName == "Monitoring") {
       this.showStatusOfWorksTab = true;
     } else {
       this.showStatusOfWorksTab = false;
     }
-
+    debugger;
     if (setValues.CurrentStageName == "Approval Pack Generation") {
       this.generateApproval = true;
     } else {
       this.generateApproval = false;
     }
-
+    debugger;
     if (setValues.CurrentStageName == "Approval Pack Generation" && this.CurrentUser.appUserId == this.applicationDataForView[0].CreatedById) {
       this.generateApprovalbtn = true;
     } else {
       this.generateApprovalbtn = false;
+      
+    }
+    if (this.CurrentUser.appUserId == this.applicationDataForView[0].CreatedById) {
+      this.referComment = true;
     }
 
-
+    debugger;
     this.getRolesLinkedToUser();
     this.CurrentApplicant = setValues.CreatedById;
 
@@ -591,12 +598,12 @@ export class ViewProjectInfoComponent implements OnInit {
     console.log("this is the created by ID", setValues);
     this.createdByID = setValues.CreatedById;
     this.getApplicationDetailsForDocs();
-
+    debugger;
 
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
-
+    debugger;
     //Assigns the below values to the variable that will be passed to the map component.
     this.ARCGISAPIData.createdByID = this.CurrentUser.appUserId;
     this.ARCGISAPIData.isActive = "1";
@@ -607,7 +614,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getAllStages();
     this.setInterface();
     this.getAllRequiredDeposits();
-
+    debugger;
 
     this.checkIfWbsRequired();
 /*    this.getAllSubDepForReject();*/
@@ -615,9 +622,10 @@ export class ViewProjectInfoComponent implements OnInit {
     this.canReapply = this.sharedService.getCanReapply();
     console.log("canReapplyVen: ", this.canReapply);
     this.setProjectNumber();
- 
+    debugger;
     this.getLinkedDepartments();
     this.checkIfCanReply();
+    this.checkIfCanReviwerReply();
     this.checkIfPermitExsist();
     this.getFinancial();
     this.getMFTForApplication();
@@ -628,7 +636,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getAllSubDepartments();
     this.getLinkedDepartmentsFORAPPROVAL();
     this.CheckForApprovalPackDownload(); 
-
+    debugger;
   }
   receivedata: string;
 
@@ -1037,6 +1045,68 @@ export class ViewProjectInfoComponent implements OnInit {
     else {
       this.canClarify = false;
     }
+  }
+
+  checkIfCanReviwerReply() {
+    debugger;
+    this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        debugger;
+        let tempReferCommentList;
+        for (let i = 0; i < data.dateSet.length; i++) {
+
+          debugger;
+          debugger;
+          const current = data.dateSet[i];
+          debugger;
+          if (current.commentStatus == "Referred" && current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
+            debugger;
+            if (current.createdById == this.CurrentUser.appUserId) {
+              debugger;
+              this.canReviewerClarify = true;
+            }
+            else {
+              debugger;
+              this.canReviewerClarify = false;
+            }
+
+
+          }
+
+
+        }
+
+      }
+      else {
+        alert(data.responseMessage);
+        debugger;
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      debugger;
+      console.log("Error: ", error);
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+    if (this.CurrentApplicant == this.CurrentUser.appUserId) {
+      this.canReviewerClarify = true;
+    }
+    else {
+      this.canReviewerClarify = false;
+    }
+  
   }
 
   onFileDelete(event: any, index: number) {

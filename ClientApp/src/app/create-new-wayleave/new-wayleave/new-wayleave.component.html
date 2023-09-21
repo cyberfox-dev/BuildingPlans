@@ -490,7 +490,10 @@
       <div class="row">
         <button mat-raised-button color="green" [disabled]="successfulUploads < totalDocs" (click)="onWayleaveCreate(CurrentUser.appUserId,false);">
           Create Application
-          <mat-spinner *ngIf="isLoading"></mat-spinner>
+          <div class="container003">
+            <img src="assets/Loading.png" *ngIf="successfulUploads < totalDocs" class="logo2">
+            <p>Uploading Documents. You may continue to upload remaining documents if needed.</p>
+          </div>
         </button>
       </div>
 

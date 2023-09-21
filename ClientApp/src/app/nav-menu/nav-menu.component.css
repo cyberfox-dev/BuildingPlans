@@ -11,6 +11,8 @@ body {
   width: 100%;
   height: 50px;
   cursor: pointer;
+  margin-top: 10px;
+  margin-left: 6px;
 }
 .container2{
     display:flex;
@@ -52,22 +54,14 @@ body {
   top: 0;
   z-index: 2;
   box-shadow: 0 2px 20px 0 rgb(0 0 0 / 27%);
-  animation: fadeInOut 0.3s ease;/* Apply both animations */
+
 }
 
 .mat-form-field {
   width: 100%;
   margin-top: 26px;
 }
-  .nav > .nav-header {
-    display: inline;
-  }
-    .nav > .nav-header > .nav-title {
-      display: inline-block;
-      font-size: 22px;
-      color: #fff;
-      padding: 10px 10px 10px 10px;
-    }
+
   .nav > .nav-btn {
     display: none;
   }
@@ -97,10 +91,11 @@ body {
 @media (max-width:900px) {
 
   .logo {
-    width: 165px;
+    width: 100%;
     height: 50px;
     cursor: pointer;
-    /* width: 100%; */
+    margin-top: 10px;
+    margin-left: 6px;
   }
   .nav > .nav-btn {
     display: inline-block;
@@ -194,11 +189,7 @@ body {
 }
 
 
-.logo {
-  width: 100%;
-  height: 50px;
-  cursor: pointer;
-}
+
 
 
 .dashboard-header .navbar {
@@ -760,5 +751,47 @@ h4 {
 }
 
 
+/* CSS Transition for search bar and table container heights */
+.search-bar-container,
+.table-container {
+  transition: height 0.5s ease-in-out; /* Customize the duration and timing function */
+  overflow: hidden; /* Ensure overflow is hidden when the content is hidden */
+}
 
+/* Define the heights for the search bar and table container */
+.search-bar-container {
+  height: 50px; /* Adjust the initial height of the search bar container */
+}
 
+.table-container {
+  height: calc(100% - 50px); /* Adjust the initial height of the table container */
+}
+
+/* Adjust the heights when cards are visible */
+.cards-visible .search-bar-container {
+  height: 0;
+}
+
+.cards-visible .table-container {
+  height: 100%;
+}
+
+@keyframes fade-in-top-Nav {
+  0% {
+    opacity: 0;
+   
+  }
+
+  50% {
+    opacity: 0;
+  
+  }
+
+  100% {
+    opacity: 1;
+    
+  }
+}
+.animationSlideUpNav {
+  animation: fade-in-top-Nav 0.5s ease-out;
+}

@@ -7,6 +7,7 @@ using WayleaveManagementSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
 using System;
+using Microsoft.Extensions.Localization;
 
 namespace WayleaveManagementSystem.Controllers
 {
@@ -221,6 +222,26 @@ namespace WayleaveManagementSystem.Controllers
 
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
 
+            }
+        }
+        [HttpPost("GetApplicationsForReviewer")]
+        public async Task<object> GetApplicationsForReviewer([FromBody] ApplicationsBindingModel model)
+        {
+            try
+            {
+                if (model.ZoneID <= 0)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "ZoneID is invalid", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.GetApplicationsForReviewer(model.ZoneID, model.UserID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Applications retrieved successfully", result));
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
 

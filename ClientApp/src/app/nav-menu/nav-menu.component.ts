@@ -96,13 +96,6 @@ export interface NotificationsList {
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
   styleUrls: ['./nav-menu.component.css'],
-  animations: [
-    trigger('swipeAnimation', [
-      state('transparent', style({ transform: 'translateX(0)' })), // No translation
-      state('solid', style({ transform: 'translateX(100%)' })), // Full translation (off-screen)
-      transition('transparent <=> solid', animate('2s ease-in-out')), // Adjust duration and easing
-    ]),
-  ],
 })
 export class NavMenuComponent implements OnInit {
 
@@ -1083,7 +1076,7 @@ export class NavMenuComponent implements OnInit {
   }
 
   filerGroupName() {
-    if (this.selectedOptionText == "") {
+    if (this.selectedOptionText == "" || this.selectedOptionText == "All Departments") {
       this.dataSource = this.DocumentsList.filter(df => df.DateCreated && df.SubDepartmentID == this.select);
     }
     else {

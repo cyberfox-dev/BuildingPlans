@@ -1,4 +1,4 @@
-<app-nav-menu [@fadeInOut]="isTransparent ? 'transparent' : 'solid'"></app-nav-menu>
+<app-nav-menu ></app-nav-menu>
 <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700,800&display=swap" rel="stylesheet">
 <link _ngcontent-ng-cli-universal-c545="" href="https://fonts.googleapis.com/css?family=Roboto:300italic,400italic,400,100,300,600,700" rel="stylesheet" type="text/css">
 
@@ -9,35 +9,47 @@
 
 <div class="container-fluid main">
 
-  <h1>Hi, {{CurrentUser.fullName}}</h1>
-  <h2>Welcome to your Dashboard</h2>
+  <h1 class="animationSlideUp">Hi, {{CurrentUser.fullName}}</h1>
+  <h2 class="animationSlideUp">Welcome to your Dashboard</h2>
   <div style="background: red; text-align: center; font-size: xx-large; color: white; padding: 10px; line-height: 0.8;" *ngIf="ServerType === 'QA'">
     Please note, you've accessed the test server, nothing captured to this server will be processed. Please go to wayleave.capetown.gov.za to access the live site.
   </div>
 
   <!--  <button class="btn" (click)="goToNewWayleave()"><a><i class="fa fa-plus"></i> Create New Wayleave</a></button>-->
-  <div class="cont3">
-    <button mat-raised-button color="createWayleave" (click)="goToNewWayleave(false,false)"><i class="fa fa-plus"></i> Create New Wayleave</button>
-    <button mat-raised-button color="createWayleave" (click)="goToNewWayleave(false,true)"><i class="fa fa-plus"></i> Request for Services Information</button>
+  <div class="cont3 ">
+    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToNewWayleave(false,false)"><i class="fa fa-plus"></i> Create New Wayleave</button>
+    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToNewWayleave(false,true)"><i class="fa fa-plus"></i> Request for Services Information</button>
   </div>
 
   <!--Tabs-->
 
-  <div class="main-container">
+  <div class="main-container animationFadeIn">
 
-    <div class="heading">
+    <!--<div class="heading">-->
 
+
+<!--      <mat-form-field>
       <mat-form-field>
 
-        <mat-select value="option3" [(value)]="select" (selectionChange)="onFilterApplications()">
+        <mat-select value="option3" [(value)]="select" (selectionChange)="onFilterApplications()" #mySelect>
           <mat-option value="option1">My Applications</mat-option>
           <mat-option value="option2">My Reviews</mat-option>
           <mat-option value="option3">Recent Projects</mat-option>
         </mat-select>
+      </mat-form-field>-->
+
+
+
+    <!--</div>-->
+<!--    <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+      <mat-button-toggle value="italic">My Reviews</mat-button-toggle>
+      <mat-button-toggle value="bold">My Applications</mat-button-toggle>
+      <mat-button-toggle value="underline">Recent Projects</mat-button-toggle>
+    </mat-button-toggle-group>-->
       </mat-form-field>
     </div>
 
-    <div class="cards">
+    <div class="cards" *ngIf="cardFilters">
       <div class="card card-5">
         <h4>Unpaid</h4>
         <h1 class="num">{{unpaidcount}}</h1>
@@ -79,7 +91,7 @@
   </div>
   <!--END OF TABS-->
 
-  <div class="table container-fluid">
+  <div class="table container-fluid animationFadeIn">
     <!--  <table class="table table-hover table-xl border_bottom">
     <thead>
       <tr class="tableheader">
@@ -127,15 +139,45 @@
       <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
     </mat-form-field>-->
     <div class="">
-      <mat-form-field appearance="outline">
-        <mat-label>Search</mat-label>
-        <div class="cont6">
+      <div class="container02">
+        <button mat-button [matMenuTriggerFor]="menu" matTooltip="Filter Applications" color="filter" aria-label="Example icon-button with a menu" (click)="onFilterButtonClick()" *ngIf="FilterBtn">
+          <i class="fa fa-filter" aria-hidden="true"></i>
+        </button>
+        <mat-menu #menu="matMenu" yPosition="below">
+          <button mat-menu-item (click)="onFilterApplicationForMyReviews()">
+            <span>My Reviews</span>
+          </button>
+          <button mat-menu-item (click)="onFilterApplicationsFprMyApplications()">
+            <span>My Applications</span>
+          </button>
+          <button mat-menu-item (click)="onFilterAPplicationsForRecentApplications()">
+            <span>All Projects</span>
+          </button>
+        </mat-menu>
+        <mat-form-field appearance="outline">
+          <mat-label>Search</mat-label>
+          <div class="cont6">
 
+            <input matInput placeholder="Search By Project Number Or Application Number" (keyup)="applyFilter($event)" #input>
+            <i class="fa fa-search" aria-hidden="true"></i>
+          </div>
+
+        </mat-form-field>
           <input matInput placeholder="Search By Project Number Or Application Number" (keyup)="applyFilter($event)" #input>
           <i class="fa fa-search" aria-hidden="true"></i>
         </div>
       </mat-form-field>
 
+
+      </div>
+      <div class="filterValue">
+        <p *ngIf="notNyProjects">You Are Currently Viewing {{FiterValue}}</p>
+        <p *ngIf="MyProjects">You Are Currently Viewing Your Applications</p>
+      </div>
+      <div class="container003">
+        <img src="assets/Loading.png" *ngIf="isTableLoading" class="logo2">
+      </div>
+      <table mat-table [dataSource]="dataSource" *ngIf="isTableLoading == false" class="mat-elevation-z8 animationFadeIn">
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
         <ng-container matColumnDef="Stage">
@@ -147,9 +189,9 @@
           <th mat-header-cell *matHeaderCellDef>Project Number</th>
           <td mat-cell *matCellDef="let element">
             <span class="processFlow"
-                  (click)="element.ProjectNumber.startsWith('WL') ? getLinkedZones(element.ApplicationID, processFlow) : null;"
-                  [class.disabled]="!element.ProjectNumber.startsWith('WL')">
-              {{element.ProjectNumber}}
+                  (click)="element?.ProjectNumber?.startsWith('WL') ? getLinkedZones(element.ApplicationID, processFlow) : null;"
+                  [class.disabled]="!element?.ProjectNumber?.startsWith('WL')">
+              {{element?.ProjectNumber}}
             </span>
           </td>
         </ng-container>
@@ -186,16 +228,18 @@
 
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let applications of ApplicationsList ; let i = index">
+          <td mat-cell *matCellDef="let applications of ApplicationsList ; let i = index;let element">
             <div class="buttons">
-              <button mat-raised-button color="blue" matTooltip="View Application" (click)="CheckIfCanReapply(i)"><i class="fa fa-eye"></i></button>
+              <button mat-raised-button color="blue" matTooltip="View Application" (click)="CheckIfCanReapply(element,i)"><i class="fa fa-eye"></i></button>
+
+
 
               <button mat-raised-button color="warn" matTooltip="Escalate" *ngIf="applications.TestApplicationAge >= this.viewEscalateDate"><i class="fa fa-arrow-circle-up"></i></button>
             </div>
             <div class="menu">
               <button mat-button color="action" [matMenuTriggerFor]="actions"> <i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
               <mat-menu #actions="matMenu">
-                <button mat-menu-item (click)="CheckIfCanReapply(i)"> View Project</button>
+                <!--<button mat-menu-item (click)="CheckIfCanReapply(i)"> View Project</button>-->
                 <button mat-menu-item>Escalate Project</button>
               </mat-menu>
             </div>
@@ -205,12 +249,18 @@
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+   <!--     <tr *ngFor="let item of items | slice: (page-1) * pageSize : page * pageSize"></tr>-->
 
-        <!-- Row shown when there is no matching data. -->
+          <!-- Row shown when there is no matching data. -->
         <tr class="mat-row" *matNoDataRow>
           <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
         </tr>
       </table>
+     <!-- <mat-paginator [pageSize]="10" [length]="dataSource?.length" [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>-->
+
+    <!--  <ngb-pagination [collectionSize]="70" [(page)]="page" aria-label="Default pagination"></ngb-pagination>-->
+
+
       <!--<mat-paginator [pageSize]="10" [length]="dataSource?.data.length" [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>-->
     </div>
   </div>
@@ -224,6 +274,17 @@
       <form>
         <div class="container-fluid">
 
+
+          <div class="cont2">
+            <button mat-raised-button color="client" [class.matactive]="option ==='internal'" (click)="cardchange('internal')"><i class="fa fa-user" aria-hidden="true"></i> Yourself</button>
+            <button mat-raised-button color="client" [class.matactive]="option ==='client'" (click)="cardchange('client')"> <i class="fa fa-user-plus" aria-hidden="true"></i> Client</button>
+
+          </div>
+        </div>
+
+      </form>
+    </div>
+    <div class="modal-footer">
           <div class="cont2">
             <button mat-raised-button color="client" [class.matactive]="option ==='internal'" (click)="cardchange('internal')"><i class="fa fa-user" aria-hidden="true"></i> Yourself</button>
             <button mat-raised-button color="client" [class.matactive]="option ==='client'" (click)="cardchange('client')"> <i class="fa fa-user-plus" aria-hidden="true"></i> Client</button>
@@ -235,7 +296,12 @@
 
       <button type="button" class="btn btn-outline-success" (click)="sendOption();modal.dismiss('Cross click')">Continue</button>
     </div>
+
   </ng-template>
+      <button type="button" class="btn btn-outline-success" (click)="sendOption();modal.dismiss('Cross click')">Continue</button>
+    </div>
+  </ng-template>
+
 
   <ng-template #clientOption let-modal>
     <div class="modal-header">
@@ -245,7 +311,32 @@
     <div class="modal-body">
       <form>
         <div class="container-fluid">
+  <ng-template #clientOption let-modal>
+    <div class="modal-header">
+      <h6 class="modal-title" id="modal-basic-title">Who Are You Applying For?</h6>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="container-fluid">
 
+
+
+
+          <div class="cont2">
+            <button mat-raised-button color="client" [class.cardactive]="option ==='client'" (click)="cardchange('client');modal.dismiss('Cross click'); openNewClient(newClient)"> <i class="fa fa-user-plus" aria-hidden="true"></i> New Client</button>
+            <button mat-raised-button color="internal" (click)="openUser(user);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'"><i class="fa fa-user" aria-hidden="true"></i> Existing Client</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+    <div class="modal-footer">
+      <!--  <button mat-raised-button color="save" (click)="sendOption();modal.dismiss('Cross click')"> Continue</button>-->
+
+    </div>
+
+  </ng-template>
           <div class="cont2">
             <button mat-raised-button color="client" [class.cardactive]="option ==='client'" (click)="cardchange('client');modal.dismiss('Cross click'); openNewClient(newClient)"> <i class="fa fa-user-plus" aria-hidden="true"></i> New Client</button>
             <button mat-raised-button color="internal" (click)="openUser(user);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'"><i class="fa fa-user" aria-hidden="true"></i> Existing Client</button>
@@ -258,6 +349,14 @@
     </div>
   </ng-template>
 
+
+  <!--choose existing-->
+  <ng-template #user let-modal>
+    <div class="modal-header">
+      <h6 class="modal-title" id="modal-basic-title">Choose the user</h6>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
   <!--choose existing-->
   <ng-template #user let-modal>
     <div class="modal-header">
@@ -272,6 +371,8 @@
           <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
         </mat-form-field>
 
+        <table mat-table [dataSource]="dataSourceLinkUsers" class="mat-elevation-z8 fade-out">
+          <!--*ngIf="showZoneUserTable"-->
         <table mat-table [dataSource]="dataSourceLinkUsers" class="mat-elevation-z8">
           <!--*ngIf="showZoneUserTable"-->
 
@@ -285,14 +386,30 @@
             <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
           </ng-container>
 
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Select</th>
+            <td mat-cell *matCellDef="let i = index">
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef>Select</th>
             <td mat-cell *matCellDef="let i = index">
 
               <mat-radio-button class="example-margin" (click)="getUserID(i)"></mat-radio-button>
             </td>
+
+          </ng-container>
+              <mat-radio-button class="example-margin" (click)="getUserID(i)"></mat-radio-button>
+            </td>
           </ng-container>
 
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsLinkUsers"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumnsLinkUsers;"></tr>
+        </table>
+
+      </div>
+      <div class="container-fluid">
+
+      </div>
           <tr mat-header-row *matHeaderRowDef="displayedColumnsLinkUsers"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumnsLinkUsers;"></tr>
         </table>
@@ -313,6 +430,17 @@
   <!--This is for adding contractor & engineer-->
   <ng-template #Prof let-modal>
     <div class="modal-header">
+      <h6 class="modal-title" id="modal-basic-title">Add New Professional</h6>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <div class="container-fluid">
+        <mat-tab-group dynamicHeight>
+          <mat-tab label="Creating a new engineer">
+            <!--<form>-->
+  <!--This is for adding contractor & engineer-->
+  <ng-template #Prof let-modal>
+    <div class="modal-header">
       <h6 class="modal-title" id="modal-basic-title">Add New Professional for {{selectedUserName}} </h6>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
@@ -321,6 +449,7 @@
         <mat-tab-group dynamicHeight>
           <mat-tab label="Creating a new engineer">
             <!--<form>-->
+
 
             <div class="row">
               <div class="col">
@@ -342,7 +471,58 @@
                 </div>
               </div>
             </div>
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" id="BpNoApplicant" [(ngModel)]="bpNoApplicant" placeholder="Enter BP Number" name="bpNoApplicant">
+                  <label for="bpNoApplicant">BP Number</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" id="professionalRegNo" [(ngModel)]="professionalRegNo" placeholder="Professional Reg No" name="professionalRegNo">
+                  <label for="professionalRegNo">Professional Reg No.</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" id="engineerIDNo" [(ngModel)]="engineerIDNo" placeholder="Engineer ID Number" name="engineerIDNo">
+                  <label for="engineerIDNo">ID Number</label>
+                </div>
+              </div>
+            </div>
 
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" id="Name" [(ngModel)]="name" placeholder="Enter First Name" name="name">
+                  <label for="name">Name</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" id="Surname" [(ngModel)]="surname" placeholder="Enter Surname" name="surname">
+                  <label for="surname">Surname</label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="tel" class="form-control" id="ApplicantTel" [(ngModel)]="applicantTellNo" placeholder="Enter Tell No." name="applicantTellNo">
+                  <label for="applicantTellNo">Cell No.</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="email" class="form-control" id="ApplicantEmail" [(ngModel)]="applicantEmail" placeholder="Enter Email" name="applicantEmail">
+                  <label for="applicantEmail">Email</label>
+                </div>
+              </div>
+            </div>
+            <!--          <button type="button" class="btn btn-outline-success" (click)="onAddEngineer()">Save</button>
+            -->
+            <button mat-raised-button color="green" (click)="onAddEngineer()">Save</button>
             <div class="row">
               <div class="col">
                 <div class="form-floating mb-3 mt-3">
@@ -450,6 +630,13 @@
 
               <!--            <button type="button" class="btn btn-outline-success" (click)="onAddContractor()">Save</button>
               -->
+              <button mat-raised-button color="green" (click)="onAddContractor()">Save</button>
+            </div>
+          </mat-tab>
+          <!--</form>-->
+        </mat-tab-group>
+              <!--            <button type="button" class="btn btn-outline-success" (click)="onAddContractor()">Save</button>
+              -->
               <!--<button mat-raised-button color="green" (click)="onAddContractor()">Save</button>-->
               <!--<button mat-raised-button color="green" (click)="onAddTheirContractor(showAddedProf);modal.close('Save click');">Save</button>-->
               <div class="button-container">
@@ -469,8 +656,22 @@
     </div>
   </ng-template>
 
+
+
+
+  <!--end contractor & engineer-->
   <!--end contractor & engineer-->
 
+
+
+
+
+  <ng-template #newClient let-modal>
+    <div class="modal-header">
+      <h6 class="modal-title">Add New Client Information</h6>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
   <ng-template #newClient let-modal>
     <div class="modal-header">
       <h6 class="modal-title">Add New Client Information</h6>
@@ -480,6 +681,8 @@
 
       <mat-horizontal-stepper #stepper>
 
+
+        <mat-step label="User Information">
         <mat-step label="User Information">
 
           <form>
@@ -519,6 +722,47 @@
                 <input type="text" class="form-control" [(ngModel)]="clientRefNo" name="clientRefNo" placeholder="Enter Ref No">
                 <label for="clientRefNo">Reference Number</label>
               </div>
+
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="email" class="form-control" [(ngModel)]="clientBpNumber" name="clientBpNumber" placeholder="Bp Number">
+                  <label for="clientBpNumber">Bp Number</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="clientCompanyName" name="clientCompanyName" placeholder="Enter Company Name">
+                  <label for="address">Company Name</label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="clientCompanyRegNo" name="clientCompanyRegNo" placeholder="Enter Company Reg No">
+                  <label for="address">Company Reg No.</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="email" class="form-control" [(ngModel)]="clientCompanyType" name="clientCompanyType" placeholder="Select Company Type">
+                  <label for="applicantEmail">Company Type</label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-floating mb-3 mt-3">
+                <input type="email" class="form-control" [(ngModel)]="clientPhysicalAddress" name="clientPhysicalAddress" placeholder="Select Address">
+                <label for="applicantEmail">Address</label>
+              </div>
+
+
+
+            </div>
+
+          </form>
             </div>
             <div class="row">
               <div class="col">
@@ -561,9 +805,16 @@
           <div class="cont889">
 
             <button mat-raised-button color="primary" *ngIf="nextBtn" (click)="checkIfError(stepper)">Next</button>
+
+
+            <button mat-raised-button color="primary" *ngIf="nextBtn" (click)="checkIfError(stepper)">Next</button>
           </div>
+
         </mat-step>
         <mat-step label="Engineer Information">
+        </mat-step>
+        <mat-step label="Engineer Information">
+
 
           <div class="row">
             <div class="col">
@@ -585,7 +836,67 @@
               </div>
             </div>
           </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="BpNoApplicant" [(ngModel)]="bpNoApplicant" placeholder="Enter BP Number" name="bpNoApplicant">
+                <label for="bpNoApplicant">BP Number</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="professionalRegNo" [(ngModel)]="professionalRegNo" placeholder="Professional Reg No" name="professionalRegNo">
+                <label for="professionalRegNo">Professional Reg No.</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="engineerIDNo" [(ngModel)]="engineerIDNo" placeholder="Engineer ID Number" name="engineerIDNo">
+                <label for="engineerIDNo">ID Number</label>
+              </div>
+            </div>
+          </div>
 
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="Name" [(ngModel)]="name" placeholder="Enter First Name" name="name">
+                <label for="name">Name</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="Surname" [(ngModel)]="surname" placeholder="Enter Surname" name="surname">
+                <label for="surname">Surname</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="tel" class="form-control" id="ApplicantTel" [(ngModel)]="applicantTellNo" placeholder="Enter Tell No." name="applicantTellNo">
+                <label for="applicantTellNo">Cell No.</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="email" class="form-control" id="ApplicantEmail" [(ngModel)]="applicantEmail" placeholder="Enter Email" name="applicantEmail">
+                <label for="applicantEmail">Email</label>
+              </div>
+            </div>
+          </div>
+          <!--          <button type="button" class="btn btn-outline-success" (click)="onAddEngineer()">Save</button>
+          -->
+          <button mat-raised-button color="green" (click)="onAddEngineer()">Save</button>
+          <div class="cont889">
+
+            <button mat-raised-button color="primary" matStepperNext>Next</button>
+
+
+          </div>
+        </mat-step>
+        <mat-step label="Contractor Information">
+          <div class="mb-3">
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
@@ -740,6 +1051,22 @@
           </div>
           <div class="cont8789">
             <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+            <button mat-raised-button color="primary" (click)="populateClientInfo();modal.dismiss('Cross click')">Finish</button>
+
+          </div>
+        </mat-step>
+        <!--</form>-->
+      </mat-horizontal-stepper>
+    </div>
+
+
+  </ng-template>
+            <!--            <button type="button" class="btn btn-outline-success" (click)="onAddContractor()">Save</button>
+            -->
+            <button mat-raised-button color="green" (click)="onAddContractor()">Save</button>
+          </div>
+          <div class="cont8789">
+            <button mat-raised-button color="primary" matStepperPrevious>Back</button>
             <!--<button mat-raised-button color="primary" (click)="populateClientInfo();saveAllNewEngineers();modal.dismiss('Cross click')">Finish</button>-->
             <button mat-raised-button color="primary" (click)="populateClientInfo();modal.dismiss('Cross click')">Finish</button>
           </div>
@@ -749,6 +1076,14 @@
     </div>
   </ng-template>
 
+
+  <ng-template #processFlow let-modal>
+    <div class="modal-header">
+      <h6 class="modal-title" id="modal-basic-title">Process Flow</h6>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <div class="container-fluid">
   <ng-template #processFlow let-modal>
     <div class="modal-header">
       <h6 class="modal-title" id="modal-basic-title">Process Flow</h6>
@@ -759,6 +1094,11 @@
 
         <table mat-table [dataSource]="dataSourceViewLinkedZones" class="mat-elevation-z8">
 
+
+          <ng-container matColumnDef="subDepartmentName">
+            <th mat-header-cell *matHeaderCellDef>Sub Departments</th>
+            <td mat-cell *matCellDef="let element"> {{element.subDepartmentName}} </td>
+          </ng-container>
           <ng-container matColumnDef="subDepartmentName">
             <th mat-header-cell *matHeaderCellDef>Sub Departments</th>
             <td mat-cell *matCellDef="let element"> {{element.subDepartmentName}} </td>
@@ -850,6 +1190,9 @@
                 <tr mat-header-row *matHeaderRowDef="displayedColumnsTempEngineers"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumnsTempEngineers;"></tr>
 
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsViewLinkedZones"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumnsViewLinkedZones;"></tr>
+        </table>
               </table>
             </div>
           </mat-tab>
@@ -896,6 +1239,9 @@
                     <button mat-raised-button color="orange" matTooltip="Edit Contractor" (click)="openEditTempContractor(i, editContractor); modal.close('Save click');"><i class="fa fa-pencil"></i></button>
                     <button mat-raised-button color="warni" matTooltip="Delete Contractor" (click)="deleteTemporaryContractorWithConfirmation(i);modal.close('Save click');openXl(showAddedProf);"><i class="fa fa-trash"></i></button>
 
+      </div>
+    </div>
+    <div class="modal-footer">
                   </td>
                   <td mat-cell *matCellDef="let element">  </td>
                 </ng-container>
@@ -915,6 +1261,8 @@
     </div>
   </ng-template>
 
+      <button type="button" class="btn btn-light" (click)="modal.dismiss('Cross click')">Close</button>
+    </div>
   <ng-template #editEngineer let-modal>
     <div class="modal-header">
       <h6 class="modal-title" id="modal-basic-title">Edit selected engineer</h6>
@@ -977,6 +1325,7 @@
     </div>
   </ng-template>
 
+  </ng-template>
   <ng-template #editContractor let-modal>
     <div class="modal-header">
       <h6 class="modal-title" id="modal-basic-title">Edit selected contractor</h6>
@@ -1111,9 +1460,13 @@
             </div>
           </mat-tab>
 
+  <ng-template #loadModal let-modal>
         </mat-tab-group>
       </div>
     </div>
+
+    <p>Loading</p>
+  </ng-template>
 
     <div class="modal-footer">
       <button type="button" class="btn btn-outline-success" (click)="openXl(Prof);modal.close('Save click')">Add Professional</button>

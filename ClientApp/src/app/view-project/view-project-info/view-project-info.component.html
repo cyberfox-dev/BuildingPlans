@@ -38,14 +38,14 @@
 
 
 
-<h1 *ngIf="CurrentApplicationBeingViewed[0].isPlanning === false">Application Information</h1>
-<h1 *ngIf="CurrentApplicationBeingViewed[0].isPlanning === true">Application Planning Information</h1>
-<h2>Project Number {{projectNo}}</h2>
+<h1 *ngIf="CurrentApplicationBeingViewed[0].isPlanning === false" class="animationSlideUp">Application Information</h1>
+<h1 *ngIf="CurrentApplicationBeingViewed[0].isPlanning === true" class="animationSlideUp">Application Planning Information</h1>
+<h2 class="animationSlideUp">Project Number {{projectNo}}</h2>
 
 <div class="cont1">
 
-  <app-action-center [ApplicationID]="ApplicationID" (refreshParent)="ngOnInit()" *ngIf="isInternalUser" (optionEvent)="reciveOption($event)"></app-action-center>
-  <button mat-button color="action" [matMenuTriggerFor]="actions"> <mat-icon>more_vert</mat-icon></button>
+  <app-action-center [ApplicationID]="ApplicationID" (refreshParent)="ngOnInit()" *ngIf="isInternalUser" (optionEvent)="reciveOption($event)" class="animationSlideUp"></app-action-center>
+  <button mat-button color="action" [matMenuTriggerFor]="actions" class="animationSlideUp"> <mat-icon>more_vert</mat-icon></button>
   <mat-menu #actions="matMenu">
     <button mat-menu-item (click)="openPaidDate(paidDateModal)" *ngIf="isInternalUser"> Move to Paid</button>
     <!--<button mat-menu-item (click)="MoveToNextStage()" *ngIf="isInternalUser">Move to Next Stage</button>-->
@@ -62,7 +62,7 @@
 </div>
 
 
-<div class="container-fluid cont6">
+<div class="container-fluid cont6 animationFadeIn">
 
   <mat-tab-group>
 
@@ -106,10 +106,11 @@
       <div class="main-container">
         <section id="timeline" class="timeline-outer">
           <div class="container" id="content">
-            <div class="row" *ngFor="let commentsList of CommentsList; let i = index">
-              <div class="col s12 m12 l12">
+                                                                                      
+            <div class="row" *ngFor="let commentsList of CommentsList; let i = index" [style.margin-left.px]="(i % 2 === 0) ? 60 : 80" [style.margin-right.px]="(i % 2 === 0) ? 60 : 80"  >
+              <div class="col s12 m12 l12" *ngIf="!(commentsList.CommentStatus === 'Referred' && referComment)">
 
-                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved' " [class.Reject]="commentsList.CommentStatus === 'Reject'||commentsList.CommentStatus === 'Rejected'" [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'" [class.refer]="commentsList.CommentStatus === 'Referred'"  [class.returned]="commentsList.CommentStatus === 'Returned'">
+                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved' " [class.Reject]="commentsList.CommentStatus === 'Reject'||commentsList.CommentStatus === 'Rejected'" [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'" [class.refer]="commentsList.CommentStatus === 'Referred'" [class.returned]="commentsList.CommentStatus === 'Returned'" [class.reviewerClarify]="commentsList.CommentStatus === 'Reviewer Clarity'">
 
                   <li class="event" data-date="">
 
@@ -123,12 +124,16 @@
 
                       {{commentsList.Comment}}
                     </p>
-                    <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarify' && canClarify" (click)="openReplyModal(replyModal,i)">Reply</button>
+                    <!--Applicant Clarity-->
+                    <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarify' && canClarify ||commentsList.CommentStatus === 'Reviewer Clarity' && canReviewerClarify" (click)="openReplyModal(replyModal,i)">Reply</button>
                     <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarified'&& canClarify" (click)="openReplyModal(replyModal,i)">Update Reply</button>
                     <div class="row" *ngIf="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null">
                       <label *ngIf="commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null">Applicants Reply :</label>
                       <div class="form-floating mb-3 mt-3" *ngIf="commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null">
                         <input type="text" class="form-control" value="{{commentsList.isApplicantReplay}}" id="ApplicantReply" name="ApplicantReply" disabled> <!--[(ngModel)]="ApplicantReply"-->
+
+
+
 
                       </div>
                     </div>
@@ -191,7 +196,7 @@
         <form>
           <div class="row">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="reply" id="reply" name="reply" placeholder="Edit Comment">
+              <input type="text" class="form-control" [(ngModel)]="reply" id="reply" name="reply" placeholder="Edit Comment">2
               <label for="reply">Enter in a reply</label>
             </div>
           </div>
@@ -470,7 +475,6 @@
     </mat-tab>
 
 
-
     <!--------------------------------------------------------Tracking--------------------------------------------------->
 
 
@@ -574,6 +578,15 @@
 
 
 </mat-tab>-->
+<!--------------------------------------------------------Service Items---------------------------------------------->
+<!--<mat-tab label="Service Items">
+  <div class="container-fluid">
+
+    <app-service-items-config></app-service-items-config>
+
+  </div>
+</mat-tab>-->
+
   </mat-tab-group>
 
 
