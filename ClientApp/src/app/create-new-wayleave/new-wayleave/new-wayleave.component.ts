@@ -966,6 +966,8 @@ export class NewWayleaveComponent implements OnInit {
   internalWayleaveCreate(appUserId: string, isPlanning: boolean): void {
     /*    this.shared.setApplicationID(this.notificationNumber);*/
     debugger;
+    console.log("Turtle Turtle, where are you? 3" + appUserId);
+
     this.physicalAddressOfProject = this.shared.getAddressData();
     this.coordinates = this.shared.getCoordinateData();
     const contractorData = this.shared.getContactorData();
@@ -1149,6 +1151,7 @@ export class NewWayleaveComponent implements OnInit {
   clientWayleaveCreate(appUserId: string, isPlanning: boolean): void {
     debugger;
     /*    this.shared.setApplicationID(this.notificationNumber);*/
+    console.log("Turtle Turtle, where are you? 4" + appUserId);
     this.physicalAddressOfProject = this.shared.getAddressData();
     this.coordinates = this.shared.getCoordinateData();
     const contractorData = this.shared.getContactorData();
@@ -1213,6 +1216,8 @@ export class NewWayleaveComponent implements OnInit {
   externalWayleaveCreate(appUserId: string, isPlanning: boolean): void {
     debugger;
     /*    this.shared.setApplicationID(this.notificationNumber);*/
+    debugger;
+    console.log("Turtle Turtle, where are you? 5 " + appUserId);
     this.physicalAddressOfProject = this.shared.getAddressData();
     this.coordinates = this.shared.getCoordinateData();
     const contractorData = this.shared.getContactorData();
@@ -1365,12 +1370,17 @@ export class NewWayleaveComponent implements OnInit {
 
 
   onWayleaveCreate(appUserId, isPlanning: boolean) {
-    
+    debugger;
+    console.log("Turtle Turtle, where are you? " + appUserId);
 
     //get ApplicationID form Shared to check if must update
     this.applicationID = this.shared.getApplicationID();
 
+    console.log("What gaan an? " + this.shared.getApplicationID());
+    debugger;
+
     if (this.applicationID === 0) {
+      
       this.shared.clearContractorData();
       this.shared.clearEngineerData();
       
@@ -1380,6 +1390,8 @@ export class NewWayleaveComponent implements OnInit {
 
           //Set ApplicationID to Update
           this.shared.setApplicationID(data.dateSet.applicationID);
+
+          this.shared.userIDForWalkIn = appUserId;
           this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
         }
         else {
@@ -1391,6 +1403,7 @@ export class NewWayleaveComponent implements OnInit {
 
       }, error => {
         console.log("Error", error);
+        console.log("Turtle?!!!!!" + appUserId);
       })
     } else {
       // If this.applicationID != 0 then we do the update
@@ -1428,7 +1441,8 @@ export class NewWayleaveComponent implements OnInit {
 
   OLDonWayleaveCreate(appUserId, isPlanning: boolean) {
 
-
+    debugger;
+    console.log("Turtle Turtle, where are you? 2" + appUserId);
 
     //this.isPlanning = isPlanning;
 

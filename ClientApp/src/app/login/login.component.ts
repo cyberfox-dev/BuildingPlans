@@ -609,9 +609,11 @@ export class LoginComponent implements OnInit {
     else { 
     //Not sure what this does TBH
     this.sharedService.errorForRegister = false;
-    this.userService.register(clientFullName, clientEmail, "Password@" + clientFullName).subscribe((data: any) => {
+      this.userService.register(clientFullName, clientEmail, clientRegisterPassword).subscribe((data: any) => {
       if (data.responseCode == 1) {
         if (onLoginForm === false) {
+
+          this.sharedService.userIDForWalkIn == data.dateSet.appUserId; //added to add access user ID, when trying to create new wayleave for new client?
           this.newProfileComponent.onNewProfileCreate(
             data.dateSet.appUserId,
             clientFullName,
@@ -639,6 +641,7 @@ export class LoginComponent implements OnInit {
       console.log("Error: ", error);
     });
     }
+    console.log("Your password is: " + clientRegisterPassword);
   }
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   DoChecksForRegister() {
@@ -649,9 +652,6 @@ export class LoginComponent implements OnInit {
     let email = this.registerForm.controls["registerEmail"].value;
     let password = this.registerForm.controls["registerPassword"].value;
     let passwordConfirm = this.registerForm.controls["reenterPassword"].value;
-
-
-
 
     // Use a regular expression to check if the email is valid 
     const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -716,6 +716,7 @@ export class LoginComponent implements OnInit {
     ApplicantIDUpload?: string | null,
     ApplicantIDNumber?: string | null
   ) {
+    debugger;
     let onLoginForm = true;
     let clientRegisterPassword = null;
     // If the method is called without parameters, then get the values from the form
@@ -750,7 +751,7 @@ export class LoginComponent implements OnInit {
         alert("Please enter a valid email address!");
         return;
       }
-
+      debugger;
       // Count the number of spaces in the full name
       let numberOfSpaces = 0;
       if (clientFullName != null) {
@@ -768,6 +769,7 @@ export class LoginComponent implements OnInit {
         this.userService.register(clientFullName, clientEmail, clientRegisterPassword).subscribe((data: any) => {
           if (data.responseCode == 1) {
             if (onLoginForm === false) {
+              this.sharedService.userIDForWalkIn == data.dateSet.appUserId;
               this.newProfileComponent.onNewProfileCreate(
                 data.dateSet.appUserId,
                 clientFullName,
@@ -782,7 +784,7 @@ export class LoginComponent implements OnInit {
               );
               this.sharedService.errorForRegister = false;
             }
-
+            debugger;
             this.sharedService.clientUserID = data.dateSet.appUserId;
             localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
             this.sharedService.newUserProfileBp = BpNo;
@@ -796,6 +798,7 @@ export class LoginComponent implements OnInit {
         });
       }
       else {
+        debugger;
         // If BP Number is valid, proceed with user registration
         this.userService.register(clientFullName, clientEmail, "Password@" + clientFullName).subscribe((data: any) => {
           if (data.responseCode == 1) {

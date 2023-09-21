@@ -150,6 +150,7 @@ export class SharedService {
   RepFileUploadSubName?: any | null;
   RepFileUploadSubID?: any | null;
   RepFileUploadCat?: any | null;
+    userIDForWalkIn: any;
 
   constructor() { }
 
