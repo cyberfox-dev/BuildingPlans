@@ -161,14 +161,7 @@ export interface ConfigList {
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ["./home.component.scss"],
-  animations: [
-    trigger('swipeAnimation', [
-      state('transparent', style({ transform: 'translateX(0)' })), // No translation
-      state('solid', style({ transform: 'translateX(100%)' })), // Full translation (off-screen)
-      transition('transparent <=> solid', animate('0.5s ease-in-out')), // Adjust duration and easing
-    ]),
-  ]
+  styleUrls: ["./home.component.scss"]
 })
 
 

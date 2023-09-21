@@ -218,7 +218,7 @@ mat-expansion-panel {
 }
 
 section.timeline-outer {
-  width: 80%;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -943,4 +943,61 @@ button {
   background-color: #ccdee2;
   color: #005870;
   user-select: none;
+}
+
+@keyframes fade-in-bottom {
+  0% {
+    opacity: 0;
+    transform: translateY(20px); /* Optional: Add a slide-up effect */
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-top {
+  0% {
+    opacity: 0;
+    transform: translateY(-60px); /* Optional: Add a slide-up effect */
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.animationSlideDown {
+  animation: fade-in-bottom 0.5s ease-out;
+}
+
+.animationSlideUp {
+  animation: fade-in-top 0.5s ease-out;
+}
+
+.animationFadeIn {
+  animation: fade-in 0.7s ease-out;
+}
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+/* CSS for fade-in animation */
+.fade-in {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
 }
