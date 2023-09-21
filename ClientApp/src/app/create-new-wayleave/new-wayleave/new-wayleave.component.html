@@ -450,7 +450,7 @@
 
       <div class="cont">
         <button mat-raised-button color="primary" matStepperPrevious>Back</button>
-        <button mat-raised-button color="primary" matStepperNext [disabled]="shared.totalAddedFeatures<1" (click)="CheckTOES()">Next</button>
+        <button mat-raised-button color="primary" matStepperNext  (click)="CheckTOES()">Next</button>
       </div>
     </mat-step>
 
@@ -470,24 +470,31 @@
           <div>
             <mat-toolbar>
               <!-- Display files names -->
-              <input matInput  readonly name="name" class="textFuckingBox" /> <!--[(ngModel)]="fileAttrs[i]"-->
-
+              <input matInput readonly name="name" class="textFuckingBox" /> <!--[(ngModel)]="fileAttrs[i]"-->
               <!-- app-file-upload Component -->
 
-                <div class="container-fluid">
-                  <app-file-upload [ApplicationID]="applicationID"
-                                   [UploadFor]="manDoc.mandatoryDocumentName"
-                                   (passFileName)="onPassFileName($event,i)"
-                                   (onUploadFinished)="onFileDelete($event, i)"
-                                   (onUploadSuccess)="onFileUpload($event)">
-                  </app-file-upload>
-                </div>
-          
+              <div class="container-fluid">
+                <app-file-upload [ApplicationID]="applicationID"
+                                 [UploadFor]="manDoc.mandatoryDocumentName"
+                                 (passFileName)="onPassFileName($event,i)"
+                                 (onUploadFinished)="onFileDelete($event, i)"
+                                 (onUploadSuccess)="onFileUpload($event)">
+                </app-file-upload>
+              </div>
+
             </mat-toolbar>
           </div>
         </mat-form-field>
       </mat-list>
+      <mat-progress-bar class="example-margin app-progress-bar"
+                        color="primary"
+                        mode="determinate"
+                        [value]="successfulUploads">
+      </mat-progress-bar>
       <div class="row">
+
+
+
         <button mat-raised-button color="green" [disabled]="successfulUploads < totalDocs" (click)="onWayleaveCreate(CurrentUser.appUserId,false);">
           Create Application
           <div class="container003">
