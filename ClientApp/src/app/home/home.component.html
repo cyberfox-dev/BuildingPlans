@@ -1,4 +1,4 @@
-<app-nav-menu ></app-nav-menu>
+<app-nav-menu></app-nav-menu>
 <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700,800&display=swap" rel="stylesheet">
 <link _ngcontent-ng-cli-universal-c545="" href="https://fonts.googleapis.com/css?family=Roboto:300italic,400italic,400,100,300,600,700" rel="stylesheet" type="text/css">
 
@@ -11,10 +11,9 @@
 
   <h1 class="animationSlideUp">Hi, {{CurrentUser.fullName}}</h1>
   <h2 class="animationSlideUp">Welcome to your Dashboard</h2>
-<!--  <div style="background: red; text-align: center; font-size: xx-large; color: white; padding: 10px; line-height: 0.8;" *ngIf="ServerType === 'QA'">
-    Please note, you've accessed the test server, nothing captured to this server will be processed. Please go to wayleave.capetown.gov.za to access the live site.
-  </div>-->
-
+  <!--  <div style="background: red; text-align: center; font-size: xx-large; color: white; padding: 10px; line-height: 0.8;" *ngIf="ServerType === 'QA'">
+      Please note, you've accessed the test server, nothing captured to this server will be processed. Please go to wayleave.capetown.gov.za to access the live site.
+    </div>-->
   <!--  <button class="btn" (click)="goToNewWayleave()"><a><i class="fa fa-plus"></i> Create New Wayleave</a></button>-->
   <div class="cont3 ">
     <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToNewWayleave(false,false)"><i class="fa fa-plus"></i> Create New Wayleave</button>
@@ -31,25 +30,20 @@
   <div class="main-container animationFadeIn">
 
     <!--<div class="heading">-->
+    <!--      <mat-form-field>
 
-
-<!--      <mat-form-field>
-
-        <mat-select value="option3" [(value)]="select" (selectionChange)="onFilterApplications()" #mySelect>
-          <mat-option value="option1">My Applications</mat-option>
-          <mat-option value="option2">My Reviews</mat-option>
-          <mat-option value="option3">Recent Projects</mat-option>
-        </mat-select>
-      </mat-form-field>-->
-
-
-
+            <mat-select value="option3" [(value)]="select" (selectionChange)="onFilterApplications()" #mySelect>
+              <mat-option value="option1">My Applications</mat-option>
+              <mat-option value="option2">My Reviews</mat-option>
+              <mat-option value="option3">Recent Projects</mat-option>
+            </mat-select>
+          </mat-form-field>-->
     <!--</div>-->
-<!--    <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
-      <mat-button-toggle value="italic">My Reviews</mat-button-toggle>
-      <mat-button-toggle value="bold">My Applications</mat-button-toggle>
-      <mat-button-toggle value="underline">Recent Projects</mat-button-toggle>
-    </mat-button-toggle-group>-->
+    <!--    <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+          <mat-button-toggle value="italic">My Reviews</mat-button-toggle>
+          <mat-button-toggle value="bold">My Applications</mat-button-toggle>
+          <mat-button-toggle value="underline">Recent Projects</mat-button-toggle>
+        </mat-button-toggle-group>-->
 
     <div class="cards" *ngIf="cardFilters">
       <div class="card card-5">
@@ -249,17 +243,15 @@
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-   <!--     <tr *ngFor="let item of items | slice: (page-1) * pageSize : page * pageSize"></tr>-->
-
-          <!-- Row shown when there is no matching data. -->
+        <!--     <tr *ngFor="let item of items | slice: (page-1) * pageSize : page * pageSize"></tr>-->
+        <!-- Row shown when there is no matching data. -->
         <tr class="mat-row" *matNoDataRow>
           <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
         </tr>
 
       </table>
-     <!-- <mat-paginator [pageSize]="10" [length]="dataSource?.length" [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>-->
-
-    <!--  <ngb-pagination [collectionSize]="70" [(page)]="page" aria-label="Default pagination"></ngb-pagination>-->
+      <!-- <mat-paginator [pageSize]="10" [length]="dataSource?.length" [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>-->
+      <!--  <ngb-pagination [collectionSize]="70" [(page)]="page" aria-label="Default pagination"></ngb-pagination>-->
 
 
     </div>

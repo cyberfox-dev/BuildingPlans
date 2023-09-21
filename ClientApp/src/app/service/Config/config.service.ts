@@ -9,8 +9,7 @@ import { Observable } from 'rxjs';
 })
 export class ConfigService {
 
-    private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
-  //private readonly apiUrl: string = this.initializationService.baseUrl + '/api/';
+  private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
   private readonly baseURL: string = this.apiUrl + "config/";
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
@@ -76,8 +75,4 @@ export class ConfigService {
 
   }
 
-  // Fetch the base URL from the API
-  public getBaseUrl(): Observable<string> {
-    return this.httpClient.get('https://localhost:7123/api/config/GetBaseUrl', { responseType: 'text' });
-  }
 }

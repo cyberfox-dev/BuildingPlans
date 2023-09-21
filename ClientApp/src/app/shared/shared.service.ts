@@ -152,6 +152,7 @@ export class SharedService {
   RepFileUploadSubName?: any | null;
   RepFileUploadSubID?: any | null;
   RepFileUploadCat?: any | null;
+    userIDForWalkIn: any;
 
   setCheckEmail(data: any) {
     this.checkEmail = data;
@@ -203,14 +204,19 @@ export class SharedService {
     return this.AllConfig;
   }
 
-  setAPIURL(data: any) {
-    this.APIURL = data;
-  }
-
   getApiUrl() {
+    let baseUrl = window.location.origin; // Get the base URL of the server
 
-/*    return this.APIURL;*/
-      return "https://localhost:7123";
+    if (baseUrl == 'https://localhost:44440') { //Dev environment fix. If these ports ever change, change here too.
+      baseUrl = 'https://localhost:7123'
+    } else {
+      //Do nothing
+    };
+
+    this.APIURL = baseUrl;
+
+    return this.APIURL;
+/*      return "https://localhost:7123";*/
     /*    return "http://172.29.166.10/api/";*/
 /*        return "https://wayleaveqa.capetown.gov.za"; */
 /*        return "https://wayleave.capetown.gov.za"; */

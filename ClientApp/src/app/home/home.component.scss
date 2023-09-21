@@ -49,6 +49,16 @@
     color: #ccdee2;
     width: 20px;
   }
+  //Temporary list actions
+.mat-warni {
+  background-color: #9d2235;
+  color: #fff;
+}
+
+.mat-orange {
+  background-color: #ff9900;
+  color: #fff;
+}
 
   table {
     width: 100%;
@@ -1430,4 +1440,15 @@ mat-button-toggle {
 .container003 {
   display: flex;
   justify-content: space-evenly;
+}
+
+//button
+.button-container {
+  display: flex; /* Use flexbox to arrange buttons horizontally */
+  gap: 8px; /* Adjust the gap as needed */
+}
+.selected-row {
+  background-color: #f0f0f0; /* Change to your desired background color */
+  font-weight: bold; /* Change to your desired text style */
+  color: #333; /* Change to your desired text color */
 }
