@@ -93,9 +93,9 @@ import { InitializationService } from './service/Initialization/initialization.s
 //import { MapModule } from 'arcgis-js-api';
 //import Map from "@arcgis/core/Map";
 // Define the APP_INITIALIZER provider
-export function initializeApp(initializationService: InitializationService) {
-  return () => initializationService.initializeApp();
-}
+//export function initializeApp(initializationService: InitializationService) {
+//  return () => initializationService.initializeApp();
+//}
 
 @NgModule({
   declarations: [
@@ -223,12 +223,12 @@ export function initializeApp(initializationService: InitializationService) {
   ],
   providers: [
     //InitializationService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeApp,
-      multi: true,
-      deps: [InitializationService]
-    },
+    //{
+    //  provide: APP_INITIALIZER,
+    //  useFactory: initializeApp,
+    //  multi: true,
+    //  deps: [InitializationService]
+    //},
     SelectEngineerTableComponent,
     SelectContractorTableComponent,
     HomeComponent,

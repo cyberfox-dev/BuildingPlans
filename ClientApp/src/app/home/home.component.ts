@@ -380,9 +380,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
       this.getAllSubDepartments();
       this.getAllUserLinks();
-      this.getConfig();
-      //this.ServerType = this.sharedService.getServerType();
 
+      this.getConfig();
 /*      this.initializeApp();*/
       //this.function();
     }, 100);
@@ -2902,7 +2901,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
         this.sharedService.setAllConfig(this.AllConfig);
         this.ServerType = this.AllConfig.find((Config) => Config.configName === 'ServerType').utilitySlot1;
-        this.sharedService.setAPIURL(this.AllConfig.find((Config) => Config.configName === 'BaseUrl').utilitySlot2);
       }
       else {
         alert("Error");
@@ -2946,16 +2944,5 @@ export class HomeComponent implements OnInit, OnDestroy {
     }, 3000); */// Wait for 3 seconds (3000 milliseconds) for the fade-in animation to complete
   }
 
-  //delet dis
-  initializeApp(): Promise<any> {
-    return this.configService.getBaseUrl().pipe(
-      tap((baseUrl: string) => {
-        // Store the base URL in a variable or service accessible to all components
-        // Example: this.configService.setBaseUrl(baseUrl);
-        console.log("BaseURL:", baseUrl)
-      })
-    ).toPromise();
-
-  }
 }
 
