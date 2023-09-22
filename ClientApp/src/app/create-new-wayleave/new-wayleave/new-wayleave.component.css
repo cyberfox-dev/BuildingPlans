@@ -580,6 +580,7 @@ mat-button-toggle {
   width: 180px;
   height: 180px;
   animation: spin 3.5s linear infinite;
+  opacity: 30%;
 }
 
 @keyframes spin {
@@ -619,6 +620,7 @@ mat-button-toggle {
 }
 :host ::ng-deep mat-progress-bar {
   height: 10px;
+  opacity: 30%;
 }
 
   :host ::ng-deep mat-progress-bar .mdc-linear-progress__bar-inner {
@@ -632,4 +634,12 @@ mat-button-toggle {
 
 .app-progress-bar {
   width: 400px !important;
+}
+
+.container04 {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: column;
+  flex-wrap: nowrap;
 }

@@ -106,3 +106,14 @@ table {
   background-color: limegreen;
   color: white;
 }
+
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px; /* Adjust the gap as needed */
+}
+
+  /* Adjust button width to make two buttons per row */
+  .button-container button {
+    flex: 1 1 calc(50% - 5px); /* 50% width with 5px gap */
+  }
