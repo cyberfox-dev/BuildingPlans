@@ -78,6 +78,8 @@ export class ProjectSizeConfigComponent implements OnInit {
     editActivity: ['', Validators.required],
     editMandatoryDocument: ['', Validators.required]
   })
+    manDocCategory: string;
+    projectSizeCheckActivityType: string;
 
   constructor(private formBuilder: FormBuilder, private modalService: NgbModal, private psCheckListService : ProjectSizeCheckListService) { }
 
@@ -92,6 +94,21 @@ export class ProjectSizeConfigComponent implements OnInit {
   @ViewChild(MatTable) PSCheckListTable: MatTable<ProjectSizeCheckList> | undefined;
   displayedColumns: string[] = ['projectSizeCheckListActivity', 'projectSizeCheckListActivityType', 'mandatoryDocumentCategory', 'actions'];
   dataSource = this.ProjectSizeCheckList;
+
+
+  setFilterActivityType() {
+    debugger;
+    this.dataSource = this.ProjectSizeCheckList.filter(df => df.projectSizeCheckListActivityType == this.projectSizeCheckActivityType);
+    this.PSCheckListTable?.renderRows();
+  }
+
+
+  setFilterManDocCategory() {
+    debugger;
+    this.dataSource = this.ProjectSizeCheckList.filter(df => df.mandatoryDocumentCategory == this.manDocCategory);
+    this.PSCheckListTable?.renderRows();
+  }
+
 
   onAddCheckListItem() {
     let newActivity = this.addProjectCheckListItem.controls["newActivity"].value;

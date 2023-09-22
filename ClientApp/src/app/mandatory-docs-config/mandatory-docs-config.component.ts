@@ -58,6 +58,7 @@ export class MandatoryDocsConfigComponent implements OnInit {
 
   StagesList: StagesList[] = [];
   MandatoryDocumentsLinkedStagesList: MandatoryDocumentsLinkedStagesList[] = [];
+    manDocCategory: string;
 
 
   openXl(content: any) {
@@ -95,7 +96,7 @@ export class MandatoryDocsConfigComponent implements OnInit {
 
 
 
-  displayedColumns: string[] = ['mandatoryDocumentName','dateCreated', 'actions'];
+  displayedColumns: string[] = ['mandatoryDocumentName', 'mandatoryDocumentCategory','dateCreated', 'actions'];
   dataSource = this.MandatoryDocumentUploadList;
  
 
@@ -200,6 +201,13 @@ export class MandatoryDocsConfigComponent implements OnInit {
     })
   }
 
+  setFilterManDocCategory() {
+    debugger;
+    this.dataSource = this.MandatoryDocumentUploadList.filter(df => df.mandatoryDocumentCategory == this.manDocCategory);
+    this.MandatoryDocumentUploadTable?.renderRows();
+  }
+
+
   getAllMandatoryDocs() {
 
     this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);
@@ -213,6 +221,7 @@ export class MandatoryDocsConfigComponent implements OnInit {
           const current = data.dateSet[i];
           tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
           tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
+          tempMandatoryDocList.mandatoryDocumentCategory = current.mandatoryDocumentCategory;
           tempMandatoryDocList.stageID = current.stageID;
           tempMandatoryDocList.dateCreated = current.dateCreated;
           this.MandatoryDocumentUploadList.push(tempMandatoryDocList);

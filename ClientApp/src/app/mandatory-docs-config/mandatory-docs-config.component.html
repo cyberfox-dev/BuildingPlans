@@ -55,9 +55,19 @@
 
 
 <div class="container-fluid">
+
   <button mat-raised-button color="create" (click)="openXl(content)">Create a new document upload </button>
 
-
+  <mat-form-field>
+    <mat-label>Filter By Category</mat-label>
+    <mat-select name="manDocCategory" [(ngModel)]="manDocCategory">
+      <mat-option (click)="setFilterManDocCategory()" value="Small">Small</mat-option>
+      <mat-option (click)="setFilterManDocCategory()" value="Medium">Medium</mat-option>
+      <mat-option (click)="setFilterManDocCategory()" value="Large">Large</mat-option>
+      <mat-option (click)="setFilterManDocCategory()" value="Emergency">Emergency</mat-option>
+      <mat-option (click)="setFilterManDocCategory()" value="LUM">LUM</mat-option>
+    </mat-select>
+  </mat-form-field>
   <!--display all docs -->
 
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
@@ -66,6 +76,11 @@
     <ng-container matColumnDef="mandatoryDocumentName">
       <th mat-header-cell *matHeaderCellDef>Document Uploads </th>
       <td mat-cell *matCellDef="let element"> {{element.mandatoryDocumentName}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="mandatoryDocumentCategory">
+      <th mat-header-cell *matHeaderCellDef>Document Uploads </th>
+      <td mat-cell *matCellDef="let element"> {{element.mandatoryDocumentCategory}} </td>
     </ng-container>
     <ng-container matColumnDef="dateCreated">
       <th mat-header-cell *matHeaderCellDef>Date Created </th>
