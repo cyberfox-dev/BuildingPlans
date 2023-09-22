@@ -152,6 +152,7 @@ namespace WayleaveManagementSystem.Service
                   DateCreated = documentUpload.DateCreated,
                   DateUpdated = documentUpload.DateUpdated,
                   CreatedById = documentUpload.CreatedById,
+                  GroupName = documentUpload.DocumentGroupName,
                   isActive = documentUpload.isActive,
 
 

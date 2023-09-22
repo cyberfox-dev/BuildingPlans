@@ -30,7 +30,6 @@ import { ContactDetailsService } from 'src/app/service/ContactDetails/contact-de
 import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
 import { MatDialog } from '@angular/material/dialog';
 
-
 import 'jspdf-autotable';
 
 
@@ -290,7 +289,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   rejected: boolean = false;
   approved: boolean = false;
- 
+
   canClarify: boolean;
   /*type of applicant*/
   isInternal = true;
@@ -356,11 +355,11 @@ export class ViewProjectInfoComponent implements OnInit {
   ServiceItemList: ServiceItemList[] = [];
   AllSubDepartmentList: AllSubDepartmentList[] = [];
   SubDepartmentListFORAPPROVAL: SubDepartmentListFORAPPROVAL[] = [];
-
+  
   @ViewChild('pdfTable', { static: false }) pdfTable: ElementRef;
 
   ApplicationID: number | undefined;
-
+ 
   CurrentUser: any;
   //Convert the local storage JSON data to an array object
   stringifiedData: any;
@@ -395,7 +394,7 @@ export class ViewProjectInfoComponent implements OnInit {
   subDepNameForClarify: any;
   currentIndex: any;
   subDepartmentForComment: any;
-    permitStartDate: Date;
+  permitStartDate: Date;
   permitBtn: boolean;
   permitTextBox: boolean = false;
   startDate: string;
@@ -405,20 +404,20 @@ export class ViewProjectInfoComponent implements OnInit {
   fileAttrs = "Upload File:";
   fileAttrsName = "Doc";
 
-    ApForUpload: string;
-    showPermitTab: boolean;
+  ApForUpload: string;
+  showPermitTab: boolean;
   showStatusOfWorksTab: boolean;
-    generateApproval: boolean;
-    hasFile: boolean;
-    EMBUsers: any;
-    loggedInUsersSubDepartmentID: number;
-    CurrentUserProfile: any;
-    stringifiedDataUserProfile: any;
-    isEMBUser: boolean;
-    datePaid: string;
+  generateApproval: boolean;
+  hasFile: boolean;
+  EMBUsers: any;
+  loggedInUsersSubDepartmentID: number;
+  CurrentUserProfile: any;
+  stringifiedDataUserProfile: any;
+  isEMBUser: boolean;
+  datePaid: string;
   Paid: string;
   canReviewerClarify: boolean;
-    previousReviewer: any;
+  previousReviewer: any;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -440,7 +439,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     } else {
       this.fileAttr = 'Choose File';
-    }
+    } 
   }
 
   openDocUpload(newSub: any) {
@@ -450,7 +449,7 @@ export class ViewProjectInfoComponent implements OnInit {
   isFinancial = true;
 
   openEditCommentModal(commentEditorModal: any, index: any) {
-    
+
 
     this.currentIndex = index;
 
@@ -463,11 +462,11 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   @ViewChild(MatTable) FinancialListTable: MatTable<DocumentsList> | undefined;
-
-
+  
+ 
   displayedColumns: string[] = ['FinancialName','FinancialDocumentName' ,'actions'];
   dataSourceDoc = this.FinancialDocumentsList;
-
+  
 
   panelOpenState = false;
 
@@ -528,7 +527,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
     debugger;
- 
+
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
     console.log("000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", this.applicationDataForView[0]);
@@ -612,8 +611,8 @@ export class ViewProjectInfoComponent implements OnInit {
     debugger;
 
     this.checkIfWbsRequired();
-/*    this.getAllSubDepForReject();*/
-/*    this.getAllSubDepForReject();*/
+    /*    this.getAllSubDepForReject();*/
+    /*    this.getAllSubDepForReject();*/
     this.canReapply = this.sharedService.getCanReapply();
     console.log("canReapplyVen: ", this.canReapply);
     this.setProjectNumber();
@@ -636,7 +635,7 @@ export class ViewProjectInfoComponent implements OnInit {
   receivedata: string;
 
   receiveData(data: string) {
-    
+
     this.receivedata = data;
     console.log(this.receivedata);
     if (this.receivedata == "Final Approved") {
@@ -832,7 +831,7 @@ export class ViewProjectInfoComponent implements OnInit {
   addAccountDetails(doc, startY) {
     const boxContent = 'Profit Centre: ' + this.getSubByName("EMB").ProfitCenter
       + '\nGL Acc: ' + this.getSubByName("EMB").GLCode
-    
+
 
     autoTable(doc, {
       body: [[boxContent]],
@@ -873,113 +872,113 @@ export class ViewProjectInfoComponent implements OnInit {
 
   generateInvoiceSplit() {
 
-      // Create a new PDF
-      const doc = new jsPDF();
+    // Create a new PDF
+    const doc = new jsPDF();
 
-      // Add company logo
-      const logo = new Image();
-      logo.src = 'assets/cctlogoblack.png';
-      doc.addImage(logo, 'png', 10, 10, 60, 20);
+    // Add company logo
+    const logo = new Image();
+    logo.src = 'assets/cctlogoblack.png';
+    doc.addImage(logo, 'png', 10, 10, 60, 20);
 
-      // Add invoice title
-      this.addInvoiceTitle(doc);
+    // Add invoice title
+    this.addInvoiceTitle(doc);
 
-      // Add client details
-      this.addClientDetails(doc);
+    // Add client details
+    this.addClientDetails(doc);
 
-      // Add company contact details
-      this.addCompanyDetails(doc);
-
-
-      // Set the starting Y position for the table
-      let startY = 100;
-
-      // Generate service items table, cost details and calculate total cost
-      startY = this.addServiceItemsAndCostDetailsSJ(doc, startY);
-
-      startY += 8; // adjust this value as needed
-
-      // Add account details
-      startY = this.addAccountDetails(doc, startY);
-
-      // Reduce the gap before the next section
-      startY -= 28; // adjust this value as needed
-
-      // Add payment options and consequences of non-payment
-      startY = this.addPaymentDetails(doc, startY);
-
-      // Increase the gap before the next section
-      startY += 20;
-
-      // Add pay points notice
-      startY = this.addPayPointsNotice(doc, startY);
-
-      startY -= 35; // adjust this value as needed
+    // Add company contact details
+    this.addCompanyDetails(doc);
 
 
-      // Add vendors image
+    // Set the starting Y position for the table
+    let startY = 100;
 
-      //  const vendors = new Image();
-      //vendors.src = 'assets/vendors.jpg';
+    // Generate service items table, cost details and calculate total cost
+    startY = this.addServiceItemsAndCostDetailsSJ(doc, startY);
 
-      //const pageWidth = doc.internal.pageSize.getWidth();
-      //const aspectRatio = vendors.width / vendors.height; // assumes vendors Image object contains width and height properties
-      //const imgHeightOnPage = pageWidth / aspectRatio;
+    startY += 8; // adjust this value as needed
 
-      //doc.addImage(vendors, 'JPEG', 0, startY + 40, pageWidth, imgHeightOnPage);
+    // Add account details
+    startY = this.addAccountDetails(doc, startY);
+
+    // Reduce the gap before the next section
+    startY -= 28; // adjust this value as needed
+
+    // Add payment options and consequences of non-payment
+    startY = this.addPaymentDetails(doc, startY);
+
+    // Increase the gap before the next section
+    startY += 20;
+
+    // Add pay points notice
+    startY = this.addPayPointsNotice(doc, startY);
+
+    startY -= 35; // adjust this value as needed
 
 
-      const vendors = new Image();
-      vendors.src = 'assets/vendors.jpg';
-      doc.addImage(vendors, 'JPEG', 15, startY + 25, 180, 20);
+    // Add vendors image
 
-      // Save the PDF as a blob object and push it for temporary upload
-      this.saveAndUploadPDFSplit(doc);
+    //  const vendors = new Image();
+    //vendors.src = 'assets/vendors.jpg';
 
-      // Navigate to home page
-     // this.router.navigate(["/home"]);
-    
+    //const pageWidth = doc.internal.pageSize.getWidth();
+    //const aspectRatio = vendors.width / vendors.height; // assumes vendors Image object contains width and height properties
+    //const imgHeightOnPage = pageWidth / aspectRatio;
+
+    //doc.addImage(vendors, 'JPEG', 0, startY + 40, pageWidth, imgHeightOnPage);
+
+
+    const vendors = new Image();
+    vendors.src = 'assets/vendors.jpg';
+    doc.addImage(vendors, 'JPEG', 15, startY + 25, 180, 20);
+
+    // Save the PDF as a blob object and push it for temporary upload
+    this.saveAndUploadPDFSplit(doc);
+
+    // Navigate to home page
+    // this.router.navigate(["/home"]);
+
   }
 
   saveAndUploadPDFSplit(doc) {
     this.sharedService.FileDocument = [];
     doc.save("invoiceSplit.pdf");
-   // const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
-  //  const file = new File([pdfData], 'Wayleave Application Fee Invoice Split.pdf', { type: 'application/pdf' });
+    // const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
+    //  const file = new File([pdfData], 'Wayleave Application Fee Invoice Split.pdf', { type: 'application/pdf' });
 
     // Prepare the form data
- //   const formData = new FormData();
- //   formData.append('file', file);
+    //   const formData = new FormData();
+    //   formData.append('file', file);
 
-   // this.sharedService.pushFileForTempFileUpload(file, "Wayleave Application Fee Invoice Split" + ".pdf");
-   // this.save();
+    // this.sharedService.pushFileForTempFileUpload(file, "Wayleave Application Fee Invoice Split" + ".pdf");
+    // this.save();
   }
 
-   getEMBUsers() {
-     this.accessGroupsService.getUserBasedOnRoleName("EMB", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+  getEMBUsers() {
+    this.accessGroupsService.getUserBasedOnRoleName("EMB", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
 
-    if (data.responseCode == 1) {
-      this.EMBUsers = data.dateSet;
-      
-      for (var i = 0; i < this.EMBUsers.length; i++) {
-        const currentEMBUser = this.EMBUsers[i].userID;
-        if (currentEMBUser == this.CurrentUser.appUserId) {
-          this.isEMBUser = true;
-        } else {
-          this.isEMBUser = false;
+      if (data.responseCode == 1) {
+        this.EMBUsers = data.dateSet;
+
+        for (var i = 0; i < this.EMBUsers.length; i++) {
+          const currentEMBUser = this.EMBUsers[i].userID;
+          if (currentEMBUser == this.CurrentUser.appUserId) {
+            this.isEMBUser = true;
+          } else {
+            this.isEMBUser = false;
+          }
         }
-      }
-    
-    }
-    else {
-      alert(data.responseMessage);
-    }
-    console.log("getAllLinkedRolesReponse", data);
 
-  }, error => {
-    console.log("getAllLinkedRolesReponseError: ", error);
-  })
-}
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("getAllLinkedRolesReponse", data);
+
+    }, error => {
+      console.log("getAllLinkedRolesReponseError: ", error);
+    })
+  }
 
   //validate(): void {
   //  //this.businessPartnerService.validateBP().subscribe(
@@ -1101,7 +1100,7 @@ export class ViewProjectInfoComponent implements OnInit {
     else {
       this.canReviewerClarify = false;
     }
-  
+
   }
 
   onFileDelete(event: any, index: number) {
@@ -1120,22 +1119,22 @@ export class ViewProjectInfoComponent implements OnInit {
     }
   }
   onFileUpload(event: any) {
-    
+
 
   }
 
 
   onAutoLinkForPermit() {
-    
+
     this.subDepartmentForCommentService.getSubDepartmentForComment(this.ApplicationID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        
+
         for (var i = 0; i < data.dateSet.length; i++) {
           this.permitService.addUpdatePermitSubForComment(0, this.ApplicationID, data.dateSet[i].subDepartmentID, data.dateSet[i].subDepartmentName, null, null, null, this.CurrentUser.appUserId, data.dateSet[i].zoneID, data.dateSet[i].zoneName).subscribe((data: any) => {
-            
+
             if (data.responseCode == 1) {
-              
+
               // alert(data.dateSet.subDepartmentName + " assigned to this Application");
 
             }
@@ -1166,17 +1165,17 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   setProjectNumber() {
-    
+
     if (this.CurrentApplicationBeingViewed[0].ProjectNumber == null) {
-      
+
 
       this.projectNo = this.CurrentApplicationBeingViewed[0].applicationID.toString();
     }
     else {
-      
+
       this.projectNo = this.CurrentApplicationBeingViewed[0].ProjectNumber;
     }
-   
+
 
   }
 
@@ -1420,7 +1419,7 @@ export class ViewProjectInfoComponent implements OnInit {
           if (data.responseCode == 1) {
             this.getAllComments();
 
-            
+
             this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, null, false, null, null, null).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
@@ -1518,7 +1517,7 @@ export class ViewProjectInfoComponent implements OnInit {
     }
   }
 
-  
+
 
 
 
@@ -1557,15 +1556,15 @@ export class ViewProjectInfoComponent implements OnInit {
 
   getAllRequiredDeposits() {
 
-    
+
     this.depositRequiredService.getDepositRequiredByApplicationID(this.ApplicationID).subscribe((data: any) => {
-                              
+
       if (data.responseCode == 1) {
 
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDepositRequired = {} as DepositRequired;
           const current = data.dateSet[i];
-          
+
           tempDepositRequired.ApplicationID = current.applicationID;
           tempDepositRequired.DepositRequiredID = current.depositRequiredID;
           tempDepositRequired.Desciption = current.desciption;
@@ -1867,16 +1866,16 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   onAutoLinkDepartment() {
-    
+
     this.subDepartmentService.getAllSubDepartmentsForAutoDistribution().subscribe((data: any) => {
-      
+
       if (data.responseCode == 1) {
-        
+
         for (var i = 0; i < data.dateSet.length; i++) {
           this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, data.dateSet[i].subDepartmentID, data.dateSet[i].subDepartmentName, null, null, this.CurrentUser.appUserId, null, null).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
-              
+
               //alert(data.dateSet.subDepartmentName + " assigned to this Application");
 
             }
@@ -1904,9 +1903,9 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   ChangeApplicationStatusToPaid() {
-    
+
     if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Unpaid") {
-   
+
       this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
         if (data.responseCode == 1) {
 
@@ -1924,11 +1923,11 @@ export class ViewProjectInfoComponent implements OnInit {
                   this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application payment", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" +"WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
 
 
-                  }
+                }
                 else {
                   /*          alert(data.responseMessage);*/
                 }
-            
+
                 console.log("responseAddapplication", data);
 
               }, error => {
@@ -1957,7 +1956,7 @@ export class ViewProjectInfoComponent implements OnInit {
         console.log("getConfigsByConfigNameError: ", error);
       })
 
-        }
+    }
 
     else {
       alert("Application Status Needs to Be Unpaid");
@@ -1966,20 +1965,20 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   checkIfPermitExsist() {
-    
+
     if (this.applicationDataForView[0].CreatedById == this.CurrentUser.appUserId) {
       this.permitBtn = true;
       this.permitTextBox = false;
     }
-   if (this.applicationDataForView[0].permitStartDate != null) {
+    if (this.applicationDataForView[0].permitStartDate != null) {
       this.permitBtn = false;
       this.permitTextBox = true;
       this.startDate = this.applicationDataForView[0].permitStartDate.toString();
       this.permitDate = "Permit has been applied, with a start date of: " + this.startDate.substring(0, this.startDate.indexOf('T'));
 
     }
-    
-    
+
+
   }
 
   updateStartDateForPermit() {
@@ -2016,22 +2015,22 @@ export class ViewProjectInfoComponent implements OnInit {
 
     //alert("ChangeApplicationStatusToPaid");
 
-   /* if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Paid") {*/
-      this.applicationsService.updateApplicationStage(this.CurrentApplicationBeingViewed[0].applicationID, this.CurrentApplicationBeingViewed[0].CurrentStageName, this.CurrentApplicationBeingViewed[0].CurrentStageNumber, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, "Distributed").subscribe((data: any) => {
+    /* if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Paid") {*/
+    this.applicationsService.updateApplicationStage(this.CurrentApplicationBeingViewed[0].applicationID, this.CurrentApplicationBeingViewed[0].CurrentStageName, this.CurrentApplicationBeingViewed[0].CurrentStageNumber, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, "Distributed").subscribe((data: any) => {
 
-        if (data.responseCode == 1) {
-         // this.onAutoLinkDepartment();
-          alert("Application Moved to Distributed");
-         // this.router.navigate(["/home"]);
+      if (data.responseCode == 1) {
+        // this.onAutoLinkDepartment();
+        alert("Application Moved to Distributed");
+        // this.router.navigate(["/home"]);
 
-        }
-        else {
-          alert(data.responseMessage);
-        }
-        console.log("responseAddapplication", data);
-      }, error => {
-        console.log("Error", error);
-      })
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("responseAddapplication", data);
+    }, error => {
+      console.log("Error", error);
+    })
 
     //}
 
@@ -2084,40 +2083,40 @@ export class ViewProjectInfoComponent implements OnInit {
   /*CREATING THE APPROVAL PACK*/
 
   getUserDep() {
-    
+
     if (this.depID != null) {
 
 
-    this.subDepartmentService.getSubDepartmentsByDepartmentID(this.depID).subscribe((data: any) => {
+      this.subDepartmentService.getSubDepartmentsByDepartmentID(this.depID).subscribe((data: any) => {
 
 
-      if (data.responseCode == 1) {
+        if (data.responseCode == 1) {
 
-        for (var i = 0; i < data.dateSet.length; i++) {
-          const tempSubDepartmentList = {} as SubDepartmentList;
+          for (var i = 0; i < data.dateSet.length; i++) {
+            const tempSubDepartmentList = {} as SubDepartmentList;
 
-          const current = data.dateSet[i];
-          this.subDepNameForClarify = current.subDepartmentName;
-          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
-
-
-          this.SubDepartmentsList.push(tempSubDepartmentList);
+            const current = data.dateSet[i];
+            this.subDepNameForClarify = current.subDepartmentName;
+            tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
 
 
+            this.SubDepartmentsList.push(tempSubDepartmentList);
+
+
+          }
+
+          console.log("THIS IS THE CUB DEP THAT HAS APPROVED THE APPLICATION CONDITIONALLY", this.subDepNameForClarify);
         }
 
-        console.log("THIS IS THE CUB DEP THAT HAS APPROVED THE APPLICATION CONDITIONALLY", this.subDepNameForClarify);
-      }
+        else {
 
-      else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
 
-        alert(data.responseMessage);
-      }
-      console.log("reponse", data);
-
-    }, error => {
-      console.log("Error: ", error);
-    })
+      }, error => {
+        console.log("Error: ", error);
+      })
 
     }
 
@@ -2128,17 +2127,17 @@ export class ViewProjectInfoComponent implements OnInit {
     debugger;
     console.log("This is all the special comments from the subdepartments", this.ApplicationID);
     this.commentsService.getCommentsForSpecialConditions(this.ApplicationID).subscribe((data: any) => {
-      
+
 
       if (data.responseCode == 1) {
-        
+
         for (var i = 0; i < data.dateSet.length; i++) {
           const tempSubDepCommentStatusList = {} as SubDepCommentsForSpecialConditions;
-          
+
           const current = data.dateSet[i];
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
 
-      
+
 
           tempSubDepCommentStatusList.SubDepName = current.subDepartmentName + " : "+current.zoneName;
           tempSubDepCommentStatusList.ApplicationID = current.applicationID;
@@ -2168,7 +2167,7 @@ export class ViewProjectInfoComponent implements OnInit {
   getAllSubDepFroConditionalApprove() {
     debugger;
     let commentS = "Approved";
-    
+
     this.commentsService.getSubDepByCommentStatus(commentS, this.ApplicationID).subscribe((data: any) => {
 
 
@@ -2176,7 +2175,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
         for (var i = 0; i < data.dateSet.length; i++) {
           const tempSubDepCommentStatusList = {} as SubDepConditionalApproveList;
-          
+
           const current = data.dateSet[i];
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
           tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
@@ -2247,9 +2246,9 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getAllSubDepForFinalApprove() {
-    
+
     let commentS = "Final Approved";
-    
+
     this.commentsService.getSubDepByCommentStatus(commentS, this.ApplicationID).subscribe((data: any) => {
 
 
@@ -2257,7 +2256,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
         for (var i = 0; i < data.dateSet.length; i++) {
           const tempSubDepCommentStatusList = {} as SubDepFinalApproveList;
-          
+
           const current = data.dateSet[i];
           console.log("FINAL APPROVED THE APPLICATION ", current);
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
@@ -2271,7 +2270,7 @@ export class ViewProjectInfoComponent implements OnInit {
           tempSubDepCommentStatusList.UserName = current.userName;
 
           this.SubDepFinalApproveList.push(tempSubDepCommentStatusList);
-        
+
 
         }
 
@@ -2301,7 +2300,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
         for (var i = 0; i < data.dateSet.length; i++) {
           const tempSubDepCommentStatusList = {} as SubDepSubDepRejectList;
-          
+
           const current = data.dateSet[i];
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
           tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
@@ -2356,17 +2355,17 @@ export class ViewProjectInfoComponent implements OnInit {
     else {
 
     }
-   
+
   }
 
 
 
 
 
- 
+
   onCreateApprovalPack() {
     debugger;
-/*    this.getAllSubDepFroConditionalApprove();*/
+    /*    this.getAllSubDepFroConditionalApprove();*/
     const subDepCommentsMap = new Map();
 
     const doc = new jsPDF({
@@ -2375,7 +2374,7 @@ export class ViewProjectInfoComponent implements OnInit {
       format: 'a4'
     });
 
-/*    const doc = new jsPDF('portrait', 'px', 'a4') as jsPDFWithPlugin;*/
+    /*    const doc = new jsPDF('portrait', 'px', 'a4') as jsPDFWithPlugin;*/
 
     // Set up table
     const startY = 50; // set the starting Y position for the table
@@ -2479,22 +2478,22 @@ export class ViewProjectInfoComponent implements OnInit {
     page27.src = 'assets/Packs/Updated/27.PNG';
     page28.src = 'assets/Packs/Updated/28.PNG';
     page29.src = 'assets/Packs/Updated/29.PNG';
-/*    page30.src = 'assets/Packs/page30.PNG';
-    page31.src = 'assets/Packs/page31.PNG';
-    page32.src = 'assets/Packs/page32.PNG';
-    page33.src = 'assets/Packs/page33.PNG';
-    page34.src = 'assets/Packs/page34.PNG';
-    page35.src = 'assets/Packs/page35.PNG';
-    page36.src = 'assets/Packs/page36.PNG';
-    page37.src = 'assets/Packs/page37.PNG';
-    page38.src = 'assets/Packs/page38.PNG';
-    page39.src = 'assets/Packs/page39.PNG';
-    page40.src = 'assets/Packs/page40.PNG';
-    page41.src = 'assets/Packs/page41.PNG';
-    page42.src = 'assets/Packs/page42.PNG';
-    page43.src = 'assets/Packs/page43.PNG';
-    page44.src = 'assets/Packs/page44.PNG';
-    page45.src = 'assets/Packs/page45.PNG';*/
+    /*    page30.src = 'assets/Packs/page30.PNG';
+        page31.src = 'assets/Packs/page31.PNG';
+        page32.src = 'assets/Packs/page32.PNG';
+        page33.src = 'assets/Packs/page33.PNG';
+        page34.src = 'assets/Packs/page34.PNG';
+        page35.src = 'assets/Packs/page35.PNG';
+        page36.src = 'assets/Packs/page36.PNG';
+        page37.src = 'assets/Packs/page37.PNG';
+        page38.src = 'assets/Packs/page38.PNG';
+        page39.src = 'assets/Packs/page39.PNG';
+        page40.src = 'assets/Packs/page40.PNG';
+        page41.src = 'assets/Packs/page41.PNG';
+        page42.src = 'assets/Packs/page42.PNG';
+        page43.src = 'assets/Packs/page43.PNG';
+        page44.src = 'assets/Packs/page44.PNG';
+        page45.src = 'assets/Packs/page45.PNG';*/
 
     // Add logo to PDF document
 
@@ -2546,7 +2545,7 @@ export class ViewProjectInfoComponent implements OnInit {
         halign: 'justify',
         fontSize: 8,
         valign: 'middle',
-        
+
 
       },
 
@@ -2555,7 +2554,7 @@ export class ViewProjectInfoComponent implements OnInit {
         1: { cellWidth: 50 },
         2: { cellWidth: 60 },
 
-        
+
       }
 
 
@@ -2674,60 +2673,60 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.setPage(currentPage);
 
     //Contact information Page
-/*    doc.addPage();
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-    doc.setFontSize(16);
-    doc.text('Contact Details', 10, 45, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    /*    doc.addPage();
+        doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+        doc.setFontSize(10);
+        doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+        doc.setFontSize(16);
+        doc.text('Contact Details', 10, 45, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+        
+        const uniqueZoneIDs = [...new Set(this.SubDepartmentListFORAPPROVAL.map(item => item.zoneID))];
     
-    const uniqueZoneIDs = [...new Set(this.SubDepartmentListFORAPPROVAL.map(item => item.zoneID))];
-
-    // Create an array to hold the filtered contact details for matching zone IDs
-    const filteredContacts = [];
-
-    // Loop through each unique zone ID
-    uniqueZoneIDs.forEach(targetZoneID => {
-      // Filter the ContactDetailsList array based on the current zone ID
-      const matchingContacts = this.ContactDetailsList.filter(deposit => deposit.ZoneID === targetZoneID);
-
-      // Add the matching contacts to the filteredContacts array
-      filteredContacts.push(...matchingContacts);
-    });
+        // Create an array to hold the filtered contact details for matching zone IDs
+        const filteredContacts = [];
     
-    // Create the table data for the filtered contact details
-    const page3Data = filteredContacts.map(deposit => [
-      deposit.SubDepName,
-      deposit.ZoneName,
-      deposit.FullName,
-      deposit.Email,
-      deposit.CellNo,
-    ]);
-
-    autoTable(doc, {
-      head: Page3headers,
-      startY: 60,
-      body: page3Data,
-      styles: {
-        overflow: 'visible',
-        halign: 'justify',
-        fontSize: 8,
-        valign: 'middle',
-      },
-      columnStyles: {
-        0: { cellWidth: 60, fontStyle: 'bold' },
-        1: { cellWidth: 25 },
-        2: { cellWidth: 30 },
-        3: { cellWidth: 35 },
-        4: { cellWidth: 30 },
-      }
-    });
-
-
-
-
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-*/
+        // Loop through each unique zone ID
+        uniqueZoneIDs.forEach(targetZoneID => {
+          // Filter the ContactDetailsList array based on the current zone ID
+          const matchingContacts = this.ContactDetailsList.filter(deposit => deposit.ZoneID === targetZoneID);
+    
+          // Add the matching contacts to the filteredContacts array
+          filteredContacts.push(...matchingContacts);
+        });
+        
+        // Create the table data for the filtered contact details
+        const page3Data = filteredContacts.map(deposit => [
+          deposit.SubDepName,
+          deposit.ZoneName,
+          deposit.FullName,
+          deposit.Email,
+          deposit.CellNo,
+        ]);
+    
+        autoTable(doc, {
+          head: Page3headers,
+          startY: 60,
+          body: page3Data,
+          styles: {
+            overflow: 'visible',
+            halign: 'justify',
+            fontSize: 8,
+            valign: 'middle',
+          },
+          columnStyles: {
+            0: { cellWidth: 60, fontStyle: 'bold' },
+            1: { cellWidth: 25 },
+            2: { cellWidth: 30 },
+            3: { cellWidth: 35 },
+            4: { cellWidth: 30 },
+          }
+        });
+    
+    
+    
+    
+        doc.addImage(footer, 'png', 7, 255, 205, 45);
+    */
     //PAGE 1
     doc.addPage();
 
@@ -3050,183 +3049,183 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.addImage(footer, 'png', 7, 255, 205, 45);
 
     //PAGE 30
-   /* doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page30, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 31
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page31, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 32
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page32, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 33
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page33, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 34
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page34, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 35
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page35, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 36
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page36, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 37
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page37, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 38
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page38, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 39
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page39, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 40
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page40, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 41
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page41, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 42
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page42, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 43
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page43, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 44
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page44, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 45
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page45, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);*/
+    /* doc.addPage();
+ 
+     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+     doc.setFontSize(10);
+     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+ 
+ 
+     doc.addImage(page30, 'png', 10, 40, 190, 215);
+     doc.addImage(footer, 'png', 7, 255, 205, 45);
+ 
+     //PAGE 31
+     doc.addPage();
+ 
+     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+     doc.setFontSize(10);
+     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+ 
+ 
+     doc.addImage(page31, 'png', 10, 40, 190, 215);
+     doc.addImage(footer, 'png', 7, 255, 205, 45);
+ 
+     //PAGE 32
+     doc.addPage();
+ 
+     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+     doc.setFontSize(10);
+     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+ 
+ 
+     doc.addImage(page32, 'png', 10, 40, 190, 215);
+     doc.addImage(footer, 'png', 7, 255, 205, 45);
+ 
+     //PAGE 33
+     doc.addPage();
+ 
+     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+     doc.setFontSize(10);
+     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+ 
+ 
+     doc.addImage(page33, 'png', 10, 40, 190, 215);
+     doc.addImage(footer, 'png', 7, 255, 205, 45);
+ 
+     //PAGE 34
+     doc.addPage();
+ 
+     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+     doc.setFontSize(10);
+     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+ 
+ 
+     doc.addImage(page34, 'png', 10, 40, 190, 215);
+     doc.addImage(footer, 'png', 7, 255, 205, 45);
+ 
+     //PAGE 35
+     doc.addPage();
+ 
+     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+     doc.setFontSize(10);
+     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+ 
+ 
+     doc.addImage(page35, 'png', 10, 40, 190, 215);
+     doc.addImage(footer, 'png', 7, 255, 205, 45);
+ 
+     //PAGE 36
+     doc.addPage();
+ 
+     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+     doc.setFontSize(10);
+     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+ 
+ 
+     doc.addImage(page36, 'png', 10, 40, 190, 215);
+     doc.addImage(footer, 'png', 7, 255, 205, 45);
+ 
+     //PAGE 37
+     doc.addPage();
+ 
+     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+     doc.setFontSize(10);
+     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+ 
+ 
+     doc.addImage(page37, 'png', 10, 40, 190, 215);
+     doc.addImage(footer, 'png', 7, 255, 205, 45);
+ 
+     //PAGE 38
+     doc.addPage();
+ 
+     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+     doc.setFontSize(10);
+     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+ 
+ 
+     doc.addImage(page38, 'png', 10, 40, 190, 215);
+     doc.addImage(footer, 'png', 7, 255, 205, 45);
+ 
+     //PAGE 39
+     doc.addPage();
+ 
+     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+     doc.setFontSize(10);
+     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+ 
+ 
+     doc.addImage(page39, 'png', 10, 40, 190, 215);
+     doc.addImage(footer, 'png', 7, 255, 205, 45);
+ 
+     //PAGE 40
+     doc.addPage();
+ 
+     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+     doc.setFontSize(10);
+     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+ 
+ 
+     doc.addImage(page40, 'png', 10, 40, 190, 215);
+     doc.addImage(footer, 'png', 7, 255, 205, 45);
+ 
+     //PAGE 41
+     doc.addPage();
+ 
+     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+     doc.setFontSize(10);
+     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+ 
+ 
+     doc.addImage(page41, 'png', 10, 40, 190, 215);
+     doc.addImage(footer, 'png', 7, 255, 205, 45);
+ 
+     //PAGE 42
+     doc.addPage();
+ 
+     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+     doc.setFontSize(10);
+     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+ 
+ 
+     doc.addImage(page42, 'png', 10, 40, 190, 215);
+     doc.addImage(footer, 'png', 7, 255, 205, 45);
+ 
+     //PAGE 43
+     doc.addPage();
+ 
+     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+     doc.setFontSize(10);
+     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+ 
+ 
+     doc.addImage(page43, 'png', 10, 40, 190, 215);
+     doc.addImage(footer, 'png', 7, 255, 205, 45);
+ 
+     //PAGE 44
+     doc.addPage();
+ 
+     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+     doc.setFontSize(10);
+     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+ 
+ 
+     doc.addImage(page44, 'png', 10, 40, 190, 215);
+     doc.addImage(footer, 'png', 7, 255, 205, 45);
+ 
+     //PAGE 45
+     doc.addPage();
+ 
+     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+     doc.setFontSize(10);
+     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+ 
+ 
+     doc.addImage(page45, 'png', 10, 40, 190, 215);
+     doc.addImage(footer, 'png', 7, 255, 205, 45);*/
 
     // Save PDF document
- 
+
     const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
     const file = new File([pdfData], 'approval_pack.pdf', { type: 'application/pdf' });
 
@@ -3281,7 +3280,7 @@ export class ViewProjectInfoComponent implements OnInit {
     console.log("documentName", documentName);
 
     this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, "System Generated Pack", "System Generated Pack").subscribe((data: any) => {
-/*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
+      /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
       if (data.responseCode == 1) {
 
         console.log(this.StagesList);
@@ -3488,15 +3487,15 @@ export class ViewProjectInfoComponent implements OnInit {
     const currentApplication = this.sharedService.getViewApplicationIndex();
 
 
-    
+
     this.subDepartmentForCommentService.getSubDepartmentForComment(currentApplication.applicationID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
-        
+
         for (var i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
-          
+
           const tempSubDepartmentList = {} as SubDepartmentList;
           tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
           tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
@@ -3514,7 +3513,7 @@ export class ViewProjectInfoComponent implements OnInit {
           if (tempSubDepartmentList.commentStatus == "Rejected") {
             this.countReject++;
           }
-          
+
           this.SubDepartmentList.push(tempSubDepartmentList);
         }
 
@@ -3535,10 +3534,10 @@ export class ViewProjectInfoComponent implements OnInit {
 
   checkIfApprovedOrRejected() {
     if (this.countApprove == this.SubDepartmentList.length) {
-     // alert("ALL FINAL APPROVED");
+      // alert("ALL FINAL APPROVED");
     }
     if (this.countReject > 0 ) {
-      
+
     }
   }
 
@@ -3600,7 +3599,7 @@ export class ViewProjectInfoComponent implements OnInit {
       if (this.RolesList[i].RoleName == "EMB") {
         this.auditTrail = true;
       }
-    
+
       if (this.RolesList[i].RoleName == "Developer Config") {
         this.ApprovalPackBtn = true;
         this.RejectionPackBtn = true;
@@ -3611,58 +3610,58 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
-/*  UploadDocuments(applicationData: any): void { 
-    //Pulling information from the share
-    const filesForUpload = this.sharedService.pullFilesForUpload();
-    for (var i = 0; i < filesForUpload.length; i++) {
-      const formData = new FormData();
-      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
-      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.ApplicationID;
-      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
-
-
-
-      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
-        .subscribe({
-          next: (event) => {
-
-            if (event.type === HttpEventType.UploadProgress && event.total)
-              this.progress = Math.round(100 * event.loaded / event.total);
-            else if (event.type === HttpEventType.Response) {
-              this.message = 'Upload success.';
-              this.uploadFinished(event.body, this.ApplicationID, applicationData);
-            }
-          },
-          error: (err: HttpErrorResponse) => console.log(err)
-        });
-    }
-  }
-
-  uploadFinished = (event: any, applicationID: any, applicationData: any) => {
-    ;
-    this.response = event;
-    console.log("this.response", this.response);
-    console.log("this.response?.dbPath", this.response?.dbPath);
-    console.log("applicationData", applicationData);
-
-    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
-    console.log("documentName", documentName);
-    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, applicationID, applicationData.userID, this.CurrentUser.appUserId).subscribe((data: any) => {
-
-      if (data.responseCode == 1) {
-
+  /*  UploadDocuments(applicationData: any): void { 
+      //Pulling information from the share
+      const filesForUpload = this.sharedService.pullFilesForUpload();
+      for (var i = 0; i < filesForUpload.length; i++) {
+        const formData = new FormData();
+        let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+        let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.ApplicationID;
+        formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+  
+  
+  
+        this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+          .subscribe({
+            next: (event) => {
+  
+              if (event.type === HttpEventType.UploadProgress && event.total)
+                this.progress = Math.round(100 * event.loaded / event.total);
+              else if (event.type === HttpEventType.Response) {
+                this.message = 'Upload success.';
+                this.uploadFinished(event.body, this.ApplicationID, applicationData);
+              }
+            },
+            error: (err: HttpErrorResponse) => console.log(err)
+          });
       }
-
-
-
-
-
-    }, error => {
-      console.log("Error: ", error);
-    })
-
-
-  }*/
+    }
+  
+    uploadFinished = (event: any, applicationID: any, applicationData: any) => {
+      ;
+      this.response = event;
+      console.log("this.response", this.response);
+      console.log("this.response?.dbPath", this.response?.dbPath);
+      console.log("applicationData", applicationData);
+  
+      const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+      console.log("documentName", documentName);
+      this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, applicationID, applicationData.userID, this.CurrentUser.appUserId).subscribe((data: any) => {
+  
+        if (data.responseCode == 1) {
+  
+        }
+  
+  
+  
+  
+  
+      }, error => {
+        console.log("Error: ", error);
+      })
+  
+  
+    }*/
 
   getAllDocsForApplication() {
 
@@ -3736,7 +3735,7 @@ export class ViewProjectInfoComponent implements OnInit {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDocList = {} as FinancialDocumentsList;
           const current = data.dateSet[i];
-          
+
           tempDocList.FinancialID = current.financialID;
           tempDocList.ApplicationID = current.applicationID;
           tempDocList.CreatedById = current.createdById;
@@ -3744,7 +3743,7 @@ export class ViewProjectInfoComponent implements OnInit {
           tempDocList.ApplicationID = current.applicationID;
           tempDocList.FinancialDocumentName = current.documentName;
           tempDocList.FinancialType = current.financialType;
-          
+
 
 
 
@@ -3752,7 +3751,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
         }
-        
+
 
         this.FinancialListTable?.renderRows();
         console.log("FinancialListTablethis.FinancialDocumentsListthis.FinancialDocumentsListthis.FinancialDocumentsListthis.FinancialDocumentsListthis.FinancialDocumentsListthis.FinancialDocumentsList", this.FinancialDocumentsList);
@@ -3766,14 +3765,14 @@ export class ViewProjectInfoComponent implements OnInit {
     }, error => {
       console.log("ErrorGetAllDocsForApplication: ", error);
     })
-    
+
   }
 
 
 
   /*Mobile Field Tracking*/
   onPassFileName(event: { uploadFor: string; fileName: string }) {
-    
+
     const { uploadFor, fileName } = event;
     this.fileAttrsName = "Doc";
 
@@ -3799,48 +3798,48 @@ export class ViewProjectInfoComponent implements OnInit {
           tempMFTList.DocumentLocalPath = current.documentLocalPath;
           tempMFTList.ApplicationNumber = current.applicationID;
           tempMFTList.FullName = current.fullName;
-       
+
           console.log("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT", current);
           console.log("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT", this.MFTList);
           this.MFTList.push(tempMFTList);
 
-         /* fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.MFTList[i].DocumentName}`)
-            .then(response => {
-              if (response.ok) {
-                // The response status is in the 200 range
+          /* fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.MFTList[i].DocumentName}`)
+             .then(response => {
+               if (response.ok) {
+                 // The response status is in the 200 range
+ 
+                 return response.blob(); // Extract the response body as a Blob
+ 
+               } else {
+                 throw new Error('Error fetching the document');
+               }
+             })
+             .then(blob => {
+               const imageURL = URL.createObjectURL(blob);
+ 
+               // Display the image using an <img> element
+               const imgElement = document.createElement('img');
+               imgElement.src = imageURL;
+ 
+               // Get a reference to the div with the ID 'myDiv'
+               const myDiv = document.getElementById('card_image');
+ 
+               // Append the <img> element to the 'myDiv' div
+               myDiv.appendChild(imgElement);
+ 
+               
+             })
+             .catch(error => {
+               console.log(error);
+               // Handle the error appropriately
+             });*/
 
-                return response.blob(); // Extract the response body as a Blob
 
-              } else {
-                throw new Error('Error fetching the document');
-              }
-            })
-            .then(blob => {
-              const imageURL = URL.createObjectURL(blob);
-
-              // Display the image using an <img> element
-              const imgElement = document.createElement('img');
-              imgElement.src = imageURL;
-
-              // Get a reference to the div with the ID 'myDiv'
-              const myDiv = document.getElementById('card_image');
-
-              // Append the <img> element to the 'myDiv' div
-              myDiv.appendChild(imgElement);
-
-              
-            })
-            .catch(error => {
-              console.log(error);
-              // Handle the error appropriately
-            });*/
-
-      
         }
 
-        
-       // console.log("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT", this.DocumentsList[0]);
-       
+
+        // console.log("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT", this.DocumentsList[0]);
+
       }
       else {
         alert(data.responseMessage);
@@ -3855,9 +3854,9 @@ export class ViewProjectInfoComponent implements OnInit {
 
   saveNote() {
 
-  
+
     const filesForUpload = this.sharedService.pullFilesForUpload();
-    
+
 
     if (filesForUpload.length === 0) {
 
@@ -3906,35 +3905,35 @@ export class ViewProjectInfoComponent implements OnInit {
 
   uploadFinishedNotes(event) {
 
-  this.response = event;
-  console.log("this.response", this.response);
-  console.log("this.response?.dbPath", this.response?.dbPath);
+    this.response = event;
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
 
 
-  const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
-  console.log("documentName", documentName);
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
 
     this.MFTService.addUpdateMFT(0, this.mftNote, this.ApplicationID, documentName, this.response?.dbPath, this.CurrentUser.appUserId, this.CurrentUser.fullName).subscribe((data: any) => {
-    /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
+      /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
       if (data.responseCode == 1) {
         alert(data.responseMessage);
         this.getMFTForApplication();
-    }
+      }
 
-  }, error => {
-    console.log("Error: ", error);
-  })
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 
 
   viewImage(index: any) {
-    
+
     // Make an HTTP GET request to fetch the document
     fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.MFTList[index].DocumentName}`)
       .then(response => {
         if (response.ok) {
           // The response status is in the 200 range
-          
+
           return response.blob(); // Extract the response body as a Blob
 
         } else {
@@ -3942,12 +3941,12 @@ export class ViewProjectInfoComponent implements OnInit {
         }
       })
       .then(blob => {
-        
+
         // Create a URL for the Blob object
         const documentURL = URL.createObjectURL(blob);
 
         window.open(documentURL, '_blank');
-        
+
 
       })
       .catch(error => {
@@ -4019,8 +4018,8 @@ export class ViewProjectInfoComponent implements OnInit {
     debugger;
 
     if (this.CurrentUser.appUserId == this.applicationDataForView[0].CreatedById && this.generateApproval == true) {
- 
-/*      this.getContactDetails();*/
+
+      /*      this.getContactDetails();*/
 
     }
 
@@ -4032,7 +4031,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     this.modalService.open(approvalPackLoading, { centered: true, size: 'xl', backdrop: 'static' })
     this.getContactDetails();
-    
+
 
   }
 
@@ -4085,13 +4084,8 @@ export class ViewProjectInfoComponent implements OnInit {
       }
     }
     else {
-      
+
     }
   }
 
-
-
-
-         
-  
 }

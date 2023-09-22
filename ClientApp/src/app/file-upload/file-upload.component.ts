@@ -15,12 +15,13 @@ export class FileUploadComponent implements OnInit {
   @Input() UploadFor: any;
   @Input() ApplicationID: any;
   @Input() isFinancial: boolean | null;
+  @Input() ServiceConditionActive: boolean | null;
   @Output() public onUploadFinished = new EventEmitter();
   @Output() public passFileName = new EventEmitter<{ uploadFor: string; fileName: string }>();
   @Output() onUploadSuccess: EventEmitter<any> = new EventEmitter();
   isDragging: boolean = false;
   isActiveDropArea: boolean = false;
-
+ 
   private readonly apiUrl: string = this.shared.getApiUrl() + '/api/';
   progress: number = 0;
   message: string | undefined;
@@ -403,7 +404,9 @@ export class FileUploadComponent implements OnInit {
     console.log("this.response", this.response);
     console.log("this.response?.dbPath", this.response?.dbPath);
     console.log("applicationData", applicationData);
-    
+    if (this.ServiceConditionActive === true) {
+      this.shared.RepFileUploadCat = "Service Condition";
+    }
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
     console.log("documentName", documentName);
     if (this.ApplicationID == "isRep") {
@@ -426,21 +429,42 @@ export class FileUploadComponent implements OnInit {
         console.log("Error: ", error);
       })
     } else {
-      this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, applicationID, applicationData.appUserId, this.CurrentUser.appUserId).subscribe((data: any) => {
+      if (this.ServiceConditionActive === true) {
+        const groupName = "Service Condition";
+        this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, applicationID, applicationData.appUserId, this.CurrentUser.appUserId, groupName).subscribe((data: any) => {
 
-        if (data.responseCode == 1) {
-          debugger;
-          // Emit the onUploadSuccess event after a successful upload
-          this.onUploadSuccess.emit(event.body);
-        }
+          if (data.responseCode == 1) {
+            debugger;
+            // Emit the onUploadSuccess event after a successful upload
+            this.onUploadSuccess.emit(event.body);
+          }
 
 
 
 
 
-      }, error => {
-        console.log("Error: ", error);
-      })
+        }, error => {
+          console.log("Error: ", error);
+        })
+      }
+      else {
+        this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, applicationID, applicationData.appUserId, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+            debugger;
+            // Emit the onUploadSuccess event after a successful upload
+            this.onUploadSuccess.emit(event.body);
+          }
+
+
+
+
+
+        }, error => {
+          console.log("Error: ", error);
+        })
+      }
+     
     }
 
   }
