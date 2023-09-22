@@ -69,6 +69,7 @@ namespace WayleaveManagementSystem.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 var appUser = await _userManager.FindByEmailAsync(model.Email);
                 var userInfo = new UserDTO(appUser.FullName, appUser.Email, appUser.UserName, appUser.DateCreated, appUser.Id);
+                
                 if (result.Succeeded)
                 {
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.

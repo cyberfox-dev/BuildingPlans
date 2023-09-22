@@ -555,6 +555,7 @@ export class LoginComponent implements OnInit {
     console.log("Email is okay?" + this.validEmail);
     console.log("Is User Internal? " + this.internalUserNoBP);
     console.log("User has valid BP Num " + this.externalWValidBP);
+    
     if (password !== passwordConfirm) {
       alert("Passwords do not match");
       this.matchingRegPasswords = false;
@@ -563,11 +564,13 @@ export class LoginComponent implements OnInit {
     }
     console.log("Passwords are: " + this.matchingRegPasswords);
   }
+  //I WONDER IF I CAN FIX THE ISSUE WITHE THE CREATE WAYLEAVE FOR NEW CLIENT SO THAT THE USER ID IS STILL ACCESSIBLE
 
   async onSendiOTP() {
 
     try {
       await this.onChecksRegistration();
+
 
       if (this.validNameSurname && this.validEmail && this.matchingRegPasswords && ((this.internalUserNoBP && !this.externalWValidBP) || (this.externalWValidBP && !this.internalUserNoBP))) {
         this.regFormReadOnly = true;
@@ -733,7 +736,7 @@ export class LoginComponent implements OnInit {
     } else {
       onLoginForm = false;
     }
-
+    debugger;
     this.VerifyBP(BpNo);
 
     this.testBp(BpNo).subscribe(isBpValid => {
@@ -773,6 +776,7 @@ export class LoginComponent implements OnInit {
         this.userService.register(clientFullName, clientEmail, clientRegisterPassword).subscribe((data: any) => {
           if (data.responseCode == 1) {
             if (onLoginForm === false) {
+              debugger;
               this.sharedService.userIDForWalkIn == data.dateSet.appUserId;
               this.newProfileComponent.onNewProfileCreate(
                 data.dateSet.appUserId,
