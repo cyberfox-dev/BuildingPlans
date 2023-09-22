@@ -369,10 +369,9 @@
   <!--Before just adding a contractor and engineer, need to be able to check which professionals are already in the system-->
   <!--Should the external mans be able to select one?-->
   <!--This is for adding contractor & engineer-->
-  <!--Sindiswa to Sindiswa: Make sure to add most recent modal.-->
   <ng-template #Prof let-modal>
     <div class="modal-header">
-      <h6 class="modal-title" id="modal-basic-title">Add New Professional</h6>
+      <h6 class="modal-title" id="modal-basic-title">Add New Professional for {{selectedUserName}} </h6>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
@@ -380,7 +379,6 @@
         <mat-tab-group dynamicHeight>
           <mat-tab label="Creating a new engineer">
             <!--<form>-->
-
 
             <div class="row">
               <div class="col">
@@ -432,8 +430,13 @@
               </div>
             </div>
             <!--          <button type="button" class="btn btn-outline-success" (click)="onAddEngineer()">Save</button>
-            -->
-            <button mat-raised-button color="green" (click)="onAddEngineer()">Save</button>
+          -->
+            <!--<button mat-raised-button color="green" (click)="onAddEngineer()">Save</button>-->
+            <div class="button-container">
+              <button mat-raised-button color="green" (click)="onAddTheirEngineer(showAddedProf);modal.close('Save click');">Add Engineer</button>
+              <button mat-raised-button color="green" (click)="openViewTheirProf(showAddedProf);modal.close('Save click');">Working List</button>
+              <button mat-raised-button color="green" (click)="openOlderProf(oldProf);modal.close('Save click');">View Existing</button>
+            </div>
 
           </mat-tab>
           <mat-tab label="Creating a New Contractor">
@@ -441,17 +444,17 @@
 
               <!--<div class="row">-->
               <!--<div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" id="bpNoContractor" [(ngModel)]="bpNoContractor" placeholder="Enter BP Number" name="bpNoContractor">
-                  <label for="bpNoContractor">BP Number</label>
-                </div>
-              </div>-->
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="bpNoContractor" [(ngModel)]="bpNoContractor" placeholder="Enter BP Number" name="bpNoContractor">
+                <label for="bpNoContractor">BP Number</label>
+              </div>
+            </div>-->
               <!--          <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" id="ProfessionalRegNo" [(ngModel)]="ProfessionalRegNo" placeholder="Enter Professional Reg No" name="professionalRegNo">
-                  <label for="professionalRegNo">CIDB Number</label>
-                </div>
-              </div>-->
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="ProfessionalRegNo" [(ngModel)]="ProfessionalRegNo" placeholder="Enter Professional Reg No" name="professionalRegNo">
+                <label for="professionalRegNo">CIDB Number</label>
+              </div>
+            </div>-->
               <!--</div>-->
               <div class="row">
                 <div class="col">
@@ -504,8 +507,14 @@
               </div>
 
               <!--            <button type="button" class="btn btn-outline-success" (click)="onAddContractor()">Save</button>
-              -->
-              <button mat-raised-button color="green" (click)="onAddContractor()">Save</button>
+            -->
+              <!--<button mat-raised-button color="green" (click)="onAddContractor()">Save</button>-->
+              <!--<button mat-raised-button color="green" (click)="onAddTheirContractor(showAddedProf);modal.close('Save click');">Save</button>-->
+              <div class="button-container">
+                <button mat-raised-button color="green" (click)="onAddTheirContractor2(showAddedProf);modal.close('Save click');">Add Contractor</button>
+                <button mat-raised-button color="green" (click)="openViewTheirProf(showAddedProf);modal.close('Save click');">Working List</button>
+                <button mat-raised-button color="green" (click)="openOlderProf(oldProf);modal.close('Save click');">View Existing</button>
+              </div>
             </div>
           </mat-tab>
           <!--</form>-->
@@ -514,7 +523,7 @@
     </div>
 
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click');populateClientInfo();modal.close('Save click');">Next</button>
+      <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click');populateClientInfo();modal.close('Save click');saveAllEngineers();saveAllContractors();">Next</button>
     </div>
   </ng-template>
 
