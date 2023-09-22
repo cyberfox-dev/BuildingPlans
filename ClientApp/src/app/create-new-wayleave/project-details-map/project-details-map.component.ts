@@ -184,6 +184,8 @@ export class ProjectDetailsMapComponent implements OnInit {
   public slideToggleScript: string = 'Show Feature Table';
   public isChecked: boolean = false;
   public isLoading = false;
+  public loadingText: string;
+  public loadingTime: number;
 
   //For maps
   isLoading2: boolean = false;
@@ -902,7 +904,7 @@ export class ProjectDetailsMapComponent implements OnInit {
       //});
 
       featureLayer.on("edits", async (event) => {
-        this.toggleLoadingIndicator(true); // Show loading indicator
+        this.toggleLoadingIndicator(true, "Starting up"); // Show loading indicator
         /*        console.log("MapConfig:",this.AllConfig)*/
 
         //Clears the distribution list. This should be moved to when the application is successfully captured and on "Create new wayleave".
@@ -924,7 +926,7 @@ export class ProjectDetailsMapComponent implements OnInit {
 
         //hack to hide loading screen
         if (subtractPolygon >= 1) {
-          this.toggleLoadingIndicator(false); // Show loading indicator
+          this.toggleLoadingIndicator(false, null); // Show loading indicator
 
         }
 
@@ -952,11 +954,11 @@ export class ProjectDetailsMapComponent implements OnInit {
 
         //Start loop from here
         for (var i = 0; i < this.sharedService.subDepartmentList.length; i++) {
-          this.toggleLoadingIndicator(true); // Show loading indicator
+          this.toggleLoadingIndicator(true, "Processing " + this.sharedService.subDepartmentList[i].subDepartmentName); // Show loading indicator
 
           //The ZoneAdminUsers for Bulk water and Waste Water and Treatment must always be returned - this code can be improved later - this is merely a fix that was hardcoded in.
           if (this.sharedService.subDepartmentList[i].isSetForAutomaticDistribution || this.sharedService.subDepartmentList[i].subDepartmentName == "Bulk Water" || this.sharedService.subDepartmentList[i].subDepartmentName == "Waste Water and Treatment") {
-            this.toggleLoadingIndicator(true); // Show loading indicator
+            this.toggleLoadingIndicator(true, null); // Show loading indicator
 
             //Get current mapLayerID
             const mapLayerID = this.sharedService.subDepartmentList[i].mapLayerID
@@ -973,14 +975,33 @@ export class ProjectDetailsMapComponent implements OnInit {
             //Get list of managers by zone. Managers are Depatment Admins, 'Department Admins' includes both Zone and Subdepartment admins. Subdepartments have at least one zone - zone1.
             this.actionCenterComponent.getUserBySubDepartmentAndRoleName(SubDepartmentID, "Department Admin").subscribe(async (data: any) => {
               if (data.responseCode == 1) {
-                const zoneAdminUsers = data.dateSet;
+                let zoneAdminUsers = data.dateSet;
+                //console.log("ZoneAdminUsers:", zoneAdminUsers);
+
+                //Removes duplicates
+                const tempList = zoneAdminUsers;
+
+                const seenCombinations = {}; // To keep track of seen combinations
+
+                zoneAdminUsers = tempList.filter(item => {
+                  const key = `${item.subDepartmentID}-${item.zoneID}-${item.email}`;
+
+                  if (!seenCombinations[key]) {
+                    seenCombinations[key] = true;
+                    return true;
+                  }
+
+                  return false;
+                });
+
+                console.log("ZoneAdminUsers:", zoneAdminUsers);
 
                 //Do nothing if the field is undefined,
                 if (mapLayerID == null) {
 
                   //Run this code if the department has only a single region, i.e., the entire city is the region
                 } else if (mapLayerID == -1) {
-                  this.toggleLoadingIndicator(true); // Show loading indicator
+                  this.toggleLoadingIndicator(true, "Processing " + SubDepartmentName + " (-1 layers)"); // Show loading indicator
                   //Bulk water
                   const bulkWaterExclusions = await this.InterceptInfrustructureChecker(SubDepartmentName, 'Bulk Water', query, 1022, this.infrustructureURL + '/', [70, 134, 68, 55, 56, 69, 75, 130, 54, 76, 77, 135, 71, 136, 58, 53, 60, 131, 138, 61, 73, 137, 51, 63, 50, 62, 132, 133, 78, 52, 57, 59]);
 
@@ -988,12 +1009,12 @@ export class ProjectDetailsMapComponent implements OnInit {
                   exclusionsList = exclusionsList.concat(bulkWaterExclusions);
 
                   //Effluent
-                  const effluentExclusions = await this.InterceptInfrustructureChecker(SubDepartmentName, 'Water Demand Management', query, 1023, this.infrustructureURL + '/', [100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114]);
+                  const effluentExclusions = await this.InterceptInfrustructureChecker(SubDepartmentName, 'Water Demand Management', query, 1023, this.infrustructureURL + '/', [100, 101, 102, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114]); //Removed 103 because it is a 'fields' layer and no polygons are present on it.
 
                   //Join lists
                   exclusionsList = exclusionsList.concat(effluentExclusions);
                   console.log(exclusionsList);
-                  this.toggleLoadingIndicator(false); // Show loading indicator
+/*                  this.toggleLoadingIndicator(false, null); // Show loading indicator*/
 
                   //Send too ALL Admin users in this subdepartment
                   this.sharedService.distributionList = this.sharedService.distributionList.concat(zoneAdminUsers);
@@ -1005,6 +1026,8 @@ export class ProjectDetailsMapComponent implements OnInit {
 
                   //This code runs when a subdepartment consists of multiple regions
                 } else if (mapLayerID > -1) {
+                  this.toggleLoadingIndicator(true, "Processing " + SubDepartmentName + "(>-1 layers)"); // Show loading indicator
+
                   // Set up the layer in the MapServer to query against
                   mapServerLayerUrl[i] = this.zonesURL + "/" + mapLayerID;
 
@@ -1014,7 +1037,7 @@ export class ProjectDetailsMapComponent implements OnInit {
 
                   //Query the layer for the current subdepartment. The intersecting layer objectIDs should be returned.
                   mapServerLayer.queryFeatures(query).then((result) => {
-                    this.toggleLoadingIndicator(true); // Show loading indicator
+                    this.toggleLoadingIndicator(true, "Processing " + SubDepartmentName + " (Checking results)"); // Show loading indicator
 
                     // Handle the resulting features that intersect or are within the drawn polygon
                     const features = result.features;
@@ -1025,7 +1048,7 @@ export class ProjectDetailsMapComponent implements OnInit {
 
                     // Iterate through the features
                     features.forEach(async (feature) => {
-                      this.toggleLoadingIndicator(true); // Show loading indicator
+                      this.toggleLoadingIndicator(true, "Processing " + SubDepartmentName + " (Checking results " + feature.attributes.OBJECTID + ")"); // Show loading indicator
 
                       //Get the objectID for the current iterated polygon interception
                       // @ts-ignore
@@ -1035,61 +1058,33 @@ export class ProjectDetailsMapComponent implements OnInit {
                       //const distance = geometryEngine.distance(query.geometry, feature.geometry, 'meters');
                       //return distance <= 2;
 
-                      const filteredList = zoneAdminUsers.filter(obj => obj.mapObjectID === OBJECTID);
-                      // Access the globalID attribute
-                      /*              const OBJECTID = feature.attributes.OBJECTID;*/
-
-                      //Add to distribution list: This list is used upon application submission.
-                      //const tempDistributionList = {} as DistributionList;
-                      //tempDistributionList.directorate = filteredList.directorate;
-                      //tempDistributionList.email = filteredList.email;
-                      //tempDistributionList.fullName = filteredList.fullName;
-                      //tempDistributionList.mapObjectID = filteredList.mapObjectID;
-                      //tempDistributionList.subDepartmentID = filteredList.subDepartmentID;
-                      //tempDistributionList.subDepartmentName = filteredList.subDepartmentName;
-                      //tempDistributionList.userID = filteredList.userID;
-                      //tempDistributionList.zoneID = filteredList.zoneID;
-                      //tempDistributionList.zoneName = filteredList.zoneName;
+                      const filteredList = zoneAdminUsers.filter(obj => obj.mapObjectID === OBJECTID && obj.subDepartmentID === SubDepartmentID);
 
                       this.sharedService.distributionList = this.sharedService.distributionList.concat(filteredList);
                       //Removes all the excluded departments
                       this.sharedService.distributionList = this.sharedService.distributionList.filter(item => !exclusionsList.includes(item.subDepartmentID));
 
-                      //Removes duplicates caused by multiple component initializations. This is a hack and should be fixed at some point.
-                      this.sharedService.distributionList = [...new Set(this.sharedService.distributionList)];
+/*                      Removes duplicates caused for whatever reason.*/
+                      const tempList = this.sharedService.distributionList;
+
+                      const seenCombinations = {}; // To keep track of seen combinations
+
+                      this.sharedService.distributionList = tempList.filter(item => {
+                        const key = `${item.subDepartmentID}-${item.zoneID}-${item.email}`;
+
+                        if (!seenCombinations[key]) {
+                          seenCombinations[key] = true;
+                          return true;
+                        }
+
+                        return false;
+                      });
+
+/*                      this.sharedService.distributionList = [...new Set(this.sharedService.distributionList)];*/
 
                       /*                    this.sharedService.distributionList.push(tempDistributionList);*/
                       console.log("Distribution list", this.sharedService.distributionList);
-
-                      //Get the department managers
-                      //this.sharedService.subDepartmentList[i].subDepartmentID;
-
-                      //this.getZoneByMapObjectID(SubDepartmentID, OBJECTID);
-                      //console.log(this.ZoneList);
-
-                      //if (await this.ZoneList.length == 0) {
-                      //  console.log("Zones not linked to map objects or sub department has no zones");
-                      //} else {
-
-                      //}
-
-                      //switch (OBJECTID) {
-                      //  case 3: //east
-                      //    this.assignTo += "Andre.VanZyl@capetown.gov.za because region 3 (east) was selected.\r"
-                      //    break;
-                      //  case 1: //so uth
-                      //    this.assignTo += "Andre.VanZyl@capetown.gov.za because region 1 (south) was selected.\r"
-                      //    break;
-                      //  case 2: //north
-                      //    this.assignTo += "Andre.VanZyl@capetown.gov.za because region 2 (north) was selected.\r"
-                      //    break;
-                      //  default:
-                      //}
-
-                      // Do something with the globalID
-                      //console.log('OBJECTID:', OBJECTID);
-                      //console.log("This application will be assigned to the following managers: \r" + this.assignTo);
-
+                      this.toggleLoadingIndicator(false, null); // Show loading indicator
                     });
 
                   });
@@ -1097,14 +1092,14 @@ export class ProjectDetailsMapComponent implements OnInit {
 
                   //This code runs if the field is null or contains something unexpected
                 } else {
-                  this.toggleLoadingIndicator(false); // Show loading indicator
+                  this.toggleLoadingIndicator(false, null); // Show loading indicator
                 }
 
                 /*              console.log(filteredList);*/
                 // Use the filteredList as needed
               }
               else {
-                this.toggleLoadingIndicator(false); // Show loading indicator
+                this.toggleLoadingIndicator(false, null); // Show loading indicator
                 //alert("Invalid Email or Password");
                 /*              alert(data.responseMessage);*/
                 /*        return null;*/
@@ -1112,7 +1107,7 @@ export class ProjectDetailsMapComponent implements OnInit {
               /*            console.log("reponse", data);*/
               return null;
             }, error => {
-              this.toggleLoadingIndicator(false); // Show loading indicator
+              this.toggleLoadingIndicator(false, null); // Show loading indicator
               console.log("Error:", error);
             });
 
@@ -1125,7 +1120,7 @@ export class ProjectDetailsMapComponent implements OnInit {
             //do not distribute to this department.
           }
 
-          this.toggleLoadingIndicator(false); // Show loading indicator
+          this.toggleLoadingIndicator(false, null); // Show loading indicator
         }
 
         //this.toggleLoadingIndicator(false); // Hide loading indicator when done
@@ -1139,7 +1134,7 @@ export class ProjectDetailsMapComponent implements OnInit {
         //this.assignTo = "";
 
         //Now get the geometry of this polygon using the globalID
-        this.toggleLoadingIndicator(false); // Show loading indicator
+        this.toggleLoadingIndicator(false, null); // Show loading indicator
       });
 
       // Listen to the 'before-apply-edits' event of the Editor widget
@@ -1783,10 +1778,10 @@ export class ProjectDetailsMapComponent implements OnInit {
 
   //Checks if a drawn object intercepts an infrustructure in a given set of layers
   private async InterceptInfrustructureChecker(currentSubDepartmentName: string, subDepartmentContainingInfrustructure: string, query: Query, exclusionUponInterception: number, baseURL: string, numbers: number[]): Promise<number[]> {
-    this.toggleLoadingIndicator(true); // Show loading indicator
+    this.toggleLoadingIndicator(true, "Checking if infrustructure is intersected for " + subDepartmentContainingInfrustructure); // Show loading indicator
 
     return new Promise<number[]>((resolve, reject) => {
-      this.toggleLoadingIndicator(true); // Show loading indicator
+      this.toggleLoadingIndicator(true, "Checking if infrustructure is intersected for " + subDepartmentContainingInfrustructure + "(" + exclusionUponInterception + ")"); // Show loading indicator
 
       if (currentSubDepartmentName === subDepartmentContainingInfrustructure) {
         let numOfInterceptions = 0;
@@ -1812,13 +1807,15 @@ export class ProjectDetailsMapComponent implements OnInit {
           });
 
           try {
+          this.toggleLoadingIndicator(true, "Checking if infrustructure is intersected for " + subDepartmentContainingInfrustructure + " (" + exclusionUponInterception + ")"); // Show loading indicator
+
             const result = await mapServerLayer.queryFeatures(query);
             numOfInterceptions += result.features.length;
 
             if (numOfInterceptions >= 1) {
               // Remove bulkwater from the exclusions list
               exclusionsList.splice(exclusionsList.indexOf(exclusionUponInterception), 1);
-              this.toggleLoadingIndicator(false); // Show loading indicator
+/*              this.toggleLoadingIndicator(false, null); // Show loading indicator*/
 
             } else {
               // Remove subdepartment first to prevent duplication of exclusions
@@ -1836,21 +1833,22 @@ export class ProjectDetailsMapComponent implements OnInit {
 
         // Start checking interceptions
         checkInterceptions(0);
-        this.toggleLoadingIndicator(true); // Show loading indicator
+        this.toggleLoadingIndicator(true, "Checking if infrustructure is intersected"); // Show loading indicator
 
       } else {
         // Handle other mapLayerID cases here
         resolve([]);
-        this.toggleLoadingIndicator(true); // Show loading indicator
+        this.toggleLoadingIndicator(true, "Checking if infrustructure is intersected"); // Show loading indicator
 
       }
-      this.toggleLoadingIndicator(true); // Show loading indicator
+      this.toggleLoadingIndicator(false, null); // Show loading indicator
     });
   }
 
   // Method to toggle the loading indicator
-  toggleLoadingIndicator(isLoading: boolean) {
+  toggleLoadingIndicator(isLoading: boolean, loadingText: string) {
     this.isLoading = isLoading;
+    this.loadingText = loadingText;
   }
 
   mapURLLoader() {
