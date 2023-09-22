@@ -296,7 +296,10 @@
 
     <mat-tab label="Documents Upload">
 
-      <app-documents-component [ApplicationID]="ApplicationID"></app-documents-component>
+      <app-documents-component [ApplicationID]="ApplicationID"
+                               [ServiceConditionActive]="false">
+
+      </app-documents-component>
 
     </mat-tab>
 
@@ -578,14 +581,15 @@
 
 
 </mat-tab>-->
-<!--------------------------------------------------------Service Items---------------------------------------------->
-<!--<mat-tab label="Service Items">
-  <div class="container-fluid">
+<!--------------------------------------------------------Service Condtions---------------------------------------------->
+<mat-tab label="Service Conditions">
+ 
+  <app-service-conditions [ApplicationID]="ApplicationID"
+                          [ServiceConditionActive]="true">
 
-    <app-service-items-config></app-service-items-config>
+  </app-service-conditions>
 
-  </div>
-</mat-tab>-->
+</mat-tab>
 
   </mat-tab-group>
 

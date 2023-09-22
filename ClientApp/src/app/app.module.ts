@@ -89,6 +89,7 @@ import { ContactDetailsComponent } from './contact-details/contact-details.compo
 import { ProjectSizeConfigComponent } from './project-size-config/project-size-config.component';
 import { InitializationService } from './service/Initialization/initialization.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { ServiceConditionsComponent } from './service-conditions/service-conditions.component';
 //import { MatExpansionModule } from '@angular/material/expansion';
 
 //import { MapModule } from 'arcgis-js-api';
@@ -165,7 +166,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     ContactDetailsComponent,
     //MatExpansionModule,
     ProjectSizeConfigComponent,
-
+    ServiceConditionsComponent,
 
 
   ],

@@ -401,7 +401,7 @@ export class NewProfileComponent implements OnInit {
 
 
       this.userPofileService.addUpdateUserProfiles(0, this.CurrentUser.appUserId, this.extApplicantName + " " + this.extApplicantSurname, this.CurrentUser.email, this.extApplicantTellNo, this.showInternal, this.extApplicantBpNoApplicant, this.extApplicantCompanyName, this.extApplicantCompanyRegNo, this.extApplicantPhyscialAddress, null, null, null, null, null, null, this.extApplicantIDUpload, this.CurrentUser.appUserId, this.extApplicantIDNumber, Number(this.selectedZone), this.extApplicantVatNumber).subscribe((data: any) => {
-
+        debugger;
         if (data.responseCode == 1) {
 
           alert(data.responseMessage);

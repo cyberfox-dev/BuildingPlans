@@ -2,7 +2,7 @@
   <button mat-raised-button color="action" (click)="openDocUpload(newSub)">Upload document</button>
 </div>
 
-<table mat-table [dataSource]="dataSourceDoc" class="mat-elevation-z8">
+<table mat-table [dataSource]="dataSourceService" class="mat-elevation-z8">
 
   <!-- Name Column -->
   <ng-container matColumnDef="DocumentName">
@@ -42,8 +42,7 @@
                              (passFileName)="onPassFileName($event)"
                              (onUploadFinished)="onFileDelete($event, 0)"
                              (onUploadSuccess)="onFileUpload($event)"
-                             [ServiceConditionActive]="ServiceConditionActive"
-                             >
+                             [ServiceConditionActive]="true">
             </app-file-upload>
           </div>
         </div>
@@ -51,6 +50,6 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" (click)="getAllDocsForApplication();changeHasFile();modal.close('Close click')">Save</button>
+    <button type="submit" class="btn btn-outline-success" (click)="getAllDocsForServiceConditions();changeHasFile();modal.close('Close click')">Save</button>
   </div>
 </ng-template>

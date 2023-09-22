@@ -5,6 +5,7 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { DocumentUploadService } from '../service/DocumentUpload/document-upload.service';
 import { SharedService } from "../shared/shared.service";
 
+
 export interface DocumentsList {
   DocumentID: number;
   DocumentName: string;
@@ -15,38 +16,82 @@ export interface DocumentsList {
 }
 
 @Component({
-  selector: 'app-documents-component',
-  templateUrl: './documents-component.component.html',
-  styleUrls: ['./documents-component.component.css']
+  selector: 'app-service-conditions',
+  templateUrl: './service-conditions.component.html',
+  styleUrls: ['./service-conditions.component.css']
 })
-export class DocumentsComponentComponent implements OnInit {
+export class ServiceConditionsComponent implements OnInit {
 
   @Input() ApplicationID: number;
-  @Input() ServiceConditionActive: boolean | null; 
+  @Input() ServiceConditionActive: boolean | null;
   DocumentsList: DocumentsList[] = [];
   private readonly apiUrl: string = this.shared.getApiUrl() + '/api/';
 
   fileAttrs = "Upload File:";
   fileAttrsName = "Doc";
- 
-  @ViewChild(MatTable) DocumentsListTable: MatTable<DocumentsList> | undefined;
+
+  @ViewChild(MatTable) ServiceConditionsTable: MatTable<DocumentsList> | undefined;
 
   fileAttr = 'Choose File';
   displayedColumnsDocs: string[] = ['DocumentName', 'actions'];
-  dataSourceDoc = this.DocumentsList;
-    currentApplication: any;
-    applicationDataForView: any;
-    hasFile: boolean;
+  dataSourceService = this.DocumentsList;
+  currentApplication: any;
+  applicationDataForView: any;
+  hasFile: boolean;
   fileCount = 0;
- 
- 
+
   constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService) { }
 
   ngOnInit(): void {
     this.currentApplication = this.shared.getViewApplicationIndex();
     this.ApplicationID = this.currentApplication.applicationID;
 
-    this.getAllDocsForApplication();
+    this.getAllDocsForServiceConditions();
+  }
+  getAllDocsForServiceConditions() {
+
+    this.DocumentsList.splice(0, this.DocumentsList.length);
+    this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
+      debugger;
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+
+          const tempDocumentList = {} as DocumentsList;
+          const current = data.dateSet[i];
+          if (current.groupName == "Service Condition") {
+            tempDocumentList.DocumentID = current.documentID;
+            tempDocumentList.DocumentName = current.documentName;
+            tempDocumentList.DocumentLocalPath = current.documentLocalPath;
+            tempDocumentList.ApplicationID = current.applicationID;
+            tempDocumentList.AssignedUserID = current.assignedUserID;
+
+
+
+            this.DocumentsList.push(tempDocumentList);
+          }
+
+          debugger;
+
+
+
+
+        }
+        this.ServiceConditionsTable.renderRows();
+
+        console.log("Service conditions doc list Service conditions doc list Service conditions doc list", data.dateSet);
+        console.log("Service conditions doc list Service conditions doc list Service conditions doc list", this.dataSourceService);
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponseGetAllDocsForApplication", data);
+
+    }, error => {
+      console.log("ErrorGetAllDocsForApplication: ", error);
+    })
+
+
   }
 
   uploadFileEvt(imgFile: any) {
@@ -93,7 +138,7 @@ export class DocumentsComponentComponent implements OnInit {
         this.modalService.dismissAll();
       }
       else {
-                    
+
       }
 
     } else {
@@ -127,7 +172,7 @@ export class DocumentsComponentComponent implements OnInit {
   }
 
   onFileUpload(event: any) {
-    
+
 
   }
 
@@ -163,52 +208,7 @@ export class DocumentsComponentComponent implements OnInit {
       });
 
   }
-
-
-  getAllDocsForApplication() {
-    this.DocumentsList.splice(0, this.DocumentsList.length);
-    this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
-
-      if (data.responseCode == 1) {
-        
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempDocList = {} as DocumentsList;
-          const current = data.dateSet[i];
-          debugger;
-          if (current.groupName != "Service Condition") {
-            tempDocList.DocumentID = current.documentID;
-            tempDocList.DocumentName = current.documentName;
-            tempDocList.DocumentLocalPath = current.documentLocalPath;
-            tempDocList.ApplicationID = current.applicationID;
-            tempDocList.AssignedUserID = current.assignedUserID;
-
-            this.DocumentsList.push(tempDocList);
-          }
-         
-
-
-
-         
-
-
-        }
-
-        this.DocumentsListTable?.renderRows();
-        console.log("GOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCS", this.DocumentsList[0]);
-      }
-      else {
-        alert(data.responseMessage);
-
-      }
-      console.log("reponseGetAllDocsForApplication", data);
-
-    }, error => {
-      console.log("ErrorGetAllDocsForApplication: ", error);
-    })
-
-  }
   openDocUpload(newSub: any) {
     this.modalService.open(newSub, { backdrop: 'static', centered: true, size: 'lg' });
   }
-
 }

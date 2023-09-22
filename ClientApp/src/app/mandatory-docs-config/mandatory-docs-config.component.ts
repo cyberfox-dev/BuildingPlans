@@ -47,6 +47,11 @@ export class MandatoryDocsConfigComponent implements OnInit {
     mandatoryDocumentCategory: ['', ]
 
   })
+  public editManDoc = this.formBuilder.group({
+    editManDocName: ['', Validators.required],
+    editManDocCategory: ['', ]
+
+  })
 
   CurrentMandatoryDocumentID: any;
   
@@ -58,6 +63,7 @@ export class MandatoryDocsConfigComponent implements OnInit {
 
   StagesList: StagesList[] = [];
   MandatoryDocumentsLinkedStagesList: MandatoryDocumentsLinkedStagesList[] = [];
+    manDocCategory: string;
 
 
   openXl(content: any) {
@@ -69,7 +75,6 @@ export class MandatoryDocsConfigComponent implements OnInit {
   openViewLinkedStages(viewLinkedStages: any) {
     this.modalService.open(viewLinkedStages, { centered: true, size: 'lg' });
   }
-
 
 
   @ViewChild(MatTable) MandatoryDocumentUploadTable: MatTable<MandatoryDocumentUploadList> | undefined;
@@ -95,8 +100,9 @@ export class MandatoryDocsConfigComponent implements OnInit {
 
 
 
-  displayedColumns: string[] = ['mandatoryDocumentName','dateCreated', 'actions'];
+  displayedColumns: string[] = ['mandatoryDocumentName', 'mandatoryDocumentCategory','dateCreated', 'actions'];
   dataSource = this.MandatoryDocumentUploadList;
+
  
 
   displayedColumnsAddStage: string[] = ['StageName', 'actions'];
@@ -200,6 +206,16 @@ export class MandatoryDocsConfigComponent implements OnInit {
     })
   }
 
+
+
+  setFilterManDocCategory() {
+    debugger;
+    this.dataSource = this.MandatoryDocumentUploadList.filter(df => df.mandatoryDocumentCategory == this.manDocCategory);
+    this.MandatoryDocumentUploadTable?.renderRows();
+    //This is what will be used for methods that need the index...
+    return this.dataSource;
+  }
+
   getAllMandatoryDocs() {
 
     this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);
@@ -213,6 +229,7 @@ export class MandatoryDocsConfigComponent implements OnInit {
           const current = data.dateSet[i];
           tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
           tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
+          tempMandatoryDocList.mandatoryDocumentCategory = current.mandatoryDocumentCategory;
           tempMandatoryDocList.stageID = current.stageID;
           tempMandatoryDocList.dateCreated = current.dateCreated;
           this.MandatoryDocumentUploadList.push(tempMandatoryDocList);
@@ -306,11 +323,21 @@ export class MandatoryDocsConfigComponent implements OnInit {
 
   }
 
-  getCurrentMandatoryDocID(index: any) {
-
+  /*getCurrentMandatoryDocID(index: any) {
+    this.selectedManDocIndex = index;
     this.CurrentMandatoryDocumentID = this.MandatoryDocumentUploadList[index].mandatoryDocumentID;
     this.header = this.MandatoryDocumentUploadList[index].mandatoryDocumentName;
+  }*/
+  getCurrentMandatoryDocID(index: any) {
+    this.selectedManDocIndex = index;
+
+    // Use this.dataSource instead of this.MandatoryDocumentUploadList
+    const selectedDocument = this.dataSource[index];
+
+    this.CurrentMandatoryDocumentID = selectedDocument?.mandatoryDocumentID || null;
+    this.header = selectedDocument?.mandatoryDocumentName || '';
   }
+
 
   onStageLink() {
     for (let i = 0; i < this.selection.selected.length; i++) {
@@ -364,7 +391,7 @@ export class MandatoryDocsConfigComponent implements OnInit {
   }
 
 
-  onManDocDelete(index:any) {
+  /*onManDocDelete(index:any) {
 
     if (confirm("Are you sure to delete " + this.MandatoryDocumentUploadList[index].mandatoryDocumentName + "?")) {
 
@@ -387,8 +414,193 @@ export class MandatoryDocsConfigComponent implements OnInit {
 
     }
 
+  }*/
+  onManDocDelete(index: number) {
+    if (index !== null && this.dataSource[index]) {
+      const documentToDelete = this.dataSource[index];
+
+      if (confirm("Are you sure to delete " + documentToDelete.mandatoryDocumentName + "?")) {
+        this.mandatoryUploadDocsService.deleteMandatoryDocument(documentToDelete.mandatoryDocumentID)
+          .subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              alert(data.responseMessage);
+              //Delete now refreshes
+              this.MandatoryDocumentUploadList = this.MandatoryDocumentUploadList.filter(item => item.mandatoryDocumentID !== documentToDelete.mandatoryDocumentID);
+              this.dataSource = [...this.MandatoryDocumentUploadList];
+              this.MandatoryDocumentUploadTable?.renderRows();
+            } else {
+              alert(data.responseMessage);
+            }
+            console.log("response", data);
+          }, error => {
+            console.log("Error: ", error);
+          });
+      }
+    }
+  }
+  /*onManDocEdit() {
+    if (this.selectedManDocIndex !== null) {
+      const editedMandatoryDocumentName = this.editManDoc.controls['editManDocName'].value;
+      const editedMandatoryDocumentCategory = this.editManDoc.controls['editManDocCategory'].value;
+
+      this.mandatoryUploadDocsService
+        .addUpdateMandatoryDocument(
+          this.MandatoryDocumentUploadList[this.selectedManDocIndex].mandatoryDocumentID,
+          editedMandatoryDocumentName,
+          this.CurrentUser.appUserId,
+          editedMandatoryDocumentCategory
+        )
+        .subscribe((data: any) => {
+          if (data.responseCode == 1) {
+            alert(data.responseMessage);
+            this.getAllMandatoryDocs();
+            this.MandatoryDocumentUploadTable?.renderRows();
+            // Reset the selectedManDocIndex after successful update
+            this.selectedManDocIndex = null;
+          } else {
+            alert(data.responseMessage);
+          }
+          console.log('reponse', data);
+        }, error => {
+          console.log('Error: ', error);
+        });
+    }
+  }*/
+  selectedManDocIndex: number | null = null;
+  /*onManDocEdit() {
+    if (this.selectedManDocIndex !== null) {
+      // Check if the form is valid
+      if (this.editManDoc.valid) {
+        const editedMandatoryDocumentName = this.editManDoc.controls['editManDocName'].value;
+        const editedMandatoryDocumentCategory = this.editManDoc.controls['editManDocCategory'].value;
+
+        // Get the original document values
+        const originalDocument = this.MandatoryDocumentUploadList[this.selectedManDocIndex];
+
+        // Check if the user made changes
+        if (
+          editedMandatoryDocumentName === originalDocument.mandatoryDocumentName &&
+          editedMandatoryDocumentCategory === originalDocument.mandatoryDocumentCategory
+        ) {
+          // No changes were made
+          alert('You have made no changes.');
+          return; // Exit the function without making the API request
+        }
+
+        // If changes were made, proceed with the API request
+        this.mandatoryUploadDocsService
+          .addUpdateMandatoryDocument(
+            originalDocument.mandatoryDocumentID,
+            editedMandatoryDocumentName,
+            this.CurrentUser.appUserId,
+            editedMandatoryDocumentCategory
+          )
+          .subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              alert(data.responseMessage);
+              this.getAllMandatoryDocs();
+              this.MandatoryDocumentUploadTable?.renderRows();
+              // Reset the selectedManDocIndex after successful update
+              this.selectedManDocIndex = null;
+            } else {
+              alert(data.responseMessage);
+            }
+            console.log('response', data);
+          }, error => {
+            console.log('Error: ', error);
+          });
+      } else {
+        // Handle form validation errors, e.g., show an error message or prevent submission
+        alert('Please fill in all required fields.');
+      }
+    }
   }
 
 
+ 
+
+
+openEdit(editingManDoc: any, index: number) {
+    if (index !== null && this.MandatoryDocumentUploadList[index]) {
+      const selectedDocument = this.MandatoryDocumentUploadList[index];
+      this.selectedManDocIndex = index;
+
+      // Set form control values based on the selected document
+      this.editManDoc.setValue({
+        editManDocName: selectedDocument.mandatoryDocumentName,
+        editManDocCategory: selectedDocument.mandatoryDocumentCategory,
+      });
+
+      this.modalService.open(editingManDoc, { centered: true, size: 'lg' });
+    }
+  }*/
+  //NB: THIS DATASOURCE ++ THIS DATASOURCE ++ THIS DATASOURCE ++ THIS DATASOURCE ++ THIS DATASOURCE intead of this.MandatoryDocumentUploadList
+  onManDocEdit() {
+    if (this.selectedManDocIndex !== null) {
+      // Check if the form is valid
+      if (this.editManDoc.valid) {
+        const editedMandatoryDocumentName = this.editManDoc.controls['editManDocName'].value;
+        const editedMandatoryDocumentCategory = this.editManDoc.controls['editManDocCategory'].value;
+
+        // Get the original document values from this.dataSource
+        const originalDocument = this.dataSource[this.selectedManDocIndex];
+
+        // Check if the user made changes
+        if (
+          editedMandatoryDocumentName === originalDocument.mandatoryDocumentName &&
+          editedMandatoryDocumentCategory === originalDocument.mandatoryDocumentCategory
+        ) {
+          // No changes were made
+          alert('You have made no changes.');
+          return; // Exit the function without making the API request
+        }
+
+        // If changes were made, proceed with the API request
+        this.mandatoryUploadDocsService
+          .addUpdateMandatoryDocument(
+            originalDocument.mandatoryDocumentID,
+            editedMandatoryDocumentName,
+            this.CurrentUser.appUserId,
+            editedMandatoryDocumentCategory
+          )
+          .subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              alert(data.responseMessage);
+              //this.getAllMandatoryDocs();
+              
+              //I'd like to "refresh" the table
+              this.dataSource = [...this.MandatoryDocumentUploadList];
+           
+              this.MandatoryDocumentUploadTable?.renderRows();
+             
+              this.selectedManDocIndex = null;   // Reseting the selectedManDocIndex after a successful update
+            } else {
+              alert(data.responseMessage);
+            }
+            console.log('response', data);
+          }, error => {
+            console.log('Error: ', error);
+          });
+      } else {
+        // Handle form validation errors, e.g., show an error message or prevent submission
+        alert('Please fill in all required fields.');
+      }
+    }
   }
+
+  openEdit(editingManDoc: any, index: number) {
+    if (index !== null && this.dataSource[index]) {
+      const selectedDocument = this.dataSource[index];
+      this.selectedManDocIndex = index;
+
+      // Set form control values based on the selected document from this.dataSource
+      this.editManDoc.setValue({
+        editManDocName: selectedDocument.mandatoryDocumentName,
+        editManDocCategory: selectedDocument.mandatoryDocumentCategory,
+      });
+
+      this.modalService.open(editingManDoc, { centered: true, size: 'lg' });
+    }
+  }
+}
 

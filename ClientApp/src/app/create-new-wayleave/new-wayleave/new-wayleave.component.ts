@@ -54,6 +54,7 @@ export interface MandatoryDocumentsLinkedStagesList {
   stageID: number;
   stageName: string;
   dateCreated: any;
+  uploads: Array<{ filename: string; /*... other properties*/ }>;
 }
 export interface TypeOfExcavationList {
   typeOfExcavationID: number;
@@ -472,6 +473,8 @@ export class NewWayleaveComponent implements OnInit {
   //CoverLetterFileName = "Choose file";
   private readonly apiUrl: string = this.shared.getApiUrl() + '/api/';
 
+  additionalUploaders: any[] = [];
+
   fileAttrs: string[] = [];
   TOE = "";
   isPlanning = false;
@@ -482,6 +485,7 @@ export class NewWayleaveComponent implements OnInit {
   generatedInvoiceNumber: string;
     totalDocs: number;
     totalDocs2: string;
+
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -2977,6 +2981,10 @@ export class NewWayleaveComponent implements OnInit {
   //  this.CoverLetterChooseFileText = CoverLetterFileName;
 
   //}
+  addAdditionalUploader() {
+    const newUploader = { mandatoryDocumentName: 'Provide a default or unique name here' };
+    this.additionalUploaders.push(newUploader);
+  }
 
 
 
@@ -3472,6 +3480,108 @@ export class NewWayleaveComponent implements OnInit {
   //    console.log("Error: ", error);
   //  })
   //}
+
+  trackByFn(index, item) {
+    return item.mandatoryDocumentID; // or any unique id from the object
+  }
+
+  isLastCharacterNotNumber(str: string): boolean {
+    if (!str) return false;
+
+    const lastChar = str.slice(-1);
+    return isNaN(Number(lastChar));
+  }
+
+  deleteUploader(index: number) {
+    let currentList = this.MandatoryDocumentsLinkedStagesList.getValue();
+
+    // Remove the item at the given index
+    currentList.splice(index, 1);
+
+    // Update the BehaviorSubject with the modified list
+    this.MandatoryDocumentsLinkedStagesList.next(currentList);
+
+    // If you're updating some UI or state based on the list change, call the appropriate function
+    this.updateMandatoryDocumentsLinkedStagesList(currentList);
+  }
+
+  addUploader(index: any) {
+    let currentList = this.MandatoryDocumentsLinkedStagesList.getValue();
+    let current = currentList[index];
+
+    // Extract base name without number at the end
+    let baseName = current.mandatoryDocumentName.replace(/(\d+)$/, "");
+
+    let currentNumber = 1; // Start with appending 1
+    let newName = baseName + currentNumber;
+
+    while (currentList.some(doc => doc.mandatoryDocumentName === newName)) {
+      currentNumber++;
+      newName = baseName + currentNumber;
+    }
+
+    let newObject = { ...current, mandatoryDocumentName: newName };
+
+    // Insert newObject directly after the current one
+    currentList.splice(index + 1, 0, newObject);
+
+    // Update the BehaviorSubject with the modified list
+    this.MandatoryDocumentsLinkedStagesList.next(currentList);
+
+    // Call updateMandatoryDocumentsLinkedStagesList function with the updated list
+    this.updateMandatoryDocumentsLinkedStagesList(currentList);
+  }
+
+
+
+
+
+
+
+  //addUploader(index: any) {
+  //  // Get the current value of the BehaviorSubject
+  //  let currentList = this.MandatoryDocumentsLinkedStagesList.getValue();
+
+  //  // Get the current object
+  //  let current = currentList[index];
+
+  //  // Create a copy of the current object
+  //  let newObject = { ...current };
+
+  //  // Extract base name without number at the end
+  //  let baseName = newObject.mandatoryDocumentName.replace(/(\d+)$/, "");
+
+  //  // Find the highest appended number for this base name in the current list
+  //  let maxNumber = 0;
+  //  for (let doc of currentList) {
+  //    if (doc.mandatoryDocumentName.startsWith(baseName)) {
+  //      let matches = doc.mandatoryDocumentName.match(/(\d+)$/);
+  //      if (matches) {
+  //        let number = parseInt(matches[1]);
+  //        if (number > maxNumber) {
+  //          maxNumber = number;
+  //        }
+  //      }
+  //    }
+  //  }
+
+  //  // If the original name had no number appended, then the next number to append will be 1.
+  //  // Otherwise, append the next number after the max number found.
+  //  newObject.mandatoryDocumentName = baseName + (maxNumber > 0 ? maxNumber + 1 : 1).toString();
+
+  //  // Insert newObject right after current in the list
+  //  currentList.splice(index + 1, 0, newObject);
+
+  //  // Update the BehaviorSubject with the modified list
+  //  this.MandatoryDocumentsLinkedStagesList.next(currentList);
+
+  //  // Call updateMandatoryDocumentsLinkedStagesList function with the updated list
+  //  this.updateMandatoryDocumentsLinkedStagesList(currentList);
+  //}
+
+
+
+
 
   updateMandatoryDocumentsLinkedStagesList(list: any[]) {
     const newList = list.map(current => {
