@@ -20,7 +20,7 @@ namespace WayleaveManagementSystem.Service
 
         public async Task<Professionals> AddUpdateProfessional(int? professinalID, string professinalType, string fullName, string bp_Number, bool? bpVerified, string email, string phoneNumber, string professionalRegNo, string appUserID, string? idNumber, string createdById, string? cibRating)
         {
-
+            
             if (professinalID == 0)
             {
                 professinalID = null;

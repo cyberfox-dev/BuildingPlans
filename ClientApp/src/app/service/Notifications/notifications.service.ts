@@ -76,8 +76,8 @@ export class NotificationsService {
       Authorization: `Basic ${encodedCredentials}`, // Set the Authorization header
     });
 
-    this.httpClient.post("https://wayleave.capetown.gov.za/mailapi" + "/send-email", emailData, { headers }).subscribe(
-/*      this.httpClient.post("https://wayleaveqa.capetown.gov.za/mailapi" + "/send-email", emailData, { headers }).subscribe(*/
+    this.httpClient.post(this.sharedService.getApiUrl() + "/mailapi/" + "send-email", emailData, { headers }).subscribe(
+/*      this.httpClient.post("https://wayleave.capetown.gov.za/mailapi" + "/send-email", emailData, { headers }).subscribe(*/
       () => {
         console.log('Email sent successfully');
         // Handle success, e.g., show a success message

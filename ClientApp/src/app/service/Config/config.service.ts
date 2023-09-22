@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SharedService } from 'src/app/shared/shared.service';
+import { Observable } from 'rxjs';
+//import { InitializationService } from 'src/app/service/Initialization/initialization.service';
 
 @Injectable({
   providedIn: 'root'
@@ -72,4 +74,5 @@ export class ConfigService {
     return this.httpClient.get(this.baseURL + "GetAllConfigs");
 
   }
+
 }

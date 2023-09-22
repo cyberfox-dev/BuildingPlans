@@ -575,7 +575,71 @@ mat-button-toggle {
   color: #474747;
   border: none;
 }
+
+.logo2 {
+  width: 180px;
+  height: 180px;
+  animation: spin 3.5s linear infinite;
+  opacity: 30%;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.container003 {
+  display: flex;
+  justify-content: space-evenly;
+}
 /*check buttons for water and sanitation type of excavtion*/
 
 
+.example-h2 {
+  margin: 10px;
+}
 
+.example-section {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  height: 60px;
+}
+
+.example-margin {
+  margin: 0 10px;
+}
+
+.example-card {
+  margin-bottom: 10px;
+}
+:host ::ng-deep mat-progress-bar {
+  height: 10px;
+  opacity: 30%;
+}
+
+  :host ::ng-deep mat-progress-bar .mdc-linear-progress__bar-inner {
+    border-top-width: 10px;
+    
+  }
+.app-spinner {
+  width: 30px !important;
+  height: 30px !important;
+}
+
+.app-progress-bar {
+  width: 400px !important;
+}
+
+.container04 {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}

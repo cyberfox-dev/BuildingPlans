@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 
-
 export interface FileDocument {
   fileName: string;
 
@@ -101,16 +100,16 @@ export interface DistributionList {
 }
 
 export interface ConfigList {
-  ConfigID: number,
-  ConfigName: string,
-  ConfigDescription: string,
-  DateCreated: Date,
-  DateUpdated: Date,
-  CreatedById: string,
+  configID: number,
+  configName: string,
+  configDescription: string,
+  dateCreated: Date,
+  dateUpdated: Date,
+  createdById: string,
   isActive: boolean,
-  UtilitySlot1: string,
-  UtilitySlot2: string,
-  UtilitySlot3: string,
+  utilitySlot1: string,
+  utilitySlot2: string,
+  utilitySlot3: string,
 }
 
 @Injectable({
@@ -148,12 +147,12 @@ export class SharedService {
   userRoles = '';
   public totalAddedFeatures: number = 0;
   public APIURL: string;
+  public ServerType: string;
 
   RepFileUploadSubName?: any | null;
   RepFileUploadSubID?: any | null;
   RepFileUploadCat?: any | null;
-
-  constructor() { }
+    userIDForWalkIn: any;
 
   setCheckEmail(data: any) {
     this.checkEmail = data;
@@ -205,18 +204,32 @@ export class SharedService {
     return this.AllConfig;
   }
 
-  setAPIURL(data: any) {
-    this.APIURL = data;
-  }
-
   getApiUrl() {
-/*    return this.APIURL;*/
-      return "https://localhost:7123";
+    let baseUrl = window.location.origin; // Get the base URL of the server
+
+    if (baseUrl == 'https://localhost:44440') { //Dev environment fix. If these ports ever change, change here too.
+      baseUrl = 'https://localhost:7123'
+    } else {
+      //Do nothing
+    };
+
+    this.APIURL = baseUrl;
+
+    return this.APIURL;
+/*      return "https://localhost:7123";*/
     /*    return "http://172.29.166.10/api/";*/
 /*        return "https://wayleaveqa.capetown.gov.za"; */
 /*        return "https://wayleave.capetown.gov.za"; */
     //this is the original ip address for venolin :)
     /*  return "https://197.242.150.226:7123/api/";*/
+  }
+
+  setServerType(data: any) {
+    this.ServerType = data;
+  }
+
+  getServerType() {
+    return this.ServerType;
   }
 
   setContactorData(data: any) {
@@ -398,4 +411,5 @@ export class SharedService {
   setUserRoles(data: any) {
     this.userRoles = data;
   }
+
 }

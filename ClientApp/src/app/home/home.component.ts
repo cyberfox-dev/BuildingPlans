@@ -10,7 +10,7 @@ import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/n
 import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
 import { ConfigService } from 'src/app/service/Config/config.service';
-import { Subscription } from 'rxjs';
+import { Subscription, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SelectEngineerTableComponent } from 'src/app/select-engineer-table/select-engineer-table.component';
 import { SelectContractorTableComponent } from 'src/app/select-contractor-table/select-contractor-table.component';
@@ -25,7 +25,10 @@ import { SubDepartmentsService } from '../service/SubDepartments/sub-departments
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
-
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { UserService } from '../service/User/user.service';
+import { NewProfileComponent } from '../new-user/new-profile/new-profile.component';
+import { BusinessPartnerService } from '../service/BusinessPartner/business-partner.service';
 
 
 export interface EngineerList {
@@ -145,16 +148,52 @@ export interface ClientUserList {
 }
 
 export interface ConfigList {
-  ConfigID: number,
-  ConfigName: string,
-  ConfigDescription: string,
-  DateCreated: Date,
-  DateUpdated: Date,
-  CreatedById: string,
+  configID: number,
+  configName: string,
+  configDescription: string,
+  dateCreated: Date,
+  dateUpdated: Date,
+  createdById: string,
   isActive: boolean,
-  UtilitySlot1: string,
-  UtilitySlot2: string,
-  UtilitySlot3: string,
+  utilitySlot1: string,
+  utilitySlot2: string,
+  utilitySlot3: string,
+}
+
+export interface TempContractorList {
+
+  companyName: string;
+  cidbNum: string;
+  cidbGrade: string;
+  name: string;
+  surname: string;
+  cellular: string;
+  email: string;
+}
+
+export interface TempEngineerList {
+
+  bpNumber: string;
+  profRegNum: string;
+  idNum: string;
+  name: string;
+  surname: string;
+  cellular: string;
+  email: string;
+}
+
+export interface ProfListEU {
+  professinalID: number;
+  ProfessinalType: string;
+  professionalRegNo: string;
+  bpNumber: string;
+  name: string;
+  surname: string;
+  //fullName: string;
+  email: string;
+  phoneNumber?: number;
+  CIBRating: string;
+  idNumber?: string;
 }
 
 
@@ -178,16 +217,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   FiterValue = "";
   isLoading: boolean = false;
 
-  /*paginator stuff*/
 
-  /*  @ViewChild(MatPaginator) paginator: MatPaginator;
-    dataSource: MatTableDataSource<any>;
-    initializeTableData() {
-      // Assuming you have an array called 'applications' with the table data
-      this.dataSource = new MatTableDataSource(this.Applications);
-      this.dataSource.paginator = this.paginator;
-      this.function();
-    }*/
 
   AllSubDepartmentList: AllSubDepartmentList[] = [];
   Applications: ApplicationsList[] = [];
@@ -202,6 +232,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   ZoneLinkedList: ZoneList[] = [];
   AllConfig: ConfigList[] = [];
   ServerType: string;
+
+  //Added on the 18th of September for the view tings
+  TempEngList: TempEngineerList[] = [];
+  TempConList: TempContractorList[] = [];
+
+  EngineersList: ProfListEU[] = [];
+  ContractorsList: ProfListEU[] = [];
 
   @ViewChild(MatTable) ZoneListTable: MatTable<ZoneList> | undefined;
 
@@ -289,6 +326,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   viewEscalateDate = 0;
 
 
+
   constructor(
     private router: Router,
     private applicationService: ApplicationsService,
@@ -308,6 +346,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     private subDepartmentService: SubDepartmentsService,
     private zoneLinkService: ZoneLinkService,
     private changeDetectorRef: ChangeDetectorRef,
+    private cdr: ChangeDetectorRef, //tables weren't showing in modal...
+    private userService: UserService,
+    private newProfileComponent: NewProfileComponent,
+    private businessPartnerService: BusinessPartnerService,
   ) {
     this.currentDate = new Date();
     this.previousMonth = this.currentDate.getMonth();
@@ -327,40 +369,40 @@ export class HomeComponent implements OnInit, OnDestroy {
   applyFilter(event: Event): string[] {
     const filterValue = (event.target as HTMLInputElement).value.toUpperCase();
     if (filterValue === "") {
-      
+
       // If the filter is empty, reset the dataSource to the original data
       this.dataSource = [...this.Applications];
       this.newList = [];
       this.applicationsTable?.renderRows();
       return this.dataSource.map(user => user.ProjectNumber || "");
-    
- 
-;
+
+
+      ;
     } else {
-      
+
       const sanitizedFilterValue = filterValue.replace(/[^\w\s]/g, '');
       const regex = new RegExp(sanitizedFilterValue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
       // Render the rows after applying the filter
-      
+
       // Apply the filter to the dataSource based on the ProjectNumber property
       this.dataSource = this.Applications.filter(user => {
-        
+
         const sanitizedProjectNumber = (user.ProjectNumber || '').replace(/[^\w\s]/g, '');
         return regex.test(sanitizedProjectNumber.toUpperCase());
       });
-      
+
       this.applicationsTable?.renderRows();
       this.newList = [...this.dataSource];
       console.log(this.newList);
       // Extract and return the filtered project numbers
       return this.newList.map(user => user.ProjectNumber || "");
     }
-   
-    
 
-  
 
-   
+
+
+
+
   }
 
 
@@ -384,17 +426,17 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.getRolesLinkedToUser();
       this.onCheckIfUserHasAccess();
       this.getAllExternalUsers();
-      
+
 
       this.getAllSubDepartments();
       this.getAllUserLinks();
-      this.getAllConfigData();
+      this.getConfig();
+      //this.ServerType = this.sharedService.getServerType();
 
-
-
+      /*      this.initializeApp();*/
       //this.function();
     }, 100);
-    //this.dataSource.paginator = this.paginator;
+
     //this.defaultPageSize = 10;
   }
 
@@ -402,9 +444,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     //this.dataSource.paginator = this.paginator;
     //this.defaultPageSize = 10;
 
-/*          const myDropdown = document.getElementById("myDropdown") as HTMLSelectElement;
-          this.select = "option1";
-          myDropdown.disabled = true;*/
+    /*          const myDropdown = document.getElementById("myDropdown") as HTMLSelectElement;
+              this.select = "option1";
+              myDropdown.disabled = true;*/
   }
 
 
@@ -420,14 +462,14 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   getAllUserLinks() {
-    
+
     this.zoneLinkService.getAllUserLinks(this.CurrentUser.appUserId).subscribe((data: any) => {
-      
+
       if (data.responseCode == 1) {
-        
+
         // const current = 
         for (let i = 0; i < data.dateSet.length; i++) {
-          
+
           if (this.AllSubDepartmentList) {
 
           }
@@ -533,9 +575,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   onAddNewClient() {
 
-
-    this.loginComponent.onRegister(this.clientName + " " + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientBpNumber, this.clientCompanyName, this.clientCompanyRegNo, this.clientPhysicalAddress, null, this.clientIDNumber);
-    this.nextBtn = true;
+    debugger;
+     this.loginComponent.onRegister(this.clientName + " " + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientBpNumber, this.clientCompanyName, this.clientCompanyRegNo, this.clientPhysicalAddress, null, this.clientIDNumber);
+     this.nextBtn = true;
   }
   nextBtn: boolean;
   nextBtn2: boolean;
@@ -553,6 +595,10 @@ export class HomeComponent implements OnInit, OnDestroy {
       stepper.next();
     }
   }
+
+  /*paginator stuff*/
+
+
 
   getLinkedZones(ApplicationID: any, processFlow: any) {
 
@@ -732,7 +778,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   getUserID(index: any) {
     console.log("Turtle Speed is too fast for me");
-    
+
     this.userID = this.ClientUserList[index].userId;
     console.log("You selected: " + this.userID);
     //The right UserID is acquired - then what?!
@@ -750,11 +796,11 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   UpdateProjectNumberConfig() {
 
-/*    if (this.CurrentUserProfile[0].isInternal == false) {
-      
-
-      this.getAllApplicationsByUserID();
-    }*/
+    /*    if (this.CurrentUserProfile[0].isInternal == false) {
+          
+    
+          this.getAllApplicationsByUserID();
+        }*/
 
     let currentMonth = this.currentDate.getMonth() + 1;
     let changeUtility = ("/" + this.currentDate.getFullYear() % 100).toString();
@@ -854,14 +900,14 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   @ViewChild('mySelect') mySelect: MatSelect;
-   getAllApplicationsByUserID() {
+  getAllApplicationsByUserID() {
 
 
-     
+
     this.Applications.splice(0, this.Applications.length);
 
-     if (this.CurrentUserProfile[0].isInternal) {
-  
+    if (this.CurrentUserProfile[0].isInternal) {
+
       /* this.applicationService.getApplicationsList(this.CurrentUser.appUserId, true).subscribe((data: any) => {
 
 
@@ -889,129 +935,129 @@ export class HomeComponent implements OnInit, OnDestroy {
 
             *//*cal application age*//*
 
-            const currentDate = new Date();
-            const dateCreated = new Date(tempApplicationList.DateCreated);
-            const timeDiff = currentDate.getTime() - dateCreated.getTime();
-            const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
-            tempApplicationList.TestApplicationAge = daysDiff;
+      const currentDate = new Date();
+      const dateCreated = new Date(tempApplicationList.DateCreated);
+      const timeDiff = currentDate.getTime() - dateCreated.getTime();
+      const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+      tempApplicationList.TestApplicationAge = daysDiff;
 
-            *//*cal stage age*//*
-            const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
-            const stageDate = currentDate.getTime() - stageDateCreated.getTime();
-            const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
-            tempApplicationList.TestApplicationStageAge = stageDateDiff;
-            console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
-
-
-
-            if (current.projectNumber != null) {
-              tempApplicationList.ProjectNumber = current.projectNumber;
-            } else {
-              tempApplicationList.ProjectNumber = (current.applicationID).toString();
-            }
+      *//*cal stage age*//*
+      const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
+      const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+      const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+      tempApplicationList.TestApplicationStageAge = stageDateDiff;
+      console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
 
 
-            *//*            do {
-                          tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
-                        } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*//*
-            //save here to send to the shared
 
-            //tempApplicationListShared.applicationID = current. ;
-            tempApplicationListShared.applicationID = current.applicationID;
-            tempApplicationListShared.clientName = current.fullName;
-            tempApplicationListShared.clientEmail = current.email;
-            tempApplicationListShared.clientAddress = current.physicalAddress;
-            tempApplicationListShared.clientRefNo = current.referenceNumber;
-            tempApplicationListShared.CompanyRegNo = current.companyRegNo;
-            tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
-            tempApplicationListShared.NotificationNumber = current.notificationNumber;
-            tempApplicationListShared.WBSNumber = current.wbsNumber;
-            tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
-            tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
-            tempApplicationListShared.NatureOfWork = current.natureOfWork;
-            tempApplicationListShared.ExcavationType = current.excavationType;
-            tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
-            tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
-            tempApplicationListShared.Location = current.location;
-            tempApplicationListShared.clientCellNo = current.phoneNumber;
-            tempApplicationListShared.CreatedById = current.createdById;
-            tempApplicationListShared.ApplicationStatus = current.applicationStatus;
-            tempApplicationListShared.CurrentStageName = current.currentStageName;
-            tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
-
-            tempApplicationListShared.NextStageName = current.nextStageName;
-            tempApplicationListShared.NextStageNumber = current.nextStageNumber;
-            tempApplicationListShared.PreviousStageName = current.previousStageName;
-            tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
-            tempApplicationListShared.DatePaid = current.datePaid;
-            tempApplicationListShared.wbsrequired = current.wbsRequired;
-            tempApplicationListShared.Coordinates = current.coordinates;
-            if (current.projectNumber != null) {
-              tempApplicationListShared.ProjectNumber = current.projectNumber;
-            } else {
-              tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
-            }
-
-            tempApplicationListShared.isPlanning = current.isPlanning;
-            tempApplicationListShared.permitStartDate = current.permitStartDate;
+      if (current.projectNumber != null) {
+        tempApplicationList.ProjectNumber = current.projectNumber;
+      } else {
+        tempApplicationList.ProjectNumber = (current.applicationID).toString();
+      }
 
 
-            this.applicationDataForView.push(tempApplicationListShared);
-            console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
-            this.Applications.push(tempApplicationList);
-            *//*Cehcing the escaltion date*//*
-            this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
+      *//*            do {
+                    tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
+                  } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*//*
+//save here to send to the shared
 
-              if (data.responseCode == 1) {
+//tempApplicationListShared.applicationID = current. ;
+tempApplicationListShared.applicationID = current.applicationID;
+tempApplicationListShared.clientName = current.fullName;
+tempApplicationListShared.clientEmail = current.email;
+tempApplicationListShared.clientAddress = current.physicalAddress;
+tempApplicationListShared.clientRefNo = current.referenceNumber;
+tempApplicationListShared.CompanyRegNo = current.companyRegNo;
+tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
+tempApplicationListShared.NotificationNumber = current.notificationNumber;
+tempApplicationListShared.WBSNumber = current.wbsNumber;
+tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
+tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
+tempApplicationListShared.NatureOfWork = current.natureOfWork;
+tempApplicationListShared.ExcavationType = current.excavationType;
+tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
+tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
+tempApplicationListShared.Location = current.location;
+tempApplicationListShared.clientCellNo = current.phoneNumber;
+tempApplicationListShared.CreatedById = current.createdById;
+tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+tempApplicationListShared.CurrentStageName = current.currentStageName;
+tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
 
-                const current = data.dateSet[0];
-                console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
-                this.viewEscalateDate = current.configDescription;
-                if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
-                  this.escalateBtn = true;
-                }
+tempApplicationListShared.NextStageName = current.nextStageName;
+tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+tempApplicationListShared.PreviousStageName = current.previousStageName;
+tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+tempApplicationListShared.DatePaid = current.datePaid;
+tempApplicationListShared.wbsrequired = current.wbsRequired;
+tempApplicationListShared.Coordinates = current.coordinates;
+if (current.projectNumber != null) {
+tempApplicationListShared.ProjectNumber = current.projectNumber;
+} else {
+tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+}
 
-              }
-              else {
-                alert("Error");
-              }
+tempApplicationListShared.isPlanning = current.isPlanning;
+tempApplicationListShared.permitStartDate = current.permitStartDate;
 
-              console.log("response", data);
-            }, error => {
-              console.log("Error", error);
-            })
+
+this.applicationDataForView.push(tempApplicationListShared);
+console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+this.Applications.push(tempApplicationList);
+*//*Cehcing the escaltion date*//*
+      this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          const current = data.dateSet[0];
+          console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
+          this.viewEscalateDate = current.configDescription;
+          if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
+            this.escalateBtn = true;
           }
 
-          this.applicationsTable?.renderRows();
-          //for card filters
-         *//* this.select = "option3";*//*
-          this.recentUnpaidCount();
-          this.recentDistributedCount();
-          this.recentApprovedCount();
-          this.recentejectedCount();
-          this.recentWIPCount();
-
-          console.log("Got all applications", data.dateSet);
         }
         else {
-          alert(data.responseMessage);
+          alert("Error");
         }
 
-      })*/
+        console.log("response", data);
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+
+    this.applicationsTable?.renderRows();
+    //for card filters
+   *//* this.select = "option3";*//*
+       this.recentUnpaidCount();
+       this.recentDistributedCount();
+       this.recentApprovedCount();
+       this.recentejectedCount();
+       this.recentWIPCount();
+
+       console.log("Got all applications", data.dateSet);
+     }
+     else {
+       alert(data.responseMessage);
+     }
+
+   })*/
 
 
-       this.FilterBtn = true;
-       this.onFilterApplicationForMyReviews();
- 
+      this.FilterBtn = true;
+      this.onFilterApplicationForMyReviews();
+
     }
     else {
-     
-      
+
+
 
       /*this.select = "option3";*/
-      
-     
-       this.applicationService.getApplicationsList(this.CurrentUser.appUserId, false).subscribe((data: any) => {
+
+
+      this.applicationService.getApplicationsList(this.CurrentUser.appUserId, false).subscribe((data: any) => {
 
 
         if (data.responseCode == 1) {
@@ -1097,7 +1143,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             this.Applications.push(tempApplicationList);
 
           }
-         /* this.mySelect.disabled = true;*/
+          /* this.mySelect.disabled = true;*/
           this.applicationsTable?.renderRows();
           this.cardFilters = false;
 
@@ -1109,13 +1155,13 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
 
         //for card filters
-       /* this.select = "option3";*/
+        /* this.select = "option3";*/
         this.recentUnpaidCount();
         this.recentDistributedCount();
         this.recentApprovedCount();
         this.recentejectedCount();
-         this.recentWIPCount();
-         this.isTableLoading = false;
+        this.recentWIPCount();
+        this.isTableLoading = false;
 
       })
     }
@@ -1189,10 +1235,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   viewProject(index: any) {
-    
+
     console.log("FIND", this.applicationDataForView[index]);
     if (this.newList.length > 0) {
-      
+
       for (var i = 0; i < this.newList.length; i++) {
         // Assuming this.applicationDataForView and newList are your arrays
 
@@ -1213,33 +1259,29 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
     } else {
-      
+
       this.applicationDataForViewToShared.push(this.applicationDataForView[index]);
     }
-    
-    
+
+
     console.log("this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]", this.applicationDataForView[index]);
     this.sharedService.setViewApplicationIndex(this.applicationDataForViewToShared);
     /*    this.CheckIfCanReapply();*/
-    
+
     this.viewContainerRef.clear();
     this.router.navigate(["/view-project-info"]);
-    
+
   }
 
   goToNewWayleave(applicationType: boolean, isPlanning: boolean) { //application type refers to whether it is a brand new application or if it is a reapply.
-
+    debugger;
     this.applicationType = applicationType;
     this.isPlanning = isPlanning;
     if (this.CurrentUserProfile[0].isInternal === true) {
       this.openSm(this.content);
     } else {
       this.createWayleave(this.applicationType, this.isPlanning);
-    } if (this.CurrentUserProfile[0].isInternal === true) {
-      this.openSm(this.content);
-    } else {
-      this.createWayleave(this.applicationType, this.isPlanning);
-    }
+    } 
 
 
   }
@@ -1453,8 +1495,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     }*/
 
   //Checks if user can re-apply
-  async CheckIfCanReapply(element: any, index:any) {
-    
+  async CheckIfCanReapply(element: any, index: any) {
+
 
 
 
@@ -1466,16 +1508,16 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     if (this.newList.length <= 0) {
       this.sharedService.setProjectNumber(element.ProjectNumber);
-      
+
       await this.applicationService.getApplicationsByProjectNumber(element.ProjectNumber).subscribe((data: any) => {
         if (data.responseCode == 1) {
 
-          
+
           for (let i = 0; i < data.dateSet.length; i++) {
             const tempRelatedApplications = {} as ApplicationList;
             const current = data.dateSet[i];
             tempRelatedApplications.ProjectNumber = current.projectNumber;
-            
+
             this.relatedApplications.push(tempRelatedApplications);
             // this.sharedService.setStageData(this.StagesList);
           }
@@ -1483,7 +1525,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
           if (data.dateSet.length < 3) {
-            
+
             this.canReapply = true;
             this.sharedService.setCanReapply(true);
           } else {
@@ -1496,7 +1538,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           alert(data.responseMessage);
         }
         console.log("reponse", data);
-        
+
         this.viewProject(index);
 
       }, error => {
@@ -1506,16 +1548,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     else {
 
       this.sharedService.setProjectNumber(this.newList[index].ProjectNumber);
-      
+
       await this.applicationService.getApplicationsByProjectNumber(this.newList[index].ProjectNumber).subscribe((data: any) => {
         if (data.responseCode == 1) {
 
-          
+
           for (let i = 0; i < data.dateSet.length; i++) {
             const tempRelatedApplications = {} as ApplicationList;
             const current = data.dateSet[i];
             tempRelatedApplications.ProjectNumber = current.projectNumber;
-            
+
             this.relatedApplications.push(tempRelatedApplications);
             // this.sharedService.setStageData(this.StagesList);
           }
@@ -1523,7 +1565,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
           if (data.dateSet.length < 3) {
-            
+
             this.canReapply = true;
             this.sharedService.setCanReapply(true);
           } else {
@@ -1536,13 +1578,13 @@ export class HomeComponent implements OnInit, OnDestroy {
           alert(data.responseMessage);
         }
         console.log("reponse", data);
-        
+
         this.viewProject(index);
 
       }, error => {
         console.log("Error: ", error);
       })
-      
+
     }
 
 
@@ -1587,7 +1629,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   myApplicaitonsUnpaidCount() {
-    
+
     const unpaidApplications = this.Applications.filter((element) => {
       return element.ApplicationStatus === 'Unpaid' && element.FullName == this.CurrentUser.fullName;
     });
@@ -1638,7 +1680,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   recentUnpaidCount() {
-    
+
     const unpaidApplications = this.Applications.filter((element) => {
       return element.ApplicationStatus === 'Unpaid';
     });
@@ -1703,24 +1745,24 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.notNyProjects = true;
     this.MyProjects = false;
     this.FiterValue = "";
-    this.FiterValue = "My Reviews";
+    this.FiterValue = "Your Reviews";
     this.cardFilters = false;
     this.applicationDataForView = [];
     this.Applications = [];
     let number = 21;
-    
+
     this.applicationService.getApplicationsForReviewer(21, this.CurrentUser.appUserId).subscribe((data: any) => {
 
 
       if (data.responseCode == 1) {
-        
+
 
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempApplicationList = {} as ApplicationsList;
           const tempApplicationListShared = {} as ApplicationList;
           const current = data.dateSet[i];
 
-          
+
 
 
 
@@ -1853,13 +1895,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.onFilterButtonClick();
     this.notNyProjects = false;
     this.MyProjects = true;
-    
+
     this.FiterValue = "";
-    this.FiterValue = "My Applications";
+    this.FiterValue = "Your Applications";
     this.cardFilters = false;
     this.applicationDataForView = [];
     this.Applications = [];
-/*    this.getAllApplicationsByUserID();*/
+    /*    this.getAllApplicationsByUserID();*/
 
     this.applicationService.getApplicationsList(this.CurrentUser.appUserId, true).subscribe((data: any) => {
 
@@ -1999,6 +2041,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
 
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
   onFilterAPplicationsForRecentApplications() {
     this.isTableLoading = true;
     this.onFilterButtonClick();
@@ -2135,6 +2180,8 @@ export class HomeComponent implements OnInit, OnDestroy {
             })
           }
           this.dataSource = this.Applications.filter(df => df.DateCreated);
+
+
           this.applicationsTable?.renderRows();
           //for card filters
           /* this.select = "option3";*/
@@ -2280,13 +2327,13 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   onFilterApplications() {
 
-    
+
     if (this.select == "option1") {
       this.cardFilters = false;
       this.applicationDataForView = [];
       this.Applications = [];
       this.getAllApplicationsByUserID();
-  
+
       this.applicationService.getApplicationsList(this.CurrentUser.appUserId, true).subscribe((data: any) => {
 
 
@@ -2430,19 +2477,19 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.applicationDataForView = [];
       this.Applications = [];
       let number = 21;
-      
+
       this.applicationService.getApplicationsForReviewer(21, this.CurrentUser.appUserId).subscribe((data: any) => {
 
 
         if (data.responseCode == 1) {
-          
+
 
           for (let i = 0; i < data.dateSet.length; i++) {
             const tempApplicationList = {} as ApplicationsList;
             const tempApplicationListShared = {} as ApplicationList;
             const current = data.dateSet[i];
 
-            
+
 
 
 
@@ -2554,7 +2601,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.dataSource = this.Applications.filter(df => df.DateCreated);
           this.applicationsTable?.renderRows();
           //for card filters
-       
+
           this.recentUnpaidCount();
           this.recentDistributedCount();
           this.recentApprovedCount();
@@ -2572,7 +2619,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     else if (this.select == "option3") {
 
       this.cardFilters = true;
-     
+
       this.applicationDataForView = [];
       this.Applications = [];
 
@@ -2838,10 +2885,10 @@ export class HomeComponent implements OnInit, OnDestroy {
         });
       this.subscriptions.push(subscription);
 
-      
+
 
     }
-    else{
+    else {
 
     }
 
@@ -2891,40 +2938,17 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
 
-  //Method is duplicated in the login.component.ts
-  getAllConfigData() {
+  getConfig() {
     this.AllConfig.splice(0, this.AllConfig.length);
-
 
     this.configService.getAllConfigs().subscribe((data: any) => {
 
-      if (data.responseCode == 1) {
+      if (data) {
+        this.AllConfig = data.dateSet;
 
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempConfigList = {} as ConfigList;
-          const current = data.dateSet[i];
-
-          tempConfigList.ConfigID = current.configID;
-          tempConfigList.ConfigName = current.configName;
-          tempConfigList.ConfigDescription = current.configDescription;
-          tempConfigList.DateCreated = current.dateCreated;
-          tempConfigList.DateUpdated = current.dateUpdated;
-          tempConfigList.CreatedById = current.createdById;
-          tempConfigList.isActive = current.isActive;
-          tempConfigList.UtilitySlot1 = current.utilitySlot1;
-          tempConfigList.UtilitySlot2 = current.utilitySlot2;
-          tempConfigList.UtilitySlot3 = current.utilitySlot3;
-
-          console.log("MapConfig:", tempConfigList);
-
-          this.AllConfig.push(tempConfigList);
-
-          //    this.sharedService.MapConfig(tempConfigList);
-        }
         this.sharedService.setAllConfig(this.AllConfig);
-        this.ServerType = this.AllConfig.find((config) => config.ConfigName === 'ServerType').UtilitySlot1;
-
-
+        this.ServerType = this.AllConfig.find((Config) => Config.configName === 'ServerType').utilitySlot1;
+        //this.sharedService.setAPIURL(this.AllConfig.find((Config) => Config.configName === 'BaseUrl').utilitySlot2);
       }
       else {
         alert("Error");
@@ -2936,6 +2960,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
 
   }
+
 
   isTransparent: boolean = true; // Initialize as true if you want the navbar to be transparent initially
 
@@ -2952,22 +2977,744 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   onFilterButtonClick() {
-/*    
-    const table = document.querySelector('.mat-elevation-z8');
+    /*    
+        const table = document.querySelector('.mat-elevation-z8');
+    
+        // Remove the fade-out class to trigger fade-in
+        table.classList.remove('fade-out');
+    
+        // Add the fade-in class to start the fade-in animation
+        table.classList.add('fade-in');
+    
+        // After the animation completes, remove the fade-in class
+        setTimeout(() => {
+          table.classList.remove('fade-in');
+        }, 3000); */// Wait for 3 seconds (3000 milliseconds) for the fade-in animation to complete
+  }
+  //EXISTING USER THINGS=======================================================================================================================================================================
+  /*18 September 2023
+ -open a modal with the added professionals
+ -let the user be able to view, delete and edit professionals before proceeding
+ -these should go into a temporary list
+ */
+  selectedUserName: string = '';
 
-    // Remove the fade-out class to trigger fade-in
-    table.classList.remove('fade-out');
+  //The aim is to show the selected user's linked professionals
+  @ViewChild(MatTable) contractorTable: MatTable<ProfListEU> | undefined;
+  displayedColumnsOldContractors: string[] = ['fullName', 'email', 'idNumber', 'phoneNumber'];
+  dataSourceContractors = this.ContractorsList;
 
-    // Add the fade-in class to start the fade-in animation
-    table.classList.add('fade-in');
+  @ViewChild(MatTable) engineerTable: MatTable<ProfListEU> | undefined;
+  displayedColumnsOldEngineers: string[] = ['fullName', 'email', 'idNumber', 'phoneNumber'];
+  dataSourceEngineers = this.EngineersList;
 
-    // After the animation completes, remove the fade-in class
-    setTimeout(() => {
-      table.classList.remove('fade-in');
-    }, 3000); */// Wait for 3 seconds (3000 milliseconds) for the fade-in animation to complete
+
+  @ViewChild(MatTable) TempContractorTable: MatTable<TempContractorList> | undefined;
+  displayedColumnsTempContractors: string[] = ['companyName', 'cidbNum', 'cidbGrade', 'name', 'surname', 'cellular', 'email', 'actions'];
+  dataSourceTempContractors = this.TempConList;
+
+  @ViewChild(MatTable) TempEngineersTable: MatTable<TempEngineerList> | undefined;
+  displayedColumnsTempEngineers: string[] = ['bpNumber', 'profRegNum', 'idNum', 'name', 'surname', 'cellular', 'email', 'actions'];
+  dataSourceTempEngineers = this.TempEngList;
+
+  openViewTheirProf(showAddedProf: any) {
+    this.modalService.open(showAddedProf, { backdrop: 'static', centered: true, size: 'xl' });
+  }
+  openOlderProf(oldProf: any) {
+    this.modalService.open(oldProf, { centered: true, size: 'xl' });
+  }
+  //The [Save] button
+
+
+  onAddTheirEngineer(showAddedProf: any) {
+    //So if I am creating for an existing client kufanele kume kanjani?
+    //createdById: string | this.CurrentUser.appUserId
+    //appUserID: string | this.userID = this.ClientUserList[index].userId;
+    // Check if any of the required fields is empty
+    if (
+      !this.bpNoApplicant ||
+      !this.professionalRegNo ||
+      !this.engineerIDNo ||
+      !this.name ||
+      !this.surname ||
+      !this.applicantTellNo ||
+      !this.applicantEmail
+    ) {
+      alert('Please fill in all required fields.');
+      return; // Exit the function if any required field is empty
+    }
+    const newEngineer: TempEngineerList = {
+
+      bpNumber: this.bpNoApplicant,
+      profRegNum: this.professionalRegNo,
+      idNum: this.engineerIDNo,
+      name: this.name,
+      surname: this.surname,
+      cellular: this.applicantTellNo.toString(),
+      email: this.applicantEmail,
+      //professionalID: data.professionalID, // Store professionalID here
+
+    };
+
+    this.TempEngList.push(newEngineer);
+    this.TempEngineersTable?.renderRows(); // Explicitly trigger rendering
+    this.clearCreateEngComponent();
+    this.openViewTheirProf(showAddedProf);
+
+  }
+  onAddTheirContractor2(showAddedProf: any) {
+
+
+    if (
+      !this.contractorIDNo ||
+      !this.ProfessionalRegNo ||
+      !this.CIBRating ||
+      !this.Name ||
+      !this.Surname ||
+      !this.ContractorTell ||
+      !this.ContractorEmail
+    ) {
+      console.log(this.contractorIDNo); ////
+      console.log(this.ProfessionalRegNo);
+      console.log(this.CIBRating);
+      console.log(this.Name);//
+      console.log(this.Surname);//
+      console.log(this.ContractorTell);//
+      console.log(this.ContractorEmail);//
+      alert('Please fill in all required fields. Is this where you stop???');
+      return; // Exit the function if any required field is empty
+    }
+
+    const newContractor: TempContractorList = {
+
+      companyName: this.contractorIDNo,
+      cidbNum: this.ProfessionalRegNo,
+      cidbGrade: this.CIBRating,
+      name: this.Name,
+      surname: this.Surname,
+      cellular: this.ContractorTell.toString(),
+      email: this.ContractorEmail,
+      //professionalID: any;
+    };
+
+    this.TempConList.push(newContractor);
+    this.TempContractorTable?.renderRows();
+    this.clearCreateComponent();
+    this.openViewTheirProf(showAddedProf);
   }
 
+  openEditingEng(editEngineer: any) {
+    this.modalService.open(editEngineer, { backdrop: 'static', centered: true, size: 'xl' });
+  }
+  openEditingCon(editContractor: any) {
+    this.modalService.open(editContractor, { backdrop: 'static', centered: true, size: 'xl' });
+  }
+
+  editEngBPNum = '';
+  editEngRegNum = '';
+  editEngID = '';
+  editEngName = '';
+  editEngSurname = '';
+  editEngPhone = '';
+  editEngEmail = '';
+  selectedEngineer: any = null;
+  openEditTempEngineer(index: any, editEngineer: any) {
+
+
+    if (index >= 0 && index < this.dataSourceTempEngineers.length) {
+      // Check if the index is valid
+      // Update the engineer's details in the data source
+      this.selectedEngineer = this.dataSourceTempEngineers[index];
+
+      this.editEngBPNum = this.selectedEngineer.bpNumber;
+      this.editEngRegNum = this.selectedEngineer.profRegNum;
+      this.editEngID = this.selectedEngineer.idNum;
+      this.editEngName = this.selectedEngineer.name;
+      this.editEngSurname = this.selectedEngineer.surname;
+      this.editEngPhone = this.selectedEngineer.cellular;
+      this.editEngEmail = this.selectedEngineer.email;
+
+      this.openEditingEng(editEngineer);
+
+    } else {
+      console.error('Invalid index for editing engineer.');
+    }
+  }
+
+  editConCompany = '';
+  editConCIDBNum = '';
+  editConCIDBRating = '';
+  editConName = '';
+  editConSurname = '';
+  editConPhone = '';
+  editConEmail = '';
+  selectedContractor: any = null;
+  openEditTempContractor(index: any, editContractor: any) {
+
+    if (index >= 0 && index < this.dataSourceTempContractors.length) {
+      this.selectedContractor = this.dataSourceTempContractors[index];
+
+      this.editConCompany = this.selectedContractor.companyName;
+      this.editConCIDBNum = this.selectedContractor.cidbNum;
+      this.editConCIDBRating = this.selectedContractor.cidbGrade;
+      this.editConName = this.selectedContractor.name;
+      this.editConSurname = this.selectedContractor.surname;
+      this.editConPhone = this.selectedContractor.cellular;
+      this.editConEmail = this.selectedContractor.email;
+      this.openEditingCon(editContractor);
+    }
+    else {
+      console.error('Invalid index for editing contractor.');
+    }
+
+  }
+  saveEditedEngineerDetails(showAddedProf: any) {
+    // Update the engineer's details in the data source
+    this.selectedEngineer.bpNumber = this.editEngBPNum;
+    this.selectedEngineer.profRegNum = this.editEngRegNum;
+    this.selectedEngineer.idNum = this.editEngID;
+    this.selectedEngineer.name = this.editEngName;
+    this.selectedEngineer.surname = this.editEngSurname;
+    this.selectedEngineer.cellular = this.editEngPhone;
+    this.selectedEngineer.email = this.editEngEmail;
+
+    this.selectedEngineer = null;
+    this.openViewTheirProf(showAddedProf);
+
 
   }
 
+  saveEditedContractorDetails(showAddedProf: any) {
+    // Update the engineer's details in the data source
+    this.selectedContractor.companyName = this.editConCompany;
+    this.selectedContractor.cidbNum = this.editConCIDBNum;
+    this.selectedContractor.cidbGrade = this.editConCIDBRating;
+    this.selectedContractor.name = this.editConName;
+    this.selectedContractor.surname = this.editConSurname;
+    this.selectedContractor.cellular = this.editConPhone;
+    this.selectedContractor.email = this.editConEmail;
+
+    this.selectedContractor = null;
+    this.openViewTheirProf(showAddedProf);
+
+
+  }
+
+  // Delete a temporarily saved engineer by index with confirmation
+  deleteTemporaryEngineerWithConfirmation(index: number) {
+    if (index >= 0 && index < this.TempEngList.length) {
+      // Check if the index is valid
+
+      // Show a confirmation dialog to the user
+      const confirmDelete = window.confirm('Are you sure you want to delete this engineer?');
+
+      if (confirmDelete) {
+        // If the user confirms, proceed with deletion
+        this.TempEngList.splice(index, 1); // Remove the engineer at the specified index
+        this.dataSourceTempEngineers = this.TempEngList;
+        this.TempEngineersTable?.renderRows();
+      } else {
+        // If the user cancels, do nothing
+        console.log('Deletion canceled by the user.');
+      }
+    } else {
+      console.error('Invalid index for deleting engineer.');
+    }
+  }
+
+  deleteTemporaryContractorWithConfirmation(index: number) {
+    if (index >= 0 && index < this.TempConList.length) {
+      // Check if the index is valid
+
+      // Show a confirmation dialog to the user
+      const confirmDelete = window.confirm('Are you sure you want to delete this contractor?');
+
+      if (confirmDelete) {
+        // If the user confirms, proceed with deletion
+        this.TempConList.splice(index, 1); // Remove the contractor at the specified index
+        this.dataSourceTempContractors = this.TempConList;
+        this.TempContractorTable?.renderRows();
+      } else {
+        // If the user cancels, do nothing
+        console.log('Deletion canceled by the user.');
+      }
+    } else {
+      console.error('Invalid index for deleting contractor.');
+    }
+  }
+
+  //[Next] button
+  saveAllEngineers() {
+    // Use forEach to loop through TempEngList and call onPermaSaveTheirEngineer for each engineer
+    this.TempEngList.forEach(engineer => {
+      this.onPermaSaveTheirEngineer(engineer);
+    });
+  }
+  saveAllContractors() {
+    debugger;
+    this.TempConList.forEach(contractor => {
+      this.onPermaSaveTheirContractor(contractor);
+    });
+  }
+  onPermaSaveTheirContractor(contractor: TempContractorList) {
+    if (
+      !contractor.companyName ||
+      !contractor.cidbNum ||
+      !contractor.cidbGrade ||
+      !contractor.name ||
+      !contractor.surname ||
+      !contractor.cellular ||
+      !contractor.email
+    ) {
+      debugger;
+      alert('Please fill in all required fields for the contractor.');
+      return; // Exit the function if any required field is empty for the current engineer
+    }
+    debugger;
+    // Use properties of the engineer parameter to populate the database request
+    this.professionalService.addUpdateProfessional(
+      0, // Action identifier (e.g., 0 for adding)
+      "Contractor", // Professional type
+      contractor.name + " " + contractor.surname, // Name
+      null, //the form doesn't request a BP number moss
+      false, // Active status
+      contractor.email,
+      contractor.cellular,
+      contractor.cidbNum,
+      this.userID,
+      contractor.companyName, //wait, is this supposed to be the company name or ID number?/
+      this.CurrentUser.appUserId,
+      contractor.cidbGrade
+    ).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        //alert(data.responseMessage);
+        //this.getExtUserEngineers();
+        this.contractorTable?.renderRows();
+      } else {
+        alert(data.responseMessage);
+        debugger;
+      }
+      console.log("response", data);
+      debugger;
+    }, error => {
+      console.log("Error: ", error);
+      debugger;
+    });
+  }
+
+  onPermaSaveTheirEngineer(engineer: TempEngineerList) {
+    //Okay, so this should only add after the user confirms... [Next] button
+
+    // Check if any of the required fields is empty for the current engineer
+    if (
+      !engineer.bpNumber ||
+      !engineer.profRegNum ||
+      !engineer.idNum ||
+      !engineer.name ||
+      !engineer.surname ||
+      !engineer.cellular ||
+      !engineer.email
+    ) {
+      alert('Please fill in all required fields for the engineer.');
+      return; // Exit the function if any required field is empty for the current engineer
+    }
+
+    /*this.professionalService.addUpdateProfessional(0, "Engineer", this.name + " " + this.surname, this.bpNoApplicant, false,
+      this.applicantEmail, this.applicantTellNo?.toString(), this.professionalRegNo, this.userID, this.engineerIDNo, this.CurrentUser.appUserId,
+      null).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+
+
+          alert(data.responseMessage);
+          this.getExtUserEngineers();
+          this.ContractorTable?.renderRows();
+
+        }
+
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+      }, error => {
+        console.log("Error: ", error);
+     })*/
+    // Use properties of the engineer parameter to populate the database request
+    this.professionalService.addUpdateProfessional(
+      0, // Action identifier (e.g., 0 for adding)
+      "Engineer", // Professional type
+      engineer.name + " " + engineer.surname, // Name
+      engineer.bpNumber,
+      false, // Active status
+      engineer.email,
+      engineer.cellular,
+      engineer.profRegNum,
+      this.userID,
+      engineer.idNum,
+      this.CurrentUser.appUserId,
+      null // Additional data, if needed
+    ).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        //alert(data.responseMessage);
+        //this.getExtUserEngineers();
+        this.engineerTable?.renderRows();
+      } else {
+        alert(data.responseMessage);
+      }
+      console.log("response", data);
+    }, error => {
+      console.log("Error: ", error);
+    });
+  }
+
+  //CREATING NEW CLIENT WAYLEAVE AND LINKING THEIR PROFESSIONALS == CREATING NEW CLIENT WAYLEAVE AND LINKING THEIR PROFESSIONALS == CREATING NEW CLIENT WAYLEAVE AND LINKING THEIR PROFESSIONALS
+  // Declare and initialize editedEngineer with empty values - HEY, here's another temporary list
+
+  NewTempEngList: EngineerList[] = [];
+  @ViewChild(MatTable) NewTempEngineersTable: MatTable<EngineerList> | undefined;
+  displayedColumnsNewTempEngineers: string[] = ['bpNoApplicant', 'professionalRegNo', 'engineerIDNo', 'name', 'surname', 'applicantTellNo', 'applicantEmail', 'actions'];
+  dataSourceNewTempEngineers = this.NewTempEngList;
+
+  editedNewEngineer: EngineerList = {
+    bpNumber: '',
+    professionalRegNo: '',
+    idNumber: '',
+    name: '',
+    surname: '',
+    phoneNumber: '',
+    email: '',
+    professinalID: 0,
+    ProfessinalType: 'Engineer'
+  };
+
+  editing: boolean = false;
+  selectedNewEngineer: any = null;
+  selectedNewIndex: number = null;
+
+  clearCreateComponent() {
+    this.bpNoContractor = "";
+    this.ProfessionalRegNo = ""; //AKA CIDB Number
+    this.CIBRating = "";
+    this.Name = "";
+    this.Surname = '';
+    this.ContractorTell = undefined;
+    this.ContractorEmail = '';
+    this.contractorIDNo = '';
+  }
+  clearCreateEngComponent() {
+    this.name = "";
+    this.surname = '';
+    this.bpNoApplicant = '';
+    this.applicantEmail = '';
+    this.applicantTellNo = undefined;
+    this.engineerIDNo = '';
+    this.professionalRegNo = "";
+  }
+  undoEdit() {
+
+    this.clearCreateEngComponent();
+    this.NewTempEngineersTable?.renderRows();
+    this.selectedNewEngineer = null;
+    this.editing = false;
+    this.selectedNewIndex = null;
+    this.editedNewEngineer = null;
+  }
+  onTempAddNewEngineer() {
+    if (
+
+      !this.bpNoApplicant ||
+      !this.professionalRegNo ||
+      !this.engineerIDNo ||
+      !this.name ||
+      !this.surname ||
+      !this.applicantTellNo ||
+      !this.applicantEmail
+    ) {
+      alert('Please fill in all required fields.');
+      return; // Exit the function if any required field is empty
+    }
+    const newEngineer: EngineerList = {
+      bpNumber: this.bpNoApplicant,
+      professionalRegNo: this.professionalRegNo,
+      idNumber: this.engineerIDNo,
+      name: this.name,
+      surname: this.surname,
+      phoneNumber: this.applicantTellNo.toString(),
+      email: this.applicantEmail,
+      //the standard for all new temporary engineer entries
+      professinalID: 0,
+      ProfessinalType: 'Engineer'
+    };
+
+    this.NewTempEngList.push(newEngineer);
+    this.cdr.detectChanges(); // Trigger change detection
+    console.log("These are the engineers you have adeded: " + JSON.stringify(this.NewTempEngList, null, 2));
+    debugger;
+    this.NewTempEngineersTable?.renderRows(); // Explicitly trigger rendering
+    this.clearCreateEngComponent();
+
+  }
+  onPermaSaveNewEngineer(engineer: EngineerList) {
+    debugger;
+    // Use properties of the engineer parameter to populate the database request
+    this.professionalService.addUpdateProfessional(
+      0, // Action identifier (e.g., 0 for adding)
+      "Engineer", // Professional type
+      engineer.name + " " + engineer.surname, // Name
+      engineer.bpNumber,
+      false, // Active status
+      engineer.email,
+      engineer.phoneNumber,
+      engineer.professionalRegNo,
+      this.userID, //Need to confirm this with kyle || Get new client's ID njani?
+      engineer.idNumber,
+      this.CurrentUser.appUserId,
+      null // Additional data, if needed
+    ).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+        this.NewTempEngineersTable?.renderRows();
+      } else {
+        alert(data.responseMessage);
+      }
+      console.log("response", data);
+    }, error => {
+      console.log("Error: ", error);
+    });
+  }
+  saveAllNewEngineers() {
+    // Use forEach to loop through TempEngList and call onPermaSaveTheirEngineer for each engineer
+    this.NewTempEngList.forEach(engineer => {
+      this.onPermaSaveNewEngineer(engineer);
+    });
+  }
+  //DELETEENGINEER-DELETEENGINEER-DELETEENGINEER-DELETEENGINEER-DELETEENGINEER-DELETEENGINEER-DELETEENGINEER-DELETEENGINEER-DELETEENGINEER
+  deleteNewTemporaryEngineerWithConfirmation(index: number) {
+    if (index >= 0 && index < this.NewTempEngList.length) {
+      // Check if the index is valid
+
+      // Show a confirmation dialog to the user
+      const confirmDelete = window.confirm('Are you sure you want to delete this engineer?');
+
+      if (confirmDelete) {
+        // If the user confirms, proceed with deletion
+        this.NewTempEngList.splice(index, 1); // Remove the engineer at the specified index
+        this.dataSourceNewTempEngineers = this.NewTempEngList;
+        this.NewTempEngineersTable?.renderRows();
+      } else {
+        // If the user cancels, do nothing
+        console.log('Deletion canceled by the user.');
+      }
+    } else {
+      console.error('Invalid index for deleting engineer.');
+    }
+  }
+  //EDITENGINEER-EDITENGINEER-EDITENGINEER-EDITENGINEER-EDITENGINEER-EDITENGINEER-EDITENGINEER-EDITENGINEER-EDITENGINEER-EDITENGINEER
+  editNewTemporaryEngineer(index: number) {
+    if (index >= 0 && index < this.NewTempEngList.length) {
+      // Check if the index is valid
+      this.editing = true;
+      this.selectedNewIndex = index;
+      this.selectedNewEngineer = this.NewTempEngList[index];
+
+      // Populate the input fields with the selectedEngineer data
+      this.bpNoApplicant = this.selectedNewEngineer.bpNumber;
+      this.professionalRegNo = this.selectedNewEngineer.professionalRegNo;
+      this.engineerIDNo = this.selectedNewEngineer.idNumber;
+      this.name = this.selectedNewEngineer.name;
+      this.surname = this.selectedNewEngineer.surname;
+      this.applicantTellNo = this.selectedNewEngineer.phoneNumber;
+      this.applicantEmail = this.selectedNewEngineer.email;
+
+    } else {
+      console.error('Invalid index for editing engineer.');
+    }
+  }
+  saveEditNewTempEngineer() {
+
+    this.editedNewEngineer = {
+      bpNumber: this.bpNoApplicant,
+      professionalRegNo: this.professionalRegNo,
+      idNumber: this.engineerIDNo,
+      name: this.name,
+      surname: this.surname,
+      phoneNumber: this.applicantTellNo,
+      email: this.applicantEmail,
+      professinalID: 0,
+      ProfessinalType: 'Engineer'
+    };
+
+    if (this.editedNewEngineer.bpNumber !== '') {
+      this.selectedNewEngineer.bpNumber = this.editedNewEngineer.bpNumber;
+    }
+    if (this.editedNewEngineer.professionalRegNo !== '') {
+      this.selectedNewEngineer.professionalRegNo = this.editedNewEngineer.professionalRegNo;
+    }
+    if (this.editedNewEngineer.idNumber !== '') {
+      this.selectedNewEngineer.idNumber = this.editedNewEngineer.idNumber;
+    }
+    if (this.editedNewEngineer.name !== '') {
+      this.selectedNewEngineer.name = this.editedNewEngineer.name;
+    }
+    if (this.editedNewEngineer.surname !== '') {
+      this.selectedNewEngineer.surname = this.editedNewEngineer.surname;
+    }
+    if (this.editedNewEngineer.phoneNumber !== '') {
+      this.selectedNewEngineer.phoneNumber = this.editedNewEngineer.phoneNumber;
+    }
+    if (this.editedNewEngineer.email !== '') {
+      this.selectedNewEngineer.email = this.editedNewEngineer.email;
+    }
+    this.selectedNewEngineer = this.NewTempEngList[this.selectedNewIndex];
+    this.undoEdit();
+
+  }
+
+  validEmail: boolean;
+  validFullName: boolean;
+  externalWValidBP: boolean;
+  noEmptyFields: boolean;
+  clientFullName: string = '';
+  //SAVING NEW PROFILE BE SHADY=======================================================================================================
+  testBp2(BpNo: any): Promise<boolean> {
+    return this.businessPartnerService.validateBP(Number(BpNo))
+      .toPromise()
+      .then((response: any) => {
+        const apiResponse = response.Response;
+        return apiResponse === "X";
+      })
+      .catch((error: any) => {
+        // Handle API error
+        console.error('API error:', error);
+        return false; // Return false in case of an error
+      });
+  }
+  async validateClientInfo() {
+   
+    let clientEmail = this.clientEmail;
+    let phoneNumber = this.clientCellNo;
+    let clientRefNo = this.clientRefNo;
+    let BpNo = this.clientBpNumber;
+    let companyName = this.clientCompanyName;
+    let companyRegNo = this.clientCompanyRegNo;
+    let clientCompanyType = this.clientCompanyType;
+    let physicalAddress = this.clientPhysicalAddress;
+
+    const nameRegex = /^[a-zA-Z]+$/;
+
+    // Check if clientName is valid
+    if (nameRegex.test(this.clientName)) {
+      // Check if clientSurname is valid
+      if (nameRegex.test(this.clientSurname)) {
+        // Both clientName and clientSurname are valid, so concatenate them
+        this.validFullName = true;
+        this.clientFullName = this.clientName + ' ' + this.clientSurname;
+        console.log("Full Name: " + this.clientFullName);
+      } else {
+        alert("Invalid surname. Please enter a single name with letters only.");
+      }
+    } else {
+      alert("Invalid name. Please enter a single name with letters only.");
+    }
+
+    const emailRegex: RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    if (clientEmail === null || !emailRegex.test(clientEmail)) {
+      alert("Please enter a valid email address");
+      this.validEmail = false;
+    } else {
+      this.validEmail = true;
+
+      // Check if the email already exists in the wayleave system
+      try {
+        const exists = await this.userService.emailExists(clientEmail).toPromise();
+        if (exists) {
+          alert("Email already exists in wayleave system.");
+          this.validEmail = false;
+        } else {
+          console.log("Testing BP Number");
+          // Ensure bpNumber is not empty before validating it
+          if (BpNo.trim() === '') {
+            alert("Please enter a valid BP Number");
+            this.externalWValidBP = false;
+          } else {
+            console.log("Testing BP number now...");
+            const isValidBP = await this.testBp2(BpNo);
+            if (isValidBP) {
+              this.externalWValidBP = true;
+            } else {
+              // Handle invalid BP Number
+              alert("Please enter a valid BP Number");
+              console.log("ngathi this BP is not valid.");
+              this.externalWValidBP = false; // Set this to false in case of an invalid BP Number
+            }
+          }
+        }
+      } catch (error) {
+        console.error("An error occurred: ", error);
+        this.validEmail = false;
+        this.externalWValidBP = false;
+      }
+    }
+
+    console.log("Email is okay?" + this.validEmail);
+    console.log("User has a valid BP Num " + this.externalWValidBP);
+
+    //What other validation must be done here?
+    if (
+      phoneNumber === undefined || phoneNumber.trim() === '' ||
+      clientRefNo === undefined || clientRefNo.trim() === '' ||
+      companyName === undefined || companyName.trim() === '' ||
+      companyRegNo === undefined || companyRegNo.trim() === '' ||
+      clientCompanyType === undefined || clientCompanyType.trim() === '' ||
+      physicalAddress === undefined || physicalAddress.trim() === ''
+    ) {
+      this.noEmptyFields = false;
+      alert("Please fill out all the required fields.");
+    } else {
+      this.noEmptyFields = true;
+    }
+    //(this.noEmptyFields == true && this.validFullName == true && this.validEmail == true && this.externalWValidBP == true)
+    if (this.noEmptyFields == true && this.validFullName == true && this.validEmail == true) {
+      this.sharedService.errorForRegister = false;
+      this.createNewClient();
+    }
+    else {
+      return;
+    }
+  }
+
+  createNewClient() {
+    try {
+
+      this.userService.register(this.clientFullName, this.clientEmail, "Password@" + this.clientFullName).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          this.newProfileComponent.onNewProfileCreate(
+            //this.sharedService.userIDForWalkIn,
+            null,
+            this.clientFullName,
+            this.clientEmail,
+            this.clientCellNo,
+            this.clientBpNumber,
+            this.clientCompanyName,
+            this.clientCompanyRegNo,
+            this.clientPhysicalAddress,
+            null,
+            null,
+          );
+          debugger;
+          this.sharedService.clientUserID = data.dateSet.appUserId;
+          console.log("IS this " + this.clientName + "'s USERID: " + this.sharedService.clientUserID);
+          localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
+          this.sharedService.newUserProfileBp = this.clientBpNumber;
+          this.router.navigate(["/new-profile"]);
+        }
+      });
+  }
+    catch (e) {
+      console.log("There has been an issue with registering new client: " + e);
+    }
+
+   //the part that is relevant is the conditional statement that has a userID of null
+  }
+}
 

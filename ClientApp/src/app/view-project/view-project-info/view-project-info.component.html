@@ -38,14 +38,14 @@
 
 
 
-<h1 *ngIf="CurrentApplicationBeingViewed[0].isPlanning === false">Application Information</h1>
-<h1 *ngIf="CurrentApplicationBeingViewed[0].isPlanning === true">Application Planning Information</h1>
-<h2>Project Number {{projectNo}}</h2>
+<h1 *ngIf="CurrentApplicationBeingViewed[0].isPlanning === false" class="animationSlideUp">Application Information</h1>
+<h1 *ngIf="CurrentApplicationBeingViewed[0].isPlanning === true" class="animationSlideUp">Application Planning Information</h1>
+<h2 class="animationSlideUp">Project Number {{projectNo}}</h2>
 
 <div class="cont1">
 
-  <app-action-center [ApplicationID]="ApplicationID" (refreshParent)="ngOnInit()" *ngIf="isInternalUser" (optionEvent)="reciveOption($event)"></app-action-center>
-  <button mat-button color="action" [matMenuTriggerFor]="actions"> <mat-icon>more_vert</mat-icon></button>
+  <app-action-center [ApplicationID]="ApplicationID" (refreshParent)="ngOnInit()" *ngIf="isInternalUser" (optionEvent)="reciveOption($event)" class="animationSlideUp"></app-action-center>
+  <button mat-button color="action" [matMenuTriggerFor]="actions" class="animationSlideUp"> <mat-icon>more_vert</mat-icon></button>
   <mat-menu #actions="matMenu">
     <button mat-menu-item (click)="openPaidDate(paidDateModal)" *ngIf="isInternalUser"> Move to Paid</button>
     <!--<button mat-menu-item (click)="MoveToNextStage()" *ngIf="isInternalUser">Move to Next Stage</button>-->
@@ -62,7 +62,7 @@
 </div>
 
 
-<div class="container-fluid cont6">
+<div class="container-fluid cont6 animationFadeIn">
 
   <mat-tab-group>
 
@@ -106,8 +106,9 @@
       <div class="main-container">
         <section id="timeline" class="timeline-outer">
           <div class="container" id="content">
-            <div class="row" *ngFor="let commentsList of CommentsList; let i = index">
-              <div class="col s12 m12 l12">
+                                                                                      
+            <div class="row" *ngFor="let commentsList of CommentsList; let i = index" [style.margin-left.px]="(i % 2 === 0) ? 60 : 80" [style.margin-right.px]="(i % 2 === 0) ? 60 : 80"  >
+              <div class="col s12 m12 l12" *ngIf="!(commentsList.CommentStatus === 'Referred' && referComment)">
 
                 <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved' " [class.Reject]="commentsList.CommentStatus === 'Reject'||commentsList.CommentStatus === 'Rejected'" [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'" [class.refer]="commentsList.CommentStatus === 'Referred'" [class.returned]="commentsList.CommentStatus === 'Returned'" [class.reviewerClarify]="commentsList.CommentStatus === 'Reviewer Clarity'">
 

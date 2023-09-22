@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { Component, NgModule } from '@angular/core';
+import { APP_INITIALIZER, Component, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
@@ -87,11 +87,17 @@ import { SharedService } from './shared/shared.service';
 import { DepartmentCirculationPlanningComponent } from './department-circulation-planning/department-circulation-planning.component';
 import { ContactDetailsComponent } from './contact-details/contact-details.component';
 import { ProjectSizeConfigComponent } from './project-size-config/project-size-config.component';
+import { InitializationService } from './service/Initialization/initialization.service';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ServiceConditionsComponent } from './service-conditions/service-conditions.component';
 //import { MatExpansionModule } from '@angular/material/expansion';
 
 //import { MapModule } from 'arcgis-js-api';
 //import Map from "@arcgis/core/Map";
+// Define the APP_INITIALIZER provider
+//export function initializeApp(initializationService: InitializationService) {
+//  return () => initializationService.initializeApp();
+//}
 
 @NgModule({
   declarations: [
@@ -176,6 +182,7 @@ import { ServiceConditionsComponent } from './service-conditions/service-conditi
     MatDatepickerModule,
     BrowserAnimationsModule,
     MatTableModule,
+    MatProgressBarModule,
     MatPaginatorModule,
     MatRadioModule,
     MatDividerModule,
@@ -205,8 +212,8 @@ import { ServiceConditionsComponent } from './service-conditions/service-conditi
     GooglePlaceModule,
     DragDropModule,
     RouterModule.forRoot([
-      { path: '', component: LoginComponent },
-      { path: 'home', component: HomeComponent },
+      { path: '', component: LoginComponent},
+      { path: 'home', component: HomeComponent},
       { path: 'new-profile', component: NewProfileComponent },
       { path: 'new-wayleave', component: NewWayleaveComponent },
       { path: 'view-project-info', component: ViewProjectInfoComponent },
@@ -218,6 +225,13 @@ import { ServiceConditionsComponent } from './service-conditions/service-conditi
     ])
   ],
   providers: [
+    //InitializationService,
+    //{
+    //  provide: APP_INITIALIZER,
+    //  useFactory: initializeApp,
+    //  multi: true,
+    //  deps: [InitializationService]
+    //},
     SelectEngineerTableComponent,
     SelectContractorTableComponent,
     HomeComponent,

@@ -49,6 +49,16 @@
     color: #ccdee2;
     width: 20px;
   }
+  //Temporary list actions
+.mat-warni {
+  background-color: #9d2235;
+  color: #fff;
+}
+
+.mat-orange {
+  background-color: #ff9900;
+  color: #fff;
+}
 
   table {
     width: 100%;
@@ -467,6 +477,21 @@
     transform: translateY(0);
   }
 }
+@keyframes fade-in-top-Nav {
+  0% {
+    opacity: 0;
+    transform: translateY(-60px); /* Optional: Add a slide-up effect */
+  }
+  50% {
+    opacity: 0;
+    transform: translateY(-30px); /* Optional: Add a slide-up effect */
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 @keyframes fade-in {
   0% {
     opacity: 0;
@@ -482,6 +507,9 @@
 }
 .animationSlideUp {
   animation: fade-in-top 0.5s ease-out;
+}
+.animationSlideUpNav {
+  animation: fade-in-top-Nav 0.5s ease-out;
 }
 .animationFadeIn {
   animation: fade-in-top 0.5s ease-out;
@@ -1367,8 +1395,9 @@ display:none;
   justify-content: space-evenly;
 }
 .mat-filter {
-  font-size:14px;
-  text-align:center;
+  font-size: 28px;
+  text-align: center;
+  color: #005870;
 }
 .mat-button-toggle-group {
   width: 100%;
@@ -1411,4 +1440,15 @@ mat-button-toggle {
 .container003 {
   display: flex;
   justify-content: space-evenly;
+}
+
+//button
+.button-container {
+  display: flex; /* Use flexbox to arrange buttons horizontally */
+  gap: 8px; /* Adjust the gap as needed */
+}
+.selected-row {
+  background-color: #f0f0f0; /* Change to your desired background color */
+  font-weight: bold; /* Change to your desired text style */
+  color: #333; /* Change to your desired text color */
 }

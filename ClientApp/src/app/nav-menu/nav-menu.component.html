@@ -1,8 +1,8 @@
-<div class="nav"  [ngClass]="{'transparent': isTransparent}">
+<div class="nav animationSlideUpNav"  [ngClass]="{'transparent': isTransparent}">
   <input type="checkbox" id="nav-check">
   <div class="nav-header">
     <div class="nav-title" (click)="goHome()">
-      <img src="assets/cctlogoblack.png" alt="" class="logo">
+      <img src="assets/cctlogoblack.png" class="logo">
     </div>
   </div>
   <div class="nav-btn">
@@ -194,7 +194,7 @@
       <mat-form-field>
         <mat-label>Filter by selecting a department</mat-label>
         <mat-select [(value)]="select" (selectionChange)="filterDepartment()">
-          <mat-option>None</mat-option>
+          <mat-option value="All">All</mat-option>
           <mat-option *ngFor="let department of SubDepartmentList" value="{{department.subDepartmentID}}">{{department.subDepartmentName}}</mat-option>
         </mat-select>
       </mat-form-field>
@@ -266,6 +266,14 @@
         <mat-option value="Layout Plans">Layout Plans</mat-option>
       </mat-select>
     </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <div class="cont6">
+
+        <input matInput placeholder="Please enter in a description for your document"  #input>
+      </div>
+
+    </mat-form-field>
 
     <mat-form-field>
       <div>
@@ -280,7 +288,7 @@
                                [UploadFor]="fileAttrsName"
                                (passFileName)="onPassFileName($event)"
                                (onUploadFinished)="onFileDelete($event, 0)"
-                               (onUploadSuccess)="onFileUpload($event)"  *ngIf="selectDepForUpload != 0 && selected != 'none' && selected != undefined">
+                               (onUploadSuccess)="onFileUpload($event)" *ngIf="selectDepForUpload != 0 && selected != 'none' && selected != undefined">
               </app-file-upload>
             </div>
           </div>

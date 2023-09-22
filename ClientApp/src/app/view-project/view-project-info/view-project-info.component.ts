@@ -417,6 +417,8 @@ export class ViewProjectInfoComponent implements OnInit {
   datePaid: string;
   Paid: string;
   canReviewerClarify: boolean;
+    previousReviewer: any;
+    referComment: boolean;
   previousReviewer: any;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
@@ -582,6 +584,10 @@ export class ViewProjectInfoComponent implements OnInit {
       this.generateApprovalbtn = true;
     } else {
       this.generateApprovalbtn = false;
+      
+    }
+    if (this.CurrentUser.appUserId == this.applicationDataForView[0].CreatedById) {
+      this.referComment = true;
     }
 
     debugger;

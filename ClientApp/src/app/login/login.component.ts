@@ -9,23 +9,23 @@ import { NewProfileComponent } from 'src/app/new-user/new-profile/new-profile.co
 import { HomeComponent } from 'src/app/home/home.component';
 import { BusinessPartnerService } from 'src/app/service/BusinessPartner/business-partner.service';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { Observable, of, throwError} from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { BpNumberService } from 'src/app/service/BPNumber/bp-number.service'
 import { tap } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ConfigService } from 'src/app/service/Config/config.service';
 import { delay } from 'rxjs/operators';
-  export interface ConfigList {
-  ConfigID: number,
-  ConfigName: string,
-  ConfigDescription: string,
-  DateCreated: Date,
-  DateUpdated: Date,
-  CreatedById: string,
+export interface ConfigList {
+  configID: number,
+  configName: string,
+  configDescription: string,
+  dateCreated: Date,
+  dateUpdated: Date,
+  createdById: string,
   isActive: boolean,
-  UtilitySlot1: string,
-  UtilitySlot2: string,
-  UtilitySlot3: string,
+  utilitySlot1: string,
+  utilitySlot2: string,
+  utilitySlot3: string,
 }
 
 @Component({
@@ -89,7 +89,7 @@ export class LoginComponent implements OnInit {
 
   //Gets all configuration data
   AllConfig: ConfigList[] = [];
-  ServerType: string;
+  public ServerType: string;
 
   constructor(
     private router: Router,
@@ -104,11 +104,10 @@ export class LoginComponent implements OnInit {
     private modalService: NgbModal,
     private bpNumberService: BpNumberService,
     private configService: ConfigService,
+    private route: ActivatedRoute
   ) {     //Run this before anything else because weaccess the apiURL from it.
-    this.getAllConfigData();
+    this.getConfig();
   }
-
-  ng
 
   ngOnInit() {
 
@@ -118,7 +117,7 @@ export class LoginComponent implements OnInit {
       registerPassword: ['', Validators.required],
       reenterPassword: ['', Validators.required],
       fullName: ['', Validators.required],
-      bpNumber: [''], 
+      bpNumber: [''],
       OTPField: ['', Validators.required],
     });
 
@@ -239,7 +238,7 @@ export class LoginComponent implements OnInit {
     alert('There was an error. Please try again.');
   }
 
-  
+
   // characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   //public generateOTP(length: number): string {
   //  let otp = '';
@@ -307,9 +306,9 @@ export class LoginComponent implements OnInit {
         this.router.navigate(["/home"]);
 
         // Wait for an additional 5 seconds before setting isLoading to false
-        
-          this.isLoading = false;
-      
+
+        this.isLoading = false;
+
       },
       (error) => {
         console.log("Error: ", error);
@@ -343,14 +342,14 @@ export class LoginComponent implements OnInit {
   //      }
   //    }),
   //    switchMap((profileData: any) => {
-        
+
   //      localStorage.setItem("userProfile", JSON.stringify(profileData.dateSet));
   //      const isInternal = profileData.dateSet[0].isInternal; // assuming isInternal is part of the dateSet at index 0
   //      const bpNo = profileData.dateSet[0].bP_Number;  // assuming bpNumber is part of the dateSet at index 0
-        
+
   //      // Only test the bpNumber if isInternal is false
   //      if (!isInternal) {
-          
+
   //        return this.testBp(bpNo);
   //      } else {
   //        // If isInternal is true, return an Observable of true to proceed with login
@@ -361,7 +360,7 @@ export class LoginComponent implements OnInit {
   //    (isValidBp: boolean) => {
   //      this.isLoading = false;
   //      if (isValidBp) {
-          
+
   //        this.router.navigate(["/home"]);
   //      } else {
   //        this.error = "Invalid Business Partner (BP) Number! Please contact CCT eServices for more information.";
@@ -431,7 +430,7 @@ export class LoginComponent implements OnInit {
     return new Observable(observer => {
       this.businessPartnerService.validateBP(Number(BpNo)).subscribe(
         (response: any) => {
-          
+
           const apiResponse = response.Response;
           if (apiResponse == "X") {
             observer.next(true);
@@ -455,7 +454,7 @@ export class LoginComponent implements OnInit {
 
     this.bpNumberService.makeApiCall(requestBody)
       .subscribe(response => {
-        console.log('bpNumber:',response);
+        console.log('bpNumber:', response);
         // Handle the response data here
       });
   }
@@ -556,6 +555,7 @@ export class LoginComponent implements OnInit {
     console.log("Email is okay?" + this.validEmail);
     console.log("Is User Internal? " + this.internalUserNoBP);
     console.log("User has valid BP Num " + this.externalWValidBP);
+    
     if (password !== passwordConfirm) {
       alert("Passwords do not match");
       this.matchingRegPasswords = false;
@@ -564,11 +564,13 @@ export class LoginComponent implements OnInit {
     }
     console.log("Passwords are: " + this.matchingRegPasswords);
   }
+  //I WONDER IF I CAN FIX THE ISSUE WITHE THE CREATE WAYLEAVE FOR NEW CLIENT SO THAT THE USER ID IS STILL ACCESSIBLE
 
   async onSendiOTP() {
 
     try {
       await this.onChecksRegistration();
+
 
       if (this.validNameSurname && this.validEmail && this.matchingRegPasswords && ((this.internalUserNoBP && !this.externalWValidBP) || (this.externalWValidBP && !this.internalUserNoBP))) {
         this.regFormReadOnly = true;
@@ -584,9 +586,9 @@ export class LoginComponent implements OnInit {
     catch (error) {
       console.error("Error in onChecksRegistration:", error);
     }
-  
+
   }
-  
+
   async onVerifyOTPRegister(
     clientFullName?: string | null,
     clientEmail?: string | null,
@@ -605,7 +607,7 @@ export class LoginComponent implements OnInit {
 
     clientFullName = this.registerForm.controls["fullName"].value;
     clientEmail = this.registerForm.controls["registerEmail"].value;
-    
+
     BpNo = this.registerForm.controls["bpNumber"].value;
 
     if (this.otp != otpEntered) {
@@ -614,9 +616,11 @@ export class LoginComponent implements OnInit {
     else { 
     //Not sure what this does TBH
     this.sharedService.errorForRegister = false;
-    this.userService.register(clientFullName, clientEmail, "Password@" + clientFullName).subscribe((data: any) => {
+      this.userService.register(clientFullName, clientEmail, clientRegisterPassword).subscribe((data: any) => {
       if (data.responseCode == 1) {
         if (onLoginForm === false) {
+
+          this.sharedService.userIDForWalkIn == data.dateSet.appUserId; //added to add access user ID, when trying to create new wayleave for new client?
           this.newProfileComponent.onNewProfileCreate(
             data.dateSet.appUserId,
             clientFullName,
@@ -632,18 +636,19 @@ export class LoginComponent implements OnInit {
           this.sharedService.errorForRegister = false;
         }
 
-        this.sharedService.clientUserID = data.dateSet.appUserId;
-        localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
-        this.sharedService.newUserProfileBp = BpNo;
-        this.router.navigate(["/new-profile"]);
-      } else {
-        this.sharedService.errorForRegister = true;
-        alert(data.responseMessage);
-      }
-    }, error => {
-      console.log("Error: ", error);
-    });
+          this.sharedService.clientUserID = data.dateSet.appUserId;
+          localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
+          this.sharedService.newUserProfileBp = BpNo;
+          this.router.navigate(["/new-profile"]);
+        } else {
+          this.sharedService.errorForRegister = true;
+          alert(data.responseMessage);
+        }
+      }, error => {
+        console.log("Error: ", error);
+      });
     }
+    console.log("Your password is: " + clientRegisterPassword);
   }
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   DoChecksForRegister() {
@@ -654,9 +659,6 @@ export class LoginComponent implements OnInit {
     let email = this.registerForm.controls["registerEmail"].value;
     let password = this.registerForm.controls["registerPassword"].value;
     let passwordConfirm = this.registerForm.controls["reenterPassword"].value;
-
-
-
 
     // Use a regular expression to check if the email is valid 
     const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -721,6 +723,7 @@ export class LoginComponent implements OnInit {
     ApplicantIDUpload?: string | null,
     ApplicantIDNumber?: string | null
   ) {
+    debugger;
     let onLoginForm = true;
     let clientRegisterPassword = null;
     // If the method is called without parameters, then get the values from the form
@@ -733,7 +736,7 @@ export class LoginComponent implements OnInit {
     } else {
       onLoginForm = false;
     }
-
+    debugger;
     this.VerifyBP(BpNo);
 
     this.testBp(BpNo).subscribe(isBpValid => {
@@ -755,7 +758,7 @@ export class LoginComponent implements OnInit {
         alert("Please enter a valid email address!");
         return;
       }
-
+      debugger;
       // Count the number of spaces in the full name
       let numberOfSpaces = 0;
       if (clientFullName != null) {
@@ -769,10 +772,12 @@ export class LoginComponent implements OnInit {
       if (numberOfSpaces >= 2 || numberOfSpaces == 0) {
         alert("Please enter your first name and surname only!");
       }
-      else if (clientRegisterPassword != null){
+      else if (clientRegisterPassword != null) {
         this.userService.register(clientFullName, clientEmail, clientRegisterPassword).subscribe((data: any) => {
           if (data.responseCode == 1) {
             if (onLoginForm === false) {
+              debugger;
+              this.sharedService.userIDForWalkIn == data.dateSet.appUserId;
               this.newProfileComponent.onNewProfileCreate(
                 data.dateSet.appUserId,
                 clientFullName,
@@ -787,7 +792,7 @@ export class LoginComponent implements OnInit {
               );
               this.sharedService.errorForRegister = false;
             }
-
+            debugger;
             this.sharedService.clientUserID = data.dateSet.appUserId;
             localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
             this.sharedService.newUserProfileBp = BpNo;
@@ -801,6 +806,7 @@ export class LoginComponent implements OnInit {
         });
       }
       else {
+        debugger;
         // If BP Number is valid, proceed with user registration
         this.userService.register(clientFullName, clientEmail, "Password@" + clientFullName).subscribe((data: any) => {
           if (data.responseCode == 1) {
@@ -819,7 +825,7 @@ export class LoginComponent implements OnInit {
               );
               this.sharedService.errorForRegister = false;
             }
-           
+
             this.sharedService.clientUserID = data.dateSet.appUserId;
             localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
             this.sharedService.newUserProfileBp = BpNo;
@@ -836,332 +842,332 @@ export class LoginComponent implements OnInit {
   }
 
 
-            //startExpirationTimer() {
-            //  this.expirationTimer = setTimeout(() => {
-            //    this.isExpired = true;
-            //    this.sendOTPBtn = true;
-            //  }, this.expirationTime * 1000);
-            //}
+  //startExpirationTimer() {
+  //  this.expirationTimer = setTimeout(() => {
+  //    this.isExpired = true;
+  //    this.sendOTPBtn = true;
+  //  }, this.expirationTime * 1000);
+  //}
 
-            //  DoChecksForRegister() {
-
-
-
-
-            ///*    this.notification.sendEmail("jahdiel@cyberfox.co.za", "Test", "testing 1, 2, 3...");*/
-
-            //    let fullName = this.registerForm.controls["fullName"].value;
-            //    let email = this.registerForm.controls["registerEmail"].value;
-            //    let password = this.registerForm.controls["registerPassword"].value;
-            //    let passwordConfirm = this.registerForm.controls["reenterPassword"].value;
-            //            this.sharedService.clientUserID = data.dateSet.appUserId;
-
-
-            //          } else {
-            //            //alert("Invalid Email or Password");
-            //            alert(data.responseMessage);
-            //          }
-            //          //console.log("reponse", data);
-            //        }, error => {
-            //          console.log("Error: ", error);
-            //        });
-            //      }
-            //    }
-            //    else {
-            //      this.notification.sendEmail("venolin@cyberfox.co.za", "Test", "testing 1, 2, 3...");
-
-            //      let fullName = this.registerForm.controls["fullName"].value;
-            //      let email = this.registerForm.controls["registerEmail"].value;
-            //      let password = this.registerForm.controls["registerPassword"].value;
-            //      let passwordConfirm = this.registerForm.controls["reenterPassword"].value;
+  //  DoChecksForRegister() {
 
 
 
 
-            //    // Use a regular expression to check if the email is valid
-            //    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            //    if (email != null) {
-            //      if (!emailRegex.test(email)) {
-            //        alert("Please enter a valid email address!");
-            //        this.otp = '';
-            //        let numberOfSpaces = 0;
-            //        if (fullName != null) {
-            //          numberOfSpaces = (fullName.split(" ").length - 1);
-            //          if (password != passwordConfirm) {
-            //            alert("The passwords entered do not match");
-            //            this.otp = '';
-            //            if (numberOfSpaces >= 2 || numberOfSpaces == 0) {
-            //              alert("Please enter your first name and surname only!");
-            //              this.otp = '';
-            //            } else {
-            //              this.FullName = fullName;
-            //              this.Email = email;
-            //              this.Password = password;
+  ///*    this.notification.sendEmail("jahdiel@cyberfox.co.za", "Test", "testing 1, 2, 3...");*/
+
+  //    let fullName = this.registerForm.controls["fullName"].value;
+  //    let email = this.registerForm.controls["registerEmail"].value;
+  //    let password = this.registerForm.controls["registerPassword"].value;
+  //    let passwordConfirm = this.registerForm.controls["reenterPassword"].value;
+  //            this.sharedService.clientUserID = data.dateSet.appUserId;
 
 
-            //            }
-            //          }
-            //          else {
-            //          }
-            //        }
-            //        else {
-            //          alert("Please enter your first name and surname only!");
-            //          this.otp = '';
-            //        }
+  //          } else {
+  //            //alert("Invalid Email or Password");
+  //            alert(data.responseMessage);
+  //          }
+  //          //console.log("reponse", data);
+  //        }, error => {
+  //          console.log("Error: ", error);
+  //        });
+  //      }
+  //    }
+  //    else {
+  //      this.notification.sendEmail("venolin@cyberfox.co.za", "Test", "testing 1, 2, 3...");
 
-            //      }
-            //    } else {
-            //      alert("Please enter a valid email address!");
-            //      this.otp = '';
-            //      return;
-            //    }
-            //      // Use a regular expression to check if the email is valid
-            //      const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            //      if (email != null) {
-            //        if (!emailRegex.test(email)) {
-            //          alert("Please enter a valid email address!");
-            //          return;
-            //        }
-            //      } else {
-            //        alert("Please enter a valid email address!");
-            //        return;
-            //      }
+  //      let fullName = this.registerForm.controls["fullName"].value;
+  //      let email = this.registerForm.controls["registerEmail"].value;
+  //      let password = this.registerForm.controls["registerPassword"].value;
+  //      let passwordConfirm = this.registerForm.controls["reenterPassword"].value;
 
 
 
 
-            //    // Count the number of spaces in the full name
+  //    // Use a regular expression to check if the email is valid
+  //    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  //    if (email != null) {
+  //      if (!emailRegex.test(email)) {
+  //        alert("Please enter a valid email address!");
+  //        this.otp = '';
+  //        let numberOfSpaces = 0;
+  //        if (fullName != null) {
+  //          numberOfSpaces = (fullName.split(" ").length - 1);
+  //          if (password != passwordConfirm) {
+  //            alert("The passwords entered do not match");
+  //            this.otp = '';
+  //            if (numberOfSpaces >= 2 || numberOfSpaces == 0) {
+  //              alert("Please enter your first name and surname only!");
+  //              this.otp = '';
+  //            } else {
+  //              this.FullName = fullName;
+  //              this.Email = email;
+  //              this.Password = password;
 
 
-            //    //Check if passwords entered, match.
+  //            }
+  //          }
+  //          else {
+  //          }
+  //        }
+  //        else {
+  //          alert("Please enter your first name and surname only!");
+  //          this.otp = '';
+  //        }
+
+  //      }
+  //    } else {
+  //      alert("Please enter a valid email address!");
+  //      this.otp = '';
+  //      return;
+  //    }
+  //      // Use a regular expression to check if the email is valid
+  //      const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  //      if (email != null) {
+  //        if (!emailRegex.test(email)) {
+  //          alert("Please enter a valid email address!");
+  //          return;
+  //        }
+  //      } else {
+  //        alert("Please enter a valid email address!");
+  //        return;
+  //      }
 
 
 
 
-            //  }
-
-            // Count the number of spaces in the full name
-            //let numberOfSpaces = 0;
-            //if (fullName != null) {
-            //  numberOfSpaces = (fullName.split(" ").length - 1);
-            //}
-            //else {
-            //  alert("Please enter your first name and surname only!");
-            //  return;
-            //}
-
-            //  onRegister() {
-            //    let otpEntered = this.registerForm.controls["OTPField"].value;
-
-            ///*if it is expired*/
-            //    if (this.isExpired) {
-            //     alert("OTP has expired. Please send a new OTP");
-            //      return;
-            //    }
-            //      //Check if passwords entered, match.
-            //      if (password != passwordConfirm) {
-            //        alert("The passwords entered do not match");
-            //        return;
-            //      }
-            //      else {
-            //      }
-
-            //    if (this.otp == otpEntered) {
-
-            //      this.userService.register(this.registerForm.controls["fullName"].value, this.registerForm.controls["registerEmail"].value, this.registerForm.controls["registerPassword"].value).subscribe((data: any) => {
-            //        if (data.responseCode == 1) {
-            //          console.log("After Register", data.dateSet);
-            //          localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
-            //          alert(data.responseMessage);
-            //          this.router.navigate(["/new-profile"]);
-            //        } else {
-            //          //alert("Invalid Email or Password");
-            //          alert(data.responseMessage);
-            //        }
-            //        //console.log("reponse", data);
-            //      }, error => {
-            //        console.log("Error: ", error);
-            //      });
-            //    }
-
-            //    else {
-            //      alert("Invalid OTP");
-            //    }
-            //  }
-
-            //  onLogin() {
-            //    this.isLoading = true;
-            //    let email = this.loginForm.controls["email"].value;
-            //    let password = this.loginForm.controls["password"].value;
-
-            //    this.userService.login(email, password).subscribe(
-            //      (data: any) => {
-            //        if (data.responseCode === 1) {
-            //          localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
-            //          this.getUserProfile();
-
-            //          this.isLoading = false;
-            //          this.router.navigate(["/home"]);
-            //        } else {
-            //          this.isLoading = false;
-
-            //          this.error = ""+ data.responseMessage;
-
-            //        }
-            //      },
-            //      (error) => {
-            //        console.log("Error: ", error);
-            //      }
-            //    );
-
-            //  }
-
-            //    getUserProfile() {
-            //      let stringifiedData = JSON.parse(
-            //        JSON.stringify(localStorage.getItem("LoggedInUserInfo"))
-            //      );
-            //      let currentUser = JSON.parse(stringifiedData);
-            //      this.userPofileService
-            //        .getUserProfileById(currentUser.appUserId)
-            //        .subscribe(
-            //          (data: any) => {
-            //            localStorage.setItem("userProfile", JSON.stringify(data.dateSet));
-            //          },
-            //          (error) => {
-            //            console.log("Error: ", error);
-            //          }
-            //        );
-            //    }
-            //      if (numberOfSpaces >= 2 || numberOfSpaces == 0) {
-            //        alert("Please enter your first name and surname only!");
-            //      } else {
-            //        this.userService.register(fullName, email, password).subscribe((data: any) => {
-            //          if (data.responseCode == 1) {
-            //            console.log("After Register", data.dateSet);
-            //            localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
-            //            alert(data.responseMessage);
-            //            this.router.navigate(["/new-profile"]);
-            //          } else {
-            //            //alert("Invalid Email or Password");
-            //            alert(data.responseMessage);
-            //          }
-            //          //console.log("reponse", data);
-            //        }, error => {
-            //          console.log("Error: ", error);
-            //        });
-            //      }
-            //    }
-            //  }
+  //    // Count the number of spaces in the full name
 
 
-            //onRegister(clientFullName ?: string | null, clientEmail ?: string | null, phoneNumber ?: string | null, BpNo ?: string | null, CompanyName ?: string | null, CompanyRegNo ?: string | null, PhyscialAddress ?: string | null, ApplicantIDUpload ?: string | null, ApplicantIDNumber ?: string | null) {
-            //  if (clientFullName != null || clientFullName != "" && clientEmail != null || clientEmail != "") {
-
-            //    // Use a regular expression to check if the email is valid
-            //    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            //    if (clientEmail != null) {
-            //      if (!emailRegex.test(clientEmail)) {
-            //        alert("Please enter a valid email address!");
-            //        return;
-            //      }
-            //    } else {
-            //      alert("Please enter a valid email address!");
-            //      return;
-            //    }
+  //    //Check if passwords entered, match.
 
 
-            //    // Count the number of spaces in the full name
-            //    let numberOfSpaces = 0;
-            //    if (clientFullName != null) {
-            //      numberOfSpaces = (clientFullName.split(" ").length - 1);
-            //    }
-            //    else {
-            //      alert("Please enter your first name and surname only!");
-            //      return;
-            //    }
 
 
-            //    if (numberOfSpaces >= 2 || numberOfSpaces == 0) {
-            //      alert("Please enter your first name and surname only!");
-            //    } else {
-            //      this.userService.register(clientFullName, clientEmail, "Password@" + clientFullName).subscribe((data: any) => {
-            //        if (data.responseCode == 1) {
-            //          console.log("After Register", data.dateSet);
-            //          
-            //          // this.homeComponent.openXl('content');
-            //          this.newProfileComponent.onNewProfileCreate(data.dateSet.appUserId, clientFullName, clientEmail, phoneNumber, BpNo, CompanyName, CompanyRegNo, PhyscialAddress, ApplicantIDUpload, ApplicantIDNumber);
+  //  }
 
-            //          this.sharedService.clientUserID = data.dateSet.appUserId;
+  // Count the number of spaces in the full name
+  //let numberOfSpaces = 0;
+  //if (fullName != null) {
+  //  numberOfSpaces = (fullName.split(" ").length - 1);
+  //}
+  //else {
+  //  alert("Please enter your first name and surname only!");
+  //  return;
+  //}
+
+  //  onRegister() {
+  //    let otpEntered = this.registerForm.controls["OTPField"].value;
+
+  ///*if it is expired*/
+  //    if (this.isExpired) {
+  //     alert("OTP has expired. Please send a new OTP");
+  //      return;
+  //    }
+  //      //Check if passwords entered, match.
+  //      if (password != passwordConfirm) {
+  //        alert("The passwords entered do not match");
+  //        return;
+  //      }
+  //      else {
+  //      }
+
+  //    if (this.otp == otpEntered) {
+
+  //      this.userService.register(this.registerForm.controls["fullName"].value, this.registerForm.controls["registerEmail"].value, this.registerForm.controls["registerPassword"].value).subscribe((data: any) => {
+  //        if (data.responseCode == 1) {
+  //          console.log("After Register", data.dateSet);
+  //          localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
+  //          alert(data.responseMessage);
+  //          this.router.navigate(["/new-profile"]);
+  //        } else {
+  //          //alert("Invalid Email or Password");
+  //          alert(data.responseMessage);
+  //        }
+  //        //console.log("reponse", data);
+  //      }, error => {
+  //        console.log("Error: ", error);
+  //      });
+  //    }
+
+  //    else {
+  //      alert("Invalid OTP");
+  //    }
+  //  }
+
+  //  onLogin() {
+  //    this.isLoading = true;
+  //    let email = this.loginForm.controls["email"].value;
+  //    let password = this.loginForm.controls["password"].value;
+
+  //    this.userService.login(email, password).subscribe(
+  //      (data: any) => {
+  //        if (data.responseCode === 1) {
+  //          localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
+  //          this.getUserProfile();
+
+  //          this.isLoading = false;
+  //          this.router.navigate(["/home"]);
+  //        } else {
+  //          this.isLoading = false;
+
+  //          this.error = ""+ data.responseMessage;
+
+  //        }
+  //      },
+  //      (error) => {
+  //        console.log("Error: ", error);
+  //      }
+  //    );
+
+  //  }
+
+  //    getUserProfile() {
+  //      let stringifiedData = JSON.parse(
+  //        JSON.stringify(localStorage.getItem("LoggedInUserInfo"))
+  //      );
+  //      let currentUser = JSON.parse(stringifiedData);
+  //      this.userPofileService
+  //        .getUserProfileById(currentUser.appUserId)
+  //        .subscribe(
+  //          (data: any) => {
+  //            localStorage.setItem("userProfile", JSON.stringify(data.dateSet));
+  //          },
+  //          (error) => {
+  //            console.log("Error: ", error);
+  //          }
+  //        );
+  //    }
+  //      if (numberOfSpaces >= 2 || numberOfSpaces == 0) {
+  //        alert("Please enter your first name and surname only!");
+  //      } else {
+  //        this.userService.register(fullName, email, password).subscribe((data: any) => {
+  //          if (data.responseCode == 1) {
+  //            console.log("After Register", data.dateSet);
+  //            localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
+  //            alert(data.responseMessage);
+  //            this.router.navigate(["/new-profile"]);
+  //          } else {
+  //            //alert("Invalid Email or Password");
+  //            alert(data.responseMessage);
+  //          }
+  //          //console.log("reponse", data);
+  //        }, error => {
+  //          console.log("Error: ", error);
+  //        });
+  //      }
+  //    }
+  //  }
 
 
-            //        } else {
-            //          //alert("Invalid Email or Password");
-            //          alert(data.responseMessage);
-            //        }
-            //        //console.log("reponse", data);
-            //      }, error => {
-            //        console.log("Error: ", error);
-            //      });
-            //    }
-            //  }
-            //  else {
-            //    this.notification.sendEmail("venolin@cyberfox.co.za", "Test", "testing 1, 2, 3...");
+  //onRegister(clientFullName ?: string | null, clientEmail ?: string | null, phoneNumber ?: string | null, BpNo ?: string | null, CompanyName ?: string | null, CompanyRegNo ?: string | null, PhyscialAddress ?: string | null, ApplicantIDUpload ?: string | null, ApplicantIDNumber ?: string | null) {
+  //  if (clientFullName != null || clientFullName != "" && clientEmail != null || clientEmail != "") {
 
-            //    let fullName = this.registerForm.controls["fullName"].value;
-            //    let email = this.registerForm.controls["registerEmail"].value;
-            //    let password = this.registerForm.controls["registerPassword"].value;
-            //    let passwordConfirm = this.registerForm.controls["reenterPassword"].value;
-
-            //    // Use a regular expression to check if the email is valid
-            //    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            //    if (email != null) {
-            //      if (!emailRegex.test(email)) {
-            //        alert("Please enter a valid email address!");
-            //        return;
-            //      }
-            //    } else {
-            //      alert("Please enter a valid email address!");
-            //      return;
-            //    }
+  //    // Use a regular expression to check if the email is valid
+  //    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  //    if (clientEmail != null) {
+  //      if (!emailRegex.test(clientEmail)) {
+  //        alert("Please enter a valid email address!");
+  //        return;
+  //      }
+  //    } else {
+  //      alert("Please enter a valid email address!");
+  //      return;
+  //    }
 
 
-            //    // Count the number of spaces in the full name
-            //    let numberOfSpaces = 0;
-            //    if (fullName != null) {
-            //      numberOfSpaces = (fullName.split(" ").length - 1);
-            //    }
-            //    else {
-            //      alert("Please enter your first name and surname only!");
-            //      return;
-            //    }
+  //    // Count the number of spaces in the full name
+  //    let numberOfSpaces = 0;
+  //    if (clientFullName != null) {
+  //      numberOfSpaces = (clientFullName.split(" ").length - 1);
+  //    }
+  //    else {
+  //      alert("Please enter your first name and surname only!");
+  //      return;
+  //    }
 
-            //    //Check if passwords entered, match.
-            //    if (password != passwordConfirm) {
-            //      alert("The passwords entered do not match");
-            //      return;
-            //    }
-            //    else {
-            //    }
 
-            //    if (numberOfSpaces >= 2 || numberOfSpaces == 0) {
-            //      alert("Please enter your first name and surname only!");
-            //    } else {
-            //      this.userService.register(fullName, email, password).subscribe((data: any) => {
-            //        if (data.responseCode == 1) {
-            //          console.log("After Register", data.dateSet);
-            //          localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
-            //          alert(data.responseMessage);
-            //          this.router.navigate(["/new-profile"]);
-            //        } else {
-            //          //alert("Invalid Email or Password");
-            //          alert(data.responseMessage);
-            //        }
-            //        //console.log("reponse", data);
-            //      }, error => {
-            //        console.log("Error: ", error);
-            //      });
-            //    }
-            //  }
+  //    if (numberOfSpaces >= 2 || numberOfSpaces == 0) {
+  //      alert("Please enter your first name and surname only!");
+  //    } else {
+  //      this.userService.register(clientFullName, clientEmail, "Password@" + clientFullName).subscribe((data: any) => {
+  //        if (data.responseCode == 1) {
+  //          console.log("After Register", data.dateSet);
+  //          
+  //          // this.homeComponent.openXl('content');
+  //          this.newProfileComponent.onNewProfileCreate(data.dateSet.appUserId, clientFullName, clientEmail, phoneNumber, BpNo, CompanyName, CompanyRegNo, PhyscialAddress, ApplicantIDUpload, ApplicantIDNumber);
+
+  //          this.sharedService.clientUserID = data.dateSet.appUserId;
+
+
+  //        } else {
+  //          //alert("Invalid Email or Password");
+  //          alert(data.responseMessage);
+  //        }
+  //        //console.log("reponse", data);
+  //      }, error => {
+  //        console.log("Error: ", error);
+  //      });
+  //    }
+  //  }
+  //  else {
+  //    this.notification.sendEmail("venolin@cyberfox.co.za", "Test", "testing 1, 2, 3...");
+
+  //    let fullName = this.registerForm.controls["fullName"].value;
+  //    let email = this.registerForm.controls["registerEmail"].value;
+  //    let password = this.registerForm.controls["registerPassword"].value;
+  //    let passwordConfirm = this.registerForm.controls["reenterPassword"].value;
+
+  //    // Use a regular expression to check if the email is valid
+  //    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  //    if (email != null) {
+  //      if (!emailRegex.test(email)) {
+  //        alert("Please enter a valid email address!");
+  //        return;
+  //      }
+  //    } else {
+  //      alert("Please enter a valid email address!");
+  //      return;
+  //    }
+
+
+  //    // Count the number of spaces in the full name
+  //    let numberOfSpaces = 0;
+  //    if (fullName != null) {
+  //      numberOfSpaces = (fullName.split(" ").length - 1);
+  //    }
+  //    else {
+  //      alert("Please enter your first name and surname only!");
+  //      return;
+  //    }
+
+  //    //Check if passwords entered, match.
+  //    if (password != passwordConfirm) {
+  //      alert("The passwords entered do not match");
+  //      return;
+  //    }
+  //    else {
+  //    }
+
+  //    if (numberOfSpaces >= 2 || numberOfSpaces == 0) {
+  //      alert("Please enter your first name and surname only!");
+  //    } else {
+  //      this.userService.register(fullName, email, password).subscribe((data: any) => {
+  //        if (data.responseCode == 1) {
+  //          console.log("After Register", data.dateSet);
+  //          localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
+  //          alert(data.responseMessage);
+  //          this.router.navigate(["/new-profile"]);
+  //        } else {
+  //          //alert("Invalid Email or Password");
+  //          alert(data.responseMessage);
+  //        }
+  //        //console.log("reponse", data);
+  //      }, error => {
+  //        console.log("Error: ", error);
+  //      });
+  //    }
+  //  }
   add() {
     this.container = document.getElementById('container');
     /* this.signUpButton.addEventListener('click', () => {
@@ -1320,40 +1326,17 @@ export class LoginComponent implements OnInit {
     this.beforeSentOTP = true;
   }
 
-  getAllConfigData() {
+  getConfig() {
     this.AllConfig.splice(0, this.AllConfig.length);
-
 
     this.configService.getAllConfigs().subscribe((data: any) => {
 
-      if (data.responseCode == 1) {
+      if (data) {
+        this.AllConfig = data.dateSet;
 
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempConfigList = {} as ConfigList;
-          const current = data.dateSet[i];
-
-          tempConfigList.ConfigID = current.configID;
-          tempConfigList.ConfigName = current.configName;
-          tempConfigList.ConfigDescription = current.configDescription;
-          tempConfigList.DateCreated = current.dateCreated;
-          tempConfigList.DateUpdated = current.dateUpdated;
-          tempConfigList.CreatedById = current.createdById;
-          tempConfigList.isActive = current.isActive;
-          tempConfigList.UtilitySlot1 = current.utilitySlot1;
-          tempConfigList.UtilitySlot2 = current.utilitySlot2;
-          tempConfigList.UtilitySlot3 = current.utilitySlot3;
-
-          console.log("MapConfig:", tempConfigList);
-
-          this.AllConfig.push(tempConfigList);
-
-          //    this.sharedService.MapConfig(tempConfigList);
-        }
         this.sharedService.setAllConfig(this.AllConfig);
-        this.ServerType = this.AllConfig.find((config) => config.ConfigName === 'ServerType').UtilitySlot1;
-        this.sharedService.setAPIURL(this.AllConfig.find((config) => config.ConfigName === 'APIURL').UtilitySlot1);
-      }
-      else {
+        this.ServerType = this.AllConfig.find((Config) => Config.configName === 'ServerType').utilitySlot1;
+      } else {
         alert("Error");
       }
 
@@ -1364,10 +1347,9 @@ export class LoginComponent implements OnInit {
 
   }
 
-
 }
 
 
 
-    
-   
+
+
