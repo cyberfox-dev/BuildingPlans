@@ -15,61 +15,61 @@
         <label for="activity">Project size check-list activity</label>
       </div>
       <!--<div class="form-floating mb-3 mt-3">
-    <input type="text" class="form-control" id="activityType" formControlName="newActivityType" placeholder="Select a project size check list activity type">
-    <label for="activityType">Project size check-list activity type</label>
-  </div>
+        <input type="text" class="form-control" id="activityType" formControlName="newActivityType" placeholder="Select a project size check list activity type">
+        <label for="activityType">Project size check-list activity type</label>
+      </div>
 
-  <div class="form-floating mb-3 mt-3">
-    <input type="text" class="form-control" id="checkManDoc" formControlName="newMandatoryDocument" placeholder="Select a mandatory document category">
-    <label for="checkManDoc">Mandatory document category </label>
-  </div>-->
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" id="checkManDoc" formControlName="newMandatoryDocument" placeholder="Select a mandatory document category">
+        <label for="checkManDoc">Mandatory document category </label>
+      </div>-->
       <!--<div class="row">
-    <mat-form-field>
-      <mat-label>Select a project size check list activity type</mat-label>
-      <mat-select [(value)]="selectType">
-        <mat-option *ngFor="let type of activityTypeArray; let i=index" value="type">type(i)</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
-  <div class="row">
-    <mat-form-field>
-      <mat-label>Select a mandatory document category</mat-label>
-      <mat-select [(value)]="selectManDocCat">
-        <mat-option *ngFor="let manDocCat of manDocCategoryArray" value="manDocCat">{{manDocCat}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>-->
+        <mat-form-field>
+          <mat-label>Select a project size check list activity type</mat-label>
+          <mat-select [(value)]="selectType">
+            <mat-option *ngFor="let type of activityTypeArray; let i=index" value="type">type(i)</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field>
+          <mat-label>Select a mandatory document category</mat-label>
+          <mat-select [(value)]="selectManDocCat">
+            <mat-option *ngFor="let manDocCat of manDocCategoryArray" value="manDocCat">{{manDocCat}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>-->
 
 
-    <div class="row">
-      <mat-form-field>
-        <mat-label>Select a project size check list activity type</mat-label>
-        <mat-select name="projectSizeCheckListActivityType" formControlName="projectSizeCheckListActivityType">
-          <mat-option value="General">General</mat-option>
-          <mat-option value="Trenching">Trenching</mat-option>
-          <mat-option value="Roadworks">Roadworks</mat-option>
-          <mat-option value="Carriageway Crossings, Pedestrian Footways & Universal Access">Carriageway Crossings, Pedestrian Footways & Universal Access</mat-option>
-          <mat-option value="Emergency">Emergency</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div class="row">
+      <div class="row">
+        <mat-form-field>
+          <mat-label>Select a project size check list activity type</mat-label>
+          <mat-select name="projectSizeCheckListActivityType" formControlName="projectSizeCheckListActivityType">
+            <mat-option value="General">General</mat-option>
+            <mat-option value="Trenching">Trenching</mat-option>
+            <mat-option value="Roadworks">Roadworks</mat-option>
+            <mat-option value="Carriageway Crossings, Pedestrian Footways & Universal Access">Carriageway Crossings, Pedestrian Footways & Universal Access</mat-option>
+            <mat-option value="Emergency">Emergency</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row">
 
-      <mat-form-field>
-        <mat-label>Select a mandatory document category</mat-label>
-        <mat-select name="mandatoryDocumentCategory" formControlName="mandatoryDocumentCategory">
-          <mat-option value="Small">Small</mat-option>
-          <mat-option value="Medium">Medium</mat-option>
-          <mat-option value="Large">Large</mat-option>
-          <mat-option value="Emergency">Emergency</mat-option>
-          <mat-option value="LUM">LUM</mat-option>
-        </mat-select>
-      </mat-form-field>
+        <mat-form-field>
+          <mat-label>Select a mandatory document category</mat-label>
+          <mat-select name="mandatoryDocumentCategory" formControlName="mandatoryDocumentCategory">
+            <mat-option value="Small">Small</mat-option>
+            <mat-option value="Medium">Medium</mat-option>
+            <mat-option value="Large">Large</mat-option>
+            <mat-option value="Emergency">Emergency</mat-option>
+            <mat-option value="LUM">LUM</mat-option>
+          </mat-select>
+        </mat-form-field>
 
-    </div>
- 
-  
-   
+      </div>
+
+
+
 
 
     </form>
@@ -79,6 +79,33 @@
   </div>
 </ng-template>
 <button mat-raised-button color="create" (click)="openCreateNewCheckListItem(createNewCheckListItem)">Create a new check-list Item </button>
+
+
+
+<mat-form-field>
+  <mat-label>Filter By Activity Type</mat-label>
+  <mat-select name="projectSizeCheckListActivityType" [(ngModel)]="projectSizeCheckActivityType" >
+    <mat-option (click)="setFilterActivityType()" value="General">General</mat-option>
+    <mat-option (click)="setFilterActivityType()" value="Trenching">Trenching</mat-option>
+    <mat-option (click)="setFilterActivityType()" value="Roadworks">Roadworks</mat-option>
+    <mat-option (click)="setFilterActivityType()" value="Carriageway Crossings, Pedestrian Footways & Universal Access">Carriageway Crossings, Pedestrian Footways & Universal Access</mat-option>
+    <mat-option (click)="setFilterActivityType()" value="Emergency">Emergency</mat-option>
+  </mat-select>
+</mat-form-field>
+
+
+
+<mat-form-field>
+  <mat-label>Filter By Category</mat-label>
+  <mat-select name="manDocCategory" [(ngModel)]="manDocCategory">
+    <mat-option (click)="setFilterManDocCategory()" value="Small">Small</mat-option>
+    <mat-option (click)="setFilterManDocCategory()" value="Medium">Medium</mat-option>
+    <mat-option (click)="setFilterManDocCategory()" value="Large">Large</mat-option>
+    <mat-option (click)="setFilterManDocCategory()" value="Emergency">Emergency</mat-option>
+    <mat-option (click)="setFilterManDocCategory()" value="LUM">LUM</mat-option>
+  </mat-select>
+</mat-form-field>
+
 
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
@@ -111,6 +138,10 @@
     </td>
     <td mat-cell *matCellDef="let element">  </td>
   </ng-container>
+
+
+
+
 
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -149,5 +180,5 @@
 
 
 <!--
-  
+
 -->
