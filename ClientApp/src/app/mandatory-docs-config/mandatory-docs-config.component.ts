@@ -424,7 +424,10 @@ export class MandatoryDocsConfigComponent implements OnInit {
           .subscribe((data: any) => {
             if (data.responseCode == 1) {
               alert(data.responseMessage);
-              this.getAllMandatoryDocs();
+              //Delete now refreshes
+              this.MandatoryDocumentUploadList = this.MandatoryDocumentUploadList.filter(item => item.mandatoryDocumentID !== documentToDelete.mandatoryDocumentID);
+              this.dataSource = [...this.MandatoryDocumentUploadList];
+              this.MandatoryDocumentUploadTable?.renderRows();
             } else {
               alert(data.responseMessage);
             }
