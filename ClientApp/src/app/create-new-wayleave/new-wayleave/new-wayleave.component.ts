@@ -397,6 +397,7 @@ export class NewWayleaveComponent implements OnInit {
 
   isLoading = false;
   public successfulUploads = 0;
+  public successfulUploads2 = '';
 
 
   //Initialize the interface for ARCGIS
@@ -480,6 +481,7 @@ export class NewWayleaveComponent implements OnInit {
   accountNumber: any;
   generatedInvoiceNumber: string;
     totalDocs: number;
+    totalDocs2: string;
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -1296,6 +1298,7 @@ export class NewWayleaveComponent implements OnInit {
   }
   onFileDelete(event: any, index: number) {
     this.successfulUploads--;
+    this.successfulUploads2 = Number(this.successfulUploads).toString();
     this.fileAttrs[index] = this.MandatoryDocumentsLinkedStagesList[index].mandatoryDocumentName;
     
 
@@ -1304,6 +1307,7 @@ export class NewWayleaveComponent implements OnInit {
   onFileUpload(event: any) {
 
     this.successfulUploads++;
+    this.successfulUploads2 = Number(this.successfulUploads).toString();
     console.log("this.successfulUploads;this.successfulUploads",this.successfulUploads);
   }
 
@@ -1365,6 +1369,7 @@ export class NewWayleaveComponent implements OnInit {
 
     this.MandatoryDocumentsLinkedStagesList.next(updatedList);
     this.totalDocs = updatedList.length;
+    this.totalDocs2 = Number(this.totalDocs).toString();
     console.log("this.totalDocs;this.totalDocs", this.totalDocs);
   }
 
@@ -3483,6 +3488,7 @@ export class NewWayleaveComponent implements OnInit {
     this.MandatoryDocumentsLinkedStagesList.next(newList);
     // set totalDocs to the length of the list
     this.totalDocs = newList.length;
+    this.totalDocs2 = Number(this.totalDocs).toString();
   }
 
   public sendEmailToDepartment(subDepartmentName: string) {
@@ -3688,6 +3694,7 @@ export class NewWayleaveComponent implements OnInit {
       this.ProjectSizeMessage = "Emergency";
       this.PSM = "Emergency Application";
       this.totalDocs = updatedList.length;
+      this.totalDocs2 = Number(this.totalDocs).toString();
       console.log("this.totalDocs;this.totalDocs", this.totalDocs);
     }
 
@@ -3717,6 +3724,7 @@ export class NewWayleaveComponent implements OnInit {
       debugger;
       this.MandatoryDocumentsLinkedStagesList.next(updatedList);
       this.totalDocs = updatedList.length;
+      this.totalDocs2 = Number(this.totalDocs).toString();
       console.log("this.totalDocs;this.totalDocs", this.totalDocs);
     }
 
