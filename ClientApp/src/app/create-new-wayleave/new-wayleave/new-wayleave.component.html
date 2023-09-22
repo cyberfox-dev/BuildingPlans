@@ -486,23 +486,21 @@
           </div>
         </mat-form-field>
       </mat-list>
-      <mat-progress-bar class="example-margin app-progress-bar"
-                        color="primary"
-                        mode="determinate"
-                        [value]="successfulUploads">
-      </mat-progress-bar>
-      <div class="row">
+
+      <div class="container04">
+      <mat-progress-bar mode="indeterminate" *ngIf="successfulUploads >0 && successfulUploads < totalDocs"></mat-progress-bar>
 
 
 
-        <button mat-raised-button color="green" [disabled]="successfulUploads < totalDocs" (click)="onWayleaveCreate(CurrentUser.appUserId,false);">
-          Create Application
-          <div class="container003">
-            <img src="assets/Loading.png" *ngIf="successfulUploads < totalDocs" class="logo2">
-            <p>Uploading Documents. You may continue to upload remaining documents if needed.</p>
-          </div>
-        </button>
-      </div>
+
+      <button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)="onWayleaveCreate(CurrentUser.appUserId,false);">
+        Create Application
+      </button>
+          <!--  <img src="assets/Loading.png" *ngIf="successfulUploads >0 && successfulUploads < totalDocs" class="logo2">-->
+            <p *ngIf="successfulUploads >0 && successfulUploads < totalDocs">Uploading Documents. You may continue to upload remaining documents if needed.</p>
+        
+
+     </div>
 
       <div class="cont">
         <button mat-raised-button color="primary" matStepperPrevious>Back</button>

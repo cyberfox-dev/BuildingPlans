@@ -1224,18 +1224,14 @@ this.Applications.push(tempApplicationList);
   }
 
   goToNewWayleave(applicationType: boolean, isPlanning: boolean) { //application type refers to whether it is a brand new application or if it is a reapply.
-
+    debugger;
     this.applicationType = applicationType;
     this.isPlanning = isPlanning;
     if (this.CurrentUserProfile[0].isInternal === true) {
       this.openSm(this.content);
     } else {
       this.createWayleave(this.applicationType, this.isPlanning);
-    } if (this.CurrentUserProfile[0].isInternal === true) {
-      this.openSm(this.content);
-    } else {
-      this.createWayleave(this.applicationType, this.isPlanning);
-    }
+    } 
 
 
   }

@@ -1052,12 +1052,14 @@ export class NavMenuComponent implements OnInit {
 
 
   filterDepartment() {
-
-    if (this.select == undefined) {
+    debugger;
+    let string = this.select.toString();
+    if (string == "All") {
+      
       this.dataSource = this.DocumentsList.filter(df => df.DateCreated);
       this.groupName = false;
-      this.selected = undefined;
-      this.selectedOptionText = "";
+ 
+
     }
     else {
 
