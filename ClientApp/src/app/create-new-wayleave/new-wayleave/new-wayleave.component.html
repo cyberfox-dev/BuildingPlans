@@ -481,8 +481,10 @@
                                  (onUploadSuccess)="onFileUpload($event)">
                 </app-file-upload>
               </div>
-              <button *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)">Add Another Upload</button>
-              <button *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)">Delete</button>
+              <!--<button *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)">Add Another Upload</button>-->
+              <button mat-raised-button color="primary" *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)" matTooltip="Add New Upload"><i class="fa fa-plus" aria-hidden="true"></i></button>
+              <button mat-raised-button color="warn" *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)" matTooltip="Delete"><i class="fa fa-trash" aria-hidden="true"></i></button>
+            <!--  <button *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)">Delete</button>-->
             </mat-toolbar>
           </div>
         </mat-form-field>
