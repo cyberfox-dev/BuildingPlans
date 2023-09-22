@@ -464,7 +464,7 @@
       <form>
         <ng-template matStepLabel>Document Uploads</ng-template>
       </form>
-      <mat-list *ngFor="let manDoc of MandatoryDocumentsLinkedStagesList | async; let i=index" [attr.data-index]="i">
+      <mat-list *ngFor="let manDoc of MandatoryDocumentsLinkedStagesList | async; let i=index; trackBy: trackByFn" [attr.data-index]="i">
         <mat-list-item> {{manDoc.mandatoryDocumentName}}</mat-list-item>
         <mat-form-field>
           <div>
@@ -481,7 +481,8 @@
                                  (onUploadSuccess)="onFileUpload($event)">
                 </app-file-upload>
               </div>
-
+              <button *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)">Add Another Upload</button>
+              <button *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)">Delete</button>
             </mat-toolbar>
           </div>
         </mat-form-field>
