@@ -419,7 +419,7 @@ export class ViewProjectInfoComponent implements OnInit {
   canReviewerClarify: boolean;
     previousReviewer: any;
     referComment: boolean;
-  previousReviewer: any;
+ 
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
