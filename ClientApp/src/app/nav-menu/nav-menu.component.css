@@ -795,3 +795,17 @@ h4 {
 .animationSlideUpNav {
   animation: fade-in-top-Nav 0.5s ease-out;
 }
+
+
+
+
+.notification-btn{
+    width:100%;
+    border:2px;
+    border-color:black;
+    left:2px;
+    right:2px;
+    
+    
+}
+
