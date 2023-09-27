@@ -9,7 +9,7 @@ namespace WayleaveManagementSystem.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-             name: "companyType",
+    name: "companyType",
     table: "UserProfilesTable",
     type: "nvarchar(max)",
     nullable: true);
