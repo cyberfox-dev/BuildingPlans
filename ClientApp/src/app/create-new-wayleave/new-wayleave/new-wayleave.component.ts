@@ -279,11 +279,11 @@ export class NewWayleaveComponent implements OnInit {
   clientEmail = '';
   clientCellNo = '';
   clientAddress = '';
-  clientRefNo = '';
+  clientRefNo = '';//Empty njani?
   clientBPNum = '';
   clientCompanyName = '';
   clientCompanyRegNo = '';
-  clientCompanyType = '';
+  clientCompanyType = ''; //Empty njani?
   clientIDNumber = '';
   clientPhysicalAddress = '';
 
@@ -2797,7 +2797,7 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   populateClientInfo(userID: string) {
-
+    //This doesn't include the reference number and company type as yet
     this.disabled = true;
     this.newClient = false;
     
@@ -2809,7 +2809,7 @@ export class NewWayleaveComponent implements OnInit {
 
         const tempUserList = {} as UserList;
         const current = data.dateSet[0];
-        
+        debugger;
         const fullname = current.fullName;
         this.clientUserID = current.userID;
         this.clientName = fullname.substring(0, fullname.indexOf(' '));
@@ -2821,6 +2821,9 @@ export class NewWayleaveComponent implements OnInit {
         this.clientCompanyRegNo = current.companyRegNo;
         this.clientCompanyName = current.companyName;
         this.clientPhysicalAddress = current.physcialAddress;
+        //Will this work??
+        this.clientRefNo = current.refNumber;
+        this.clientCompanyType = current.companyType;
 
         this.getProfessionalsListByProfessionalType(this.professionalType);
         console.log(tempUserList);

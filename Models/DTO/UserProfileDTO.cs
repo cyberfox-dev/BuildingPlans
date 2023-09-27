@@ -59,6 +59,9 @@ namespace WayleaveManagementSystem.Models.DTO
         public int? MapObjectID { get; set; }
         public string? ZoneName { get; set; }
         public string? SubDepartmentName { get; set; }
+        //
+        public string? RefNumber { get; set; }
+        public string? CompanyType { get; set; }
 
     }
 }

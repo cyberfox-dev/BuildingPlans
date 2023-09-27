@@ -21,7 +21,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string? userID, string? fullName, string? email, string? phoneNumber, bool? isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string? createdById, string? IdNumber, int? zoneID, string? vatNumber)
+        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string? userID, string? fullName, string? email, string? phoneNumber, bool? isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string? createdById, string? IdNumber, int? zoneID, string? vatNumber, string? refNumber, string? companyType)
         {
             if (userProfileID == 0)
             {
@@ -61,6 +61,8 @@ namespace WayleaveManagementSystem.Service
                     depConfirmation = false,
                     zoneID = zoneID,
                     VatNumber = vatNumber,
+                    refNumber = refNumber,
+                    companyType = companyType,
 
 
                 };
@@ -242,6 +244,8 @@ namespace WayleaveManagementSystem.Service
                    IdNumber = UserProfile.IdNumber,
                    isZoneAdmin = UserProfile.isZoneAdmin,
                    depConfirmation = UserProfile.depConfirmation,
+                   RefNumber = UserProfile.refNumber,
+                   CompanyType = UserProfile.companyType,
                }
 
                ).ToListAsync();
