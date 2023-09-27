@@ -481,29 +481,30 @@
                                  (onUploadSuccess)="onFileUpload($event)">
                 </app-file-upload>
               </div>
+  
               <!--<button *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)">Add Another Upload</button>-->
-              <button mat-raised-button color="primary" *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)" matTooltip="Add New Upload"><i class="fa fa-plus" aria-hidden="true"></i></button>
+              <button mat-raised-button color="addNewUploadButtonColor" *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)" matTooltip="Add New Upload"><i class="fa fa-plus" aria-hidden="true"></i></button>
               <button mat-raised-button color="warn" *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)" matTooltip="Delete"><i class="fa fa-trash" aria-hidden="true"></i></button>
-            <!--  <button *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)">Delete</button>-->
+              <!--  <button *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)">Delete</button>-->
             </mat-toolbar>
           </div>
         </mat-form-field>
       </mat-list>
 
       <div class="container04">
-      <mat-progress-bar mode="indeterminate" *ngIf="successfulUploads >0 && successfulUploads < totalDocs"></mat-progress-bar>
+        <mat-progress-bar mode="indeterminate" *ngIf="successfulUploads >0 && successfulUploads < totalDocs"></mat-progress-bar>
 
 
 
 
-      <button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)="onWayleaveCreate(CurrentUser.appUserId,false);">
-        Create Application
-      </button>
-          <!--  <img src="assets/Loading.png" *ngIf="successfulUploads >0 && successfulUploads < totalDocs" class="logo2">-->
-            <p *ngIf="successfulUploads >0 && successfulUploads < totalDocs">Uploading Documents. You may continue to upload remaining documents if needed.</p>
-        
+        <button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)="onWayleaveCreate(CurrentUser.appUserId,false);">
+          Create Application
+        </button>
+        <!--  <img src="assets/Loading.png" *ngIf="successfulUploads >0 && successfulUploads < totalDocs" class="logo2">-->
+        <p *ngIf="successfulUploads >0 && successfulUploads < totalDocs">Uploading Documents. You may continue to upload remaining documents if needed.</p>
 
-     </div>
+
+      </div>
 
       <div class="cont">
         <button mat-raised-button color="primary" matStepperPrevious>Back</button>

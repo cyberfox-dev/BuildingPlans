@@ -1737,7 +1737,11 @@ this.Applications.push(tempApplicationList);
   notNyProjects = false;
   MyProjects = false;
   select = '';
-  cardFilters: boolean = true;
+  cardFilters: boolean = false;
+
+  getCurrentUserZoneID() {
+
+  }
 
   onFilterApplicationForMyReviews() {
     this.isTableLoading = true;
@@ -2051,7 +2055,7 @@ this.Applications.push(tempApplicationList);
     this.MyProjects = false;
     this.FiterValue = "";
     this.FiterValue = "All Applications";
-    this.cardFilters = true;
+
 
     this.applicationDataForView = [];
     this.Applications = [];
@@ -2191,6 +2195,7 @@ this.Applications.push(tempApplicationList);
           this.recentejectedCount();
           this.recentWIPCount();
           this.isTableLoading = false;
+          this.cardFilters = true;
           console.log("Got all applications", data.dateSet);
         }
         else {

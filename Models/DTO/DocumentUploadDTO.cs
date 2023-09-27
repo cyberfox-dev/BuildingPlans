@@ -18,6 +18,7 @@ namespace WayleaveManagementSystem.DTO
         public int? SubDepartmentID { get; set; }
         public string? SubDepartmentName { get; set; }
         public bool? isRepository { get; set; }
+        public string? Description { get; set; }
 
 
     }
