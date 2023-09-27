@@ -4,15 +4,15 @@
 
 namespace WayleaveManagementSystem.Data.Migrations
 {
-    public partial class CompanyTypeAndRefNum : Migration
+    public partial class DescriptionColForDocumentRepoTest745 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "companyType",
-                table: "UserProfilesTable",
-                type: "nvarchar(max)",
-                nullable: true);
+             name: "companyType",
+    table: "UserProfilesTable",
+    type: "nvarchar(max)",
+    nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "refNumber",
@@ -20,26 +20,26 @@ namespace WayleaveManagementSystem.Data.Migrations
                 type: "nvarchar(max)",
                 nullable: true);
 
-            migrationBuilder.AddColumn<int>(
+/*            migrationBuilder.AddColumn<int>(
                 name: "ZoneID",
                 table: "ApplicationListDTO",
                 type: "int",
-                nullable: true);
+                nullable: true);*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "companyType",
-                table: "UserProfilesTable");
+             name: "companyType",
+    table: "UserProfilesTable");
 
             migrationBuilder.DropColumn(
                 name: "refNumber",
                 table: "UserProfilesTable");
 
-            migrationBuilder.DropColumn(
+/*            migrationBuilder.DropColumn(
                 name: "ZoneID",
-                table: "ApplicationListDTO");
+                table: "ApplicationListDTO");*/
         }
     }
 }
