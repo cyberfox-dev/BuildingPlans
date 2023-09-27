@@ -285,7 +285,7 @@ export class NewProfileComponent implements OnInit {
     });
   }
 
-  onNewProfileCreate(userID?: string | null, fullName?: string | null, email?: string | null, phoneNumber?: string | null, BpNo?: string | null, CompanyName?: string | null, CompanyRegNo?: string | null, PhyscialAddress?: string | null, ApplicantIDUpload?: string | null, ApplicantIDNumber?: string | null) {
+  onNewProfileCreate(userID?: string | null, fullName?: string | null, email?: string | null, phoneNumber?: string | null, BpNo?: string | null, CompanyName?: string | null, CompanyRegNo?: string | null, PhyscialAddress?: string | null, ApplicantIDUpload?: string | null, ApplicantIDNumber?: string | null, refNumber?:string | null, companyType?: string | null) {
     debugger;
     if (this.showInternal) {
       ///// 
@@ -396,9 +396,32 @@ export class NewProfileComponent implements OnInit {
     }
 
 
+    else if (userID != null || userID != "") {
+      this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+      this.CurrentUser = JSON.parse(this.stringifiedData);
 
+      debugger;
+      this.userPofileService.addUpdateUserProfiles(0, userID, fullName, email, phoneNumber, false, BpNo, CompanyName, CompanyRegNo,
+        PhyscialAddress, null, null, null, null, null, null, ApplicantIDUpload, this.CurrentUser.appUserId, ApplicantIDNumber, null, null, refNumber, companyType).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          alert(data.responseMessage);
+
+        }
+
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
     else if (this.showInternal === false) {
-
+      debugger;
 
       this.userPofileService.addUpdateUserProfiles(0, this.CurrentUser.appUserId, this.extApplicantName + " " + this.extApplicantSurname, this.CurrentUser.email, this.extApplicantTellNo, this.showInternal, this.extApplicantBpNoApplicant, this.extApplicantCompanyName, this.extApplicantCompanyRegNo, this.extApplicantPhyscialAddress, null, null, null, null, null, null, this.extApplicantIDUpload, this.CurrentUser.appUserId, this.extApplicantIDNumber, Number(this.selectedZone), this.extApplicantVatNumber).subscribe((data: any) => {
         debugger;
@@ -406,7 +429,7 @@ export class NewProfileComponent implements OnInit {
 
           alert(data.responseMessage);
 
-
+          debugger;
           const linkedContractors = this.shared.getContactorData();
           const linkedEngineers = this.shared.getEngineerData();
 
@@ -457,7 +480,7 @@ export class NewProfileComponent implements OnInit {
         }
 
         else {
-
+          debugger;
           alert(data.responseMessage);
           localStorage.removeItem('LoggedInUserInfo');
           localStorage.removeItem('userProfile');
@@ -498,29 +521,7 @@ export class NewProfileComponent implements OnInit {
       //this.extApplicantIDUpload;
     }
 
-    else if (userID != null || userID != "") {
-      this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
-      this.CurrentUser = JSON.parse(this.stringifiedData);
-
-      this.userPofileService.addUpdateUserProfiles(0, userID, fullName, email, phoneNumber, false, BpNo, CompanyName, CompanyRegNo, PhyscialAddress, null, null, null, null, null, null, ApplicantIDUpload, this.CurrentUser.appUserId, ApplicantIDNumber, null).subscribe((data: any) => {
-        
-        if (data.responseCode == 1) {
-
-          alert(data.responseMessage);
-
-
-        }
-
-        else {
-
-          alert(data.responseMessage);
-        }
-        console.log("reponse", data);
-
-      }, error => {
-        console.log("Error: ", error);
-      })
-    }
+    
 
     else {
       alert("Error Saving User Profile Infomation");
@@ -758,8 +759,6 @@ export class NewProfileComponent implements OnInit {
               ;
               if (data.responseCode == 1) {
                 alert(data.responseMessage);
-
-
               }
               else {
                 alert(data.responseMessage);

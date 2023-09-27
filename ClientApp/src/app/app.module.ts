@@ -90,6 +90,7 @@ import { ProjectSizeConfigComponent } from './project-size-config/project-size-c
 import { InitializationService } from './service/Initialization/initialization.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ServiceConditionsComponent } from './service-conditions/service-conditions.component';
+import { ConfigActingDepartmentComponent } from './config-acting-department/config-acting-department.component';
 //import { MatExpansionModule } from '@angular/material/expansion';
 
 //import { MapModule } from 'arcgis-js-api';
@@ -167,6 +168,7 @@ import { ServiceConditionsComponent } from './service-conditions/service-conditi
     //MatExpansionModule,
     ProjectSizeConfigComponent,
     ServiceConditionsComponent,
+    ConfigActingDepartmentComponent,
 
 
   ],

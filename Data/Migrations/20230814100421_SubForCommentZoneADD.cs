@@ -8,7 +8,7 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
+/*            migrationBuilder.AddColumn<int>(
                 name: "ZoneID",
                 table: "SubDepartmentForComment",
                 type: "int",
@@ -18,18 +18,18 @@ namespace WayleaveManagementSystem.Data.Migrations
                 name: "ZoneName",
                 table: "SubDepartmentForComment",
                 type: "nvarchar(max)",
-                nullable: true);
+                nullable: true);*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+/*            migrationBuilder.DropColumn(
                 name: "ZoneID",
                 table: "SubDepartmentForComment");
 
             migrationBuilder.DropColumn(
                 name: "ZoneName",
-                table: "SubDepartmentForComment");
+                table: "SubDepartmentForComment");*/
         }
     }
 }

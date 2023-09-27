@@ -1,17 +1,4 @@
-:host ::ng-deep .mat-radio-container {
-  height: 50px;
-  width: 50px;
-}
 
-:host ::ng-deep .mat-radio-outer-circle {
-  height: 50px;
-  width: 50px;
-}
-
-:host ::ng-deep .mat-radio-inner-circle {
-  height: 50px;
-  width: 50px;
-}
 .mat-radio-container {
   transform: scale(2.85);
 }
@@ -42,68 +29,6 @@
     font-size: 13px;*/
 /* border-color: cadetblue; */
 /*}
-
-
-.mat-form-field-custom-checkbox
-{
-    font-size: 12px;
-    width:10vw;
-    line-height: 15px;
-    height: 10px;
-
-}
-
-.mat-form-input
-{
-    font-size: 14px;
-
-}
-
-.mat-form-field--inline {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
-.mat-form-field--inline .mat-form-field {
-    display: inline-block;
-    width: 100%;
-    vertical-align: middle;
-}
-
-.mat-form-field--inline .mat-form-field:nth-child(1) {
-    margin-right: 10px;
-}
-
-.mat-toolbar-single-row {
-    height: auto !important;
-    background: transparent;
-}
-
-.mat-toolbar-single-row button {
-    width: 200px;
-}
-
-#uploadFile {
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    z-index: 9;
-    opacity: 0;
-    height: 100%;
-    cursor: pointer;
-    position: absolute;
-}
-
-
-
-
-
-.mat-form-field
-{
-    min-width: 300px;
-    width:300px;
-}
 
 
 
@@ -543,7 +468,7 @@ h3 {
 h4{
      text-align:center;
  }
-mat-button-toggle-group {
+/*mat-button-toggle-group {
   width: 100%;
   margin-bottom: 20px;
 }
@@ -554,7 +479,7 @@ mat-button-toggle-group {
 }
 mat-button-toggle {
   width: 100%;
-}
+}*/
 
 .form-control {
   background-color: #ccdee2;
@@ -642,4 +567,17 @@ mat-button-toggle {
   justify-content: space-evenly;
   flex-direction: column;
   flex-wrap: nowrap;
+}
+.highlighted-item {
+  background-color: #f2f2f2; /* Slight gray background color */
+  width: 90%; /* Adjust the width as needed */
+  transition: all 0.3s; /* Add a transition for smooth visual effect */
+}
+.mat-addNewUploadButtonColor {
+  width: 51px;
+  height: 40px;
+  border: none;
+  font-size: 16px;
+  background-color: #8bb6c2;
+  color: white;
 }

@@ -321,6 +321,8 @@
   <!--choose existing--> 
   <ng-template #user let-modal>
     <div class="modal-header">
+      <h6 class="modal-title" id="modal-basic-title">Choose the user</h6>
+      <button type="button" class="btn-close" aria-label="Close" (click)="clearFilter(); modal.dismiss('Cross click')"></button>
       <h6 class="modal-title" id="modal-basic-title">Choose the user</h6> 
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
@@ -329,10 +331,11 @@
       <div class="container-fluid">
         <mat-form-field>
           <mat-label>Filter</mat-label>
-          <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+          <!--<input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>-->
+          <input matInput (keyup)="applyExistingClientFilter($event)" placeholder="Ex. ium" #input>
         </mat-form-field>
 
-        <table mat-table [dataSource]="dataSourceLinkUsers" class="mat-elevation-z8 fade-out">
+        <table mat-table [dataSource]="dataSourceLinkUsers" class="mat-elevation-z8">
           <!--*ngIf="showZoneUserTable"-->
 
           <ng-container matColumnDef="idNumber">
@@ -366,7 +369,7 @@
     </div>
 
     <div class="modal-footer">
-      <button type="submit" class="btn btn-outline-success" (click)="openXl(Prof);modal.close('Save click')">Save</button>
+      <button type="submit" class="btn btn-outline-success" (click)="openXl(Prof);closeModalFromModal();modal.close('Save click')">Save</button>
     </div>
   </ng-template>
 
@@ -585,14 +588,19 @@
               </div>
             </div>
             <div class="row">
-
-
-
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="clientRefNo" name="clientRefNo" placeholder="Enter Ref No">
-                <label for="clientRefNo">Reference Number</label>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <!--Welp, the ID number wasn't there...-->
+                  <input type="text" class="form-control" [(ngModel)]="clientIDNumber" name="clientIDNumber" placeholder="Enter ID No">
+                  <label for="clientIDNumber">ID Number</label>
+                </div>
               </div>
-
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="clientRefNo" name="clientRefNo" placeholder="Enter Ref No">
+                  <label for="clientRefNo">Reference Number</label>
+                </div>
+              </div>
             </div>
             <div class="row">
               <div class="col">
@@ -637,10 +645,12 @@
           <br>
           <!--<button mat-raised-button color="green" (click)="onAddNewClient()">Save</button>-->
           <!--<button mat-raised-button color="green" (click)="createNewClient()">Save</button>-->
-          <button mat-raised-button color="green" (click)="validateClientInfo()">Save</button>
+          <button mat-raised-button color="green" (click)="validateClientInfo(stepper)">Save</button>
           <div class="cont889">
 
-            <button mat-raised-button color="primary" *ngIf="nextBtn" (click)="checkIfError(stepper)">Next</button>
+            <!--<button mat-raised-button color="primary" *ngIf="nextBtn" (click)="checkIfError(stepper)">Next</button>-->
+            <!--I now validate when I create the client-->
+            <button mat-raised-button color="primary" >Next</button>
 
 
           </div>
@@ -700,7 +710,7 @@
           </div>
           <div *ngIf="dataSourceNewTempEngineers.length === 0">
             <hr />
-            No engineers have been added for this client.
+            No engineers have been added for {{this.clientFullName}}.
           </div>
           <div *ngIf="dataSourceNewTempEngineers.length > 0">
             <hr />
@@ -756,17 +766,17 @@
 
             <!--<div class="row">-->
             <!--<div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="bpNoContractor" [(ngModel)]="bpNoContractor" placeholder="Enter BP Number" name="bpNoContractor">
-                <label for="bpNoContractor">BP Number</label>
-              </div>
-            </div>-->
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" id="bpNoContractor" [(ngModel)]="bpNoContractor" placeholder="Enter BP Number" name="bpNoContractor">
+      <label for="bpNoContractor">BP Number</label>
+    </div>
+  </div>-->
             <!--          <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="ProfessionalRegNo" [(ngModel)]="ProfessionalRegNo" placeholder="Enter Professional Reg No" name="professionalRegNo">
-                <label for="professionalRegNo">CIDB Number</label>
-              </div>
-            </div>-->
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" id="ProfessionalRegNo" [(ngModel)]="ProfessionalRegNo" placeholder="Enter Professional Reg No" name="professionalRegNo">
+      <label for="professionalRegNo">CIDB Number</label>
+    </div>
+  </div>-->
             <!--</div>-->
             <div class="row">
               <div class="col">
@@ -817,14 +827,58 @@
                 </div>
               </div>
             </div>
+            <div *ngIf="dataSourceNewTempContractors.length === 0">
+              <hr />
+              No contractors have been added for {{this.clientFullName}}.
+            </div>
+            <div *ngIf="dataSourceNewTempContractors.length > 0">
+              <hr />
+              <table>
+                <thead>
+                  <tr>
+                    <th>CIDB Rating</th>
+                    <th>CIDB Number</th>
+                    <!--<th>ID Number</th>-->
+                    <th>Company Name</th>
+                    <th>Name</th>
+                    <th>Surname</th>
+                    <th>Cell No.</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let contractor of NewTempConList; let i = index"
+                      [class.selected-row]="i === selectedNewIndex">
+                    <td>{{ contractor.CIBRating }}</td>
+                    <td>{{ contractor.professionalRegNo }}</td>
+                    <td>{{ contractor.idNumber }}</td>
+                    <td>{{ contractor.name }}</td>
+                    <td>{{ contractor.surname }}</td>
+                    <td>{{ contractor.phoneNumber }}</td>
+                    <td>{{ contractor.email }}</td>
+                    <td>
+                      <button mat-raised-button color="orange" matTooltip="Edit Engineer" (click)="editNewTemporaryContractor(i) "><i class="fa fa-pencil"></i></button>
+                      <button mat-raised-button color="warni" matTooltip="Delete Engineer" (click)="deleteNewTemporaryContractorWithConfirmation(i);"><i class="fa fa-trash"></i></button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
 
             <!--            <button type="button" class="btn btn-outline-success" (click)="onAddContractor()">Save</button>
-            -->
-            <button mat-raised-button color="green" (click)="onAddContractor()">Save</button>
+  -->
+            <!--<button mat-raised-button color="green" (click)="onAddContractor()">Save</button>-->
+            <div class="button-container">
+              <button mat-raised-button color="green" *ngIf="!editing" (click)="onTempAddNewContractor()">Add Contractor</button>
+              <button mat-raised-button color="green" *ngIf="editing" (click)="saveEditNewTempContractor()">Edit Contractor</button>
+              <button mat-raised-button color="green" *ngIf="editing" (click)="undoEdit()">Cancel</button>
+            </div>
           </div>
           <div class="cont8789">
             <button mat-raised-button color="primary" matStepperPrevious>Back</button>
-            <button mat-raised-button color="primary" (click)="populateClientInfo();modal.dismiss('Cross click');saveAllNewEngineers()">Finish</button>
+            <button mat-raised-button color="primary" (click)="populateClientInfo();modal.dismiss('Cross click');saveAllNewEngineers();saveAllNewContractors()">Finish</button>
 
           </div>
         </mat-step>
@@ -1003,6 +1057,7 @@
 
     <div class="modal-footer">
       <button type="button" class="btn btn-outline-success" (click)="openXl(Prof);modal.close('Save click')">Add Professional</button>
+      <button type="button" class="btn btn-outline-success" (click)="openXl(oldProf);modal.close('Save click')">View Existing</button>
       <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click');populateClientInfo();modal.close('Save click');saveAllEngineers();saveAllContractors()">Create Wayleave</button>
     </div>
   </ng-template>

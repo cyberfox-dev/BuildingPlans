@@ -46,7 +46,10 @@ namespace WayleaveManagementSystem.Data.Entities
         public bool? depConfirmation { get; set; }
         public int? zoneID { get; set; }
 
+        //--Created a migration called: dotnet ef migrations add YourMigrationName
 
+        public string? refNumber { get; set; }
+        public string? companyType { get; set; }
 
 
     }
