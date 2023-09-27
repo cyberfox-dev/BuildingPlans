@@ -21,7 +21,7 @@ export class UserProfileService {
 ) {
   }
 
-  public addUpdateUserProfiles(userProfileID?: number | null, userID?: string | null, fullName?: string | null, email?: string | null, phoneNumber?: string | null, isInternal?: boolean | null, bp_Number?: string | null, companyName?: string | null, companyRegNo?: string | null, physcialAddress?: string | null, directorate?: string | null, departmentID?: number | null, subDepartmentID?: number | null, branch?: string | null, costCenterNumber?: string | null, costCenterOwner?: string | null, copyOfID?: any | null, createdById?: string | null, idNumber?: string | null, zoneID?: number | null, vatNumber?: string | null) {
+  public addUpdateUserProfiles(userProfileID?: number | null, userID?: string | null, fullName?: string | null, email?: string | null, phoneNumber?: string | null, isInternal?: boolean | null, bp_Number?: string | null, companyName?: string | null, companyRegNo?: string | null, physcialAddress?: string | null, directorate?: string | null, departmentID?: number | null, subDepartmentID?: number | null, branch?: string | null, costCenterNumber?: string | null, costCenterOwner?: string | null, copyOfID?: any | null, createdById?: string | null, idNumber?: string | null, zoneID?: number | null, vatNumber?: string | null, refNumber?:string | null, companyType?:string | null) {
 
     const body = {
       UserProfileID: userProfileID,
@@ -47,6 +47,10 @@ export class UserProfileService {
       depConfirmation: false,
       zoneID: zoneID,
       vatNumber: vatNumber,
+
+      //Reference Number & Company Type??
+      refNumber: refNumber,
+      companyType: companyType,
 
     }
     return this.httpClient.post(this.baseURL + "AddUpdateUserProfiles", body);

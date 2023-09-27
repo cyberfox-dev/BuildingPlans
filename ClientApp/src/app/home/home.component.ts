@@ -29,6 +29,7 @@ import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { UserService } from '../service/User/user.service';
 import { NewProfileComponent } from '../new-user/new-profile/new-profile.component';
 import { BusinessPartnerService } from '../service/BusinessPartner/business-partner.service';
+import { ContractorList } from '../edit-contractor/edit-contractor.component';
 
 
 export interface EngineerList {
@@ -276,7 +277,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   clientCompanyName = '';
   clientCompanyRegNo = '';
   clientCompanyType = '';
-  clientIDNumber = '';
+  clientIDNumber = ''; //This was made ready, but was ultimately not pushed into function...
   clientPhysicalAddress = '';
   clientBpNumber = '';
 
@@ -309,8 +310,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild("Prof", { static: true }) Prof!: ElementRef;
   @Output() optionEvent = new EventEmitter<string>();
 
-  displayedColumnsLinkUsers: string[] = ['idNumber', 'fullName', 'actions'];
-  dataSourceLinkUsers = this.ClientUserList;
+
   isDarkTheme: boolean = true;
 
   private subscriptions: Subscription[] = [];
@@ -397,16 +397,43 @@ export class HomeComponent implements OnInit, OnDestroy {
       // Extract and return the filtered project numbers
       return this.newList.map(user => user.ProjectNumber || "");
     }
-
-
-
-
-
-
   }
 
+  @ViewChild(MatTable) linkUsersTable: MatTable<any> | undefined;
+  displayedColumnsLinkUsers: string[] = ['idNumber', 'fullName', 'actions'];
+  dataSourceLinkUsers = this.ClientUserList;
 
+  //I lost the Client list table
 
+  applyExistingClientFilter(event: Event): void {
+    debugger;
+    //this.ClientUserList.splice(0, this.ClientUserList.length);
+
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    console.log('Filtering with:', filterValue);
+
+    if (filterValue === '') {
+      // If the filter is empty, reset the dataSource to the original data
+      this.dataSourceLinkUsers = [...this.ClientUserList];
+      this.newList = [];
+    } else {
+      // Apply the filter to the dataSource based on columns 'idNumber' and 'fullName'
+      this.dataSourceLinkUsers = this.ClientUserList.filter((user: any) => {
+        return (
+          (user.idNumber?.toLowerCase() || '').includes(filterValue) ||
+          (user.fullName?.toLowerCase() || '').includes(filterValue)
+        );
+      });
+
+      this.newList = [...this.dataSourceLinkUsers];
+    }
+    console.log('Filtered Data:', this.newList);
+    // Render the rows after applying the filter
+    this.linkUsersTable?.renderRows();
+  }
+
+  //Filtered list is duplicated sometimes??
+  
 
   ngOnInit(): void {
 
@@ -425,12 +452,14 @@ export class HomeComponent implements OnInit, OnDestroy {
 
       this.getRolesLinkedToUser();
       this.onCheckIfUserHasAccess();
-      this.getAllExternalUsers();
-
+    
 
       this.getAllSubDepartments();
       this.getAllUserLinks();
       this.getConfig();
+
+      //this.getAllExternalUsers(); //returns null at this point
+
       //this.ServerType = this.sharedService.getServerType();
 
       /*      this.initializeApp();*/
@@ -534,19 +563,57 @@ export class HomeComponent implements OnInit, OnDestroy {
       keyboard: false // Prevent pressing the ESC key to close the modal
     });
   }
+
+  isModalOpen = false;
+  // Function to handle modal dismissal from the modal component
+  closeModalFromModal() {
+    // Set the modal state to closed
+    this.isModalOpen = false;
+
+    // Clear the filter and reset the lists
+    this.clearFilter();
+  }
+
+  // Function to clear the filter and reset the lists
+  clearFilter() {
+    this.dataSourceLinkUsers = [...this.ClientUserList];
+    this.newList = [];
+  }
+
+  //The filter acts up sometimes - 
   openUser(user: any) {
-    if (confirm("Are you sure you what to apply for a existing client?")) {
-      this.modalService.open(user, {
+    
+    if (this.isModalOpen) {
+      // Modal is already open, do nothing or handle it as needed
+      return;
+    }
+
+    if (confirm("Are you sure you want to apply for an existing client?")) {
+      this.isModalOpen = true;
+      this.clearFilter();
+
+      const modalRef = this.modalService.open(user, {
         centered: true,
         size: 'lg',
         backdrop: 'static', // Prevent clicking outside the modal to close it
         keyboard: false // Prevent pressing the ESC key to close the modal
       });
-    }
-    else {
 
+      modalRef.result.then(
+        (result) => {
+          // Handle modal closure here
+          this.isModalOpen = false;
+          this.clearFilter();
+        },
+        (reason) => {
+          // Handle modal dismissal here if needed
+          this.isModalOpen = false;
+          this.clearFilter();
+        }
+      );
+    } else {
+      // Handle the case when the user cancels the confirmation
     }
-
   }
 
   openXl(Prof: any) {
@@ -746,24 +813,26 @@ export class HomeComponent implements OnInit, OnDestroy {
   getAllExternalUsers() {
 
     this.UserList.splice(0, this.UserList.length);
-
+    this.ClientUserList.splice(0, this.ClientUserList.length);
+    debugger;
 
     this.userPofileService.getExternalUsers().subscribe((data: any) => {
-
+      console.log("I entered the service");
       if (data.responseCode == 1) {
-
+        console.log("Received data:", data);
         for (let i = 0; i < data.dateSet.length; i++) {
-          const tempZoneList = {} as ClientUserList;
+          const tempUsersList = {} as ClientUserList;
           const current = data.dateSet[i];
-          tempZoneList.userId = current.userID;
-          tempZoneList.idNumber = current.idNumber;
-          tempZoneList.fullName = current.fullName;
+          tempUsersList.userId = current.userID;
+          tempUsersList.idNumber = current.idNumber;
+          tempUsersList.fullName = current.fullName;
 
 
           this.sharedService.clientUserID = current.userID;
-          this.ClientUserList.push(tempZoneList);
+          this.ClientUserList.push(tempUsersList);
+          
         }
-
+        console.log("This is your client user list: " + JSON.stringify(this.ClientUserList));
       }
       else {
         alert(data.responseMessage);
@@ -771,15 +840,22 @@ export class HomeComponent implements OnInit, OnDestroy {
       console.log("reponse", data);
 
     }, error => {
+      debugger;
       console.log("Error: ", error);
     })
-
+    //console.log("Did I skip the service?");
   }
 
   getUserID(index: any) {
     console.log("Turtle Speed is too fast for me");
 
     this.userID = this.ClientUserList[index].userId;
+
+    this.selectedUserName = this.ClientUserList[index].fullName;
+    this.sharedService.clientUserID = this.userID;
+
+    this.getAllProfessionalsListByProfessionalType("Engineer");
+    this.getAllProfessionalsListByProfessionalType("Contractor");
     console.log("You selected: " + this.userID);
     //The right UserID is acquired - then what?!
   }
@@ -1275,6 +1351,7 @@ this.Applications.push(tempApplicationList);
 
   goToNewWayleave(applicationType: boolean, isPlanning: boolean) { //application type refers to whether it is a brand new application or if it is a reapply.
     debugger;
+    this.getAllExternalUsers();
     this.applicationType = applicationType;
     this.isPlanning = isPlanning;
     if (this.CurrentUserProfile[0].isInternal === true) {
@@ -3028,6 +3105,72 @@ this.Applications.push(tempApplicationList);
   openOlderProf(oldProf: any) {
     this.modalService.open(oldProf, { centered: true, size: 'xl' });
   }
+
+  getAllProfessionalsListByProfessionalType(professionalType: string) {
+    //this.EngineersList.splice(0, this.EngineersList.length);
+    //this.ContractorsList.splice(0, this.ContractorsList.length);
+    debugger;
+    this.professionalService.getProfessionalsListByProfessionalType(this.userID, professionalType).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        console.log("data.dateSet get", data.dateSet);
+        debugger;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          //Check if Engineer or Contractor
+          if (professionalType == "Engineer") {
+            const tempProfessionalList = {} as ProfListEU;
+            const current = data.dateSet[i];
+            debugger;
+            tempProfessionalList.name = current.fullName.split(' ')[0], // Split full name into first name and last name
+              tempProfessionalList.surname = current.fullName.split(' ')[1], // Assuming space separates first and last names
+              //tempProfessionalList.fullName = current.fullName;
+              tempProfessionalList.email = current.email;
+            tempProfessionalList.idNumber = current.idNumber;
+            tempProfessionalList.phoneNumber = current.phoneNumber;
+            debugger;
+            this.EngineersList.push(tempProfessionalList);
+            //this.EngineerTable?.renderRows();
+
+            debugger;
+          } else {
+            const tempProfessionalList = {} as ProfListEU;
+            const current = data.dateSet[i];
+            tempProfessionalList.name = current.fullName.split(' ')[0], // Split full name into first name and last name
+              tempProfessionalList.surname = current.fullName.split(' ')[1], // Assuming space separates first and last names
+              //tempProfessionalList.fullName = current.fullName;
+              tempProfessionalList.email = current.email;
+            tempProfessionalList.idNumber = current.idNumber;
+            tempProfessionalList.phoneNumber = current.phoneNumber;
+
+            this.ContractorsList.push(tempProfessionalList);
+            //this.ContractorTable?.renderRows();
+
+          }
+          //this.EngineerTable?.renderRows();
+          //this.ContractorTable?.renderRows();
+          debugger;
+        }
+        //this.ContractorTable?.renderRows();
+
+        console.log("this.EngineerList", this.EngineersList);
+        console.log("this.ContractorList", this.ContractorsList);
+
+        this.contractorTable?.renderRows();
+        this.engineerTable?.renderRows();
+        debugger;
+      }
+
+      else {
+        alert(data.responseMessage);
+      }
+
+      console.log("reponse", data);
+      this.contractorTable?.renderRows();
+      this.engineerTable?.renderRows();
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
   //The [Save] button
 
 
@@ -3173,6 +3316,7 @@ this.Applications.push(tempApplicationList);
     }
 
   }
+  /*
   saveEditedEngineerDetails(showAddedProf: any) {
     // Update the engineer's details in the data source
     this.selectedEngineer.bpNumber = this.editEngBPNum;
@@ -3203,6 +3347,62 @@ this.Applications.push(tempApplicationList);
     this.openViewTheirProf(showAddedProf);
 
 
+  }
+  */
+  saveEditedEngineerDetails(showAddedProf: any) {
+    // Check if the textbox values are not empty before updating
+    if (this.editEngBPNum.trim() !== '') {
+      this.selectedEngineer.bpNumber = this.editEngBPNum;
+    }
+    if (this.editEngRegNum.trim() !== '') {
+      this.selectedEngineer.profRegNum = this.editEngRegNum;
+    }
+    if (this.editEngID.trim() !== '') {
+      this.selectedEngineer.idNum = this.editEngID;
+    }
+    if (this.editEngName.trim() !== '') {
+      this.selectedEngineer.name = this.editEngName;
+    }
+    if (this.editEngSurname.trim() !== '') {
+      this.selectedEngineer.surname = this.editEngSurname;
+    }
+    if (this.editEngPhone.trim() !== '') {
+      this.selectedEngineer.cellular = this.editEngPhone;
+    }
+    if (this.editEngEmail.trim() !== '') {
+      this.selectedEngineer.email = this.editEngEmail;
+    }
+
+    this.selectedEngineer = null;
+    this.openViewTheirProf(showAddedProf);
+  }
+
+  saveEditedContractorDetails(showAddedProf: any) {
+    // Check if the textbox values are not empty before updating
+    if (this.editConCompany.trim() !== '') {
+      this.selectedContractor.companyName = this.editConCompany;
+    }
+    if (this.editConCIDBNum.trim() !== '') {
+      this.selectedContractor.cidbNum = this.editConCIDBNum;
+    }
+    if (this.editConCIDBRating.trim() !== '') {
+      this.selectedContractor.cidbGrade = this.editConCIDBRating;
+    }
+    if (this.editConName.trim() !== '') {
+      this.selectedContractor.name = this.editConName;
+    }
+    if (this.editConSurname.trim() !== '') {
+      this.selectedContractor.surname = this.editConSurname;
+    }
+    if (this.editConPhone.trim() !== '') {
+      this.selectedContractor.cellular = this.editConPhone;
+    }
+    if (this.editConEmail.trim() !== '') {
+      this.selectedContractor.email = this.editConEmail;
+    }
+
+    this.selectedContractor = null;
+    this.openViewTheirProf(showAddedProf);
   }
 
   // Delete a temporarily saved engineer by index with confirmation
@@ -3286,7 +3486,7 @@ this.Applications.push(tempApplicationList);
       contractor.email,
       contractor.cellular,
       contractor.cidbNum,
-      this.userID,
+      this.clientUserID,
       contractor.companyName, //wait, is this supposed to be the company name or ID number?/
       this.CurrentUser.appUserId,
       contractor.cidbGrade
@@ -3353,9 +3553,9 @@ this.Applications.push(tempApplicationList);
       engineer.email,
       engineer.cellular,
       engineer.profRegNum,
-      this.userID,
+      this.clientUserID, //linked client?
       engineer.idNum,
-      this.CurrentUser.appUserId,
+      this.CurrentUser.appUserId, //createdBy
       null // Additional data, if needed
     ).subscribe((data: any) => {
       if (data.responseCode == 1) {
@@ -3379,6 +3579,24 @@ this.Applications.push(tempApplicationList);
   displayedColumnsNewTempEngineers: string[] = ['bpNoApplicant', 'professionalRegNo', 'engineerIDNo', 'name', 'surname', 'applicantTellNo', 'applicantEmail', 'actions'];
   dataSourceNewTempEngineers = this.NewTempEngList;
 
+  NewTempConList: ContractorList[] = [];
+  @ViewChild(MatTable) NewTempContractorsTable: MatTable<ContractorList> | undefined;
+  displayedColumnsNewTempContractors: string[] = ['contractorIDNo', 'ProfessionalRegNo', 'CIBRating', 'Name', 'Surname', 'ContractorTell', 'ContractorEmail', 'actions'];
+  dataSourceNewTempContractors = this.NewTempConList;
+
+  editedNewContractor: ContractorList = {
+    idNumber: '',
+    professionalRegNo: '',//this is commented out on the HTML?
+    CIBRating: '',
+    name: '',
+    surname: '',
+    phoneNumber: null,
+    email: '',
+    bpNumber: null, //this is commented out on the HTML?
+    professinalID: 0,
+    ProfessinalType: 'Contractor'
+  };
+
   editedNewEngineer: EngineerList = {
     bpNumber: '',
     professionalRegNo: '',
@@ -3393,6 +3611,7 @@ this.Applications.push(tempApplicationList);
 
   editing: boolean = false;
   selectedNewEngineer: any = null;
+  selectedNewContractor: any = null;
   selectedNewIndex: number = null;
 
   clearCreateComponent() {
@@ -3416,13 +3635,24 @@ this.Applications.push(tempApplicationList);
   }
   undoEdit() {
 
+    debugger;
     this.clearCreateEngComponent();
-    this.NewTempEngineersTable?.renderRows();
+    this.clearCreateComponent();
+
+    
     this.selectedNewEngineer = null;
+    this.selectedNewContractor = null;
+
     this.editing = false;
     this.selectedNewIndex = null;
+
     this.editedNewEngineer = null;
+    this.editedNewContractor = null;
+
+    this.NewTempEngineersTable?.renderRows();
+    this.NewTempContractorsTable?.renderRows();
   }
+
   onTempAddNewEngineer() {
     if (
 
@@ -3470,7 +3700,8 @@ this.Applications.push(tempApplicationList);
       engineer.email,
       engineer.phoneNumber,
       engineer.professionalRegNo,
-      this.userID, //Need to confirm this with kyle || Get new client's ID njani?
+      //this.userID, //Need to confirm this with kyle || Get new client's ID njani?
+      this.sharedService.clientUserID,
       engineer.idNumber,
       this.CurrentUser.appUserId,
       null // Additional data, if needed
@@ -3492,6 +3723,73 @@ this.Applications.push(tempApplicationList);
       this.onPermaSaveNewEngineer(engineer);
     });
   }
+
+  onTempAddNewContractor() {
+    if (
+
+      !this.contractorIDNo ||
+      !this.ProfessionalRegNo ||
+      !this.CIBRating ||
+      !this.Name ||
+      !this.Surname ||
+      !this.ContractorTell ||
+      !this.ContractorEmail
+    ) {
+      alert('Please fill in all required fields.');
+      return; // Exit the function if any required field is empty
+    }
+    const newContractor: ContractorList = {
+      CIBRating: this.CIBRating,
+      professionalRegNo: this.ProfessionalRegNo, //This is the CIDB Number
+      idNumber: this.contractorIDNo,
+      name: this.Name,
+      surname: this.Surname,
+      phoneNumber: this.ContractorTell,
+      email: this.ContractorEmail,
+      bpNumber: null,
+      professinalID: 0,
+      ProfessinalType: 'Contractor'
+    };
+
+    this.NewTempConList.push(newContractor);
+    this.cdr.detectChanges(); // Trigger change detection
+    console.log("These are the contractors you have added: " + JSON.stringify(this.NewTempConList, null, 2));
+    debugger;
+    this.NewTempContractorsTable?.renderRows(); // Explicitly trigger rendering
+    this.clearCreateComponent();
+  }
+  onPermaSaveNewContractor(contractor: ContractorList) {
+    this.professionalService.addUpdateProfessional(
+      0, // Action identifier (e.g., 0 for adding)
+      "Contractor", // Professional type
+      contractor.name + " " + contractor.surname, // Name
+      contractor.bpNumber,
+      false, // Active status
+      contractor.email,
+      contractor.phoneNumber.toString(),
+      contractor.professionalRegNo,
+      //this.userID, //Need to confirm this with kyle || Get new client's ID njani?
+      this.sharedService.clientUserID,
+      contractor.idNumber,
+      this.CurrentUser.appUserId,
+      contractor.CIBRating 
+    ).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+        this.NewTempContractorsTable?.renderRows();
+      } else {
+        alert(data.responseMessage);
+      }
+      console.log("response", data);
+    }, error => {
+      console.log("Error: ", error);
+    });
+  }
+  saveAllNewContractors() {
+    this.NewTempConList.forEach(contractor => {
+      this.onPermaSaveNewContractor(contractor);
+    });
+  }
   //DELETEENGINEER-DELETEENGINEER-DELETEENGINEER-DELETEENGINEER-DELETEENGINEER-DELETEENGINEER-DELETEENGINEER-DELETEENGINEER-DELETEENGINEER
   deleteNewTemporaryEngineerWithConfirmation(index: number) {
     if (index >= 0 && index < this.NewTempEngList.length) {
@@ -3511,6 +3809,27 @@ this.Applications.push(tempApplicationList);
       }
     } else {
       console.error('Invalid index for deleting engineer.');
+    }
+  }
+  //DELETECONTRACTOR-DELETECONTRACTOR-DELETECONTRACTOR-DELETECONTRACTOR-DELETECONTRACTOR-DELETECONTRACTOR-DELETECONTRACTOR-DELETECONTRACTOR
+  deleteNewTemporaryContractorWithConfirmation(index: number) {
+    if (index >= 0 && index < this.NewTempConList.length) {
+      // Check if the index is valid
+
+      // Show a confirmation dialog to the user
+      const confirmDelete = window.confirm('Are you sure you want to delete this contractor?');
+
+      if (confirmDelete) {
+        // If the user confirms, proceed with deletion
+        this.NewTempConList.splice(index, 1);
+        this.dataSourceNewTempContractors = this.NewTempConList;
+        this.NewTempContractorsTable?.renderRows();
+      } else {
+        // If the user cancels, do nothing
+        console.log('Deletion canceled by the user.');
+      }
+    } else {
+      console.error('Invalid index for deleting contractor.');
     }
   }
   //EDITENGINEER-EDITENGINEER-EDITENGINEER-EDITENGINEER-EDITENGINEER-EDITENGINEER-EDITENGINEER-EDITENGINEER-EDITENGINEER-EDITENGINEER
@@ -3573,12 +3892,75 @@ this.Applications.push(tempApplicationList);
     this.undoEdit();
 
   }
+  //EDITCONTRACTOR-EDITCONTRACTOR-EDITCONTRACTOR-EDITCONTRACTOR-EDITCONTRACTOR-EDITCONTRACTOR-EDITCONTRACTOR-EDITCONTRACTOR-EDITCONTRACTOR
+  editNewTemporaryContractor(index: number) {
+    if (index >= 0 && index < this.NewTempConList.length) {
+      // Check if the index is valid
+      this.editing = true;
+      this.selectedNewIndex = index;
+      debugger;
+      this.selectedNewContractor = this.NewTempConList[index];
 
+      // Populate the input fields with the selectedContractor data
+      this.CIBRating = this.selectedNewContractor.CIBRating;
+      this.ProfessionalRegNo = this.selectedNewContractor.professionalRegNo;
+      this.contractorIDNo = this.selectedNewContractor.idNumber;
+      this.Name = this.selectedNewContractor.name;
+      this.Surname = this.selectedNewContractor.surname;
+      this.ContractorTell = this.selectedNewContractor.phoneNumber;
+      this.ContractorEmail = this.selectedNewContractor.email;
+
+    } else {
+      console.error('Invalid index for editing contractor.');
+    }
+  }
+  saveEditNewTempContractor() {
+
+    this.editedNewContractor = {
+      bpNumber: null,
+      CIBRating: this.CIBRating,
+      professionalRegNo: this.ProfessionalRegNo,
+      idNumber: this.contractorIDNo,
+      name: this.Name,
+      surname: this.Surname,
+      phoneNumber: this.ContractorTell,
+      email: this.ContractorEmail,
+      professinalID: 0,
+      ProfessinalType: 'Contractor'
+    };
+
+    if (this.editedNewContractor.professionalRegNo !== '') {
+      this.selectedNewContractor.professionalRegNo = this.editedNewContractor.professionalRegNo;
+    }
+    if (this.editedNewContractor.CIBRating !== '') {
+      this.selectedNewContractor.CIBRating = this.editedNewContractor.CIBRating;
+    }
+    if (this.editedNewContractor.idNumber !== '') {
+      this.selectedNewContractor.idNumber = this.editedNewContractor.idNumber;
+    }
+    if (this.editedNewContractor.name !== '') {
+      this.selectedNewContractor.name = this.editedNewContractor.name;
+    }
+    if (this.editedNewContractor.surname !== '') {
+      this.selectedNewContractor.surname = this.editedNewContractor.surname;
+    }
+    if (this.editedNewContractor.phoneNumber !== null) {
+      this.selectedNewContractor.phoneNumber = this.editedNewContractor.phoneNumber;
+    }
+    if (this.editedNewContractor.email !== '') {
+      this.selectedNewContractor.email = this.editedNewContractor.email;
+    }
+
+    this.selectedNewContractor = this.NewTempConList[this.selectedNewIndex];
+    this.undoEdit();
+
+  }
   validEmail: boolean;
   validFullName: boolean;
   externalWValidBP: boolean;
   noEmptyFields: boolean;
   clientFullName: string = '';
+  validID: boolean;
   //SAVING NEW PROFILE BE SHADY=======================================================================================================
   testBp2(BpNo: any): Promise<boolean> {
     return this.businessPartnerService.validateBP(Number(BpNo))
@@ -3593,7 +3975,7 @@ this.Applications.push(tempApplicationList);
         return false; // Return false in case of an error
       });
   }
-  async validateClientInfo() {
+  async validateClientInfo(stepper: MatStepper) {
    
     let clientEmail = this.clientEmail;
     let phoneNumber = this.clientCellNo;
@@ -3603,6 +3985,8 @@ this.Applications.push(tempApplicationList);
     let companyRegNo = this.clientCompanyRegNo;
     let clientCompanyType = this.clientCompanyType;
     let physicalAddress = this.clientPhysicalAddress;
+
+    let clientIDNumber = this.clientIDNumber;
 
     const nameRegex = /^[a-zA-Z]+$/;
 
@@ -3619,6 +4003,13 @@ this.Applications.push(tempApplicationList);
       }
     } else {
       alert("Invalid name. Please enter a single name with letters only.");
+    }
+
+    if (clientIDNumber.length === 13) {
+      this.validID = true;
+    } else {
+      alert("The ID number must be 13 digits.")
+      this.validID = false;
     }
 
     const emailRegex: RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -3671,31 +4062,32 @@ this.Applications.push(tempApplicationList);
       companyName === undefined || companyName.trim() === '' ||
       companyRegNo === undefined || companyRegNo.trim() === '' ||
       clientCompanyType === undefined || clientCompanyType.trim() === '' ||
-      physicalAddress === undefined || physicalAddress.trim() === ''
+      physicalAddress === undefined || physicalAddress.trim() === '' ||
+      clientIDNumber === undefined || clientIDNumber.trim() === ''
     ) {
       this.noEmptyFields = false;
       alert("Please fill out all the required fields.");
     } else {
       this.noEmptyFields = true;
     }
-    //(this.noEmptyFields == true && this.validFullName == true && this.validEmail == true && this.externalWValidBP == true)
-    if (this.noEmptyFields == true && this.validFullName == true && this.validEmail == true) {
+    //(this.noEmptyFields == true && this.validFullName == true && this.validEmail == true && this.externalWValidBP == true && this.validID == true)
+    if (this.noEmptyFields == true && this.validFullName == true && this.validEmail == true && this.validID == true) {
       this.sharedService.errorForRegister = false;
-      this.createNewClient();
+      this.createNewClient(stepper);
     }
     else {
       return;
     }
   }
 
-  createNewClient() {
+  createNewClient(stepper: MatStepper) {
     try {
 
       this.userService.register(this.clientFullName, this.clientEmail, "Password@" + this.clientFullName).subscribe((data: any) => {
         if (data.responseCode == 1) {
+          debugger;
           this.newProfileComponent.onNewProfileCreate(
-            //this.sharedService.userIDForWalkIn,
-            null,
+            data.dateSet.appUserId,
             this.clientFullName,
             this.clientEmail,
             this.clientCellNo,
@@ -3704,14 +4096,21 @@ this.Applications.push(tempApplicationList);
             this.clientCompanyRegNo,
             this.clientPhysicalAddress,
             null,
-            null,
-          );
+            this.clientIDNumber,
+            this.clientRefNo,
+            this.clientCompanyType,
+          )
           debugger;
-          this.sharedService.clientUserID = data.dateSet.appUserId;
+          console.log("Before assignment - this.sharedService.clientUserID: " + this.sharedService.clientUserID);
+          this.sharedService.clientUserID = data.dateSet.appUserId; //This assignment is sus
           console.log("IS this " + this.clientName + "'s USERID: " + this.sharedService.clientUserID);
           localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
           this.sharedService.newUserProfileBp = this.clientBpNumber;
-          this.router.navigate(["/new-profile"]);
+          alert(this.clientFullName + " has been added as an external client.\nYou can now link their professionals and create a wayleave on their behalf.");
+          stepper.next();
+          
+          //I NEED TO STAY INSIDE THIS MAT-STEPPER
+          //this.router.navigate(["/new-profile"]);
         }
       });
   }
