@@ -5,6 +5,7 @@ using WayleaveManagementSystem.IServices;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel;
+using WayleaveManagementSystem.Data.Migrations;
 
 namespace WayleaveManagementSystem.Service
 {
@@ -18,7 +19,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
         //Implementing the interface Methods
-        public async Task<DocumentUpload> AddUpdateDocument(int? documentID, string documentName, string? DocumentLocalPath, int? applicationID, string? assignedUserID, string createdById,string? groupName, int?subDepID, string? subDepName, bool? isPlanning, bool? isRepository)
+        public async Task<DocumentUpload> AddUpdateDocument(int? documentID, string documentName, string? DocumentLocalPath, int? applicationID, string? assignedUserID, string createdById,string? groupName, int?subDepID, string? subDepName, bool? isPlanning, bool? isRepository,string? description)
         {
 
             if (documentID == 0)
@@ -47,6 +48,7 @@ namespace WayleaveManagementSystem.Service
                     SubDepartmentName = subDepName,
                     isPlanning = isPlanning,
                     isRepository = isRepository,
+                    DescriptionForRepoDoc = description,
                 };
 
                 //After the inizlization add to the db
@@ -126,7 +128,8 @@ namespace WayleaveManagementSystem.Service
                     DateCreated = item.DateCreated,
                     DateUpdated = item.DateUpdated,
                     CreatedById = item.CreatedById,
-                    isActive = item.isActive
+                    isActive = item.isActive,
+                    Description = item.DescriptionForRepoDoc
                 });
             }
 
@@ -154,7 +157,7 @@ namespace WayleaveManagementSystem.Service
                   CreatedById = documentUpload.CreatedById,
                   GroupName = documentUpload.DocumentGroupName,
                   isActive = documentUpload.isActive,
-
+                  Description = documentUpload.DescriptionForRepoDoc
 
               }
               ).ToListAsync();
@@ -183,7 +186,7 @@ namespace WayleaveManagementSystem.Service
                   isActive = documentUpload.isActive,
                   SubDepartmentID = documentUpload.SubDepartmentID,
                   SubDepartmentName = documentUpload.SubDepartmentName,
-
+                  Description = documentUpload.DescriptionForRepoDoc
               }
               ).ToListAsync();
 
@@ -209,6 +212,7 @@ namespace WayleaveManagementSystem.Service
                   isActive = documentUpload.isActive,
                   GroupName = documentUpload.DocumentGroupName,
                   SubDepartmentID = documentUpload.SubDepartmentID,
+                  Description = documentUpload.DescriptionForRepoDoc
               }
               ).ToListAsync();
 
@@ -232,7 +236,8 @@ namespace WayleaveManagementSystem.Service
                     DateCreated = item.DateCreated,
                     DateUpdated = item.DateUpdated,
                     CreatedById = item.CreatedById,
-                    isActive = item.isActive
+                    isActive = item.isActive,
+                    Description = item.DescriptionForRepoDoc
                 });
             }
             return documentUploadDTO;

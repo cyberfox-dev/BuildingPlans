@@ -108,8 +108,13 @@ namespace WayleaveManagementSystem.Service
                 {
                     MandatoryDocumentName = MandatoryDocumentUpload.MandatoryDocumentName,
                     MandatoryDocumentCategory = MandatoryDocumentUpload.MandatoryDocumentCategory,
-                    DateCreated = DateTime.Now,
-                    DateUpdated = DateTime.Now,
+                    //This should be the date that was stored no?
+                    /*DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,*/
+
+                    DateCreated = MandatoryDocumentUpload.DateCreated,
+                    DateUpdated = MandatoryDocumentUpload.DateUpdated,
+
                     CreatedById = MandatoryDocumentUpload.CreatedById,
                     isActive = true
 
@@ -125,8 +130,11 @@ namespace WayleaveManagementSystem.Service
                 select new MandatoryDocumentUploadDTO()
                 {
                     MandatoryDocumentName = MandatoryDocumentUpload.MandatoryDocumentName,
-                    DateCreated = DateTime.Now,
-                    DateUpdated = DateTime.Now,
+                    /*DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,*/
+
+                    DateCreated = MandatoryDocumentUpload.DateCreated,
+                    DateUpdated = MandatoryDocumentUpload.DateUpdated,
                     MandatoryDocumentCategory = MandatoryDocumentUpload.MandatoryDocumentCategory,
                     CreatedById = MandatoryDocumentUpload.CreatedById,
                     isActive = true
@@ -145,8 +153,11 @@ namespace WayleaveManagementSystem.Service
                  {
                      MandatoryDocumentID = mandatoryDocumentUpload.MandatoryDocumentID,
                      MandatoryDocumentName = mandatoryDocumentUpload.MandatoryDocumentName,
-                     DateCreated = DateTime.Now,
-                     DateUpdated = DateTime.Now,
+                     /*DateCreated = DateTime.Now,
+                     DateUpdated = DateTime.Now,*/
+
+                     DateCreated = mandatoryDocumentUpload.DateCreated,
+                     DateUpdated = mandatoryDocumentUpload.DateUpdated,
                      MandatoryDocumentCategory = mandatoryDocumentUpload.MandatoryDocumentCategory,
                      CreatedById = mandatoryDocumentUpload.CreatedById,
                      isActive = true

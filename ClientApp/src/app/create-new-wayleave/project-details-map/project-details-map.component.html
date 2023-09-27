@@ -369,7 +369,8 @@
   <div class="loading-screen" *ngIf="isLoading" id="loadingScreen">
     <mat-spinner></mat-spinner>
     <div class="text">Saving drawing</div>
-    <div class="text2">Taking too long? Your internet connection may be slow.</div>
+    <div class="text2">{{loadingText}}</div>
+    <div class="text2">{{takingTooLong}}</div>
   </div>
   <!--<div #mapViewNode
        class="mapViewNode"></div>-->

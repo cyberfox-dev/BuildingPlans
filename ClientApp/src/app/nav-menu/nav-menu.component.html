@@ -335,7 +335,7 @@
 
   <div class="modal-body">
     <h1>Frequently Asked Questions (FAQ's)</h1>
-    <mat-expansion-panel *ngFor="let faqList of FAQList; let i = index">
+    <mat-expansion-panel  *ngFor="let faqList of FAQList; let i = index" class="animationSlideUp">
       <mat-expansion-panel-header>
         <mat-panel-title>
           Question : {{faqList.Question}}
@@ -359,20 +359,20 @@
 <!--Side Nav-->
 
 <ng-template #content let-offcanvas>
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title" id="offcanvas-basic-title">Menu</h5>
-    <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
+  <div class="offcanvas-header animationFadeInRightToLeft">
+    <h5 class="offcanvas-title animationFadeInRightToLeft" id="offcanvas-basic-title">Menu</h5>
+    <button type="button" class="btn-close animationFadeInRightToLeft" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
   </div>
   <div class="offcanvas-body">
-    <div class="sideNav" *ngIf="Icons">
-      <button mat-button class="sideNavIcons" (click)="openFAQModal(FAQModal)"><i class="fa fa-question" aria-hidden="true"></i>   Frequently Asked Questions</button>
-      <button mat-button class="sideNavIcons" (click)="goToCyberfoxCofig();offcanvas.dismiss('Cross click')" *ngIf="cyberfoxConfigs"><i class="fa fa-superpowers"></i>   Cyberfox Configs</button>
-      <button mat-button class="sideNavIcons" (click)="openRepositoryModal(repositoryModal)"><i class="fa fa-files-o" aria-hidden="true"></i>   Document Repository</button>
-      <button mat-button class="sideNavIcons" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><i class="fa fa-comment"></i>   Comment Builder</button>
-      <button mat-button class="sideNavIcons" (click)="goToConfig();offcanvas.dismiss('Cross click')" *ngIf="Configurations"><i class="fa fa-cogs"></i>   Configurations</button>
-      <button mat-button class="sideNavIcons" (click)="getAllNotifications();openNotificationsModal(notificationsCenter); getAllReadNotifications()"><i class="fa fa-bell"></i>   Notifications</button>
-      <button mat-button class="sideNavIcons" (click)="goToSettings();offcanvas.dismiss('Cross click')"><i class="fa fa-user-circle-o" aria-hidden="true"></i>   User Settings</button>
-      <button mat-button class="sideNavIcons" (click)="LogoutUser();offcanvas.dismiss('Cross click')"><i class="fa fa-sign-out" aria-hidden="true"></i>   Log Out</button>
+      <div class="sideNav animationFadeInRightToLeft" *ngIf="Icons">
+      <button mat-button class ="sideNavIcons" (click)="openFAQModal(FAQModal)"><i class="fa fa-question" aria-hidden="true"></i>   Frequently Asked Questions</button>
+      <button mat-button class ="sideNavIcons" (click)="goToCyberfoxCofig();offcanvas.dismiss('Cross click')" *ngIf="cyberfoxConfigs"><i class="fa fa-superpowers"></i>   Cyberfox Configs</button>
+      <button mat-button class ="sideNavIcons" (click)="openRepositoryModal(repositoryModal)"><i class="fa fa-files-o" aria-hidden="true"></i>   Document Repository</button>
+      <button mat-button class ="sideNavIcons" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><i class="fa fa-comment"></i>   Comment Builder</button>
+      <button mat-button class ="sideNavIcons" (click)="goToConfig();offcanvas.dismiss('Cross click')" *ngIf="Configurations"><i class="fa fa-cogs"></i>   Configurations</button>
+      <button mat-button class="sideNavIcons" (click)="getAllNotifications();openNotificationsModal(notificationsCenter)"><i class="fa fa-bell"></i>   Notifications</button>
+      <button mat-button class ="sideNavIcons" (click)="goToSettings();offcanvas.dismiss('Cross click')"><i class="fa fa-user-circle-o" aria-hidden="true"></i>   User Settings</button>
+      <button mat-button class ="sideNavIcons" (click)="LogoutUser();offcanvas.dismiss('Cross click')"><i class="fa fa-sign-out" aria-hidden="true"></i>   Log Out</button>
     </div>
   </div>
 </ng-template>

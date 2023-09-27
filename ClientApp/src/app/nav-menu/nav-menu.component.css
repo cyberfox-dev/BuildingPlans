@@ -795,6 +795,70 @@ h4 {
 .animationSlideUpNav {
   animation: fade-in-top-Nav 0.5s ease-out;
 }
+.animationSlideDown {
+  animation: fade-in-bottom 0.5s ease-out;
+}
+
+.animationSlideUp {
+  animation: fade-in-top 0.5s ease-out;
+}
+
+.animationFadeIn {
+  animation: fade-in-top 0.5s ease-out;
+}
+.animationFadeInRightToLeft {
+  animation: fade-in-rightToLeft 1s ease-out;
+}
+
+@keyframes fade-in-bottom {
+  0% {
+    opacity: 0;
+    transform: translateY(20px); /* Optional: Add a slide-up effect */
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-top {
+  0% {
+    opacity: 0;
+    transform: translateY(20px); /* Optional: Add a slide-up effect */
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in-rightToLeft {
+  0% {
+    opacity: 1;
+    transform: translateX(20px); /* Optional: Add a slide-up effect */
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateX(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 
 
 

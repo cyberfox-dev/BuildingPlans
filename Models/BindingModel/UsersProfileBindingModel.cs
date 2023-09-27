@@ -31,6 +31,7 @@
         public int? zoneID { get; set; }
         public string? vatNumber { get; set; }
 
-
+        public string? refNumber { get; set; }
+        public string? companyType { get; set; }
     }
 }

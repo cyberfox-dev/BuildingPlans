@@ -649,16 +649,16 @@ namespace WayleaveManagementSystem.Service
         public async Task<List<ApplicationsDTO>> GetApplicationsForReviewer(int? zoneId, string userId)
         {
             return await (
-               from Applications in _context.Application
-               join SubDepartmentComment in _context.SubDepartmentForComment
-               on Applications.ApplicationID equals SubDepartmentComment.ApplicationID
-               where Applications.isActive == true &&
-                     SubDepartmentComment.ZoneID == zoneId &&
-                     SubDepartmentComment.UserAssaignedToComment == userId
-               orderby Applications.DateCreated descending
-               select new ApplicationsDTO()
-               {
-                   ApplicationID = Applications.ApplicationID,
+                from Applications in _context.Application
+                join SubDepartmentComment in _context.SubDepartmentForComment
+                on Applications.ApplicationID equals SubDepartmentComment.ApplicationID
+                where Applications.isActive == true &&
+                      SubDepartmentComment.ZoneID == zoneId &&
+                      (SubDepartmentComment.UserAssaignedToComment == userId || SubDepartmentComment.UserAssaignedToComment == "All users in Subdepartment FA")
+                orderby Applications.DateCreated descending
+                select new ApplicationsDTO()
+                {
+                    ApplicationID = Applications.ApplicationID,
                    UserID = Applications.UserID,
                    FullName = Applications.FullName,
                    Email = Applications.Email,
