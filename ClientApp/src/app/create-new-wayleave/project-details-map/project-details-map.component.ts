@@ -904,7 +904,7 @@ export class ProjectDetailsMapComponent implements OnInit {
       //  });
       //});
 
-      featureLayer.on("edits", async (event) => {
+      featureLayer.on("edits", (event) => {
         this.loadingStartTime = Date.now(); // Record the start time
         this.toggleLoadingIndicator(true, "Starting up"); // Show loading indicator
 
@@ -1080,7 +1080,7 @@ export class ProjectDetailsMapComponent implements OnInit {
                       /*              const numOfObjects = result.features.length;*/
 
                       // Iterate through the features
-                      features.forEach(async (feature) => {
+                      features.forEach((feature) => {
                         this.toggleLoadingIndicator(true, "Processing " + SubDepartmentName + " (Checking results " + feature.attributes.OBJECTID + ")"); // Show loading indicator
 
                         //Get the objectID for the current iterated polygon interception
@@ -1119,10 +1119,11 @@ export class ProjectDetailsMapComponent implements OnInit {
                         console.log("Distribution list", this.sharedService.distributionList);
                         //  this.toggleLoadingIndicator(false, null); // Show loading indicator
                         /*                        this.drawingIsComplete += 1;*/
-                        this.toggleLoadingIndicator(false, null);
+                        //this.toggleLoadingIndicator(false, null);
 
                       });
 
+                      this.toggleLoadingIndicator(false, null);
                     });
 
 
@@ -1821,23 +1822,18 @@ export class ProjectDetailsMapComponent implements OnInit {
   }
 
   //Checks if a drawn object intercepts an infrustructure in a given set of layers
-  private async InterceptInfrustructureChecker(currentSubDepartmentName: string, subDepartmentContainingInfrustructure: string, query: Query, exclusionUponInterception: number, baseURL: string, numbers: number[]): Promise<number[]> {
-    //this.toggleLoadingIndicator(true, "Checking if infrustructure is intersected for " + subDepartmentContainingInfrustructure); // Show loading indicator
-
+  private InterceptInfrustructureChecker(currentSubDepartmentName: string, subDepartmentContainingInfrustructure: string, query: Query, exclusionUponInterception: number, baseURL: string, numbers: number[]): Promise<number[]> {
     // Record the start time for InterceptInfrustructureChecker
     const interceptionStartTime = Date.now();
 
-
     return new Promise<number[]>((resolve, reject) => {
-      //this.toggleLoadingIndicator(true, "Checking if infrustructure is intersected for " + subDepartmentContainingInfrustructure + "(" + exclusionUponInterception + ")"); // Show loading indicator
-
       if (currentSubDepartmentName === subDepartmentContainingInfrustructure) {
         let numOfInterceptions = 0;
         const exclusionsList: number[] = [];
         const countNumber = numbers.length;
         const layerURLs = numbers.map(number => `${baseURL}${number}`);
 
-        const checkInterceptions = async (index: number) => {
+        const checkInterceptions = (index: number) => {
           this.toggleLoadingIndicator(true, "Checking if infrustructure is intersected for " + subDepartmentContainingInfrustructure + " (" + countNumber + "/" + index + ")"); // Show loading indicator
 
           if (index >= layerURLs.length) {
@@ -1857,27 +1853,26 @@ export class ProjectDetailsMapComponent implements OnInit {
             url: layerURL
           });
 
-          try {
-            const result = await mapServerLayer.queryFeatures(query);
-            numOfInterceptions += result.features.length;
+          mapServerLayer.queryFeatures(query)
+            .then(result => {
+              numOfInterceptions += result.features.length;
 
-            if (numOfInterceptions >= 1) {
-              // Remove bulkwater from the exclusions list
-              exclusionsList.splice(exclusionsList.indexOf(exclusionUponInterception), 1);
-              /*              this.toggleLoadingIndicator(false, null); // Show loading indicator*/
+              if (numOfInterceptions >= 1) {
+                // Remove bulkwater from the exclusions list
+                exclusionsList.splice(exclusionsList.indexOf(exclusionUponInterception), 1);
+              } else {
+                // Remove subdepartment first to prevent duplication of exclusions
+                exclusionsList.splice(exclusionsList.indexOf(exclusionUponInterception), 1);
+                // Exclude bulkwater subdepartment
+                exclusionsList.push(exclusionUponInterception);
+              }
 
-            } else {
-              // Remove subdepartment first to prevent duplication of exclusions
-              exclusionsList.splice(exclusionsList.indexOf(exclusionUponInterception), 1);
-              // Exclude bulkwater subdepartment
-              exclusionsList.push(exclusionUponInterception);
-            }
-
-            // Continue with the next layer
-            checkInterceptions(index + 1);
-          } catch (error) {
-            reject(error);
-          }
+              // Continue with the next layer
+              checkInterceptions(index + 1);
+            })
+            .catch(error => {
+              reject(error);
+            });
         };
 
         // Calculate the time taken for InterceptInfrustructureChecker
@@ -1894,11 +1889,10 @@ export class ProjectDetailsMapComponent implements OnInit {
         // Handle other mapLayerID cases here
         resolve([]);
         this.toggleLoadingIndicator(false, null); // Show loading indicator
-
       }
-      //  this.toggleLoadingIndicator(false, null); // Show loading indicator
     });
   }
+
 
   // Method to toggle the loading indicator
   toggleLoadingIndicator(isLoading: boolean, loadingText: string) {
