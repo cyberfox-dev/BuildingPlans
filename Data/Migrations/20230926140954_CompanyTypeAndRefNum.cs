@@ -8,7 +8,7 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
+/*            migrationBuilder.AddColumn<string>(
                 name: "companyType",
                 table: "UserProfilesTable",
                 type: "nvarchar(max)",
@@ -24,12 +24,12 @@ namespace WayleaveManagementSystem.Data.Migrations
                 name: "ZoneID",
                 table: "ApplicationListDTO",
                 type: "int",
-                nullable: true);
+                nullable: true);*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+/*            migrationBuilder.DropColumn(
                 name: "companyType",
                 table: "UserProfilesTable");
 
@@ -39,7 +39,7 @@ namespace WayleaveManagementSystem.Data.Migrations
 
             migrationBuilder.DropColumn(
                 name: "ZoneID",
-                table: "ApplicationListDTO");
+                table: "ApplicationListDTO");*/
         }
     }
 }
