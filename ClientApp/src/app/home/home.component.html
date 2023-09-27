@@ -6,6 +6,11 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <!--<h1>Navbar</h1>-->
+<button mat-fab [@fadeInAnimation]="" *ngIf="CurrentUserProfile[0].isInternal" class="floating-button">
+  <!--color="configureActingDepartment"-->
+  <i class="fa fa-cog"></i>
+</button>
+
 
 <div class="container-fluid main">
 
@@ -310,14 +315,16 @@
 
     </div>
 
-  </ng-template>
+  </ng-template>0
 
 
-  <!--choose existing-->
+  <!--choose existing--> 
   <ng-template #user let-modal>
     <div class="modal-header">
       <h6 class="modal-title" id="modal-basic-title">Choose the user</h6>
       <button type="button" class="btn-close" aria-label="Close" (click)="clearFilter(); modal.dismiss('Cross click')"></button>
+      <h6 class="modal-title" id="modal-basic-title">Choose the user</h6> 
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
 

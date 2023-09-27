@@ -1,6 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ConfigService} from'../service/Config/config.service'
+import { ConfigService } from '../service/Config/config.service';
+import { AccessGroupsService } from '../service/AccessGroups/access-groups.service';
+
+//reminder: roles, man-doc and project size
+export interface RolesList {
+  RoleID: number;
+  RoleName: string;
+  AccessGroupID: number;
+  AccessGroupName: string;
+}
 
 @Component({
   selector: 'app-cyberfox-config',
@@ -17,8 +26,8 @@ export class CyberfoxConfigComponent implements OnInit {
 
 
   })
-
-  constructor(private formBuilder: FormBuilder, private configService: ConfigService) { }
+  RolesList: RolesList[] = [];
+  constructor(private formBuilder: FormBuilder, private configService: ConfigService, private accessGroupsService: AccessGroupsService) { }
   stringifiedData: any;
   CurrentUser: any;
   ngOnInit(): void {
@@ -27,6 +36,7 @@ export class CyberfoxConfigComponent implements OnInit {
     this.CurrentUser = JSON.parse(this.stringifiedData);
 
     this.getEscalationDate();
+    this.getRolesLinkedToUser();
   }
 
   
@@ -70,5 +80,65 @@ export class CyberfoxConfigComponent implements OnInit {
       console.log("Error", error);
     })
   }
+
+  //roles related things
+  lockViewAccordingToRoles() {
+
+
+
+    for (var i = 0; i < this.RolesList.length; i++) {
+
+      if (this.RolesList[i].RoleName == "Developer Config") {
+
+      }
+      if (this.RolesList[i].RoleName == "Developer Config" || this.RolesList[i].RoleName == "Configuration") {
+
+      }
+
+      if (this.RolesList[i].RoleName == "Department Admin" || this.RolesList[i].RoleName == "EMB" || this.RolesList[i].RoleName == "Developer Config") {
+
+      }
+    }
+
+
+  }
+  getRolesLinkedToUser() {
+
+    this.RolesList.splice(0, this.RolesList.length);
+
+    this.accessGroupsService.getAllRolesForUser(this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempRolesList = {} as RolesList;
+          const current = data.dateSet[i];
+          tempRolesList.AccessGroupName = current.accessGroupName;
+          tempRolesList.AccessGroupID = current.accessGroupID;
+          tempRolesList.RoleID = current.roleID;
+          tempRolesList.RoleName = current.roleName;
+
+          this.RolesList.push(tempRolesList);
+          this.lockViewAccordingToRoles();
+
+
+        }
+
+        // this.rolesTable?.renderRows();
+        console.log("getAllLinkedRolesReponse", data.dateSet);
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("getAllLinkedRolesReponse", data);
+
+    }, error => {
+      console.log("getAllLinkedRolesReponseError: ", error);
+    })
+
+  }
+
 
 }
