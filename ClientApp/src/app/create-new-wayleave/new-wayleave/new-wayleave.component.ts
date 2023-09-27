@@ -279,11 +279,11 @@ export class NewWayleaveComponent implements OnInit {
   clientEmail = '';
   clientCellNo = '';
   clientAddress = '';
-  clientRefNo = '';
+  clientRefNo = '';//Empty njani?
   clientBPNum = '';
   clientCompanyName = '';
   clientCompanyRegNo = '';
-  clientCompanyType = '';
+  clientCompanyType = ''; //Empty njani?
   clientIDNumber = '';
   clientPhysicalAddress = '';
 
@@ -2797,7 +2797,7 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   populateClientInfo(userID: string) {
-
+    //This doesn't include the reference number and company type as yet
     this.disabled = true;
     this.newClient = false;
     
@@ -2809,7 +2809,7 @@ export class NewWayleaveComponent implements OnInit {
 
         const tempUserList = {} as UserList;
         const current = data.dateSet[0];
-        
+        debugger;
         const fullname = current.fullName;
         this.clientUserID = current.userID;
         this.clientName = fullname.substring(0, fullname.indexOf(' '));
@@ -2821,6 +2821,9 @@ export class NewWayleaveComponent implements OnInit {
         this.clientCompanyRegNo = current.companyRegNo;
         this.clientCompanyName = current.companyName;
         this.clientPhysicalAddress = current.physcialAddress;
+        //Will this work??
+        this.clientRefNo = current.refNumber;
+        this.clientCompanyType = current.companyType;
 
         this.getProfessionalsListByProfessionalType(this.professionalType);
         console.log(tempUserList);
@@ -3493,16 +3496,30 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   deleteUploader(index: number) {
-    let currentList = this.MandatoryDocumentsLinkedStagesList.getValue();
+    debugger;
+    let currentList2 = this.MandatoryDocumentsLinkedStagesList.getValue();
+    let current = currentList2[index];
 
-    // Remove the item at the given index
-    currentList.splice(index, 1);
+    // Check if there's an uploaded file for the current document
+    if (current.mandatoryDocumentName || current.mandatoryDocumentName != undefined || current.mandatoryDocumentName != null) {
+      // If a file has been uploaded for this document, show an alert to inform the user
+      alert('A file has been uploaded for this document. Please remove the file first before removing.');
+      
+    }
+    else {
+      let currentList = this.MandatoryDocumentsLinkedStagesList.getValue();
 
-    // Update the BehaviorSubject with the modified list
-    this.MandatoryDocumentsLinkedStagesList.next(currentList);
+      // Remove the item at the given index
+      currentList.splice(index, 1);
 
-    // If you're updating some UI or state based on the list change, call the appropriate function
-    this.updateMandatoryDocumentsLinkedStagesList(currentList);
+      // Update the BehaviorSubject with the modified list
+      this.MandatoryDocumentsLinkedStagesList.next(currentList);
+
+      // If you're updating some UI or state based on the list change, call the appropriate function
+      this.updateMandatoryDocumentsLinkedStagesList(currentList);
+    }
+
+   
   }
 
   addUploader(index: any) {
@@ -3980,6 +3997,14 @@ export class NewWayleaveComponent implements OnInit {
     const day = currentDate.getDate().toString().padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
+
+  selectedItemIndex: number = -1;
+
+  addUploader2(index: number) {
+    // Handle the logic for adding a new upload here
+    this.selectedItemIndex = index;
+  }
+
 
 
 }
