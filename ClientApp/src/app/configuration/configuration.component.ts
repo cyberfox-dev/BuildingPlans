@@ -61,6 +61,8 @@ export class ConfigurationComponent implements OnInit {
 
   @ViewChild(MatTable) DepartmentListTable: MatTable<DepartmentList> | undefined;
 
+  isCSVVisible: boolean = false;
+  isAccessGroupsVisible: boolean = false;
 
   getAllDepartments() {
     this.departmentService.getDepartmentsList().subscribe((data: any) => {

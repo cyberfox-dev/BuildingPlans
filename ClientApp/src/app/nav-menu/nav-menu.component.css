@@ -859,3 +859,17 @@ h4 {
   }
 }
 
+
+
+
+
+.notification-btn{
+    width:100%;
+    border:2px;
+    border-color:black;
+    left:2px;
+    right:2px;
+    
+    
+}
+

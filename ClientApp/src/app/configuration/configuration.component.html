@@ -7,12 +7,12 @@
 
   <mat-tab-group>
 
-    <mat-tab label="Roles">
+    <!--<mat-tab label="Roles">-->
 
       <!-- <app-new-role></app-new-role>-->
 
-      <app-roles-config></app-roles-config>
-    </mat-tab>
+      <!--<app-roles-config></app-roles-config>
+    </mat-tab>-->
 
     <!-----------------------------------------------------------Line Departments configuration-------------------------------------------------------------->
 
@@ -28,15 +28,15 @@
     </mat-tab>-->
     <!-----------------------------------------------------------Acess Groups configuration-------------------------------------------------------------->
 
-    <mat-tab label="Access Groups">
+    <mat-tab *ngIf="isAccessGroupsVisible" label="Access Groups">
       <app-access-groups-config></app-access-groups-config>
     </mat-tab>
 
     <!-----------------------------------------------------------Mandatory Docs configuration-------------------------------------------------------------->
 
-    <mat-tab label="Mandatory Docs">
+    <!--<mat-tab label="Mandatory Docs">
       <app-mandatory-docs-config></app-mandatory-docs-config>
-    </mat-tab>
+    </mat-tab>-->
     <!-----------------------------------------------------------GL Code configuration-------------------------------------------------------------->
     <mat-tab label="GL Code">
       <app-gl-code-config></app-gl-code-config>
@@ -49,14 +49,14 @@
     </mat-tab>
 
     <!----------------------------------------------------------Project Size Config------------------------------------------------------------------------->
-    <mat-tab label="Project Size">
+    <!--<mat-tab label="Project Size">
 
       <app-project-size-config></app-project-size-config>
-    </mat-tab>
+    </mat-tab>-->
 
     <!-----------------------------------------------------------CSV configuration-------------------------------------------------------------->
     <!-----------------------------------------------------------CSV configuration-------------------------------------------------------------->
-    <mat-tab label="CSV">
+    <mat-tab *ngIf="isCSVVisible" label="CSV">
 
       <div class="container-fluid">
 

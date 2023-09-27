@@ -89,9 +89,18 @@ export interface NotificationsList {
   NotificationDescription: string;
   ApplicationID: number;
   UserID: number;
+  IsRead: boolean;
   DateCreated: string;
 }
 
+export interface OldNotificationsList {
+  NotificationID: number;
+  NotificationName: string;
+  NotificationDescription: string;
+  ApplicationID: number;
+  UserID: number;
+  DateCreated: string;
+}
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
@@ -106,6 +115,7 @@ export class NavMenuComponent implements OnInit {
   notiBell = true;
   CommentList: CommentList[] = [];
   NotificationsList: NotificationsList[] = [];
+  OldNotificationsList: OldNotificationsList[] = [];
   RolesList: RolesList[] = [];
   FileDocument: FileDocument[] = [];
   UserList: UserList[] = [];
@@ -113,6 +123,7 @@ export class NavMenuComponent implements OnInit {
   SubDepartmentListFORDOCUMENTS: SubDepartmentListFORDOCUMENTS[] = [];
   FAQList: FAQList[] = [];
   forEditIndex: any;
+  index: number;
 
   cyberfoxConfigs: boolean = false;
   Configurations: boolean = false;
@@ -567,7 +578,9 @@ export class NavMenuComponent implements OnInit {
   openXl(content: any) {
 		this.modalService.open(content, { size: 'xl' });
   }
-
+  openNotifications(notifications: any) {
+    this.modalService.open(notifications, {size:'xl'})
+  }
 
   goHome() {
     
@@ -580,21 +593,24 @@ export class NavMenuComponent implements OnInit {
 
     this.NotificationsList.splice(0, this.NotificationsList.length);
     this.notificationsService.getNotificationByUserID(this.CurrentUser.appUserId).subscribe((data: any) => {
-
+      
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempNotificationsList = {} as NotificationsList;
           const current = data.dateSet[i];
           console.log(current);
-          const date = current.dateCreated;
-          tempNotificationsList.ApplicationID = current.applicationID;
-          tempNotificationsList.NotificationID = current.notificationID;
-          tempNotificationsList.NotificationName = current.notificationName;
-          tempNotificationsList.NotificationDescription = current.notificationDescription;
-          tempNotificationsList.DateCreated = date.substring(0, date.indexOf('T'));
+          if (current.isRead == false) {
+
+            const date = current.dateCreated;
+            tempNotificationsList.ApplicationID = current.applicationID;
+            tempNotificationsList.NotificationID = current.notificationID;
+            tempNotificationsList.NotificationName = current.notificationName;
+            tempNotificationsList.NotificationDescription = current.notificationDescription;
+            tempNotificationsList.DateCreated = date.substring(0, date.indexOf('T'));
 
 
-          this.NotificationsList.push(tempNotificationsList);
+            this.NotificationsList.push(tempNotificationsList);
+          }
           // this.sharedService.setStageData(this.StagesList);
         }
       }
@@ -1167,6 +1183,45 @@ export class NavMenuComponent implements OnInit {
     const scrollY = window.scrollY || document.documentElement.scrollTop;
     this.isTransparent = scrollY < 460; // Adjust the scroll threshold as needed
   }
+  
+
+  getAllReadNotifications() {
+    this.applica = 3023;
+    debugger;
+    this.NotificationsList.splice(0, this.NotificationsList.length);
+    this.notificationsService.getNotificationByUserID(this.CurrentUser.appUserId).subscribe((data: any) => {
+      debugger;
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempNotificationsList = {} as NotificationsList;
+          const current = data.dateSet[i];
+          console.log(current);
+          if (current.isRead == true) {
+            debugger;
+            const date = current.dateCreated;
+            tempNotificationsList.ApplicationID = current.applicationID;
+            tempNotificationsList.NotificationID = current.notificationID;
+            tempNotificationsList.NotificationName = current.notificationName;
+            tempNotificationsList.NotificationDescription = current.notificationDescription;
+            tempNotificationsList.DateCreated = date.substring(0, date.indexOf('T'));
+
+
+            this.OldNotificationsList.push(tempNotificationsList);
+          }
+          // this.sharedService.setStageData(this.StagesList);
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+ 
 
 }
 
