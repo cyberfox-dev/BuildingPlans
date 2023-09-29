@@ -29,17 +29,17 @@ namespace WayleaveManagementSystem.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-        //    migrationBuilder.DropColumn(
-        //        name: "companyType",
-        //        table: "UserProfilesTable");
+            //migrationBuilder.DropColumn(
+            //    name: "companyType",
+            //    table: "UserProfilesTable");
 
-        //    migrationBuilder.DropColumn(
-        //        name: "refNumber",
-        //        table: "UserProfilesTable");
+            //migrationBuilder.DropColumn(
+            //    name: "refNumber",
+            //    table: "UserProfilesTable");
 
-        //    migrationBuilder.DropColumn(
-        //        name: "ZoneID",
-        //        table: "ApplicationListDTO");
+            //migrationBuilder.DropColumn(
+            //    name: "ZoneID",
+            //    table: "ApplicationListDTO");
         }
     }
 }

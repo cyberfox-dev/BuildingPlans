@@ -983,6 +983,7 @@ export class DepartmentConfigComponent implements OnInit {
 
   onSelectToPopulateZoneUserTable(event: any, viewlinkedZones: any) {
     this.UserZoneList.splice(0, this.UserZoneList.length);
+    debugger;
     if (event.target.value > 0) {
       console.log(event.target.value);
       this.zoneService.getUsersLinkedByZoneID(Number(event.target.value)).subscribe((data: any) => {
