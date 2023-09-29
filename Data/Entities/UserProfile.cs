@@ -51,6 +51,7 @@ namespace WayleaveManagementSystem.Data.Entities
         public string? refNumber { get; set; }
         public string? companyType { get; set; }
 
-
+        //--added subDepartment name
+        public string? SubDepartmentName { get; set; }
     }
 }

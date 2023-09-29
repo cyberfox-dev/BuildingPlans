@@ -21,7 +21,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string? userID, string? fullName, string? email, string? phoneNumber, bool? isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string? createdById, string? IdNumber, int? zoneID, string? vatNumber, string? refNumber, string? companyType)
+        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string? userID, string? fullName, string? email, string? phoneNumber, bool? isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string? createdById, string? IdNumber, int? zoneID, string? vatNumber, string? refNumber, string? companyType, string? subDepartmentName)
         {
             if (userProfileID == 0)
             {
@@ -48,7 +48,7 @@ namespace WayleaveManagementSystem.Service
                     PhyscialAddress = physcialAddress,
                     Directorate = directorate,
                     DepartmentID = departmentID,
-                    SubDepartmentID = subDepartmentID,
+                    SubDepartmentID = subDepartmentID, //need the name as well
                     Branch = branch,
                     CostCenterNumber = costCenterNumber,
                     CostCenterOwner = costCenterOwner,
@@ -63,6 +63,7 @@ namespace WayleaveManagementSystem.Service
                     VatNumber = vatNumber,
                     refNumber = refNumber,
                     companyType = companyType,
+                    SubDepartmentName = subDepartmentName,
 
 
                 };
@@ -156,6 +157,18 @@ namespace WayleaveManagementSystem.Service
                 {
                     tempUserProfile.VatNumber = vatNumber;
                 }
+                if (refNumber != null)
+                {
+                    tempUserProfile.refNumber = refNumber;
+                } 
+                if (companyType != null)
+                {
+                    tempUserProfile.companyType = companyType;
+                } 
+                if (subDepartmentName != null)
+                {
+                    tempUserProfile.SubDepartmentName = subDepartmentName;
+                }
 
                 //tempUserProfile.DateCreated = DateTime.Now;
                 tempUserProfile.DateUpdated = DateTime.Now;
@@ -246,6 +259,8 @@ namespace WayleaveManagementSystem.Service
                    depConfirmation = UserProfile.depConfirmation,
                    RefNumber = UserProfile.refNumber,
                    CompanyType = UserProfile.companyType,
+                   SubDepartmentName = UserProfile.SubDepartmentName,
+                   zoneID = UserProfile.zoneID
                }
 
                ).ToListAsync();
@@ -282,6 +297,9 @@ namespace WayleaveManagementSystem.Service
                    VatNumber = UserProfile.VatNumber,
                    IdNumber = UserProfile.IdNumber,
 
+                   RefNumber = UserProfile.refNumber,
+                   CompanyType = UserProfile.companyType,
+                   SubDepartmentName = UserProfile.SubDepartmentName,
                }
 
                ).ToListAsync();
@@ -320,6 +338,9 @@ namespace WayleaveManagementSystem.Service
                    IdNumber = UserProfile.IdNumber,
                    isZoneAdmin = UserProfile.isZoneAdmin,
 
+                   RefNumber = UserProfile.refNumber,
+                   CompanyType = UserProfile.companyType,
+                   SubDepartmentName = UserProfile.SubDepartmentName,
                }
 
                ).ToListAsync();
@@ -356,6 +377,9 @@ namespace WayleaveManagementSystem.Service
                    VatNumber = UserProfile.VatNumber,
                    IdNumber = UserProfile.IdNumber,
 
+                   RefNumber = UserProfile.refNumber,
+                   CompanyType = UserProfile.companyType,
+                   SubDepartmentName = UserProfile.SubDepartmentName,
                }
 
                ).ToListAsync();
@@ -392,7 +416,11 @@ namespace WayleaveManagementSystem.Service
                    VatNumber = UserProfile.VatNumber,
                    IdNumber = UserProfile.IdNumber,
                    depConfirmation = UserProfile.depConfirmation,
-                   zoneID = UserProfile.zoneID
+                   zoneID = UserProfile.zoneID,
+
+                   RefNumber = UserProfile.refNumber,
+                   CompanyType = UserProfile.companyType,
+                   SubDepartmentName = UserProfile.SubDepartmentName,
                }
 
                ).ToListAsync();
@@ -457,6 +485,10 @@ namespace WayleaveManagementSystem.Service
                                         Directorate = newtableItem.Directorate,
                                         SubDepartmentID = newtableItem.SubDepartmentID,
                                         SubDepartmentName = SubDepartments.SubDepartmentName,
+                                        //
+                                        isZoneAdmin = newtableItem.isZoneAdmin,
+                                        isDepartmentAdmin = newtableItem.isDepartmentAdmin,
+                                        zoneID = newtableItem.zoneID,
                                     }
                 ).ToListAsync();
         }

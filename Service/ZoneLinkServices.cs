@@ -183,6 +183,8 @@ namespace WayleaveManagementSystem.Service
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
 
+                    ZoneID = ZoneLink.ZoneID,
+
                 }
                 ).ToListAsync();
         }
