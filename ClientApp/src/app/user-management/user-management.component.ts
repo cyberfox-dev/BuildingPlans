@@ -289,44 +289,45 @@ export class UserManagementComponent implements OnInit {
 
     //This is for the the zone linking
 
-    this.zoneService.getZoneByZoneID(this.selectedUserZoneID).subscribe((data: any) => {
+    //this.zoneService.getZoneByZoneID(this.selectedUserZoneID).subscribe((data: any) => {
 
-      if (data.responseCode == 1) {
-
-
-        const tempZoneList = {} as ZoneList;
-        const current = data.dateSet[0];
-        tempZoneList.departmentID = current.departmentID;
-        tempZoneList.subDepartmentID = current.subDepartmentID;
-        tempZoneList.zoneName = current.zoneName;
-        this.ZoneList.push(tempZoneList);
-
-        this.zoneLinkService.addUpdateZoneLink(0, this.UserProfile[0].depID, this.selectedUserZoneID, tempZoneList.subDepartmentID, this.selectedUserIndex.toString(), null, this.CurrentUser.appUserId).subscribe((data: any) => {
-          ;
-          if (data.responseCode == 1) {
-            alert(data.responseMessage);
-          }
-          else {
-            alert(data.responseMessage);
-          }
-          console.log("reponse", data);
-
-        }, error => {
-          console.log("Error: ", error);
-        })
+    //  if (data.responseCode == 1) {
 
 
-        console.log("Got All ZONES", this.ZoneList);
+    //    const tempZoneList = {} as ZoneList;
+    //    const current = data.dateSet[0];
+    //    tempZoneList.departmentID = current.departmentID;
+    //    tempZoneList.subDepartmentID = current.subDepartmentID;
 
-      }
-      else {
-        alert(data.responseMessage);
-      }
-      console.log("reponse", data);
+    //    tempZoneList.zoneName = current.zoneName;
+    //    this.ZoneList.push(tempZoneList);
 
-    }, error => {
-      console.log("Error: ", error);
-    })
+    //    this.zoneLinkService.addUpdateZoneLink(0, this.UserProfile[0].depID, this.selectedUserZoneID, tempZoneList.subDepartmentID, this.selectedUserIndex.toString(), null, this.CurrentUser.appUserId).subscribe((data: any) => {
+    //      ;
+    //      if (data.responseCode == 1) {
+    //        alert(data.responseMessage);
+    //      }
+    //      else {
+    //        alert(data.responseMessage);
+    //      }
+    //      console.log("reponse", data);
+
+    //    }, error => {
+    //      console.log("Error: ", error);
+    //    })
+
+
+    //    console.log("Got All ZONES", this.ZoneList);
+
+    //  }
+    //  else {
+    //    alert(data.responseMessage);
+    //  }
+    //  console.log("reponse", data);
+
+    //}, error => {
+    //  console.log("Error: ", error);
+    //})
 
     //this is for the access group linking
 
