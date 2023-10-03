@@ -50,7 +50,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _zonesLinkingServices.AddUpdateZoneLink(model.ZoneLinkID,model.ZoneID , (int)model.DepartmentID, (int)model.SubDepartmentID, model.AssignedUserID, model.UserType,model.CreatedById);
+                    var result = await _zonesLinkingServices.AddUpdateZoneLink(model.ZoneLinkID,model.ZoneID , model.ZoneName , model.DepartmentID, model.SubDepartmentID, model.SubDepartmentName , model.AssignedUserID, model.UserType,model.CreatedById, model.isDepartmentAdmin, model.isZoneAdmin);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ZoneLinkID > 0 ? "Zone Link Updated Successfully" : "User Linked Successfully"), result));
                 }
             }

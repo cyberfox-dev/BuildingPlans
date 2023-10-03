@@ -106,7 +106,8 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _departmentsService.DeleteDepartments(DepartmentID);
+                    //var result = await _departmentsService.DeleteDepartments(DepartmentID);//hebana?
+                    var result = await _departmentsService.GetDepartmentByDepartmentID(DepartmentID);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Department", result));
                 }
 

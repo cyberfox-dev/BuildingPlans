@@ -6,6 +6,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <!--<h1>Navbar</h1>-->
+<app-config-acting-department [isInternal]="CurrentUserProfile[0].isInternal"></app-config-acting-department>
+
+
 
 <div class="container-fluid main">
 
@@ -318,6 +321,8 @@
     <div class="modal-header">
       <h6 class="modal-title" id="modal-basic-title">Choose the user</h6>
       <button type="button" class="btn-close" aria-label="Close" (click)="clearFilter(); modal.dismiss('Cross click')"></button>
+      <h6 class="modal-title" id="modal-basic-title">Choose the user</h6>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
 
@@ -431,7 +436,7 @@
               </div>
             </div>
             <!--          <button type="button" class="btn btn-outline-success" (click)="onAddEngineer()">Save</button>
-          -->
+            -->
             <!--<button mat-raised-button color="green" (click)="onAddEngineer()">Save</button>-->
             <div class="button-container">
               <button mat-raised-button color="green" (click)="onAddTheirEngineer(showAddedProf);modal.close('Save click');">Add Engineer</button>
@@ -445,17 +450,17 @@
 
               <!--<div class="row">-->
               <!--<div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="bpNoContractor" [(ngModel)]="bpNoContractor" placeholder="Enter BP Number" name="bpNoContractor">
-                <label for="bpNoContractor">BP Number</label>
-              </div>
-            </div>-->
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" id="bpNoContractor" [(ngModel)]="bpNoContractor" placeholder="Enter BP Number" name="bpNoContractor">
+                  <label for="bpNoContractor">BP Number</label>
+                </div>
+              </div>-->
               <!--          <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="ProfessionalRegNo" [(ngModel)]="ProfessionalRegNo" placeholder="Enter Professional Reg No" name="professionalRegNo">
-                <label for="professionalRegNo">CIDB Number</label>
-              </div>
-            </div>-->
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" id="ProfessionalRegNo" [(ngModel)]="ProfessionalRegNo" placeholder="Enter Professional Reg No" name="professionalRegNo">
+                  <label for="professionalRegNo">CIDB Number</label>
+                </div>
+              </div>-->
               <!--</div>-->
               <div class="row">
                 <div class="col">
@@ -508,7 +513,7 @@
               </div>
 
               <!--            <button type="button" class="btn btn-outline-success" (click)="onAddContractor()">Save</button>
-            -->
+              -->
               <!--<button mat-raised-button color="green" (click)="onAddContractor()">Save</button>-->
               <!--<button mat-raised-button color="green" (click)="onAddTheirContractor(showAddedProf);modal.close('Save click');">Save</button>-->
               <div class="button-container">
@@ -643,7 +648,7 @@
 
             <!--<button mat-raised-button color="primary" *ngIf="nextBtn" (click)="checkIfError(stepper)">Next</button>-->
             <!--I now validate when I create the client-->
-            <button mat-raised-button color="primary" >Next</button>
+            <button mat-raised-button color="primary">Next</button>
 
 
           </div>
@@ -759,17 +764,17 @@
 
             <!--<div class="row">-->
             <!--<div class="col">
-    <div class="form-floating mb-3 mt-3">
-      <input type="text" class="form-control" id="bpNoContractor" [(ngModel)]="bpNoContractor" placeholder="Enter BP Number" name="bpNoContractor">
-      <label for="bpNoContractor">BP Number</label>
-    </div>
-  </div>-->
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="bpNoContractor" [(ngModel)]="bpNoContractor" placeholder="Enter BP Number" name="bpNoContractor">
+                <label for="bpNoContractor">BP Number</label>
+              </div>
+            </div>-->
             <!--          <div class="col">
-    <div class="form-floating mb-3 mt-3">
-      <input type="text" class="form-control" id="ProfessionalRegNo" [(ngModel)]="ProfessionalRegNo" placeholder="Enter Professional Reg No" name="professionalRegNo">
-      <label for="professionalRegNo">CIDB Number</label>
-    </div>
-  </div>-->
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="ProfessionalRegNo" [(ngModel)]="ProfessionalRegNo" placeholder="Enter Professional Reg No" name="professionalRegNo">
+                <label for="professionalRegNo">CIDB Number</label>
+              </div>
+            </div>-->
             <!--</div>-->
             <div class="row">
               <div class="col">
@@ -861,7 +866,7 @@
             </div>
 
             <!--            <button type="button" class="btn btn-outline-success" (click)="onAddContractor()">Save</button>
-  -->
+            -->
             <!--<button mat-raised-button color="green" (click)="onAddContractor()">Save</button>-->
             <div class="button-container">
               <button mat-raised-button color="green" *ngIf="!editing" (click)="onTempAddNewContractor()">Add Contractor</button>

@@ -283,7 +283,7 @@
         <div class="form-floating mb-3 mt-3">
           <select class="form-select" aria-label="Default select example" formControlName="selectedSubDep" (change)="onSelectToPopulateZone($event)">
             <option selected value="0">Select a Sub Department</option>
-            <option *ngFor="let subDemartment of SubDepartmentDropdown" value="{{subDemartment.subDepartmentID}}">{{subDemartment.subDepartmentName}}</option>
+            <option *ngFor="let subDemartment of SubDepartmentDropdown; let i = index" value="{{i}}">{{subDemartment.subDepartmentName}}</option>
           </select>
 
         </div>
@@ -291,7 +291,7 @@
         <div class="form-floating mb-3 mt-3" *ngIf="showZone">
           <select class="form-select" aria-label="Default select example" formControlName="selectedZone" (change)="onSelectToPopulateZoneUsers($event,newUserLinkedToZone)">
             <option selected value="0">select a zone</option>
-            <option *ngFor="let zone of ZoneDropdown" value="{{zone.zoneID}}">{{zone.zoneName}}</option>
+            <option *ngFor="let zone of ZoneDropdown; let i = index" value="i">{{zone.zoneName}}</option>
           </select>
 
         </div>

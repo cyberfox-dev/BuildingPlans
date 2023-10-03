@@ -56,3 +56,11 @@ table {
   hyphens: auto;
   text-align: center;
 }
+.mat-create {
+  background-color: #005870;
+  color: #fff;
+}
+.mat-orange {
+  background-color: #ff9900;
+  color: #fff;
+}

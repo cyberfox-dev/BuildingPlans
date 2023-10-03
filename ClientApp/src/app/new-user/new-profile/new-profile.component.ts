@@ -740,71 +740,71 @@ export class NewProfileComponent implements OnInit {
 
   }
 
-  onZoneUserLink() {
-    ;
-    let selectedDep = Number(this.internalApplicantDepartment);
-    let selectedZone = Number(this.selectedZone);
+  //onZoneUserLink() {
+  //  ;
+  //  let selectedDep = Number(this.internalApplicantDepartment);
+  //  let selectedZone = Number(this.selectedZone);
 
-    console.log("this.selection.selectedthis.selection.selectedthis.selection.selectedthis.selection.selectedthis.selection.selectedthis.selection.selectedthis.selection.selected", this.selection.selected);
-
-
-    for (let i = 0; i < this.selection.selected.length; i++) {
-      const current = this.selection.selected[i];
-
-      this.zoneLinkService.getAllRecordsByUserIdIfDeleted(current.id).subscribe((data: any) => {
-
-        if (data.responseCode == 1) {
-          if (data.dateSet.length > 0) {
-            this.zoneLinkService.addUpdateZoneLink(data.dateSet[0].zoneLinkID, selectedDep, selectedZone, this.subDepartmentID, current.id, null, this.CurrentUser.appUserId,).subscribe((data: any) => {
-              ;
-              if (data.responseCode == 1) {
-                alert(data.responseMessage);
-              }
-              else {
-                alert(data.responseMessage);
-              }
-              console.log("reponse", data);
+  //  console.log("this.selection.selectedthis.selection.selectedthis.selection.selectedthis.selection.selectedthis.selection.selectedthis.selection.selectedthis.selection.selected", this.selection.selected);
 
 
-            }, error => {
-              console.log("Error: ", error);
-            })
-          }
-          else {
-            this.zoneLinkService.addUpdateZoneLink(0, selectedDep, selectedZone, this.subDepartmentID, current.id, null, this.CurrentUser.appUserId,).subscribe((data: any) => {
+  //  for (let i = 0; i < this.selection.selected.length; i++) {
+  //    const current = this.selection.selected[i];
 
-              if (data.responseCode == 1) {
-                alert(data.responseMessage);
+  //    this.zoneLinkService.getAllRecordsByUserIdIfDeleted(current.id).subscribe((data: any) => {
 
-
-              }
-              else {
-                alert(data.responseMessage);
-              }
-              console.log("reponse", data);
-
-
-            }, error => {
-              alert(data.responseMessage);
-              console.log("Error: ", error);
-            })
-          }
+  //      if (data.responseCode == 1) {
+  //        if (data.dateSet.length > 0) {
+  //          this.zoneLinkService.addUpdateZoneLink(data.dateSet[0].zoneLinkID, selectedDep, selectedZone, this.subDepartmentID, current.id, null, this.CurrentUser.appUserId,).subscribe((data: any) => {
+  //            ;
+  //            if (data.responseCode == 1) {
+  //              alert(data.responseMessage);
+  //            }
+  //            else {
+  //              alert(data.responseMessage);
+  //            }
+  //            console.log("reponse", data);
 
 
+  //          }, error => {
+  //            console.log("Error: ", error);
+  //          })
+  //        }
+  //        else {
+  //          this.zoneLinkService.addUpdateZoneLink(0, selectedDep, selectedZone, this.subDepartmentID, current.id, null, this.CurrentUser.appUserId,).subscribe((data: any) => {
 
-        }
-        else {
-          alert(data.responseMessage);
-        }
-        console.log("reponse", data);
+  //            if (data.responseCode == 1) {
+  //              alert(data.responseMessage);
 
 
-      }, error => {
-        alert("Error");
-        console.log("Error: ", error);
-      })
-    }
-  }
+  //            }
+  //            else {
+  //              alert(data.responseMessage);
+  //            }
+  //            console.log("reponse", data);
+
+
+  //          }, error => {
+  //            alert(data.responseMessage);
+  //            console.log("Error: ", error);
+  //          })
+  //        }
+
+
+
+  //      }
+  //      else {
+  //        alert(data.responseMessage);
+  //      }
+  //      console.log("reponse", data);
+
+
+  //    }, error => {
+  //      alert("Error");
+  //      console.log("Error: ", error);
+  //    })
+  //  }
+  //}
 
   checkValue() {
     alert(this.extApplicantCompanyType);

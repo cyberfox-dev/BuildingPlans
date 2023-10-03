@@ -8,17 +8,17 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-    name: "companyType",
-    table: "UserProfilesTable",
-    type: "nvarchar(max)",
-    nullable: true);
+    //        migrationBuilder.AddColumn<string>(
+    //         name: "companyType",
+    //table: "UserProfilesTable",
+    //type: "nvarchar(max)",
+    //nullable: true);
 
-            migrationBuilder.AddColumn<string>(
-                name: "refNumber",
-                table: "UserProfilesTable",
-                type: "nvarchar(max)",
-                nullable: true);
+    //        migrationBuilder.AddColumn<string>(
+    //            name: "refNumber",
+    //            table: "UserProfilesTable",
+    //            type: "nvarchar(max)",
+    //            nullable: true);
 
 /*            migrationBuilder.AddColumn<int>(
                 name: "ZoneID",
@@ -29,17 +29,17 @@ namespace WayleaveManagementSystem.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-             name: "companyType",
-    table: "UserProfilesTable");
+    //        migrationBuilder.DropColumn(
+    //         name: "companyType",
+    //table: "UserProfilesTable");
 
-            migrationBuilder.DropColumn(
-                name: "refNumber",
-                table: "UserProfilesTable");
+    //        migrationBuilder.DropColumn(
+    //            name: "refNumber",
+    //            table: "UserProfilesTable");
 
-/*            migrationBuilder.DropColumn(
-                name: "ZoneID",
-                table: "ApplicationListDTO");*/
+            /*            migrationBuilder.DropColumn(
+                            name: "ZoneID",
+                            table: "ApplicationListDTO");*/
         }
     }
 }

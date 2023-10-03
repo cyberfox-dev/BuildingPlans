@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WayleaveManagementSystem.Data;
 
@@ -11,9 +12,10 @@ using WayleaveManagementSystem.Data;
 namespace WayleaveManagementSystem.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230927100217_SubDepartmentName")]
+    partial class SubDepartmentName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1603,14 +1605,11 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<DateTime>("DateUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("DepartmentID")
+                    b.Property<int>("DepartmentID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SubDepartmentID")
+                    b.Property<int>("SubDepartmentID")
                         .HasColumnType("int");
-
-                    b.Property<string>("SubDepartmentName")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserType")
                         .HasColumnType("nvarchar(max)");
@@ -1618,16 +1617,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<int?>("ZoneID")
                         .HasColumnType("int");
 
-                    b.Property<string>("ZoneName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("isActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("isDepartmentAdmin")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("isZoneAdmin")
                         .HasColumnType("bit");
 
                     b.HasKey("ZoneLinkID");

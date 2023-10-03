@@ -33,5 +33,7 @@
 
         public string? refNumber { get; set; }
         public string? companyType { get; set; }
+
+        public string? SubDepartmentName { get; set; }
     }
 }

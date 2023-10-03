@@ -1,0 +1,10 @@
+.floating-button {
+  bottom: -220px;
+  right: -989px;
+  z-index: 1002;
+  background-color: transparent;
+}
+
+i.fa.fa-cog {
+  font-size: 26px;
+}
