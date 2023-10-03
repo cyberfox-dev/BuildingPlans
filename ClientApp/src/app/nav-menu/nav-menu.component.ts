@@ -164,8 +164,8 @@ export class NavMenuComponent implements OnInit {
 
 
   displayedColumns: string[] = ['DocumentName'];
-/*  dataSource = new MatTableDataSource(this.DocumentsList);*/
-  dataSource = this.DocumentsList;
+  dataSource = new MatTableDataSource<DocumentsList>();
+
 
   
   columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
@@ -206,7 +206,9 @@ export class NavMenuComponent implements OnInit {
 
     this.getAllDepartments();
     this.getAllFAQ();
-/*    this.dataSource.paginator = this.paginator;*/
+/*        this.dataSource.paginator = this.paginator;*/
+
+ 
   }
 
   uploadRepoDoc: boolean = false;
@@ -813,7 +815,12 @@ export class NavMenuComponent implements OnInit {
         
 
         }
-        
+        debugger;
+        this.dataSource.data = this.DocumentsList;
+        this.dataSource.paginator = this.paginator;
+        if (this.paginator) {
+          this.paginator.length = this.DocumentsList.length;
+        }
         this.DocumentsListTable?.renderRows();
         this.modalService.open(repositoryModal, { centered: true, size: 'xl' });
        // console.log("GOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCS", this.DocumentsList[0]);
@@ -1261,7 +1268,7 @@ export class NavMenuComponent implements OnInit {
   }*/
 
   filterDepartment() {
-    debugger;
+/*    debugger;
     let string = this.select.toString();
     if (string === 'All') {
       // If 'All' is selected, show all documents.
@@ -1270,7 +1277,7 @@ export class NavMenuComponent implements OnInit {
       // Filter documents based on the selected department.
       this.dataSource = this.DocumentsList.filter(df => df.SubDepartmentID === this.select);
       this.DocumentsListTable?.renderRows();
-    }
+    }*/
   }
 
 
