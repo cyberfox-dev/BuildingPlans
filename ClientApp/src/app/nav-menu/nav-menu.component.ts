@@ -6,7 +6,7 @@ import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { SharedService } from '../shared/shared.service';
 import { RolesService } from '../service/Roles/roles.service';
-import { MatTable } from '@angular/material/table';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { CommentBuilderService } from '../service/CommentBuilder/comment-builder.service';
 import { UserProfileService } from '../service/UserProfile/user-profile.service';
 import { NotificationsService } from '../service/Notifications/notifications.service';
@@ -23,6 +23,8 @@ import { NGB_DATEPICKER_TIME_ADAPTER_FACTORY } from '@ng-bootstrap/ng-bootstrap/
 import { NgbDatepickerModule, NgbOffcanvas, OffcanvasDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { Input } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+import { MatPaginator } from '@angular/material/paginator';
+
 
 export interface SubDepartmentList {
   subDepartmentID: number;
@@ -50,6 +52,7 @@ export interface DocumentsList {
   DateCreated: any;
   GroupName: string;
   SubDepartmentID: number;
+  Description: string;
 }
 
 export interface UserList {
@@ -105,6 +108,13 @@ export interface OldNotificationsList {
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
   styleUrls: ['./nav-menu.component.css'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class NavMenuComponent implements OnInit {
 
@@ -151,8 +161,15 @@ export class NavMenuComponent implements OnInit {
 
   selected = 'none';
   select = 0;
-  displayedColumns: string[] = ['DocumentName', 'actions'];
+
+
+  displayedColumns: string[] = ['DocumentName'];
+/*  dataSource = new MatTableDataSource(this.DocumentsList);*/
   dataSource = this.DocumentsList;
+
+  
+  columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
+  expandedElement = this.DocumentsList;
 
   displayedColumnsComment: string[] = ['Comment', 'actions'];
   dataSourceComment = this.CommentList;
@@ -160,6 +177,7 @@ export class NavMenuComponent implements OnInit {
 
   @ViewChild(MatTable) commentTable: MatTable<CommentList> | undefined;
   @ViewChild(MatTable) DocumentsListTable: MatTable<DocumentsList> | undefined;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   stringifiedData: any;
   CurrentUser: any;
@@ -188,6 +206,7 @@ export class NavMenuComponent implements OnInit {
 
     this.getAllDepartments();
     this.getAllFAQ();
+/*    this.dataSource.paginator = this.paginator;*/
   }
 
   uploadRepoDoc: boolean = false;
@@ -779,6 +798,7 @@ export class NavMenuComponent implements OnInit {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDocList = {} as DocumentsList;
           const current = data.dateSet[i];
+          console.log(current);
           tempDocList.DocumentID = current.documentID;
           tempDocList.DocumentName = current.documentName;
           tempDocList.DocumentLocalPath = current.documentLocalPath;
@@ -787,12 +807,13 @@ export class NavMenuComponent implements OnInit {
           tempDocList.DateCreated = current.dateCreated;
           tempDocList.GroupName = current.groupName;
           tempDocList.SubDepartmentID = current.subDepartmentID;
+          tempDocList.Description = current.description;
           console.log("THIS IS THE REPOSITY THINGSTHIS IS THE REPOSITY THINGSTHIS IS THE REPOSITY THINGSTHIS IS THE REPOSITY THINGSTHIS IS THE REPOSITY THINGSTHIS IS THE REPOSITY THINGS", current);
           this.DocumentsList.push(tempDocList);
         
 
         }
-
+        
         this.DocumentsListTable?.renderRows();
         this.modalService.open(repositoryModal, { centered: true, size: 'xl' });
        // console.log("GOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCS", this.DocumentsList[0]);
@@ -811,10 +832,10 @@ export class NavMenuComponent implements OnInit {
 
   private readonly apiUrl: string = this.shared.getApiUrl() + '/api/';
 
-  viewDocument(index: any) {
-
+  viewDocument(element: any) {
+    debugger;
     // Make an HTTP GET request to fetch the document
-    fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.DocumentsList[index].DocumentName}`)
+    fetch(this.apiUrl + `documentUpload/GetDocument?filename=${element.DocumentName}`)
       .then(response => {
         if (response.ok) {
           // The response status is in the 200 range
@@ -834,7 +855,7 @@ export class NavMenuComponent implements OnInit {
         // Download the document
         const link = document.createElement('a');
         link.href = documentURL;
-        link.download = this.DocumentsList[index].DocumentName; // Set the downloaded file name
+        link.download = element.DocumentName; // Set the downloaded file name
         link.click();
       })
       .catch(error => {
@@ -954,18 +975,20 @@ export class NavMenuComponent implements OnInit {
       
     //}
   }
+  descriptionForDocRepo = '';
 
   uploadFinished = (event: any, repositoryModal) => {
-
+    debugger;
     this.response = event;
     console.log("this.response", this.response);
+    console.log(this.descriptionForDocRepo);
     console.log("this.response?.dbPath", this.response?.dbPath);
 
 
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
     console.log("documentName", documentName);
 
-    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, null, this.CurrentUser.appUserId, this.CurrentUser.appUserId, this.selectedOptionText, this.selectDepForUpload, this.SubDepartmentListFORDOCUMENTS[0].subDepartmentName).subscribe((data: any) => {
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, null, this.CurrentUser.appUserId, this.CurrentUser.appUserId, this.selectedOptionText, this.selectDepForUpload, this.SubDepartmentListFORDOCUMENTS[0].subDepartmentName, null, true, this.descriptionForDocRepo).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
@@ -1067,8 +1090,8 @@ export class NavMenuComponent implements OnInit {
 
 
 
-  filterDepartment() {
-    debugger;
+/*  filterDepartment() {
+*//*    debugger;
     let string = this.select.toString();
     if (string == "All") {
       
@@ -1083,25 +1106,25 @@ export class NavMenuComponent implements OnInit {
       console.log(this.select);
       this.dataSource = this.DocumentsList.filter(df => df.SubDepartmentID == this.select);
       console.log("FilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilter", this.DocumentsList.filter(df => df.SubDepartmentID == this.select))
-    }
-  }
+    }*//*
+  }*/
   resetFilter() {
-    this.select = undefined;
+/*    this.select = undefined;
     this.selected = undefined;
     this.groupName = false;
     this.selectedOptionText = "";
-    this.dataSource = this.DocumentsList.filter(df => df.DateCreated);
+    this.dataSource = this.DocumentsList.filter(df => df.DateCreated);*/
   }
 
   filerGroupName() {
-    if (this.selectedOptionText == "" || this.selectedOptionText == "All Departments") {
+/*    if (this.selectedOptionText == "" || this.selectedOptionText == "All Departments") {
       this.dataSource = this.DocumentsList.filter(df => df.DateCreated && df.SubDepartmentID == this.select);
     }
     else {
       console.log(this.selectedOptionText);
       this.dataSource = this.DocumentsList.filter(df => df.GroupName == this.selectedOptionText && df.SubDepartmentID == this.select );
       console.log("FilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilter", this.DocumentsList.filter(df => df.SubDepartmentID == this.select))
-    }
+    }*/
   }
 
   selectDepartment() {
@@ -1221,7 +1244,35 @@ export class NavMenuComponent implements OnInit {
     })
   }
 
- 
+  selectedDocumentIndex: number | null = null; // Initialize as null
+
+  // ... rest of your component code
+
+/*  toggleExpandRow(element: any) {
+    // Check if the selected element is the same as the currently expanded element
+    if (this.expandedElement === element) {
+      this.expandedElement = null; // Collapse the row
+      this.selectedDocumentIndex = null; // Reset the selected document index
+    } else {
+      this.expandedElement = element; // Expand the row
+      // Find the index of the selected element in your dataSource array
+      this.selectedDocumentIndex = this.dataSource.indexOf(element);
+    }
+  }*/
+
+  filterDepartment() {
+    debugger;
+    let string = this.select.toString();
+    if (string === 'All') {
+      // If 'All' is selected, show all documents.
+      this.dataSource = this.DocumentsList;
+    } else {
+      // Filter documents based on the selected department.
+      this.dataSource = this.DocumentsList.filter(df => df.SubDepartmentID === this.select);
+      this.DocumentsListTable?.renderRows();
+    }
+  }
+
 
 }
 

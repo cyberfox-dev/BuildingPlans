@@ -14,6 +14,7 @@ import { FinancialService } from 'src/app/service/Financial/financial.service';
 export class FileUploadComponent implements OnInit {
   @Input() UploadFor: any;
   @Input() ApplicationID: any;
+  @Input() descriptionForDocRepoS: any;
   @Input() isFinancial: boolean | null;
   @Input() ServiceConditionActive: boolean | null;
   @Output() public onUploadFinished = new EventEmitter();
@@ -410,7 +411,7 @@ export class FileUploadComponent implements OnInit {
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
     console.log("documentName", documentName);
     if (this.ApplicationID == "isRep") {
-      this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, null, applicationData.appUserId, this.CurrentUser.appUserId, this.shared.RepFileUploadCat, this.shared.RepFileUploadSubID, this.shared.RepFileUploadSubName,null,true).subscribe((data: any) => {
+      this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, null, applicationData.appUserId, this.CurrentUser.appUserId, this.shared.RepFileUploadCat, this.shared.RepFileUploadSubID, this.shared.RepFileUploadSubName, null, true, this.descriptionForDocRepoS).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           debugger;

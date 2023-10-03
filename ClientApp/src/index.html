@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <title>WayleaveManagementSystem</title>
   <base href="/" />
-
+<!---->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -17,232 +17,230 @@
   <!--<script src="google-map-bounds-limit.js"></script>-->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5LXlCpe3iXpKIrgWLt_69Y3NlAwaFEMI&libraries=places&language=en"></script>
   <script src="https://js.arcgis.com/4.25/"></script>
-
+  <link rel="stylesheet" href="src/assets/font-awesome-4.7.0/font-awesome-4.7.0/css/font-awesome.css">
   <!--this works-->
   <!--<script>
-  require([
-      "esri/widgets/Sketch",
-      "esri/Map",
-    "esri/layers/GraphicsLayer",
-    "esri/layers/MapImageLayer",
-      "esri/views/MapView"
-  ], (Sketch, Map, MapImageLayer, GraphicsLayer, MapView) => {
-    const graphicsLayer = new GraphicsLayer();
+    require([
+        "esri/widgets/Sketch",
+        "esri/Map",
+      "esri/layers/GraphicsLayer",
+      "esri/layers/MapImageLayer",
+        "esri/views/MapView"
+    ], (Sketch, Map, MapImageLayer, GraphicsLayer, MapView) => {
+      const graphicsLayer = new GraphicsLayer();
 
-    //var layer = new MapImageLayer({
-    //  //portalItem: {
-    //  //  id: "e7e03ad8f72b42709e7d63dde8c6c3f5"
-    //  //},
-    //  url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer"
+      //var layer = new MapImageLayer({
+      //  //portalItem: {
+      //  //  id: "e7e03ad8f72b42709e7d63dde8c6c3f5"
+      //  //},
+      //  url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer"
+      //});
+  /*    map.add(Layer)*/
+
+        const map = new Map({
+          basemap: "topo-vector",
+          layers: [graphicsLayer]
+        });
+
+
+
+        //view.when(() => {
+
+    //  var layerList = new LayerList({
+    //    view: view
+    //  });
+
+    //  view.ui.add(layerList, "top-left");
+
+    //  var lengend = new Lenged({
+    //    view: view
+    //  });
+
+    //  view.ui.add(Legend, "top-left");
+
+    //  const sketch = new Sketch({
+    //    layer: graphicsLayer,
+    //    view: view,
+    //    // graphic will be selected as soon as it is created
+    //    creationMode: "update"
+    //  });
+
+    //  view.ui.add(sketch, "top-right");
+
+
+
+
+
     //});
-/*    map.add(Layer)*/
 
-      const map = new Map({
-        basemap: "topo-vector",
-        layers: [graphicsLayer]
-      });
+  /*    The below works but was commented out for testing*/
+        const view = new MapView({
+          container: "viewDiv",
+          map: map,
+          zoom: 5,
+          center: [90, 45]
+        });
 
-
-
-      //view.when(() => {
-
-  //  var layerList = new LayerList({
-  //    view: view
-  //  });
-
-  //  view.ui.add(layerList, "top-left");
-
-  //  var lengend = new Lenged({
-  //    view: view
-  //  });
-
-  //  view.ui.add(Legend, "top-left");
-
-  //  const sketch = new Sketch({
-  //    layer: graphicsLayer,
-  //    view: view,
-  //    // graphic will be selected as soon as it is created
-  //    creationMode: "update"
-  //  });
-
-  //  view.ui.add(sketch, "top-right");
-
-
-
-
-
-  //});
-
-/*    The below works but was commented out for testing*/
       const view = new MapView({
-        container: "viewDiv",
+        container: "viewDivVenTest",
         map: map,
         zoom: 5,
         center: [90, 45]
       });
 
-    const view = new MapView({
-      container: "viewDivVenTest",
-      map: map,
-      zoom: 5,
-      center: [90, 45]
-    });
+        view.when(() => {
+          const sketch = new Sketch({
+            layer: graphicsLayer,
+            view: view,
+            // graphic will be selected as soon as it is created
+            creationMode: "update"
+          });
 
-      view.when(() => {
-        const sketch = new Sketch({
-          layer: graphicsLayer,
-          view: view,
-          // graphic will be selected as soon as it is created
-          creationMode: "update"
+          view.ui.add(sketch, "top-right");
+
+      //        var layerList = new LayerList({
+      //  view: view
+      //});
+
+      //view.ui.add(layerList, "top-left");
+
+      //var lengend = new Lenged({
+      //  view: view
+      //});
+
+      //view.ui.add(legend, "top-left");
+
         });
-
-        view.ui.add(sketch, "top-right");
-
-    //        var layerList = new LayerList({
-    //  view: view
-    //});
-
-    //view.ui.add(layerList, "top-left");
-
-    //var lengend = new Lenged({
-    //  view: view
-    //});
-
-    //view.ui.add(legend, "top-left");
-
-      });
-    });</script>-->
-
-
+      });</script>-->
   <!--this is old-->
   <!--<script>
-    require([
-      "esri/widgets/Sketch",
-      "esri/Map",
-      "esri/layers/MapImageLayer",
-      "esri/layers/GraphicsLayer",
-      "esri/views/MapView"
-    ],  (
-      Map, MapView, Basemap, Sketch,  GraphicsLayer, FeatureLayer, MapImageLayer
-    ) => {
+      require([
+        "esri/widgets/Sketch",
+        "esri/Map",
+        "esri/layers/MapImageLayer",
+        "esri/layers/GraphicsLayer",
+        "esri/views/MapView"
+      ],  (
+        Map, MapView, Basemap, Sketch,  GraphicsLayer, FeatureLayer, MapImageLayer
+      ) => {
 
-      var citiesRenderer = {
-        type: "simple",
-        symbol: {
-          type: "simple-marker",
-          size: 6,
-          color: { a: 1, b: 200, g: 0, r: 0 },
-          style: "circle"
-        },
-        label: "Cities"
-      };
+        var citiesRenderer = {
+          type: "simple",
+          symbol: {
+            type: "simple-marker",
+            size: 6,
+            color: { a: 1, b: 200, g: 0, r: 0 },
+            style: "circle"
+          },
+          label: "Cities"
+        };
 
-      var statesRenderer = {
-        type: "simple",
-        symbol: {
-          type: "simple-fill",
-          style: "solid",
-          color: { a: 1, b: 0, g: 0, r: 0 },
-          outlike: {
-            width: 2,
-            color: { a: 1, b: 0, g: 200, r: 0 }
-          }
+        var statesRenderer = {
+          type: "simple",
+          symbol: {
+            type: "simple-fill",
+            style: "solid",
+            color: { a: 1, b: 0, g: 0, r: 0 },
+            outlike: {
+              width: 2,
+              color: { a: 1, b: 0, g: 200, r: 0 }
+            }
 
-        },
-        label: "State boundaries"
-      };
+          },
+          label: "State boundaries"
+        };
 
-      var highwaysRenderer = {
-        type: "simple",
-        symbol: {
-          type: "simple-line",
-          style: "solid",
-          width: 1.5,
-          color: { a: 1, b: 100, g: 100, r: 100 }
-        },
-        label: "Interstate highway"
-      };
+        var highwaysRenderer = {
+          type: "simple",
+          symbol: {
+            type: "simple-line",
+            style: "solid",
+            width: 1.5,
+            color: { a: 1, b: 100, g: 100, r: 100 }
+          },
+          label: "Interstate highway"
+        };
 
-      //var Layer = new MapImageLayer({
-      //  portalItem: {
-      //    id: "e7e03ad8f72b42709e7d63dde8c6c3f5"
-      //  },
-      //  sublayers: [
-      //    {
-      //      id: 2,
-      //      renderer: statesRenderer,
-      //      Opacity: 1
-      //    },
-      //    {
-      //      id: 1,
-      //      renderer: highwaysRenderer,
-      //      opacity: 0.5
-      //    },
-      //    {
-      //      id: 0,
-      //      renderer: citiesRenderer,
-      //      opacity: 1
-      //    }]
-      //});
+        //var Layer = new MapImageLayer({
+        //  portalItem: {
+        //    id: "e7e03ad8f72b42709e7d63dde8c6c3f5"
+        //  },
+        //  sublayers: [
+        //    {
+        //      id: 2,
+        //      renderer: statesRenderer,
+        //      Opacity: 1
+        //    },
+        //    {
+        //      id: 1,
+        //      renderer: highwaysRenderer,
+        //      opacity: 0.5
+        //    },
+        //    {
+        //      id: 0,
+        //      renderer: citiesRenderer,
+        //      opacity: 1
+        //    }]
+        //});
 
 
-      var Layer = new MapImageLayer({
-        portalItem: {
-          id: "e7e03ad8f72b42709e7d63dde8c6c3f5"
-        },
-      });
-
-      map.add(Layer)
-
-/*      const graphicsLayer = new GraphicsLayer();*/
-
-      var map = new Map({
-        basemap: new Basemap({
+        var Layer = new MapImageLayer({
           portalItem: {
-            id: "00c8181753cd4673810a1ede1f52a922"
-          }
-        }),
-        layers: [Layer]
-      });
+            id: "e7e03ad8f72b42709e7d63dde8c6c3f5"
+          },
+        });
 
-      var view = new MapView({
-        container: "viewDiv",
-        map: map,
-        zoom: 5,
-        center: [-83.114, 36.921]
-      });
+        map.add(Layer)
 
+  /*      const graphicsLayer = new GraphicsLayer();*/
 
+        var map = new Map({
+          basemap: new Basemap({
+            portalItem: {
+              id: "00c8181753cd4673810a1ede1f52a922"
+            }
+          }),
+          layers: [Layer]
+        });
 
-      //view.when(() => {
-
-      //  var layerList = new LayerList({
-      //    view: view
-      //  });
-
-      //  view.ui.add(layerList, "top-left");
-
-      //  var lengend = new Lenged({
-      //    view: view
-      //  });
-
-      //  view.ui.add(Legend, "top-left");
-
-      //  const sketch = new Sketch({
-      //    layer: graphicsLayer,
-      //    view: view,
-      //    // graphic will be selected as soon as it is created
-      //    creationMode: "update"
-      //  });
-
-      //  view.ui.add(sketch, "top-right");
+        var view = new MapView({
+          container: "viewDiv",
+          map: map,
+          zoom: 5,
+          center: [-83.114, 36.921]
+        });
 
 
 
+        //view.when(() => {
+
+        //  var layerList = new LayerList({
+        //    view: view
+        //  });
+
+        //  view.ui.add(layerList, "top-left");
+
+        //  var lengend = new Lenged({
+        //    view: view
+        //  });
+
+        //  view.ui.add(Legend, "top-left");
+
+        //  const sketch = new Sketch({
+        //    layer: graphicsLayer,
+        //    view: view,
+        //    // graphic will be selected as soon as it is created
+        //    creationMode: "update"
+        //  });
+
+        //  view.ui.add(sketch, "top-right");
 
 
-      //});
-    });</script>-->
+
+
+
+        //});
+      });</script>-->
 </head>
 <body class="mat-typography">
   <app-root>Loading...</app-root>
