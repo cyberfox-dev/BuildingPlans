@@ -48,7 +48,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _notificationService.AddUpdateNotification(model.NotificationID, model.NotificationName, model.NotificationDescription, model.IsRead,model.UserID, model.ApplicationID,model.CreatedById);
+                    var result = await _notificationService.AddUpdateNotification(model.NotificationID, model.NotificationName, model.NotificationDescription, model.IsRead,model.UserID, model.ApplicationID,model.CreatedById ,model.Message);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.NotificationID > 0 ? "Notifications Updated Successfully" : "Notification Added Successfully"), result));
                 }
 

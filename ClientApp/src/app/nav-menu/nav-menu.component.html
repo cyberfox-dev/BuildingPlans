@@ -160,50 +160,18 @@
 </div>-->
 <!--the notifications section-->
 <ng-template #notificationsCenter let-modal>
-  <div class="modal-header">
-    <h1 class="modal-title" id="modal-basic-title">Notifications</h1>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-  </div>
-  <div class="modal-body">
-    <mat-tab-group>
-      <mat-tab label="NEW NOTIFICATIONS">
+  
+    <app-notification-center>
 
-        <div *ngFor="let notificationsList of NotificationsList; let i = index ">
-          <button class="notification-btn" >
-            <div class="cont2 box box-down blue btn ">
-              <h3>{{notificationsList.NotificationName}}</h3>
-              <h4>Application {{notificationsList.ApplicationID}}</h4>
-            </div>
-            <p>Application {{notificationsList.NotificationDescription}} on {{notificationsList.DateCreated}}</p>
-
-          </button>
-        </div>
-
-
-      </mat-tab>
-
-
-      <mat-tab label="READ NOTIFICATIONS">
-
-        <div class="row1-container" *ngFor="let notificationsList of OldNotificationsList">
-          <div class="box box-down blue ">
-            <div class="cont2">
-              <h3>{{notificationsList.NotificationName}}</h3>
-              <h4>Application {{notificationsList.ApplicationID}}</h4>
-            </div>
-            <p>Application {{notificationsList.NotificationDescription}} on {{notificationsList.DateCreated}}</p>
-          </div>
-        </div>
-
-      </mat-tab>
-
-    </mat-tab-group>
-  </div>
+    </app-notification-center>
+  
 </ng-template>
 
-<ng-template #viewNotification let-modal>
-  <header></header> 
-</ng-template>
+
+
+ 
+
+
 
 <!--Repository-->
 
@@ -356,6 +324,7 @@
 
 
 
+
 <!--Side Nav-->
 
 <ng-template #content let-offcanvas>
@@ -370,7 +339,7 @@
       <button mat-button class ="sideNavIcons" (click)="openRepositoryModal(repositoryModal)"><i class="fa fa-files-o" aria-hidden="true"></i>   Document Repository</button>
       <button mat-button class ="sideNavIcons" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><i class="fa fa-comment"></i>   Comment Builder</button>
       <button mat-button class ="sideNavIcons" (click)="goToConfig();offcanvas.dismiss('Cross click')" *ngIf="Configurations"><i class="fa fa-cogs"></i>   Configurations</button>
-      <button mat-button class="sideNavIcons" (click)="getAllNotifications();openNotificationsModal(notificationsCenter)"><i class="fa fa-bell"></i>   Notifications</button>
+      <button mat-button class="sideNavIcons" (click)="openNotificationsModal(notificationsCenter)"><i class="fa fa-bell"></i>   Notifications</button>
       <button mat-button class ="sideNavIcons" (click)="goToSettings();offcanvas.dismiss('Cross click')"><i class="fa fa-user-circle-o" aria-hidden="true"></i>   User Settings</button>
       <button mat-button class ="sideNavIcons" (click)="LogoutUser();offcanvas.dismiss('Cross click')"><i class="fa fa-sign-out" aria-hidden="true"></i>   Log Out</button>
     </div>

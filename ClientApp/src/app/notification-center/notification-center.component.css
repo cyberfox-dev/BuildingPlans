@@ -1,0 +1,64 @@
+.noti-length{
+    width:100%;
+    top: 10px;
+    height:70px;
+    text-align:center;
+    align-items:center;
+    
+}
+.noti-length:hover {
+  background: #a5cef4;
+}
+
+
+.email-body {
+  font-family: Arial, sans-serif;
+}
+
+.email-content {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.email-footer {
+  margin-top: 20px;
+  color: #777;
+}
+
+.email-footer-logo {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+h3 {
+  color: hsl(234, 12%, 34%);
+  font-weight: 600;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: 0;
+  padding-bottom: 20px;
+  margin-right: auto;
+  margin-left:auto;
+  font-size: 30px;
+  width:100%;
+}
+
+h4 {
+  color: hsl(234, 12%, 34%);
+  font-weight: 500;
+  font-size: 20px;
+  width:100%;
+  text-align:center;
+}
+
+
+.btn{
+    top:0px;
+    left:0px;
+}
+.notification-header {
+  display: table-row;
+  color: hsl(234, 12%, 34%);
+  font-weight:bold;
+}

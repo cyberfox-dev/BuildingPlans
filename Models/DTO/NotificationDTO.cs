@@ -21,6 +21,7 @@ namespace WayleaveManagementSystem.DTO
 
         public bool isActive { get; set; }
         public string? CreatedById { get; set; }
+        public string? Message { get; set; }
 
     }
 

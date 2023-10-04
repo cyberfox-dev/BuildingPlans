@@ -246,6 +246,7 @@ import { ConfigActingDepartmentComponent } from './config-acting-department/conf
     ViewProjectInfoComponent,
     PermitComponentComponent,
     FileUploadComponent,
+    NotificationCenterComponent,
   ],
   bootstrap: [AppComponent]
 })
