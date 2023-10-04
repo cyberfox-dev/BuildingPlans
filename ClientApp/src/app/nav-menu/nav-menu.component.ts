@@ -1057,8 +1057,8 @@ export class NavMenuComponent implements OnInit {
 
 
 
-/*  filterDepartment() {
-*//*    debugger;
+  filterDepartment() {
+/*    debugger;
     let string = this.select.toString();
     if (string == "All") {
 
@@ -1073,8 +1073,8 @@ export class NavMenuComponent implements OnInit {
       console.log(this.select);
       this.dataSource = this.DocumentsList.filter(df => df.SubDepartmentID == this.select);
       console.log("FilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilter", this.DocumentsList.filter(df => df.SubDepartmentID == this.select))
-    }*//*
-  }*/
+    }*/
+  }
   resetFilter() {
 /*    this.select = undefined;
     this.selected = undefined;
@@ -1175,41 +1175,7 @@ export class NavMenuComponent implements OnInit {
   }
   
 
-  getAllReadNotifications() {
-    this.applica = 3023;
-    debugger;
-    this.NotificationsList.splice(0, this.NotificationsList.length);
-    this.notificationsService.getNotificationByUserID(this.CurrentUser.appUserId).subscribe((data: any) => {
-      debugger;
-      if (data.responseCode == 1) {
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempNotificationsList = {} as NotificationsList;
-          const current = data.dateSet[i];
-          console.log(current);
-          if (current.isRead == true) {
-            debugger;
-            const date = current.dateCreated;
-            tempNotificationsList.ApplicationID = current.applicationID;
-            tempNotificationsList.NotificationID = current.notificationID;
-            tempNotificationsList.NotificationName = current.notificationName;
-            tempNotificationsList.NotificationDescription = current.notificationDescription;
-            tempNotificationsList.DateCreated = date.substring(0, date.indexOf('T'));
-
-
-            this.OldNotificationsList.push(tempNotificationsList);
-          }
-          // this.sharedService.setStageData(this.StagesList);
-        }
-      }
-      else {
-        alert(data.responseMessage);
-      }
-      console.log("reponse", data);
-
-    }, error => {
-      console.log("Error: ", error);
-    })
-  }
+ 
 
  
 
