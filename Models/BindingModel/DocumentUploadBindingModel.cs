@@ -24,5 +24,7 @@
         public bool? isPlanning { get; set; }
         public bool? isRepository { get; set; }
 
+        public string? Description { get; set; }
+
     }
 }

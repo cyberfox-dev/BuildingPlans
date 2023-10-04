@@ -983,6 +983,7 @@ export class DepartmentConfigComponent implements OnInit {
 
   onSelectToPopulateZoneUserTable(event: any, viewlinkedZones: any) {
     this.UserZoneList.splice(0, this.UserZoneList.length);
+    debugger;
     if (event.target.value > 0) {
       console.log(event.target.value);
       this.zoneService.getUsersLinkedByZoneID(Number(event.target.value)).subscribe((data: any) => {
@@ -1110,7 +1111,9 @@ export class DepartmentConfigComponent implements OnInit {
 
         if (data.responseCode == 1) {
           if (data.dateSet.length > 0) {
-            this.zoneLinkService.addUpdateZoneLink(data.dateSet[0].zoneLinkID, this.CurrentDepartmentID, selectedZone, selectedSubDep, current.id, null, this.CurrentUser.appUserId,).subscribe((data: any) => {
+
+            
+            this.zoneLinkService.addUpdateZoneLink(data.dateSet[0].zoneLinkID, this.ZoneDropdown[selectedZone].zoneID, this.ZoneDropdown[selectedZone].zoneName, this.CurrentDepartmentID, this.SubDepartmentDropdown[selectedSubDep].subDepartmentID, this.SubDepartmentDropdown[selectedSubDep].subDepartmentName, current.id, null, this.CurrentUser.appUserId,false,false).subscribe((data: any) => {
               ;
               if (data.responseCode == 1) {
                 alert(data.responseMessage);
@@ -1128,7 +1131,7 @@ export class DepartmentConfigComponent implements OnInit {
             })
           }
           else {
-            this.zoneLinkService.addUpdateZoneLink(0, this.CurrentDepartmentID, selectedZone, selectedSubDep, current.id, null, this.CurrentUser.appUserId,).subscribe((data: any) => {
+            this.zoneLinkService.addUpdateZoneLink(0, this.ZoneDropdown[selectedZone].zoneID, this.ZoneDropdown[selectedZone].zoneName, this.CurrentDepartmentID, this.SubDepartmentDropdown[selectedSubDep].subDepartmentID, this.SubDepartmentDropdown[selectedSubDep].subDepartmentName, current.id, null, this.CurrentUser.appUserId, false, false).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
                 alert(data.responseMessage);
@@ -1177,29 +1180,31 @@ export class DepartmentConfigComponent implements OnInit {
   }
 
   onSelectToPopulateZone(event: any) {
-
+    debugger;
     if (event.target.value > 0) {
 
       this.ZoneDropdown.splice(0, this.ZoneDropdown.length);
       this.zoneService.getZonesBySubDepartmentsID(event.target.value).subscribe((data: any) => {
-
+        debugger;
         if (data.responseCode == 1) {
-
+          debugger;
           for (let i = 0; i < data.dateSet.length; i++) {
             const tempZoneList = {} as ZoneDropdown;
             const current = data.dateSet[i];
             tempZoneList.zoneID = current.zoneID;
             tempZoneList.zoneName = current.zoneName;
-
+            debugger;
             this.ZoneDropdown.push(tempZoneList);
-
+            debugger;
           }
 
 
         }
         else {
+          debugger;
           alert(data.responseMessage);
         }
+
         console.log("reponse", data);
 
 
@@ -1332,14 +1337,15 @@ export class DepartmentConfigComponent implements OnInit {
   }
 
   openNewUserlinkedToZone(newUserLinkedToZone: any, index: any) {
-    ;
+    debugger;
     this.SubDepartmentDropdown.splice(0, this.SubDepartmentDropdown.length);
     this.subDepartment.getSubDepartmentsByDepartmentID(this.DepartmentList[index].departmentID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-
+        debugger;
 
         for (let i = 0; i < data.dateSet.length; i++) {
+          debugger;
           const tempSubDepartmentList = {} as SubDepartmentDropdown;
           const current = data.dateSet[i];
           tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
@@ -1361,7 +1367,7 @@ export class DepartmentConfigComponent implements OnInit {
       console.log("Error: ", error);
     })
 
-
+    debugger;
     this.modalService.open(newUserLinkedToZone, { backdrop: 'static', centered: true, size: 'xl' });
   }
   toggle() {

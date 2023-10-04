@@ -1,39 +1,49 @@
 <div class="container-fluid">
+  <br />
+  <!--<button mat-raised-button color="create" (click)="openNewUserModal(newUser)">Create a new EMB profile</button>-->
+  <button mat-raised-button color="create" (click)="openNewUserModal(newUser)">Create a new {{this.loggedInUserDepartmentName}} profile</button>
+  &nbsp;
+  <button mat-raised-button color="create" (click)="openAllUsersModal(allUsers)">Show linked profiles</button>
+  
+  <ng-container *ngIf="dataSourceLinkUsers.length > 0; else noUsersMessage">
+    <table mat-table [dataSource]="dataSourceLinkUsers" class="mat-elevation-z8">
+      <!--*ngIf="showZoneUserTable"-->
 
-  <table mat-table [dataSource]="dataSourceLinkUsers" class="mat-elevation-z8">
-    <!--*ngIf="showZoneUserTable"-->
+      <ng-container matColumnDef="idNumber">
+        <th mat-header-cell *matHeaderCellDef> ID Number </th>
+        <td mat-cell *matCellDef="let element"> {{element.idNumber}} </td>
+      </ng-container>
 
-    <ng-container matColumnDef="idNumber">
-      <th mat-header-cell *matHeaderCellDef> ID Number </th>
-      <td mat-cell *matCellDef="let element"> {{element.idNumber}} </td>
-    </ng-container>
+      <ng-container matColumnDef="fullName">
+        <th mat-header-cell *matHeaderCellDef> User Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
+      </ng-container>
 
-    <ng-container matColumnDef="fullName">
-      <th mat-header-cell *matHeaderCellDef> User Name </th>
-      <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
-    </ng-container>
+      <ng-container matColumnDef="zoneName">
+        <th mat-header-cell *matHeaderCellDef> Zone Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.zoneName}} </td>
+      </ng-container>
 
-    <ng-container matColumnDef="zoneName">
-      <th mat-header-cell *matHeaderCellDef> Zone Name </th>
-      <td mat-cell *matCellDef="let element"> {{element.zoneName}} </td>
-    </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let i = index">
 
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef>Actions</th>
-      <td mat-cell *matCellDef="let i = index">
+          <button mat-raised-button color="warn">Decline</button>
+          <button mat-raised-button color="green" (click)="openAssignModal(content,i)">Approve</button>
 
-        <button mat-raised-button color="warn">Decline</button>
-        <button mat-raised-button color="green" (click)="openAssignModal(content,i)">Approve</button>
+        </td>
 
-      </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsLinkUsers"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsLinkUsers;"></tr>
+    </table>
+  </ng-container>
+  <ng-template #noUsersMessage>
+    <hr />
+    <p>There are no new users needing approval at the moment.</p>
+  </ng-template>
 
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumnsLinkUsers"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumnsLinkUsers;"></tr>
-  </table>
-
-
+  
 
 </div>
 
@@ -53,5 +63,99 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-success" (click)="approveTheUser();modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+
+<!--create a new user-->
+<ng-template #newUser let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Add a new user to {{this.loggedInUserDepartmentName}}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+
+   <!--Make sure to finish this ASAP-->
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+<!--I want to show the user, be able to select one and change access group and "zone" on a whim?-->
+<ng-template #allUsers let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{this.loggedInUserDepartmentName}} user list</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <table mat-table [dataSource]="dataSourceZoneLink" class="mat-elevation-z8">
+      <!--*ngIf="showZoneUserTable"-->
+
+      <ng-container matColumnDef="fullName">
+        <th mat-header-cell *matHeaderCellDef> User Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="departmentName">
+        <th mat-header-cell *matHeaderCellDef> Department Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.departmentName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="subdepartmentName">
+        <th mat-header-cell *matHeaderCellDef> Subdepartment Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.subdepartmentName}} </td>
+      </ng-container>
+      <ng-container matColumnDef="zoneName">
+        <th mat-header-cell *matHeaderCellDef> Zone Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.zoneName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="isZoneAdmin">
+        <th mat-header-cell *matHeaderCellDef> Zone Admin </th>
+        <td mat-cell *matCellDef="let element"> {{element.isZoneAdmin}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="isDepartmentAdmin">
+        <th mat-header-cell *matHeaderCellDef> Department Admin </th>
+        <td mat-cell *matCellDef="let element"> {{element.isDepartmentAdmin}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> </th>
+        <td mat-cell *matCellDef="let i = index">
+
+          <button mat-raised-button color="orange" matTooltip="View and Edit User" (click)="editUserScope(i, viewDepartmentPerson)"><i class="fa fa-pencil"></i></button>
+          <button mat-raised-button color="warn" matTooltip="Unlink User" click="removeUserFromDPT(i)"><i class="fa fa-unlink"></i></button>
+
+
+        </td>
+
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsZoneLinks"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsZoneLinks;"></tr>
+    </table>
+  </div>
+  <!--<div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+  </div>-->
+</ng-template>
+
+<ng-template #viewDepartmentPerson let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title" id="modal-basic-title">{{this.selectedUserName}}</h3>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div id="userRolesList">
+      <div *ngFor="let role of this.ThisUserRolesList; let i = index" class="role-item">
+        <span>{{ role.RoleName }}</span>
+        <button (click)="removeRole(i)">
+          <i class="fas fa-minus"></i> <!-- Font Awesome minus sign icon -->
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
   </div>
 </ng-template>

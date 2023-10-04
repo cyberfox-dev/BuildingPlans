@@ -1511,6 +1511,9 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<int?>("SubDepartmentID")
                         .HasColumnType("int");
 
+                    b.Property<string>("SubDepartmentName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserID")
                         .HasColumnType("nvarchar(max)");
 
@@ -1603,11 +1606,14 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<DateTime>("DateUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DepartmentID")
+                    b.Property<int?>("DepartmentID")
                         .HasColumnType("int");
 
-                    b.Property<int>("SubDepartmentID")
+                    b.Property<int?>("SubDepartmentID")
                         .HasColumnType("int");
+
+                    b.Property<string>("SubDepartmentName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserType")
                         .HasColumnType("nvarchar(max)");
@@ -1615,7 +1621,16 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<int?>("ZoneID")
                         .HasColumnType("int");
 
+                    b.Property<string>("ZoneName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("isActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("isDepartmentAdmin")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("isZoneAdmin")
                         .HasColumnType("bit");
 
                     b.HasKey("ZoneLinkID");

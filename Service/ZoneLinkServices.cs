@@ -17,7 +17,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<ZoneLink> AddUpdateZoneLink(int? zoneLinkID,int? zoneID ,int departmentID, int subDepartmentID, string? assignedUserID, string? userType,string? createdById)
+        public async Task<ZoneLink> AddUpdateZoneLink(int? zoneLinkID,int? zoneID , string? zoneName, int? departmentID, int? subDepartmentID, string? subDepartmentName, string? assignedUserID, string? userType,string? createdById, bool? isDepartmentAdmin, bool? isZoneAdmin)
         {
             if (zoneLinkID == 0)
             {
@@ -28,6 +28,15 @@ namespace WayleaveManagementSystem.Service
 
             if (tempZoneLinksTable == null)
             {
+                if (isDepartmentAdmin != null)
+                {
+                    isDepartmentAdmin = false;
+                }
+                if (isZoneAdmin != null)
+                {
+                    isZoneAdmin = false;
+                }
+
                 tempZoneLinksTable = new ZoneLink()
                 {
                     ZoneLinkID = zoneLinkID,
@@ -39,6 +48,10 @@ namespace WayleaveManagementSystem.Service
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     CreatedById = createdById,
+                    isDepartmentAdmin = isDepartmentAdmin,  
+                    isZoneAdmin = isZoneAdmin,
+                    SubDepartmentName = subDepartmentName,  
+                    ZoneName = zoneName,    
                     isActive = true
                 };
 
@@ -50,9 +63,48 @@ namespace WayleaveManagementSystem.Service
             }
             else
             {
-                tempZoneLinksTable.ZoneLinkID = zoneLinkID;
+
+                if (zoneID != null)
+                {
+                    tempZoneLinksTable.ZoneID = zoneID;
+                }
+
+                if (zoneName != null)
+                {
+                    tempZoneLinksTable.ZoneName = zoneName;
+                }
+
+                if (departmentID != null)
+                {
+                    tempZoneLinksTable.DepartmentID = departmentID;
+                }
+                if (subDepartmentID != null)
+                {
+                    tempZoneLinksTable.SubDepartmentID = subDepartmentID;
+                }
+                if (zoneName != null)
+                {
+                    tempZoneLinksTable.SubDepartmentName = subDepartmentName;
+                }
+                if (assignedUserID != null)
+                {
+                    tempZoneLinksTable.AssignedUserID = assignedUserID;
+                }
+                if (userType != null)
+                {
+                    tempZoneLinksTable.UserType = userType;
+                }
+                if (isDepartmentAdmin != null)
+                {
+                    tempZoneLinksTable.isDepartmentAdmin = isDepartmentAdmin;
+                } 
+                if (isZoneAdmin != null)
+                {
+                    tempZoneLinksTable.isZoneAdmin = isZoneAdmin;
+                } 
+
                 tempZoneLinksTable.DateUpdated = DateTime.Now;
-                tempZoneLinksTable.isActive = true;
+             
 
                 _context.Update(tempZoneLinksTable);
                 await _context.SaveChangesAsync();
@@ -121,53 +173,12 @@ namespace WayleaveManagementSystem.Service
 
                 }
                 ).ToListAsync();
-        } 
-        
+        }
+
+
+
         public async Task<List<ZoneLinkDTO>> GetAllUserLinks(string userID)
         {
-
-
-
-
-            //var zoneIds = await _context.ZoneLinkTable
-            //                       .Where(z => z.AssignedUserID == userID
-            //                                   && z.isActive)
-            //                       .Select(z => z.SubDepartmentID)
-            //                       .ToListAsync();
-
-            //// Step 2: Use the retrieved ZoneIDs in the SubDepartmentForComment query
-            //return await _context.SubDepartmentsTable
-            //                    .Where(s => s.isActive
-            //                           && zoneIds.Contains(s.ZoneID)) // Use Contains to filter by ZoneIDs
-            //                    .Select(s => new SubDepartmentForCommentDTO()
-            //                    {
-            //                        SubDepartmentForCommentID = s.SubDepartmentForCommentID,
-            //                        ApplicationID = s.ApplicationID,
-            //                        SubDepartmentID = s.SubDepartmentID,
-            //                        SubDepartmentName = s.SubDepartmentName,
-            //                        UserAssaignedToComment = s.UserAssaignedToComment,
-            //                        CommentStatus = s.CommentStatus,
-            //                        isAwaitingClarity = s.isAwaitingClarity,
-            //                        IsRefered = s.IsRefered,
-            //                        ReferedToUserID = s.ReferedToUserID,
-            //                        CreatedById = s.CreatedById,
-            //                        ZoneID = s.ZoneID,
-            //                        ZoneName = s.ZoneName,
-            //                    })
-            //                    .ToListAsync();
-
-
-
-
-
-
-
-
-
-
-
-
-
             return await (
                 from ZoneLink in _context.ZoneLinkTable
                     where ZoneLink.AssignedUserID == userID && ZoneLink.isActive == true
@@ -182,6 +193,8 @@ namespace WayleaveManagementSystem.Service
 
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
+
+                    ZoneID = ZoneLink.ZoneID,
 
                 }
                 ).ToListAsync();
