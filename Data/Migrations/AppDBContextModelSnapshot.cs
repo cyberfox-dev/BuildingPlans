@@ -1015,6 +1015,9 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<bool?>("IsRead")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("NotificationDescription")
                         .HasColumnType("nvarchar(max)");
 

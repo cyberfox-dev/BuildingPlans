@@ -160,50 +160,18 @@
 </div>-->
 <!--the notifications section-->
 <ng-template #notificationsCenter let-modal>
-  <div class="modal-header">
-    <h1 class="modal-title" id="modal-basic-title">Notifications</h1>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-  </div>
-  <div class="modal-body">
-    <mat-tab-group>
-      <mat-tab label="NEW NOTIFICATIONS">
+  
+    <app-notification-center>
 
-        <div *ngFor="let notificationsList of NotificationsList; let i = index ">
-          <button class="notification-btn" >
-            <div class="cont2 box box-down blue btn ">
-              <h3>{{notificationsList.NotificationName}}</h3>
-              <h4>Application {{notificationsList.ApplicationID}}</h4>
-            </div>
-            <p>Application {{notificationsList.NotificationDescription}} on {{notificationsList.DateCreated}}</p>
-
-          </button>
-        </div>
-
-
-      </mat-tab>
-
-
-      <mat-tab label="READ NOTIFICATIONS">
-
-        <div class="row1-container" *ngFor="let notificationsList of OldNotificationsList">
-          <div class="box box-down blue ">
-            <div class="cont2">
-              <h3>{{notificationsList.NotificationName}}</h3>
-              <h4>Application {{notificationsList.ApplicationID}}</h4>
-            </div>
-            <p>Application {{notificationsList.NotificationDescription}} on {{notificationsList.DateCreated}}</p>
-          </div>
-        </div>
-
-      </mat-tab>
-
-    </mat-tab-group>
-  </div>
+    </app-notification-center>
+  
 </ng-template>
 
-<ng-template #viewNotification let-modal>
-  <header></header> 
-</ng-template>
+
+
+ 
+
+
 
 <!--Repository-->
 
@@ -222,9 +190,10 @@
         <mat-label>Filter by selecting a department</mat-label>
         <mat-select [(value)]="select" (selectionChange)="filterDepartment()">
           <mat-option value="All">All</mat-option>
-          <mat-option *ngFor="let department of SubDepartmentList" value="{{department.subDepartmentID}}">{{department.subDepartmentName}}</mat-option>
+          <mat-option *ngFor="let department of SubDepartmentList" value="{{ department.subDepartmentID }}">{{ department.subDepartmentName }}</mat-option>
         </mat-select>
       </mat-form-field>
+
 
 
       <!--This is to select the department-->
@@ -240,28 +209,73 @@
 
     </div>
 
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <!--    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
 
 
-      <ng-container matColumnDef="DocumentName">
-        <th mat-header-cell *matHeaderCellDef>Document</th>
-        <td mat-cell *matCellDef="let element"> {{element.DocumentName}} </td>
+        <ng-container matColumnDef="DocumentName">
+          <th mat-header-cell *matHeaderCellDef>Document</th>
+          <td mat-cell *matCellDef="let element"> {{element.DocumentName}} </td>
+        </ng-container>
+        <ng-container matColumnDef="Description">
+          <th mat-header-cell *matHeaderCellDef>Description</th>
+          <td mat-cell *matCellDef="let element"> {{element.Description}} </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>actions</th>
+          <td mat-cell *matCellDef="let i = index">
+            <button mat-raised-button color="blue" (click)="viewDocument(i)" matTooltip="View document"><i class="fa fa-eye"></i></button>
+            <button mat-raised-button color="warn" matTooltip="Delete document" (click)="onDeleteRepositoryDocument(i,repositoryModal)" *ngIf="deleteRepoDoc"><i class="fa fa-trash"></i></button>
+          </td>
+          <td mat-cell *matCellDef="let element">  </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>-->
+    <table mat-table
+           [dataSource]="dataSource" multiTemplateDataRows
+           class="mat-elevation-z8">
+      <ng-container matColumnDef="{{DocumentName}}" *ngFor="let DocumentName of displayedColumns">
+        <th mat-header-cell *matHeaderCellDef> {{DocumentName}} </th>
+        <td mat-cell *matCellDef="let element"> {{element[DocumentName]}} </td>
       </ng-container>
-
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>actions</th>
-        <td mat-cell *matCellDef="let i = index">
-          <button mat-raised-button color="blue" (click)="viewDocument(i)" matTooltip="View document"><i class="fa fa-eye"></i></button>
-          <button mat-raised-button color="warn" matTooltip="Delete document" (click)="onDeleteRepositoryDocument(i,repositoryModal)" *ngIf="deleteRepoDoc"><i class="fa fa-trash"></i></button>
+      <ng-container matColumnDef="expand">
+        <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button aria-label="expand row" (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+            <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+            <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+          </button>
         </td>
-        <td mat-cell *matCellDef="let element">  </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+      <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+      <ng-container matColumnDef="expandedDetail">
+        <td mat-cell *matCellDef="let element; let i = index" [attr.colspan]="columnsToDisplayWithExpand.length">
+          <div class="example-element-detail"
+               [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+            <div class="example-element-diagram">
+              <div class="example-element-position"> {{element.Description}} </div>
+              <div class="example-element-symbol">{{element.GroupName}} </div>
 
+            </div>
+            <div class="example-element-description">
+              <button mat-raised-button color="blue" (click)="viewDocument(element)" matTooltip="View document"><i class="fa fa-eye"></i></button>
+              <button mat-raised-button color="warn2" matTooltip="Delete document" (click)="onDeleteRepositoryDocument(i,repositoryModal)" *ngIf="deleteRepoDoc"><i class="fa fa-trash"></i></button>
+            </div>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+      <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand;"
+          class="example-element-row"
+          [class.example-expanded-row]="expandedElement === element"
+          (click)="expandedElement = expandedElement === element ? null : element">
+      </tr>
+      <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+    </table>
   </div>
 </ng-template>
 
@@ -297,7 +311,7 @@
       <mat-label>Description</mat-label>
       <div class="cont6">
 
-        <input matInput placeholder="Please enter in a description for your document" #input>
+        <input matInput placeholder="Please enter in a description for your document" #input [(ngModel)]="descriptionForDocRepo">
       </div>
 
     </mat-form-field>
@@ -312,6 +326,7 @@
           <div class="row" style="margin-bottom:15px;">
             <div class="container-fluid">
               <app-file-upload [ApplicationID]="isRep"
+                               [descriptionForDocRepoS]="descriptionForDocRepo"
                                [UploadFor]="fileAttrsName"
                                (passFileName)="onPassFileName($event)"
                                (onUploadFinished)="onFileDelete($event, 0)"
@@ -356,6 +371,7 @@
 
 
 
+
 <!--Side Nav-->
 
 <ng-template #content let-offcanvas>
@@ -370,7 +386,7 @@
       <button mat-button class ="sideNavIcons" (click)="openRepositoryModal(repositoryModal)"><i class="fa fa-files-o" aria-hidden="true"></i>   Document Repository</button>
       <button mat-button class ="sideNavIcons" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><i class="fa fa-comment"></i>   Comment Builder</button>
       <button mat-button class ="sideNavIcons" (click)="goToConfig();offcanvas.dismiss('Cross click')" *ngIf="Configurations"><i class="fa fa-cogs"></i>   Configurations</button>
-      <button mat-button class="sideNavIcons" (click)="getAllNotifications();openNotificationsModal(notificationsCenter)"><i class="fa fa-bell"></i>   Notifications</button>
+      <button mat-button class="sideNavIcons" (click)="openNotificationsModal(notificationsCenter)"><i class="fa fa-bell"></i>   Notifications</button>
       <button mat-button class ="sideNavIcons" (click)="goToSettings();offcanvas.dismiss('Cross click')"><i class="fa fa-user-circle-o" aria-hidden="true"></i>   User Settings</button>
       <button mat-button class ="sideNavIcons" (click)="LogoutUser();offcanvas.dismiss('Cross click')"><i class="fa fa-sign-out" aria-hidden="true"></i>   Log Out</button>
     </div>

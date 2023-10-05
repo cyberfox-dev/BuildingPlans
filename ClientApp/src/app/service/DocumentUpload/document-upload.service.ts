@@ -13,7 +13,7 @@ export class DocumentUploadService {
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
-  public addUpdateDocument(documentID?: number | null, documentName?: string | null, documentLocalPath?: any | null, applicationID?: number | null, assignedUserID?: string | null, createdById?: string | null, groupName?: string | null, subDepID?: number | null, subDepName?: string | null, isPlanning?: boolean | null, isRepository?: boolean | null ) {
+  public addUpdateDocument(documentID?: number | null, documentName?: string | null, documentLocalPath?: any | null, applicationID?: number | null, assignedUserID?: string | null, createdById?: string | null, groupName?: string | null, subDepID?: number | null, subDepName?: string | null, isPlanning?: boolean | null, isRepository?: boolean | null, descriptionForDocRepo?: string | null ) {
     const body = {
       DocumentID: documentID,
       DocumentName: documentName,
@@ -26,6 +26,7 @@ export class DocumentUploadService {
       SubDepartmentName: subDepName,
       isPlanning: isPlanning,
       isRepository: isRepository,
+      Description: descriptionForDocRepo,
     }
     return this.httpClient.post(this.baseURL + "AddUpdateDocument", body);
   }

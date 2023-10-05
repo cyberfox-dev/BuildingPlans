@@ -113,7 +113,9 @@ export interface ApplicationList {
   permitStartDate: Date,
   DatePaid: Date;
   wbsrequired: boolean;
-  Coordinates: string
+  Coordinates: string,
+  userID:string,
+  //Coordinates: string
   UserID: any;
 }
 
