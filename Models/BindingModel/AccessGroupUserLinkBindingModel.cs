@@ -1,17 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace WayleaveManagementSystem.Data.Entities
+﻿namespace WayleaveManagementSystem.Models.BindingModel
 {
-    public class  AccessGroupUserLink: BaseEntity
+    public class AccessGroupUserLinkBindingModel 
     {
-        [Key]
         public int AccessGroupUserLinkID { get; set; }
         public int? AccessGroupID { get; set; }
 
         public string? UserID { get; set; }
 
-
-        //Need to add subdepartment and zone?
         public int? SubDepartmentID { get; set; }
         public int? ZoneID { get; set; }
 

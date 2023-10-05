@@ -18,6 +18,7 @@ import { ProfessionalService } from 'src/app/service/Professionals/professional.
 import { LoginComponent } from 'src/app/login/login.component';
 import { MatStepper } from '@angular/material/stepper';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatPaginator } from '@angular/material/paginator';
 import { ZoneForCommentService } from '../service/ZoneForComment/zone-for-comment.service';
 import { ZoneLinkService } from '../service/ZoneLink/zone-link.service';
@@ -113,6 +114,7 @@ export interface ApplicationList {
   DatePaid: Date;
   wbsrequired: boolean;
   Coordinates: string
+  UserID: any;
 }
 
 
@@ -174,7 +176,7 @@ export interface TempContractorList {
 
 export interface TempEngineerList {
 
-  bpNumber: string;
+  //bpNumber: string;
   profRegNum: string;
   idNum: string;
   name: string;
@@ -197,6 +199,21 @@ export interface ProfListEU {
   idNumber?: string;
 }
 
+export interface AllInternalUserProfileList {
+
+  UserID: string;
+  FullName: string;
+  Email: string;
+  PhoneNumber: string;
+  Directorate: string;
+  SubDepartmentID: string;
+
+  DepartmentID: string;
+  Branch: string;
+
+
+
+}
 
 @Component({
   selector: 'app-home',
@@ -230,6 +247,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   RolesList: RolesList[] = [];
   UserList: UserList[] = [];
   ClientUserList: ClientUserList[] = [];
+  AllInternalUserProfileList: ClientUserList[] = [];
   ZoneLinkedList: ZoneList[] = [];
   AllConfig: ConfigList[] = [];
   ServerType: string;
@@ -359,6 +377,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   isTableLoading: boolean = true;
 
   newList = [];
+  newInternalList = [];
   currentDate: Date;
   previousMonth: number;
   @ViewChild(MatTable) applicationsTable: MatTable<ApplicationsList> | undefined;
@@ -403,6 +422,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   displayedColumnsLinkUsers: string[] = ['idNumber', 'fullName', 'actions'];
   dataSourceLinkUsers = this.ClientUserList;
 
+  @ViewChild(MatTable) linkAllUsersTable: MatTable<any> | undefined;
+  displayedColumnsLinkAllUsers: string[] = ['idNumber', 'fullName', 'actions'];
+  dataSourceLinkAllUsers = this.AllInternalUserProfileList;
+
   //I lost the Client list table
 
   applyExistingClientFilter(event: Event): void {
@@ -432,6 +455,32 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.linkUsersTable?.renderRows();
   }
 
+  applyInternalClientFilter(event: Event): void {
+    debugger;
+    //this.ClientUserList.splice(0, this.ClientUserList.length);
+
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    console.log('Filtering with:', filterValue);
+
+    if (filterValue === '') {
+      // If the filter is empty, reset the dataSource to the original data
+      this.dataSourceLinkAllUsers = [...this.AllInternalUserProfileList];
+      this.newInternalList = [];
+    } else {
+      // Apply the filter to the dataSource based on columns 'idNumber' and 'fullName'
+      this.dataSourceLinkAllUsers = this.AllInternalUserProfileList.filter((user: any) => {
+        return (
+          (user.idNumber?.toLowerCase() || '').includes(filterValue) ||
+          (user.fullName?.toLowerCase() || '').includes(filterValue)
+        );
+      });
+
+      this.newInternalList = [...this.dataSourceLinkAllUsers];
+    }
+    console.log('Filtered Data:', this.newInternalList);
+    // Render the rows after applying the filter
+    this.linkAllUsersTable?.renderRows();
+  }
   //Filtered list is duplicated sometimes??
   
 
@@ -457,6 +506,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.getAllSubDepartments();
       this.getAllUserLinks();
       this.getConfig();
+      this.getAllInternalUsers();
 
       //this.getAllExternalUsers(); //returns null at this point
 
@@ -578,6 +628,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   clearFilter() {
     this.dataSourceLinkUsers = [...this.ClientUserList];
     this.newList = [];
+    this.dataSourceLinkAllUsers = [...this.AllInternalUserProfileList]
+    this.newInternalList = [];
   }
 
   //The filter acts up sometimes - 
@@ -848,28 +900,51 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   getUserID(index: any) {
     console.log("Turtle Speed is too fast for me");
+    /*ClientUserList will get messed up when there is filtering
+    this.userID = this.ClientUserList[index].userId; 
+    this.selectedUserName = this.ClientUserList[index].fullName;*/
 
-    this.userID = this.ClientUserList[index].userId;
+    if (index >= 0 && index < this.dataSourceLinkUsers.length) {
+      this.userID = this.dataSourceLinkUsers[index].userId;
+      this.selectedUserName = this.dataSourceLinkUsers[index].fullName;
 
-    this.selectedUserName = this.ClientUserList[index].fullName;
-    this.sharedService.clientUserID = this.userID;
+      this.sharedService.clientUserID = this.userID;
+      this.clientUserID = this.userID;
 
-    this.getAllProfessionalsListByProfessionalType("Engineer");
-    this.getAllProfessionalsListByProfessionalType("Contractor");
-    console.log("You selected: " + this.userID);
-    //The right UserID is acquired - then what?!
+      this.getAllProfessionalsListByProfessionalType("Engineer");
+      this.getAllProfessionalsListByProfessionalType("Contractor");
+      console.log("You selected: " + this.userID);
+    }
   }
 
+  getInternalUserID(index: any) {
 
+    debugger;
+    /*AllInternalUserProfileList will get messed up when there is filtering
+    this.userID = this.AllInternalUserProfileList[index].userId;
+    this.selectedUserName = this.AllInternalUserProfileList[index].fullName;*/
+    if (index >= 0 && index < this.dataSourceLinkAllUsers.length) {
+      this.userID = this.dataSourceLinkAllUsers[index].userId;
+      this.selectedUserName = this.dataSourceLinkAllUsers[index].fullName;
+
+      this.sharedService.clientUserID = this.userID;
+      this.clientUserID = this.userID;
+
+      this.getAllProfessionalsListByProfessionalType("Engineer");
+      this.getAllProfessionalsListByProfessionalType("Contractor");
+      console.log("You selected: " + this.userID);
+    }
+
+  }
   populateClientInfo() {
     if (confirm("Are you sure you are done?")) {
+      debugger;
       this.createWayleave(this.applicationType, this.isPlanning);
     }
 
 
 
   }
-
   UpdateProjectNumberConfig() {
 
     /*    if (this.CurrentUserProfile[0].isInternal == false) {
@@ -1367,9 +1442,9 @@ this.Applications.push(tempApplicationList);
     //application type refers to whether it is a brand new application or if it is a reapply.
     console.log("THIS IS THE APPLICATION TYPE", applicationType);
     this.sharedService.setReapply(applicationType);
+    debugger;
 
-
-    if (this.option == "client") {
+    if (this.option == "client" || this.option == 'proxy') {
 
       this.NewWayleaveComponent.onWayleaveCreate(this.userID, isPlanning);
       // this.NewWayleaveComponent.populateClientInfo(this.userID);
@@ -1880,7 +1955,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.ProjectNumber = (current.applicationID).toString();
           }
 
-
+          debugger;
           /*            do {
                         tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
                       } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
@@ -1905,6 +1980,7 @@ this.Applications.push(tempApplicationList);
           tempApplicationListShared.Location = current.location;
           tempApplicationListShared.clientCellNo = current.phoneNumber;
           tempApplicationListShared.CreatedById = current.createdById;
+          tempApplicationListShared.UserID = current.userID;//
           tempApplicationListShared.ApplicationStatus = current.applicationStatus;
           tempApplicationListShared.CurrentStageName = current.currentStageName;
           tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
@@ -2057,6 +2133,7 @@ this.Applications.push(tempApplicationList);
           tempApplicationListShared.Location = current.location;
           tempApplicationListShared.clientCellNo = current.phoneNumber;
           tempApplicationListShared.CreatedById = current.createdById;
+          tempApplicationListShared.UserID = current.userID;//
           tempApplicationListShared.ApplicationStatus = current.applicationStatus;
           tempApplicationListShared.CurrentStageName = current.currentStageName;
           tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
@@ -2214,6 +2291,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.Location = current.location;
             tempApplicationListShared.clientCellNo = current.phoneNumber;
             tempApplicationListShared.CreatedById = current.createdById;
+            tempApplicationListShared.UserID = current.userID;//
             tempApplicationListShared.ApplicationStatus = current.applicationStatus;
             tempApplicationListShared.CurrentStageName = current.currentStageName;
             tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
@@ -2342,6 +2420,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.Location = current.location;
             tempApplicationListShared.clientCellNo = current.phoneNumber;
             tempApplicationListShared.CreatedById = current.createdById;
+            tempApplicationListShared.UserID = current.userID;//
             tempApplicationListShared.ApplicationStatus = current.applicationStatus;
             tempApplicationListShared.CurrentStageName = current.currentStageName;
             tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
@@ -2489,6 +2568,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.Location = current.location;
             tempApplicationListShared.clientCellNo = current.phoneNumber;
             tempApplicationListShared.CreatedById = current.createdById;
+            tempApplicationListShared.UserID = current.userID;//
             tempApplicationListShared.ApplicationStatus = current.applicationStatus;
             tempApplicationListShared.CurrentStageName = current.currentStageName;
             tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
@@ -2633,6 +2713,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.Location = current.location;
             tempApplicationListShared.clientCellNo = current.phoneNumber;
             tempApplicationListShared.CreatedById = current.createdById;
+            tempApplicationListShared.UserID = current.userID;//
             tempApplicationListShared.ApplicationStatus = current.applicationStatus;
             tempApplicationListShared.CurrentStageName = current.currentStageName;
             tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
@@ -2782,6 +2863,7 @@ this.Applications.push(tempApplicationList);
               tempApplicationListShared.Location = current.location;
               tempApplicationListShared.clientCellNo = current.phoneNumber;
               tempApplicationListShared.CreatedById = current.createdById;
+              tempApplicationListShared.UserID = current.userID;//
               tempApplicationListShared.ApplicationStatus = current.applicationStatus;
               tempApplicationListShared.CurrentStageName = current.currentStageName;
               tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
@@ -2907,6 +2989,7 @@ this.Applications.push(tempApplicationList);
               tempApplicationListShared.Location = current.location;
               tempApplicationListShared.clientCellNo = current.phoneNumber;
               tempApplicationListShared.CreatedById = current.createdById;
+              tempApplicationListShared.UserID = current.userID;//
               tempApplicationListShared.ApplicationStatus = current.applicationStatus;
               tempApplicationListShared.CurrentStageName = current.currentStageName;
               tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
@@ -3096,7 +3179,8 @@ this.Applications.push(tempApplicationList);
   dataSourceTempContractors = this.TempConList;
 
   @ViewChild(MatTable) TempEngineersTable: MatTable<TempEngineerList> | undefined;
-  displayedColumnsTempEngineers: string[] = ['bpNumber', 'profRegNum', 'idNum', 'name', 'surname', 'cellular', 'email', 'actions'];
+  //displayedColumnsTempEngineers: string[] = ['bpNumber', 'profRegNum', 'idNum', 'name', 'surname', 'cellular', 'email', 'actions'];
+  displayedColumnsTempEngineers: string[] = ['profRegNum', 'idNum', 'name', 'surname', 'cellular', 'email', 'actions'];
   dataSourceTempEngineers = this.TempEngList;
 
   openViewTheirProf(showAddedProf: any) {
@@ -3107,8 +3191,8 @@ this.Applications.push(tempApplicationList);
   }
 
   getAllProfessionalsListByProfessionalType(professionalType: string) {
-    //this.EngineersList.splice(0, this.EngineersList.length);
-    //this.ContractorsList.splice(0, this.ContractorsList.length);
+    this.EngineersList.splice(0, this.EngineersList.length);
+    this.ContractorsList.splice(0, this.ContractorsList.length);
     debugger;
     this.professionalService.getProfessionalsListByProfessionalType(this.userID, professionalType).subscribe((data: any) => {
       if (data.responseCode == 1) {
@@ -3180,7 +3264,7 @@ this.Applications.push(tempApplicationList);
     //appUserID: string | this.userID = this.ClientUserList[index].userId;
     // Check if any of the required fields is empty
     if (
-      !this.bpNoApplicant ||
+      
       !this.professionalRegNo ||
       !this.engineerIDNo ||
       !this.name ||
@@ -3188,12 +3272,13 @@ this.Applications.push(tempApplicationList);
       !this.applicantTellNo ||
       !this.applicantEmail
     ) {
+      //!this.bpNoApplicant  - no bp!
       alert('Please fill in all required fields.');
       return; // Exit the function if any required field is empty
     }
     const newEngineer: TempEngineerList = {
 
-      bpNumber: this.bpNoApplicant,
+      //bpNumber: this.bpNoApplicant,
       profRegNum: this.professionalRegNo,
       idNum: this.engineerIDNo,
       name: this.name,
@@ -3258,7 +3343,7 @@ this.Applications.push(tempApplicationList);
     this.modalService.open(editContractor, { backdrop: 'static', centered: true, size: 'xl' });
   }
 
-  editEngBPNum = '';
+  //editEngBPNum = '';
   editEngRegNum = '';
   editEngID = '';
   editEngName = '';
@@ -3274,7 +3359,7 @@ this.Applications.push(tempApplicationList);
       // Update the engineer's details in the data source
       this.selectedEngineer = this.dataSourceTempEngineers[index];
 
-      this.editEngBPNum = this.selectedEngineer.bpNumber;
+      //this.editEngBPNum = this.selectedEngineer.bpNumber;
       this.editEngRegNum = this.selectedEngineer.profRegNum;
       this.editEngID = this.selectedEngineer.idNum;
       this.editEngName = this.selectedEngineer.name;
@@ -3351,9 +3436,9 @@ this.Applications.push(tempApplicationList);
   */
   saveEditedEngineerDetails(showAddedProf: any) {
     // Check if the textbox values are not empty before updating
-    if (this.editEngBPNum.trim() !== '') {
+    /*if (this.editEngBPNum.trim() !== '') {
       this.selectedEngineer.bpNumber = this.editEngBPNum;
-    }
+    }*/
     if (this.editEngRegNum.trim() !== '') {
       this.selectedEngineer.profRegNum = this.editEngRegNum;
     }
@@ -3450,6 +3535,7 @@ this.Applications.push(tempApplicationList);
 
   //[Next] button
   saveAllEngineers() {
+    debugger;
     // Use forEach to loop through TempEngList and call onPermaSaveTheirEngineer for each engineer
     this.TempEngList.forEach(engineer => {
       this.onPermaSaveTheirEngineer(engineer);
@@ -3512,7 +3598,6 @@ this.Applications.push(tempApplicationList);
 
     // Check if any of the required fields is empty for the current engineer
     if (
-      !engineer.bpNumber ||
       !engineer.profRegNum ||
       !engineer.idNum ||
       !engineer.name ||
@@ -3520,6 +3605,7 @@ this.Applications.push(tempApplicationList);
       !engineer.cellular ||
       !engineer.email
     ) {
+      //!engineer.bpNumber ||
       alert('Please fill in all required fields for the engineer.');
       return; // Exit the function if any required field is empty for the current engineer
     }
@@ -3548,7 +3634,8 @@ this.Applications.push(tempApplicationList);
       0, // Action identifier (e.g., 0 for adding)
       "Engineer", // Professional type
       engineer.name + " " + engineer.surname, // Name
-      engineer.bpNumber,
+      //engineer.bpNumber,
+      null,
       false, // Active status
       engineer.email,
       engineer.cellular,
@@ -4119,6 +4206,64 @@ this.Applications.push(tempApplicationList);
     }
 
    //the part that is relevant is the conditional statement that has a userID of null
+  }
+
+  @Output() internalUserSelected = new EventEmitter<void>();
+  @Output() externalClientSelected = new EventEmitter<void>();
+  isInternalUser = false;//the default MUST be external
+
+  openExternalClient(user: any) {
+    this.modalService.open(user, { backdrop: 'static', centered: true, size: 'xl' });
+  }
+
+  openInternalUserClient(internalUser: any) {
+    this.modalService.open(internalUser, { backdrop: 'static', centered: true, size: 'xl' });
+  }
+
+  openChoice(choiceEC: any) {
+    this.modalService.open(choiceEC, { backdrop: 'static', centered: true, size: 'xl' });
+  }
+  
+
+  handleChoice(internalUser: any, user:any) {
+    if (this.isInternalUser) {
+      this.internalUserSelected.emit();
+      this.sharedService.option = 'proxy';
+      
+      this.openInternalUserClient(internalUser);
+    } else {
+      this.externalClientSelected.emit();
+      this.openExternalClient(user);
+    }
+  }
+
+  async getAllInternalUsers() {
+    debugger;
+
+    this.AllInternalUserProfileList.splice(0, this.AllInternalUserProfileList.length);
+
+    const data: any = await this.userPofileService.getInternalUsers().toPromise();
+
+    if (data.responseCode == 1) {
+      for (let i = 0; i < data.dateSet.length; i++) {
+        const current = data.dateSet[i];
+        const tempAllInternalUserProfileList: ClientUserList = {
+          userId: current.userID,
+          idNumber: current.idNumber,
+          fullName: current.fullName,
+        };
+        this.sharedService.clientUserID = current.userID;
+        this.AllInternalUserProfileList.push(tempAllInternalUserProfileList);
+
+      }
+
+      console.log("InternalUserProfileList", this.AllInternalUserProfileList);
+    } else {
+      alert(data.responseMessage);
+    }
+    console.log("Response", data);
+  } catch(error) {
+    console.log("Error:", error);
   }
 }
 

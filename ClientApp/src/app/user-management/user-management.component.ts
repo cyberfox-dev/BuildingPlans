@@ -10,6 +10,9 @@ import { ZonesService } from '../service/Zones/zones.service';
 import { SubDepartmentsService } from '../service/SubDepartments/sub-departments.service';
 import { Observable } from 'rxjs';
 import { DepartmentsService } from '../service/Departments/departments.service';
+import { switchMap, catchError } from 'rxjs/operators';
+import { of, throwError } from 'rxjs';
+import { AccessGroupUserLinkServiceService } from '../service/AccessGroupUserLink/access-group-user-link-service.service';
 
 
 export interface UserList {
@@ -50,11 +53,17 @@ export interface RolesList {
 export interface TheirRolesList {
   RoleName: string;
 }
+export interface TheirAccessGroupList {
+  AccessGroupUserLinkID: any;
+  AccessGroupID: number;
+}
 
 export interface ZoneLinkList {
+  userProfileID: any;
   userID: string;
   fullName: string;
   departmentName: string;
+  subDepartmentID: any;
   subdepartmentName: string;
   zoneName: string;
   isZoneAdmin: string;
@@ -95,7 +104,7 @@ export class UserManagementComponent implements OnInit {
   loggedInUsersSubDepartmentID: any;
   loggedInUsersDepartmentID: number;
 
-  constructor(private userPofileService: UserProfileService, private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private zoneService: ZonesService, private zoneLinkService: ZoneLinkService, private subDepartmentService: SubDepartmentsService, private departmentService: DepartmentsService) { }
+  constructor(private userPofileService: UserProfileService, private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private zoneService: ZonesService, private zoneLinkService: ZoneLinkService, private subDepartmentService: SubDepartmentsService, private departmentService: DepartmentsService, private accessGroupLinkService: AccessGroupUserLinkServiceService) { }
 
   ngOnInit(): void {
     this.getAllAccessGroup();
@@ -111,6 +120,7 @@ export class UserManagementComponent implements OnInit {
     this.loggedInUserDepartment();
     this.showLinkedUsers();
     this.getAllusersNotLinkedToDep();
+    this.getAllAccessGroups();
   }
 
   openAssignModal(content, index: any) {
@@ -332,8 +342,8 @@ export class UserManagementComponent implements OnInit {
     //this is for the access group linking
 
 
-
-    this.accessGroupsService.addUpdateAccessGroupUserLink(0, this.accessGroupID, this.selectedUserIndex.toString(), this.CurrentUser.appUserId).subscribe((data: any) => {
+    //NOW WHAT??
+    this.accessGroupsService.addUpdateAccessGroupUserLink(0, this.accessGroupID, this.selectedUserIndex.toString(), this.CurrentUser.appUserId, null, null).subscribe((data: any) => {
       ;
       if (data.responseCode == 1) {
         alert(data.responseMessage);
@@ -371,7 +381,8 @@ export class UserManagementComponent implements OnInit {
   }
 
   @ViewChild(MatTable) ZoneDepTable: MatTable<ZoneLinkList> | undefined;
-  displayedColumnsZoneLinks: string[] = ['fullName', 'departmentName', 'subdepartmentName', 'zoneName', 'isZoneAdmin', 'isDepartmentAdmin', 'actions'];
+  //displayedColumnsZoneLinks: string[] = ['fullName', 'departmentName', 'subdepartmentName', 'zoneName', 'isZoneAdmin', 'isDepartmentAdmin', 'actions'];
+  displayedColumnsZoneLinks: string[] = ['fullName', 'departmentName', 'subdepartmentName', 'zoneName', 'actions'];
   dataSourceZoneLink = this.ZoneLinkList;
 
   //dynamic button name and user list title
@@ -417,9 +428,11 @@ export class UserManagementComponent implements OnInit {
               const tempZoneLinkList = {} as ZoneLinkList;
               const current = data.dateSet[j];
               debugger;
+              tempZoneLinkList.userProfileID = current.userProfileID;
               tempZoneLinkList.userID = current.userID;
               tempZoneLinkList.fullName = current.fullName;
               tempZoneLinkList.departmentName = current.directorate;
+              tempZoneLinkList.subDepartmentID = current.subDepartmentID;
               tempZoneLinkList.subdepartmentName = current.subDepartmentName;
               tempZoneLinkList.isZoneAdmin = current.isZoneAdmin ? 'Yes' : 'No';
               tempZoneLinkList.isDepartmentAdmin = current.isDepartmentAdmin ? 'Yes' : 'No';
@@ -528,18 +541,53 @@ export class UserManagementComponent implements OnInit {
   selectedUserID: string = '';
   selectedUserName: string = '';
   ThisUserRolesList: TheirRolesList[] = [];
+  isZoneAdmin: any;// actually string
+  isDepartmentAdmin: any;
+  zoneAdminValue: number;
+  departmentAdminValue: number;
+  subDeptName: string = '';
+  subDeptID: any = null;
+  boolZoneAdmin: boolean;
+  boolDeptAdmin: boolean;
+  userProfileID: any;
 
-  removeUserFromDPT(index: any) {
-    this.selectedUser = index;
+  convertToBoolean(value: number): boolean {
+    if (value === 1) {
+      return true;
+    } else if (value === 0) {
+      return false;
+    } else {
+      throw new Error("Input must be 0 or 1");
+    }
   }
+
+
+  UserZoneLinkID: any;
   async editUserScope(index: any, viewDepartmentPerson: any) {
     debugger;
+    this.ThisUserRolesList.splice(0, this.ThisUserRolesList.length);
     this.selectedUser = index;
 
     this.selectedUserID = this.ZoneLinkList[index].userID;
+    this.userProfileID = this.ZoneLinkList[index].userProfileID;
     this.selectedUserName = this.ZoneLinkList[index].fullName;
+
     console.log("Selected UserID: ", this.selectedUserID);
     console.log("Selected UserName: ", this.selectedUserName);
+
+    /*
+    WILL NO LONGER BE AUTOPOPULATING ACCORDING TO THE VALUES IN THE USER PROFILE TABLE
+    const zoneAdminString = this.ZoneLinkList[index].isZoneAdmin;
+    const departmentAdminString = this.ZoneLinkList[index].isDepartmentAdmin;
+        // Convert string values to numeric values (0 or 1)
+    this.isZoneAdmin = zoneAdminString === "Yes" ? 1 : 0;
+    this.isDepartmentAdmin = departmentAdminString === "Yes" ? 1 : 0;
+    */
+
+    this.subDeptID = this.ZoneLinkList[index].subDepartmentID;
+    this.subDeptName = this.ZoneLinkList[index].subdepartmentName;
+
+    this.getAccessGroups();
 
     try {
       const data: any = await this.accessGroupsService.getAllRolesForUser(this.selectedUserID).toPromise();
@@ -550,7 +598,7 @@ export class UserManagementComponent implements OnInit {
         console.log("Entering if block");
         debugger;
 
-        for (let i = 0; i < data.dateSet.length; i++) {
+        /*for (let i = 0; i < data.dateSet.length; i++) {
           const tempRolesList = {} as TheirRolesList;
           const current = data.dateSet[i];
           tempRolesList.RoleName = current.roleName;
@@ -558,13 +606,27 @@ export class UserManagementComponent implements OnInit {
           this.ThisUserRolesList.push(tempRolesList);
         }
 
+        debugger;
         // Open the modal after the loop has finished
-        this.modalService.open(viewDepartmentPerson, { centered: true, size: 'lg' });
+        this.modalService.open(viewDepartmentPerson, { centered: true, size: 'lg' });*/
 
         console.log("Exiting if block");
         debugger;
       } else {
         if (data) {
+          //response is supposedly not 1 - there's a raised condition I can't figure out at the moment
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempRolesList = {} as TheirRolesList;
+            const current = data.dateSet[i];
+            tempRolesList.RoleName = current.roleName;
+            console.table(tempRolesList);
+            this.ThisUserRolesList.push(tempRolesList);
+          }
+         
+          console.log("Exiting if block");
+         
+
+
           alert(data.responseMessage);
         } else {
           alert("No data received or invalid response structure.");
@@ -574,14 +636,165 @@ export class UserManagementComponent implements OnInit {
       console.log('Error getting roles for selected user: ', error);
       alert('Error getting roles for selected user: ' + error.message);
     }
+    debugger;
+
+    this.zoneLinkService.getBySubAndUserID(this.subDeptID, this.selectedUserID).subscribe((data: any) => {
+      if (data || data.responseCode == 1) {
+        alert(data.responseMessage);
+        debugger;
+
+        const current = data.dateSet[0];
+
+        this.UserZoneLinkID = current.zoneLinkID;
+        this.departmentAdminValue = current.isDepartmentAdmin ? 1 : 0;
+        this.zoneAdminValue = current.isZoneAdmin ? 1 : 0;
+        console.log("This is the departmentValue: " + this.departmentAdminValue);
+        console.log("This is the zoneAdminValue: " + this.zoneAdminValue);
+        console.log(data);
+
+        console.log("Is this it? Is this the ZoneLink ID? " + this.UserZoneLinkID);
+        this.modalService.open(viewDepartmentPerson, { centered: true, size: 'lg' });
+
+      } else {
+        alert(data.responseMessage);
+      }
+    })
 
     console.log("I'm out of the method.");
   }
 
   removeRole(index: number): void {
     //am I going to need more than this? maybe a young delete via service?
-    this.ThisUserRolesList.splice(index, 1);
+    //method does nothing for NOW
+    this.selectedUser = index;
+    //this.ThisUserRolesList.splice(index, 1);
   }
+  
+  saveAdminChanges() {
+
+      this.boolDeptAdmin = this.convertToBoolean(this.departmentAdminValue);
+      this.boolZoneAdmin = this.convertToBoolean(this.zoneAdminValue);
+      debugger;
+      this.zoneLinkService.addUpdateZoneLink(this.UserZoneLinkID, null, null, null, this.subDeptID, this.subDeptName, this.selectedUserID, null, null, this.boolDeptAdmin, this.boolZoneAdmin).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          alert(data.responseMessage);
+        } else {
+          alert(data.responseMessage);
+        }
+        console.log("response", data);
+      }, error => {
+        console.log("Error: ", error);
+      });
+  }
+  ThisUserAGList: TheirAccessGroupList[] = [];
+  getAccessGroups() {
+    this.ThisUserAGList.splice(0, this.ThisUserAGList.length);
+    //shnap, this table doesn't have Access group names, just the IDs?!
+    this.accessGroupLinkService.getAccessGroupByUserID(this.selectedUserID).subscribe((data: any) => {
+      debugger;
+      if (data || data.responseCode == 1) {
+        alert(data.responseMessage);
+        debugger;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempAccessList = {} as TheirAccessGroupList;
+          const current = data.dateSet[i];
+          debugger;
+          tempAccessList.AccessGroupUserLinkID = current.accessGroupUserLinkID;//accessGroupUserLinkID
+          tempAccessList.AccessGroupID = current.accessGroupID;
+          console.table(tempAccessList);
+          this.ThisUserAGList.push(tempAccessList);
+        }
+
+      } else {
+        alert(data.responseMessage);
+      }
+    }
+    )
+  }
+  //AccessGroupList: AccessGroupList[] = [];
+  getAllAccessGroups() {
+    this.accessGroupsService.getAllAccessGroups().subscribe((data: any) => {
+      debugger;
+      if (data || data.responseCode == 1) {
+        alert(data.responseMessage);
+        debugger;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempAllAccessList = {} as AccessGroupList;
+          const current = data.dateSet[i];
+          debugger;
+          tempAllAccessList.AccessGroupID = current.accessGroupID;
+          tempAllAccessList.AccessGroupName = current.accessGroupName;
+          console.table(tempAllAccessList);
+          this.AccessGroupList.push(tempAllAccessList);
+        }
+
+      } else {
+        alert(data.responseMessage);
+      }
+    }
+    )
+  }
+
+  isUserInAccessGroup(accessGroupID: number): boolean {
+    return this.ThisUserAGList.some(userAccessGroup => userAccessGroup.AccessGroupID === accessGroupID);
+  }
+  addToAccessGroup(index: number, viewDepartmentPerson: any) {
+    // You can use the index to access the selected access group in AccessGroupList
+    const selectedAccessGroup = this.AccessGroupList[index];
+    const accessGroupID = selectedAccessGroup.AccessGroupID;
+    debugger;
+    //NB: MAKE SURE THAT THOSE TWO NEW ARGUMENTS ARE ACCOUNTED FOR ACCORDINGLY!
+    this.accessGroupsService.addUpdateAccessGroupUserLink(null, accessGroupID, this.selectedUserID, this.CurrentUser.appUserId, null, null).subscribe((data: any) => {
+      ///
+      console.log("TRYINGTRYINGTRYINGTOADDACCESSGROUPACCESSGROUP");
+      if (data.response == 1) {
+
+        console.log("user has been added??");
+      } else {
+        this.modalService.dismissAll();
+        this.modalService.open(viewDepartmentPerson, { size: 'lg' }); 
+        console.error('Error adding user to access group:', data.responseMessage);
+      }
+    })
+    //this.modalService.dismissAll();
+    //this.modalService.open(viewDepartmentPerson, { size: 'lg' }); // You can specify modal options like size, backdrop, etc.
+  }
+
+  removeFromAccessGroup(index: number) {
+    // Get the selected access group
+    const selectedAccessGroup = this.AccessGroupList[index];
+
+    // Find the user's association in ThisUserAGList based on the AccessGroupID
+    const userAccessGroup = this.ThisUserAGList.find(userAG => userAG.AccessGroupID === selectedAccessGroup.AccessGroupID);
+
+    if (userAccessGroup) {
+      const accessGroupUserLinkID = userAccessGroup.AccessGroupUserLinkID;
+
+      
+      const confirmation = confirm(`Are you sure you want to remove "${selectedAccessGroup.AccessGroupName}" privileges?`);
+
+      if (confirmation) {
+        this.accessGroupsService.deleteAccessGroupUserLinkByID(accessGroupUserLinkID).subscribe((data:any) => {
+          if (data || data.response == 1) {
+
+            console.log("DELETEDELETEDELETEDELETEACCESSGROUPACCESSGROUP");
+            const indexOfUserAccessGroup = this.ThisUserAGList.indexOf(userAccessGroup);
+            if (indexOfUserAccessGroup !== -1) {
+              this.ThisUserAGList.splice(indexOfUserAccessGroup, 1);
+            }
+          } else {
+            console.error('Error removing user from access group:', data.responseMessage);
+          }
+        });
+      } else {
+        console.log('Removal canceled by the user.');
+      }
+    } else {
+      console.error('User access group not found for removal.');
+    }
+  }
+
+
 }
 
 

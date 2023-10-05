@@ -63,6 +63,7 @@ export interface ApplicationList {
   DatePaid: Date;
   wbsrequired: boolean;
   Coordinates: string
+  UserID: any;
 }
 
 
