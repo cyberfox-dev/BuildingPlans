@@ -35,5 +35,8 @@
         public string? companyType { get; set; }
 
         public string? SubDepartmentName { get; set; }
+
+        public bool? isDepartmentAdmin { get; set; }
+        public bool? isZoneAdmin { get; set; }
     }
 }

@@ -4,32 +4,32 @@
 
 namespace WayleaveManagementSystem.Data.Migrations
 {
-    public partial class DescriptionColForDocumentRepo : Migration
+    public partial class ZoneSubDeptAccessGroup : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "DescriptionForRepoDoc",
-                table: "DocumentUpload",
-                type: "nvarchar(max)",
+            migrationBuilder.AddColumn<int>(
+                name: "SubDepartmentID",
+                table: "AccessGroupUserLink",
+                type: "int",
                 nullable: true);
 
-            migrationBuilder.AddColumn<int>(
+            migrationBuilder.AddColumn<string>(
                 name: "ZoneID",
-                table: "ApplicationListDTO",
-                type: "int",
+                table: "AccessGroupUserLink",
+                type: "nvarchar(max)",
                 nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                  name: "DescriptionForRepoDoc",
-                  table: "DocumentUpload");
+                name: "SubDepartmentID",
+                table: "AccessGroupUserLink");
 
             migrationBuilder.DropColumn(
                 name: "ZoneID",
-                table: "ApplicationListDTO");
+                table: "AccessGroupUserLink");
         }
     }
 }

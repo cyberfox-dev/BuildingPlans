@@ -64,6 +64,8 @@ export interface ApplicationList {
   wbsrequired: boolean;
   Coordinates: string,
   userID: string
+  //Coordinates: string
+  UserID: any;
 }
 
 
