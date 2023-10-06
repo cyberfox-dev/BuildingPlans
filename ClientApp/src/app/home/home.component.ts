@@ -1553,27 +1553,39 @@ this.Applications.push(tempApplicationList);
 
 
   filterByUnpaid() {
-    // Filter your data by the "Unpaid" status.
-    this.dataSource = this.dataSource.filter(item => item.ApplicationStatus === 'Distributed' && item.FullName == this.CurrentUser.fullName);
-
-    // Update the count variable.
+    debugger;
+    if (this.filter == false) {
+      this.dataSource = this.Applications.filter(df => df.ApplicationStatus == "Unpaid");
+      this.filter = true;
+    }
+    else {
+      this.dataSource = this.Applications.filter(df => df.DateCreated);
+      this.filter = false;
+    }
 
   }
 
   filterByDistribution() {
-    // Filter your data by the "Distribution" status.
-    this.dataSource = this.dataSource.filter(item => item.ApplicationStatus === 'Distributed');
-
-    // Update the count variable.
-
+    if (this.filter == false) {
+      this.dataSource = this.Applications.filter(df => df.ApplicationStatus == "Distributing" || df.ApplicationStatus == "Distributed/Unallocated");
+      this.filter = true;
+    }
+    else {
+      this.dataSource = this.Applications.filter(df => df.DateCreated);
+      this.filter = false;
+    }
   }
 
   filterByApproved() {
-    // Filter your data by the "Approved" status.
-    this.dataSource = this.dataSource.filter(item => item.ApplicationStatus === 'Approved');
-
-    // Update the count variable.
-
+    debugger;
+    if (this.filter == false) {
+      this.dataSource = this.Applications.filter(df => df.ApplicationStatus == "Approval Pack Generation" || df.ApplicationStatus == "Final Approval" || df.ApplicationStatus == "PTW Pending");
+      this.filter = true;
+    }
+    else {
+      this.dataSource = this.Applications.filter(df => df.DateCreated);
+      this.filter = false;
+    }
   }
 
   filterByRejected() {
@@ -1585,11 +1597,14 @@ this.Applications.push(tempApplicationList);
   }
 
   filterByWIP() {
-    // Filter your data by the "WIP" status.
-    this.dataSource = this.dataSource.filter(item => item.ApplicationStatus === 'WIP');
-
-    // Update the count variable.
-
+    if (this.filter == false) {
+      this.dataSource = this.Applications.filter(df => df.ApplicationStatus == "Monitoring");
+      this.filter = true;
+    }
+    else {
+      this.dataSource = this.Applications.filter(df => df.DateCreated);
+      this.filter = false;
+    }
   }
 
   /*  filterByUnpaid() {
@@ -1652,7 +1667,7 @@ this.Applications.push(tempApplicationList);
   async CheckIfCanReapply(element: any, index: any) {
 
 
-
+    debugger;
 
 
     this.relatedApplications.splice(0, this.relatedApplications.length);

@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild,TemplateRef, HostListener } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild, TemplateRef, HostListener, QueryList } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DepartmentConfigComponent } from 'src/app/department-config/department-config.component';
@@ -23,8 +23,13 @@ import { NGB_DATEPICKER_TIME_ADAPTER_FACTORY } from '@ng-bootstrap/ng-bootstrap/
 import { NgbDatepickerModule, NgbOffcanvas, OffcanvasDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { Input } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { ChangeDetectorRef } from '@angular/core';
+import { ViewChildren } from '@angular/core';
+import { Observable } from 'rxjs/internal/Observable';
+import { DocumentRepositoryComponent } from 'src/app/document-repository/document-repository.component'
 import { NotificationCenterComponent } from 'src/app/notification-center/notification-center.component';
-import { MatPaginator } from '@angular/material/paginator';
+
 
 
 export interface SubDepartmentList {
@@ -134,6 +139,7 @@ export class NavMenuComponent implements OnInit {
   projectNumber: string;
   ApplicationID: number;
 
+  DocumentsList: DocumentsList[] = [];
 
   cyberfoxConfigs: boolean = false;
   Configurations: boolean = false;
@@ -156,29 +162,25 @@ export class NavMenuComponent implements OnInit {
   selectedOptionText: string;
   lastUploadEvent: any;
 
-  constructor(private offcanvasService: NgbOffcanvas, private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private http: HttpClient, private documentUploadService: DocumentUploadService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private subDepartment: SubDepartmentsService, private applicationsService: ApplicationsService, private faq: FrequentlyAskedQuestionsService, private notificationCenterComponent: NotificationCenterComponent) { }
-  DocumentsList: DocumentsList[] = [];
+  constructor(private offcanvasService: NgbOffcanvas, private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private http: HttpClient, private documentUploadService: DocumentUploadService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private subDepartment: SubDepartmentsService, private applicationsService: ApplicationsService, private faq: FrequentlyAskedQuestionsService, private dialog: MatDialog) { }
+
+
+ 
 
   selected = 'none';
   select = 0;
 
 
-  displayedColumns: string[] = ['DocumentName'];
-/*  dataSource = new MatTableDataSource(this.DocumentsList);*/
-  dataSource = this.DocumentsList;
 
-  
-  columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
-  expandedElement = this.DocumentsList;
+
+
+
+
+  /*  columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
+  expandedElement = this.DocumentsList;*/
 
   displayedColumnsComment: string[] = ['Comment', 'actions'];
   dataSourceComment = this.CommentList;
-
-
-  @ViewChild(MatTable) commentTable: MatTable<CommentList> | undefined;
-  @ViewChild(MatTable) DocumentsListTable: MatTable<DocumentsList> | undefined;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-
   stringifiedData: any;
   CurrentUser: any;
 
@@ -206,8 +208,26 @@ export class NavMenuComponent implements OnInit {
 
     this.getAllDepartments();
     this.getAllFAQ();
-/*    this.dataSource.paginator = this.paginator;*/
+
+
+ 
   }
+
+  onPageChange(event: PageEvent) {
+    // This function is called when the user changes the page
+  /*  this.pageIndex = event.pageIndex;*/
+    const pageSize = event.pageSize;
+
+    // Perform actions based on the new page index and size
+    // Call the function to load data with the updated page size or index
+    // this.getAllDocsForRepository(pageSize, pageIndex);
+  }
+
+  @ViewChild('repositoryModal') templateRef: TemplateRef<any>;
+  @ViewChildren(MatPaginator) paginator: QueryList<MatPaginator>;
+  @ViewChild(MatTable) commentTable: MatTable<CommentList> | undefined;
+  @ViewChild(MatTable) DocumentsListTable: MatTable<DocumentsList> | undefined;
+
 
   uploadRepoDoc: boolean = false;
   deleteRepoDoc: boolean = false;
@@ -216,9 +236,14 @@ export class NavMenuComponent implements OnInit {
   selectDepartmentForUpload: boolean = false;
   selectDepForUpload = 0;
 
+  displayedColumns: string[] = ['DocumentName'];
+  dataSource = new MatTableDataSource<DocumentsList>([]);
+
+  pageSize = 5;
+  pageSizeOptions: number[] = [5, 10, 25, 50];
+  length: any;
+ 
   lockViewAccordingToRoles() {
-
-
 
     for (var i = 0; i < this.RolesList.length; i++) {
 
@@ -534,10 +559,18 @@ export class NavMenuComponent implements OnInit {
 
   /*Open Repository Modal*/
   openRepositoryModal(repositoryModal: any) {
-    this.selected = undefined;
-    this.selectedOptionText = "";
-    this.getAllDocsForRepository(repositoryModal);
+    /*    this.ngAfterViewInit();
+        this.selected = undefined;
+        this.selectedOptionText = "";
+        this.getAllDocsForRepository(repositoryModal);
+        *//*this.getAllDocsForRepository();*//*
+    this.modalService.open(repositoryModal, { centered: true, size: 'xl' });*/
 
+    this.dialog.open(DocumentRepositoryComponent, {
+      width: '60%',
+      maxHeight: 'calc(100vh - 90px)',
+      height: 'auto'
+    });
   }
 
   /*Open File Upload for repository*/
@@ -751,13 +784,19 @@ export class NavMenuComponent implements OnInit {
 
 
 
+  refreshModal(repositoryModal) {
+    debugger;
+/*    this.cdr.detectChanges();*/
+    this.modalService.dismissAll(repositoryModal);
+    this.modalService.open(repositoryModal, { centered: true, size: 'xl' });
+  }
 
 
 
 
-
-  /*Repository Section*/
-  getAllDocsForRepository(repositoryModal) {
+/*  *//*Repository Section*//*
+  getAllDocsForRepository() {
+    debugger;
     this.DocumentsList.splice(0, this.DocumentsList.length);
     this.documentUploadService.getAllDocumentsForRepository().subscribe((data: any) => {
 
@@ -777,14 +816,29 @@ export class NavMenuComponent implements OnInit {
           tempDocList.Description = current.description;
           console.log("THIS IS THE REPOSITY THINGSTHIS IS THE REPOSITY THINGSTHIS IS THE REPOSITY THINGSTHIS IS THE REPOSITY THINGSTHIS IS THE REPOSITY THINGSTHIS IS THE REPOSITY THINGS", current);
           this.DocumentsList.push(tempDocList);
+        
+       
+        }
+*//*        this.length = this.DocumentsList.length;
+        this.dataSource.data = this.DocumentsList;
+        const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+        const endIndex = startIndex + this.paginator.pageSize;
+        const displayedData = this.DocumentsList.slice(startIndex, endIndex);
+        this.dataSource.data = displayedData;*//*
 
 
+
+        // Trigger change detection
+        this.cdr.detectChanges();
+
+        // Ensure that renderRows is called (optional)
+        if (this.DocumentsListTable) {
+          this.DocumentsListTable.renderRows();
         }
         
-        this.DocumentsListTable?.renderRows();
-        this.modalService.open(repositoryModal, { centered: true, size: 'xl' });
-        // console.log("GOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCS", this.DocumentsList[0]);
-      }
+
+       
+       // console.log("GOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCS", this.DocumentsList[0]);
       else {
         alert(data.responseMessage);
 
@@ -794,8 +848,8 @@ export class NavMenuComponent implements OnInit {
     }, error => {
       console.log("ErrorGetAllDocsForApplication: ", error);
     })
-
-  }
+  
+  }*/
 
   private readonly apiUrl: string = this.shared.getApiUrl() + '/api/';
 
@@ -894,7 +948,7 @@ export class NavMenuComponent implements OnInit {
       if (data.responseCode == 1) {
         alert("Uploaded Document");
       }
-      this.getAllDocsForRepository(repositoryModal);
+
     }, error => {
       console.log("Error: ", error);
     })
@@ -904,7 +958,7 @@ export class NavMenuComponent implements OnInit {
   message = '';
   save(repositoryModal) {
     this.modalService.dismissAll();
-    this.getAllDocsForRepository(repositoryModal);
+    
 
     //if (this.selectDepartmentForUpload == undefined) {
     //  alert("Please Select a department");
@@ -960,7 +1014,7 @@ export class NavMenuComponent implements OnInit {
       if (data.responseCode == 1) {
 
         this.modalService.dismissAll(repositoryModal);
-        this.getAllDocsForRepository(repositoryModal);
+      
       }
 
 
@@ -983,7 +1037,7 @@ export class NavMenuComponent implements OnInit {
         if (data.responseCode == 1) {
 
           this.modalService.dismissAll(repositoryModal);
-          this.getAllDocsForRepository(repositoryModal);
+       
         }
       }, error => {
         console.log("Error: ", error);
@@ -1174,11 +1228,6 @@ export class NavMenuComponent implements OnInit {
     this.isTransparent = scrollY < 460; // Adjust the scroll threshold as needed
   }
   
-
- 
-
- 
-
 }
 
 

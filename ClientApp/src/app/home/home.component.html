@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <!--<h1>Navbar</h1>-->
-<app-config-acting-department [isInternal]="CurrentUserProfile[0].isInternal"></app-config-acting-department>
+<!--<app-config-acting-department [isInternal]="CurrentUserProfile[0].isInternal"></app-config-acting-department>-->
 
 
 
@@ -32,24 +32,8 @@
 
   <div class="main-container animationFadeIn">
 
-    <!--<div class="heading">-->
-    <!--      <mat-form-field>
-
-            <mat-select value="option3" [(value)]="select" (selectionChange)="onFilterApplications()" #mySelect>
-              <mat-option value="option1">My Applications</mat-option>
-              <mat-option value="option2">My Reviews</mat-option>
-              <mat-option value="option3">Recent Projects</mat-option>
-            </mat-select>
-          </mat-form-field>-->
-    <!--</div>-->
-    <!--    <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
-          <mat-button-toggle value="italic">My Reviews</mat-button-toggle>
-          <mat-button-toggle value="bold">My Applications</mat-button-toggle>
-          <mat-button-toggle value="underline">Recent Projects</mat-button-toggle>
-        </mat-button-toggle-group>-->
-
-    <div class="cards" *ngIf="cardFilters">
-      <div class="card card-5">
+    <div class="cards" *ngIf="cardFilters" >
+      <div class="card card-5" (click)="filterByUnpaid()">
         <h4>Unpaid</h4>
         <h1 class="num">{{unpaidcount}}</h1>
         <p class="card__apply">

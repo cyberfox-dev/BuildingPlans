@@ -567,7 +567,8 @@ export class ViewProjectInfoComponent implements OnInit {
       this.router.navigate(["/home"]);
     }
     debugger;
-    if (setValues.CurrentStageName == "PTW") {
+
+    if (setValues.CurrentStageName == "PTW" || setValues.CurrentStageNumber >= 4) {
       this.showPermitTab = true;
     } else {
       this.showPermitTab = false;
@@ -575,18 +576,21 @@ export class ViewProjectInfoComponent implements OnInit {
     debugger;
     if (setValues.CurrentStageName == "Monitoring") {
       this.showStatusOfWorksTab = true;
+      this.showPermitTab = true;
     } else {
       this.showStatusOfWorksTab = false;
     }
     debugger;
     if (setValues.CurrentStageName == "Approval Pack Generation") {
       this.generateApproval = true;
+      this.showPermitTab = true;
     } else {
       this.generateApproval = false;
     }
     debugger;
     if (setValues.CurrentStageName == "Approval Pack Generation" && this.CurrentUser.appUserId == this.applicationDataForView[0].CreatedById) {
       this.generateApprovalbtn = true;
+      this.showPermitTab = true;
     } else {
       this.generateApprovalbtn = false;
       
