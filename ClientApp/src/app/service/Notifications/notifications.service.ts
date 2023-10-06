@@ -18,7 +18,7 @@ export class NotificationsService {
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
-  public addUpdateNotification(notificationID?: number | null, notificationName?: string | null, notificationDescription?: string | null, isRead?: boolean | null, userID?: string | null, createdByID?: string | null, applicationID?: number | null) {
+  public addUpdateNotification(notificationID?: number | null, notificationName?: string | null, notificationDescription?: string | null, isRead?: boolean | null, userID?: string | null, createdByID?: string | null, applicationID?: number | null , message?:string | null) {
     
     const body = {
       NotificationID: notificationID,
@@ -28,14 +28,14 @@ export class NotificationsService {
       UserID: userID,
       ApplicationID: applicationID,
       CreatedById: createdByID,
-
+      Message : message
     }
     return this.httpClient.post(this.baseURL + "AddUpdateNotification", body);
 
   }
 
   public getNotificationByID(applicationID: any ) {
-
+    
     return this.httpClient.post(this.baseURL + "GetNotificationByID", applicationID);
 
   }

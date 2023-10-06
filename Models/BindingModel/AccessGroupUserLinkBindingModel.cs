@@ -1,0 +1,14 @@
+﻿namespace WayleaveManagementSystem.Models.BindingModel
+{
+    public class AccessGroupUserLinkBindingModel 
+    {
+        public int AccessGroupUserLinkID { get; set; }
+        public int? AccessGroupID { get; set; }
+
+        public string? UserID { get; set; }
+
+        public int? SubDepartmentID { get; set; }
+        public int? ZoneID { get; set; }
+
+    }
+}

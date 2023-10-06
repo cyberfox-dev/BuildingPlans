@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Data;
 using WayleaveManagementSystem.Data.Entities;
+using WayleaveManagementSystem.Data.Migrations;
 using WayleaveManagementSystem.DTO;
 using WayleaveManagementSystem.IServices;
 using WayleaveManagementSystem.Models.DTO;
@@ -170,6 +171,8 @@ namespace WayleaveManagementSystem.Service
 
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
+                    isDepartmentAdmin = ZoneLink.isDepartmentAdmin,
+                    isZoneAdmin = ZoneLink.isZoneAdmin,
 
                 }
                 ).ToListAsync();

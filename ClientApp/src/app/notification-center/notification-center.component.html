@@ -1,23 +1,115 @@
-<ng-template #internalOpt let-modal>
+
+<ng-template #Notifications let-modal>
   <div class="modal-header">
-    <h1 class="modal-title" id="modal-basic-title">As an internal applicant are you...</h1>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    <h3>Welcome {{this.CurrentUser.fullName}} to your Notification Center</h3>
+    <button type="button" class="btn-close" aria-label="Close" (click)="onClose()"></button>
+  </div>
+  <div clase="modal-body">
+    <mat-tab-group>
+      <mat-tab label="New Notifications">
+        
+          <div class="container-fluid" *ngFor="let notifications of NotificationsList">
+
+            <div>
+              <button class="alert alert-primary noti-length" role="alert" (click)="getSelectedNotification(notifications.ApplicationID);modal.dismiss('Cross click')">
+                <div>
+                  <span style="font-size:20px;">{{notifications.NotificationName}} - Application {{notifications.ApplicationID}}</span>
+                </div>
+                <div>
+
+                  <p>Application {{notifications.NotificationDescription}} on {{notifications.DateCreated}}</p>
+                </div>
+              </button>
+            </div>
+          </div>
+        
+      </mat-tab>
+      <mat-tab label="Old Notifications">
+        <div class="container-fluid" *ngFor="let notifications of OldNotificationsList">
+
+          <div>
+            <button class="alert alert-primary noti-length" role="alert" (click)="getSelectedNotification(notifications.ApplicationID);modal.dismiss('Cross click')">
+              <div>
+                <span style="font-size:20px;">{{notifications.NotificationName}} - Application {{notifications.ApplicationID}}</span>
+              </div>
+              <div>
+
+                <p>Application {{notifications.NotificationDescription}} on {{notifications.DateCreated}}</p>
+              </div>
+            </button>
+          </div>
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
+  </div>
+</ng-template>
+
+
+
+<ng-template #Internal  let-modal>
+  <div class="modal-header">
+    
+    <div class=" notification-header">
+      <div>
+        <span style="font-size:35px;">{{this.MessageList.NotificationName}} - Application {{this.MessageList.ApplicationID}}</span>
+      </div>
+      <div>
+
+        <p style="font-size:20px;">Application {{this.MessageList.NotificationDescription}}</p>
+      </div>
+    </div>
+   
+    <button type="button" class="btn-close" aria-label="Close" (click)="onRefreshModal()"></button>
+  </div>
+  <div class="modal-body" >
+    <div class="email-body">
+      <div class="email-content">
+        <p>Dear  {{this.fullName}},</p>
+        <p>{{this.MessageList.Message}}</p>
+        
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="email-footer">
+
+        <img class="email-footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+        <p>Regards,<br>Wayleave Management System</p>
+        <p>
+          <a href="#">CCT Web</a> | <a href="#">Contacts</a> | <a href="#">Media</a> | <a href="#">Report a fault</a> | <a href="#">Accounts</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+
+<ng-template #External let-modal>
+  <div class="modal-header">
+    <h3>{{this.MessageList.NotificationName}}</h3>
+    <h4>{{this.MessageList.NotificationDescription}}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="onRefreshModal()"></button>
   </div>
   <div class="modal-body">
-    <form>
-      <div class="container-fluid">
-
-        <div class="cont2">
-          <div class="alert alert-primary" role="alert">
-            This is a primary alert—check it out!
-          </div>
-          </div>
+    <div class="email-body">
+      <div class="email-content">
+        <div class="email-content">
+          <p>Dear   {{this.fullName}},</p>
+          <p>{{this.MessageList.Message}}</p>
+          <p>Should you have any queries, please contact us at <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+        </div>
       </div>
+    </div>
+    <div class="modal-footer">
+      <div class="email-footer">
 
-    </form>
+        <img class="email-footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+        <p>Regards,<br>Wayleave Management System</p>
+        <p>
+          <a href="#">CCT Web</a> | <a href="#">Contacts</a> | <a href="#">Media</a> | <a href="#">Report a fault</a> | <a href="#">Accounts</a>
+        </p>
+      </div>
+    </div>
   </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline-success" (click)="modal.dismiss('Cross click')">Continue</button>
-  </div>
-
 </ng-template>

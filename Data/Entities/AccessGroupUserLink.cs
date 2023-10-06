@@ -11,7 +11,9 @@ namespace WayleaveManagementSystem.Data.Entities
         public string? UserID { get; set; }
 
 
-
+        //Need to add subdepartment and zone?
+        public int? SubDepartmentID { get; set; }
+        public int? ZoneID { get; set; }
 
     }
 }

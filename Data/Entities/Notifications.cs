@@ -13,7 +13,7 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public string? UserID { get; set; }
         public int? ApplicationID { get; set; }
-
+        public string? Message { get; set; }
 
 
     }

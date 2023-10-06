@@ -240,8 +240,14 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<DateTime>("DateUpdated")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("SubDepartmentID")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserID")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ZoneID")
+                        .HasColumnType("int");
 
                     b.Property<bool>("isActive")
                         .HasColumnType("bit");
@@ -756,6 +762,9 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("SubDepartmentName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ZoneID")
+                        .HasColumnType("int");
+
                     b.Property<bool>("isActive")
                         .HasColumnType("bit");
 
@@ -1005,6 +1014,9 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.Property<bool?>("IsRead")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NotificationDescription")
                         .HasColumnType("nvarchar(max)");

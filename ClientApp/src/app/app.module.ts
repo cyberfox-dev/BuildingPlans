@@ -248,6 +248,7 @@ import { DocumentRepositoryComponent } from './document-repository/document-repo
     ViewProjectInfoComponent,
     PermitComponentComponent,
     FileUploadComponent,
+    NotificationCenterComponent,
   ],
   bootstrap: [AppComponent]
 })

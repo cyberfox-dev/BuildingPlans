@@ -382,6 +382,7 @@ export class NewWayleaveComponent implements OnInit {
   public external: boolean = true;
   public internal: boolean = false;
   public client: boolean = false;
+  public internalProxy: boolean = false;
   public map: boolean = true;
   public newClient: boolean = true;
   public disabled: boolean = false;
@@ -484,7 +485,9 @@ export class NewWayleaveComponent implements OnInit {
   accountNumber: any;
   generatedInvoiceNumber: string;
     totalDocs: number;
-    totalDocs2: string;
+  totalDocs2: string;
+
+  Emailmessage: string;
 
 
   applyFilter(event: Event) {
@@ -690,7 +693,51 @@ export class NewWayleaveComponent implements OnInit {
 
 
     }
-    else if (this.option == "internal") {
+    else if (this.option == "proxy") {
+      debugger;
+      this.internalProxy = true; //I hope this will get me the right divs
+      this.clientUserID = this.shared.clientUserID;
+      //this.populateClientInfo(this.clientUserID);
+      this.userPofileService.getUserProfileById(this.clientUserID).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          debugger;
+
+          console.log("data", data.dateSet);
+
+          const targetUserProfile = data.dateSet[0];
+          const fullname = targetUserProfile.fullName;
+
+          this.internalName = fullname.substring(0, fullname.indexOf(' '));
+          this.internalSurname = fullname.substring(fullname.indexOf(' ') + 1);
+          //Welp, what happens when a person is both internal but a 'client'?
+          this.clientName = fullname.substring(0, fullname.indexOf(' '));
+          this.clientSurname = fullname.substring(fullname.indexOf(' ') + 1);
+          this.clientEmail = targetUserProfile.email;
+          this.clientCellNo = targetUserProfile.phoneNumber;
+          this.clientIDNumber = targetUserProfile.idNumber;
+          //I need the email
+          //directorate is the department name for displaying to the user and departmentID is what we we may need to send to the db
+          this.internalDepartmentName = targetUserProfile.directorate;
+          //the is where the departmentID is saved
+          this.internalDepartmentID = targetUserProfile.departmentID;
+          this.internalBranch = targetUserProfile.branch;
+          this.internalCostCenterNumber = targetUserProfile.costCenterNumber;
+          this.internalCostCenterOwner = targetUserProfile.costCenterOwner;
+
+        }
+
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+    else if (this.option == "internal" && this.option != 'proxy') {
       this.internal = true;
       this.external = false;
 
@@ -1026,10 +1073,12 @@ export class NewWayleaveComponent implements OnInit {
               else {
                 alert("Failed To Create Application");
               }
-              this.onCreateNotification();
+              
+              
               this.router.navigate(["/home"]);
               this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
               /*              this.addToSubDepartmentForComment();*/
+              this.notificationsService.addUpdateNotification(0, "Application Submission", "New wayleave application submission", false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserID, this.applicationID, "Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.");
               const projectNum = "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear;
               const emailContent = `
       <html>
@@ -1074,7 +1123,9 @@ export class NewWayleaveComponent implements OnInit {
 
               this.notificationsService.sendEmail(this.CurrentUser.email, "New wayleave application", emailContent, emailContent);
               /*              this.addToSubDepartmentForComment();*/
-
+              this.Emailmessage = "A Wayleave application with ID "+this.applicationID+" and project reference number:"+ projectNum+ " has just been captured. You will be notified once your application has reached the next stage in the process.";
+                this.onCreateNotification();
+               
 
               //Send emails to zone department admins
               this.shared.distributionList.forEach((obj) => {
@@ -1122,6 +1173,7 @@ export class NewWayleaveComponent implements OnInit {
     `;
 
                 this.notificationsService.sendEmail(obj.email, "New wayleave application", emailContent2, emailContent2);
+                this.notificationsService.addUpdateNotification(0, "Application Created", "New wayleave application", false, obj.userID, this.CurrentUser.appUserID, this.applicationID,"zoneAdmins");
               })
 
               this.addToZoneForComment();
@@ -1206,6 +1258,9 @@ export class NewWayleaveComponent implements OnInit {
       else {
         alert("Failed To Create Application");
       }
+
+      this.Emailmessage = "Your application (" + this.projectNumber +") for wayleave has been captured. You will be notified once your application has reached the next stage in the process."
+      //Sends emails to the entire EMB department, as per process flow.
       this.onCreateNotification();
       //Sends notification to applying user.
       this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + "<br><br><p>Your application (" + this.applicationID + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Thank you</p>");
@@ -1341,7 +1396,7 @@ export class NewWayleaveComponent implements OnInit {
         });
     }
   }
-
+  
 
   CheckTOES() {
     
@@ -1427,12 +1482,15 @@ export class NewWayleaveComponent implements OnInit {
       }
 
 
-      if (this.internal) {
+      if (this.internal && this.option!="proxy") {
 
         this.internalWayleaveCreate(appUserId, isPlanning);
         console.log('Co-ordinates:', this.coordinates);
       }
-      else if (this.client) {
+      else if (this.client || this.option == "proxy" ) {
+        debugger; //the issue is - an internal person can be a client
+        //this.clientWayleaveCreate(appUserId, isPlanning);
+        const appUserId = this.shared.clientUserID;
         this.clientWayleaveCreate(appUserId, isPlanning);
         console.log('Co-ordinates:', this.coordinates);
       }
@@ -3159,11 +3217,11 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   onCreateNotification() {
-
+    debugger;
     this.notiName = "Application Created";
     this.notiDescription = this.applicationID + " was created ";
 
-    this.notificationsService.addUpdateNotification(0, this.notiName, this.notiDescription, false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserId, this.applicationID).subscribe((data: any) => {
+    this.notificationsService.addUpdateNotification(0, this.notiName, this.notiDescription, false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserId, this.applicationID, this.Emailmessage).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         alert(data.responseMessage);
@@ -3177,7 +3235,7 @@ export class NewWayleaveComponent implements OnInit {
     }, error => {
       console.log("Error", error);
     })
-
+      
 
   }
 
@@ -3627,7 +3685,7 @@ export class NewWayleaveComponent implements OnInit {
 
         data.forEach((obj) => {
           this.notificationsService.sendEmail(obj.email, "New wayleave application submission", "check html", "Dear " + subDepartmentName + "User" + "<br><br>An application with ID " + this.applicationID + " for wayleave has just been captured.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-          
+          this.notificationsService.addUpdateNotification(0, "Wayleave Created", "New wayleave application submission", false, this.CurrentUser.appUserID, obj.userID, this.applicationID, "An application with ID " + this.applicationID + " for wayleave has just been captured.");
       })
 
         alert(data.responseMessage);

@@ -110,14 +110,14 @@
         <td mat-cell *matCellDef="let element"> {{element.zoneName}} </td>
       </ng-container>
 
-      <ng-container matColumnDef="isZoneAdmin">
-        <th mat-header-cell *matHeaderCellDef> Zone Admin </th>
-        <td mat-cell *matCellDef="let element"> {{element.isZoneAdmin}} </td>
-      </ng-container>
-
       <ng-container matColumnDef="isDepartmentAdmin">
         <th mat-header-cell *matHeaderCellDef> Department Admin </th>
         <td mat-cell *matCellDef="let element"> {{element.isDepartmentAdmin}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="isZoneAdmin">
+        <th mat-header-cell *matHeaderCellDef> Zone Admin </th>
+        <td mat-cell *matCellDef="let element"> {{element.isZoneAdmin}} </td>
       </ng-container>
 
       <ng-container matColumnDef="actions">
@@ -146,16 +146,62 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-    <div id="userRolesList">
-      <div *ngFor="let role of this.ThisUserRolesList; let i = index" class="role-item">
-        <span>{{ role.RoleName }}</span>
-        <button (click)="removeRole(i)">
-          <i class="fas fa-minus"></i> <!-- Font Awesome minus sign icon -->
-        </button>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Access Groups</th>
+          <th> </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let access of AccessGroupList; let i = index">
+          <td>{{ access.AccessGroupName }}</td>
+          <td>
+            <button class="btn btn-danger" (click)="removeFromAccessGroup(i)" *ngIf="isUserInAccessGroup(access.AccessGroupID)">
+              <i class="fa fa-minus"></i>
+            </button>
+            <button class="btn btn-success" (click)="addToAccessGroup(i, viewDepartmentPerson)" *ngIf="!isUserInAccessGroup(access.AccessGroupID)">
+              <i class="fa fa-plus"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <br />
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="departmentAdminToggle">Department Admin:</label>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <mat-slide-toggle id="departmentAdminToggle"
+                              [(ngModel)]="departmentAdminValue"
+                              color="primary"></mat-slide-toggle>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="zoneAdminToggle">Zone Admin:</label>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <mat-slide-toggle id="zoneAdminToggle"
+                              [(ngModel)]="zoneAdminValue"
+                              color="primary"></mat-slide-toggle>
+          </div>
+        </div>
       </div>
     </div>
+
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+    <button type="button" class="btn btn-outline-success" (click)="saveAdminChanges();modal.close('Save click')">Save</button>
   </div>
 </ng-template>

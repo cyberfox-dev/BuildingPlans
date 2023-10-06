@@ -19,7 +19,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Notification> AddUpdateNotification(int? notificationID, string? notificationName, string? notificationDescription, bool? isRead, string? userID, int? applicationID, string? createdByID)
+        public async Task<Notification> AddUpdateNotification(int? notificationID, string? notificationName, string? notificationDescription, bool? isRead, string? userID, int? applicationID, string? createdByID ,string? message)
         {
 
             if (notificationID == 0)
@@ -43,7 +43,8 @@ namespace WayleaveManagementSystem.Service
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     CreatedById = createdByID,
-                    isActive = true
+                    isActive = true,
+                    Message = message
                 };
 
      
@@ -59,6 +60,7 @@ namespace WayleaveManagementSystem.Service
                 tempNotificationTable.NotificationName = notificationName;
                 tempNotificationTable.NotificationDescription = notificationDescription;
                 tempNotificationTable.DateUpdated = DateTime.Now;
+                tempNotificationTable.IsRead = isRead;
                 tempNotificationTable.isActive = true;
 
                 _context.Update(tempNotificationTable);
@@ -83,9 +85,10 @@ namespace WayleaveManagementSystem.Service
                     IsRead = Notification.IsRead,
                     UserID = Notification.UserID,
                     ApplicationID = Notification.ApplicationID,
-                    DateCreated = DateTime.Now,
+                    DateCreated = Notification.DateCreated,
                     DateUpdated = DateTime.Now,
                     CreatedById = Notification.CreatedById,
+                    Message = Notification.Message,
                     isActive = true
                 }
                 ).ToListAsync();
@@ -103,9 +106,10 @@ namespace WayleaveManagementSystem.Service
                     IsRead = Notification.IsRead,
                     UserID = Notification.UserID,
                     ApplicationID = Notification.ApplicationID,
-                    DateCreated = DateTime.Now,
+                    DateCreated = Notification.DateCreated,
                     DateUpdated = DateTime.Now,
                     CreatedById = Notification.CreatedById,
+                    Message = Notification.Message,
                     isActive = true
                 }
                 ).ToListAsync();

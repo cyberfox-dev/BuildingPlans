@@ -81,7 +81,7 @@ export class ApplicationsService {
   }
 
   public getApplicationsByApplicationID(applicationID: number) {
-
+ 
     return this.httpClient.post(this.baseURL + "GetApplicationsByApplicationID", applicationID);
 
   }

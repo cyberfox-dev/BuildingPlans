@@ -1001,3 +1001,23 @@ button {
   opacity: 1;
   transition: opacity 0.5s ease-in-out;
 }
+
+.centered-text {
+  text-align: center;
+}
+
+.line {
+  display: inline-block;
+  width: 40%;
+  height: 1px;
+  background-color: #000; /* Change this to your desired line color */
+  vertical-align: middle;
+}
+
+.left-line {
+  margin-right: 10px; /* Adjust this margin as needed */
+}
+
+.right-line {
+  margin-left: 10px; /* Adjust this margin as needed */
+}

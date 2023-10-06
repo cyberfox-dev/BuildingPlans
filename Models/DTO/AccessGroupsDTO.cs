@@ -29,6 +29,7 @@ namespace WayleaveManagementSystem.Models.DTO
         public DateTime? DateUpdated { get; set; }
         public bool? isActive { get; set; }
 
-
+        public int? SubDepartmentID { get; set; }
+        public int? ZoneID { get; set; }
     }
 }

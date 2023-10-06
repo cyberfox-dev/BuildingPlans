@@ -1473,3 +1473,37 @@ mat-button-toggle {
 i.fa.fa-cog {
   font-size: 26px;
 }
+//
+.text-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
+}
+
+.toggle {
+  margin: 0 10px; /* Adjust the margin as needed for spacing */
+}
+
+.text-left {
+  flex: 1;
+  text-align: left;
+}
+
+.text-right {
+  flex: 1;
+  text-align: right;
+}
+.bold-text {
+  font-weight: bold;
+}
+
+
+
+
+

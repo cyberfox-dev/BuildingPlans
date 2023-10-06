@@ -26,13 +26,15 @@ export class AccessGroupsService {
 
   }
 
-  public addUpdateAccessGroupUserLink(accessGroupUserLinkID:number | null, accessGroupID: number | null, userID: string | null,createdById: string | null) {
-
+  public addUpdateAccessGroupUserLink(accessGroupUserLinkID: number | null, accessGroupID: number | null, userID: string | null, createdById: string | null, ZoneID: number | null, SubDepartmentID: number| null) {
+    debugger;
     const body = {
       AccessGroupUserLinkID: accessGroupUserLinkID,
       AccessGroupID: accessGroupID,
       UserID: userID,
       CreatedById: createdById,
+      ZoneID: ZoneID,
+      SubDepartmentID: SubDepartmentID,
 
     }
     return this.httpClient.post(this.baseURL + "AddUpdateAccessGroupUserLink", body);
