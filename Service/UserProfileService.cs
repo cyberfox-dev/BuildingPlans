@@ -21,7 +21,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string? userID, string? fullName, string? email, string? phoneNumber, bool? isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string? createdById, string? IdNumber, int? zoneID, string? vatNumber, string? refNumber, string? companyType, string? subDepartmentName)
+        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string? userID, string? fullName, string? email, string? phoneNumber, bool? isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string? createdById, string? IdNumber, int? zoneID, string? vatNumber, string? refNumber, string? companyType, string? subDepartmentName, bool? isDepartmentAdmin, bool? isZoneAdmin)
         {
             if (userProfileID == 0)
             {
@@ -168,6 +168,14 @@ namespace WayleaveManagementSystem.Service
                 if (subDepartmentName != null)
                 {
                     tempUserProfile.SubDepartmentName = subDepartmentName;
+                }  
+                if (isDepartmentAdmin != null)
+                {
+                    tempUserProfile.isDepartmentAdmin = isDepartmentAdmin;
+                }  
+                if (isZoneAdmin != null)
+                {
+                    tempUserProfile.isZoneAdmin = isZoneAdmin;
                 }
 
                 //tempUserProfile.DateCreated = DateTime.Now;
@@ -478,6 +486,7 @@ namespace WayleaveManagementSystem.Service
                                     where SubDepartments.SubDepartmentName == SubDepartmentName && SubDepartments.isActive == true
                                     select new UserProfileDTO()
                                     {
+                                        UserProfileID = newtableItem.UserProfileID,
                                         UserID = newtableItem.UserID,
                                         FullName = newtableItem.FullName,
                                         Email = newtableItem.Email,

@@ -104,7 +104,7 @@
           </div>
           <!------------------------------------------------------------INTERNAL---------------------------------------------------------------->
           <!-- <app-internal-details *ngIf="internal"></app-internal-details>-->
-          <div *ngIf="internal">
+          <div *ngIf="internal || internalProxy">
 
             <div class="row">
               <div class="col">
@@ -503,6 +503,7 @@
         </button>
         <!--  <img src="assets/Loading.png" *ngIf="successfulUploads >0 && successfulUploads < totalDocs" class="logo2">-->
         <p *ngIf="successfulUploads >0 && successfulUploads < totalDocs">Uploading Documents. You may continue to upload remaining documents if needed.</p>
+        <p>{{successfulUploads}}</p>
 
 
       </div>

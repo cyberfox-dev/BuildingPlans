@@ -29,8 +29,11 @@ code {
 }
 
 /*-------------------------------------------------------------------------IF THE VIEW BREAKS REMOVE THIS FROM THE FILE---------------------------------*/
-.cdk-global-overlay-wrapper, .cdk-overlay-container {
+.cdk-overlay-container {
   z-index: 10000 !important;
+}
+.cdk-global-overlay-wrapper, .cdk-overlay-pane {
+  /*z-index: 20000 !important;*/
 }
 /*-------------------------------------------------------------------------IF THE VIEW BREAKS REMOVE THIS FROM THE FILE---------------------------------*/
 

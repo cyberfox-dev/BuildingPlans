@@ -180,7 +180,8 @@ export interface ApplicationList {
   ExpectedEndDate: Date,
   Location: string,
   clientCellNo: string,
-  CreatedById: number,
+  //CreatedById: number,
+  CreatedById: any,
   ApplicationStatus: string,
   CurrentStageName: string,
   CurrentStageNumber: number,
@@ -194,7 +195,8 @@ export interface ApplicationList {
   permitStartDate: Date,
   DatePaid: Date;
   wbsrequired: boolean;
-  Coordinates: string
+  Coordinates: string;
+  UserID: any;
 }
 
 
@@ -286,6 +288,9 @@ export class ViewProjectInfoComponent implements OnInit {
   canReapply = false;
   public projectNo = "";
   createdByID: any | undefined;
+
+  //applying for a client...
+  originatorID: any | undefined;
 
   rejected: boolean = false;
   approved: boolean = false;
@@ -562,7 +567,8 @@ export class ViewProjectInfoComponent implements OnInit {
       this.router.navigate(["/home"]);
     }
     debugger;
-    if (setValues.CurrentStageName == "PTW") {
+
+    if (setValues.CurrentStageName == "PTW" || setValues.CurrentStageNumber >= 4) {
       this.showPermitTab = true;
     } else {
       this.showPermitTab = false;
@@ -570,18 +576,21 @@ export class ViewProjectInfoComponent implements OnInit {
     debugger;
     if (setValues.CurrentStageName == "Monitoring") {
       this.showStatusOfWorksTab = true;
+      this.showPermitTab = true;
     } else {
       this.showStatusOfWorksTab = false;
     }
     debugger;
     if (setValues.CurrentStageName == "Approval Pack Generation") {
       this.generateApproval = true;
+      this.showPermitTab = true;
     } else {
       this.generateApproval = false;
     }
     debugger;
     if (setValues.CurrentStageName == "Approval Pack Generation" && this.CurrentUser.appUserId == this.applicationDataForView[0].CreatedById) {
       this.generateApprovalbtn = true;
+      this.showPermitTab = true;
     } else {
       this.generateApprovalbtn = false;
       
@@ -610,7 +619,10 @@ export class ViewProjectInfoComponent implements OnInit {
     /*    this.ARCGISAPIData.applicationID = this.notificationNumber;*/
     this.getAllComments();
     //this.getAllDocsForApplication();
-    this.getUserProfileByUserID();
+
+    //this.getUserProfileByUserID(); //comment this out later and add this.checkIfProxyApplication();
+    this.checkIfProxyApplication();
+
     this.getAllStages();
     this.setInterface();
     this.getAllRequiredDeposits();
@@ -1763,7 +1775,116 @@ export class ViewProjectInfoComponent implements OnInit {
     // Save PDF document
     doc.save('Deposit_Invoice_ApplicationID_' + this.DepositRequired[0].ApplicationID);
   }
+  theirProxy: boolean = false;
+  internalProxyApplicant: boolean = false;
+  //that internal person - proxy
+  internalProxyApplicantName = '';
+  internalProxyApplicantSurname = '';
+  internalProxyApplicantDirectorate = '';
+  internalProxyApplicantBranch = '';
+  internalProxyApplicantCostCenterNo = '';
+  internalProxyApplicantCostCenterOwner = '';
+  internalProxyApplicantDepartment = '';
+  internalProxyApplicantTellNo = '';
+  //external person - proxy
+  extProxyApplicantBpNoApplicant = '';
+  extProxyApplicantCompanyName = '';
+  extProxyApplicantCompanyRegNo = '';
+  extProxyApplicantName = '';
+  extProxyApplicantSurname = '';
+  extProxyApplicantTellNo = '';
+  extProxyApplicantEmail = '';
+  extProxyApplicantPhyscialAddress = '';
 
+  checkIfProxyApplication() {
+    if (this.CurrentApplicationBeingViewed[0].CreatedById != this.CurrentApplicationBeingViewed[0].UserID) {
+      this.theirProxy = true;
+
+
+      this.userPofileService.getUserProfileById(this.CurrentApplicationBeingViewed[0].CreatedById).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+
+          //Gonna go ahead and assume that only internal people can apply for people
+          console.log("data", data.dateSet);
+
+          const currentUserProfile = data.dateSet[0];
+          const fullname = currentUserProfile.fullName;
+
+            this.toa = 'Internal User';
+            this.internalApplicantName = fullname.substring(0, fullname.indexOf(' '));
+            this.internalApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
+            this.internalApplicantDirectorate = currentUserProfile.directorate;
+            this.internalApplicantDepartment = currentUserProfile.departmentName;
+            this.internalApplicantTellNo = currentUserProfile.phoneNumber;
+            this.internalApplicantBranch = currentUserProfile.branch;
+            this.internalApplicantCostCenterNo = currentUserProfile.costCenterNumber;
+            this.internalApplicantCostCenterOwner = currentUserProfile.costCenterOwner;
+
+        }
+
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+
+      })
+
+
+      this.userPofileService.getUserProfileById(this.CurrentApplicationBeingViewed[0].UserID).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+
+          console.log("This is my originator's information, hopefully. Finger's crossed: ", data.dateSet);
+          const currentUserProfile = data.dateSet[0];
+          const fullname = currentUserProfile.fullName;
+          if (currentUserProfile.isInternal == true) {
+
+            this.toa = 'Internal User';
+            this.internalProxyApplicantName = fullname.substring(0, fullname.indexOf(' '));
+            this.internalProxyApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
+            this.internalProxyApplicantDirectorate = currentUserProfile.directorate;
+            this.internalProxyApplicantDepartment = currentUserProfile.departmentName; //not displayed?
+            this.internalProxyApplicantTellNo = currentUserProfile.phoneNumber; //not displayed?
+            this.internalProxyApplicantBranch = currentUserProfile.branch;
+            this.internalProxyApplicantCostCenterNo = currentUserProfile.costCenterNumber;
+            this.internalProxyApplicantCostCenterOwner = currentUserProfile.costCenterOwner;
+            this.internalProxyApplicant = true;
+          }
+          else {
+            this.toa = 'External User';
+            this.extProxyApplicantBpNoApplicant = currentUserProfile.bP_Number;
+            this.extProxyApplicantCompanyName = currentUserProfile.companyName;
+            this.extProxyApplicantCompanyRegNo = currentUserProfile.companyRegNo;
+            this.extProxyApplicantName = fullname.substring(0, fullname.indexOf(' '));
+            this.extProxyApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
+            this.extProxyApplicantTellNo = currentUserProfile.phoneNumber;
+            this.extProxyApplicantEmail = currentUserProfile.email;
+            this.extProxyApplicantPhyscialAddress = currentUserProfile.physcialAddress;
+            // this.extApplicantIDNumber = ''; todo chage the dto to include the id number
+            this.internalProxyApplicant = false;
+          }
+
+
+
+
+        }
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+    else {
+      this.getUserProfileByUserID();
+    }
+  }
 
   getUserProfileByUserID() {
 
@@ -1820,6 +1941,7 @@ export class ViewProjectInfoComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
+
 
 
   openXl(MFTModal: any) {

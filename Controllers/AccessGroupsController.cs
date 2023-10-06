@@ -121,6 +121,8 @@ namespace WayleaveManagementSystem.Controllers
                         tempAccessGroup = new AccessGroupUserLink()
                         {
                             AccessGroupID = model.AccessGroupID,
+                            SubDepartmentID = model.SubDepartmentID,
+                            ZoneID = model.ZoneID,
                             UserID = model.UserID,
                             CreatedById = model.CreatedById,
                             DateCreated = DateTime.Now,
@@ -136,6 +138,8 @@ namespace WayleaveManagementSystem.Controllers
                     else
                     {
                         tempAccessGroup.AccessGroupID = model.AccessGroupID;
+                        tempAccessGroup.SubDepartmentID = model.SubDepartmentID;
+                        tempAccessGroup.ZoneID = model.ZoneID;
                         tempAccessGroup.UserID = model.UserID;
                         tempAccessGroup.DateUpdated = DateTime.Now;
 

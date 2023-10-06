@@ -393,6 +393,7 @@ export class NewWayleaveComponent implements OnInit {
   public external: boolean = true;
   public internal: boolean = false;
   public client: boolean = false;
+  public internalProxy: boolean = false;
   public map: boolean = true;
   public newClient: boolean = true;
   public disabled: boolean = false;
@@ -704,7 +705,51 @@ export class NewWayleaveComponent implements OnInit {
 
 
     }
-    else if (this.option == "internal") {
+    else if (this.option == "proxy") {
+      debugger;
+      this.internalProxy = true; //I hope this will get me the right divs
+      this.clientUserID = this.shared.clientUserID;
+      //this.populateClientInfo(this.clientUserID);
+      this.userPofileService.getUserProfileById(this.clientUserID).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          debugger;
+
+          console.log("data", data.dateSet);
+
+          const targetUserProfile = data.dateSet[0];
+          const fullname = targetUserProfile.fullName;
+
+          this.internalName = fullname.substring(0, fullname.indexOf(' '));
+          this.internalSurname = fullname.substring(fullname.indexOf(' ') + 1);
+          //Welp, what happens when a person is both internal but a 'client'?
+          this.clientName = fullname.substring(0, fullname.indexOf(' '));
+          this.clientSurname = fullname.substring(fullname.indexOf(' ') + 1);
+          this.clientEmail = targetUserProfile.email;
+          this.clientCellNo = targetUserProfile.phoneNumber;
+          this.clientIDNumber = targetUserProfile.idNumber;
+          //I need the email
+          //directorate is the department name for displaying to the user and departmentID is what we we may need to send to the db
+          this.internalDepartmentName = targetUserProfile.directorate;
+          //the is where the departmentID is saved
+          this.internalDepartmentID = targetUserProfile.departmentID;
+          this.internalBranch = targetUserProfile.branch;
+          this.internalCostCenterNumber = targetUserProfile.costCenterNumber;
+          this.internalCostCenterOwner = targetUserProfile.costCenterOwner;
+
+        }
+
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+    else if (this.option == "internal" && this.option != 'proxy') {
       this.internal = true;
       this.external = false;
 
@@ -1477,12 +1522,15 @@ export class NewWayleaveComponent implements OnInit {
       }
 
 
-      if (this.internal) {
+      if (this.internal && this.option!="proxy") {
 
         this.internalWayleaveCreate(appUserId, isPlanning);
         console.log('Co-ordinates:', this.coordinates);
       }
-      else if (this.client) {
+      else if (this.client || this.option == "proxy" ) {
+        debugger; //the issue is - an internal person can be a client
+        //this.clientWayleaveCreate(appUserId, isPlanning);
+        const appUserId = this.shared.clientUserID;
         this.clientWayleaveCreate(appUserId, isPlanning);
         console.log('Co-ordinates:', this.coordinates);
       }

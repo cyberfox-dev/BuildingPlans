@@ -155,7 +155,7 @@
             <div class="col">
               <div class="form-floating mb-3 mt-3">
                 <select class="form-select" aria-label="Default select example" [(ngModel)]="internalApplicantDepartment" (change)="onSelectToPopulateZone($event)">
-                  <option selected value="0">Select a department *</option>
+                  <option selected value="0">Select a subdepartment *</option>
                   <option *ngFor="let subDepartment of SubDepartmentList" value="{{subDepartment.subDepartmentID}}">{{subDepartment.subDepartmentName}}</option>
                 </select>
               </div>

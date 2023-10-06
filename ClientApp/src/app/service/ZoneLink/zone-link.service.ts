@@ -49,7 +49,11 @@ export class ZoneLinkService {
   //}
   public getBySubAndUserID(subDepartmentID: number | null, assignedUserID: string | null) {
     debugger;
-    return this.httpClient.get(this.baseURL + "FindME");
+    const body = {
+      subDepartmentID: subDepartmentID,
+      assignedUserID: assignedUserID
+    }
+    return this.httpClient.post(this.baseURL + "GetBySubAndUserID", body);
 
   }
 

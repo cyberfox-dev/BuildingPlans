@@ -397,8 +397,9 @@ export class NewProfileComponent implements OnInit {
 
 
     else if (userID != null || userID != "") {
+      debugger;
       this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
-      this.CurrentUser = JSON.parse(this.stringifiedData);
+      this.CurrentUser = JSON.parse(this.stringifiedData); 
 
       debugger;
       this.userPofileService.addUpdateUserProfiles(0, userID, fullName, email, phoneNumber, false, BpNo, CompanyName, CompanyRegNo,
@@ -407,14 +408,13 @@ export class NewProfileComponent implements OnInit {
         if (data.responseCode == 1) {
 
           alert(data.responseMessage);
-
         }
-
         else {
-
           alert(data.responseMessage);
+       
         }
-        console.log("reponse", data);
+          console.log("reponse - is this where the dashboard is stolen?", data);
+      
 
       }, error => {
         console.log("Error: ", error);

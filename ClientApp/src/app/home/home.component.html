@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <!--<h1>Navbar</h1>-->
-<app-config-acting-department [isInternal]="CurrentUserProfile[0].isInternal"></app-config-acting-department>
+<!--<app-config-acting-department [isInternal]="CurrentUserProfile[0].isInternal"></app-config-acting-department>-->
 
 
 
@@ -32,24 +32,8 @@
 
   <div class="main-container animationFadeIn">
 
-    <!--<div class="heading">-->
-    <!--      <mat-form-field>
-
-            <mat-select value="option3" [(value)]="select" (selectionChange)="onFilterApplications()" #mySelect>
-              <mat-option value="option1">My Applications</mat-option>
-              <mat-option value="option2">My Reviews</mat-option>
-              <mat-option value="option3">Recent Projects</mat-option>
-            </mat-select>
-          </mat-form-field>-->
-    <!--</div>-->
-    <!--    <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
-          <mat-button-toggle value="italic">My Reviews</mat-button-toggle>
-          <mat-button-toggle value="bold">My Applications</mat-button-toggle>
-          <mat-button-toggle value="underline">Recent Projects</mat-button-toggle>
-        </mat-button-toggle-group>-->
-
-    <div class="cards" *ngIf="cardFilters">
-      <div class="card card-5">
+    <div class="cards" *ngIf="cardFilters" >
+      <div class="card card-5" (click)="filterByUnpaid()">
         <h4>Unpaid</h4>
         <h1 class="num">{{unpaidcount}}</h1>
         <p class="card__apply">
@@ -302,7 +286,8 @@
 
           <div class="cont2">
             <button mat-raised-button color="client" [class.cardactive]="option ==='client'" (click)="cardchange('client');modal.dismiss('Cross click'); openNewClient(newClient)"> <i class="fa fa-user-plus" aria-hidden="true"></i> New Client</button>
-            <button mat-raised-button color="internal" (click)="openUser(user);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'"><i class="fa fa-user" aria-hidden="true"></i> Existing Client</button>
+            <!--<button mat-raised-button color="internal" (click)="openUser(user);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'"><i class="fa fa-user" aria-hidden="true"></i> Existing Client</button>-->
+            <button mat-raised-button color="internal" (click)="openChoice(choiceEC);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'"><i class="fa fa-user" aria-hidden="true"></i> Existing Client</button>
           </div>
         </div>
 
@@ -315,14 +300,30 @@
 
   </ng-template>
 
+  <div class="text-center">
+    <ng-template #choiceEC let-modal>
+      <div class="modal-header">
+        <h6 class="modal-title" id="modal-basic-title">Are you applying for an internal user or an external client?</h6>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+      </div>
+      <div class="modal-body">
+        <div class="toggle-container">
+          <div [class.bold-text]="!isInternalUser" class="text-left">EXTERNAL</div>
+          <mat-slide-toggle [(ngModel)]="isInternalUser" class="toggle"></mat-slide-toggle>
+          <div [class.bold-text]="isInternalUser" class="text-right">INTERNAL</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button mat-raised-button class="btn btn-outline-success" (click)="handleChoice(internalUser, user);modal.dismiss('Cross click')"> Continue</button>
+      </div>
+    </ng-template>
+  </div>
 
   <!--choose existing-->
   <ng-template #user let-modal>
     <div class="modal-header">
-      <h6 class="modal-title" id="modal-basic-title">Choose the user</h6>
+      <h6 class="modal-title" id="modal-basic-title">Choose the external client</h6>
       <button type="button" class="btn-close" aria-label="Close" (click)="clearFilter(); modal.dismiss('Cross click')"></button>
-      <h6 class="modal-title" id="modal-basic-title">Choose the user</h6>
-      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
 
@@ -371,6 +372,57 @@
     </div>
   </ng-template>
 
+  <ng-template #internalUser let-modal>
+    <div class="modal-header">
+      <h6 class="modal-title" id="modal-basic-title">Choose the internal user</h6>
+      <button type="button" class="btn-close" aria-label="Close" (click)="clearFilter(); modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+
+      <div class="container-fluid">
+        <mat-form-field>
+          <mat-label>Filter</mat-label>
+          <!--<input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>-->
+          <input matInput (keyup)="applyInternalClientFilter($event)" placeholder="Ex. ium" #input>
+        </mat-form-field>
+
+        <table mat-table [dataSource]="dataSourceLinkAllUsers" class="mat-elevation-z8">
+          <!--*ngIf="showZoneUserTable"-->
+
+          <ng-container matColumnDef="idNumber">
+            <th mat-header-cell *matHeaderCellDef> ID Number </th>
+            <td mat-cell *matCellDef="let element"> {{element.idNumber}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="fullName">
+            <th mat-header-cell *matHeaderCellDef> User Name </th>
+            <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Select</th>
+            <td mat-cell *matCellDef="let i = index">
+
+              <mat-radio-button class="example-margin" (click)="getInternalUserID(i)"></mat-radio-button>
+            </td>
+
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsLinkAllUsers"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumnsLinkAllUsers;"></tr>
+        </table>
+
+      </div>
+      <div class="container-fluid">
+
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-outline-success" (click)="openXl(Prof);closeModalFromModal();modal.close('Save click')">Save</button>
+    </div>
+  </ng-template>
   <!--end-->
   <!--Before just adding a contractor and engineer, need to be able to check which professionals are already in the system-->
   <!--Should the external mans be able to select one?-->
@@ -387,12 +439,12 @@
             <!--<form>-->
 
             <div class="row">
-              <div class="col">
+              <!--<div class="col">
                 <div class="form-floating mb-3 mt-3">
                   <input type="text" class="form-control" id="BpNoApplicant" [(ngModel)]="bpNoApplicant" placeholder="Enter BP Number" name="bpNoApplicant">
                   <label for="bpNoApplicant">BP Number</label>
                 </div>
-              </div>
+              </div>-->
               <div class="col">
                 <div class="form-floating mb-3 mt-3">
                   <input type="text" class="form-control" id="professionalRegNo" [(ngModel)]="professionalRegNo" placeholder="Professional Reg No" name="professionalRegNo">
@@ -529,7 +581,7 @@
     </div>
 
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click');populateClientInfo();modal.close('Save click');saveAllEngineers();saveAllContractors();">Next</button>
+      <button type="button" class="btn btn-outline-success" (click)="saveAllEngineers();saveAllContractors();populateClientInfo();modal.close('Save click');">Next</button>
     </div>
   </ng-template>
 
@@ -1056,7 +1108,7 @@
     <div class="modal-footer">
       <button type="button" class="btn btn-outline-success" (click)="openXl(Prof);modal.close('Save click')">Add Professional</button>
       <button type="button" class="btn btn-outline-success" (click)="openXl(oldProf);modal.close('Save click')">View Existing</button>
-      <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click');populateClientInfo();modal.close('Save click');saveAllEngineers();saveAllContractors()">Create Wayleave</button>
+      <button type="button" class="btn btn-outline-success" (click)="saveAllEngineers();saveAllContractors();populateClientInfo();modal.close('Save click');">Create Wayleave</button>
     </div>
   </ng-template>
 
@@ -1068,12 +1120,12 @@
     <div modal-body>
       <form>
         <div class="row">
-          <div class="col">
+          <!--<div class="col">
             <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" id="editEngBPNum" [(ngModel)]="editEngBPNum" placeholder="Enter BP Number" name="editEngBPNum" />
               <label for="bpNumber">BP Num</label>
             </div>
-          </div>
+          </div>-->
           <div class="col">
             <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" id="editEngRegNum" [(ngModel)]="editEngRegNum" placeholder="Enter Professional Reg No." name="editEngRegNum" />
@@ -1262,6 +1314,6 @@
 
     <div class="modal-footer">
       <button type="button" class="btn btn-outline-success" (click)="openXl(Prof);modal.close('Save click')">Add Professional</button>
-      <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click');populateClientInfo();modal.close('Save click');">Create Wayleave</button>
+      <button type="button" class="btn btn-outline-success" (click)="saveAllEngineers();saveAllContractors();populateClientInfo();modal.close('Save click');">Create Wayleave</button>
     </div>
   </ng-template>

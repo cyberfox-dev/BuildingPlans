@@ -116,7 +116,7 @@
 
 
                     <h3>{{commentsList.SubDepartmentName}} - {{commentsList.CommentStatus}}</h3>
-                    <h5>{{commentsList.UserName}}</h5>
+                    <h5 *ngIf="isInternalUser">{{commentsList.UserName}}</h5>
                     <div class="cont2">
                       <button mat-raised-button color="white" *ngIf="commentsList.CommentStatus != 'FinalApproved'  &&   this.subDepNameForClarify === commentsList.SubDepartmentName" (click)="openEditCommentModal(commentEditorModal, i)"><i class="fa fa-pencil" aria-hidden="true"></i></button>
                     </div>
@@ -309,7 +309,7 @@
     <mat-tab label="Applicant">
 
       <!--External User information-->
-      <div class="container-fluid" *ngIf="isInternal == false">
+      <div class="container-fluid" *ngIf="isInternal == false && theirProxy == false">
 
         <div class="row">
           <div class="col">
@@ -392,8 +392,7 @@
 
 
       <!--Internal user information-->
-      <div class="container-fluid" *ngIf="isInternal == true">
-
+      <div class="container-fluid" *ngIf="isInternal == true && theirProxy == false">
 
         <div class="row">
           <div class="col">
@@ -441,6 +440,185 @@
 
 
 
+      </div>
+
+      <!--Having applied for another person-->
+      <!-- <div *ngIf="internalProxy == true"> -->
+      <div class="container-fluid" *ngIf="theirProxy == true">
+        <br />
+        <div class="centered-text">
+          <div class="line left-line"></div>
+          APPLICANT
+          <div class="line right-line"></div>
+        </div>
+        <br />
+        <div *ngIf="internalProxyApplicant == true">
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="internalProxyApplicantName" placeholder="Enter First Name" disabled>
+                <label for="name">Name</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="internalProxyApplicantSurname" placeholder="Enter Surname" disabled>
+                <label for="surname">Surname</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="internalProxyApplicantDirectorate" placeholder="Enter Surname" disabled>
+                <label for="surname">Department</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="internalProxyApplicantBranch" placeholder="Enter Branch" disabled>
+                <label for="Branch">Branch</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="email" class="form-control" [(ngModel)]="internalProxyApplicantCostCenterNo" placeholder="Enter Cost Center Number" disabled>
+                <label for="applicantEmail">Cost Center Number</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="internalProxyApplicantCostCenterOwner" placeholder="Enter Cost Center Owner" disabled>
+                <label for="applicantTellNo">Cost Center Owner</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="internalProxyApplicant == false">
+
+          <div class="row">
+            <div class="col">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="extProxyApplicantBpNoApplicant" placeholder="Enter BP Number" disabled>
+                  <label for="bpNoApplicant">BP Number</label>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="extProxyApplicantCompanyName" placeholder="Enter Company Name" disabled>
+                <label for="address">Company Name</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="extProxyApplicantCompanyRegNo" placeholder="Enter Company Reg No" disabled>
+                <label for="address">Company Reg No.</label>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="extProxyApplicantName" placeholder="Enter First Name" disabled>
+                <label for="name">Name</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="extProxyApplicantSurname" placeholder="Enter Surname" disabled>
+                <label for="surname">Surname</label>
+              </div>
+            </div>
+          </div>
+
+
+
+
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="extProxyApplicantPhyscialAddress" placeholder="Enter Address" disabled>
+                <label for="applicantTellNo">Physcial Address</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="tel" class="form-control" [(ngModel)]="extProxyApplicantTellNo" placeholder="Enter Tell No." disabled>
+                <label for="applicantTellNo">Cell No.</label>
+              </div>
+
+            </div>
+
+          </div>
+          <div class="row">
+
+
+            <div class="form-floating mb-3 mt-3">
+              <input type="email" class="form-control" [(ngModel)]="extProxyApplicantEmail" placeholder="Enter Email" disabled>
+              <label for="applicantEmail">Email</label>
+            </div>
+
+          </div>
+        </div>
+        <br />
+        <div class="centered-text">
+          <div class="line left-line"></div>
+          ORIGINATOR
+          <div class="line right-line"></div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="internalApplicantName" placeholder="Enter First Name" disabled>
+              <label for="name">Name</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="internalApplicantSurname" placeholder="Enter Surname" disabled>
+              <label for="surname">Surname</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="internalApplicantDirectorate" placeholder="Enter Surname" disabled>
+              <label for="surname">Department</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="internalApplicantBranch" placeholder="Enter Branch" disabled>
+              <label for="Branch">Branch</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="email" class="form-control" [(ngModel)]="internalApplicantCostCenterNo" placeholder="Enter Cost Center Number" disabled>
+              <label for="applicantEmail">Cost Center Number</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="internalApplicantCostCenterOwner" placeholder="Enter Cost Center Owner" disabled>
+              <label for="applicantTellNo">Cost Center Owner</label>
+            </div>
+          </div>
+        </div>
       </div>
     </mat-tab>
 
