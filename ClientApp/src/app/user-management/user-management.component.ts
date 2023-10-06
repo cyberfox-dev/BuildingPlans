@@ -22,6 +22,7 @@ export interface UserList {
   fullName: string;
   zoneName: string;
   ZoneID: any;
+  SubDepartmentID: any;
 }
 export interface ZoneList {
   zoneID: number;
@@ -67,7 +68,8 @@ export interface ZoneLinkList {
   subdepartmentName: string;
   zoneName: string;
   isZoneAdmin: string;
-  isDepartmentAdmin: string; 
+  isDepartmentAdmin: string;
+  ZoneID: any;
 }
 
 @Component({
@@ -127,6 +129,8 @@ export class UserManagementComponent implements OnInit {
 
     this.selectedUserIndex = this.UserList[index].userProfileID;
     this.selectedUserZoneID = this.UserList[index].ZoneID;
+    this.selectedUsersubDepID = this.UserList[index].SubDepartmentID;
+    this.selectedUserID = this.UserList[index].userId;
     /* this.selectedUserAccessGroupID = this.AccessGroupList[0].AccessGroupID;*/
     /* this.getAllZonesByZoneID();*/
 
@@ -162,7 +166,7 @@ export class UserManagementComponent implements OnInit {
 
     /* this.UserList.splice(0, this.UserList.length);    this.zoneService.getZoneByZoneID(tempZoneList.ZoneID)*/
     this.userPofileService.getAllUsersToLinkToDep(this.UserProfile[0].depID).subscribe(async (data: any) => {
-
+      debugger;
       if (data.responseCode == 1) {
 
         for (let i = 0; i < data.dateSet.length; i++) {
@@ -174,6 +178,7 @@ export class UserManagementComponent implements OnInit {
           tempZoneList.fullName = current.fullName;
           tempZoneList.userProfileID = current.userProfileID;
           tempZoneList.ZoneID = current.zoneID;
+          tempZoneList.SubDepartmentID = current.subDepartmentID;
 
 
           const zoneName: string = await this.getZoneByZoneId(current.zoneID);
@@ -342,8 +347,9 @@ export class UserManagementComponent implements OnInit {
     //this is for the access group linking
 
 
-    //NOW WHAT??
-    this.accessGroupsService.addUpdateAccessGroupUserLink(0, this.accessGroupID, this.selectedUserIndex.toString(), this.CurrentUser.appUserId, null, null).subscribe((data: any) => {
+    //NOW WHAT?? - PUSH ZONEID AND SUBDEPARTMENTID
+  
+    this.accessGroupsService.addUpdateAccessGroupUserLink(0, this.accessGroupID, this.selectedUserID, this.CurrentUser.appUserId, this.selectedUserZoneID, this.selectedUsersubDepID).subscribe((data: any) => {
       ;
       if (data.responseCode == 1) {
         alert(data.responseMessage);
@@ -436,6 +442,7 @@ export class UserManagementComponent implements OnInit {
               tempZoneLinkList.subdepartmentName = current.subDepartmentName;
               tempZoneLinkList.isZoneAdmin = current.isZoneAdmin ? 'Yes' : 'No';
               tempZoneLinkList.isDepartmentAdmin = current.isDepartmentAdmin ? 'Yes' : 'No';
+           
 
               if (current.directorate == "EMB" || current.subDepartmentName == "EMB") {
                 tempZoneLinkList.zoneName = "EMB";
@@ -443,6 +450,7 @@ export class UserManagementComponent implements OnInit {
                 //zoneID
                 if (current.zoneID != null) {
                   try {
+                    tempZoneLinkList.ZoneID = current.zoneID;
                     const zoneName: string = await this.getTheirZoneName(current.zoneID);
                     tempZoneLinkList.zoneName = zoneName;
                     // Use zoneName here as a string
@@ -450,12 +458,14 @@ export class UserManagementComponent implements OnInit {
                   } catch (error) {
                     // Handle errors here
                     console.error("Error:", error);
+                    tempZoneLinkList.ZoneID = null;
                     tempZoneLinkList.zoneName = "Unassigned";
                   }
                 } else {
                   // this.zoneLinkService.getAllUserLinks(current.userID).subscribe
                   try {
                     const fetchedZoneID: number = await this.getZoneIDViaLink(current.userID);
+                    tempZoneLinkList.ZoneID = fetchedZoneID;
                     const zoneName: string = await this.getTheirZoneName(fetchedZoneID);
                     tempZoneLinkList.zoneName = zoneName;
                   } catch (error) {
@@ -463,6 +473,7 @@ export class UserManagementComponent implements OnInit {
                     debugger;
                     console.error("Error:", error);
                     // Set a default message for "Unknown Zone"
+                    tempZoneLinkList.ZoneID = null;
                     tempZoneLinkList.zoneName = "Unassigned";
                   }
                 }
@@ -544,7 +555,7 @@ export class UserManagementComponent implements OnInit {
   isZoneAdmin: any;// actually string
   isDepartmentAdmin: any;
   zoneAdminValue: number;
-  departmentAdminValue: number;
+  //departmentAdminValue: number; //toggle removed
   subDeptName: string = '';
   subDeptID: any = null;
   boolZoneAdmin: boolean;
@@ -563,6 +574,7 @@ export class UserManagementComponent implements OnInit {
 
 
   UserZoneLinkID: any;
+  zoneId: any;
   async editUserScope(index: any, viewDepartmentPerson: any) {
     debugger;
     this.ThisUserRolesList.splice(0, this.ThisUserRolesList.length);
@@ -585,6 +597,7 @@ export class UserManagementComponent implements OnInit {
     */
 
     this.subDeptID = this.ZoneLinkList[index].subDepartmentID;
+    this.zoneId = this.ZoneLinkList[index].ZoneID;
     this.subDeptName = this.ZoneLinkList[index].subdepartmentName;
 
     this.getAccessGroups();
@@ -646,9 +659,9 @@ export class UserManagementComponent implements OnInit {
         const current = data.dateSet[0];
 
         this.UserZoneLinkID = current.zoneLinkID;
-        this.departmentAdminValue = current.isDepartmentAdmin ? 1 : 0;
+        //this.departmentAdminValue = current.isDepartmentAdmin ? 1 : 0;
         this.zoneAdminValue = current.isZoneAdmin ? 1 : 0;
-        console.log("This is the departmentValue: " + this.departmentAdminValue);
+        //console.log("This is the departmentValue: " + this.departmentAdminValue);
         console.log("This is the zoneAdminValue: " + this.zoneAdminValue);
         console.log(data);
 
@@ -672,10 +685,10 @@ export class UserManagementComponent implements OnInit {
   
   saveAdminChanges() {
 
-      this.boolDeptAdmin = this.convertToBoolean(this.departmentAdminValue);
+      //this.boolDeptAdmin = this.convertToBoolean(this.departmentAdminValue); //made null for now
       this.boolZoneAdmin = this.convertToBoolean(this.zoneAdminValue);
       debugger;
-      this.zoneLinkService.addUpdateZoneLink(this.UserZoneLinkID, null, null, null, this.subDeptID, this.subDeptName, this.selectedUserID, null, null, this.boolDeptAdmin, this.boolZoneAdmin).subscribe((data: any) => {
+      this.zoneLinkService.addUpdateZoneLink(this.UserZoneLinkID, null, null, null, this.subDeptID, this.subDeptName, this.selectedUserID, null, null, null, this.boolZoneAdmin).subscribe((data: any) => {
         if (data.responseCode == 1) {
           alert(data.responseMessage);
         } else {
@@ -693,7 +706,7 @@ export class UserManagementComponent implements OnInit {
     this.accessGroupLinkService.getAccessGroupByUserID(this.selectedUserID).subscribe((data: any) => {
       debugger;
       if (data || data.responseCode == 1) {
-        alert(data.responseMessage);
+        //alert(data.responseMessage);
         debugger;
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempAccessList = {} as TheirAccessGroupList;
@@ -706,7 +719,7 @@ export class UserManagementComponent implements OnInit {
         }
 
       } else {
-        alert(data.responseMessage);
+        //alert(data.responseMessage);
       }
     }
     )
@@ -742,22 +755,27 @@ export class UserManagementComponent implements OnInit {
     // You can use the index to access the selected access group in AccessGroupList
     const selectedAccessGroup = this.AccessGroupList[index];
     const accessGroupID = selectedAccessGroup.AccessGroupID;
+    
     debugger;
     //NB: MAKE SURE THAT THOSE TWO NEW ARGUMENTS ARE ACCOUNTED FOR ACCORDINGLY!
-    this.accessGroupsService.addUpdateAccessGroupUserLink(null, accessGroupID, this.selectedUserID, this.CurrentUser.appUserId, null, null).subscribe((data: any) => {
+
+    this.accessGroupsService.addUpdateAccessGroupUserLink(null, accessGroupID, this.selectedUserID, this.CurrentUser.appUserId, this.zoneId, this.subDeptID).subscribe((data: any) => {
       ///
       console.log("TRYINGTRYINGTRYINGTOADDACCESSGROUPACCESSGROUP");
       if (data.response == 1) {
-
+       
+        //this.modalService.dismissAll();
+        //this.modalService.open(viewDepartmentPerson, { size: 'lg' });
+        this.getAccessGroups();
         console.log("user has been added??");
       } else {
-        this.modalService.dismissAll();
-        this.modalService.open(viewDepartmentPerson, { size: 'lg' }); 
+      
+        //this.modalService.dismissAll();
+        //this.modalService.open(viewDepartmentPerson, { size: 'lg' }); 
         console.error('Error adding user to access group:', data.responseMessage);
+        this.getAccessGroups();
       }
     })
-    //this.modalService.dismissAll();
-    //this.modalService.open(viewDepartmentPerson, { size: 'lg' }); // You can specify modal options like size, backdrop, etc.
   }
 
   removeFromAccessGroup(index: number) {
@@ -794,7 +812,21 @@ export class UserManagementComponent implements OnInit {
     }
   }
 
-
+  newFullName: string = '';
+  newEmail: string = '';
+  newPhoneNumber: string = '';
+  //isInternal, isActive
+  newDirectorate: string = '';
+  newDepartmentID: string = '';
+  newSubDepartmentID: string = '';
+  newBranch: string = '';
+  newCostCenterOwner: string = '';
+  newCostCenterNumber: string = '';
+  newCreatedById: string = '';
+  //need to be able to set this isDepartmentAdmin, isZoneAdmin
+  //depConfirmation
+  newzoneID: string = '';
+  newSubDepartmentName: string = '';
 }
 
 

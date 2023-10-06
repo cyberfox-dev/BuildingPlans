@@ -13,11 +13,11 @@ namespace WayleaveManagementSystem.Data.Migrations
       table: "Notification",
       type: "nvarchar(max)",
       nullable: true);
-            migrationBuilder.AddColumn<string>(
-           name: "DescriptionForRepoDoc",
-           table: "DocumentUpload",
-           type: "nvarchar(max)",
-           nullable: true);
+           // migrationBuilder.AddColumn<string>(
+           //name: "DescriptionForRepoDoc",
+           //table: "DocumentUpload",
+           //type: "nvarchar(max)",
+           //nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -27,9 +27,9 @@ namespace WayleaveManagementSystem.Data.Migrations
                table: "Notification"); migrationBuilder.DropColumn(
                 name: "Message",
                 table: "Notification");
-            migrationBuilder.DropColumn(
-               name: "DescriptionForRepoDoc",
-               table: "DocumentUpload");
+            //migrationBuilder.DropColumn(
+            //   name: "DescriptionForRepoDoc",
+            //   table: "DocumentUpload");
         }
 
     }

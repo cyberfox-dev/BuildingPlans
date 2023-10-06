@@ -4191,11 +4191,12 @@ this.Applications.push(tempApplicationList);
           )
           debugger;
           console.log("Before assignment - this.sharedService.clientUserID: " + this.sharedService.clientUserID);
-          this.sharedService.clientUserID = data.dateSet.appUserId; //This assignment is sus
+          this.sharedService.clientUserID = data.dateSet.appUserId; //This assignment is sus THIS IS THE NEW PERSON
           console.log("IS this " + this.clientName + "'s USERID: " + this.sharedService.clientUserID);
-          localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
+          //localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet)); //THIS IS WHERE YOU LOG THEM IN -MXM
           this.sharedService.newUserProfileBp = this.clientBpNumber;
           alert(this.clientFullName + " has been added as an external client.\nYou can now link their professionals and create a wayleave on their behalf.");
+          console.log("Who is logged in?" + JSON.stringify(this.CurrentUser));
           stepper.next();
           
           //I NEED TO STAY INSIDE THIS MAT-STEPPER
@@ -4208,6 +4209,24 @@ this.Applications.push(tempApplicationList);
     }
 
    //the part that is relevant is the conditional statement that has a userID of null
+
+    this.getUserProfile();
+  }
+  getUserProfile() {
+    let stringifiedData = JSON.parse(
+      JSON.stringify(localStorage.getItem("LoggedInUserInfo"))
+    );
+    let currentUser = JSON.parse(stringifiedData);
+    this.userPofileService
+      .getUserProfileById(currentUser.appUserId)
+      .subscribe(
+        (data: any) => {
+          localStorage.setItem("userProfile", JSON.stringify(data.dateSet));
+        },
+        (error) => {
+          console.log("Error: ", error);
+        }
+      );
   }
 
   @Output() internalUserSelected = new EventEmitter<void>();
