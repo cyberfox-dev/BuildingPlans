@@ -116,7 +116,7 @@
 
 
                     <h3>{{commentsList.SubDepartmentName}} - {{commentsList.CommentStatus}}</h3>
-                    <h5>{{commentsList.UserName}}</h5>
+                    <h5 *ngIf="isInternalUser">{{commentsList.UserName}}</h5>
                     <div class="cont2">
                       <button mat-raised-button color="white" *ngIf="commentsList.CommentStatus != 'FinalApproved'  &&   this.subDepNameForClarify === commentsList.SubDepartmentName" (click)="openEditCommentModal(commentEditorModal, i)"><i class="fa fa-pencil" aria-hidden="true"></i></button>
                     </div>

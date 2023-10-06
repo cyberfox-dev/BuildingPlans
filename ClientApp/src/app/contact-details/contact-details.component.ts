@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTable } from '@angular/material/table';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ContactDetailsService } from '../service/ContactDetails/contact-details.service';
 import { SubDepartmentsService } from 'src/app/service/SubDepartments/sub-departments.service';
 import { ZonesService } from 'src/app/service/Zones/zones.service';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 export interface ZoneDropdown {
   zoneID: number;
@@ -61,18 +62,39 @@ export class ContactDetailsComponent implements OnInit {
     selectedZoneName: string;
     selectedSubDep: any;
 
-  constructor(private modalService: NgbModal, private contactDetails: ContactDetailsService, private zoneService: ZonesService, private subDepartmentsService: SubDepartmentsService,) { }
+
+  pageSize = 5;
+  pageSizeOptions: number[] = [5, 10, 25, 50];
+  length: any;
+
+  constructor(private modalService: NgbModal, private contactDetails: ContactDetailsService, private zoneService: ZonesService, private subDepartmentsService: SubDepartmentsService, private cdr: ChangeDetectorRef) { }
   CurrentUser: any;
   stringifiedData: any;  
-  ngOnInit(): void {
+  ngOnInit() {
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.getAllSubDepartments();
     this.getAllContactDetails();
   }
+  ngAfterViewInit() {
+    debugger;
+
+    this.dataSource.data = this.ContactDetailsList;
+    this.length = this.ContactDetailsList.length;
+
+    if (this.paginator) {
+      this.paginator.page.subscribe((pageEvent: PageEvent) => {
+        this.pageSize = pageEvent.pageSize;
+        // Reload data based on the new page size if needed
+        this.getAllContactDetails();// Call the function to load the data with the updated page size
+
+      });
+    }
+
+  }
 
   displayedColumns: string[] = ['FullName', 'Email', 'CellNumber','actions'];
-  dataSource = this.ContactDetailsList;
+  dataSource = new MatTableDataSource<ContactDetailsList>([]);
 
   openContactDetailsModal(ContactDetailsModal:any)
   {
@@ -84,37 +106,53 @@ export class ContactDetailsComponent implements OnInit {
     this.modalService.open(ContactDetailsModal, { centered: true, size: 'xl' });
   }
   @ViewChild(MatTable) ContactDetailsTable: MatTable<ContactDetailsList> | undefined;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   getAllContactDetails() {
-    this.ContactDetailsList.splice(0, this.ContactDetailsList.length);
+
+    this.ContactDetailsList = []; // Initialize or clear the array
+
     this.contactDetails.getAllContactDetials().subscribe((data: any) => {
+      if (data.responseCode === 1) {
+        // Successful response, update the data
+        this.ContactDetailsList = data.dateSet.map((current: any) => {
+          const tempContactDetailsList: ContactDetailsList = {
+            ContactDetailID: current.contactDetailID,
+            FullName: current.fullName,
+            CellNo: current.cellNo,
+            Email: current.email,
+          };
+          return tempContactDetailsList;
+        });
 
-      if (data.responseCode == 1) {
+        // Update the length and data source
+        this.length = this.ContactDetailsList.length;
+        this.dataSource.data = this.ContactDetailsList;
+        const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+        const endIndex = startIndex + this.paginator.pageSize;
+        const displayedData = this.ContactDetailsList.slice(startIndex, endIndex);
+        this.dataSource.data = displayedData;
 
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempContactDetailsList = {} as ContactDetailsList;
-          const current = data.dateSet[i];
-          tempContactDetailsList.ContactDetailID = current.contactDetailID;
-          tempContactDetailsList.FullName = current.fullName;
-          tempContactDetailsList.CellNo = current.cellNo;
-          tempContactDetailsList.Email = current.email;
-          
-          this.ContactDetailsList.push(tempContactDetailsList);
-          this.ContactDetailsTable?.renderRows();
+
+
+        // Trigger change detection
+        this.cdr.detectChanges();
+
+        // Ensure that renderRows is called (optional)
+        if (this.ContactDetailsTable) {
+          this.ContactDetailsTable.renderRows();
         }
 
         console.log("ContactDetailsList", this.ContactDetailsList);
-      }
-      else {
-
+      } else {
         alert(data.responseMessage);
       }
-      console.log("reponse", data);
-
+      console.log("response", data);
     }, error => {
-      console.log("Error: ", error);
-    })
+      console.error("Error:", error);
+    });
   }
+
 
 
   selectedZone7 = 0;

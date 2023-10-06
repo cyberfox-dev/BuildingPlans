@@ -1,0 +1,151 @@
+<h1 mat-dialog-title>Document Repository</h1>
+
+<button mat-raised-button mat-dialog-close color="green" (click)="onUploadFile(fileUpload)" *ngIf="uploadRepoDoc">Upload Document</button>
+
+<div class="container2">
+
+  <!--This is to select the group from that department-->
+  <mat-form-field>
+    <mat-label>Filter by selecting a department</mat-label>
+    <mat-select [(value)]="select" (selectionChange)="filterDepartment()" [(ngModel)]="selectDepFilterName">
+      <mat-option value="All">All</mat-option>
+      <mat-option value="AllGeneralDocuments">All General Documents</mat-option>
+      <mat-option *ngFor="let department of SubDepartmentList" value="{{ department.subDepartmentID }}">{{ department.subDepartmentName }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+
+
+  <!--This is to select the department-->
+  <mat-form-field *ngIf="groupName">
+    <mat-label>Filter</mat-label>
+    <mat-select [(value)]="selected" (selectionChange)="onOptionSelected($event);filerGroupName()">
+      <mat-option value="All">All</mat-option>
+      <mat-option value="option1">General Documents</mat-option>
+      <mat-option value="option2">Terms and conditions</mat-option>
+      <mat-option value="option3">Layout Plans</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+</div>
+<div class="mat-elevation-z8">
+  <table mat-table
+         [dataSource]="dataSource" multiTemplateDataRows
+         class="mat-elevation-z8">
+    <ng-container matColumnDef="{{DocumentName}}" *ngFor="let DocumentName of displayedColumns">
+      <th mat-header-cell *matHeaderCellDef> {{DocumentName}} </th>
+      <td mat-cell *matCellDef="let element"> {{element[DocumentName]}} </td>
+    </ng-container>
+    <ng-container matColumnDef="expand">
+      <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button aria-label="expand row" (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+          <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+          <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let element; let i = index" [attr.colspan]="columnsToDisplayWithExpand.length">
+        <div class="example-element-detail"
+             [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+          <div class="example-element-diagram">
+            <div class="example-element-position"> {{element.Description}} </div>
+            <div class="example-element-symbol">{{element.GroupName}} </div> 
+
+          </div>
+          <div class="example-element-description">
+            <button mat-raised-button color="blue" (click)="viewDocument(element)" matTooltip="View document"><i class="fa fa-eye"></i></button>
+            <button mat-raised-button color="warn2" matTooltip="Delete document" (click)="onDeleteRepositoryDocument(element)"><i class="fa fa-trash"></i></button>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+    <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand;"
+        class="example-element-row"
+        [class.example-expanded-row]="expandedElement === element"
+        (click)="expandedElement = expandedElement === element ? null : element">
+    </tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+  </table>
+
+
+
+  <mat-paginator [length]="length"
+                 [pageSize]="pageSize"
+                 [pageSizeOptions]="pageSizeOptions"
+                 [disabled]="isDepartmentSelected">
+  </mat-paginator>
+</div>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+
+</mat-dialog-actions>
+
+<!--File Upload-->
+<ng-template #fileUpload let-modal>
+  <div class="modal-header">
+    <h1 class="modal-title" id="modal-basic-title">Upload Document For Document Repository</h1>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+
+  </div>
+  <div class="modal-body">
+
+    <!--This is to select the group from that department-->
+    <mat-form-field>
+      <mat-label>Filter by selecting a department</mat-label>
+      <mat-select [(value)]="selectDepForUpload" (selectionChange)="selectDepartment()" [(ngModel)]="SelectedDepForRepUpload">
+        <mat-option value="All Departments">All Departments</mat-option>
+        <mat-option value="GeneralDocument">General Document</mat-option>
+        <mat-option *ngFor="let department of SubDepartmentList" value="{{department.subDepartmentID}}">{{department.subDepartmentName}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="GroupName">
+      <mat-label>Select an option</mat-label>
+      <mat-select [(value)]="selected" (selectionChange)="onOptionSelected($event)" >
+        <mat-option>None</mat-option>
+        <mat-option value="General Documents">General Documents</mat-option>
+        <mat-option value="Terms and conditions">Terms and conditions</mat-option>
+        <mat-option value="Layout Plans">Layout Plans</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <div class="cont6">
+
+        <input matInput placeholder="Please enter in a description for your document" #input [(ngModel)]="descriptionForDocRepo">
+      </div>
+
+    </mat-form-field>
+
+    <mat-form-field>
+      <div>
+        <mat-toolbar>
+
+          <!-- Display files names -->
+          <input matInput [(ngModel)]="fileAttrs" readonly name="name" />
+          <!-- app-file-upload Component -->
+          <div class="row" style="margin-bottom:15px;">
+            <div class="container-fluid">
+              <app-file-upload [ApplicationID]="isRep"
+                               [descriptionForDocRepoS]="descriptionForDocRepo"
+                               [UploadFor]="fileAttrsName"
+                               (passFileName)="onPassFileName($event)"
+                               (onUploadFinished)="onFileDelete($event, 0)"
+                               (onUploadSuccess)="onFileUpload($event)" *ngIf="selectDepForUpload != 0 && selected != 'none' && selected != undefined && descriptionForDocRepo != ''">
+              </app-file-upload>
+            </div>
+          </div>
+        </mat-toolbar>
+      </div>
+    </mat-form-field>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="save();modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
