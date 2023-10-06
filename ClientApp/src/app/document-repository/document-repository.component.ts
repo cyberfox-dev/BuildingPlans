@@ -141,15 +141,17 @@ expandedElement = this.DocumentsList;
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDocList = {} as DocumentsList;
           const current = data.dateSet[i];
-          console.log(current);
+          console.log("current1",current);
           tempDocList.DocumentID = current.documentID;
           tempDocList.DocumentName = current.documentName;
           tempDocList.DocumentLocalPath = current.documentLocalPath;
           tempDocList.ApplicationID = current.applicationID;
           tempDocList.AssignedUserID = current.assignedUserID;
           tempDocList.DateCreated = current.dateCreated;
+          tempDocList.GroupName = current.groupName;
+          tempDocList.Description = current.groupName;
           debugger;
-          if (current.groupName == "GeneralNonDep") {
+          if (tempDocList.GroupName == "GeneralNonDep") {
             tempDocList.GroupName = "General";
           }
           if (current.Description == "" || current.Description == null) {
@@ -535,11 +537,14 @@ expandedElement = this.DocumentsList;
     }
     else if (this.selectDepFilterName === "AllGeneralDocuments") {
       // Filter documents based on the selected department.
+    
       let filteredData = this.DocumentsList.filter(df => df.GroupName === "GeneralNonDep");
+
       this.dataSource.data = filteredData;
       console.log(filteredData);
       this.groupName = false;
       this.isDepartmentSelected = true; // Department selected
+      this.dataSource.data = this.DocumentsList.filter(df => df.DateCreated && df.GroupName === "GeneralNonDep");
     }
     else {
       // Filter documents based on the selected department.
@@ -555,7 +560,7 @@ expandedElement = this.DocumentsList;
       else {
         console.log(this.selectedOptionText);
         this.dataSource.data = this.DocumentsList.filter(df => df.GroupName == this.selectedOptionText && df.SubDepartmentID == this.select);
-        console.log("FilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilter", this.DocumentsList.filter(df => df.SubDepartmentID == this.select))
+        console.log("FilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterubDepartmentID == this.select))", this.DocumentsList.filter(df => df.SubDepartmentID == this.select))
       }
     }
 
