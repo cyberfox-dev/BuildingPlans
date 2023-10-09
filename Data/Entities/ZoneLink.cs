@@ -21,6 +21,7 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public bool? isDepartmentAdmin { get; set; }
         public bool? isZoneAdmin { get; set; }
+        public bool? isDefault { get; set; }
 
     }
 }

@@ -498,7 +498,7 @@
 
 
 
-        <button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)="onWayleaveCreate(CurrentUser.appUserId,false);">
+        <button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)="onWayleaveCreate(CurrentUser.appUserId,false);SavedProjectSizeSelections()">
           Create Application
         </button>
         <!--  <img src="assets/Loading.png" *ngIf="successfulUploads >0 && successfulUploads < totalDocs" class="logo2">-->
@@ -726,7 +726,8 @@
   </div>-->
 <div class="modal-footer">
   <button class="infoTool" matTooltip="Please check the 'Project Size Criteria.pdf' in the Repository. You'll find it in the top right-hand menu."><i class="fa fa-info-circle" aria-hidden="true"></i></button>
-  <button type="button" (click)="CheckToPopulateManDoc();modal.close('Save click')" class="btn btn-outline-success">Save</button>  <!--(click)="onLinkUser();modal.close('Save click')"-->
+  <button type="button" (click)="CheckToPopulateManDoc();StoreSelectionProjectCheckListItems();modal.close('Save click')" class="btn btn-outline-success">Save</button>  <!--(click)="onLinkUser();modal.close('Save click')"-->
+  <button type="button" matTooltip="View selected project size criteria" (click)="openViewSelection(viewSelection); CheckToPopulateManDoc()" class="btn btn-outline-success">View Selections</button>
 </div>
 </ng-template>
 
@@ -859,3 +860,21 @@
 
   </mat-tab>
 </mat-tab-group>-->
+<ng-template #viewSelection let-modal>
+
+  <div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Determine Type of Application</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body " *ngFor="let projects of ProjectSizeSelectionList ">
+    <div class="alert alert-info" role="alert" >
+      <span>{{projects.selectedProject}} :  {{projects.projectDescription}}</span>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="alert alert-info" role="alert" *ngIf="PSM">
+      These selections will give you a {{PSM}}
+    </div>
+  </div>
+</ng-template>
