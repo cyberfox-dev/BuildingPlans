@@ -14,7 +14,7 @@ import { FinancialService } from 'src/app/service/Financial/financial.service';
 export class FileUploadComponent implements OnInit {
   @Input() UploadFor: any;
   @Input() ApplicationID: any;
-  @Input() descriptionForDocRepoS: any;
+  @Input() descriptionForDocRepoS: any | null;
   @Input() isFinancial: boolean | null;
   @Input() ServiceConditionActive: boolean | null;
   @Output() public onUploadFinished = new EventEmitter();
@@ -449,8 +449,9 @@ export class FileUploadComponent implements OnInit {
         })
       }
       else {
+        debugger;
         this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, applicationID, applicationData.appUserId, this.CurrentUser.appUserId).subscribe((data: any) => {
-
+          debugger;
           if (data.responseCode == 1) {
             debugger;
             // Emit the onUploadSuccess event after a successful upload
