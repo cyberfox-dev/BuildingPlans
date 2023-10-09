@@ -38,7 +38,8 @@ namespace WayleaveManagementSystem.Data
 
         public DbSet<MandatoryDocumentUpload> MandatoryDocumentUploads { get; set; }
         public DbSet<ProjectSizeCheckList> ProjectSizeCheckList { get; set; }
-
+        public virtual DbSet<ProjectSizedSelections> ProjectSizedSelections { get; set; }
+        public virtual DbSet<ManuallyAssignUsers> ManuallyAssignUsers { get; set; }
         public DbSet<MandatoryDocumentStageLink> MandatoryDocumentStageLink { get; set; }
         public DbSet<ServiceItems> ServiceItem { get; set; }
         public DbSet<GLCode> GLCode { get; set; }
@@ -63,6 +64,6 @@ namespace WayleaveManagementSystem.Data
         public virtual DbSet<LinkedUserSpDTO> LinkedUserSpDTOs { get; set; }
         public virtual DbSet<ApplicationsDTO> ApplicationListDTO { get; set; }
 
-
+        
     }
 }

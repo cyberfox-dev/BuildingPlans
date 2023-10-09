@@ -173,6 +173,7 @@ import { DocumentRepositoryComponent } from './document-repository/document-repo
     DocumentRepositoryComponent,
 
 
+
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

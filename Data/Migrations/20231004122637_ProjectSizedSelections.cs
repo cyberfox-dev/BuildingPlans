@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace WayleaveManagementSystem.Data.Migrations
 {
-    public partial class ZoneLinkReconfig : Migration
+    public partial class ProjectSizedSelections : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -47,10 +48,39 @@ namespace WayleaveManagementSystem.Data.Migrations
             //    table: "ZoneLinkTable",
             //    type: "bit",
             //    nullable: true);
+
+            //migrationBuilder.AddColumn<string>(
+            //    name: "SubDepartmentName",
+            //    table: "UserProfilesTable",
+            //    type: "nvarchar(max)",
+            //    nullable: true);
+
+            migrationBuilder.CreateTable(
+                name: "ProjectSizedSelections",
+                columns: table => new
+                {
+                    SelectionID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserFullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ApplicationID = table.Column<int>(type: "int", nullable: true),
+                    SelectedProject = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProjectDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedById = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    isActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProjectSizedSelections", x => x.SelectionID);
+                });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ProjectSizedSelections");
+
             //migrationBuilder.DropColumn(
             //    name: "SubDepartmentName",
             //    table: "ZoneLinkTable");
@@ -66,6 +96,10 @@ namespace WayleaveManagementSystem.Data.Migrations
             //migrationBuilder.DropColumn(
             //    name: "isZoneAdmin",
             //    table: "ZoneLinkTable");
+
+            //migrationBuilder.DropColumn(
+            //    name: "SubDepartmentName",
+            //    table: "UserProfilesTable");
 
             //migrationBuilder.AlterColumn<int>(
             //    name: "SubDepartmentID",

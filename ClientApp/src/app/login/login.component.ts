@@ -556,13 +556,19 @@ export class LoginComponent implements OnInit {
     console.log("Is User Internal? " + this.internalUserNoBP);
     console.log("User has valid BP Num " + this.externalWValidBP);
     
-    if (password !== passwordConfirm) {
-      alert("Passwords do not match");
+    if (password.trim() === '' || passwordConfirm.trim() === '') {
+      // At least one of the passwords is empty or contains only whitespace.
+      alert("Password field has been left empty");
       this.matchingRegPasswords = false;
     } else {
-      this.matchingRegPasswords = true;
+      if (password !== passwordConfirm) {
+        alert("Passwords do not match");
+        this.matchingRegPasswords = false;
+      } else {
+        this.matchingRegPasswords = true;
+      }
+      console.log("Passwords are: " + this.matchingRegPasswords);
     }
-    console.log("Passwords are: " + this.matchingRegPasswords);
   }
   //I WONDER IF I CAN FIX THE ISSUE WITHE THE CREATE WAYLEAVE FOR NEW CLIENT SO THAT THE USER ID IS STILL ACCESSIBLE
 

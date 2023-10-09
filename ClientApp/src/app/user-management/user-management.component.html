@@ -75,6 +75,8 @@
   <div class="modal-body">
 
    <!--Make sure to finish this ASAP-->
+   <!--So when this is done, no approval should be required-->
+   <!--Wait, should I be able to add from existing UserProfiles??-->
 
   </div>
   <div class="modal-footer">
@@ -125,6 +127,7 @@
         <td mat-cell *matCellDef="let i = index">
 
           <button mat-raised-button color="orange" matTooltip="View and Edit User" (click)="editUserScope(i, viewDepartmentPerson)"><i class="fa fa-pencil"></i></button>
+          <!--What is this button supposed to do?-->
           <button mat-raised-button color="warn" matTooltip="Unlink User" click="removeUserFromDPT(i)"><i class="fa fa-unlink"></i></button>
 
 
@@ -169,7 +172,8 @@
     </table>
     <br />
     <div class="container">
-      <div class="row">
+      <!--removed because the access groups list already has this:-->
+      <!--<div class="row">
         <div class="col-sm-6">
           <div class="form-group">
             <label for="departmentAdminToggle">Department Admin:</label>
@@ -182,7 +186,7 @@
                               color="primary"></mat-slide-toggle>
           </div>
         </div>
-      </div>
+      </div>-->
 
       <div class="row">
         <div class="col-sm-6">
