@@ -4,6 +4,10 @@
 
 <head>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="src/assets/js/all.js"></script>
+  <script src="src/assets/js/all.min.js"></script>
+  <link rel="stylesheet" href="/src/assets/all.css">
+  <link rel="stylesheet" href="/src/assets/all.min.css">
 </head>
 <!--<h1>Navbar</h1>-->
 <!--<app-config-acting-department [isInternal]="CurrentUserProfile[0].isInternal"></app-config-acting-department>-->
@@ -127,6 +131,7 @@
         <button mat-button [matMenuTriggerFor]="menu" matTooltip="Filter Applications" color="filter" aria-label="Example icon-button with a menu" (click)="onFilterButtonClick()" *ngIf="FilterBtn">
           <i class="fa fa-filter" aria-hidden="true"></i>
         </button>
+
         <mat-menu #menu="matMenu" yPosition="below">
           <button mat-menu-item (click)="onFilterApplicationForMyReviews()">
             <span>My Reviews</span>

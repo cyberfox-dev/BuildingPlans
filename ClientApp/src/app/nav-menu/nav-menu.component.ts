@@ -27,7 +27,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { ChangeDetectorRef } from '@angular/core';
 import { ViewChildren } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
-import { DocumentRepositoryComponent } from 'src/app/document-repository/document-repository.component'
+import { DocumentRepositoryComponent } from 'src/app/document-repository/document-repository.component';
 import { NotificationCenterComponent } from 'src/app/notification-center/notification-center.component';
 
 
@@ -583,10 +583,14 @@ export class NavMenuComponent implements OnInit {
   }
   /*this is to open the notifications modal*/
 
-  openNotificationsModal(notificationsCenter: any) {
-    debugger;
-    this.notiBell = false;
-    this.modalService.open(notificationsCenter, { centered: true, size: 'xl' });
+  openNotificationsModal() {
+
+
+    this.dialog.open(NotificationCenterComponent, {
+      width: '60%',
+      maxHeight: 'calc(100vh - 90px)',
+      height: 'auto'
+    });
   }
   /*Notifications*/
 
