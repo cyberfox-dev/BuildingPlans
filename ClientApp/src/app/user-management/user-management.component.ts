@@ -982,9 +982,11 @@ export class UserManagementComponent implements OnInit {
     let internalCostCenterOwner = this.newCostCenterOwner;
     let internalCostCenterNumber = this.newCostCenterNumber;
     let internalPhoneNumber = this.newPhoneNumber;
-    let internalEmail = this.newEmail + "";
+    let internalEmail = this.newEmail + "@capetown.gov.za";
 
     //choose to the option to be able to leave the cost centre things and phone number empty
+
+    const emailRegex: RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     if (internalSubdepartment !== null &&
         internalZone !== null &&
@@ -992,7 +994,12 @@ export class UserManagementComponent implements OnInit {
         internalSurname !== null &&
         internalEmail !== null) {
 
+      if (!emailRegex.test(internalEmail)) {
+        alert("Please enter a valid email address");
+      }
+      else {
 
+      }
 
 
 
