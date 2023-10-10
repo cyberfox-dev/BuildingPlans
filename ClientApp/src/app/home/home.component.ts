@@ -149,6 +149,7 @@ export interface ClientUserList {
   userId: any;
   idNumber: string;
   fullName: string;
+  internalDepartment: string;
 
 }
 
@@ -425,7 +426,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   dataSourceLinkUsers = this.ClientUserList;
 
   @ViewChild(MatTable) linkAllUsersTable: MatTable<any> | undefined;
-  displayedColumnsLinkAllUsers: string[] = ['idNumber', 'fullName', 'actions'];
+  //displayedColumnsLinkAllUsers: string[] = ['idNumber', 'fullName', 'actions'];
+  displayedColumnsLinkAllUsers: string[] = ['internalDepartment', 'fullName', 'actions'];
   dataSourceLinkAllUsers = this.AllInternalUserProfileList;
 
   //I lost the Client list table
@@ -4287,6 +4289,7 @@ this.Applications.push(tempApplicationList);
           userId: current.userID,
           idNumber: current.idNumber,
           fullName: current.fullName,
+          internalDepartment: current.directorate,
         };
         this.sharedService.clientUserID = current.userID;
         this.AllInternalUserProfileList.push(tempAllInternalUserProfileList);

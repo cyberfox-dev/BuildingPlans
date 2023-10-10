@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { MatTable } from '@angular/material/table';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { asyncScheduler } from 'rxjs';
@@ -10,7 +10,7 @@ import { ZonesService } from '../service/Zones/zones.service';
 import { SubDepartmentsService } from '../service/SubDepartments/sub-departments.service';
 import { Observable } from 'rxjs';
 import { DepartmentsService } from '../service/Departments/departments.service';
-import { switchMap, catchError } from 'rxjs/operators';
+import { switchMap, catchError, tap } from 'rxjs/operators';
 import { of, throwError } from 'rxjs';
 import { AccessGroupUserLinkServiceService } from '../service/AccessGroupUserLink/access-group-user-link-service.service';
 
@@ -71,7 +71,17 @@ export interface ZoneLinkList {
   isDepartmentAdmin: string;
   ZoneID: any;
 }
-
+export interface SubDepartmentList {
+  SubDepartmentID: number;
+  SubDepartmentName: string;
+  DepartmentID: number;
+}
+export interface ZonesList {
+  ZoneID: number;
+  ZoneName: string;
+  DepartmentID: number;
+  SubDepartmentID: number;
+}
 @Component({
   selector: 'app-user-management',
   templateUrl: './user-management.component.html',
@@ -91,6 +101,9 @@ export class UserManagementComponent implements OnInit {
   AccessGroupList: AccessGroupList[] = [];
   ZoneList: ZoneList[] = [];
 
+  SubDepartmentList: SubDepartmentList[] = [];
+  AllSubDepartmentList: SubDepartmentList[] = [];
+  ZonesList: ZonesList[] = [];
 
   stringifiedDataUserProfile: any;
   CurrentUserProfile: any;
@@ -106,7 +119,7 @@ export class UserManagementComponent implements OnInit {
   loggedInUsersSubDepartmentID: any;
   loggedInUsersDepartmentID: number;
 
-  constructor(private userPofileService: UserProfileService, private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private zoneService: ZonesService, private zoneLinkService: ZoneLinkService, private subDepartmentService: SubDepartmentsService, private departmentService: DepartmentsService, private accessGroupLinkService: AccessGroupUserLinkServiceService) { }
+  constructor(private cdr: ChangeDetectorRef, private userPofileService: UserProfileService, private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private zoneService: ZonesService, private zoneLinkService: ZoneLinkService, private subDepartmentService: SubDepartmentsService, private departmentService: DepartmentsService, private accessGroupLinkService: AccessGroupUserLinkServiceService, private zonesService: ZonesService) { }
 
   ngOnInit(): void {
     this.getAllAccessGroup();
@@ -123,6 +136,9 @@ export class UserManagementComponent implements OnInit {
     this.showLinkedUsers();
     this.getAllusersNotLinkedToDep();
     this.getAllAccessGroups();
+    this.addNewDepartmentUser();
+    this.getAllSubdepartments();
+    this.getSubdepartments();
   }
 
   openAssignModal(content, index: any) {
@@ -138,7 +154,7 @@ export class UserManagementComponent implements OnInit {
     console.log("FSDFJNISDFSDFJNISFDJNISFDSDFJISDF", this.selectedUsersubDepID, this.selectedUserZoneID);
   }
   openNewUserModal(newUser) {
-    this.modalService.open(newUser, { centered: true, size: 'lg' });
+    this.modalService.open(newUser, { centered: true, size: 'xl' });
   }
   openAllUsersModal(allUsers) {
     this.modalService.open(allUsers, { centered: true, size: 'xl' });
@@ -812,7 +828,8 @@ export class UserManagementComponent implements OnInit {
     }
   }
 
-  newFullName: string = '';
+  newName: string = '';
+  newSurname: string = '';
   newEmail: string = '';
   newPhoneNumber: string = '';
   //isInternal, isActive
@@ -827,6 +844,128 @@ export class UserManagementComponent implements OnInit {
   //depConfirmation
   newzoneID: string = '';
   newSubDepartmentName: string = '';
+
+  isEMBAdmin: boolean;
+
+
+
+  addNewDepartmentUser() {
+
+    if (this.loggedInUserDepartmentName == "EMB" || this.loggedInUsersDepartmentID == 28) {
+      this.isEMBAdmin = true;
+    }
+    else {
+      this.isEMBAdmin = false;
+    }
+  }
+  selectedSubdepartment: any;
+  selectedZone: any;
+  onSubdepartmentChange() {
+    // Update data or perform actions based on the selected subdepartment
+    this.getZones(this.selectedSubdepartment).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempZonesList = {} as ZonesList;
+          const current = data.dateSet[i];
+          tempZonesList.ZoneID = current.zoneID;
+          tempZonesList.ZoneName = current.zoneName;
+          tempZonesList.DepartmentID = current.DepartmentID;
+          tempZonesList.SubDepartmentID = current.SubDepartmentID;
+          this.ZonesList.push(tempZonesList);
+        }
+        console.log("ZonesList ", this.ZonesList);
+      } else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("ZonesList error: ", error);
+    });
+
+    // Trigger change detection to update the template
+    this.cdr.detectChanges();
+  }
+
+  getSubdepartments() {
+    this.subDepartmentService.getSubDepartmentsByDepartmentID(this.loggedInUsersDepartmentID).subscribe((data: any) => {
+      debugger;
+      if (data.responseCode == 1) {
+        debugger;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepartmentList = {} as SubDepartmentList;
+          const current = data.dateSet[i];
+          tempSubDepartmentList.SubDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.SubDepartmentID = current.subDepartmentID;
+          tempSubDepartmentList.DepartmentID = current.departmentID;
+          this.SubDepartmentList.push(tempSubDepartmentList);
+
+        }
+
+        console.log("Where are they??? SubDepartmentList", this.SubDepartmentList);
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("SubDepartmentList", data);
+
+    }, error => {
+      console.log("SubDepartmentList: ", error);
+    })
+  }
+  getAllSubdepartments() {
+    this.subDepartmentService.getSubDepartmentsList().subscribe((data: any) => {
+      debugger;
+      if (data.responseCode == 1) {
+        debugger;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepartmentList = {} as SubDepartmentList;
+          const current = data.dateSet[i];
+          tempSubDepartmentList.SubDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.SubDepartmentID = current.subDepartmentID;
+          tempSubDepartmentList.DepartmentID = current.departmentID;
+          this.AllSubDepartmentList.push(tempSubDepartmentList);
+
+        }
+
+        console.log("Where are they??? SubDepartmentList", this.AllSubDepartmentList);
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("SubDepartmentList", data);
+
+    }, error => {
+      console.log("SubDepartmentList: ", error);
+    })
+  }
+  getZones(subDeptID: any): Observable<any> { // Change the return type to Observable<any>
+    debugger;
+    console.log('subDeptID:', subDeptID);
+    this.ZonesList = [];
+    return this.zonesService.getZonesBySubDepartmentsID(subDeptID) // Return the observable here
+      .pipe(
+        tap((data: any) => {
+          if (data.responseCode == 1) {
+            this.ZonesList = data.dateSet.map(current => ({
+              ZoneID: current.zoneID,
+              ZoneName: current.zoneName,
+              DepartmentID: current.DepartmentID,
+              SubDepartmentID: current.SubDepartmentID
+            }));
+            console.log("ZonesList", this.ZonesList);
+          } else {
+            alert(data.responseMessage);
+          }
+          console.log("ZonesList", data);
+        }),
+        catchError(error => {
+          console.log("ZonesList: ", error);
+          return throwError(error);
+        })
+      );
+  }
+
+
 }
 
 
