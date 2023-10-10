@@ -1,7 +1,7 @@
 <div class="container-fluid">
   <br />
   <!--<button mat-raised-button color="create" (click)="openNewUserModal(newUser)">Create a new EMB profile</button>-->
-  <button mat-raised-button color="create" (click)="openNewUserModal(newUser)">Create a new {{this.loggedInUserDepartmentName}} profile</button>
+  <button mat-raised-button color="create" (click)="addNewDepartmentUser();openNewUserModal(newUser)">Create a new {{this.loggedInUserDepartmentName}} profile</button>
   &nbsp;
   <button mat-raised-button color="create" (click)="openAllUsersModal(allUsers)">Show linked profiles</button>
   
@@ -69,7 +69,8 @@
 <!--create a new user-->
 <ng-template #newUser let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Add a new user to the {{this.loggedInUserDepartmentName}} department</h4>
+    <h4 class="modal-title" *ngIf="!isEMBAdmin" id="modal-basic-title">Add a new user to the {{this.loggedInUserDepartmentName}} department</h4>
+    <h4 class="modal-title" *ngIf="isEMBAdmin" id="modal-basic-title">Add a new user to a department</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
@@ -82,21 +83,21 @@
       <div class="col" *ngIf="!isEMBAdmin">
         <div class="form-floating mb-3 mt-3">
           <mat-select [(ngModel)]="selectedSubdepartment" placeholder="Select a subdepartment" (ngModelChange)="onSubdepartmentChange()" [ngModelOptions]="{standalone: true}">
-            <mat-option *ngFor="let subdepartment of this.SubDepartmentList" [value]="subdepartment.SubDepartmentID">{{ subdepartment.SubDepartmentName }}</mat-option>
+            <mat-option *ngFor="let subdepartment of SubDepartmentList" [value]="subdepartment.SubDepartmentID">{{ subdepartment.SubDepartmentName }}</mat-option>
           </mat-select>
         </div>
       </div>
       <div class="col" *ngIf="isEMBAdmin">
         <div class="form-floating mb-3 mt-3">
           <mat-select [(ngModel)]="selectedSubdepartment" placeholder="Select a subdepartment" (ngModelChange)="onSubdepartmentChange()" [ngModelOptions]="{standalone: true}">
-            <mat-option *ngFor="let subdepartment of this.AllSubDepartmentList" [value]="subdepartment.SubDepartmentID">{{ subdepartment.SubDepartmentName }}</mat-option>
+            <mat-option *ngFor="let subdepartment of AllSubDepartmentList" [value]="subdepartment.SubDepartmentID">{{ subdepartment.SubDepartmentName }}</mat-option>
           </mat-select>
         </div>
       </div>
       <div class="col">
         <div class="form-floating mb-3 mt-3">
           <mat-select [(ngModel)]="selectedZone" placeholder="Select a zone" [ngModelOptions]="{standalone: true}">
-            <mat-option *ngFor="let zone of this.ZonesList" [value]="zone.ZoneID">{{ zone.ZoneName }}</mat-option>
+            <mat-option *ngFor="let zone of ZonesList" [value]="zone.ZoneID">{{ zone.ZoneName }}</mat-option>
           </mat-select>
         </div>
       </div>
@@ -134,13 +135,18 @@
       <div class="col">
         <div class="form-floating mb-3 mt-3">
           <input type="tel" class="form-control" [(ngModel)]="newPhoneNumber" placeholder="Enter Tell No.">
-          <label for="newPhoneNumber" >Tell No *</label>
+          <label for="newPhoneNumber">Tell No *</label>
         </div>
       </div>
       <div class="col">
-        <div class="form-floating mb-3 mt-3">
-          <input type="tel" class="form-control" [(ngModel)]="newEmail" placeholder="Enter Email Address">
-          <label for="newEmail">Email *</label>
+        <div class="row">
+          <div class="col">
+            <div class="input-group form-floating mb-3 mt-3">
+              <input type="email" class="form-control" [(ngModel)]="newEmail" placeholder="Enter Email Address">
+              <span class="input-group-text">@capetown.gov.za</span>
+              <label for="newEmail">Email *</label>
+            </div>
+          </div>
         </div>
       </div>
     </div>
