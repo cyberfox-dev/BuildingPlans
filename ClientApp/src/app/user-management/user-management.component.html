@@ -69,15 +69,81 @@
 <!--create a new user-->
 <ng-template #newUser let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Add a new user to {{this.loggedInUserDepartmentName}}</h4>
+    <h4 class="modal-title" id="modal-basic-title">Add a new user to the {{this.loggedInUserDepartmentName}} department</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
 
-   <!--Make sure to finish this ASAP-->
-   <!--So when this is done, no approval should be required-->
-   <!--Wait, should I be able to add from existing UserProfiles??-->
+    <!--Make sure to finish this ASAP-->
+    <!--So when this is done, no approval should be required-->
+    <!--Wait, should I be able to add a user to THIS department from existing UserProfiles??-->
 
+    <div class="row">
+      <div class="col" *ngIf="!isEMBAdmin">
+        <div class="form-floating mb-3 mt-3">
+          <mat-select [(ngModel)]="selectedSubdepartment" placeholder="Select a subdepartment" (ngModelChange)="onSubdepartmentChange()" [ngModelOptions]="{standalone: true}">
+            <mat-option *ngFor="let subdepartment of this.SubDepartmentList" [value]="subdepartment.SubDepartmentID">{{ subdepartment.SubDepartmentName }}</mat-option>
+          </mat-select>
+        </div>
+      </div>
+      <div class="col" *ngIf="isEMBAdmin">
+        <div class="form-floating mb-3 mt-3">
+          <mat-select [(ngModel)]="selectedSubdepartment" placeholder="Select a subdepartment" (ngModelChange)="onSubdepartmentChange()" [ngModelOptions]="{standalone: true}">
+            <mat-option *ngFor="let subdepartment of this.AllSubDepartmentList" [value]="subdepartment.SubDepartmentID">{{ subdepartment.SubDepartmentName }}</mat-option>
+          </mat-select>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <mat-select [(ngModel)]="selectedZone" placeholder="Select a zone" [ngModelOptions]="{standalone: true}">
+            <mat-option *ngFor="let zone of this.ZonesList" [value]="zone.ZoneID">{{ zone.ZoneName }}</mat-option>
+          </mat-select>
+        </div>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="newName" placeholder="Enter First Name">
+          <label for="name">Name *</label>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="newSurname" placeholder="Enter Surname">
+          <label for="surname">Surname *</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="newCostCenterOwner" placeholder="Enter Cost Center Owner">
+          <label for="applicantTellNo">Cost Center Owner *</label>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="email" class="form-control" [(ngModel)]="newCostCenterNumber" placeholder="Enter Cost Center Number">
+          <label for="newCostCenterNumber">Cost Center Number *</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="tel" class="form-control" [(ngModel)]="newPhoneNumber" placeholder="Enter Tell No.">
+          <label for="newPhoneNumber" >Tell No *</label>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="tel" class="form-control" [(ngModel)]="newEmail" placeholder="Enter Email Address">
+          <label for="newEmail">Email *</label>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
