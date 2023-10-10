@@ -598,6 +598,8 @@
   <ItemGroup>
     <Folder Include="ClientApp\.angular\cache\14.2.4\angular-webpack\" />
     <Folder Include="ClientApp\src\app\service\Departments\" />
+    <Folder Include="ClientApp\src\app\service\NewFolder1\" />
+    <Folder Include="ClientApp\src\app\service\NewFolder\" />
     <Folder Include="ClientApp\src\app\service\ZoneLink\" />
     <Folder Include="ClientApp\src\app\service\Zones\" />
     <Folder Include="ClientApp\src\app\service\SubDepartments\" />
