@@ -1,17 +1,11 @@
-
-<ng-template #Notifications let-modal>
-  <div class="modal-header">
-    <h3>Welcome {{this.CurrentUser.fullName}} to your Notification Center</h3>
-    <button type="button" class="btn-close" aria-label="Close" (click)="onClose()"></button>
-  </div>
-  <div clase="modal-body">
+<h3>Welcome {{this.CurrentUser.fullName}} to your Notification Center</h3>
     <mat-tab-group>
       <mat-tab label="New Notifications">
         
           <div class="container-fluid" *ngFor="let notifications of NotificationsList">
 
             <div>
-              <button class="alert alert-primary noti-length" role="alert" (click)="getSelectedNotification(notifications.ApplicationID);modal.dismiss('Cross click')">
+              <button class="alert alert-primary noti-length" role="alert" (click)="getSelectedNotification(notifications.ApplicationID)">
                 <div>
                   <span style="font-size:20px;">{{notifications.NotificationName}} - Application {{notifications.ApplicationID}}</span>
                 </div>
@@ -28,7 +22,7 @@
         <div class="container-fluid" *ngFor="let notifications of OldNotificationsList">
 
           <div>
-            <button class="alert alert-primary noti-length" role="alert" (click)="getSelectedNotification(notifications.ApplicationID);modal.dismiss('Cross click')">
+            <button class="alert alert-primary noti-length" role="alert" (click)="getSelectedNotification(notifications.ApplicationID)">
               <div>
                 <span style="font-size:20px;">{{notifications.NotificationName}} - Application {{notifications.ApplicationID}}</span>
               </div>
@@ -42,8 +36,7 @@
       </mat-tab>
 
     </mat-tab-group>
-  </div>
-</ng-template>
+
 
 
 

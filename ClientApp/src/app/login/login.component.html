@@ -1,6 +1,9 @@
 <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700,800&display=swap" rel="stylesheet">
 <link _ngcontent-ng-cli-universal-c545="" href="https://fonts.googleapis.com/css?family=Roboto:300italic,400italic,400,100,300,600,700" rel="stylesheet" type="text/css">
-
+<script src="src/assets/js/all.js"></script>
+<script src="src/assets/js/all.min.js"></script>
+<link rel="stylesheet" href="/src/assets/all.css">
+<link rel="stylesheet" href="/src/assets/all.min.css">
 <body>
 
   <!--Background-->
@@ -48,11 +51,11 @@
             <a (click)="openForgotPassModal(forgotPasswordModal)" *ngIf="!isLoading">Forgot your password?</a>
             <button *ngIf="!isLoading" type="submit" [disabled]="!loginForm.valid" class="submit">Login</button> <!--(click)="login()"-->
             <div *ngIf="isLoading">
-           <!--   <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>-->
+              <!--   <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>-->
             </div>
           </form>
           <div *ngIf="isLoading">
-          <!--  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>-->
+            <!--  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>-->
           </div>
         </div>
 

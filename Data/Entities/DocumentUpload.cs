@@ -16,7 +16,7 @@ namespace WayleaveManagementSystem.Data.Entities
         public bool? isPlanning { get; set; }
         public bool? isRepository { get; set; }
         public string? DescriptionForRepoDoc { get; set; }
-        public int? ZoneID { get; set; }
+ 
 
     }
 }
