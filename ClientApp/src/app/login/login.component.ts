@@ -297,8 +297,11 @@ export class LoginComponent implements OnInit {
       }),
       switchMap((profileData: any) => {
         const userId = profileData.dateSet[0].userID;
+        debugger;
         localStorage.setItem("userProfile", JSON.stringify(profileData.dateSet));
+        debugger;
         return this.zoneLinkService.getAllUserLinks(userId).pipe(
+
           tap(data => console.log("getAllUserLinks response:", data))
         );
       }),
@@ -317,21 +320,25 @@ export class LoginComponent implements OnInit {
       tap((response: any) => {
         const zoneLinks = Array.isArray(response.dateSet) ? response.dateSet : [];
         const defaultZoneLink = zoneLinks.find(link => link.isDefault === true) || zoneLinks[0];
-
+        debugger;
         if (defaultZoneLink) {
+          debugger;
           let userProfile = JSON.parse(localStorage.getItem("userProfile") || '[]');
           console.log("Before Merge: ", { userProfile, defaultZoneLink }); // Debug objects before merging
-
+          debugger;
           // Ensure both objects are of the correct structure and userProfile is an array
           if (Array.isArray(userProfile)) {
+            debugger;
             // Merging and assuming userProfile has at least one object to merge with defaultZoneLink
             const mergedProfile = { ...userProfile[0], ...defaultZoneLink };
+            debugger;
             console.log("Merged Profile: ", mergedProfile);
-
+            debugger;
             // Making userProfile an array again after merge
             userProfile = [mergedProfile];
+            debugger;
             console.log("After Merge as Array: ", userProfile);
-
+            debugger;
             localStorage.setItem("userProfile", JSON.stringify(userProfile));
           } else {
             console.error("userProfile is not an array: ", userProfile);

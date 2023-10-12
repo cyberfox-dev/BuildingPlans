@@ -19,7 +19,7 @@ namespace WayleaveManagementSystem.Service
         }
 
         public async Task<ZoneLink> AddUpdateZoneLink(int? zoneLinkID,int? zoneID , string? zoneName, int? departmentID, int? subDepartmentID, string? subDepartmentName, string? assignedUserID, string? userType,string? createdById, bool? isDepartmentAdmin, bool? isZoneAdmin, int? accessGroupUserLinkID, string? accessGroupName)
-        public async Task<ZoneLink> AddUpdateZoneLink(int? zoneLinkID, int? zoneID, string? zoneName, int? departmentID, int? subDepartmentID, string? subDepartmentName, string? assignedUserID, string? userType, string? createdById, bool? isDepartmentAdmin, bool? isZoneAdmin)
+      
         {
             if (zoneLinkID == 0)
             {
@@ -56,8 +56,7 @@ namespace WayleaveManagementSystem.Service
                     ZoneName = zoneName,
                     AccessGroupUserLinkID = accessGroupUserLinkID,
                     AccessGroupName = accessGroupName,
-                    SubDepartmentName = subDepartmentName,
-                    ZoneName = zoneName,
+                 
                     isActive = true
                 };
 
@@ -128,7 +127,7 @@ namespace WayleaveManagementSystem.Service
                 return tempZoneLinksTable;
             }
 
-        }
+        
 
         public async Task<bool> DeleteZoneLink(int zoneLinkID)
         {
@@ -163,7 +162,7 @@ namespace WayleaveManagementSystem.Service
                     AssignedUserID = ZoneLink.AssignedUserID,
                     UserType = ZoneLink.UserType,
 
-                    AccessGroupUserLinkID = ZoneLink.AccessGroupUserLinkID,
+                   AccessGroupUserLinkID = ZoneLink.AccessGroupUserLinkID,
                     AcessGroupName = ZoneLink.AccessGroupName,
 
                     DateCreated = DateTime.Now,
@@ -192,7 +191,7 @@ namespace WayleaveManagementSystem.Service
                     DateUpdated = DateTime.Now,
                     isDepartmentAdmin = ZoneLink.isDepartmentAdmin,
                     isZoneAdmin = ZoneLink.isZoneAdmin,
-                    AccessGroupUserLinkID = ZoneLink.AccessGroupUserLinkID,
+                   AccessGroupUserLinkID = ZoneLink.AccessGroupUserLinkID,
                     AcessGroupName = ZoneLink.AccessGroupName,
 
                 }
@@ -211,6 +210,7 @@ namespace WayleaveManagementSystem.Service
                     ZoneLinkID = ZoneLink.ZoneLinkID,
                     DepartmentID = ZoneLink.DepartmentID,
                     SubDepartmentID = ZoneLink.SubDepartmentID,
+                    
 
                     AssignedUserID = ZoneLink.AssignedUserID,
                     UserType = ZoneLink.UserType,
@@ -230,7 +230,7 @@ namespace WayleaveManagementSystem.Service
                     isDefault = ZoneLink.isDefault,
 
                     AccessGroupName = ZoneLink.AccessGroupName,
-                    AccessGroupUserLinkID = ZoneLink.AccessGroupUserLinkID,
+     
 
 
                 }
