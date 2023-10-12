@@ -24,7 +24,7 @@ namespace WayleaveManagementSystem.Data.Entities
         public bool? isDefault { get; set; }
 
         public string? AccessGroupName { get; set; }
-        public string? AccessGroupUserLinkID { get; set; }
+        public int? AccessGroupUserLinkID { get; set; }// IDs are strings!!
 
     }
 }

@@ -4269,7 +4269,12 @@ this.Applications.push(tempApplicationList);
     if (this.isInternalUser) {
       this.internalUserSelected.emit();
       this.sharedService.option = 'proxy';
-      
+      if (this.isInternalUser == true) {
+
+      }
+      else {
+
+      }      
       this.openInternalUserClient(internalUser);
     } else {
       this.externalClientSelected.emit();

@@ -707,8 +707,11 @@ export class NewWayleaveComponent implements OnInit {
     }
     else if (this.option == "proxy") {
       debugger;
-      this.internalProxy = true; //I hope this will get me the right divs
+      this.external = false;
+      this.internalProxy = true;//I hope this will get me the right divs
+
       this.clientUserID = this.shared.clientUserID;
+
       //this.populateClientInfo(this.clientUserID);
       this.userPofileService.getUserProfileById(this.clientUserID).subscribe((data: any) => {
 
@@ -752,10 +755,6 @@ export class NewWayleaveComponent implements OnInit {
     else if (this.option == "internal" && this.option != 'proxy') {
       this.internal = true;
       this.external = false;
-
-
-
-
       this.userPofileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
@@ -1069,7 +1068,10 @@ export class NewWayleaveComponent implements OnInit {
         this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
           if (data.responseCode == 1) {
             debugger;
-            this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, null, this.CurrentUser.appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3, "Distributed", false, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
+            this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null,
+              null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE,
+              this.expectedStartDate, this.expectedEndType, null, this.CurrentUser.appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3,
+              "Distributed", false, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
               if (data.responseCode == 1) {
                 debugger;
                 alert("Application Created");
