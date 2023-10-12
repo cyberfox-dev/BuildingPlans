@@ -1,0 +1,60 @@
+.mat-FAQ {
+  margin: 10px;
+  background-color: #005a71;
+  color: white;
+}
+
+table {
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+
+.mat-column-CategoryName,
+.mat-column-Department,
+.mat-column-DateCreated,
+.mat-column-DateUpdated {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 1; 
+  width: auto !important; 
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+.mat-column-Actions {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 15% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  text-align: center;
+}
+
+.mat-orange {
+  background-color: #ff9900;
+  color: #fff;
+}
+
+
+.mat-warn {
+  margin: 10px;
+  background-color: #9d2235;
+  color: #fff;
+}
+
+.mat-success {
+  background-color: #005a71;
+  margin: 10px;
+  color: white;
+}
