@@ -1,48 +1,114 @@
-<h3>Welcome {{this.CurrentUser.fullName}} to your Notification Center</h3>
-    <mat-tab-group>
-      <mat-tab label="New Notifications">
-        
-          <div class="container-fluid" *ngFor="let notifications of NotificationsList">
+<div class="cont2">
+<h3 class="mat-dialog-title">Welcome {{ this.CurrentUser.fullName }} to your Notification Center</h3>
 
-            <div>
-              <button class="alert alert-primary noti-length" role="alert" (click)="getSelectedNotification(notifications.ApplicationID)">
-                <div>
-                  <span style="font-size:20px;">{{notifications.NotificationName}} - Application {{notifications.ApplicationID}}</span>
-                </div>
-                <div>
-
-                  <p>Application {{notifications.NotificationDescription}} on {{notifications.DateCreated}}</p>
-                </div>
-              </button>
-            </div>
-          </div>
-        
-      </mat-tab>
-      <mat-tab label="Old Notifications">
-        <div class="container-fluid" *ngFor="let notifications of OldNotificationsList">
-
-          <div>
-            <button class="alert alert-primary noti-length" role="alert" (click)="getSelectedNotification(notifications.ApplicationID)">
-              <div>
-                <span style="font-size:20px;">{{notifications.NotificationName}} - Application {{notifications.ApplicationID}}</span>
-              </div>
-              <div>
-
-                <p>Application {{notifications.NotificationDescription}} on {{notifications.DateCreated}}</p>
-              </div>
-            </button>
-          </div>
+<button mat-button mat-dialog-close><i class="fa fa-times" aria-hidden="true"></i></button>
+  </div>
+<mat-tab-group class="mat-dialog-content">
+  <mat-tab label="New Notifications">
+    <div class="timeline__event animated fade-in-bottom  timeline__event--type2" *ngFor="let notification of NotificationsList" (click)="getSelectedNotification(notification.ApplicationID)">
+      <div class="timeline__event__icon">
+        <div class="timeline__event__date">
+          {{ notification.NotificationName }}
+          <br>
+          <span class="daysAgo">{{ getTimeAgo(notification.DateCreated) }}</span>
         </div>
-      </mat-tab>
+      </div>
+      <div class="timeline__event__content">
+        <div class="timeline__event__title">
+          Application {{ notification.ApplicationID }}
+        </div>
+        <div class="timeline__event__description">
+          <p>Application {{ notification.ApplicationID }} has been created on {{ notification.DateCreated }}</p>
+        </div>
+      </div>
+    </div>
+  </mat-tab>
 
-    </mat-tab-group>
+  <mat-tab label="Old Notifications">
+
+    <div class="timeline__event animated fade-in-bottom  timeline__event--type2seen" *ngFor="let notifications of OldNotificationsList">
+      <div class="timeline__event__icon">
+        <div class="timeline__event__date">
+          {{notifications.NotificationName}}
+          <br>
+          <span class="daysAgo">  {{ getTimeAgo(notifications.DateCreated) }} </span>
+        </div>
+      </div>
+      <div class="timeline__event__content">
+        <div class="timeline__event__title">
+          Application {{notifications.ApplicationID}}
+        </div>
+        <div class="timeline__event__description">
+          <p>Application {{notifications.ApplicationID}} has been created on {{notifications.DateCreated}}</p>
+        </div>
+
+      </div>
+    </div>
+  </mat-tab>
+
+</mat-tab-group>
+
+<!--<div class="timeline">
+ 
+  <div class="timeline__event  animated fadeInUp delay-3s timeline__event--type1">
+    <div class="timeline__event__icon ">
+      <i class="lni-cake"></i>
+      <div class="timeline__event__date">
+        20-08-2019
+      </div>
+    </div>
+    <div class="timeline__event__content ">
+      <div class="timeline__event__title">
+        Birthday
+      </div>
+      <div class="timeline__event__description">
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vel, nam! Nam eveniet ut aliquam ab asperiores, accusamus iure veniam corporis incidunt reprehenderit accusantium id aut architecto harum quidem dolorem in!</p>
+      </div>
+    </div>
+  </div>
+  <div class="timeline__event animated fadeInUp delay-2s timeline__event--type2">
+    <div class="timeline__event__icon">
+      <i class="lni-burger"></i>
+      <div class="timeline__event__date">
+        20-08-2019
+      </div>
+    </div>
+    <div class="timeline__event__content">
+      <div class="timeline__event__title">
+        Lunch
+      </div>
+      <div class="timeline__event__description">
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vel, nam! Nam eveniet ut aliquam ab asperiores, accusamus iure veniam corporis incidunt reprehenderit accusantium id aut architecto harum quidem dolorem in!</p>
+      </div>
+    </div>
+  </div>
 
 
 
 
-<ng-template #Internal  let-modal>
+
+  <div class="timeline__event animated fadeInUp timeline__event--type1">
+    <div class="timeline__event__icon">
+      <i class="lni-cake"></i>
+      <div class="timeline__event__date">
+        20-08-2019
+      </div>
+    </div>
+    <div class="timeline__event__content">
+      <div class="timeline__event__title">
+        Birthday
+      </div>
+      <div class="timeline__event__description">
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vel, nam! Nam eveniet ut aliquam ab asperiores, accusamus iure veniam corporis incidunt reprehenderit accusantium id aut architecto harum quidem dolorem in!</p>
+      </div>
+    </div>
+  </div>
+
+</div>-->
+
+<ng-template #Internal let-modal>
   <div class="modal-header">
-    
+
     <div class=" notification-header">
       <div>
         <span style="font-size:35px;">{{this.MessageList.NotificationName}} - Application {{this.MessageList.ApplicationID}}</span>
@@ -52,15 +118,15 @@
         <p style="font-size:20px;">Application {{this.MessageList.NotificationDescription}}</p>
       </div>
     </div>
-   
+
     <button type="button" class="btn-close" aria-label="Close" (click)="onRefreshModal()"></button>
   </div>
-  <div class="modal-body" >
+  <div class="modal-body">
     <div class="email-body">
       <div class="email-content">
         <p>Dear  {{this.fullName}},</p>
         <p>{{this.MessageList.Message}}</p>
-        
+
       </div>
     </div>
     <div class="modal-footer">
