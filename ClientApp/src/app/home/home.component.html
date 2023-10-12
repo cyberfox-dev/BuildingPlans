@@ -10,7 +10,11 @@
   <link rel="stylesheet" href="/src/assets/all.min.css">
 </head>
 <!--<h1>Navbar</h1>-->
-<app-config-acting-department [isInternal]="CurrentUserProfile[0].isInternal"></app-config-acting-department>
+<button mat-fab [@fadeInAnimation]="" *ngIf="FilterBtn" class="floating-button" (click)="openUserActingDepModal()">
+  <!--color="configureActingDepartment"-->
+  <i class="fa fa-cog"></i>
+</button>
+
 
 
 
@@ -1329,30 +1333,3 @@
   </ng-template>
 
 
-  <ng-template #userDepartmentConfig let-modal>
-    <div class="modal-header">
-      <h6 class="modal-title" id="modal-basic-title">You May Change Your Acting Department And Zone</h6>
-      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-    </div>
-    <div class="modal-body">
-
-
-      <mat-form-field>
-        <mat-label>Select A Department</mat-label>
-        <mat-select [(value)]="selectedDep" [(ngModel)]="SelectActingDep">
-          <mat-option *ngFor="let department of SubDepartmentList" value="{{ department.subDepartmentID }}">{{ department.subDepartmentName }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field>
-        <mat-label>Select A Zone</mat-label>
-        <mat-select [(value)]="selectedZone" [(ngModel)]="SelectActingDZone">
-          <mat-option *ngFor="let zone of ZoneList" value="{{ zone.subDepartmentID }}">{{ zone.subDepartmentName }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outline-success" (click)="modal.dismiss('Cross click')">Continue</button>
-    </div>
-
-  </ng-template>

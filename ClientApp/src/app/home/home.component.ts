@@ -31,7 +31,8 @@ import { UserService } from '../service/User/user.service';
 import { NewProfileComponent } from '../new-user/new-profile/new-profile.component';
 import { BusinessPartnerService } from '../service/BusinessPartner/business-partner.service';
 import { ContractorList } from '../edit-contractor/edit-contractor.component';
-
+import { MatDialog } from '@angular/material/dialog';
+import { ConfigActingDepartmentComponent } from 'src/app/config-acting-department/config-acting-department.component';
 
 export interface EngineerList {
   professinalID: number;
@@ -345,8 +346,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   userID: any;
   FilterBtn: boolean = false;
   viewEscalateDate = 0;
-
-
+  selectedDep = 0;
+  SelectActingDep = '';
+  selectedZone = 0;
+  SelectActingDZone = '';
 
   constructor(
     private router: Router,
@@ -371,6 +374,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private newProfileComponent: NewProfileComponent,
     private businessPartnerService: BusinessPartnerService,
+    private dialog: MatDialog,
   ) {
     this.currentDate = new Date();
     this.previousMonth = this.currentDate.getMonth();
@@ -694,6 +698,14 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   openProcessFlowModal(processFlow: any) {
     this.modalService.open(processFlow, { centered: true, size: 'xl' });
+  }
+
+  openUserActingDepModal() {
+    this.dialog.open(ConfigActingDepartmentComponent, {
+      width: '60%',
+      maxHeight: 'calc(100vh - 90px)',
+      height: 'auto'
+    });
   }
 
   onAddNewClient() {
