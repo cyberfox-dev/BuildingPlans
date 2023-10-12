@@ -1113,7 +1113,7 @@ export class DepartmentConfigComponent implements OnInit {
           if (data.dateSet.length > 0) {
 
             
-            this.zoneLinkService.addUpdateZoneLink(data.dateSet[0].zoneLinkID, this.ZoneDropdown[selectedZone].zoneID, this.ZoneDropdown[selectedZone].zoneName, this.CurrentDepartmentID, this.SubDepartmentDropdown[selectedSubDep].subDepartmentID, this.SubDepartmentDropdown[selectedSubDep].subDepartmentName, current.id, null, this.CurrentUser.appUserId,false,false).subscribe((data: any) => {
+            this.zoneLinkService.addUpdateZoneLink(data.dateSet[0].zoneLinkID, this.ZoneDropdown[selectedZone].zoneID, this.ZoneDropdown[selectedZone].zoneName, this.CurrentDepartmentID, this.SubDepartmentDropdown[selectedSubDep].subDepartmentID, this.SubDepartmentDropdown[selectedSubDep].subDepartmentName, current.id, null, this.CurrentUser.appUserId,false,false, null, null).subscribe((data: any) => {
               ;
               if (data.responseCode == 1) {
                 alert(data.responseMessage);
@@ -1131,7 +1131,7 @@ export class DepartmentConfigComponent implements OnInit {
             })
           }
           else {
-            this.zoneLinkService.addUpdateZoneLink(0, this.ZoneDropdown[selectedZone].zoneID, this.ZoneDropdown[selectedZone].zoneName, this.CurrentDepartmentID, this.SubDepartmentDropdown[selectedSubDep].subDepartmentID, this.SubDepartmentDropdown[selectedSubDep].subDepartmentName, current.id, null, this.CurrentUser.appUserId, false, false).subscribe((data: any) => {
+            this.zoneLinkService.addUpdateZoneLink(0, this.ZoneDropdown[selectedZone].zoneID, this.ZoneDropdown[selectedZone].zoneName, this.CurrentDepartmentID, this.SubDepartmentDropdown[selectedSubDep].subDepartmentID, this.SubDepartmentDropdown[selectedSubDep].subDepartmentName, current.id, null, this.CurrentUser.appUserId, false, false, null, null).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
                 alert(data.responseMessage);

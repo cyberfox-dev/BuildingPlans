@@ -17,7 +17,7 @@ export class ZoneLinkService {
 
 
 
-  public addUpdateZoneLink(zoneLinkID: number | null, zoneID: number | null, zoneName: string | null, departmentID: number, subDepartmentID: number, subDepartmentName: string | null, assignedUserID: string | null, userType: string | null, createdById: string | null, isDepartmentAdmin: boolean | null, isZoneAdmin: boolean | null) {
+  public addUpdateZoneLink(zoneLinkID: number | null, zoneID: number | null, zoneName: string | null, departmentID: number, subDepartmentID: number, subDepartmentName: string | null, assignedUserID: string | null, userType: string | null, createdById: string | null, isDepartmentAdmin: boolean | null, isZoneAdmin: boolean | null, accessGroupUserLinkID: number | null, accessGroupName: string |null ) {
 
     const body = {
       ZoneLinkID: zoneLinkID,
@@ -31,6 +31,8 @@ export class ZoneLinkService {
       isZoneAdmin: isZoneAdmin,
       SubDepartmentName: subDepartmentName,
       ZoneName: zoneName,
+      AccessGroupUserLinkID: accessGroupUserLinkID,
+      AccessGroupName: accessGroupName,
       
     }
     return this.httpClient.post(this.baseURL + "AddUpdateZoneLink", body);
