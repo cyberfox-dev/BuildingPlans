@@ -1,12 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using WayleaveManagementSystem.IServices;
 using WayleaveManagementSystem.Models.BindingModel;
 using WayleaveManagementSystem.Models;
 using WayleaveManagementSystem.Service;
-using WayleaveManagementSystem.Data.Entities;
 using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.Data;
+using WayleaveManagementSystem.DTO;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using WayleaveManagementSystem.BindingModel;
+using WayleaveManagementSystem.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using WayleaveManagementSystem.Data;
+using System.Threading.Tasks;
+using System;
+using System.Linq;
+using System.Data;
 
 namespace WayleaveManagementSystem.Controllers
 {
@@ -29,7 +44,7 @@ namespace WayleaveManagementSystem.Controllers
 
                 var result = new object();
 
-                if (model == null)
+                if (model.DocumentsCategory == null || model.DepartmentID == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
@@ -64,7 +79,7 @@ namespace WayleaveManagementSystem.Controllers
                         tempDocumentsRepository = new DocumentsRepository()
                         {
                             DocumentsCategory = model.DocumentsCategory,
-                            DateUpdated = model.DateUpdated,
+                            DateUpdated = DateTime.Now,
 
                         };
                     }
@@ -77,22 +92,23 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-        [HttpGet("GetAllCategoriesByDepartmentID")]
-        public async Task<object> GetAllCategoriesByDepartmentID([FromBody] DocumentRepositoryBindingModel model)
+        [HttpGet("GetAllDocumentCategories")]
+        public async Task<object> GetAllDocumentCategories()
         {
             try
             {
                 var result = await (
-                from DocumentsRepository in _context.DocumentsRepository
-                where DocumentsRepository.DepartmentID == model.DepartmentID
-                select new DocumentsRepository()
+                from documentsRepository in _context.DocumentsRepository
+                where documentsRepository.isActive == true
+                select new DocumentRepositoryDTO()
                 {
-                    DocumentsRepositoryID = model.DepartmentID,
-                    DocumentsCategory = model.DocumentsCategory,
-                    DepartmentID = model.DepartmentID,
-                    DateCreated = model.DateCreated,
-                    DateUpdated = model.DateUpdated,
-                    CreatedById = model.CreatedById,
+                    DocumentsRepositoryID = documentsRepository.DocumentsRepositoryID,
+                    DocumentsCategory = documentsRepository.DocumentsCategory,
+                    DepartmentID = documentsRepository.DepartmentID,
+                    DateCreated = documentsRepository.DateCreated,
+                    DateUpdated = documentsRepository.DateUpdated,
+                    isActive = documentsRepository.isActive,
+                   
                 }
                 ).ToListAsync();
 
@@ -133,6 +149,37 @@ namespace WayleaveManagementSystem.Controllers
                     await _context.SaveChangesAsync();
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Document Category Deleted Successfully", true));
                 }
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+        [HttpPost("GetDocumentCategoryByDepartmentID")]
+        public async Task<object> GetDocumentCategoryByDepartmentID([FromBody]  int departmentID)
+        {
+            try
+            {
+
+                var result = await (from documentRepository in _context.DocumentsRepository
+                                    where documentRepository.isActive == true && documentRepository.DepartmentID == departmentID
+                                    select new DocumentsRepository()
+                                    {
+                                        DocumentsCategory = documentRepository.DocumentsCategory,
+                                        DepartmentID = documentRepository.DepartmentID,
+                                        DocumentsRepositoryID = documentRepository.DocumentsRepositoryID,
+                                        DateCreated = documentRepository.DateCreated, 
+                                        DateUpdated = documentRepository.DateUpdated,
+                                        isActive = documentRepository.isActive,
+                                    }).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got all document categories for department", result));
+
 
 
             }

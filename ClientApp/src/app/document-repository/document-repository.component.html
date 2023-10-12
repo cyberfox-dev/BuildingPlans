@@ -21,9 +21,8 @@
     <mat-label>Filter</mat-label>
     <mat-select [(value)]="selected" (selectionChange)="onOptionSelected($event);filerGroupName()">
       <mat-option value="All">All</mat-option>
-      <mat-option value="option1">General Documents</mat-option>
-      <mat-option value="option2">Terms and conditions</mat-option>
-      <mat-option value="option3">Layout Plans</mat-option>
+      <mat-option *ngFor="let filter of FilterList">{{filter.CategoryName}}</mat-option>
+      
     </mat-select>
   </mat-form-field>
 
