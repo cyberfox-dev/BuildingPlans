@@ -22,5 +22,8 @@
 
         public bool? isDepartmentAdmin { get; set; }
         public bool? isZoneAdmin { get; set; }
+
+        public  int? AccessGroupUserLinkID { get; set; }
+        public  string? AccessGroupName { get; set; }
     }
 }

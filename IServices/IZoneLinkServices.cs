@@ -7,7 +7,7 @@ namespace WayleaveManagementSystem.IServices
     public interface IZoneLinkServices
     {
         //Task<Zones> - This is the return type so its going to ruturn it in the fromt of the Zones model
-        public Task<ZoneLink> AddUpdateZoneLink(int? zoneLinkID, int? zoneID, string? zoneName, int? departmentID, int? subDepartmentID, string? subDepartmentName, string? assignedUserID, string? userType, string? createdById, bool? isDepartmentAdmin, bool? isZoneAdmin);
+        public Task<ZoneLink> AddUpdateZoneLink(int? zoneLinkID, int? zoneID, string? zoneName, int? departmentID, int? subDepartmentID, string? subDepartmentName, string? assignedUserID, string? userType, string? createdById, bool? isDepartmentAdmin, bool? isZoneAdmin, int? accessGroupUserLinkID, string? accessGroupName);
         //this will return T/F 
         public Task<bool> DeleteZoneLink(int zoneID);
 
