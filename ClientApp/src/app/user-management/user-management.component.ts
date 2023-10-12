@@ -136,9 +136,7 @@ export class UserManagementComponent implements OnInit {
     this.showLinkedUsers();
     this.getAllusersNotLinkedToDep();
     this.getAllAccessGroups();
-    this.addNewDepartmentUser();
-    this.getAllSubdepartments();
-    this.getSubdepartments();
+    //this.addNewDepartmentUser();
   }
 
   openAssignModal(content, index: any) {
@@ -828,17 +826,14 @@ export class UserManagementComponent implements OnInit {
     }
   }
 
-  newName: string = '';
-  newSurname: string = '';
-  newEmail: string = '';
-  newPhoneNumber: string = '';
+
+
   //isInternal, isActive
   newDirectorate: string = '';
   newDepartmentID: string = '';
   newSubDepartmentID: string = '';
   newBranch: string = '';
-  newCostCenterOwner: string = '';
-  newCostCenterNumber: string = '';
+
   newCreatedById: string = '';
   //need to be able to set this isDepartmentAdmin, isZoneAdmin
   //depConfirmation
@@ -850,40 +845,17 @@ export class UserManagementComponent implements OnInit {
 
 
   addNewDepartmentUser() {
+    debugger;
 
     if (this.loggedInUserDepartmentName == "EMB" || this.loggedInUsersDepartmentID == 28) {
       this.isEMBAdmin = true;
+      this.getAllSubdepartments();
+      console.log("Is this user in EMB???" + this.loggedInUserDepartmentName)
     }
     else {
       this.isEMBAdmin = false;
+      this.getSubdepartments();
     }
-  }
-  selectedSubdepartment: any;
-  selectedZone: any;
-  onSubdepartmentChange() {
-    // Update data or perform actions based on the selected subdepartment
-    this.getZones(this.selectedSubdepartment).subscribe((data: any) => {
-      if (data.responseCode == 1) {
-        
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempZonesList = {} as ZonesList;
-          const current = data.dateSet[i];
-          tempZonesList.ZoneID = current.zoneID;
-          tempZonesList.ZoneName = current.zoneName;
-          tempZonesList.DepartmentID = current.DepartmentID;
-          tempZonesList.SubDepartmentID = current.SubDepartmentID;
-          this.ZonesList.push(tempZonesList);
-        }
-        console.log("ZonesList ", this.ZonesList);
-      } else {
-        alert(data.responseMessage);
-      }
-    }, error => {
-      console.log("ZonesList error: ", error);
-    });
-
-    // Trigger change detection to update the template
-    this.cdr.detectChanges();
   }
 
   getSubdepartments() {
@@ -938,6 +910,32 @@ export class UserManagementComponent implements OnInit {
       console.log("SubDepartmentList: ", error);
     })
   }
+  onSubdepartmentChange() {
+    // Update data or perform actions based on the selected subdepartment
+    //this.ZonesList = [];
+    this.getZones(this.selectedSubdepartment).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempZonesList = {} as ZonesList;
+          const current = data.dateSet[i];
+          tempZonesList.ZoneID = current.zoneID;
+          tempZonesList.ZoneName = current.zoneName;
+          tempZonesList.DepartmentID = current.DepartmentID;
+          tempZonesList.SubDepartmentID = current.SubDepartmentID;
+          //this.ZonesList.push(tempZonesList); //so I was essentially pushing the zones list twice! **face palm*
+        }
+        //console.log("ZonesList ", this.ZonesList);
+      } else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("ZonesList error: ", error);
+    });
+
+    // Trigger change detection to update the template
+    //this.cdr.detectChanges();
+  }
   getZones(subDeptID: any): Observable<any> { // Change the return type to Observable<any>
     debugger;
     console.log('subDeptID:', subDeptID);
@@ -965,7 +963,65 @@ export class UserManagementComponent implements OnInit {
       );
   }
 
+  selectedSubdepartment: any;
+  selectedZone: any;
 
+  newName: string = '';
+  newSurname: string = '';
+  newCostCenterOwner: string = '';
+  newCostCenterNumber: string = '';
+  newEmail: string = '';
+  newPhoneNumber: string = '';
+
+  verifyingTheAddition(
+  ) {
+    let internalSubdepartment = this.selectedSubdepartment;
+    let internalZone = this.selectedZone;
+    let internalName = this.newName;
+    let internalSurname = this.newSurname;
+    let internalCostCenterOwner = this.newCostCenterOwner;
+    let internalCostCenterNumber = this.newCostCenterNumber;
+    let internalPhoneNumber = this.newPhoneNumber;
+    let internalEmail = this.newEmail + "@capetown.gov.za";
+
+    //choose to the option to be able to leave the cost centre things and phone number empty
+
+    const emailRegex: RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    if (internalSubdepartment !== null &&
+        internalZone !== null &&
+        internalName !== null &&
+        internalSurname !== null &&
+        internalEmail !== null) {
+
+      if (!emailRegex.test(internalEmail)) {
+        alert("Please enter a valid email address");
+      }
+      else {
+
+      }
+
+
+
+
+
+
+
+
+
+
+
+    }
+    else {
+      alert('Please fill in all required fields.');
+    }
+
+  }
+
+  addingTheUser() {
+
+    
+  }
 }
 
 

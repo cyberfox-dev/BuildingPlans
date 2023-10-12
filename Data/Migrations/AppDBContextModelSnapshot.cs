@@ -1705,6 +1705,12 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("ZoneLinkID"), 1L, 1);
 
+                    b.Property<string>("AccessGroupName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AccessGroupUserLinkID")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("AssignedUserID")
                         .HasColumnType("nvarchar(max)");
 
