@@ -10,7 +10,11 @@
   <link rel="stylesheet" href="/src/assets/all.min.css">
 </head>
 <!--<h1>Navbar</h1>-->
-<app-config-acting-department [isInternal]="CurrentUserProfile[0].isInternal"></app-config-acting-department>
+<button mat-fab [@fadeInAnimation]="" *ngIf="FilterBtn" class="floating-button" (click)="openUserActingDepModal()">
+  <!--color="configureActingDepartment"-->
+  <i class="fa fa-cog"></i>
+</button>
+
 
 
 
@@ -37,7 +41,7 @@
 
   <div class="main-container animationFadeIn">
 
-    <div class="cards" *ngIf="cardFilters" >
+    <div class="cards" *ngIf="cardFilters">
       <div class="card card-5" (click)="filterByUnpaid()">
         <h4>Unpaid</h4>
         <h1 class="num">{{unpaidcount}}</h1>
@@ -394,7 +398,6 @@
 
         <table mat-table [dataSource]="dataSourceLinkAllUsers" class="mat-elevation-z8">
           <!--*ngIf="showZoneUserTable"-->
-
           <!--<ng-container matColumnDef="idNumber">
             <th mat-header-cell *matHeaderCellDef> ID Number </th>
             <td mat-cell *matCellDef="let element"> {{element.idNumber}} </td>
@@ -1328,3 +1331,5 @@
       <button type="button" class="btn btn-outline-success" (click)="saveAllEngineers();saveAllContractors();populateClientInfo();modal.close('Save click');">Create Wayleave</button>
     </div>
   </ng-template>
+
+
