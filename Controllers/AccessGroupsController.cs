@@ -693,6 +693,8 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+
+
         [HttpPost("GetUserAndZoneBasedOnRoleName")]
         public async Task<object> GetUserAndZoneBasedOnRoleName([FromBody] AccessGroupsBindingModel model)
         {

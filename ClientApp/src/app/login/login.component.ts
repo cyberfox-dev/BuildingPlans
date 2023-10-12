@@ -14,7 +14,8 @@ import { BpNumberService } from 'src/app/service/BPNumber/bp-number.service'
 import { tap } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ConfigService } from 'src/app/service/Config/config.service';
-import {  ZoneLinkService} from 'src/app/service/ZoneLink/zone-link.service';
+import { ZoneLinkService } from 'src/app/service/ZoneLink/zone-link.service';
+import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
 import { delay } from 'rxjs/operators';
 export interface ConfigList {
   configID: number,
@@ -106,6 +107,7 @@ export class LoginComponent implements OnInit {
     private bpNumberService: BpNumberService,
     private configService: ConfigService,
     private zoneLinkService: ZoneLinkService,
+    private accessGroupsService: AccessGroupsService,
     private route: ActivatedRoute
   ) {     //Run this before anything else because weaccess the apiURL from it.
     this.getConfig();
@@ -279,6 +281,7 @@ export class LoginComponent implements OnInit {
     const currentUser = JSON.parse(localStorage.getItem("LoggedInUserInfo"));
     return this.userPofileService.getUserProfileById(currentUser.appUserId);
   }
+
 
 
   onLogin() {
