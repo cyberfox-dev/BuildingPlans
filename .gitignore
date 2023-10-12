@@ -241,3 +241,6 @@ _Pvt_Extensions
 /Resources/DocumentUpload
 /ClientApp/.env.local
 /ClientApp/src/.env.local
+/Data/Entities/DraftedProjects.cs
+/Models/BindingModel/DraftedProjectsBindingModel.cs
+/Models/DTO/DraftedProjectsDTO.cs

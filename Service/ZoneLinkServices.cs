@@ -18,7 +18,8 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<ZoneLink> AddUpdateZoneLink(int? zoneLinkID,int? zoneID , string? zoneName, int? departmentID, int? subDepartmentID, string? subDepartmentName, string? assignedUserID, string? userType,string? createdById, bool? isDepartmentAdmin, bool? isZoneAdmin)
+        public async Task<ZoneLink> AddUpdateZoneLink(int? zoneLinkID,int? zoneID , string? zoneName, int? departmentID, int? subDepartmentID, string? subDepartmentName, string? assignedUserID, string? userType,string? createdById, bool? isDepartmentAdmin, bool? isZoneAdmin, int? accessGroupUserLinkID, string? accessGroupName)
+      
         {
             if (zoneLinkID == 0)
             {
@@ -49,10 +50,13 @@ namespace WayleaveManagementSystem.Service
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     CreatedById = createdById,
-                    isDepartmentAdmin = isDepartmentAdmin,  
+                    isDepartmentAdmin = isDepartmentAdmin,
                     isZoneAdmin = isZoneAdmin,
                     SubDepartmentName = subDepartmentName,  
-                    ZoneName = zoneName,    
+                    ZoneName = zoneName,
+                    AccessGroupUserLinkID = accessGroupUserLinkID,
+                    AccessGroupName = accessGroupName,
+                 
                     isActive = true
                 };
 
@@ -98,21 +102,32 @@ namespace WayleaveManagementSystem.Service
                 if (isDepartmentAdmin != null)
                 {
                     tempZoneLinksTable.isDepartmentAdmin = isDepartmentAdmin;
-                } 
+                }
                 if (isZoneAdmin != null)
                 {
                     tempZoneLinksTable.isZoneAdmin = isZoneAdmin;
+                }  
+                
+                if (accessGroupName != null)
+                {
+                    tempZoneLinksTable.AccessGroupName = accessGroupName;
+                } 
+                if (accessGroupUserLinkID != null)
+                {
+                    tempZoneLinksTable.AccessGroupUserLinkID = accessGroupUserLinkID;
                 } 
 
+                }
+
                 tempZoneLinksTable.DateUpdated = DateTime.Now;
-             
+
 
                 _context.Update(tempZoneLinksTable);
                 await _context.SaveChangesAsync();
                 return tempZoneLinksTable;
             }
 
-        }
+        
 
         public async Task<bool> DeleteZoneLink(int zoneLinkID)
         {
@@ -147,6 +162,9 @@ namespace WayleaveManagementSystem.Service
                     AssignedUserID = ZoneLink.AssignedUserID,
                     UserType = ZoneLink.UserType,
 
+                   AccessGroupUserLinkID = ZoneLink.AccessGroupUserLinkID,
+                    AcessGroupName = ZoneLink.AccessGroupName,
+
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
 
@@ -159,7 +177,7 @@ namespace WayleaveManagementSystem.Service
         {
             return await (
                 from ZoneLink in _context.ZoneLinkTable
-                    where ZoneLink.SubDepartmentID == subDepartmentID && ZoneLink.AssignedUserID == userID && ZoneLink.isActive == true
+                where ZoneLink.SubDepartmentID == subDepartmentID && ZoneLink.AssignedUserID == userID && ZoneLink.isActive == true
                 select new ZoneLinkDTO()
                 {
                     ZoneLinkID = ZoneLink.ZoneLinkID,
@@ -173,6 +191,8 @@ namespace WayleaveManagementSystem.Service
                     DateUpdated = DateTime.Now,
                     isDepartmentAdmin = ZoneLink.isDepartmentAdmin,
                     isZoneAdmin = ZoneLink.isZoneAdmin,
+                   AccessGroupUserLinkID = ZoneLink.AccessGroupUserLinkID,
+                    AcessGroupName = ZoneLink.AccessGroupName,
 
                 }
                 ).ToListAsync();
@@ -184,20 +204,34 @@ namespace WayleaveManagementSystem.Service
         {
             return await (
                 from ZoneLink in _context.ZoneLinkTable
-                    where ZoneLink.AssignedUserID == userID && ZoneLink.isActive == true
+                where ZoneLink.AssignedUserID == userID && ZoneLink.isActive == true
                 select new ZoneLinkDTO()
                 {
                     ZoneLinkID = ZoneLink.ZoneLinkID,
                     DepartmentID = ZoneLink.DepartmentID,
                     SubDepartmentID = ZoneLink.SubDepartmentID,
+                    
 
                     AssignedUserID = ZoneLink.AssignedUserID,
                     UserType = ZoneLink.UserType,
+                    AccessGroupUserLinkID = ZoneLink.AccessGroupUserLinkID,
+                    AcessGroupName = ZoneLink.AccessGroupName,
 
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
 
                     ZoneID = ZoneLink.ZoneID,
+                    SubDepartmentName = ZoneLink.SubDepartmentName,
+                    ZoneName = ZoneLink.ZoneName,
+                    
+
+                    isDepartmentAdmin = ZoneLink.isDepartmentAdmin,
+                    isZoneAdmin = ZoneLink.isZoneAdmin,
+                    isDefault = ZoneLink.isDefault,
+
+                    AccessGroupName = ZoneLink.AccessGroupName,
+     
+
 
                 }
                 ).ToListAsync();
@@ -231,7 +265,7 @@ namespace WayleaveManagementSystem.Service
         {
             return await (
                 from ZoneLink in _context.ZoneLinkTable
-                    where ZoneLink.AssignedUserID == userID && ZoneLink.isActive == false
+                where ZoneLink.AssignedUserID == userID && ZoneLink.isActive == false
                 select new ZoneLinkDTO()
                 {
                     ZoneLinkID = ZoneLink.ZoneLinkID,

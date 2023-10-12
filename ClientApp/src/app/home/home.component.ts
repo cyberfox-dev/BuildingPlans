@@ -298,7 +298,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   clientCompanyName = '';
   clientCompanyRegNo = '';
   clientCompanyType = '';
-  clientIDNumber = ''; //This was made ready, but was ultimately not pushed into function...
+  clientIDNumber = ''; //This was made ready, but was ultimately not pushed into function... 
   clientPhysicalAddress = '';
   clientBpNumber = '';
 
@@ -493,7 +493,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
     setTimeout(() => {
-
+      debugger;
       this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
       this.CurrentUser = JSON.parse(this.stringifiedData);
       this.getAllStages();
@@ -940,6 +940,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
   }
+
   populateClientInfo() {
     if (confirm("Are you sure you are done?")) {
       debugger;
@@ -949,6 +950,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   }
+
   UpdateProjectNumberConfig() {
 
     /*    if (this.CurrentUserProfile[0].isInternal == false) {
@@ -4267,7 +4269,12 @@ this.Applications.push(tempApplicationList);
     if (this.isInternalUser) {
       this.internalUserSelected.emit();
       this.sharedService.option = 'proxy';
-      
+      if (this.isInternalUser == true) {
+
+      }
+      else {
+
+      }      
       this.openInternalUserClient(internalUser);
     } else {
       this.externalClientSelected.emit();

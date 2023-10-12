@@ -20,7 +20,18 @@
         public string? CreatedById { get; set; }
         public string? AppUserID { get; set; }
 
+
+
+
         public bool? isDepartmentAdmin { get; set; }
         public bool? isZoneAdmin { get; set; }
+        public bool? isDefault { get; set; }
+
+        public string? AccessGroupName { get; set; }
+       // public string? AccessGroupUserLinkID { get; set; }
+
+
+        public  int? AccessGroupUserLinkID { get; set; }
+      //  public  string? AccessGroupName { get; set; }
     }
 }

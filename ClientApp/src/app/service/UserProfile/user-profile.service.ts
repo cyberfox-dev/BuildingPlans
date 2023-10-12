@@ -25,7 +25,7 @@ export class UserProfileService {
     phoneNumber?: string | null, isInternal?: boolean | null, bp_Number?: string | null, companyName?: string | null, companyRegNo?: string | null,
     physcialAddress?: string | null, directorate?: string | null, departmentID?: number | null, subDepartmentID?: number | null, branch?: string | null,
     costCenterNumber?: string | null, costCenterOwner?: string | null, copyOfID?: any | null, createdById?: string | null, idNumber?: string | null,
-    zoneID?: number | null, vatNumber?: string | null, refNumber?: string | null, companyType?: string | null, isDepartmentAdmin?: boolean | null , isZoneAdmin?:boolean | null) {
+    zoneID?: number | null, vatNumber?: string | null, refNumber?: string | null, companyType?: string | null, isDepartmentAdmin?: boolean | null , isZoneAdmin?:boolean | null, subDepartmentName?:string|null) {
 
     const body = {
       UserProfileID: userProfileID,
@@ -57,7 +57,9 @@ export class UserProfileService {
       companyType: companyType,
 
       isDepartmentAdmin: isDepartmentAdmin,
-      isZoneAdmin: isZoneAdmin
+      isZoneAdmin: isZoneAdmin,
+
+      subDepartmentName: subDepartmentName
 
     }
     return this.httpClient.post(this.baseURL + "AddUpdateUserProfiles", body);

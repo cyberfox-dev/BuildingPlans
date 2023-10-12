@@ -25,6 +25,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { ChangeDetectorRef } from '@angular/core';
 import { ViewChildren } from '@angular/core';
+import { DocumentRepositoryConfigService } from '../service/DocumentRepositoryConfig/document-repository-config.service';
 export interface DocumentsList {
   DocumentID: number;
   DocumentName: string;
@@ -64,6 +65,10 @@ export interface UserList {
   DepartmentID: number;
   SubDepID: number;
 }
+export interface FilterList {
+  CategoryName: string;
+  CategoryID: number;
+}
 @Component({
   selector: 'app-document-repository',
   templateUrl: './document-repository.component.html',
@@ -81,6 +86,7 @@ export class DocumentRepositoryComponent implements OnInit {
   RolesList: RolesList[] = [];
   SubDepartmentList: SubDepartmentList[] = [];
   UserList: UserList[] = [];
+  FilterList: FilterList[] = [];
   SubDepartmentListFORDOCUMENTS: SubDepartmentListFORDOCUMENTS[] = [];
   selected = 'none';
   select = 1;
@@ -93,7 +99,7 @@ export class DocumentRepositoryComponent implements OnInit {
   selectDepForUpload = 0;
   stringifiedData: any;
   CurrentUser: any;
-  constructor(private accessGroupsService: AccessGroupsService, private http: HttpClient, private documentUploadService: DocumentUploadService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private subDepartment: SubDepartmentsService, private applicationsService: ApplicationsService, private faq: FrequentlyAskedQuestionsService, private cdr: ChangeDetectorRef, private dialog: MatDialog, private modalService: NgbModal) { }
+  constructor(private accessGroupsService: AccessGroupsService, private http: HttpClient, private documentUploadService: DocumentUploadService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private subDepartment: SubDepartmentsService, private applicationsService: ApplicationsService, private faq: FrequentlyAskedQuestionsService, private cdr: ChangeDetectorRef, private dialog: MatDialog, private modalService: NgbModal, private documentRepositoryConfigService: DocumentRepositoryConfigService) { }
   @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
   @ViewChild(MatTable) DocumentsListTable: MatTable<DocumentsList> | undefined;
   displayedColumns: string[] = ['DocumentName'];
@@ -103,6 +109,8 @@ expandedElement = this.DocumentsList;
   pageSize = 5;
   pageSizeOptions: number[] = [5, 10, 25, 50];
   length: any;
+  departmentID: number;
+  
 
   ngOnInit(): void {
     debugger;
@@ -558,9 +566,16 @@ expandedElement = this.DocumentsList;
         this.dataSource.data = this.DocumentsList.filter(df => df.DateCreated && df.SubDepartmentID == this.select);
       }
       else {
+        
         console.log(this.selectedOptionText);
         this.dataSource.data = this.DocumentsList.filter(df => df.GroupName == this.selectedOptionText && df.SubDepartmentID == this.select);
         console.log("FilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterFilterubDepartmentID == this.select))", this.DocumentsList.filter(df => df.SubDepartmentID == this.select))
+      }
+      for (let i = 0; i < this.SubDepartmentList.length; i++) {
+        if (this.SubDepartmentList[i].subDepartmentID.toString() === this.selectDepFilterName) {
+          this.departmentID = this.SubDepartmentList[i].departmentID;
+          this.getDocumentFilterList(this.departmentID);
+        }
       }
     }
 
@@ -642,5 +657,33 @@ expandedElement = this.DocumentsList;
   }
   @ViewChild('fileInput')
   fileInput!: ElementRef;
- 
+
+  getDocumentFilterList(departmentID: number) {
+    debugger;
+    this.FilterList.splice(0, this.FilterList.length);
+    this.documentRepositoryConfigService.GetDocumentCategoryByDepartmentID(departmentID).subscribe((data: any) => {
+      if (data.responseCode === 1)
+      {
+        debugger;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempFilterList = {} as FilterList;
+          const current = data.dateSet[i];
+
+          tempFilterList.CategoryName = current.documentsCategory;
+
+          this.FilterList.push(tempFilterList);
+          debugger;
+        }
+
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponseGetAllDocsForApplication", data);
+
+    }, error => {
+      console.log("ErrorGetAllDocsForApplication: ", error);
+    })
+  }
 }
