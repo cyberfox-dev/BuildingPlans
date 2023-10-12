@@ -14,6 +14,7 @@ import { BpNumberService } from 'src/app/service/BPNumber/bp-number.service'
 import { tap } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ConfigService } from 'src/app/service/Config/config.service';
+import {  ZoneLinkService} from 'src/app/service/ZoneLink/zone-link.service';
 import { delay } from 'rxjs/operators';
 export interface ConfigList {
   configID: number,
@@ -104,6 +105,7 @@ export class LoginComponent implements OnInit {
     private modalService: NgbModal,
     private bpNumberService: BpNumberService,
     private configService: ConfigService,
+    private zoneLinkService: ZoneLinkService,
     private route: ActivatedRoute
   ) {     //Run this before anything else because weaccess the apiURL from it.
     this.getConfig();
@@ -280,8 +282,6 @@ export class LoginComponent implements OnInit {
 
 
   onLogin() {
-    // Removed the checkBPValidity and its warning
-
     this.isLoading = true;
     const email = this.loginForm.controls["email"].value;
     const password = this.loginForm.controls["password"].value;
@@ -292,23 +292,64 @@ export class LoginComponent implements OnInit {
           localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
           return this.getUserProfile();
         } else {
-          // Throw error if login failed
           throw new Error(data.responseMessage);
         }
       }),
       switchMap((profileData: any) => {
+        const userId = profileData.dateSet[0].userID;
         localStorage.setItem("userProfile", JSON.stringify(profileData.dateSet));
-        return of(true); // Return an observable of true to proceed with the rest of the flow
+        return this.zoneLinkService.getAllUserLinks(userId).pipe(
+          tap(data => console.log("getAllUserLinks response:", data))
+        );
       }),
-      delay(5000) // Delay for 5 seconds after successful login and profile retrieval
+      //tap((response: any) => {
+      //  const zoneLinks = Array.isArray(response.dateSet) ? response.dateSet : [];
+      //  const defaultZoneLink = zoneLinks.find(link => link.isDefault === true) || zoneLinks[0];
+
+      //  if (defaultZoneLink) {
+      //    debugger;
+      //    const userProfile = JSON.parse(localStorage.getItem("userProfile"));
+      //    const mergedData = { ...userProfile, ...defaultZoneLink };
+      //    localStorage.setItem("userProfile", JSON.stringify(mergedData));
+      //  }
+      //}),
+
+      tap((response: any) => {
+        const zoneLinks = Array.isArray(response.dateSet) ? response.dateSet : [];
+        const defaultZoneLink = zoneLinks.find(link => link.isDefault === true) || zoneLinks[0];
+
+        if (defaultZoneLink) {
+          let userProfile = JSON.parse(localStorage.getItem("userProfile") || '[]');
+          console.log("Before Merge: ", { userProfile, defaultZoneLink }); // Debug objects before merging
+
+          // Ensure both objects are of the correct structure and userProfile is an array
+          if (Array.isArray(userProfile)) {
+            // Merging and assuming userProfile has at least one object to merge with defaultZoneLink
+            const mergedProfile = { ...userProfile[0], ...defaultZoneLink };
+            console.log("Merged Profile: ", mergedProfile);
+
+            // Making userProfile an array again after merge
+            userProfile = [mergedProfile];
+            console.log("After Merge as Array: ", userProfile);
+
+            localStorage.setItem("userProfile", JSON.stringify(userProfile));
+          } else {
+            console.error("userProfile is not an array: ", userProfile);
+          }
+        }
+      }),
+
+
+
+      catchError(error => {
+        console.error("Failed in the pipeline", error);
+        return throwError(error);
+      }),
+      delay(5000) // Delay for 5 seconds
     ).subscribe(
       () => {
         this.router.navigate(["/home"]);
-
-        // Wait for an additional 5 seconds before setting isLoading to false
-
         this.isLoading = false;
-
       },
       (error) => {
         console.log("Error: ", error);
@@ -317,6 +358,50 @@ export class LoginComponent implements OnInit {
       }
     );
   }
+
+ 
+
+
+
+  //old login 10-10-23
+  //onLogin() {
+  //  // Removed the checkBPValidity and its warning
+
+  //  this.isLoading = true;
+  //  const email = this.loginForm.controls["email"].value;
+  //  const password = this.loginForm.controls["password"].value;
+
+  //  this.userService.login(email, password).pipe(
+  //    switchMap((data: any) => {
+  //      if (data.responseCode === 1) {
+  //        localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
+  //        return this.getUserProfile();
+  //      } else {
+  //        // Throw error if login failed
+  //        throw new Error(data.responseMessage);
+  //      }
+  //    }),
+  //    switchMap((profileData: any) => {
+  //      localStorage.setItem("userProfile", JSON.stringify(profileData.dateSet));
+  //      return of(true); // Return an observable of true to proceed with the rest of the flow
+  //    }),
+  //    delay(5000) // Delay for 5 seconds after successful login and profile retrieval
+  //  ).subscribe(
+  //    () => {
+  //      this.router.navigate(["/home"]);
+
+  //      // Wait for an additional 5 seconds before setting isLoading to false
+
+  //      this.isLoading = false;
+
+  //    },
+  //    (error) => {
+  //      console.log("Error: ", error);
+  //      this.isLoading = false;
+  //      this.error = error.message;
+  //    }
+  //  );
+  //}
 
 
   //onLogin() {

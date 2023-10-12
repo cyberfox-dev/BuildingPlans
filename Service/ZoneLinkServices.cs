@@ -18,7 +18,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<ZoneLink> AddUpdateZoneLink(int? zoneLinkID,int? zoneID , string? zoneName, int? departmentID, int? subDepartmentID, string? subDepartmentName, string? assignedUserID, string? userType,string? createdById, bool? isDepartmentAdmin, bool? isZoneAdmin)
+        public async Task<ZoneLink> AddUpdateZoneLink(int? zoneLinkID, int? zoneID, string? zoneName, int? departmentID, int? subDepartmentID, string? subDepartmentName, string? assignedUserID, string? userType, string? createdById, bool? isDepartmentAdmin, bool? isZoneAdmin)
         {
             if (zoneLinkID == 0)
             {
@@ -49,10 +49,10 @@ namespace WayleaveManagementSystem.Service
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     CreatedById = createdById,
-                    isDepartmentAdmin = isDepartmentAdmin,  
+                    isDepartmentAdmin = isDepartmentAdmin,
                     isZoneAdmin = isZoneAdmin,
-                    SubDepartmentName = subDepartmentName,  
-                    ZoneName = zoneName,    
+                    SubDepartmentName = subDepartmentName,
+                    ZoneName = zoneName,
                     isActive = true
                 };
 
@@ -98,14 +98,14 @@ namespace WayleaveManagementSystem.Service
                 if (isDepartmentAdmin != null)
                 {
                     tempZoneLinksTable.isDepartmentAdmin = isDepartmentAdmin;
-                } 
+                }
                 if (isZoneAdmin != null)
                 {
                     tempZoneLinksTable.isZoneAdmin = isZoneAdmin;
-                } 
+                }
 
                 tempZoneLinksTable.DateUpdated = DateTime.Now;
-             
+
 
                 _context.Update(tempZoneLinksTable);
                 await _context.SaveChangesAsync();
@@ -159,7 +159,7 @@ namespace WayleaveManagementSystem.Service
         {
             return await (
                 from ZoneLink in _context.ZoneLinkTable
-                    where ZoneLink.SubDepartmentID == subDepartmentID && ZoneLink.AssignedUserID == userID && ZoneLink.isActive == true
+                where ZoneLink.SubDepartmentID == subDepartmentID && ZoneLink.AssignedUserID == userID && ZoneLink.isActive == true
                 select new ZoneLinkDTO()
                 {
                     ZoneLinkID = ZoneLink.ZoneLinkID,
@@ -184,7 +184,7 @@ namespace WayleaveManagementSystem.Service
         {
             return await (
                 from ZoneLink in _context.ZoneLinkTable
-                    where ZoneLink.AssignedUserID == userID && ZoneLink.isActive == true
+                where ZoneLink.AssignedUserID == userID && ZoneLink.isActive == true
                 select new ZoneLinkDTO()
                 {
                     ZoneLinkID = ZoneLink.ZoneLinkID,
@@ -198,6 +198,17 @@ namespace WayleaveManagementSystem.Service
                     DateUpdated = DateTime.Now,
 
                     ZoneID = ZoneLink.ZoneID,
+                    SubDepartmentName = ZoneLink.SubDepartmentName,
+                    ZoneName = ZoneLink.ZoneName,
+                    
+
+                    isDepartmentAdmin = ZoneLink.isDepartmentAdmin,
+                    isZoneAdmin = ZoneLink.isZoneAdmin,
+                    isDefault = ZoneLink.isDefault,
+
+                    AccessGroupName = ZoneLink.AccessGroupName,
+                    AccessGroupUserLinkID = ZoneLink.AccessGroupUserLinkID,
+
 
                 }
                 ).ToListAsync();
@@ -231,7 +242,7 @@ namespace WayleaveManagementSystem.Service
         {
             return await (
                 from ZoneLink in _context.ZoneLinkTable
-                    where ZoneLink.AssignedUserID == userID && ZoneLink.isActive == false
+                where ZoneLink.AssignedUserID == userID && ZoneLink.isActive == false
                 select new ZoneLinkDTO()
                 {
                     ZoneLinkID = ZoneLink.ZoneLinkID,

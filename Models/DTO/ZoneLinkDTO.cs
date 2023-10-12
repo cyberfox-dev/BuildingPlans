@@ -22,7 +22,13 @@
 
         public string? ZoneName { get; set; }
 
+
         public bool? isDepartmentAdmin { get; set; }
         public bool? isZoneAdmin { get; set; }
+        public bool? isDefault { get; set; }
+
+        public string? AccessGroupName { get; set; }
+        public string? AccessGroupUserLinkID { get; set; }
+
     }
 }
