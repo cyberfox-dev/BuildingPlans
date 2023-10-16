@@ -81,5 +81,35 @@ namespace WayleaveManagementSystem.Controllers
                 return BadRequest(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
+        [HttpPost("GetAccessGroupsBySubDeptZoneAndUserID")]
+        public async Task<IActionResult> GetAccessGroupsBySubDeptZoneAndUserID([FromBody] AccessGroupUserLinkBindingModel model)
+        {
+            try
+            {
+                var result = await (
+                    from accessGL in _context.AccessGroupUserLink
+                    where accessGL.isActive && accessGL.UserID == model.UserID && accessGL.ZoneID == model.ZoneID && accessGL.SubDepartmentID == model.SubDepartmentID
+                    select new AccessGroupsDTO()
+                    {
+                        AccessGroupUserLinkID = accessGL.AccessGroupUserLinkID,
+                        AccessGroupID = accessGL.AccessGroupID,
+                        ZoneID = accessGL.ZoneID,
+                        SubDepartmentID = accessGL.SubDepartmentID,
+                        UserID = accessGL.UserID,
+                        DateCreated = accessGL.DateCreated,
+                        DateUpdated = accessGL.DateUpdated,
+                        CreatedById = accessGL.CreatedById,
+                    }
+                ).ToListAsync();
+
+                // Return an Ok response with the data
+                return Ok(new ResponseModel(Enums.ResponseCode.OK, "Got all access groups the user is linked to in specified zone", result));
+            }
+            catch (Exception ex)
+            {
+                // Return a BadRequest response with the error message
+                return BadRequest(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
     }
 }
