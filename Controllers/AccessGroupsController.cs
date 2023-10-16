@@ -424,6 +424,66 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpPost("GetAllRolesForUserForAllAG")]
+        public async Task<IActionResult> GetAllRolesForUserForAllAG([FromBody] AccessGroupsBindingModel model)
+        {
+            try
+            {
+                var accessGroupIDs = await _context.AccessGroupUserLink
+                    .Where(ag => ag.UserID == model.UserID && ag.isActive)
+                    .Select(ag => ag.AccessGroupID)
+                    .ToListAsync();
+
+                var distinctRoleIds = await _context.AccessGroupRoleLink
+                    .Where(agrl => agrl.isActive && accessGroupIDs.Contains(agrl.AccessGroupID))
+                    .Select(agrl => agrl.RoleID)
+                    .Distinct()
+                    .ToListAsync();
+
+                var roles = new List<AccessGroupsDTO>();
+                foreach (var roleId in distinctRoleIds)
+                {
+                    var role = await _context.Role
+                        .Where(r => r.RoleID == roleId)
+                        .Select(r => new AccessGroupsDTO
+                        {
+                            RoleID = r.RoleID,
+                            RoleName = r.RoleName,
+                            // Add additional properties as required
+                            // ...
+                            
+                        })
+                        .FirstOrDefaultAsync();
+
+                    if (role != null) roles.Add(role);
+                }
+
+                return Ok(new ResponseModel(Enums.ResponseCode.OK, "Got All Roles", roles));
+            }
+            catch (Exception ex)
+            {
+                // Log exception using a logging framework
+                return StatusCode(500, new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+        // Implement a custom IEqualityComparer<> to compare roles in .Distinct() method
+        public class RoleEqualityComparer : IEqualityComparer<AccessGroupsDTO>
+        {
+            public bool Equals(AccessGroupsDTO x, AccessGroupsDTO y)
+            {
+                // Compare roles based on RoleID or other unique properties
+                return x.RoleID == y.RoleID;
+            }
+
+            public int GetHashCode(AccessGroupsDTO obj)
+            {
+                // Use RoleID or other unique properties for hash code
+                return obj.RoleID.GetHashCode();
+            }
+        }
+
+
         [HttpPost("GetAllRolesForUser")]
         public async Task<object> GetAllRolesForUser([FromBody] AccessGroupsBindingModel model)
         {
