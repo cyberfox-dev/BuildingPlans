@@ -45,12 +45,12 @@
 <div class="cont1">
 
   <app-action-center [ApplicationID]="ApplicationID" (refreshParent)="ngOnInit()" *ngIf="isInternalUser" (optionEvent)="reciveOption($event)" class="animationSlideUp"></app-action-center>
-  <button mat-button color="action" [matMenuTriggerFor]="actions" class="animationSlideUp"> <mat-icon>more_vert</mat-icon></button>
+  <button mat-button color="action" [matMenuTriggerFor]="actions" class="animationSlideUp"> <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ellipsis-vertical-solid.svg" class="icon"></button>
   <mat-menu #actions="matMenu">
     <button mat-menu-item (click)="openPaidDate(paidDateModal)" *ngIf="isInternalUser"> Move to Paid</button>
     <!--<button mat-menu-item (click)="MoveToNextStage()" *ngIf="isInternalUser">Move to Next Stage</button>-->
-    <button mat-menu-item (click)="MoveToNextStage()"> <i class="fa fa-ban" aria-hidden="true"></i> Cancel Application</button>
-    <button mat-menu-item (click)="goToNewWayleave(true)" *ngIf="canReapply"><i class="fa fa-repeat" aria-hidden="true"></i> Re-apply</button>
+    <button mat-menu-item (click)="MoveToNextStage()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon"> Cancel Application</button>
+    <button mat-menu-item (click)="goToNewWayleave(true)" *ngIf="canReapply"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/arrow-rotate-right-solid.svg" class="icon"> Re-apply</button>
     <!--<button mat-menu-item (click)="validate()"><i class="fa fa-repeat" aria-hidden="true"></i> Test BP</button>-->
 
 
@@ -118,7 +118,7 @@
                     <h3>{{commentsList.SubDepartmentName}} - {{commentsList.CommentStatus}}</h3>
                     <h5 *ngIf="isInternalUser">{{commentsList.UserName}}</h5>
                     <div class="cont2">
-                      <button mat-raised-button color="white" *ngIf="commentsList.CommentStatus != 'FinalApproved'  &&   this.subDepNameForClarify === commentsList.SubDepartmentName" (click)="openEditCommentModal(commentEditorModal, i)"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+                      <button mat-raised-button color="white" *ngIf="commentsList.CommentStatus != 'FinalApproved'  &&   this.subDepNameForClarify === commentsList.SubDepartmentName" (click)="openEditCommentModal(commentEditorModal, i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/pencil-solid.svg" class="icon"></button>
                     </div>
                     <p>
 

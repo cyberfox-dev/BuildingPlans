@@ -42,10 +42,10 @@
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef>Actions</th>
     <td mat-cell *matCellDef="let i = index">
-      <button mat-raised-button color="success" matTooltip="Link Department to GL Code" (click)="openLnkDepToGLCode(linkDepToGLCode,i)"><i class="fa fa-link"></i></button>
+      <button mat-raised-button color="success" matTooltip="Link Department to GL Code" (click)="openLnkDepToGLCode(linkDepToGLCode,i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/link-solid.svg" class="icon"></button>
 <!--      <button mat-raised-button color="orange" matTooltip="Link Department to GL Code" (click)="openViewLnkDepToGLCode(unlinkDepToGLCode,i)"><i class="fa fa-chain-broken" aria-hidden="true"></i></button>-->
-      <button mat-raised-button color="blue" matTooltip="View GL Code" (click)="getAllDepartmentsLinked(editGLCode,i);openEditGLCode(editGLCode,i)"><i class="fa fa-eye"></i></button>
-      <button mat-raised-button color="warn" matTooltip="Delete GL Code" (click)="onGLCodeDelete(i)"><i class="fa fa-trash"></i></button>
+      <button mat-raised-button color="blue" matTooltip="View GL Code" (click)="getAllDepartmentsLinked(editGLCode,i);openEditGLCode(editGLCode,i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid-white.svg" class="icon"></button>
+      <button mat-raised-button color="warn" matTooltip="Delete GL Code" (click)="onGLCodeDelete(i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid-white.svg" class="icon"></button>
 
 
     </td>
@@ -92,7 +92,7 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Actions</th>
         <td mat-cell *matCellDef="let i = index">
-          <button mat-raised-button color="warn" matTooltip="Un-link Department" (click)="onGLCodeUnlinkDep(i)"><i class="fa fa-trash"></i></button>
+          <button mat-raised-button color="warn" matTooltip="Un-link Department" (click)="onGLCodeUnlinkDep(i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid.svg" class="icon red"></button>
         </td>
         <td mat-cell *matCellDef="let element"></td>
       </ng-container>

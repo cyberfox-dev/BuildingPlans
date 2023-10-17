@@ -258,9 +258,21 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 .icon {
-  width: 19px;
+  width: 15px;
   height: 30px;
-  fill: #aa0000;
+
+}
+.icon2 {
+    margin:5px;
+  height: 30px;
+
+}.icon3 {
+
+  height: 20px;
+
+}
+.icon4 {
+  height: 16px;
 }
 .blue{
 

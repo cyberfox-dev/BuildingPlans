@@ -66,11 +66,7 @@ h5 {
     width:50px;
 }
 /*MFT*/
-img {
-  height: auto;
-  max-width: 100%;
-  vertical-align: middle;
-}
+
 .cards {
   /* display: flex; */
   flex-wrap: nowrap;

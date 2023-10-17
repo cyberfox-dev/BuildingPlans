@@ -10,18 +10,7 @@
   </div>
 
   <div class="nav-links" *ngIf="Icons">
-    <!--    <button mat-button matTooltip="Frequently Asked Questions" (click)="openFAQModal(FAQModal)"><i class="fa fa-question" aria-hidden="true"></i></button>
-        <button mat-button matTooltip="Cyberfox configs" (click)="goToCyberfoxCofig()" *ngIf="cyberfoxConfigs"><i class="fa fa-superpowers"></i></button>
-        <button mat-button matTooltip="Repository" (click)="openRepositoryModal(repositoryModal)"><i class="fa fa-files-o" aria-hidden="true"></i></button>
-        <button mat-button matTooltip="Comment Builder" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><i class="fa fa-comment"></i></button>
-        <button mat-button matTooltip="Configurations" (click)="goToConfig()" *ngIf="Configurations"><i class="fa fa-cogs"></i></button>
-        <button mat-button matTooltip="Notifications" (click)="getAllNotifications();openNotificationsModal(notificationsCenter)"><i class="fa fa-bell"></i></button>-->
     <button mat-button matTooltip="Menu" (click)="openEnd(content)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bars-solid.svg" class="icon"></button>
-    <!--    <button mat-button [matMenuTriggerFor]="user"><img src="https://img.icons8.com/dusk/100/000000/user-male-circle.png" alt="" class="user-avatar-md rounded-circle"></button>-->
-    <!--    <mat-menu #user="matMenu">
-          <button mat-menu-item (click)="goToSettings()">Settings</button>
-          <a><button mat-menu-item (click)="LogoutUser()">Log Out</button></a>
-        </mat-menu>-->
   </div>
 
 </div>
@@ -43,7 +32,7 @@
         </mat-form-field>
 
         <!--<mat-checkbox class="example-margin">Set as default</mat-checkbox>-->
-        <button mat-raised-button color="green" (click)="modal.dismiss('Cross click');onCommentCreate(commentBuilder)"><i class="fa fa-save"></i></button>
+        <button mat-raised-button color="green" (click)="modal.dismiss('Cross click');onCommentCreate(commentBuilder)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/floppy-disk-regular.svg" class="icon"></button>
 
       </form>
     </div>
@@ -78,24 +67,7 @@
   </div>
 </ng-template>
 
-<!--create a new comment-->
-<!--<ng-template #createNewComment let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Create new comment</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-  </div>
-  <div class="modal-body">
-    <form [formGroup]="addComment" (ngSubmit)="onCommentCreate(commentBuilder)">
-      <mat-form-field class="example-full-width">
-        <mat-label>Type new comment</mat-label>
-        <textarea matInput placeholder="Eg. This is good" formControlName="newCommentName"></textarea>
-      </mat-form-field>
-    </form>
-  </div>
-  <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" (click)="onCommentCreate(commentBuilder);modal.dismiss('Cross click')">Save</button>
-  </div>
-</ng-template>-->
+
  <ng-template #editComment let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Edit Comment</h4>
@@ -113,63 +85,6 @@
     <button type="submit" class="btn btn-outline-success" (click)="modal.dismiss('Cross click');onEditCommentSave(commentBuilder);modal.close('Save click')">Save</button>
   </div>
 </ng-template>
-
-<!--<h1>Navbar</h1>-->
-<!--<div class="container-fluid">
-  <div class="dashboard-header">
-    <nav class="navbar navbar-expand-lg bg-white fixed-top">
-      <a class="navbar-brand" (click)="goHome()"><img src="assets/cctlogoblack.png" alt="" class="logo"></a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-        <ul class="navbar-nav ml-auto navbar-right-top">
-        </ul>
-        <ul class="navbar-nav ml-auto navbar-right-top">-->
-<!--Cyberfox configs-->
-<!--<button mat-button matTooltip="Cyberfox configs" (click)="goToCyberfoxCofig()" *ngIf="isInternalUser"><i class="fa fa-superpowers"></i></button>-->
-<!--Comment builder-->
-<!--<button mat-button matTooltip="Comment Builder" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><i class="fa fa-comment"></i></button>-->
-<!--Configs-->
-<!--<button mat-button matTooltip="Configurations" (click)="goToConfig()"><i class="fa fa-cogs" *ngIf="isInternalUser"></i></button>-->
-<!--notifications-->
-<!--<button mat-button matTooltip="Notifications" (click)="getAllNotifications();openNotificationsModal(notificationsCenter)"><i class="fa fa-bell"></i> <span *ngIf="notiBell" class="indicator"></span></button>-->
-<!--User settings-->
-<!--<button mat-button [matMenuTriggerFor]="user"><img src="https://img.icons8.com/dusk/100/000000/user-male-circle.png" alt="" class="user-avatar-md rounded-circle"></button>
-<mat-menu #user="matMenu">
-  <button mat-menu-item (click)="goToSettings()">Settings</button>
-  <a><button mat-menu-item (click)="LogoutUser()">Log Out</button></a>
-</mat-menu>-->
-<!-- <li ngbDropdown class="nav-item dropdown nav-user">
-  <a ngbDropdownToggle class="nav-link nav-user-img" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="https://img.icons8.com/dusk/100/000000/user-female-circle.png" alt="" class="user-avatar-md rounded-circle"></a>
-  <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
-    <div class="nav-user-info">
-      <h5 class="mb-0 text-white nav-user-name">Jahdiel Sanjeevy</h5>
-
-    </div>
-    <a class="dropdown-item"><i class="fa fa-user mr-2"></i>Account</a>
-    <a class="dropdown-item"><i class="fa fa-cog mr-2"></i>Setting</a>
-    <a class="dropdown-item" href="#"><i class="fa fa-power-off mr-2"></i>Logout</a>
-  </div>
-</li>-->
-<!--</ul>
-      </div>
-    </nav>
-  </div>
-</div>-->
-<!--the notifications section-->
-<!--<ng-template #notificationsCenter let-modal>
-  
-    <app-notification-center>
-
-    </app-notification-center>
-  
-</ng-template>-->
-
-
-
- 
-
 
 
 <!--Repository-->
@@ -243,49 +158,6 @@
 
 
     </div>
-
-    <!--<table mat-table
-       [dataSource]="dataSource" multiTemplateDataRows
-       class="mat-elevation-z8">
-  <ng-container matColumnDef="{{DocumentName}}" *ngFor="let DocumentName of displayedColumns">
-    <th mat-header-cell *matHeaderCellDef> {{DocumentName}} </th>
-    <td mat-cell *matCellDef="let element"> {{element[DocumentName]}} </td>
-  </ng-container>
-  <ng-container matColumnDef="expand">
-    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
-    <td mat-cell *matCellDef="let element">
-      <button mat-icon-button aria-label="expand row" (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
-        <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
-        <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
-      </button>
-    </td>
-  </ng-container>-->
-    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-    <!--<ng-container matColumnDef="expandedDetail">
-      <td mat-cell *matCellDef="let element; let i = index" [attr.colspan]="columnsToDisplayWithExpand.length">
-        <div class="example-element-detail"
-             [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-          <div class="example-element-diagram">
-            <div class="example-element-position"> {{element.Description}} </div>
-            <div class="example-element-symbol">{{element.GroupName}} </div>
-
-          </div>
-          <div class="example-element-description">
-            <button mat-raised-button color="blue" (click)="viewDocument(element)" matTooltip="View document"><i class="fa fa-eye"></i></button>
-            <button mat-raised-button color="warn2" matTooltip="Delete document" (click)="onDeleteRepositoryDocument(i,repositoryModal)" *ngIf="deleteRepoDoc"><i class="fa fa-trash"></i></button>
-          </div>
-        </div>
-      </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
-    <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand;"
-        class="example-element-row"
-        [class.example-expanded-row]="expandedElement === element"
-        (click)="expandedElement = expandedElement === element ? null : element">
-    </tr>
-    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
-  </table>-->
   </div>
 </ng-template>
 
@@ -386,19 +258,19 @@
 
 <ng-template #content let-offcanvas>
   <div class="offcanvas-header animationFadeInRightToLeft">
-    <h5 class="offcanvas-title animationFadeInRightToLeft" id="offcanvas-basic-title">Menu</h5>
+    <h5 class="offcanvas-title animationFadeInRightToLeft" id="offcanvas-basic-title"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bars-staggered-solid.svg" class="icon"> Menu</h5>
     <button type="button" class="btn-close animationFadeInRightToLeft" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
   </div>
   <div class="offcanvas-body">
       <div class="sideNav animationFadeInRightToLeft" *ngIf="Icons">
-      <button mat-button class ="sideNavIcons" (click)="openFAQModal(FAQModal)"><i class="fa fa-question" aria-hidden="true"></i>   Frequently Asked Questions</button>
-      <button mat-button class ="sideNavIcons" (click)="goToCyberfoxCofig();offcanvas.dismiss('Cross click')" *ngIf="cyberfoxConfigs"><i class="fa fa-superpowers"></i>   Cyberfox Configs</button>
-      <button mat-button class ="sideNavIcons" (click)="openRepositoryModal(repositoryModal)"><i class="fa fa-files-o" aria-hidden="true"></i>   Document Repository</button>
-      <button mat-button class ="sideNavIcons" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><i class="fa fa-comment"></i>   Comment Builder</button>
-      <button mat-button class ="sideNavIcons" (click)="goToConfig();offcanvas.dismiss('Cross click')" *ngIf="Configurations"><i class="fa fa-cogs"></i>   Configurations</button>
-      <button mat-button class="sideNavIcons" (click)="openNotificationsModal()"><i class="fa fa-bell"></i>   Notifications</button>
-      <button mat-button class ="sideNavIcons" (click)="goToSettings();offcanvas.dismiss('Cross click')"><i class="fa fa-user-circle-o" aria-hidden="true"></i>   User Settings</button>
-      <button mat-button class ="sideNavIcons" (click)="LogoutUser();offcanvas.dismiss('Cross click')"><i class="fa fa-sign-out" aria-hidden="true"></i>   Log Out</button>
+      <button mat-button class ="sideNavIcons" (click)="openFAQModal(FAQModal)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/question-solid.svg" class="icon">   Frequently Asked Questions</button>
+      <button mat-button class="sideNavIcons" (click)="goToCyberfoxCofig();offcanvas.dismiss('Cross click')" *ngIf="cyberfoxConfigs"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/lemon-regular.svg" class="icon">   Cyberfox Configs</button>
+      <button mat-button class ="sideNavIcons" (click)="openRepositoryModal(repositoryModal)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/box-archive-solid.svg" class="icon">   Document Repository</button>
+      <button mat-button class ="sideNavIcons" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid-black.svg" class="icon">  Comment Builder</button>
+      <button mat-button class="sideNavIcons" (click)="goToConfig();offcanvas.dismiss('Cross click')" *ngIf="Configurations"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/gear-solid.svg" class="icon">    Configurations</button>
+      <button mat-button class="sideNavIcons" (click)="openNotificationsModal()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bell-solid.svg" class="icon">   Notifications</button>
+      <button mat-button class ="sideNavIcons" (click)="goToSettings();offcanvas.dismiss('Cross click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/circle-user-regular.svg" class="icon">   User Settings</button>
+      <button mat-button class="sideNavIcons" (click)="LogoutUser();offcanvas.dismiss('Cross click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/right-from-bracket-solid.svg" class="icon">   Log Out</button>
     </div>
   </div>
 </ng-template>

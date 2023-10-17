@@ -204,7 +204,7 @@
       <div class="cont2">
         <button mat-raised-button color="primary" matStepperPrevious disabled>Back</button>
         <div class="cont5">
-          <i class="fa fa-info-circle" aria-hidden="true" matTooltip="Please fill out all of the fields. Please enter N/A to fields that are not applicable"></i>
+          <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/circle-info-solid.svg" class="icon" matTooltip="Please fill out all of the fields. Please enter N/A to fields that are not applicable">
           <button mat-raised-button color="primary" *ngIf="showExternal" matStepperNext [disabled]="!extApplicantBpNoApplicant ||   !extApplicantTellNo ||   !extApplicantTellNo  || !extApplicantPhyscialAddress ">Next</button>
           <button mat-raised-button color="primary" *ngIf="showInternal" matStepperNext [disabled]="!internalApplicantDepartment || !selectedZone || !internalApplicantCostCenterOwner || !internalApplicantBranch || !internalApplicantCostCenterNo">Next</button>
 

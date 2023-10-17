@@ -30,7 +30,10 @@
   background-color: #ccdee2;
   width: 20px;
 }
-
+.mat-warn {
+  background-color: #e2cccc;
+  color: #aa0000;
+}
 
 .btnactive {
   background-color: #258e33;
@@ -43,10 +46,7 @@
   background-color: rgb(0 0 0 / 0%);
 }
 
-.mat-warn {
-  background-color: #e2cccc;
-  color: #aa0000;
-}
+
   //Temporary list actions
 .mat-warni {
   background-color: #9d2235;

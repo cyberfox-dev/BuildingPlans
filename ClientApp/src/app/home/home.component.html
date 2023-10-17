@@ -3,7 +3,7 @@
 <link _ngcontent-ng-cli-universal-c545="" href="https://fonts.googleapis.com/css?family=Roboto:300italic,400italic,400,100,300,600,700" rel="stylesheet" type="text/css">
 
 <head>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="src/assets/js/all.js"></script>
   <script src="src/assets/js/all.min.js"></script>
   <link rel="stylesheet" href="/src/assets/all.css">
@@ -12,7 +12,7 @@
   <script defer src="src/assets/fontawesome-free-6.4.2-web/js/solid.js"></script>
   <script defer src="src/assets/fontawesome-free-6.4.2-web/js/fontawesome.js"></script>
   <script defer src="src/assets/fontawesome-free-6.4.2-web/js/sharp-solid.js"></script>
-  <script defer src="src/assets/fontawesome-free-6.4.2-web/js/custom-icons.js"></script>
+  <script defer src="src/assets/fontawesome-free-6.4.2-web/js/custom-icons.js"></script>-->
 
 
 </head>
@@ -35,14 +35,9 @@
     </div>-->
   <!--  <button class="btn" (click)="goToNewWayleave()"><a><i class="fa fa-plus"></i> Create New Wayleave</a></button>-->
   <div class="cont3 ">
-    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToNewWayleave(false,false)"><i class="fa-solid fa-user"></i> Create New Wayleave</button>
-    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToNewWayleave(false,true)"><i class="fa fa-plus"></i> Request for Services Information</button>
+    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToNewWayleave(false,false)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon4"> Create New Wayleave</button>
+    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToNewWayleave(false,true)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon4"> Request for Services Information</button>
   </div>
-
-
-
-
-
 
   <!--Tabs-->
 
@@ -160,7 +155,7 @@
           <div class="cont6">
 
             <input matInput placeholder="Search By Project Number Or Application Number" (keyup)="applyFilter($event)" #input>
-            <i class="fa fa-search" aria-hidden="true"></i>
+            <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/magnifying-glass-solid.svg" class="icon3">
           </div>
 
         </mat-form-field>
@@ -232,7 +227,7 @@
 
 
 
-              <button mat-raised-button color="warn" matTooltip="Escalate" *ngIf="applications.TestApplicationAge >= this.viewEscalateDate"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid.svg" class="icon red" ></button>
+              <button mat-raised-button color="warn" matTooltip="Escalate" *ngIf="applications.TestApplicationAge >= this.viewEscalateDate"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/stairs-solid.svg" class="icon red" ></button>
             </div>
             <div class="menu">
               <button mat-button color="action" [matMenuTriggerFor]="actions"> <i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
@@ -1007,7 +1002,7 @@
     <div class="container99">
       <div class="cards">
         <label class="card" *ngFor="let subDept of AllSubDepartmentList; let i = index">
-          <img src="https://images.unsplash.com/photo-1530651788726-1dbf58eeef1f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=882&q=80" alt="song">
+
           {{subDept.subDepartmentName}}
         </label>
       </div>
