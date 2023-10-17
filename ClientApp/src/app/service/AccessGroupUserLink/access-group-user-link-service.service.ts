@@ -13,8 +13,18 @@ export class AccessGroupUserLinkServiceService {
 
   public getAccessGroupByUserID(userID: string) {
     // Create an object with the userID property
-    const requestBody = { userID: userID };
+    const requestBody = { UserID: userID };
 
     return this.httpClient.post(this.baseURL + "GetAccessGroupByUserID", requestBody);
+  }
+
+  public getAccessGroupsBySubDeptZoneAndUserID(userID: string, zoneId: number| null, subDepartmentId: number| null) {
+    const requestBody = {
+      UserID: userID,
+      ZoneID: zoneId,
+      SubDepartmentID: subDepartmentId
+    };
+
+    return this.httpClient.post(this.baseURL + "GetAccessGroupsBySubDeptZoneAndUserID", requestBody);
   }
 }

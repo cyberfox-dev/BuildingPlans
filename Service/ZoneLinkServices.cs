@@ -193,7 +193,8 @@ namespace WayleaveManagementSystem.Service
                     isZoneAdmin = ZoneLink.isZoneAdmin,
                    AccessGroupUserLinkID = ZoneLink.AccessGroupUserLinkID,
                     AcessGroupName = ZoneLink.AccessGroupName,
-
+                    ZoneID = ZoneLink.ZoneID,
+                    ZoneName = ZoneLink.ZoneName,
                 }
                 ).ToListAsync();
         }
