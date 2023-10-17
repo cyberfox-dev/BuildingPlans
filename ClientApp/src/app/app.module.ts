@@ -92,7 +92,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ServiceConditionsComponent } from './service-conditions/service-conditions.component';
 import { ConfigActingDepartmentComponent } from './config-acting-department/config-acting-department.component';
 import { DocumentRepositoryComponent } from './document-repository/document-repository.component';
-import { DocumentRepositoryConfigComponent } from './document-repository-config/document-repository-config.component'
+import { DocumentRepositoryConfigComponent } from './document-repository-config/document-repository-config.component';
+import { SnackBarAlertsComponent } from './snack-bar-alerts/snack-bar-alerts.component'
 //import { MatExpansionModule } from '@angular/material/expansion';
 
 //import { MapModule } from 'arcgis-js-api';
@@ -173,6 +174,7 @@ import { DocumentRepositoryConfigComponent } from './document-repository-config/
     ConfigActingDepartmentComponent,
     DocumentRepositoryComponent,
     DocumentRepositoryConfigComponent,
+    SnackBarAlertsComponent,
 
 
 

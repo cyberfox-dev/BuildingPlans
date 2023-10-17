@@ -1,7 +1,7 @@
 <div class="cont2">
 <h3 class="mat-dialog-title">Welcome {{ this.CurrentUser.fullName }} to your Notification Center</h3>
 
-<button mat-button mat-dialog-close><i class="fa fa-times" aria-hidden="true"></i></button>
+<button mat-button mat-dialog-close>X</button>
   </div>
 <mat-tab-group class="mat-dialog-content">
   <mat-tab label="New Notifications">
@@ -26,7 +26,7 @@
 
   <mat-tab label="Old Notifications">
 
-    <div class="timeline__event animated fade-in-bottom  timeline__event--type2seen" *ngFor="let notifications of OldNotificationsList">
+    <div class="timeline__event animated fade-in-bottom  timeline__event--type2seen" *ngFor="let notifications of OldNotificationsList" (click)="getSelectedNotification(notifications.ApplicationID)">
       <div class="timeline__event__icon">
         <div class="timeline__event__date">
           {{notifications.NotificationName}}
@@ -119,7 +119,7 @@
       </div>
     </div>
 
-    <button type="button" class="btn-close" aria-label="Close" (click)="onRefreshModal()"></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="onRefreshModal();close()"></button>
   </div>
   <div class="modal-body">
     <div class="email-body">

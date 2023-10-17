@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { ApplicationsService } from '../service/Applications/applications.service';
 import { MatTable } from '@angular/material/table';
@@ -33,6 +33,8 @@ import { BusinessPartnerService } from '../service/BusinessPartner/business-part
 import { ContractorList } from '../edit-contractor/edit-contractor.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfigActingDepartmentComponent } from 'src/app/config-acting-department/config-acting-department.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackBarAlertsComponent } from '../snack-bar-alerts/snack-bar-alerts.component';
 
 export interface EngineerList {
   professinalID: number;
@@ -375,6 +377,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private newProfileComponent: NewProfileComponent,
     private businessPartnerService: BusinessPartnerService,
     private dialog: MatDialog,
+    private _snackBar: MatSnackBar, private renderer: Renderer2, private el: ElementRef
   ) {
     this.currentDate = new Date();
     this.previousMonth = this.currentDate.getMonth();
@@ -391,6 +394,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['ProjectNumber', 'FullName', 'Stage', 'Status', 'TypeOfApplication', 'AplicationAge', 'StageAge', 'DateCreated', 'actions'];
   dataSource = this.Applications;
 
+
+  openSnackBar() {
+    this._snackBar.openFromComponent(SnackBarAlertsComponent, {
+     /* duration:3*1000,*/
+      panelClass: ['green-snackbar'],
+      verticalPosition: 'top'
+    });
+  }
 
   applyFilter(event: Event): string[] {
     const filterValue = (event.target as HTMLInputElement).value.toUpperCase();
@@ -4293,6 +4304,27 @@ this.Applications.push(tempApplicationList);
       this.openExternalClient(user);
     }
   }
+  openSpin(spin) {
+    this.modalService.open(spin, { backdrop: 'static', centered: true, size: 'xl' });
+  }
+
+  addCard(subDeptName: string) {
+    const cardContainer = this.el.nativeElement.querySelector('.cards');
+
+    // Create a new card element
+    const newCard = this.renderer.createElement('div');
+    this.renderer.addClass(newCard, 'card');
+    this.renderer.setProperty(newCard, 'textContent', subDeptName);
+
+    // Append the new card to the card container
+    this.renderer.appendChild(cardContainer, newCard);
+  }
+
+  addCardsForSubDepartments() {
+    this.AllSubDepartmentList.forEach((subDept) => this.addCard(subDept.subDepartmentName));
+  }
+
+
 
   async getAllInternalUsers() {
     debugger;

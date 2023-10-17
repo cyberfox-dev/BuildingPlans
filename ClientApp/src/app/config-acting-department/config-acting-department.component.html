@@ -2,7 +2,8 @@
 <h1>You May Change Your Acting Department And Zone</h1>
 
 
-<mat-form-field>
+
+<!--<mat-form-field>
   <mat-label>Select A Department</mat-label>
   <mat-select [(value)]="selectedDep" [(ngModel)]="SelectActingDep">
     <mat-option *ngFor="let department of SubDepartmentList" value="{{ department.subDepartmentID }}">{{ department.subDepartmentName }}</mat-option>
@@ -14,11 +15,10 @@
   <mat-select [(value)]="selectedZone" [(ngModel)]="SelectActingDZone">
     <mat-option *ngFor="let zone of ZoneList" value="{{ zone.subDepartmentID }}">{{ zone.subDepartmentName }}</mat-option>
   </mat-select>
-</mat-form-field>
+</mat-form-field>-->
 
 
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Cancel</button>
   <button mat-button cdkFocusInitial>Continue</button>
 </mat-dialog-actions>
-
