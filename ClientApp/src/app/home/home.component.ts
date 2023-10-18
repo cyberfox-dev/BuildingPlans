@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { ApplicationsService } from '../service/Applications/applications.service';
 import { MatTable } from '@angular/material/table';
@@ -31,6 +31,10 @@ import { UserService } from '../service/User/user.service';
 import { NewProfileComponent } from '../new-user/new-profile/new-profile.component';
 import { BusinessPartnerService } from '../service/BusinessPartner/business-partner.service';
 import { ContractorList } from '../edit-contractor/edit-contractor.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfigActingDepartmentComponent } from 'src/app/config-acting-department/config-acting-department.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackBarAlertsComponent } from '../snack-bar-alerts/snack-bar-alerts.component';
 import { DraftApplicationsService } from '../service/DraftApplications/draft-applications.service';
 import { DraftsComponent } from 'src/app/drafts/drafts.component';
 
@@ -302,7 +306,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   clientCompanyName = '';
   clientCompanyRegNo = '';
   clientCompanyType = '';
-  clientIDNumber = ''; //This was made ready, but was ultimately not pushed into function...
+  clientIDNumber = ''; //This was made ready, but was ultimately not pushed into function... 
   clientPhysicalAddress = '';
   clientBpNumber = '';
 
@@ -350,6 +354,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   userID: any;
   FilterBtn: boolean = false;
   viewEscalateDate = 0;
+  selectedDep = 0;
+  SelectActingDep = '';
+  selectedZone = 0;
+  SelectActingDZone = '';
   gotDrafts: boolean ;
   externalUser: boolean = false;
 
@@ -376,6 +384,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private newProfileComponent: NewProfileComponent,
     private businessPartnerService: BusinessPartnerService,
+    private dialog: MatDialog,
+    private _snackBar: MatSnackBar, private renderer: Renderer2, private el: ElementRef
     private draftApplicationService: DraftApplicationsService,
   ) {
     this.currentDate = new Date();
@@ -393,7 +403,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['ProjectNumber', 'FullName', 'Stage', 'Status', 'TypeOfApplication', 'AplicationAge', 'StageAge', 'DateCreated', 'actions'];
   dataSource = this.Applications;
 
-  
+
+  openSnackBar() {
+    this._snackBar.openFromComponent(SnackBarAlertsComponent, {
+     /* duration:3*1000,*/
+      panelClass: ['green-snackbar'],
+      verticalPosition: 'top'
+    });
+  }
+
   applyFilter(event: Event): string[] {
     const filterValue = (event.target as HTMLInputElement).value.toUpperCase();
     if (filterValue === "") {
@@ -499,7 +517,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
     setTimeout(() => {
-
+      debugger;
       this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
       this.CurrentUser = JSON.parse(this.stringifiedData);
       this.getAllStages();
@@ -709,6 +727,14 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   openProcessFlowModal(processFlow: any) {
     this.modalService.open(processFlow, { centered: true, size: 'xl' });
+  }
+
+  openUserActingDepModal() {
+    this.dialog.open(ConfigActingDepartmentComponent, {
+      width: '60%',
+      maxHeight: 'calc(100vh - 90px)',
+      height: 'auto'
+    });
   }
 
   onAddNewClient() {
@@ -955,6 +981,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
   }
+
   populateClientInfo() {
     if (confirm("Are you sure you are done?")) {
       debugger;
@@ -964,6 +991,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   }
+
   UpdateProjectNumberConfig() {
 
     /*    if (this.CurrentUserProfile[0].isInternal == false) {
@@ -4303,6 +4331,27 @@ this.Applications.push(tempApplicationList);
       this.openExternalClient(user);
     }
   }
+  openSpin(spin) {
+    this.modalService.open(spin, { backdrop: 'static', centered: true, size: 'xl' });
+  }
+
+  addCard(subDeptName: string) {
+    const cardContainer = this.el.nativeElement.querySelector('.cards');
+
+    // Create a new card element
+    const newCard = this.renderer.createElement('div');
+    this.renderer.addClass(newCard, 'card');
+    this.renderer.setProperty(newCard, 'textContent', subDeptName);
+
+    // Append the new card to the card container
+    this.renderer.appendChild(cardContainer, newCard);
+  }
+
+  addCardsForSubDepartments() {
+    this.AllSubDepartmentList.forEach((subDept) => this.addCard(subDept.subDepartmentName));
+  }
+
+
 
   async getAllInternalUsers() {
     debugger;

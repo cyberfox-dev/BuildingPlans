@@ -9,7 +9,7 @@ import { NotificationsService } from '../service/Notifications/notifications.ser
 import { ApplicationsService } from '../service/Applications/applications.service';
 import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http';
 import { Input } from '@angular/core';
-
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
 export interface NotificationsList {
   NotificationID: number;
@@ -56,17 +56,17 @@ export class NotificationCenterComponent implements OnInit {
 
   viewNotification: any;
 
-  constructor(private modalService: NgbModal, private sharedService: SharedService, private userProfileService: UserProfileService, private notificationService: NotificationsService, private applicationService: ApplicationsService, private hhtp: HttpClient, private router: Router) { }
+  constructor(private modalService: NgbModal, private sharedService: SharedService, private userProfileService: UserProfileService, private notificationService: NotificationsService, private applicationService: ApplicationsService, private hhtp: HttpClient, private router: Router, private dialog: MatDialog) { }
 
   ngOnInit(): void {
-    this.openModal(this.content);
+
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
 
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.getAllNotifications();
     this.getAllReadNotifications();
     this.getUserInfo();
-
+   
   }
 
   openModal(Notifications: any) {
@@ -90,7 +90,7 @@ export class NotificationCenterComponent implements OnInit {
           const current = data.dateSet[i];
           console.log(current);
           if (current.isRead == true) {
-           
+
             const date = current.dateCreated;
             tempNotificationsList.ApplicationID = current.applicationID;
             tempNotificationsList.NotificationID = current.notificationID;
@@ -102,6 +102,13 @@ export class NotificationCenterComponent implements OnInit {
             this.OldNotificationsList.push(tempNotificationsList);
           }
           // this.sharedService.setStageData(this.StagesList);
+          this.NotificationsList.sort((a, b) => {
+            return new Date(b.DateCreated).getTime() - new Date(a.DateCreated).getTime();
+          });
+
+          this.OldNotificationsList.sort((a, b) => {
+            return new Date(b.DateCreated).getTime() - new Date(a.DateCreated).getTime();
+          });
         }
       }
       else {
@@ -114,8 +121,16 @@ export class NotificationCenterComponent implements OnInit {
     })
   }
 
-  getSelectedNotification(applicationID: number ) {
+  close() {
+    this.dialog.open(NotificationCenterComponent, {
+      width: '70%',
+      maxHeight: 'calc(100vh - 90px)',
+      height: 'auto'
+    });
+  }
 
+  getSelectedNotification(applicationID: number) {
+    this.dialog.closeAll();
 
     this.NotificationsList.splice(0, this.NotificationsList.length);
     this.notificationService.getNotificationByID(applicationID).subscribe((data: any) => {
@@ -179,7 +194,18 @@ export class NotificationCenterComponent implements OnInit {
         alert(data.responseMessage);
       }
       console.log("reponse", data);
-      console.log("notification", this.MessageList)
+      console.log("notification", this.MessageList);
+      this.NotificationsList.sort((a, b) => {
+        return new Date(b.DateCreated).getTime() - new Date(a.DateCreated).getTime();
+      });
+    
+        this.OldNotificationsList.sort((a, b) => {
+      return new Date(b.DateCreated).getTime() - new Date(a.DateCreated).getTime();
+    });
+
+
+
+
     }, error => {
       console.log("Error: ", error);
     })
@@ -240,6 +266,13 @@ export class NotificationCenterComponent implements OnInit {
             this.NotificationsList.push(tempNotificationsList);
           }
           // this.sharedService.setStageData(this.StagesList);
+          this.NotificationsList.sort((a, b) => {
+            return new Date(b.DateCreated).getTime() - new Date(a.DateCreated).getTime();
+          });
+
+          this.OldNotificationsList.sort((a, b) => {
+            return new Date(b.DateCreated).getTime() - new Date(a.DateCreated).getTime();
+          });
         }
       }
       else {
@@ -257,7 +290,7 @@ export class NotificationCenterComponent implements OnInit {
   onRefreshModal() {
     debugger;
     this.modalService.dismissAll();
-    this.openModal(this.content);
+
     this.getAllNotifications();
     this.getAllReadNotifications();
   }
@@ -281,6 +314,21 @@ export class NotificationCenterComponent implements OnInit {
       debugger;
       console.log("Error: ", error);
     })
+  }
+
+  getTimeAgo(dateCreated: string): string {
+    const now = new Date();
+    const createdDate = new Date(dateCreated + 'T00:00:00Z'); // Assume the time part is always 00:00:00 UTC
+    const timeDifference = now.getTime() - createdDate.getTime();
+
+    // Calculate hours and days
+    const hoursAgo = Math.floor(timeDifference / (1000 * 60 * 60));
+    if (hoursAgo < 24) {
+      return `${hoursAgo} hour${hoursAgo !== 1 ? 's' : ''} ago`;
+    } else {
+      const daysAgo = Math.floor(hoursAgo / 24);
+      return `${daysAgo} day${daysAgo !== 1 ? 's' : ''} ago`;
+    }
   }
 }
 

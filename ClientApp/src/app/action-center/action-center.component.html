@@ -17,7 +17,7 @@
     </div>
 
     <br>
-    <mat-divider *ngIf="CurrentApplication.isPlanning != true"></mat-divider>
+    <mat-divider *ngIf="CurrentApplication.isPlanning != true || canCommentFinalApprover != true"></mat-divider>
     <br>
     <mat-form-field class="example-full-width" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true">
       <!--|| canCommentFinalApprover == true-->
@@ -25,31 +25,31 @@
       <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good"></textarea>
 
     </mat-form-field>
-    <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true"><i class="fa fa-comment" aria-hidden="true"></i></button>
+    <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"></button>
     <mat-menu #menu="matMenu" xPosition="before">
       <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>
 
     </mat-menu>
 
     <div class="cont2" *ngIf="canComment == true && canCommentFinalApprover == false">
-      <button mat-raised-button color="approveBTN" (click)="onComment('Approve')"><i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true"></i>  Approved</button>
-      <button mat-raised-button color="rejectBTN" (click)="onComment('Reject')"><i class="fa fa-thumbs-down redThumbsDown" aria-hidden="true"></i>  Not Approved</button>
-      <button mat-raised-button color="clarifyBTN" (click)="onComment('Clarify');sendOption()"><i class="fa fa-commenting-o orangeSpeech" aria-hidden="true"></i>  Clarify</button>
-      <button mat-raised-button color="referBTN" (click)="onComment('Refer')"><i class="fa fa-retweet blueRefer" aria-hidden="true"></i>  Refer</button>
+      <button mat-raised-button color="approveBTN" (click)="onComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approved</button>
+      <button mat-raised-button color="rejectBTN" (click)="onComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">   Not Approved</button>
+      <button mat-raised-button color="clarifyBTN" (click)="onComment('Clarify');sendOption()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
+      <button mat-raised-button color="referBTN" (click)="onComment('Refer')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/retweet-solid-white.svg" class="icon">  Refer</button>
 
     </div>
     <div class="cont2" *ngIf="canCommentSeniorReviewer == true">
-      <button mat-raised-button color="approveBTN" (click)="onCommentSR('Approve')"><i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true"></i>  Approved</button>
-      <button mat-raised-button color="rejectBTN" (click)="onCommentSR('Reject')"><i class="fa fa-thumbs-down redThumbsDown" aria-hidden="true"></i>  Not Approved</button>
-      <button mat-raised-button color="clarifyBTN" (click)="onCommentSR('Clarify');sendOption()"><i class="fa fa-commenting-o orangeSpeech" aria-hidden="true"></i>  Clarify</button>
+      <button mat-raised-button color="approveBTN" (click)="onCommentSR('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">   Approved</button>
+      <button mat-raised-button color="rejectBTN" (click)="onCommentSR('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon"> Not Approved</button>
+      <button mat-raised-button color="clarifyBTN" (click)="onCommentSR('Clarify');sendOption()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
       <button mat-raised-button color="returnToReviewerBTN" (click)="onReturnToReviewerClick()"><i class="fa fa-reply" aria-hidden="true"></i>  Return To Reviewer</button>
       <button mat-raised-button color="consultWithReviewerBTN" (click)="onReviewerClarityClick()"  ><i class="fa fa-comments" aria-hidden="true"></i>  Consult With Reviewer</button> <!---->
 
     </div>
     <div class="cont2" *ngIf="canCommentFinalApprover == true">
       <!-- -->
-      <button mat-raised-button color="approveBTN" (click)="FinalApprove('Approve')"><i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true"></i> Approved</button>
-      <button mat-raised-button color="rejectBTN" (click)="FinalApprove('Reject')"><i class="fa fa-thumbs-down redThumbsDown" aria-hidden="true"></i> Not Approved</button>
+      <button mat-raised-button color="approveBTN" (click)="FinalApprove('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approved</button>
+      <button mat-raised-button color="rejectBTN" (click)="FinalApprove('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon"> Not Approved</button>
 
     </div>
     <div class="cont3">
@@ -119,7 +119,7 @@
           <textarea matInput [(ngModel)]="leaveACommentPermit" placeholder="Eg. This is good"></textarea>
 
         </mat-form-field>
-        <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()"><i class="fa fa-comment" aria-hidden="true"></i></button>
+        <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"></button>
         <mat-menu #menu="matMenu" xPosition="before">
           <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateCommentPermit(comment.commentName)">{{comment.commentName}} </button>
 
@@ -263,7 +263,7 @@
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef>Actions</th>
             <td mat-cell *matCellDef="let i = index;let element">
-              <button mat-raised-button color="warn" (click)="deleteLinkedDepartmentForComment(i);modal.dismiss('Cross click');getAllSubDepartments()"><i class="fa fa-trash" aria-hidden="true"></i></button>
+              <button mat-raised-button color="warn" (click)="deleteLinkedDepartmentForComment(i);modal.dismiss('Cross click');getAllSubDepartments()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid.svg" class="icon red"></button>
             </td>
           </ng-container>
 
@@ -326,7 +326,7 @@
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef>Actions</th>
             <td mat-cell *matCellDef="let i = index;let element">
-              <button mat-raised-button color="warn" (click)="deleteLinkedZoneForComment(i);modal.dismiss('Cross click')"><i class="fa fa-trash" aria-hidden="true"></i></button>
+              <button mat-raised-button color="warn" (click)="deleteLinkedZoneForComment(i);modal.dismiss('Cross click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid.svg" class="icon red"></button>
             </td>
           </ng-container>
 

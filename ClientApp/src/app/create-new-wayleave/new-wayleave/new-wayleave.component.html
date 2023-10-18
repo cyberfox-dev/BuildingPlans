@@ -19,7 +19,7 @@
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>Actions</th>
           <td mat-cell *matCellDef="let i = index;let element">
-            <button mat-raised-button><i class="fa fa-dot-circle-o" aria-hidden="true"></i></button>
+            <button mat-raised-button><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/up-right-from-square-solid.svg" class="icon"></button>
           </td>
         </ng-container>
 
@@ -490,8 +490,8 @@
               </div>
   
               <!--<button *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)">Add Another Upload</button>-->
-              <button mat-raised-button color="addNewUploadButtonColor" *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)" matTooltip="Add New Upload"><i class="fa fa-plus" aria-hidden="true"></i></button>
-              <button mat-raised-button color="warn" *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)" matTooltip="Delete"><i class="fa fa-trash" aria-hidden="true"></i></button>
+              <button mat-raised-button color="addNewUploadButtonColor" *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)" matTooltip="Add New Upload"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon"></button>
+              <button mat-raised-button color="warn" *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)" matTooltip="Delete"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid.svg" class="icon red"></button>
               <!--  <button *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)">Delete</button>-->
             </mat-toolbar>
           </div>
@@ -731,7 +731,7 @@
     </table>
   </div>-->
 <div class="modal-footer">
-  <button class="infoTool" matTooltip="Please check the 'Project Size Criteria.pdf' in the Repository. You'll find it in the top right-hand menu."><i class="fa fa-info-circle" aria-hidden="true"></i></button>
+  <button class="infoTool" matTooltip="Please check the 'Project Size Criteria.pdf' in the Repository. You'll find it in the top right-hand menu."><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/circle-info-solid.svg" class="icon"></button>
   <button type="button" (click)="CheckToPopulateManDoc();StoreSelectionProjectCheckListItems();modal.close('Save click')" class="btn btn-outline-success">Save</button>  <!--(click)="onLinkUser();modal.close('Save click')"-->
   <button type="button" matTooltip="View selected project size criteria" (click)="openViewSelection(viewSelection); CheckToPopulateManDoc()" class="btn btn-outline-success">View Selections</button>
 </div>

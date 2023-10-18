@@ -8,7 +8,10 @@ table {
   color: #fff;
   margin: 10px;
 }
-
+.mat-success {
+  background-color: #446414;
+  color: #fff;
+}
 .mat-column-idNumber {
   word-wrap: break-word !important;
   white-space: unset !important;
@@ -63,4 +66,9 @@ table {
 .mat-orange {
   background-color: #ff9900;
   color: #fff;
+}
+.outlined-select {
+  border: 1px solid #000; /* Add the desired border properties */
+  border-radius: 4px; /* Add rounded corners if needed */
+  padding: 5px; /* Add padding for spacing */
 }

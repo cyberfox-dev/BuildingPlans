@@ -9,9 +9,7 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            //migrationBuilder.DropColumn(
-            //    name: "ZoneID",
-            //    table: "DocumentUpload");
+           
 
             migrationBuilder.AddColumn<string>(
                 name: "AccessGroupName",
@@ -57,11 +55,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                 name: "AccessGroupUserLinkID",
                 table: "ZoneLinkTable");
 
-            //migrationBuilder.AddColumn<int>(
-            //    name: "ZoneID",
-            //    table: "DocumentUpload",
-            //    type: "int",
-            //    nullable: true);
+ 
         }
     }
 }

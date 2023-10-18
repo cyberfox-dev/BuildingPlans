@@ -587,7 +587,7 @@ export class NavMenuComponent implements OnInit {
 
 
     this.dialog.open(NotificationCenterComponent, {
-      width: '60%',
+      width: '70%',
       maxHeight: 'calc(100vh - 90px)',
       height: 'auto'
     });
@@ -635,9 +635,7 @@ export class NavMenuComponent implements OnInit {
   openXl(content: any) {
     this.modalService.open(content, { size: 'xl' });
   }
-  openNotifications(viewNotification: any) {
-    this.modalService.open(viewNotification, { size: 'xl' })
-  }
+
 
   goHome() {
 

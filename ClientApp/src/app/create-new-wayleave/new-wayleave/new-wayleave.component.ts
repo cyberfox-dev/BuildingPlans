@@ -1036,6 +1036,273 @@ export class NewWayleaveComponent implements OnInit {
   }
 
 
+  //12102023: EDIT THIS SO THAT IT WORKS FOR THE ... CREATE WAYLEAVE ON BEHALF OF SOMEONE INTERNAL 
+  internalProxyWayleaveCreate(appUserId: string, isPlanning: boolean): void {
+    /*    this.shared.setApplicationID(this.notificationNumber);*/
+    debugger;
+    console.log("Turtle Turtle, where are you? 3" + appUserId);
+
+    this.physicalAddressOfProject = this.shared.getAddressData();
+    this.coordinates = this.shared.getCoordinateData();
+    const contractorData = this.shared.getContactorData();
+    const engineerData = this.shared.getEngineerData();
+    let previousStageName = "";
+    let CurrentStageName = "";
+    let NextStageName = "";
+
+    let previousStageNameIn = "";
+    let CurrentStageNameIn = "";
+    let NextStageNameIn = "";
+
+    for (var i = 0; i < this.StagesList.length; i++) {
+      ;
+      if (this.StagesList[i].StageOrderNumber == 1) {
+        previousStageName = this.StagesList[i - 1].StageName
+        CurrentStageName = this.StagesList[i].StageName;
+        NextStageName = this.StagesList[i + 1].StageName
+      }
+      else if (this.StagesList[i].StageOrderNumber == 2) {
+        previousStageNameIn = this.StagesList[i - 2].StageName
+        CurrentStageNameIn = this.StagesList[i].StageName;
+        NextStageNameIn = this.StagesList[i + 1].StageName
+      }
+
+    }
+
+    this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        debugger;
+        const current = data.dateSet[0];
+        this.configNumberOfProject = current.utilitySlot1;
+        this.configMonthYear = current.utilitySlot2;
+        this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
+          if (data.responseCode == 1) {
+            debugger;
+            //ARGUMENTS NEED CAREFUL ALTERATIONS - OBVIOUSLY CURRENT USER IS THE ORIGINATOR, ARE THEY GOING TO GET THE EMAILS OR IS THE APPLICANT GOING TO GET AN EMAIL??
+
+            
+            this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.clientEmail, this.clientCellNo, null, null,
+              null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE,
+              this.expectedStartDate, this.expectedEndType, null, this.CurrentUser.appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3,
+              "Distributed", false, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
+              if (data.responseCode == 1) {
+                debugger;
+                alert("Application Created");
+                if (isPlanning == false) {
+                  this.AddProfessinal(contractorData, engineerData);
+                }
+                // this.UploadDocuments(data.dateSet);
+
+                this.shared.setApplicationID(0);
+                this.shared.clearContractorData();
+                this.shared.clearEngineerData();
+              }
+              else {
+                alert("Failed To Create Application");
+              }
+
+
+              this.router.navigate(["/home"]);
+              this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+              /*              this.addToSubDepartmentForComment();*/
+              this.notificationsService.addUpdateNotification(0, "Application Submission", "New wayleave application submission", false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserID, this.applicationID, "Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.").subscribe((data: any) => {
+
+                if (data.responseCode == 1) {
+                  alert(data.responseMessage);
+
+                }
+                else {
+                  alert(data.responseMessage);
+                }
+
+                console.log("response", data);
+              }, error => {
+                console.log("Error", error);
+              });
+
+              const projectNum = "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear;
+              const emailContentOriginator = `
+      <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+              font-family: Arial, sans-serif;
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.CurrentUser.fullName},</p>
+            <p>A Wayleave application with ID ${this.applicationID} and project reference number: ${projectNum} has just been captured. You will be notified once your application has reached the next stage in the process.</p>
+            <p>Should you have any queries, please contact us at <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+          </div>
+          <div class="footer">
+
+            <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+            <p>Regards,<br>Wayleave Management System</p>
+            <p>
+              <a href="#">CCT Web</a> | <a href="#">Contacts</a> | <a href="#">Media</a> | <a href="#">Report a fault</a> | <a href="#">Accounts</a>
+            </p>
+          </div>
+        </body>
+      </html>
+    `;
+                const emailContentApplicant = `
+      <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+              font-family: Arial, sans-serif;
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.internalName + ' ' + this.internalSurname},</p>
+            <p>A Wayleave application with ID ${this.applicationID} and project reference number: ${projectNum} has just been captured. You will be notified once your application has reached the next stage in the process.</p>
+            <p>Should you have any queries, please contact us at <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+          </div>
+          <div class="footer">
+
+            <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+            <p>Regards,<br>Wayleave Management System</p>
+            <p>
+              <a href="#">CCT Web</a> | <a href="#">Contacts</a> | <a href="#">Media</a> | <a href="#">Report a fault</a> | <a href="#">Accounts</a>
+            </p>
+          </div>
+        </body>
+      </html>
+    `;
+
+                this.notificationsService.sendEmail(this.CurrentUser.email, "New wayleave application", emailContentOriginator, emailContentOriginator);
+                this.notificationsService.sendEmail(this.clientEmail, "New wayleave application", emailContentApplicant, emailContentApplicant);
+              /*              this.addToSubDepartmentForComment();*/
+              this.Emailmessage = "A Wayleave application with ID " + this.applicationID + " and project reference number:" + projectNum + " has just been captured. You will be notified once your application has reached the next stage in the process.";
+                this.onCreateNotification();
+                this.onCreateNotificationApplicant();
+
+
+              //Send emails to zone department admins
+              this.shared.distributionList.forEach((obj) => {
+
+
+                const emailContent2 = `
+      <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${obj.fullName},</p>
+            <p>A Wayleave application with ID ${this.applicationID} has just been captured. As the zone admin of ${obj.zoneName} in ${obj.subDepartmentName}, please assign a reviewer to the application.</p>
+            <p>Should you have any queries, please contact us at <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+          </div>
+          <div class="footer">
+
+            <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+            <p>Regards,<br>Wayleave Management System</p>
+            <p>
+              <a href="#">CCT Web</a> | <a href="#">Contacts</a> | <a href="#">Media</a> | <a href="#">Report a fault</a> | <a href="#">Accounts</a>
+            </p>
+          </div>
+        </body>
+      </html>
+    `;
+
+                this.notificationsService.sendEmail(obj.email, "New wayleave application", emailContent2, emailContent2);
+                this.notificationsService.addUpdateNotification(0, "Application Created", "New wayleave application", false, obj.userID, this.CurrentUser.appUserID, this.applicationID, "A Wayleave application with ID ${this.applicationID} has just been captured. As the zone admin of " + obj.zoneName + "in" + obj.subDepartmentName + " , please assign a reviewer to the application.").subscribe((data: any) => {
+
+                  if (data.responseCode == 1) {
+                    alert(data.responseMessage);
+
+                  }
+                  else {
+                    alert(data.responseMessage);
+                  }
+
+                  console.log("response", data);
+                }, error => {
+                  console.log("Error", error);
+                })
+
+              })
+
+              this.addToZoneForComment();
+
+              console.log("responseAddapplication", data);
+            }, error => {
+              console.log("Error", error);
+            });
+          }
+          else {
+
+            alert("Update Config Error");
+          }
+          console.log("addUpdateConfigReponse", data);
+
+        }, error => {
+          console.log("addUpdateConfigError: ", error);
+        })
+
+
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("getConfigsByConfigNameReponse", data);
+
+    }, error => {
+      console.log("getConfigsByConfigNameError: ", error);
+    })
+  }
+
 
   internalWayleaveCreate(appUserId: string, isPlanning: boolean): void {
     /*    this.shared.setApplicationID(this.notificationNumber);*/
@@ -1180,6 +1447,10 @@ export class NewWayleaveComponent implements OnInit {
                   this.Emailmessage = "A Wayleave application with ID " + this.applicationID + " and project reference number:" + projectNum + " has just been captured. You will be notified once your application has reached the next stage in the process.";
                   this.onCreateNotification();
                 }
+              this.notificationsService.sendEmail(this.CurrentUser.email, "New wayleave application", emailContent, emailContent);
+              /*              this.addToSubDepartmentForComment();*/
+              this.Emailmessage = "A Wayleave application with ID " + this.applicationID + " and project reference number:" + projectNum + " has just been captured. You will be notified once your application has reached the next stage in the process.";
+                this.onCreateNotification();
 
 
                 //Send emails to zone department admins
@@ -1616,6 +1887,11 @@ export class NewWayleaveComponent implements OnInit {
 
       }
       else if (this.client || this.option == "proxy") {
+      else if (this.internalProxy) {
+        const appUserId = this.shared.clientUserID;
+        this.internalProxyWayleaveCreate(appUserId, isPlanning);
+      }
+      else if (this.client || this.option == "proxy" ) {
         debugger; //the issue is - an internal person can be a client
         //this.clientWayleaveCreate(appUserId, isPlanning);
         const appUserId = this.shared.clientUserID;
@@ -3362,6 +3638,28 @@ export class NewWayleaveComponent implements OnInit {
       console.log("Error", error);
     })
 
+
+  }
+  onCreateNotificationApplicant() {
+    debugger;
+    this.notiName = "Application Created";
+    this.notiDescription = this.applicationID + " was created ";
+
+    this.notificationsService.addUpdateNotification(0, this.notiName, this.notiDescription, false, this.DepartmentAdminList[0].userId, this.shared.clientUserID, this.applicationID, this.Emailmessage).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        alert(data.responseMessage);
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+      console.log("response", data);
+    }, error => {
+      console.log("Error", error);
+    })
+      
 
   }
 

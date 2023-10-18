@@ -15,3 +15,14 @@ table {
   width: 100%;
   margin-bottom: 20px;
 }
+.mat-blue {
+  margin: 5px;
+
+  background-color: #ccdee2;
+  width: 20px;
+}
+
+.mat-warn {
+  background-color: #e2cccc;
+  color: #aa0000;
+}
