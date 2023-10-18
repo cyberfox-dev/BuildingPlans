@@ -62,6 +62,8 @@ namespace WayleaveManagementSystem.Models.DTO
         //
         public string? RefNumber { get; set; }
         public string? CompanyType { get; set; }
+        public string? AlternateEmail { get; set; }
+        public string? AlternateNumber { get; set; }
 
     }
 }

@@ -53,5 +53,8 @@ namespace WayleaveManagementSystem.Data.Entities
 
         //--added subDepartment name
         public string? SubDepartmentName { get; set; }
+        //
+        public string? AlternateEmail { get; set; }
+        public string? AlternateNumber { get; set; }
     }
 }

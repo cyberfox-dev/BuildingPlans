@@ -38,5 +38,7 @@
 
         public bool? isDepartmentAdmin { get; set; }
         public bool? isZoneAdmin { get; set; }
+        public string? AlternateEmail { get; set; }
+        public string? AlternateNumber { get; set; }
     }
 }

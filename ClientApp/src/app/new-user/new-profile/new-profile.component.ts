@@ -295,7 +295,7 @@ export class NewProfileComponent implements OnInit {
         if (data.responseCode == 1) {
 
           const current = data.dateSet[0];
-
+          debugger;
           this.subDepartmentID = current.subDepartmentID;
           this.departmentID = current.departmentID;
           console.log("reponse this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID", this.subDepartmentID, this.departmentID);
@@ -664,7 +664,6 @@ export class NewProfileComponent implements OnInit {
     this.ZoneDropdown.splice(0, this.ZoneDropdown.length);
     if (event.target.value > 0) {
 
-
       this.zoneService.getZonesBySubDepartmentsID(event.target.value).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
@@ -692,8 +691,7 @@ export class NewProfileComponent implements OnInit {
     }
     else {
   
-    
-
+   
 
     }
 

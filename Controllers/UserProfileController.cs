@@ -15,6 +15,7 @@ using WayleaveManagementSystem.DTO;
 using WayleaveManagementSystem.IServices;
 using WayleaveManagementSystem.Models;
 using WayleaveManagementSystem.Models.BindingModel;
+using WayleaveManagementSystem.Models.DTO;
 using WayleaveManagementSystem.Service;
 
 namespace WayleaveManagementSystem.Controllers
@@ -43,7 +44,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _userProfileService.AddUpdateUserProfiles(model.UserProfileID, model.UserID, model.FullName, model.Email, model.PhoneNumber, model.isInternal, model.BP_Number, model.CompanyName, model.CompanyRegNo, model.PhyscialAddress, model.Directorate, model.DepartmentID, model.SubDepartmentID, model.Branch, model.CostCenterNumber, model.CostCenterOwner, model.CopyOfID, model.CreatedById, model.IdNumber, model.zoneID, model.vatNumber, model.refNumber, model.companyType, model.SubDepartmentName, model.isDepartmentAdmin, model.isZoneAdmin);
+                    var result = await _userProfileService.AddUpdateUserProfiles(model.UserProfileID, model.UserID, model.FullName, model.Email, model.PhoneNumber, model.isInternal, model.BP_Number, model.CompanyName, model.CompanyRegNo, model.PhyscialAddress, model.Directorate, model.DepartmentID, model.SubDepartmentID, model.Branch, model.CostCenterNumber, model.CostCenterOwner, model.CopyOfID, model.CreatedById, model.IdNumber, model.zoneID, model.vatNumber, model.refNumber, model.companyType, model.SubDepartmentName, model.isDepartmentAdmin, model.isZoneAdmin, model.AlternateEmail, model.AlternateNumber);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.UserProfileID > 0 ? "User Profile Updated Successfully" : "User Profile Added Successfully"), result));
                 }
             }
@@ -258,7 +259,27 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+        [HttpPost("GetUserByEmail")]
+        public async Task<object> GetUserByEmail([FromBody] UsersProfileBindingModel model)
+        {
+            try
+            {
 
+                if (model.Email.Length < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _userProfileService.GetUserByEmail(model.Email);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "UserProfile information fetched", result));
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
 
     }
 }

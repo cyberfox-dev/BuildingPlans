@@ -72,7 +72,7 @@
   <div class="modal-header">
     <h4 class="modal-title" *ngIf="!isEMBAdmin" id="modal-basic-title">Add a new user to the {{this.loggedInUserDepartmentName}} department</h4>
     <h4 class="modal-title" *ngIf="isEMBAdmin" id="modal-basic-title">Add a new user to a department</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="clearFormFields();modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
 
@@ -280,7 +280,7 @@
             <button mat-raised-button color="orange" matTooltip="View and Edit User" (click)="editUserScopeManyZones(i, departmentPersonZones); modal.close('Save click')"><i class="fa fa-pencil"></i></button>
             <!--What is this button supposed to do?-->
             <button mat-raised-button color="success" matTooltip="Add User to another Zone" (click)="addToMoreZones(i, addToZones);modal.close('Save click')"><i class="fa fa-plus"></i></button>
-            <button mat-raised-button color="warn" matTooltip="Unlink User" (click)="removeUserFromDPT(i)"><i class="fa fa-unlink"></i></button>
+            <!--<button mat-raised-button color="warn" matTooltip="Unlink User" (click)="removeUserFromDPT(i)"><i class="fa fa-unlink"></i></button>-->
 
           </td>
 
@@ -369,14 +369,14 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-    <mat-tab-group>
+    <mat-tab-group (selectedTabChange)="onTabChange($event)">
 
       <ng-container>
         <ng-container>
           <mat-tab *ngFor="let zone of ZonesList" label="{{ zone.ZoneName }}">
             <!-- Zone-specific information -->
             <!-- <div *ngIf="checkZoneInTheirZoneLink(zone.ZoneID)"> -->
-            <div *ngIf="zone.isLinked">
+            <div *ngIf="zone.isLinked" (click)="getZoneAccessGroups(zone.ZoneID)" >
               <!-- Display zone-specific information here if user is linked to this zone-->
               <div>
                 <table class="table">
@@ -390,10 +390,10 @@
                     <tr *ngFor="let access of AccessGroupList; let i = index">
                       <td>{{ access.AccessGroupName }}</td>
                       <td>
-                        <button class="btn btn-danger" (click)="removeFromAccessGroup(i)" *ngIf="isUserInAccessGroup(access.AccessGroupID)">
+                        <button class="btn btn-danger" (click)="removeFromAccessGroup(i)" *ngIf="isUserInAccessGroup2(access.AccessGroupID, zone.ZoneID)">
                           <i class="fa fa-minus"></i>
                         </button>
-                        <button class="btn btn-success" (click)="addToAccessGroup(i, departmentPersonZones);modal.close('Save click')" *ngIf="!isUserInAccessGroup(access.AccessGroupID)">
+                        <button class="btn btn-success" (click)="addToAccessGroupInZones(i, departmentPersonZones, zone.ZoneID);modal.close('Save click')" *ngIf="!isUserInAccessGroup2(access.AccessGroupID, zone.ZoneID)">
                           <i class="fa fa-plus"></i>
                         </button>
                       </td>
