@@ -1102,23 +1102,25 @@ export class NewWayleaveComponent implements OnInit {
               }
 
 
-              this.router.navigate(["/home"]);
-              this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-              /*              this.addToSubDepartmentForComment();*/
-              this.notificationsService.addUpdateNotification(0, "Application Submission", "New wayleave application submission", false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserID, this.applicationID, "Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.").subscribe((data: any) => {
+                this.router.navigate(["/home"]);
+                if (this.isDraft === false) {
+                  this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  /*              this.addToSubDepartmentForComment();*/
+                  this.notificationsService.addUpdateNotification(0, "Application Submission", "New wayleave application submission", false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserID, this.applicationID, "Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.").subscribe((data: any) => {
 
-                if (data.responseCode == 1) {
-                  alert(data.responseMessage);
+                    if (data.responseCode == 1) {
+                      alert(data.responseMessage);
 
+                    }
+                    else {
+                      alert(data.responseMessage);
+                    }
+
+                    console.log("response", data);
+                  }, error => {
+                    console.log("Error", error);
+                  });
                 }
-                else {
-                  alert(data.responseMessage);
-                }
-
-                console.log("response", data);
-              }, error => {
-                console.log("Error", error);
-              });
 
               const projectNum = "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear;
               const emailContentOriginator = `
@@ -1354,7 +1356,7 @@ export class NewWayleaveComponent implements OnInit {
                   this.SavedProjectSizeSelections();
                   if (this.isDraft == true) {
                     this.draftApplicationsService.addUpdateDraftApplication(0, this.applicationID, appUserId, this.internalName + " " + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject
-                      , this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, contractorData.toString(), engineerData.toString()).subscribe((data: any) => {
+                      , this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, contractorData[0].name, engineerData[0].name).subscribe((data: any) => {
                         alert("Draft Saved")
                         console.log("response", data);
 
@@ -1447,10 +1449,7 @@ export class NewWayleaveComponent implements OnInit {
                   this.Emailmessage = "A Wayleave application with ID " + this.applicationID + " and project reference number:" + projectNum + " has just been captured. You will be notified once your application has reached the next stage in the process.";
                   this.onCreateNotification();
                 }
-              this.notificationsService.sendEmail(this.CurrentUser.email, "New wayleave application", emailContent, emailContent);
-              /*              this.addToSubDepartmentForComment();*/
-              this.Emailmessage = "A Wayleave application with ID " + this.applicationID + " and project reference number:" + projectNum + " has just been captured. You will be notified once your application has reached the next stage in the process.";
-                this.onCreateNotification();
+              
 
 
                 //Send emails to zone department admins
@@ -1587,7 +1586,7 @@ export class NewWayleaveComponent implements OnInit {
         debugger;
         if (this.isDraft == true) {
           this.draftApplicationsService.addUpdateDraftApplication(0, this.applicationID, appUserId, this.clientName + " " + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, this.clientCompanyRegNo, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject
-            , this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, null, null, null ).subscribe((data: any) => {
+            , this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, null, contractorData[0].name, engineerData[0].name ).subscribe((data: any) => {
               if (data.responseCode === 1) {
                 alert("Draft Saved")
 
@@ -1679,7 +1678,7 @@ export class NewWayleaveComponent implements OnInit {
         debugger;
         this.SavedProjectSizeSelections();
         if (this.isDraft == true) {
-          this.draftApplicationsService.addUpdateDraftApplication(0, this.applicationID, this.CurrentUser.appUserId, this.externalName + " " + this.externalSurname, this.externalEmail, "Phone", this.externalAddress, this.clientRefNo, this.clientCompanyRegNo, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, appUserId, null, contractorData.toString(), engineerData.toString()).subscribe((data: any) => {
+          this.draftApplicationsService.addUpdateDraftApplication(0, this.applicationID, this.CurrentUser.appUserId, this.externalName + " " + this.externalSurname, this.externalEmail, "Phone", this.externalAddress, this.clientRefNo, this.clientCompanyRegNo, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, appUserId, null, contractorData[0].name, engineerData[0].name).subscribe((data: any) => {
             if (data.responseCode === 1) {
               debugger;
               alert("Draft Saved")
@@ -4604,7 +4603,18 @@ export class NewWayleaveComponent implements OnInit {
 
   }
 
- 
+  AddUpdateDraftWayleave() {
+    this.draftApplicationsService.addUpdateDraftApplication(0, this.applicationID, this.CurrentUserProfile.appUserId, this.internalName + " " + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject
+      , this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null,null).subscribe((data: any) => {
+        alert("Draft Saved")
+        console.log("response", data);
+
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+  
+  }
 
 
   onDraftSave() {

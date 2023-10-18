@@ -107,6 +107,7 @@ namespace WayleaveManagementSystem.Controllers
                     }
                     else //if it is not null then user is doing an update 
                     {
+                        tempDraftApplicationTable.DraftID = model.DraftID;
                         if ( model.ApplicationID != null)
                         {
                             tempDraftApplicationTable.ApplicationID = model.ApplicationID;
