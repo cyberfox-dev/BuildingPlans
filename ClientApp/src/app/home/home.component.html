@@ -14,7 +14,6 @@
   <script defer src="src/assets/fontawesome-free-6.4.2-web/js/sharp-solid.js"></script>
   <script defer src="src/assets/fontawesome-free-6.4.2-web/js/custom-icons.js"></script>-->
 
-
 </head>
 <!--<h1>Navbar</h1>-->
 <button mat-fab [@fadeInAnimation]="" *ngIf="FilterBtn" class="floating-button" (click)="openSpin(spin)">
@@ -999,9 +998,9 @@
 
   <ng-template #spin let-modal >
 
-    <div class="container99">
-      <div class="cards">
-        <label class="card" *ngFor="let subDept of AllSubDepartmentList; let i = index">
+<!--    <div class="container99">
+      <div class="cards2">
+        <label class="card2" *ngFor="let subDept of AllSubDepartmentList; let i = index">
 
           {{subDept.subDepartmentName}}
         </label>
@@ -1042,7 +1041,7 @@
           <span class="progress"></span>
         </div>
       </div>
-    </div>
+    </div>-->
   </ng-template>
 
   <ng-template #showAddedProf let-modal>
