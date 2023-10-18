@@ -1886,7 +1886,7 @@ export class NewWayleaveComponent implements OnInit {
         console.log('Co-ordinates:', this.coordinates);
 
       }
-      else if (this.client || this.option == "proxy") {
+    
       else if (this.internalProxy) {
         const appUserId = this.shared.clientUserID;
         this.internalProxyWayleaveCreate(appUserId, isPlanning);

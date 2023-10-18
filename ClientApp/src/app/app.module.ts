@@ -92,7 +92,6 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ServiceConditionsComponent } from './service-conditions/service-conditions.component';
 import { ConfigActingDepartmentComponent } from './config-acting-department/config-acting-department.component';
 import { DocumentRepositoryComponent } from './document-repository/document-repository.component';
-import { DocumentRepositoryConfigComponent } from './document-repository-config/document-repository-config.component';
 import { SnackBarAlertsComponent } from './snack-bar-alerts/snack-bar-alerts.component'
 import { DocumentRepositoryConfigComponent } from './document-repository-config/document-repository-config.component';
 import { DraftsComponent } from 'src/app/drafts/drafts.component';

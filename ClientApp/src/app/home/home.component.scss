@@ -1684,3 +1684,28 @@ border:none;
 #item-3:checked ~ .player #test {
   transform: translateY(-80px);
 }
+.drafts {
+  height: 80px;
+  text-align: center;
+  width: 100%;
+}
+
+.draftHeader {
+  height: 95px;
+}
+
+.draftCount {
+  text-align: Center;
+  display: block;
+  font-size: 20px;
+}
+
+
+.span1 {
+  display: block;
+  margin-top: 10px;
+}
+
+.drafts:hover {
+  border-color: rgb(38, 168, 255);
+}

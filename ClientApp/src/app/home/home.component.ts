@@ -385,7 +385,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private newProfileComponent: NewProfileComponent,
     private businessPartnerService: BusinessPartnerService,
     private dialog: MatDialog,
-    private _snackBar: MatSnackBar, private renderer: Renderer2, private el: ElementRef
+    private _snackBar: MatSnackBar, private renderer: Renderer2, private el: ElementRef,
     private draftApplicationService: DraftApplicationsService,
   ) {
     this.currentDate = new Date();
