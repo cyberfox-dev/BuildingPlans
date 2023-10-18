@@ -25,10 +25,11 @@
   <div class="cont3 ">
     <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToNewWayleave(false,false)"><i class="fa fa-plus"></i> Create New Wayleave</button>
     <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToNewWayleave(false,true)"><i class="fa fa-plus"></i> Request for Services Information</button>
+    
   </div>
 
 
-
+  
 
 
 
@@ -270,8 +271,9 @@
       </form>
     </div>
     <div class="modal-footer">
-
+      <button type="button" class="btn btn-outline-success " *ngIf="gotDrafts == true " (click)="openDrafts(drafts)">View Draft Wayleaves</button>
       <button type="button" class="btn btn-outline-success" (click)="sendOption();modal.dismiss('Cross click')">Continue</button>
+
     </div>
 
   </ng-template>
@@ -302,6 +304,28 @@
       <!--  <button mat-raised-button color="save" (click)="sendOption();modal.dismiss('Cross click')"> Continue</button>-->
 
     </div>
+
+  </ng-template>
+  <ng-template #externalOpt let-modal>
+    <div class="modal-header">
+      <h6 class="modal-title" id="modal-basic-title">As an external applicant are you applying for :</h6>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="container-fluid">
+
+
+          <div class="cont2">
+            <button mat-raised-button color="client"><i class="fa fa-user-plus" aria-hidden="true" (click)="openNewWayleave()"></i> New Application</button>
+            <button mat-raised-button color="client"  (click)="openDrafts(drafts)"><i class="fa fa-eye" aria-hidden="true"></i> Select From Drafts</button>
+
+          </div>
+        </div>
+
+      </form>
+    </div>
+    
 
   </ng-template>
 
@@ -1326,4 +1350,39 @@
       <button type="button" class="btn btn-outline-success" (click)="openXl(Prof);modal.close('Save click')">Add Professional</button>
       <button type="button" class="btn btn-outline-success" (click)="saveAllEngineers();saveAllContractors();populateClientInfo();modal.close('Save click');">Create Wayleave</button>
     </div>
+  </ng-template>
+
+  <!--<ng-template #draft let-modal class="form-floating">
+    <div class="modal-header draftHeader">
+      <div class="draftCount">
+        <span class="span1" style="font-size:40px">Drafted Projects Of {{this.CurrentUser.fullName}}</span>
+        <span class="span1" style="font-size:20px"> You have {{this.draftsLength}} drafts out of 10 </span>
+      </div>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+
+    <div *ngFor="let drafts of DraftsList">
+      <button class="alert alert-info drafts" role="alert" (click)=" openOptions(Options)">
+        <div><span style="font-size: 20px;"> Wayleave Application for {{drafts.FullName}} Application </span></div>
+        <div>
+          <span style="font-size: 15px;">{{drafts.TypeOfApplication}} Application / Excavation Type: {{drafts.ExcavationType}}</span>
+          
+        </div>
+        <div> <span>Created on {{drafts.DateCreated}}</span></div>
+      </button>
+    </div>
+
+  </ng-template>-->
+
+  <ng-template #drafts let-modal>
+
+    <div>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div>
+      <app-drafts></app-drafts>
+    </div>
+   
+
+
   </ng-template>

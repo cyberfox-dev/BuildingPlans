@@ -581,3 +581,9 @@ mat-button-toggle {
   background-color: #8bb6c2;
   color: white;
 }
+.floating-button2 {
+  position: fixed;
+  top: 50px;
+  left: 16px;
+  z-index: 1; /* Ensure it's above other content, adjust as needed */
+}

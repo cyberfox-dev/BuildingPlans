@@ -62,7 +62,7 @@ export class DocumentRepositoryConfigComponent implements OnInit {
 
   getAllDocumentCategories() {
     debugger;
-   
+    this.documentsCategoryList = [];
     this.documentsCategoryList.splice(0, this.documentsCategoryList.length);
     this.documentRepositoryService.getAllDocumentCategories().subscribe((data: any) => {
       debugger;
@@ -171,7 +171,7 @@ export class DocumentRepositoryConfigComponent implements OnInit {
   
   getAllDepartments() {
     debugger;
- 
+    
     this.DepartmentsList.splice(0, this.DepartmentsList.length);
     this.departmentsService.getDepartmentsList().subscribe((data: any) => {
       if (data.responseCode === 1) {

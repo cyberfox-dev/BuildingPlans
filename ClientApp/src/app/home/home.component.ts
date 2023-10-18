@@ -31,7 +31,8 @@ import { UserService } from '../service/User/user.service';
 import { NewProfileComponent } from '../new-user/new-profile/new-profile.component';
 import { BusinessPartnerService } from '../service/BusinessPartner/business-partner.service';
 import { ContractorList } from '../edit-contractor/edit-contractor.component';
-
+import { DraftApplicationsService } from '../service/DraftApplications/draft-applications.service';
+import { DraftsComponent } from 'src/app/drafts/drafts.component';
 
 export interface EngineerList {
   professinalID: number;
@@ -218,6 +219,8 @@ export interface AllInternalUserProfileList {
 
 }
 
+
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -253,6 +256,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   AllInternalUserProfileList: ClientUserList[] = [];
   ZoneLinkedList: ZoneList[] = [];
   AllConfig: ConfigList[] = [];
+ 
   ServerType: string;
 
   //Added on the 18th of September for the view tings
@@ -263,7 +267,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   ContractorsList: ProfListEU[] = [];
 
   @ViewChild(MatTable) ZoneListTable: MatTable<ZoneList> | undefined;
-
+ 
   displayedColumnsViewLinkedZones: string[] = ['subDepartmentName', 'zoneName'];
   dataSourceViewLinkedZones = this.ZoneLinkedList;
 
@@ -326,6 +330,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   btnActiveClient: boolean = true;
   btnActiveInternal: boolean = false;
   @ViewChild("internalOpt", { static: true }) content!: ElementRef;
+  @ViewChild("externalOpt", { static: true }) external!: ElementRef;
   @ViewChild("clientOption", { static: true }) clientOption!: ElementRef;
   @ViewChild("user", { static: true }) user!: ElementRef;
   @ViewChild("Prof", { static: true }) Prof!: ElementRef;
@@ -345,8 +350,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   userID: any;
   FilterBtn: boolean = false;
   viewEscalateDate = 0;
-
-
+  gotDrafts: boolean ;
+  externalUser: boolean = false;
 
   constructor(
     private router: Router,
@@ -371,6 +376,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private newProfileComponent: NewProfileComponent,
     private businessPartnerService: BusinessPartnerService,
+    private draftApplicationService: DraftApplicationsService,
   ) {
     this.currentDate = new Date();
     this.previousMonth = this.currentDate.getMonth();
@@ -387,7 +393,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['ProjectNumber', 'FullName', 'Stage', 'Status', 'TypeOfApplication', 'AplicationAge', 'StageAge', 'DateCreated', 'actions'];
   dataSource = this.Applications;
 
-
+  
   applyFilter(event: Event): string[] {
     const filterValue = (event.target as HTMLInputElement).value.toUpperCase();
     if (filterValue === "") {
@@ -511,7 +517,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.getAllUserLinks();
       this.getConfig();
       this.getAllInternalUsers();
-
+      this.getDraftsList();
       //this.getAllExternalUsers(); //returns null at this point
 
       //this.ServerType = this.sharedService.getServerType();
@@ -601,6 +607,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
   openSm(internalOpt: any) {
     this.modalService.open(internalOpt, {
+      centered: true,
+      size: 'lg',
+      backdrop: 'static', // Prevent clicking outside the modal to close it
+      keyboard: false // Prevent pressing the ESC key to close the modal
+    });
+
+  }
+  openExternal(externalOpt: any) {
+    this.modalService.open(externalOpt, {
       centered: true,
       size: 'lg',
       backdrop: 'static', // Prevent clicking outside the modal to close it
@@ -1436,12 +1451,20 @@ this.Applications.push(tempApplicationList);
     if (this.CurrentUserProfile[0].isInternal === true) {
       this.openSm(this.content);
     } else {
-      this.createWayleave(this.applicationType, this.isPlanning);
+      if (this.gotDrafts == true) {
+        this.openExternal(this.external);
+      }
+      else {
+        this.createWayleave(this.applicationType, this.isPlanning);
+      }
     } 
 
 
   }
-
+  openNewWayleave() {
+      this.createWayleave(this.applicationType, this.isPlanning);
+  }
+ 
   createWayleave(applicationType: boolean, isPlanning: boolean) {
     //application type refers to whether it is a brand new application or if it is a reapply.
     console.log("THIS IS THE APPLICATION TYPE", applicationType);
@@ -1471,6 +1494,7 @@ this.Applications.push(tempApplicationList);
   
         }  
       }
+    }
     }
   
     countDistributed() {
@@ -4308,6 +4332,55 @@ this.Applications.push(tempApplicationList);
     console.log("Response", data);
   } catch(error) {
     console.log("Error:", error);
+  }
+
+  openDrafts(drafts: any) {
+    this.modalService.open(drafts, {
+      centered: true,
+      size: 'xl',
+      backdrop: 'static', // Prevent clicking outside the modal to close it
+      keyboard: false // Prevent pressing the ESC key to close the modal
+    });
+  }
+  getDraftsList() {
+    debugger;
+    if (this.CurrentUserProfile[0].isInternal == true) {
+      this.draftApplicationService.getDraftedApplicationsList(this.CurrentUser.appUserId).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          debugger;
+          if (data.dateSet.length != 0) {
+            this.gotDrafts = true;
+            debugger;
+          }
+          
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("response", data);
+      }, error => {
+        console.log("Error: ", error);
+      });
+    }
+    else {
+      this.draftApplicationService.getDraftedApplicationsListForExternal(this.CurrentUser.appUserId).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          debugger;
+          if (data.dateSet.length != 0) {
+            this.gotDrafts = true;
+            this.externalUser = true;
+            debugger;
+          }
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("response", data);
+      }, error => {
+        console.log("Error: ", error);
+      });
+    }
   }
 }
 

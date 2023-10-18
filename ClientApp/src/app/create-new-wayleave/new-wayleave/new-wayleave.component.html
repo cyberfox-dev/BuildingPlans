@@ -329,12 +329,12 @@
 
       <button mat-raised-button color="projectSize" matTooltip="Please check the 'Project Size Criteria.pdf' in the Repository. You'll find it in the top right-hand menu." (click)="openMandatoryDocumentCategory(MandatoryDocumentCategory)">Determine Project Size</button>
 
-      <div class="alert alert-info" role="alert" *ngIf="projectSizeAlert">{{PSM}}</div>
+      <div class="alert alert-info" role="alert" *ngIf="projectSizeAlert || onPopulateDraftInfo">{{PSM}}</div>
       <!--Out with the old-->
       <!--<mat-form-field appearance="fill">
     <mat-label>Select type of application</mat-label>
     <mat-select [(ngModel)]="typeOfApplication" name="typeOfApplication">
-      <mat-option value="Small">Small</mat-option>
+      <mat-option value="Small">Small</mat-option>MandatoryDocumentCategory
       <mat-option value="Medium">Medium</mat-option>
       <mat-option value="Large">Large</mat-option>
       <mat-option value="Emergency">Emergency</mat-option>
@@ -380,7 +380,7 @@
       </div>
 
 
-      <button mat-raised-button color="draft" (click)="saveProjectAsDraft()">Save project as a draft</button>
+      <button mat-raised-button color="draft" class="floating-button2" (click)="DraftOption(); onWayleaveCreate(CurrentUser.appUserId,false);" >Save project as a draft</button>
 
       <div class="row">
         <div class="typeOfExcavation">
@@ -388,16 +388,18 @@
           <div class="card">
             <h3><span>Type Of Excavation</span></h3>
           </div>
-          <div class="container-fluid">
+          <div class="container-fluid" *ngIf="onWayleaveCreate">
 
             <mat-form-field>
               <mat-label>Types Of Excavation</mat-label>
               <mat-select [(ngModel)]="TOENAMES" multiple>
+               
                 <mat-option *ngFor="let TOE of TypeOfExcavationList" (selectionChange)="CheckTOES()" [value]="TOE.typeOfExcavationName">{{TOE.typeOfExcavationName}}</mat-option>
               </mat-select>
             </mat-form-field>
 
           </div>
+          
         </div>
       </div>
 
@@ -409,7 +411,7 @@
       <div class="row">
         <div class="col">
           <div class="form-floating mb-3 mt-3">
-            <input type="date" class="form-control" [(ngModel)]="expectedStartDate" id="startDate" placeholder="Enter Start Date" name="expectedStartDate" [min]="getCurrentDate()">
+            <input type="date" class="form-control" [(ngModel)]="expectedStartDate" id="startDate" placeholder="Enter Start Date" name="expectedStartDate"> <!--[min]="getCurrentDate()"-->
             <label for="name">Start Date</label>
           </div>
         </div>
@@ -464,6 +466,10 @@
     <mat-step>
       <form>
         <ng-template matStepLabel>Document Uploads</ng-template>
+        
+        
+        <button mat-raised-button color="draft" class="floating-button2" (click)= "DraftOption();onWayleaveCreate(CurrentUser.appUserId,false)">Save project as a draft</button>
+        
       </form>
       <mat-list *ngFor="let manDoc of MandatoryDocumentsLinkedStagesList | async; let i=index; trackBy: trackByFn" [attr.data-index]="i">
         <mat-list-item> {{manDoc.mandatoryDocumentName}}</mat-list-item>
@@ -498,7 +504,7 @@
 
 
 
-        <button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)="onWayleaveCreate(CurrentUser.appUserId,false);SavedProjectSizeSelections()">
+        <button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)="onWayleaveCreate(CurrentUser.appUserId,false)">
           Create Application
         </button>
         <!--  <img src="assets/Loading.png" *ngIf="successfulUploads >0 && successfulUploads < totalDocs" class="logo2">-->
@@ -873,7 +879,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <div class="alert alert-info" role="alert" *ngIf="PSM">
+    <div class="alert alert-info" role="alert" *ngIf="PSM" >
       These selections will give you a {{PSM}}
     </div>
   </div>
