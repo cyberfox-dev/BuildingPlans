@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WayleaveManagementSystem.Data;
 
@@ -11,9 +12,10 @@ using WayleaveManagementSystem.Data;
 namespace WayleaveManagementSystem.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231012132112_DraftApplicationstable")]
+    partial class DraftApplicationstable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -809,19 +811,13 @@ namespace WayleaveManagementSystem.Data.Migrations
 
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.DraftedProjects", b =>
                 {
-                    b.Property<int?>("DraftID")
+                    b.Property<int?>("ApplicationID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("DraftID"), 1L, 1);
-
-                    b.Property<int?>("ApplicationID")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("ApplicationID"), 1L, 1);
 
                     b.Property<string>("CompanyRegNo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Contractor")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedById")
@@ -837,9 +833,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Engineer")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ExcavationType")
@@ -893,7 +886,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<bool>("isActive")
                         .HasColumnType("bit");
 
-                    b.HasKey("DraftID");
+                    b.HasKey("ApplicationID");
 
                     b.ToTable("DraftedProjectsTable");
                 });

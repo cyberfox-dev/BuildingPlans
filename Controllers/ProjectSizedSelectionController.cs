@@ -99,5 +99,36 @@ namespace WayleaveManagementSystem.Controllers
 
         }
 
+
+        [HttpPost("GetProjectSizedSelectionForApplication")]
+        public async Task<object> GetProjectSizedSelectionForApplication([FromBody]ProjectSizedSelectionDTO model) 
+        {
+            try
+            {
+
+                var result = await (
+                   from ProjectSizedSelections in _context.ProjectSizedSelections
+                   where ProjectSizedSelections.isActive == true && ProjectSizedSelections.ApplicationID == model.ApplicationID
+                   select new ProjectSizedSelectionDTO()
+                   {
+                      ApplicationID = ProjectSizedSelections.ApplicationID,
+                      SelectedProject = ProjectSizedSelections.SelectedProject,
+                      ProjectDescription = ProjectSizedSelections.ProjectDescription,
+                      
+                   }
+               ).ToListAsync();
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got selected project selections", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+
+        }
+
+
+
     }
 }

@@ -156,7 +156,8 @@ export class SharedService {
   RepFileUploadSubID?: any | null;
   RepFileUploadCat?: any | null;
     userIDForWalkIn: any;
-
+  isDraft: boolean;
+   
   setCheckEmail(data: any) {
     this.checkEmail = data;
     console.log("Set method" + this.checkEmail);

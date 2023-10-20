@@ -41,4 +41,12 @@ export class ProjectSizedSelectionService {
     }
     return this.httpClient.post(this.baseURL + "DeleteProjectSizedSelection", body);
   }
+
+  public getProjectSizedSelectionForApplication(applicationID: number) {
+    debugger;
+    const body = {
+      ApplicationID:applicationID
+    }
+    return this.httpClient.post(this.baseURL + "GetProjectSizedSelectionForApplication", body);
+  }
 }
