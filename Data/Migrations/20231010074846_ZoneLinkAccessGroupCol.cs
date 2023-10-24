@@ -55,7 +55,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                 name: "AccessGroupUserLinkID",
                 table: "ZoneLinkTable");
 
- 
+
         }
     }
 }
