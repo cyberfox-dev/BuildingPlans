@@ -39,7 +39,7 @@ export class SelectEngineerTableComponent implements OnInit {
   stringifiedData: any;
   ProfessialList: ProfessialList[] = [];
   @ViewChild(MatTable) ProfessialTable: MatTable<ProfessialList> | undefined;
-  displayedColumns: string[] = ['ProfessinalType', 'name', 'surname', 'email', 'phoneNumber'];
+  displayedColumns: string[] = ['ProfessinalType','professionalRegNo', 'name', 'surname', 'email', 'phoneNumber'];
   dataSourceProfessials = this.ProfessialList;
   clickedRowsProfessials = new Set<ProfessialList>();
   ProfessionalsDataForShared: ProfessialList[] = [];

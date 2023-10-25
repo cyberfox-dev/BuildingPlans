@@ -38,7 +38,7 @@
             <input class="input" type="text" placeholder="Enter OTP" formControlName="OTPField" *ngIf="!showDuplicatePassInput" />
             <button type="submit" [disabled]="!registerForm.valid" [class.disabled]="!registerForm.valid" class="button2" (click)="onVerifyOTPRegister()" *ngIf="!showDuplicatePassInput">Verify & Register</button>
             <!--Be sure to remove this paragraph when the app is finalized!!-->
-            <p>{{otp}}</p>
+          <!--  <p>{{otp}}</p>-->
           </form>
         </div>
         <div class="form-container sign-in-container">

@@ -197,12 +197,12 @@ export class LoginComponent implements OnInit {
       alert("OTP Sent, Please check your email");
       this.sendOTPBtn = false;
       const emailContent = `
-      <html>
+       <html>
         <head>
           <style>
             /* Define your font and styles here */
             body {
-              font-family: 'Century Gothic';
+              font-family: Arial, sans-serif;
             }
             .email-content {
               padding: 20px;
@@ -222,17 +222,15 @@ export class LoginComponent implements OnInit {
         <body>
           <div class="email-content">
             <p>Dear Applicant,</p>
-            <p>Please enter the following one-time pin to create your account on the City of Cape Town Wayleave Management System: <strong>${otp}</strong>. This code will be valid for the next 15 minutes.</p>
-            <p>Should you have any queries, please contact us at <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
-          </div>
-          <div class="footer">
-
-            <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
-            <p>Regards,<br>Wayleave Management System</p>
-            <p>
-              <a href="#">CCT Web</a> | <a href="#">Contacts</a> | <a href="#">Media</a> | <a href="#">Report a fault</a> | <a href="#">Accounts</a>
+            <p>Please enter the following one time pin to create your account on the City of Cape Town Wayleave Management System: <strong>${otp}</strong>. This code will be valid for the next 15 minutes.</p>
+            <p>Should you have any queries, please contact <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+                <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
             </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
           </div>
+
         </body>
       </html>
     `;
