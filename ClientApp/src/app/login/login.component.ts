@@ -288,128 +288,128 @@ export class LoginComponent implements OnInit {
   }
 
 
-  getAllRolesForUserForAllAG(userId: string): void {
-    this.accessGroupsService.getAllRolesForUserForAllAG(userId).subscribe(
-      (data: any) => {
-        if (data?.responseCode === 1 && data?.dateSet) {
-          this.setLocalStorage("AllCurrentUserRoles", data.dateSet);
-        } else {
-          console.error("Invalid data structure received: ", data);
-        }
-      },
-      error => console.error("Error: ", error)
-    );
-  }
+  //getAllRolesForUserForAllAG(userId: string): void {
+  //  this.accessGroupsService.getAllRolesForUserForAllAG(userId).subscribe(
+  //    (data: any) => {
+  //      if (data?.responseCode === 1 && data?.dateSet) {
+  //        this.setLocalStorage("AllCurrentUserRoles", data.dateSet);
+  //      } else {
+  //        console.error("Invalid data structure received: ", data);
+  //      }
+  //    },
+  //    error => console.error("Error: ", error)
+  //  );
+  //}
 
 
 
 
 
-onLogin(): void {
-  if(this.loginForm.invalid) {
-  console.error("Form is invalid");
-  return;
-}
+//onLogin(): void {
+//  if(this.loginForm.invalid) {
+//  console.error("Form is invalid");
+//  return;
+//}
 
-this.isLoading = true;
+//this.isLoading = true;
 
-const email = this.loginForm.controls["email"].value;
-const password = this.loginForm.controls["password"].value;
+//const email = this.loginForm.controls["email"].value;
+//const password = this.loginForm.controls["password"].value;
 
-this.userService.login(email, password).pipe(
-  switchMap((data: LoginResponse) => {
-    if (data.responseCode === 1) {
-      this.setLocalStorage("LoggedInUserInfo", data.dateSet);
-      return this.getUserProfile();
-    }
-    return throwError(data.responseMessage);
-  }),
-  switchMap((profileData: LoginResponse) => {
-    const userId = profileData.dateSet[0].userID;
-    this.setLocalStorage("userProfile", profileData.dateSet);
-    this.getAllRolesForUserForAllAG(userId);
-    return this.zoneLinkService.getAllUserLinks(userId);
-  }),
-  tap((response: LoginResponse) => this.handleUserLinks(response.dateSet)),
-  catchError(error => {
-    console.error("Failed in the pipeline", error);
-    return throwError(error);
-  }),
-  delay(5000) // consider reducing the delay if it’s not necessary
-).subscribe(
-  () => {
-    this.router.navigate(["/home"]);
-  },
-  (error) => {
-    console.error("Error: ", error);
-    this.error = error.message;
-  }
-).add(() => {
-  this.isLoading = false;
-});
-}
+//this.userService.login(email, password).pipe(
+//  switchMap((data: LoginResponse) => {
+//    if (data.responseCode === 1) {
+//      this.setLocalStorage("LoggedInUserInfo", data.dateSet);
+//      return this.getUserProfile();
+//    }
+//    return throwError(data.responseMessage);
+//  }),
+//  switchMap((profileData: LoginResponse) => {
+//    const userId = profileData.dateSet[0].userID;
+//    this.setLocalStorage("userProfile", profileData.dateSet);
+//    this.getAllRolesForUserForAllAG(userId);
+//    return this.zoneLinkService.getAllUserLinks(userId);
+//  }),
+//  tap((response: LoginResponse) => this.handleUserLinks(response.dateSet)),
+//  catchError(error => {
+//    console.error("Failed in the pipeline", error);
+//    return throwError(error);
+//  }),
+//  delay(5000) // consider reducing the delay if it’s not necessary
+//).subscribe(
+//  () => {
+//    this.router.navigate(["/home"]);
+//  },
+//  (error) => {
+//    console.error("Error: ", error);
+//    this.error = error.message;
+//  }
+//).add(() => {
+//  this.isLoading = false;
+//});
+//}
 
-  setLocalStorage(key: string, data: any): void {
-    localStorage.setItem(key, JSON.stringify(data));
-  }
+//  setLocalStorage(key: string, data: any): void {
+//    localStorage.setItem(key, JSON.stringify(data));
+//  }
 
-  handleUserLinks(zoneLinks: any[]): void {
-    const defaultZoneLink = zoneLinks?.find(link => link.isDefault) || zoneLinks?.[0];
-    if (!defaultZoneLink) return;
+//  handleUserLinks(zoneLinks: any[]): void {
+//    const defaultZoneLink = zoneLinks?.find(link => link.isDefault) || zoneLinks?.[0];
+//    if (!defaultZoneLink) return;
 
-    let userProfile = JSON.parse(localStorage.getItem("userProfile") || '[]');
-    if (!Array.isArray(userProfile)) {
-      console.error("userProfile is not an array: ", userProfile);
-      return;
-    }
+//    let userProfile = JSON.parse(localStorage.getItem("userProfile") || '[]');
+//    if (!Array.isArray(userProfile)) {
+//      console.error("userProfile is not an array: ", userProfile);
+//      return;
+//    }
 
-    const mergedProfile = { ...userProfile[0], ...defaultZoneLink };
-    this.setLocalStorage("userProfile", [mergedProfile]);
-  }
+//    const mergedProfile = { ...userProfile[0], ...defaultZoneLink };
+//    this.setLocalStorage("userProfile", [mergedProfile]);
+//  }
 
  
 
 
 
   //old login 10-10-23
-  //onLogin() {
-  //  // Removed the checkBPValidity and its warning
+  onLogin() {
+    // Removed the checkBPValidity and its warning
 
-  //  this.isLoading = true;
-  //  const email = this.loginForm.controls["email"].value;
-  //  const password = this.loginForm.controls["password"].value;
+    this.isLoading = true;
+    const email = this.loginForm.controls["email"].value;
+    const password = this.loginForm.controls["password"].value;
 
-  //  this.userService.login(email, password).pipe(
-  //    switchMap((data: any) => {
-  //      if (data.responseCode === 1) {
-  //        localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
-  //        return this.getUserProfile();
-  //      } else {
-  //        // Throw error if login failed
-  //        throw new Error(data.responseMessage);
-  //      }
-  //    }),
-  //    switchMap((profileData: any) => {
-  //      localStorage.setItem("userProfile", JSON.stringify(profileData.dateSet));
-  //      return of(true); // Return an observable of true to proceed with the rest of the flow
-  //    }),
-  //    delay(5000) // Delay for 5 seconds after successful login and profile retrieval
-  //  ).subscribe(
-  //    () => {
-  //      this.router.navigate(["/home"]);
+    this.userService.login(email, password).pipe(
+      switchMap((data: any) => {
+        if (data.responseCode === 1) {
+          localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
+          return this.getUserProfile();
+        } else {
+          // Throw error if login failed
+          throw new Error(data.responseMessage);
+        }
+      }),
+      switchMap((profileData: any) => {
+        localStorage.setItem("userProfile", JSON.stringify(profileData.dateSet));
+        return of(true); // Return an observable of true to proceed with the rest of the flow
+      }),
+      delay(5000) // Delay for 5 seconds after successful login and profile retrieval
+    ).subscribe(
+      () => {
+        this.router.navigate(["/home"]);
 
-  //      // Wait for an additional 5 seconds before setting isLoading to false
+        // Wait for an additional 5 seconds before setting isLoading to false
 
-  //      this.isLoading = false;
+        this.isLoading = false;
 
-  //    },
-  //    (error) => {
-  //      console.log("Error: ", error);
-  //      this.isLoading = false;
-  //      this.error = error.message;
-  //    }
-  //  );
-  //}
+      },
+      (error) => {
+        console.log("Error: ", error);
+        this.isLoading = false;
+        this.error = error.message;
+      }
+    );
+  }
 
 
   //onLogin() {

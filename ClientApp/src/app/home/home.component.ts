@@ -999,7 +999,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     
           this.getAllApplicationsByUserID();
         }*/
-
+    debugger;
     let currentMonth = this.currentDate.getMonth() + 1;
     let changeUtility = ("/" + this.currentDate.getFullYear() % 100).toString();
     //return currentMonth !== this.previousMonth;
@@ -1009,13 +1009,13 @@ export class HomeComponent implements OnInit, OnDestroy {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
-          let dbMonth = current.utilitySlot2.substring(0, 2);
+          let dbMonth = current.utilitySlot2.substring(0, 3);
           if (dbMonth < 10) {
             this.previousMonth = dbMonth.substring(1, 2);
           } else {
             this.previousMonth = dbMonth;
           }
-
+          debugger;
           if (currentMonth !== Number(this.previousMonth)) {  //this.previousMonth  currentMonth
 
             this.configService.addUpdateConfig(current.configID, null, null, "0", "0" + currentMonth + changeUtility, null, this.CurrentUser.appUserId).subscribe((data: any) => {
@@ -1501,11 +1501,11 @@ this.Applications.push(tempApplicationList);
 
     if (this.option == "client" || this.option == 'proxy') {
 
-      this.NewWayleaveComponent.onWayleaveCreate(this.userID, isPlanning);
+      this.NewWayleaveComponent.onWayleaveCreate(this.userID, isPlanning,false);
       // this.NewWayleaveComponent.populateClientInfo(this.userID);
     }
     else {
-      this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId, isPlanning);
+      this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId, isPlanning,false);
     }
 
 

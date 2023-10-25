@@ -1075,7 +1075,7 @@ export class NewWayleaveComponent implements OnInit {
         const current = data.dateSet[0];
         this.configNumberOfProject = current.utilitySlot1;
         this.configMonthYear = current.utilitySlot2;
-        this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
+        this.configService.addUpdateConfig(current.configID, null,null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
           if (data.responseCode == 1) {
             debugger;
             //ARGUMENTS NEED CAREFUL ALTERATIONS - OBVIOUSLY CURRENT USER IS THE ORIGINATOR, ARE THEY GOING TO GET THE EMAILS OR IS THE APPLICANT GOING TO GET AN EMAIL??
@@ -1335,9 +1335,11 @@ export class NewWayleaveComponent implements OnInit {
       if (data.responseCode == 1) {
         debugger;
         const current = data.dateSet[0];
+        const configID = current.configID;
         this.configNumberOfProject = current.utilitySlot1;
         this.configMonthYear = current.utilitySlot2;
-        this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
+        debugger;
+        this.configService.addUpdateConfig(configID, "ProjectNumberTracker", null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
           if (data.responseCode == 1) {
 
             debugger;
@@ -1375,6 +1377,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
                 this.router.navigate(["/home"]);
+                debugger;
                 if (this.isDraft === false) {
                   this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
                   /*              this.addToSubDepartmentForComment();*/
@@ -1819,13 +1822,13 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
-  onWayleaveCreate(appUserId, isPlanning: boolean) {
+  onWayleaveCreate(appUserId, isPlanning: boolean, isDraft: boolean) {
     debugger;
     console.log("Turtle Turtle, where are you? " + appUserId);
 
     //get ApplicationID form Shared to check if must update
     this.applicationID = this.shared.getApplicationID();
-
+    this.isDraft = isDraft;
     console.log("What gaan an? " + this.shared.getApplicationID());
     debugger;
 
@@ -1834,7 +1837,7 @@ export class NewWayleaveComponent implements OnInit {
       this.shared.clearContractorData();
       this.shared.clearEngineerData();
 
-      this.applicationsService.addUpdateApplication(0, appUserId, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, isPlanning, null, null, null).subscribe((data: any) => {
+      this.applicationsService.addUpdateApplication(0, appUserId, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,isDraft, null, isPlanning, null, null, null).subscribe((data: any) => {
         if (data.responseCode == 1) {
 
 
