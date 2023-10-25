@@ -380,7 +380,7 @@
       </div>
 
 
-      <button mat-raised-button color="draft" class="floating-button2" (click)="DraftOption(); onWayleaveCreate(CurrentUser.appUserId,false);" >Save project as a draft</button>
+      <button mat-raised-button color="draft" class="floating-button2" (click)="DraftOption(); onWayleaveCreate(CurrentUser.appUserId,false,true);" >Save project as a draft</button>
 
       <div class="row">
         <div class="typeOfExcavation">
@@ -468,7 +468,7 @@
         <ng-template matStepLabel>Document Uploads</ng-template>
         
         
-        <button mat-raised-button color="draft" class="floating-button2" (click)= "DraftOption();onWayleaveCreate(CurrentUser.appUserId,false)">Save project as a draft</button>
+        <button mat-raised-button color="draft" class="floating-button2" (click)= "DraftOption();onWayleaveCreate(CurrentUser.appUserId,false,true)">Save project as a draft</button>
         
       </form>
       <mat-list *ngFor="let manDoc of MandatoryDocumentsLinkedStagesList | async; let i=index; trackBy: trackByFn" [attr.data-index]="i">
@@ -504,7 +504,7 @@
 
 
 
-        <button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)="onWayleaveCreate(CurrentUser.appUserId,false)">
+        <button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)="onWayleaveCreate(CurrentUser.appUserId,false,false)">
           Create Application
         </button>
         <!--  <img src="assets/Loading.png" *ngIf="successfulUploads >0 && successfulUploads < totalDocs" class="logo2">-->

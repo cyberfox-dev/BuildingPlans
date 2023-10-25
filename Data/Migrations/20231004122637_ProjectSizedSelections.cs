@@ -9,21 +9,21 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            //migrationBuilder.AlterColumn<int>(
-            //    name: "SubDepartmentID",
-            //    table: "ZoneLinkTable",
-            //    type: "int",
-            //    nullable: true,
-            //    oldClrType: typeof(int),
-            //    oldType: "int");
+            migrationBuilder.AlterColumn<int>(
+                name: "SubDepartmentID",
+                table: "ZoneLinkTable",
+                type: "int",
+                nullable: true,
+                oldClrType: typeof(int),
+                oldType: "int");
 
-            //migrationBuilder.AlterColumn<int>(
-            //    name: "DepartmentID",
-            //    table: "ZoneLinkTable",
-            //    type: "int",
-            //    nullable: true,
-            //    oldClrType: typeof(int),
-            //    oldType: "int");
+            migrationBuilder.AlterColumn<int>(
+                name: "DepartmentID",
+                table: "ZoneLinkTable",
+                type: "int",
+                nullable: true,
+                oldClrType: typeof(int),
+                oldType: "int");
 
             //migrationBuilder.AddColumn<string>(
             //    name: "SubDepartmentName",
@@ -49,11 +49,11 @@ namespace WayleaveManagementSystem.Data.Migrations
             //    type: "bit",
             //    nullable: true);
 
-            //migrationBuilder.AddColumn<string>(
-            //    name: "SubDepartmentName",
-            //    table: "UserProfilesTable",
-            //    type: "nvarchar(max)",
-            //    nullable: true);
+            migrationBuilder.AddColumn<string>(
+                name: "SubDepartmentName",
+                table: "UserProfilesTable",
+                type: "nvarchar(max)",
+                nullable: true);
 
             migrationBuilder.CreateTable(
                 name: "ProjectSizedSelections",
@@ -81,9 +81,9 @@ namespace WayleaveManagementSystem.Data.Migrations
             migrationBuilder.DropTable(
                 name: "ProjectSizedSelections");
 
-            //migrationBuilder.DropColumn(
-            //    name: "SubDepartmentName",
-            //    table: "ZoneLinkTable");
+            migrationBuilder.DropColumn(
+                name: "SubDepartmentName",
+                table: "ZoneLinkTable");
 
             //migrationBuilder.DropColumn(
             //    name: "ZoneName",
@@ -97,29 +97,29 @@ namespace WayleaveManagementSystem.Data.Migrations
             //    name: "isZoneAdmin",
             //    table: "ZoneLinkTable");
 
-            //migrationBuilder.DropColumn(
-            //    name: "SubDepartmentName",
-            //    table: "UserProfilesTable");
+            migrationBuilder.DropColumn(
+                name: "SubDepartmentName",
+                table: "UserProfilesTable");
 
-            //migrationBuilder.AlterColumn<int>(
-            //    name: "SubDepartmentID",
-            //    table: "ZoneLinkTable",
-            //    type: "int",
-            //    nullable: false,
-            //    defaultValue: 0,
-            //    oldClrType: typeof(int),
-            //    oldType: "int",
-            //    oldNullable: true);
+            migrationBuilder.AlterColumn<int>(
+                name: "SubDepartmentID",
+                table: "ZoneLinkTable",
+                type: "int",
+                nullable: false,
+                defaultValue: 0,
+                oldClrType: typeof(int),
+                oldType: "int",
+                oldNullable: true);
 
-            //migrationBuilder.AlterColumn<int>(
-            //    name: "DepartmentID",
-            //    table: "ZoneLinkTable",
-            //    type: "int",
-            //    nullable: false,
-            //    defaultValue: 0,
-            //    oldClrType: typeof(int),
-            //    oldType: "int",
-            //    oldNullable: true);
+            migrationBuilder.AlterColumn<int>(
+                name: "DepartmentID",
+                table: "ZoneLinkTable",
+                type: "int",
+                nullable: false,
+                defaultValue: 0,
+                oldClrType: typeof(int),
+                oldType: "int",
+                oldNullable: true);
         }
     }
 }
