@@ -1259,7 +1259,7 @@ export class NewWayleaveComponent implements OnInit {
                   }
                   else {
                     alert(data.responseMessage);
-                  }
+                  }                                                                                                                                  
 
                   console.log("response", data);
                 }, error => {
