@@ -34,7 +34,7 @@
         <p class="redThumbsDownText" *ngIf="element.commentStatus === Rejected">Rejected</p>
         <p class="yellowTimerText" *ngIf="element.commentStatus !== FinalApproved && element.commentStatus !== ApprovedConditional && element.commentStatus !== Approved && element.isAwaitingClarity === false && element.IsRefered === false && element.commentStatus !== Rejected || element.commentStatus === Null">Waiting</p>
         <p class="orangeSpeechText" *ngIf="element.isAwaitingClarity">Awaiting Clarity</p>
-        <p class="blueReferText" *ngIf="element.IsRefered">Refered</p>
+        <p class="blueReferText" *ngIf="element.IsRefered">Referred</p>
       </div>
     </td>
   </ng-container>
