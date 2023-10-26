@@ -50,6 +50,7 @@ export class LoginComponent implements OnInit {
   isLoading = false;
   error!: string;
   checkEmail = "";
+  isMaintenanceMode = false;
   otp = '';
   otpPassword = '';
   sendOTPBtn: boolean = true;
@@ -121,7 +122,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.getConfigForMaintenanceMode();
     // Initialize the registration form
     this.registerForm = this.formBuilder.group({
       registerEmail: ['', [Validators.required, Validators.email]],
@@ -1433,6 +1434,8 @@ export class LoginComponent implements OnInit {
       if (data) {
         this.AllConfig = data.dateSet;
 
+       
+
         this.sharedService.setAllConfig(this.AllConfig);
         this.ServerType = this.AllConfig.find((Config) => Config.configName === 'ServerType').utilitySlot1;
       } else {
@@ -1442,6 +1445,35 @@ export class LoginComponent implements OnInit {
       console.log("response", data);
     }, error => {
       console.log("Error", error);
+    })
+
+
+
+
+  }
+
+  getConfigForMaintenanceMode() {
+    this.configService.getConfigsByConfigName("MaintenanceMode").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        debugger;
+          const current = data.dateSet[0];
+          if (current.isActive == false) {
+            this.isMaintenanceMode = false;
+          }
+          else {
+            this.isMaintenanceMode = true;
+          }
+         
+        
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("getConfigsByConfigNameReponse", data);
+
+    }, error => {
+      console.log("getConfigsByConfigNameError: ", error);
     })
 
   }
