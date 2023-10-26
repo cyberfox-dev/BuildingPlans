@@ -807,6 +807,7 @@ h8 {
   margin: 0 auto;
   opacity: 30%;
   margin-top: 57px;
+  pointer-events: none;
 }
 
 .animation {
@@ -826,12 +827,14 @@ h8 {
   background-repeat: no-repeat;
   margin-top: -10px;
   margin-right: -4px;
+  pointer-events: none;
 }
 .wheel2 {
   width: 178px;
   height: 188px;
   background-size: 100% 100%;
   background-repeat: no-repeat;
+  pointer-events: none;
 }
 .wheel3 {
   width: 105px;
@@ -840,6 +843,7 @@ h8 {
   background-repeat: no-repeat;
   margin-top: -50px;
   margin-left: -10px;
+  pointer-events: none;
 }
 @keyframes spin-one {
   0% {
@@ -916,4 +920,12 @@ h8 {
   letter-spacing: 0.5px;
   margin: -6px 0 30px;
   /* opacity: 40%; */
+}
+img {
+  user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
