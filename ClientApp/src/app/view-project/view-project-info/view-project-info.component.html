@@ -116,7 +116,7 @@
 
 
                     <h3>{{commentsList.SubDepartmentName}} - {{commentsList.CommentStatus}}</h3>
-                    <h5 *ngIf="isInternalUser">{{commentsList.UserName}}</h5>
+                    <h5 *ngIf="isInternalUser">{{commentsList.UserName}} : {{commentsList.DateCreated}}</h5>
                     <div class="cont2">
                       <button mat-raised-button color="white" *ngIf="commentsList.CommentStatus != 'FinalApproved'  &&   this.subDepNameForClarify === commentsList.SubDepartmentName" (click)="openEditCommentModal(commentEditorModal, i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/pencil-solid.svg" class="icon"></button>
                     </div>
@@ -760,7 +760,7 @@
 
 </mat-tab>-->
 <!--------------------------------------------------------Service Condtions---------------------------------------------->
-<mat-tab label="Special Conditions">
+<mat-tab label="Service Conditions">
  
   <app-service-conditions [ApplicationID]="ApplicationID"
                           [ServiceConditionActive]="true">

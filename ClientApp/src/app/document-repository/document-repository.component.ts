@@ -141,7 +141,7 @@ expandedElement = this.DocumentsList;
 
   }
   getAllDocsForRepository() {
-    debugger;
+   
     this.DocumentsList.splice(0, this.DocumentsList.length);
     this.documentUploadService.getAllDocumentsForRepository().subscribe((data: any) => {
 
@@ -149,7 +149,8 @@ expandedElement = this.DocumentsList;
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDocList = {} as DocumentsList;
           const current = data.dateSet[i];
-          console.log("current1",current);
+          console.log("current1", current);
+      
           tempDocList.DocumentID = current.documentID;
           tempDocList.DocumentName = current.documentName;
           tempDocList.DocumentLocalPath = current.documentLocalPath;
@@ -157,12 +158,12 @@ expandedElement = this.DocumentsList;
           tempDocList.AssignedUserID = current.assignedUserID;
           tempDocList.DateCreated = current.dateCreated;
           tempDocList.GroupName = current.groupName;
-          tempDocList.Description = current.groupName;
+          tempDocList.Description = current.description;
           debugger;
-          if (tempDocList.GroupName == "GeneralNonDep") {
-            tempDocList.GroupName = "General";
+          if (current.groupName == "GeneralNonDep") {
+            tempDocList.GroupName = "Document Repository General Document";
           }
-          if (current.Description == "" || current.Description == null) {
+          if (current.Description == " " || current.Description == null) {
             tempDocList.Description = "No Description";
           }
 
@@ -545,14 +546,66 @@ expandedElement = this.DocumentsList;
     }
     else if (this.selectDepFilterName === "AllGeneralDocuments") {
       // Filter documents based on the selected department.
-    
-      let filteredData = this.DocumentsList.filter(df => df.GroupName === "GeneralNonDep");
+      this.DocumentsList.splice(0, this.DocumentsList.length);
+      this.documentUploadService.getAllDocumentsForRepository().subscribe((data: any) => {
 
-      this.dataSource.data = filteredData;
-      console.log(filteredData);
-      this.groupName = false;
-      this.isDepartmentSelected = true; // Department selected
-      this.dataSource.data = this.DocumentsList.filter(df => df.DateCreated && df.GroupName === "GeneralNonDep");
+        if (data.responseCode == 1) {
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempDocList = {} as DocumentsList;
+            const current = data.dateSet[i];
+            console.log(current);
+            tempDocList.DocumentID = current.documentID;
+            tempDocList.DocumentName = current.documentName;
+            tempDocList.DocumentLocalPath = current.documentLocalPath;
+            tempDocList.ApplicationID = current.applicationID;
+            tempDocList.AssignedUserID = current.assignedUserID;
+            tempDocList.DateCreated = current.dateCreated;
+            tempDocList.GroupName = current.groupName;
+            tempDocList.SubDepartmentID = current.subDepartmentID;
+            tempDocList.Description = current.description;
+            console.log("THIS IS THE REPOSITY THINGSTHIS IS THE REPOSITY THINGSTHIS IS THE REPOSITY THINGSTHIS IS THE REPOSITY THINGSTHIS IS THE REPOSITY THINGSTHIS IS THE REPOSITY THINGS", current);
+            this.DocumentsList.push(tempDocList);
+
+          }
+
+          // Update the length and data source
+          debugger;
+          this.length = this.DocumentsList.length;
+          this.dataSource.data = this.DocumentsList;
+          const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+          const endIndex = startIndex + this.paginator.pageSize;
+          const displayedData = this.DocumentsList.slice(startIndex, endIndex);
+          this.dataSource.data = displayedData;
+          this.groupName = false;
+          this.isDepartmentSelected = true; // Department selected
+          this.dataSource.data = this.DocumentsList.filter(df => df.DateCreated && df.GroupName === "GeneralNonDep");
+
+          // Trigger change detection
+          this.cdr.detectChanges();
+
+          // Ensure that renderRows is called (optional)
+          if (this.DocumentsListTable) {
+            this.DocumentsListTable.renderRows();
+          }
+
+
+          // console.log("GOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCS", this.DocumentsList[0]);
+        }
+        else {
+          alert(data.responseMessage);
+
+        }
+        console.log("reponseGetAllDocsForApplication", data);
+
+      }, error => {
+        console.log("ErrorGetAllDocsForApplication: ", error);
+      })
+    
+/*      let filteredData = this.DocumentsList.filter(df => df.GroupName === "GeneralNonDep");*/
+      debugger;
+/*      this.dataSource.data = filteredData;
+      console.log(filteredData);*/
+
     }
     else {
       // Filter documents based on the selected department.

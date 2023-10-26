@@ -159,7 +159,7 @@ export interface CommentsList {
   isClarifyCommentID?: number; 
   isApplicantReplay?: string; 
   UserName: string;
-
+  DateCreated: any;
 }
 
 export interface ApplicationList {
@@ -1230,6 +1230,7 @@ export class ViewProjectInfoComponent implements OnInit {
           tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
           tempCommentList.isApplicantReplay = current.isApplicantReplay;
           tempCommentList.UserName = current.userName;
+          tempCommentList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
           this.CommentsList.push(tempCommentList);
           console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", current);
 

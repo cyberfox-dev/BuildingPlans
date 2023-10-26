@@ -44,7 +44,7 @@ export class ViewEngineersTableComponent implements OnInit {
   @Input() ApplicationID: any;
   professionalsType = "Engineer";
 
-  displayedColumns: string[] = ['ProfessinalType', 'name', 'surname', 'phoneNumber', 'email'];
+  displayedColumns: string[] = ['ProfessinalType','professionalRegNo', 'name', 'surname', 'phoneNumber', 'email'];
   dataSource = this.ProfessionalsList;
 
 
