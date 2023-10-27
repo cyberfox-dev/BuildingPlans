@@ -35,7 +35,7 @@ h2 {
 
 p {
   font-size: 14px;
-  font-weight: 100;
+
   line-height: 20px;
   letter-spacing: 0.5px;
   margin: 20px 0 30px;
@@ -496,6 +496,7 @@ h3 {
   padding-bottom: 23px;
   color: #343a40;
   animation: card-fade 2s ease 1 normal;
+  line-height: 1;
 }
 
 h4 {
@@ -800,4 +801,132 @@ h8 {
   100% {
     opacity: 1;
   }
+}
+.maintenanceM {
+  width: 846px;
+  height: 517px;
+  margin: 0 auto;
+  opacity: 30%;
+  margin-top: 57px;
+  pointer-events: none;
+}
+
+.animation {
+  margin-top: 20%;
+  display: inline-block;
+  margin-bottom: 5%;
+}
+
+.one, .two, .three {
+  display: block;
+  float: left;
+}
+.wheel1 {
+  width: 78px;
+  height: 80px;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  margin-top: -10px;
+  margin-right: -4px;
+  pointer-events: none;
+}
+.wheel2 {
+  width: 178px;
+  height: 188px;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+.wheel3 {
+  width: 105px;
+  height: 110px;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  margin-top: -50px;
+  margin-left: -10px;
+  pointer-events: none;
+}
+@keyframes spin-one {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(-359deg);
+    transform: rotate(-359deg);
+  }
+}
+
+.spin-one {
+  -webkit-animation: spin-one 1.5s infinite linear;
+  animation: spin-one 1.5s infinite linear;
+}
+
+@keyframes spin-two {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(-359deg);
+    transform: rotate(359deg);
+  }
+}
+
+.spin-two {
+  -webkit-animation: spin-two 2s infinite linear;
+  animation: spin-two 2s infinite linear;
+}
+
+.container9 {
+  margin: 0 auto;
+  max-width: 1024px;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  position: relative;
+  margin-bottom: -79px;
+}
+.box {
+  width: auto;
+  height: 500px;
+  margin-top: -178px;
+  margin-left: 100px;
+  margin-right: 100px;
+  border-radius: 5px;
+}
+.logo3 {
+  height: 57px;
+  margin: 20px;
+}
+.loading2 {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(255, 255, 255);
+  z-index: 9999;
+  animation: fadein 0.5s linear forwards;
+}
+.P28 {
+  font-size: 24px;
+  line-height: 20px;
+  letter-spacing: 0.5px;
+  margin: -6px 0 30px;
+  /* opacity: 40%; */
+}
+img {
+  user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
