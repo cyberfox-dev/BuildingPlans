@@ -51,6 +51,7 @@ namespace WayleaveManagementSystem.Controllers
                 return BadRequest(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
+
         [HttpPost("GetAccessGroupsBySubDeptAndUserID")]
         public async Task<IActionResult> GetAccessGroupsBySubDeptAndUserID([FromBody] AccessGroupUserLinkBindingModel model)
         {
@@ -81,6 +82,7 @@ namespace WayleaveManagementSystem.Controllers
                 return BadRequest(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
+
         [HttpPost("GetAccessGroupsBySubDeptZoneAndUserID")]
         public async Task<IActionResult> GetAccessGroupsBySubDeptZoneAndUserID([FromBody] AccessGroupUserLinkBindingModel model)
         {

@@ -65,6 +65,6 @@ namespace WayleaveManagementSystem.Data
         public virtual DbSet<LinkedUserSpDTO> LinkedUserSpDTOs { get; set; }
         public virtual DbSet<ApplicationsDTO> ApplicationListDTO { get; set; }
 
-        
+        public virtual DbSet<DraftedProjects> DraftedProjectsTable { get; set; }
     }
 }

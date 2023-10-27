@@ -16,9 +16,6 @@ export interface EngineerList {
 }
 
 
-
-
-
 @Component({
   selector: 'app-new-egineer',
   templateUrl: './new-egineer.component.html',
@@ -49,7 +46,7 @@ export class NewEgineerComponent implements OnInit {
 
   constructor(private modalService: NgbModal, private shared: SharedService) { }
 
-  displayedColumns: string[] = ['ProfessinalType', 'name', 'surname', 'phoneNumber', 'email', 'actions'];
+  displayedColumns: string[] = ['ProfessinalType','professionalRegNo', 'name', 'surname', 'phoneNumber', 'email', 'actions'];
   myDataSource = this.tempEngineerList;
   @ViewChild(MatTable) table: MatTable<EngineerList> | undefined;
 

@@ -38,7 +38,7 @@
             <input class="input" type="text" placeholder="Enter OTP" formControlName="OTPField" *ngIf="!showDuplicatePassInput" />
             <button type="submit" [disabled]="!registerForm.valid" [class.disabled]="!registerForm.valid" class="button2" (click)="onVerifyOTPRegister()" *ngIf="!showDuplicatePassInput">Verify & Register</button>
             <!--Be sure to remove this paragraph when the app is finalized!!-->
-            <p>{{otp}}</p>
+          <!--  <p>{{otp}}</p>-->
           </form>
         </div>
         <div class="form-container sign-in-container">
@@ -152,4 +152,23 @@
 
 <div class="loading-screen" *ngIf="isLoading" id="loadingScreen">
   <img src="assets/Loading.png" alt="" class="logo2">
+</div>
+
+
+<div class="loading2" id="maintenanceMode" *ngIf="isMaintenanceMode">
+  <img src="assets/cctlogoblack.png" class="logo3">
+
+  <div class="container9">
+    <div class="box">
+      <div class="animation">
+        <img src="assets/cog-wheel-295519_1280.png" alt="" class="wheel1 spin-one">
+        <img src="assets/cog-wheel-295519_1280.png" alt="" class="wheel2 spin-two">
+        <img src="assets/cog-wheel-295519_1280.png" alt="" class="wheel3 spin-one">
+      </div>
+      <h3>WLMS Temporarily unavailable due to updates and maintenance.</h3>
+      <p class="P28">Please check back later. For queries contact <a class="P28"href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+    </div>
+  </div>
+  <img src="assets/2840523.jpg" alt="" class="maintenanceM">
+
 </div>

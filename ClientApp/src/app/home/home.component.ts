@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { ApplicationsService } from '../service/Applications/applications.service';
 import { MatTable } from '@angular/material/table';
@@ -33,6 +33,10 @@ import { BusinessPartnerService } from '../service/BusinessPartner/business-part
 import { ContractorList } from '../edit-contractor/edit-contractor.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfigActingDepartmentComponent } from 'src/app/config-acting-department/config-acting-department.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackBarAlertsComponent } from '../snack-bar-alerts/snack-bar-alerts.component';
+import { DraftApplicationsService } from '../service/DraftApplications/draft-applications.service';
+import { DraftsComponent } from 'src/app/drafts/drafts.component';
 
 export interface EngineerList {
   professinalID: number;
@@ -219,6 +223,8 @@ export interface AllInternalUserProfileList {
 
 }
 
+
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -254,6 +260,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   AllInternalUserProfileList: ClientUserList[] = [];
   ZoneLinkedList: ZoneList[] = [];
   AllConfig: ConfigList[] = [];
+ 
   ServerType: string;
 
   //Added on the 18th of September for the view tings
@@ -264,7 +271,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   ContractorsList: ProfListEU[] = [];
 
   @ViewChild(MatTable) ZoneListTable: MatTable<ZoneList> | undefined;
-
+ 
   displayedColumnsViewLinkedZones: string[] = ['subDepartmentName', 'zoneName'];
   dataSourceViewLinkedZones = this.ZoneLinkedList;
 
@@ -327,6 +334,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   btnActiveClient: boolean = true;
   btnActiveInternal: boolean = false;
   @ViewChild("internalOpt", { static: true }) content!: ElementRef;
+  @ViewChild("externalOpt", { static: true }) external!: ElementRef;
   @ViewChild("clientOption", { static: true }) clientOption!: ElementRef;
   @ViewChild("user", { static: true }) user!: ElementRef;
   @ViewChild("Prof", { static: true }) Prof!: ElementRef;
@@ -350,6 +358,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   SelectActingDep = '';
   selectedZone = 0;
   SelectActingDZone = '';
+  gotDrafts: boolean ;
+  externalUser: boolean = false;
 
   constructor(
     private router: Router,
@@ -375,6 +385,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private newProfileComponent: NewProfileComponent,
     private businessPartnerService: BusinessPartnerService,
     private dialog: MatDialog,
+    private _snackBar: MatSnackBar, private renderer: Renderer2, private el: ElementRef,
+    private draftApplicationService: DraftApplicationsService,
   ) {
     this.currentDate = new Date();
     this.previousMonth = this.currentDate.getMonth();
@@ -391,6 +403,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['ProjectNumber', 'FullName', 'Stage', 'Status', 'TypeOfApplication', 'AplicationAge', 'StageAge', 'DateCreated', 'actions'];
   dataSource = this.Applications;
 
+
+  openSnackBar() {
+    this._snackBar.openFromComponent(SnackBarAlertsComponent, {
+     /* duration:3*1000,*/
+      panelClass: ['green-snackbar'],
+      verticalPosition: 'top'
+    });
+  }
 
   applyFilter(event: Event): string[] {
     const filterValue = (event.target as HTMLInputElement).value.toUpperCase();
@@ -515,7 +535,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.getAllUserLinks();
       this.getConfig();
       this.getAllInternalUsers();
-
+      this.getDraftsList();
       //this.getAllExternalUsers(); //returns null at this point
 
       //this.ServerType = this.sharedService.getServerType();
@@ -605,6 +625,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
   openSm(internalOpt: any) {
     this.modalService.open(internalOpt, {
+      centered: true,
+      size: 'lg',
+      backdrop: 'static', // Prevent clicking outside the modal to close it
+      keyboard: false // Prevent pressing the ESC key to close the modal
+    });
+
+  }
+  openExternal(externalOpt: any) {
+    this.modalService.open(externalOpt, {
       centered: true,
       size: 'lg',
       backdrop: 'static', // Prevent clicking outside the modal to close it
@@ -970,7 +999,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     
           this.getAllApplicationsByUserID();
         }*/
-
+    debugger;
     let currentMonth = this.currentDate.getMonth() + 1;
     let changeUtility = ("/" + this.currentDate.getFullYear() % 100).toString();
     //return currentMonth !== this.previousMonth;
@@ -980,13 +1009,13 @@ export class HomeComponent implements OnInit, OnDestroy {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
-          let dbMonth = current.utilitySlot2.substring(0, 2);
+          let dbMonth = current.utilitySlot2.substring(0, 3);
           if (dbMonth < 10) {
             this.previousMonth = dbMonth.substring(1, 2);
           } else {
             this.previousMonth = dbMonth;
           }
-
+          debugger;
           if (currentMonth !== Number(this.previousMonth)) {  //this.previousMonth  currentMonth
 
             this.configService.addUpdateConfig(current.configID, null, null, "0", "0" + currentMonth + changeUtility, null, this.CurrentUser.appUserId).subscribe((data: any) => {
@@ -1450,12 +1479,20 @@ this.Applications.push(tempApplicationList);
     if (this.CurrentUserProfile[0].isInternal === true) {
       this.openSm(this.content);
     } else {
-      this.createWayleave(this.applicationType, this.isPlanning);
+      if (this.gotDrafts == true) {
+        this.openExternal(this.external);
+      }
+      else {
+        this.createWayleave(this.applicationType, this.isPlanning);
+      }
     } 
 
 
   }
-
+  openNewWayleave() {
+      this.createWayleave(this.applicationType, this.isPlanning);
+  }
+ 
   createWayleave(applicationType: boolean, isPlanning: boolean) {
     //application type refers to whether it is a brand new application or if it is a reapply.
     console.log("THIS IS THE APPLICATION TYPE", applicationType);
@@ -1464,11 +1501,11 @@ this.Applications.push(tempApplicationList);
 
     if (this.option == "client" || this.option == 'proxy') {
 
-      this.NewWayleaveComponent.onWayleaveCreate(this.userID, isPlanning);
+      this.NewWayleaveComponent.onWayleaveCreate(this.userID, isPlanning,false);
       // this.NewWayleaveComponent.populateClientInfo(this.userID);
     }
     else {
-      this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId, isPlanning);
+      this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId, isPlanning,false);
     }
 
 
@@ -1485,6 +1522,7 @@ this.Applications.push(tempApplicationList);
   
         }  
       }
+    }
     }
   
     countDistributed() {
@@ -4350,6 +4388,27 @@ this.Applications.push(tempApplicationList);
       this.openExternalClient(user);
     }
   }
+  openSpin(spin) {
+    this.modalService.open(spin, { backdrop: 'static', centered: true, size: 'xl' });
+  }
+
+  addCard(subDeptName: string) {
+    const cardContainer = this.el.nativeElement.querySelector('.cards');
+
+    // Create a new card element
+    const newCard = this.renderer.createElement('div');
+    this.renderer.addClass(newCard, 'card');
+    this.renderer.setProperty(newCard, 'textContent', subDeptName);
+
+    // Append the new card to the card container
+    this.renderer.appendChild(cardContainer, newCard);
+  }
+
+  addCardsForSubDepartments() {
+    this.AllSubDepartmentList.forEach((subDept) => this.addCard(subDept.subDepartmentName));
+  }
+
+
 
   async getAllInternalUsers() {
     debugger;
@@ -4379,6 +4438,55 @@ this.Applications.push(tempApplicationList);
     console.log("Response", data);
   } catch(error) {
     console.log("Error:", error);
+  }
+
+  openDrafts(drafts: any) {
+    this.modalService.open(drafts, {
+      centered: true,
+      size: 'xl',
+      backdrop: 'static', // Prevent clicking outside the modal to close it
+      keyboard: false // Prevent pressing the ESC key to close the modal
+    });
+  }
+  getDraftsList() {
+    debugger;
+    if (this.CurrentUserProfile[0].isInternal == true) {
+      this.draftApplicationService.getDraftedApplicationsList(this.CurrentUser.appUserId).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          debugger;
+          if (data.dateSet.length != 0) {
+            this.gotDrafts = true;
+            debugger;
+          }
+          
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("response", data);
+      }, error => {
+        console.log("Error: ", error);
+      });
+    }
+    else {
+      this.draftApplicationService.getDraftedApplicationsListForExternal(this.CurrentUser.appUserId).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          debugger;
+          if (data.dateSet.length != 0) {
+            this.gotDrafts = true;
+            this.externalUser = true;
+            debugger;
+          }
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("response", data);
+      }, error => {
+        console.log("Error: ", error);
+      });
+    }
   }
 }
 

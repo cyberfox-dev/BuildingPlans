@@ -91,10 +91,10 @@
     <ng-container matColumnDef="actions"  class="button-container">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let i = index">
-        <button mat-raised-button color="success" (click)=" getCurrentMandatoryDocID(i);openAddUserToAccessGroup(addStage)"><i class="fa fa-plus"></i></button>
-        <button mat-raised-button color="orange" (click)=" getCurrentMandatoryDocID(i); openEdit(editingManDoc, i)"><i class="fa fa-pencil"></i></button>
-        <button mat-raised-button color="blue" (click)=" getCurrentMandatoryDocID(i);getAllLinkedStages(i,viewLinkedStages)"><i class="fa fa-eye"></i></button>
-        <button mat-raised-button color="warn" (click)=" getCurrentMandatoryDocID(i);onManDocDelete(i)"><i class="fa fa-trash"></i></button>
+        <button mat-raised-button color="success" (click)=" getCurrentMandatoryDocID(i);openAddUserToAccessGroup(addStage)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon2"></button>
+        <button mat-raised-button color="orange" (click)=" getCurrentMandatoryDocID(i); openEdit(editingManDoc, i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/pencil-solid.svg" class="icon"></button>
+        <button mat-raised-button color="blue" (click)=" getCurrentMandatoryDocID(i);getAllLinkedStages(i,viewLinkedStages)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid.svg" class="icon"></button>
+        <button mat-raised-button color="warn" (click)=" getCurrentMandatoryDocID(i);onManDocDelete(i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid.svg" class="icon red"></button>
 
       </td>
       <td mat-cell *matCellDef="let element">  </td>
@@ -174,7 +174,7 @@
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let i = index">
 
-                  <button mat-raised-button color="warn" (click)="modal.close('Close click');onStageDelete(i,viewLinkedStages)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                  <button mat-raised-button color="warn" (click)="modal.close('Close click');onStageDelete(i,viewLinkedStages)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid.svg" class="icon red"></button>
                 </td>
 
               </ng-container>

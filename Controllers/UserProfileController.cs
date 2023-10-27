@@ -3,14 +3,18 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Net.NetworkInformation;
 using System.Text;
 using WayleaveManagementSystem.BindingModel;
+using WayleaveManagementSystem.Data;
 using WayleaveManagementSystem.Data.Entities;
+using WayleaveManagementSystem.Data.Migrations;
 using WayleaveManagementSystem.DTO;
 using WayleaveManagementSystem.IServices;
 using WayleaveManagementSystem.Models;
@@ -25,10 +29,12 @@ namespace WayleaveManagementSystem.Controllers
     public class UserProfileController : ControllerBase
     {
         private readonly IUserProfileService _userProfileService;
+        private readonly AppDBContext _context;
 
-        public UserProfileController(IUserProfileService userProfileService)
+        public UserProfileController(IUserProfileService userProfileService, AppDBContext context)
         {
             _userProfileService = userProfileService;
+            _context = context;
         }
 
 
@@ -37,6 +43,7 @@ namespace WayleaveManagementSystem.Controllers
         {
             try
             {
+                var result = new object();
 
                 if (model == null || model.UserProfileID < 0)
                 {
@@ -44,7 +51,257 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _userProfileService.AddUpdateUserProfiles(model.UserProfileID, model.UserID, model.FullName, model.Email, model.PhoneNumber, model.isInternal, model.BP_Number, model.CompanyName, model.CompanyRegNo, model.PhyscialAddress, model.Directorate, model.DepartmentID, model.SubDepartmentID, model.Branch, model.CostCenterNumber, model.CostCenterOwner, model.CopyOfID, model.CreatedById, model.IdNumber, model.zoneID, model.vatNumber, model.refNumber, model.companyType, model.SubDepartmentName, model.isDepartmentAdmin, model.isZoneAdmin, model.AlternateEmail, model.AlternateNumber);
+                    //  var result = await _userProfileService.AddUpdateUserProfiles(model.UserProfileID, model.UserID, model.FullName, model.Email, model.PhoneNumber, model.isInternal, model.BP_Number, model.CompanyName, model.CompanyRegNo, model.PhyscialAddress, model.Directorate, model.DepartmentID, model.SubDepartmentID, model.Branch, model.CostCenterNumber, model.CostCenterOwner, model.CopyOfID, model.CreatedById, model.IdNumber, model.zoneID, model.VatNumber, model.refNumber, model.companyType, model.SubDepartmentName, model.isDepartmentAdmin, model.isZoneAdmin);
+                    if (model.UserProfileID == 0)
+                    {
+                        model.UserProfileID = null;
+                    }
+                    //this checks is the record exists in the db
+                    var tempUserProfile = _context.UserProfilesTable.FirstOrDefault(x => x.UserProfileID == model.UserProfileID);
+
+                    //if the object is null assume that the user is tying to add a new Professional
+                    if (tempUserProfile == null)
+                    {
+                        //create a new object of professional entity class then initialize the object with given infomation
+                        tempUserProfile = new UserProfile()
+                        {
+
+                            UserID = model.UserID,
+                            Name = model.Name,
+                            FullName = model.FullName,
+                            Surname = model.Surname,
+                            Email = model.Email,
+                            AlternativeEmail = model.AlternativeEmail,
+                            isInternal = model.isInternal,
+                            isDefault = model.isDefault,
+
+                            PhoneNumber = model.PhoneNumber,
+                            AlternativePhoneNumber = model.AlternativePhoneNumber,
+                            BP_Number = model.BP_Number,
+                            CompanyName = model.CompanyName,
+                            CompanyRegNo = model.CompanyRegNo,
+                            PhyscialAddress = model.PhyscialAddress,
+                            CopyOfID = model.CopyOfID,
+                            IdNumber = model.IdNumber,
+                            VatNumber = model.VatNumber,
+                            ICASALicense = model.ICASALicense,
+
+                            Directorate = model.Directorate,
+                            DepartmentID = model.DepartmentID,
+                            DepartmentName = model.DepartmentName,
+                            Branch = model.Branch,
+                            CostCenterNumber = model.CostCenterNumber,
+                            CostCenterOwner = model.CostCenterOwner,
+                            depConfirmation = model.depConfirmation,
+                            zoneID = model.zoneID,
+                            zoneName = model.zoneName,
+                            refNumber = model.refNumber,
+                            companyType = model.companyType,
+                            SubDepartmentID = model.SubDepartmentID,
+                            SubDepartmentName = model.SubDepartmentName,
+                            isDepartmentAdmin = model.isDepartmentAdmin,
+                            isZoneAdmin = model.isZoneAdmin,
+
+
+                            DateCreated = DateTime.Now,
+                            DateUpdated = DateTime.Now,
+                            CreatedById = model.CreatedById,
+                            isActive = true,
+                        };
+
+                        //After the inizlization add to the db
+                        await _context.UserProfilesTable.AddAsync(tempUserProfile);
+                        await _context.SaveChangesAsync();
+
+                        result = tempUserProfile;
+
+                    }
+                    else //if it is not null then user is doing an update 
+                    {
+                        if (model.UserProfileID != null)
+                        {
+                            tempUserProfile.UserProfileID = model.UserProfileID;
+                        }
+
+                        if (model.UserID != null)
+                        {
+                            tempUserProfile.UserID = model.UserID;
+                        }
+
+                        if (model.Name != null)
+                        {
+                            tempUserProfile.Name = model.Name;
+                        }
+
+                        if (model.FullName != null)
+                        {
+                            tempUserProfile.FullName = model.FullName;
+                        }
+
+                        if (model.Surname != null)
+                        {
+                            tempUserProfile.Surname = model.Surname;
+                        }
+
+                        if (model.Email != null)
+                        {
+                            tempUserProfile.Email = model.Email;
+                        }
+
+                        if (model.AlternativeEmail != null)
+                        {
+                            tempUserProfile.AlternativeEmail = model.AlternativeEmail;
+                        }
+
+                        if (model.isInternal != null)
+                        {
+                            tempUserProfile.isInternal = model.isInternal;
+                        }
+
+                        if (model.isDefault != null)
+                        {
+                            tempUserProfile.isDefault = model.isDefault;
+                        }
+
+                        if (model.PhoneNumber != null)
+                        {
+                            tempUserProfile.PhoneNumber = model.PhoneNumber;
+                        }
+
+                        if (model.AlternativePhoneNumber != null)
+                        {
+                            tempUserProfile.AlternativePhoneNumber = model.AlternativePhoneNumber;
+                        }
+
+                        if (model.BP_Number != null)
+                        {
+                            tempUserProfile.BP_Number = model.BP_Number;
+                        }
+
+                        if (model.CompanyName != null)
+                        {
+                            tempUserProfile.CompanyName = model.CompanyName;
+                        }
+
+                        if (model.CompanyRegNo != null)
+                        {
+                            tempUserProfile.CompanyRegNo = model.CompanyRegNo;
+                        }
+
+                        if (model.PhyscialAddress != null)
+                        {
+                            tempUserProfile.PhyscialAddress = model.PhyscialAddress;
+                        }
+
+                        if (model.CopyOfID != null)
+                        {
+                            tempUserProfile.CopyOfID = model.CopyOfID;
+                        }
+
+                        if (model.IdNumber != null)
+                        {
+                            tempUserProfile.IdNumber = model.IdNumber;
+                        }
+
+                        if (model.VatNumber != null)
+                        {
+                            tempUserProfile.VatNumber = model.VatNumber;
+                        }
+
+                        if (model.ICASALicense != null)
+                        {
+                            tempUserProfile.ICASALicense = model.ICASALicense;
+                        }
+
+                        if (model.Directorate != null)
+                        {
+                            tempUserProfile.Directorate = model.Directorate;
+                        }
+
+                        if (model.DepartmentID != null)
+                        {
+                            tempUserProfile.DepartmentID = model.DepartmentID;
+                        }
+
+                        if (model.DepartmentName != null)
+                        {
+                            tempUserProfile.DepartmentName = model.DepartmentName;
+                        }
+
+                        if (model.Branch != null)
+                        {
+                            tempUserProfile.Branch = model.Branch;
+                        }
+
+                        if (model.CostCenterNumber != null)
+                        {
+                            tempUserProfile.CostCenterNumber = model.CostCenterNumber;
+                        }
+
+                        if (model.CostCenterOwner != null)
+                        {
+                            tempUserProfile.CostCenterOwner = model.CostCenterOwner;
+                        }
+
+                        if (model.depConfirmation != null)
+                        {
+                            tempUserProfile.depConfirmation = model.depConfirmation;
+                        }
+
+                        if (model.zoneID != null)
+                        {
+                            tempUserProfile.zoneID = model.zoneID;
+                        }
+
+                        if (model.zoneName != null)
+                        {
+                            tempUserProfile.zoneName = model.zoneName;
+                        }
+
+                        if (model.refNumber != null)
+                        {
+                            tempUserProfile.refNumber = model.refNumber;
+                        }
+
+                        if (model.companyType != null)
+                        {
+                            tempUserProfile.companyType = model.companyType;
+                        }
+
+                        if (model.SubDepartmentID != null)
+                        {
+                            tempUserProfile.SubDepartmentID = model.SubDepartmentID;
+                        }
+
+                        if (model.SubDepartmentName != null)
+                        {
+                            tempUserProfile.SubDepartmentName = model.SubDepartmentName;
+                        }
+
+                        if (model.isDepartmentAdmin != null)
+                        {
+                            tempUserProfile.isDepartmentAdmin = model.isDepartmentAdmin;
+                        }
+
+                        if (model.isZoneAdmin != null)
+                        {
+                            tempUserProfile.isZoneAdmin = model.isZoneAdmin;
+                        }
+
+                        
+                       
+                        tempUserProfile.DateUpdated = DateTime.Now;
+
+                        if (model.CreatedById != null)
+                        {
+                            tempUserProfile.CreatedById = model.CreatedById;
+                        }
+
+                      
+                        _context.Update(tempUserProfile);
+                        await _context.SaveChangesAsync();
+                        result = tempUserProfile;
+                    }
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.UserProfileID > 0 ? "User Profile Updated Successfully" : "User Profile Added Successfully"), result));
                 }
             }
@@ -69,6 +326,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
+
                     var result = await _userProfileService.DeleteUserProfile(userProfileID);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Professional Deleted Successfully", result));
                 }
@@ -159,6 +417,140 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+
+
+        [HttpPost("GetDefaltUserProfile")]
+        public async Task<object> GetDefaltUserProfile([FromBody] UsersProfileBindingModel model)
+        {
+            try
+            {
+                var result = await (
+          from UserProfile in _context.UserProfilesTable
+          where UserProfile.UserID == model.UserID && UserProfile.isDefault == true && UserProfile.isActive == true
+          select new UserProfileDTO()
+          {
+              UserProfileID = UserProfile.UserProfileID,
+              UserID = UserProfile.UserID,
+              Name = UserProfile.Name,
+              FullName = UserProfile.FullName,
+              Surname = UserProfile.Surname,
+              Email = UserProfile.Email,
+              AlternativeEmail = UserProfile.AlternativeEmail,
+              isInternal = UserProfile.isInternal,
+              isDefault = UserProfile.isDefault,
+              PhoneNumber = UserProfile.PhoneNumber,
+              AlternativePhoneNumber = UserProfile.AlternativePhoneNumber,
+              BP_Number = UserProfile.BP_Number,
+              CompanyName = UserProfile.CompanyName,
+              CompanyRegNo = UserProfile.CompanyRegNo,
+              PhyscialAddress = UserProfile.PhyscialAddress,
+              CopyOfID = UserProfile.CopyOfID,
+              IdNumber = UserProfile.IdNumber,
+              VatNumber = UserProfile.VatNumber,
+              ICASALicense = UserProfile.ICASALicense,
+              Directorate = UserProfile.Directorate,
+              DepartmentID = UserProfile.DepartmentID,
+              DepartmentName = UserProfile.DepartmentName,
+              Branch = UserProfile.Branch,
+              CostCenterNumber = UserProfile.CostCenterNumber,
+              CostCenterOwner = UserProfile.CostCenterOwner,
+              depConfirmation = UserProfile.depConfirmation,
+              zoneID = UserProfile.zoneID,
+              zoneName = UserProfile.zoneName,
+              refNumber = UserProfile.refNumber,
+              companyType = UserProfile.companyType,
+              SubDepartmentID = UserProfile.SubDepartmentID,
+              SubDepartmentName = UserProfile.SubDepartmentName,
+              isDepartmentAdmin = UserProfile.isDepartmentAdmin,
+              isZoneAdmin = UserProfile.isZoneAdmin,
+              DateCreated = DateTime.Now,
+              DateUpdated = DateTime.Now,
+              CreatedById = UserProfile.CreatedById,
+
+
+          }
+
+          ).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Service Items", result));
+            }
+            catch (Exception ex)
+            {
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+
+
+        }
+
+
+        [HttpPost("GetUserByUserProfileID")]
+        public async Task<object> GetUserByUserProfileID([FromBody] UsersProfileBindingModel model)
+        {
+            try
+            {
+                var result = await (
+          from UserProfile in _context.UserProfilesTable
+          where UserProfile.UserProfileID == model.UserProfileID && UserProfile.isActive == true
+          select new UserProfileDTO()
+          {
+              UserProfileID = UserProfile.UserProfileID,
+              UserID = UserProfile.UserID,
+              Name = UserProfile.Name,
+              FullName = UserProfile.FullName,
+              Surname = UserProfile.Surname,
+              Email = UserProfile.Email,
+              AlternativeEmail = UserProfile.AlternativeEmail,
+              isInternal = UserProfile.isInternal,
+              isDefault = UserProfile.isDefault,
+              PhoneNumber = UserProfile.PhoneNumber,
+              AlternativePhoneNumber = UserProfile.AlternativePhoneNumber,
+              BP_Number = UserProfile.BP_Number,
+              CompanyName = UserProfile.CompanyName,
+              CompanyRegNo = UserProfile.CompanyRegNo,
+              PhyscialAddress = UserProfile.PhyscialAddress,
+              CopyOfID = UserProfile.CopyOfID,
+              IdNumber = UserProfile.IdNumber,
+              VatNumber = UserProfile.VatNumber,
+              ICASALicense = UserProfile.ICASALicense,
+              Directorate = UserProfile.Directorate,
+              DepartmentID = UserProfile.DepartmentID,
+              DepartmentName = UserProfile.DepartmentName,
+              Branch = UserProfile.Branch,
+              CostCenterNumber = UserProfile.CostCenterNumber,
+              CostCenterOwner = UserProfile.CostCenterOwner,
+              depConfirmation = UserProfile.depConfirmation,
+              zoneID = UserProfile.zoneID,
+              zoneName = UserProfile.zoneName,
+              refNumber = UserProfile.refNumber,
+              companyType = UserProfile.companyType,
+              SubDepartmentID = UserProfile.SubDepartmentID,
+              SubDepartmentName = UserProfile.SubDepartmentName,
+              isDepartmentAdmin = UserProfile.isDepartmentAdmin,
+              isZoneAdmin = UserProfile.isZoneAdmin,
+              DateCreated = DateTime.Now,
+              DateUpdated = DateTime.Now,
+              CreatedById = UserProfile.CreatedById,
+
+
+          }
+
+          ).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Service Items", result));
+            }
+            catch (Exception ex)
+            {
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+
+
+        }
+
+
+
+
 
         [HttpGet("GetInternalUsers")]
         public async Task<object> GetInternalUsers()
@@ -259,27 +651,7 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
-        [HttpPost("GetUserByEmail")]
-        public async Task<object> GetUserByEmail([FromBody] UsersProfileBindingModel model)
-        {
-            try
-            {
 
-                if (model.Email.Length < 1)
-                {
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
-                }
-                else
-                {
-                    var result = await _userProfileService.GetUserByEmail(model.Email);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "UserProfile information fetched", result));
-                }
-            }
-            catch (Exception ex)
-            {
-                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
-            }
-        }
 
     }
 }

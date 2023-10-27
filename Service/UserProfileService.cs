@@ -9,6 +9,9 @@ using System.Net.NetworkInformation;
 using Microsoft.AspNetCore.Mvc;
 using WayleaveManagementSystem.Models.BindingModel;
 using WayleaveManagementSystem.Models;
+using Microsoft.AspNetCore.Server.IISIntegration;
+using System.Data;
+using WayleaveManagementSystem.Data.Migrations;
 
 namespace WayleaveManagementSystem.Service
 {
@@ -161,19 +164,19 @@ namespace WayleaveManagementSystem.Service
                 if (refNumber != null)
                 {
                     tempUserProfile.refNumber = refNumber;
-                } 
+                }
                 if (companyType != null)
                 {
                     tempUserProfile.companyType = companyType;
-                } 
+                }
                 if (subDepartmentName != null)
                 {
                     tempUserProfile.SubDepartmentName = subDepartmentName;
-                }  
+                }
                 if (isDepartmentAdmin != null)
                 {
                     tempUserProfile.isDepartmentAdmin = isDepartmentAdmin;
-                }  
+                }
                 if (isZoneAdmin != null)
                 {
                     tempUserProfile.isZoneAdmin = isZoneAdmin;
@@ -251,35 +254,43 @@ namespace WayleaveManagementSystem.Service
                {
                    UserProfileID = UserProfile.UserProfileID,
                    UserID = UserProfile.UserID,
+                   Name = UserProfile.Name,
                    FullName = UserProfile.FullName,
+                   Surname = UserProfile.Surname,
                    Email = UserProfile.Email,
-                   PhoneNumber = UserProfile.PhoneNumber,
+                   AlternativeEmail = UserProfile.AlternativeEmail,
                    isInternal = UserProfile.isInternal,
+                   isDefault = UserProfile.isDefault,
+                   PhoneNumber = UserProfile.PhoneNumber,
+                   AlternativePhoneNumber = UserProfile.AlternativePhoneNumber,
                    BP_Number = UserProfile.BP_Number,
                    CompanyName = UserProfile.CompanyName,
                    CompanyRegNo = UserProfile.CompanyRegNo,
                    PhyscialAddress = UserProfile.PhyscialAddress,
+                   CopyOfID = UserProfile.CopyOfID,
+                   IdNumber = UserProfile.IdNumber,
+                   VatNumber = UserProfile.VatNumber,
+                   ICASALicense = UserProfile.ICASALicense,
                    Directorate = UserProfile.Directorate,
                    DepartmentID = UserProfile.DepartmentID,
-                   SubDepartmentID = UserProfile.SubDepartmentID,
+                   DepartmentName = UserProfile.DepartmentName,
                    Branch = UserProfile.Branch,
                    CostCenterNumber = UserProfile.CostCenterNumber,
                    CostCenterOwner = UserProfile.CostCenterOwner,
-                   CopyOfID = UserProfile.CopyOfID,
-                   DateCreated = UserProfile.DateCreated,
-                   DateUpdated = UserProfile.DateUpdated,
-                   CreatedById = UserProfile.CreatedById,
-                   isDepartmentAdmin = UserProfile.isDepartmentAdmin,
-                   VatNumber = UserProfile.VatNumber,
-                   IdNumber = UserProfile.IdNumber,
-                   isZoneAdmin = UserProfile.isZoneAdmin,
                    depConfirmation = UserProfile.depConfirmation,
-                   RefNumber = UserProfile.refNumber,
-                   CompanyType = UserProfile.companyType,
-                   SubDepartmentName = UserProfile.SubDepartmentName,
                    zoneID = UserProfile.zoneID,
-                   AlternateEmail = UserProfile.AlternateEmail,
-                   AlternateNumber = UserProfile.AlternateNumber,
+                   zoneName = UserProfile.zoneName,
+                   refNumber = UserProfile.refNumber,
+                   companyType = UserProfile.companyType,
+                   SubDepartmentID = UserProfile.SubDepartmentID,
+                   SubDepartmentName = UserProfile.SubDepartmentName,
+                   isDepartmentAdmin = UserProfile.isDepartmentAdmin,
+                   isZoneAdmin = UserProfile.isZoneAdmin,
+                   DateCreated = DateTime.Now,
+                   DateUpdated = DateTime.Now,
+                   CreatedById = UserProfile.CreatedById,
+
+
                }
 
                ).ToListAsync();
@@ -294,34 +305,41 @@ namespace WayleaveManagementSystem.Service
                {
                    UserProfileID = UserProfile.UserProfileID,
                    UserID = UserProfile.UserID,
+                   Name = UserProfile.Name,
                    FullName = UserProfile.FullName,
+                   Surname = UserProfile.Surname,
                    Email = UserProfile.Email,
-                   PhoneNumber = UserProfile.PhoneNumber,
+                   AlternativeEmail = UserProfile.AlternativeEmail,
                    isInternal = UserProfile.isInternal,
+                   isDefault = UserProfile.isDefault,
+                   PhoneNumber = UserProfile.PhoneNumber,
+                   AlternativePhoneNumber = UserProfile.AlternativePhoneNumber,
                    BP_Number = UserProfile.BP_Number,
                    CompanyName = UserProfile.CompanyName,
                    CompanyRegNo = UserProfile.CompanyRegNo,
                    PhyscialAddress = UserProfile.PhyscialAddress,
+                   CopyOfID = UserProfile.CopyOfID,
+                   IdNumber = UserProfile.IdNumber,
+                   VatNumber = UserProfile.VatNumber,
+                   ICASALicense = UserProfile.ICASALicense,
                    Directorate = UserProfile.Directorate,
                    DepartmentID = UserProfile.DepartmentID,
-                   SubDepartmentID = UserProfile.SubDepartmentID,
+                   DepartmentName = UserProfile.DepartmentName,
                    Branch = UserProfile.Branch,
                    CostCenterNumber = UserProfile.CostCenterNumber,
                    CostCenterOwner = UserProfile.CostCenterOwner,
-                   CopyOfID = UserProfile.CopyOfID,
-                   DateCreated = UserProfile.DateCreated,
-                   DateUpdated = UserProfile.DateUpdated,
-                   CreatedById = UserProfile.CreatedById,
-                   // isDepartmentAdmin = UserProfile.isDepartmentAdmin,
-                   VatNumber = UserProfile.VatNumber,
-                   IdNumber = UserProfile.IdNumber,
-
-                   RefNumber = UserProfile.refNumber,
-                   CompanyType = UserProfile.companyType,
+                   depConfirmation = UserProfile.depConfirmation,
+                   zoneID = UserProfile.zoneID,
+                   zoneName = UserProfile.zoneName,
+                   refNumber = UserProfile.refNumber,
+                   companyType = UserProfile.companyType,
+                   SubDepartmentID = UserProfile.SubDepartmentID,
                    SubDepartmentName = UserProfile.SubDepartmentName,
-
-                   AlternateEmail = UserProfile.AlternateEmail,
-                   AlternateNumber = UserProfile.AlternateNumber,
+                   isDepartmentAdmin = UserProfile.isDepartmentAdmin,
+                   isZoneAdmin = UserProfile.isZoneAdmin,
+                   DateCreated = DateTime.Now,
+                   DateUpdated = DateTime.Now,
+                   CreatedById = UserProfile.CreatedById,
                }
 
                ).ToListAsync();
@@ -337,35 +355,41 @@ namespace WayleaveManagementSystem.Service
                {
                    UserProfileID = UserProfile.UserProfileID,
                    UserID = UserProfile.UserID,
+                   Name = UserProfile.Name,
                    FullName = UserProfile.FullName,
+                   Surname = UserProfile.Surname,
                    Email = UserProfile.Email,
-                   PhoneNumber = UserProfile.PhoneNumber,
+                   AlternativeEmail = UserProfile.AlternativeEmail,
                    isInternal = UserProfile.isInternal,
+                   isDefault = UserProfile.isDefault,
+                   PhoneNumber = UserProfile.PhoneNumber,
+                   AlternativePhoneNumber = UserProfile.AlternativePhoneNumber,
                    BP_Number = UserProfile.BP_Number,
                    CompanyName = UserProfile.CompanyName,
                    CompanyRegNo = UserProfile.CompanyRegNo,
                    PhyscialAddress = UserProfile.PhyscialAddress,
+                   CopyOfID = UserProfile.CopyOfID,
+                   IdNumber = UserProfile.IdNumber,
+                   VatNumber = UserProfile.VatNumber,
+                   ICASALicense = UserProfile.ICASALicense,
                    Directorate = UserProfile.Directorate,
                    DepartmentID = UserProfile.DepartmentID,
-                   SubDepartmentID = UserProfile.SubDepartmentID,
+                   DepartmentName = UserProfile.DepartmentName,
                    Branch = UserProfile.Branch,
                    CostCenterNumber = UserProfile.CostCenterNumber,
                    CostCenterOwner = UserProfile.CostCenterOwner,
-                   CopyOfID = UserProfile.CopyOfID,
-                   DateCreated = UserProfile.DateCreated,
-                   DateUpdated = UserProfile.DateUpdated,
-                   CreatedById = UserProfile.CreatedById,
-                   isDepartmentAdmin = UserProfile.isDepartmentAdmin,
-                   VatNumber = UserProfile.VatNumber,
-                   IdNumber = UserProfile.IdNumber,
-                   isZoneAdmin = UserProfile.isZoneAdmin,
-
-                   RefNumber = UserProfile.refNumber,
-                   CompanyType = UserProfile.companyType,
+                   depConfirmation = UserProfile.depConfirmation,
+                   zoneID = UserProfile.zoneID,
+                   zoneName = UserProfile.zoneName,
+                   refNumber = UserProfile.refNumber,
+                   companyType = UserProfile.companyType,
+                   SubDepartmentID = UserProfile.SubDepartmentID,
                    SubDepartmentName = UserProfile.SubDepartmentName,
-
-                   AlternateEmail = UserProfile.AlternateEmail,
-                   AlternateNumber = UserProfile.AlternateNumber,
+                   isDepartmentAdmin = UserProfile.isDepartmentAdmin,
+                   isZoneAdmin = UserProfile.isZoneAdmin,
+                   DateCreated = DateTime.Now,
+                   DateUpdated = DateTime.Now,
+                   CreatedById = UserProfile.CreatedById,
                }
 
                ).ToListAsync();
@@ -380,34 +404,41 @@ namespace WayleaveManagementSystem.Service
                {
                    UserProfileID = UserProfile.UserProfileID,
                    UserID = UserProfile.UserID,
+                   Name = UserProfile.Name,
                    FullName = UserProfile.FullName,
+                   Surname = UserProfile.Surname,
                    Email = UserProfile.Email,
-                   PhoneNumber = UserProfile.PhoneNumber,
+                   AlternativeEmail = UserProfile.AlternativeEmail,
                    isInternal = UserProfile.isInternal,
+                   isDefault = UserProfile.isDefault,
+                   PhoneNumber = UserProfile.PhoneNumber,
+                   AlternativePhoneNumber = UserProfile.AlternativePhoneNumber,
                    BP_Number = UserProfile.BP_Number,
                    CompanyName = UserProfile.CompanyName,
                    CompanyRegNo = UserProfile.CompanyRegNo,
                    PhyscialAddress = UserProfile.PhyscialAddress,
+                   CopyOfID = UserProfile.CopyOfID,
+                   IdNumber = UserProfile.IdNumber,
+                   VatNumber = UserProfile.VatNumber,
+                   ICASALicense = UserProfile.ICASALicense,
                    Directorate = UserProfile.Directorate,
                    DepartmentID = UserProfile.DepartmentID,
-                   SubDepartmentID = UserProfile.SubDepartmentID,
+                   DepartmentName = UserProfile.DepartmentName,
                    Branch = UserProfile.Branch,
                    CostCenterNumber = UserProfile.CostCenterNumber,
                    CostCenterOwner = UserProfile.CostCenterOwner,
-                   CopyOfID = UserProfile.CopyOfID,
-                   DateCreated = UserProfile.DateCreated,
-                   DateUpdated = UserProfile.DateUpdated,
-                   CreatedById = UserProfile.CreatedById,
-                   isDepartmentAdmin = UserProfile.isDepartmentAdmin,
-                   VatNumber = UserProfile.VatNumber,
-                   IdNumber = UserProfile.IdNumber,
-
-                   RefNumber = UserProfile.refNumber,
-                   CompanyType = UserProfile.companyType,
+                   depConfirmation = UserProfile.depConfirmation,
+                   zoneID = UserProfile.zoneID,
+                   zoneName = UserProfile.zoneName,
+                   refNumber = UserProfile.refNumber,
+                   companyType = UserProfile.companyType,
+                   SubDepartmentID = UserProfile.SubDepartmentID,
                    SubDepartmentName = UserProfile.SubDepartmentName,
-
-                   AlternateEmail = UserProfile.AlternateEmail,
-                   AlternateNumber = UserProfile.AlternateNumber,
+                   isDepartmentAdmin = UserProfile.isDepartmentAdmin,
+                   isZoneAdmin = UserProfile.isZoneAdmin,
+                   DateCreated = DateTime.Now,
+                   DateUpdated = DateTime.Now,
+                   CreatedById = UserProfile.CreatedById,
                }
 
                ).ToListAsync();
@@ -422,36 +453,41 @@ namespace WayleaveManagementSystem.Service
                {
                    UserProfileID = UserProfile.UserProfileID,
                    UserID = UserProfile.UserID,
+                   Name = UserProfile.Name,
                    FullName = UserProfile.FullName,
+                   Surname = UserProfile.Surname,
                    Email = UserProfile.Email,
-                   PhoneNumber = UserProfile.PhoneNumber,
+                   AlternativeEmail = UserProfile.AlternativeEmail,
                    isInternal = UserProfile.isInternal,
+                   isDefault = UserProfile.isDefault,
+                   PhoneNumber = UserProfile.PhoneNumber,
+                   AlternativePhoneNumber = UserProfile.AlternativePhoneNumber,
                    BP_Number = UserProfile.BP_Number,
                    CompanyName = UserProfile.CompanyName,
                    CompanyRegNo = UserProfile.CompanyRegNo,
                    PhyscialAddress = UserProfile.PhyscialAddress,
+                   CopyOfID = UserProfile.CopyOfID,
+                   IdNumber = UserProfile.IdNumber,
+                   VatNumber = UserProfile.VatNumber,
+                   ICASALicense = UserProfile.ICASALicense,
                    Directorate = UserProfile.Directorate,
                    DepartmentID = UserProfile.DepartmentID,
-                   SubDepartmentID = UserProfile.SubDepartmentID,
+                   DepartmentName = UserProfile.DepartmentName,
                    Branch = UserProfile.Branch,
                    CostCenterNumber = UserProfile.CostCenterNumber,
                    CostCenterOwner = UserProfile.CostCenterOwner,
-                   CopyOfID = UserProfile.CopyOfID,
-                   DateCreated = UserProfile.DateCreated,
-                   DateUpdated = UserProfile.DateUpdated,
-                   CreatedById = UserProfile.CreatedById,
-                   isDepartmentAdmin = UserProfile.isDepartmentAdmin,
-                   VatNumber = UserProfile.VatNumber,
-                   IdNumber = UserProfile.IdNumber,
                    depConfirmation = UserProfile.depConfirmation,
                    zoneID = UserProfile.zoneID,
-
-                   RefNumber = UserProfile.refNumber,
-                   CompanyType = UserProfile.companyType,
+                   zoneName = UserProfile.zoneName,
+                   refNumber = UserProfile.refNumber,
+                   companyType = UserProfile.companyType,
+                   SubDepartmentID = UserProfile.SubDepartmentID,
                    SubDepartmentName = UserProfile.SubDepartmentName,
-
-                   AlternateEmail = UserProfile.AlternateEmail,
-                   AlternateNumber = UserProfile.AlternateNumber,
+                   isDepartmentAdmin = UserProfile.isDepartmentAdmin,
+                   isZoneAdmin = UserProfile.isZoneAdmin,
+                   DateCreated = DateTime.Now,
+                   DateUpdated = DateTime.Now,
+                   CreatedById = UserProfile.CreatedById,
                }
 
                ).ToListAsync();
@@ -481,7 +517,7 @@ namespace WayleaveManagementSystem.Service
                         Email = upItem.Email,
                         PhoneNumber = upItem.PhoneNumber,
                         Directorate = upItem.Directorate,
-                        ZoneName = ztItem.ZoneName,
+                        zoneName = ztItem.ZoneName,
                         MapObjectID = ztItem.MapObjectID,
                         SubDepartmentID = ztItem.SubDepartmentID,
                         zoneID = ztItem.ZoneID,

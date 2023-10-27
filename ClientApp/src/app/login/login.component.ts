@@ -30,6 +30,13 @@ export interface ConfigList {
   utilitySlot3: string,
 }
 
+interface LoginResponse {
+  responseCode: number;
+  responseMessage: string;
+  dateSet: any;
+}
+
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -43,6 +50,7 @@ export class LoginComponent implements OnInit {
   isLoading = false;
   error!: string;
   checkEmail = "";
+  isMaintenanceMode = false;
   otp = '';
   otpPassword = '';
   sendOTPBtn: boolean = true;
@@ -114,7 +122,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.getConfigForMaintenanceMode();
     // Initialize the registration form
     this.registerForm = this.formBuilder.group({
       registerEmail: ['', [Validators.required, Validators.email]],
@@ -190,12 +198,12 @@ export class LoginComponent implements OnInit {
       alert("OTP Sent, Please check your email");
       this.sendOTPBtn = false;
       const emailContent = `
-      <html>
+       <html>
         <head>
           <style>
             /* Define your font and styles here */
             body {
-              font-family: 'Century Gothic';
+              font-family: Arial, sans-serif;
             }
             .email-content {
               padding: 20px;
@@ -215,17 +223,15 @@ export class LoginComponent implements OnInit {
         <body>
           <div class="email-content">
             <p>Dear Applicant,</p>
-            <p>Please enter the following one-time pin to create your account on the City of Cape Town Wayleave Management System: <strong>${otp}</strong>. This code will be valid for the next 15 minutes.</p>
-            <p>Should you have any queries, please contact us at <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
-          </div>
-          <div class="footer">
-
-            <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
-            <p>Regards,<br>Wayleave Management System</p>
-            <p>
-              <a href="#">CCT Web</a> | <a href="#">Contacts</a> | <a href="#">Media</a> | <a href="#">Report a fault</a> | <a href="#">Accounts</a>
+            <p>Please enter the following one time pin to create your account on the City of Cape Town Wayleave Management System: <strong>${otp}</strong>. This code will be valid for the next 15 minutes.</p>
+            <p>Should you have any queries, please contact <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+                <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
             </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
           </div>
+
         </body>
       </html>
     `;
@@ -279,12 +285,138 @@ export class LoginComponent implements OnInit {
 
   getUserProfile(): Observable<any> {
     const currentUser = JSON.parse(localStorage.getItem("LoggedInUserInfo"));
-    return this.userPofileService.getUserProfileById(currentUser.appUserId);
+    return this.userPofileService.getDefaltUserProfile(currentUser.appUserId);
+  }
+
+
+  getAllRolesForUserForAllAG(userId: number): void {
+    this.accessGroupsService.getAllRolesForUserForAllAG(userId).subscribe(
+      (data: any) => {
+        if (data?.responseCode === 1 && data?.dateSet) {
+          this.setLocalStorage("AllCurrentUserRoles", data.dateSet);
+        } else {
+          console.error("Invalid data structure received: ", data);
+        }
+      },
+      error => console.error("Error: ", error)
+    );
+  }
+
+
+  onLoginCurrentKyle(): void {
+    if (this.loginForm.invalid) {
+      console.error("Form is invalid");
+      return;
+    }
+
+    this.isLoading = true;
+
+    const email = this.loginForm.controls["email"].value;
+    const password = this.loginForm.controls["password"].value;
+
+    this.userService.login(email, password).pipe(
+      switchMap((data: LoginResponse) => {
+        if (data.responseCode === 1) {
+          this.setLocalStorage("LoggedInUserInfo", data.dateSet);
+          return this.getUserProfile();
+        }
+        return throwError(data.responseMessage);
+      }),
+      tap((profileData: LoginResponse) => {
+        const userId = profileData.dateSet[0].userProfileID;
+        this.setLocalStorage("userProfile", profileData.dateSet);
+        this.getAllRolesForUserForAllAG(userId);
+      }),
+      catchError(error => {
+        console.error("Failed in the pipeline", error);
+        return throwError(error);
+      }),
+      delay(5000) // consider reducing the delay if it’s not necessary
+    ).subscribe(
+      () => {
+        this.router.navigate(["/home"]);
+      },
+      (error) => {
+        console.error("Error: ", error);
+        this.error = error.message;
+      }
+    ).add(() => {
+      this.isLoading = false;
+    });
   }
 
 
 
+onLoginNewOld(): void {
+  if(this.loginForm.invalid) {
+  console.error("Form is invalid");
+  return;
+}
+
+this.isLoading = true;
+
+const email = this.loginForm.controls["email"].value;
+const password = this.loginForm.controls["password"].value;
+
+this.userService.login(email, password).pipe(
+  switchMap((data: LoginResponse) => {
+    if (data.responseCode === 1) {
+      this.setLocalStorage("LoggedInUserInfo", data.dateSet);
+      return this.getUserProfile();
+    }
+    return throwError(data.responseMessage);
+  }),
+  switchMap((profileData: LoginResponse) => {
+    const userId = profileData.dateSet[0].userProfileID;
+    this.setLocalStorage("userProfile", profileData.dateSet);
+    this.getAllRolesForUserForAllAG(userId);
+    return this.zoneLinkService.getAllUserLinks(userId);
+  }),
+  tap((response: LoginResponse) => this.handleUserLinks(response.dateSet)),
+  catchError(error => {
+    console.error("Failed in the pipeline", error);
+    return throwError(error);
+  }),
+  delay(5000) // consider reducing the delay if it’s not necessary
+).subscribe(
+  () => {
+    this.router.navigate(["/home"]);
+  },
+  (error) => {
+    console.error("Error: ", error);
+    this.error = error.message;
+  }
+).add(() => {
+  this.isLoading = false;
+});
+}
+
+  setLocalStorage(key: string, data: any): void {
+    localStorage.setItem(key, JSON.stringify(data));
+  }
+
+  handleUserLinks(zoneLinks: any[]): void {
+    const defaultZoneLink = zoneLinks?.find(link => link.isDefault) || zoneLinks?.[0];
+    if (!defaultZoneLink) return;
+
+    let userProfile = JSON.parse(localStorage.getItem("userProfile") || '[]');
+    if (!Array.isArray(userProfile)) {
+      console.error("userProfile is not an array: ", userProfile);
+      return;
+    }
+
+    const mergedProfile = { ...userProfile[0], ...defaultZoneLink };
+    this.setLocalStorage("userProfile", [mergedProfile]);
+  }
+
+ 
+  
+
+
+  //old login 10-10-23
   onLogin() {
+    // Removed the checkBPValidity and its warning
+
     this.isLoading = true;
     const email = this.loginForm.controls["email"].value;
     const password = this.loginForm.controls["password"].value;
@@ -295,71 +427,23 @@ export class LoginComponent implements OnInit {
           localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
           return this.getUserProfile();
         } else {
+          // Throw error if login failed
           throw new Error(data.responseMessage);
         }
       }),
       switchMap((profileData: any) => {
-        const userId = profileData.dateSet[0].userID;
-        debugger;
         localStorage.setItem("userProfile", JSON.stringify(profileData.dateSet));
-        debugger;
-        return this.zoneLinkService.getAllUserLinks(userId).pipe(
-
-          tap(data => console.log("getAllUserLinks response:", data))
-        );
+        return of(true); // Return an observable of true to proceed with the rest of the flow
       }),
-      //tap((response: any) => {
-      //  const zoneLinks = Array.isArray(response.dateSet) ? response.dateSet : [];
-      //  const defaultZoneLink = zoneLinks.find(link => link.isDefault === true) || zoneLinks[0];
-
-      //  if (defaultZoneLink) {
-      //    debugger;
-      //    const userProfile = JSON.parse(localStorage.getItem("userProfile"));
-      //    const mergedData = { ...userProfile, ...defaultZoneLink };
-      //    localStorage.setItem("userProfile", JSON.stringify(mergedData));
-      //  }
-      //}),
-
-      tap((response: any) => {
-        const zoneLinks = Array.isArray(response.dateSet) ? response.dateSet : [];
-        const defaultZoneLink = zoneLinks.find(link => link.isDefault === true) || zoneLinks[0];
-        debugger;
-        if (defaultZoneLink) {
-          debugger;
-          let userProfile = JSON.parse(localStorage.getItem("userProfile") || '[]');
-          console.log("Before Merge: ", { userProfile, defaultZoneLink }); // Debug objects before merging
-          debugger;
-          // Ensure both objects are of the correct structure and userProfile is an array
-          if (Array.isArray(userProfile)) {
-            debugger;
-            // Merging and assuming userProfile has at least one object to merge with defaultZoneLink
-            const mergedProfile = { ...userProfile[0], ...defaultZoneLink };
-            debugger;
-            console.log("Merged Profile: ", mergedProfile);
-            debugger;
-            // Making userProfile an array again after merge
-            userProfile = [mergedProfile];
-            debugger;
-            console.log("After Merge as Array: ", userProfile);
-            debugger;
-            localStorage.setItem("userProfile", JSON.stringify(userProfile));
-          } else {
-            console.error("userProfile is not an array: ", userProfile);
-          }
-        }
-      }),
-
-
-
-      catchError(error => {
-        console.error("Failed in the pipeline", error);
-        return throwError(error);
-      }),
-      delay(5000) // Delay for 5 seconds
+      delay(5000) // Delay for 5 seconds after successful login and profile retrieval
     ).subscribe(
       () => {
         this.router.navigate(["/home"]);
+
+        // Wait for an additional 5 seconds before setting isLoading to false
+
         this.isLoading = false;
+
       },
       (error) => {
         console.log("Error: ", error);
@@ -368,50 +452,6 @@ export class LoginComponent implements OnInit {
       }
     );
   }
-
- 
-
-
-
-  //old login 10-10-23
-  //onLogin() {
-  //  // Removed the checkBPValidity and its warning
-
-  //  this.isLoading = true;
-  //  const email = this.loginForm.controls["email"].value;
-  //  const password = this.loginForm.controls["password"].value;
-
-  //  this.userService.login(email, password).pipe(
-  //    switchMap((data: any) => {
-  //      if (data.responseCode === 1) {
-  //        localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
-  //        return this.getUserProfile();
-  //      } else {
-  //        // Throw error if login failed
-  //        throw new Error(data.responseMessage);
-  //      }
-  //    }),
-  //    switchMap((profileData: any) => {
-  //      localStorage.setItem("userProfile", JSON.stringify(profileData.dateSet));
-  //      return of(true); // Return an observable of true to proceed with the rest of the flow
-  //    }),
-  //    delay(5000) // Delay for 5 seconds after successful login and profile retrieval
-  //  ).subscribe(
-  //    () => {
-  //      this.router.navigate(["/home"]);
-
-  //      // Wait for an additional 5 seconds before setting isLoading to false
-
-  //      this.isLoading = false;
-
-  //    },
-  //    (error) => {
-  //      console.log("Error: ", error);
-  //      this.isLoading = false;
-  //      this.error = error.message;
-  //    }
-  //  );
-  //}
 
 
   //onLogin() {
@@ -1435,6 +1475,8 @@ export class LoginComponent implements OnInit {
       if (data) {
         this.AllConfig = data.dateSet;
 
+       
+
         this.sharedService.setAllConfig(this.AllConfig);
         this.ServerType = this.AllConfig.find((Config) => Config.configName === 'ServerType').utilitySlot1;
       } else {
@@ -1444,6 +1486,35 @@ export class LoginComponent implements OnInit {
       console.log("response", data);
     }, error => {
       console.log("Error", error);
+    })
+
+
+
+
+  }
+
+  getConfigForMaintenanceMode() {
+    this.configService.getConfigsByConfigName("MaintenanceMode").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        debugger;
+          const current = data.dateSet[0];
+          if (current.isActive == false) {
+            this.isMaintenanceMode = false;
+          }
+          else {
+            this.isMaintenanceMode = true;
+          }
+         
+        
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("getConfigsByConfigNameReponse", data);
+
+    }, error => {
+      console.log("getConfigsByConfigNameError: ", error);
     })
 
   }

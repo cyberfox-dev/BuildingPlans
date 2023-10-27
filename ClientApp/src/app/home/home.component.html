@@ -3,17 +3,23 @@
 <link _ngcontent-ng-cli-universal-c545="" href="https://fonts.googleapis.com/css?family=Roboto:300italic,400italic,400,100,300,600,700" rel="stylesheet" type="text/css">
 
 <head>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="src/assets/js/all.js"></script>
   <script src="src/assets/js/all.min.js"></script>
   <link rel="stylesheet" href="/src/assets/all.css">
   <link rel="stylesheet" href="/src/assets/all.min.css">
+  <script defer src="src/assets/fontawesome-free-6.4.2-web/js/brands.js"></script>
+  <script defer src="src/assets/fontawesome-free-6.4.2-web/js/solid.js"></script>
+  <script defer src="src/assets/fontawesome-free-6.4.2-web/js/fontawesome.js"></script>
+  <script defer src="src/assets/fontawesome-free-6.4.2-web/js/sharp-solid.js"></script>
+  <script defer src="src/assets/fontawesome-free-6.4.2-web/js/custom-icons.js"></script>-->
+
 </head>
 <!--<h1>Navbar</h1>-->
-<button mat-fab [@fadeInAnimation]="" *ngIf="FilterBtn" class="floating-button" (click)="openUserActingDepModal()">
+<!--<button mat-fab [@fadeInAnimation]="" *ngIf="FilterBtn" class="floating-button" (click)="openSpin(spin)">-->
   <!--color="configureActingDepartment"-->
-  <i class="fa fa-cog"></i>
-</button>
+  <!--<img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-gear-solid.svg" class="icon">
+</button>-->
 
 
 
@@ -22,18 +28,18 @@
 
   <h1 class="animationSlideUp">Hi, {{CurrentUserProfile[0].fullName}}</h1>
   <h2 class="animationSlideUp">Welcome to your Dashboard</h2>
-  <h3 class="animationSlideUp">You are acting as {{CurrentUserProfile[0].subDepartmentName}}, for {{CurrentUserProfile[0].zoneName}}</h3>
+  <!--<h3 class="animationSlideUp">You are acting as {{CurrentUserProfile[0].subDepartmentName}}, for {{CurrentUserProfile[0].zoneName}}</h3>-->
   <!--  <div style="background: red; text-align: center; font-size: xx-large; color: white; padding: 10px; line-height: 0.8;" *ngIf="ServerType === 'QA'">
       Please note, you've accessed the test server, nothing captured to this server will be processed. Please go to wayleave.capetown.gov.za to access the live site.
     </div>-->
   <!--  <button class="btn" (click)="goToNewWayleave()"><a><i class="fa fa-plus"></i> Create New Wayleave</a></button>-->
   <div class="cont3 ">
-    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToNewWayleave(false,false)"><i class="fa fa-plus"></i> Create New Wayleave</button>
-    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToNewWayleave(false,true)"><i class="fa fa-plus"></i> Request for Services Information</button>
+    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToNewWayleave(false,false)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon4"> Create New Wayleave</button>
+    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToNewWayleave(false,true)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon4"> Request for Services Information</button>
   </div>
 
 
-
+  
 
 
 
@@ -134,7 +140,7 @@
     <div class="">
       <div class="container02">
         <button mat-button [matMenuTriggerFor]="menu" matTooltip="Filter Applications" color="filter" aria-label="Example icon-button with a menu" (click)="onFilterButtonClick()" *ngIf="FilterBtn">
-          <i class="fa fa-filter" aria-hidden="true"></i>
+          <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/filter-solid.svg" class="icon">
         </button>
 
         <mat-menu #menu="matMenu" yPosition="below">
@@ -153,7 +159,7 @@
           <div class="cont6">
 
             <input matInput placeholder="Search By Project Number Or Application Number" (keyup)="applyFilter($event)" #input>
-            <i class="fa fa-search" aria-hidden="true"></i>
+            <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/magnifying-glass-solid.svg" class="icon3">
           </div>
 
         </mat-form-field>
@@ -221,11 +227,11 @@
           <th mat-header-cell *matHeaderCellDef>Actions</th>
           <td mat-cell *matCellDef="let applications of ApplicationsList ; let i = index;let element">
             <div class="buttons">
-              <button mat-raised-button color="blue" matTooltip="View Application" (click)="CheckIfCanReapply(element,i)"><i class="fa fa-eye"></i></button>
+              <button mat-raised-button color="blue" matTooltip="View Application" (click)="CheckIfCanReapply(element,i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid.svg" class="icon"></button>
 
 
 
-              <button mat-raised-button color="warn" matTooltip="Escalate" *ngIf="applications.TestApplicationAge >= this.viewEscalateDate"><i class="fa fa-arrow-circle-up"></i></button>
+              <button mat-raised-button color="warn" matTooltip="Escalate" *ngIf="applications.TestApplicationAge >= this.viewEscalateDate"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/stairs-solid.svg" class="icon red" ></button>
             </div>
             <div class="menu">
               <button mat-button color="action" [matMenuTriggerFor]="actions"> <i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
@@ -275,8 +281,9 @@
       </form>
     </div>
     <div class="modal-footer">
-
+      <button type="button" class="btn btn-outline-success " *ngIf="gotDrafts == true " (click)="openDrafts(drafts)">View Draft Wayleaves</button>
       <button type="button" class="btn btn-outline-success" (click)="sendOption();modal.dismiss('Cross click')">Continue</button>
+
     </div>
 
   </ng-template>
@@ -307,6 +314,28 @@
       <!--  <button mat-raised-button color="save" (click)="sendOption();modal.dismiss('Cross click')"> Continue</button>-->
 
     </div>
+
+  </ng-template>
+  <ng-template #externalOpt let-modal>
+    <div class="modal-header">
+      <h6 class="modal-title" id="modal-basic-title">As an external applicant are you applying for :</h6>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="container-fluid">
+
+
+          <div class="cont2">
+            <button mat-raised-button color="client"><i class="fa fa-user-plus" aria-hidden="true" (click)="openNewWayleave()"></i> New Application</button>
+            <button mat-raised-button color="client"  (click)="openDrafts(drafts)"><i class="fa fa-eye" aria-hidden="true"></i> Select From Drafts</button>
+
+          </div>
+        </div>
+
+      </form>
+    </div>
+    
 
   </ng-template>
 
@@ -1003,9 +1032,52 @@
   </ng-template>
 
 
-  <ng-template #loadModal let-modal>
+  <ng-template #spin let-modal >
 
-    <p>Loading</p>
+<!--    <div class="container99">
+      <div class="cards2">
+        <label class="card2" *ngFor="let subDept of AllSubDepartmentList; let i = index">
+
+          {{subDept.subDepartmentName}}
+        </label>
+      </div>
+      <div class="player">
+        <div class="upper-part">
+          <div class="play-icon">
+            <svg width="20" height="20" fill="#2992dc" stroke="#2992dc" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-play" viewBox="0 0 24 24">
+              <defs />
+              <path d="M5 3l14 9-14 9V3z" />
+            </svg>
+          </div>
+          <div class="info-area" id="test">
+            <label class="song-info" id="song-info-1">
+              <div class="title">Bunker</div>
+              <div class="sub-line">
+                <div class="subtitle">Balthazar</div>
+                <div class="time">4.05</div>
+              </div>
+            </label>
+            <label class="song-info" id="song-info-2">
+              <div class="title">Words Remain</div>
+              <div class="sub-line">
+                <div class="subtitle">Moderator</div>
+                <div class="time">4.05</div>
+              </div>
+            </label>
+            <label class="song-info" id="song-info-3">
+              <div class="title">Falling Out</div>
+              <div class="sub-line">
+                <div class="subtitle">Otzeki</div>
+                <div class="time">4.05</div>
+              </div>
+            </label>
+          </div>
+        </div>
+        <div class="progress-bar">
+          <span class="progress"></span>
+        </div>
+      </div>
+    </div>-->
   </ng-template>
 
   <ng-template #showAddedProf let-modal>
@@ -1340,4 +1412,37 @@
     </div>
   </ng-template>
 
+  <!--<ng-template #draft let-modal class="form-floating">
+    <div class="modal-header draftHeader">
+      <div class="draftCount">
+        <span class="span1" style="font-size:40px">Drafted Projects Of {{this.CurrentUser.fullName}}</span>
+        <span class="span1" style="font-size:20px"> You have {{this.draftsLength}} drafts out of 10 </span>
+      </div>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
 
+    <div *ngFor="let drafts of DraftsList">
+      <button class="alert alert-info drafts" role="alert" (click)=" openOptions(Options)">
+        <div><span style="font-size: 20px;"> Wayleave Application for {{drafts.FullName}} Application </span></div>
+        <div>
+          <span style="font-size: 15px;">{{drafts.TypeOfApplication}} Application / Excavation Type: {{drafts.ExcavationType}}</span>
+          
+        </div>
+        <div> <span>Created on {{drafts.DateCreated}}</span></div>
+      </button>
+    </div>
+
+  </ng-template>-->
+
+  <ng-template #drafts let-modal>
+
+    <div>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div>
+      <app-drafts></app-drafts>
+    </div>
+   
+
+
+  </ng-template>

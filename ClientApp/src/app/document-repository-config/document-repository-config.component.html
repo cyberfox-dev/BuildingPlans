@@ -24,7 +24,7 @@
     <th mat-header-cell *matHeaderCellDef> Actions </th>
     <td mat-cell *matCellDef="let element; let i = index">
      
-      <button mat-raised-button color="warn" matTooltip="Delete Document Repository Category" (click)="onDeleteCategoryByCategoryID(i)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+      <button mat-raised-button color="warn" matTooltip="Delete Document Repository Category" (click)="onDeleteCategoryByCategoryID(i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid-white.svg" class="icon"></button>
     </td>
   </ng-container>
 
@@ -55,6 +55,6 @@
     </div>
     </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-success" (click)="onSaveClick();getAllDocumentCategories();clearInputAndDropdown();modal.dismiss('Cross click')">Save</button>
+    <button type="button" class="btn btn-outline-success" (click)="onSaveClick();getAllDocumentCategories();modal.dismiss('Cross click');clearInputAndDropdown()">Save</button>
   </div>
 </ng-template>

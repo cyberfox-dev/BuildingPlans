@@ -13,14 +13,14 @@ namespace WayleaveManagementSystem.Service
 {
     public class ApplicationsService : IApplicationsService
     {
-        private readonly AppDBContext _context ;
+        private readonly AppDBContext _context;
 
         public ApplicationsService(AppDBContext context)
         {
             _context = context;
         }
 
-        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string? userID, string? fullName, string? email, string? phoneNumber, string? physicalAddress, string? referenceNumber, string? companyRegNo, string? typeOfApplication, string? notificationNumber, string? wBSNumber, string? physicalAddressOfProject, string? descriptionOfProject, string? natureOfWork, string? excavationType, DateTime? expectedStartDate, DateTime? expectedEndDate, string? location, string? createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus, bool? isDrafted,string? projectNumber,bool? isPlanning, DateTime? PermitStartDate, DateTime? DatePaid, bool? WBSRequired, string? Coordinates)
+        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string? userID, string? fullName, string? email, string? phoneNumber, string? physicalAddress, string? referenceNumber, string? companyRegNo, string? typeOfApplication, string? notificationNumber, string? wBSNumber, string? physicalAddressOfProject, string? descriptionOfProject, string? natureOfWork, string? excavationType, DateTime? expectedStartDate, DateTime? expectedEndDate, string? location, string? createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus, bool? isDrafted, string? projectNumber, bool? isPlanning, DateTime? PermitStartDate, DateTime? DatePaid, bool? WBSRequired, string? Coordinates)
         {
 
             if (ApplicationID == 0)
@@ -28,7 +28,7 @@ namespace WayleaveManagementSystem.Service
                 ApplicationID = null;
             }
 
-        
+
             //this checks is the record exists in the db
             var tempApplicationTable = _context.Application.FirstOrDefault(x => x.ApplicationID == ApplicationID);
 
@@ -71,7 +71,7 @@ namespace WayleaveManagementSystem.Service
                     isDrafted = false,
                     ProjectNumber = projectNumber,
                     isPlanning = isPlanning,
-                    PermitStartDate= PermitStartDate,
+                    PermitStartDate = PermitStartDate,
                     Coordinates = Coordinates,
                 };
 
@@ -211,7 +211,7 @@ namespace WayleaveManagementSystem.Service
                 if (projectNumber != null)
                 {
                     tempApplicationTable.ProjectNumber = projectNumber;
-                }   
+                }
                 if (PermitStartDate != null)
                 {
                     tempApplicationTable.PermitStartDate = PermitStartDate;
@@ -249,48 +249,48 @@ namespace WayleaveManagementSystem.Service
 
 
 
-        public async Task<bool> UpdateApplicationStage(int? ApplicationID, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus,string? projectNumber)
+        public async Task<bool> UpdateApplicationStage(int? ApplicationID, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus, string? projectNumber)
         {
 
-           
+
             //this checks is the record exists in the db
             var tempApplicationTable = _context.Application.FirstOrDefault(x => x.ApplicationID == ApplicationID);
             if (tempApplicationTable != null)
             {
 
-          
-            if (tempApplicationTable.CurrentStageName == CurrentStageName)
-            {
-                //tempApplicationTable.PreviousStageName = PreviousStageName;
-                //tempApplicationTable.PreviousStageNumber = PreviousStageNumber;
-                //tempApplicationTable.CurrentStageName = CurrentStageName;
-                //tempApplicationTable.CurrentStageNumber = CurrentStageNumber;
-                //tempApplicationTable.NextStageName = NextStageName;
-                //tempApplicationTable.NextStageNumber = NextStageNumber;
-                tempApplicationTable.ApplicationStatus = ApplicationStatus;
-                   
-            }
-            else if (projectNumber != null)
+
+                if (tempApplicationTable.CurrentStageName == CurrentStageName)
+                {
+                    //tempApplicationTable.PreviousStageName = PreviousStageName;
+                    //tempApplicationTable.PreviousStageNumber = PreviousStageNumber;
+                    //tempApplicationTable.CurrentStageName = CurrentStageName;
+                    //tempApplicationTable.CurrentStageNumber = CurrentStageNumber;
+                    //tempApplicationTable.NextStageName = NextStageName;
+                    //tempApplicationTable.NextStageNumber = NextStageNumber;
+                    tempApplicationTable.ApplicationStatus = ApplicationStatus;
+
+                }
+                else if (projectNumber != null)
                 {
                     tempApplicationTable.ProjectNumber = projectNumber;
                 }
-            else
-            {
-                tempApplicationTable.PreviousStageName = PreviousStageName;
-                tempApplicationTable.PreviousStageNumber = PreviousStageNumber;
-                tempApplicationTable.CurrentStageName = CurrentStageName;
-                tempApplicationTable.CurrentStageNumber = CurrentStageNumber;
-                tempApplicationTable.CurrentStageStartDate = DateTime.Now;
-                tempApplicationTable.NextStageName = NextStageName;
-                tempApplicationTable.NextStageNumber = NextStageNumber;
-                tempApplicationTable.ApplicationStatus = ApplicationStatus;
-            }
-
-            
+                else
+                {
+                    tempApplicationTable.PreviousStageName = PreviousStageName;
+                    tempApplicationTable.PreviousStageNumber = PreviousStageNumber;
+                    tempApplicationTable.CurrentStageName = CurrentStageName;
+                    tempApplicationTable.CurrentStageNumber = CurrentStageNumber;
+                    tempApplicationTable.CurrentStageStartDate = DateTime.Now;
+                    tempApplicationTable.NextStageName = NextStageName;
+                    tempApplicationTable.NextStageNumber = NextStageNumber;
+                    tempApplicationTable.ApplicationStatus = ApplicationStatus;
+                }
 
 
 
-            _context.Update(tempApplicationTable);
+
+
+                _context.Update(tempApplicationTable);
                 await _context.SaveChangesAsync();
                 return true;
 
@@ -304,50 +304,50 @@ namespace WayleaveManagementSystem.Service
 
         public async Task<List<ApplicationsDTO>> GetApplicationsByApplicationID(int applicationID)
         {
-           
-                return await (
-                   from Applications in _context.Application
-                   where Applications.ApplicationID == applicationID
-                   select new ApplicationsDTO()
-                   {
-                       ApplicationID = Applications.ApplicationID,
-                       UserID = Applications.UserID,
-                       FullName = Applications.FullName,
-                       Email = Applications.Email,
-                       PhoneNumber = Applications.PhoneNumber,
-                       PhysicalAddress = Applications.PhyscialAddress,
-                       ReferenceNumber = Applications.ReferenceNumber,
-                       CompanyRegNo = Applications.CompanyRegNo,
-                       TypeOfApplication = Applications.TypeOfApplication,
-                       NotificationNumber = Applications.NotificationNumber,
-                       WBSNumber = Applications.WBSNumber,
-                       PhysicalAddressOfProject = Applications.PhysicalAddressOfProject,
-                       DescriptionOfProject = Applications.DescriptionOfProject,
-                       NatureOfWork = Applications.NatureOfWork,
-                       ExcavationType = Applications.ExcavationType,
-                       ExpectedStartDate = Applications.ExpectedStartDate,
-                       ExpectedEndDate = Applications.ExpectedEndDate,
-                       Location = Applications.Location,
-                       DateCreated = Applications.DateCreated,
-                       DateUpdated = Applications.DateUpdated,
-                       CreatedById = Applications.CreatedById,
-                       isActive = Applications.isActive,
-                       PreviousStageName = Applications.PreviousStageName,
-                       ApplicationStatus = Applications.ApplicationStatus,
-                       CurrentStageName = Applications.CurrentStageName,
-                       CurrentStageNumber = Applications.CurrentStageNumber,
-                       CurrentStageStartDate = Applications.CurrentStageStartDate,
-                       NextStageName = Applications.NextStageName,
-                       NextStageNumber = Applications.NextStageNumber,
-                       PreviousStageNumber = Applications.PreviousStageNumber,
-                       isPlanning = Applications.isPlanning,
-                       permitStartDate = Applications.PermitStartDate,
-                       WBSRequired = Applications.WBSRequired,
-                       Coordinates = Applications.Coordinates,
-                   }
-                   ).ToListAsync();
-          
-            
+
+            return await (
+               from Applications in _context.Application
+               where Applications.ApplicationID == applicationID
+               select new ApplicationsDTO()
+               {
+                   ApplicationID = Applications.ApplicationID,
+                   UserID = Applications.UserID,
+                   FullName = Applications.FullName,
+                   Email = Applications.Email,
+                   PhoneNumber = Applications.PhoneNumber,
+                   PhysicalAddress = Applications.PhyscialAddress,
+                   ReferenceNumber = Applications.ReferenceNumber,
+                   CompanyRegNo = Applications.CompanyRegNo,
+                   TypeOfApplication = Applications.TypeOfApplication,
+                   NotificationNumber = Applications.NotificationNumber,
+                   WBSNumber = Applications.WBSNumber,
+                   PhysicalAddressOfProject = Applications.PhysicalAddressOfProject,
+                   DescriptionOfProject = Applications.DescriptionOfProject,
+                   NatureOfWork = Applications.NatureOfWork,
+                   ExcavationType = Applications.ExcavationType,
+                   ExpectedStartDate = Applications.ExpectedStartDate,
+                   ExpectedEndDate = Applications.ExpectedEndDate,
+                   Location = Applications.Location,
+                   DateCreated = Applications.DateCreated,
+                   DateUpdated = Applications.DateUpdated,
+                   CreatedById = Applications.CreatedById,
+                   isActive = Applications.isActive,
+                   PreviousStageName = Applications.PreviousStageName,
+                   ApplicationStatus = Applications.ApplicationStatus,
+                   CurrentStageName = Applications.CurrentStageName,
+                   CurrentStageNumber = Applications.CurrentStageNumber,
+                   CurrentStageStartDate = Applications.CurrentStageStartDate,
+                   NextStageName = Applications.NextStageName,
+                   NextStageNumber = Applications.NextStageNumber,
+                   PreviousStageNumber = Applications.PreviousStageNumber,
+                   isPlanning = Applications.isPlanning,
+                   permitStartDate = Applications.PermitStartDate,
+                   WBSRequired = Applications.WBSRequired,
+                   Coordinates = Applications.Coordinates,
+               }
+               ).ToListAsync();
+
+
 
         }
 
@@ -404,7 +404,7 @@ namespace WayleaveManagementSystem.Service
 
         //this method gets all the applications linked to a partcular user
         //We use DTO (a cutom list) because we may pull custom data from the database at some point, otherwise, we can just use the existing list.
-        public async Task<List<ApplicationsDTO>> GetApplicationsList(string userId,bool isInternal)
+        public async Task<List<ApplicationsDTO>> GetApplicationsList(string userId, bool isInternal)
         {
             if (isInternal)
             {
@@ -442,8 +442,8 @@ namespace WayleaveManagementSystem.Service
                        CurrentStageNumber = Applications.CurrentStageNumber,
                        CurrentStageStartDate = Applications.CurrentStageStartDate,
                        NextStageName = Applications.NextStageName,
-                       NextStageNumber = Applications.NextStageNumber,  
-                       PreviousStageNumber = Applications.PreviousStageNumber,   
+                       NextStageNumber = Applications.NextStageNumber,
+                       PreviousStageNumber = Applications.PreviousStageNumber,
                        ProjectNumber = Applications.ProjectNumber,
                        isPlanning = Applications.isPlanning,
                        permitStartDate = Applications.PermitStartDate,
@@ -483,7 +483,7 @@ namespace WayleaveManagementSystem.Service
                        DateUpdated = Applications.DateUpdated,
                        CreatedById = Applications.CreatedById,
                        isActive = Applications.isActive,
-                        PreviousStageName = Applications.PreviousStageName,
+                       PreviousStageName = Applications.PreviousStageName,
                        ApplicationStatus = Applications.ApplicationStatus,
                        CurrentStageName = Applications.CurrentStageName,
                        CurrentStageNumber = Applications.CurrentStageNumber,
@@ -491,7 +491,7 @@ namespace WayleaveManagementSystem.Service
                        NextStageName = Applications.NextStageName,
                        NextStageNumber = Applications.NextStageNumber,
                        PreviousStageNumber = Applications.PreviousStageNumber,
-                             isPlanning = Applications.isPlanning,
+                       isPlanning = Applications.isPlanning,
                        ProjectNumber = Applications.ProjectNumber,
                        permitStartDate = Applications.PermitStartDate,
                        DatePaid = Applications.DatePaid,
@@ -602,63 +602,13 @@ namespace WayleaveManagementSystem.Service
 
         public async Task<List<ApplicationsDTO>> GetApplicationsByProjectNumber(string projectNumber)
         {
-                return await (
-                   from Applications in _context.Application
-                   where Applications.isActive == true && Applications.ProjectNumber == projectNumber
-                   orderby Applications.DateCreated descending
-                   select new ApplicationsDTO()
-                   {
-                       ApplicationID = Applications.ApplicationID,
-                       UserID = Applications.UserID,
-                       FullName = Applications.FullName,
-                       Email = Applications.Email,
-                       PhoneNumber = Applications.PhoneNumber,
-                       PhysicalAddress = Applications.PhyscialAddress,
-                       ReferenceNumber = Applications.ReferenceNumber,
-                       CompanyRegNo = Applications.CompanyRegNo,
-                       TypeOfApplication = Applications.TypeOfApplication,
-                       NotificationNumber = Applications.NotificationNumber,
-                       WBSNumber = Applications.WBSNumber,
-                       PhysicalAddressOfProject = Applications.PhysicalAddressOfProject,
-                       DescriptionOfProject = Applications.DescriptionOfProject,
-                       NatureOfWork = Applications.NatureOfWork,
-                       ExcavationType = Applications.ExcavationType,
-                       ExpectedStartDate = Applications.ExpectedStartDate,
-                       ExpectedEndDate = Applications.ExpectedEndDate,
-                       Location = Applications.Location,
-                       DateCreated = Applications.DateCreated,
-                       DateUpdated = Applications.DateUpdated,
-                       CreatedById = Applications.CreatedById,
-                       isActive = Applications.isActive,
-                       PreviousStageName = Applications.PreviousStageName,
-                       ApplicationStatus = Applications.ApplicationStatus,
-                       CurrentStageName = Applications.CurrentStageName,
-                       CurrentStageNumber = Applications.CurrentStageNumber,
-                       CurrentStageStartDate = Applications.CurrentStageStartDate,
-                       NextStageName = Applications.NextStageName,
-                       NextStageNumber = Applications.NextStageNumber,
-                       PreviousStageNumber = Applications.PreviousStageNumber,
-                       ProjectNumber = Applications.ProjectNumber,
-                       isPlanning = Applications.isPlanning,
-                       permitStartDate = Applications.PermitStartDate,
-                       WBSRequired = Applications.WBSRequired,
-                       Coordinates = Applications.Coordinates,
-                   }
-                   ).ToListAsync();
-        }
-        public async Task<List<ApplicationsDTO>> GetApplicationsForReviewer(int? zoneId, string userId)
-        {
             return await (
-                from Applications in _context.Application
-                join SubDepartmentComment in _context.SubDepartmentForComment
-                on Applications.ApplicationID equals SubDepartmentComment.ApplicationID
-                where Applications.isActive == true &&
-                      SubDepartmentComment.ZoneID == zoneId &&
-                      (SubDepartmentComment.UserAssaignedToComment == userId || SubDepartmentComment.UserAssaignedToComment == "All users in Subdepartment FA")
-                orderby Applications.DateCreated descending
-                select new ApplicationsDTO()
-                {
-                    ApplicationID = Applications.ApplicationID,
+               from Applications in _context.Application
+               where Applications.isActive == true && Applications.ProjectNumber == projectNumber
+               orderby Applications.DateCreated descending
+               select new ApplicationsDTO()
+               {
+                   ApplicationID = Applications.ApplicationID,
                    UserID = Applications.UserID,
                    FullName = Applications.FullName,
                    Email = Applications.Email,
@@ -694,10 +644,59 @@ namespace WayleaveManagementSystem.Service
                    WBSRequired = Applications.WBSRequired,
                    Coordinates = Applications.Coordinates,
                }
+               ).ToListAsync();
+        }
+        public async Task<List<ApplicationsDTO>> GetApplicationsForReviewer(int? zoneId, string userId)
+        {
+            return await (
+                from Applications in _context.Application
+                join SubDepartmentComment in _context.SubDepartmentForComment
+                on Applications.ApplicationID equals SubDepartmentComment.ApplicationID
+                where Applications.isActive == true &&
+                      SubDepartmentComment.ZoneID == zoneId &&
+                      (SubDepartmentComment.UserAssaignedToComment == userId || SubDepartmentComment.UserAssaignedToComment == "All users in Subdepartment FA")
+                orderby Applications.DateCreated descending
+                select new ApplicationsDTO()
+                {
+                    ApplicationID = Applications.ApplicationID,
+                    UserID = Applications.UserID,
+                    FullName = Applications.FullName,
+                    Email = Applications.Email,
+                    PhoneNumber = Applications.PhoneNumber,
+                    PhysicalAddress = Applications.PhyscialAddress,
+                    ReferenceNumber = Applications.ReferenceNumber,
+                    CompanyRegNo = Applications.CompanyRegNo,
+                    TypeOfApplication = Applications.TypeOfApplication,
+                    NotificationNumber = Applications.NotificationNumber,
+                    WBSNumber = Applications.WBSNumber,
+                    PhysicalAddressOfProject = Applications.PhysicalAddressOfProject,
+                    DescriptionOfProject = Applications.DescriptionOfProject,
+                    NatureOfWork = Applications.NatureOfWork,
+                    ExcavationType = Applications.ExcavationType,
+                    ExpectedStartDate = Applications.ExpectedStartDate,
+                    ExpectedEndDate = Applications.ExpectedEndDate,
+                    Location = Applications.Location,
+                    DateCreated = Applications.DateCreated,
+                    DateUpdated = Applications.DateUpdated,
+                    CreatedById = Applications.CreatedById,
+                    isActive = Applications.isActive,
+                    PreviousStageName = Applications.PreviousStageName,
+                    ApplicationStatus = Applications.ApplicationStatus,
+                    CurrentStageName = Applications.CurrentStageName,
+                    CurrentStageNumber = Applications.CurrentStageNumber,
+                    CurrentStageStartDate = Applications.CurrentStageStartDate,
+                    NextStageName = Applications.NextStageName,
+                    NextStageNumber = Applications.NextStageNumber,
+                    PreviousStageNumber = Applications.PreviousStageNumber,
+                    ProjectNumber = Applications.ProjectNumber,
+                    isPlanning = Applications.isPlanning,
+                    permitStartDate = Applications.PermitStartDate,
+                    WBSRequired = Applications.WBSRequired,
+                    Coordinates = Applications.Coordinates,
+                }
            ).ToListAsync();
         }
 
-
-
+      
     }
 }

@@ -23,11 +23,11 @@ table {
   font-size: 29px;
 }
 .greenThumbsUpText {
-  color: #68d017;
+  color: #42640c;
   font-size: 13px;
 }
 .blueThumbsUpText {
-  color: #00a4ff;
+  color: #0099c6;
   font-size: 13px;
 }
 .redThumbsDownText {
@@ -35,7 +35,11 @@ table {
   font-size: 13px;
 }
 .yellowTimerText {
-  color: #d0c400bd;
+  color: #fe9800;
+  font-size: 13px;
+}
+.blueReferText {
+  color: #6607f2;
   font-size: 13px;
 }
 .orangeSpeechText {

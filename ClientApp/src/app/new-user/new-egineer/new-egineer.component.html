@@ -2,7 +2,7 @@
 <ng-template #content let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Creating a new engineer</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">Close</button>
   </div>
   <div class="modal-body">
     <form>
@@ -15,12 +15,12 @@
               <label for="bpNoApplicant">BP Number</label>
             </div>
           </div>-->
-<!--          <div class="col">
+          <div class="col">
             <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" id="professionalRegNo" [(ngModel)]="professionalRegNo" placeholder="Professional Reg No" name="professionalRegNo">
-              <label for="professionalRegNo">Professional Reg No.</label>
+              <label for="professionalRegNo">ECSA Reg No.</label>
             </div>
-          </div>-->
+          </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" id="engineerCompanyName" [(ngModel)]="engineerCompanyName" placeholder="Engineer ID Number" name="engineerCompanyName">
@@ -84,12 +84,12 @@
       <div class="mb-3">
 
         <div class="row">
-          <!-- <div class="col">
-         <div class="form-floating mb-3 mt-3">
-           <input type="text" class="form-control" id="BpNoApplicant" [(ngModel)]="editBpNoApplicant" placeholder="Enter BP Number" name="editBpNoApplicant">
-           <label for="bpNoApplicant">BP Number</label>
-         </div>
-       </div>-->
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="professionalRegNo" [(ngModel)]="editProfessionalRegNo" placeholder="Professional Reg No" name="editProfessionalRegNo">
+              <label for="editProfessionalRegNo">ECSA Reg No.</label>
+            </div>
+          </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" id="professionalRegNo" [(ngModel)]="editProfessionalRegNo" placeholder="Professional Reg No" name="editProfessionalRegNo">
@@ -167,7 +167,7 @@
 
   <!-- Symbol Column -->
   <ng-container matColumnDef="professionalRegNo">
-    <th mat-header-cell *matHeaderCellDef> Professional Reg Number </th>
+    <th mat-header-cell *matHeaderCellDef> ECSA Reg Number </th>
     <td mat-cell *matCellDef="let element"> {{element.professionalRegNo}} </td>
   </ng-container>
 
@@ -185,8 +185,8 @@
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef>Actions</th>
     <td mat-cell *matCellDef="let i = index">
-      <button mat-raised-button color="warn" (click)="onDelete(i)"><i class="fa fa-trash" aria-hidden="true"></i></button>
-      <button mat-raised-button color="primary" (click)="openEditModal(edit, i)"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+      <button mat-raised-button color="warn" (click)="onDelete(i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid.svg" class="icon red"></button>
+      <button mat-raised-button color="primary" (click)="openEditModal(edit, i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid.svg" class="icon"></button>
     </td>
     <td mat-cell *matCellDef="let element">  </td>
   </ng-container>

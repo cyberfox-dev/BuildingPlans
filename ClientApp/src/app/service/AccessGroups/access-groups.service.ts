@@ -106,6 +106,14 @@ export class AccessGroupsService {
     return this.httpClient.post(this.baseURL + "GetAllRolesForUser", body);
 
   }
+  public getAllRolesForUserForAllAG(UserProfileID: number) {
+
+    const body = {
+      UserProfileID: UserProfileID,
+    }
+    return this.httpClient.post(this.baseURL + "GetAllRolesForUserForAllAG", body);
+
+  }
 
   public getAllNotLinkedUsers(accessGroupID: number) {
 
