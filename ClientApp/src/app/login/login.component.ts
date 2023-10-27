@@ -284,91 +284,132 @@ export class LoginComponent implements OnInit {
 
   getUserProfile(): Observable<any> {
     const currentUser = JSON.parse(localStorage.getItem("LoggedInUserInfo"));
-    return this.userPofileService.getUserProfileById(currentUser.appUserId);
+    return this.userPofileService.getDefaltUserProfile(currentUser.appUserId);
   }
 
 
-  //getAllRolesForUserForAllAG(userId: string): void {
-  //  this.accessGroupsService.getAllRolesForUserForAllAG(userId).subscribe(
-  //    (data: any) => {
-  //      if (data?.responseCode === 1 && data?.dateSet) {
-  //        this.setLocalStorage("AllCurrentUserRoles", data.dateSet);
-  //      } else {
-  //        console.error("Invalid data structure received: ", data);
-  //      }
-  //    },
-  //    error => console.error("Error: ", error)
-  //  );
-  //}
+  getAllRolesForUserForAllAG(userId: number): void {
+    this.accessGroupsService.getAllRolesForUserForAllAG(userId).subscribe(
+      (data: any) => {
+        if (data?.responseCode === 1 && data?.dateSet) {
+          this.setLocalStorage("AllCurrentUserRoles", data.dateSet);
+        } else {
+          console.error("Invalid data structure received: ", data);
+        }
+      },
+      error => console.error("Error: ", error)
+    );
+  }
+
+
+  onLoginCurrentKyle(): void {
+    if (this.loginForm.invalid) {
+      console.error("Form is invalid");
+      return;
+    }
+
+    this.isLoading = true;
+
+    const email = this.loginForm.controls["email"].value;
+    const password = this.loginForm.controls["password"].value;
+
+    this.userService.login(email, password).pipe(
+      switchMap((data: LoginResponse) => {
+        if (data.responseCode === 1) {
+          this.setLocalStorage("LoggedInUserInfo", data.dateSet);
+          return this.getUserProfile();
+        }
+        return throwError(data.responseMessage);
+      }),
+      tap((profileData: LoginResponse) => {
+        const userId = profileData.dateSet[0].userProfileID;
+        this.setLocalStorage("userProfile", profileData.dateSet);
+        this.getAllRolesForUserForAllAG(userId);
+      }),
+      catchError(error => {
+        console.error("Failed in the pipeline", error);
+        return throwError(error);
+      }),
+      delay(5000) // consider reducing the delay if it’s not necessary
+    ).subscribe(
+      () => {
+        this.router.navigate(["/home"]);
+      },
+      (error) => {
+        console.error("Error: ", error);
+        this.error = error.message;
+      }
+    ).add(() => {
+      this.isLoading = false;
+    });
+  }
 
 
 
+onLoginNewOld(): void {
+  if(this.loginForm.invalid) {
+  console.error("Form is invalid");
+  return;
+}
 
+this.isLoading = true;
 
-//onLogin(): void {
-//  if(this.loginForm.invalid) {
-//  console.error("Form is invalid");
-//  return;
-//}
+const email = this.loginForm.controls["email"].value;
+const password = this.loginForm.controls["password"].value;
 
-//this.isLoading = true;
+this.userService.login(email, password).pipe(
+  switchMap((data: LoginResponse) => {
+    if (data.responseCode === 1) {
+      this.setLocalStorage("LoggedInUserInfo", data.dateSet);
+      return this.getUserProfile();
+    }
+    return throwError(data.responseMessage);
+  }),
+  switchMap((profileData: LoginResponse) => {
+    const userId = profileData.dateSet[0].userProfileID;
+    this.setLocalStorage("userProfile", profileData.dateSet);
+    this.getAllRolesForUserForAllAG(userId);
+    return this.zoneLinkService.getAllUserLinks(userId);
+  }),
+  tap((response: LoginResponse) => this.handleUserLinks(response.dateSet)),
+  catchError(error => {
+    console.error("Failed in the pipeline", error);
+    return throwError(error);
+  }),
+  delay(5000) // consider reducing the delay if it’s not necessary
+).subscribe(
+  () => {
+    this.router.navigate(["/home"]);
+  },
+  (error) => {
+    console.error("Error: ", error);
+    this.error = error.message;
+  }
+).add(() => {
+  this.isLoading = false;
+});
+}
 
-//const email = this.loginForm.controls["email"].value;
-//const password = this.loginForm.controls["password"].value;
+  setLocalStorage(key: string, data: any): void {
+    localStorage.setItem(key, JSON.stringify(data));
+  }
 
-//this.userService.login(email, password).pipe(
-//  switchMap((data: LoginResponse) => {
-//    if (data.responseCode === 1) {
-//      this.setLocalStorage("LoggedInUserInfo", data.dateSet);
-//      return this.getUserProfile();
-//    }
-//    return throwError(data.responseMessage);
-//  }),
-//  switchMap((profileData: LoginResponse) => {
-//    const userId = profileData.dateSet[0].userID;
-//    this.setLocalStorage("userProfile", profileData.dateSet);
-//    this.getAllRolesForUserForAllAG(userId);
-//    return this.zoneLinkService.getAllUserLinks(userId);
-//  }),
-//  tap((response: LoginResponse) => this.handleUserLinks(response.dateSet)),
-//  catchError(error => {
-//    console.error("Failed in the pipeline", error);
-//    return throwError(error);
-//  }),
-//  delay(5000) // consider reducing the delay if it’s not necessary
-//).subscribe(
-//  () => {
-//    this.router.navigate(["/home"]);
-//  },
-//  (error) => {
-//    console.error("Error: ", error);
-//    this.error = error.message;
-//  }
-//).add(() => {
-//  this.isLoading = false;
-//});
-//}
+  handleUserLinks(zoneLinks: any[]): void {
+    const defaultZoneLink = zoneLinks?.find(link => link.isDefault) || zoneLinks?.[0];
+    if (!defaultZoneLink) return;
 
-//  setLocalStorage(key: string, data: any): void {
-//    localStorage.setItem(key, JSON.stringify(data));
-//  }
+    let userProfile = JSON.parse(localStorage.getItem("userProfile") || '[]');
+    if (!Array.isArray(userProfile)) {
+      console.error("userProfile is not an array: ", userProfile);
+      return;
+    }
 
-//  handleUserLinks(zoneLinks: any[]): void {
-//    const defaultZoneLink = zoneLinks?.find(link => link.isDefault) || zoneLinks?.[0];
-//    if (!defaultZoneLink) return;
-
-//    let userProfile = JSON.parse(localStorage.getItem("userProfile") || '[]');
-//    if (!Array.isArray(userProfile)) {
-//      console.error("userProfile is not an array: ", userProfile);
-//      return;
-//    }
-
-//    const mergedProfile = { ...userProfile[0], ...defaultZoneLink };
-//    this.setLocalStorage("userProfile", [mergedProfile]);
-//  }
+    const mergedProfile = { ...userProfile[0], ...defaultZoneLink };
+    this.setLocalStorage("userProfile", [mergedProfile]);
+  }
 
  
-
+  
 
 
   //old login 10-10-23

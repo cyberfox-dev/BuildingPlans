@@ -156,6 +156,15 @@ export class UserManagementComponent implements OnInit {
     this.getAllAccessGroups();
   }
 
+
+  getUserProfiles() {
+    //if (this.CurrentUserProfile.) {
+
+    //}
+  }
+
+
+
   openAssignModal(content, index: any) {
 
     this.selectedUserIndex = this.UserList[index].userProfileID;

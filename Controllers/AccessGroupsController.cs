@@ -430,7 +430,7 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
                 var accessGroupIDs = await _context.AccessGroupUserLink
-                    .Where(ag => ag.UserID == model.UserID && ag.isActive)
+                    .Where(ag => ag.UserProfileID == model.UserProfileID && ag.isActive)
                     .Select(ag => ag.AccessGroupID)
                     .ToListAsync();
 
@@ -780,7 +780,7 @@ namespace WayleaveManagementSystem.Controllers
                         Email = upItem.Email,
                         PhoneNumber = upItem.PhoneNumber,
                         Directorate = upItem.Directorate,
-                        ZoneName = ztItem.ZoneName,
+                        zoneName = ztItem.ZoneName,
                         MapObjectID = ztItem.MapObjectID,
                         SubDepartmentID = ztItem.SubDepartmentID,
                         zoneID = ztItem.ZoneID,

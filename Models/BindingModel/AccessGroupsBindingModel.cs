@@ -21,6 +21,7 @@
         public int? AccessGroupUserLinkID { get; set; }
 
         public string? UserID { get; set; }
+        public int? UserProfileID { get; set; }
 
         //Base Entity
         public string? CreatedById { get; set; }

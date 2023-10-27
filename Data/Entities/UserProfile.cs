@@ -9,15 +9,18 @@ namespace WayleaveManagementSystem.Data.Entities
         public string? UserID { get; set; }
 
         public string? Name { get; set; }
-        public string? SurnameName { get; set; }
+        public string? Surname { get; set; }
 
         public string? FullName { get; set; }
         public string? Email { get; set;}
+        public string? AlternativeEmail { get; set; }
+
 
         public bool? isInternal { get; set; }
         public bool? isDefault { get; set; }
 
         //External Information
+
         public string? PhoneNumber { get; set; }
         public string? AlternativePhoneNumber { get; set; }
 

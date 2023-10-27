@@ -94,6 +94,14 @@ export class UserProfileService {
 
   }
 
+  public getDefaltUserProfile(userId: string) {
+    const body = {
+      UserID: userId,
+    }
+    return this.httpClient.post(this.baseURL + "GetDefaltUserProfile", body);
+
+  }
+
   public getInternalUsers() {
 
     return this.httpClient.get(this.baseURL + "GetInternalUsers");
