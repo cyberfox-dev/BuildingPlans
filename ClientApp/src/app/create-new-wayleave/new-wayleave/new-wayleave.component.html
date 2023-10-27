@@ -411,7 +411,7 @@
       <div class="row">
         <div class="col">
           <div class="form-floating mb-3 mt-3">
-            <input type="date" class="form-control" [(ngModel)]="expectedStartDate" id="startDate" placeholder="Enter Start Date" name="expectedStartDate"> <!--[min]="getCurrentDate()"-->
+            <input type="date" class="form-control" [(ngModel)]="expectedStartDate" id="startDate" placeholder="Enter Start Date" name="expectedStartDate" [min]="getCurrentDate()"> <!--[min]="getCurrentDate()"-->
             <label for="name">Start Date</label>
           </div>
         </div>
