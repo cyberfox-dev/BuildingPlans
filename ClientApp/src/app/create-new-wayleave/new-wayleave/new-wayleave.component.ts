@@ -1330,7 +1330,19 @@ export class NewWayleaveComponent implements OnInit {
           NextStageNameIn = this.StagesList[i + 1].StageName
         }
 
-      }
+    }
+    if (this.isDraft == true) {
+      this.draftApplicationsService.addUpdateDraftApplication(0, this.applicationID, appUserId, this.internalName + " " + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null, null).subscribe((data: any) => {
+        alert("Draft Saved");
+        this.router.navigate(["/home"]);
+        console.log("response", data);
+
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+    else {
 
       this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
         if (data.responseCode == 1) {
@@ -1344,45 +1356,34 @@ export class NewWayleaveComponent implements OnInit {
             if (data.responseCode == 1) {
 
               debugger;
-              if (this.isDraft == true) {
-                this.draftApplicationsService.addUpdateDraftApplication(0, this.applicationID, appUserId, this.internalName + " " + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject , this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear,null, null).subscribe((data: any) => {
-                    alert("Draft Saved");
+
+              this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null,
+                null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE,
+                this.expectedStartDate, this.expectedEndType, null, this.CurrentUser.appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3,
+                "Distributed", this.isDraft, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
+                  if (data.responseCode == 1) {
+                    this.SavedProjectSizeSelections();
+                    alert("Application Created");
+                    if (isPlanning == false) {
+                      this.AddProfessinal(contractorData, engineerData);
+                    }
+                    // this.UploadDocuments(data.dateSet);
+
+                    this.shared.setApplicationID(0);
+                    this.shared.clearContractorData();
+                    this.shared.clearEngineerData();
                     this.router.navigate(["/home"]);
-                    console.log("response", data);
+                    debugger;
+                    this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                    /*              this.addToSubDepartmentForComment();*/
+                    this.notificationsService.addUpdateNotification(0, "Application Submission", "New wayleave application submission", false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserID, this.applicationID, "Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.").subscribe((data: any) => {
+
+                      if (data.responseCode == 1) {
+                        alert(data.responseMessage);
 
 
-                  }, error => {
-                    console.log("Error: ", error);
-                  })
-              }
-              else {
-                this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null,
-                  null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE,
-                  this.expectedStartDate, this.expectedEndType, null, this.CurrentUser.appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3,
-                  "Distributed", this.isDraft, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
-                    if (data.responseCode == 1) {
-                      this.SavedProjectSizeSelections();
-                      alert("Application Created");
-                      if (isPlanning == false) {
-                        this.AddProfessinal(contractorData, engineerData);
-                      }
-                      // this.UploadDocuments(data.dateSet);
-
-                      this.shared.setApplicationID(0);
-                      this.shared.clearContractorData();
-                      this.shared.clearEngineerData();
-                      this.router.navigate(["/home"]);
-                      debugger;
-                      this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-                      /*              this.addToSubDepartmentForComment();*/
-                      this.notificationsService.addUpdateNotification(0, "Application Submission", "New wayleave application submission", false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserID, this.applicationID, "Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.").subscribe((data: any) => {
-
-                        if (data.responseCode == 1) {
-                          alert(data.responseMessage);
-
-
-                          const projectNum = "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear;
-                          const emailContent = `
+                        const projectNum = "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear;
+                        const emailContent = `
       <html>
         <head>
           <style>
@@ -1424,19 +1425,19 @@ export class NewWayleaveComponent implements OnInit {
     `;
 
 
-                          this.notificationsService.sendEmail(this.CurrentUser.email, "New wayleave application", emailContent, emailContent);
-                          /*              this.addToSubDepartmentForComment();*/
-                          this.Emailmessage = "A Wayleave application with ID " + this.applicationID + " and project reference number:" + projectNum + " has just been captured. You will be notified once your application has reached the next stage in the process.";
-                          this.onCreateNotification();
+                        this.notificationsService.sendEmail(this.CurrentUser.email, "New wayleave application", emailContent, emailContent);
+                        /*              this.addToSubDepartmentForComment();*/
+                        this.Emailmessage = "A Wayleave application with ID " + this.applicationID + " and project reference number:" + projectNum + " has just been captured. You will be notified once your application has reached the next stage in the process.";
+                        this.onCreateNotification();
 
 
 
 
-                          //Send emails to zone department admins
-                          this.shared.distributionList.forEach((obj) => {
+                        //Send emails to zone department admins
+                        this.shared.distributionList.forEach((obj) => {
 
 
-                            const emailContent2 = `
+                          const emailContent2 = `
       <html>
         <head>
           <style>
@@ -1478,58 +1479,58 @@ export class NewWayleaveComponent implements OnInit {
     `;
 
 
-                            this.notificationsService.sendEmail(obj.email, "New wayleave application", emailContent2, emailContent2);
-                            this.notificationsService.addUpdateNotification(0, "Application Created", "New wayleave application", false, obj.userID, this.CurrentUser.appUserID, this.applicationID, "A Wayleave application with ID ${this.applicationID} has just been captured. As the zone admin of " + obj.zoneName + "in" + obj.subDepartmentName + " , please assign a reviewer to the application.").subscribe((data: any) => {
+                          this.notificationsService.sendEmail(obj.email, "New wayleave application", emailContent2, emailContent2);
+                          this.notificationsService.addUpdateNotification(0, "Application Created", "New wayleave application", false, obj.userID, this.CurrentUser.appUserID, this.applicationID, "A Wayleave application with ID ${this.applicationID} has just been captured. As the zone admin of " + obj.zoneName + "in" + obj.subDepartmentName + " , please assign a reviewer to the application.").subscribe((data: any) => {
 
-                              if (data.responseCode == 1) {
-
-
-                              }
-                              else {
-                                alert(data.responseMessage);
-                              }
-
-                              console.log("response", data);
-                            }, error => {
-                              console.log("Error", error);
-                            })
+                            if (data.responseCode == 1) {
 
 
+                            }
+                            else {
+                              alert(data.responseMessage);
+                            }
 
+                            console.log("response", data);
+                          }, error => {
+                            console.log("Error", error);
                           })
-                          this.addToZoneForComment();
-                        }
-                        else {
-                          alert(data.responseMessage);
-                        }
-
-                        console.log("response", data);
-                      }, error => {
-                        console.log("Error", error);
-                      });
-                    }
-                    else {
-                      alert("Failed To Create Application");
-                    }
 
 
 
-                    console.log("responseAddapplication", data);
-                  }, error => {
-                    console.log("Error", error);
-                  });
-              }
-              }
+                        })
+                        this.addToZoneForComment();
+                      }
+                      else {
+                        alert(data.responseMessage);
+                      }
+
+                      console.log("response", data);
+                    }, error => {
+                      console.log("Error", error);
+                    });
+                  }
+                  else {
+                    alert("Failed To Create Application");
+                  }
+
+
+
+                  console.log("responseAddapplication", data);
+                }, error => {
+                  console.log("Error", error);
+                });
+
+            }
             else {
 
-                alert("Update Config Error");
-              }
-              console.log("addUpdateConfigReponse", data);
+              alert("Update Config Error");
+            }
+            console.log("addUpdateConfigReponse", data);
 
-            }, error => {
-              console.log("addUpdateConfigError: ", error);
-            })
-        
+          }, error => {
+            console.log("addUpdateConfigError: ", error);
+          })
+
 
         }
         else {
@@ -1541,6 +1542,7 @@ export class NewWayleaveComponent implements OnInit {
       }, error => {
         console.log("getConfigsByConfigNameError: ", error);
       })
+    }
     }
    
   
