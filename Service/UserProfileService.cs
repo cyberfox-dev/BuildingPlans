@@ -67,8 +67,8 @@ namespace WayleaveManagementSystem.Service
                     refNumber = refNumber,
                     companyType = companyType,
                     SubDepartmentName = subDepartmentName,
-                    AlternateEmail = alternateEmail,
-                    AlternateNumber = alternateNumber
+                    AlternativeEmail = alternateEmail,
+                    AlternativePhoneNumber = alternateNumber
 
                 };
 
@@ -183,11 +183,11 @@ namespace WayleaveManagementSystem.Service
                 }
                 if (alternateEmail != null)
                 {
-                    tempUserProfile.AlternateEmail = alternateEmail;
+                    tempUserProfile.AlternativeEmail = alternateEmail;
                 }  
                 if (alternateNumber != null)
                 {
-                    tempUserProfile.AlternateNumber = alternateNumber;
+                    tempUserProfile.AlternativePhoneNumber = alternateNumber;
                 }
 
                 //tempUserProfile.DateCreated = DateTime.Now;
@@ -558,8 +558,8 @@ namespace WayleaveManagementSystem.Service
                                         isDepartmentAdmin = newtableItem.isDepartmentAdmin,
                                         zoneID = newtableItem.zoneID,
 
-                                        AlternateEmail = newtableItem.AlternateEmail,
-                                        AlternateNumber = newtableItem.AlternateNumber,
+                                        AlternativeEmail = newtableItem.AlternativeEmail,
+                                        AlternativePhoneNumber = newtableItem.AlternativePhoneNumber,
                                     }
                 ).ToListAsync();
         }
@@ -597,12 +597,10 @@ namespace WayleaveManagementSystem.Service
                    depConfirmation = UserProfile.depConfirmation,
                    zoneID = UserProfile.zoneID,
 
-                   RefNumber = UserProfile.refNumber,
-                   CompanyType = UserProfile.companyType,
                    SubDepartmentName = UserProfile.SubDepartmentName,
 
-                   AlternateEmail = UserProfile.AlternateEmail,
-                   AlternateNumber = UserProfile.AlternateNumber,
+                   AlternativeEmail = UserProfile.AlternativeEmail,
+                   AlternativePhoneNumber = UserProfile.AlternativePhoneNumber,
                }
 
                ).ToListAsync();
