@@ -287,6 +287,10 @@ export class LoginComponent implements OnInit {
     const currentUser = JSON.parse(localStorage.getItem("LoggedInUserInfo"));
     return this.userPofileService.getDefaltUserProfile(currentUser.appUserId);
   }
+  getUserProfileOld(): Observable<any> {
+    const currentUser = JSON.parse(localStorage.getItem("LoggedInUserInfo"));
+    return this.userPofileService.getUserProfileById(currentUser.appUserId);
+  }
 
 
   getAllRolesForUserForAllAG(userId: number): void {
@@ -425,7 +429,7 @@ this.userService.login(email, password).pipe(
       switchMap((data: any) => {
         if (data.responseCode === 1) {
           localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
-          return this.getUserProfile();
+          return this.getUserProfileOld();
         } else {
           // Throw error if login failed
           throw new Error(data.responseMessage);

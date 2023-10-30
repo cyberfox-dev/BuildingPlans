@@ -90,6 +90,12 @@ export interface SubDepartmentList {
   SubDepartmentName: string;
   DepartmentID: number;
 }
+
+export interface DepartmentList {
+  departmentID: number;
+  departmentName: string;
+}
+
 export interface ZonesList {
   ZoneID: number;
   ZoneName: string;
@@ -119,6 +125,8 @@ export class UserManagementComponent implements OnInit {
   SubDepartmentList: SubDepartmentList[] = [];
   AllSubDepartmentList: SubDepartmentList[] = [];
   ZonesList: ZonesList[] = [];
+
+  DepartmentList: DepartmentList[] = [];
 
   stringifiedDataUserProfile: any;
   CurrentUserProfile: any;
@@ -156,6 +164,7 @@ export class UserManagementComponent implements OnInit {
     //this.showLinkedUsers();
     this.getAllusersNotLinkedToDep();
     this.getAllAccessGroups();
+    this.getAllDepartments();
   }
 
 
@@ -2075,6 +2084,39 @@ export class UserManagementComponent implements OnInit {
   }
 
   removeUserFromDPT(index: any) {
+
+  }
+
+  FilterBtn: boolean = false;
+  DepartFilter: boolean = false;
+  FilterValue = "";
+
+  getAllDepartments() {
+    debugger;
+    this.departmentService.getDepartmentsList().subscribe((data: any)=>{
+      if (data.responseCode == 1) {
+        debugger;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempDeptList = {} as DepartmentList;
+          const current = data.dateSet[i];
+          debugger
+          tempDeptList.departmentID = current.departmentID;
+          tempDeptList.departmentName = current.departmentName;
+          this.DepartmentList.push(tempDeptList);
+        }
+        console.log(data.responseMessage);
+      } else {
+
+        console.log(data.responseMessage);
+      }
+      console.log("These are the wayleave departments:", data);
+    }, error => {
+      // Handle errors that may occur during the zone link update.
+      console.log("Error: ", error);
+    })
+  }
+
+  onFilterButtonClick() {
 
   }
 }
