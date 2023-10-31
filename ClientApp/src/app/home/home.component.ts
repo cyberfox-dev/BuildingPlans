@@ -523,6 +523,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.getAllStages();
       this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
       this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
+
+
       this.UpdateProjectNumberConfig();
       this.getAllApplicationsByUserID();
       /* this.select = "option3";*/
@@ -1977,8 +1979,8 @@ this.Applications.push(tempApplicationList);
     this.applicationDataForView = [];
     this.Applications = [];
     let number = 21;
-
-    this.applicationService.getApplicationsForReviewer(21, this.CurrentUser.appUserId).subscribe((data: any) => {
+    debugger;
+    this.applicationService.getApplicationsForReviewer(this.CurrentUserProfile[0].zoneID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
 
       if (data.responseCode == 1) {
