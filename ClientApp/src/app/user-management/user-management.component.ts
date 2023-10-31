@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { MatTable } from '@angular/material/table';
-import { MatTabsModule } from '@angular/material/tabs';
+import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { asyncScheduler } from 'rxjs';
 import { forkJoin } from 'rxjs';
@@ -53,6 +53,7 @@ export interface AccessGroupDetailsList {
   AccessGroupName: string,
   AccessGroupUserLinkID: number,
   SubdepartmentID: any;
+  ZoneID: number;
 }
 
 export interface RolesList {
@@ -68,6 +69,7 @@ export interface TheirRolesList {
 export interface TheirAccessGroupList {
   AccessGroupUserLinkID: any;
   AccessGroupID: number;
+  ZoneID: number;
 }
 
 export interface ZoneLinkList {
@@ -88,6 +90,12 @@ export interface SubDepartmentList {
   SubDepartmentName: string;
   DepartmentID: number;
 }
+
+export interface DepartmentList {
+  departmentID: number;
+  departmentName: string;
+}
+
 export interface ZonesList {
   ZoneID: number;
   ZoneName: string;
@@ -117,6 +125,8 @@ export class UserManagementComponent implements OnInit {
   SubDepartmentList: SubDepartmentList[] = [];
   AllSubDepartmentList: SubDepartmentList[] = [];
   ZonesList: ZonesList[] = [];
+
+  DepartmentList: DepartmentList[] = [];
 
   stringifiedDataUserProfile: any;
   CurrentUserProfile: any;
@@ -154,6 +164,7 @@ export class UserManagementComponent implements OnInit {
     //this.showLinkedUsers();
     this.getAllusersNotLinkedToDep();
     this.getAllAccessGroups();
+    this.getAllDepartments();
   }
 
 
@@ -895,8 +906,8 @@ export class UserManagementComponent implements OnInit {
 
     await this.checkZoneLinkage();
 
-    this.getAccessGroups();
-    this.getZoneAccessGroups();
+    //this.getAccessGroups();
+    //this.getZoneAccessGroups();
 
     const selectedAccessGroup = this.AccessGroupList[index];
 
@@ -1029,6 +1040,7 @@ export class UserManagementComponent implements OnInit {
           debugger;
           tempAccessList.AccessGroupUserLinkID = current.accessGroupUserLinkID;//accessGroupUserLinkID
           tempAccessList.AccessGroupID = current.accessGroupID;
+          tempAccessList.ZoneID = current.zoneID;
           console.table(tempAccessList);
           this.ThisUserAGList.push(tempAccessList);
         }
@@ -1039,12 +1051,63 @@ export class UserManagementComponent implements OnInit {
     }
     )
   }
+/*
+  async getZoneAccessGroups() {
+    this.ThisUserAGList.splice(0, this.ThisUserAGList.length);
 
-  getZoneAccessGroups() {
-    this.accessGroupLinkService.getAccessGroupsBySubDeptZoneAndUserID(this.selectedUserID, this.zoneId ,this.subDeptID).subscribe((data: any) => {
+    await this.getZones(this.subDeptID).subscribe((zoneList: any[]) => {
+      // Iterate over the ZoneIDs in the zoneList
+      for (const zone of zoneList) {
+        this.accessGroupLinkService
+          .getAccessGroupsBySubDeptZoneAndUserID(this.selectedUserID, zone.ZoneID, this.subDeptID)
+          .subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              debugger;
+              console.log("Zone specific access group info for ZoneID " + zone.ZoneID + ":", data);
+              console.log(data.responseMessage);
+
+              for (let i = 0; i < data.dateSet.length; i++) {
+                const tempAccessList = {} as TheirAccessGroupList;
+                const current = data.dateSet[i];
+                debugger;
+                tempAccessList.AccessGroupUserLinkID = current.accessGroupUserLinkID;//accessGroupUserLinkID
+                tempAccessList.AccessGroupID = current.accessGroupID;
+                console.table(tempAccessList);
+                this.ThisUserAGList.push(tempAccessList);
+              }
+
+            } else {
+              console.log("Error for ZoneID " + zone.ZoneID + ":", data.responseMessage);
+            }
+          }, error => {
+            console.log("Error for ZoneID " + zone.ZoneID + ":", error);
+          });
+      }
+    });
+  }
+*/
+  onTabChange(event: MatTabChangeEvent) {
+    const selectedZone = this.ZonesList[event.index];
+    if (selectedZone.isLinked) {
+      debugger;
+      this.getZoneAccessGroups(selectedZone.ZoneID);
+    }
+  }
+  getZoneAccessGroups(zoneId: number) {
+    debugger;
+    this.accessGroupLinkService.getAccessGroupsBySubDeptZoneAndUserID(this.selectedUserID, zoneId, this.subDeptID).subscribe((data: any) => {
       if (data.responseCode == 1) {
         debugger;
-
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempAccessList = {} as TheirAccessGroupList;
+          const current = data.dateSet[i];
+          debugger;
+          tempAccessList.AccessGroupUserLinkID = current.accessGroupUserLinkID;//accessGroupUserLinkID
+          tempAccessList.AccessGroupID = current.accessGroupID;
+          tempAccessList.ZoneID = current.zoneID;
+          console.table(tempAccessList);
+          this.ThisUserAGList.push(tempAccessList);
+        }
         console.log("I want zone specific access group info: ", data);
         console.log(data.responseMessage);
       } else {
@@ -1125,6 +1188,12 @@ export class UserManagementComponent implements OnInit {
   isUserInAccessGroup(accessGroupID: number): boolean {
     return this.ThisUserAGList.some(userAccessGroup => userAccessGroup.AccessGroupID === accessGroupID);
   }
+
+  isUserInAccessGroup2(accessGroupID: number, zoneId: number): boolean {
+    debugger;
+    //why is the zone ID null??
+    return this.ThisUserAGList.some(userAccessGroup => userAccessGroup.AccessGroupID === accessGroupID && userAccessGroup.ZoneID === zoneId);
+  }
   tempAccessGroupDetailsArray: AccessGroupDetailsList[] = [];
   async addToAccessGroup(index: number, viewDepartmentPerson: any) {
     // You can use the index to access the selected access group in AccessGroupList
@@ -1139,6 +1208,83 @@ export class UserManagementComponent implements OnInit {
     //NB: MAKE SURE THAT THOSE TWO NEW ARGUMENTS ARE ACCOUNTED FOR ACCORDINGLY!
 
     this.accessGroupsService.addUpdateAccessGroupUserLink(0, accessGroupID, this.selectedUserID, this.CurrentUser.appUserId, this.zoneId, this.subDeptID).subscribe((data: any) => {
+      ///
+      console.log("TRYINGTRYINGTRYINGTOADDACCESSGROUPACCESSGROUP");
+      if (data.responseCode == 1) {
+        debugger;
+        //this.modalService.dismissAll();
+        //this.modalService.open(viewDepartmentPerson, { size: 'lg' });
+        console.log("What gets outputted?? kodwa here's the data: ", data);
+        const tempAccessGroupDetails = {} as AccessGroupDetailsList;
+
+        tempAccessGroupDetails.AccessGroupID = data.dateSet.accessGroupID;
+        tempAccessGroupDetails.SubdepartmentID = data.dateSet.subDepartmentID;
+        tempAccessGroupDetails.AccessGroupName = this.getAccessGroupName(data.dateSet.accessGroupID);
+        tempAccessGroupDetails.AccessGroupUserLinkID = data.dateSet.accessGroupUserLinkID;
+        tempAccessGroupDetails.ZoneID = data.dateSet.zoneID;
+
+        this.tempAccessGroupDetailsArray.push(tempAccessGroupDetails);
+        this.boolZoneAdmin = this.convertToBoolean(this.zoneAdminValue);
+        this.getDepartmentID(tempAccessGroupDetails.SubdepartmentID);
+
+        console.log("This is the tempoaryAccessGroupDetails", this.tempAccessGroupDetailsArray)
+        // Now, update the zone link.
+        this.zoneLinkService.addUpdateZoneLink(0, this.zoneId, this.ZoneName, this.theDepartmentID, this.subDeptID, this.subDeptName, this.selectedUserID, null, this.CurrentUser.appUserId, null, this.boolZoneAdmin,
+          tempAccessGroupDetails.AccessGroupUserLinkID,
+          tempAccessGroupDetails.AccessGroupName
+        ).subscribe((zoneLinkData: any) => {
+          if (zoneLinkData.responseCode == 1) {
+            // Successful zone link update. Display a success message.
+            //alert(zoneLinkData.responseMessage);
+            console.log(data.responseMessage);
+          } else {
+            // Handle the case where the zone link update fails. Display an error message.
+            //alert(zoneLinkData.responseMessage);
+            console.log(data.responseMessage);
+          }
+          console.log("response", zoneLinkData);
+        }, error => {
+          // Handle errors that may occur during the zone link update.
+          console.log("Error: ", error);
+        });
+
+        this.getAccessGroups();
+        console.log("user has been added??");
+      } else {
+        //this.modalService.dismissAll();
+        //this.modalService.open(viewDepartmentPerson, { size: 'lg' });
+        console.log("There's an error, kodwa here's the data: ", data);
+        //console.error('Error adding user to access group:', data.responseMessage);
+        this.getAccessGroups();
+        //alert(data.responseMessage);
+        console.log(data.responseMessage);
+      }
+      console.log("response", data);
+    }, error => {
+      console.log("Error:", error);
+
+      
+    })
+
+   
+  
+    //await new Promise(resolve => setTimeout(resolve, 1000));
+    await this.getAccessGroups();
+    this.modalService.open(viewDepartmentPerson, { centered: true, size: 'lg' });
+  }
+  async addToAccessGroupInZones(index: number, departmentPersonZones: any, zoneId) {
+    // You can use the index to access the selected access group in AccessGroupList
+    const selectedAccessGroup = this.AccessGroupList[index];
+    const accessGroupID = selectedAccessGroup.AccessGroupID;
+
+
+    //this.selectedDepartmentID
+
+
+    debugger;
+    //NB: MAKE SURE THAT THOSE TWO NEW ARGUMENTS ARE ACCOUNTED FOR ACCORDINGLY!
+
+    this.accessGroupsService.addUpdateAccessGroupUserLink(0, accessGroupID, this.selectedUserID, this.CurrentUser.appUserId, zoneId, this.subDeptID).subscribe((data: any) => {
       ///
       console.log("TRYINGTRYINGTRYINGTOADDACCESSGROUPACCESSGROUP");
       if (data.responseCode == 1) {
@@ -1200,7 +1346,7 @@ export class UserManagementComponent implements OnInit {
   
     //await new Promise(resolve => setTimeout(resolve, 1000));
     await this.getAccessGroups();
-    this.modalService.open(viewDepartmentPerson, { centered: true, size: 'lg' });
+    this.modalService.open(departmentPersonZones, { centered: true, size: 'lg' });
   }
 
   removeFromAccessGroup(index: number) {
@@ -1403,6 +1549,17 @@ export class UserManagementComponent implements OnInit {
   validEmail: boolean = false;
   validNames: boolean = false;
 
+  clearFormFields() {
+    this.selectedSubdepartment = null;
+    this.selectedZone = null;
+    this.newName = '';
+    this.newSurname = '';
+    this.newCostCenterOwner = '';
+    this.newCostCenterNumber = '';
+    this.newPhoneNumber = '';
+    this.newEmail = '';
+  }
+
   async verifyingTheAddition() {
     let internalSubdepartment = this.selectedSubdepartment;
     let internalZone = this.selectedZone;
@@ -1431,8 +1588,12 @@ export class UserManagementComponent implements OnInit {
         try {
           const exists = await this.userService.emailExists(internalEmail).toPromise();
           if (exists) {
-            alert("Email already exists in wayleave system. Consider changing your password");
+            debugger;
             this.validEmail = false;
+            this.handlingEmailExist(internalEmail, internalSubdepartment);
+            debugger;
+            //alert("Email already exists in wayleave system. Are you sure you want to add this user to this department as well?");
+
           }
           else {
             this.validEmail = true;
@@ -1460,7 +1621,49 @@ export class UserManagementComponent implements OnInit {
     }
 
   }
+  emailSubDepartmentID: any = null;
+  emailUSerID = '';
+  emailFullName = '';
+  existingUser: boolean = false; //old user in new department, well - extra department that is not their default USERPROFILETABLE subdepartment
+  async handlingEmailExist(email: string, selectedSubDepID: number) {
+    debugger;
+    await this.userPofileService.getUserByEmail(email).subscribe((data: any) => {
+      debugger;
+      if (data.responseCode == 1) {
+        let current = data.dateSet[0];
+        this.emailSubDepartmentID = current.subDepartmentID;
+        this.emailUSerID = current.userID;
+        this.emailFullName = current.fullName;
+        console.log("this is what I found about this user:", current);
+        console.log("this is the SubDepartmentID of the user that is already in the database:", this.emailSubDepartmentID);
+        console.log("this is the UserID of the user that is already in the database:", this.emailUSerID);
 
+        // Move the subsequent code here, inside the callback
+        this.getSubdepartmentName(this.emailSubDepartmentID);
+        if (this.emailSubDepartmentID == selectedSubDepID) {
+          alert(this.emailFullName + " is already linked to the " + this.theSubDepartmentName + " subdepartment.");
+        } else {
+          debugger;
+          this.zoneLinkService.getBySubAndUserID(selectedSubDepID, this.emailUSerID).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              if (data.dateSet > 1) {
+                debugger;
+                this.getSubdepartmentName(selectedSubDepID);
+                alert(this.emailFullName + " is already linked to the " + this.theSubDepartmentName + " subdepartment.");
+              } else {
+                console.log("The user is not linked to this department.");
+                // You can add the user to this department here
+                this.validEmail = true;
+                this.existingUser = true;
+                // Emails must be linked to one person only!!
+              }
+            }
+          });
+        }
+      }
+    });
+  }
+  reviewerAGID: any = null;
   async addingTheUser(viewDepartmentPerson: any) {
 
     let internalCostCenterOwner = this.newCostCenterOwner;
@@ -1475,7 +1678,61 @@ export class UserManagementComponent implements OnInit {
     try {
       await this.verifyingTheAddition();
       await this.getSubdepartmentName(internalSubdepartment);
-      if (this.validNames && this.validEmail) {
+
+      console.log("validNames:", this.validNames);
+      console.log("validEmail:", this.validEmail);
+      console.log("existingUser:", this.existingUser);
+     
+      if (this.validNames && this.validEmail && this.existingUser) {
+        //this user is already in the userprofile table
+
+        //remember that the default access groups at time of link are "Reviewer" and "Capturer"
+        this.reviewerAGID = this.getAccessGroupIdByName("Reviewer");
+        this.accessGroupsService.addUpdateAccessGroupUserLink(0, this.reviewerAGID, this.emailUSerID, this.CurrentUser.appUserId, this.zoneId, this.subDeptID).subscribe((data: any) => {
+          ;
+          if (data.responseCode == 1) {
+            //alert(data.responseMessage);
+            console.log(data.responseMessage);
+
+            debugger;
+            this.newAcessGroupUserLinkID = data.dateSet.accessGroupUserLinkID;
+            debugger;
+            //Note: that I decided that the default access group is reviewer.
+
+
+            this.zoneLinkService.addUpdateZoneLink(0, this.zoneId, this.ZoneName, this.theDepartmentID, this.subDeptID, this.subDeptName, this.emailUSerID, null, this.CurrentUser.appUserId, false, false, this.newAcessGroupUserLinkID, "Reviewer").subscribe((data: any) => {
+              debugger;
+              if (data.responseCode == 1) {
+                //alert(data.responseMessage);
+                console.log(data.responseMessage);
+
+              }
+              else {
+                // alert(data.responseMessage);
+                console.log(data.responseMessage);
+              }
+              console.log("Response after trying to add user into the ZoneLink table: ", data);
+
+            }, error => {
+              console.log("Error after trying to add user into the ZoneLink table: ", error);
+            })
+
+
+          }
+          else {
+            // alert(data.responseMessage);
+            console.log(data.responseMessage);
+          }
+          console.log("Response after trying to auto approve the user: ", data);
+
+        }, error => {
+          console.log("Error after trying to auto approve the user: ", error);
+        })
+
+
+
+      }
+      else if (this.validNames && this.validEmail && !this.existingUser) {
         //register the user and create a profile
         this.userService.register(internalName + " " + internalSurname, internalEmail, "12345").subscribe((data: any) => {
           if (data.responseCode == 1) {
@@ -1486,7 +1743,7 @@ export class UserManagementComponent implements OnInit {
             //link them to this department and zone - approve them too
             //then open access group link list!
             this.getDepartmentID(internalSubdepartment);
-            //made directorate and departmentID null - is that okay?
+
             this.userPofileService.addUpdateUserProfiles(
               0, data.dateSet.appUserId, internalName + " " + internalSurname, internalEmail, internalPhoneNumber, true, null, null, null,
               null, null, this.theDepartmentID, internalSubdepartment, null, internalCostCenterNumber, internalCostCenterOwner, null, this.CurrentUser.appUserId, null, internalZone, null, null, null, null, null, this.theSubDepartmentName).subscribe(async (data: any) => {
@@ -1532,7 +1789,7 @@ export class UserManagementComponent implements OnInit {
         })
         //why don't we use this UserProfile entity property public bool? depConfirmation { get; set; } to auto approve???
         //the zone link table is supposed to also have the AccessGroupName and AccessGroupUserLinkID
-        
+        this.clearFormFields();
       }
       else {
         alert("There seem to be some verification issues.")
@@ -1827,6 +2084,39 @@ export class UserManagementComponent implements OnInit {
   }
 
   removeUserFromDPT(index: any) {
+
+  }
+
+  FilterBtn: boolean = false;
+  DepartFilter: boolean = false;
+  FilterValue = "";
+
+  getAllDepartments() {
+    debugger;
+    this.departmentService.getDepartmentsList().subscribe((data: any)=>{
+      if (data.responseCode == 1) {
+        debugger;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempDeptList = {} as DepartmentList;
+          const current = data.dateSet[i];
+          debugger
+          tempDeptList.departmentID = current.departmentID;
+          tempDeptList.departmentName = current.departmentName;
+          this.DepartmentList.push(tempDeptList);
+        }
+        console.log(data.responseMessage);
+      } else {
+
+        console.log(data.responseMessage);
+      }
+      console.log("These are the wayleave departments:", data);
+    }, error => {
+      // Handle errors that may occur during the zone link update.
+      console.log("Error: ", error);
+    })
+  }
+
+  onFilterButtonClick() {
 
   }
 }

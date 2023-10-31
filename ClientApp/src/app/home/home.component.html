@@ -681,19 +681,18 @@
               </div>
             </div>
             <div class="row">
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <!--Welp, the ID number wasn't there...-->
-                  <input type="text" class="form-control" [(ngModel)]="clientIDNumber" name="clientIDNumber" placeholder="Enter ID No">
-                  <label for="clientIDNumber">ID Number</label>
-                </div>
-              </div>
+              <!--<div class="col">
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" [(ngModel)]="clientIDNumber" name="clientIDNumber" placeholder="Enter ID No" >
+      <label for="clientIDNumber">ID Number</label>
+    </div>
+  </div>
               <div class="col">
                 <div class="form-floating mb-3 mt-3">
                   <input type="text" class="form-control" [(ngModel)]="clientRefNo" name="clientRefNo" placeholder="Enter Ref No">
                   <label for="clientRefNo">Reference Number</label>
                 </div>
-              </div>
+              </div>-->
             </div>
             <div class="row">
               <div class="col">
@@ -724,9 +723,18 @@
               </div>
             </div>
             <div class="row">
-              <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control" [(ngModel)]="clientPhysicalAddress" name="clientPhysicalAddress" placeholder="Select Address">
-                <label for="applicantEmail">Address</label>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="clientRefNo" name="clientRefNo" placeholder="Enter Ref No">
+                  <label for="clientRefNo">Reference Number</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="email" class="form-control" [(ngModel)]="clientPhysicalAddress" name="clientPhysicalAddress" placeholder="Select Address">
+                  <label for="applicantEmail">Address</label>
+                </div>
+
               </div>
 
 

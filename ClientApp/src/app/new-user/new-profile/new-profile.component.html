@@ -184,16 +184,16 @@
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control" [(ngModel)]="internalApplicantCostCenterNo" placeholder="Enter Cost Center Number">
-                <label for="applicantEmail">Cost Center Number *</label>
+                <input type="text" class="form-control" [(ngModel)]="internalApplicantCostCenterNo" placeholder="Enter Cost Center Number">
+                <label for="CostCenterNumber">Cost Center Number *</label>
               </div>
             </div>
           </div>
           <div class="row">
-            <div class="col">
+            <div class="col"> <!--Why is the PhoneNumberHidden?-->
               <div class="form-floating mb-3 mt-3">
-                <input type="tel" class="form-control" [(ngModel)]="internalApplicantDirectorate" placeholder="Enter Tell No." hidden>
-                <label for="applicantTellNo" hidden>Directorate *</label>
+                <input type="tel" class="form-control" [(ngModel)]="internalApplicantTellNo" placeholder="Enter Tell No." hidden>
+                <label for="applicantTellNo" hidden>Tell No *</label>
               </div>
             </div>
           </div>

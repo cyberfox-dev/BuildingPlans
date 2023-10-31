@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input, ViewChildren, QueryList, ElementRef, Renderer2 } from '@angular/core';
 import { ZoneLinkService } from 'src/app/service/ZoneLink/zone-link.service';
 
 export interface ZoneLinks {
@@ -39,9 +39,9 @@ export class ConfigActingDepartmentComponent implements OnInit {
     stringifiedDataUserProfile: any;
     CurrentUserProfile: any;
     allZoneLinks: any;
+  @ViewChildren('carouselItem') carouselItems: QueryList<ElementRef>;
 
-
-  constructor(private zoneLinkService: ZoneLinkService, private cdRef: ChangeDetectorRef,) { }
+  constructor(private zoneLinkService: ZoneLinkService, private cdRef: ChangeDetectorRef, private renderer: Renderer2) { }
 
   ngOnInit(): void {
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
@@ -99,6 +99,33 @@ export class ConfigActingDepartmentComponent implements OnInit {
     localStorage.setItem(key, JSON.stringify(data));
   }
 
+  ngAfterViewInit() {
+    this.setupCarousel();
+  }
+  items = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'];
+  currentItem: string = this.items[0];
+  setupCarousel() {
+    this.carouselItems.forEach(item => {
+      this.renderer.listen(item.nativeElement, 'click', () => {
+        this.carouselItems.forEach(element => {
+          if (element !== item) {
+            this.renderer.removeClass(element.nativeElement, 'active');
+          }
+        });
+        this.renderer.addClass(item.nativeElement, 'active');
+      });
+    });
+  }
 
+  prev(): void {
+    const currentIndex = this.items.indexOf(this.currentItem);
+    const prevIndex = (currentIndex - 1 + this.items.length) % this.items.length;
+    this.currentItem = this.items[prevIndex];
+  }
 
+  next(): void {
+    const currentIndex = this.items.indexOf(this.currentItem);
+    const nextIndex = (currentIndex + 1) % this.items.length;
+    this.currentItem = this.items[nextIndex];
+  }
 }

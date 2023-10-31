@@ -523,6 +523,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.getAllStages();
       this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
       this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
+
+
       this.UpdateProjectNumberConfig();
       this.getAllApplicationsByUserID();
       /* this.select = "option3";*/
@@ -1977,8 +1979,8 @@ this.Applications.push(tempApplicationList);
     this.applicationDataForView = [];
     this.Applications = [];
     let number = 21;
-
-    this.applicationService.getApplicationsForReviewer(21, this.CurrentUser.appUserId).subscribe((data: any) => {
+    debugger;
+    this.applicationService.getApplicationsForReviewer(this.CurrentUserProfile[0].zoneID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
 
       if (data.responseCode == 1) {
@@ -4133,6 +4135,62 @@ this.Applications.push(tempApplicationList);
         return false; // Return false in case of an error
       });
   }
+  //PROPERLY VALIDATING THE ID NUMBER!
+  isValidSouthAfricanIDNumber(idNumber: string): boolean {
+    if (idNumber.length !== 13) {
+      //alert("The ID number must be 13 digits.");
+      alert("Enter a valid ID number.");
+      return false;
+  }
+
+  // Check if it's a valid date
+  const birthDate = idNumber.substr(0, 6);
+  const year = parseInt(birthDate.substr(0, 2), 10);
+  const month = parseInt(birthDate.substr(2, 2), 10);
+  const day = parseInt(birthDate.substr(4, 2), 10);
+
+  const fullYear = year < 20 ? 2000 + year : 1900 + year;
+
+    if (month < 1 || month > 12 || day < 1 || day > 31 || !this.isDateValid(fullYear, month, day)) {
+      alert("Enter a valid ID number.");
+      return false;
+  }
+
+    // Check if the 11th digit is 0 or 1
+    const digit11 = parseInt(idNumber[10], 10);
+    if (digit11 !== 0 && digit11 !== 1) {
+      alert("Enter a valid ID number.");
+      return false;
+    }
+
+  // Check the last digit (checksum)
+  const checksum = parseInt(idNumber[12], 10);
+  const checksumCalculated = this.calculateChecksum(idNumber);
+
+  return checksum === checksumCalculated;
+  }
+  calculateChecksum(idNumber: string): number {
+    const idArray = idNumber.split('').map((digit) => parseInt(digit, 10));
+    const weights = [1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2];
+    let sum = 0;
+
+    for (let i = 0; i < 12; i++) {
+      const product = idArray[i] * weights[i];
+      sum += product >= 10 ? Math.floor(product / 10) + (product % 10) : product;
+    }
+
+    const checksumCalculated = (10 - (sum % 10)) % 10;
+    return checksumCalculated;
+  }
+
+  isDateValid(year: number, month: number, day: number): boolean {
+    const date = new Date(year, month - 1, day);
+    return (
+      date.getFullYear() === year &&
+      date.getMonth() + 1 === month &&
+      date.getDate() === day
+    );
+  }
   async validateClientInfo(stepper: MatStepper) {
    
     let clientEmail = this.clientEmail;
@@ -4144,7 +4202,7 @@ this.Applications.push(tempApplicationList);
     let clientCompanyType = this.clientCompanyType;
     let physicalAddress = this.clientPhysicalAddress;
 
-    let clientIDNumber = this.clientIDNumber;
+    let clientIDNumber = this.clientIDNumber; //hide
 
     const nameRegex = /^[a-zA-Z]+$/;
 
@@ -4163,12 +4221,13 @@ this.Applications.push(tempApplicationList);
       alert("Invalid name. Please enter a single name with letters only.");
     }
 
-    if (clientIDNumber.length === 13) {
+    /*if (clientIDNumber.length === 13) {
       this.validID = true;
     } else {
       alert("The ID number must be 13 digits.")
       this.validID = false;
-    }
+    }*/
+    //this.validID = this.isValidSouthAfricanIDNumber(clientIDNumber);
 
     const emailRegex: RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -4213,23 +4272,23 @@ this.Applications.push(tempApplicationList);
     console.log("Email is okay?" + this.validEmail);
     console.log("User has a valid BP Num " + this.externalWValidBP);
 
-    //What other validation must be done here?
+    //What other validation must be done here? | || clientIDNumber === undefined || clientIDNumber.trim() === ''
     if (
       phoneNumber === undefined || phoneNumber.trim() === '' ||
       clientRefNo === undefined || clientRefNo.trim() === '' ||
       companyName === undefined || companyName.trim() === '' ||
       companyRegNo === undefined || companyRegNo.trim() === '' ||
       clientCompanyType === undefined || clientCompanyType.trim() === '' ||
-      physicalAddress === undefined || physicalAddress.trim() === '' ||
-      clientIDNumber === undefined || clientIDNumber.trim() === ''
+      physicalAddress === undefined || physicalAddress.trim() === '' 
     ) {
       this.noEmptyFields = false;
       alert("Please fill out all the required fields.");
     } else {
       this.noEmptyFields = true;
     }
-    //(this.noEmptyFields == true && this.validFullName == true && this.validEmail == true && this.externalWValidBP == true && this.validID == true)
-    if (this.noEmptyFields == true && this.validFullName == true && this.validEmail == true && this.validID == true) {
+    //&& this.validID == true
+    if(this.noEmptyFields == true && this.validFullName == true && this.validEmail == true && this.externalWValidBP == true){
+    //if (this.noEmptyFields == true && this.validFullName == true && this.validEmail == true && this.validID == true) {
       this.sharedService.errorForRegister = false;
       this.createNewClient(stepper);
     }
@@ -4254,7 +4313,7 @@ this.Applications.push(tempApplicationList);
             this.clientCompanyRegNo,
             this.clientPhysicalAddress,
             null,
-            this.clientIDNumber,
+            /*this.clientIDNumber*/ null,
             this.clientRefNo,
             this.clientCompanyType,
           )

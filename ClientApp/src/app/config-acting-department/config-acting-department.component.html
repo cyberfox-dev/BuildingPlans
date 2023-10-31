@@ -1,25 +1,32 @@
-<h1>You May Change Your Acting Department And Zone</h1>
-<mat-form-field>
+<h2>You May Change Your Acting Department And Zone</h2>
+<!--<mat-form-field>
   <mat-label>Select A Department</mat-label>
   <mat-select [(ngModel)]="selectedDep" (change)="updateZoneList()">
     <mat-option *ngFor="let department of SubDepartmentList" [value]="department.subDepartmentId">
       {{ department.subDepartmentName }}
     </mat-option>
   </mat-select>
-</mat-form-field>
-
-<mat-form-field>
-  <mat-label>Select A Zone</mat-label>
-  <mat-select [(ngModel)]="selectedZone">
-    <mat-option *ngFor="let zone of ZoneList" [value]="zone.zoneId">
-      {{ zone.zoneName }}
-    </mat-option>
-  </mat-select>
 </mat-form-field>-->
 
+
+
+
+<section class="game-section">
+  <div *ngFor="let item of items" class="carousel-item" [ngClass]="{ 'active': item === currentItem }">
+    <div class="item active" #carouselItem>
+      <div class="item-desc">
+        <h3>Dota 2</h3>
+        <p>
+         {{item}}
+        </p>
+      </div>
+    </div>
+  </div>
+
+</section>
+<button (click)="prev()">Previous</button>
+<button (click)="next()">Next</button>
 <mat-dialog-actions align="end">
   <button mat-button (click)="cancel()">Cancel</button>
   <button mat-button cdkFocusInitial (click)="continue()">Continue</button>
 </mat-dialog-actions>
-
-

@@ -1318,7 +1318,7 @@ export class NewWayleaveComponent implements OnInit {
       let NextStageNameIn = "";
 
       for (var i = 0; i < this.StagesList.length; i++) {
-        ;
+        
         if (this.StagesList[i].StageOrderNumber == 1) {
           previousStageName = this.StagesList[i - 1].StageName
           CurrentStageName = this.StagesList[i].StageName;

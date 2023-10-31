@@ -24,7 +24,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string? userID, string? fullName, string? email, string? phoneNumber, bool? isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string? createdById, string? IdNumber, int? zoneID, string? vatNumber, string? refNumber, string? companyType, string? subDepartmentName, bool? isDepartmentAdmin, bool? isZoneAdmin)
+        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string? userID, string? fullName, string? email, string? phoneNumber, bool? isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string? createdById, string? IdNumber, int? zoneID, string? vatNumber, string? refNumber, string? companyType, string? subDepartmentName, bool? isDepartmentAdmin, bool? isZoneAdmin, string? alternateEmail, string? alternateNumber)
         {
             if (userProfileID == 0)
             {
@@ -67,7 +67,8 @@ namespace WayleaveManagementSystem.Service
                     refNumber = refNumber,
                     companyType = companyType,
                     SubDepartmentName = subDepartmentName,
-
+                    AlternativeEmail = alternateEmail,
+                    AlternativePhoneNumber = alternateNumber
 
                 };
 
@@ -179,6 +180,14 @@ namespace WayleaveManagementSystem.Service
                 if (isZoneAdmin != null)
                 {
                     tempUserProfile.isZoneAdmin = isZoneAdmin;
+                }
+                if (alternateEmail != null)
+                {
+                    tempUserProfile.AlternativeEmail = alternateEmail;
+                }  
+                if (alternateNumber != null)
+                {
+                    tempUserProfile.AlternativePhoneNumber = alternateNumber;
                 }
 
                 //tempUserProfile.DateCreated = DateTime.Now;
@@ -548,10 +557,54 @@ namespace WayleaveManagementSystem.Service
                                         isZoneAdmin = newtableItem.isZoneAdmin,
                                         isDepartmentAdmin = newtableItem.isDepartmentAdmin,
                                         zoneID = newtableItem.zoneID,
+
+                                        AlternativeEmail = newtableItem.AlternativeEmail,
+                                        AlternativePhoneNumber = newtableItem.AlternativePhoneNumber,
                                     }
                 ).ToListAsync();
         }
 
+        public async Task<object> GetUserByEmail(string email)
+        {
+            return await (
+               from UserProfile in _context.UserProfilesTable
+               where UserProfile.isActive == true && UserProfile.depConfirmation == true && UserProfile.Email == email
+               select new UserProfileDTO()
+               {
+                   UserProfileID = UserProfile.UserProfileID,
+                   UserID = UserProfile.UserID,
+                   FullName = UserProfile.FullName,
+                   Email = UserProfile.Email,
+                   PhoneNumber = UserProfile.PhoneNumber,
+                   isInternal = UserProfile.isInternal,
+                   BP_Number = UserProfile.BP_Number,
+                   CompanyName = UserProfile.CompanyName,
+                   CompanyRegNo = UserProfile.CompanyRegNo,
+                   PhyscialAddress = UserProfile.PhyscialAddress,
+                   Directorate = UserProfile.Directorate,
+                   DepartmentID = UserProfile.DepartmentID,
+                   SubDepartmentID = UserProfile.SubDepartmentID,
+                   Branch = UserProfile.Branch,
+                   CostCenterNumber = UserProfile.CostCenterNumber,
+                   CostCenterOwner = UserProfile.CostCenterOwner,
+                   CopyOfID = UserProfile.CopyOfID,
+                   DateCreated = UserProfile.DateCreated,
+                   DateUpdated = UserProfile.DateUpdated,
+                   CreatedById = UserProfile.CreatedById,
+                   isDepartmentAdmin = UserProfile.isDepartmentAdmin,
+                   VatNumber = UserProfile.VatNumber,
+                   IdNumber = UserProfile.IdNumber,
+                   depConfirmation = UserProfile.depConfirmation,
+                   zoneID = UserProfile.zoneID,
+
+                   SubDepartmentName = UserProfile.SubDepartmentName,
+
+                   AlternativeEmail = UserProfile.AlternativeEmail,
+                   AlternativePhoneNumber = UserProfile.AlternativePhoneNumber,
+               }
+
+               ).ToListAsync();
+        }
     }
 
 }
