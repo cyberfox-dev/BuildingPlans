@@ -1011,7 +1011,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
-          let dbMonth = current.utilitySlot2.substring(0, 3);
+          let dbMonth = current.utilitySlot2.substring(0, 2);
           if (dbMonth < 10) {
             this.previousMonth = dbMonth.substring(1, 2);
           } else {
@@ -1019,26 +1019,49 @@ export class HomeComponent implements OnInit, OnDestroy {
           }
           debugger;
           if (currentMonth !== Number(this.previousMonth)) {  //this.previousMonth  currentMonth
+            if (currentMonth < 10) {
+              this.configService.addUpdateConfig(current.configID, null, null, current.utilitySlot1, "0" + currentMonth + changeUtility, null, this.CurrentUser.appUserId).subscribe((data: any) => {
+                if (data.responseCode == 1) {
+                  //for (let i = 0; i < data.dateSet.length; i++) {
+                  //  const current = data.dateSet[i];
 
-            this.configService.addUpdateConfig(current.configID, null, null, "0", "0" + currentMonth + changeUtility, null, this.CurrentUser.appUserId).subscribe((data: any) => {
-              if (data.responseCode == 1) {
-                //for (let i = 0; i < data.dateSet.length; i++) {
-                //  const current = data.dateSet[i];
+
+
+                  //}
+
+                }
+                else {
+                  //alert("Invalid Email or Password");
+                  alert(data.responseMessage);
+                }
+                console.log("addUpdateConfigReponse", data);
+
+              }, error => {
+                console.log("addUpdateConfigError: ", error);
+              })
+            }
+            else {
+              this.configService.addUpdateConfig(current.configID, null, null, current.utilitySlot1, currentMonth + changeUtility, null, this.CurrentUser.appUserId).subscribe((data: any) => {
+                if (data.responseCode == 1) {
+                  //for (let i = 0; i < data.dateSet.length; i++) {
+                  //  const current = data.dateSet[i];
 
 
 
-                //}
+                  //}
 
-              }
-              else {
-                //alert("Invalid Email or Password");
-                alert(data.responseMessage);
-              }
-              console.log("addUpdateConfigReponse", data);
+                }
+                else {
+                  //alert("Invalid Email or Password");
+                  alert(data.responseMessage);
+                }
+                console.log("addUpdateConfigReponse", data);
 
-            }, error => {
-              console.log("addUpdateConfigError: ", error);
-            })
+              }, error => {
+                console.log("addUpdateConfigError: ", error);
+              })
+            }
+          
           }
         }
 
