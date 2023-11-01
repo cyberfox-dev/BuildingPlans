@@ -426,7 +426,7 @@ namespace WayleaveManagementSystem.Controllers
             {
                 var result = await (
           from UserProfile in _context.UserProfilesTable
-          where UserProfile.UserID == model.UserID && UserProfile.isDefault == true && UserProfile.isActive == true
+          where UserProfile.UserID == model.UserID && UserProfile.isDefault == true && UserProfile.isActive == true || UserProfile.UserID == model.UserID && UserProfile.isDefault == null && UserProfile.isActive == true
           select new UserProfileDTO()
           {
               UserProfileID = UserProfile.UserProfileID,
