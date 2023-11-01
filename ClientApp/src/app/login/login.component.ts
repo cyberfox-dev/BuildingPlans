@@ -285,6 +285,8 @@ export class LoginComponent implements OnInit {
 
   getUserProfile(): Observable<any> {
     const currentUser = JSON.parse(localStorage.getItem("LoggedInUserInfo"));
+
+
     return this.userPofileService.getDefaltUserProfile(currentUser.appUserId);
   }
   getUserProfileOld(): Observable<any> {
