@@ -1137,6 +1137,27 @@ export class ActionCenterComponent implements OnInit {
           this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Final Approved", null, null, "EndOfCommentProcess", true).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Final Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
+
+                if (data.responseCode == 1) {
+
+
+                  alert(data.responseMessage);
+
+                  this.router.navigate(["/home"]);
+                  this.viewProjectInfoComponent.getAllComments();
+                  this.CheckALLLinkedDepartmentsCommented(false);
+
+                }
+                else {
+                  alert(data.responseMessage);
+
+                }
+                console.log("reponse", data);
+
+              }, error => {
+                console.log("Error: ", error);
+              })
               this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have approved application " + this.projectNo + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
               this.notificationsService.addUpdateNotification(0, "Application approved", "You have approved an application", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have approved application " + this.projectNo).subscribe((data: any) => {
 
@@ -1156,27 +1177,7 @@ export class ActionCenterComponent implements OnInit {
 
               alert(data.responseMessage);
               //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Final Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
-
-                if (data.responseCode == 1) {
-                 
-
-                  alert(data.responseMessage);
-              
-                  this.router.navigate(["/home"]);
-                  this.viewProjectInfoComponent.getAllComments();
-                  this.CheckALLLinkedDepartmentsCommented(false);
-
-                }
-                else {
-                  alert(data.responseMessage);
-
-                }
-                console.log("reponse", data);
-
-              }, error => {
-                console.log("Error: ", error);
-              })
+            
             }
             else {
               alert(data.responseMessage);
@@ -1244,62 +1245,79 @@ export class ActionCenterComponent implements OnInit {
 
 
   getReviewerForLink() {
-   
+    debugger;
     this.ReviewerUserList.splice(0, this.ReviewerUserList.length);
    // this.ReviewerUserList = []; // Initialize the new list
-   
+    debugger;
     for (var i = 0; i < this.reviewerUsers.length; i++) {
      
       var reviewer = this.reviewerUsers[i];
      
-      for (var j = 0; j < this.UserZoneList.length; j++) {
-        var userZone = this.UserZoneList[j];
+      //for (var j = 0; j < this.UserZoneList.length; j++) {
+      //  var userZone = this.UserZoneList[j];
        
-        if (reviewer.userID === userZone.id) {
+      //  if (reviewer.userID === userZone.id) {
          
-          this.ReviewerUserList.push(userZone); // Save the matching userZone in the new list
-          console.log("THIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINK", userZone)
-        }
-      }
+      //    this.ReviewerUserList.push(userZone); // Save the matching userZone in the new list
+      //    console.log("THIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINK", userZone)
+      //  }
+      //}
+
+      const tempreviewer = {} as UserZoneList;
+      debugger;
+
+      tempreviewer.Email = reviewer.email;
+      tempreviewer.fullName = reviewer.fullName;
+      tempreviewer.id = reviewer.userID;
+      tempreviewer.zoneLinkID = reviewer.subDepartmentID;
+     
+
+      this.ReviewerUserList.push(tempreviewer);
     }
   }
 
-
-  
   setRoles() {
 
-   
+
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-       
+
         for (var i = 0; i < data.dateSet.length; i++) {
-         
+
           let current = data.dateSet[i];
           if (this.loggedInUsersIsAdmin == true) {
-           
+
             this.AssignProjectToZone = true;
-           
+
           }
-          if (this.loggedInUsersIsZoneAdmin == true) {
-           
-            for (var j = 0; j < this.UserZoneList.length; j++) {
-             
-              if (this.UserZoneList[j].id == this.CurrentUser.appUserId) {
-               
-                this.AssignUserForComment = true;
-                if (this.ACHeader == "You can comment" || this.canCommentFinalApprover === true) {
 
-                } else {
-                  this.ACHeader = "Assign to Reviewer for comment";
-                }
-              
-                this.getUsersByRoleName("Reviewer");
+          for (var i = 0; i < this.CurrentUserProfile.length; i++) {
+            debugger;
+            if (this.loggedInUsersIsZoneAdmin == true && current.subDepartmentID == this.CurrentUserProfile[i].subDepartmentID && current.zoneID == this.CurrentUserProfile[i].zoneID && this.CurrentUserProfile[i].isDefault == true) {
+              debugger;
+              //for (var j = 0; j < this.UserZoneList.length; j++) {
 
-                break; // Exit the loop once a match is found
-              }
+              //  if (this.UserZoneList[j].id == this.CurrentUser.appUserId) {
+
+              //    this.AssignUserForComment = true;
+              //    if (this.ACHeader == "You can comment" || this.canCommentFinalApprover === true) {
+
+              //    } else {
+              //      this.ACHeader = "Assign to Reviewer for comment";
+              //    }
+
+              //    this.getUsersByRoleName("Reviewer");
+
+              //    break; // Exit the loop once a match is found
+              //  }
+              //}
+
+              this.AssignUserForComment = true;
+              this.getUsersByRoleName("Reviewer");
             }
           }
+        
 
           if (this.loggedInUsersSubDepartmentID == this.ReticulationID) {
 
@@ -1319,8 +1337,64 @@ export class ActionCenterComponent implements OnInit {
       console.log("Error: ", error);
     })
 
-  
+
   }
+  
+  //setRoles() {
+
+   
+  //  this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+  //    if (data.responseCode == 1) {
+       
+  //      for (var i = 0; i < data.dateSet.length; i++) {
+         
+  //        let current = data.dateSet[i];
+  //        if (this.loggedInUsersIsAdmin == true) {
+           
+  //          this.AssignProjectToZone = true;
+           
+  //        }
+  //        if (this.loggedInUsersIsZoneAdmin == true) {
+           
+  //          for (var j = 0; j < this.UserZoneList.length; j++) {
+             
+  //            if (this.UserZoneList[j].id == this.CurrentUser.appUserId) {
+               
+  //              this.AssignUserForComment = true;
+  //              if (this.ACHeader == "You can comment" || this.canCommentFinalApprover === true) {
+
+  //              } else {
+  //                this.ACHeader = "Assign to Reviewer for comment";
+  //              }
+              
+  //              this.getUsersByRoleName("Reviewer");
+
+  //              break; // Exit the loop once a match is found
+  //            }
+  //          }
+  //        }
+
+  //        if (this.loggedInUsersSubDepartmentID == this.ReticulationID) {
+
+  //          this.CanAssignDepartment = true;
+  //        } else {
+
+  //          this.CanAssignDepartment = false;
+  //        }
+  //      }
+  //    }
+  //    else {
+  //      alert(data.responseMessage);
+
+  //    }
+  //    console.log("reponse", data);
+  //  }, error => {
+  //    console.log("Error: ", error);
+  //  })
+
+  
+  //}
   OldsetRoles() {
   
    
@@ -2009,7 +2083,7 @@ export class ActionCenterComponent implements OnInit {
       })
     }
     else if (roleName == "Reviewer") {
-      this.accessGroupsService.getUserBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+      this.accessGroupsService.getUsersBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID,this.CurrentUserProfile[0].zoneID).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           
