@@ -3738,6 +3738,7 @@ export class NewWayleaveComponent implements OnInit {
     const tempList = this.shared.distributionList;
 
     tempList.forEach((obj) => {
+      debugger;
       this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.applicationID, obj.subDepartmentID, obj.subDepartmentName, obj.userID, null, "ESRI API", obj.zoneID, obj.zoneName).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
