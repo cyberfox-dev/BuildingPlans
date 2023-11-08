@@ -10,7 +10,7 @@ i.fa.fa-cog {
 }
 
 h2 {
-  margin-bottom: 48px;
+  margin-bottom: 12px;
   padding-bottom: 16px;
   font-size: 20px;
   line-height: 28px;
@@ -20,7 +20,75 @@ h2 {
 }
 
 h3 {
-  margin: 0 0 10px;
+  margin: 44px 0 -29px;
+  font-size: 28px;
+  line-height: 36px;
+}
+
+button {
+  outline: none !important;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  outline: none;
+  transition: all 0.4s ease-in-out;
+  -webkit-transition: all 0.4s ease-in-out;
+}
+
+  a:focus,
+  a:active,
+  a:visited,
+  a:hover {
+    text-decoration: none;
+    outline: none;
+  }
+
+  a:hover {
+    color: #e73700;
+  }
+
+.carousel-container {
+  position: relative;
+  width: 80%; /* Adjust width as needed */
+  margin: 0 auto;
+}
+
+.carousel {
+  display: flex;
+  overflow: hidden;
+}
+
+.carousel-item {
+  flex: 0 0 auto;
+  width: 100%; /* Adjust width as needed */
+  display: none;
+}
+
+  .carousel-item.active {
+    display: block;
+  }
+
+
+
+h2 {
+  margin-bottom: 12px;
+  padding-bottom: 16px;
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 700;
+  position: relative;
+  text-transform: capitalize;
+}
+
+h3 {
+  margin: 44px 0 -29px;
   font-size: 28px;
   line-height: 36px;
 }
@@ -33,7 +101,6 @@ button {
 /* -------- title style ------- */
 .line-title {
   position: relative;
-  width: 400px;
 }
 
   .line-title::before,
@@ -52,14 +119,13 @@ button {
   }
 
   .line-title::after {
-    width: 32px;
-    background: #e73700;
+    width: 100%;
+    background: #005870;
   }
 
 /******* Middle section CSS Start ******/
 /* -------- Landing page ------- */
 .game-section {
-  padding: 60px 50px;
 }
 
   .game-section .owl-stage {
@@ -70,13 +136,13 @@ button {
 
   .game-section .item {
     margin: 0 15px 60px;
+    border: 1px solid #dfdfdf;
     width: 320px;
-    height: 400px;
+    height: 285px;
     display: flex;
     display: -webkit-flex;
     align-items: flex-end;
     -webkit-align-items: flex-end;
-    background: #343434 no-repeat center center / cover;
     border-radius: 16px;
     overflow: hidden;
     position: relative;
@@ -88,7 +154,7 @@ button {
     .game-section .item.active {
       width: 500px;
       box-shadow: 12px 40px 40px rgba(0, 0, 0, 0.25);
-      -webkit-box-shadow: 12px 40px 40px rgba(0, 0, 0, 0.25);
+      -webkit-box-shadow: 20px 16px 40px rgba(0, 0, 0, 0.25);
     }
 
     .game-section .item:after {
@@ -99,12 +165,11 @@ button {
       width: 100%;
       left: 0;
       top: 0;
-      background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
     }
 
   .game-section .item-desc {
     padding: 0 24px 12px;
-    color: #fff;
+    color: #005870;
     position: relative;
     z-index: 1;
     overflow: hidden;
@@ -119,7 +184,7 @@ button {
     -webkit-transform: none;
   }
 
-  .game-section .item-desc p {
+  .game-section .item-desc p .icon2 {
     opacity: 0;
     -webkit-transform: translateY(32px);
     transform: translateY(32px);
@@ -127,7 +192,7 @@ button {
     -webkit-transition: all 0.4s ease-in-out 0.2s;
   }
 
-  .game-section .item.active .item-desc p {
+  .game-section .item.active .item-desc p .icon2 {
     opacity: 1;
     -webkit-transform: translateY(0);
     transform: translateY(0);
@@ -148,14 +213,13 @@ button {
   }
 
   h3 {
-    margin: 0 0 8px;
-    font-size: 24px;
-    line-height: 32px;
+    margin: 44px 0 -29px;
+    font-size: 28px;
+    line-height: 36px;
   }
 
   /* -------- Landing page ------- */
   .game-section {
-    padding: 50px 30px;
   }
 
     .game-section .item {
@@ -180,18 +244,16 @@ button {
   }
 
   h3 {
-    margin: 0 0 8px;
-    font-size: 24px;
-    line-height: 32px;
+    margin: 44px 0 -29px;
+    font-size: 28px;
+    line-height: 36px;
   }
 
   .line-title {
-    width: 330px;
   }
 
   /* -------- Landing page ------- */
   .game-section {
-    padding: 50px 30px 40px;
   }
 
     .game-section .item {
@@ -220,18 +282,16 @@ button {
   }
 
   h3 {
-    margin: 0 0 8px;
-    font-size: 19px;
-    line-height: 24px;
+    margin: 44px 0 -29px;
+    font-size: 28px;
+    line-height: 36px;
   }
 
   .line-title {
-    width: 250px;
   }
 
   /* -------- Landing page ------- */
   .game-section {
-    padding: 30px 15px 20px;
   }
 
     .game-section .item {
@@ -253,47 +313,43 @@ button {
     }
 }
 
-ul,
-ol {
-  list-style: none;
+.actingDepFlexContainer {
+  width: 100%; /* Set the width of the container */
+  overflow-x: auto; /* Enable horizontal scrolling */
+  white-space: nowrap; /* Ensure items stay in a single line */
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
-  outline: none;
-  transition: all 0.4s ease-in-out;
-  -webkit-transition: all 0.4s ease-in-out;
+.item-card {
+  display: inline-block; /* Display items in a line */
+  margin: 0 10px; /* Add some spacing between items */
 }
 
-  a:focus,
-  a:active,
-  a:visited,
-  a:hover {
-    text-decoration: none;
-    outline: none;
-  }
-
-  a:hover {
-    color: #e73700;
-  }
-.carousel-container {
-  position: relative;
-  width: 80%; /* Adjust width as needed */
-  margin: 0 auto;
+.item {
+  /* Style for individual item cards */
+  /* Add your desired styles here */
 }
 
-.carousel {
+.backgroundWLMS2 {
+  width: 100%;
+  height: 269px;
+  position: absolute;
+  top: -82px;
+  z-index: 1;
+}
+
+.actingDepFlexContainer2 {
   display: flex;
-  overflow: hidden;
 }
-
-.carousel-item {
-  flex: 0 0 auto;
-  width: 100%; /* Adjust width as needed */
-  display: none;
+.mat-activate {
+  margin-left: 80px;
+  margin-top: 98px;
 }
+.default{
 
-  .carousel-item.active {
-    display: block;
-  }
+}
+.active{
+
+}
+.shapes{
+    display:flex;
+}

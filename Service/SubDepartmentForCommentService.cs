@@ -203,11 +203,11 @@ namespace WayleaveManagementSystem.Service
             if (userID != null)
             {
                 // Step 1: Get the list of ZoneIDs associated with the user
-                var zoneIds = await _context.ZoneLinkTable
+                var zoneIds = await _context.UserProfilesTable
                                       .Where(z => z.SubDepartmentID == subDepartmentID
-                                                  && z.AssignedUserID == userID
+                                                  && z.UserID == userID
                                                   && z.isActive)
-                                      .Select(z => z.ZoneID)
+                                      .Select(z => z.zoneID)
                                       .ToListAsync();
 
                 // Step 2: Use the retrieved ZoneIDs in the SubDepartmentForComment query

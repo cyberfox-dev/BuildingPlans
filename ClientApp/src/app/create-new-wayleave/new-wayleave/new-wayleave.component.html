@@ -508,8 +508,8 @@
           Create Application
         </button>
         <!--  <img src="assets/Loading.png" *ngIf="successfulUploads >0 && successfulUploads < totalDocs" class="logo2">-->
-        <p *ngIf="successfulUploads >0 && successfulUploads < totalDocs">Uploading Documents. You may continue to upload remaining documents if needed.</p>
-        <p>{{successfulUploads}}</p>
+        <p *ngIf="successfulUploads > 0 && successfulUploads < totalDocs">Uploading Documents. You may continue to upload remaining documents if needed.</p>
+        <p *ngIf="successfulUploads < totalDocs">Successful Uploads: {{successfulUploads}} of {{totalDocs}}</p>
 
 
       </div>
