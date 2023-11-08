@@ -3735,6 +3735,7 @@ export class NewWayleaveComponent implements OnInit {
 
   //This function is defunct because the subdepartment table is used for assigning users. Even subepartments without subzones, have at least 1 zone, usually representing the entire city.
   public addToSubDepartmentForComment() {
+    debugger;
     const tempList = this.shared.distributionList;
 
     tempList.forEach((obj) => {
@@ -3780,6 +3781,7 @@ export class NewWayleaveComponent implements OnInit {
     console.log("uniqueArray:", uniqueArray);
 
     uniqueArray.forEach((obj) => {
+      debugger;
       this.zoneForCommentService.addUpdateZoneForComment(0, obj.subDepartmentID, this.applicationID, obj.zoneID, obj.zoneName, obj.userID).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
