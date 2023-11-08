@@ -766,12 +766,8 @@ namespace WayleaveManagementSystem.Controllers
                     from agulItem in agul.DefaultIfEmpty()
                     join userProfiles in _context.UserProfilesTable on agulItem.UserID equals userProfiles.UserID into up
                     from upItem in up.DefaultIfEmpty()
-                    join zoneLinkTable in _context.ZoneLinkTable on upItem.UserID equals zoneLinkTable.AssignedUserID into zlt
-                    from zltItem in zlt.DefaultIfEmpty()
-                    join zonesTable in _context.ZonesTable on zltItem.ZoneID equals zonesTable.ZoneID into zt
+                    join zonesTable in _context.ZonesTable on upItem.zoneID equals zonesTable.ZoneID into zt
                     from ztItem in zt.DefaultIfEmpty()
-                    join subDepartmentTable in _context.SubDepartmentsTable on ztItem.SubDepartmentID equals subDepartmentTable.SubDepartmentID into sdt
-                    from sdtItem in sdt.DefaultIfEmpty()
                     where accessGroups.AccessGroupName == model.AccessGroupName && upItem.SubDepartmentID == model.SubDepartmentID
                     select new UserProfileDTO()
                     {
@@ -780,12 +776,40 @@ namespace WayleaveManagementSystem.Controllers
                         Email = upItem.Email,
                         PhoneNumber = upItem.PhoneNumber,
                         Directorate = upItem.Directorate,
-                        zoneName = ztItem.ZoneName,
+                        zoneName = upItem.zoneName,
                         MapObjectID = ztItem.MapObjectID,
-                        SubDepartmentID = ztItem.SubDepartmentID,
-                        zoneID = ztItem.ZoneID,
-                        SubDepartmentName = sdtItem.SubDepartmentName,
-                        // SubDepartmentID = upItem.SubDepartmentID,
+                        SubDepartmentID = upItem.SubDepartmentID,
+                        zoneID = upItem.zoneID,
+                        SubDepartmentName = upItem.SubDepartmentName,
+                        AlternativeEmail = upItem.AlternativeEmail,
+                        AlternativePhoneNumber = upItem.AlternativePhoneNumber,
+                        Branch = upItem.Branch,
+                        CompanyName = upItem.CompanyName,
+                        CompanyRegNo = upItem.CompanyRegNo,
+                        companyType = upItem.companyType,
+                        BP_Number = upItem.BP_Number,
+                        CostCenterNumber = upItem.CostCenterNumber,
+                        CopyOfID = upItem.CopyOfID,
+                        CostCenterOwner = upItem.CostCenterOwner,
+                        CreatedById = upItem.CreatedById,
+                        DateCreated = upItem.DateCreated,
+                        DateUpdated = upItem.DateUpdated,
+                        DepartmentID = upItem.DepartmentID,
+                        DepartmentName = upItem.DepartmentName,
+                        depConfirmation =   upItem.depConfirmation,
+                        ICASALicense = upItem.ICASALicense,
+                        IdNumber = upItem.IdNumber,
+                        isDefault = upItem.isDefault,
+                        isDepartmentAdmin = upItem.isDepartmentAdmin,
+                        isInternal = upItem.isInternal,
+                        isZoneAdmin = upItem.isZoneAdmin,
+                        Name = upItem.Name,
+                        PhyscialAddress = upItem.PhyscialAddress,
+                        refNumber = upItem.refNumber,
+                        Surname = upItem.Surname,
+                        UserProfileID = upItem.UserProfileID,
+                        VatNumber = upItem.VatNumber,
+
                     }
                 ).ToListAsync();
 

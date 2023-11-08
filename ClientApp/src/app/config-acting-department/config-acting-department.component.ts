@@ -1,5 +1,6 @@
-import { Component, OnInit, ChangeDetectorRef, Input, ViewChildren, QueryList, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input, ViewChildren, QueryList, ElementRef, Renderer2, ViewChild } from '@angular/core';
 import { ZoneLinkService } from 'src/app/service/ZoneLink/zone-link.service';
+import { UserProfileService } from '../service/UserProfile/user-profile.service';
 
 export interface ZoneLinks {
   zoneLinkId?: number;
@@ -16,7 +17,23 @@ export interface ZoneLinks {
   accessGroupName?: string;
   accessGroupUserLinkId?: number;
 }
-
+export interface UserList {
+  UserID?: number;
+  UserName?: string;
+  zoneName?: string;
+  departmentId?: number;
+  departmentName?: string;
+  subDepartmentId?: number;
+  subDepartmentName?: string;
+  assignedUserId?: string;
+  userType?: string;
+  isDepartmentAdmin?: boolean;
+  isZoneAdmin?: boolean;
+  isDefault?: boolean;
+  accessGroupName?: string;
+  accessGroupUserLinkId?: number;
+  isActive: boolean;
+}
 
 
 @Component({
@@ -29,8 +46,9 @@ export interface ZoneLinks {
 
 export class ConfigActingDepartmentComponent implements OnInit {
   @Input() isInternal: any;
-
+  items: any[];
   ZoneLinks: ZoneLinks[] = []; // Adapt to your type
+  UserList: UserList[] = []; // Adapt to your type
   SubDepartmentList: { subDepartmentId: number, subDepartmentName: string }[] = [];
   ZoneList: { zoneId: number, zoneName: string }[] = [];
 
@@ -39,16 +57,19 @@ export class ConfigActingDepartmentComponent implements OnInit {
     stringifiedDataUserProfile: any;
     CurrentUserProfile: any;
     allZoneLinks: any;
-  @ViewChildren('carouselItem') carouselItems: QueryList<ElementRef>;
+  @ViewChild('customCarousel') customCarousel!: ElementRef;
 
-  constructor(private zoneLinkService: ZoneLinkService, private cdRef: ChangeDetectorRef, private renderer: Renderer2) { }
+  constructor(private zoneLinkService: ZoneLinkService, private cdRef: ChangeDetectorRef, private renderer: Renderer2, private userPofileService: UserProfileService) { }
 
   ngOnInit(): void {
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
-    this.getAllUserLinks(this.CurrentUserProfile[0].userID);
-  }
 
+    this.getUserProfileByUserID();
+
+    this.getAllUserLinks(this.CurrentUserProfile[0].userID);
+
+  }
   cancel(): void {
     // Implement your cancel logic here.
     console.log('Cancel button clicked');
@@ -100,23 +121,19 @@ export class ConfigActingDepartmentComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.setupCarousel();
-  }
-  items = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'];
-  currentItem: string = this.items[0];
-  setupCarousel() {
-    this.carouselItems.forEach(item => {
-      this.renderer.listen(item.nativeElement, 'click', () => {
-        this.carouselItems.forEach(element => {
-          if (element !== item) {
-            this.renderer.removeClass(element.nativeElement, 'active');
-          }
-        });
-        this.renderer.addClass(item.nativeElement, 'active');
-      });
-    });
-  }
 
+  }
+/*  items = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'];
+  currentItem: string = this.items[0];*/
+  toggleActive(item: UserList): void {
+    this.UserList.forEach(user => {
+      if (user !== item) {
+        user.isActive = false; // Deactivate other items
+      }
+    });
+    item.isActive = !item.isActive; // Toggle the active state
+  }
+   currentItem: any;
   prev(): void {
     const currentIndex = this.items.indexOf(this.currentItem);
     const prevIndex = (currentIndex - 1 + this.items.length) % this.items.length;
@@ -128,4 +145,54 @@ export class ConfigActingDepartmentComponent implements OnInit {
     const nextIndex = (currentIndex + 1) % this.items.length;
     this.currentItem = this.items[nextIndex];
   }
+  getUserProfileByUserID() {
+    this.userPofileService.getUserProfileById(this.CurrentUserProfile[0].userID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempUserList = {} as UserList;
+          const current = data.dateSet[i];
+          tempUserList.UserID = current.userID;
+          tempUserList.UserName = current.fullName;
+          tempUserList.zoneName = current.zoneName;
+          tempUserList.subDepartmentName = current.subDepartmentName;
+          tempUserList.isDepartmentAdmin = current.isDepartmentAdmin;
+          tempUserList.isZoneAdmin = current.isZoneAdmin;
+          tempUserList.isDefault = current.isDefault;
+          this.UserList.push(tempUserList);
+        }
+        // Assigning received user profiles to 'items' to display in the template
+        this.items = this.UserList.map(user => user.zoneName);
+
+        const defaultUser = this.UserList.find(user => user.isDefault === true);
+        if (defaultUser) {
+          defaultUser.isActive = true;
+        }
+      } else {
+        alert(data.responseMessage);
+      }
+      console.log("response", data);
+    }, error => {
+      console.log("Error: ", error);
+    });
+  }
+  isBlue = false;
+
+  toggleBodyClass() {
+    this.isBlue = !this.isBlue;
+  }
+ 
 }
+/*UserID ?: number;
+UserName ?: string;
+zoneName ?: string;
+departmentId ?: number;
+departmentName ?: string;
+subDepartmentId ?: number;
+subDepartmentName ?: string;
+assignedUserId ?: string;
+userType ?: string;
+isDepartmentAdmin ?: boolean;
+isZoneAdmin ?: boolean;
+isDefault ?: boolean;
+accessGroupName ?: string;
+accessGroupUserLinkId ?: number;*/
