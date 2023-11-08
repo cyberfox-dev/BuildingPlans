@@ -766,13 +766,11 @@ namespace WayleaveManagementSystem.Controllers
                     from agulItem in agul.DefaultIfEmpty()
                     join userProfiles in _context.UserProfilesTable on agulItem.UserID equals userProfiles.UserID into up
                     from upItem in up.DefaultIfEmpty()
-                    join zoneLinkTable in _context.ZoneLinkTable on upItem.UserID equals zoneLinkTable.AssignedUserID into zlt
-                    from zltItem in zlt.DefaultIfEmpty()
-                    join zonesTable in _context.ZonesTable on zltItem.ZoneID equals zonesTable.ZoneID into zt
+                    join zonesTable in _context.ZonesTable on upItem.zoneID equals zonesTable.ZoneID into zt
                     from ztItem in zt.DefaultIfEmpty()
                     join subDepartmentTable in _context.SubDepartmentsTable on ztItem.SubDepartmentID equals subDepartmentTable.SubDepartmentID into sdt
                     from sdtItem in sdt.DefaultIfEmpty()
-                    where accessGroups.AccessGroupName == model.AccessGroupName && upItem.SubDepartmentID == model.SubDepartmentID
+                    where accessGroups.AccessGroupName == model.AccessGroupName && sdtItem.SubDepartmentID == model.SubDepartmentID
                     select new UserProfileDTO()
                     {
                         UserID = upItem.UserID,
