@@ -217,12 +217,12 @@ export class SharedService {
       //Do nothing
     };
 
-    this.APIURL = baseUrl;
+/*    this.APIURL = baseUrl;
 
-    return this.APIURL;
+    return this.APIURL;*/
 /*      return "https://localhost:7123";*/
     /*    return "http://172.29.166.10/api/";*/
-/*        return "https://wayleaveqa.capetown.gov.za"; */
+        return "https://wayleaveqa.capetown.gov.za"; 
 /*        return "https://wayleave.capetown.gov.za"; */
     //this is the original ip address for venolin :)
     /*  return "https://197.242.150.226:7123/api/";*/
