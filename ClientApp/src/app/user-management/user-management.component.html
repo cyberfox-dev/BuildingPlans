@@ -5,7 +5,7 @@
   <span *ngIf="isEMBAdmin"> <button mat-raised-button color="create" (click)="addNewDepartmentUser();openNewUserModal(newUser)">Create a new internal user profile</button></span>
   &nbsp;
   <button mat-raised-button color="create" (click)="openAllUsersModal(allUsers)">Show linked profiles</button>
-  
+
   <ng-container *ngIf="dataSourceLinkUsers.length > 0; else noUsersMessage">
     <table mat-table [dataSource]="dataSourceLinkUsers" class="mat-elevation-z8">
       <!--*ngIf="showZoneUserTable"-->
@@ -29,7 +29,7 @@
         <th mat-header-cell *matHeaderCellDef>Actions</th>
         <td mat-cell *matCellDef="let i = index">
 
-          <button mat-raised-button color="warn">Decline</button>
+          <button mat-raised-button color="warn" (click)="rejectUser(i)">Decline</button>
           <button mat-raised-button color="green" (click)="openAssignModal(content,i)">Approve</button>
 
         </td>
@@ -44,12 +44,12 @@
     <p>There are no new users needing approval at the moment.</p>
   </ng-template>
 
-  
+
 
 </div>
 
 <!--Assign the user to an access group-->
-<ng-template #content let-modal>
+<!--<ng-template #content let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Accept the user into department</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
@@ -65,7 +65,29 @@
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-success" (click)="approveTheUser();modal.close('Save click')">Save</button>
   </div>
+</ng-template>-->
+<!--IS NOT PRETTY BUT FUNCTIONAL-->
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Accept the user into department</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div class="prompt">
+      <p>Select Access Group(s) For The User</p>
+    </div>
+    <div *ngFor="let accessGroup of AccessGroupList">
+      <label>
+        <input type="checkbox" [value]="accessGroup.AccessGroupID" (change)="getAccesGroupID($event)"> {{ accessGroup.AccessGroupName }}
+      </label>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="approveTheUser();modal.close('Save click')">Save</button>
+  </div>
 </ng-template>
+
+
 
 <!--create a new user-->
 <ng-template #newUser let-modal>
@@ -233,64 +255,131 @@
 </ng-template>
 <!--I want to show the user, be able to select one and change access group and "zone" on a whim?-->
 <ng-template #allUsers let-modal>
-  
-    <div class="modal-header">
-      <div *ngIf="!isEMBAdmin"><h4 class="modal-title" id="modal-basic-title">{{this.loggedInUserDepartmentName}} user list</h4></div>
-      <div *ngIf="isEMBAdmin"> <h4 class="modal-title" id="modal-basic-title">Internal user list</h4></div>
-      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+
+  <div class="modal-header">
+    <div *ngIf="!isEMBAdmin"><h4 class="modal-title" id="modal-basic-title">The <b>{{this.loggedInUserDepartmentName}}</b> department's user list</h4></div>
+    <div *ngIf="isEMBAdmin"> <h4 class="modal-title" id="modal-basic-title">Internal user list</h4></div>
+    <button type="button" class="btn-close" aria-label="Close" (click)="onFilterButtonClick();modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+
+    <div *ngIf="isEMBAdmin" class="filter-users">
+      <div class="container02">
+        <button mat-button [matMenuTriggerFor]="linkedUsers" matTooltip="Filter internal user list" color="filter" aria-label="" (click)="onFilterButtonClick()">
+          <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/filter-solid.svg" class="icon">
+        </button>
+
+        <mat-menu #linkedUsers="matMenu">
+          <ng-container *ngFor="let department of DepartmentList">
+            <button mat-menu-item (click)="onFilterByDepartment(department)" value="{{department.departmentID}}">{{ department.departmentName }}</button>
+          </ng-container>
+        </mat-menu>
+        <mat-form-field appearance="outline">
+          <mat-label>Search</mat-label>
+          <div class="cont6">
+
+            <input matInput placeholder="Search By Internal User Name" (keyup)="applyFilter($event)" #input>
+            <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/magnifying-glass-solid.svg" class="icon3">
+          </div>
+
+        </mat-form-field>
+
+        <!--C:\CyberfoxProjects\WayleaveManagementSystem\ClientApp\src\assets\fontawesome-free-6.4.2-web\svgs\solid\user-group.svg-->
+      </div>
+      <div *ngIf="DepartFilter" class="filterValue">
+        <p class="filterText">You Are Currently Viewing {{FilterValue}} Users | </p>
+
+        <button mat-button color="primary" (click)="showAccessGroups()">
+          <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/user-group.svg" class="icon">
+        </button>
+
+      </div>
+
     </div>
-    <div class="modal-body">
+    <div *ngIf="!isEMBAdmin">
+      <div class="container02">
+        <button mat-button [matMenuTriggerFor]="asPerAccessGroup" matTooltip="access group filter" color="filter" aria-label="" (click)="onFilterButtonClick()">
+          <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/user-group.svg" class="icon">
+        </button>
+        <button mat-button [matMenuTriggerFor]="asPerZone" matTooltip="zone filter" color="filter" aria-label="" (click)="onFilterButtonClick()">
+          <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/house.svg" class="icon">
+        </button>
 
-     
-      <table mat-table [dataSource]="dataSourceZoneLink" class="mat-elevation-z8">
-        <!--*ngIf="showZoneUserTable"-->
+        <mat-menu #asPerZone="matMenu">
+          <ng-container *ngFor="let zone of LoggedInUserDptZones">
+            <button mat-menu-item (click)="onFilterByZone(zone)" value="{{zone.ZoneID}}">{{ zone.ZoneName }}</button>
+          </ng-container>
+        </mat-menu>
+        <mat-menu #asPerAccessGroup="matMenu">
+          <ng-container *ngFor="let group of AccessGroupsForFilter">
+            <button mat-menu-item (click)=" onFilterByAccessGroup(group)" value="{{group.AccessGroupID}}">{{ group.AccessGroupName }}</button>
+          </ng-container>
+        </mat-menu>
 
-        <ng-container matColumnDef="fullName">
-          <th mat-header-cell *matHeaderCellDef> User Name </th>
-          <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="departmentName">
-          <th mat-header-cell *matHeaderCellDef> Department Name </th>
-          <td mat-cell *matCellDef="let element"> {{element.departmentName}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="subdepartmentName">
-          <th mat-header-cell *matHeaderCellDef> Subdepartment Name </th>
-          <td mat-cell *matCellDef="let element"> {{element.subdepartmentName}} </td>
-        </ng-container>
-        <ng-container matColumnDef="zoneName">
-          <th mat-header-cell *matHeaderCellDef> Zone Name </th>
-          <td mat-cell *matCellDef="let element"> {{element.zoneName}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="isDepartmentAdmin">
-          <th mat-header-cell *matHeaderCellDef> Department Admin </th>
-          <td mat-cell *matCellDef="let element"> {{element.isDepartmentAdmin}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="isZoneAdmin">
-          <th mat-header-cell *matHeaderCellDef> Zone Admin </th>
-          <td mat-cell *matCellDef="let element"> {{element.isZoneAdmin}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef> </th>
-          <td mat-cell *matCellDef="let i = index">
-
-            <!--<button mat-raised-button color="orange" matTooltip="View and Edit User" (click)="editUserScope(i, viewDepartmentPerson); modal.close('Save click')"><i class="fa fa-pencil"></i></button>-->
-            <button mat-raised-button color="orange" matTooltip="View and Edit User" (click)="editUserScopeManyZones(i, departmentPersonZones); modal.close('Save click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/pencil-solid.svg" class="icon"></button>
-            <!--What is this button supposed to do?-->
-            <button mat-raised-button color="success" matTooltip="Add User to another Zone" (click)="addToMoreZones(i, addToZones);modal.close('Save click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid-white.svg" class="icon"></button>
-            <button mat-raised-button color="warn" matTooltip="Unlink User" (click)="removeUserFromDPT(i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/link-slash-solid-white.svg" class="icon red"> </button>
-
-          </td>
-
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumnsZoneLinks"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumnsZoneLinks;"></tr>
-      </table>
+        <mat-form-field appearance="outline">
+          <mat-label>Search</mat-label>
+          <div class="cont6">
+            <input matInput placeholder="Search by {{this.loggedInUserDepartmentName}} department user name." (keyup)="applyFilter($event)" #input>
+            <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/magnifying-glass-solid.svg" class="icon3">
+          </div>
+        </mat-form-field>
+      </div>
+      <div *ngIf="isAGFilter" class="filterValue">
+        <p class="filterText">You are currently viewing users in the {{selectedAG}} access group.</p>
+      </div>
+      <div *ngIf="isZoneFilter" class="filterValue">
+        <p class="filterText">You are currently viewing users from {{selectedZoneF}} of the {{coincidentallySelectedSubDept}} sudepartment.</p>
+      </div>
     </div>
+    <table mat-table [dataSource]="dataSourceZoneLink" class="mat-elevation-z8">
+      <!--*ngIf="showZoneUserTable"-->
+
+      <ng-container matColumnDef="fullName">
+        <th mat-header-cell *matHeaderCellDef> User Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="departmentName">
+        <th mat-header-cell *matHeaderCellDef> Department Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.departmentName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="subdepartmentName">
+        <th mat-header-cell *matHeaderCellDef> Subdepartment Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.subdepartmentName}} </td>
+      </ng-container>
+      <ng-container matColumnDef="zoneName">
+        <th mat-header-cell *matHeaderCellDef> Zone Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.zoneName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="isDepartmentAdmin">
+        <th mat-header-cell *matHeaderCellDef> Department Admin </th>
+        <td mat-cell *matCellDef="let element"> {{element.isDepartmentAdmin}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="isZoneAdmin">
+        <th mat-header-cell *matHeaderCellDef> Zone Admin </th>
+        <td mat-cell *matCellDef="let element"> {{element.isZoneAdmin}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> </th>
+        <td mat-cell *matCellDef="let i = index">
+
+          <!--<button mat-raised-button color="orange" matTooltip="View and Edit User" (click)="editUserScope(i, viewDepartmentPerson); modal.close('Save click')"><i class="fa fa-pencil"></i></button>-->
+          <button mat-raised-button color="orange" matTooltip="View and Edit User" (click)="editUserScopeManyZones(i, departmentPersonZones); modal.close('Save click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/pencil-solid.svg" class="icon"></button>
+          <!--What is this button supposed to do?-->
+          <button mat-raised-button color="success" matTooltip="Add User to another Zone" (click)="addToMoreZones(i, addToZones);modal.close('Save click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid-white.svg" class="icon"></button>
+          <button mat-raised-button color="warn" matTooltip="Unlink User" (click)="removeUserFromDPT(i);modal.close('Save click');openAllUsersModal(allUsers)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/link-slash-solid-white.svg" class="icon red"> </button>
+
+        </td>
+
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsZoneLinks"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsZoneLinks;"></tr>
+    </table>
+  </div>
 
 
   <!--<div class="modal-footer">
@@ -300,7 +389,7 @@
 
 <ng-template #viewDepartmentPerson let-modal>
   <div class="modal-header">
-    <h3 class="modal-title" id="modal-basic-title">{{this.selectedUserName}}</h3>
+    <h3 class="modal-title" id="modal-basic-title">{{this.selectedUserName}} | {{this.theirSelectedSubDepartment}}, {{this.theirSelectedZoneName}} </h3>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
@@ -321,8 +410,8 @@
         </tr>
       </tbody>
     </table>
-    <br />
-    <div class="container">
+    <br /> <!--TOGGLES HAVE BEEN REMOVED BECAUSE ZONE ADMIN IS NOW A PROPER ACCESS GROUP-->
+    <!--<div class="container">-->
       <!--removed because the access groups list already has this:-->
       <!--<div class="row">
         <div class="col-sm-6">
@@ -339,7 +428,7 @@
         </div>
       </div>-->
 
-      <div class="row">
+      <!--<div class="row">
         <div class="col-sm-6">
           <div class="form-group">
             <label for="zoneAdminToggle">Zone Admin:</label>
@@ -353,12 +442,13 @@
           </div>
         </div>
       </div>
-    </div>
+    </div>-->
 
   </div>
-  <div class="modal-footer">
+  <!--THIS SAVE ONLY SAVED TOGGLE RELATED THINGS THAT ESSENTIALLY UPDATED THE USERPROFILE TABLE VELE == SO BYE-->
+  <!--<div class="modal-footer">
     <button type="button" class="btn btn-outline-success" (click)="saveAdminChanges();modal.close('Save click')">Save</button>
-  </div>
+  </div>-->
 </ng-template>
 
 <ng-template #departmentPersonZones let-modal>
@@ -374,7 +464,7 @@
           <mat-tab *ngFor="let zone of ZonesList" label="{{ zone.ZoneName }}">
             <!-- Zone-specific information -->
             <!-- <div *ngIf="checkZoneInTheirZoneLink(zone.ZoneID)"> -->
-            <div *ngIf="zone.isLinked" (click)="getZoneAccessGroups(zone.ZoneID)" >
+            <div *ngIf="zone.isLinked" (click)="getZoneAccessGroups(zone.ZoneID)">
               <!-- Display zone-specific information here if user is linked to this zone-->
               <div>
                 <table class="table">

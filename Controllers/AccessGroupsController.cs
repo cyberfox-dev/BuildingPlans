@@ -124,6 +124,7 @@ namespace WayleaveManagementSystem.Controllers
                             SubDepartmentID = model.SubDepartmentID,
                             ZoneID = model.ZoneID,
                             UserID = model.UserID,
+                            UserProfileID = model.UserProfileID,
                             CreatedById = model.CreatedById,
                             DateCreated = DateTime.Now,
                             DateUpdated = DateTime.Now,
@@ -138,6 +139,7 @@ namespace WayleaveManagementSystem.Controllers
                     else
                     {
                         tempAccessGroup.AccessGroupID = model.AccessGroupID;
+                        tempAccessGroup.UserProfileID = model.UserProfileID;
                         tempAccessGroup.SubDepartmentID = model.SubDepartmentID;
                         tempAccessGroup.ZoneID = model.ZoneID;
                         tempAccessGroup.UserID = model.UserID;
@@ -147,7 +149,7 @@ namespace WayleaveManagementSystem.Controllers
                         await _context.SaveChangesAsync();
                         result = tempAccessGroup;
                     }
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.AccessGroupUserLinkID > 0 ? "Zone Link Updated Successfully" : "Service Item Created Successfully"), result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.AccessGroupUserLinkID > 0 ? "Zone and Access Group Link Updated Successfully" : "Zone and Access Group Link Created Successfully"), result));
                 }
             }
             catch (Exception ex)

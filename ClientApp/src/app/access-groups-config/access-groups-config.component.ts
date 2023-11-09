@@ -483,8 +483,8 @@ export class AccessGroupsConfigComponent implements OnInit {
       const current = this.selection.selected[i];
       const zoneID = current.selectedZone;
       const subdepartmentID = current.selectedSubdepartment;
-
-      this.accessGroupsService.addUpdateAccessGroupUserLink(0, this.currentAGID, current.UserID, this.CurrentUser.appUserId, zoneID, subdepartmentID).subscribe((data: any) => {
+      // TODO work on the 6th argument
+      this.accessGroupsService.addUpdateAccessGroupUserLink(0, this.currentAGID, current.UserID, this.CurrentUser.appUserId, zoneID, subdepartmentID, null).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 

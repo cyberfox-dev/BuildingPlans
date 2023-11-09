@@ -27,4 +27,19 @@ export class AccessGroupUserLinkServiceService {
 
     return this.httpClient.post(this.baseURL + "GetAccessGroupsBySubDeptZoneAndUserID", requestBody);
   }
+  public getPeopleByAccessGroupAndSubDept(agID: number|null, subDepartmentId: number | null) {
+    debugger;
+    const requestBody = {
+      AccessGroupID: agID,
+      SubDepartmentID: subDepartmentId
+    };
+    return this.httpClient.post(this.baseURL + "GetPeopleByAccessGroupAndSubDept", requestBody);
+  }
+  public getPeopleByZone(zoneId: number | null) {
+    debugger;
+    const requestBody = {
+      ZoneID: zoneId
+    };
+    return this.httpClient.post(this.baseURL + "GetPeopleByZone", requestBody);
+  }
 }

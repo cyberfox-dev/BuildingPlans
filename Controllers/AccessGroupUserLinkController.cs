@@ -113,5 +113,71 @@ namespace WayleaveManagementSystem.Controllers
                 return BadRequest(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
+
+        [HttpPost("GetPeopleByAccessGroupAndSubDept")]
+        public async Task<IActionResult> GetPeopleByAccessGroupAndSubDept([FromBody] AccessGroupUserLinkBindingModel model)
+        {
+            try
+            {
+                var result = await (
+                    from accessGL in _context.AccessGroupUserLink
+                    where accessGL.isActive && accessGL.AccessGroupID == model.AccessGroupID && accessGL.SubDepartmentID == model.SubDepartmentID
+                    select new AccessGroupsDTO()
+                    {
+                        AccessGroupUserLinkID = accessGL.AccessGroupUserLinkID,
+                        AccessGroupID = accessGL.AccessGroupID,
+                        ZoneID = accessGL.ZoneID,
+                        SubDepartmentID = accessGL.SubDepartmentID,
+                        UserID = accessGL.UserID,
+                        UserProfileID = accessGL.UserProfileID,
+                        DateCreated = accessGL.DateCreated,
+                        DateUpdated = accessGL.DateUpdated,
+                        CreatedById = accessGL.CreatedById,
+                    }
+                ).ToListAsync();
+
+                // Return an Ok response with the data
+                return Ok(new ResponseModel(Enums.ResponseCode.OK, "Got all these subdepartment users in specified access group", result));
+            }
+            catch (Exception ex)
+            {
+                // Return a BadRequest response with the error message
+                return BadRequest(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+        
+        [HttpPost("GetPeopleByZone")]
+        public async Task<IActionResult> GetPeopleByZone([FromBody] AccessGroupUserLinkBindingModel model)
+        {
+            try
+            {
+                var result = await (
+                    from accessGL in _context.AccessGroupUserLink
+                    where accessGL.isActive && accessGL.ZoneID == model.ZoneID
+                    select new AccessGroupsDTO()
+                    {
+                        AccessGroupUserLinkID = accessGL.AccessGroupUserLinkID,
+                        AccessGroupID = accessGL.AccessGroupID,
+                        ZoneID = accessGL.ZoneID,
+                        UserProfileID = accessGL.UserProfileID,
+                        SubDepartmentID = accessGL.SubDepartmentID,
+                        UserID = accessGL.UserID,
+                        DateCreated = accessGL.DateCreated,
+                        DateUpdated = accessGL.DateUpdated,
+                        CreatedById = accessGL.CreatedById,
+                    }
+                ).ToListAsync();
+
+                // Return an Ok response with the data
+                return Ok(new ResponseModel(Enums.ResponseCode.OK, "Got all users in specified zone", result));
+            }
+            catch (Exception ex)
+            {
+                // Return a BadRequest response with the error message
+                return BadRequest(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+
     }
 }
