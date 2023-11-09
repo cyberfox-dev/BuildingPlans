@@ -141,7 +141,19 @@ export class AccessGroupsService {
     return this.httpClient.post(this.baseURL + "GetUserBasedOnRoleName", body);
 
   }
-  
+
+  public getUsersBasedOnRoleName(accessGroupName: string, subDepartmentID: number, zoneID: number) {
+
+    const body = {
+      AccessGroupName: accessGroupName,
+      SubDepartmentID: subDepartmentID,
+      ZoneID: zoneID
+    }
+    return this.httpClient.post(this.baseURL + "GetUsersBasedOnRoleName", body);
+
+  }
+
+
   public GetUserAndZoneBasedOnRoleName(accessGroupName: string, subDepartmentID: number) {
 
     const body = {

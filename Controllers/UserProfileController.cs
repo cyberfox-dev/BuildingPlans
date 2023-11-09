@@ -451,7 +451,7 @@ namespace WayleaveManagementSystem.Controllers
             {
                 var result = await (
           from UserProfile in _context.UserProfilesTable
-          where UserProfile.UserID == model.UserID && UserProfile.isDefault == true && UserProfile.isActive == true
+          where UserProfile.UserID == model.UserID && UserProfile.isDefault == true && UserProfile.isActive == true || UserProfile.UserID == model.UserID && UserProfile.isDefault == null && UserProfile.isActive == true
           select new UserProfileDTO()
           {
               UserProfileID = UserProfile.UserProfileID,
@@ -783,6 +783,33 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpPost("UpdateActingDepartment")]
+        public async Task<object> UpdateActingDepartment([FromBody] int userProfileID)
+        {
+            try
+            {
+                if (userProfileID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Invalid UserProfileID", null));
+                }
+                else
+                {
+                    var result = await _userProfileService.UpdateActingDepartment(userProfileID);
+                    if (result)
+                    {
+                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Changed department successfully", result));
+                    }
+                    else
+                    {
+                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Request for department change unsuccessful ", null));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
 
     }
 }

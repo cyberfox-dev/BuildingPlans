@@ -29,7 +29,7 @@ import { ViewChildren } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { DocumentRepositoryComponent } from 'src/app/document-repository/document-repository.component';
 import { NotificationCenterComponent } from 'src/app/notification-center/notification-center.component';
-
+import { ConfigActingDepartmentComponent } from 'src/app/config-acting-department/config-acting-department.component';
 
 
 export interface SubDepartmentList {
@@ -169,6 +169,7 @@ export class NavMenuComponent implements OnInit {
 
   selected = 'none';
   select = 0;
+  isLoading: boolean = false;
 
 
 
@@ -320,6 +321,16 @@ export class NavMenuComponent implements OnInit {
 
 
   }
+
+  openUserActingDepModal() {
+    this.dialog.open(ConfigActingDepartmentComponent, {
+      width: '60%',
+      maxHeight: 'calc(100vh - 90px)',
+      height: 'auto'
+    });
+  }
+
+
   onFileDelete(event: any, index: number) {
 
     this.fileAttrsName = "Doc";

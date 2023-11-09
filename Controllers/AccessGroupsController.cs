@@ -710,6 +710,79 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpPost("GetUsersBasedOnRoleName")]
+        public async Task<object> GetUsersBasedOnRoleName([FromBody] AccessGroupsBindingModel model)
+        {
+            try
+            {
+                var AgID = await (
+                    from accessGroups in _context.AccessGroups
+                    where accessGroups.AccessGroupName == model.AccessGroupName
+                    select accessGroups.AccessGroupID).ToListAsync();
+
+                var UserID = await (
+                    from accessGroupUserLink in _context.AccessGroupUserLink
+                    where accessGroupUserLink.AccessGroupID == AgID[0]
+                          && accessGroupUserLink.SubDepartmentID == model.SubDepartmentID
+                          && accessGroupUserLink.ZoneID == model.ZoneID
+                    select accessGroupUserLink.UserID).ToListAsync();
+
+                var result = await (
+                    from userProfile in _context.UserProfilesTable
+                    where userProfile.isActive == true
+                          && UserID.Contains(userProfile.UserID)
+                          && userProfile.SubDepartmentID == model.SubDepartmentID && userProfile.zoneID == model.ZoneID
+                    select new
+                    {
+                        UserProfileID = userProfile.UserProfileID,
+                        UserID = userProfile.UserID,
+                        Name = userProfile.Name,
+                        FullName = userProfile.FullName,
+                        Surname = userProfile.Surname,
+                        Email = userProfile.Email,
+                        AlternativeEmail = userProfile.AlternativeEmail,
+                        isInternal = userProfile.isInternal,
+                        isDefault = userProfile.isDefault,
+                        PhoneNumber = userProfile.PhoneNumber,
+                        AlternativePhoneNumber = userProfile.AlternativePhoneNumber,
+                        BP_Number = userProfile.BP_Number,
+                        CompanyName = userProfile.CompanyName,
+                        CompanyRegNo = userProfile.CompanyRegNo,
+                        PhyscialAddress = userProfile.PhyscialAddress,
+                        CopyOfID = userProfile.CopyOfID,
+                        IdNumber = userProfile.IdNumber,
+                        VatNumber = userProfile.VatNumber,
+                        ICASALicense = userProfile.ICASALicense,
+                        Directorate = userProfile.Directorate,
+                        DepartmentID = userProfile.DepartmentID,
+                        DepartmentName = userProfile.DepartmentName,
+                        Branch = userProfile.Branch,
+                        CostCenterNumber = userProfile.CostCenterNumber,
+                        CostCenterOwner = userProfile.CostCenterOwner,
+                        depConfirmation = userProfile.depConfirmation,
+                        zoneID = userProfile.zoneID,
+                        zoneName = userProfile.zoneName,
+                        refNumber = userProfile.refNumber,
+                        companyType = userProfile.companyType,
+                        SubDepartmentID = userProfile.SubDepartmentID,
+                        SubDepartmentName = userProfile.SubDepartmentName,
+                        isDepartmentAdmin = userProfile.isDepartmentAdmin,
+                        isZoneAdmin = userProfile.isZoneAdmin,
+                        DateCreated = DateTime.Now,
+                        DateUpdated = DateTime.Now,
+                        CreatedById = userProfile.CreatedById,
+
+                    }
+                ).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Users with profiles", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
 
         [HttpPost("GetUserBasedOnRoleName")]
         public async Task<object> GetUserBasedOnRoleName([FromBody] AccessGroupsBindingModel model)
@@ -768,15 +841,13 @@ namespace WayleaveManagementSystem.Controllers
                     from agulItem in agul.DefaultIfEmpty()
                     join userProfiles in _context.UserProfilesTable on agulItem.UserID equals userProfiles.UserID into up
                     from upItem in up.DefaultIfEmpty()
-                    join zoneLinkTable in _context.ZoneLinkTable on upItem.UserID equals zoneLinkTable.AssignedUserID into zlt
-                    from zltItem in zlt.DefaultIfEmpty()
-                    join zonesTable in _context.ZonesTable on zltItem.ZoneID equals zonesTable.ZoneID into zt
+                    join zonesTable in _context.ZonesTable on upItem.zoneID equals zonesTable.ZoneID into zt
                     from ztItem in zt.DefaultIfEmpty()
                     join subDepartmentTable in _context.SubDepartmentsTable on ztItem.SubDepartmentID equals subDepartmentTable.SubDepartmentID into sdt
                     from sdtItem in sdt.DefaultIfEmpty()
-                    where accessGroups.AccessGroupName == model.AccessGroupName && upItem.SubDepartmentID == model.SubDepartmentID
+                    where accessGroups.AccessGroupName == model.AccessGroupName && sdtItem.SubDepartmentID == model.SubDepartmentID
                     select new UserProfileDTO()
-                    {
+                                        {
                         UserID = upItem.UserID,
                         FullName = upItem.FullName,
                         Email = upItem.Email,

@@ -285,6 +285,8 @@ export class LoginComponent implements OnInit {
 
   getUserProfile(): Observable<any> {
     const currentUser = JSON.parse(localStorage.getItem("LoggedInUserInfo"));
+
+
     return this.userPofileService.getDefaltUserProfile(currentUser.appUserId);
   }
   getUserProfileOld(): Observable<any> {
@@ -307,7 +309,7 @@ export class LoginComponent implements OnInit {
   }
 
 
-  onLoginCurrentKyle(): void {
+  onLogin(): void {
     if (this.loginForm.invalid) {
       console.error("Form is invalid");
       return;
@@ -327,6 +329,7 @@ export class LoginComponent implements OnInit {
         return throwError(data.responseMessage);
       }),
       tap((profileData: LoginResponse) => {
+        debugger;
         const userId = profileData.dateSet[0].userProfileID;
         this.setLocalStorage("userProfile", profileData.dateSet);
         this.getAllRolesForUserForAllAG(userId);
@@ -418,7 +421,7 @@ this.userService.login(email, password).pipe(
 
 
   //old login 10-10-23
-  onLogin() {
+/*  onLogin() {
     // Removed the checkBPValidity and its warning
 
     this.isLoading = true;
@@ -455,7 +458,7 @@ this.userService.login(email, password).pipe(
         this.error = error.message;
       }
     );
-  }
+  }*/
 
 
   //onLogin() {

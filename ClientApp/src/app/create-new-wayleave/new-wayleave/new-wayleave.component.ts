@@ -1068,62 +1068,74 @@ export class NewWayleaveComponent implements OnInit {
       }
 
     }
-
-    this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
-      if (data.responseCode == 1) {
-        debugger;
-        const current = data.dateSet[0];
-        this.configNumberOfProject = current.utilitySlot1;
-        this.configMonthYear = current.utilitySlot2;
-        this.configService.addUpdateConfig(current.configID, null,null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
-          if (data.responseCode == 1) {
-            debugger;
-            //ARGUMENTS NEED CAREFUL ALTERATIONS - OBVIOUSLY CURRENT USER IS THE ORIGINATOR, ARE THEY GOING TO GET THE EMAILS OR IS THE APPLICANT GOING TO GET AN EMAIL??
-
-            
-            this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.clientEmail, this.clientCellNo, null, null,
-              null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE,
-              this.expectedStartDate, this.expectedEndType, null, this.CurrentUser.appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3,
-              "Distributed", false, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
-              if (data.responseCode == 1) {
-                debugger;
-                alert("Application Created");
-                if (isPlanning == false) {
-                  this.AddProfessinal(contractorData, engineerData);
-                }
-                // this.UploadDocuments(data.dateSet);
-
-                this.shared.setApplicationID(0);
-                this.shared.clearContractorData();
-                this.shared.clearEngineerData();
-              }
-              else {
-                alert("Failed To Create Application");
-              }
+    if (this.isDraft == true) {
+      /*      this.draftApplicationsService.addUpdateDraftApplication(0, this.applicationID, appUserId, this.internalName + " " + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null, null).subscribe((data: any) => {
+              alert("Draft Saved");
+              this.router.navigate(["/home"]);
+              console.log("response", data);
+      
+      
+            }, error => {
+              console.log("Error: ", error);
+            })*/
+      /*      alert("Work in progress");*/
+    }
+    else {
+      this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          debugger;
+          const current = data.dateSet[0];
+          this.configNumberOfProject = current.utilitySlot1;
+          this.configMonthYear = current.utilitySlot2;
+          this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              debugger;
+              //ARGUMENTS NEED CAREFUL ALTERATIONS - OBVIOUSLY CURRENT USER IS THE ORIGINATOR, ARE THEY GOING TO GET THE EMAILS OR IS THE APPLICANT GOING TO GET AN EMAIL??
 
 
-                this.router.navigate(["/home"]);
-                if (this.isDraft === false) {
-                  this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-                  /*              this.addToSubDepartmentForComment();*/
-                  this.notificationsService.addUpdateNotification(0, "Application Submission", "New wayleave application submission", false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserID, this.applicationID, "Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.").subscribe((data: any) => {
-
-                    if (data.responseCode == 1) {
-                      alert(data.responseMessage);
-
+              this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.clientEmail, this.clientCellNo, null, null,
+                null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE,
+                this.expectedStartDate, this.expectedEndType, null, this.CurrentUser.appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3,
+                "Distributed", false, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
+                  if (data.responseCode == 1) {
+                    debugger;
+                    alert("Application Created");
+                    if (isPlanning == false) {
+                      this.AddProfessinal(contractorData, engineerData);
                     }
-                    else {
-                      alert(data.responseMessage);
-                    }
+                    // this.UploadDocuments(data.dateSet);
 
-                    console.log("response", data);
-                  }, error => {
-                    console.log("Error", error);
-                  });
-                }
+                    this.shared.setApplicationID(0);
+                    this.shared.clearContractorData();
+                    this.shared.clearEngineerData();
+                  }
+                  else {
+                    alert("Failed To Create Application");
+                  }
 
-              const projectNum = "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear;
-              const emailContentOriginator = `
+
+                  this.router.navigate(["/home"]);
+                  if (this.isDraft === false) {
+                    this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                    /*              this.addToSubDepartmentForComment();*/
+                    this.notificationsService.addUpdateNotification(0, "Application Submission", "New wayleave application submission", false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserID, this.applicationID, "Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.").subscribe((data: any) => {
+
+                      if (data.responseCode == 1) {
+                        alert(data.responseMessage);
+
+                      }
+                      else {
+                        alert(data.responseMessage);
+                      }
+
+                      console.log("response", data);
+                    }, error => {
+                      console.log("Error", error);
+                    });
+                  }
+
+                  const projectNum = "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear;
+                  const emailContentOriginator = `
      <html>
         <head>
           <style>
@@ -1160,7 +1172,7 @@ export class NewWayleaveComponent implements OnInit {
         </body>
       </html>
     `;
-                const emailContentApplicant = `
+                  const emailContentApplicant = `
       <html>
         <head>
           <style>
@@ -1186,7 +1198,7 @@ export class NewWayleaveComponent implements OnInit {
         <body>
           <div class="email-content">
             <p>Dear ${this.internalName + ' ' + this.internalSurname},</p>
-            <p>Your application <strong>${ projectNum }</strong> for a Wayleave has been captured. Please use this reference number in all further correspondence. You will be notified once your application proceeds to the next stage. </p>
+            <p>Your application <strong>${projectNum}</strong> for a Wayleave has been captured. Please use this reference number in all further correspondence. You will be notified once your application proceeds to the next stage. </p>
             <p>Should you have any queries, please contact <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
                 <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
                           <p>
@@ -1197,19 +1209,19 @@ export class NewWayleaveComponent implements OnInit {
         </body>
       </html>
     `;
-                this.notificationsService.sendEmail(this.CurrentUser.email, "New wayleave application", emailContentOriginator, emailContentOriginator);
-                this.notificationsService.sendEmail(this.clientEmail, "New wayleave application", emailContentApplicant, emailContentApplicant);
-              /*              this.addToSubDepartmentForComment();*/
-              this.Emailmessage = "A Wayleave application with ID " + this.applicationID + " and project reference number:" + projectNum + " has just been captured. You will be notified once your application has reached the next stage in the process.";
-                this.onCreateNotification();
-                this.onCreateNotificationApplicant();
+                  this.notificationsService.sendEmail(this.CurrentUser.email, "New wayleave application", emailContentOriginator, emailContentOriginator);
+                  this.notificationsService.sendEmail(this.clientEmail, "New wayleave application", emailContentApplicant, emailContentApplicant);
+                  /*              this.addToSubDepartmentForComment();*/
+                  this.Emailmessage = "A Wayleave application with ID " + this.applicationID + " and project reference number:" + projectNum + " has just been captured. You will be notified once your application has reached the next stage in the process.";
+                  this.onCreateNotification();
+                  this.onCreateNotificationApplicant();
 
 
-              //Send emails to zone department admins
-              this.shared.distributionList.forEach((obj) => {
+                  //Send emails to zone department admins
+                  this.shared.distributionList.forEach((obj) => {
 
 
-                const emailContent2 = `
+                    const emailContent2 = `
       <html>
         <head>
           <style>
@@ -1250,52 +1262,55 @@ export class NewWayleaveComponent implements OnInit {
       </html>
     `;
 
-                this.notificationsService.sendEmail(obj.email, "New wayleave application", emailContent2, emailContent2);
-                this.notificationsService.addUpdateNotification(0, "Application Created", "New wayleave application", false, obj.userID, this.CurrentUser.appUserID, this.applicationID, "A Wayleave application with ID ${this.applicationID} has just been captured. As the zone admin of " + obj.zoneName + "in" + obj.subDepartmentName + " , please assign a reviewer to the application.").subscribe((data: any) => {
+                    this.notificationsService.sendEmail(obj.email, "New wayleave application", emailContent2, emailContent2);
+                    this.notificationsService.addUpdateNotification(0, "Application Created", "New wayleave application", false, obj.userID, this.CurrentUser.appUserID, this.applicationID, "A Wayleave application with ID ${this.applicationID} has just been captured. As the zone admin of " + obj.zoneName + "in" + obj.subDepartmentName + " , please assign a reviewer to the application.").subscribe((data: any) => {
 
-                  if (data.responseCode == 1) {
-                    alert(data.responseMessage);
+                      if (data.responseCode == 1) {
+                        alert(data.responseMessage);
 
-                  }
-                  else {
-                    alert(data.responseMessage);
-                  }                                                                                                                                  
+                      }
+                      else {
+                        alert(data.responseMessage);
+                      }
 
-                  console.log("response", data);
+                      console.log("response", data);
+                    }, error => {
+                      console.log("Error", error);
+                    })
+
+                  })
+
+                  this.addToZoneForComment();
+
+                  console.log("responseAddapplication", data);
                 }, error => {
                   console.log("Error", error);
-                })
+                });
+            }
+            else {
 
-              })
+              alert("Update Config Error");
+            }
+            console.log("addUpdateConfigReponse", data);
 
-              this.addToZoneForComment();
-
-              console.log("responseAddapplication", data);
-            }, error => {
-              console.log("Error", error);
-            });
-          }
-          else {
-
-            alert("Update Config Error");
-          }
-          console.log("addUpdateConfigReponse", data);
-
-        }, error => {
-          console.log("addUpdateConfigError: ", error);
-        })
+          }, error => {
+            console.log("addUpdateConfigError: ", error);
+          })
 
 
-      }
-      else {
-        //alert("Invalid Email or Password");
-        alert(data.responseMessage);
-      }
-      console.log("getConfigsByConfigNameReponse", data);
+        }
+        else {
+          //alert("Invalid Email or Password");
+          alert(data.responseMessage);
+        }
+        console.log("getConfigsByConfigNameReponse", data);
 
-    }, error => {
-      console.log("getConfigsByConfigNameError: ", error);
-    })
+      }, error => {
+        console.log("getConfigsByConfigNameError: ", error);
+      })
+    }
+
+  
   }
 
 
@@ -1318,7 +1333,7 @@ export class NewWayleaveComponent implements OnInit {
       let NextStageNameIn = "";
 
       for (var i = 0; i < this.StagesList.length; i++) {
-        ;
+        
         if (this.StagesList[i].StageOrderNumber == 1) {
           previousStageName = this.StagesList[i - 1].StageName
           CurrentStageName = this.StagesList[i].StageName;
@@ -1577,30 +1592,33 @@ export class NewWayleaveComponent implements OnInit {
       }
 
     }
+    if (this.isDraft == true) {
+      this.draftApplicationsService.addUpdateDraftApplication(0, this.applicationID, appUserId, this.clientName + " " + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, this.clientCompanyRegNo, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject
+        , this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, null, contractorData[0].name, engineerData[0].name).subscribe((data: any) => {
+          if (data.responseCode === 1) {
+            alert("Draft Saved")
 
+          }
+          else {
+            alert(data.responseMessage);
+
+          }
+          console.log("response", data);
+
+
+        }, error => {
+          console.log("Error: ", error);
+        })
+    }
+    else {
+
+    }
     this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, '10 Stella Road, Newholme, PMB, KZN', this.CurrentUser.appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", this.isDraft, null, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         this.SavedProjectSizeSelections();
         debugger;
-        if (this.isDraft == true) {
-          this.draftApplicationsService.addUpdateDraftApplication(0, this.applicationID, appUserId, this.clientName + " " + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, this.clientCompanyRegNo, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject
-            , this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, null, contractorData[0].name, engineerData[0].name ).subscribe((data: any) => {
-              if (data.responseCode === 1) {
-                alert("Draft Saved")
-
-              }
-              else {
-                alert(data.responseMessage);
-
-              }
-              console.log("response", data);
-
-
-            }, error => {
-              console.log("Error: ", error);
-            })
-        }
+     
         if (isPlanning == false) {
           this.AddProfessinal(contractorData, engineerData);
         }
@@ -1612,10 +1630,9 @@ export class NewWayleaveComponent implements OnInit {
         this.shared.clearEngineerData();
         alert("Client Application Created");
 
-        if (this.isDraft === false) {
           this.addToZoneForComment();
           this.getCurrentInvoiceNumberForGen(this.clientName + ' ' + this.clientSurname);
-        }
+
         debugger;
       }
       else {
@@ -1624,13 +1641,13 @@ export class NewWayleaveComponent implements OnInit {
 
       this.Emailmessage = "Your application (" + this.projectNumber + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process."
       //Sends emails to the entire EMB department, as per process flow.
-      if (this.isDraft === false) {
+
         this.onCreateNotification();
         //Sends notification to applying user.
         this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + "<br><br><p>Your application (" + this.applicationID + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Thank you</p>");
         //Sends emails to the entire EMB department, as per process flow.
         this.sendEmailToDepartment("EMB");
-      }
+
       this.router.navigate(["/home"]);
       console.log("responseAddapplication", data);
     }, error => {
@@ -3718,9 +3735,11 @@ export class NewWayleaveComponent implements OnInit {
 
   //This function is defunct because the subdepartment table is used for assigning users. Even subepartments without subzones, have at least 1 zone, usually representing the entire city.
   public addToSubDepartmentForComment() {
+    debugger;
     const tempList = this.shared.distributionList;
 
     tempList.forEach((obj) => {
+      debugger;
       this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.applicationID, obj.subDepartmentID, obj.subDepartmentName, obj.userID, null, "ESRI API", obj.zoneID, obj.zoneName).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
@@ -3762,6 +3781,7 @@ export class NewWayleaveComponent implements OnInit {
     console.log("uniqueArray:", uniqueArray);
 
     uniqueArray.forEach((obj) => {
+      debugger;
       this.zoneForCommentService.addUpdateZoneForComment(0, obj.subDepartmentID, this.applicationID, obj.zoneID, obj.zoneName, obj.userID).subscribe((data: any) => {
 
         if (data.responseCode == 1) {

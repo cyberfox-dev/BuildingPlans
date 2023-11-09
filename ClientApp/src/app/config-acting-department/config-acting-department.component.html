@@ -1,25 +1,54 @@
-<h1>You May Change Your Acting Department And Zone</h1>
-<mat-form-field>
+<!--<h2>You May Change Your Acting Department And Zone</h2>-->
+<!--<mat-form-field>
   <mat-label>Select A Department</mat-label>
   <mat-select [(ngModel)]="selectedDep" (change)="updateZoneList()">
     <mat-option *ngFor="let department of SubDepartmentList" [value]="department.subDepartmentId">
       {{ department.subDepartmentName }}
     </mat-option>
   </mat-select>
-</mat-form-field>
-
-<mat-form-field>
-  <mat-label>Select A Zone</mat-label>
-  <mat-select [(ngModel)]="selectedZone">
-    <mat-option *ngFor="let zone of ZoneList" [value]="zone.zoneId">
-      {{ zone.zoneName }}
-    </mat-option>
-  </mat-select>
 </mat-form-field>-->
 
+<section class="game-section">
+  <h2 class="line-title">You May Change Your Acting Department And Zone</h2>
+  <div class="actingDepFlexContainer">
+    <div class="owl-carousel custom-carousel owl-theme actingDepFlexContainer2">
+
+      <div class="item" *ngFor="let item of UserList" [class.active]="item.isActive" (click)="toggleActive(item)">
+
+        <div class="shapes">
+          <div class="active">
+          </div>
+        </div>
+        <img src="assets/tobias-reich-1GgWbP74phY-unsplash2.jpg" class="backgroundWLMS2">
+        <div class="cont2">
+
+          <div class="item-desc">
+            <div class="row">
+              <div class="col-5">
+                <h3><i class="fa fa-user-circle" aria-hidden="true" hidden></i></h3>
+                <h2>{{item.FullName}}</h2>
+                <p>Belongs to: {{item.subDepartmentName}}</p>
+                <p>For: {{item.zoneName}}</p>
+              </div>
+              <div class="col-6">
+                <button mat-button color="activate" (click)="activateProfile(item)" *ngIf="item.isDefault != true">Activate</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--<button (click)="prev()">Previous</button>
+<button (click)="next()">Next</button>
 <mat-dialog-actions align="end">
   <button mat-button (click)="cancel()">Cancel</button>
   <button mat-button cdkFocusInitial (click)="continue()">Continue</button>
-</mat-dialog-actions>
+</mat-dialog-actions>-->
 
-
+<div class="loading-screen" *ngIf="isLoading" id="loadingScreen">
+  <img src="assets/Loading.png" alt="" class="logo2">
+</div>

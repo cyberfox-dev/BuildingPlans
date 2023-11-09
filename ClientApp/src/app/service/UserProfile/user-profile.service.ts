@@ -166,6 +166,15 @@ export class UserProfileService {
     }
 
     return this.httpClient.post(this.baseURL + "GetUserByEmail", body);
-  } 
+  }
+
+
+
+  public updateActingDepartment(userProfileID: number) {
+
+    return this.httpClient.post(this.baseURL + "UpdateActingDepartment", userProfileID);
+
+  }
+
 
 }

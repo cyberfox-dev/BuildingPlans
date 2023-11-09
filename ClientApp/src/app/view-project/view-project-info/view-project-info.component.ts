@@ -513,12 +513,12 @@ export class ViewProjectInfoComponent implements OnInit {
 
   ngOnInit(): void {
 
-    debugger;
+    
 
     this.applicationData = this.sharedService.getViewApplicationIndex();
     console.log("venApplicationData:", this.applicationData);
     this.getAllSubDepartments();
-    debugger;
+    
 
     if (this.CurrentUser == null) {
       console.log("Not");
@@ -526,27 +526,27 @@ export class ViewProjectInfoComponent implements OnInit {
     else {
       console.log(this.CurrentUser);
     }
-    debugger;
+    
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
-    debugger;
+    
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
-    debugger;
+    
 
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
     console.log("000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", this.applicationDataForView[0]);
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
-    debugger;
+    
 
 
     const today = new Date();
     const twoWeeksFromNow = new Date();
     twoWeeksFromNow.setDate(today.getDate() + 14); // Add 14 days to the current date
-    debugger;
+    
     this.minDate = twoWeeksFromNow.toISOString().split('T')[0];
 
 
@@ -554,7 +554,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
 
-    debugger;
+    
 
     const setValues = this.applicationDataForView[0];
 
@@ -566,28 +566,28 @@ export class ViewProjectInfoComponent implements OnInit {
 
       this.router.navigate(["/home"]);
     }
-    debugger;
+    
 
     if (setValues.CurrentStageName == "PTW" || setValues.CurrentStageNumber >= 4) {
       this.showPermitTab = true;
     } else {
       this.showPermitTab = false;
     }
-    debugger;
+    
     if (setValues.CurrentStageName == "Monitoring") {
       this.showStatusOfWorksTab = true;
       this.showPermitTab = true;
     } else {
       this.showStatusOfWorksTab = false;
     }
-    debugger;
+    
     if (setValues.CurrentStageName == "Approval Pack Generation") {
       this.generateApproval = true;
       this.showPermitTab = true;
     } else {
       this.generateApproval = false;
     }
-    debugger;
+    
     if (setValues.CurrentStageName == "Approval Pack Generation" && this.CurrentUser.appUserId == this.applicationDataForView[0].CreatedById) {
       this.generateApprovalbtn = true;
       this.showPermitTab = true;
@@ -599,7 +599,7 @@ export class ViewProjectInfoComponent implements OnInit {
       this.referComment = true;
     }
 
-    debugger;
+    
     this.getRolesLinkedToUser();
     this.CurrentApplicant = setValues.CreatedById;
 
@@ -607,12 +607,12 @@ export class ViewProjectInfoComponent implements OnInit {
     console.log("this is the created by ID", setValues);
     this.createdByID = setValues.CreatedById;
     this.getApplicationDetailsForDocs();
-    debugger;
+    
 
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
-    debugger;
+    
     //Assigns the below values to the variable that will be passed to the map component.
     this.ARCGISAPIData.createdByID = this.CurrentUser.appUserId;
     this.ARCGISAPIData.isActive = "1";
@@ -626,7 +626,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getAllStages();
     this.setInterface();
     this.getAllRequiredDeposits();
-    debugger;
+    
 
     this.checkIfWbsRequired();
     /*    this.getAllSubDepForReject();*/
@@ -634,7 +634,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.canReapply = this.sharedService.getCanReapply();
     console.log("canReapplyVen: ", this.canReapply);
     this.setProjectNumber();
-    debugger;
+    
     this.getLinkedDepartments();
     this.checkIfCanReply();
     this.checkIfCanReviwerReply();
@@ -648,7 +648,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getAllSubDepartments();
     this.getLinkedDepartmentsFORAPPROVAL();
     this.CheckForApprovalPackDownload(); 
-    debugger;
+    
   }
   receivedata: string;
 
@@ -1060,25 +1060,25 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   checkIfCanReviwerReply() {
-    debugger;
+    
     this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         let tempReferCommentList;
         for (let i = 0; i < data.dateSet.length; i++) {
 
-          debugger;
-          debugger;
+          
+          
           const current = data.dateSet[i];
-          debugger;
+          
           if (current.commentStatus == "Referred" && current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
-            debugger;
+            
             if (current.createdById == this.CurrentUser.appUserId) {
-              debugger;
+              
               this.canReviewerClarify = true;
             }
             else {
-              debugger;
+              
               this.canReviewerClarify = false;
             }
 
@@ -1091,12 +1091,12 @@ export class ViewProjectInfoComponent implements OnInit {
       }
       else {
         alert(data.responseMessage);
-        debugger;
+        
       }
       console.log("reponse", data);
 
     }, error => {
-      debugger;
+      
       console.log("Error: ", error);
     })
 
@@ -2253,7 +2253,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getAllCommentsForSpecialConditions() {
-    debugger;
+    
     console.log("This is all the special comments from the subdepartments", this.ApplicationID);
     this.commentsService.getCommentsForSpecialConditions(this.ApplicationID).subscribe((data: any) => {
 
@@ -2294,7 +2294,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getAllSubDepFroConditionalApprove() {
-    debugger;
+    
     let commentS = "Approved";
 
     this.commentsService.getSubDepByCommentStatus(commentS, this.ApplicationID).subscribe((data: any) => {
@@ -2338,7 +2338,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   getContactDetails() {
 
-    debugger;
+    
     this.ContactDetailsList.splice(0, this.ContactDetailsList.length);
     this.contactDetails.getAllContactDetials().subscribe((data: any) => {
 
@@ -2494,7 +2494,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   onCreateApprovalPack() {
 
-    debugger;
+    
     /*    this.getAllSubDepFroConditionalApprove();*/
     const subDepCommentsMap = new Map();
 
@@ -2730,7 +2730,7 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.setFontSize(16);
     doc.text('Special Conditions', 10, 45, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify', });
 
-    debugger;
+    
     console.log(this.SubDepCommentsForSpecialConditions);
     this.SubDepCommentsForSpecialConditions.forEach((deposit) => {
       if (subDepCommentsMap.has(deposit.SubDepName)) {
@@ -3453,7 +3453,7 @@ export class ViewProjectInfoComponent implements OnInit {
       if (data.responseCode == 1) {
 
         console.log(this.StagesList);
-        debugger;
+        
         this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, this.StagesList[5].StageName, this.StagesList[5].StageOrderNumber, "PTW Pending").subscribe((data: any) => {
 
           if (data.responseCode == 1) {
@@ -4184,7 +4184,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   CheckForApprovalPackDownload() {
-    debugger;
+    
 
     if (this.CurrentUser.appUserId == this.applicationDataForView[0].CreatedById && this.generateApproval == true) {
 
@@ -4208,7 +4208,7 @@ export class ViewProjectInfoComponent implements OnInit {
   MoveToPermitStage() {
 
     console.log(this.StagesList);
-    debugger;
+    
     this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, this.StagesList[5].StageName, this.StagesList[5].StageOrderNumber, "PTW Pending").subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -4240,7 +4240,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   checkIfWbsRequired() {
-    debugger;
+    
     if (this.CurrentApplicationBeingViewed[0].wbsrequired == true) {
 
       if ( this.CurrentApplicationBeingViewed[0].WBSNumber.length >0) {

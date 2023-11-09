@@ -719,6 +719,41 @@ namespace WayleaveManagementSystem.Service
 
                ).ToListAsync();
         }
+        public async Task<bool> UpdateActingDepartment([FromBody] int userProfileID)
+        {
+            var userProfileToUpdate = _context.UserProfilesTable.FirstOrDefault(x => x.UserProfileID == userProfileID);
+
+            if (userProfileToUpdate == null)
+            {
+                return await Task.FromResult(false);
+            }
+            else
+            {
+                var userId = userProfileToUpdate.UserID; // Assuming there is a UserID field
+
+                // Get all profiles associated with the same user
+                var userProfiles = _context.UserProfilesTable.Where(x => x.UserID == userId).ToList();
+
+                foreach (var profile in userProfiles)
+                {
+                    if (profile.UserProfileID == userProfileID)
+                    {
+                        profile.isDefault = true; // Set the selected profile to true
+                    }
+                    else
+                    {
+                        profile.isDefault = false; // Set all other profiles to false
+                    }
+
+                    profile.DateUpdated = DateTime.Now;
+                    _context.Update(profile);
+                }
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+        }
+
     }
 
 }
