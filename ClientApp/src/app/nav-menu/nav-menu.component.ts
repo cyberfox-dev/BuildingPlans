@@ -169,6 +169,7 @@ export class NavMenuComponent implements OnInit {
 
   selected = 'none';
   select = 0;
+  isLoading: boolean = false;
 
 
 

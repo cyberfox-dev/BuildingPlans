@@ -13,6 +13,7 @@ namespace WayleaveManagementSystem.IServices
         //this will return T/F 
         public Task<bool> DeleteUserProfile(int userProfileID);
         public Task<bool> UserGainsApproval(int userProfileID);
+        public Task<bool> UpdateActingDepartment(int userProfileID);
 
         Task<List<UserProfileDTO>> GetUserByUserID(string userId);
 

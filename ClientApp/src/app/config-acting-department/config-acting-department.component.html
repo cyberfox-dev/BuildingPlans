@@ -24,19 +24,19 @@
 
           <div class="item-desc">
             <div class="row">
-            <div class="col-5">
-              <h3><i class="fa fa-user-circle" aria-hidden="true" hidden></i></h3>
-              <h2>{{item.UserName}}</h2>
-              <p>Belongs to: {{item.subDepartmentName}}</p>
-              <p>For: {{item.zoneName}}</p>
-            </div>
-            <div class="col-6">
-              <button mat-button color="activate" >Activate</button>
-            </div>
+              <div class="col-5">
+                <h3><i class="fa fa-user-circle" aria-hidden="true" hidden></i></h3>
+                <h2>{{item.FullName}}</h2>
+                <p>Belongs to: {{item.subDepartmentName}}</p>
+                <p>For: {{item.zoneName}}</p>
+              </div>
+              <div class="col-6">
+                <button mat-button color="activate" (click)="activateProfile(item)" *ngIf="item.isDefault != true">Activate</button>
               </div>
             </div>
           </div>
-  
+        </div>
+
       </div>
     </div>
   </div>
@@ -48,3 +48,7 @@
   <button mat-button (click)="cancel()">Cancel</button>
   <button mat-button cdkFocusInitial (click)="continue()">Continue</button>
 </mat-dialog-actions>-->
+
+<div class="loading-screen" *ngIf="isLoading" id="loadingScreen">
+  <img src="assets/Loading.png" alt="" class="logo2">
+</div>

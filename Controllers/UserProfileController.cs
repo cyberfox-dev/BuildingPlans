@@ -652,6 +652,33 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpPost("UpdateActingDepartment")]
+        public async Task<object> UpdateActingDepartment([FromBody] int userProfileID)
+        {
+            try
+            {
+                if (userProfileID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Invalid UserProfileID", null));
+                }
+                else
+                {
+                    var result = await _userProfileService.UpdateActingDepartment(userProfileID);
+                    if (result)
+                    {
+                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Changed department successfully", result));
+                    }
+                    else
+                    {
+                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Request for department change unsuccessful ", null));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
 
     }
 }

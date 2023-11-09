@@ -68,7 +68,7 @@
 </ng-template>
 
 
- <ng-template #editComment let-modal>
+<ng-template #editComment let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Edit Comment</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">Close</button>
@@ -232,7 +232,7 @@
 
   <div class="modal-body">
     <h1>Frequently Asked Questions (FAQ's)</h1>
-    <mat-expansion-panel  *ngFor="let faqList of FAQList; let i = index" class="animationSlideUp">
+    <mat-expansion-panel *ngFor="let faqList of FAQList; let i = index" class="animationSlideUp">
       <mat-expansion-panel-header>
         <mat-panel-title>
           Question : {{faqList.Question}}
@@ -276,3 +276,11 @@
     </div>
   </div>
 </ng-template>
+
+
+
+
+<!--
+<div class="loading-screen" *ngIf="isLoading" id="loadingScreen">
+  <img src="assets/Loading.png" alt="" class="logo2">
+</div>-->

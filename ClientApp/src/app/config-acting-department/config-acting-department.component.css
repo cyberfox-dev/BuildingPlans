@@ -341,7 +341,7 @@ button {
   display: flex;
 }
 .mat-activate {
-  margin-left: 80px;
+  margin-left: 102px;
   margin-top: 98px;
 }
 .default{
@@ -352,4 +352,58 @@ button {
 }
 .shapes{
     display:flex;
+}
+
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(255 255 255);
+  z-index: 9999;
+  animation: fadein 0.5s linear forwards;
+}
+
+.text {
+  font-size: 24px;
+  color: black;
+  margin-top: 20px;
+}
+
+.text2 {
+  font-size: 12px;
+  color: black;
+  margin-top: 10px;
+}
+
+.logo2 {
+  width: 252px;
+  height: 252px;
+  animation: spin 4s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadein {
+
+  0% {
+    opacity: 0.1;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
