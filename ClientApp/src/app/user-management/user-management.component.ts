@@ -220,8 +220,44 @@ export class UserManagementComponent implements OnInit {
     this.modalService.open(newUser, { centered: true, size: 'xl' });
   }
   openAllUsersModal(allUsers) {
-    this.modalService.open(allUsers, { centered: true, size: 'xl' });
+
+    this.modalService.dismissAll();
+    const modalRef = this.modalService.open(allUsers, { centered: true, size: 'xl', backdrop:'static', });
+    //modalRef.componentInstance.dataSource = this.dataSourceZoneLink;
   }
+  /*async openAllUsersModal(allUsers) {
+    try {
+      // Retrieve the default list before opening the modal
+      await this.showLinkedUsers();
+
+      // Dismiss any existing modals
+      this.modalService.dismissAll();
+
+      // Open the new modal with the freshly acquired data source
+      const modalRef = this.modalService.open(allUsers, {
+        centered: true,
+        size: 'xl',
+        backdrop: 'static', // Prevent dismissal by clicking outside the modal
+      });
+
+      modalRef.componentInstance.dataSource = [...this.ZoneLinkList];
+
+      // Subscribe to the modal's dismiss event to refresh the data source
+      modalRef.result.then(
+        async () => {
+          // Refresh the data source when the modal is dismissed
+          await this.showLinkedUsers();
+          modalRef.componentInstance.dataSource = [...this.ZoneLinkList];
+        },
+        () => {
+          // Handle dismissal rejection if needed
+        }
+      );
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  }
+  */
 
   async getZoneByZoneId(zoneID: any): Promise<string> {
     try {
@@ -633,93 +669,107 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
-  async showLinkedUsers() {
-    debugger;
-    console.log("Hi, from show linked - This is the department ID????" + this.loggedInUsersDepartmentID);
-    //This service become undefined??
-    this.subDepartmentService.getSubDepartmentsByDepartmentID(this.loggedInUsersDepartmentID).subscribe(async (subDepartmentsData: any) => {
-      if (subDepartmentsData.responseCode === 1) {
-        const observables = subDepartmentsData.dateSet.map(async (subDepartment: any) => {
-          const userData = await this.userPofileService.getUsersBySubDepartmentName(subDepartment.subDepartmentName).toPromise();
-          return userData;
-        });
-        debugger;
-        const userDataSets = await Promise.all(observables);
-        console.log("What is going on??");
-        console.table(userDataSets);
-        for (let i = 0; i < userDataSets.length; i++) {
-          const data = userDataSets[i];
-          if (data.responseCode === 1) {
-            for (let j = 0; j < data.dateSet.length; j++) {
-              const tempZoneLinkList = {} as ZoneLinkList;
-              const current = data.dateSet[j];
-              debugger;
-              tempZoneLinkList.userProfileID = current.userProfileID;
-              tempZoneLinkList.userID = current.userID;
-              tempZoneLinkList.fullName = current.fullName;
-              tempZoneLinkList.departmentName = current.directorate;
-              tempZoneLinkList.subDepartmentID = current.subDepartmentID;
-              tempZoneLinkList.departmentID = current.departmentID;
-              tempZoneLinkList.subdepartmentName = current.subDepartmentName;
-              tempZoneLinkList.isZoneAdmin = current.isZoneAdmin ? 'Yes' : 'No';
-              tempZoneLinkList.isDepartmentAdmin = current.isDepartmentAdmin ? 'Yes' : 'No';
+  async showLinkedUsers(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      debugger;
+      this.ZoneLinkList.splice(0, this.ZoneLinkList.length);
+      console.log("Hi, from show linked - This is the department ID????" + this.loggedInUsersDepartmentID);
 
-              this.getZones(current.subDepartmentID);
-              if (current.directorate == "EMB" || current.subDepartmentName == "EMB") {
-                tempZoneLinkList.zoneName = "EMB";
-              } else {
-                //zoneID
-                if (current.zoneID != null) {
-                  try {
-                    tempZoneLinkList.ZoneID = current.zoneID;
-                    const zoneName: string = await this.getTheirZoneName(current.zoneID);
-                    tempZoneLinkList.zoneName = zoneName;
-                    // Use zoneName here as a string
-                    console.log("Zone Name:", zoneName);
-                  } catch (error) {
-                    // Handle errors here
-                    console.error("Error:", error);
-                    tempZoneLinkList.ZoneID = null;
-                    tempZoneLinkList.zoneName = "Unassigned";
+      this.subDepartmentService.getSubDepartmentsByDepartmentID(this.loggedInUsersDepartmentID).subscribe(async (subDepartmentsData: any) => {
+        try {
+          if (subDepartmentsData.responseCode === 1) {
+            const observables = subDepartmentsData.dateSet.map(async (subDepartment: any) => {
+              const userData = await this.userPofileService.getUsersBySubDepartmentName(subDepartment.subDepartmentName).toPromise();
+              return userData;
+            });
+
+            const userDataSets = await Promise.all(observables);
+
+            for (let i = 0; i < userDataSets.length; i++) {
+              const data = userDataSets[i];
+
+              if (data.responseCode === 1) {
+                for (let j = 0; j < data.dateSet.length; j++) {
+                  const tempZoneLinkList = {} as ZoneLinkList;
+                  const current = data.dateSet[j];
+
+                  debugger;
+                  tempZoneLinkList.userProfileID = current.userProfileID;
+                  tempZoneLinkList.userID = current.userID;
+                  tempZoneLinkList.fullName = current.fullName;
+                  tempZoneLinkList.departmentName = current.directorate;
+                  tempZoneLinkList.subDepartmentID = current.subDepartmentID;
+                  tempZoneLinkList.departmentID = current.departmentID;
+                  tempZoneLinkList.subdepartmentName = current.subDepartmentName;
+                  tempZoneLinkList.isZoneAdmin = current.isZoneAdmin ? 'Yes' : 'No';
+                  tempZoneLinkList.isDepartmentAdmin = current.isDepartmentAdmin ? 'Yes' : 'No';
+
+                  this.getZones(current.subDepartmentID);
+                  if (current.directorate == "EMB" || current.subDepartmentName == "EMB") {
+                    tempZoneLinkList.zoneName = "EMB";
+                  } else {
+                    //zoneID
+                    if (current.zoneID != null) {
+                      try {
+                        tempZoneLinkList.ZoneID = current.zoneID;
+                        const zoneName: string = await this.getTheirZoneName(current.zoneID);
+                        tempZoneLinkList.zoneName = zoneName;
+                        // Use zoneName here as a string
+                        console.log("Zone Name:", zoneName);
+                      } catch (error) {
+                        // Handle errors here
+                        console.error("Error:", error);
+                        tempZoneLinkList.ZoneID = null;
+                        tempZoneLinkList.zoneName = "Unassigned";
+                      }
+                    } else {
+                      // this.zoneLinkService.getAllUserLinks(current.userID).subscribe
+                      try {
+                        const fetchedZoneID: number = await this.getZoneIDViaLink(current.userID);
+                        tempZoneLinkList.ZoneID = fetchedZoneID;
+                        const zoneName: string = await this.getTheirZoneName(fetchedZoneID);
+                        tempZoneLinkList.zoneName = zoneName;
+                      } catch (error) {
+                        // Handle errors here
+                        debugger;
+                        console.error("Error:", error);
+                        // Set a default message for "Unknown Zone"
+                        tempZoneLinkList.ZoneID = null;
+                        tempZoneLinkList.zoneName = "Unassigned";
+                      }
+                    }
                   }
-                } else {
-                  // this.zoneLinkService.getAllUserLinks(current.userID).subscribe
-                  try {
-                    const fetchedZoneID: number = await this.getZoneIDViaLink(current.userID);
-                    tempZoneLinkList.ZoneID = fetchedZoneID;
-                    const zoneName: string = await this.getTheirZoneName(fetchedZoneID);
-                    tempZoneLinkList.zoneName = zoneName;
-                  } catch (error) {
-                    // Handle errors here
-                    debugger;
-                    console.error("Error:", error);
-                    // Set a default message for "Unknown Zone"
-                    tempZoneLinkList.ZoneID = null;
-                    tempZoneLinkList.zoneName = "Unassigned";
-                  }
+
+                  this.ZoneLinkList.push(tempZoneLinkList);
                 }
+              } else {
+                //alert(data.responseMessage);
               }
-              this.ZoneLinkList.push(tempZoneLinkList);
-             
+              console.log('response', data);
             }
-          } else {
-            //alert(data.responseMessage);
-          }
-          console.log('response', data);
-        }
-        console.log("Iphi le ZONE LINK LIST????");
-        console.table(this.ZoneLinkList);
 
-        this.ZoneDepTable?.renderRows();
-      } else {
-        //alert(subDepartmentsData.responseMessage);
-      }
-    }, error => {
-      console.log('Error showing linked users: ', error);
+            console.log("Iphi le ZONE LINK LIST????");
+            console.table(this.ZoneLinkList);
+
+            this.ZoneDepTable?.renderRows();
+            resolve(); // Resolve the promise once the asynchronous operations are complete
+          } else {
+            //alert(subDepartmentsData.responseMessage);
+            reject("Error: " + subDepartmentsData.responseMessage);
+          }
+        } catch (error) {
+          console.log('Error showing linked users: ', error);
+          reject("Error: " + error);
+        }
+      }, error => {
+        console.log('Error showing linked users: ', error);
+        reject("Error: " + error);
+      });
     });
   }
 
-  //Zone Name
+  //Zone Name == This was a roundabout way that I used because there was no Zone Name column at the time
+  //TODO: Get ZoneName from UserProfile table
   async getTheirZoneName(zoneID: any): Promise<string> {
     if (zoneID === null) {
       //if not the return no zone 
@@ -807,13 +857,12 @@ export class UserManagementComponent implements OnInit {
     this.ThisUserRolesList.splice(0, this.ThisUserRolesList.length);
     this.selectedUser = index;
 
-    /*this.selectedUserID = this.ZoneLinkList[index].userID;
-    this.userProfileID = this.ZoneLinkList[index].userProfileID;
-    this.selectedUserName = this.ZoneLinkList[index].fullName;*/
-
     this.selectedUserID = this.dataSourceZoneLink[index].userID;
     this.userProfileID = this.dataSourceZoneLink[index].userProfileID;
+    this.thisUSERPID = this.dataSourceZoneLink[index].userProfileID;
     this.selectedUserName = this.dataSourceZoneLink[index].fullName;
+    this.theirSelectedSubDepartment = this.dataSourceZoneLink[index].subdepartmentName;
+    this.theirSelectedZoneName = this.dataSourceZoneLink[index].zoneName;
 
     //this.selectedDepartmentID = this.ZoneLinkList[index].departmentID;
 
@@ -943,23 +992,24 @@ export class UserManagementComponent implements OnInit {
     this.ThisUserRolesList.splice(0, this.ThisUserRolesList.length);
     this.selectedUser = index;
 
-    this.selectedUserID = this.ZoneLinkList[index].userID;
-    this.userProfileID = this.ZoneLinkList[index].userProfileID;
-    this.selectedUserName = this.ZoneLinkList[index].fullName;
+    this.selectedUserID = this.dataSourceZoneLink[index].userID;
+    this.userProfileID = this.dataSourceZoneLink[index].userProfileID;
+    this.selectedUserName = this.dataSourceZoneLink[index].fullName;
 
     //this.selectedDepartmentID = this.ZoneLinkList[index].departmentID;
 
     console.log("Selected UserID: ", this.selectedUserID);
     console.log("Selected UserName: ", this.selectedUserName);
 
-    this.subDeptID = this.ZoneLinkList[index].subDepartmentID;
-    this.theirSubdepartmentID = this.ZoneLinkList[index].subDepartmentID;
-    this.zoneId = this.ZoneLinkList[index].ZoneID;
-    this.ZoneName = this.ZoneLinkList[index].zoneName;
-    this.subDeptName = this.ZoneLinkList[index].subdepartmentName;
+    this.subDeptID = this.dataSourceZoneLink[index].subDepartmentID;
+    this.theirSubdepartmentID = this.dataSourceZoneLink[index].subDepartmentID;
+    this.zoneId = this.dataSourceZoneLink[index].ZoneID;
+    this.ZoneName = this.dataSourceZoneLink[index].zoneName;
+    this.subDeptName = this.dataSourceZoneLink[index].subdepartmentName;
 
-    this.ZonesList.splice(0, this.ZonesList.length);
-    
+    await this.ZonesList.splice(0, this.ZonesList.length);
+    await this.TheirZoneLinkDetailsList.splice(0, this.TheirZoneLinkDetailsList.length);
+
     await this.getZones(this.subDeptID).subscribe((data: any) => {
       if (data.responseCode == 1) {
         this.selectedDepartmentID = data.dateSet.departmentID;
@@ -972,7 +1022,7 @@ export class UserManagementComponent implements OnInit {
           tempZonesList.SubDepartmentID = current.subDepartmentID;
           this.ZonesList.push(tempZonesList); 
         }
-        console.log("This is the relevant departmentID ", this.subDeptID);
+        console.log("This is the relevant departmentID, and I have just got all of the zones for the mat-tab ", this.subDeptID);
         console.table(this.ZonesList);
       } else {
         //alert(data.responseMessage);
@@ -981,11 +1031,38 @@ export class UserManagementComponent implements OnInit {
     }, error => {
       console.log("ZonesList error: ", error);
     });
+    await this.accessGroupLinkService.getAGBySubDeptAndUserID(this.selectedUserID, this.subDeptID).subscribe(async (data: any) => {
+      if (data.responseCode == 1) {
+        console.log("ZONELINKS ARE NOW IN THE ACCESSGROUPUSERLINKTABLE:", data);
+        // This is essentially the new thisUserZoneInfo()
 
-    await this.getZoneLinks(this.selectedUserID);
+        //const zoneName: string = await this.getZoneByZoneId(current.zoneID);
+        if (data.responseCode == 1) {
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempTheirZoneLinkDetailsList = {} as ZoneLinkList;
+            const current = data.dateSet[i];
+            tempTheirZoneLinkDetailsList.ZoneID = current.zoneID;
+            tempTheirZoneLinkDetailsList.zoneName = await this.getZoneByZoneId(current.zoneID);
+            this.TheirZoneLinkDetailsList.push(tempTheirZoneLinkDetailsList);
+          }
+          console.log("I want to know which zones they are in: ", data);
+          console.table(this.TheirZoneLinkDetailsList);
+          await this.checkZoneLinkage();
+          console.log(data.responseMessage);
+        } else {
+          console.log(data.responseMessage);
+        }
+      }
+    }, error => {
+      console.log("ZonesList error: ", error);
+    });
+
+    this.modalService.open(departmentPersonZones, { centered: true, size: 'lg' });
+    //#region OLD IMPLEMENTATION THAT USES THE ZONELINK TABLE
+    /*
+    await this.getZoneLinks(this.selectedUserID); //NO LONGER USING THE ZONE LINK TABLE - ALL IS DONE VIA THE USERPROFILETABLE AND THE ACCESSGROUPUSERLINKTABLES
     this.TheirZoneLinkDetailsList.splice(0, this.TheirZoneLinkDetailsList.length);
     await this.thisUserZoneInfo();//NB - won't know where user is linked without this
-
     await this.checkZoneLinkage();
 
     //this.getAccessGroups();
@@ -1027,6 +1104,8 @@ export class UserManagementComponent implements OnInit {
       }
     })
     console.log("I'm out of the method.");
+    */
+    //#endregion
   }
 
   checkZoneLinkage() {
@@ -1489,6 +1568,7 @@ export class UserManagementComponent implements OnInit {
     this.modalService.open(viewDepartmentPerson, { centered: true, size: 'lg' });
   }
 
+  //MIZE THIS METHOD FOR NOW!!!!
   async addToAccessGroupInZones(index: number, departmentPersonZones: any, zoneId) {
     // You can use the index to access the selected access group in AccessGroupList
     const selectedAccessGroup = this.AccessGroupList[index];
@@ -2437,30 +2517,70 @@ export class UserManagementComponent implements OnInit {
     });
   }
   nameToUnlink: string = '';
-  removeUserFromDPT(index: any) {
+  zoneToUnlinkFrom: string = '';
+  async removeUserFromDPT(index: any, allUsers:any) {
     //this is to remove a person from a zone
+
     debugger;
     this.selectedUserIndex = this.dataSourceZoneLink[index].userProfileID;
     this.nameToUnlink = this.dataSourceZoneLink[index].fullName;
-    this.userPofileService.deleteUserProfile(this.selectedUserIndex).subscribe((data: any) => {
+    this.zoneToUnlinkFrom = this.dataSourceZoneLink[index].zoneName;
+
+    const isConfirmed = window.confirm("Are you sure you want to remove "+ this.nameToUnlink +" from " + this.zoneToUnlinkFrom + "?");
+
+    if (!isConfirmed) {
+      return; // Do nothing if the user cancels the confirmation
+    }
+
+    await this.userPofileService.deleteUserProfile(this.selectedUserIndex).subscribe(async(data: any) => {
       if (data.responseCode == 1) {
         debugger;
         console.log(data.responseMessage);
+       
+        await this.showLinkedUsers()
+          .then(() => {
+            this.dataSourceZoneLink = [...this.ZoneLinkList];
+          })
+          .catch((error) => {
+            console.error("An error occurred:", error);
+          });
+        
       } else {
 
         console.log(data.responseMessage);
       }
       console.log("I'm just trying to unlink a user AKA delete a userprofile:", data);
+
     }, error => {
       // Handle errors that may occur during the zone link update.
       console.log("Error: ", error);
     })
-    this.showLinkedUsers();
+    //I should probably "remove" accessgroup links while I'm at it no?
+    this.accessGroupsService.deleteUserAGZoneLinks(this.selectedUserIndex).subscribe(async (data: any) => {
+      if (data.responseCode == 1) {
+       
+        await this.openAllUsersModal(allUsers);
+      }else {
+
+        console.log(data.responseMessage);
+      }
+      console.log("I'm just trying to unlink a user from a zone and revoke acess group privileges:", data);
+
+    }, error => {
+      // Handle errors that may occur during the zone link update.
+      console.log("Error: ", error);
+    })
+
   }
 
   FilterBtn: boolean = false;
   DepartFilter: boolean = false;
   FilterValue = "";
+
+  multiFilter: boolean = false;
+  openFilterModal() {
+
+  }
 
   getAllDepartments() {
     this.departmentService.getDepartmentsList().subscribe((data: any) => {
@@ -2489,7 +2609,17 @@ export class UserManagementComponent implements OnInit {
     })
   }
 
-
+  onUnselection() {
+    this.selectedUserID = null;
+    this.userProfileID = null;
+    this.selectedUserName = null;
+    this.subDeptID = null;
+    this.theirSubdepartmentID = null;
+    this.zoneId = null;
+    this.ZoneName = null;
+    this.subDeptName = null;
+    console.log("WHO IS SELECTED? NOBODY")
+  }
   onFilterButtonClick() {
     this.DepartFilter = false;
     this.isAGFilter = false;

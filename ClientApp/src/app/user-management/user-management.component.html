@@ -258,15 +258,18 @@
 
   <div class="modal-header">
     <div *ngIf="!isEMBAdmin"><h4 class="modal-title" id="modal-basic-title">The <b>{{this.loggedInUserDepartmentName}}</b> department's user list</h4></div>
-    <div *ngIf="isEMBAdmin"> <h4 class="modal-title" id="modal-basic-title">Internal user list</h4></div>
-    <button type="button" class="btn-close" aria-label="Close" (click)="onFilterButtonClick();modal.dismiss('Cross click')"></button>
+    <div *ngIf="isEMBAdmin"> <h4 class="modal-title" id="modal-basic-title">Internal User Listing</h4></div>
+    <button type="button" class="btn-close" aria-label="Close" (click)="onFilterButtonClick();onUnselection();modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
 
     <div *ngIf="isEMBAdmin" class="filter-users">
       <div class="container02">
-        <button mat-button [matMenuTriggerFor]="linkedUsers" matTooltip="Filter internal user list" color="filter" aria-label="" (click)="onFilterButtonClick()">
+        <button mat-button [matMenuTriggerFor]="linkedUsers" matTooltip="Filter ITO departments" color="filter" aria-label="" (click)="onFilterButtonClick()">
           <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/filter-solid.svg" class="icon">
+        </button>
+        <button mat-button matTooltip="Filter ITO zones and access groups" color="filter" aria-label="" (click)=" openFilterModal()">
+          <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/sliders.svg" class="icon">
         </button>
 
         <mat-menu #linkedUsers="matMenu">
@@ -277,7 +280,7 @@
         <mat-form-field appearance="outline">
           <mat-label>Search</mat-label>
           <div class="cont6">
-
+            <!--TODO: check which list the textbox filter pulls from-->
             <input matInput placeholder="Search By Internal User Name" (keyup)="applyFilter($event)" #input>
             <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/magnifying-glass-solid.svg" class="icon3">
           </div>
@@ -287,11 +290,19 @@
         <!--C:\CyberfoxProjects\WayleaveManagementSystem\ClientApp\src\assets\fontawesome-free-6.4.2-web\svgs\solid\user-group.svg-->
       </div>
       <div *ngIf="DepartFilter" class="filterValue">
-        <p class="filterText">You Are Currently Viewing {{FilterValue}} Users | </p>
+        <p class="filterText">You Are Currently Viewing {{FilterValue}} Users </p>
 
-        <button mat-button color="primary" (click)="showAccessGroups()">
+        <!--<button mat-button color="primary" (click)="showAccessGroups()">
           <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/user-group.svg" class="icon">
-        </button>
+        </button>-->
+
+      </div>
+      <div *ngIf="multiFilter" class="filterValue">
+        <p class="filterText">You Are Currently Viewing {{FilterValue}} Users </p>
+
+        <!--<button mat-button color="primary" (click)="showAccessGroups()">
+          <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/user-group.svg" class="icon">
+        </button>-->
 
       </div>
 
@@ -364,18 +375,32 @@
       </ng-container>
 
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef> </th>
-        <td mat-cell *matCellDef="let i = index">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let i = index" class="action-buttons-container">
 
-          <!--<button mat-raised-button color="orange" matTooltip="View and Edit User" (click)="editUserScope(i, viewDepartmentPerson); modal.close('Save click')"><i class="fa fa-pencil"></i></button>-->
-          <button mat-raised-button color="orange" matTooltip="View and Edit User" (click)="editUserScopeManyZones(i, departmentPersonZones); modal.close('Save click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/pencil-solid.svg" class="icon"></button>
-          <!--What is this button supposed to do?-->
-          <button mat-raised-button color="success" matTooltip="Add User to another Zone" (click)="addToMoreZones(i, addToZones);modal.close('Save click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid-white.svg" class="icon"></button>
-          <button mat-raised-button color="warn" matTooltip="Unlink User" (click)="removeUserFromDPT(i);modal.close('Save click');openAllUsersModal(allUsers)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/link-slash-solid-white.svg" class="icon red"> </button>
+          <div class="button-group">
+            <button mat-raised-button color="blue" matTooltip="View ALL User Access Group Links" (click)="editUserScopeManyZones(i, departmentPersonZones); modal.close('Save click')">
+              <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid-white.svg" class="icon">
+            </button>
+
+            <button mat-raised-button color="orange" matTooltip="View and Edit User" (click)="editUserScope(i, viewDepartmentPerson); modal.close('Save click')">
+              <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/pencil-solid.svg" class="icon">
+            </button>
+          </div>
+
+          <div class="button-group">
+            <button mat-raised-button color="success" matTooltip="Add User to another Zone" (click)="addToMoreZones(i, addToZones);modal.close('Save click')">
+              <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/link-solid.svg" class="icon">
+            </button>
+
+            <button mat-raised-button color="warn" matTooltip="Unlink User" (click)="removeUserFromDPT(i,allUsers);">
+              <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/link-slash-solid-white.svg" class="icon red">
+            </button>
+          </div>
 
         </td>
-
       </ng-container>
+
       <tr mat-header-row *matHeaderRowDef="displayedColumnsZoneLinks"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumnsZoneLinks;"></tr>
     </table>
@@ -387,10 +412,15 @@
   </div>-->
 </ng-template>
 
+<ng-template #moreFulter let-modal>
+
+
+</ng-template>
+
 <ng-template #viewDepartmentPerson let-modal>
   <div class="modal-header">
     <h3 class="modal-title" id="modal-basic-title">{{this.selectedUserName}} | {{this.theirSelectedSubDepartment}}, {{this.theirSelectedZoneName}} </h3>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click');onUnselection();"></button>
   </div>
   <div class="modal-body">
     <table class="table">
@@ -451,10 +481,11 @@
   </div>-->
 </ng-template>
 
+<!--WELP, YOU CAN ONLY VIEW THEM HERE-->
 <ng-template #departmentPersonZones let-modal>
   <div class="modal-header">
-    <h3 class="modal-title" id="modal-basic-title">{{this.selectedUserName}}</h3>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    <h3 class="modal-title" id="modal-basic-title">You're currently viewing {{this.selectedUserName}}'s zone links and access groups.</h3>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click');onUnselection() "></button>
   </div>
   <div class="modal-body">
     <mat-tab-group (selectedTabChange)="onTabChange($event)">
@@ -478,17 +509,27 @@
                     <tr *ngFor="let access of AccessGroupList; let i = index">
                       <td>{{ access.AccessGroupName }}</td>
                       <td>
-                        <button class="btn btn-danger" (click)="removeFromAccessGroup(i)" *ngIf="isUserInAccessGroup(access.AccessGroupID)">
-                          -
+                        <!--<button class="btn btn-danger" (click)="removeFromAccessGroup(i)" *ngIf="isUserInAccessGroup(access.AccessGroupID)">
+                        -
+                      </button>
+                      <button class="btn btn-success" (click)="addToAccessGroup(i, departmentPersonZones);modal.close('Save click')" *ngIf="!isUserInAccessGroup(access.AccessGroupID)">
+                        +
+                      </button>-->
+                        <!-- For the minus button -->
+                        <button class="btn btn-success"  *ngIf="isUserInAccessGroup(access.AccessGroupID)" [disabled]="true">
+                          &#10003; <!-- Unicode check (tick) character -->
                         </button>
-                        <button class="btn btn-success" (click)="addToAccessGroup(i, departmentPersonZones);modal.close('Save click')" *ngIf="!isUserInAccessGroup(access.AccessGroupID)">
-                          +
+
+                        <!-- For the plus button -->
+                        <button class="btn btn-danger" style="background-color: gray;" *ngIf="!isUserInAccessGroup(access.AccessGroupID)" [disabled]="true">
+                          &#10005; <!-- Unicode cross character -->
                         </button>
+
                       </td>
                     </tr>
                   </tbody>
                 </table>
-                <div class="container">
+                <!--<div class="container">
                   <div class="row">
                     <div class="col-sm-6">
                       <div class="form-group">
@@ -503,7 +544,7 @@
                       </div>
                     </div>
                   </div>
-                </div>
+                </div>-->
               </div>
               <br />
             </div>
@@ -516,7 +557,7 @@
       </ng-container>
     </mat-tab-group>
   </div>
-  <div class="modal-footer">
+  <!--<div class="modal-footer">
     <button type="button" class="btn btn-outline-success" (click)="saveAdminChanges();modal.close('Save click')">Save</button>
-  </div>
+  </div>-->
 </ng-template>

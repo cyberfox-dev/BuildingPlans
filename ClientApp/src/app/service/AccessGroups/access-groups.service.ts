@@ -67,6 +67,14 @@ export class AccessGroupsService {
     return this.httpClient.post(this.baseURL + "DeleteAccessGroupUserLinkByID", accessGroupUserLinkID);
 
   }
+  public deleteUserAGZoneLinks(userProfileID: number) {
+    const body = {
+      userProfileID:userProfileID
+    }
+
+    return this.httpClient.post(this.baseURL + "DeleteAccessGroupUserLinkByProfessionalID", body);
+
+  }
 
   public deleteAccessGroupRoleLinkByID(accessGroupRoleLinkID: number) {
 
