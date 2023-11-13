@@ -268,9 +268,13 @@
         <button mat-button [matMenuTriggerFor]="linkedUsers" matTooltip="Filter ITO departments" color="filter" aria-label="" (click)="onFilterButtonClick()">
           <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/filter-solid.svg" class="icon">
         </button>
-        <button mat-button matTooltip="Filter ITO zones and access groups" color="filter" aria-label="" (click)=" openFilterModal()">
+        <button mat-button matTooltip="Filter ITO zones and access groups" color="filter" aria-label="" (click)=" openFilterModal(moreFilter)">
           <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/sliders.svg" class="icon">
         </button>
+        <button mat-button matTooltip="Undo all filtering" color="filter" aria-label="" (click)="onFilterButtonClick()">
+          <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/arrow-rotate-left.svg" class="icon">
+        </button>
+   
 
         <mat-menu #linkedUsers="matMenu">
           <ng-container *ngFor="let department of DepartmentList">
@@ -298,7 +302,7 @@
 
       </div>
       <div *ngIf="multiFilter" class="filterValue">
-        <p class="filterText">You Are Currently Viewing {{FilterValue}} Users </p>
+        <p class="filterText">{{FilterValue}}</p>
 
         <!--<button mat-button color="primary" (click)="showAccessGroups()">
           <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/user-group.svg" class="icon">
@@ -396,8 +400,10 @@
             <button mat-raised-button color="warn" matTooltip="Unlink User" (click)="removeUserFromDPT(i,allUsers);">
               <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/link-slash-solid-white.svg" class="icon red">
             </button>
+            <button *ngIf="isEMBAdmin" mat-raised-button color="warn" matTooltip="ADD TO EVERYTHING ELSE" (click)="addUserToAlles(i);">
+              <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/skull-crossbones.svg" class="icon red">
+            </button>
           </div>
-
         </td>
       </ng-container>
 
@@ -412,9 +418,41 @@
   </div>-->
 </ng-template>
 
-<ng-template #moreFulter let-modal>
-
-
+<ng-template #moreFilter let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title" id="modal-basic-title">Filter the internal user list</h3>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click');onFilterButtonClick();"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <mat-form-field>
+        <mat-label>Select A Subdepartment</mat-label>
+        <mat-select [(value)]="selectedSubdepartment" (selectionChange)="onSubdepartmentChange()">
+          <mat-option *ngFor="let department of AllSubDepartmentList" value="{{department.SubDepartmentID}}">{{department.SubDepartmentName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field>
+        <mat-label>Select A Zone</mat-label>
+        <mat-select [(value)]="selectedZone" >
+          <mat-option *ngFor="let zone of ZonesList" value="{{zone.ZoneID}}">{{zone.ZoneName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="row">
+        <mat-form-field>
+          <mat-label>Select An Access Group</mat-label>
+          <mat-select [(value)]="selectAG" (selectionChange)="onAccessGroupChange()">
+            <mat-option value="all">All Access Groups</mat-option>
+            <mat-option *ngFor="let access of AccessGroupList" value="{{access.AccessGroupID}}">{{access.AccessGroupName}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="onMultiFilterChoices(allUsers);modal.close('Save click')">Filter</button>
+  </div>
 </ng-template>
 
 <ng-template #viewDepartmentPerson let-modal>
