@@ -393,14 +393,16 @@
           </div>
 
           <div class="button-group">
-            <button mat-raised-button color="success" matTooltip="Add User to another Zone" (click)="addToMoreZones(i, addToZones);modal.close('Save click')">
+            <button mat-raised-button *ngIf="!isEMBAdmin" color="success" matTooltip="Add User to another Zone" (click)="addToMoreZones(i, addToZones);modal.close('Save click')">
               <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/link-solid.svg" class="icon">
             </button>
-
+              <button mat-raised-button *ngIf="isEMBAdmin" color="success" matTooltip="Add User to Department and/or Zone" (click)="addToMoreZones(i, addToZones);modal.close('Save click')">
+              <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/link-solid.svg" class="icon">
+            </button>
             <button mat-raised-button color="warn" matTooltip="Unlink User" (click)="removeUserFromDPT(i,allUsers);">
               <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/link-slash-solid-white.svg" class="icon red">
             </button>
-            <button *ngIf="isEMBAdmin" mat-raised-button color="warn" matTooltip="ADD TO EVERYTHING ELSE" (click)="addUserToAlles(i);">
+            <button *ngIf="isEMBAdmin" mat-raised-button color="warn" matTooltip="ADD TO EVERYTHING ELSE" (click)="addUserToAlles(i);" hidden>
               <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/skull-crossbones.svg" class="icon red">
             </button>
           </div>
@@ -522,7 +524,7 @@
 <!--WELP, YOU CAN ONLY VIEW THEM HERE-->
 <ng-template #departmentPersonZones let-modal>
   <div class="modal-header">
-    <h3 class="modal-title" id="modal-basic-title">You're currently viewing {{this.selectedUserName}}'s zone links and access groups.</h3>
+    <h3 class="modal-title" id="modal-basic-title">You're currently viewing {{this.selectedUserName}}'s zone links and access groups in {{this.subDeptName}}.</h3>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click');onUnselection() "></button>
   </div>
   <div class="modal-body">

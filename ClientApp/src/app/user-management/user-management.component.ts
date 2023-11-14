@@ -359,7 +359,7 @@ export class UserManagementComponent implements OnInit {
     })
   }
 
-  getAllAccessGroup() {
+  /*getAllAccessGroup() {
 
     this.AccessGroupList.splice(0, this.AccessGroupList.length);
     this.accessGroupsService.getAllAccessGroups().subscribe((data: any) => {
@@ -386,7 +386,36 @@ export class UserManagementComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
+  }*/
+
+  async getAllAccessGroup(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.AccessGroupList.splice(0, this.AccessGroupList.length);
+      this.accessGroupsService.getAllAccessGroups().subscribe(
+        (data: any) => {
+          if (data.responseCode == 1) {
+            for (let i = 0; i < data.dateSet.length; i++) {
+              const tempAccessGroupList = {} as AccessGroupList;
+              const current = data.dateSet[i];
+              tempAccessGroupList.AccessGroupID = current.accessGroupID;
+              tempAccessGroupList.AccessGroupName = current.accessGroupName;
+              this.AccessGroupList.push(tempAccessGroupList);
+            }
+            console.log("Got All Access Groups", this.AccessGroupList);
+            resolve();
+          } else {
+            console.log("Response Error: ", data.responseMessage);
+            reject(data.responseMessage);
+          }
+        },
+        (error) => {
+          console.log("Error: ", error);
+          reject(error);
+        }
+      );
+    });
   }
+
 
   AcceptUser() {
     console.log("This is the index of the selected user:", this.selectedUserIndex);
@@ -1052,6 +1081,7 @@ export class UserManagementComponent implements OnInit {
           console.table(this.TheirZoneLinkDetailsList);
           await this.checkZoneLinkage();
           console.log(data.responseMessage);
+          this.modalService.open(departmentPersonZones, { centered: true, size: 'lg' });
         } else {
           console.log(data.responseMessage);
         }
@@ -1060,7 +1090,8 @@ export class UserManagementComponent implements OnInit {
       console.log("ZonesList error: ", error);
     });
 
-    this.modalService.open(departmentPersonZones, { centered: true, size: 'lg' });
+    //this.modalService.open(departmentPersonZones, { centered: true, size: 'lg' });
+
     //#region OLD IMPLEMENTATION THAT USES THE ZONELINK TABLE
     /*
     await this.getZoneLinks(this.selectedUserID); //NO LONGER USING THE ZONE LINK TABLE - ALL IS DONE VIA THE USERPROFILETABLE AND THE ACCESSGROUPUSERLINKTABLES
@@ -1403,7 +1434,7 @@ export class UserManagementComponent implements OnInit {
       console.log("Error: ", error);
     });
   }*/
-  getDepartmentName(departmentId: number): Promise<string> {
+  async getDepartmentName(departmentId: number): Promise<string> {
     return new Promise((resolve, reject) => {
       this.departmentService.getDepartmentByDepartmentID(departmentId).subscribe((data: any) => {
         if (data.responseCode == 1) {
@@ -1419,7 +1450,7 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
-  getDepartmentID(subDepartmentID: number) {
+  /*getDepartmentID(subDepartmentID: number) {
     debugger;
     this.subDepartmentService.getSubDepartmentBySubDepartmentID(subDepartmentID).subscribe((data: any) => {
       if (data.responseCode == 1) {
@@ -1439,6 +1470,31 @@ export class UserManagementComponent implements OnInit {
       // Handle errors that may occur during the zone link update.
       console.log("Error: ", error);
     });
+  }*/
+  async getDepartmentID(subDepartmentID: number) {
+    try {
+      debugger;
+
+      const data: any = await this.subDepartmentService.getSubDepartmentBySubDepartmentID(subDepartmentID).toPromise();
+
+      if (data.responseCode == 1) {
+        debugger;
+        this.theDepartmentID = data.dateSet[0].departmentID;
+
+        console.log("All I want is the DepartmentID: ", data);
+        //alert(data.responseMessage);
+        console.log(data.responseMessage);
+      } else {
+        //alert(data.responseMessage);
+        console.log(data.responseMessage);
+      }
+
+      console.log("All I want is the DepartmentID: ", data);
+
+    } catch (error) {
+      // Handle errors that may occur during the zone link update.
+      console.log("Error: ", error);
+    }
   }
 
   isUserInAccessGroup(accessGroupID: number): boolean {
@@ -1787,7 +1843,7 @@ export class UserManagementComponent implements OnInit {
       console.log("SubDepartmentList: ", error);
     })
   }
-  getAllSubdepartments() {
+  /*getAllSubdepartments() {
     this.AllSubDepartmentList.splice(0, this.AllSubDepartmentList.length);
     this.subDepartmentService.getSubDepartmentsList().subscribe((data: any) => {
       debugger;
@@ -1815,7 +1871,36 @@ export class UserManagementComponent implements OnInit {
     }, error => {
       console.log("SubDepartmentList: ", error);
     })
+  }*/
+  async getAllSubdepartments(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.AllSubDepartmentList.splice(0, this.AllSubDepartmentList.length);
+      this.subDepartmentService.getSubDepartmentsList().subscribe(
+        (data: any) => {
+          if (data.responseCode == 1) {
+            for (let i = 0; i < data.dateSet.length; i++) {
+              const tempSubDepartmentList = {} as SubDepartmentList;
+              const current = data.dateSet[i];
+              tempSubDepartmentList.SubDepartmentName = current.subDepartmentName;
+              tempSubDepartmentList.SubDepartmentID = current.subDepartmentID;
+              tempSubDepartmentList.DepartmentID = current.departmentID;
+              this.AllSubDepartmentList.push(tempSubDepartmentList);
+            }
+            console.log("SubDepartmentList", this.AllSubDepartmentList);
+            resolve();
+          } else {
+            console.log("Response Error: ", data.responseMessage);
+            reject(data.responseMessage);
+          }
+        },
+        (error) => {
+          console.log("SubDepartmentList Error: ", error);
+          reject(error);
+        }
+      );
+    });
   }
+
   onSubdepartmentChange() {
     // Update data or perform actions based on the selected subdepartment
     //this.ZonesList = [];
@@ -2839,7 +2924,7 @@ export class UserManagementComponent implements OnInit {
   allZoneIDs: any[] = []
 
   async addUserToAlles(index: any) {
-    this.getAllAccessGroup();
+    await this.getAllAccessGroup();
     await this.getAllSubdepartments();
 
     this.selectedUserID = this.dataSourceZoneLink[index].userID;
@@ -2868,11 +2953,16 @@ export class UserManagementComponent implements OnInit {
 
         
         //FINDING ACCESSGROUPS THEY ARE NOT A PART OF IN THE ZONES THEY ARE IN
+
+        //Note: older entries don't have UserProfileID column, should I use ZoneID and SubDepartmentID instead? To avoid duplicates...
+        //const agData: any = await this.accessGroupLinkService.getAccessGroupsBySubDeptZoneAndUserID(this.selectedUserID, zoneId, subDeptID).toPromise();
+
         const agData: any = await this.accessGroupLinkService.getAccessGroupsByUserProfileID(userProfileID).toPromise();
         if (agData.responseCode == 1) {
+          this.ThisUserAGList = [];
           for (let i = 0; i < data.dateSet.length; i++) {
             const tempAccessList = {} as TheirAccessGroupList;
-            const current = data.dateSet[i];
+            const current = agData.dateSet[i];
             debugger;
             tempAccessList.AccessGroupUserLinkID = current.accessGroupUserLinkID;
             tempAccessList.AccessGroupID = current.accessGroupID;
@@ -2885,9 +2975,9 @@ export class UserManagementComponent implements OnInit {
           const differenceAGIDs = this.AccessGroupList.filter(accessGroup => !thisUserAGIDs.includes(accessGroup.AccessGroupID));
 
           for (const ag of differenceAGIDs) {
-            this.accessGroupsService.addUpdateAccessGroupUserLink(0, ag.AccessGroupID, this.selectedUserID, this.CurrentUser.appUserId, zoneId, subDeptID, userProfileID).subscribe((data: any) => {
-              if (data.responseCode == 1) {
-                console.log("Adding user to the remaining accessgroups in the zone they are already in", data);
+            this.accessGroupsService.addUpdateAccessGroupUserLink(0, ag.AccessGroupID, this.selectedUserID, this.CurrentUser.appUserId, zoneId, subDeptID, userProfileID).subscribe((difAgData: any) => {
+              if (difAgData.responseCode == 1) {
+                console.log("Adding user to the remaining accessgroups in the zone they are already in", difAgData);
               }
             })
           }
@@ -2895,7 +2985,7 @@ export class UserManagementComponent implements OnInit {
           console.log("Zone specific access group info: ", agData);
         } else {
           console.log(agData.responseMessage);
-          throw new Error(`Error: ${data.responseMessage}`);
+          throw new Error(`Error: ${agData.responseMessage}`);
         }
       }
 
@@ -2903,11 +2993,11 @@ export class UserManagementComponent implements OnInit {
 
       let allKyleZoneIDs;
       for (const kyleSubDptID of this.kyleSubDptIDs) {
-        const data: any = await this.zoneService.getZonesBySubDepartmentsID(kyleSubDptID).toPromise();
+        const zData: any = await this.zoneService.getZonesBySubDepartmentsID(kyleSubDptID).toPromise();
 
-        if (data.dateSet && data.dateSet.length > 0) {
-          for (let i = 0; i < data.dateSet.length; i++) {
-            const current = data.dateSet[i];
+        if (zData.dateSet && zData.dateSet.length > 0) {
+          for (let i = 0; i < zData.dateSet.length; i++) {
+            const current = zData.dateSet[i];
             allKyleZoneIDs = current.zoneID;
 
             this.allZoneIDs.push(allKyleZoneIDs);
@@ -2922,38 +3012,39 @@ export class UserManagementComponent implements OnInit {
       const differenceZoneIDs = this.allZoneIDs.filter(zoneID => !this.kyleZoneIDs.includes(zoneID));
 
       for (const zone of differenceZoneIDs) {
-        const data: any = await this.zoneService.getZoneByZoneID(zone).toPromise();
-        if (data.dateSet && data.dateSet.length > 0) {
+        const difZonedata: any = await this.zoneService.getZoneByZoneID(zone).toPromise();
+        if (difZonedata.dateSet && difZonedata.dateSet.length > 0) {
           for (let i = 0; i < data.dateSet.length; i++) {
-            const current = data.dateSet[i];
+            const current = difZonedata.dateSet[i];
             const zoneID = current.zoneID;
             const zoneName = current.zoneName;
             const departmentID = current.departmentID;
-            const subDepartmentID = current.subDepartmentID;
+            const subDepartmentID = current.subDepartmentID; //This should be the same as subDeptID declared above.
 
             await this.getDepartmentName(current.departmentID); // this.theDepartmentName
             await this.getSubdepartmentName(current.subDepartmentID);
 
             this.userPofileService.addUpdateUserProfiles(0, this.selectedUserID, fullName, email, phoneNumber, true, null, null, null, null, this.theDepartmentName, departmentID, subDepartmentID, null, (8888).toString(), "Mass Add",
-              null, this.CurrentUser.appUserId, null, zoneID, null, null, null, true, true, this.theSubDepartmentName, null, null, name, surname, this.theDepartmentName, zoneName, false, null, true).subscribe(async (data: any) => {
-                if (data.responseCode == 1) {
-                  console.log("This is my new profile info", data);
-                  const UPID = await data.dateSet.userProfileID;
+              null, this.CurrentUser.appUserId, null, zoneID, null, null, null, true, true, this.theSubDepartmentName, null, null, name, surname, this.theDepartmentName, zoneName, false, null, true).subscribe(async (newDepData: any) => {
+                if (newDepData.responseCode == 1) {
+                  console.log("This is my new profile info", newDepData);
+                  const UPID = await newDepData.dateSet.userProfileID;
                   console.log("My new profile ID", UPID)
                   this.createdUPID = UPID;
-                  this.userPofileService.userGainsApproval(UPID).subscribe((data: any) => {
-                    if (data.responseCode == 1) {
+                  this.userPofileService.userGainsApproval(UPID).subscribe((newApprovalData: any) => {
+                    if (newApprovalData.responseCode == 1) {
 
                       for (let j = 0; j < this.AccessGroupList.length; j++) {
                         const accessgroupID = this.AccessGroupList[j].AccessGroupID;
                         // Perform your action with accessGroupsService here
-                        this.accessGroupsService.addUpdateAccessGroupUserLink(0, accessgroupID, this.selectedUserID, this.CurrentUser.appUserId, zoneID, subDeptID, UPID).subscribe((data: any) => {
-                          if (data.responseCode == 1) {
-                            console.log("The selected user is being added to ALL access groups in the zones they DIDN'T already belong to", data);
+                        this.accessGroupsService.addUpdateAccessGroupUserLink(0, accessgroupID, this.selectedUserID, this.CurrentUser.appUserId, zoneID, subDeptID, UPID).subscribe((newLinkData: any) => {
+                          if (newLinkData.responseCode == 1) {
+                            console.log("The selected user is being added to ALL access groups in the zones they DIDN'T already belong to", newLinkData);
                           }
                         });
                       }
                       console.log("Finished processing Access Groups");
+                      this.showAllLinkedUsers();
                     } else {
                       console.log("No data or empty dateSet");
                     }
