@@ -10,10 +10,10 @@
 
 <section class="game-section">
   <h2 class="line-title">You May Change Your Acting Department And Zone</h2>
-  <div class="actingDepFlexContainer">
-    <div class="owl-carousel custom-carousel owl-theme actingDepFlexContainer2">
+  <div class="actingDepFlexContainer" >
+    <div class="owl-carousel custom-carousel owl-theme actingDepFlexContainer2" style="overflow-x: auto;">
 
-      <div class="item" *ngFor="let item of UserList" [class.active]="item.isActive" (click)="toggleActive(item)">
+      <div class="item" *ngFor="let item of UserList" [class.active]="item.isActive" (click)="toggleActive(item)" [class.activeCard]="item.isDefault == true">
 
         <div class="shapes">
           <div class="active">
@@ -31,7 +31,7 @@
                 <p>For: {{item.zoneName}}</p>
               </div>
               <div class="col-6">
-                <button mat-button color="activate" (click)="activateProfile(item)" *ngIf="item.isDefault != true">Activate</button>
+                <button mat-button color="activate" (click)="activateProfile(item)" *ngIf="item.isDefault != true" tabindex="-1">Activate</button>
               </div>
             </div>
           </div>
