@@ -397,7 +397,7 @@ export class ActionCenterComponent implements OnInit {
     // setTimeout(() => {
     //this.getDepartmentManagerUserID();
     //Get Current Application Infomation 
-
+    debugger;
 
     this.applicationData = this.sharedService.getViewApplicationIndex();
     console.log("venApplicationData:",this.applicationData);
@@ -454,17 +454,19 @@ export class ActionCenterComponent implements OnInit {
     this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
     if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
       this.getUsersByRoleName("Permit Issuer");
+      debugger;
       this.showPermitTab = true;
-
+      this.canApprovePTW();
+      this.getAllPermitForComment();
     }
     else {
       this.showPermitTab = false;
     }
+
     this.getLinkedZones();
   
     this.getAllStages();
-    this.canApprovePTW();
-    this.getAllPermitForComment();
+
 
     this.getUserRoles();
     this.getServicesByDepID();
@@ -475,6 +477,10 @@ export class ActionCenterComponent implements OnInit {
     this.checkIfWbsRequired();
     this.CheckApplicant();
     this.setProjectNumber();
+
+
+
+
 
   }
 
@@ -519,24 +525,24 @@ export class ActionCenterComponent implements OnInit {
   }
 
   canApprovePTW() {
-
+    debugger;
     this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
-
+      debugger;
       if (data.responseCode == 1) {
-       
+        debugger;
         for (var i = 0; i < data.dateSet.length; i++) {
-         
+          debugger;
           let foundMatch = false;
           let current = data.dateSet[i];
           if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
-
+            debugger;
             for (var i = 0; i < this.permitIssuer.length; i++) {
 
-             
+              debugger;
 
               if (this.permitIssuer[i].userID == this.CurrentUser.appUserId) {
 
-
+                debugger;
                
                 if (current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
 
@@ -2130,12 +2136,13 @@ export class ActionCenterComponent implements OnInit {
       })
     }
     else if (roleName == "Permit Issuer") {
-      
+      debugger;
       this.accessGroupsService.getUserBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
-
+        debugger;
         if (data.responseCode == 1) {
-          
+          debugger;
           this.permitIssuer = data.dateSet;
+          console.log("YEAHHHHHHHHHHHHHH", this.permitIssuer);
         }
         else {
           alert(data.responseMessage);

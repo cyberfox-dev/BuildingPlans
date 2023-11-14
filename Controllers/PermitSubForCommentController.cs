@@ -245,12 +245,12 @@ namespace WayleaveManagementSystem.Controllers
             {
                 if (model.UserAssaignedToComment != null)
                 {
-                    var zoneIds = await _context.ZoneLinkTable
-                                    .Where(z => z.SubDepartmentID == model.SubDepartmentID
-                                                && z.AssignedUserID == model.UserAssaignedToComment
-                                                && z.isActive)
-                                    .Select(z => z.ZoneID)
-                                    .ToListAsync();
+                    var zoneIds = await _context.UserProfilesTable
+                                          .Where(z => z.SubDepartmentID == model.SubDepartmentID
+                                                      && z.UserID == model.UserAssaignedToComment
+                                                      && z.isActive)
+                                          .Select(z => z.zoneID)
+                                          .ToListAsync();
 
                     var result = await _context.PermitSubForComment
               .Where(s => s.ApplicationID == model.ApplicationID

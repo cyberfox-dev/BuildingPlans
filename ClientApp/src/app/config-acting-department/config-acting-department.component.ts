@@ -97,6 +97,13 @@ export class ConfigActingDepartmentComponent implements OnInit {
     this.getUserProfileByUserID();
 
     this.getAllUserLinks(this.CurrentUserProfile[0].userID);
+    this.UserList.forEach(user => {
+      debugger;
+      if (user.isDefault == false || user.isDefault == true) {
+        debugger;
+        user.isActive = false; // Deactivate other items
+      }
+    });
 
   }
   cancel(): void {
@@ -220,6 +227,8 @@ export class ConfigActingDepartmentComponent implements OnInit {
     const nextIndex = (currentIndex + 1) % this.items.length;
     this.currentItem = this.items[nextIndex];
   }
+
+  item:any
   getUserProfileByUserID() {
 
 
@@ -228,7 +237,7 @@ export class ConfigActingDepartmentComponent implements OnInit {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempUserList = {} as UserList;
           const current = data.dateSet[i];
-          debugger;
+
           tempUserList.userProfileID = current.userProfileID,
           tempUserList.UserID = current.userID;
           tempUserList.FullName = current.fullName;
@@ -264,10 +273,13 @@ export class ConfigActingDepartmentComponent implements OnInit {
         // Assigning received user profiles to 'items' to display in the template
         this.items = this.UserList.map(user => user.zoneName);
         console.log(this.UserList);
-        const defaultUser = this.UserList.find(user => user.isDefault === true);
+        const defaultUser = this.UserList.find(user => user.isDefault == true);
         if (defaultUser) {
           defaultUser.isActive = true;
         }
+        debugger;
+
+
       } else {
         alert(data.responseMessage);
       }

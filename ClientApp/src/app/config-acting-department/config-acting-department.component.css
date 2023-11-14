@@ -48,6 +48,7 @@ a {
   a:hover {
     text-decoration: none;
     outline: none;
+
   }
 
   a:hover {
@@ -100,7 +101,7 @@ button {
 
 /* -------- title style ------- */
 .line-title {
-  position: relative;
+  position: fixed;
 }
 
   .line-title::before,
@@ -127,6 +128,9 @@ button {
 /* -------- Landing page ------- */
 .game-section {
 }
+.activeCard {
+  border: 3px solid #3aa03a85;
+}
 
   .game-section .owl-stage {
     margin: 15px 0;
@@ -134,27 +138,29 @@ button {
     display: -webkit-flex;
   }
 
-  .game-section .item {
-    margin: 0 15px 60px;
-    border: 1px solid #dfdfdf;
-    width: 320px;
-    height: 285px;
-    display: flex;
-    display: -webkit-flex;
-    align-items: flex-end;
-    -webkit-align-items: flex-end;
-    border-radius: 16px;
-    overflow: hidden;
-    position: relative;
-    transition: all 0.4s ease-in-out;
-    -webkit-transition: all 0.4s ease-in-out;
-    cursor: pointer;
-  }
+.game-section .item {
+  margin: 0 20px 41px;
+  border: 1px solid #dfdfdf;
+  width: 431px;
+  height: 285px;
+  display: flex;
+  display: -webkit-flex;
+  align-items: flex-end;
+  -webkit-align-items: flex-end;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.4s ease-in-out;
+  -webkit-transition: all 0.4s ease-in-out;
+  cursor: pointer;
+  margin-top: 87px;
+}
 
     .game-section .item.active {
       width: 500px;
       box-shadow: 12px 40px 40px rgba(0, 0, 0, 0.25);
       -webkit-box-shadow: 20px 16px 40px rgba(0, 0, 0, 0.25);
+     
     }
 
     .game-section .item:after {
@@ -162,7 +168,7 @@ button {
       display: block;
       position: absolute;
       height: 100%;
-      width: 100%;
+      width: 900px;
       left: 0;
       top: 0;
     }
@@ -218,7 +224,7 @@ button {
     line-height: 36px;
   }
 
-  /* -------- Landing page ------- */
+
   .game-section {
   }
 
@@ -228,15 +234,14 @@ button {
       height: 360px;
     }
 
-      .game-section .item.active {
-        width: 400px;
-      }
+
 
     .game-section .item-desc {
       transform: translateY(calc(100% - 46px));
       -webkit-transform: translateY(calc(100% - 46px));
     }
 }
+
 
 @media (min-width: 768px) and (max-width: 991px) {
   h2 {
@@ -252,7 +257,7 @@ button {
   .line-title {
   }
 
-  /* -------- Landing page ------- */
+
   .game-section {
   }
 
@@ -290,7 +295,7 @@ button {
   .line-title {
   }
 
-  /* -------- Landing page ------- */
+
   .game-section {
   }
 
@@ -314,9 +319,8 @@ button {
 }
 
 .actingDepFlexContainer {
-  width: 100%; /* Set the width of the container */
-  overflow-x: auto; /* Enable horizontal scrolling */
-  white-space: nowrap; /* Ensure items stay in a single line */
+  width: 1375px;
+  white-space: nowrap;
 }
 
 .item-card {
@@ -330,7 +334,7 @@ button {
 }
 
 .backgroundWLMS2 {
-  width: 100%;
+  width: 500px;
   height: 269px;
   position: absolute;
   top: -82px;
@@ -339,10 +343,12 @@ button {
 
 .actingDepFlexContainer2 {
   display: flex;
+
 }
 .mat-activate {
   margin-left: 102px;
   margin-top: 98px;
+
 }
 .default{
 
