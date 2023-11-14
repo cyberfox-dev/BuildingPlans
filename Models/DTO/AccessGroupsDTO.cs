@@ -31,5 +31,8 @@ namespace WayleaveManagementSystem.Models.DTO
 
         public int? SubDepartmentID { get; set; }
         public int? ZoneID { get; set; }
+        
+        //Zone Link Tings
+        public int? UserProfileID { get; set;}
     }
 }

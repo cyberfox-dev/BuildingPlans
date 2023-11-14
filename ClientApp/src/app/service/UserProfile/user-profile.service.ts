@@ -25,7 +25,11 @@ export class UserProfileService {
     phoneNumber?: string | null, isInternal?: boolean | null, bp_Number?: string | null, companyName?: string | null, companyRegNo?: string | null,
     physcialAddress?: string | null, directorate?: string | null, departmentID?: number | null, subDepartmentID?: number | null, branch?: string | null,
     costCenterNumber?: string | null, costCenterOwner?: string | null, copyOfID?: any | null, createdById?: string | null, idNumber?: string | null,
-    zoneID?: number | null, vatNumber?: string | null, refNumber?: string | null, companyType?: string | null, isDepartmentAdmin?: boolean | null, isZoneAdmin?: boolean | null, subDepartmentName?: string | null, alternateEmail?: string | null, alternateNumber?: string | null) {
+    zoneID?: number | null, vatNumber?: string | null, refNumber?: string | null, companyType?: string | null, isDepartmentAdmin?: boolean | null,
+    isZoneAdmin?: boolean | null, subDepartmentName?: string | null, alternateEmail?: string | null, alternateNumber?: string | null,
+    name?: string | null, surname?: string | null, departmentName?: string | null, zoneName?: string | null, isDefault?: boolean | null, icasaLicense?: string | null, depConfirmation?:boolean|null) {
+
+    const isCreatingNewUser = userProfileID === null || userProfileID === undefined; // Check if a new user is being created
 
     const body = {
       UserProfileID: userProfileID,
@@ -48,7 +52,8 @@ export class UserProfileService {
       CreatedById: createdById,
       IdNumber: idNumber,
       isActive: true,
-      depConfirmation: false,
+      //HEBANA!!!!!!!!!!!! --- This should only be false at creation, when I update then it should keep whatever value I have
+      depConfirmation: isCreatingNewUser ? false : depConfirmation,
       zoneID: zoneID,
       vatNumber: vatNumber,
 
@@ -63,12 +68,27 @@ export class UserProfileService {
 
       AlternateEmail: alternateEmail,
       AlternateNumber: alternateNumber,
-
+      //things added later:
+      Name: name,
+      Surname: surname,
+      zoneName:zoneName,
+      DepartmentName: departmentName,
+      isDefault: isDefault,
+      ICASALicense: icasaLicense,
     }
     return this.httpClient.post(this.baseURL + "AddUpdateUserProfiles", body);
 
   }
-
+  //(int? userProfileID, bool? isDepartmentAdmin, bool? isZoneAdmin, string? createdById)
+  public updateAdminBool(userProfileID?: number | null, isDepartmentAdmin?: boolean | null, isZoneAdmin?: boolean | null, createdById?: string | null) {
+    const body = {
+      UserProfileID: userProfileID,
+      isDepartmentAdmin: isDepartmentAdmin,
+      isZoneAdmin: isZoneAdmin,
+      CreatedById: createdById,
+    }
+    return this.httpClient.post(this.baseURL + "AdminConfig", body);
+  }
   public deleteUserProfile(professinalID: number) {
 
     return this.httpClient.post(this.baseURL + "DeleteUserProfile", professinalID);
@@ -76,8 +96,14 @@ export class UserProfileService {
   }
 
   public userGainsApproval(professinalID: number) {
-
+    debugger;
     return this.httpClient.post(this.baseURL + "UserGainsApproval", professinalID);
+
+  }
+  public noApproval(professinalID: number) {
+    debugger;
+
+    return this.httpClient.post(this.baseURL + "UserDoesntGainApproval", professinalID);
 
   }
 

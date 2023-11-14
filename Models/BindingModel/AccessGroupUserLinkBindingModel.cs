@@ -9,6 +9,7 @@
 
         public int? SubDepartmentID { get; set; }
         public int? ZoneID { get; set; }
+        public int? UserProfileID { get; set; }
 
     }
 }

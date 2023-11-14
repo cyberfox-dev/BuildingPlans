@@ -35,7 +35,33 @@ table {
   word-wrap: break-word !important;
   white-space: unset !important;
   flex: 0 0 8% !important;
-  width: 20% !important;
+  width: 27% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+.mat-column-subdepartmentName {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 27% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+.mat-column-zoneName {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 27% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
@@ -49,7 +75,7 @@ table {
   word-wrap: break-word !important;
   white-space: unset !important;
   flex: 0 0 8% !important;
-  width: 20% !important;
+  width: 19% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
@@ -58,7 +84,20 @@ table {
   -webkit-hyphens: auto;
   hyphens: auto;
   text-align: center;
+  /* Add the following styles for the new layout 
+  display: flex;
+  flex-direction: column;*/
 }
+  .mat-column-actions .action-buttons-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mat-column-actions .button-group {
+    display: flex;
+    justify-content: space-around;
+    margin: 5px; /* Adjust as needed */
+  }
 .mat-create {
   background-color: #005870;
   color: #fff;
@@ -80,6 +119,11 @@ table {
   flex-direction: row;
   justify-content: space-evenly;
 }
+.mat-blue {
+  background-color: #20c997;
+  color: #fff;
+}
+
 
 .mat-filter {
   font-size: 28px;
@@ -94,6 +138,9 @@ table {
   margin-bottom: 10px;
   margin-top: -8px;
 }
+.filterText {
+  margin-right: 10px; /* Adjust the margin as needed to separate the text and button */
+}
 .cont6 {
   display: flex;
   flex-direction: row;
@@ -105,3 +152,21 @@ table {
   display: flex;
   justify-content: space-evenly;
 }
+.row {
+  display: flex !important;
+  justify-content: space-between !important;
+}
+
+.col {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-basis: 100% !important;
+  width: auto !important; /* or adjust width as needed */
+}
+
+  .col button {
+    margin-bottom: 5px !important;
+    margin-top: 5px !important;
+  }
+
+/*fixing random wide columns*/

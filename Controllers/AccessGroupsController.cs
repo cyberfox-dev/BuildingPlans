@@ -124,6 +124,7 @@ namespace WayleaveManagementSystem.Controllers
                             SubDepartmentID = model.SubDepartmentID,
                             ZoneID = model.ZoneID,
                             UserID = model.UserID,
+                            UserProfileID = model.UserProfileID,
                             CreatedById = model.CreatedById,
                             DateCreated = DateTime.Now,
                             DateUpdated = DateTime.Now,
@@ -138,6 +139,7 @@ namespace WayleaveManagementSystem.Controllers
                     else
                     {
                         tempAccessGroup.AccessGroupID = model.AccessGroupID;
+                        tempAccessGroup.UserProfileID = model.UserProfileID;
                         tempAccessGroup.SubDepartmentID = model.SubDepartmentID;
                         tempAccessGroup.ZoneID = model.ZoneID;
                         tempAccessGroup.UserID = model.UserID;
@@ -147,7 +149,7 @@ namespace WayleaveManagementSystem.Controllers
                         await _context.SaveChangesAsync();
                         result = tempAccessGroup;
                     }
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.AccessGroupUserLinkID > 0 ? "Zone Link Updated Successfully" : "Service Item Created Successfully"), result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.AccessGroupUserLinkID > 0 ? "Zone and Access Group Link Updated Successfully" : "Zone and Access Group Link Created Successfully"), result));
                 }
             }
             catch (Exception ex)
@@ -285,7 +287,37 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        //when a user is no longer in that zone then their access group links should reflect that
 
+        [HttpPost("DeleteAccessGroupUserLinkByProfessionalID")]
+        public async Task<object> DeleteAccessGroupUserLinkByProfessionalID(AccessGroupsBindingModel model)
+        {
+            try
+            {
+                var matchingAccessGroups = _context.AccessGroupUserLink.Where(x => x.UserProfileID == model.UserProfileID).ToList();
+
+                if (matchingAccessGroups.Count == 0)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "No matching entries found", false));
+                }
+                else
+                {
+                    foreach (var tempAccessGroup in matchingAccessGroups)
+                    {
+                        tempAccessGroup.DateUpdated = DateTime.Now;
+                        tempAccessGroup.isActive = false;
+                        _context.Update(tempAccessGroup);
+                    }
+
+                    await _context.SaveChangesAsync();
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Access group privileges have been revoked for all matching entries.", true));
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
         [HttpPost("DeleteAccessGroupRoleLinkByID")]
         public async Task<object> DeleteAccessGroupRoleLinkByID([FromBody] int accessGroupRoleLinkID)
         {
