@@ -213,7 +213,7 @@ button {
 
 /***** responsive css Start ******/
 
-@media (min-width: 992px) and (max-width: 1199px) {
+/*@media (min-width: 992px) and (max-width: 1199px) {
   h2 {
     margin-bottom: 32px;
   }
@@ -316,7 +316,7 @@ button {
       transform: translateY(calc(100% - 42px));
       -webkit-transform: translateY(calc(100% - 42px));
     }
-}
+}*/
 
 .actingDepFlexContainer {
   width: 1375px;
