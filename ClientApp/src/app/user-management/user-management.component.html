@@ -436,6 +436,7 @@
         <td mat-cell *matCellDef="let i = index" class="action-buttons-container">
 
           <div class="button-group">
+            <!--The button below is only for viewing purposes-->
             <button mat-raised-button color="blue" matTooltip="View ALL User Access Group Links" (click)="editUserScopeManyZones(i, departmentPersonZones); modal.close('Save click')">
               <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid-white.svg" class="icon">
             </button>
@@ -543,7 +544,7 @@
     <h3 class="modal-title" id="modal-basic-title">You're currently viewing {{this.selectedUserName}}'s zone links and access groups in {{this.subDeptName}}.</h3>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click');onUnselection() "></button>
   </div>
-  <div class="modal-body">
+  <div class="modal-body" *ngIf="!isLoading">
     <mat-tab-group (selectedTabChange)="onTabChange($event)">
 
       <ng-container>
@@ -591,5 +592,8 @@
         </ng-container>
       </ng-container>
     </mat-tab-group>
+  </div>
+  <div class="modal-body loading-screen" *ngIf="isLoading" id="loadingScreen">
+    <img src="assets/Loading.png" alt="" class="logo2">
   </div>
 </ng-template>

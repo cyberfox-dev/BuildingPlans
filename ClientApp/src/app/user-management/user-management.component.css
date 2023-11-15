@@ -169,4 +169,32 @@ table {
     margin-top: 5px !important;
   }
 
-/*fixing random wide columns*/
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(255 255 255);
+  z-index: 9999;
+  animation: fadein 0.5s linear forwards;
+}
+
+img {
+  user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+.logo2 {
+  width: 252px;
+  height: 252px;
+  animation: spin 4s linear infinite;
+}
