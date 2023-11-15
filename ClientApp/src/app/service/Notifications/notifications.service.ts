@@ -61,6 +61,7 @@ export class NotificationsService {
 
     ////dev check
 /*    if (emailData.to !== 'jahdiel@cyberfox.co.za') {
+
       emailData.to = 'jahdiel@cyberfox.co.za';
     } else {
 
@@ -76,7 +77,10 @@ export class NotificationsService {
       Authorization: `Basic ${encodedCredentials}`, // Set the Authorization header
     });
 
+
+    debugger;
     this.httpClient.post(this.sharedService.getApiUrl() + "/mailapi/" + "send-email", emailData, { headers }).subscribe(
+      
 /*      this.httpClient.post("https://wayleave.capetown.gov.za/mailapi" + "/send-email", emailData, { headers }).subscribe(*/
       () => {
         console.log('Email sent successfully');
