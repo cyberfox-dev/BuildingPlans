@@ -480,7 +480,7 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-
+    
 
   }
 
@@ -491,15 +491,15 @@ export class ActionCenterComponent implements OnInit {
 
 
   setProjectNumber() {
+    debugger;
+    if (this.CurrentApplication.ProjectNumber == null) {
 
-    if (this.CurrentApplicationBeingViewed[0].ProjectNumber == null) {
 
-
-      this.projectNo = this.CurrentApplicationBeingViewed[0].applicationID.toString();
+      this.projectNo = this.CurrentApplication.applicationID.toString();
     }
     else {
 
-      this.projectNo = this.CurrentApplicationBeingViewed[0].ProjectNumber;
+      this.projectNo = this.CurrentApplication.ProjectNumber;
     }
 
 
@@ -2002,6 +2002,7 @@ export class ActionCenterComponent implements OnInit {
           this.MoveApplicationToAllocated();
           this.viewProjectInfoComponent.getAllComments();
           this.refreshParent.emit();
+          debugger;
           this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "New Wayleave Application", "check html", "Dear " + this.UserSelectionForManualLink.selected[0].fullName + ",<br><br>You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
           this.notificationsService.addUpdateNotification(0, "New Wayleave Application", "Application Assigned", false, this.CurrentUser.appUserID, this.UserSelectionForManualLink.selected[0].id, this.ApplicationID, "You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.").subscribe((data: any) => {
 

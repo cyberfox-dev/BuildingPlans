@@ -95,6 +95,7 @@ import { DocumentRepositoryComponent } from './document-repository/document-repo
 import { SnackBarAlertsComponent } from './snack-bar-alerts/snack-bar-alerts.component'
 import { DocumentRepositoryConfigComponent } from './document-repository-config/document-repository-config.component';
 import { DraftsComponent } from 'src/app/drafts/drafts.component';
+import { MatChipsModule } from '@angular/material/chips';
 
 //import { MatExpansionModule } from '@angular/material/expansion';
 
@@ -197,6 +198,7 @@ import { DraftsComponent } from 'src/app/drafts/drafts.component';
     MatProgressBarModule,
     MatPaginatorModule,
     MatRadioModule,
+    MatChipsModule,
     MatDividerModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
