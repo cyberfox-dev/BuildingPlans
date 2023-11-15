@@ -49,23 +49,6 @@
 </div>
 
 <!--Assign the user to an access group-->
-<!--<ng-template #content let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Accept the user into department</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-  </div>
-  <div class="modal-body">
-
-    <select class="form-select" aria-label="Default select example"  (change)="getAccesGroupID($event)">
-      <option selected value="0">Select An Access Group For The User</option>
-      <option *ngFor="let accessGroup of AccessGroupList" value="{{accessGroup.AccessGroupID}}">{{accessGroup.AccessGroupName}}</option>
-    </select>
-
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline-success" (click)="approveTheUser();modal.close('Save click')">Save</button>
-  </div>
-</ng-template>-->
 <!--IS NOT PRETTY BUT FUNCTIONAL-->
 <ng-template #content let-modal>
   <div class="modal-header">
@@ -97,10 +80,6 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="clearFormFields();modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-
-    <!--Make sure to finish this ASAP-->
-    <!--So when this is done, no approval should be required-->
-    <!--Wait, should I be able to add a user to THIS department from existing UserProfiles??-->
 
     <div class="row">
       <div class="col" *ngIf="!isEMBAdmin">
@@ -188,16 +167,86 @@
   <div class="modal-body">
 
     <div class="row">
-      <!--<div class="col">
-        <div class="form-floating mb-3 mt-3">
-          <input type="text" class="form-control" [(ngModel)]="theSubDepartmentName" disabled>
-          <label for="subdepartment">Subdepartment</label>
-        </div>
-      </div>-->
+
       <div class="col">
         <div class="form-floating mb-3 mt-3">
           <mat-select [(ngModel)]="theirSelectedZone" placeholder="Select a zone" [ngModelOptions]="{standalone: true}" class="outlined-select">
             <mat-option *ngFor="let zone of TheirZonesList" [value]="zone.ZoneID">{{ zone.ZoneName }}</mat-option>
+          </mat-select>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="theirName" disabled>
+          <label for="name">Name </label>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="theirSurname" disabled>
+          <label for="surname">Surname </label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col" >
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="theirCostCenterOwner" disabled >
+          <label for="applicantTellNo">Cost Center Owner</label>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="email" class="form-control" [(ngModel)]="theirCostCenterNumber" disabled>
+          <label for="newCostCenterNumber">Cost Center Number </label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="tel" class="form-control" [(ngModel)]="theirPhoneNumber" disabled>
+          <label for="newPhoneNumber">Tell No </label>
+        </div>
+      </div>
+      <div class="col">
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="email" class="form-control" [(ngModel)]="theirEmail" disabled>
+              <label for="newEmail">Email </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="addToMoreZones2(viewDepartmentPerson);modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+
+<!--Add a linked user to another department maybe because you're EMB-->
+<ng-template #addToNewDepartment let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Add <b>{{ this.selectedUserName}}</b> to a different department or zone</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <mat-select [(ngModel)]="selectedSubdepartment" placeholder="Select a subdepartment" [ngModelOptions]="{standalone: true}" class="outlined-select" (selectionChange)="onSubdepartmentChange()">
+            <mat-option *ngFor="let department of AllSubDepartmentList" [value]="department.SubDepartmentID">{{department.SubDepartmentName}}</mat-option>
+          </mat-select>
+        </div>
+      </div><div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <mat-select [(ngModel)]="selectedZone" placeholder="Select a zone" [ngModelOptions]="{standalone: true}" class="outlined-select">
+            <mat-option *ngFor="let zone of ZonesList" [value]="zone.ZoneID">{{ zone.ZoneName }}</mat-option>
           </mat-select>
         </div>
       </div>
@@ -250,15 +299,16 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-success" (click)="addToMoreZones2(viewDepartmentPerson);modal.close('Save click')">Save</button>
+    <button type="button" class="btn btn-outline-success" (click)="saveAddToMoreDeparts(viewDepartmentPerson);modal.close('Save click')">Save</button>
   </div>
 </ng-template>
+
 <!--I want to show the user, be able to select one and change access group and "zone" on a whim?-->
 <ng-template #allUsers let-modal>
 
   <div class="modal-header">
     <div *ngIf="!isEMBAdmin"><h4 class="modal-title" id="modal-basic-title">The <b>{{this.loggedInUserDepartmentName}}</b> department's user list</h4></div>
-    <div *ngIf="isEMBAdmin"> <h4 class="modal-title" id="modal-basic-title">Internal User Listing</h4></div>
+    <div *ngIf="isEMBAdmin"> <h4 class="modal-title" id="modal-basic-title">Internal User List</h4></div>
     <button type="button" class="btn-close" aria-label="Close" (click)="onFilterButtonClick();onUnselection();modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
@@ -274,7 +324,7 @@
         <button mat-button matTooltip="Undo all filtering" color="filter" aria-label="" (click)="onFilterButtonClick()">
           <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/arrow-rotate-left.svg" class="icon">
         </button>
-   
+
 
         <mat-menu #linkedUsers="matMenu">
           <ng-container *ngFor="let department of DepartmentList">
@@ -318,6 +368,9 @@
         </button>
         <button mat-button [matMenuTriggerFor]="asPerZone" matTooltip="zone filter" color="filter" aria-label="" (click)="onFilterButtonClick()">
           <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/house.svg" class="icon">
+        </button>
+        <button mat-button matTooltip="Undo all filtering" color="filter" aria-label="" (click)="onFilterButtonClick()">
+          <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/arrow-rotate-left.svg" class="icon">
         </button>
 
         <mat-menu #asPerZone="matMenu">
@@ -383,6 +436,7 @@
         <td mat-cell *matCellDef="let i = index" class="action-buttons-container">
 
           <div class="button-group">
+            <!--The button below is only for viewing purposes-->
             <button mat-raised-button color="blue" matTooltip="View ALL User Access Group Links" (click)="editUserScopeManyZones(i, departmentPersonZones); modal.close('Save click')">
               <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid-white.svg" class="icon">
             </button>
@@ -396,7 +450,7 @@
             <button mat-raised-button *ngIf="!isEMBAdmin" color="success" matTooltip="Add User to another Zone" (click)="addToMoreZones(i, addToZones);modal.close('Save click')">
               <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/link-solid.svg" class="icon">
             </button>
-              <button mat-raised-button *ngIf="isEMBAdmin" color="success" matTooltip="Add User to Department and/or Zone" (click)="addToMoreZones(i, addToZones);modal.close('Save click')">
+            <button mat-raised-button *ngIf="isEMBAdmin" color="success" matTooltip="Add User to Department and/or Zone" (click)="addToMoreDeparts(i, addToNewDepartment);modal.close('Save click')">
               <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/link-solid.svg" class="icon">
             </button>
             <button mat-raised-button color="warn" matTooltip="Unlink User" (click)="removeUserFromDPT(i,allUsers);">
@@ -437,7 +491,7 @@
     <div class="row">
       <mat-form-field>
         <mat-label>Select A Zone</mat-label>
-        <mat-select [(value)]="selectedZone" >
+        <mat-select [(value)]="selectedZone">
           <mat-option *ngFor="let zone of ZonesList" value="{{zone.ZoneID}}">{{zone.ZoneName}}</mat-option>
         </mat-select>
       </mat-form-field>
@@ -480,45 +534,8 @@
         </tr>
       </tbody>
     </table>
-    <br /> <!--TOGGLES HAVE BEEN REMOVED BECAUSE ZONE ADMIN IS NOW A PROPER ACCESS GROUP-->
-    <!--<div class="container">-->
-      <!--removed because the access groups list already has this:-->
-      <!--<div class="row">
-        <div class="col-sm-6">
-          <div class="form-group">
-            <label for="departmentAdminToggle">Department Admin:</label>
-          </div>
-        </div>
-        <div class="col-sm-6">
-          <div class="form-group">
-            <mat-slide-toggle id="departmentAdminToggle"
-                              [(ngModel)]="departmentAdminValue"
-                              color="primary"></mat-slide-toggle>
-          </div>
-        </div>
-      </div>-->
-
-      <!--<div class="row">
-        <div class="col-sm-6">
-          <div class="form-group">
-            <label for="zoneAdminToggle">Zone Admin:</label>
-          </div>
-        </div>
-        <div class="col-sm-6">
-          <div class="form-group">
-            <mat-slide-toggle id="zoneAdminToggle"
-                              [(ngModel)]="zoneAdminValue"
-                              color="primary"></mat-slide-toggle>
-          </div>
-        </div>
-      </div>
-    </div>-->
-
+    <br /> 
   </div>
-  <!--THIS SAVE ONLY SAVED TOGGLE RELATED THINGS THAT ESSENTIALLY UPDATED THE USERPROFILE TABLE VELE == SO BYE-->
-  <!--<div class="modal-footer">
-    <button type="button" class="btn btn-outline-success" (click)="saveAdminChanges();modal.close('Save click')">Save</button>
-  </div>-->
 </ng-template>
 
 <!--WELP, YOU CAN ONLY VIEW THEM HERE-->
@@ -527,14 +544,14 @@
     <h3 class="modal-title" id="modal-basic-title">You're currently viewing {{this.selectedUserName}}'s zone links and access groups in {{this.subDeptName}}.</h3>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click');onUnselection() "></button>
   </div>
-  <div class="modal-body">
+  <div class="modal-body" *ngIf="!isLoading">
     <mat-tab-group (selectedTabChange)="onTabChange($event)">
 
       <ng-container>
         <ng-container>
           <mat-tab *ngFor="let zone of ZonesList" label="{{ zone.ZoneName }}">
             <!-- Zone-specific information -->
-            <!-- <div *ngIf="checkZoneInTheirZoneLink(zone.ZoneID)"> -->
+    
             <div *ngIf="zone.isLinked" (click)="getZoneAccessGroups(zone.ZoneID)">
               <!-- Display zone-specific information here if user is linked to this zone-->
               <div>
@@ -549,14 +566,9 @@
                     <tr *ngFor="let access of AccessGroupList; let i = index">
                       <td>{{ access.AccessGroupName }}</td>
                       <td>
-                        <!--<button class="btn btn-danger" (click)="removeFromAccessGroup(i)" *ngIf="isUserInAccessGroup(access.AccessGroupID)">
-                        -
-                      </button>
-                      <button class="btn btn-success" (click)="addToAccessGroup(i, departmentPersonZones);modal.close('Save click')" *ngIf="!isUserInAccessGroup(access.AccessGroupID)">
-                        +
-                      </button>-->
+
                         <!-- For the minus button -->
-                        <button class="btn btn-success"  *ngIf="isUserInAccessGroup(access.AccessGroupID)" [disabled]="true">
+                        <button class="btn btn-success" *ngIf="isUserInAccessGroup(access.AccessGroupID)" [disabled]="true">
                           &#10003; <!-- Unicode check (tick) character -->
                         </button>
 
@@ -569,26 +581,10 @@
                     </tr>
                   </tbody>
                 </table>
-                <!--<div class="container">
-                  <div class="row">
-                    <div class="col-sm-6">
-                      <div class="form-group">
-                        <label for="zoneAdminToggle">Zone Admin:</label>
-                      </div>
-                    </div>
-                    <div class="col-sm-6">
-                      <div class="form-group">
-                        <mat-slide-toggle id="zoneAdminToggle"
-                                          [(ngModel)]="zoneAdminValue"
-                                          color="primary"></mat-slide-toggle>
-                      </div>
-                    </div>
-                  </div>
-                </div>-->
+
               </div>
               <br />
             </div>
-            <!--<div *ngIf="!checkZoneInTheirZoneLink(zone.ZoneID)">-->
             <div *ngIf="!zone.isLinked">
               User has not been linked to this zone.
             </div>
@@ -597,7 +593,7 @@
       </ng-container>
     </mat-tab-group>
   </div>
-  <!--<div class="modal-footer">
-    <button type="button" class="btn btn-outline-success" (click)="saveAdminChanges();modal.close('Save click')">Save</button>
-  </div>-->
+  <div class="modal-body loading-screen" *ngIf="isLoading" id="loadingScreen">
+    <img src="assets/Loading.png" alt="" class="logo2">
+  </div>
 </ng-template>

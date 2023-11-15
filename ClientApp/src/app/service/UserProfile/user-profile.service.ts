@@ -116,6 +116,15 @@ export class UserProfileService {
     return this.httpClient.post(this.baseURL + "GetUserByUserID", body);
 
   }
+  public getUserProfileByUserProfileID(userProfileId: number) {
+
+    const body = {
+      UserProfileID: userProfileId,
+    }
+   
+    return this.httpClient.post(this.baseURL + "GetUserByUserProfileID", body);
+
+  }
 
   public getExternalUsers() {
 

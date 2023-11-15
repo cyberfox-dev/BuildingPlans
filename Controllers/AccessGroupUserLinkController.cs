@@ -29,7 +29,7 @@ namespace WayleaveManagementSystem.Controllers
             {
                 var result = await (
                     from accessGL in _context.AccessGroupUserLink
-                    where accessGL.isActive && accessGL.UserID == model.UserID
+                    where accessGL.isActive && accessGL.UserID == model.UserID && accessGL.UserProfileID != null
                     select new AccessGroupsDTO()
                     {
                         AccessGroupUserLinkID = accessGL.AccessGroupUserLinkID,
@@ -61,7 +61,7 @@ namespace WayleaveManagementSystem.Controllers
             {
                 var result = await (
                     from accessGL in _context.AccessGroupUserLink
-                    where accessGL.isActive && accessGL.UserID == model.UserID && accessGL.SubDepartmentID == model.SubDepartmentID
+                    where accessGL.isActive && accessGL.UserID == model.UserID && accessGL.SubDepartmentID == model.SubDepartmentID && accessGL.UserProfileID != null
                     select new AccessGroupsDTO()
                     {
                         AccessGroupUserLinkID = accessGL.AccessGroupUserLinkID,
@@ -93,7 +93,7 @@ namespace WayleaveManagementSystem.Controllers
             {
                 var result = await (
                     from accessGL in _context.AccessGroupUserLink
-                    where accessGL.isActive && accessGL.UserID == model.UserID && accessGL.ZoneID == model.ZoneID && accessGL.SubDepartmentID == model.SubDepartmentID
+                    where accessGL.isActive && accessGL.UserID == model.UserID && accessGL.ZoneID == model.ZoneID && accessGL.SubDepartmentID == model.SubDepartmentID //&& accessGL.UserProfileID != null
                     select new AccessGroupsDTO()
                     {
                         AccessGroupUserLinkID = accessGL.AccessGroupUserLinkID,
