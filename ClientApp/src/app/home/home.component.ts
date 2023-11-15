@@ -926,7 +926,6 @@ export class HomeComponent implements OnInit, OnDestroy {
           tempUsersList.idNumber = current.idNumber;
           tempUsersList.fullName = current.fullName;
 
-
           this.sharedService.clientUserID = current.userID;
           this.ClientUserList.push(tempUsersList);
           
@@ -2049,6 +2048,9 @@ this.Applications.push(tempApplicationList);
     this.applicationDataForView = [];
     this.Applications = [];
     let number = 21;
+    if (this.CurrentUserProfile[0].isZoneAdmin == true) {
+
+    }
     debugger;
     this.applicationService.getApplicationsForReviewer(this.CurrentUserProfile[0].zoneID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
