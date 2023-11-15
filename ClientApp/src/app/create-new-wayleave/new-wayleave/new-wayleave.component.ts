@@ -504,6 +504,7 @@ export class NewWayleaveComponent implements OnInit {
   projects: any;
   isDraft: boolean = false;
   draftExcavationType: string = "";
+    projectNum: string;
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -1135,6 +1136,7 @@ export class NewWayleaveComponent implements OnInit {
                   }
 
                   const projectNum = "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear;
+                   this.projectNum = "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear;
                   const emailContentOriginator = `
      <html>
         <head>
@@ -1198,7 +1200,7 @@ export class NewWayleaveComponent implements OnInit {
         <body>
           <div class="email-content">
             <p>Dear ${this.internalName + ' ' + this.internalSurname},</p>
-            <p>Your application <strong>${projectNum}</strong> for a Wayleave has been captured. Please use this reference number in all further correspondence. You will be notified once your application proceeds to the next stage. </p>
+            <p>Your application <strong>${"WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear}</strong> for a Wayleave has been captured. Please use this reference number in all further correspondence. You will be notified once your application proceeds to the next stage. </p>
             <p>Should you have any queries, please contact <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
                 <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
                           <p>
@@ -1247,7 +1249,7 @@ export class NewWayleaveComponent implements OnInit {
         <body>
           <div class="email-content">
             <p>Dear ${obj.fullName},</p>
-            <p>A Wayleave application with ID ${this.applicationID} has just been captured. As the zone admin of ${obj.zoneName} in ${obj.subDepartmentName}, please assign a reviewer to the application.</p>
+            <p>A Wayleave application with Wayleave No. ${this.projectNum} has just been captured. As the zone admin of ${obj.zoneName} in ${obj.subDepartmentName}, please assign a reviewer to the application.</p>
             <p>Should you have any queries, please contact us at <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
           </div>
           <div class="footer">
