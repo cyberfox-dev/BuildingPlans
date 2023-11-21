@@ -326,10 +326,15 @@
       <div class="card">
         <h3><span>Project Details</span></h3>
       </div>
-
+      <div class="container-fluid">
+        <div class="alert alert-warning">
+          <h4>Please ensure to determine the size of your project by clicking the button below and making the necessary selections.</h4>
+        </div>
+      </div>
       <button mat-raised-button color="projectSize" matTooltip="Please check the 'Project Size Criteria.pdf' in the Repository. You'll find it in the top right-hand menu." (click)="openMandatoryDocumentCategory(MandatoryDocumentCategory)">Determine Project Size</button>
-
-      <div class="alert alert-info" role="alert" *ngIf="projectSizeAlert || onPopulateDraftInfo">{{PSM}}</div>
+      <div *ngIf="PSM != ''">
+        <div class="alert alert-info" role="alert" *ngIf="projectSizeAlert || onPopulateDraftInfo">{{PSM}}</div>
+      </div>
       <!--Out with the old-->
       <!--<mat-form-field appearance="fill">
     <mat-label>Select type of application</mat-label>
@@ -358,9 +363,9 @@
         <label for="name">WBS Number</label>
       </div>-->
           <!--            <div class="form-floating mb-3 mt-3">
-          <input type="text" class="form-control" [(ngModel)]="descriptionOfProject" id="Description" placeholder="Enter Description" name="descriptionOfProject">
-          <label for="name">Description of Proposed Construction Work</label>
-        </div>-->
+        <input type="text" class="form-control" [(ngModel)]="descriptionOfProject" id="Description" placeholder="Enter Description" name="descriptionOfProject">
+        <label for="name">Description of Proposed Construction Work</label>
+      </div>-->
         </div>
       </div>
       <div class="row">
@@ -379,8 +384,20 @@
 
       </div>
 
+      <!--      <div class="floating-container">
+          <div class="floating-button">Save Project As Draft</div>
+          <div class="element-container">
 
-      <button mat-raised-button color="draft" class="floating-button2" (click)="DraftOption(); onWayleaveCreate(CurrentUser.appUserId,false,true);" >Save project as a draft</button>
+            <a href="google.com">
+              <span class="float-element tooltip-left">
+
+              </span>
+            </a>
+
+
+          </div>
+        </div>-->
+      <button mat-raised-button color="draft" class="floating-button2" (click)="DraftOption(); onWayleaveCreate(CurrentUser.appUserId,false,true);">Save project as a draft</button>
 
       <div class="row">
         <div class="typeOfExcavation">
@@ -393,13 +410,13 @@
             <mat-form-field>
               <mat-label>Types Of Excavation</mat-label>
               <mat-select [(ngModel)]="TOENAMES" multiple>
-               
+
                 <mat-option *ngFor="let TOE of TypeOfExcavationList" (selectionChange)="CheckTOES()" [value]="TOE.typeOfExcavationName">{{TOE.typeOfExcavationName}}</mat-option>
               </mat-select>
             </mat-form-field>
 
           </div>
-          
+
         </div>
       </div>
 
@@ -453,7 +470,8 @@
 
       <div class="cont">
         <button mat-raised-button color="primary" matStepperPrevious>Back</button>
-        <button mat-raised-button color="primary" matStepperNext  (click)="CheckTOES()">Next</button>
+        <button mat-raised-button color="primary" matStepperNext (click)="CheckTOES()" [disabled]="PSM == ''">Next</button>
+
       </div>
     </mat-step>
 
@@ -468,7 +486,7 @@
         <ng-template matStepLabel>Document Uploads</ng-template>
         
         
-        <button mat-raised-button color="draft" class="floating-button2" (click)= "DraftOption();onWayleaveCreate(CurrentUser.appUserId,false,true)">Save project as a draft</button>
+<!--        <button mat-raised-button color="draft" class="floating-button2" (click)= "DraftOption();onWayleaveCreate(CurrentUser.appUserId,false,true)">Save project as a draft</button>-->
         
       </form>
       <mat-list *ngFor="let manDoc of MandatoryDocumentsLinkedStagesList | async; let i=index; trackBy: trackByFn" [attr.data-index]="i">

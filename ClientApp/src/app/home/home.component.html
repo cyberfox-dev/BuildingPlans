@@ -153,6 +153,9 @@
           <button mat-menu-item (click)="onFilterAPplicationsForRecentApplications()">
             <span>All Projects</span>
           </button>
+          <button mat-menu-item (click)="filterForMyDep()">
+            <span>Applications For My Department</span>
+          </button>
         </mat-menu>
         <mat-form-field appearance="outline">
           <mat-label>Search</mat-label>
@@ -170,10 +173,10 @@
         <p *ngIf="notNyProjects">You Are Currently Viewing {{FiterValue}}</p>
         <p *ngIf="MyProjects">You Are Currently Viewing Your Applications</p>
       </div>
-      <div class="internalFilterBtns" >
-        <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
-          <mat-button-toggle value="bold" >Current Reviews</mat-button-toggle>
-          <mat-button-toggle value="italic" >Past Reviews</mat-button-toggle>
+      <div class="internalFilterBtns" *ngIf="pastAndCurrentReviews">
+        <mat-button-toggle-group name="fontStyle" aria-label="Font Style" [(ngModel)]="Reviews">
+          <mat-button-toggle value="Current" (click)="onFilterApplicationForMyReviews()">Current Reviews</mat-button-toggle>
+          <mat-button-toggle value="Past" disabled>Past Reviews</mat-button-toggle>
         </mat-button-toggle-group>
 
       </div>

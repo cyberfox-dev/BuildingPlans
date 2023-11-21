@@ -19,10 +19,10 @@
     <br>
     <mat-divider *ngIf="CurrentApplication.isPlanning != true || canCommentFinalApprover != true"></mat-divider>
     <br>
-    <mat-form-field class="example-full-width" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true">
+    <mat-form-field class="example-full-width" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true" >
       <!--|| canCommentFinalApprover == true-->
       <mat-label>Type New Comment/Special Condition </mat-label>
-      <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good"></textarea>
+      <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea"></textarea>
 
     </mat-form-field>
     <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"></button>

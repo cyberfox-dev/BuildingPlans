@@ -34,7 +34,13 @@ import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-u
 import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
 import { ManuallyAssignUsersService } from 'src/app/service/ManuallyAssignUsers/manually-assign-users.service';
 import { tap } from 'rxjs/operators';
+import 'tinymce';
+import 'tinymce/themes/silver';
 
+// Add any plugins you want to use
+import 'tinymce/plugins/lists';
+
+declare var tinymce: any;
 
 
 
@@ -398,7 +404,7 @@ export class ActionCenterComponent implements OnInit {
     //this.getDepartmentManagerUserID();
     //Get Current Application Infomation 
     debugger;
-
+    this.initializeTinyMCE();
     this.applicationData = this.sharedService.getViewApplicationIndex();
     console.log("venApplicationData:",this.applicationData);
     this.getAllSubDepartments();
@@ -478,11 +484,21 @@ export class ActionCenterComponent implements OnInit {
     this.CheckApplicant();
     this.setProjectNumber();
 
-
+ 
 
     
 
   }
+  initializeTinyMCE() {
+    debugger;
+    tinymce.init({
+      selector: '#myTextarea', // Replace with the ID of your textarea
+      plugins: ['lists', 'textcolor'],
+      toolbar: 'bold italic | numlist bullist forecolor backcolor',
+      menubar: false
+    });
+  }
+
 
 
   ngOnDestroy() {

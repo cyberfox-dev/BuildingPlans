@@ -123,5 +123,12 @@ export class ApplicationsService {
     return this.httpClient.post(this.baseURL + "GetApplicationsForReviewer", body);
   }
 
+  public getApplicationsForDepartment(ZoneID: number, SubDepartmentID: number) {
+    const body = {
+      ZoneID: ZoneID,
+      SubDepartmentID: SubDepartmentID
+    };
+    return this.httpClient.post(this.baseURL + "GetApplicationsForDepartment", body);
+  }
 
 }
