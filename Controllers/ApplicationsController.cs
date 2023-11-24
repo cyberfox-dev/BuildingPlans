@@ -246,5 +246,27 @@ namespace WayleaveManagementSystem.Controllers
         }
 
 
+        [HttpPost("GetApplicationsForDepartment")]
+        public async Task<object> GetApplicationsForDepartment([FromBody] ApplicationsBindingModel model)
+        {
+            try
+            {
+                if (model.ZoneID <= 0)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "ZoneID is invalid", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.GetApplicationsForDepartment(model.ZoneID, model.SubDepartmentID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Applications retrieved successfully", result));
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+
     }
 }

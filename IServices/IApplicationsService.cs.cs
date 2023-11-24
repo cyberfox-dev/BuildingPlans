@@ -23,6 +23,7 @@ namespace WayleaveManagementSystem.IServices
 
         Task<List<ApplicationsDTO>> GetApplicationsByProjectNumber(string projectNumber);
         Task<List<ApplicationsDTO>> GetApplicationsForReviewer(int? ZoneID, string UserID);
+        Task<List<ApplicationsDTO>> GetApplicationsForDepartment(int? ZoneID, int? subDepartmentID);
 
         
     }

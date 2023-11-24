@@ -19,10 +19,10 @@
     <br>
     <mat-divider *ngIf="CurrentApplication.isPlanning != true || canCommentFinalApprover != true"></mat-divider>
     <br>
-    <mat-form-field class="example-full-width" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true">
+    <mat-form-field class="example-full-width" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true" >
       <!--|| canCommentFinalApprover == true-->
       <mat-label>Type New Comment/Special Condition </mat-label>
-      <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good"></textarea>
+      <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea"></textarea>
 
     </mat-form-field>
     <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"></button>
@@ -32,15 +32,15 @@
     </mat-menu>
 
     <div class="cont2" *ngIf="canComment == true && canCommentFinalApprover == false">
-      <button mat-raised-button color="approveBTN" (click)="onComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approved</button>
-      <button mat-raised-button color="rejectBTN" (click)="onComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">   Not Approved</button>
+      <button mat-raised-button color="approveBTN" (click)="onComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon"> Prov. Approved</button>
+      <button mat-raised-button color="rejectBTN" (click)="onComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">   Prov. Not Approved</button>
       <button mat-raised-button color="clarifyBTN" (click)="onComment('Clarify');sendOption()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
       <button mat-raised-button color="referBTN" (click)="onComment('Refer')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/retweet-solid-white.svg" class="icon">  Refer</button>
 
     </div>
     <div class="cont2" *ngIf="canCommentSeniorReviewer == true">
-      <button mat-raised-button color="approveBTN" (click)="onCommentSR('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">   Approved</button>
-      <button mat-raised-button color="rejectBTN" (click)="onCommentSR('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon"> Not Approved</button>
+      <button mat-raised-button color="approveBTN" (click)="onCommentSR('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">   Prov. Approved</button>
+      <button mat-raised-button color="rejectBTN" (click)="onCommentSR('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon"> Prov. Not Approved</button>
       <button mat-raised-button color="clarifyBTN" (click)="onCommentSR('Clarify');sendOption()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
       <button mat-raised-button color="returnToReviewerBTN" (click)="onReturnToReviewerClick()"><i class="fa fa-reply" aria-hidden="true"></i>  Return To Reviewer</button>
       <button mat-raised-button color="consultWithReviewerBTN" (click)="onReviewerClarityClick()"  ><i class="fa fa-comments" aria-hidden="true"></i>  Consult With Reviewer</button> <!---->

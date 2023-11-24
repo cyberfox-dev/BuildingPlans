@@ -49,5 +49,6 @@
         public bool? WBSRequired { get; set; }
 
         public int? ZoneID { get; set; } 
+        public int? SubDepartmentID { get; set; } 
     }
 }
