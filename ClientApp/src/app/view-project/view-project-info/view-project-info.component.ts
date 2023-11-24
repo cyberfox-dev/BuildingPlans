@@ -1401,7 +1401,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
               if (data.responseCode == 1) {
 
-
+             
 
 
               }

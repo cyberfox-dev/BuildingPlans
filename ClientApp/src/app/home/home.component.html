@@ -147,14 +147,14 @@
           <button mat-menu-item (click)="onFilterApplicationForMyReviews()">
             <span>My Reviews</span>
           </button>
-          <button mat-menu-item (click)="onFilterApplicationsFprMyApplications()">
-            <span>My Applications</span>
+          <button mat-menu-item (click)="filterForMyDep()">
+            <span>Applications For My Zone</span>
           </button>
           <button mat-menu-item (click)="onFilterAPplicationsForRecentApplications()">
             <span>All Projects</span>
           </button>
-          <button mat-menu-item (click)="filterForMyDep()">
-            <span>Applications For My Department</span>
+          <button mat-menu-item (click)="onFilterApplicationsFprMyApplications()">
+            <span>My Applications</span>
           </button>
         </mat-menu>
         <mat-form-field appearance="outline">
@@ -176,7 +176,7 @@
       <div class="internalFilterBtns" *ngIf="pastAndCurrentReviews">
         <mat-button-toggle-group name="fontStyle" aria-label="Font Style" [(ngModel)]="Reviews">
           <mat-button-toggle value="Current" (click)="onFilterApplicationForMyReviews()">Current Reviews</mat-button-toggle>
-          <mat-button-toggle value="Past" disabled>Past Reviews</mat-button-toggle>
+          <mat-button-toggle value="Past" matTooltip="This is a future feature" disabled>Past Reviews(Disabled)</mat-button-toggle>
         </mat-button-toggle-group>
 
       </div>
@@ -282,8 +282,8 @@
 
 
           <div class="cont2">
-            <button mat-raised-button color="client" [class.matactive]="option ==='internal'" (click)="cardchange('internal')"><i class="fa fa-user" aria-hidden="true"></i> Yourself</button>
-            <button mat-raised-button color="client" [class.matactive]="option ==='client'" (click)="cardchange('client')"> <i class="fa fa-user-plus" aria-hidden="true"></i> Client</button>
+            <button mat-raised-button color="client" [class.matactive]="option ==='internal'" (click)="cardchange('internal')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon"> Yourself</button>
+            <button mat-raised-button color="client" [class.matactive]="option ==='client'" (click)="cardchange('client')"> <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon"> Client</button>
 
           </div>
         </div>
@@ -312,9 +312,9 @@
 
 
           <div class="cont2">
-            <button mat-raised-button color="client" [class.cardactive]="option ==='client'" (click)="cardchange('client');modal.dismiss('Cross click'); openNewClient(newClient)"> <i class="fa fa-user-plus" aria-hidden="true"></i> New Client</button>
+            <button mat-raised-button color="client" [class.cardactive]="option ==='client'" (click)="cardchange('client');modal.dismiss('Cross click'); openNewClient(newClient)"> <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon">  New Client</button>
             <!--<button mat-raised-button color="internal" (click)="openUser(user);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'"><i class="fa fa-user" aria-hidden="true"></i> Existing Client</button>-->
-            <button mat-raised-button color="internal" (click)="openChoice(choiceEC);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'"><i class="fa fa-user" aria-hidden="true"></i> Existing Client</button>
+            <button mat-raised-button color="internal" (click)="openChoice(choiceEC);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon">  Existing Client</button>
           </div>
         </div>
 

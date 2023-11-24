@@ -2660,6 +2660,24 @@ export class ActionCenterComponent implements OnInit {
 
 
                   this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", emailContent, emailContent);
+                  debugger;
+                  this.accessGroupsService.getUserBasedOnRoleName("FinalApprover", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+                    debugger;
+                    if (data.responseCode == 1) {
+                      debugger;
+                      console.log(data.dateSet);
+
+                      console.log("this.departmentAdminUsersgetAllLinkedRolesReponsethis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsers", this.departmentAdminUsers);
+                    }
+                    else {
+                      alert(data.responseMessage);
+                    }
+                    console.log("getAllLinkedRolesReponse", data);
+
+                  }, error => {
+                    console.log("getAllLinkedRolesReponseError: ", error);
+                  })
+
 /*                  this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have approved application " + this.projectNo + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
 */                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application provisionally approved", false, this.CurrentUserProfile[0].UserID, this.CurrentUserProfile[0].UserID, this.ApplicationID, "You have approved application " + this.projectNo).subscribe((data: any) => {
 
@@ -2820,6 +2838,66 @@ export class ActionCenterComponent implements OnInit {
 
 
                 this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", emailContent, emailContent);
+                debugger;
+                this.accessGroupsService.GetUserAndZoneBasedOnRoleName("Final Approver", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+                  if (data.responseCode === 1) {
+                    // Filter out duplicates based on a unique property (e.g., email)
+                    const uniqueFinalApprovers = this.getUniqueFinalApprovers(data.dateSet, 'email');
+                    debugger;
+                    // Filter out final approvers for the current zone
+                    const finalApproversForCurrentZone = uniqueFinalApprovers.filter(approver => approver.zoneID === this.CurrentUserProfile[0].zoneID);
+                    finalApproversForCurrentZone.forEach(approver => {
+                      const emailContent12 = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${approver.fullName}</p>
+            <p>Your sign-off is required on ${this.projectNo}. Kindly login to the Wayleave Management System and proceed accordingly.</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+     
+           
+    `;
+                      this.notificationsService.sendEmail(approver.email, "Request for Sign-of", emailContent12, emailContent12);
+                    });
+                    console.log("Filtered Final Approvers:", finalApproversForCurrentZone);
+                  } else {
+                    alert(data.responseMessage);
+                  }
+                }, error => {
+                  console.log("Error fetching final approvers:", error);
+                });
+
+                // Function to get unique final approvers based on a property
+
 /*                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have approved application " + this.projectNo + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
 */                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application provisionally approved", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have approved application " + this.projectNo).subscribe((data: any) => {
 
@@ -3057,6 +3135,7 @@ export class ActionCenterComponent implements OnInit {
             <p>Dear ${this.applicationData.clientName }</p>
             <p>A reviewer has asked you to clarify your application ${this.projectNo} with the comment:</p>
             <p>${this.leaveAComment}</p>
+               <p >Please login to the <a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a> and provide a response</p>
                <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
                           <p>
               <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
@@ -3252,6 +3331,13 @@ export class ActionCenterComponent implements OnInit {
         break;
       }
     }
+  }
+  getUniqueFinalApprovers(approvers: any[], property: string): any[] {
+    const uniqueApproversMap = new Map();
+    for (const approver of approvers) {
+      uniqueApproversMap.set(approver[property], approver);
+    }
+    return Array.from(uniqueApproversMap.values());
   }
 
   onCommentSR(interact: any) {
