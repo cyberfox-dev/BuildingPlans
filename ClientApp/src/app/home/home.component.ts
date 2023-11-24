@@ -4359,8 +4359,9 @@ this.Applications.push(tempApplicationList);
       this.noEmptyFields = true;
     }
     //&& this.validID == true
-    if(this.noEmptyFields == true && this.validFullName == true && this.validEmail == true && this.externalWValidBP == true){
+    //if(this.noEmptyFields == true && this.validFullName == true && this.validEmail == true && this.externalWValidBP == true){
     //if (this.noEmptyFields == true && this.validFullName == true && this.validEmail == true && this.validID == true) {
+    if (this.validFullName == true && this.validEmail == true) {
       this.sharedService.errorForRegister = false;
       this.createNewClient(stepper);
     }

@@ -158,6 +158,12 @@ export class AccessGroupsConfigComponent implements OnInit {
   openXl(content: any) {
     this.modalService.open(content, { size: 'lg' });
   }
+
+  openEditAccessGroup(editAG: any) {
+    const modalRef = this.modalService.open(editAG, { size: 'lg' });
+
+    modalRef.componentInstance.editedAGName = this.editedAGName;
+  }
   async openAddUserToAccessGroup(addUserToAccessGroup: any, index: any) {
 
 
@@ -770,6 +776,101 @@ export class AccessGroupsConfigComponent implements OnInit {
     // You can also add more logic here if needed
     // ...
   }
+   private static readonly OGAccessGroups: readonly string[] = Object.freeze([
+    "Department Admin",
+    "Zone Admin",
+    "Applicant",
+    "Reviewer",
+    "Final Approver",
+    "Senior Reviewer",
+    "Permit Issuer",
+    "Developer",
+
+    //These might not be real access groups:
+    "EMB",
+    "Test",
+    "Capturer"
+   ]);
+
+  isOGGroup: boolean = false;
+  deleteAccessGroup(index:number): void {
+
+    this.currentAGID = this.AccessGroupList[index].AccessGroupID;
+    this.currentAGName = this.AccessGroupList[index].AccessGroupName;
+    this.isOGGroup = AccessGroupsConfigComponent.OGAccessGroups.includes(this.currentAGName);
+
+    if (this.isOGGroup) {
+      console.warn(`Cannot delete access group "${this.currentAGName}". The OG Access Groups are immutable.`);
+    } else {
+     
+      console.log(`Deleting access group "${this.currentAGName}".`);
+
+      const index = this.AccessGroupList.findIndex(item => item.AccessGroupName === this.currentAGName);
+
+      if (index !== -1) {
+        // Remove the access group from AccessGroupList
+        debugger;
+        this.accessGroupsService.deleteAccessGroupByID(this.currentAGID).subscribe((data: any) => {
+
+          this.getAllAccessGroup();
+          this.AccessGroupListTable?.renderRows();
+        });
+
+       
+      } else {
+        console.warn(`Access group "${this.currentAGName}" not found in AccessGroupList.`);
+      }
+
+      //this.accessGroupsService.deleteAccessGroupByID(this.currentAGID);
+    }
+    this.getAllAccessGroup();
+  }
+
+  editedAGName: string = "Default TEST";
+  editedAGID: number;
+  editedAGDescription: string;
+  selectedAGName: string;
 
 
+  editAccessGroup(index: number, editAG: any) {
+    this.currentAGID = this.AccessGroupList[index].AccessGroupID;
+    this.currentAGName = this.AccessGroupList[index].AccessGroupName;
+    this.editedAGDescription = this.AccessGroupList[index].AccessGroupDescription;
+
+  
+    this.isOGGroup = AccessGroupsConfigComponent.OGAccessGroups.includes(this.currentAGName);
+
+ 
+    if (this.isOGGroup) {
+      console.warn(`Cannot edit the name of OG Access Group "${this.currentAGName}".`);
+
+      //return;
+    }
+
+ 
+    this.editedAGName = this.currentAGName;
+    this.selectedAGName = this.currentAGName;
+    this.editedAGID = this.currentAGID;
+    console.log("The selected access group is:", this.editedAGName)
+    this.openEditAccessGroup(editAG);
+  }
+  onAccessGroupEdit() {
+
+    this.accessGroupsService.addUpdateAccessGroup(this.currentAGID, this.editedAGDescription, this.editedAGName, this.CurrentUser.appUserId).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        this.getAllAccessGroup();
+        this.AccessGroupListTable?.renderRows();
+      }
+    })
+  }
+
+  reset() {
+    this.editedAGID = 0;
+    this.editedAGName = '';
+    this.selectedAGName = '';
+    this.isOGGroup = false;
+
+  }
+
+  //Are roles still relevant?
 }

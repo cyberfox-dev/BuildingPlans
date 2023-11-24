@@ -591,7 +591,7 @@ export class UserManagementComponent implements OnInit {
       if (data.responseCode == 1) {
 
         const current = data.dateSet[0];
-        debugger;
+        debugger; 
         this.loggedInUserDepartmentName = current.departmentName;
 
         if (this.loggedInUserDepartmentName == "EMB" || this.loggedInUsersDepartmentID == 28) {
@@ -2316,8 +2316,11 @@ export class UserManagementComponent implements OnInit {
       } else {
         console.log(`Zone ${this.theirSelectedZone} does not exist in TheirZoneLinkDetailsList.`);
         // 5. This is when you can add them to that Zone
-        await this.internalInOtherZoneOrDpt();
-        this.linkToAnotherZone(viewDepartmentPerson);
+        debugger;
+
+        await this.internalInOtherZoneOrDpt(viewDepartmentPerson);
+
+        //this.linkToAnotherZone(viewDepartmentPerson);
       }
     }
   }
@@ -2373,8 +2376,9 @@ export class UserManagementComponent implements OnInit {
         } else {
           console.log(`Zone ${this.theirSelectedZone} does not exist in TheirZoneLinkDetailsList.`);
           // 5. This is when you can add them to that Zone
-          await this.internalInOtherZoneOrDpt();
-          this.linkToAnotherZone(viewDepartmentPerson);
+          await this.internalInOtherZoneOrDpt(viewDepartmentPerson);
+          //this.modalService.open(viewDepartmentPerson, { centered: true, size: 'lg' });
+          //this.linkToAnotherZone(viewDepartmentPerson); //Am I using this method anywhere else??
         }
       }
     } catch (error) {
@@ -2398,20 +2402,20 @@ export class UserManagementComponent implements OnInit {
     const ReviewerID = this.getAccessGroupIdByName("Reviewer");
     this.theirSelectedZoneName = await this.getZoneByZoneId(this.theirSelectedZone);
 
-    console.log("What is my user profile ID: ", this.createdUPID)
+    console.log("What is my user profile ID: ", this.createdUPID) //it's null??
     // TODO: FIX THE LAST ARGUMENT
     this.accessGroupsService.addUpdateAccessGroupUserLink(0, ReviewerID, this.selectedUserID, this.CurrentUser.appUserId, this.theirSelectedZone, this.theirSubdepartmentID, this.createdUPID).subscribe((data: any) => {
       ;
       if (data.responseCode == 1) {
         //alert(data.responseMessage);
         console.log(data.responseMessage);
-
+        this.modalService.open(viewDepartmentPerson, { centered: true, size: 'lg' });
         debugger;
         this.newAcessGroupUserLinkID = data.dateSet.accessGroupUserLinkID;
         debugger;
         //Note: that I decided that the default access group is reviewer.
 
-        this.zoneLinkService.addUpdateZoneLink(0, this.theirSelectedZone, this.theirSelectedZoneName, this.theDepartmentID, this.theirSubdepartmentID, this.theSubDepartmentName, this.selectedUserID,
+       /* this.zoneLinkService.addUpdateZoneLink(0, this.theirSelectedZone, this.theirSelectedZoneName, this.theDepartmentID, this.theirSubdepartmentID, this.theSubDepartmentName, this.selectedUserID,
           null, this.CurrentUser.appUserId, false, false, this.newAcessGroupUserLinkID, "Reviewer").subscribe(async (zoneLinkData: any) => {
             if (zoneLinkData.responseCode == 1) {
               await this.getZoneLinks(this.selectedUserID);
@@ -2426,7 +2430,7 @@ export class UserManagementComponent implements OnInit {
           }, error => {
             // Handle errors that may occur during the zone link update.
             console.log("Error: ", error);
-          });
+          });*/
       }
       else {
         // alert(data.responseMessage);
@@ -2556,6 +2560,9 @@ export class UserManagementComponent implements OnInit {
 
   async onMultiFilterChoices(allUsers: any) {
     this.multiFilter = true;
+    this.isAGFilter = false;
+    this.isZoneFilter = false;
+    this.DepartFilter = false;
 
     console.log('selectedSubdepartment:', this.selectedSubdepartment);
     console.log('selectedZone:', this.selectedZone);
@@ -3020,7 +3027,7 @@ export class UserManagementComponent implements OnInit {
  
     
   //When a person already has a wayleave profile then everytime they are added to a different zone or department they must get a new userProfile ID with that information - create with official work email perhaps?
-  async internalInOtherZoneOrDpt() {
+  async internalInOtherZoneOrDpt(viewDepartmentPerson:any) {
     debugger;
     await this.zoneService.getZoneByZoneID(this.theirSelectedZone).subscribe((data: any) => {
       if (data.responseCode == 1) {
@@ -3107,6 +3114,7 @@ export class UserManagementComponent implements OnInit {
                           if (agsData.responseCode == 1) {
                             //this.getAccessGroups();
                             await this.getZoneAccessGroups(zoneID);
+                            this.modalService.open(viewDepartmentPerson, { centered: true, size: 'lg' });
 
                           }
                         })

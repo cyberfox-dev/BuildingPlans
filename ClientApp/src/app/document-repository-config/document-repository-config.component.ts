@@ -121,7 +121,8 @@ export class DocumentRepositoryConfigComponent implements OnInit {
     if (DepartmentID == "All") {
       debugger;
       for (let i = 0; i < this.DepartmentsList.length; i++) {
-        this.documentRepositoryService.addUpdateDocumentCategory(documentRepositoryID, newDocumentCategory, this.DepartmentsList[i].departmentID, this.CurrentUser.appUserID)
+        console.log("This is the current user:", this.CurrentUser);
+        this.documentRepositoryService.addUpdateDocumentCategory(documentRepositoryID, newDocumentCategory, this.DepartmentsList[i].departmentID, this.CurrentUser.appUserId)
           .subscribe((data: any) => {
             if (data.responseCode === 1) {
               debugger;
@@ -145,7 +146,7 @@ export class DocumentRepositoryConfigComponent implements OnInit {
 
     }
     else {
-      this.documentRepositoryService.addUpdateDocumentCategory(documentRepositoryID, newDocumentCategory, DepartmentID, this.CurrentUser.appUserID)
+      this.documentRepositoryService.addUpdateDocumentCategory(documentRepositoryID, newDocumentCategory, DepartmentID, this.CurrentUser.appUserId)
         .subscribe((data: any) => {
           if (data.responseCode === 1) {
             debugger;
