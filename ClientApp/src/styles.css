@@ -1,5 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~quill/dist/quill.bubble.css';
 
+/* OR ??
+   @import '~quill/dist/quill.snow.css'; */
 /* Provide sufficient contrast against white background */
 a {
   color: #0366d6;

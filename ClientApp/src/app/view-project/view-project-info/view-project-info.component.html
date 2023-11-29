@@ -72,23 +72,23 @@
 
       <app-view-project-details></app-view-project-details>
       <!--<nav class="menu">
-        <input type="checkbox" href="#" class="menu-open" name="menu-open" id="menu-open" />
-        <label class="menu-open-button" for="menu-open">
-          <span class="hamburger hamburger-1"></span>
-          <span class="hamburger hamburger-2"></span>
-          <span class="hamburger hamburger-3"></span>
-        </label>
+      <input type="checkbox" href="#" class="menu-open" name="menu-open" id="menu-open" />
+      <label class="menu-open-button" for="menu-open">
+        <span class="hamburger hamburger-1"></span>
+        <span class="hamburger hamburger-2"></span>
+        <span class="hamburger hamburger-3"></span>
+      </label>
 
-        <a class="menu-item" matTooltipPosition="left" matTooltip="Show applicant layer"> <i class="fa fa-user"></i> </a>
-        <a class="menu-item" matTooltipPosition="left" matTooltip="Show department layer"><i class="fa fa-building"></i> </a>
-        <a class="menu-item" matTooltipPosition="left" matTooltip="Show all layers"> <i class="fa fa-eye"></i> </a>
-        <a class="menu-item" matTooltipPosition="left" matTooltip="Hide all layers"> <i class="fa fa-eye-slash"></i> </a>
+      <a class="menu-item" matTooltipPosition="left" matTooltip="Show applicant layer"> <i class="fa fa-user"></i> </a>
+      <a class="menu-item" matTooltipPosition="left" matTooltip="Show department layer"><i class="fa fa-building"></i> </a>
+      <a class="menu-item" matTooltipPosition="left" matTooltip="Show all layers"> <i class="fa fa-eye"></i> </a>
+      <a class="menu-item" matTooltipPosition="left" matTooltip="Hide all layers"> <i class="fa fa-eye-slash"></i> </a>
 
 
-      </nav>-->
+    </nav>-->
       <!--<div class="maps">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d55522.617408819875!2d30.405427199999995!3d-29.569843200000005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sza!4v1662643454248!5m2!1sen!2sza" width="100%" height="700" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-      </div>-->
+      <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d55522.617408819875!2d30.405427199999995!3d-29.569843200000005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sza!4v1662643454248!5m2!1sen!2sza" width="100%" height="700" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>-->
       <app-project-details-map-view [data]="ARCGISAPIData"></app-project-details-map-view>
       <app-department-circulation></app-department-circulation>
       <!-- <app-department-circulation-planning *ngIf="CurrentApplicationBeingViewed[0].isPlanning === true"></app-department-circulation-planning>-->
@@ -106,8 +106,8 @@
       <div class="main-container">
         <section id="timeline" class="timeline-outer">
           <div class="container" id="content">
-                                                                                      
-            <div class="row" *ngFor="let commentsList of CommentsList; let i = index" [style.margin-left.px]="(i % 2 === 0) ? 60 : 80" [style.margin-right.px]="(i % 2 === 0) ? 60 : 80"  >
+
+            <div class="row" *ngFor="let commentsList of CommentsList; let i = index" [style.margin-left.px]="(i % 2 === 0) ? 60 : 80" [style.margin-right.px]="(i % 2 === 0) ? 60 : 80">
               <div class="col s12 m12 l12" *ngIf="!(commentsList.CommentStatus === 'Referred' && referComment)">
 
                 <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved' " [class.Reject]="commentsList.CommentStatus === 'Reject'||commentsList.CommentStatus === 'Rejected'" [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'" [class.refer]="commentsList.CommentStatus === 'Referred'" [class.returned]="commentsList.CommentStatus === 'Returned'" [class.reviewerClarify]="commentsList.CommentStatus === 'Reviewer Clarity'">
@@ -120,10 +120,12 @@
                     <div class="cont2">
                       <button mat-raised-button color="white" *ngIf="commentsList.CommentStatus != 'FinalApproved'  &&   this.subDepNameForClarify === commentsList.SubDepartmentName" (click)="openEditCommentModal(commentEditorModal, i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/pencil-solid.svg" class="icon"></button>
                     </div>
-                    <p>
+                    <!--<p>
 
-                      {{commentsList.Comment}}
-                    </p>
+    {{commentsList.Comment}}
+  </p>-->
+                    <div [innerHTML]="sanitizeHTML(commentsList.Comment)"></div>
+
                     <!--Applicant Clarity-->
                     <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarify' && canClarify ||commentsList.CommentStatus === 'Reviewer Clarity' && canReviewerClarify" (click)="openReplyModal(replyModal,i)">Reply</button>
                     <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarified'&& canClarify" (click)="openReplyModal(replyModal,i)">Update Reply</button>
@@ -150,9 +152,9 @@
         <br />
       </div>
       <!-- <div class="cont3" *ngIf="isInternalUser">
-        <button mat-raised-button color="green" (click)="onCreateApprovalPack()" *ngIf="ApprovalPackBtn">Approval Pack</button>
-        <button mat-raised-button color="red" (click)="onCrreateRejectionPack()" *ngIf="RejectionPackBtn">Rejection Pack</button>
-      </div>-->
+      <button mat-raised-button color="green" (click)="onCreateApprovalPack()" *ngIf="ApprovalPackBtn">Approval Pack</button>
+      <button mat-raised-button color="red" (click)="onCrreateRejectionPack()" *ngIf="RejectionPackBtn">Rejection Pack</button>
+    </div>-->
 
       <div class="container-fluid" *ngIf="rejected">
         <div class="alert alert-danger">
@@ -166,26 +168,27 @@
       </div>
 
       <!--<mat-form-field>
-      <div>
-        <mat-toolbar>-->
+    <div>
+      <mat-toolbar>-->
       <!-- Display files names -->
       <!--<input matInput [(ngModel)]="fileAttr" readonly name="name" />-->
       <!-- Browse Button -->
       <!--<button mat-flat-button color="blue">Browse File</button>
-      </mat-toolbar>-->
+    </mat-toolbar>-->
       <!-- Fetch selected filed on change -->
       <!--<input type="file"
-                 #fileInput
-                 id="uploadFile"
-                 (change)="uploadFileEvt($event)"
-                 name="uploadFile"
-                 multiple="multiple"
-                 accept="image/*" />
-        </div>
-      </mat-form-field>-->
+               #fileInput
+               id="uploadFile"
+               (change)="uploadFileEvt($event)"
+               name="uploadFile"
+               multiple="multiple"
+               accept="image/*" />
+      </div>
+    </mat-form-field>-->
 
 
     </mat-tab>
+    <!--USE THE QUILL-EDITOR!!-->
     <!--This is the modal for when the applicant can reply to a comment made by the line department-->
     <ng-template #replyModal let-modal>
       <div class="modal-header">
@@ -195,10 +198,25 @@
       <div class="modal-body">
         <form>
           <div class="row">
-            <div class="form-floating mb-3 mt-3">
+            <!--<div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" [(ngModel)]="reply" id="reply" name="reply" placeholder="Edit Comment">2
               <label for="reply">Enter in a reply</label>
-            </div>
+            </div>-->
+            <quill-editor [(ngModel)]="reply"
+                          [placeholder]="'Enter your response here...'"
+                          [modules]="{
+  toolbar: [
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+    [{ 'script': 'sub' }, { 'script': 'super' }],
+    [{ 'indent': '-1' }, { 'indent': '+1' }],
+    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+    [{ 'color': [] }],
+    [{ 'font': [] }],
+    [{ 'align': [] }],
+    ['clean'],
+  ]
+}"></quill-editor>
           </div>
         </form>
       </div>
@@ -206,6 +224,7 @@
         <button type="button" class="btn btn-outline-success" (click)="createReply();modal.close('Save click')">Save</button>
       </div>
     </ng-template>
+
 
     <!--this is the modal for when the line dep user wants to edit their comment made -->
     <ng-template #commentEditorModal let-modal>
@@ -220,7 +239,22 @@
           <div class="row">
 
             <div class="form-floating mb-3 mt-3">
-              <input type="text" [(ngModel)]="commentEdit" name="commentEdit" class="form-control" id="commentEdit" placeholder="Update Comment">
+              <!--<input type="text" [(ngModel)]="commentEdit" name="commentEdit" class="form-control" id="commentEdit" placeholder="Update Comment">-->
+              <quill-editor [(ngModel)]="commentEdit"
+                            [placeholder]="'Update Comment'"
+                            [modules]="{
+                toolbar: [
+                  ['bold', 'italic', 'underline', 'strike'],
+                  [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                  [{ 'script': 'sub' }, { 'script': 'super' }],
+                  [{ 'indent': '-1' }, { 'indent': '+1' }],
+                  [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                  [{ 'color': [] }],
+                  [{ 'font': [] }],
+                  [{ 'align': [] }],
+                  ['clean'],
+                ]
+              }"></quill-editor>
               <label for="commentEdit">Update Comment</label>
             </div>
 
@@ -237,7 +271,7 @@
     <!--------------------------------------------------------Messaging--------------------------------------------------->
     <!--     <mat-tab label="Messaging">
 
-    </mat-tab>-->
+  </mat-tab>-->
     <!--------------------------------------------------------Financial--------------------------------------------------->
 
     <mat-tab label="Financials">
@@ -663,24 +697,24 @@
       <button mat-raised-button color="blue" (click)="openXl(MFTModal)">Create New Note</button>
 
       <!--      <div class="row" *ngFor="let mftList of MFTList; let i = index">
-        <div class="col s12 m12 l12">
+      <div class="col s12 m12 l12">
 
-          <ul class="timeline">
+        <ul class="timeline">
 
-            <li class="event" data-date="">
+          <li class="event" data-date="">
 
 
-              <h3>{{mftList.MFTNote}} - {{mftList.DateCreated}}</h3>
-              <p>
+            <h3>{{mftList.MFTNote}} - {{mftList.DateCreated}}</h3>
+            <p>
 
-                {{mftList.DocumentName}}
-              </p>
+              {{mftList.DocumentName}}
+            </p>
 
-            </li>
+          </li>
 
-          </ul>
-        </div>
-      </div>-->
+        </ul>
+      </div>
+    </div>-->
       <div class="cards" *ngFor="let mftList of MFTList; let i = index">
       <li class="cards_item">
         <div class="card">

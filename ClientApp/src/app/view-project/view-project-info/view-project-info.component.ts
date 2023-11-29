@@ -29,6 +29,7 @@ import { ServiceItemService } from 'src/app/service/ServiceItems/service-item.se
 import { ContactDetailsService } from 'src/app/service/ContactDetails/contact-details.service';
 import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
 import { MatDialog } from '@angular/material/dialog';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import 'jspdf-autotable';
 
@@ -507,6 +508,7 @@ export class ViewProjectInfoComponent implements OnInit {
     private contactDetails: ContactDetailsService,
     private notificationsService: NotificationsService,
     private dialog: MatDialog,
+    private sanitizer: DomSanitizer
   ) { }
 
 
@@ -650,6 +652,11 @@ export class ViewProjectInfoComponent implements OnInit {
     this.CheckForApprovalPackDownload(); 
     
   }
+
+  sanitizeHTML(comment: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(comment);
+  }
+
   receivedata: string;
 
   receiveData(data: string) {

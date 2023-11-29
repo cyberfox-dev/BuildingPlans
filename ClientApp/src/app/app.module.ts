@@ -96,6 +96,7 @@ import { SnackBarAlertsComponent } from './snack-bar-alerts/snack-bar-alerts.com
 import { DocumentRepositoryConfigComponent } from './document-repository-config/document-repository-config.component';
 import { DraftsComponent } from 'src/app/drafts/drafts.component';
 import { MatChipsModule } from '@angular/material/chips';
+import { QuillModule } from 'ngx-quill';
 
 //import { MatExpansionModule } from '@angular/material/expansion';
 
@@ -225,6 +226,7 @@ import { MatChipsModule } from '@angular/material/chips';
     NgbModule,
     GooglePlaceModule,
     DragDropModule,
+    QuillModule.forRoot(),
     RouterModule.forRoot([
       { path: '', component: LoginComponent},
       { path: 'home', component: HomeComponent},
