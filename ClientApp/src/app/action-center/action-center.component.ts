@@ -3266,7 +3266,63 @@ export class ActionCenterComponent implements OnInit {
            
     `;
 
+                this.accessGroupsService.GetUserAndZoneBasedOnRoleName("Senior Reviewer", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+                  if (data.responseCode === 1) {
+                    // Filter out duplicates based on a unique property (e.g., email)
+                    const uniqueFinalApprovers = this.getUniqueFinalApprovers(data.dateSet, 'email');
+                    debugger;
+                    // Filter out final approvers for the current zone
+                    const finalApproversForCurrentZone = uniqueFinalApprovers.filter(approver => approver.zoneID === this.CurrentUserProfile[0].zoneID);
+                    finalApproversForCurrentZone.forEach(approver => {
+                      const emailContent12 = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${approver.fullName}</p>
+            <p>${this.loggedInUserName} has requested your perusal of ${this.projectNo}with comment:</p>
+            <p>${this.leaveAComment}. Kindly login to the Wayleave Management System and provide input.</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
 
+        </body>
+      </html>
+     
+           
+    `;
+                      this.notificationsService.sendEmail(approver.email, "Request for Perusal", emailContent12, emailContent12);
+                    });
+                    console.log("Filtered Final Approvers:", finalApproversForCurrentZone);
+                  } else {
+                    alert(data.responseMessage);
+                  }
+                }, error => {
+                  console.log("Error fetching final approvers:", error);
+                });
 
                 this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application escalated", emailContent, emailContent);
 /*                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application escalated", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have escalated application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");

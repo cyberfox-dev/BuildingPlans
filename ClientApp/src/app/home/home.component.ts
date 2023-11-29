@@ -216,7 +216,6 @@ export interface AllInternalUserProfileList {
   PhoneNumber: string;
   Directorate: string;
   SubDepartmentID: string;
-
   DepartmentID: string;
   Branch: string;
 
@@ -397,7 +396,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   isTableLoading: boolean = true;
-
+  InternalExternalUser: boolean = false;
   newList = [];
   newInternalList = [];
   currentDate: Date;

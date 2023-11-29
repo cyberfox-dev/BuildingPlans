@@ -28,14 +28,14 @@
 
   <h1 class="animationSlideUp">Hi, {{CurrentUserProfile[0].fullName}}</h1>
   <h2 class="animationSlideUp">Welcome to your Dashboard</h2>
-  <h3 class="animationSlideUp" *ngIf="CurrentUserProfile[0].subDepartmentName != null">You are acting as {{CurrentUserProfile[0].subDepartmentName}}, for {{CurrentUserProfile[0].zoneName}}</h3>
+  <h3 class="animationSlideUp" *ngIf="CurrentUserProfile[0].subDepartmentName != null    ">You are acting as {{CurrentUserProfile[0].subDepartmentName}}, for {{CurrentUserProfile[0].zoneName}}</h3>
   <!--  <div style="background: red; text-align: center; font-size: xx-large; color: white; padding: 10px; line-height: 0.8;" *ngIf="ServerType === 'QA'">
       Please note, you've accessed the test server, nothing captured to this server will be processed. Please go to wayleave.capetown.gov.za to access the live site.
     </div>-->
   <!--  <button class="btn" (click)="goToNewWayleave()"><a><i class="fa fa-plus"></i> Create New Wayleave</a></button>-->
   <div class="cont3 ">
     <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToNewWayleave(false,false)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon4"> Create New Wayleave</button>
-    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToNewWayleave(false,true)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon4"> Request for Services Information</button>
+    <button mat-raised-button color="createWayleave2" class="animationSlideDown" (click)="goToNewWayleave(false,true)" matTooltip="Future Enhancement" disabled><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon4"> Request for Services Information</button>
   </div>
 
 
@@ -176,7 +176,7 @@
       <div class="internalFilterBtns" *ngIf="pastAndCurrentReviews">
         <mat-button-toggle-group name="fontStyle" aria-label="Font Style" [(ngModel)]="Reviews">
           <mat-button-toggle value="Current" (click)="onFilterApplicationForMyReviews()">Current Reviews</mat-button-toggle>
-          <mat-button-toggle value="Past" matTooltip="This is a future feature" disabled>Past Reviews(Disabled)</mat-button-toggle>
+          <mat-button-toggle value="Past" matTooltip="Future Enhancement" disabled>Past Reviews(Disabled)</mat-button-toggle>
         </mat-button-toggle-group>
 
       </div>
