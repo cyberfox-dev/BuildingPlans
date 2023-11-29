@@ -106,7 +106,7 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field *ngIf="GroupName">
+    <mat-form-field *ngIf="Group">
       <mat-label>Select an option</mat-label>
       <mat-select [(value)]="selected" (selectionChange)="onOptionSelected($event)" >
         <mat-option>None</mat-option>
@@ -138,7 +138,7 @@
                                [UploadFor]="fileAttrsName"
                                (passFileName)="onPassFileName($event)"
                                (onUploadFinished)="onFileDelete($event, 0)"
-                               (onUploadSuccess)="onFileUpload($event)" *ngIf="selectDepForUpload != 0 && selected != 'none' && selected != undefined && descriptionForDocRepo != ''">
+                               (onUploadSuccess)="onFileUpload($event)" *ngIf="selectDepForUpload != 0 || descriptionForDocRepo != ''">
               </app-file-upload>
             </div>
           </div>
@@ -147,6 +147,6 @@
     </mat-form-field>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" (click)="save();modal.close('Save click')">Save</button>
+    <button type="submit" class="btn btn-outline-success" (click)="save();modal.close('Save click')" >Save</button>
   </div>
 </ng-template>

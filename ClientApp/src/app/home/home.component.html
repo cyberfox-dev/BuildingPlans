@@ -34,8 +34,9 @@
     </div>-->
   <!--  <button class="btn" (click)="goToNewWayleave()"><a><i class="fa fa-plus"></i> Create New Wayleave</a></button>-->
   <div class="cont3 ">
-    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToNewWayleave(false,false)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon4"> Create New Wayleave</button>
-    <button mat-raised-button color="createWayleave2" class="animationSlideDown" (click)="goToNewWayleave(false,true)" matTooltip="Future Enhancement" disabled><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon4"> Request for Services Information</button>
+    <!--<img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon4"> -->
+    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToNewWayleave(false,false)">Create New Wayleave</button>
+    <button mat-raised-button color="createWayleave2" class="animationSlideDown" (click)="goToNewWayleave(false,true)" matTooltip="Future Enhancement" disabled>Request for Services Information (Disabled)</button>
   </div>
 
 
@@ -176,7 +177,7 @@
       <div class="internalFilterBtns" *ngIf="pastAndCurrentReviews">
         <mat-button-toggle-group name="fontStyle" aria-label="Font Style" [(ngModel)]="Reviews">
           <mat-button-toggle value="Current" (click)="onFilterApplicationForMyReviews()">Current Reviews</mat-button-toggle>
-          <mat-button-toggle value="Past" matTooltip="Future Enhancement" disabled>Past Reviews(Disabled)</mat-button-toggle>
+          <mat-button-toggle value="Past" matTooltip="Future Enhancement" disabled>Past Reviews (Disabled)</mat-button-toggle>
         </mat-button-toggle-group>
 
       </div>

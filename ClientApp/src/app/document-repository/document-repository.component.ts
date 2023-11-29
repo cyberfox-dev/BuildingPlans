@@ -251,13 +251,13 @@ expandedElement = this.DocumentsList;
       console.log("Error: ", error);
     })
   }
-  GroupName: boolean = false;
+  Group: boolean = false;
   selectDepartment() {
-    if (this.SelectedDepForRepUpload != "GeneralDocument" && this.SelectedDepForRepUpload != "All Departments") {
-      this.GroupName = true;
+    if (this.SelectedDepForRepUpload == "GeneralDocument" || this.SelectedDepForRepUpload == "All Departments") {
+      this.Group = false;
     }
     else {
-      this.GroupName = false
+      this.Group = true;
     }
     this.subDepartment.getSubDepartmentBySubDepartmentID(this.selectDepForUpload).subscribe((data: any) => {
       const tempSubDocList = {} as SubDepartmentListFORDOCUMENTS;
