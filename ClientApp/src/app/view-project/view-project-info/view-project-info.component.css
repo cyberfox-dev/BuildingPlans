@@ -1018,3 +1018,26 @@ button {
 .right-line {
   margin-left: 10px; /* Adjust this margin as needed */
 }
+
+quill-editor {
+  width: 90%;
+  min-height: 300px;
+  overflow-y: auto;
+}
+
+.modal-body {
+  overflow-y: auto; /* Enable vertical scrolling within the modal body */
+}
+
+.disabled-textbox {
+  background-color: #e0e0e0; /* Grey background color */
+  border: 1px solid #ccc; /* Border style */
+  padding: 10px; /* Padding for content */
+  display: inline-block; /* Allow the div to grow with content */
+  width: 90%; /* Automatically adjust width based on content */
+  min-height: 40px; /* Minimum height, adjust as needed */
+  overflow: auto; /* Enable scrolling if content exceeds the height */
+  pointer-events: none; /* Ignore mouse events, making it visually appear disabled */
+  color: #777; /* Text color to make it less prominent */
+  border-radius: 8px;
+}

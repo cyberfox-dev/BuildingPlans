@@ -373,10 +373,10 @@ export class ViewProjectInfoComponent implements OnInit {
   replyCreated: boolean = false;
   editComment: boolean = true;
   ApplicantReply = '';
-  reply = ''
+  //reply = ''
   /* @ViewChild('fileInput') fileInput: ElementRef | undefined;*/
   fileAttr = 'Choose File';
-  commentEdit: any;
+  //commentEdit: any;
   currentApplication: number;
   configNumberOfProject: any;
   configMonthYear: any;
@@ -456,18 +456,18 @@ export class ViewProjectInfoComponent implements OnInit {
 
   isFinancial = true;
 
-  openEditCommentModal(commentEditorModal: any, index: any) {
+  public editMyComment = this.formBuilder.group({
+    commentEdit: ['', Validators.required],
+  })
+  public editMyReply = this.formBuilder.group({
+    editCommentName: ['', Validators.required],
+  })
+  public myNewReply = this.formBuilder.group({
+    reply: ['', Validators.required],
+  })
 
 
-    this.currentIndex = index;
 
-    this.commentEdit = this.CommentsList[index].Comment;
-
-
-    this.subDepartmentForComment = this.CommentsList[index].SubDepartmentForCommentID;
-    this.modalService.open(commentEditorModal, { centered: true, size: 'lg' });
-
-  }
 
   @ViewChild(MatTable) FinancialListTable: MatTable<DocumentsList> | undefined;
   
@@ -651,6 +651,22 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getLinkedDepartmentsFORAPPROVAL();
     this.CheckForApprovalPackDownload(); 
     
+  }
+
+
+
+  openEditCommentModal(commentEditorModal: any, index: any) {
+
+    debugger;
+    this.currentIndex = index;
+    this.editMyComment.controls["commentEdit"].setValue(this.CommentsList[index].Comment);
+    //this.commentEdit = this.CommentsList[index].Comment;
+    console.log("This is what you're trying to edit", this.CommentsList[index].Comment);
+
+
+    this.subDepartmentForComment = this.CommentsList[index].SubDepartmentForCommentID;
+    this.modalService.open(commentEditorModal, { centered: true, size: 'lg' });
+
   }
 
   sanitizeHTML(comment: string): SafeHtml {
@@ -1255,14 +1271,24 @@ export class ViewProjectInfoComponent implements OnInit {
     })
   }
 
-  openReplyModal(replyModal: any, index: any) {
+  modalTitle: string = "";
+  openReplyModal(replyModal: any, index: any, action: string) {
     this.modalService.open(replyModal, { centered: true, size: 'lg' })
     this.currentIndex = index;
     if (this.CommentsList[index].isApplicantReplay != null) {
-      this.reply = this.CommentsList[index].isApplicantReplay;
+      //this.reply = this.CommentsList[index].isApplicantReplay;
+      this.myNewReply.controls["reply"].setValue(this.CommentsList[index].isApplicantReplay);
+    } else {
+      this.myNewReply.controls["reply"].setValue("");
     }
 
     this.subDepartmentForComment = this.CommentsList[index].SubDepartmentForCommentID;
+
+    if (action === 'Reply') {
+      this.modalTitle = 'Reply To Comment';
+    } else if (action === 'Update') {
+      this.modalTitle = 'Update Reply to Comment';
+    }
 
   }
 
@@ -1274,7 +1300,7 @@ export class ViewProjectInfoComponent implements OnInit {
   // await  this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, subDepID ).subscribe((data: any) => {
   //     if (data.responseCode == 1) {
   //       const current = data.dateSet[0];
-  //       
+  //
 
   //       this.subDepartmentForComment = current.subDepartmentForCommentID;
 
@@ -1295,9 +1321,12 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
 
+  // TODO: make sure that comments update
 
   updateComment() {
-    let CurrentComment = this.commentEdit;
+    let CurrentComment = this.editMyComment.controls["commentEdit"].value;
+    console.log("This is the updated comment", CurrentComment);
+    //let CurrentComment = this.commentEdit;
 
     const currentComment = this.CommentsList[this.currentIndex];
     //let numberOfComments = 0;
@@ -1386,7 +1415,9 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   createReply() {
-    let Currentreply = this.reply;
+    //let Currentreply = this.reply;
+    let Currentreply = this.myNewReply.controls["reply"].value;
+
     //this.ApplicantReply = Currentreply;
     // this.replyCreated = true;
 

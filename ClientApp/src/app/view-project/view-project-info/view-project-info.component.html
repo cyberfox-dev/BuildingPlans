@@ -125,14 +125,16 @@
     {{commentsList.Comment}}
   </p>-->
                     <div [innerHTML]="sanitizeHTML(commentsList.Comment)"></div>
-
+                    <br />
                     <!--Applicant Clarity-->
-                    <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarify' && canClarify ||commentsList.CommentStatus === 'Reviewer Clarity' && canReviewerClarify" (click)="openReplyModal(replyModal,i)">Reply</button>
-                    <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarified'&& canClarify" (click)="openReplyModal(replyModal,i)">Update Reply</button>
+                    <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarify' && canClarify ||commentsList.CommentStatus === 'Reviewer Clarity' && canReviewerClarify" (click)="openReplyModal(replyModal,i,'Reply')">Reply</button>
+                    <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarified'&& canClarify" (click)="openReplyModal(replyModal,i, 'Update')">Update Reply</button>
                     <div class="row" *ngIf="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null">
-                      <label *ngIf="commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null">Applicants Reply :</label>
+                      <label *ngIf="commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null"> <strong><em>Applicant's Reply:</em></strong></label>
                       <div class="form-floating mb-3 mt-3" *ngIf="commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null">
-                        <input type="text" class="form-control" value="{{commentsList.isApplicantReplay}}" id="ApplicantReply" name="ApplicantReply" disabled> <!--[(ngModel)]="ApplicantReply"-->
+                        <!--<input type="text" class="form-control" value="{{commentsList.isApplicantReplay}}" id="ApplicantReply" name="ApplicantReply" disabled>--> <!--[(ngModel)]="ApplicantReply"-->
+                      
+                        <div class="disabled-textbox" [innerHTML]="sanitizeHTML(commentsList.isApplicantReplay)" id="ApplicantReply"></div>
 
 
 
@@ -192,31 +194,62 @@
     <!--This is the modal for when the applicant can reply to a comment made by the line department-->
     <ng-template #replyModal let-modal>
       <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Reply To Comment</h4>
+        <h4 class="modal-title" id="modal-basic-title">{{ modalTitle }}</h4>
         <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
       </div>
       <div class="modal-body">
         <form>
           <div class="row">
             <!--<div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="reply" id="reply" name="reply" placeholder="Edit Comment">2
-              <label for="reply">Enter in a reply</label>
-            </div>-->
-            <quill-editor [(ngModel)]="reply"
-                          [placeholder]="'Enter your response here...'"
-                          [modules]="{
-  toolbar: [
-    ['bold', 'italic', 'underline', 'strike'],
-    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-    [{ 'script': 'sub' }, { 'script': 'super' }],
-    [{ 'indent': '-1' }, { 'indent': '+1' }],
-    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-    [{ 'color': [] }],
-    [{ 'font': [] }],
-    [{ 'align': [] }],
-    ['clean'],
-  ]
-}"></quill-editor>
+    <input type="text" class="form-control" [(ngModel)]="reply" id="reply" name="reply" placeholder="Edit Comment">2
+    <label for="reply">Enter in a reply</label>
+  </div>-->
+
+            <form [formGroup]="myNewReply">
+              <quill-editor formControlName="reply" [readOnly]="false">
+                <div quill-editor-toolbar>
+                  <span class="ql-formats">
+                    <button class="ql-bold" [title]="'Bold'"></button>
+                    <select class="ql-color" [title]="'Text Color'">
+                      <option value="rgb(0, 0, 0)" selected></option>
+                      <option value="rgb(255, 0, 0)"></option>
+                      <option value="rgb(255, 153, 0)"></option>
+                      <option value="rgb(255, 255, 0)"></option>
+                      <option value="rgb(0, 255, 0)"></option>
+                      <option value="rgb(0, 255, 255)"></option>
+                      <option value="rgb(0, 0, 255)"></option>
+                      <!-- Add other color options as needed -->
+                    </select>
+                    <button class="ql-italic" [title]="'Italic'"></button>
+                    <button class="ql-underline" [title]="'Underline'"></button>
+                    <button class="ql-strike" [title]="'Strikethrough'"></button>
+                    <button class="ql-script" value="sub"></button>
+                    <button class="ql-script" value="super"></button>
+                    <button class="ql-list" [title]="'Bullet List'" [value]="'bullet'"></button>
+                    <button class="ql-list" [title]="'Numbered List'" [value]="'ordered'"></button>
+                    <!--<button class="ql-link" [title]="'Enter URL'"></button>-->
+                    <button class="ql-indent" [value]="'-1'"></button>
+                    <button class="ql-indent" [value]="'+1'"></button>
+                    <select class="ql-align" [title]="'Alignment'">
+                      <option selected></option>
+                      <option value="center"></option>
+                      <option value="right"></option>
+                      <option value="justify"></option>
+                    </select>
+                    <select class="ql-header">
+                      <option value="false" selected></option>
+                      <option value="1"></option>
+                      <option value="2"></option>
+                      <option value="3"></option>
+                      <option value="4"></option>
+                      <option value="5"></option>
+                      <option value="6"></option>
+                    </select>
+                  </span>
+                </div>
+              </quill-editor>
+            </form>
+
           </div>
         </form>
       </div>
@@ -236,29 +269,60 @@
         <form>
 
 
-          <div class="row">
+          <!--<div class="row">
 
-            <div class="form-floating mb-3 mt-3">
+            <div class="form-floating mb-3 mt-3">-->
               <!--<input type="text" [(ngModel)]="commentEdit" name="commentEdit" class="form-control" id="commentEdit" placeholder="Update Comment">-->
-              <quill-editor [(ngModel)]="commentEdit"
-                            [placeholder]="'Update Comment'"
-                            [modules]="{
-                toolbar: [
-                  ['bold', 'italic', 'underline', 'strike'],
-                  [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                  [{ 'script': 'sub' }, { 'script': 'super' }],
-                  [{ 'indent': '-1' }, { 'indent': '+1' }],
-                  [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                  [{ 'color': [] }],
-                  [{ 'font': [] }],
-                  [{ 'align': [] }],
-                  ['clean'],
-                ]
-              }"></quill-editor>
-              <label for="commentEdit">Update Comment</label>
-            </div>
 
-          </div>
+              <!--<quill-editor [(ngModel)]="commentEdit" [readOnly]="false">-->
+              <form [formGroup]="editMyComment">
+                <quill-editor formControlName="commentEdit" [ngModel]="editMyComment.controls['commentEdit'].value" [readOnly]="false">
+                  <div quill-editor-toolbar>
+                    <span class="ql-formats">
+                      <button class="ql-bold" [title]="'Bold'"></button>
+                      <select class="ql-color" [title]="'Text Color'">
+                        <option value="rgb(0, 0, 0)" selected></option>
+                        <option value="rgb(255, 0, 0)"></option>
+                        <option value="rgb(255, 153, 0)"></option>
+                        <option value="rgb(255, 255, 0)"></option>
+                        <option value="rgb(0, 255, 0)"></option>
+                        <option value="rgb(0, 255, 255)"></option>
+                        <option value="rgb(0, 0, 255)"></option>
+                        <!-- Add other color options as needed -->
+                      </select>
+                      <button class="ql-italic" [title]="'Italic'"></button>
+                      <button class="ql-underline" [title]="'Underline'"></button>
+                      <button class="ql-strike" [title]="'Strikethrough'"></button>
+                      <button class="ql-script" value="sub"></button>
+                      <button class="ql-script" value="super"></button>
+                      <button class="ql-list" [title]="'Bullet List'" [value]="'bullet'"></button>
+                      <button class="ql-list" [title]="'Numbered List'" [value]="'ordered'"></button>
+                      <!--<button class="ql-link" [title]="'Enter URL'"></button>-->
+                      <button class="ql-indent" [value]="'-1'"></button>
+                      <button class="ql-indent" [value]="'+1'"></button>
+                      <select class="ql-align" [title]="'Alignment'">
+                        <option selected></option>
+                        <option value="center"></option>
+                        <option value="right"></option>
+                        <option value="justify"></option>
+                      </select>
+                      <select class="ql-header">
+                        <option value="false" selected></option>
+                        <option value="1"></option>
+                        <option value="2"></option>
+                        <option value="3"></option>
+                        <option value="4"></option>
+                        <option value="5"></option>
+                        <option value="6"></option>
+                      </select>
+                    </span>
+                  </div>
+                </quill-editor>
+              </form>
+              <!--<label for="commentEdit">Update Comment</label>-->
+            <!--</div>
+
+          </div>-->
 
 
         </form>

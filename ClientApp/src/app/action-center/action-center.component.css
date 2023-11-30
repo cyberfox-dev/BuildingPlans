@@ -185,6 +185,9 @@ table {
   /* word-wrap: normal; */
   /* flex-direction: row; */
 }
+.mat-menu-panel {
+  z-index: 9999999 !important; /* or any other high value */
+}
 .cont4 {
   display: flex;
   flex-wrap: nowrap;

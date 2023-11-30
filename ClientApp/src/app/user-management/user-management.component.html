@@ -528,8 +528,8 @@
         <tr *ngFor="let access of AccessGroupList; let i = index">
           <td>{{ access.AccessGroupName }}</td>
           <td>
-            <button class="btn btn-danger" (click)="removeFromAccessGroup(i)" *ngIf="isUserInAccessGroup(access.AccessGroupID)"> + </button>
-            <button class="btn btn-success" (click)="addToAccessGroup(i, viewDepartmentPerson);modal.close('Save click')" *ngIf="!isUserInAccessGroup(access.AccessGroupID)"> - </button>
+            <button class="btn btn-danger" (click)="removeFromAccessGroup(i)" *ngIf="isUserInAccessGroup(access.AccessGroupID)"> - </button>
+            <button class="btn btn-success" (click)="addToAccessGroup(i, viewDepartmentPerson);modal.close('Save click')" *ngIf="!isUserInAccessGroup(access.AccessGroupID)"> + </button>
           </td>
         </tr>
       </tbody>
