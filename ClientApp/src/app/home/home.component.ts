@@ -4678,11 +4678,10 @@ this.Applications.push(tempApplicationList);
   }
 
   openDrafts(drafts: any) {
-    this.modalService.open(drafts, {
-      centered: true,
-      size: 'xl',
-      backdrop: 'static', // Prevent clicking outside the modal to close it
-      keyboard: false // Prevent pressing the ESC key to close the modal
+    this.dialog.open(drafts, {
+      width: '80%',
+      maxHeight: 'calc(100vh - 100px)',
+      height: '100%'
     });
   }
   getDraftsList() {

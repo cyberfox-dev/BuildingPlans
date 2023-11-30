@@ -2,6 +2,9 @@
 .mat-radio-container {
   transform: scale(2.85);
 }
+
+
+
 @-webkit-keyframes come-in {
   0% {
     -webkit-transform: translatey(100px);
@@ -227,14 +230,26 @@ form {
   height: 40px;
   font-size: 16px;
 }
+.cont5 {
+  display: flex;
+  justify-content: center;
+}
+.sticky-button {
+
+}
+
 .mat-draft {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* Adjust the z-index as needed */
+  /* Add any other styles you want for the sticky button */
   background-color: #ffefcb;
   color: #d78900de;
-
   height: 51px;
-  margin-top: 27px;
+  /* margin-top: -11px; */
   font-size: 16px;
-
+  margin-bottom: 99px;
 }
 .mat-green {
   background-color: #54d75e;
@@ -287,7 +302,7 @@ h5 {
 h2 {
   color: #343a40;
   margin-top: 211px;
-  margin-bottom: 186px;
+  margin-bottom: 75px;
   text-align: center;
   font-family: 'Nunito';
   font-size: 55px;
@@ -724,8 +739,19 @@ mat-button-toggle {
   color: white;
 }
 .floating-button2 {
+  animation: fade-in-bottom 0.5s ease-out;
   position: fixed;
-  top: 50px;
-  left: 16px;
-  z-index: 1; /* Ensure it's above other content, adjust as needed */
+  top: 8px;
+  /* left: 16px; */
+}
+@keyframes fade-in-bottom {
+  0% {
+    opacity: 0;
+    transform: translateY(20px); /* Optional: Add a slide-up effect */
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

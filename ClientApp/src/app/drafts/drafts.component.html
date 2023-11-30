@@ -1,10 +1,11 @@
+<div class="cont5">
+  <h2 class="mat-dialog-title">{{this.CurrentUser.fullName}}'s Drafts</h2>
 
-<h1>Welcome {{this.CurrentUser.fullName}}</h1>
+</div>
+<div class="alert alert-info mat-dialog-content" role="alert" *ngIf="DraftsList.length == 0"> You Currently Have No drafts</div>
 
-<div class="alert alert-info" role="alert" *ngIf="DraftsList.length == 0"> You Currently Have No drafts</div>
 
-
-<div *ngIf="DraftsList.length > 0 ">
+<div *ngIf="DraftsList.length > 0 " class="mat-dialog-content">
   <table mat-table #draftsTable [dataSource]="draftDataSource" class="mat-elevation-z8">
 
     <ng-container matColumnDef="ApplicationID">
@@ -15,22 +16,22 @@
     
 
     <ng-container matColumnDef="FullName">
-      <th mat-header-cell *matHeaderCellDef> Full Name </th>
+      <th mat-header-cell *matHeaderCellDef>Full Name</th>
       <td mat-cell *matCellDef="let element"> {{element.FullName}} </td>
     </ng-container>
 
     <ng-container matColumnDef="TypeOfApplication">
-      <th mat-header-cell *matHeaderCellDef> Type Of Application </th>
+      <th mat-header-cell *matHeaderCellDef>Type Of Application</th>
       <td mat-cell *matCellDef="let element"> {{element.TypeOfApplication}} </td>
     </ng-container>
 
     <ng-container matColumnDef="PhysicalAddressOfProject">
-      <th mat-header-cell *matHeaderCellDef> Physical Address Of Project </th>
+      <th mat-header-cell *matHeaderCellDef>Address Of Project</th>
       <td mat-cell *matCellDef="let element"> {{element.PhysicalAddressOfProject}} </td>
     </ng-container>
 
     <ng-container matColumnDef="NatureOfWork">
-      <th mat-header-cell *matHeaderCellDef> Nature Of Work </th>
+      <th mat-header-cell *matHeaderCellDef>Nature Of Work</th>
       <td mat-cell *matCellDef="let element"> {{element.NatureOfWork}} </td>
     </ng-container>
 
@@ -64,3 +65,7 @@
     <tr mat-row *matRowDef="let row; columns:draftTableColumns;"></tr>
   </table>
 </div>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+
+</mat-dialog-actions>
