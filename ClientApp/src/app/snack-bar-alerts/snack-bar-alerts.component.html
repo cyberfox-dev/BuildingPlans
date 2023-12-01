@@ -1,4 +1,14 @@
-<span>
-  ✔ Application Created
-</span>
+<div class="container">
+  <div class="GoodCase" *ngIf="data.message == 'You Have Approved The Application'">
+    <div class="notification-text">
 
+      <span>{{ data.message}}</span>
+    </div>
+  </div>
+  <div class="BadCase" *ngIf="data.message != 'You Have Approved The Application'">
+    <div class="notification-text">
+
+      <span>{{ data.message}}</span>
+    </div>
+  </div>
+</div>

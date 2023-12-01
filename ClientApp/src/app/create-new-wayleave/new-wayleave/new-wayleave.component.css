@@ -208,8 +208,12 @@ form {
 }
 .mat-stepper{
     animation-duration:0s;
+    position:fixed;
 }
-
+.MainContainer {
+  position: absolute;
+  top: 469px;
+}
 .mat-toolbar-single-row {
   height: auto !important;
   background: transparent;
@@ -739,15 +743,15 @@ mat-button-toggle {
   color: white;
 }
 .floating-button2 {
-  animation: fade-in-bottom 0.5s ease-out;
+  animation: fade-in-top 0.5s ease-out;
   position: fixed;
   top: 8px;
   /* left: 16px; */
 }
-@keyframes fade-in-bottom {
+@keyframes fade-in-top {
   0% {
     opacity: 0;
-    transform: translateY(20px); /* Optional: Add a slide-up effect */
+    transform: translateY(-20px); /* Optional: Add a slide-up effect */
   }
 
   100% {

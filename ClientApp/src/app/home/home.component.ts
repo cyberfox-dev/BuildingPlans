@@ -406,11 +406,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   dataSource = this.Applications;
 
 
-  openSnackBar() {
+  openSnackBar(message: string) {
     this._snackBar.openFromComponent(SnackBarAlertsComponent, {
-      /* duration:3*1000,*/
+      data: { message }, // Pass the message as data to the component
+      duration: 3 * 1000,
       panelClass: ['green-snackbar'],
-      verticalPosition: 'top'
+      verticalPosition: 'top',
     });
   }
 
@@ -1149,8 +1150,13 @@ export class HomeComponent implements OnInit, OnDestroy {
 
           this.RolesList.push(tempRolesList);
 
-
-
+         /* if (tempRolesList.RoleName == "Applicant") {
+            this.InternalExternalUser = true;
+            this.FilterBtn = false;
+            this.onFilterApplicationsFprMyApplications();
+            alert("Applicant");
+          }
+*/
         }
         this.sharedService.setCurrentUserRole(this.RolesList);
         // this.rolesTable?.renderRows();
@@ -4681,7 +4687,7 @@ this.Applications.push(tempApplicationList);
     this.dialog.open(drafts, {
       width: '80%',
       maxHeight: 'calc(100vh - 100px)',
-      height: '100%'
+      height: 'auto'
     });
   }
   getDraftsList() {

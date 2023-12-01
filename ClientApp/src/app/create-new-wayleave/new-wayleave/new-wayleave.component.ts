@@ -696,7 +696,7 @@ export class NewWayleaveComponent implements OnInit {
   onWindowScroll() {
     this.toggleButtonVisibility();
   }
-  private scrollThreshold = 498;
+  private scrollThreshold = 350;
   ngAfterViewInit() {
     //  this.getProfessionalsListByProfessionalType("Contractor");
     this.dataSourceTest.paginator = this.paginator;
