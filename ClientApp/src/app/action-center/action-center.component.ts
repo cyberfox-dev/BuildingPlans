@@ -1,5 +1,5 @@
 import { Component, OnInit, TemplateRef, ViewChild, Input, Output, EventEmitter, ElementRef } from '@angular/core';
-import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -33,6 +33,7 @@ import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/ht
 import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-upload.service';
 import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
 import { ManuallyAssignUsersService } from 'src/app/service/ManuallyAssignUsers/manually-assign-users.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { tap } from 'rxjs/operators';
 import 'tinymce';
 import 'tinymce/themes/silver';
@@ -373,6 +374,7 @@ export class ActionCenterComponent implements OnInit {
     private documentUploadService: DocumentUploadService,
     private notificationsService: NotificationsService,
     private manuallyAssignUsersService: ManuallyAssignUsersService,
+    private sanitizer: DomSanitizer
 
   ) { }
   openEnd(content: TemplateRef<any>) {
@@ -394,6 +396,11 @@ export class ActionCenterComponent implements OnInit {
   selectSI = 0;
 
   leaveAComment = "";
+
+  sanitizeHTML(comment: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(comment);
+  }
+
   leaveACommentPermit = "";
   FileUpload = "Please Upload file";
   @ViewChild("internalOpt", { static: true }) content!: ElementRef;
@@ -4083,9 +4090,11 @@ export class ActionCenterComponent implements OnInit {
   }
 
   populateComment(commentName: any) {
-    let currnetComment = this.leaveAComment;
-    console.log("commentName", commentName);
-    this.leaveAComment = currnetComment+" "+commentName;
+    //let currnetComment = this.leaveAComment;
+    //console.log("commentName", commentName);
+    //this.leaveAComment = currnetComment + " " + commentName;
+    debugger;
+    this.leaveAComment = commentName;
   }
 
   populateCommentPermit(commentName: any) {

@@ -335,3 +335,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   background: #e1e2cc;
   color: #6d6200;
 }
+quill-editor {
+  width: 90%;
+  min-height: 500px;
+  overflow-y: auto;
+}
