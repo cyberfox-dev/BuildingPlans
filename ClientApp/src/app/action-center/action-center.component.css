@@ -220,9 +220,10 @@ table {
 
 
 .example-full-width {
-  width: 90%;
-  background-color:transparent;
-  color:black;
+  width: 100%;
+  background-color: white;
+  color: black;
+  height: 182px;
 }
 
 .actioncenter {

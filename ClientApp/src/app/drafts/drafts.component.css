@@ -112,6 +112,12 @@ h2 {
   -webkit-hyphens: auto;
   hyphens: auto;
 }
+.Nothing {
+  text-align: center;
+  color: gainsboro;
+  font-size: 20px;
+  font-style: italic;
+}
 .mat-column-DescriptionOfProject {
   word-wrap: break-word !important;
   white-space: unset !important;

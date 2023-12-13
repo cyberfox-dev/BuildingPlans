@@ -4589,7 +4589,7 @@ getAllCommentsByUserID() {
         <body>
           <div class="email-content">
             <p>Dear ${this.applicationData.clientName },</p>
-            <p>Congratulations, your application with reference ${this.projectNo}has been approved. Please login to the Wayleave Management System and download your Wayleave Approval Pack.</p>
+            <p>Congratulations, your application with reference ${this.projectNo} has been approved. Please login to the Wayleave Management System and download your Wayleave Approval Pack.</p>
                 <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
                           <p>
               <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              

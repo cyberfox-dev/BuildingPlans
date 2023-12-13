@@ -2,18 +2,18 @@
   <h2 class="mat-dialog-title">{{this.CurrentUser.fullName}}'s Drafts</h2>
 
 </div>
-<div class="alert alert-info mat-dialog-content" role="alert" *ngIf="DraftsList.length == 0"> You Currently Have No drafts</div>
+<p class="Nothing" *ngIf="DraftsList.length == 0"> You Currently Have No drafts</p>
 
 
 <div *ngIf="DraftsList.length > 0 " class="mat-dialog-content">
   <table mat-table #draftsTable [dataSource]="draftDataSource" class="mat-elevation-z8">
 
     <ng-container matColumnDef="ApplicationID">
-      <th mat-header-cell *matHeaderCellDef> Application ID </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Application ID </th>
       <td mat-cell *matCellDef="let element"> {{element.ApplicationID}} </td>
     </ng-container>
 
-    
+
 
     <ng-container matColumnDef="FullName">
       <th mat-header-cell *matHeaderCellDef>Full Name</th>
@@ -41,7 +41,7 @@
     </ng-container>
 
 
-    
+
     <ng-container matColumnDef="DescriptionOfProject">
       <th mat-header-cell *matHeaderCellDef> Desription Of Project </th>
       <td mat-cell *matCellDef="let element"> {{element.DescriptionOfProject}} </td>

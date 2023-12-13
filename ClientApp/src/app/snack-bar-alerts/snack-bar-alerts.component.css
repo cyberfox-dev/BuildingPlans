@@ -32,8 +32,10 @@
 .container {
   display: flex;
   width:100%;
-  justify-content: center;
-  align-items: center;
+  justify-content: end;
+  align-items: end;
+  right:0;
+  position:static;
 }
 
 .GoodCase {

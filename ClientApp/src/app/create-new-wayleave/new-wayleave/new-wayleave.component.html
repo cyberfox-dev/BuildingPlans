@@ -42,6 +42,7 @@
   <div class="cont5">
   <button  mat-raised-button color="draft" (click)="DraftOption(); onWayleaveCreate(CurrentUser.appUserId,false,true);" *ngIf="draft && stepper.selectedIndex === 1" class="floating-button2">Save project as a draft</button>
   <button  mat-raised-button color="draft" (click)="DraftOption(); onWayleaveCreate(CurrentUser.appUserId,false,true);" *ngIf="stepper.selectedIndex === 1" >Save project as a draft</button>
+
     </div>
   <!--Stepper-->
   <div class="MainContainer">
@@ -396,7 +397,7 @@
           <div class="card">
             <h3><span>Type Of Excavation</span></h3>
           </div>
-          <div class="container-fluid" *ngIf="PSM == ''">
+<!--          <div class="container-fluid" *ngIf="PSM == ''">
 
             <mat-form-field>
               <mat-label>Types Of Excavation</mat-label>
@@ -406,11 +407,11 @@
               </mat-select>
             </mat-form-field>
 
-          </div>
-          <div class="container-fluid" *ngIf="PSM != ''">
+          </div>-->
+          <div class="container-fluid">
             <mat-form-field>
               <mat-label>Types Of Excavation</mat-label>
-              <mat-select [(ngModel)]="TOENAMES2" [compareWith]="compareExcavationTypes" multiple>
+              <mat-select [(ngModel)]="TOENAMES" [compareWith]="compareExcavationTypes" (selectionChange)="CheckTOES()" multiple>
                 <mat-option *ngFor="let TOE of TypeOfExcavationList" [value]="TOE.typeOfExcavationName">
                   {{TOE.typeOfExcavationName}}
                 </mat-option>

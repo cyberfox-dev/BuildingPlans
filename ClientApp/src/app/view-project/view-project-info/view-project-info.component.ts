@@ -30,8 +30,12 @@ import { ContactDetailsService } from 'src/app/service/ContactDetails/contact-de
 import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ApprovalPackComponent } from 'src/app/Packs/approval-pack/approval-pack.component';
+import { RejectionPackComponent } from 'src/app/Packs/rejection-pack/rejection-pack.component';
+import { PdfGenerationService } from 'src/app/service/PDFGeneration/pdf-generation.service';
 
 import 'jspdf-autotable';
+import html2canvas from 'html2canvas';
 
 
 export interface RolesList {
@@ -267,7 +271,8 @@ interface jsPDFWithPlugin extends jsPDF {
 @Component({
   selector: 'app-view-project-info',
   templateUrl: './view-project-info.component.html',
-  styleUrls: ['./view-project-info.component.css']
+  styleUrls: ['./view-project-info.component.css'],
+
 })
 
 
@@ -500,6 +505,7 @@ export class ViewProjectInfoComponent implements OnInit {
     private businessPartnerService: BusinessPartnerService,
     private documentUploadService: DocumentUploadService,
     private http: HttpClient,
+    private PdfGenerationService: PdfGenerationService,
     private financial: FinancialService,
     private permitService: PermitService,
     private MFTService: MobileFieldTrackingService,
@@ -508,7 +514,8 @@ export class ViewProjectInfoComponent implements OnInit {
     private contactDetails: ContactDetailsService,
     private notificationsService: NotificationsService,
     private dialog: MatDialog,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private approvalPack: ApprovalPackComponent
   ) { }
 
 
@@ -4233,12 +4240,11 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
-  OpenLoadingModal(approvalPackLoading: any) {
 
 
-    this.modalService.open(approvalPackLoading, { centered: true, size: 'xl', backdrop: 'static' })
+  OpenLoadingModal(approvalPackLoading) {
+    this.modalService.open(approvalPackLoading, { centered: true, size: 'xl' })
     this.getContactDetails();
-
 
   }
 

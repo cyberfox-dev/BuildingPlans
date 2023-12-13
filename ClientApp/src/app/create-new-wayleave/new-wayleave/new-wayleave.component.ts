@@ -44,6 +44,8 @@ import { __await } from 'tslib';
 import { DraftApplicationsService } from 'src/app/service/DraftApplications/draft-applications.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { trim } from 'jquery';
+import { SnackBarAlertsComponent } from '../../snack-bar-alerts/snack-bar-alerts.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 
@@ -328,7 +330,7 @@ export class NewWayleaveComponent implements OnInit {
   expectedEndType: Date = new Date();
   coordinates = '';
 
-  TOENAMES ='' ;
+  TOENAMES:any ;
 
   projectNumber = '';
 
@@ -522,6 +524,7 @@ export class NewWayleaveComponent implements OnInit {
 
   constructor(
     private modalService: NgbModal,
+    private _snackBar: MatSnackBar,
     private el: ElementRef,
     private renderer: Renderer2,
     private applicationsService: ApplicationsService,
@@ -1373,11 +1376,14 @@ export class NewWayleaveComponent implements OnInit {
 
     }
     if (this.isDraft == true) {
+      debugger;
+      this.currentDate = this.expectedStartDate
+
       if (this.PSM = "") {
 
 
-        this.draftApplicationsService.addUpdateDraftApplication(0, this.applicationID, appUserId, this.internalName + " " + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null, null).subscribe((data: any) => {
-          alert("Draft Saved");
+        this.draftApplicationsService.addUpdateDraftApplication(this.currentDraftID, this.applicationID, appUserId, this.internalName + " " + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null, null).subscribe((data: any) => {
+          this.openSnackBar("Draft Saved!")
           this.SavedProjectSizeSelections();
           this.router.navigate(["/home"]);
           console.log("response", data);
@@ -1388,16 +1394,16 @@ export class NewWayleaveComponent implements OnInit {
         })
       }
       else {
-        for (var i = 0; i < this.TOENAMES2.length; i++) {
-          let current = this.TOENAMES2[i].toString();
+        for (var i = 0; i < this.TOENAMES.length; i++) {
+          let current = this.TOENAMES[i].toString();
           if (i > 0) {
             this.TOE2 = this.TOE2 + ", " + current
           } else {
             this.TOE2 = current;
           }
         }
-          this.draftApplicationsService.addUpdateDraftApplication(0, this.applicationID, appUserId, this.internalName + " " + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE2, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null, null).subscribe((data: any) => {
-            alert("Draft Saved");
+        this.draftApplicationsService.addUpdateDraftApplication(this.currentDraftID, this.applicationID, appUserId, this.internalName + " " + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE2, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null, null).subscribe((data: any) => {
+          this.openSnackBar("Draft Saved!")
             this.SavedProjectSizeSelections();
             this.router.navigate(["/home"]);
             console.log("response", data);
@@ -1939,7 +1945,7 @@ export class NewWayleaveComponent implements OnInit {
     this.applicationID = this.shared.getApplicationID();
     this.isDraft = isDraft;
     console.log("What gaan an? " + this.shared.getApplicationID());
-    
+    debugger;
 
     if (this.applicationID === 0) {
 
@@ -1970,46 +1976,73 @@ export class NewWayleaveComponent implements OnInit {
     }
 
     else {
-      // If this.applicationID != 0 then we do the update
+      //check to see if this is saving a draft application
 
 
-      for (var i = 0; i < this.TOENAMES.length; i++) {
-        let current = this.TOENAMES[i].toString();
-        if (i > 0) {
-          this.TOE = this.TOE + ", " + current
-        } else {
-          this.TOE = current;
+
+
+
+
+        // If this.applicationID != 0 then we do the update
+
+
+
+        if (this.TOENAMES.length <= 0) {
+          for (var i = 0; i < this.TOENAMES.length; i++) {
+            let current = this.TOENAMES[i].toString();
+            if (i > 0) {
+              this.TOE = this.TOE + ", " + current
+            } else {
+              this.TOE = current;
+            }
+
+          }
+        }
+        else {
+          for (var i = 0; i < this.TOENAMES.length; i++) {
+            let current = this.TOENAMES[i].toString();
+            if (i > 0) {
+              this.TOE = this.TOE + ", " + current
+            } else {
+              this.TOE = current;
+            }
+
+          
         }
 
+
+
+
+
+
+        if (this.internal && this.option != "proxy") {
+
+          this.internalWayleaveCreate(appUserId, isPlanning);
+          console.log('Co-ordinates:', this.coordinates);
+
+        }
+
+        else if (this.internalProxy) {
+          const appUserId = this.shared.clientUserID;
+          this.internalProxyWayleaveCreate(appUserId, isPlanning);
+        }
+        else if (this.client || this.option == "proxy") {
+          //the issue is - an internal person can be a client
+          //this.clientWayleaveCreate(appUserId, isPlanning);
+          const appUserId = this.shared.clientUserID;
+          this.clientWayleaveCreate(appUserId, isPlanning);
+
+          console.log('Co-ordinates:', this.coordinates);
+        }
+        else { //External
+          this.externalWayleaveCreate(appUserId, isPlanning);
+          console.log('Co-ordinates:', this.coordinates);
+
+        }
+
+
       }
 
-     
-
-
-      if (this.internal && this.option != "proxy") {
-
-        this.internalWayleaveCreate(appUserId, isPlanning);
-        console.log('Co-ordinates:', this.coordinates);
-
-      }
-    
-      else if (this.internalProxy) {
-        const appUserId = this.shared.clientUserID;
-        this.internalProxyWayleaveCreate(appUserId, isPlanning);
-      }
-      else if (this.client || this.option == "proxy" ) {
-         //the issue is - an internal person can be a client
-        //this.clientWayleaveCreate(appUserId, isPlanning);
-        const appUserId = this.shared.clientUserID;
-        this.clientWayleaveCreate(appUserId, isPlanning);
-
-        console.log('Co-ordinates:', this.coordinates);
-      }
-      else { //External
-        this.externalWayleaveCreate(appUserId, isPlanning);
-        console.log('Co-ordinates:', this.coordinates);
-
-      }
 
 
     }
@@ -4654,36 +4687,64 @@ export class NewWayleaveComponent implements OnInit {
   DraftOption() {
     this.isDraft = true;
   }
-  TOENAMES2: string[] = [];
-
+  
+  currentDraftID: number;
   option1:any
   onPopulateDraftInfo(applicationId: number) {
     this.draftApplicationsService.getDraftedApplicationsByApplicationID(applicationId).subscribe((data: any) => {
       
       if (data.responseCode === 1) {
-        const current = data.dateSet[0];
-        
-        // Assign data to component properties
-        this.applicationID = applicationId;
-        this.PSM = current.typeOfApplication + " Application";
-        this.TOENAMES = current.excavationType;
+        if (data.dateSet.length <= 1) {
+          const current = data.dateSet[0];
+          debugger;
+          // Assign data to component properties
+          this.currentDraftID = current.draftID;
+          this.applicationID = applicationId;
+          this.PSM = current.typeOfApplication + " Application";
+          this.TOENAMES = current.excavationType;
 
-        const excavationTypes = current.excavationType.split(', ');
-        for (var i = 0; i < excavationTypes.length; i++) {
-          this.TOENAMES2 = this.TypeOfExcavationList
-            .filter((toe) => excavationTypes.includes(toe.typeOfExcavationName))
-            .map((toe) => toe.typeOfExcavationName);
+          const excavationTypes = current.excavationType.split(', ');
+          for (var i = 0; i < excavationTypes.length; i++) {
+            this.TOENAMES = this.TypeOfExcavationList.filter((toe) => excavationTypes.includes(toe.typeOfExcavationName)).map((toe) => toe.typeOfExcavationName);
+          }
+          // Filter out the excavationTypes that are in the mat-select list
+          /*        this.TOENAMES2 = this.TypeOfExcavationList
+                    .filter((toe) => excavationTypes.includes(toe.typeOfExcavationName))
+                    .map((toe) => toe.typeOfExcavationName);*/
+          this.natureOfWork = current.natureOfWork;
+          this.expectedStartDate = current.expectedStartDate.substring(0, current.expectedStartDate.toString().indexOf('T'));
+          this.expectedEndType = current.expectedEndDate.substring(0, current.expectedEndDate.toString().indexOf('T'));
+          this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: false } });
+          console.log("draftPSM", this.PSM)
+          console.log("draftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSM", this.TOENAMES, "draftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSM", current.excavationType, "draftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSM", this.TypeOfExcavationList)
+          this.CheckProjectSizeChecklistForDraft();
+
         }
-        // Filter out the excavationTypes that are in the mat-select list
-/*        this.TOENAMES2 = this.TypeOfExcavationList
-          .filter((toe) => excavationTypes.includes(toe.typeOfExcavationName))
-          .map((toe) => toe.typeOfExcavationName);*/
-        this.natureOfWork = current.natureOfWork;
-        this.expectedStartDate = current.expectedStartDate.substring(0, current.dateCreated.indexOf('T'));
-        this.expectedEndType = current.expectedEndDate.substring(0, current.dateCreated.indexOf('T'));
-        this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: false } });
-        console.log("draftPSM", this.PSM)
-        this.CheckProjectSizeChecklistForDraft();
+        else {
+          const current = data.dateSet[data.dateSet.length -1];
+          debugger;
+          // Assign data to component properties
+          this.applicationID = applicationId;
+          this.PSM = current.typeOfApplication + " Application";
+          this.TOENAMES = current.excavationType;
+
+          const excavationTypes = current.excavationType.split(', ');
+          for (var i = 0; i < excavationTypes.length; i++) {
+            this.TOENAMES = this.TypeOfExcavationList.filter((toe) => excavationTypes.includes(toe.typeOfExcavationName)).map((toe) => toe.typeOfExcavationName);
+          }
+          // Filter out the excavationTypes that are in the mat-select list
+          /*        this.TOENAMES2 = this.TypeOfExcavationList
+                    .filter((toe) => excavationTypes.includes(toe.typeOfExcavationName))
+                    .map((toe) => toe.typeOfExcavationName);*/
+          this.natureOfWork = current.natureOfWork;
+          this.expectedStartDate = current.expectedStartDate.substring(0, current.expectedStartDate.toString().indexOf('T'));
+          this.expectedEndType = current.expectedEndDate.substring(0, current.expectedEndDate.toString().indexOf('T'));
+          this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: false } });
+          console.log("draftPSM", this.PSM)
+          console.log("draftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSM", this.TOENAMES, "draftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSM", current.excavationType, "draftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSMdraftPSM", this.TypeOfExcavationList)
+          this.CheckProjectSizeChecklistForDraft();
+
+        }
        
 
       } else {
@@ -4736,9 +4797,11 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   AddUpdateDraftWayleave() {
+    debugger;
     this.draftApplicationsService.addUpdateDraftApplication(0, this.applicationID, this.CurrentUserProfile.appUserId, this.internalName + " " + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject
       , this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null,null).subscribe((data: any) => {
-        alert("Draft Saved")
+        this.openSnackBar("Draft Saved!")
+        this.router.navigate(["/home"]);
         console.log("response", data);
 
 
@@ -4748,7 +4811,14 @@ export class NewWayleaveComponent implements OnInit {
   
   }
 
-
+  openSnackBar(message: string) {
+    this._snackBar.openFromComponent(SnackBarAlertsComponent, {
+      data: { message }, // Pass the message as data to the component
+      duration: 3 * 1000,
+      panelClass: ['green-snackbar'],
+      verticalPosition: 'top',
+    });
+  }
   onDraftSave() {
     this.router.navigate(["/home"]);
   }
