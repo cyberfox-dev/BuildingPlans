@@ -263,6 +263,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   AllConfig: ConfigList[] = [];
 
   ServerType: string;
+  BaseUrl: string;
 
   //Added on the 18th of September for the view tings
   TempEngList: TempEngineerList[] = [];
@@ -544,6 +545,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       //this.getAllExternalUsers(); //returns null at this point
       this.Reviews = 'Current';
       //this.ServerType = this.sharedService.getServerType();
+      this.isBannerVisible();
 
       /*      this.initializeApp();*/
       //this.function();
@@ -562,6 +564,16 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
 
+  //builder's break banner
+
+  isBannerVisible(): boolean {
+    const currentDate = new Date();
+    const startDate = new Date(2023, 11, 1); // 1 Dec 2023
+    const endDate = new Date(2024, 0, 5);   // 5 Jan 2024
+    //const endDate = new Date(2023, 11, 5);   // 5 December 2023 - used to test
+
+    return currentDate >= startDate && currentDate <= endDate;
+  }
 
 
   Reviews: any;
@@ -3762,6 +3774,7 @@ this.Applications.push(tempApplicationList);
         this.sharedService.setAllConfig(this.AllConfig);
         this.ServerType = this.AllConfig.find((Config) => Config.configName === 'ServerType').utilitySlot1;
         //this.sharedService.setAPIURL(this.AllConfig.find((Config) => Config.configName === 'BaseUrl').utilitySlot2);
+        this.BaseUrl = this.AllConfig.find((Config) => Config.configName === 'BaseUrl').utilitySlot1;
       }
       else {
         alert("Error");

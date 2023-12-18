@@ -8,7 +8,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatTable } from '@angular/material/table';
 import { ApplicationsService } from 'src/app/service/Applications/applications.service';
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
-import { PdfGenerationService } from 'src/app/service/PDFGeneration/pdf-generation.service';
+/*import { PdfGenerationService } from 'src/app/service/PDFGeneration/pdf-generation.service';*/
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
@@ -28,7 +28,7 @@ export class ApprovalPackComponent implements OnInit {
 
 
 
-  constructor(private router: Router, private sharedService: SharedService, private PdfGenerationService: PdfGenerationService, private draftApplicationService: DraftApplicationsService, private NewWayleaveComponent: NewWayleaveComponent, private modalService: NgbModal, private applicationService: ApplicationsService, private userPofileService: UserProfileService,) { }
+  constructor(private router: Router, private sharedService: SharedService, /*private PdfGenerationService: PdfGenerationService,*/ private draftApplicationService: DraftApplicationsService, private NewWayleaveComponent: NewWayleaveComponent, private modalService: NgbModal, private applicationService: ApplicationsService, private userPofileService: UserProfileService,) { }
 
 
 

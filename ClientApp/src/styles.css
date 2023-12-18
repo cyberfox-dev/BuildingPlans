@@ -295,6 +295,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .red {
   fill: #aa0000;
 }
+.white {
+    fill: #ffffff;
+}
 
 .green-snackbar {
     text-align: center !important;

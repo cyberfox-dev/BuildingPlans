@@ -32,7 +32,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ApprovalPackComponent } from 'src/app/Packs/approval-pack/approval-pack.component';
 import { RejectionPackComponent } from 'src/app/Packs/rejection-pack/rejection-pack.component';
-import { PdfGenerationService } from 'src/app/service/PDFGeneration/pdf-generation.service';
+/*import { PdfGenerationService } from 'src/app/service/PDFGeneration/pdf-generation.service';*/
 
 import 'jspdf-autotable';
 import html2canvas from 'html2canvas';
@@ -505,7 +505,7 @@ export class ViewProjectInfoComponent implements OnInit {
     private businessPartnerService: BusinessPartnerService,
     private documentUploadService: DocumentUploadService,
     private http: HttpClient,
-    private PdfGenerationService: PdfGenerationService,
+/*    private PdfGenerationService: PdfGenerationService,*/
     private financial: FinancialService,
     private permitService: PermitService,
     private MFTService: MobileFieldTrackingService,
