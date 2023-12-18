@@ -44,7 +44,7 @@ export class DraftsComponent implements OnInit {
   DraftsList: DraftsList[] = [];
 
   @ViewChild(MatTable) DraftsTable: MatTable<DraftsList> | undefined;
-  draftTableColumns: string[] = ['ApplicationID', 'FullName', 'TypeOfApplication', 'PhysicalAddressOfProject', 'NatureOfWork', 'ExcavationType', 'DescriptionOfProject', 'DateCreated', 'actions'];
+  draftTableColumns: string[] = ['ApplicationID', 'FullName', 'TypeOfApplication', 'PhysicalAddressOfProject', 'NatureOfWork', 'DateCreated', 'actions'];
 
 
   draftDataSource = this.DraftsList;
@@ -66,52 +66,7 @@ export class DraftsComponent implements OnInit {
   getAllDraftsForUser() {
     debugger;
     this.DraftsList.splice(0, this.DraftsList.length);
-    if (this.CurrentUserInfo.isInternal == true) {
-      this.draftApplicationService.getDraftedApplicationsList(this.CurrentUser.appUserId).subscribe((data: any) => {
-        debugger;
-        if (data.responseCode == 1) {
-          debugger;
-          for (let i = 0; i < data.dateSet.length; i++) {
-            debugger;
-            const tempDraftsList = {} as DraftsList;
-            const current = data.dateSet[i];
-            const date = current.dateCreated;
-            tempDraftsList.DraftId = current.draftID;
-            tempDraftsList.ApplicationID = current.applicationID;
-            tempDraftsList.CompanyRegNumber = current.companyregNo;
-            tempDraftsList.CreatedByID = current.createdById;
-            tempDraftsList.DateCreated = current.dateCreated.substring(0, date.indexOf('T'));
-            tempDraftsList.DateUpdated = current.dateUpdated;
-            tempDraftsList.DescriptionOfProject = current.descriptionOfProject;
-            tempDraftsList.Email = current.email;
-            tempDraftsList.ExcavationType = current.excavationType;
-            tempDraftsList.FullName = current.fullName;
-            tempDraftsList.NatureOfWork = current.natureOfWork;
-            tempDraftsList.PhysicalAddressOfProject = current.physicalAddressOfProject;
-            tempDraftsList.ReferenceNumber = current.referenceNumber;
-            tempDraftsList.TypeOfApplication = current.typeOfApplication;
-            tempDraftsList.ProjectNumber = current.projectNumber;
-            tempDraftsList.UserID = current.userID;
-            tempDraftsList.ExpectedStartdate = current.expectedStartDate;
-            tempDraftsList.ExpectedEndDate = current.expectedEndDate;
 
-            this.DraftsList.push(tempDraftsList);
-
-          }
-
-          this.draftsLength = this.DraftsList.length.toString();
-          this.DraftsTable.renderRows();
-        }
-        else {
-          alert(data.responseMessage);
-        }
-      },
-        (error) => {
-          console.log("Error: ", error);
-        }
-      );
-    }
-    else {
       this.draftApplicationService.getDraftedApplicationsListForExternal(this.CurrentUser.appUserId).subscribe((data: any) => {
         debugger;
         if (data.responseCode == 1) {
@@ -143,8 +98,9 @@ export class DraftsComponent implements OnInit {
             this.DraftsList.push(tempDraftsList);
 
           }
-
+          this.DraftsList.sort((a, b) => new Date(b.DateCreated).getTime() - new Date(a.DateCreated).getTime());
           this.draftsLength = this.DraftsList.length.toString();
+          this.draftDataSource = this.DraftsList.filter(df => df.DateCreated);
           this.DraftsTable.renderRows();
         }
         else {
@@ -155,7 +111,8 @@ export class DraftsComponent implements OnInit {
           console.log("Error: ", error);
         }
       );
-    }
+    
+   
   }
 
   onSelectDraft(index: number) {

@@ -123,6 +123,21 @@ export class ApplicationsService {
     return this.httpClient.post(this.baseURL + "GetApplicationsForReviewer", body);
   }
 
+  public getApplicationsForDepAdmin(ZoneID: number, UserID: string) {
+    const body = {
+      ZoneID: ZoneID,
+      UserID: UserID
+    };
+    return this.httpClient.post(this.baseURL + "GetApplicationsForDepAdmin", body);
+  }
+  public getApplicationsForFinalReview(ZoneID: number, UserID: string) {
+    const body = {
+      ZoneID: ZoneID,
+      UserID: UserID
+    };
+    return this.httpClient.post(this.baseURL + "GetApplicationsForFinalReview", body);
+  }
+
   public getApplicationsForDepartment(ZoneID: number, SubDepartmentID: number) {
     const body = {
       ZoneID: ZoneID,

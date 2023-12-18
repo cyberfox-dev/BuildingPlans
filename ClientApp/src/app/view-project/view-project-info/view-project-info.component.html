@@ -1,5 +1,6 @@
 <app-nav-menu></app-nav-menu>
 
+
 <ng-template #MFTModal let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">New Note For Mobile Field Tracking</h4>
@@ -58,7 +59,7 @@
 
 </div>
 <div class="cont7">
-  <button mat-raised-button color="generatePackBtn"  (click)="OpenLoadingModal(approvalPackLoading)" *ngIf="generateApprovalbtn" >Generate My Approval Pack</button>
+  <button mat-raised-button color="generatePackBtn" (click)="OpenLoadingModal(approvalPackLoading)">Generate My Approval Pack</button>
 </div>
 
 
@@ -72,23 +73,23 @@
 
       <app-view-project-details></app-view-project-details>
       <!--<nav class="menu">
-      <input type="checkbox" href="#" class="menu-open" name="menu-open" id="menu-open" />
-      <label class="menu-open-button" for="menu-open">
-        <span class="hamburger hamburger-1"></span>
-        <span class="hamburger hamburger-2"></span>
-        <span class="hamburger hamburger-3"></span>
-      </label>
+        <input type="checkbox" href="#" class="menu-open" name="menu-open" id="menu-open" />
+        <label class="menu-open-button" for="menu-open">
+          <span class="hamburger hamburger-1"></span>
+          <span class="hamburger hamburger-2"></span>
+          <span class="hamburger hamburger-3"></span>
+        </label>
 
-      <a class="menu-item" matTooltipPosition="left" matTooltip="Show applicant layer"> <i class="fa fa-user"></i> </a>
-      <a class="menu-item" matTooltipPosition="left" matTooltip="Show department layer"><i class="fa fa-building"></i> </a>
-      <a class="menu-item" matTooltipPosition="left" matTooltip="Show all layers"> <i class="fa fa-eye"></i> </a>
-      <a class="menu-item" matTooltipPosition="left" matTooltip="Hide all layers"> <i class="fa fa-eye-slash"></i> </a>
+        <a class="menu-item" matTooltipPosition="left" matTooltip="Show applicant layer"> <i class="fa fa-user"></i> </a>
+        <a class="menu-item" matTooltipPosition="left" matTooltip="Show department layer"><i class="fa fa-building"></i> </a>
+        <a class="menu-item" matTooltipPosition="left" matTooltip="Show all layers"> <i class="fa fa-eye"></i> </a>
+        <a class="menu-item" matTooltipPosition="left" matTooltip="Hide all layers"> <i class="fa fa-eye-slash"></i> </a>
 
 
-    </nav>-->
+      </nav>-->
       <!--<div class="maps">
-      <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d55522.617408819875!2d30.405427199999995!3d-29.569843200000005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sza!4v1662643454248!5m2!1sen!2sza" width="100%" height="700" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div>-->
+        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d55522.617408819875!2d30.405427199999995!3d-29.569843200000005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sza!4v1662643454248!5m2!1sen!2sza" width="100%" height="700" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>-->
       <app-project-details-map-view [data]="ARCGISAPIData"></app-project-details-map-view>
       <app-department-circulation></app-department-circulation>
       <!-- <app-department-circulation-planning *ngIf="CurrentApplicationBeingViewed[0].isPlanning === true"></app-department-circulation-planning>-->
@@ -122,8 +123,8 @@
                     </div>
                     <!--<p>
 
-    {{commentsList.Comment}}
-  </p>-->
+                      {{commentsList.Comment}}
+                    </p>-->
                     <div [innerHTML]="sanitizeHTML(commentsList.Comment)"></div>
                     <br />
                     <!--Applicant Clarity-->
@@ -133,7 +134,7 @@
                       <label *ngIf="commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null"> <strong><em>Applicant's Reply:</em></strong></label>
                       <div class="form-floating mb-3 mt-3" *ngIf="commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null">
                         <!--<input type="text" class="form-control" value="{{commentsList.isApplicantReplay}}" id="ApplicantReply" name="ApplicantReply" disabled>--> <!--[(ngModel)]="ApplicantReply"-->
-                      
+
                         <div class="disabled-textbox" [innerHTML]="sanitizeHTML(commentsList.isApplicantReplay)" id="ApplicantReply"></div>
 
 
@@ -154,9 +155,9 @@
         <br />
       </div>
       <!-- <div class="cont3" *ngIf="isInternalUser">
-      <button mat-raised-button color="green" (click)="onCreateApprovalPack()" *ngIf="ApprovalPackBtn">Approval Pack</button>
-      <button mat-raised-button color="red" (click)="onCrreateRejectionPack()" *ngIf="RejectionPackBtn">Rejection Pack</button>
-    </div>-->
+        <button mat-raised-button color="green" (click)="onCreateApprovalPack()" *ngIf="ApprovalPackBtn">Approval Pack</button>
+        <button mat-raised-button color="red" (click)="onCrreateRejectionPack()" *ngIf="RejectionPackBtn">Rejection Pack</button>
+      </div>-->
 
       <div class="container-fluid" *ngIf="rejected">
         <div class="alert alert-danger">
@@ -170,23 +171,23 @@
       </div>
 
       <!--<mat-form-field>
-    <div>
-      <mat-toolbar>-->
+      <div>
+        <mat-toolbar>-->
       <!-- Display files names -->
       <!--<input matInput [(ngModel)]="fileAttr" readonly name="name" />-->
       <!-- Browse Button -->
       <!--<button mat-flat-button color="blue">Browse File</button>
-    </mat-toolbar>-->
+      </mat-toolbar>-->
       <!-- Fetch selected filed on change -->
       <!--<input type="file"
-               #fileInput
-               id="uploadFile"
-               (change)="uploadFileEvt($event)"
-               name="uploadFile"
-               multiple="multiple"
-               accept="image/*" />
-      </div>
-    </mat-form-field>-->
+                 #fileInput
+                 id="uploadFile"
+                 (change)="uploadFileEvt($event)"
+                 name="uploadFile"
+                 multiple="multiple"
+                 accept="image/*" />
+        </div>
+      </mat-form-field>-->
 
 
     </mat-tab>
@@ -201,9 +202,9 @@
         <form>
           <div class="row">
             <!--<div class="form-floating mb-3 mt-3">
-    <input type="text" class="form-control" [(ngModel)]="reply" id="reply" name="reply" placeholder="Edit Comment">2
-    <label for="reply">Enter in a reply</label>
-  </div>-->
+              <input type="text" class="form-control" [(ngModel)]="reply" id="reply" name="reply" placeholder="Edit Comment">2
+              <label for="reply">Enter in a reply</label>
+            </div>-->
 
             <form [formGroup]="myNewReply">
               <quill-editor formControlName="reply" [readOnly]="false">
@@ -272,55 +273,54 @@
           <!--<div class="row">
 
             <div class="form-floating mb-3 mt-3">-->
-              <!--<input type="text" [(ngModel)]="commentEdit" name="commentEdit" class="form-control" id="commentEdit" placeholder="Update Comment">-->
-
-              <!--<quill-editor [(ngModel)]="commentEdit" [readOnly]="false">-->
-              <form [formGroup]="editMyComment">
-                <quill-editor formControlName="commentEdit" [ngModel]="editMyComment.controls['commentEdit'].value" [readOnly]="false">
-                  <div quill-editor-toolbar>
-                    <span class="ql-formats">
-                      <button class="ql-bold" [title]="'Bold'"></button>
-                      <select class="ql-color" [title]="'Text Color'">
-                        <option value="rgb(0, 0, 0)" selected></option>
-                        <option value="rgb(255, 0, 0)"></option>
-                        <option value="rgb(255, 153, 0)"></option>
-                        <option value="rgb(255, 255, 0)"></option>
-                        <option value="rgb(0, 255, 0)"></option>
-                        <option value="rgb(0, 255, 255)"></option>
-                        <option value="rgb(0, 0, 255)"></option>
-                        <!-- Add other color options as needed -->
-                      </select>
-                      <button class="ql-italic" [title]="'Italic'"></button>
-                      <button class="ql-underline" [title]="'Underline'"></button>
-                      <button class="ql-strike" [title]="'Strikethrough'"></button>
-                      <button class="ql-script" value="sub"></button>
-                      <button class="ql-script" value="super"></button>
-                      <button class="ql-list" [title]="'Bullet List'" [value]="'bullet'"></button>
-                      <button class="ql-list" [title]="'Numbered List'" [value]="'ordered'"></button>
-                      <!--<button class="ql-link" [title]="'Enter URL'"></button>-->
-                      <button class="ql-indent" [value]="'-1'"></button>
-                      <button class="ql-indent" [value]="'+1'"></button>
-                      <select class="ql-align" [title]="'Alignment'">
-                        <option selected></option>
-                        <option value="center"></option>
-                        <option value="right"></option>
-                        <option value="justify"></option>
-                      </select>
-                      <select class="ql-header">
-                        <option value="false" selected></option>
-                        <option value="1"></option>
-                        <option value="2"></option>
-                        <option value="3"></option>
-                        <option value="4"></option>
-                        <option value="5"></option>
-                        <option value="6"></option>
-                      </select>
-                    </span>
-                  </div>
-                </quill-editor>
-              </form>
-              <!--<label for="commentEdit">Update Comment</label>-->
-            <!--</div>
+          <!--<input type="text" [(ngModel)]="commentEdit" name="commentEdit" class="form-control" id="commentEdit" placeholder="Update Comment">-->
+          <!--<quill-editor [(ngModel)]="commentEdit" [readOnly]="false">-->
+          <form [formGroup]="editMyComment">
+            <quill-editor formControlName="commentEdit" [ngModel]="editMyComment.controls['commentEdit'].value" [readOnly]="false">
+              <div quill-editor-toolbar>
+                <span class="ql-formats">
+                  <button class="ql-bold" [title]="'Bold'"></button>
+                  <select class="ql-color" [title]="'Text Color'">
+                    <option value="rgb(0, 0, 0)" selected></option>
+                    <option value="rgb(255, 0, 0)"></option>
+                    <option value="rgb(255, 153, 0)"></option>
+                    <option value="rgb(255, 255, 0)"></option>
+                    <option value="rgb(0, 255, 0)"></option>
+                    <option value="rgb(0, 255, 255)"></option>
+                    <option value="rgb(0, 0, 255)"></option>
+                    <!-- Add other color options as needed -->
+                  </select>
+                  <button class="ql-italic" [title]="'Italic'"></button>
+                  <button class="ql-underline" [title]="'Underline'"></button>
+                  <button class="ql-strike" [title]="'Strikethrough'"></button>
+                  <button class="ql-script" value="sub"></button>
+                  <button class="ql-script" value="super"></button>
+                  <button class="ql-list" [title]="'Bullet List'" [value]="'bullet'"></button>
+                  <button class="ql-list" [title]="'Numbered List'" [value]="'ordered'"></button>
+                  <!--<button class="ql-link" [title]="'Enter URL'"></button>-->
+                  <button class="ql-indent" [value]="'-1'"></button>
+                  <button class="ql-indent" [value]="'+1'"></button>
+                  <select class="ql-align" [title]="'Alignment'">
+                    <option selected></option>
+                    <option value="center"></option>
+                    <option value="right"></option>
+                    <option value="justify"></option>
+                  </select>
+                  <select class="ql-header">
+                    <option value="false" selected></option>
+                    <option value="1"></option>
+                    <option value="2"></option>
+                    <option value="3"></option>
+                    <option value="4"></option>
+                    <option value="5"></option>
+                    <option value="6"></option>
+                  </select>
+                </span>
+              </div>
+            </quill-editor>
+          </form>
+          <!--<label for="commentEdit">Update Comment</label>-->
+          <!--</div>
 
           </div>-->
 
@@ -335,7 +335,7 @@
     <!--------------------------------------------------------Messaging--------------------------------------------------->
     <!--     <mat-tab label="Messaging">
 
-  </mat-tab>-->
+    </mat-tab>-->
     <!--------------------------------------------------------Financial--------------------------------------------------->
 
     <mat-tab label="Financials">
@@ -761,24 +761,24 @@
       <button mat-raised-button color="blue" (click)="openXl(MFTModal)">Create New Note</button>
 
       <!--      <div class="row" *ngFor="let mftList of MFTList; let i = index">
-      <div class="col s12 m12 l12">
+        <div class="col s12 m12 l12">
 
-        <ul class="timeline">
+          <ul class="timeline">
 
-          <li class="event" data-date="">
+            <li class="event" data-date="">
 
 
-            <h3>{{mftList.MFTNote}} - {{mftList.DateCreated}}</h3>
-            <p>
+              <h3>{{mftList.MFTNote}} - {{mftList.DateCreated}}</h3>
+              <p>
 
-              {{mftList.DocumentName}}
-            </p>
+                {{mftList.DocumentName}}
+              </p>
 
-          </li>
+            </li>
 
-        </ul>
-      </div>
-    </div>-->
+          </ul>
+        </div>
+      </div>-->
       <div class="cards" *ngFor="let mftList of MFTList; let i = index">
       <li class="cards_item">
         <div class="card">
@@ -859,7 +859,7 @@
 </mat-tab>-->
 <!--------------------------------------------------------Service Condtions---------------------------------------------->
 <mat-tab label="Service Conditions">
- 
+
   <app-service-conditions [ApplicationID]="ApplicationID"
                           [ServiceConditionActive]="true">
 
@@ -957,11 +957,14 @@
 
 <ng-template #approvalPackLoading let-modal>
 
-  <div class="loading-screen"  id="loadingScreen">
+  <div class="loading-screen" id="loadingScreen">
     <mat-spinner></mat-spinner>
     <div class="text">Generating Approval Pack</div>
     <div class="text2">This may take several minutes</div>
   </div>
 
 </ng-template>
+
+<!-- Example template -->
+
 

@@ -25,10 +25,9 @@ code {
   border-color: #1861ac;
 }
 .green-snackbar {
-    font-size: 15px;
-    font-weight:bold;
-   margin:0 auto;
-  background: #68e56b;
+  font-size: 15px;
+  font-weight: bold;
+  background: #cee2cc00;
 }
 
 /*-------------------------------------------------------------------------IF THE VIEW BREAKS REMOVE THIS FROM THE FILE---------------------------------*/
@@ -36,7 +35,10 @@ code {
   z-index: 10000 !important;
 }
 .cdk-global-overlay-wrapper, .cdk-overlay-pane {
-  /*z-index: 20000 !important;*/
+  /*z-index: 20000 !important;  margin: 5px;
+  color: #005870;
+  background-color: #ccdee2;
+  width: 20px;*/
 }
 /*-------------------------------------------------------------------------IF THE VIEW BREAKS REMOVE THIS FROM THE FILE---------------------------------*/
 
@@ -295,17 +297,19 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 .green-snackbar {
-  text-align: center !important;
-  border-radius: 91px !important;
-  /* box-sizing: initial !important; */
-  margin-top: 10px !important;
-  /* max-width: 33vw; */
-  min-width: 240px !important;
-  /* padding: 0; */
-  min-height: 3px !important;
-  position: static;
-  background: #cee2cc;
-  color: #137000;
+    text-align: center !important;
+    border-radius: 91px !important;
+    /* box-sizing: initial !important; */
+    margin-top: -2px !important;
+    /* max-width: 33vw; */
+    min-width: 240px !important;
+    /* padding: 0; */
+    min-height: 3px !important;
+    position: absolute;
+    background: #cee2cc00;
+    color: #137000;
+    box-shadow: none;
+    right: 0;
 }
 
 .red-snackbar {

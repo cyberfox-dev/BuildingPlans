@@ -28,19 +28,19 @@
 
   <h1 class="animationSlideUp">Hi, {{CurrentUserProfile[0].fullName}}</h1>
   <h2 class="animationSlideUp">Welcome to your Dashboard</h2>
-  <h3 class="animationSlideUp" *ngIf="CurrentUserProfile[0].subDepartmentName != null    ">You are acting as {{CurrentUserProfile[0].subDepartmentName}}, for {{CurrentUserProfile[0].zoneName}}</h3>
+  <h3 class="animationSlideUp" *ngIf="CurrentUserProfile[0].subDepartmentName != null  && InternalExternalUser == false">You are acting as {{CurrentUserProfile[0].subDepartmentName}}, for {{CurrentUserProfile[0].zoneName}}</h3>
   <!--  <div style="background: red; text-align: center; font-size: xx-large; color: white; padding: 10px; line-height: 0.8;" *ngIf="ServerType === 'QA'">
       Please note, you've accessed the test server, nothing captured to this server will be processed. Please go to wayleave.capetown.gov.za to access the live site.
     </div>-->
-  <!--  <button class="btn" (click)="goToNewWayleave()"><a><i class="fa fa-plus"></i> Create New Wayleave</a></button>-->
+  <!--  <button class="btn" (click)="openSnackBar()"><a><i class="fa fa-plus"></i> Create New Wayleave</a></button>-->
   <div class="cont3 ">
     <!--<img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon4"> -->
     <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToNewWayleave(false,false)">Create New Wayleave</button>
-    <button mat-raised-button color="createWayleave2" class="animationSlideDown" (click)="goToNewWayleave(false,true)" matTooltip="Future Enhancement" disabled>Request for Services Information (Disabled)</button>
+    <button mat-raised-button color="createWayleave2" class="animationSlideDown"  matTooltip="Future Enhancement" disabled>Request for Services Information (Disabled)</button>
   </div>
 
 
-  
+
 
 
 
@@ -242,7 +242,7 @@
 
 
 
-              <button mat-raised-button color="warn" matTooltip="Escalate" *ngIf="applications.TestApplicationAge >= this.viewEscalateDate"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/stairs-solid.svg" class="icon red" ></button>
+              <button mat-raised-button color="warn" matTooltip="Escalate" *ngIf="applications.TestApplicationAge >= this.viewEscalateDate"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/stairs-solid.svg" class="icon red"></button>
             </div>
             <div class="menu">
               <button mat-button color="action" [matMenuTriggerFor]="actions"> <i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
@@ -339,14 +339,14 @@
 
           <div class="cont2">
             <button mat-raised-button color="client"><i class="fa fa-user-plus" aria-hidden="true" (click)="openNewWayleave()"></i> New Application</button>
-            <button mat-raised-button color="client"  (click)="openDrafts(drafts)"><i class="fa fa-eye" aria-hidden="true"></i> Select From Drafts</button>
+            <button mat-raised-button color="client" (click)="openDrafts(drafts)"><i class="fa fa-eye" aria-hidden="true"></i> Select From Drafts</button>
 
           </div>
         </div>
 
       </form>
     </div>
-    
+
 
   </ng-template>
 
@@ -693,17 +693,17 @@
             </div>
             <div class="row">
               <!--<div class="col">
-    <div class="form-floating mb-3 mt-3">
-      <input type="text" class="form-control" [(ngModel)]="clientIDNumber" name="clientIDNumber" placeholder="Enter ID No" >
-      <label for="clientIDNumber">ID Number</label>
-    </div>
-  </div>
-              <div class="col">
                 <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="clientRefNo" name="clientRefNo" placeholder="Enter Ref No">
-                  <label for="clientRefNo">Reference Number</label>
+                  <input type="text" class="form-control" [(ngModel)]="clientIDNumber" name="clientIDNumber" placeholder="Enter ID No" >
+                  <label for="clientIDNumber">ID Number</label>
                 </div>
-              </div>-->
+              </div>
+                          <div class="col">
+                            <div class="form-floating mb-3 mt-3">
+                              <input type="text" class="form-control" [(ngModel)]="clientRefNo" name="clientRefNo" placeholder="Enter Ref No">
+                              <label for="clientRefNo">Reference Number</label>
+                            </div>
+                          </div>-->
             </div>
             <div class="row">
               <div class="col">
@@ -1043,52 +1043,52 @@
   </ng-template>
 
 
-  <ng-template #spin let-modal >
+  <ng-template #spin let-modal>
 
-<!--    <div class="container99">
-      <div class="cards2">
-        <label class="card2" *ngFor="let subDept of AllSubDepartmentList; let i = index">
+    <!--    <div class="container99">
+          <div class="cards2">
+            <label class="card2" *ngFor="let subDept of AllSubDepartmentList; let i = index">
 
-          {{subDept.subDepartmentName}}
-        </label>
-      </div>
-      <div class="player">
-        <div class="upper-part">
-          <div class="play-icon">
-            <svg width="20" height="20" fill="#2992dc" stroke="#2992dc" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-play" viewBox="0 0 24 24">
-              <defs />
-              <path d="M5 3l14 9-14 9V3z" />
-            </svg>
-          </div>
-          <div class="info-area" id="test">
-            <label class="song-info" id="song-info-1">
-              <div class="title">Bunker</div>
-              <div class="sub-line">
-                <div class="subtitle">Balthazar</div>
-                <div class="time">4.05</div>
-              </div>
-            </label>
-            <label class="song-info" id="song-info-2">
-              <div class="title">Words Remain</div>
-              <div class="sub-line">
-                <div class="subtitle">Moderator</div>
-                <div class="time">4.05</div>
-              </div>
-            </label>
-            <label class="song-info" id="song-info-3">
-              <div class="title">Falling Out</div>
-              <div class="sub-line">
-                <div class="subtitle">Otzeki</div>
-                <div class="time">4.05</div>
-              </div>
+              {{subDept.subDepartmentName}}
             </label>
           </div>
-        </div>
-        <div class="progress-bar">
-          <span class="progress"></span>
-        </div>
-      </div>
-    </div>-->
+          <div class="player">
+            <div class="upper-part">
+              <div class="play-icon">
+                <svg width="20" height="20" fill="#2992dc" stroke="#2992dc" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-play" viewBox="0 0 24 24">
+                  <defs />
+                  <path d="M5 3l14 9-14 9V3z" />
+                </svg>
+              </div>
+              <div class="info-area" id="test">
+                <label class="song-info" id="song-info-1">
+                  <div class="title">Bunker</div>
+                  <div class="sub-line">
+                    <div class="subtitle">Balthazar</div>
+                    <div class="time">4.05</div>
+                  </div>
+                </label>
+                <label class="song-info" id="song-info-2">
+                  <div class="title">Words Remain</div>
+                  <div class="sub-line">
+                    <div class="subtitle">Moderator</div>
+                    <div class="time">4.05</div>
+                  </div>
+                </label>
+                <label class="song-info" id="song-info-3">
+                  <div class="title">Falling Out</div>
+                  <div class="sub-line">
+                    <div class="subtitle">Otzeki</div>
+                    <div class="time">4.05</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <span class="progress"></span>
+            </div>
+          </div>
+        </div>-->
   </ng-template>
 
   <ng-template #showAddedProf let-modal>
@@ -1437,7 +1437,7 @@
         <div><span style="font-size: 20px;"> Wayleave Application for {{drafts.FullName}} Application </span></div>
         <div>
           <span style="font-size: 15px;">{{drafts.TypeOfApplication}} Application / Excavation Type: {{drafts.ExcavationType}}</span>
-          
+
         </div>
         <div> <span>Created on {{drafts.DateCreated}}</span></div>
       </button>
@@ -1447,13 +1447,9 @@
 
   <ng-template #drafts let-modal>
 
-    <div>
-      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-    </div>
-    <div>
-      <app-drafts></app-drafts>
-    </div>
-   
+    <app-drafts></app-drafts>
+
+
 
 
   </ng-template>

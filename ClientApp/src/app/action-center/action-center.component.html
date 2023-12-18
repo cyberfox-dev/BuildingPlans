@@ -65,20 +65,29 @@
                 <option value="5"></option>
                 <option value="6"></option>
               </select>
+              <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"></button>
+              <!--<mat-menu #menu="matMenu" xPosition="before">-->
+              <mat-menu #menu="matMenu" xPosition="after">
+                <!--<button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>-->
+                <button type="button" mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)"> <span [innerHTML]="sanitizeHTML(comment.commentName)"></span></button>
+
+              </mat-menu>
             </span>
           </div>
         </quill-editor>
       </div>
   
+      <div class="cont2">
+        <!--</mat-form-field>-->
+        <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"></button>
+        <!--<mat-menu #menu="matMenu" xPosition="before">-->
+        <mat-menu #menu="matMenu" xPosition="after">
+          <!--<button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>-->
+          <button type="button" mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)"> <span [innerHTML]="sanitizeHTML(comment.commentName)"></span></button>
 
-    <!--</mat-form-field>-->
-    <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"></button>
-    <!--<mat-menu #menu="matMenu" xPosition="before">-->
-      <mat-menu #menu="matMenu" xPosition="after">
-      <!--<button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>-->
-      <button type="button" mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)"> <span [innerHTML]="sanitizeHTML(comment.commentName)"></span></button>
+        </mat-menu>
+      </div>
 
-    </mat-menu>
 
     <div class="cont2" *ngIf="canComment == true && canCommentFinalApprover == false">
       <button mat-raised-button color="approveBTN" (click)="onComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon"> Prov. Approved</button>
@@ -87,6 +96,7 @@
       <button mat-raised-button color="referBTN" (click)="onComment('Refer')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/retweet-solid-white.svg" class="icon">  Refer</button>
 
     </div>
+
     <div class="cont2" *ngIf="canCommentSeniorReviewer == true">
       <button mat-raised-button color="approveBTN" (click)="onCommentSR('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">   Prov. Approved</button>
       <button mat-raised-button color="rejectBTN" (click)="onCommentSR('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon"> Prov. Not Approved</button>

@@ -97,6 +97,8 @@ import { DocumentRepositoryConfigComponent } from './document-repository-config/
 import { DraftsComponent } from 'src/app/drafts/drafts.component';
 import { MatChipsModule } from '@angular/material/chips';
 import { QuillModule } from 'ngx-quill';
+import { ApprovalPackComponent } from 'src/app/Packs/approval-pack/approval-pack.component';
+import { RejectionPackComponent } from 'src/app/Packs/rejection-pack/rejection-pack.component';
 
 //import { MatExpansionModule } from '@angular/material/expansion';
 
@@ -181,6 +183,8 @@ import { QuillModule } from 'ngx-quill';
     SnackBarAlertsComponent,
 
     DraftsComponent,
+      ApprovalPackComponent,
+      RejectionPackComponent,
 
 
   ],
@@ -263,7 +267,7 @@ import { QuillModule } from 'ngx-quill';
     NotificationCenterComponent,
     DocumentRepositoryConfigComponent,
     DraftsComponent,
-    
+    ApprovalPackComponent
   ],
   bootstrap: [AppComponent]
 })

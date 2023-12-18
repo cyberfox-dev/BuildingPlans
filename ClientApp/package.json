@@ -29,6 +29,7 @@
     "bootstrap": "^5.2.2",
     "bootstrap-steps": "^1.0.3",
     "bs-stepper": "^1.7.0",
+    "html2canvas": "^1.4.1",
     "jquery": "^3.6.0",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.28",
