@@ -4661,7 +4661,10 @@ this.Applications.push(tempApplicationList);
           userId: current.userID,
           idNumber: current.idNumber,
           fullName: current.fullName,
-          internalDepartment: current.directorate,
+
+          internalDepartment: (current.directorate !== null && current.directorate !== '') ? current.directorate : current.departmentName,
+          //What happens if both are empty?
+          
         };
         this.sharedService.clientUserID = current.userID;
         this.AllInternalUserProfileList.push(tempAllInternalUserProfileList);

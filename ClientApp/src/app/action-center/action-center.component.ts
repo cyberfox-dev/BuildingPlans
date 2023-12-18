@@ -3224,7 +3224,7 @@ export class ActionCenterComponent implements OnInit {
         break;
       }
       case "Refer": {
-
+        debugger;
         
      
         if (confirm("Are you sure you want to refer this application to Senior Reviewers?")) {
@@ -3349,7 +3349,12 @@ export class ActionCenterComponent implements OnInit {
                 });
                 alert(data.responseMessage);
                 //commentsService
-                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Referred", this.CurrentUser.appUserId, null, this.loggedInUserName).subscribe((data: any) => {
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName,
+
+
+
+
+                  this.leaveAComment, "Referred", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
 
