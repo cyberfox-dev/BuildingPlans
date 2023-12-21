@@ -1,0 +1,57 @@
+h1 {
+  font-family: 'Nunito', sans-serif;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 10px;
+  font-size: 40px;
+  font-weight: bold;
+}
+
+p {
+  font-family: 'Nunito', sans-serif;
+}
+
+button {
+  margin-top: 10px;
+  justify-self: center;
+}
+
+.mat-create {
+  background-color: #005870;
+  color: #fff;
+}
+
+table {
+  width: 100%;
+  margin: 0 auto;
+  margin-bottom: 30px;
+  overflow-x: scroll;
+}
+
+.mat-warni {
+  background-color: #9d2235;
+  color: #fff;
+}
+
+.mat-column-Message {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 45% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+mat-column-StartDate, mat-column-EndtDate, mat-column-DateCreated {
+  width: 15% !important;
+}
+
+.mat-column-Actions {
+  width: 10% !important;
+}

@@ -99,6 +99,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { QuillModule } from 'ngx-quill';
 import { ApprovalPackComponent } from 'src/app/Packs/approval-pack/approval-pack.component';
 import { RejectionPackComponent } from 'src/app/Packs/rejection-pack/rejection-pack.component';
+import { SystemAlertConfigComponent } from 'src/app/system-alert-config/system-alert-config.component'; 
 
 //import { MatExpansionModule } from '@angular/material/expansion';
 
@@ -181,6 +182,7 @@ import { RejectionPackComponent } from 'src/app/Packs/rejection-pack/rejection-p
     DocumentRepositoryComponent,
     DocumentRepositoryConfigComponent,
     SnackBarAlertsComponent,
+    SystemAlertConfigComponent,
 
     DraftsComponent,
       ApprovalPackComponent,

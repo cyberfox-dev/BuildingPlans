@@ -66,8 +66,8 @@ export class UserProfileService {
 
       subDepartmentName: subDepartmentName,
 
-      AlternateEmail: alternateEmail,
-      AlternateNumber: alternateNumber,
+      AlternativeEmail: alternateEmail,
+      AlternativePhoneNumber: alternateNumber,
       //things added later:
       Name: name,
       Surname: surname,

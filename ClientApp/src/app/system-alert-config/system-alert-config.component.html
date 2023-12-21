@@ -1,0 +1,90 @@
+<!--
+1. Add a new alert for "Production" & "QA"
+2. Banner colour?
+3. Create wayleave button functionality
+4.1 Timed but can be cancelled prematurely by those who have priviledges?
+4.2 Indefinite ??
+5.
+-->
+
+<button mat-raised-button color="create" (click)="openCreateModal(newAlert)">Create a New System Alert</button>
+
+<h1>All Alerts</h1>
+
+<div *ngIf="dataSource.length > 0; else noAlerts">
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <ng-container matColumnDef="Message">
+      <th mat-header-cell *matHeaderCellDef> Message </th>
+      <td mat-cell *matCellDef="let element"> {{element.message}} </td>
+    </ng-container>
+    <ng-container matColumnDef="StartDate">
+      <th mat-header-cell *matHeaderCellDef> Start Date </th>
+      <td mat-cell *matCellDef="let element"> {{element.startDate}} </td>
+    </ng-container>
+    <ng-container matColumnDef="EndDate">
+      <th mat-header-cell *matHeaderCellDef> End Date </th>
+      <td mat-cell *matCellDef="let element"> {{element.endDate}} </td>
+    </ng-container>
+    <ng-container matColumnDef="DateCreated">
+      <th mat-header-cell *matHeaderCellDef> Date Created </th>
+      <td mat-cell *matCellDef="let element"> {{element.dateCreated  | date:'yyyy-MM-dd' }} </td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>  </th>
+      <td mat-cell *matCellDef="let i = index;let element">
+        <button mat-raised-button color="warni" matTooltip="Remove Alert" (click)=" deleteAlert(i, element);"><i class="fa fa-trash"></i></button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+</div>
+<ng-template #noAlerts>
+  ><p>There are no alerts in the DB.</p>
+</ng-template>
+<hr />
+<h1>Ongoing Alerts</h1>
+<p>There are no current alerts.</p>
+<hr />
+<h1>Upcoming Alerts</h1>
+<p>There are no upcoming alerts.</p>
+
+<ng-template #newAlert let-modal>
+
+  <div class="modal-header">
+    <h4 class="modal-title">Creating a new system alert</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" name="bannerMessage" id="bannerMessage" [(ngModel)]="bannerMessage" placeholder="Enter Alert Message" />
+          <label name="name">Alert Message</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="date" class="form-control" [(ngModel)]="startDate" id="startDate" name="startDate" [min]="getCurrentDate()">
+          <label for="name">Start Date</label>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="date" class="form-control" [(ngModel)]="endDate" id="endDate" name="endDate" [min]="startDate">
+          <label for="name">Completion Date</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="createNewAlert()">Save</button>
+  </div>
+
+
+</ng-template>

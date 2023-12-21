@@ -34,14 +34,14 @@
     </div>-->
   <!--  <button class="btn" (click)="openSnackBar()"><a><i class="fa fa-plus"></i> Create New Wayleave</a></button>-->
 
-  <div style="background: red; text-align: center; font-size: xx-large; color: white; padding: 10px; line-height: 0.8;"  *ngIf="isBannerVisible() && (BaseUrl === 'QA' || BaseUrl === 'Development' || BaseUrl === 'Production')">
+  <div style="background: red; text-align: center; font-size: xx-large; color: white; padding: 10px; line-height: 0.8;"  *ngIf="isBannerVisible() && (BaseUrl === 'QA' || BaseUrl === 'Production')">
     SYSTEM ALERT<br /> 8 Dec 2023 - 5 Jan 2024: Application freeze.
   </div>
 
   <div class="cont3 ">
     <!--<img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon4"> -->
-    <button mat-raised-button color="createWayleave" *ngIf="!isBannerVisible()" class="animationSlideDown" (click)="goToNewWayleave(false,false)">Create New Wayleave</button>
-    <button mat-raised-button color="createWayleave2" *ngIf="isBannerVisible()" disabled matTooltip="Creating new applications is currently not allowed." class="animationSlideDown">Create New Wayleave</button>
+    <button mat-raised-button color="createWayleave" *ngIf="!isBannerVisible() || BaseUrl === 'Development'" class="animationSlideDown" (click)="goToNewWayleave(false,false)">Create New Wayleave</button>
+    <button mat-raised-button color="createWayleave2" *ngIf="isBannerVisible() && (BaseUrl === 'QA' || BaseUrl === 'Production')" disabled matTooltip="Creating new applications is currently not allowed." class="animationSlideDown">Create New Wayleave</button>
     <button mat-raised-button color="createWayleave2" class="animationSlideDown"  matTooltip="Future Enhancement" disabled>Request for Services Information (Disabled)</button>
   </div>
 

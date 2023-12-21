@@ -46,6 +46,8 @@ import { ChangeDetectorRef } from '@angular/core';
 import { trim } from 'jquery';
 import { SnackBarAlertsComponent } from '../../snack-bar-alerts/snack-bar-alerts.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+
 
 
 
@@ -330,7 +332,7 @@ export class NewWayleaveComponent implements OnInit {
   expectedEndType: Date = new Date();
   coordinates = '';
 
-  TOENAMES:any ;
+  TOENAMES: any;
 
   projectNumber = '';
 
@@ -387,7 +389,7 @@ export class NewWayleaveComponent implements OnInit {
   selectionMedium = new SelectionModel<MandatoryDocumentsLinkedStagesList>(true, []);
   selectionLarge = new SelectionModel<MandatoryDocumentsLinkedStagesList>(true, []);
   selectionEmergency = new SelectionModel<MandatoryDocumentsLinkedStagesList>(true, []);
- 
+
 
 
   SubDepartmentList: SubDepartmentList[] = [];
@@ -440,6 +442,9 @@ export class NewWayleaveComponent implements OnInit {
   //Store message for file upload
   CoverLetter = "CoverLetter";
   response: { dbPath: ''; } | undefined
+
+  displayedColumnsCurrentUploads: string[] = ['appManDoc', 'yourUpload'];
+  dataSourceIntermediateUploads = this.MandatoryDocumentUploadList;
 
   CurrentUserProfile: any;
   stringifiedDataUserProfile: any;
@@ -507,7 +512,7 @@ export class NewWayleaveComponent implements OnInit {
   projects: any;
   isDraft: boolean = false;
   draftExcavationType: string = "";
-    projectNum: string;
+  projectNum: string;
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -668,7 +673,7 @@ export class NewWayleaveComponent implements OnInit {
     this.getAllByMandatoryDocumentCategory("Emergency");
     this.getAllByMandatoryDocumentCategory("Drilling");
     this.getAllByMandatoryDocumentCategory("LUM");
-    
+
     this.isDraft = this.shared.isDraft;
     if (this.isDraft == true) {
       this.onPopulateDraftInfo(this.shared.applicationID);
@@ -742,7 +747,7 @@ export class NewWayleaveComponent implements OnInit {
 
     }
     else if (this.option == "proxy") {
-      
+
       this.external = false;
       this.internalProxy = true;//I hope this will get me the right divs
 
@@ -752,7 +757,7 @@ export class NewWayleaveComponent implements OnInit {
       this.userPofileService.getUserProfileById(this.clientUserID).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
-          
+
 
           console.log("data", data.dateSet);
 
@@ -1067,7 +1072,7 @@ export class NewWayleaveComponent implements OnInit {
   //12102023: EDIT THIS SO THAT IT WORKS FOR THE ... CREATE WAYLEAVE ON BEHALF OF SOMEONE INTERNAL 
   internalProxyWayleaveCreate(appUserId: string, isPlanning: boolean): void {
     /*    this.shared.setApplicationID(this.notificationNumber);*/
-    
+
     console.log("Turtle Turtle, where are you? 3" + appUserId);
 
     this.physicalAddressOfProject = this.shared.getAddressData();
@@ -1111,13 +1116,13 @@ export class NewWayleaveComponent implements OnInit {
     else {
       this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
         if (data.responseCode == 1) {
-          
+
           const current = data.dateSet[0];
           this.configNumberOfProject = current.utilitySlot1;
           this.configMonthYear = current.utilitySlot2;
           this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
             if (data.responseCode == 1) {
-              
+
               //ARGUMENTS NEED CAREFUL ALTERATIONS - OBVIOUSLY CURRENT USER IS THE ORIGINATOR, ARE THEY GOING TO GET THE EMAILS OR IS THE APPLICANT GOING TO GET AN EMAIL??
 
 
@@ -1126,7 +1131,7 @@ export class NewWayleaveComponent implements OnInit {
                 this.expectedStartDate, this.expectedEndType, null, this.CurrentUser.appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3,
                 "Distributed", false, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
                   if (data.responseCode == 1) {
-                    
+
                     alert("Application Created");
                     if (isPlanning == false) {
                       this.AddProfessinal(contractorData, engineerData);
@@ -1163,7 +1168,7 @@ export class NewWayleaveComponent implements OnInit {
                   }
 
                   const projectNum = "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear;
-                   this.projectNum = "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear;
+                  this.projectNum = "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear;
                   const emailContentOriginator = `
      <html>
         <head>
@@ -1339,40 +1344,40 @@ export class NewWayleaveComponent implements OnInit {
       })
     }
 
-  
+
   }
 
 
   internalWayleaveCreate(appUserId: string, isPlanning: boolean): void {
     /*    this.shared.setApplicationID(this.notificationNumber);*/
-    
+
     console.log("Turtle Turtle, where are you? 3" + appUserId);
 
     this.physicalAddressOfProject = this.shared.getAddressData();
     this.coordinates = this.shared.getCoordinateData();
     const contractorData = this.shared.getContactorData();
     const engineerData = this.shared.getEngineerData();
-   
-      let previousStageName = "";
-      let CurrentStageName = "";
-      let NextStageName = "";
 
-      let previousStageNameIn = "";
-      let CurrentStageNameIn = "";
-      let NextStageNameIn = "";
+    let previousStageName = "";
+    let CurrentStageName = "";
+    let NextStageName = "";
 
-      for (var i = 0; i < this.StagesList.length; i++) {
-        
-        if (this.StagesList[i].StageOrderNumber == 1) {
-          previousStageName = this.StagesList[i - 1].StageName
-          CurrentStageName = this.StagesList[i].StageName;
-          NextStageName = this.StagesList[i + 1].StageName
-        }
-        else if (this.StagesList[i].StageOrderNumber == 2) {
-          previousStageNameIn = this.StagesList[i - 2].StageName
-          CurrentStageNameIn = this.StagesList[i].StageName;
-          NextStageNameIn = this.StagesList[i + 1].StageName
-        }
+    let previousStageNameIn = "";
+    let CurrentStageNameIn = "";
+    let NextStageNameIn = "";
+
+    for (var i = 0; i < this.StagesList.length; i++) {
+
+      if (this.StagesList[i].StageOrderNumber == 1) {
+        previousStageName = this.StagesList[i - 1].StageName
+        CurrentStageName = this.StagesList[i].StageName;
+        NextStageName = this.StagesList[i + 1].StageName
+      }
+      else if (this.StagesList[i].StageOrderNumber == 2) {
+        previousStageNameIn = this.StagesList[i - 2].StageName
+        CurrentStageNameIn = this.StagesList[i].StageName;
+        NextStageNameIn = this.StagesList[i + 1].StageName
+      }
 
     }
     if (this.isDraft == true) {
@@ -1404,31 +1409,31 @@ export class NewWayleaveComponent implements OnInit {
         }
         this.draftApplicationsService.addUpdateDraftApplication(this.currentDraftID, this.applicationID, appUserId, this.internalName + " " + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE2, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null, null).subscribe((data: any) => {
           this.openSnackBar("Draft Saved!")
-            this.SavedProjectSizeSelections();
-            this.router.navigate(["/home"]);
-            console.log("response", data);
+          this.SavedProjectSizeSelections();
+          this.router.navigate(["/home"]);
+          console.log("response", data);
 
 
-          }, error => {
-            console.log("Error: ", error);
-          })
-        
+        }, error => {
+          console.log("Error: ", error);
+        })
+
       }
     }
     else {
 
       this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
         if (data.responseCode == 1) {
-          
+
           const current = data.dateSet[0];
           const configID = current.configID;
           this.configNumberOfProject = current.utilitySlot1;
           this.configMonthYear = current.utilitySlot2;
-          
+
           this.configService.addUpdateConfig(configID, "ProjectNumberTracker", null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
             if (data.responseCode == 1) {
 
-              
+
 
               this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null,
                 null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE,
@@ -1446,8 +1451,8 @@ export class NewWayleaveComponent implements OnInit {
                     this.shared.clearContractorData();
                     this.shared.clearEngineerData();
                     this.router.navigate(["/home"]);
-                    
-                  /*  this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");*/
+
+                    /*  this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");*/
                     /*              this.addToSubDepartmentForComment();*/
                     this.notificationsService.addUpdateNotification(0, "Application Submission", "New wayleave application submission", false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserID, this.applicationID, "Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.").subscribe((data: any) => {
 
@@ -1612,12 +1617,12 @@ export class NewWayleaveComponent implements OnInit {
         console.log("getConfigsByConfigNameError: ", error);
       })
     }
-    }
-   
-  
+  }
+
+
 
   clientWayleaveCreate(appUserId: string, isPlanning: boolean): void {
-    
+
     /*    this.shared.setApplicationID(this.notificationNumber);*/
     console.log("Turtle Turtle, where are you? 4" + appUserId);
     this.physicalAddressOfProject = this.shared.getAddressData();
@@ -1671,8 +1676,8 @@ export class NewWayleaveComponent implements OnInit {
 
       if (data.responseCode == 1) {
         this.SavedProjectSizeSelections();
-        
-     
+
+
         if (isPlanning == false) {
           this.AddProfessinal(contractorData, engineerData);
         }
@@ -1684,10 +1689,10 @@ export class NewWayleaveComponent implements OnInit {
         this.shared.clearEngineerData();
         alert("Client Application Created");
 
-          this.addToZoneForComment();
-          this.getCurrentInvoiceNumberForGen(this.clientName + ' ' + this.clientSurname);
+        this.addToZoneForComment();
+        this.getCurrentInvoiceNumberForGen(this.clientName + ' ' + this.clientSurname);
 
-        
+
       }
       else {
         alert("Failed To Create Application");
@@ -1696,11 +1701,11 @@ export class NewWayleaveComponent implements OnInit {
       this.Emailmessage = "Your application (" + this.projectNumber + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process."
       //Sends emails to the entire EMB department, as per process flow.
 
-        this.onCreateNotification();
-        //Sends notification to applying user.
-       /* this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + "<br><br><p>Your application (" + this.applicationID + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Thank you</p>");*/
-        //Sends emails to the entire EMB department, as per process flow.
-        this.sendEmailToDepartment("EMB");
+      this.onCreateNotification();
+      //Sends notification to applying user.
+      /* this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + "<br><br><p>Your application (" + this.applicationID + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Thank you</p>");*/
+      //Sends emails to the entire EMB department, as per process flow.
+      this.sendEmailToDepartment("EMB");
 
       this.router.navigate(["/home"]);
       console.log("responseAddapplication", data);
@@ -1711,9 +1716,9 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   externalWayleaveCreate(appUserId: string, isPlanning: boolean): void {
-    
+
     /*    this.shared.setApplicationID(this.notificationNumber);*/
-    
+
     console.log("Turtle Turtle, where are you? 5 " + appUserId);
     this.physicalAddressOfProject = this.shared.getAddressData();
     this.coordinates = this.shared.getCoordinateData();
@@ -1745,12 +1750,12 @@ export class NewWayleaveComponent implements OnInit {
 
     this.applicationsService.addUpdateApplication(this.applicationID, this.CurrentUser.appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, "Phone", this.externalAddress, null, null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.externalAddress, appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", this.isDraft, null, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        
+
         this.SavedProjectSizeSelections();
         if (this.isDraft == true) {
           this.draftApplicationsService.addUpdateDraftApplication(0, this.applicationID, this.CurrentUser.appUserId, this.externalName + " " + this.externalSurname, this.externalEmail, "Phone", this.externalAddress, this.clientRefNo, this.clientCompanyRegNo, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, appUserId, null, contractorData[0].name, engineerData[0].name).subscribe((data: any) => {
             if (data.responseCode === 1) {
-              
+
               alert("Draft Saved")
 
             }
@@ -1938,7 +1943,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
   onWayleaveCreate(appUserId, isPlanning: boolean, isDraft: boolean) {
-    
+
     console.log("Turtle Turtle, where are you? " + appUserId);
 
     //get ApplicationID form Shared to check if must update
@@ -1952,7 +1957,7 @@ export class NewWayleaveComponent implements OnInit {
       this.shared.clearContractorData();
       this.shared.clearEngineerData();
 
-      this.applicationsService.addUpdateApplication(0, appUserId, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,isDraft, null, isPlanning, null, null, null).subscribe((data: any) => {
+      this.applicationsService.addUpdateApplication(0, appUserId, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, isDraft, null, isPlanning, null, null, null).subscribe((data: any) => {
         if (data.responseCode == 1) {
 
 
@@ -1983,31 +1988,31 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
-        // If this.applicationID != 0 then we do the update
+      // If this.applicationID != 0 then we do the update
 
 
 
-        if (this.TOENAMES.length <= 0) {
-          for (var i = 0; i < this.TOENAMES.length; i++) {
-            let current = this.TOENAMES[i].toString();
-            if (i > 0) {
-              this.TOE = this.TOE + ", " + current
-            } else {
-              this.TOE = current;
-            }
-
+      if (this.TOENAMES.length <= 0) {
+        for (var i = 0; i < this.TOENAMES.length; i++) {
+          let current = this.TOENAMES[i].toString();
+          if (i > 0) {
+            this.TOE = this.TOE + ", " + current
+          } else {
+            this.TOE = current;
           }
-        }
-        else {
-          for (var i = 0; i < this.TOENAMES.length; i++) {
-            let current = this.TOENAMES[i].toString();
-            if (i > 0) {
-              this.TOE = this.TOE + ", " + current
-            } else {
-              this.TOE = current;
-            }
 
-          
+        }
+      }
+      else {
+        for (var i = 0; i < this.TOENAMES.length; i++) {
+          let current = this.TOENAMES[i].toString();
+          if (i > 0) {
+            this.TOE = this.TOE + ", " + current
+          } else {
+            this.TOE = current;
+          }
+
+
         }
 
 
@@ -2053,7 +2058,7 @@ export class NewWayleaveComponent implements OnInit {
 
   OLDonWayleaveCreate(appUserId, isPlanning: boolean) {
 
-    
+
     console.log("Turtle Turtle, where are you? 2" + appUserId);
 
     //this.isPlanning = isPlanning;
@@ -2690,6 +2695,9 @@ export class NewWayleaveComponent implements OnInit {
   }
   openViewSelection(viewSelection: any) {
     this.modalService.open(viewSelection, { size: 'xl' });
+  }
+  openDocUpload(doubleCheckDocUploads: any) {
+    this.modalService.open(doubleCheckDocUploads, { size: 'xl' });
   }
 
   async getCurrentInvoiceNumberForGen(ClientName: string) {
@@ -3414,7 +3422,7 @@ export class NewWayleaveComponent implements OnInit {
 
         const tempUserList = {} as UserList;
         const current = data.dateSet[0];
-        
+
         const fullname = current.fullName;
         this.clientUserID = current.userID;
         this.clientName = fullname.substring(0, fullname.indexOf(' '));
@@ -3579,7 +3587,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
   onPassFileName(event: { uploadFor: string; fileName: string }, index: any) {
-    
+
     const { uploadFor, fileName } = event;
     // const index = parseInt(uploadFor.substring('CoverLetter'.length));
     this.fileAttrs[index] = this.MandatoryDocumentsLinkedStagesList[index].mandatoryDocumentName;
@@ -3758,7 +3766,7 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   onCreateNotification() {
-    
+
     this.notiName = "Application Created";
     this.notiDescription = this.applicationID + " was created ";
 
@@ -3780,7 +3788,7 @@ export class NewWayleaveComponent implements OnInit {
 
   }
   onCreateNotificationApplicant() {
-    
+
     this.notiName = "Application Created";
     this.notiDescription = this.applicationID + " was created ";
 
@@ -3798,7 +3806,7 @@ export class NewWayleaveComponent implements OnInit {
     }, error => {
       console.log("Error", error);
     })
-      
+
 
   }
 
@@ -3857,11 +3865,11 @@ export class NewWayleaveComponent implements OnInit {
 
   //This function is defunct because the subdepartment table is used for assigning users. Even subepartments without subzones, have at least 1 zone, usually representing the entire city.
   public addToSubDepartmentForComment() {
-    
+
     const tempList = this.shared.distributionList;
 
     tempList.forEach((obj) => {
-      
+
       this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.applicationID, obj.subDepartmentID, obj.subDepartmentName, obj.userID, null, "ESRI API", obj.zoneID, obj.zoneName).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
@@ -3903,7 +3911,7 @@ export class NewWayleaveComponent implements OnInit {
     console.log("uniqueArray:", uniqueArray);
 
     uniqueArray.forEach((obj) => {
-      
+
       this.zoneForCommentService.addUpdateZoneForComment(0, obj.subDepartmentID, this.applicationID, obj.zoneID, obj.zoneName, obj.userID).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
@@ -3931,7 +3939,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
   selectedProjectSizeCheckList(ProjectSizeCheckList: any) {
-    
+
     this.selectionProjectSizeCheck.toggle(ProjectSizeCheckList);
     this.StoreSelectionProjectCheckListItems();
 
@@ -4121,7 +4129,7 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   deleteUploader(index: number) {
-    
+
     let currentList2 = this.MandatoryDocumentsLinkedStagesList.getValue();
     let current = currentList2[index];
 
@@ -4226,7 +4234,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
   updateMandatoryDocumentsLinkedStagesList(list: any[]) {
-    
+
     const newList = list.map(current => {
       const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
       tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
@@ -4439,7 +4447,7 @@ export class NewWayleaveComponent implements OnInit {
       let tempList = []; // Temporary list to collect all new entries
 
       const newList = this.MandatoryDocumentUploadListEmergency.map(current => {
-        
+
         const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
         tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
         tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
@@ -4457,7 +4465,7 @@ export class NewWayleaveComponent implements OnInit {
 
       // Concatenate currentList and tempList
       const updatedList = currentList.concat(tempList);
-      
+
       this.MandatoryDocumentsLinkedStagesList.next(updatedList);
       this.projectSizeAlert = true;
       this.ProjectSizeMessage = "Emergency";
@@ -4467,12 +4475,12 @@ export class NewWayleaveComponent implements OnInit {
       console.log("this.totalDocs;this.totalDocs", this.totalDocs);
     }
 
-    
+
     if (LUMCount > 0) {
       let tempList = []; // Temporary list to collect all new entries
 
       const newList = this.MandatoryDocumentUploadListLUM.map(current => {
-        
+
         const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
         tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
         tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
@@ -4490,7 +4498,7 @@ export class NewWayleaveComponent implements OnInit {
 
       // Concatenate currentList and tempList
       const updatedList = currentList.concat(tempList);
-      
+
       this.MandatoryDocumentsLinkedStagesList.next(updatedList);
       this.totalDocs = updatedList.length;
       this.totalDocs2 = Number(this.totalDocs).toString();
@@ -4648,10 +4656,10 @@ export class NewWayleaveComponent implements OnInit {
     this.selectedItemIndex = index;
   }
   StoreSelectionProjectCheckListItems() {
-    
+
 
     this.ProjectSizeSelectionList.splice(0, this.ProjectSizeSelectionList.length);
-    
+
     for (var i = 0; i < this.selectionProjectSizeCheck.selected.length; i++) {
       const checkList = this.selectionProjectSizeCheck.selected[i]
       const tempSelectionList = {} as ProjectSizeSelectionList;
@@ -4660,16 +4668,16 @@ export class NewWayleaveComponent implements OnInit {
       tempSelectionList.projectDescription = checkList.ProjectSizeCheckListActivity;
       tempSelectionList.userFullName = this.CurrentUser.fullName;
       tempSelectionList.createdById = this.CurrentUser.appUserId;
-      
+
       this.ProjectSizeSelectionList.push(tempSelectionList);
     }
 
   }
   SavedProjectSizeSelections() {
-    
+
     for (var i = 0; i < this.ProjectSizeSelectionList.length; i++) {
       const current = this.ProjectSizeSelectionList[i];
-      
+
       this.projectSizeSelectionService.AddUpdateProjectSizeSelection(0, this.applicationID, this.CurrentUser.fullName, current.selectedProject, current.projectDescription, current.createdById).subscribe((data: any) => {
         if (data.responseCode == 1) {
           /*alert(data.responseMessage);*/
@@ -4687,12 +4695,12 @@ export class NewWayleaveComponent implements OnInit {
   DraftOption() {
     this.isDraft = true;
   }
-  
+
   currentDraftID: number;
-  option1:any
+  option1: any
   onPopulateDraftInfo(applicationId: number) {
     this.draftApplicationsService.getDraftedApplicationsByApplicationID(applicationId).subscribe((data: any) => {
-      
+
       if (data.responseCode === 1) {
         if (data.dateSet.length <= 1) {
           const current = data.dateSet[0];
@@ -4721,7 +4729,7 @@ export class NewWayleaveComponent implements OnInit {
 
         }
         else {
-          const current = data.dateSet[data.dateSet.length -1];
+          const current = data.dateSet[data.dateSet.length - 1];
           debugger;
           // Assign data to component properties
           this.applicationID = applicationId;
@@ -4745,7 +4753,7 @@ export class NewWayleaveComponent implements OnInit {
           this.CheckProjectSizeChecklistForDraft();
 
         }
-       
+
 
       } else {
         alert(data.response);
@@ -4759,7 +4767,7 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   compareExcavationTypes(option1: string, option2: string): boolean {
-    
+
     return option1 === option2;
   }
   CheckProjectSizeChecklistForDraft() {
@@ -4799,7 +4807,7 @@ export class NewWayleaveComponent implements OnInit {
   AddUpdateDraftWayleave() {
     debugger;
     this.draftApplicationsService.addUpdateDraftApplication(0, this.applicationID, this.CurrentUserProfile.appUserId, this.internalName + " " + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject
-      , this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null,null).subscribe((data: any) => {
+      , this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null, null).subscribe((data: any) => {
         this.openSnackBar("Draft Saved!")
         this.router.navigate(["/home"]);
         console.log("response", data);
@@ -4808,7 +4816,7 @@ export class NewWayleaveComponent implements OnInit {
       }, error => {
         console.log("Error: ", error);
       })
-  
+
   }
 
   openSnackBar(message: string) {
@@ -4822,7 +4830,15 @@ export class NewWayleaveComponent implements OnInit {
   onDraftSave() {
     this.router.navigate(["/home"]);
   }
-}
+
+  confirmAndCreate(appUserId): void {
+    //'It looks like you are about to upload some files. Are you sure you want to proceed? Double-check to ensure you have selected the correct files for upload.'
+    const isConfirmed = window.confirm('Are you sure you want to upload these files? Click "Cancel" to double-check your selections.');
+    if (isConfirmed) {
+      this.onWayleaveCreate(appUserId, false, false);
+    }
+
+  }
 
 
   //CheckToPopulateManDoc() {
@@ -4896,7 +4912,7 @@ export class NewWayleaveComponent implements OnInit {
   //            this.MandatoryDocumentsLinkedStagesList.push(tempMandatoryDocumentsLinkedStagesList);
   //          }
 
-           
+
   //        }
 
 
@@ -5038,9 +5054,9 @@ export class NewWayleaveComponent implements OnInit {
 
   //}
 
- 
 
 
 
 
 
+}

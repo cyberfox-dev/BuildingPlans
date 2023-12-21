@@ -26,3 +26,24 @@ h1 {
   color: #005870;
   user-select: none;
 }
+/* YHOOO, just press the down arrow, the autocomplete is behind the modal*/
+.form-floating input.ngx-google-places-autocomplete {
+  z-index: 9999 !important; /* Adjust this value based on your modal's z-index */
+  position: relative; /* Add this if necessary */
+}
+
+.google-placess, .pac-container {
+  z-index: 999;
+  position: absolute;
+}
+
+.pac-container {
+  background-color: #FFF;
+  z-index: 9999 !important;
+  position: fixed;
+  display: inline-block !important;
+  float: left;
+}
+
+
+
