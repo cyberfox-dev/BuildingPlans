@@ -1968,7 +1968,7 @@ this.Applications.push(tempApplicationList);
   myApplicaitonsApprovedCount() {
     // Filter the dataSource based on the "Status" column
     const approvedApplications = this.Applications.filter((element) => {
-      return element.ApplicationStatus === 'PTW Pending' && element.FullName == this.CurrentUser.fullName;
+      return element.ApplicationStatus === 'PTW Pending' && element.FullName == this.CurrentUser.fullName ;
     });
 
     // Update the unpaidcount variable with the count of "Unpaid" applications
@@ -2015,11 +2015,11 @@ this.Applications.push(tempApplicationList);
 
     // Update the unpaidcount variable with the count of "Unpaid" applications
     this.distributioncount = distributedApplications.length;
-  }
+  } 
   recentApprovedCount() {
     // Filter the dataSource based on the "Status" column
     const approvedApplications = this.Applications.filter((element) => {
-      return element.ApplicationStatus === 'PTW Pending';
+      return element.ApplicationStatus === 'PTW Pending' || element.ApplicationStatus === 'Approval Pack Generation';
     });
 
     // Update the unpaidcount variable with the count of "Unpaid" applications
