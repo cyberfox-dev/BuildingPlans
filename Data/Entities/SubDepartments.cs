@@ -19,6 +19,10 @@ namespace WayleaveManagementSystem.Data.Entities
         public string? GLCode { get; set; }
         public string? ProfitCenter { get; set; }
 
+        public int? PermitExpiration { get; set; }
+        public int? WayleaveExpiration { get; set; }
+
+
 
     }
 }

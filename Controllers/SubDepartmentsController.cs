@@ -31,7 +31,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _subDepartmentService.AddUpdateSubDepartments(model.SubDepartmentID, model.SubDepartmentName, model.DepartmentID, model.CreatedById, model.ProfitCenter,  model.GlCode);
+                    var result = await _subDepartmentService.AddUpdateSubDepartments(model.SubDepartmentID, model.SubDepartmentName, model.DepartmentID, model.CreatedById, model.ProfitCenter,  model.GlCode , model.PermitExpiration,model.WayleaveExpiration);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.DepartmentID > 0 ? "Sub Department Updated Successfully" : "Sub Department Added Successfully"), result));
                 }
 
@@ -239,7 +239,7 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-        
+       
 
     }
 }

@@ -21,7 +21,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }  
 
-        public async Task<SubDepartments> AddUpdateSubDepartments(int? subDepartmentID, string? subDepartmentName, int? DepartmentID, string? createdByID, string? profitCenter, string? GlCode) 
+        public async Task<SubDepartments> AddUpdateSubDepartments(int? subDepartmentID, string? subDepartmentName, int? DepartmentID, string? createdByID, string? profitCenter, string? GlCode , int? PermitExpiration, int? WayleaveExpiration)  
         {
             if(subDepartmentID == 0) 
             { 
@@ -41,6 +41,8 @@ namespace WayleaveManagementSystem.Service
                     CreatedById = createdByID, 
                     ProfitCenter = profitCenter,
                     GLCode = GlCode,
+                    PermitExpiration = PermitExpiration,
+                    WayleaveExpiration = WayleaveExpiration,
                     isActive = true
 
                 };
@@ -69,6 +71,14 @@ namespace WayleaveManagementSystem.Service
                 if(profitCenter != null)
                 {
                     tempSubDepartmentsTable.ProfitCenter = profitCenter;
+                }
+                if(PermitExpiration != null)
+                {
+                    tempSubDepartmentsTable.PermitExpiration = PermitExpiration;
+                }
+                if(WayleaveExpiration != null)
+                {
+                    tempSubDepartmentsTable.WayleaveExpiration = WayleaveExpiration;
                 }
                     tempSubDepartmentsTable.DateUpdated = DateTime.Now;
                 
@@ -136,6 +146,8 @@ namespace WayleaveManagementSystem.Service
                     MapLayerID = SubDepartments.MapLayerID,
                     ProfitCenter = SubDepartments.ProfitCenter,
                     GlCode = SubDepartments.GLCode,
+                    PermitExpiration = SubDepartments.PermitExpiration,
+                    WayleaveExpiration = SubDepartments.WayleaveExpiration,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     isActive = true,
@@ -220,6 +232,8 @@ namespace WayleaveManagementSystem.Service
                     SubDepartmentName = SubDepartments.SubDepartmentName,
                     GlCode = SubDepartments.GLCode,
                     ProfitCenter = SubDepartments.ProfitCenter,
+                    PermitExpiration = SubDepartments.PermitExpiration,
+                    WayleaveExpiration = SubDepartments.WayleaveExpiration,
                     DepartmentID = SubDepartments.DepartmentID,
                     DateCreated = SubDepartments.DateCreated,
                     DateUpdated = SubDepartments.DateUpdated,
@@ -242,6 +256,8 @@ namespace WayleaveManagementSystem.Service
                     DepartmentID = SubDepartments.DepartmentID,
                     GlCode = SubDepartments.GLCode,
                     ProfitCenter = SubDepartments.ProfitCenter,
+                    PermitExpiration = SubDepartments.PermitExpiration,
+                    WayleaveExpiration = SubDepartments.WayleaveExpiration,
                     DateCreated = SubDepartments.DateCreated,
                     DateUpdated = SubDepartments.DateUpdated,
                     isActive = true
@@ -262,6 +278,8 @@ namespace WayleaveManagementSystem.Service
                     SubDepartmentName = SubDepartments.SubDepartmentName,
                     GlCode = SubDepartments.GLCode,
                     ProfitCenter = SubDepartments.ProfitCenter,
+                    PermitExpiration = SubDepartments.PermitExpiration,
+                    WayleaveExpiration = SubDepartments.WayleaveExpiration,
                     DepartmentID = SubDepartments.DepartmentID,
                     DateCreated = SubDepartments.DateCreated,
                     DateUpdated = SubDepartments.DateUpdated,
