@@ -472,6 +472,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.dataSourceLinkUsers = [...this.ClientUserList];
       this.newList = [];
     } else {
+      debugger;
       // Apply the filter to the dataSource based on columns 'idNumber' and 'fullName'
       this.dataSourceLinkUsers = this.ClientUserList.filter((user: any) => {
         return (
@@ -1528,14 +1529,14 @@ this.Applications.push(tempApplicationList);
 
 
   viewProject(index: any) {
-
+    debugger;
     console.log("FIND", this.applicationDataForView[index]);
     if (this.newList.length > 0) {
-
+      debugger;
       for (var i = 0; i < this.newList.length; i++) {
         // Assuming this.applicationDataForView and newList are your arrays
 
-        const desiredApplicationID = this.newList[i].ApplicationID; // Replace [0] with the specific index you want to match
+        const desiredApplicationID = this.newList[index].ApplicationID; // Replace [0] with the specific index you want to match
 
         const foundRow = this.applicationDataForView.find(item => item.applicationID === desiredApplicationID);
 
@@ -1549,10 +1550,11 @@ this.Applications.push(tempApplicationList);
         }
 
       }
+      
 
 
     } else {
-
+      debugger;
       this.applicationDataForViewToShared.push(this.applicationDataForView[index]);
     }
 
@@ -1823,8 +1825,9 @@ this.Applications.push(tempApplicationList);
 
     //this.sharedService.getProjectNumber() i removed this
 
-
+    debugger;
     if (this.newList.length <= 0) {
+      debugger;
       this.sharedService.setProjectNumber(element.ProjectNumber);
 
       await this.applicationService.getApplicationsByProjectNumber(element.ProjectNumber).subscribe((data: any) => {
@@ -1864,7 +1867,7 @@ this.Applications.push(tempApplicationList);
       })
     }
     else {
-
+      debugger;
       this.sharedService.setProjectNumber(this.newList[index].ProjectNumber);
 
       await this.applicationService.getApplicationsByProjectNumber(this.newList[index].ProjectNumber).subscribe((data: any) => {

@@ -56,6 +56,7 @@ export interface SubDepartmentList {
   dateCreated: any;
   glCode: string;
   profitCenter: string;
+  permitExpiration:number
   isSetForAutomaticDistribution: boolean;
 }
 
@@ -127,6 +128,7 @@ export class DepartmentConfigComponent implements OnInit {
   showViewSubLinkedToZone = false;
   subDepID: number;
   selectedSubDepartment: any;
+  selectedDepartment: any;
  
   public addDepartment = this.formBuilder.group({
     newDepName: ['', Validators.required]
@@ -191,6 +193,9 @@ export class DepartmentConfigComponent implements OnInit {
   newSub: any;
 
   tabIndex: Tabs = Tabs.View_linked_sub_departments;
+  
+ 
+
   constructor(private matdialog: MatDialog, public dialog: MatDialog, private formBuilder: FormBuilder, private departmentService: DepartmentsService, private modalService: NgbModal, private zoneService: ZonesService, private subDepartment: SubDepartmentsService, private zoneLinkService: ZoneLinkService, private userProfileService: UserProfileService, public sharedService: SharedService) { }
 
 
@@ -205,7 +210,11 @@ export class DepartmentConfigComponent implements OnInit {
       this.modalService.open(newSub, { backdrop: 'static', centered: true });
     }
   }
-
+  //Kyle Gounder 08-01-24
+  openPermitExpiration(permitExpiration: any) {
+    this.modalService.dismissAll();
+    this.modalService.open(permitExpiration, { backdrop: 'static', centered: true, size: 'xl' });
+  }
   openGlCodeEdit(makeChanges: any) {
     this.modalService.open(makeChanges, { backdrop: 'static', centered: true, size: 'xl' });
   }
@@ -348,6 +357,7 @@ export class DepartmentConfigComponent implements OnInit {
           tempSubDepartmentList.dateCreated = current.dateCreated;
           tempSubDepartmentList.glCode = current.glCode;
           tempSubDepartmentList.profitCenter = current.profitCenter;
+          tempSubDepartmentList.permitExpiration = current.permitExpiration;
           tempSubDepartmentList.isSetForAutomaticDistribution = current.isSetForAutomaticDistribution;
           this.SubDepartmentList.push(tempSubDepartmentList);
           this.SubDepartmentListTable?.renderRows();
@@ -637,7 +647,7 @@ export class DepartmentConfigComponent implements OnInit {
 
 
 
-          this.subDepartment.addUpdateSubDepartment(0, newSubDepName, data.dateSet.departmentID, this.CurrentUser.appUserId, GlCode, ProfitCenter).subscribe((data: any) => {
+          this.subDepartment.addUpdateSubDepartment(0, newSubDepName, data.dateSet.departmentID, this.CurrentUser.appUserId, GlCode, ProfitCenter,null,null).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
 
@@ -694,7 +704,7 @@ export class DepartmentConfigComponent implements OnInit {
     this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
     console.log("this.SubDepartmentList", this.SubDepartmentList);
 
-    this.subDepartment.addUpdateSubDepartment(0, newSubDepName, this.CurrentDepartmentID, this.CurrentUser.appUserId, null, null).subscribe((data: any) => {
+    this.subDepartment.addUpdateSubDepartment(0, newSubDepName, this.CurrentDepartmentID, this.CurrentUser.appUserId, null, null,null,null).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
@@ -1377,21 +1387,21 @@ export class DepartmentConfigComponent implements OnInit {
   
 
   getSubDemartmentBySubDepartmentID(subDepID:number ) {
-
+    debugger;
     this.subDepartment.getSubDepartmentBySubDepartmentID( subDepID).subscribe((data: any) => {
      
       console.log("Got SubDepartment", data.dateSet);
      
 
       if (data.responseCode == 1) {
-        
+        debugger;
           const tempSubDepartmentList = {} as SubDepartmentList;
           const current = data.dateSet[0];
           tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
           tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
           tempSubDepartmentList.glCode = current.glCode;
-          tempSubDepartmentList.profitCenter = current.profitCenter;
-
+        tempSubDepartmentList.profitCenter = current.profitCenter;
+        tempSubDepartmentList.permitExpiration = current.permitExpiration;
           this.selectedSubDepartment = tempSubDepartmentList;
           
 
@@ -1415,12 +1425,32 @@ export class DepartmentConfigComponent implements OnInit {
   onSaveForEditGlCodeAndProfitCenter(selectedSubDepartment:any )
   {
     debugger;
-    this.subDepartment.addUpdateSubDepartment(selectedSubDepartment.subDepartmentID, selectedSubDepartment.subDepartmentName, null, null, selectedSubDepartment.glCode, selectedSubDepartment.profitCenter).subscribe((data: any) => {
+    this.subDepartment.addUpdateSubDepartment(selectedSubDepartment.subDepartmentID, selectedSubDepartment.subDepartmentName, null, null, selectedSubDepartment.glCode, selectedSubDepartment.profitCenter,null,null).subscribe((data: any) => {
      
       if (data.responseCode == 1) {
         debugger;
         alert("Update for " + selectedSubDepartment.subDepartmentName+ " Successful");
 
+      }
+      else {
+        debugger;
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  //Kyle Gounder 08-01-24
+  onSavePermitExpiration(selectedSubDepartment) {
+    this.subDepartment.addUpdateSubDepartment(selectedSubDepartment.subDepartmentID, selectedSubDepartment.subDepartmentName, null, null, null,null,selectedSubDepartment.permitExpiration, null).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        debugger;
+        alert("Update for " + selectedSubDepartment.subDepartmentName + " Successful");
+        this.modalService.dismissAll();
       }
       else {
         debugger;
