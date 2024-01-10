@@ -63,13 +63,22 @@
           <!--<app-external-details *ngIf="external"></app-external-details>-->
           <div *ngIf="external">
             <div class="row">
-
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="externalBPNumber" id="BPNumber" name="BPNumber" disabled>
-                <label for="name">BP Number</label>
+              <!-- icasadetails Sindiswa 10 January 2024 : some of the below was modified to account for the ICASA number-->
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="externalBPNumber" id="BPNumber" name="BPNumber" disabled>
+                  <label for="name">BP Number</label>
+                </div>
               </div>
 
 
+              <div *ngIf="telecomms" class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="externalICASANumber" id=" externalICASANumber" name="externalICASANumber" disabled>
+                  <label for="name">ICASA Number</label>
+                </div>
+              </div>
+              <!-- end of icasadetails Sindiswa 10 January 2024 -->
             </div>
 
             <!--Displaying the applicants information into textboxes-->

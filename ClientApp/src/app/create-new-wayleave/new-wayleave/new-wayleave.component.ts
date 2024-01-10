@@ -319,6 +319,8 @@ export class NewWayleaveComponent implements OnInit {
   externalSurname = '';
   externalAddress = '';
   externalEmail = '';
+  externalICASANumber = ""; //icasadetails Sindiswa 10 January 2024
+  telecomms: boolean = false; //icasadetails Sindiswa 10 January 2024
 
   /*project details*/
   typeOfApplication = '';
@@ -629,7 +631,8 @@ export class NewWayleaveComponent implements OnInit {
           this.externalSurname = fullname.substring(fullname.indexOf(' ') + 1);
           this.externalAddress = currentUserProfile.physcialAddress;
           this.externalEmail = currentUserProfile.email;
-
+          this.externalICASANumber = currentUserProfile.icasaLicense; //icasadetails Sindiswa 10 January 2024
+          this.telecomms = this.externalICASANumber !== null && this.externalICASANumber !== undefined && this.externalICASANumber !== ''; //icasadetails Sindiswa 10 January 2024
 
         }
 
