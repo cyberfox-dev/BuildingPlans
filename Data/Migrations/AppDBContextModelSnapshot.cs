@@ -1214,10 +1214,16 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<DateTime>("DateUpdated")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("DocumentLocalPath")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PermitComment")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PermitCommentStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PermitDocName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("SubDepartmentID")
@@ -1603,6 +1609,9 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<int?>("MapLayerID")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PermitExpiration")
+                        .HasColumnType("int");
+
                     b.Property<string>("ProfitCenter")
                         .HasColumnType("nvarchar(max)");
 
@@ -1611,6 +1620,9 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.Property<string>("SubDepartmentName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("WayleaveExpiration")
+                        .HasColumnType("int");
 
                     b.Property<bool>("isActive")
                         .HasColumnType("bit");

@@ -95,6 +95,11 @@ import { DocumentRepositoryComponent } from './document-repository/document-repo
 import { SnackBarAlertsComponent } from './snack-bar-alerts/snack-bar-alerts.component'
 import { DocumentRepositoryConfigComponent } from './document-repository-config/document-repository-config.component';
 import { DraftsComponent } from 'src/app/drafts/drafts.component';
+import { MatChipsModule } from '@angular/material/chips';
+import { QuillModule } from 'ngx-quill';
+import { ApprovalPackComponent } from 'src/app/Packs/approval-pack/approval-pack.component';
+import { RejectionPackComponent } from 'src/app/Packs/rejection-pack/rejection-pack.component';
+import { SystemAlertConfigComponent } from 'src/app/system-alert-config/system-alert-config.component'; 
 
 //import { MatExpansionModule } from '@angular/material/expansion';
 
@@ -177,8 +182,11 @@ import { DraftsComponent } from 'src/app/drafts/drafts.component';
     DocumentRepositoryComponent,
     DocumentRepositoryConfigComponent,
     SnackBarAlertsComponent,
+    SystemAlertConfigComponent,
 
     DraftsComponent,
+      ApprovalPackComponent,
+      RejectionPackComponent,
 
 
   ],
@@ -197,6 +205,7 @@ import { DraftsComponent } from 'src/app/drafts/drafts.component';
     MatProgressBarModule,
     MatPaginatorModule,
     MatRadioModule,
+    MatChipsModule,
     MatDividerModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
@@ -223,6 +232,7 @@ import { DraftsComponent } from 'src/app/drafts/drafts.component';
     NgbModule,
     GooglePlaceModule,
     DragDropModule,
+    QuillModule.forRoot(),
     RouterModule.forRoot([
       { path: '', component: LoginComponent},
       { path: 'home', component: HomeComponent},
@@ -259,7 +269,8 @@ import { DraftsComponent } from 'src/app/drafts/drafts.component';
     NotificationCenterComponent,
     DocumentRepositoryConfigComponent,
     DraftsComponent,
-    
+    ApprovalPackComponent,
+    DocumentsComponentComponent
   ],
   bootstrap: [AppComponent]
 })

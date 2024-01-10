@@ -1,14 +1,153 @@
 table {
+  /* width: 100%; */
+  /* margin: 0 auto; */
+  /* margin-bottom: 30px; */
   width: 100%;
-  margin: 0 auto;
-  margin-bottom: 30px;
-  overflow-x: scroll;
+  margin-bottom: 20px;
 }
 .mat-warni {
-  background-color: #9d2235;
-  color: #fff;
+  background-color: #e2cccc;
+  color: #aa0000;
 }
 .mat-orange {
-  background-color: #ff9900;
-  color: #fff;
+  margin: 5px;
+  color: #005870;
+  background-color: #ccdee2;
+  width: 20px;
+}
+h2 {
+  margin-bottom: 12px;
+  padding-bottom: 16px;
+  font-size: 25px;
+  line-height: 28px;
+  font-weight: 700;
+  text-transform: capitalize;
+  margin: 8px;
+}
+.mat-dialog-content {
+  display: block;
+  margin: 10px;
+  padding: 10px;
+  max-height: 61vh;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mat-dialog-actions {
+  padding: 0px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  box-sizing: content-box;
+  margin-bottom: 0px;
+}
+.cont5 {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.mat-column-FullName {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 10% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+.mat-column-ApplicationID {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 10% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+.mat-column-TypeOfApplication {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 10% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+.mat-column-PhysicalAddressOfProject {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 10% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+.mat-column-NatureOfWork {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 10% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+.mat-column-ExcavationType {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 10% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+.Nothing {
+  text-align: center;
+  color: gainsboro;
+  font-size: 20px;
+  font-style: italic;
+}
+.mat-column-DescriptionOfProject {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 10% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+.mat-column-DateCreated {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 6% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+.mat-column-actions {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 12% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
 }

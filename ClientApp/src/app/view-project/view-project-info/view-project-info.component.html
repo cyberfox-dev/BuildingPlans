@@ -1,5 +1,6 @@
 <app-nav-menu></app-nav-menu>
 
+
 <ng-template #MFTModal let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">New Note For Mobile Field Tracking</h4>
@@ -58,7 +59,7 @@
 
 </div>
 <div class="cont7">
-  <button mat-raised-button color="generatePackBtn"  (click)="OpenLoadingModal(approvalPackLoading)" *ngIf="generateApprovalbtn" >Generate My Approval Pack</button>
+  <button mat-raised-button color="generatePackBtn" (click)="OpenLoadingModal(approvalPackLoading)" *ngIf="generateApprovalbtn">Generate My Approval Pack</button>
 </div>
 
 
@@ -102,15 +103,15 @@
 
 
 
-
+<!--//JJS 8 Jan (Changed the approve to Prov.Approve)-->
       <div class="main-container">
         <section id="timeline" class="timeline-outer">
           <div class="container" id="content">
-                                                                                      
-            <div class="row" *ngFor="let commentsList of CommentsList; let i = index" [style.margin-left.px]="(i % 2 === 0) ? 60 : 80" [style.margin-right.px]="(i % 2 === 0) ? 60 : 80"  >
+
+            <div class="row" *ngFor="let commentsList of CommentsList; let i = index" [style.margin-left.px]="(i % 2 === 0) ? 60 : 80" [style.margin-right.px]="(i % 2 === 0) ? 60 : 80">
               <div class="col s12 m12 l12" *ngIf="!(commentsList.CommentStatus === 'Referred' && referComment)">
 
-                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved' " [class.Reject]="commentsList.CommentStatus === 'Reject'||commentsList.CommentStatus === 'Rejected'" [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'" [class.refer]="commentsList.CommentStatus === 'Referred'" [class.returned]="commentsList.CommentStatus === 'Returned'" [class.reviewerClarify]="commentsList.CommentStatus === 'Reviewer Clarity'">
+                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Provisionally Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved' " [class.Reject]="commentsList.CommentStatus === 'FinalReject'||commentsList.CommentStatus === 'Rejected'" [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'" [class.refer]="commentsList.CommentStatus === 'Referred'" [class.returned]="commentsList.CommentStatus === 'Returned'" [class.reviewerClarify]="commentsList.CommentStatus === 'Reviewer Clarity'">
 
                   <li class="event" data-date="">
 
@@ -120,17 +121,21 @@
                     <div class="cont2">
                       <button mat-raised-button color="white" *ngIf="commentsList.CommentStatus != 'FinalApproved'  &&   this.subDepNameForClarify === commentsList.SubDepartmentName" (click)="openEditCommentModal(commentEditorModal, i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/pencil-solid.svg" class="icon"></button>
                     </div>
-                    <p>
+                    <!--<p>
 
                       {{commentsList.Comment}}
-                    </p>
+                    </p>-->
+                    <div [innerHTML]="sanitizeHTML(commentsList.Comment)"></div>
+                    <br />
                     <!--Applicant Clarity-->
-                    <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarify' && canClarify ||commentsList.CommentStatus === 'Reviewer Clarity' && canReviewerClarify" (click)="openReplyModal(replyModal,i)">Reply</button>
-                    <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarified'&& canClarify" (click)="openReplyModal(replyModal,i)">Update Reply</button>
+                    <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarify' && canClarify ||commentsList.CommentStatus === 'Reviewer Clarity' && canReviewerClarify" (click)="openReplyModal(replyModal,i,'Reply')">Reply</button>
+                    <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarified'&& canClarify" (click)="openReplyModal(replyModal,i, 'Update')">Update Reply</button>
                     <div class="row" *ngIf="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null">
-                      <label *ngIf="commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null">Applicants Reply :</label>
+                      <label *ngIf="commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null"> <strong><em>Applicant's Reply:</em></strong></label>
                       <div class="form-floating mb-3 mt-3" *ngIf="commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null">
-                        <input type="text" class="form-control" value="{{commentsList.isApplicantReplay}}" id="ApplicantReply" name="ApplicantReply" disabled> <!--[(ngModel)]="ApplicantReply"-->
+                        <!--<input type="text" class="form-control" value="{{commentsList.isApplicantReplay}}" id="ApplicantReply" name="ApplicantReply" disabled>--> <!--[(ngModel)]="ApplicantReply"-->
+
+                        <div class="disabled-textbox" [innerHTML]="sanitizeHTML(commentsList.isApplicantReplay)" id="ApplicantReply"></div>
 
 
 
@@ -186,19 +191,66 @@
 
 
     </mat-tab>
+    <!--USE THE QUILL-EDITOR!!-->
     <!--This is the modal for when the applicant can reply to a comment made by the line department-->
     <ng-template #replyModal let-modal>
       <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Reply To Comment</h4>
+        <h4 class="modal-title" id="modal-basic-title">{{ modalTitle }}</h4>
         <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
       </div>
       <div class="modal-body">
         <form>
           <div class="row">
-            <div class="form-floating mb-3 mt-3">
+            <!--<div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" [(ngModel)]="reply" id="reply" name="reply" placeholder="Edit Comment">2
               <label for="reply">Enter in a reply</label>
-            </div>
+            </div>-->
+
+            <form [formGroup]="myNewReply">
+              <quill-editor formControlName="reply" [readOnly]="false">
+                <div quill-editor-toolbar>
+                  <span class="ql-formats">
+                    <button class="ql-bold" [title]="'Bold'"></button>
+                    <select class="ql-color" [title]="'Text Color'">
+                      <option value="rgb(0, 0, 0)" selected></option>
+                      <option value="rgb(255, 0, 0)"></option>
+                      <option value="rgb(255, 153, 0)"></option>
+                      <option value="rgb(255, 255, 0)"></option>
+                      <option value="rgb(0, 255, 0)"></option>
+                      <option value="rgb(0, 255, 255)"></option>
+                      <option value="rgb(0, 0, 255)"></option>
+                      <!-- Add other color options as needed -->
+                    </select>
+                    <button class="ql-italic" [title]="'Italic'"></button>
+                    <button class="ql-underline" [title]="'Underline'"></button>
+                    <button class="ql-strike" [title]="'Strikethrough'"></button>
+                    <button class="ql-script" value="sub"></button>
+                    <button class="ql-script" value="super"></button>
+                    <button class="ql-list" [title]="'Bullet List'" [value]="'bullet'"></button>
+                    <button class="ql-list" [title]="'Numbered List'" [value]="'ordered'"></button>
+                    <!--<button class="ql-link" [title]="'Enter URL'"></button>-->
+                    <button class="ql-indent" [value]="'-1'"></button>
+                    <button class="ql-indent" [value]="'+1'"></button>
+                    <select class="ql-align" [title]="'Alignment'">
+                      <option selected></option>
+                      <option value="center"></option>
+                      <option value="right"></option>
+                      <option value="justify"></option>
+                    </select>
+                    <select class="ql-header">
+                      <option value="false" selected></option>
+                      <option value="1"></option>
+                      <option value="2"></option>
+                      <option value="3"></option>
+                      <option value="4"></option>
+                      <option value="5"></option>
+                      <option value="6"></option>
+                    </select>
+                  </span>
+                </div>
+              </quill-editor>
+            </form>
+
           </div>
         </form>
       </div>
@@ -206,6 +258,7 @@
         <button type="button" class="btn btn-outline-success" (click)="createReply();modal.close('Save click')">Save</button>
       </div>
     </ng-template>
+
 
     <!--this is the modal for when the line dep user wants to edit their comment made -->
     <ng-template #commentEditorModal let-modal>
@@ -217,14 +270,59 @@
         <form>
 
 
-          <div class="row">
+          <!--<div class="row">
 
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" [(ngModel)]="commentEdit" name="commentEdit" class="form-control" id="commentEdit" placeholder="Update Comment">
-              <label for="commentEdit">Update Comment</label>
-            </div>
+            <div class="form-floating mb-3 mt-3">-->
+          <!--<input type="text" [(ngModel)]="commentEdit" name="commentEdit" class="form-control" id="commentEdit" placeholder="Update Comment">-->
+          <!--<quill-editor [(ngModel)]="commentEdit" [readOnly]="false">-->
+          <form [formGroup]="editMyComment">
+            <quill-editor formControlName="commentEdit" [ngModel]="editMyComment.controls['commentEdit'].value" [readOnly]="false">
+              <div quill-editor-toolbar>
+                <span class="ql-formats">
+                  <button class="ql-bold" [title]="'Bold'"></button>
+                  <select class="ql-color" [title]="'Text Color'">
+                    <option value="rgb(0, 0, 0)" selected></option>
+                    <option value="rgb(255, 0, 0)"></option>
+                    <option value="rgb(255, 153, 0)"></option>
+                    <option value="rgb(255, 255, 0)"></option>
+                    <option value="rgb(0, 255, 0)"></option>
+                    <option value="rgb(0, 255, 255)"></option>
+                    <option value="rgb(0, 0, 255)"></option>
+                    <!-- Add other color options as needed -->
+                  </select>
+                  <button class="ql-italic" [title]="'Italic'"></button>
+                  <button class="ql-underline" [title]="'Underline'"></button>
+                  <button class="ql-strike" [title]="'Strikethrough'"></button>
+                  <button class="ql-script" value="sub"></button>
+                  <button class="ql-script" value="super"></button>
+                  <button class="ql-list" [title]="'Bullet List'" [value]="'bullet'"></button>
+                  <button class="ql-list" [title]="'Numbered List'" [value]="'ordered'"></button>
+                  <!--<button class="ql-link" [title]="'Enter URL'"></button>-->
+                  <button class="ql-indent" [value]="'-1'"></button>
+                  <button class="ql-indent" [value]="'+1'"></button>
+                  <select class="ql-align" [title]="'Alignment'">
+                    <option selected></option>
+                    <option value="center"></option>
+                    <option value="right"></option>
+                    <option value="justify"></option>
+                  </select>
+                  <select class="ql-header">
+                    <option value="false" selected></option>
+                    <option value="1"></option>
+                    <option value="2"></option>
+                    <option value="3"></option>
+                    <option value="4"></option>
+                    <option value="5"></option>
+                    <option value="6"></option>
+                  </select>
+                </span>
+              </div>
+            </quill-editor>
+          </form>
+          <!--<label for="commentEdit">Update Comment</label>-->
+          <!--</div>
 
-          </div>
+          </div>-->
 
 
         </form>
@@ -761,7 +859,7 @@
 </mat-tab>-->
 <!--------------------------------------------------------Service Condtions---------------------------------------------->
 <mat-tab label="Service Conditions">
- 
+
   <app-service-conditions [ApplicationID]="ApplicationID"
                           [ServiceConditionActive]="true">
 
@@ -859,11 +957,14 @@
 
 <ng-template #approvalPackLoading let-modal>
 
-  <div class="loading-screen"  id="loadingScreen">
+  <div class="loading-screen" id="loadingScreen">
     <mat-spinner></mat-spinner>
     <div class="text">Generating Approval Pack</div>
     <div class="text2">This may take several minutes</div>
   </div>
 
 </ng-template>
+
+<!-- Example template -->
+
 

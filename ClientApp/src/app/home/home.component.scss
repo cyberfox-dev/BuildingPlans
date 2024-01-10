@@ -30,6 +30,17 @@
   background-color: #ccdee2;
   width: 20px;
 }
+.diasbaledRequestForServices{
+
+}
+
+.mat-blue2 {
+  margin-right: 12px;
+  color: #005870;
+  background-color: #ccdee2;
+  width: 146px;
+  font-weight: 700;
+}
 .mat-warn {
   background-color: #e2cccc;
   color: #aa0000;
@@ -802,6 +813,22 @@ h6 {
       top: 101px;
     }
 
+    //this will be removed
+    .mat-createWayleave2 {
+      margin-top: -61px;
+      margin-bottom: 124px;
+      background: #005870;
+      color: white;
+      width: 256px;
+      height: 53px;
+      margin-right: 30px;
+      margin-left: 30px;
+      border-radius: 30px;
+      top: 101px;
+      white-space: initial;
+      line-height: initial;
+    }
+
     .mat-configureActingDepartment {
       margin-top: -61px;
       margin-bottom: 124px;
@@ -951,6 +978,21 @@ h6 {
       margin-left: 30px;
       border-radius: 30px;
     }
+
+    .mat-createWayleave2 {
+      margin-top: 75px;
+      margin-bottom: 80px;
+      background: #005870;
+      color: white;
+      width: 256px;
+      height: 74px;
+      margin-right: 30px;
+      margin-left: 30px;
+      border-radius: 30px;
+      white-space: initial;
+      line-height:initial;
+    }
+
   }
 
   .mat-createWayleave:hover {
@@ -959,6 +1001,10 @@ h6 {
   }
 
 
+.mat-createWayleave2:hover {
+  background-color: #838a9175;
+  color: #ffffff;
+}
 
 
 
@@ -1413,11 +1459,12 @@ display:none;
 .mat-button-toggle-group {
   width: 100%;
   margin-bottom: 20px;
+  padding: inherit;
 }
 
 .mat-button-toggle-checked {
-  background-color: #005870;
-  color: white;
+  background-color: #ccdee2;
+  color: #005870;
 }
 
 mat-button-toggle {

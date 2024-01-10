@@ -33,6 +33,10 @@
         <input type="number" class="form-control" [(ngModel)]="viewEscalateDate" id="viewEscalateDate" name="viewEscalateDate" placeholder="Enter a date" disabled>
         <label for="escalateDate"> The Current date for the escalation</label>
       </div>
+
+
+
+
     </mat-tab>
 
     <!-----------------------------------------------------Roles configuration-------------------------------------------------------------->
@@ -47,6 +51,11 @@
     <mat-tab label="Project Size">
       <app-project-size-config></app-project-size-config>
     </mat-tab>
+    <!-----------------------------------------------------Alert Banner Config-------------------------------------------------------------->
+    <mat-tab label="System Alert">
+      <!--Insert code here!-->
+      <app-system-alert-config></app-system-alert-config>
+    </mat-tab>
   </mat-tab-group>
-
+  
 </div>

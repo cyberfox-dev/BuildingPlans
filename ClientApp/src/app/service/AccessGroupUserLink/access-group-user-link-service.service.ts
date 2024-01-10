@@ -18,7 +18,15 @@ export class AccessGroupUserLinkServiceService {
     return this.httpClient.post(this.baseURL + "GetAccessGroupByUserID", requestBody);
   }
 
-  public getAccessGroupsBySubDeptZoneAndUserID(userID: string, zoneId: number| null, subDepartmentId: number| null) {
+  public getAGBySubDeptAndUserID(userID: string, subDepartmentId: number| null) {
+    const requestBody = {
+      UserID: userID,
+      SubDepartmentID: subDepartmentId
+    };
+
+    return this.httpClient.post(this.baseURL + "GetAccessGroupsBySubDeptAndUserID", requestBody);
+  }
+  public getAccessGroupsBySubDeptZoneAndUserID(userID: string, zoneId: number | null, subDepartmentId: number | null) {
     const requestBody = {
       UserID: userID,
       ZoneID: zoneId,
@@ -26,5 +34,36 @@ export class AccessGroupUserLinkServiceService {
     };
 
     return this.httpClient.post(this.baseURL + "GetAccessGroupsBySubDeptZoneAndUserID", requestBody);
+  }
+  public getAccessGroupsByUserProfileID(userProfileID: number | null) {
+    const requestBody = {
+      UserProfileID: userProfileID
+    };
+
+    return this.httpClient.post(this.baseURL + "GetAccessGroupsByUserProfileID", requestBody);
+  }
+  public getPeopleByAccessGroupAndSubDept(agID: number|null, subDepartmentId: number | null) {
+    debugger;
+    const requestBody = {
+      AccessGroupID: agID,
+      SubDepartmentID: subDepartmentId
+    };
+    return this.httpClient.post(this.baseURL + "GetPeopleByAccessGroupAndSubDept", requestBody);
+  }
+  public getPeopleByAccessGroupAndZone(agID: number | null, zoneId:number|null, subDepartmentId: number | null) {
+    debugger;
+    const requestBody = {
+      AccessGroupID: agID,
+      ZoneID: zoneId,
+      SubDepartmentID: subDepartmentId
+    };
+    return this.httpClient.post(this.baseURL + "GetPeopleByAccessGroupZoneAndSubDept", requestBody);
+  }
+  public getPeopleByZone(zoneId: number | null) {
+    debugger;
+    const requestBody = {
+      ZoneID: zoneId
+    };
+    return this.httpClient.post(this.baseURL + "GetPeopleByZone", requestBody);
   }
 }

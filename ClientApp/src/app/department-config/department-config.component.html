@@ -79,7 +79,8 @@
   <ng-container matColumnDef="actionsDep">
     <th mat-header-cell *matHeaderCellDef>Action</th>
     <td mat-cell *matCellDef="let i = index">
-      <button mat-raised-button color="blue" matTooltip="Link Department Admin" (click)="linkDepAdmin(i,linkDepAdminModal)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-plus-solid.svg" class="icon"></button>
+      <!----KyleGounder 08-01-24    permit expiration button----->
+      <button mat-raised-button color="orange" matTooltip="Permit Expiration Days" (click)="forViewPopulateSubDepartmentDropDown(i,selectSubdepartment);setCurrentDepartmentID(i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/book-solid.svg" class="icon"></button>
       <button mat-raised-button color="warn" matTooltip="Delete Department" (click)="onDeleteDepartment(i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid-white.svg" class="icon"></button>
 
     </td>
@@ -162,7 +163,7 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Actions</th>
         <td mat-cell *matCellDef="let i = index">
-          <button mat-raised-button color="warn" (click)="modal.close('Close click');onDeleteSubDepartment(i,viewSub)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid.svg" class="icon red" ></button>
+          <button mat-raised-button color="warn" (click)="modal.close('Close click');onDeleteSubDepartment(i,viewSub)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid.svg" class="icon red"></button>
         </td>
         <td mat-cell *matCellDef="let element">  </td>
 
@@ -376,7 +377,7 @@
                 <ng-container matColumnDef="actions">
                   <th mat-header-cell *matHeaderCellDef></th>
                   <td mat-cell *matCellDef="let i = index">
-                    <button mat-raised-button color="warn" (click)="modal.dismiss('Cross click');onZoneDelete(i,viewlinkedZones)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid.svg" class="icon red" ></button>
+                    <button mat-raised-button color="warn" (click)="modal.dismiss('Cross click');onZoneDelete(i,viewlinkedZones)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid.svg" class="icon red"></button>
                   </td>
                   <td mat-cell *matCellDef="let element">  </td>
                 </ng-container>
@@ -419,7 +420,7 @@
 
               <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let i = index">  <button mat-raised-button color="warn" (click)="modal.dismiss('Cross click');onUserUnlinkFromZone(i,viewlinkedZones)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid.svg" class="icon red" ></button></td>
+                <td mat-cell *matCellDef="let i = index">  <button mat-raised-button color="warn" (click)="modal.dismiss('Cross click');onUserUnlinkFromZone(i,viewlinkedZones)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid.svg" class="icon red"></button></td>
                 <td mat-cell *matCellDef="let element">  </td>
               </ng-container>
 
@@ -597,3 +598,45 @@
     <button type="submit" class="btn btn-outline-success" (click)="onDepartmentUserLink();modal.close('Close click')">Save</button>
   </div>
 </ng-template>
+<!----KyleGounder 08-01-24----->
+
+<ng-template #selectSubdepartment let-modal class="mat-elevation-z8">
+
+  <div class="modal-header">
+    <h4 class="modal-title">Select a Sub Department</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+
+    <select class="form-select" [(ngModel)]="subDepID">
+
+      <option *ngFor="let subDemartment of SubDepartmentDropdown " value="{{subDemartment.subDepartmentID}}">{{subDemartment.subDepartmentName}} </option>
+    </select>
+
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-outline-success" (click)="getSubDemartmentBySubDepartmentID(subDepID);openPermitExpiration(permitExpiration)">select</button>
+    </div>
+  </div>
+
+
+</ng-template>
+<ng-template #permitExpiration let-modal>
+  <div class="modal-header">
+    <h2 class="modal-title">Permit Expiration</h2>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body" [(ngModel)]="selectedSubDepartment">
+    <div class="form-floating mb-3 mt-3">
+      <textarea class="form-control" type="text" [(ngModel)]="selectedSubDepartment.permitExpiration"></textarea>
+      <label>Number of days permit is valid for</label>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)=" onSavePermitExpiration(selectedSubDepartment)">Save</button>
+  </div>
+
+
+</ng-template>
+<!----KyleGounder 08-01-24----->

@@ -928,3 +928,14 @@ tr.example-element-row:not(.example-expanded-row):active {
   background-color: #e2cccc;
   color: #aa0000;
 }
+/*quill-editor {
+  display: block;
+  height: 300px;*/ /* Adjust the height as needed */
+  /*min-height: 100px;*/ /* Set a minimum height */
+/*}*/
+
+quill-editor {
+  width: 90%;
+  min-height: 500px;
+  overflow-y:auto;
+}

@@ -1,5 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~quill/dist/quill.bubble.css';
 
+/* OR ??
+   @import '~quill/dist/quill.snow.css'; */
 /* Provide sufficient contrast against white background */
 a {
   color: #0366d6;
@@ -22,10 +25,9 @@ code {
   border-color: #1861ac;
 }
 .green-snackbar {
-    font-size: 15px;
-    font-weight:bold;
-   margin:0 auto;
-  background: #68e56b;
+  font-size: 15px;
+  font-weight: bold;
+  background: #cee2cc00;
 }
 
 /*-------------------------------------------------------------------------IF THE VIEW BREAKS REMOVE THIS FROM THE FILE---------------------------------*/
@@ -33,7 +35,10 @@ code {
   z-index: 10000 !important;
 }
 .cdk-global-overlay-wrapper, .cdk-overlay-pane {
-  /*z-index: 20000 !important;*/
+  /*z-index: 20000 !important;  margin: 5px;
+  color: #005870;
+  background-color: #ccdee2;
+  width: 20px;*/
 }
 /*-------------------------------------------------------------------------IF THE VIEW BREAKS REMOVE THIS FROM THE FILE---------------------------------*/
 
@@ -290,19 +295,24 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .red {
   fill: #aa0000;
 }
+.white {
+    fill: #ffffff;
+}
 
 .green-snackbar {
-  text-align: center !important;
-  border-radius: 91px !important;
-  /* box-sizing: initial !important; */
-  margin-top: 10px !important;
-  /* max-width: 33vw; */
-  min-width: 240px !important;
-  /* padding: 0; */
-  min-height: 3px !important;
-  position: static;
-  background: #cee2cc;
-  color: #137000;
+    text-align: center !important;
+    border-radius: 91px !important;
+    /* box-sizing: initial !important; */
+    margin-top: -2px !important;
+    /* max-width: 33vw; */
+    min-width: 240px !important;
+    /* padding: 0; */
+    min-height: 3px !important;
+    position: absolute;
+    background: #cee2cc00;
+    color: #137000;
+    box-shadow: none;
+    right: 0;
 }
 
 .red-snackbar {
@@ -331,4 +341,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   position: static;
   background: #e1e2cc;
   color: #6d6200;
+}
+quill-editor {
+  width: 90%;
+  min-height: 500px;
+  overflow-y: auto;
 }

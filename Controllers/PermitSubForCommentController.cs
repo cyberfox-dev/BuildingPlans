@@ -58,6 +58,11 @@ namespace WayleaveManagementSystem.Controllers
                             ZoneID = model.ZoneID,
                             ZoneName = model.ZoneName,
 
+                            #region permitupload Sindiswa 08 January 2024 - for the purpose of uploading documents under the "Permits" tab
+                            DocumentLocalPath =  model.DocumentLocalPath,
+                            PermitDocName = model.PermitDocName,
+                            #endregion
+
                         };
 
                         await _context.PermitSubForComment.AddAsync(tempPermitSubForComment);
@@ -104,7 +109,17 @@ namespace WayleaveManagementSystem.Controllers
                         {
                             tempPermitSubForComment.ZoneName = model.ZoneName;
                         }
-
+                        #region permitupload Sindiswa 08 January 2024 - for the purpose of uploading documents under the "Permits" tab
+                        if (model.DocumentLocalPath != null)
+                        {
+                            tempPermitSubForComment.DocumentLocalPath = model.DocumentLocalPath;
+                        }
+                        if (model.PermitDocName != null)
+                        {
+                            tempPermitSubForComment.PermitDocName = model.PermitDocName;
+                        }
+                        tempPermitSubForComment.DateUpdated = DateTime.Now;
+                        #endregion
                         _context.Update(tempPermitSubForComment);
                         await _context.SaveChangesAsync();
                         result = tempPermitSubForComment;
@@ -175,6 +190,10 @@ namespace WayleaveManagementSystem.Controllers
                     ZoneID = permitSubForComment.ZoneID,
                     ZoneName = permitSubForComment.ZoneName,
 
+                    #region permitupload Sindiswa 09 January 2024
+                    PermitDocName = permitSubForComment.PermitDocName,
+                    DocumentLocalPath = permitSubForComment.DocumentLocalPath,
+                    #endregion
 
 
                 }
@@ -220,6 +239,11 @@ namespace WayleaveManagementSystem.Controllers
                     ZoneID = permitSubForComment.ZoneID,
                     ZoneName = permitSubForComment.ZoneName,
 
+                    #region permitupload Sindiswa 09 January 2024
+                    PermitDocName = permitSubForComment.PermitDocName,
+                    DocumentLocalPath = permitSubForComment.DocumentLocalPath,
+                    #endregion
+
 
                 }
                 ).ToListAsync();
@@ -245,12 +269,12 @@ namespace WayleaveManagementSystem.Controllers
             {
                 if (model.UserAssaignedToComment != null)
                 {
-                    var zoneIds = await _context.ZoneLinkTable
-                                    .Where(z => z.SubDepartmentID == model.SubDepartmentID
-                                                && z.AssignedUserID == model.UserAssaignedToComment
-                                                && z.isActive)
-                                    .Select(z => z.ZoneID)
-                                    .ToListAsync();
+                    var zoneIds = await _context.UserProfilesTable
+                                          .Where(z => z.SubDepartmentID == model.SubDepartmentID
+                                                      && z.UserID == model.UserAssaignedToComment
+                                                      && z.isActive)
+                                          .Select(z => z.zoneID)
+                                          .ToListAsync();
 
                     var result = await _context.PermitSubForComment
               .Where(s => s.ApplicationID == model.ApplicationID
@@ -307,6 +331,41 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+
+        #region permitupload Sindiswa 09 January 2024
+        [HttpPost("HasPermitSubForCommentDocuments")]
+
+        public async Task<object> HasPermitSubForCommentDocuments([FromBody] int permitSubForCommentID)
+        {
+            try
+            {
+                var tempPermitSubForComment = _context.PermitSubForComment.FirstOrDefault(x => x.PermitSubForCommentID == permitSubForCommentID);
+
+                if (tempPermitSubForComment == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", false));
+
+                }
+                else
+                {
+                    // Check if DocumentLocationPath and PermitDocName are empty or not
+                    bool hasDocuments = !string.IsNullOrEmpty(tempPermitSubForComment.DocumentLocalPath) && !string.IsNullOrEmpty(tempPermitSubForComment.PermitDocName);
+
+                    return await Task.FromResult(new ResponseModel(
+                        Enums.ResponseCode.OK,
+                        "Got Document Details",
+                        new { HasDocuments = hasDocuments }
+                    ));
+                }
+
+            }
+            catch(Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+
+        }
+        #endregion
 
 
     }

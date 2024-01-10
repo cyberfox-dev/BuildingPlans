@@ -366,6 +366,31 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+        [HttpPost("UserDoesntGainApproval")]
+        public async Task<object> UserDoesntGainApproval([FromBody] int userProfileID)
+        {
+            try
+            {
+
+                if (userProfileID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _userProfileService.UserDoesntGainApproval(userProfileID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "User NOT Given Access", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
         //[FromBody] string userId UserGainsApproval
         [HttpPost("GetUserByUserID")]
         public async Task<object> GetUserByUserID([FromBody] UsersProfileIdOnlyBindingModel model)
@@ -549,9 +574,115 @@ namespace WayleaveManagementSystem.Controllers
         }
 
 
+        [HttpPost("GetUserByEmail")] //The goal will be to get only confirmed people via email
+        public async Task<object> GetUserByEmailD([FromBody] UsersProfileBindingModel model)
+        {
+            try
+            {
+                var result = await (
+          from UserProfile in _context.UserProfilesTable
+          where UserProfile.Email == model.Email && UserProfile.isActive == true && UserProfile.depConfirmation == true
+          select new UserProfileDTO()
+          {
+              UserProfileID = UserProfile.UserProfileID,
+              UserID = UserProfile.UserID,
+              Name = UserProfile.Name,
+              FullName = UserProfile.FullName,
+              Surname = UserProfile.Surname,
+              Email = UserProfile.Email,
+              AlternativeEmail = UserProfile.AlternativeEmail,
+              isInternal = UserProfile.isInternal,
+              isDefault = UserProfile.isDefault,
+              PhoneNumber = UserProfile.PhoneNumber,
+              AlternativePhoneNumber = UserProfile.AlternativePhoneNumber,
+              BP_Number = UserProfile.BP_Number,
+              CompanyName = UserProfile.CompanyName,
+              CompanyRegNo = UserProfile.CompanyRegNo,
+              PhyscialAddress = UserProfile.PhyscialAddress,
+              CopyOfID = UserProfile.CopyOfID,
+              IdNumber = UserProfile.IdNumber,
+              VatNumber = UserProfile.VatNumber,
+              ICASALicense = UserProfile.ICASALicense,
+              Directorate = UserProfile.Directorate,
+              DepartmentID = UserProfile.DepartmentID,
+              DepartmentName = UserProfile.DepartmentName,
+              Branch = UserProfile.Branch,
+              CostCenterNumber = UserProfile.CostCenterNumber,
+              CostCenterOwner = UserProfile.CostCenterOwner,
+              depConfirmation = UserProfile.depConfirmation,
+              zoneID = UserProfile.zoneID,
+              zoneName = UserProfile.zoneName,
+              refNumber = UserProfile.refNumber,
+              companyType = UserProfile.companyType,
+              SubDepartmentID = UserProfile.SubDepartmentID,
+              SubDepartmentName = UserProfile.SubDepartmentName,
+              isDepartmentAdmin = UserProfile.isDepartmentAdmin,
+              isZoneAdmin = UserProfile.isZoneAdmin,
+              DateCreated = DateTime.Now,
+              DateUpdated = DateTime.Now,
+              CreatedById = UserProfile.CreatedById,
+          }
 
+          ).ToListAsync();
 
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Service Items", result));
+            }
+            catch (Exception ex)
+            {
 
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+
+        }
+
+        [HttpPost("AdminConfig")]
+        public async Task<object> AdminConfig([FromBody] UsersProfileBindingModel model)
+        {
+            try
+            {
+                var result = new object();
+                if (model == null || model.UserProfileID <= 0)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+
+                // Retrieve the existing profile
+                var existingProfile = _context.UserProfilesTable.FirstOrDefault(x => x.UserProfileID == model.UserProfileID);
+
+                if (existingProfile == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "User profile not found", null));
+                }
+
+                // Update only if the corresponding property in the model is not null
+                if (model.isDepartmentAdmin != null)
+                {
+                    existingProfile.isDepartmentAdmin = model.isDepartmentAdmin;
+                }
+
+                if (model.isZoneAdmin != null)
+                {
+                    existingProfile.isZoneAdmin = model.isZoneAdmin;
+                }
+
+                if (model.CreatedById != null)
+                {
+                    existingProfile.CreatedById = model.CreatedById;
+                }
+
+                existingProfile.DateUpdated = DateTime.Now;
+
+                _context.Update(existingProfile);
+                await _context.SaveChangesAsync();
+                result = existingProfile;
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Department and/or Zone Admin privileges have been changed", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
         [HttpGet("GetInternalUsers")]
         public async Task<object> GetInternalUsers()
         {
@@ -652,6 +783,33 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpPost("UpdateActingDepartment")]
+        public async Task<object> UpdateActingDepartment([FromBody] int userProfileID)
+        {
+            try
+            {
+                if (userProfileID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Invalid UserProfileID", null));
+                }
+                else
+                {
+                    var result = await _userProfileService.UpdateActingDepartment(userProfileID);
+                    if (result)
+                    {
+                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Changed department successfully", result));
+                    }
+                    else
+                    {
+                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Request for department change unsuccessful ", null));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
 
     }
 }

@@ -25,9 +25,56 @@
         <span></span>
       </div>-->
 </div>
-<div class="container-fluid ">
+<div class="container-fluid" *ngIf="!wasRejectedbyDept">
   <h4>Thank you for registering.</h4>
   <h5>We are awating feedback from your department manager to allow you access.</h5>
+</div>
+<div class="container-fluid " *ngIf="wasRejectedbyDept">
+  <h4>Hi, {{rejectedUserName}}</h4>
+  <h5>Access has been denied by a department head.</h5>
+  <h6>Update your department selection ASAP.</h6>
+
+  <div class="small-form">
+    <!-- <div class="row">
+     <div class="col">
+       <div class="form-floating mb-3 mt-3">
+         <select class="form-select" aria-label="Select a subdepartment" [(ngModel)]="internalApplicantDepartment" (change)="onSelectToPopulateZone($event)">
+           <option selected value="0">Select a subdepartment *</option>
+           <option *ngFor="let subDepartment of SubDepartmentList" value="{{subDepartment.subDepartmentID}}">{{subDepartment.subDepartmentName}}</option>
+         </select>
+       </div>
+     </div>
+     <div class="col">
+       <div class="form-floating mb-3 mt-3">
+         <select class="form-select" aria-label="Select your zone" [(ngModel)]="selectedZone">
+           <option selected value="0">Select a zone *</option>
+           <option *ngFor="let zone of ZoneDropdown" value="{{zone.zoneID}}">{{zone.zoneName}}</option>
+         </select>
+       </div>
+     </div>
+   </div>-->
+    <!--USE ANGULAR MATERIAL-->
+    <div class="row">
+      <div class="col">
+        <mat-form-field class="form-floating mb-3 mt-3">
+          <mat-select placeholder="Select a subdepartment" [(ngModel)]="internalApplicantDepartment" (selectionChange)="onSelectToPopulateZone()">
+            <mat-option value="0">Select a subdepartment *</mat-option>
+            <mat-option *ngFor="let subDepartment of SubDepartmentList" [value]="subDepartment.subDepartmentID">{{subDepartment.subDepartmentName}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field class="form-floating mb-3 mt-3">
+          <mat-select placeholder="Select your zone" [(ngModel)]="selectedZone" (selectionChange)="updateZoneName()">
+            <mat-option value="0">Select a zone *</mat-option>
+            <mat-option *ngFor="let zone of ZoneDropdown" [value]="zone.zoneID">{{zone.zoneName}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row"></div>
+    <button class="save" (click)="onUpdateSelection()" [disabled]="!selectedZone || selectedZone === 0" matTooltip="Might need to click twice">Update Department Selection</button>
+  </div>
 </div>
 
 

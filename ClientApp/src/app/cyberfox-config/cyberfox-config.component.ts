@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
 import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ConfigService } from '../service/Config/config.service';
 import { AccessGroupsService } from '../service/AccessGroups/access-groups.service';
-
+import { SnackBarAlertsComponent } from '../snack-bar-alerts/snack-bar-alerts.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 //reminder: roles, man-doc and project size
 export interface RolesList {
   RoleID: number;
@@ -27,7 +28,7 @@ export class CyberfoxConfigComponent implements OnInit {
 
   })
   RolesList: RolesList[] = [];
-  constructor(private formBuilder: FormBuilder, private configService: ConfigService, private accessGroupsService: AccessGroupsService) { }
+  constructor(private formBuilder: FormBuilder, private configService: ConfigService, private accessGroupsService: AccessGroupsService, private _snackBar: MatSnackBar, private renderer: Renderer2, private el: ElementRef,) { }
   stringifiedData: any;
   CurrentUser: any;
   ngOnInit(): void {
@@ -39,7 +40,15 @@ export class CyberfoxConfigComponent implements OnInit {
     this.getRolesLinkedToUser();
   }
 
-  
+
+  openSnackBar(message: string) {
+    this._snackBar.openFromComponent(SnackBarAlertsComponent, {
+      data: { message }, // Pass the message as data to the component
+
+      panelClass: ['green-snackbar'],
+      verticalPosition: 'top',
+    });
+  }
   onEscalateDateSubmit() {
     let escalteDuration = this.addEscalateDate.controls["escalateDate"].value;
     let escalte = "EscalationDate";

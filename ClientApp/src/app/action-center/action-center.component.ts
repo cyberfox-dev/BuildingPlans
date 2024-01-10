@@ -1,5 +1,5 @@
 import { Component, OnInit, TemplateRef, ViewChild, Input, Output, EventEmitter, ElementRef } from '@angular/core';
-import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -33,8 +33,15 @@ import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/ht
 import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-upload.service';
 import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
 import { ManuallyAssignUsersService } from 'src/app/service/ManuallyAssignUsers/manually-assign-users.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { tap } from 'rxjs/operators';
+import 'tinymce';
+import 'tinymce/themes/silver';
 
+// Add any plugins you want to use
+import 'tinymce/plugins/lists';
+
+declare var tinymce: any;
 
 
 
@@ -367,6 +374,7 @@ export class ActionCenterComponent implements OnInit {
     private documentUploadService: DocumentUploadService,
     private notificationsService: NotificationsService,
     private manuallyAssignUsersService: ManuallyAssignUsersService,
+    private sanitizer: DomSanitizer
 
   ) { }
   openEnd(content: TemplateRef<any>) {
@@ -388,6 +396,11 @@ export class ActionCenterComponent implements OnInit {
   selectSI = 0;
 
   leaveAComment = "";
+
+  sanitizeHTML(comment: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(comment);
+  }
+
   leaveACommentPermit = "";
   FileUpload = "Please Upload file";
   @ViewChild("internalOpt", { static: true }) content!: ElementRef;
@@ -397,8 +410,8 @@ export class ActionCenterComponent implements OnInit {
     // setTimeout(() => {
     //this.getDepartmentManagerUserID();
     //Get Current Application Infomation 
-
-
+    debugger;
+    this.initializeTinyMCE();
     this.applicationData = this.sharedService.getViewApplicationIndex();
     console.log("venApplicationData:",this.applicationData);
     this.getAllSubDepartments();
@@ -454,17 +467,19 @@ export class ActionCenterComponent implements OnInit {
     this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
     if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
       this.getUsersByRoleName("Permit Issuer");
+      debugger;
       this.showPermitTab = true;
-
+      this.canApprovePTW();
+      this.getAllPermitForComment();
     }
     else {
       this.showPermitTab = false;
     }
+
     this.getLinkedZones();
   
     this.getAllStages();
-    this.canApprovePTW();
-    this.getAllPermitForComment();
+
 
     this.getUserRoles();
     this.getServicesByDepID();
@@ -476,7 +491,21 @@ export class ActionCenterComponent implements OnInit {
     this.CheckApplicant();
     this.setProjectNumber();
 
+ 
+
+    
+
   }
+  initializeTinyMCE() {
+    debugger;
+    tinymce.init({
+      selector: '#myTextarea', // Replace with the ID of your textarea
+      plugins: ['lists', 'textcolor'],
+      toolbar: 'bold italic | numlist bullist forecolor backcolor',
+      menubar: false
+    });
+  }
+
 
 
   ngOnDestroy() {
@@ -485,15 +514,15 @@ export class ActionCenterComponent implements OnInit {
 
 
   setProjectNumber() {
+    debugger;
+    if (this.CurrentApplication.ProjectNumber == null) {
 
-    if (this.CurrentApplicationBeingViewed[0].ProjectNumber == null) {
 
-
-      this.projectNo = this.CurrentApplicationBeingViewed[0].applicationID.toString();
+      this.projectNo = this.CurrentApplication.applicationID.toString();
     }
     else {
 
-      this.projectNo = this.CurrentApplicationBeingViewed[0].ProjectNumber;
+      this.projectNo = this.CurrentApplication.ProjectNumber;
     }
 
 
@@ -519,24 +548,24 @@ export class ActionCenterComponent implements OnInit {
   }
 
   canApprovePTW() {
-
+    debugger;
     this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
-
+      debugger;
       if (data.responseCode == 1) {
-       
+        debugger;
         for (var i = 0; i < data.dateSet.length; i++) {
-         
+          debugger;
           let foundMatch = false;
           let current = data.dateSet[i];
           if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
-
+            debugger;
             for (var i = 0; i < this.permitIssuer.length; i++) {
 
-             
+              debugger;
 
               if (this.permitIssuer[i].userID == this.CurrentUser.appUserId) {
 
-
+                debugger;
                
                 if (current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
 
@@ -1158,7 +1187,54 @@ export class ActionCenterComponent implements OnInit {
               }, error => {
                 console.log("Error: ", error);
               })
-              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have approved application " + this.projectNo + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+/*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have approved application " + this.projectNo + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+*/              const emailContent = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.loggedInUserName}</p>
+            <p>You have approved application ${this.projectNo}</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+     
+           
+    `;
+
+
+
+              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application approved", emailContent, emailContent);
+
+
+
+
               this.notificationsService.addUpdateNotification(0, "Application approved", "You have approved an application", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have approved application " + this.projectNo).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
@@ -1636,8 +1712,49 @@ export class ActionCenterComponent implements OnInit {
       this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, null, null, false, this.previousReviewer.userID, false).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
-          this.notificationsService.sendEmail(this.previousReviewer.email, "Application Returned By Senior Reviewer", "Check html", "Dear " + this.previousReviewer.fullName + ",<br><br>Application: " + this.projectNo + ", Returned By Senior Reviewer" + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-          this.notificationsService.addUpdateNotification(0, "Application Returned", "Application returned by senior reviewer", false, this.CurrentUser.appUserID, this.previousReviewer.UserID, this.ApplicationID, "Application: " + this.projectNo + ", Returned By Senior Reviewer").subscribe((data: any) => {
+          const emailContent = `
+      <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.previousReviewer.fullName},</p>
+            <p>Application ${this.projectNo} returned by  ${this.loggedInUsersEmail}</p>
+           <p>Should you have any queries, please contact <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+                <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+    `;
+
+
+          this.notificationsService.sendEmail(this.previousReviewer.email, "Application Returned By Senior Reviewer", emailContent, emailContent);
+/*          this.notificationsService.sendEmail(this.previousReviewer.email, "Application Returned By Senior Reviewer", "Check html", "Dear " + this.previousReviewer.fullName + ",<br><br>Application: " + this.projectNo + ", Returned By Senior Reviewer" + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+*/          this.notificationsService.addUpdateNotification(0, "Application Returned", "Application returned by senior reviewer", false, this.CurrentUser.appUserID, this.previousReviewer.UserID, this.ApplicationID, "Application: " + this.projectNo + ", Returned By Senior Reviewer").subscribe((data: any) => {
 
             if (data.responseCode == 1) {
               alert(data.responseMessage);
@@ -1996,8 +2113,49 @@ export class ActionCenterComponent implements OnInit {
           this.MoveApplicationToAllocated();
           this.viewProjectInfoComponent.getAllComments();
           this.refreshParent.emit();
-          this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "New Wayleave Application", "check html", "Dear " + this.UserSelectionForManualLink.selected[0].fullName + ",<br><br>You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-          this.notificationsService.addUpdateNotification(0, "New Wayleave Application", "Application Assigned", false, this.CurrentUser.appUserID, this.UserSelectionForManualLink.selected[0].id, this.ApplicationID, "You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.").subscribe((data: any) => {
+          debugger;
+          const emailContent = `
+      <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.UserSelectionForManualLink.selected[0].fullName},</p>
+            <p>You have been assigned as reviewer for application ${this.projectNo}. Please login to the Wayleave Management System and proceed accordingly.</p>
+                <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+    `;
+
+
+          this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "New wayleave application", emailContent, emailContent);
+/*          this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "New Wayleave Application", "check html", "Dear " + this.UserSelectionForManualLink.selected[0].fullName + ",<br><br>You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+*/          this.notificationsService.addUpdateNotification(0, "New Wayleave Application", "Application Assigned", false, this.CurrentUser.appUserID, this.UserSelectionForManualLink.selected[0].id, this.ApplicationID, "You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.").subscribe((data: any) => {
 
             if (data.responseCode == 1) {
               alert(data.responseMessage);
@@ -2130,12 +2288,13 @@ export class ActionCenterComponent implements OnInit {
       })
     }
     else if (roleName == "Permit Issuer") {
-      
+      debugger;
       this.accessGroupsService.getUserBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
-
+        debugger;
         if (data.responseCode == 1) {
-          
+          debugger;
           this.permitIssuer = data.dateSet;
+          console.log("YEAHHHHHHHHHHHHHH", this.permitIssuer);
         }
         else {
           alert(data.responseMessage);
@@ -2458,132 +2617,76 @@ export class ActionCenterComponent implements OnInit {
         
        
         if (this.WBSCheck == true) {
-            
+
           //SubDepartmentForCommentService
-            this.onDepositRequiredClick();
-            if (confirm("Are you sure you want to approve this application?")) {
-              this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved(Conditional)", null, false, "All users in Subdepartment FA", false).subscribe((data: any) => {
-
-                if (data.responseCode == 1) {
-                  this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have approved application " + this.projectNo + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application provisionally approved", false, this.CurrentUserProfile[0].UserID, this.CurrentUserProfile[0].UserID, this.ApplicationID, "You have approved application " + this.projectNo).subscribe((data: any) => {
-
-                    if (data.responseCode == 1) {
-                      alert(data.responseMessage);
-
-                    }
-                    else {
-                      alert(data.responseMessage);
-                    }
-
-                    console.log("response", data);
-                  }, error => {
-                    console.log("Error", error);
-                  });
-                  alert(data.responseMessage);
-
-                  //commentsService
-                  this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
-
-                    if (data.responseCode == 1) {
-
-                      alert(data.responseMessage);
-                      this.viewProjectInfoComponent.getAllComments();
-
-                    }
-                    else {
-                      alert(data.responseMessage);
-
-                    }
-                    console.log("reponse", data);
-
-                  }, error => {
-                    console.log("Error: ", error);
-                  })
-
-
-                }
-                else {
-                  alert(data.responseMessage);
-
-                }
-                console.log("reponse", data);
-
-
-              }, error => {
-                console.log("Error: ", error);
-              })
-
-
-              //this is for the wbs number to be sent to the table
-
-              let SubDepartmentName = "";
-              for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
-                if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
-                  SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
-                }
-              }
-              let serviceItemCode = this.depositRequired.controls["selectServiceItemCode"].value;
-              let rate = this.depositRequired.controls["rate"].value;
-              let description = this.depositRequired.controls["description"].value;
-              let quantity = this.depositRequired.controls["quantity"].value;
-              //let total = this.depositRequired.controls["total"].value;
-
-
-              this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.WBSCheck, null).subscribe((data: any) => {
-
-                if (data.responseCode == 1) {
-                  alert("Updated Applications WBS");
-                  alert(data.responseMessage);
-
-
-                }
-                else {
-                  alert(data.responseMessage);
-
-                }
-                console.log("reponse", data);
-
-              }, error => {
-                console.log("Error: ", error);
-              })
-
-
-
-             /* this.depositRequiredService.addUpdateDepositRequired(0, this.forManuallyAssignSubForCommentID, Number(rate), this.ApplicationID, description, this.loggedInUsersSubDepartmentID, Number(quantity), this.CurrentUser.appUserId, SubDepartmentName, serviceItemCode, "True").subscribe((data: any) => {
-
-                if (data.responseCode == 1) {
-
-                  alert(data.responseMessage);
-
-                  this.hopperButton = false;
-                }
-                else {
-                  alert(data.responseMessage);
-
-                }
-                console.log("reponse", data);
-
-              }, error => {
-                console.log("Error: ", error);
-              })*/
-              this.refreshParent.emit();
-              this.moveToFinalApprovalForDepartment();
-              this.modalService.dismissAll();
-              this.router.navigate(["/home"]);
-            }
-        }
-        
-
-        else {
-          
+          this.onDepositRequiredClick();
           if (confirm("Are you sure you want to approve this application?")) {
-            
-            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved", null, null, "All users in Subdepartment FA", false).subscribe((data: any) => {
+            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved(Conditional)", null, false, "All users in Subdepartment FA", false).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
-                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have approved application " + this.projectNo + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application provisionally approved", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have approved application " + this.projectNo).subscribe((data: any) => {
+                const emailContent = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.loggedInUserName}</p>
+            <p>You have provisionally approved application ${this.projectNo}</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+     
+           
+    `;
+
+
+
+                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", emailContent, emailContent);
+                debugger;
+                this.accessGroupsService.getUserBasedOnRoleName("FinalApprover", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+                  debugger;
+                  if (data.responseCode == 1) {
+                    debugger;
+                    console.log(data.dateSet);
+
+                    console.log("this.departmentAdminUsersgetAllLinkedRolesReponsethis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsers", this.departmentAdminUsers);
+                  }
+                  else {
+                    alert(data.responseMessage);
+                  }
+                  console.log("getAllLinkedRolesReponse", data);
+
+                }, error => {
+                  console.log("getAllLinkedRolesReponseError: ", error);
+                })
+
+/*                  this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have approved application " + this.projectNo + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+*/                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application provisionally approved", false, this.CurrentUserProfile[0].UserID, this.CurrentUserProfile[0].UserID, this.ApplicationID, "You have approved application " + this.projectNo).subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
                     alert(data.responseMessage);
@@ -2597,15 +2700,16 @@ export class ActionCenterComponent implements OnInit {
                 }, error => {
                   console.log("Error", error);
                 });
-
                 alert(data.responseMessage);
+
                 //commentsService
-                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
 
                     alert(data.responseMessage);
                     this.viewProjectInfoComponent.getAllComments();
+
                   }
                   else {
                     alert(data.responseMessage);
@@ -2616,6 +2720,43 @@ export class ActionCenterComponent implements OnInit {
                 }, error => {
                   console.log("Error: ", error);
                 })
+
+
+              }
+              else {
+                alert(data.responseMessage);
+
+              }
+              console.log("reponse", data);
+
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+
+
+            //this is for the wbs number to be sent to the table
+
+            let SubDepartmentName = "";
+            for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
+              if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
+                SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
+              }
+            }
+            let serviceItemCode = this.depositRequired.controls["selectServiceItemCode"].value;
+            let rate = this.depositRequired.controls["rate"].value;
+            let description = this.depositRequired.controls["description"].value;
+            let quantity = this.depositRequired.controls["quantity"].value;
+            //let total = this.depositRequired.controls["total"].value;
+
+
+            this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.WBSCheck, null).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+                alert("Updated Applications WBS");
+                alert(data.responseMessage);
+
+
               }
               else {
                 alert(data.responseMessage);
@@ -2626,13 +2767,196 @@ export class ActionCenterComponent implements OnInit {
             }, error => {
               console.log("Error: ", error);
             })
+
+
+
+            /* this.depositRequiredService.addUpdateDepositRequired(0, this.forManuallyAssignSubForCommentID, Number(rate), this.ApplicationID, description, this.loggedInUsersSubDepartmentID, Number(quantity), this.CurrentUser.appUserId, SubDepartmentName, serviceItemCode, "True").subscribe((data: any) => {
+
+               if (data.responseCode == 1) {
+
+                 alert(data.responseMessage);
+
+                 this.hopperButton = false;
+               }
+               else {
+                 alert(data.responseMessage);
+
+               }
+               console.log("reponse", data);
+
+             }, error => {
+               console.log("Error: ", error);
+             })*/
+            this.refreshParent.emit();
             this.moveToFinalApprovalForDepartment();
             this.modalService.dismissAll();
             this.router.navigate(["/home"]);
+          }
+        }
+
+
+        else {
+          if (confirm("Have you uploaded all revelevant documents?")) {
+            if (confirm("Are you sure you want to approve this application?")) {
+
+              this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved", null, null, "All users in Subdepartment FA", false).subscribe((data: any) => {
+
+                if (data.responseCode == 1) {
+                  const emailContent = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {yu
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.loggedInUserName}</p>
+            <p>You have provisionally approved application ${this.projectNo}</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+     
+           
+    `;
+
+
+
+                  this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", emailContent, emailContent);
+                  debugger;
+                  this.accessGroupsService.GetUserAndZoneBasedOnRoleName("Final Approver", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+                    if (data.responseCode === 1) {
+                      // Filter out duplicates based on a unique property (e.g., email)
+                      const uniqueFinalApprovers = this.getUniqueFinalApprovers(data.dateSet, 'email');
+                      debugger;
+                      // Filter out final approvers for the current zone
+                      const finalApproversForCurrentZone = uniqueFinalApprovers.filter(approver => approver.zoneID === this.CurrentUserProfile[0].zoneID);
+                      finalApproversForCurrentZone.forEach(approver => {
+                        const emailContent12 = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${approver.fullName}</p>
+            <p>Your sign-off is required on ${this.projectNo}. Kindly login to the Wayleave Management System and proceed accordingly.</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+     
+           
+    `;
+                        this.notificationsService.sendEmail(approver.email, "Request for Sign-of", emailContent12, emailContent12);
+                      });
+                      console.log("Filtered Final Approvers:", finalApproversForCurrentZone);
+                    } else {
+                      alert(data.responseMessage);
+                    }
+                  }, error => {
+                    console.log("Error fetching final approvers:", error);
+                  });
+
+                // Function to get unique final approvers based on a property
+
+/*                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have approved application " + this.projectNo + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+*/                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application provisionally approved", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have approved application " + this.projectNo).subscribe((data: any) => {
+
+                    if (data.responseCode == 1) {
+                      alert(data.responseMessage);
+
+                    }
+                    else {
+                      alert(data.responseMessage);
+                    }
+
+                    console.log("response", data);
+                  }, error => {
+                    console.log("Error", error);
+                  });
+
+                  alert(data.responseMessage);
+                  //commentsService
+                  this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
+
+                    if (data.responseCode == 1) {
+
+                      alert(data.responseMessage);
+                      this.viewProjectInfoComponent.getAllComments();
+                    }
+                    else {
+                      alert(data.responseMessage);
+
+                    }
+                    console.log("reponse", data);
+
+                  }, error => {
+                    console.log("Error: ", error);
+                  })
+                }
+                else {
+                  alert(data.responseMessage);
+
+                }
+                console.log("reponse", data);
+
+              }, error => {
+                console.log("Error: ", error);
+              })
+              this.moveToFinalApprovalForDepartment();
+              this.modalService.dismissAll();
+              this.router.navigate(["/home"]);
             }
 
+          }
         }
-       
         break;
       }
 
@@ -2642,8 +2966,52 @@ export class ActionCenterComponent implements OnInit {
           this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Rejected", null, null,"All users in Subdepartment FA",false).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
-              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application disapproved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have disapproved application " + this.projectNo + "with comment: <br><br><i>" + this.leaveAComment  + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-              this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application Disapproved", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have disapproved application " + this.projectNo + "with comment:" + this.leaveAComment).subscribe((data: any) => {
+              const emailContent = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.loggedInUserName}</p>
+            <p>You have not supported application ${this.projectNo} and have provided the following comment:</p>
+            <p>${this.leaveAComment}</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+     
+           
+    `;
+
+
+
+              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application disapproved", emailContent, emailContent);
+/*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application disapproved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have disapproved application " + this.projectNo + "with comment: <br><br><i>" + this.leaveAComment  + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+*/              this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application Disapproved", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have disapproved application " + this.projectNo + "with comment:" + this.leaveAComment).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
                   alert(data.responseMessage);
@@ -2701,9 +3069,99 @@ export class ActionCenterComponent implements OnInit {
           this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
-              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-              this.notificationsService.addUpdateNotification(0, "Wayleave Application Request", "Request for clarification", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+              const emailContent = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.loggedInUserName}</p>
+            <p>You have requested clarity on ${this.projectNo} with the comment:</p>
+            <p>${this.leaveAComment}</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+     
+           
+    `;
+
+
+
+              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
+/*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+*/
+              const emailContentApp = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.applicationData.clientName }</p>
+            <p>A reviewer has asked you to clarify your application ${this.projectNo} with the comment:</p>
+            <p>${this.leaveAComment}</p>
+               <p >Please login to the <a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a> and provide a response</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+     
+           
+    `;
+
+
+
+              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
+/*              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+*/              this.notificationsService.addUpdateNotification(0, "Wayleave Application Request", "Request for clarification", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
                   alert(data.responseMessage);
@@ -2767,7 +3225,7 @@ export class ActionCenterComponent implements OnInit {
         break;
       }
       case "Refer": {
-
+        debugger;
         
      
         if (confirm("Are you sure you want to refer this application to Senior Reviewers?")) {
@@ -2775,8 +3233,108 @@ export class ActionCenterComponent implements OnInit {
             this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Referred", false, true, "Senior Reviewer to comment",false).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
-                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application escalated", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have escalated application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application escalated", false, this.CurrentUser.appUserID, this.CurrentUserProfile[0].UserID, this.ApplicationID, "You have escalated application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+                const emailContent = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.loggedInUserName}</p>
+            <p>You have escalated application ${this.projectNo} with the comment:</p>
+            <p>${this.leaveAComment}</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+     
+           
+    `;
+
+                this.accessGroupsService.GetUserAndZoneBasedOnRoleName("Senior Reviewer", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+                  if (data.responseCode === 1) {
+                    // Filter out duplicates based on a unique property (e.g., email)
+                    const uniqueFinalApprovers = this.getUniqueFinalApprovers(data.dateSet, 'email');
+                    debugger;
+                    // Filter out final approvers for the current zone
+                    const finalApproversForCurrentZone = uniqueFinalApprovers.filter(approver => approver.zoneID === this.CurrentUserProfile[0].zoneID);
+                    finalApproversForCurrentZone.forEach(approver => {
+                      const emailContent12 = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${approver.fullName}</p>
+            <p>${this.loggedInUserName} has requested your perusal of ${this.projectNo}with comment:</p>
+            <p>${this.leaveAComment}. Kindly login to the Wayleave Management System and provide input.</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+     
+           
+    `;
+                      this.notificationsService.sendEmail(approver.email, "Request for Perusal", emailContent12, emailContent12);
+                    });
+                    console.log("Filtered Final Approvers:", finalApproversForCurrentZone);
+                  } else {
+                    alert(data.responseMessage);
+                  }
+                }, error => {
+                  console.log("Error fetching final approvers:", error);
+                });
+
+                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application escalated", emailContent, emailContent);
+/*                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application escalated", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have escalated application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+*/                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application escalated", false, this.CurrentUser.appUserID, this.CurrentUserProfile[0].UserID, this.ApplicationID, "You have escalated application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
                     alert(data.responseMessage);
@@ -2792,7 +3350,12 @@ export class ActionCenterComponent implements OnInit {
                 });
                 alert(data.responseMessage);
                 //commentsService
-                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Referred", this.CurrentUser.appUserId, null, this.loggedInUserName).subscribe((data: any) => {
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName,
+
+
+
+
+                  this.leaveAComment, "Referred", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
 
@@ -2838,6 +3401,13 @@ export class ActionCenterComponent implements OnInit {
       }
     }
   }
+  getUniqueFinalApprovers(approvers: any[], property: string): any[] {
+    const uniqueApproversMap = new Map();
+    for (const approver of approvers) {
+      uniqueApproversMap.set(approver[property], approver);
+    }
+    return Array.from(uniqueApproversMap.values());
+  }
 
   onCommentSR(interact: any) {
     
@@ -2855,154 +3425,197 @@ export class ActionCenterComponent implements OnInit {
         
 
         if (this.checked == true) {
-          
+
           //SubDepartmentForCommentService
           this.onDepositRequiredClick();
-          
-          if (confirm("Are you sure you want to approve this application?")) {
-            
-            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved(Conditional)", false, false, "All users in Subdepartment FA", false).subscribe((data: any) => {
+          if (confirm("Have you uploaded all revelevant documents?")) {
+            if (confirm("Are you sure you want to approve this application?")) {
 
-              if (data.responseCode == 1) {
-                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You, as a senior reviewer, have approved application " + this.projectNo + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application approved", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You, as a senior reviewer, have approved application " + this.projectNo).subscribe((data: any) => {
+              this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved(Conditional)", false, false, "All users in Subdepartment FA", false).subscribe((data: any) => {
 
-                  if (data.responseCode == 1) {
-                    alert(data.responseMessage);
-
-                  }
-                  else {
-                    alert(data.responseMessage);
-                  }
-
-                  console.log("response", data);
-                }, error => {
-                  console.log("Error", error);
-                });
-
-                alert(data.responseMessage);
-
-                //commentsService
-                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
-
-                  if (data.responseCode == 1) {
-                    
-
-                    alert(data.responseMessage);
-                    this.viewProjectInfoComponent.getAllComments();
-
-                  }
-                  else {
-                    alert(data.responseMessage);
-
-                  }
-                  console.log("reponse", data);
-
-                }, error => {
-                  console.log("Error: ", error);
-                })
-
-
-              }
-              else {
-                alert(data.responseMessage);
-
-              }
-              console.log("reponse", data);
-
-
-            }, error => {
-              console.log("Error: ", error);
-            })
-
-
-            //this is for the wbs number to be sent to the table
-
-            let SubDepartmentName = "";
-            for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
-              if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
-                SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
-              }
+                if (data.responseCode == 1) {
+                  const emailContent = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
             }
-            let serviceItemCode = this.depositRequired.controls["selectServiceItemCode"].value;
-            let rate = this.depositRequired.controls["rate"].value;
-            let description = this.depositRequired.controls["description"].value;
-            let quantity = this.depositRequired.controls["quantity"].value;
-            //let total = this.depositRequired.controls["total"].value;
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.loggedInUserName}</p>
+            <p>You have approved application ${this.projectNo}</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+     
+           
+    `;
 
 
-            this.depositRequiredService.addUpdateDepositRequired(0, this.forManuallyAssignSubForCommentID, Number(rate), this.ApplicationID, description, this.loggedInUsersSubDepartmentID, Number(quantity), this.CurrentUser.appUserId, SubDepartmentName, serviceItemCode, "True").subscribe((data: any) => {
 
-              if (data.responseCode == 1) {
+                  this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application approved", emailContent, emailContent);
+/*                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You, as a senior reviewer, have approved application " + this.projectNo + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+*/                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application approved", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You, as a senior reviewer, have approved application " + this.projectNo).subscribe((data: any) => {
 
-                alert(data.responseMessage);
-                this.hopperButton = false;
+                    if (data.responseCode == 1) {
+                      alert(data.responseMessage);
+
+                    }
+                    else {
+                      alert(data.responseMessage);
+                    }
+
+                    console.log("response", data);
+                  }, error => {
+                    console.log("Error", error);
+                  });
+
+                  alert(data.responseMessage);
+
+                  //commentsService
+                  this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
+
+                    if (data.responseCode == 1) {
+
+
+                      alert(data.responseMessage);
+                      this.viewProjectInfoComponent.getAllComments();
+
+                    }
+                    else {
+                      alert(data.responseMessage);
+
+                    }
+                    console.log("reponse", data);
+
+                  }, error => {
+                    console.log("Error: ", error);
+                  })
+
+
+                }
+                else {
+                  alert(data.responseMessage);
+
+                }
+                console.log("reponse", data);
+
+
+              }, error => {
+                console.log("Error: ", error);
+              })
+
+
+              //this is for the wbs number to be sent to the table
+
+              let SubDepartmentName = "";
+              for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
+                if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
+                  SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
+                }
               }
-              else {
-                alert(data.responseMessage);
+              let serviceItemCode = this.depositRequired.controls["selectServiceItemCode"].value;
+              let rate = this.depositRequired.controls["rate"].value;
+              let description = this.depositRequired.controls["description"].value;
+              let quantity = this.depositRequired.controls["quantity"].value;
+              //let total = this.depositRequired.controls["total"].value;
 
-              }
-              console.log("reponse", data);
 
-            }, error => {
-              console.log("Error: ", error);
-            })
-          
+              this.depositRequiredService.addUpdateDepositRequired(0, this.forManuallyAssignSubForCommentID, Number(rate), this.ApplicationID, description, this.loggedInUsersSubDepartmentID, Number(quantity), this.CurrentUser.appUserId, SubDepartmentName, serviceItemCode, "True").subscribe((data: any) => {
+
+                if (data.responseCode == 1) {
+
+                  alert(data.responseMessage);
+                  this.hopperButton = false;
+                }
+                else {
+                  alert(data.responseMessage);
+
+                }
+                console.log("reponse", data);
+
+              }, error => {
+                console.log("Error: ", error);
+              })
+
+            }
+            this.refreshParent.emit();
+            this.moveToFinalApprovalForDepartment();
+            this.modalService.dismissAll();
+            this.router.navigate(["/home"]);
           }
-          this.refreshParent.emit();
-          this.moveToFinalApprovalForDepartment();
-          this.modalService.dismissAll();
-          this.router.navigate(["/home"]);
-        }
 
 
-        else {
-          
-          if (confirm("Are you sure you want to approve this application?")) {
-            
-            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved", false, false, "All users in Subdepartment FA", false).subscribe((data: any) => {
+          else {
 
-              if (data.responseCode == 1) {
-                
-                alert(data.responseMessage);
-                //commentsService
-                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
+            if (confirm("Are you sure you want to approve this application?")) {
 
-                  if (data.responseCode == 1) {
+              this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved", false, false, "All users in Subdepartment FA", false).subscribe((data: any) => {
 
-                    alert(data.responseMessage);
-                    this.viewProjectInfoComponent.getAllComments();
-                  }
-                  else {
-                    alert(data.responseMessage);
+                if (data.responseCode == 1) {
 
-                  }
-                  console.log("reponse", data);
+                  alert(data.responseMessage);
+                  //commentsService
+                  this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
-                }, error => {
-                  console.log("Error: ", error);
-                })
-              }
-              else {
-                alert(data.responseMessage);
+                    if (data.responseCode == 1) {
 
-              }
-              console.log("reponse", data);
+                      alert(data.responseMessage);
+                      this.viewProjectInfoComponent.getAllComments();
+                    }
+                    else {
+                      alert(data.responseMessage);
 
-            }, error => {
-              console.log("Error: ", error);
-            })
-      
+                    }
+                    console.log("reponse", data);
+
+                  }, error => {
+                    console.log("Error: ", error);
+                  })
+                }
+                else {
+                  alert(data.responseMessage);
+
+                }
+                console.log("reponse", data);
+
+              }, error => {
+                console.log("Error: ", error);
+              })
+
+            }
+
+            this.moveToFinalApprovalForDepartment();
+            this.modalService.dismissAll();
+            this.router.navigate(["/home"]);
+
+
           }
 
-          this.moveToFinalApprovalForDepartment();
-          this.modalService.dismissAll();
-          this.router.navigate(["/home"]);
-
-
         }
-
-
 
         break;
       }
@@ -3018,8 +3631,52 @@ export class ActionCenterComponent implements OnInit {
               this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Rejected", this.CurrentUser.appUserId, null, this.loggedInUserName).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-                  this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application disapproved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You, as a senior reviewer, have disapproved application " + this.projectNo + "with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application Disapproved", false, this.CurrentUser.appUserID, this.CurrentUserProfile[0].UserID, this.ApplicationID, "You, as a senior reviewer, have disapproved application " + this.projectNo + "with comment:" + this.leaveAComment).subscribe((data: any) => {
+                  const emailContent = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.loggedInUserName}</p>
+            <p>You have not supported application ${this.projectNo} and have provided the following comment:</p>
+              <p>${this.leaveAComment}</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+     
+           
+    `;
+
+
+
+                  this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application disapproved", emailContent, emailContent);
+/*                  this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application disapproved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You, as a senior reviewer, have disapproved application " + this.projectNo + "with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+*/                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application Disapproved", false, this.CurrentUser.appUserID, this.CurrentUserProfile[0].UserID, this.ApplicationID, "You, as a senior reviewer, have disapproved application " + this.projectNo + "with comment:" + this.leaveAComment).subscribe((data: any) => {
 
                     if (data.responseCode == 1) {
                       alert(data.responseMessage);
@@ -3070,9 +3727,98 @@ export class ActionCenterComponent implements OnInit {
           this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
-              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You, as a senior reviewer, have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.projectNo, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-              this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarification", false, this.CurrentUserProfile[0].UserID, this.CurrentUserProfile[0].UserID, this.ApplicationID, "You, as a senior reviewer, have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+              const emailContent = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.loggedInUserName}</p>
+            <p>You, as a senior reviewer, have asked the applicant to clarify the application ${this.projectNo} with comment:</p>
+              <p>${this.leaveAComment}</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+     
+           
+    `;
+
+
+
+              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
+/*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You, as a senior reviewer, have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+*/
+              const emailContent2 = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.applicationData.clientName}</p>
+            <p>A reviewer has asked that you clarify your application ${this.projectNo} with comment:</p>
+              <p>${this.leaveAComment}</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+     
+           
+    `;
+
+
+
+              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.projectNo, emailContent2, emailContent2);
+/*              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.projectNo, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+*/              this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarification", false, this.CurrentUserProfile[0].UserID, this.CurrentUserProfile[0].UserID, this.ApplicationID, "You, as a senior reviewer, have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
                   alert(data.responseMessage);
@@ -3350,9 +4096,11 @@ export class ActionCenterComponent implements OnInit {
   }
 
   populateComment(commentName: any) {
-    let currnetComment = this.leaveAComment;
-    console.log("commentName", commentName);
-    this.leaveAComment = currnetComment+" "+commentName;
+    //let currnetComment = this.leaveAComment;
+    //console.log("commentName", commentName);
+    //this.leaveAComment = currnetComment + " " + commentName;
+    debugger;
+    this.leaveAComment = commentName;
   }
 
   populateCommentPermit(commentName: any) {
@@ -3821,9 +4569,48 @@ getAllCommentsByUserID() {
     this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, "Approval Pack Generation").subscribe((data: any) => {
 
       if (data.responseCode == 1) {
+        const emailContent = `
+      <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.applicationData.clientName },</p>
+            <p>Congratulations, your application with reference ${this.projectNo} has been approved. Please login to the Wayleave Management System and download your Wayleave Approval Pack.</p>
+                <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
 
-        this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.projectNo, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Congratulations, your application has been approved. Please log into the system to download your Approval Pack.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-        this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application approved", false, this.CurrentUserProfile[0].UserID, this.applicationData.userID, this.ApplicationID, "Congratulations, your application has been approved. Please log into the system to download your Approval Pack.").subscribe((data: any) => {
+        </body>
+      </html>
+    `;
+
+
+        this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.projectNo, emailContent, emailContent);
+/*        this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.projectNo, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Congratulations, your application has been approved. Please log into the system to download your Approval Pack.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+*/        this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application approved", false, this.CurrentUserProfile[0].UserID, this.applicationData.userID, this.ApplicationID, "Congratulations, your application has been approved. Please log into the system to download your Approval Pack.").subscribe((data: any) => {
 
           if (data.responseCode == 1) {
             alert(data.responseMessage);

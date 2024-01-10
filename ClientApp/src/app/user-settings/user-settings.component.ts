@@ -1,10 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
 import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DepartmentsService } from '../service/Departments/departments.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserService } from '../service//User/user.service';
 import { catchError, map, switchMap } from 'rxjs/operators';
+import { GooglePlaceDirective } from 'ngx-google-places-autocomplete';
+import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
+import { Address } from 'ngx-google-places-autocomplete/objects/address';
+
 export interface DepartmentList {
   departmentID: number;
   departmentName: string;
@@ -34,6 +38,13 @@ export class UserSettingsComponent implements OnInit {
     internalApplicantCostCenterOwner: ['', Validators.required],
   })
 
+  @ViewChild("placesRef")
+  placesRef: GooglePlaceDirective | undefined;
+  options = {
+    types: [],
+    componentRestrictions: { country: 'ZA' }
+  } as unknown as Options
+
   CurrentUser: any;
   stringifiedData: any;  
   hide = true;
@@ -52,16 +63,23 @@ export class UserSettingsComponent implements OnInit {
   extApplicantEmail = '';
   extApplicantPhyscialAddress = '';
   extApplicantIDNumber = '';
-extApplicantVatNumber='';
+  extApplicantVatNumber = '';
+  extApplicantEmailAlt = '';
+  extApplicantTellNoAlt = '';
 
 /*internal*/
   internalApplicantName = '';
   internalApplicantSurname = '';
   internalApplicantDirectorate = '';
   internalApplicantDepartment = '';
+
   internalApplicantTellNo = '';
+  internalApplicantTellNoAlt = '';
+  internalApplicantEmailAlt = '';
+  internalApplicantEmail = '';
+
   internalApplicantBranch = '';
-  internalApplicantCostCenterNo = '';
+  internalApplicantCostCenterNo = ''; 
   internalApplicantCostCenterOwner = '';
     DepartmentList: any;
 
@@ -80,6 +98,9 @@ extApplicantVatNumber='';
   extApplicantIDNumberEdit = '';
   extApplicantVatNumberEdit = '';
 
+  extApplicantEmailAltEdit = '';
+  extApplicantTellNoAltEdit = '';
+
 
   /*EditForInternal*/
 
@@ -87,7 +108,12 @@ extApplicantVatNumber='';
   internalApplicantSurnameEdit = '';
   internalApplicantDirectorateEdit = '';
   internalApplicantDepartmentEdit = '';
+
   internalApplicantTellNoEdit = '';
+  internalApplicantTellNoAltEdit = '';
+  internalApplicantEmailAltEdit = '';
+  internalApplicantEmailEdit = '';
+
   internalApplicantBranchEdit = '';
   internalApplicantCostCenterNoEdit = '';
   internalApplicantCostCenterOwnerEdit = '';
@@ -131,6 +157,7 @@ extApplicantVatNumber='';
         console.log("data", data.dateSet);
 
         const currentUserProfile = data.dateSet[0];
+        console.log("Hey Sindiswa! These are the current user's details: ", this.CurrentUserProfile);
         const fullname = currentUserProfile.fullName;
 
         if (currentUserProfile.isInternal == true) {
@@ -144,6 +171,11 @@ extApplicantVatNumber='';
           this.internalApplicantBranch = currentUserProfile.branch;
           this.internalApplicantCostCenterNo = currentUserProfile.costCenterNumber;
           this.internalApplicantCostCenterOwner = currentUserProfile.costCenterOwner;
+
+          this.internalApplicantEmail = currentUserProfile.email;
+          this.internalApplicantTellNoAlt = currentUserProfile.alternativePhoneNumber;
+          this.internalApplicantEmailAlt = currentUserProfile.alternativeEmail;
+
           this.isInternal = true;
 
           console.log("THIS IS THE USERPROFILEID", this.userProfileID);
@@ -164,6 +196,9 @@ extApplicantVatNumber='';
           this.extApplicantVatNumber = currentUserProfile.vatNumber;
          /* this.extApplicantIDNumber = currentUserProfile.;*/
           this.isInternal = false;
+
+          this.extApplicantEmailAlt = currentUserProfile.alternativeEmail;
+          this.extApplicantTellNoAlt = currentUserProfile.alternativePhoneNumber;
         }
         this.userProfileID = currentUserProfile.userProfileID;
       }
@@ -191,6 +226,10 @@ extApplicantVatNumber='';
       this.internalApplicantCostCenterNoEdit = this.internalApplicantCostCenterNo;
       this.internalApplicantCostCenterOwnerEdit = this.internalApplicantCostCenterOwner;
       this.internalApplicantSurnameEdit = this.internalApplicantSurname;
+
+      this.internalApplicantEmailEdit = this.internalApplicantEmail;
+      this.internalApplicantEmailAltEdit = this.internalApplicantEmailAlt;
+      this.internalApplicantTellNoAltEdit = this.internalApplicantTellNoAlt;
     }
     if (this.isInternal == false) {
       this.extApplicantBpNoApplicantEdit = this.extApplicantBpNoApplicant;
@@ -203,6 +242,9 @@ extApplicantVatNumber='';
       this.extApplicantEmailEdit = this.extApplicantEmail;
       this.extApplicantPhyscialAddressEdit = this.extApplicantPhyscialAddress;
       this.extApplicantIDNumberEdit = '';
+
+      this.extApplicantEmailAltEdit = this.extApplicantEmailAlt;
+      this.extApplicantTellNoAltEdit = this.extApplicantTellNoAlt;
     }
 
     this.modalService.open(userProfileEditModal,{ centered: true, size: 'lg' });
@@ -220,10 +262,14 @@ extApplicantVatNumber='';
   updateUserProfileDetails() {
     
     if (this.isInternal == true) {
-      this.userPofileService.addUpdateUserProfiles(Number(this.userProfileID), this.CurrentUser.appUserId, this.internalApplicantNameEdit + " " + this.internalApplicantSurnameEdit, null, null, true, null, null, null, null, this.internalApplicantDirectorateEdit, null, null, this.internalApplicantBranchEdit, this.internalApplicantCostCenterNoEdit, this.internalApplicantCostCenterOwnerEdit, null, this.CurrentUser.appUserId, null, null).subscribe((data: any) => {
+        this.userPofileService.addUpdateUserProfiles(Number(this.userProfileID), this.CurrentUser.appUserId, this.internalApplicantNameEdit + " " + this.internalApplicantSurnameEdit, null,
+        this.internalApplicantTellNoEdit, true, null, null, null, null, this.internalApplicantDirectorateEdit, null, null, this.internalApplicantBranchEdit, this.internalApplicantCostCenterNoEdit,
+        this.internalApplicantCostCenterOwnerEdit, null, this.CurrentUser.appUserId, null, null, null, null, null, null, null, null, this.internalApplicantEmailAltEdit, this.internalApplicantTellNoAltEdit, this.internalApplicantNameEdit,
+        this.internalApplicantSurnameEdit).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           alert(data.responseMessage);
+          debugger;
           this.getUserProfileByUserID();
         }
 
@@ -238,7 +284,9 @@ extApplicantVatNumber='';
       })
     }
     if (this.isInternal == false) {
-      this.userPofileService.addUpdateUserProfiles(Number(this.userProfileID), this.CurrentUser.appUserId, this.extApplicantNameEdit + " " + this.extApplicantSurnameEdit, this.extApplicantEmailEdit, this.extApplicantTellNoEdit, false, null, this.extApplicantCompanyNameEdit, this.extApplicantCompanyRegNoEdit, this.extApplicantPhyscialAddressEdit, null, null, null, null, null, null, null, this.CurrentUser.appUserId, null, null).subscribe((data: any) => {
+      this.userPofileService.addUpdateUserProfiles(Number(this.userProfileID), this.CurrentUser.appUserId, this.extApplicantNameEdit + " " + this.extApplicantSurnameEdit, this.extApplicantEmailEdit, this.extApplicantTellNoEdit, false, null, this.extApplicantCompanyNameEdit, this.extApplicantCompanyRegNoEdit,
+        this.extApplicantPhyscialAddressEdit, null, null, null, null, null, null, null, this.CurrentUser.appUserId, null, null, null, null, null, null, null, null, this.extApplicantEmailAltEdit, this.extApplicantTellNoAltEdit, this.extApplicantNameEdit,
+        this.extApplicantSurnameEdit).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           alert(data.responseMessage);
@@ -325,6 +373,24 @@ extApplicantVatNumber='';
     }
   }
 
+  isValidPhoneNumber(phoneNumber: string): boolean {
+    // You can implement your phone number validation logic here
+    // For example, you can use regular expressions to validate the format
+    const phoneNumberPattern = /^\d{10}$/; // Example: 1234567890
 
+    return phoneNumberPattern.test(phoneNumber);
+  }
+
+  isValidEmail(email: string): boolean {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email format pattern
+
+    return emailPattern.test(email);
+  }
+
+  public handleAddressChange(address: Address) {
+    // Do some stuff
+    this.extApplicantPhyscialAddress = address.formatted_address;
+
+  }
 
 }

@@ -26,7 +26,7 @@ export class AccessGroupsService {
 
   }
 
-  public addUpdateAccessGroupUserLink(accessGroupUserLinkID: number | null, accessGroupID: number | null, userID: string | null, createdById: string | null, ZoneID: number | null, SubDepartmentID: number| null) {
+  public addUpdateAccessGroupUserLink(accessGroupUserLinkID: number | null, accessGroupID: number | null, userID: string | null, createdById: string | null, ZoneID: number | null, SubDepartmentID: number| null, userProfileID: number|null) {
     debugger;
     const body = {
       AccessGroupUserLinkID: accessGroupUserLinkID,
@@ -35,7 +35,7 @@ export class AccessGroupsService {
       CreatedById: createdById,
       ZoneID: ZoneID,
       SubDepartmentID: SubDepartmentID,
-
+      UserProfileID: userProfileID
     }
     return this.httpClient.post(this.baseURL + "AddUpdateAccessGroupUserLink", body);
 
@@ -65,6 +65,14 @@ export class AccessGroupsService {
   public deleteAccessGroupUserLinkByID(accessGroupUserLinkID: number) {
 
     return this.httpClient.post(this.baseURL + "DeleteAccessGroupUserLinkByID", accessGroupUserLinkID);
+
+  }
+  public deleteUserAGZoneLinks(userProfileID: number) {
+    const body = {
+      userProfileID:userProfileID
+    }
+
+    return this.httpClient.post(this.baseURL + "DeleteAccessGroupUserLinkByProfessionalID", body);
 
   }
 

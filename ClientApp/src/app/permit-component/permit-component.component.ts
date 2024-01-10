@@ -28,7 +28,8 @@ export interface PTCList {
 export class PermitComponentComponent implements OnInit {
 
   PTCList: PTCList[] = [];
-  displayedColumns: string[] = ['subDepartmentName','zoneName' ,'comment' ,'indication'];
+  //permitupload Sindiswa 08 January 2024
+  displayedColumns: string[] = ['subDepartmentName','zoneName' ,'comment' ,'indication', 'addDocument'];
   dataSource = this.PTCList;
   MeetOnSite = "MeetOnSite";
   Approved = "Approved";

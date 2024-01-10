@@ -20,5 +20,11 @@
 
         public string? ZoneName { get; set; }
 
+        #region permitupload Sindiswa 08 January 2024 - for the purpose of uploading documents under the "Permits" tab
+        //Each person who's been Assigned to Comment can upload a permit document?
+
+        public string? PermitDocName { get; set; }
+        public string? DocumentLocalPath { get; set; }
+        #endregion
     }
 }

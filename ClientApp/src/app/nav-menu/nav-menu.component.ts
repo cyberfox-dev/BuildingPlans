@@ -30,6 +30,8 @@ import { Observable } from 'rxjs/internal/Observable';
 import { DocumentRepositoryComponent } from 'src/app/document-repository/document-repository.component';
 import { NotificationCenterComponent } from 'src/app/notification-center/notification-center.component';
 import { ConfigActingDepartmentComponent } from 'src/app/config-acting-department/config-acting-department.component';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
 
 
 export interface SubDepartmentList {
@@ -162,13 +164,14 @@ export class NavMenuComponent implements OnInit {
   selectedOptionText: string;
   lastUploadEvent: any;
 
-  constructor(private offcanvasService: NgbOffcanvas, private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private http: HttpClient, private documentUploadService: DocumentUploadService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private subDepartment: SubDepartmentsService, private applicationsService: ApplicationsService, private faq: FrequentlyAskedQuestionsService, private dialog: MatDialog) { }
+  constructor(private offcanvasService: NgbOffcanvas, private sanitizer: DomSanitizer, private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private http: HttpClient, private documentUploadService: DocumentUploadService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private subDepartment: SubDepartmentsService, private applicationsService: ApplicationsService, private faq: FrequentlyAskedQuestionsService, private dialog: MatDialog) { }
 
 
  
 
   selected = 'none';
   select = 0;
+  isLoading: boolean = false;
 
 
 
@@ -186,6 +189,20 @@ export class NavMenuComponent implements OnInit {
 
   fileAttrs: string[] = [];
   isRep = "isRep";
+
+  editorContent: string = ''; // This will store the editor content
+  placeholderText: string = 'Eg. This is good.';
+
+  onEditorBlur(event: FocusEvent): void {
+    if (this.editorContent.trim() === '') {
+      // Editor is empty, set the placeholder
+      this.editorContent = `<p>${this.placeholderText}</p>`;
+    }
+  }
+
+  sanitizeHTML(html: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(html);
+  }
 
 
   ngOnInit() {

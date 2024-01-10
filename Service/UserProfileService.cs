@@ -24,7 +24,11 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string? userID, string? fullName, string? email, string? phoneNumber, bool? isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string? createdById, string? IdNumber, int? zoneID, string? vatNumber, string? refNumber, string? companyType, string? subDepartmentName, bool? isDepartmentAdmin, bool? isZoneAdmin, string? alternateEmail, string? alternateNumber)
+        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string? userID, string? fullName, string? email, 
+            string? phoneNumber, bool? isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, 
+            int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string? createdById, string? IdNumber, 
+            int? zoneID, string? vatNumber, string? refNumber, string? companyType, string? subDepartmentName, bool? isDepartmentAdmin, bool? isZoneAdmin, string? alternateEmail, 
+            string? alternateNumber, string?name, string? surname, string? departmentName, string? zoneName,bool? isDefault, string? icasaLicense, bool?depConfirmation)
         {
             if (userProfileID == 0)
             {
@@ -61,14 +65,22 @@ namespace WayleaveManagementSystem.Service
                     CreatedById = createdById,
                     isActive = true,
                     IdNumber = IdNumber,
-                    depConfirmation = false,
+                    depConfirmation = false, //
                     zoneID = zoneID,
                     VatNumber = vatNumber,
                     refNumber = refNumber,
                     companyType = companyType,
                     SubDepartmentName = subDepartmentName,
                     AlternativeEmail = alternateEmail,
-                    AlternativePhoneNumber = alternateNumber
+                    AlternativePhoneNumber = alternateNumber,
+                    Name = name,
+                    Surname = surname,
+                    DepartmentName = departmentName,
+                    zoneName = zoneName,
+                    isDefault = isDefault,
+                    ICASALicense = icasaLicense
+
+                    
 
                 };
 
@@ -81,6 +93,7 @@ namespace WayleaveManagementSystem.Service
             }
             else //if it is not null then user is doing an update 
             {
+                #region UPDATING THINGS
                 if (userProfileID != null)
                 {
                     tempUserProfile.UserProfileID = userProfileID;
@@ -188,8 +201,32 @@ namespace WayleaveManagementSystem.Service
                 if (alternateNumber != null)
                 {
                     tempUserProfile.AlternativePhoneNumber = alternateNumber;
+                }           
+                if (name != null)
+                {
+                    tempUserProfile.Name = name;
                 }
-
+                if (surname != null)
+                {
+                    tempUserProfile.Surname = surname;
+                }  
+                if (departmentName != null)
+                {
+                    tempUserProfile.DepartmentName = departmentName;
+                }           
+                if (zoneName != null)
+                {
+                    tempUserProfile.zoneName = zoneName;
+                }
+                if (isDefault != null)
+                {
+                    tempUserProfile.isDefault = isDefault;
+                }  
+                if (icasaLicense != null)
+                {
+                    tempUserProfile.ICASALicense = icasaLicense;
+                }
+                #endregion
                 //tempUserProfile.DateCreated = DateTime.Now;
                 tempUserProfile.DateUpdated = DateTime.Now;
                 // tempUserProfile.CreatedById = createdById;
@@ -200,6 +237,49 @@ namespace WayleaveManagementSystem.Service
                 _context.Update(tempUserProfile);
                 await _context.SaveChangesAsync();
                 return tempUserProfile;
+            }
+        }
+        public async Task<UserProfile> AdminConfig(int? userProfileID, bool? isDepartmentAdmin, bool? isZoneAdmin, string? createdById)
+        {
+            try
+            {
+                var tempUserProfile = _context.UserProfilesTable.FirstOrDefault(x => x.UserProfileID == userProfileID);
+
+                if (tempUserProfile == null)
+                {
+                    // Handle the case where the user profile doesn't exist
+                    return null;
+                }
+
+                // Update admin-related fields
+                if (isDepartmentAdmin != null)
+                {
+                    tempUserProfile.isDepartmentAdmin = isDepartmentAdmin;
+                }
+
+                if (isZoneAdmin != null)
+                {
+                    tempUserProfile.isZoneAdmin = isZoneAdmin;
+                }
+
+                if (createdById != null)
+                {
+                    tempUserProfile.CreatedById = createdById;
+                }
+
+                // Update common fields
+                tempUserProfile.DateUpdated = DateTime.Now;
+                tempUserProfile.isActive = true;
+
+                _context.Update(tempUserProfile);
+                await _context.SaveChangesAsync();
+
+                return tempUserProfile;
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions if needed
+                return null;
             }
         }
 
@@ -238,6 +318,39 @@ namespace WayleaveManagementSystem.Service
             {
                 tempUserProfilesTable.DateUpdated = DateTime.Now;
                 tempUserProfilesTable.depConfirmation = true;
+                _context.Update(tempUserProfilesTable);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+
+        }
+        public async Task<bool> UserDoesntGainApproval(int userProfileID)
+        {
+            //this checks is the record exists in the db
+            var tempUserProfilesTable = _context.UserProfilesTable.FirstOrDefault(x => x.UserProfileID == userProfileID);
+
+            if (tempUserProfilesTable == null)
+            {
+                return await Task.FromResult(false);
+
+            }
+            else
+            {
+                //I'm going to go ahead and clear everything linked to previous department selections
+                #region
+                tempUserProfilesTable.Directorate = null;
+                tempUserProfilesTable.DepartmentID = null;
+                tempUserProfilesTable.SubDepartmentID = null;
+                tempUserProfilesTable.zoneID = null;
+                tempUserProfilesTable.SubDepartmentName = null;
+                tempUserProfilesTable.DepartmentName = null;
+                tempUserProfilesTable.zoneName = null;
+                //these cost centre things - what are they linked to? imma clear them too for now
+                tempUserProfilesTable.CostCenterOwner = null;
+                tempUserProfilesTable.CostCenterNumber = null;
+                #endregion
+                tempUserProfilesTable.DateUpdated = DateTime.Now;
+                tempUserProfilesTable.depConfirmation = false;
                 _context.Update(tempUserProfilesTable);
                 await _context.SaveChangesAsync();
                 return true;
@@ -543,6 +656,7 @@ namespace WayleaveManagementSystem.Service
                                     join UserProfile in _context.UserProfilesTable on SubDepartments.SubDepartmentID equals UserProfile.SubDepartmentID into newtable
                                     from newtableItem in newtable.DefaultIfEmpty()
                                     where SubDepartments.SubDepartmentName == SubDepartmentName && SubDepartments.isActive == true
+                                    && newtableItem != null && newtableItem.depConfirmation == true && newtableItem.isActive == true //This is so that you'll get people that are OFFICIALLY in a department
                                     select new UserProfileDTO()
                                     {
                                         UserProfileID = newtableItem.UserProfileID,
@@ -605,6 +719,41 @@ namespace WayleaveManagementSystem.Service
 
                ).ToListAsync();
         }
+        public async Task<bool> UpdateActingDepartment([FromBody] int userProfileID)
+        {
+            var userProfileToUpdate = _context.UserProfilesTable.FirstOrDefault(x => x.UserProfileID == userProfileID);
+
+            if (userProfileToUpdate == null)
+            {
+                return await Task.FromResult(false);
+            }
+            else
+            {
+                var userId = userProfileToUpdate.UserID; // Assuming there is a UserID field
+
+                // Get all profiles associated with the same user
+                var userProfiles = _context.UserProfilesTable.Where(x => x.UserID == userId).ToList();
+
+                foreach (var profile in userProfiles)
+                {
+                    if (profile.UserProfileID == userProfileID)
+                    {
+                        profile.isDefault = true; // Set the selected profile to true
+                    }
+                    else
+                    {
+                        profile.isDefault = false; // Set all other profiles to false
+                    }
+
+                    profile.DateUpdated = DateTime.Now;
+                    _context.Update(profile);
+                }
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+        }
+
     }
 
 }

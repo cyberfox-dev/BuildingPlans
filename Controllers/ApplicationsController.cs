@@ -245,6 +245,69 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpPost("GetApplicationsForDepAdmin")]
+        public async Task<object> GetApplicationsForDepAdmin([FromBody] ApplicationsBindingModel model)
+        {
+            try
+            {
+                if (model.ZoneID <= 0)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "ZoneID is invalid", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.GetApplicationsForDepAdmin(model.ZoneID, model.UserID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Applications retrieved successfully", result));
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+        [HttpPost("GetApplicationsForFinalReview")]
+        public async Task<object> GetApplicationsForFinalReview([FromBody] ApplicationsBindingModel model)
+        {
+            try
+            {
+                if (model.ZoneID <= 0)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "ZoneID is invalid", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.GetApplicationsForFinalReview(model.ZoneID, model.UserID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Applications retrieved successfully", result));
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+        [HttpPost("GetApplicationsForDepartment")]
+        public async Task<object> GetApplicationsForDepartment([FromBody] ApplicationsBindingModel model)
+        {
+            try
+            {
+                if (model.ZoneID <= 0)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "ZoneID is invalid", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.GetApplicationsForDepartment(model.ZoneID, model.SubDepartmentID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Applications retrieved successfully", result));
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
 
     }
 }

@@ -8,18 +8,18 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
+/*            migrationBuilder.AddColumn<string>(
                 name: "AlternativeEmail",
                 table: "UserProfilesTable",
                 type: "nvarchar(max)",
-                nullable: true);
+                nullable: true);*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+/*            migrationBuilder.DropColumn(
                 name: "AlternativeEmail",
-                table: "UserProfilesTable");
+                table: "UserProfilesTable");*/
         }
     }
 }

@@ -29,8 +29,13 @@ import { ServiceItemService } from 'src/app/service/ServiceItems/service-item.se
 import { ContactDetailsService } from 'src/app/service/ContactDetails/contact-details.service';
 import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
 import { MatDialog } from '@angular/material/dialog';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ApprovalPackComponent } from 'src/app/Packs/approval-pack/approval-pack.component';
+import { RejectionPackComponent } from 'src/app/Packs/rejection-pack/rejection-pack.component';
+/*import { PdfGenerationService } from 'src/app/service/PDFGeneration/pdf-generation.service';*/
 
 import 'jspdf-autotable';
+import html2canvas from 'html2canvas';
 
 
 export interface RolesList {
@@ -266,7 +271,8 @@ interface jsPDFWithPlugin extends jsPDF {
 @Component({
   selector: 'app-view-project-info',
   templateUrl: './view-project-info.component.html',
-  styleUrls: ['./view-project-info.component.css']
+  styleUrls: ['./view-project-info.component.css'],
+
 })
 
 
@@ -372,10 +378,10 @@ export class ViewProjectInfoComponent implements OnInit {
   replyCreated: boolean = false;
   editComment: boolean = true;
   ApplicantReply = '';
-  reply = ''
+  //reply = ''
   /* @ViewChild('fileInput') fileInput: ElementRef | undefined;*/
   fileAttr = 'Choose File';
-  commentEdit: any;
+  //commentEdit: any;
   currentApplication: number;
   configNumberOfProject: any;
   configMonthYear: any;
@@ -455,18 +461,18 @@ export class ViewProjectInfoComponent implements OnInit {
 
   isFinancial = true;
 
-  openEditCommentModal(commentEditorModal: any, index: any) {
+  public editMyComment = this.formBuilder.group({
+    commentEdit: ['', Validators.required],
+  })
+  public editMyReply = this.formBuilder.group({
+    editCommentName: ['', Validators.required],
+  })
+  public myNewReply = this.formBuilder.group({
+    reply: ['', Validators.required],
+  })
 
 
-    this.currentIndex = index;
 
-    this.commentEdit = this.CommentsList[index].Comment;
-
-
-    this.subDepartmentForComment = this.CommentsList[index].SubDepartmentForCommentID;
-    this.modalService.open(commentEditorModal, { centered: true, size: 'lg' });
-
-  }
 
   @ViewChild(MatTable) FinancialListTable: MatTable<DocumentsList> | undefined;
   
@@ -499,6 +505,7 @@ export class ViewProjectInfoComponent implements OnInit {
     private businessPartnerService: BusinessPartnerService,
     private documentUploadService: DocumentUploadService,
     private http: HttpClient,
+/*    private PdfGenerationService: PdfGenerationService,*/
     private financial: FinancialService,
     private permitService: PermitService,
     private MFTService: MobileFieldTrackingService,
@@ -507,6 +514,8 @@ export class ViewProjectInfoComponent implements OnInit {
     private contactDetails: ContactDetailsService,
     private notificationsService: NotificationsService,
     private dialog: MatDialog,
+    private sanitizer: DomSanitizer,
+    private approvalPack: ApprovalPackComponent
   ) { }
 
 
@@ -650,6 +659,27 @@ export class ViewProjectInfoComponent implements OnInit {
     this.CheckForApprovalPackDownload(); 
     
   }
+
+
+
+  openEditCommentModal(commentEditorModal: any, index: any) {
+
+    debugger;
+    this.currentIndex = index;
+    this.editMyComment.controls["commentEdit"].setValue(this.CommentsList[index].Comment);
+    //this.commentEdit = this.CommentsList[index].Comment;
+    console.log("This is what you're trying to edit", this.CommentsList[index].Comment);
+
+
+    this.subDepartmentForComment = this.CommentsList[index].SubDepartmentForCommentID;
+    this.modalService.open(commentEditorModal, { centered: true, size: 'lg' });
+
+  }
+
+  sanitizeHTML(comment: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(comment);
+  }
+
   receivedata: string;
 
   receiveData(data: string) {
@@ -1213,6 +1243,8 @@ export class ViewProjectInfoComponent implements OnInit {
     this.refreshComponent();
   }
 
+
+/*  JJS 8 Jan(Changed the approve to Prov.Approve)*/
   getAllComments() {
 
     this.CommentsList.splice(0, this.CommentsList.length);
@@ -1224,7 +1256,15 @@ export class ViewProjectInfoComponent implements OnInit {
           tempCommentList.ApplicationID = current.applicationID;
           tempCommentList.Comment = current.comment;
           tempCommentList.CommentID = current.commentID;
-          tempCommentList.CommentStatus = current.commentStatus;
+
+          debugger;
+          if (current.commentStatus == "Approved") {
+            tempCommentList.CommentStatus = "Provisionally Approved";
+          }
+          else {
+            tempCommentList.CommentStatus = current.commentStatus;
+          }
+
           tempCommentList.SubDepartmentForCommentID = current.subDepartmentForCommentID;
           tempCommentList.SubDepartmentName = current.subDepartmentName;
           tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
@@ -1248,14 +1288,24 @@ export class ViewProjectInfoComponent implements OnInit {
     })
   }
 
-  openReplyModal(replyModal: any, index: any) {
+  modalTitle: string = "";
+  openReplyModal(replyModal: any, index: any, action: string) {
     this.modalService.open(replyModal, { centered: true, size: 'lg' })
     this.currentIndex = index;
     if (this.CommentsList[index].isApplicantReplay != null) {
-      this.reply = this.CommentsList[index].isApplicantReplay;
+      //this.reply = this.CommentsList[index].isApplicantReplay;
+      this.myNewReply.controls["reply"].setValue(this.CommentsList[index].isApplicantReplay);
+    } else {
+      this.myNewReply.controls["reply"].setValue("");
     }
 
     this.subDepartmentForComment = this.CommentsList[index].SubDepartmentForCommentID;
+
+    if (action === 'Reply') {
+      this.modalTitle = 'Reply To Comment';
+    } else if (action === 'Update') {
+      this.modalTitle = 'Update Reply to Comment';
+    }
 
   }
 
@@ -1267,7 +1317,7 @@ export class ViewProjectInfoComponent implements OnInit {
   // await  this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, subDepID ).subscribe((data: any) => {
   //     if (data.responseCode == 1) {
   //       const current = data.dateSet[0];
-  //       
+  //
 
   //       this.subDepartmentForComment = current.subDepartmentForCommentID;
 
@@ -1288,9 +1338,12 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
 
+  // TODO: make sure that comments update
 
   updateComment() {
-    let CurrentComment = this.commentEdit;
+    let CurrentComment = this.editMyComment.controls["commentEdit"].value;
+    console.log("This is the updated comment", CurrentComment);
+    //let CurrentComment = this.commentEdit;
 
     const currentComment = this.CommentsList[this.currentIndex];
     //let numberOfComments = 0;
@@ -1379,7 +1432,9 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   createReply() {
-    let Currentreply = this.reply;
+    //let Currentreply = this.reply;
+    let Currentreply = this.myNewReply.controls["reply"].value;
+
     //this.ApplicantReply = Currentreply;
     // this.replyCreated = true;
 
@@ -1401,7 +1456,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
               if (data.responseCode == 1) {
 
-
+             
 
 
               }
@@ -2272,7 +2327,8 @@ export class ViewProjectInfoComponent implements OnInit {
           tempSubDepCommentStatusList.ApplicationID = current.applicationID;
           tempSubDepCommentStatusList.Comment = current.comment;
           tempSubDepCommentStatusList.DateCreated = current.dateCreated;
-          tempSubDepCommentStatusList.CommentStatus = current.commentStatus;
+         
+          
           tempSubDepCommentStatusList.UserName = current.userName;
           this.SubDepCommentsForSpecialConditions.push(tempSubDepCommentStatusList);
 
@@ -4195,12 +4251,11 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
-  OpenLoadingModal(approvalPackLoading: any) {
 
 
-    this.modalService.open(approvalPackLoading, { centered: true, size: 'xl', backdrop: 'static' })
+  OpenLoadingModal(approvalPackLoading) {
+    this.modalService.open(approvalPackLoading, { centered: true, size: 'xl' })
     this.getContactDetails();
-
 
   }
 
