@@ -1,8 +1,11 @@
 <div class="container-fluid">
-  <button mat-raised-button color="action" (click)="openDocUpload(newSub)">Upload document</button>
+  <button *ngIf="!isCalledInsidePermit" mat-raised-button color="action" (click)="openDocUpload(newSub)">Upload document</button>
+  <!--permitupload Sindiswa 09 January 2024 - for the purpose of uploading documents under the "Permits" tab-->
+  <button *ngIf="isCalledInsidePermit" mat-raised-button color="action" [disabled]="hasDocument" (click)="openDocUpload(newSub)">Upload document</button>
+  <!--End of permitupload Sindiswa 09 January 2024 - for the purpose of uploading documents under the "Permits" tab-->
 </div>
 
-<table mat-table [dataSource]="dataSourceDoc" class="mat-elevation-z8">
+<table  *ngIf="!isCalledInsidePermit" mat-table [dataSource]="dataSourceDoc" class="mat-elevation-z8">
 
   <!-- Name Column -->
   <ng-container matColumnDef="DocumentName">
@@ -37,20 +40,35 @@
         <!-- app-file-upload Component -->
         <div class="row" style="margin-bottom:15px;">
           <div class="container-fluid">
-            <app-file-upload [ApplicationID]="ApplicationID"
-                             [UploadFor]="fileAttrsName"
-                             (passFileName)="onPassFileName($event)"
-                             (onUploadFinished)="onFileDelete($event, 0)"
-                             (onUploadSuccess)="onFileUpload($event)"
-                             [ServiceConditionActive]="ServiceConditionActive"
-                             >
-            </app-file-upload>
+            <ng-container *ngIf="!isCalledInsidePermit; else permitSubForCommentIDSection">
+              <app-file-upload [ApplicationID]="ApplicationID"
+                               [UploadFor]="fileAttrsName"
+                               (passFileName)="onPassFileName($event)"
+                               (onUploadFinished)="onFileDelete($event, 0)"
+                               (onUploadSuccess)="onFileUpload($event)"
+                               [ServiceConditionActive]="ServiceConditionActive">
+              </app-file-upload>
+            </ng-container>
+            <!--permitUpload Sindiswa 08 January 2024-->
+            <ng-template #permitSubForCommentIDSection>
+              <!-- Handle permitSubForCommentID for file upload -->
+              <app-file-upload [permitSubForCommentID]="permitSubForCommentID"
+                               [isCalledInsidePermit]="isCalledInsidePermit"
+                               [ApplicationID]="ApplicationID"
+                               [UploadFor]="fileAttrsName"
+                               (passFileName)="onPassFileName($event)"
+                               (onUploadFinished)="onFileDelete($event, 0)"
+                               (onUploadSuccess)="onFileUpload($event)">
+              </app-file-upload>
+            </ng-template>
+            <!--End of permitUpload Sindiswa 08 January 2024-->
           </div>
         </div>
       </mat-form-field>
     </form>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" (click)="getAllDocsForApplication();changeHasFile();modal.close('Close click')">Save</button>
+    <button *ngIf="!isCalledInsidePermit" type="submit" class="btn btn-outline-success" (click)="  ConfirmUpload();getAllDocsForApplication();changeHasFile();modal.close('Close click')">Save</button>
+    <button *ngIf="isCalledInsidePermit" type="submit" class="btn btn-outline-success" (click)="  ConfirmUpload();changeHasFile();modal.close('Close click')">Save</button>
   </div>
 </ng-template>

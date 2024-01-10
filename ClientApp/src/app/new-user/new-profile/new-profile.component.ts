@@ -133,7 +133,8 @@ export class NewProfileComponent implements OnInit {
   extApplicantEmail = '';
   extApplicantPhyscialAddress = '';
   extApplicantIDNumber = '';
-  extApplicantIDUpload :any;
+  extApplicantIDUpload: any;
+  extApplicantICASANumber = ''; //icasadetails Sindiswa 10 January 2023
 
 
   /*Internal*/
@@ -147,6 +148,7 @@ export class NewProfileComponent implements OnInit {
   internalApplicantCostCenterOwner = '';
   selectedZone = '';
   extApplicantVatNumber = '';
+  internalApplicantICASANumber = ''; //icasadetails Sindiswa 10 January 2023
 
   CurrentUser: any;
   stringifiedData: any;  

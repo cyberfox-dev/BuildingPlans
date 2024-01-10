@@ -269,7 +269,8 @@ import { SystemAlertConfigComponent } from 'src/app/system-alert-config/system-a
     NotificationCenterComponent,
     DocumentRepositoryConfigComponent,
     DraftsComponent,
-    ApprovalPackComponent
+    ApprovalPackComponent,
+    DocumentsComponentComponent
   ],
   bootstrap: [AppComponent]
 })

@@ -12,8 +12,8 @@ export class PermitService {
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
-
-  public addUpdatePermitSubForComment(permitSubForCommentID: number | null, applicationID: number | null, subDepartmentID: number | null, subDepartmentName: string | null, userAssaignedToComment: string | null, permitComment: string | null, permitCommentStatus: string | null, createdByID: string | null, zoneID?: number | null, zoneName?: string | null) {
+ 
+  public addUpdatePermitSubForComment(permitSubForCommentID: number | null, applicationID: number | null, subDepartmentID: number | null, subDepartmentName: string | null, userAssaignedToComment: string | null, permitComment: string | null, permitCommentStatus: string | null, createdByID: string | null, zoneID?: number | null, zoneName?: string | null, documentLocalPath?: any | null, documentName?: string | null ) {
 
     const body = {
       PermitSubForCommentID: permitSubForCommentID,
@@ -26,7 +26,10 @@ export class PermitService {
       CreatedById: createdByID,
       ZoneID: zoneID,
       ZoneName: zoneName,
-
+       // #region permitupload Sindiswa 08 January 2024 - for the purpose of uploading documents under the "Permits" tab
+      DocumentLocalPath: documentLocalPath,
+      PermitDocName: documentName,
+      // #endregion
 
     }
     return this.httpClient.post(this.baseURL + "AddUpdatePermitSubForComment", body);
@@ -53,6 +56,15 @@ export class PermitService {
     return this.httpClient.post(this.baseURL + "GetPermitSubForCommentBySubID", body);
 
   }
+
+  // #region permitupload Sindiswa 09 January 2024
+
+  public hasPermitSubForCommentDocuments(permitSubForCommentID: number | null) {
+
+
+    return this.httpClient.post<any>(this.baseURL + 'HasPermitSubForCommentDocuments', permitSubForCommentID);
+  }
+  // #endregion
 
 
 }

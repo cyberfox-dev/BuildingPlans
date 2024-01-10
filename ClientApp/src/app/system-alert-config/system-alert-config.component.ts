@@ -122,5 +122,8 @@ export class SystemAlertConfigComponent implements OnInit {
     })
   }
 
+  editAlert(element: AlertList, editAlert: any) {
+    this.modalService.open(editAlert, { backdrop: 'static', centered: true, size: 'xl' });
+  }
 
 }
