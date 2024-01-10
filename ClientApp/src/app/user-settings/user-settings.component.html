@@ -43,10 +43,18 @@
 
           <div class="row">
             <div class="col">
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="extApplicantBpNoApplicant" placeholder="Enter BP Number" disabled>
-                  <label for="bpNoApplicant">BP Number</label>
+              <div class="row">
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="extApplicantBpNoApplicant" placeholder="Enter BP Number" disabled>
+                    <label for="bpNoApplicant">BP Number</label>
+                  </div>
+                </div>
+                <div class="col" *ngIf="telecomms"> <!--  icasadetails Sindiswa 10 January 2024 -->
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="externalApplicantICASANumber" placeholder="Enter ICASA License Number" disabled>
+                    <label for="externalApplicantICASANumber">ICASA Number</label>
+                  </div>
                 </div>
               </div>
             </div>
@@ -58,13 +66,20 @@
             </div>
           </div>
           <div class="row">
-            <div class="col">
+            <div class="col-md-3"> <!--icasadetails Sindiswa 10 January 2024-->
               <div class="form-floating mb-3 mt-3">
                 <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyRegNo" placeholder="Enter Company Reg No" readonly>
                 <label for="address">Company Reg No.</label>
               </div>
             </div>
-            <div class="col">
+              <div class="col-md-3">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="extApplicantVatNumber" placeholder="Enter Vat Number" readonly>
+                  <label for="extApplicantIDNumber">Vat Number</label>
+                </div>
+              </div>
+           
+            <div class="col-md-6">
               <div class="form-floating mb-3 mt-3">
                 <input type="email" class="form-control" [(ngModel)]="extApplicantCompanyType" placeholder="Select Company Type" readonly>
                 <label for="applicantEmail">Company Type</label>
@@ -119,7 +134,8 @@
           </div>
 
           <div class="row">
-            <div class="col-lg-8">
+            <!--<div class="col-lg-8">-->
+            <div class="col">
               <div class="form-floating mb-3 mt-3">
                 <input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address" readonly>
                 <label for="applicantTellNo">Physical Address</label>
@@ -127,12 +143,12 @@
             </div>
 
 
-            <div class="col-lg-4">
+            <!--<div class="col-lg-4">
               <div class="form-floating mb-3 mt-3">
                 <input type="text" class="form-control" [(ngModel)]="extApplicantVatNumber" placeholder="Enter Vat Number" readonly>
                 <label for="extApplicantIDNumber">Vat Number</label>
               </div>
-            </div>
+            </div>-->
 
           </div>
 
@@ -268,6 +284,14 @@
           </div>
         </div>
       </div>
+      <!--  icasadetails Sindiswa 10 January 2024 -->
+      <div class="row">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="externalApplicantICASANumberEdit" placeholder="Enter ICASA License Number">
+          <label for="address">ICASA Number</label>
+        </div>
+      </div>
+      <!-- end of  icasadetails Sindiswa 10 January 2024 -->
       <div class="row">
         <div class="col">
           <div class="form-floating mb-3 mt-3">
@@ -324,13 +348,13 @@
       <div class="row">
         <div class="col">
           <div class="form-floating mb-3 mt-3">
-            <input type="tel" class="form-control" [(ngModel)]=" extApplicantTellNoAltEdit" placeholder="Enter New Alt. Tell No." >
+            <input type="tel" class="form-control" [(ngModel)]=" extApplicantTellNoAltEdit" placeholder="Enter New Alt. Tell No.">
             <label for="applicantTellNo">Alternative Tel No.</label>
           </div>
         </div>
         <div class="col">
           <div class="form-floating mb-3 mt-3">
-            <input type="email" class="form-control" [(ngModel)]="extApplicantEmailAltEdit" placeholder="Enter New Alt. Email" >
+            <input type="email" class="form-control" [(ngModel)]="extApplicantEmailAltEdit" placeholder="Enter New Alt. Email">
             <label for="applicantEmail">Alternative Email</label>
           </div>
         </div>
