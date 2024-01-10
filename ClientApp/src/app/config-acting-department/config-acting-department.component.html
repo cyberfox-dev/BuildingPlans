@@ -8,9 +8,14 @@
   </mat-select>
 </mat-form-field>-->
 
+
+
+
+
+<!--JJS Jan 8 If the user only has one role that they can choose i hid that role and displayed a message-->
 <section class="game-section">
   <h2 class="line-title">You May Change Your Acting Department And Zone</h2>
-  <div class="actingDepFlexContainer" >
+  <div class="actingDepFlexContainer" *ngIf="UserList.length > 1">
     <div class="owl-carousel custom-carousel owl-theme actingDepFlexContainer2" style="overflow-x: auto;">
 
       <div class="item" *ngFor="let item of UserList" [class.active]="item.isActive" (click)="toggleActive(item)" [class.activeCard]="item.isDefault == true">
@@ -39,6 +44,11 @@
 
       </div>
     </div>
+  </div>
+
+
+  <div class="container-fluid" *ngIf="UserList.length === 1">
+    <p class="Only1">You Have No Other Acting Roles</p>
   </div>
 </section>
 

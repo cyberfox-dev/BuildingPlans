@@ -413,3 +413,14 @@ button {
     opacity: 1;
   }
 }
+/*<!-- JJS Jan 8 If the user only has one role that they can choose i hid that role and displayed a message-- >*/
+.Only1 {
+  padding-top: 107px;
+  padding-bottom: 49px;
+  text-align: center;
+  font-style: italic;
+  color: grey;
+  font-size: 25px;
+  font-weight: 200;
+  opacity: 60%;
+}

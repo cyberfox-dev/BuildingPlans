@@ -11,6 +11,9 @@
         public string? SubDepartmentAdminUserID { get; set; }
         public string? GlCode { get; set; }
         public string? ProfitCenter { get; set; }
+
+        public int? PermitExpiration { get; set; }
+        public int? WayleaveExpiration { get; set; }
         public string? CreatedById { get; set; }
         public bool? isActive { get; set; }
     }

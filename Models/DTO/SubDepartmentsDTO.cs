@@ -12,6 +12,8 @@
         public int? MapLayerID { get; set; }
         public string? GlCode { get; set; }
         public string? ProfitCenter { get; set; }
+        public int? PermitExpiration { get; set; }
+        public int? WayleaveExpiration { get; set; }
         public DateTime? DateCreated { get; set; }
         public DateTime? DateUpdated { get; set; }
         public int? CreatedById { get; set; }

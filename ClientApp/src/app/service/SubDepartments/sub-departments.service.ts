@@ -14,7 +14,7 @@ export class SubDepartmentsService {
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
 
-  public addUpdateSubDepartment(subDepartmentID: number | null, subDepartmentName: string | null, departmentID: number | null, createdById: string | null ,glCode: string| null, profitCenter: string| null ) {
+  public addUpdateSubDepartment(subDepartmentID: number | null, subDepartmentName: string | null, departmentID: number | null, createdById: string | null ,glCode: string| null, profitCenter: string| null ,permitExpiration:number|null ,wayleaveExpiration:number|null) {
     
     const body = {
       SubDepartmentID: subDepartmentID,
@@ -22,7 +22,9 @@ export class SubDepartmentsService {
       DepartmentID: departmentID,
       CreatedById: createdById,
       GlCode: glCode,
-      ProfitCenter: profitCenter
+      ProfitCenter: profitCenter,
+      PermitExpiration: permitExpiration,
+      WayleaveExpiration: wayleaveExpiration
     }
     return this.httpClient.post(this.baseURL + "AddUpdateSubDepartments", body);
 

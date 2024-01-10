@@ -6,7 +6,7 @@ namespace WayleaveManagementSystem.IServices
     public interface ISubDepartmentService
     {
         //Task<Departments> - This is the return type so its going to ruturn it in the fromt of the departments model
-        Task<SubDepartments> AddUpdateSubDepartments(int? SubDepartmentID, string? SubDepartmentNamem, int? DepartmentID,string? createdByID, string? ProfitCenter, string? GlCode);
+        Task<SubDepartments> AddUpdateSubDepartments(int? SubDepartmentID, string? SubDepartmentNamem, int? DepartmentID,string? createdByID, string? ProfitCenter, string? GlCode , int? PermitExpiration, int? WayleaveExpiration );
         Task<SubDepartments> AddSubDepartmentAdmin(int? subDepartmentID, string? departmentAdminUserID);
         //this will return T/F 
         public Task<bool> DeleteSubDepartments(int SubDepartmentID);

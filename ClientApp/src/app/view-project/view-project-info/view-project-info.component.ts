@@ -1243,6 +1243,8 @@ export class ViewProjectInfoComponent implements OnInit {
     this.refreshComponent();
   }
 
+
+/*  JJS 8 Jan(Changed the approve to Prov.Approve)*/
   getAllComments() {
 
     this.CommentsList.splice(0, this.CommentsList.length);
@@ -1254,7 +1256,15 @@ export class ViewProjectInfoComponent implements OnInit {
           tempCommentList.ApplicationID = current.applicationID;
           tempCommentList.Comment = current.comment;
           tempCommentList.CommentID = current.commentID;
-          tempCommentList.CommentStatus = current.commentStatus;
+
+          debugger;
+          if (current.commentStatus == "Approved") {
+            tempCommentList.CommentStatus = "Provisionally Approved";
+          }
+          else {
+            tempCommentList.CommentStatus = current.commentStatus;
+          }
+
           tempCommentList.SubDepartmentForCommentID = current.subDepartmentForCommentID;
           tempCommentList.SubDepartmentName = current.subDepartmentName;
           tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
@@ -2317,7 +2327,8 @@ export class ViewProjectInfoComponent implements OnInit {
           tempSubDepCommentStatusList.ApplicationID = current.applicationID;
           tempSubDepCommentStatusList.Comment = current.comment;
           tempSubDepCommentStatusList.DateCreated = current.dateCreated;
-          tempSubDepCommentStatusList.CommentStatus = current.commentStatus;
+         
+          
           tempSubDepCommentStatusList.UserName = current.userName;
           this.SubDepCommentsForSpecialConditions.push(tempSubDepCommentStatusList);
 
