@@ -18,6 +18,10 @@
 
         public string? ZoneName { get; set; }
 
+        #region permitupload Sindiswa 08 January 2024 - for the purpose of uploading documents under the "Permits" tab
+        public string? PermitDocName { get; set; }
+        public string? DocumentLocalPath { get; set; }
+        #endregion
 
     }
 }

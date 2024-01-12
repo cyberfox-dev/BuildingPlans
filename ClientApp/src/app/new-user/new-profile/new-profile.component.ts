@@ -133,7 +133,11 @@ export class NewProfileComponent implements OnInit {
   extApplicantEmail = '';
   extApplicantPhyscialAddress = '';
   extApplicantIDNumber = '';
-  extApplicantIDUpload :any;
+  extApplicantIDUpload: any;
+  extApplicantICASANumber = ''; //icasadetails Sindiswa 10 January 2023
+
+  showTelecommsPrompt = true; //icasadetails Sindiswa 10 January 2023
+  isRepresentingTelecommsCompany = false; //icasadetails Sindiswa 10 January 2023
 
 
   /*Internal*/
@@ -147,6 +151,7 @@ export class NewProfileComponent implements OnInit {
   internalApplicantCostCenterOwner = '';
   selectedZone = '';
   extApplicantVatNumber = '';
+  internalApplicantICASANumber = ''; //icasadetails Sindiswa 10 January 2023
 
   CurrentUser: any;
   stringifiedData: any;  
@@ -396,6 +401,86 @@ export class NewProfileComponent implements OnInit {
     }
 
 
+
+    //#region icasadetails Sindiswa 10 January 2024 - so, there's an issue where the if statements don't run as expected so external users weren't being created appropriately, the following code block has been added to hopefully fix that
+    else if (this.showExternal) {
+      debugger;
+
+      // icasadetails Sindiswa 10 January 2024
+      this.userPofileService.addUpdateUserProfiles(0, this.CurrentUser.appUserId, this.extApplicantName + " " + this.extApplicantSurname, this.CurrentUser.email, this.extApplicantTellNo, this.showInternal,
+        this.extApplicantBpNoApplicant, this.extApplicantCompanyName, this.extApplicantCompanyRegNo, this.extApplicantPhyscialAddress, null, null, null, null, null, null,
+        this.extApplicantIDUpload, this.CurrentUser.appUserId, this.extApplicantIDNumber, Number(this.selectedZone), this.extApplicantVatNumber, null, this.extApplicantCompanyType, null, null, null, null, null, this.extApplicantName, this.extApplicantSurname, null, null, null, this.extApplicantICASANumber).subscribe((data: any) => {
+          debugger;
+          if (data.responseCode == 1) {
+
+            alert(data.responseMessage);
+
+            debugger;
+            const linkedContractors = this.shared.getContactorData();
+            const linkedEngineers = this.shared.getEngineerData();
+
+
+            for (let i = 0; i < linkedContractors.length; i++) {
+              const linkedContractor = this.shared.getContactorDataByIndex(i);
+
+              this.professionalService.addUpdateProfessional(null, linkedContractor.ProfessinalType, linkedContractor.name + " " + linkedContractor.surname, linkedContractor.bpNumber, false, linkedContractor.email, linkedContractor.phoneNumber?.toString(), linkedContractor.professionalRegNo, this.CurrentUser.appUserId, linkedContractor.idNumber, this.CurrentUser.appUserId, linkedContractor.CIBRating)
+                .subscribe((data: any) => {
+
+                  if (data.responseCode == 1) {
+
+                    //alert(data.responseMessage);
+                  }
+                  else {
+                    //alert("Invalid Email or Password");
+                    alert(data.responseMessage);
+
+                  }
+                  console.log("reponse", data);
+
+                }, error => {
+                  console.log("Error: ", error);
+                })
+            }
+
+            for (let i = 0; i < linkedEngineers.length; i++) {
+              const linkedEngineer = this.shared.getEngineerDataByIndex(i);
+
+              this.professionalService.addUpdateProfessional(null, linkedEngineer.ProfessinalType, linkedEngineer.name + " " + linkedEngineer.surname, linkedEngineer.bpNumber, false, linkedEngineer.email, linkedEngineer.phoneNumber?.toString(), linkedEngineer.professionalRegNo, this.CurrentUser.appUserId, linkedEngineer.idNumber, this.CurrentUser.appUserId, linkedEngineer.CIBRating)
+                .subscribe((data: any) => {
+
+                  if (data.responseCode == 1) {
+
+                    //alert(data.responseMessage);
+                  }
+                  else {
+                    //alert("Invalid Email or Password");
+                    alert(data.responseMessage);
+
+                  }
+                  console.log("reponse", data);
+
+                }, error => {
+                  console.log("Error: ", error);
+                })
+            }
+          }
+
+          else {
+            debugger;
+            alert(data.responseMessage);
+            localStorage.removeItem('LoggedInUserInfo');
+            localStorage.removeItem('userProfile');
+            this.router.navigate(["/"]);
+          }
+          console.log("reponse", data);
+          localStorage.removeItem('LoggedInUserInfo');
+          localStorage.removeItem('userProfile');
+          this.router.navigate(["/"]);
+        }, error => {
+          console.log("Error: ", error);
+        })
+    }
+    //#endregion
     else if (userID != null || userID != "") {
       debugger;
       this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
@@ -423,7 +508,10 @@ export class NewProfileComponent implements OnInit {
     else if (this.showInternal === false) {
       debugger;
 
-      this.userPofileService.addUpdateUserProfiles(0, this.CurrentUser.appUserId, this.extApplicantName + " " + this.extApplicantSurname, this.CurrentUser.email, this.extApplicantTellNo, this.showInternal, this.extApplicantBpNoApplicant, this.extApplicantCompanyName, this.extApplicantCompanyRegNo, this.extApplicantPhyscialAddress, null, null, null, null, null, null, this.extApplicantIDUpload, this.CurrentUser.appUserId, this.extApplicantIDNumber, Number(this.selectedZone), this.extApplicantVatNumber).subscribe((data: any) => {
+      // icasadetails Sindiswa 10 January 2024
+      this.userPofileService.addUpdateUserProfiles(0, this.CurrentUser.appUserId, this.extApplicantName + " " + this.extApplicantSurname, this.CurrentUser.email, this.extApplicantTellNo, this.showInternal,
+        this.extApplicantBpNoApplicant, this.extApplicantCompanyName, this.extApplicantCompanyRegNo, this.extApplicantPhyscialAddress, null, null, null, null, null, null,
+        this.extApplicantIDUpload, this.CurrentUser.appUserId, this.extApplicantIDNumber, Number(this.selectedZone), this.extApplicantVatNumber, null, this.extApplicantCompanyType, null,null, null, null, null, this.extApplicantName, this.extApplicantSurname, null, null, null, this.extApplicantICASANumber).subscribe((data: any) => {
         debugger;
         if (data.responseCode == 1) {
 

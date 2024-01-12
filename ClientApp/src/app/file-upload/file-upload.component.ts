@@ -3,6 +3,7 @@ import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/ht
 import { SharedService } from 'src/app/shared/shared.service';
 import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-upload.service';
 import { FinancialService } from 'src/app/service/Financial/financial.service';
+import { PermitService } from '../service/Permit/permit.service';
 
 
 
@@ -16,6 +17,10 @@ export class FileUploadComponent implements OnInit {
   @Input() ApplicationID: any;
   @Input() descriptionForDocRepoS: any | null;
   @Input() isFinancial: boolean | null;
+
+  @Input() isCalledInsidePermit: boolean | null;
+  @Input() permitSubForCommentID: any;
+
   @Input() ServiceConditionActive: boolean | null;
   @Output() public onUploadFinished = new EventEmitter();
   @Output() public passFileName = new EventEmitter<{ uploadFor: string; fileName: string }>();
@@ -34,7 +39,7 @@ export class FileUploadComponent implements OnInit {
   fileExtention: string;
   currentApplication: any;
 
-  constructor(private http: HttpClient, private shared: SharedService, private documentUploadService: DocumentUploadService, private financialService: FinancialService) { }
+  constructor(private http: HttpClient, private shared: SharedService, private documentUploadService: DocumentUploadService, private financialService: FinancialService, private permitService: PermitService) { }
 
   ngOnInit(): void {
     this.CurrentUser = JSON.parse(localStorage.getItem('LoggedInUserInfo') || '{}');
@@ -388,6 +393,11 @@ export class FileUploadComponent implements OnInit {
             if (this.isFinancial) {
               this.financialuploadFinished(event.body, this.ApplicationID, this.CurrentUser); // Pass CurrentUser assuming it contains relevant user data. Adjust as needed.
             }
+            // #region permitupload Sindiswa 08 January 2024 - for the purpose of uploading documents under the "Permits" tab
+            if (this.isCalledInsidePermit) {
+              this.permitUploadFinished(event.body, this.permitSubForCommentID);
+            }
+            // #endregion
             else {
               this.uploadFinished(event.body, this.ApplicationID, this.CurrentUser); // Pass CurrentUser assuming it contains relevant user data. Adjust as needed.
             }
@@ -502,5 +512,22 @@ export class FileUploadComponent implements OnInit {
 
   }
 
+  // #region permitupload Sindiswa 08 January 2024 - for the purpose of uploading documents under the "Permits" tab
+  permitUploadFinished = (event: any, permitSubForCommentID: any) => {
+    this.response = event;
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
 
+    //
+    this.permitService.addUpdatePermitSubForComment(permitSubForCommentID, null, null, null, null, null, null, null, null, null, this.response?.dbPath, documentName).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+        // Emit the onUploadSuccess event after a successful upload
+        this.onUploadSuccess.emit(event.body);
+      }
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+  // #endregion
 }
