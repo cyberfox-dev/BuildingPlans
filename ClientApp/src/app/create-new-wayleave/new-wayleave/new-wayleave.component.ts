@@ -1382,13 +1382,12 @@ export class NewWayleaveComponent implements OnInit {
     }
     if (this.isDraft == true) {
       debugger;
-      this.currentDate = this.expectedStartDate
-
+    
       if (this.PSM = "") {
 
 
         this.draftApplicationsService.addUpdateDraftApplication(this.currentDraftID, this.applicationID, appUserId, this.internalName + " " + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null, null).subscribe((data: any) => {
-          this.openSnackBar("Draft Saved!")
+          this.openSnackBar("Draft Saved!");
           this.SavedProjectSizeSelections();
           this.router.navigate(["/home"]);
           console.log("response", data);
@@ -1441,12 +1440,12 @@ export class NewWayleaveComponent implements OnInit {
                 "Distributed", this.isDraft, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
                   if (data.responseCode == 1) {
                     this.SavedProjectSizeSelections();
-                    alert("Application Created");
+                    
                     if (isPlanning == false) {
                       this.AddProfessinal(contractorData, engineerData);
                     }
                     // this.UploadDocuments(data.dateSet);
-
+                    this.openSnackBar("Application Created");
                     this.shared.setApplicationID(0);
                     this.shared.clearContractorData();
                     this.shared.clearEngineerData();
@@ -1457,7 +1456,7 @@ export class NewWayleaveComponent implements OnInit {
                     this.notificationsService.addUpdateNotification(0, "Application Submission", "New wayleave application submission", false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserID, this.applicationID, "Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.").subscribe((data: any) => {
 
                       if (data.responseCode == 1) {
-                        alert(data.responseMessage);
+                     
 
 
                         const projectNum = "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear;
@@ -3773,7 +3772,7 @@ export class NewWayleaveComponent implements OnInit {
     this.notificationsService.addUpdateNotification(0, this.notiName, this.notiDescription, false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserId, this.applicationID, this.Emailmessage).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        alert(data.responseMessage);
+
 
       }
       else {

@@ -98,9 +98,11 @@ export class DraftsComponent implements OnInit {
             this.DraftsList.push(tempDraftsList);
 
           }
-          this.DraftsList.sort((a, b) => new Date(b.DateCreated).getTime() - new Date(a.DateCreated).getTime());
-          this.draftsLength = this.DraftsList.length.toString();
-          this.draftDataSource = this.DraftsList.filter(df => df.DateCreated);
+
+          this.draftDataSource = this.DraftsList
+            .filter(df => df.DateCreated)
+            .sort((a, b) => new Date(b.DateCreated).getTime() - new Date(a.DateCreated).getTime());
+
           this.DraftsTable.renderRows();
         }
         else {

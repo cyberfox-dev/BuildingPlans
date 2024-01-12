@@ -146,7 +146,7 @@ export class NavMenuComponent implements OnInit {
   cyberfoxConfigs: boolean = false;
   Configurations: boolean = false;
   CommentBuilder: boolean = false;
-
+  actingDep: boolean = false;
   public isInternalUser: boolean = false;
   Links: boolean = false;
   Icons: boolean = true;
@@ -163,6 +163,7 @@ export class NavMenuComponent implements OnInit {
   UserRoles: import("C:/CyberfoxProjects/WayleaveManagementSystem/ClientApp/src/app/shared/shared.service").RolesList[];
   selectedOptionText: string;
   lastUploadEvent: any;
+    public InternalExternalUser: boolean = false;
 
   constructor(private offcanvasService: NgbOffcanvas, private sanitizer: DomSanitizer, private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private http: HttpClient, private documentUploadService: DocumentUploadService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private subDepartment: SubDepartmentsService, private applicationsService: ApplicationsService, private faq: FrequentlyAskedQuestionsService, private dialog: MatDialog) { }
 
@@ -279,6 +280,7 @@ export class NavMenuComponent implements OnInit {
         this.CommentBuilder = true;
         this.selectDepartmentForUpload = true;
       }
+      
     }
 
 
@@ -376,6 +378,9 @@ export class NavMenuComponent implements OnInit {
           tempRolesList.RoleName = current.roleName;
 
           this.RolesList.push(tempRolesList);
+          if (tempRolesList.RoleName == "Applicant") {
+            this.InternalExternalUser = true;
+          }
           this.lockViewAccordingToRoles();
 
 

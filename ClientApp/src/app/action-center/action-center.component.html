@@ -17,76 +17,35 @@
     </div>
 
     <br>
-    <mat-divider *ngIf="CurrentApplication.isPlanning != true || canCommentFinalApprover != true"></mat-divider>
+    <mat-divider *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && showPermitTab === false"></mat-divider>
+    <!--    <mat-form-field>
+      <mat-label>Select A Comment From Your Comment Builder</mat-label>
+      <mat-select [(value)]="select" (selectionChange)="filterDepartment()" [(ngModel)]="selectDepFilterName">
+        <mat-option *ngFor="let comment of CommentList" value="{{comment.commentID}}">{{comment.commentName}}</mat-option>
+      </mat-select>
+    </mat-form-field>-->
+
+
+
     <br>
-    <!--<mat-form-field class="example-full-width" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true">-->
-      <!--|| canCommentFinalApprover == true-->
-      <!--<mat-label>Type New Comment/Special Condition </mat-label>
-  <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea"></textarea>-->
+    <mat-form-field class="example-full-width" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true">
+      <!--  || canCommentFinalApprover == true-->
+      <mat-label>Type New Comment/Special Condition </mat-label>
+      <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea"></textarea>
 
-  
-      <div class="example-full-width" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true">
-        <quill-editor [(ngModel)]="leaveAComment" [readOnly]="false">
-          <div quill-editor-toolbar>
-            <span class="ql-formats">
-              <button class="ql-bold" [title]="'Bold'"></button>
-              <select class="ql-color" [title]="'Text Color'">
-                <option value="rgb(0, 0, 0)" selected></option>
-                <option value="rgb(255, 0, 0)"></option>
-                <option value="rgb(255, 153, 0)"></option>
-                <option value="rgb(255, 255, 0)"></option>
-                <option value="rgb(0, 255, 0)"></option>
-                <option value="rgb(0, 255, 255)"></option>
-                <option value="rgb(0, 0, 255)"></option>
-                <!-- Add other color options as needed -->
-              </select>
-              <button class="ql-italic" [title]="'Italic'"></button>
-              <button class="ql-underline" [title]="'Underline'"></button>
-              <button class="ql-strike" [title]="'Strikethrough'"></button>
-              <button class="ql-script" value="sub"></button>
-              <button class="ql-script" value="super"></button>
-              <button class="ql-list" [title]="'Bullet List'" [value]="'bullet'"></button>
-              <button class="ql-list" [title]="'Numbered List'" [value]="'ordered'"></button>
-              <!--<button class="ql-link" [title]="'Enter URL'"></button>-->
-              <button class="ql-indent" [value]="'-1'"></button>
-              <button class="ql-indent" [value]="'+1'"></button>
-              <select class="ql-align" [title]="'Alignment'">
-                <option selected></option>
-                <option value="center"></option>
-                <option value="right"></option>
-                <option value="justify"></option>
-              </select>
-              <select class="ql-header">
-                <option value="false" selected></option>
-                <option value="1"></option>
-                <option value="2"></option>
-                <option value="3"></option>
-                <option value="4"></option>
-                <option value="5"></option>
-                <option value="6"></option>
-              </select>
-              <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"></button>
-              <!--<mat-menu #menu="matMenu" xPosition="before">-->
-              <mat-menu #menu="matMenu" xPosition="after">
-                <!--<button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>-->
-                <button type="button" mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)"> <span [innerHTML]="sanitizeHTML(comment.commentName)"></span></button>
 
-              </mat-menu>
-            </span>
-          </div>
-        </quill-editor>
-      </div>
-  
-      <div class="cont2">
-        <!--</mat-form-field>-->
-        <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"></button>
-        <!--<mat-menu #menu="matMenu" xPosition="before">-->
-        <mat-menu #menu="matMenu" xPosition="after">
-          <!--<button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>-->
-          <button type="button" mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)"> <span [innerHTML]="sanitizeHTML(comment.commentName)"></span></button>
+    </mat-form-field>
+    <div class="cont2">
 
-        </mat-menu>
-      </div>
+      <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true">Select A Comment From Your Comment Builder</button>
+ <!--     <button mat-raised-button color="purple" (click)="openBottomSheet()">Select A Comment From Your Comment Builder</button>
+   -->   <!--<mat-menu #menu="matMenu" xPosition="before">-->
+      <mat-menu #menu="matMenu" yPosition="above" width="100%">
+        <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>
+      <!--  <button type="button" mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)"> <span [innerHTML]="sanitizeHTML(comment.commentName)"></span></button>-->
+
+      </mat-menu>
+    </div>
 
 
     <div class="cont2" *ngIf="canComment == true && canCommentFinalApprover == false">
@@ -102,7 +61,7 @@
       <button mat-raised-button color="rejectBTN" (click)="onCommentSR('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon"> Prov. Not Approved</button>
       <button mat-raised-button color="clarifyBTN" (click)="onCommentSR('Clarify');sendOption()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
       <button mat-raised-button color="returnToReviewerBTN" (click)="onReturnToReviewerClick()"><i class="fa fa-reply" aria-hidden="true"></i>  Return To Reviewer</button>
-      <button mat-raised-button color="consultWithReviewerBTN" (click)="onReviewerClarityClick()"  ><i class="fa fa-comments" aria-hidden="true"></i>  Consult With Reviewer</button> <!---->
+      <button mat-raised-button color="consultWithReviewerBTN" (click)="onReviewerClarityClick()"><i class="fa fa-comments" aria-hidden="true"></i>  Consult With Reviewer</button> <!---->
 
     </div>
     <div class="cont2" *ngIf="canCommentFinalApprover == true">
@@ -160,39 +119,39 @@
 
 
       <!--  WBSCheck: boolean = false;
-  checked: boolean = false;
-  DepositCheck: boolean = false;-->
+    checked: boolean = false;
+    DepositCheck: boolean = false;-->
       <!--this is for the deposit required  (click)="saveDeposit(deposit)"-->
       <div *ngIf="DepositCHeckBox">
         <mat-checkbox class="example-margin" *ngIf="canComment == true || canCommentSeniorReviewer == true && canCommentFinalApprover == false" [(ngModel)]="DepositCheck" (click)="getAllServiceItmesForDropdown(deposit)">Deposit Required</mat-checkbox>
-        </div>
       </div>
+    </div>
 
 
-      <mat-spinner [diameter]="20" *ngIf="loading"></mat-spinner>
-      <button mat-raised-button color="saveDoc" (click)="saveDocument()" *ngIf="CurrentApplication.isPlanning === true && saveBtn">Save</button>
-      <div class="cont4" *ngIf="permit && canApprovePermit">
-        <mat-form-field class="example-full-width">
-          <!--|| canCommentFinalApprover == true-->
-          <mat-label>Type new comment</mat-label>
-          <textarea matInput [(ngModel)]="leaveACommentPermit" placeholder="Eg. This is good"></textarea>
+    <mat-spinner [diameter]="20" *ngIf="loading"></mat-spinner>
+    <button mat-raised-button color="saveDoc" (click)="saveDocument()" *ngIf="CurrentApplication.isPlanning === true && saveBtn">Save</button>
+    <div class="cont4" *ngIf="permit && canApprovePermit">
+      <mat-form-field class="example-full-width">
+        <!--|| canCommentFinalApprover == true-->
+        <mat-label>Type new comment</mat-label>
+        <textarea matInput [(ngModel)]="leaveACommentPermit" placeholder="Eg. This is good"></textarea>
 
-        </mat-form-field>
-        <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"></button>
-        <mat-menu #menu="matMenu" xPosition="before">
-          <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateCommentPermit(comment.commentName)">{{comment.commentName}} </button>
+      </mat-form-field>
+      <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"></button>
+      <mat-menu #menu="matMenu" xPosition="before">
+        <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateCommentPermit(comment.commentName)">{{comment.commentName}} </button>
 
-        </mat-menu>
+      </mat-menu>
 
-
-      </div>
-      <div class="cont6" *ngIf="permit && canApprovePermit">
-        <button mat-raised-button color="approvePermit" *ngIf="canApprovePermit" (click)="PermitIssue('Approve')">Approve Permit</button>
-        <button mat-raised-button color="meetOnSite" *ngIf="canApprovePermit" (click)="PermitIssue('MeetOnSite')">Meet On Site</button>
-        <button mat-raised-button color="rejectPermit" *ngIf="canApprovePermit" (click)="PermitIssue('Reject')">Reject Permit</button>
-      </div>
 
     </div>
+    <div class="cont6" *ngIf="permit && canApprovePermit">
+      <button mat-raised-button color="approvePermit" *ngIf="canApprovePermit" (click)="PermitIssue('Approve')">Approve Permit</button>
+      <button mat-raised-button color="meetOnSite" *ngIf="canApprovePermit" (click)="PermitIssue('MeetOnSite')">Meet On Site</button>
+      <button mat-raised-button color="rejectPermit" *ngIf="canApprovePermit" (click)="PermitIssue('Reject')">Reject Permit</button>
+    </div>
+
+  </div>
 
 </ng-template>
 

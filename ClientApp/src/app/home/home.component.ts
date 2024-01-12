@@ -529,12 +529,12 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
       this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
 
-
+      this.getRolesLinkedToUser();
       this.UpdateProjectNumberConfig();
-      this.getAllApplicationsByUserID();
+
       /* this.select = "option3";*/
 
-      this.getRolesLinkedToUser();
+     
       this.onCheckIfUserHasAccess();
 
 
@@ -1149,9 +1149,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.RolesList.splice(0, this.RolesList.length);
 
     this.accessGroupsService.getAllRolesForUser(this.CurrentUser.appUserId).subscribe((data: any) => {
-
+    
       if (data.responseCode == 1) {
-
+        
 
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempRolesList = {} as RolesList;
@@ -1162,22 +1162,34 @@ export class HomeComponent implements OnInit, OnDestroy {
           tempRolesList.RoleName = current.roleName;
 
           this.RolesList.push(tempRolesList);
-
+         
           if (tempRolesList.RoleName == "Applicant") {
+           
             this.InternalExternalUser = true;
             this.FilterBtn = false;
+
             this.onFilterApplicationsFprMyApplications();
-            alert("Applicant");
+     
           }
 
-
+         
           if (tempRolesList.RoleName == "Department Admin") {
 
           }
         }
         this.sharedService.setCurrentUserRole(this.RolesList);
-        // this.rolesTable?.renderRows();
-        console.log("getAllLinkedRolesReponse", data.dateSet);
+        debugger;
+        if (this.InternalExternalUser == false) {
+          debugger;
+          this.getAllApplicationsByUserID();
+        }
+
+  
+           // this.rolesTable?.renderRows();
+          console.log("getAllLinkedRolesReponse", data.dateSet);
+        
+       
+       
       }
       else {
         //alert("Invalid Email or Password");
@@ -1569,21 +1581,26 @@ this.Applications.push(tempApplicationList);
   }
 
   goToNewWayleave(applicationType: boolean, isPlanning: boolean) { //application type refers to whether it is a brand new application or if it is a reapply.
-    
+    debugger;
     this.getAllExternalUsers();
     this.applicationType = applicationType;
     this.isPlanning = isPlanning;
-    if (this.CurrentUserProfile[0].isInternal === true) {
-      this.openSm(this.content);
-    } else {
-      if (this.gotDrafts == true) {
-        this.openExternal(this.external);
-      }
-      else {
-        this.createWayleave(this.applicationType, this.isPlanning);
-      }
+   
+   
+      debugger;
+      if (this.CurrentUserProfile[0].isInternal === true) {
+        this.openSm(this.content);
+      } else {
+        debugger;
+        if (this.gotDrafts == true) {
+          this.openExternal(this.external);
+        }
+        
+        else {
+          this.createWayleave(this.applicationType, this.isPlanning);
+        }
+      
     }
-
 
   }
   openNewWayleave() {
@@ -2221,10 +2238,11 @@ this.Applications.push(tempApplicationList);
   getCurrentUserZoneID() {
 
   }
-
+  ActingAs: boolean = false;
   onFilterApplicationForMyReviews() {
     debugger;
     this.isTableLoading = true;
+    this.ActingAs = true;
     this.onFilterButtonClick();
     this.notNyProjects = true;
     this.pastAndCurrentReviews = true;
@@ -2397,12 +2415,12 @@ this.Applications.push(tempApplicationList);
 
             this.RolesList.push(tempRolesList);
 
-             if (tempRolesList.RoleName == "Applicant") {
+            /* if (tempRolesList.RoleName == "Applicant") {
                this.InternalExternalUser = true;
                this.FilterBtn = false;
                this.onFilterApplicationsFprMyApplications();
                alert("Applicant");
-             }
+             }*/
    
           }
 
@@ -2719,7 +2737,7 @@ this.Applications.push(tempApplicationList);
     this.Applications = [];
     /*    this.getAllApplicationsByUserID();*/
 
-    this.applicationService.getApplicationsList(this.CurrentUser.appUserId, true).subscribe((data: any) => {
+    this.applicationService.getApplicationsList(this.CurrentUser.appUserId, false).subscribe((data: any) => {
 
 
       if (data.responseCode == 1) {
