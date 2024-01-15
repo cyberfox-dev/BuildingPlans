@@ -26,7 +26,8 @@
 
   
       <div class="example-full-width" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true">
-        <quill-editor [(ngModel)]="leaveAComment" [readOnly]="false">
+        <!-- actionCentreEdits Sindiswa 15 January 2024-->
+        <quill-editor [(ngModel)]="leaveAComment" [readOnly]="false"  [placeholder]="'Type new Comment / Special Condition. Please also make reference to the Services Conditions tab, if documents have been uploaded.'">
           <div quill-editor-toolbar>
             <span class="ql-formats">
               <button class="ql-bold" [title]="'Bold'"></button>
@@ -65,13 +66,16 @@
                 <option value="5"></option>
                 <option value="6"></option>
               </select>
-              <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"></button>
-              <!--<mat-menu #menu="matMenu" xPosition="before">-->
-              <mat-menu #menu="matMenu" xPosition="after">
-                <!--<button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>-->
-                <button type="button" mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)"> <span [innerHTML]="sanitizeHTML(comment.commentName)"></span></button>
 
-              </mat-menu>
+              <!-- actionCentreEdits Sindiswa 15 January 2024 - I commented out the duplicate comment built comments "fetch" button-->
+              <!--<button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"></button>-->
+              <!--<mat-menu #menu="matMenu" xPosition="before">-->
+              <!--<mat-menu #menu="matMenu" xPosition="after">-->
+              <!--<button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>-->
+              <!--<button type="button" mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)" matTooltip="Browse Your Comment Collection"> <span [innerHTML]="sanitizeHTML(comment.commentName)"></span></button>
+
+              </mat-menu>-->
+              <!-- end of actionCentreEdits Sindiswa 15 January 2024 -->
             </span>
           </div>
         </quill-editor>
@@ -79,7 +83,8 @@
   
       <div class="cont2">
         <!--</mat-form-field>-->
-        <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"></button>
+        <!-- actionCentreEdits Sindiswa 15 January 2024 - added a matTooltip for button -->
+        <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true" matTooltip="Browse Your Comment Collection"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"></button>
         <!--<mat-menu #menu="matMenu" xPosition="before">-->
         <mat-menu #menu="matMenu" xPosition="after">
           <!--<button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>-->
