@@ -1,25 +1,8 @@
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
-  <!-- Position Column -->
-  <ng-container matColumnDef="SubDepartmentName" class="approve">
-    <th mat-header-cell *matHeaderCellDef>SubDepartmentName</th>
-    <td mat-cell *matCellDef="let element">{{element.SubDepartmentName}}</td>
-  </ng-container>
-
-  <!-- Indication Column -->
-  <ng-container matColumnDef="indication">
-    <th mat-header-cell *matHeaderCellDef>Indication</th>
-    <td mat-cell *matCellDef="let element">
-      <i class="fa fa-thumbs-up greenThumbsUp" aria-hidden="true" ></i>
-      <i class="fa fa-thumbs-up blueThumbsUp" aria-hidden="true" ></i>
-      <i class="fa fa-thumbs-down redThumbsDown" aria-hidden="true" ></i>
-      <i class="fa fa-clock-o yellowTimer" aria-hidden="true" ></i>
-      <i class="fa fa-commenting-o orangeSpeech" aria-hidden="true" ></i>
-      <i class="fa fa-retweet blueRefer" aria-hidden="true" ></i>
-    </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row [ngClass]="{'approve': row.action === 'H'}" *matRowDef="let row; columns: displayedColumns;"></tr>
-
-</table>
+<mat-nav-list>
+  <a class="commentlist" *ngFor="let comment of CommentDropDown" mat-list-item >
+    <span matListItemTitle>{{ comment.commentName }}</span>
+  </a>
+  <a mat-list-item *ngIf="noComments">
+    <span matListItemTitle>You Have No Comments Saved</span>
+  </a>
+</mat-nav-list>

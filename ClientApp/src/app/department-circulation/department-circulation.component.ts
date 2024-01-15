@@ -49,6 +49,7 @@ export class DepartmentCirculationComponent implements OnInit {
   ApprovedConditional = "Approved(Conditional)";
   Approved = "Approved";
   Rejected = "Rejected";
+  FinalReject = "FinalReject";
   FinalApproved = "Final Approved";
   SubDepartmentList: SubDepartmentList[] = [];
   applicationDataForView: any;

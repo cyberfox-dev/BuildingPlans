@@ -177,9 +177,11 @@ export class DocumentsComponentComponent implements OnInit {
         
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDocList = {} as DocumentsList;
+
           const current = data.dateSet[i];
+          const nameCheck = current.documentName.substring(0, 8);
           debugger;
-          if (current.groupName != "Service Condition") {
+          if (current.groupName != "Service Condition" && nameCheck != "Approval") {
             tempDocList.DocumentID = current.documentID;
             tempDocList.DocumentName = current.documentName;
             tempDocList.DocumentLocalPath = current.documentLocalPath;

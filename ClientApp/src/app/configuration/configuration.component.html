@@ -110,10 +110,11 @@
               Question : {{faqList.Question}}
             </mat-panel-title>
           </div>
-          <!--<button mat-raised-button color="warn" ><i class="fa fa-trash" aria-hidden="true"></i></button>-->
+          <button mat-raised-button color="warn" (click)="onFAQDelete(i)"><i class="fa fa-trash" aria-hidden="true"></i></button>
         </mat-expansion-panel-header>
 
         <mat-label>Answer : {{faqList.Answer}}</mat-label>
+        
       </mat-expansion-panel>
     </mat-tab>
 

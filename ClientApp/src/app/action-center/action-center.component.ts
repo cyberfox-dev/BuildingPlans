@@ -34,12 +34,15 @@ import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-u
 import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
 import { ManuallyAssignUsersService } from 'src/app/service/ManuallyAssignUsers/manually-assign-users.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { SnackBarAlertsComponent } from '../snack-bar-alerts/snack-bar-alerts.component';
 import { tap } from 'rxjs/operators';
 import 'tinymce';
 import 'tinymce/themes/silver';
 
 // Add any plugins you want to use
 import 'tinymce/plugins/lists';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { DepartmentCirculationPlanningComponent } from '../department-circulation-planning/department-circulation-planning.component';
 
 declare var tinymce: any;
 
@@ -374,7 +377,8 @@ export class ActionCenterComponent implements OnInit {
     private documentUploadService: DocumentUploadService,
     private notificationsService: NotificationsService,
     private manuallyAssignUsersService: ManuallyAssignUsersService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private _bottomSheet: MatBottomSheet
 
   ) { }
   openEnd(content: TemplateRef<any>) {
@@ -491,7 +495,7 @@ export class ActionCenterComponent implements OnInit {
     this.CheckApplicant();
     this.setProjectNumber();
 
- 
+
 
     
 
@@ -505,7 +509,9 @@ export class ActionCenterComponent implements OnInit {
       menubar: false
     });
   }
-
+  openBottomSheet(): void {
+    this._bottomSheet.open(DepartmentCirculationPlanningComponent);
+  }
 
 
   ngOnDestroy() {
@@ -2107,7 +2113,7 @@ export class ActionCenterComponent implements OnInit {
 
         if (data.responseCode == 1) {
           
-          alert(data.responseMessage);
+      
           this.getLinkedZones();
           this.updateApplicationStatus();
           this.MoveApplicationToAllocated();
@@ -2158,7 +2164,7 @@ export class ActionCenterComponent implements OnInit {
 */          this.notificationsService.addUpdateNotification(0, "New Wayleave Application", "Application Assigned", false, this.CurrentUser.appUserID, this.UserSelectionForManualLink.selected[0].id, this.ApplicationID, "You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.").subscribe((data: any) => {
 
             if (data.responseCode == 1) {
-              alert(data.responseMessage);
+           
               
             }
             else {
@@ -2176,6 +2182,7 @@ export class ActionCenterComponent implements OnInit {
         }
         console.log("reponse", data);
         this.modalService.dismissAll();
+        this.openSnackBar("User Assigned Successfully");
         this.router.navigate(["/home"]);
         
 
@@ -2349,7 +2356,7 @@ export class ActionCenterComponent implements OnInit {
 
         if (data.responseCode == 1) {
 
-          alert(data.responseMessage);
+      
           this.viewProjectInfoComponent.getAllComments();
         }
         else {
@@ -2689,7 +2696,7 @@ export class ActionCenterComponent implements OnInit {
 */                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application provisionally approved", false, this.CurrentUserProfile[0].UserID, this.CurrentUserProfile[0].UserID, this.ApplicationID, "You have approved application " + this.projectNo).subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
-                    alert(data.responseMessage);
+                 
 
                   }
                   else {
@@ -2700,14 +2707,14 @@ export class ActionCenterComponent implements OnInit {
                 }, error => {
                   console.log("Error", error);
                 });
-                alert(data.responseMessage);
+              
 
                 //commentsService
                 this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
 
-                    alert(data.responseMessage);
+                 
                     this.viewProjectInfoComponent.getAllComments();
 
                   }
@@ -2754,7 +2761,7 @@ export class ActionCenterComponent implements OnInit {
 
               if (data.responseCode == 1) {
                 alert("Updated Applications WBS");
-                alert(data.responseMessage);
+
 
 
               }
@@ -2799,7 +2806,7 @@ export class ActionCenterComponent implements OnInit {
           if (confirm("Have you uploaded all revelevant documents?")) {
             if (confirm("Are you sure you want to approve this application?")) {
 
-              this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved", null, null, "All users in Subdepartment FA", false).subscribe((data: any) => {
+              this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved", false, false, "All users in Subdepartment FA", false).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
                   const emailContent = `
@@ -2910,7 +2917,7 @@ export class ActionCenterComponent implements OnInit {
 */                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application provisionally approved", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have approved application " + this.projectNo).subscribe((data: any) => {
 
                     if (data.responseCode == 1) {
-                      alert(data.responseMessage);
+                   
 
                     }
                     else {
@@ -2923,12 +2930,12 @@ export class ActionCenterComponent implements OnInit {
                   });
 
                   alert(data.responseMessage);
-                  //commentsService
-                  this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
+                  //commentsService                                                                                                                                                              //Change Wording Kyle 15/01/24
+                  this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Provisionally Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
                     if (data.responseCode == 1) {
 
-                      alert(data.responseMessage);
+                 
                       this.viewProjectInfoComponent.getAllComments();
                     }
                     else {
@@ -2952,7 +2959,9 @@ export class ActionCenterComponent implements OnInit {
               })
               this.moveToFinalApprovalForDepartment();
               this.modalService.dismissAll();
+              this.openSnackBar("Application Actioned");
               this.router.navigate(["/home"]);
+              
             }
 
           }
@@ -3056,6 +3065,7 @@ export class ActionCenterComponent implements OnInit {
           })
           this.moveToFinalApprovalForDepartment();
           this.modalService.dismissAll();
+          this.openSnackBar("Application Actioned");
           this.router.navigate(["/home"]);
         }
        
@@ -3220,6 +3230,7 @@ export class ActionCenterComponent implements OnInit {
           })
           // alert("In progress");
           this.modalService.dismissAll();
+          this.openSnackBar("Application Actioned");
           this.router.navigate(["/home"]);
         }
         break;
@@ -3383,7 +3394,8 @@ export class ActionCenterComponent implements OnInit {
               console.log("Error: ", error);
             })
             //alert("In progress");
-            this.modalService.dismissAll();
+          this.modalService.dismissAll();
+          this.openSnackBar("Application Actioned");
             this.router.navigate(["/home"]);
           }
         
@@ -3400,6 +3412,15 @@ export class ActionCenterComponent implements OnInit {
         break;
       }
     }
+  }
+
+  openSnackBar(message: string) {
+    this._snackBar.openFromComponent(SnackBarAlertsComponent, {
+      data: { message }, // Pass the message as data to the component
+      duration: 4 * 1000,
+      panelClass: ['green-snackbar'],
+      verticalPosition: 'top',
+    });
   }
   getUniqueFinalApprovers(approvers: any[], property: string): any[] {
     const uniqueApproversMap = new Map();
@@ -3572,14 +3593,14 @@ export class ActionCenterComponent implements OnInit {
           else {
 
             if (confirm("Are you sure you want to approve this application?")) {
-
+     
               this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved", false, false, "All users in Subdepartment FA", false).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
 
                   alert(data.responseMessage);
-                  //commentsService
-                  this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
+                  //commentsService                                                                                                                                                             //Change Wording Kyle 15/01/24
+                  this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Provisionally Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
                     if (data.responseCode == 1) {
 
@@ -4394,6 +4415,7 @@ getAllCommentsByUserID() {
           tempSubDepartmentList.dateCreated = current.dateCreated;
           tempSubDepartmentList.commentStatus = current.commentStatus;
 
+
           if (tempSubDepartmentList.commentStatus == "Final Approved") {
             this.countApprove++;
           }
@@ -4404,7 +4426,7 @@ getAllCommentsByUserID() {
           this.SubDepartmentListForCheck.push(tempSubDepartmentList);
         }
 
-        if (this.SubDepartmentListForCheck.length == this.countApprove) {
+        if (this.SubDepartmentListForCheck.length == this.countApprove ) {
 /*          this.viewProjectInfoComponent.getAllCommentsForSpecialConditions();*/
 
 

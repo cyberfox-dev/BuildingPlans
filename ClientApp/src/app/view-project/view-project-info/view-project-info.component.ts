@@ -30,8 +30,8 @@ import { ContactDetailsService } from 'src/app/service/ContactDetails/contact-de
 import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { ApprovalPackComponent } from 'src/app/Packs/approval-pack/approval-pack.component';
-import { RejectionPackComponent } from 'src/app/Packs/rejection-pack/rejection-pack.component';
+import { ApprovalPackComponent } from 'src/app/Packs//ApprovalPackComponent/approval-pack.component';
+
 /*import { PdfGenerationService } from 'src/app/service/PDFGeneration/pdf-generation.service';*/
 
 import 'jspdf-autotable';
@@ -429,7 +429,10 @@ export class ViewProjectInfoComponent implements OnInit {
   Paid: string;
   canReviewerClarify: boolean;
     previousReviewer: any;
-    referComment: boolean;
+  referComment: boolean;
+  PacksTab: boolean = false;
+  public InternalExternalUser: boolean=false;
+;
  
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
@@ -539,7 +542,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
-    
+    this.getRolesLinkedToUser();
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
     
@@ -579,13 +582,16 @@ export class ViewProjectInfoComponent implements OnInit {
 
     if (setValues.CurrentStageName == "PTW" || setValues.CurrentStageNumber >= 4) {
       this.showPermitTab = true;
+      this.PacksTab = true;
     } else {
       this.showPermitTab = false;
+      this.PacksTab = false;
     }
     
     if (setValues.CurrentStageName == "Monitoring") {
       this.showStatusOfWorksTab = true;
       this.showPermitTab = true;
+      this.PacksTab = true;
     } else {
       this.showStatusOfWorksTab = false;
     }
@@ -593,6 +599,7 @@ export class ViewProjectInfoComponent implements OnInit {
     if (setValues.CurrentStageName == "Approval Pack Generation") {
       this.generateApproval = true;
       this.showPermitTab = true;
+      this.PacksTab = true;
     } else {
       this.generateApproval = false;
     }
@@ -600,6 +607,7 @@ export class ViewProjectInfoComponent implements OnInit {
     if (setValues.CurrentStageName == "Approval Pack Generation" && this.CurrentUser.appUserId == this.applicationDataForView[0].CreatedById) {
       this.generateApprovalbtn = true;
       this.showPermitTab = true;
+      this.PacksTab = true;
     } else {
       this.generateApprovalbtn = false;
       
@@ -657,6 +665,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getAllSubDepartments();
     this.getLinkedDepartmentsFORAPPROVAL();
     this.CheckForApprovalPackDownload(); 
+
     
   }
 
@@ -3796,6 +3805,14 @@ export class ViewProjectInfoComponent implements OnInit {
           tempRolesList.RoleName = current.roleName;
 
           this.RolesList.push(tempRolesList);
+          if (tempRolesList.RoleName == "Applicant") {
+
+            this.InternalExternalUser = true;
+
+
+
+
+          }
           this.lockViewAccordingToRoles();
 
 

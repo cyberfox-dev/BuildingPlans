@@ -68,3 +68,10 @@ table {
 .approve {
   background-color: #9ef5c1c7;
 }
+.mat-nav-list{
+    max-width:20px;
+}
+.commentlist{
+    margin:10px;
+   
+}
