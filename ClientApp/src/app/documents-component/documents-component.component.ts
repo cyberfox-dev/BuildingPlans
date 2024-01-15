@@ -4,6 +4,7 @@ import { MatTable } from '@angular/material/table';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { DocumentUploadService } from '../service/DocumentUpload/document-upload.service';
 import { SharedService } from "../shared/shared.service";
+import { PermitService } from '../service/Permit/permit.service';
 
 export interface DocumentsList {
   DocumentID: number;
@@ -38,15 +39,18 @@ export class DocumentsComponentComponent implements OnInit {
     applicationDataForView: any;
     hasFile: boolean;
   fileCount = 0;
- 
- 
-  constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService) { }
+
+  @Input() isCalledInsidePermit: boolean = false; //default?
+  @Input() permitSubForCommentID: any;
+  hasDocument: boolean = false;
+  constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService, private permitService : PermitService) { }
 
   ngOnInit(): void {
     this.currentApplication = this.shared.getViewApplicationIndex();
     this.ApplicationID = this.currentApplication.applicationID;
 
     this.getAllDocsForApplication();
+    this.hasPermitSubForCommentDocument();
   }
 
   uploadFileEvt(imgFile: any) {
@@ -104,11 +108,11 @@ export class DocumentsComponentComponent implements OnInit {
   }
 
   changeHasFile() {
-    if (this.hasFile) {
-      this.hasFile = false;
-    } else {
-      this.hasFile = true;
-    }
+      if (this.hasFile) {
+        this.hasFile = false;
+      } else {
+        this.hasFile = true;
+      }
   }
   onPassFileName(event: { uploadFor: string; fileName: string }) {
     debugger;
@@ -173,9 +177,11 @@ export class DocumentsComponentComponent implements OnInit {
         
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDocList = {} as DocumentsList;
+
           const current = data.dateSet[i];
+          const nameCheck = current.documentName.substring(0, 8);
           debugger;
-          if (current.groupName != "Service Condition") {
+          if (current.groupName != "Service Condition" && nameCheck != "Approval") {
             tempDocList.DocumentID = current.documentID;
             tempDocList.DocumentName = current.documentName;
             tempDocList.DocumentLocalPath = current.documentLocalPath;
@@ -211,4 +217,18 @@ export class DocumentsComponentComponent implements OnInit {
     this.modalService.open(newSub, { backdrop: 'static', centered: true, size: 'lg' });
   }
 
+  // #region permitUpload Sindiswa 09 January 2024 - the upload button should be disabled after ONE document has been uploaded
+  hasPermitSubForCommentDocument() {
+
+    console.log("This is the acquired permitforSubCommentID", this.permitSubForCommentID);
+    if (this.isCalledInsidePermit) {
+      this.permitService.hasPermitSubForCommentDocuments(this.permitSubForCommentID).subscribe((data) => {
+
+        console.log("API Response:", data);
+        console.log("This is the response for the Has Document question", data.HasDocuments);
+        this.hasDocument = data && data.dateSet.hasDocuments;
+      });
+    }
+  }
+  // #endregion
 }

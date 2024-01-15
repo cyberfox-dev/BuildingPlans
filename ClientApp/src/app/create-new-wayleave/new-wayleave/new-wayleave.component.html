@@ -63,13 +63,22 @@
           <!--<app-external-details *ngIf="external"></app-external-details>-->
           <div *ngIf="external">
             <div class="row">
-
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="externalBPNumber" id="BPNumber" name="BPNumber" disabled>
-                <label for="name">BP Number</label>
+              <!-- icasadetails Sindiswa 10 January 2024 : some of the below was modified to account for the ICASA number-->
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="externalBPNumber" id="BPNumber" name="BPNumber" disabled>
+                  <label for="name">BP Number</label>
+                </div>
               </div>
 
 
+              <div *ngIf="telecomms" class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="externalICASANumber" id=" externalICASANumber" name="externalICASANumber" disabled>
+                  <label for="name">ICASA Number</label>
+                </div>
+              </div>
+              <!-- end of icasadetails Sindiswa 10 January 2024 -->
             </div>
 
             <!--Displaying the applicants information into textboxes-->
@@ -332,7 +341,7 @@
       </div>
       <div class="container-fluid">
         <div class="alert alert-warning">
-          <h4>Please ensure to determine the size of your project by clicking the button below and making the necessary selections.</h4>
+          <h4>Compulsory Field - To determine project size, click the button below and make applicable selections</h4>
         </div>
       </div>
       <button mat-raised-button color="projectSize" matTooltip="Please check the 'Project Size Criteria.pdf' in the Repository. You'll find it in the top right-hand menu." (click)="openMandatoryDocumentCategory(MandatoryDocumentCategory)">Determine Project Size</button>

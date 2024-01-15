@@ -40,7 +40,9 @@ h1 {
 
 .cont2 {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
 }
 .mat-white {
   bottom: 53px;
@@ -56,6 +58,12 @@ h5 {
   opacity: 50%;
   font-size: 14px;
   margin-top: -13px;
+}
+h6 {
+  opacity: 50%;
+  font-size: 14px;
+  margin-top: -46px;
+  text-align: end;
 }
 .maps {
   position: center;
@@ -832,9 +840,9 @@ a {
   }
 
 .mat-blue {
-  background-color: #005a71;
-  color: #fff;
-  margin: 10px;
+  background-color: #ccdee2;
+  color: #005870;
+  margin-top: -77px;
 }
 
 button {

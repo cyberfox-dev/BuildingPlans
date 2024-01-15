@@ -67,6 +67,9 @@ export class UserSettingsComponent implements OnInit {
   extApplicantEmailAlt = '';
   extApplicantTellNoAlt = '';
 
+  externalApplicantICASANumber = ''; //icasadetails Sindiswa 10 January 2024
+  telecomms: boolean = false; //icasadetails Sindiswa 10 January 2024
+
 /*internal*/
   internalApplicantName = '';
   internalApplicantSurname = '';
@@ -101,7 +104,7 @@ export class UserSettingsComponent implements OnInit {
   extApplicantEmailAltEdit = '';
   extApplicantTellNoAltEdit = '';
 
-
+  externalApplicantICASANumberEdit = ''; //icasadetails Sindiswa 10 January 2024
   /*EditForInternal*/
 
   internalApplicantNameEdit = '';
@@ -199,6 +202,9 @@ export class UserSettingsComponent implements OnInit {
 
           this.extApplicantEmailAlt = currentUserProfile.alternativeEmail;
           this.extApplicantTellNoAlt = currentUserProfile.alternativePhoneNumber;
+
+          this.externalApplicantICASANumber = currentUserProfile.icasaLicense; //icasadetails Sindiswa 10 January 2024
+          this.telecomms = this.externalApplicantICASANumber !== null && this.externalApplicantICASANumber !== undefined && this.externalApplicantICASANumber !== ''; //icasadetails Sindiswa 10 January 2024
         }
         this.userProfileID = currentUserProfile.userProfileID;
       }
@@ -245,6 +251,7 @@ export class UserSettingsComponent implements OnInit {
 
       this.extApplicantEmailAltEdit = this.extApplicantEmailAlt;
       this.extApplicantTellNoAltEdit = this.extApplicantTellNoAlt;
+      this.externalApplicantICASANumberEdit = this.externalApplicantICASANumber; //icasadetails Sindiswa 10 January 2024
     }
 
     this.modalService.open(userProfileEditModal,{ centered: true, size: 'lg' });
@@ -286,7 +293,7 @@ export class UserSettingsComponent implements OnInit {
     if (this.isInternal == false) {
       this.userPofileService.addUpdateUserProfiles(Number(this.userProfileID), this.CurrentUser.appUserId, this.extApplicantNameEdit + " " + this.extApplicantSurnameEdit, this.extApplicantEmailEdit, this.extApplicantTellNoEdit, false, null, this.extApplicantCompanyNameEdit, this.extApplicantCompanyRegNoEdit,
         this.extApplicantPhyscialAddressEdit, null, null, null, null, null, null, null, this.CurrentUser.appUserId, null, null, null, null, null, null, null, null, this.extApplicantEmailAltEdit, this.extApplicantTellNoAltEdit, this.extApplicantNameEdit,
-        this.extApplicantSurnameEdit).subscribe((data: any) => {
+        this.extApplicantSurnameEdit, /* icasadetails Sindiswa 10 January 2024 - the arguments on the right of this comment have been recently added */ null, null, null, this.externalApplicantICASANumberEdit).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           alert(data.responseMessage);
