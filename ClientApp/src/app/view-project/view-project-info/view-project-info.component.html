@@ -429,6 +429,7 @@
 
   <mat-tab label="Applicant">
 
+    <!-- icasaDetailsDisplay Sindiswa 15 January 2024, an external applicant trying to look at their own application sees  the ORIGINATOR/APPLICANT thing for some reason!?? -->
     <!--External User information-->
     <div class="container-fluid" *ngIf="isInternal == false && theirProxy == false">
 
@@ -455,6 +456,14 @@
             <label for="address">Company Reg No.</label>
           </div>
         </div>
+        <!-- icasaDetailsDisplay Sindiswa 15 January 2024 -->
+        <div class="col" *ngIf="isTelecomms">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="extApplicantICASALicense" placeholder="Enter ICASA License Number" disabled>
+            <label for="address">ICASA License No.</label>
+          </div>
+        </div>
+        <!-- endof icasaDetailsDisplay Sindiswa 15 January 2024 -->
         <div class="col">
           <div class="form-floating mb-3 mt-3">
             <input type="email" class="form-control" [(ngModel)]="extApplicantCompanyType" placeholder="Select Company Type" disabled>
@@ -643,6 +652,14 @@
               <label for="address">Company Reg No.</label>
             </div>
           </div>
+          <!-- icasaDetailsDisplay Sindiswa 15 January 2024 -->
+          <div class="col" *ngIf="isTelecomms">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extProxyApplicantICASALicense" placeholder="Enter ICASA License Number" disabled>
+              <label for="address">ICASA License No.</label>
+            </div>
+          </div>
+          <!-- endof icasaDetailsDisplay Sindiswa 15 January 2024 -->
         </div>
 
 

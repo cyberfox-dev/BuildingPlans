@@ -1390,6 +1390,7 @@ this.Applications.push(tempApplicationList);
             const tempApplicationListShared = {} as ApplicationList;
             const current = data.dateSet[i];
             console.log("current", current)
+            tempApplicationListShared.UserID = current.userID; // icasaDetailsDisplay Sindiswa 16 January 2024, it seems like this fixed the undefined UserID issue for external users checking on their applications
             tempApplicationList.ApplicationID = current.applicationID;
             tempApplicationList.FullName = current.fullName;
             tempApplicationList.TypeOfApplication = current.typeOfApplication;
