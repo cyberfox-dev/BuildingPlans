@@ -406,6 +406,9 @@ export class NewWayleaveComponent implements OnInit {
   public newClient: boolean = true;
   public disabled: boolean = false;
 
+  //Physical address of project Kyle 16/01/24
+  public addressSaved: boolean = false;
+  //Physical address of project Kyle 16/01/24
 
   // @Input() isPlanningS: boolean;
 
