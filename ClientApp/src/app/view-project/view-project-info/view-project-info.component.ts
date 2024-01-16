@@ -301,6 +301,10 @@ export class ViewProjectInfoComponent implements OnInit {
   rejected: boolean = false;
   approved: boolean = false;
 
+   //  Financial POP Kyle 15/01/24
+  uploadingPOP: boolean = false;
+  uploadedPOP: boolean = false;
+   //  Financial POP Kyle 15/01/24
   canClarify: boolean;
   /*type of applicant*/
   isInternal = true;
@@ -464,7 +468,12 @@ export class ViewProjectInfoComponent implements OnInit {
   openDocUpload(newSub: any) {
     this.modalService.open(newSub, { backdrop: 'static', centered: true, size: 'lg' });
   }
-
+  //  Financial POP Kyle 15/01/24
+  OnPOPUpload() {
+    this.uploadingPOP = true;
+    
+  }
+   //  Financial POP Kyle 15/01/24
   isFinancial = true;
 
   public editMyComment = this.formBuilder.group({
@@ -4022,11 +4031,13 @@ export class ViewProjectInfoComponent implements OnInit {
           tempDocList.FinancialType = current.financialType;
 
 
-
-
+           //  Financial POP Kyle 15/01/24
+          if (tempDocList.FinancialDocumentName.startsWith("Proof Of Payment")) {
+            this.uploadedPOP = true;
+          }
           this.FinancialDocumentsList.push(tempDocList);
 
-
+           //  Financial POP Kyle 15/01/24
         }
 
 
@@ -4363,5 +4374,5 @@ export class ViewProjectInfoComponent implements OnInit {
 
     }
   }
-
+ 
 }

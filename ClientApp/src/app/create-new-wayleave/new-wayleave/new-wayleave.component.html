@@ -352,44 +352,44 @@
       </div>
       <!--Out with the old-->
       <!--<mat-form-field appearance="fill">
-        <mat-label>Select type of application</mat-label>
-        <mat-select [(ngModel)]="typeOfApplication" name="typeOfApplication">
-          <mat-option value="Small">Small</mat-option>MandatoryDocumentCategory
-          <mat-option value="Medium">Medium</mat-option>
-          <mat-option value="Large">Large</mat-option>
-          <mat-option value="Emergency">Emergency</mat-option>
+    <mat-label>Select type of application</mat-label>
+    <mat-select [(ngModel)]="typeOfApplication" name="typeOfApplication">
+      <mat-option value="Small">Small</mat-option>MandatoryDocumentCategory
+      <mat-option value="Medium">Medium</mat-option>
+      <mat-option value="Large">Large</mat-option>
+      <mat-option value="Emergency">Emergency</mat-option>
 
-        </mat-select>
-      </mat-form-field>-->
+    </mat-select>
+  </mat-form-field>-->
       <!--  <button mat-raised-button color="primary" (click)="openTypeOfApplicationModal()">Type Of Application</button>
-      -->
+  -->
 
       <div class="row">
         <!--          <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="notificationNumber" id="NotificationNo" placeholder="Enter Notification Number" name="notificationNo">
-            <label for="name">Notification Number</label>
-          </div>
-        </div>-->
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" [(ngModel)]="notificationNumber" id="NotificationNo" placeholder="Enter Notification Number" name="notificationNo">
+        <label for="name">Notification Number</label>
+      </div>
+    </div>-->
 
         <div class="col">
           <!--  <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="wbsNumber" id="WBSNo" placeholder="Enter WBS Number" name="wbsNo">
-            <label for="name">WBS Number</label>
-          </div>-->
+        <input type="text" class="form-control" [(ngModel)]="wbsNumber" id="WBSNo" placeholder="Enter WBS Number" name="wbsNo">
+        <label for="name">WBS Number</label>
+      </div>-->
           <!--            <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="descriptionOfProject" id="Description" placeholder="Enter Description" name="descriptionOfProject">
-            <label for="name">Description of Proposed Construction Work</label>
-          </div>-->
+        <input type="text" class="form-control" [(ngModel)]="descriptionOfProject" id="Description" placeholder="Enter Description" name="descriptionOfProject">
+        <label for="name">Description of Proposed Construction Work</label>
+      </div>-->
         </div>
       </div>
       <div class="row">
         <!--          <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="physicalAddressOfProject" id="Address" placeholder="Enter Address" name="physicalAddressOfProject">
-            <label for="name">Physical Address</label>
-          </div>
-        </div>-->
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" [(ngModel)]="physicalAddressOfProject" id="Address" placeholder="Enter Address" name="physicalAddressOfProject">
+        <label for="name">Physical Address</label>
+      </div>
+    </div>-->
 
         <div class="form-floating mb-3 mt-3">
           <input type="text" class="form-control" [(ngModel)]="natureOfWork" id="Email" placeholder="Enter Email" name="natureOfWork">
@@ -408,17 +408,17 @@
           <div class="card">
             <h3><span>Type Of Excavation</span></h3>
           </div>
-<!--          <div class="container-fluid" *ngIf="PSM == ''">
+          <!--          <div class="container-fluid" *ngIf="PSM == ''">
 
-            <mat-form-field>
-              <mat-label>Types Of Excavation</mat-label>
-              <mat-select [(ngModel)]="TOENAMES" multiple>
+              <mat-form-field>
+                <mat-label>Types Of Excavation</mat-label>
+                <mat-select [(ngModel)]="TOENAMES" multiple>
 
-                <mat-option *ngFor="let TOE of TypeOfExcavationList" (selectionChange)="CheckTOES()" [value]="TOE.typeOfExcavationName">{{TOE.typeOfExcavationName}}</mat-option>
-              </mat-select>
-            </mat-form-field>
+                  <mat-option *ngFor="let TOE of TypeOfExcavationList" (selectionChange)="CheckTOES()" [value]="TOE.typeOfExcavationName">{{TOE.typeOfExcavationName}}</mat-option>
+                </mat-select>
+              </mat-form-field>
 
-          </div>-->
+            </div>-->
           <div class="container-fluid">
             <mat-form-field>
               <mat-label>Types Of Excavation</mat-label>
@@ -462,12 +462,12 @@
       <!--<app-project-details-map *ngIf="map"></app-project-details-map>-->
       <div *ngIf="map">
         <!--<div class="row">
-        <div class="form-floating mb-3 mt-3">-->
+    <div class="form-floating mb-3 mt-3">-->
         <!--<input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address">-->
         <!--<input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" />
-            <label for="applicantTellNo">Physical Address</label>
-          </div>
-        </div>-->
+        <label for="applicantTellNo">Physical Address</label>
+      </div>
+    </div>-->
 
         <app-project-details-map [data]="ARCGISAPIData"></app-project-details-map>
 
@@ -477,15 +477,18 @@
       <div class="alert alert-warning" *ngIf="client">
         <h4>This project is being created for a client, because of this a drawing needs to be provided of the location of works on the next step.</h4>
       </div>
-
-
-
+      <!--Physical address Of project Kyle 16/01/24-->
+      <div class="alert alert-warning" *ngIf="client == false">
+        <h4><strong>Note*</strong><em> In order to proceed to the next step a drawing needs to be provided of the location of works on the map</em></h4>
+      </div>
+      <!--Physical address Of project Kyle 16/01/24-->
 
 
       <div class="cont">
         <button mat-raised-button color="primary" matStepperPrevious>Back</button>
-        <button mat-raised-button color="primary" matStepperNext (click)="CheckTOES()" [disabled]="PSM == ''">Next</button>
-
+        <!--Physical address Of project Kyle 16/01/24-->
+        <button mat-raised-button color="primary" matStepperNext (click)="CheckTOES()" [disabled]="PSM == '' || addressSaved == false">Next</button>
+        <!--Physical address Of project Kyle 16/01/24-->
       </div>
     </mat-step>
 

@@ -347,7 +347,13 @@
     <div class="container-fluid">
       <div class="container-fluid">
         <button mat-raised-button color="permit" (click)="openDocUpload(newSub)">Upload document</button>
+        <!---- Financial POP Kyle 15/01/24-->
+        <button  *ngIf="applicationDataForView[0].ApplicationStatus == 'Unpaid' && uploadedPOP == false" (click)="openDocUpload(newSub);OnPOPUpload()" mat-raised-button color="permit" >Upload Proof Of Payment</button>
+        <!----Financial POP Kyle 15/01/24-->
+
       </div>
+
+     
       <table mat-table [dataSource]="dataSourceDoc" class="mat-elevation-z8">
 
 
@@ -939,9 +945,11 @@
         <!-- app-file-upload Component -->
         <div class="row" style="margin-bottom:15px;">
           <div class="container-fluid">
+            <!-- Financial POP Kyle 15/01/24-->
             <app-file-upload [ApplicationID]="ApplicationID"
                              [UploadFor]="fileAttrsName"
                              [isFinancial]="isFinancial"
+                             [uploadingPOP]="uploadingPOP"
                              (passFileName)="onPassFileName($event)"
                              (onUploadFinished)="onFileDelete($event, 0)"
                              (onUploadSuccess)="onFileUpload($event)">

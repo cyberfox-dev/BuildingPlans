@@ -17,6 +17,9 @@ export class FileUploadComponent implements OnInit {
   @Input() ApplicationID: any;
   @Input() descriptionForDocRepoS: any | null;
   @Input() isFinancial: boolean | null;
+   //  Financial POP Kyle 15/01/24
+  @Input() uploadingPOP: boolean | null;
+  //  Financial POP Kyle 15/01/24
 
   @Input() isCalledInsidePermit: boolean | null;
   @Input() permitSubForCommentID: any;
@@ -38,12 +41,12 @@ export class FileUploadComponent implements OnInit {
   fileUploadName: string;
   fileExtention: string;
   currentApplication: any;
-
+  
   constructor(private http: HttpClient, private shared: SharedService, private documentUploadService: DocumentUploadService, private financialService: FinancialService, private permitService: PermitService) { }
 
   ngOnInit(): void {
     this.CurrentUser = JSON.parse(localStorage.getItem('LoggedInUserInfo') || '{}');
-    this.currentApplication = this.shared.getViewApplicationIndex();
+    this.currentApplication = this.shared.getViewApplicationIndex(); 
     debugger;
     if (this.ApplicationID == "isRep") {
 
@@ -192,11 +195,21 @@ export class FileUploadComponent implements OnInit {
       if (this.UploadFor == "Doc") {
         debugger;
         if (this.ApplicationID === undefined) {
+          this.currentApplication
           this.fileUploadName = fileNameParts[0] + "_appID";
-        } else {
+        }
+       //  Financial POP Kyle 15/01/24
+        else if (this.uploadingPOP === true) {
+          debugger;
+          const projectNumber = this.currentApplication.ProjectNumber;
+       
+            this.fileUploadName = "Proof Of Payment _appID" + this.ApplicationID;
+          
+        }
+        else {
           this.fileUploadName = fileNameParts[0] + "_appID" + this.ApplicationID;
         }
-
+       //  Financial POP Kyle 15/01/24
       }
       else {
         debugger;
