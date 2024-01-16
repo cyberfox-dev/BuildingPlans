@@ -316,6 +316,9 @@ export class ViewProjectInfoComponent implements OnInit {
   extApplicantEmail = '';
   extApplicantPhyscialAddress = '';
   extApplicantIDNumber = '';
+  extApplicantICASALicense = ''; //icasaDetailsDisplay Sindiswa 16 Janauary 2024
+  isTelecomms: boolean = false; //icasaDetailsDisplay Sindiswa 16 Janauary 2024
+  isExtApplicantViewer: boolean = false; //icasaDetailsDisplay Sindiswa 16 Janauary 2024
 
   /*internal*/
   internalApplicantName = '';
@@ -553,7 +556,9 @@ export class ViewProjectInfoComponent implements OnInit {
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
     
+    // #region icasaDetailsDisplay Sindiswa 16 January 2024, when the logged in user is external the "Applicant" details show funny | USERID??
 
+    // #endregion icasaDetailsDisplay Sindiswa 16 January 2024
 
     const today = new Date();
     const twoWeeksFromNow = new Date();
@@ -1860,9 +1865,13 @@ export class ViewProjectInfoComponent implements OnInit {
   extProxyApplicantTellNo = '';
   extProxyApplicantEmail = '';
   extProxyApplicantPhyscialAddress = '';
+  extProxyApplicantCompanyType = ''; //icasaDetailsDisplay Sindiswa 16 Janauary 2024
+  extProxyApplicantICASALicense = ''; //icasaDetailsDisplay Sindiswa 16 Janauary 2024
+
 
   checkIfProxyApplication() {
     if (this.CurrentApplicationBeingViewed[0].CreatedById != this.CurrentApplicationBeingViewed[0].UserID) {
+      debugger;
       this.theirProxy = true;
 
 
@@ -1930,6 +1939,18 @@ export class ViewProjectInfoComponent implements OnInit {
             this.extProxyApplicantPhyscialAddress = currentUserProfile.physcialAddress;
             // this.extApplicantIDNumber = ''; todo chage the dto to include the id number
             this.internalProxyApplicant = false;
+
+            // #region icasaDetailsDisplay Sindiswa 16 Janauary 2024
+            this.extProxyApplicantCompanyType = currentUserProfile.companyType;
+            if (currentUserProfile.icasaLicense) {
+
+              this.isTelecomms = true;
+            }
+            else {
+              this.isTelecomms = false;
+            }
+            this.extProxyApplicantICASALicense = currentUserProfile.icasaLicense;
+            // #endregion icasaDetailsDisplay Sindiswa 16 Janauary 2024
           }
 
 
@@ -1984,6 +2005,19 @@ export class ViewProjectInfoComponent implements OnInit {
           this.extApplicantCompanyName = currentUserProfile.companyName;
           this.extApplicantCompanyRegNo = currentUserProfile.companyRegNo;
           //this.extApplicantCompanyType = '';
+
+          // #region icasaDetailsDisplay Sindiswa 16 Janauary 2024 - why was the above commented out initially vele?
+          this.extApplicantCompanyType = currentUserProfile.companyType;
+          if (currentUserProfile.icasaLicense) {
+           
+            this.isTelecomms = true;
+          }
+          else {
+            this.isTelecomms = false;
+          }
+          this.extApplicantICASALicense = currentUserProfile.icasaLicense;
+          // #endregion icasaDetailsDisplay Sindiswa 16 Janauary 2024
+
           this.extApplicantName = fullname.substring(0, fullname.indexOf(' '));
           this.extApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
           this.extApplicantTellNo = currentUserProfile.phoneNumber;
@@ -1991,6 +2025,7 @@ export class ViewProjectInfoComponent implements OnInit {
           this.extApplicantPhyscialAddress = currentUserProfile.physcialAddress;
           // this.extApplicantIDNumber = ''; todo chage the dto to include the id number
           this.isInternal = false;
+          this.isExtApplicantViewer = true;
 
         }
 
