@@ -116,10 +116,11 @@ export class DepartmentCirculationComponent implements OnInit {
           tempSubDepartmentList.UserAssaignedToComment = current.userAssaignedToComment; //projectTracker Sindiswa 12 January 2024
 
           //#region projectTracker Sindiswa 15 January 2024
+          tempSubDepartmentList.zoneUser = current.userAssaignedToComment;
           if (tempSubDepartmentList.UserAssaignedToComment === null) {
             tempSubDepartmentList.zoneUser = "Not Yet Assigned to Reviewer";
-}
-          else {
+          } //edited on the 17th by Sindiswa, 10:10, 12:20
+          else if (tempSubDepartmentList.UserAssaignedToComment !== "EndOfCommentProcess" && tempSubDepartmentList.UserAssaignedToComment !== "All users in Subdepartment FA" && tempSubDepartmentList.UserAssaignedToComment !== "Senior Reviewer to comment") {
             tempSubDepartmentList.zoneUser = await this.getUserName(current.userAssaignedToComment);
           }
           //#endregion
