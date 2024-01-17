@@ -30,7 +30,7 @@
     <br>
     <mat-form-field class="example-full-width" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true">
       <!--  || canCommentFinalApprover == true-->
-      <mat-label>Type New Comment/Special Condition </mat-label>
+      <mat-label>Type new Comment/Special Condition. Please also make reference to the Services Conditions tab, if documents have been uploaded. </mat-label> <!-- actionCentreEdits Sindiswa 15 January 2024-->
       <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea"></textarea>
 
 
@@ -38,11 +38,15 @@
     <div class="cont2">
 
       <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true">Select A Comment From Your Comment Builder</button>
- <!--     <button mat-raised-button color="purple" (click)="openBottomSheet()">Select A Comment From Your Comment Builder</button>
-   -->   <!--<mat-menu #menu="matMenu" xPosition="before">-->
+      <!--     <button mat-raised-button color="purple" (click)="openBottomSheet()">Select A Comment From Your Comment Builder</button>
+    -->
+      <!--<mat-menu #menu="matMenu" xPosition="before">-->
+      <!-- actionCentreEdits Sindiswa 15 January 2024 - a blank box will NO LONGER SHOW if comment list length is less than 1-->
       <mat-menu #menu="matMenu" yPosition="above" width="100%">
-        <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>
-      <!--  <button type="button" mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)"> <span [innerHTML]="sanitizeHTML(comment.commentName)"></span></button>-->
+        <ng-container *ngIf="CommentDropDown.length > 0; else noComments"> <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button></ng-container>
+        <ng-template #noComments>
+          <p style="padding: 10px; color: red; font-style: italic;">There are no comments in your comment collection.</p>
+        </ng-template><!--  <button type="button" mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)"> <span [innerHTML]="sanitizeHTML(comment.commentName)"></span></button>-->
 
       </mat-menu>
     </div>
@@ -402,7 +406,7 @@
         </table>
       </mat-tab>
 
-      <mat-tab label="View Selected User(s)">
+      <mat-tab label="View Selected User(s) " >
 
         <!--<div class="form-floating mb-3 mt-3" *ngIf="showZone">
           <select class="form-select" aria-label="Default select example" formControlName="viewSelectedZone" (change)="onSelectToPopulateZoneUsers($event,newUserLinkedToZone)">

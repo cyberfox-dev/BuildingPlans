@@ -406,6 +406,9 @@ export class NewWayleaveComponent implements OnInit {
   public newClient: boolean = true;
   public disabled: boolean = false;
 
+  //Physical address of project Kyle 16/01/24
+  public addressSaved: boolean = false;
+  //Physical address of project Kyle 16/01/24
 
   // @Input() isPlanningS: boolean;
 
@@ -3941,11 +3944,12 @@ export class NewWayleaveComponent implements OnInit {
     console.log("uniqueArray:", uniqueArray);
 
     uniqueArray.forEach((obj) => {
-
+      debugger;
       this.zoneForCommentService.addUpdateZoneForComment(0, obj.subDepartmentID, this.applicationID, obj.zoneID, obj.zoneName, obj.userID).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           /*          alert(data.responseMessage);*/
+          debugger;
           this.onAutoLinkDepartment(obj.subDepartmentID, obj.subDepartmentName, obj.zoneID, obj.zoneName);
 
         }

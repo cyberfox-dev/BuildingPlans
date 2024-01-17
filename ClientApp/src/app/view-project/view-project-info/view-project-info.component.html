@@ -108,10 +108,10 @@
       <section id="timeline" class="timeline-outer">
         <div class="container" id="content">
 
-          <div class="row" *ngFor="let commentsList of CommentsList; let i = index" >
-            <div class="col s12 m12 l12" *ngIf="!(commentsList.CommentStatus === 'Referred' && referComment)">
-
-              <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Provisionally Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved' " [class.Reject]="commentsList.CommentStatus === 'FinalReject'||commentsList.CommentStatus === 'Rejected'" [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'" [class.refer]="commentsList.CommentStatus === 'Referred'" [class.returned]="commentsList.CommentStatus === 'Returned'" [class.reviewerClarify]="commentsList.CommentStatus === 'Reviewer Clarity'">
+            <div class="row" *ngFor="let commentsList of CommentsList; let i = index" [style.margin-left.px]="(i % 2 === 0) ? 60 : 80" [style.margin-right.px]="(i % 2 === 0) ? 60 : 80">
+              <div class="col s12 m12 l12" *ngIf="!(commentsList.CommentStatus === 'Referred' && referComment)">
+                <!---Change Wording Kyle 15/01/24-->
+                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Provisionally Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved' " [class.Reject]="commentsList.CommentStatus === 'FinalReject'||commentsList.CommentStatus === 'Rejected'" [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'" [class.refer]="commentsList.CommentStatus === 'Referred'" [class.returned]="commentsList.CommentStatus === 'Returned'" [class.reviewerClarify]="commentsList.CommentStatus === 'Reviewer Clarity'">
 
                 <li class="event" data-date="">
 
@@ -347,7 +347,13 @@
     <div class="container-fluid">
       <div class="container-fluid">
         <button mat-raised-button color="permit" (click)="openDocUpload(newSub)">Upload document</button>
+        <!---- Financial POP Kyle 15/01/24-->
+        <button  *ngIf="applicationDataForView[0].ApplicationStatus == 'Unpaid' && uploadedPOP == false" (click)="openDocUpload(newSub);OnPOPUpload()" mat-raised-button color="permit" >Upload Proof Of Payment</button>
+        <!----Financial POP Kyle 15/01/24-->
+
       </div>
+
+     
       <table mat-table [dataSource]="dataSourceDoc" class="mat-elevation-z8">
 
 
@@ -423,6 +429,7 @@
 
   <mat-tab label="Applicant">
 
+    <!-- icasaDetailsDisplay Sindiswa 15 January 2024, an external applicant trying to look at their own application sees  the ORIGINATOR/APPLICANT thing for some reason!?? -->
     <!--External User information-->
     <div class="container-fluid" *ngIf="isInternal == false && theirProxy == false">
 
@@ -449,6 +456,14 @@
             <label for="address">Company Reg No.</label>
           </div>
         </div>
+        <!-- icasaDetailsDisplay Sindiswa 15 January 2024 -->
+        <div class="col" *ngIf="isTelecomms">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="extApplicantICASALicense" placeholder="Enter ICASA License Number" disabled>
+            <label for="address">ICASA License No.</label>
+          </div>
+        </div>
+        <!-- endof icasaDetailsDisplay Sindiswa 15 January 2024 -->
         <div class="col">
           <div class="form-floating mb-3 mt-3">
             <input type="email" class="form-control" [(ngModel)]="extApplicantCompanyType" placeholder="Select Company Type" disabled>
@@ -637,6 +652,14 @@
               <label for="address">Company Reg No.</label>
             </div>
           </div>
+          <!-- icasaDetailsDisplay Sindiswa 15 January 2024 -->
+          <div class="col" *ngIf="isTelecomms">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extProxyApplicantICASALicense" placeholder="Enter ICASA License Number" disabled>
+              <label for="address">ICASA License No.</label>
+            </div>
+          </div>
+          <!-- endof icasaDetailsDisplay Sindiswa 15 January 2024 -->
         </div>
 
 
@@ -1000,9 +1023,11 @@
         <!-- app-file-upload Component -->
         <div class="row" style="margin-bottom:15px;">
           <div class="container-fluid">
+            <!-- Financial POP Kyle 15/01/24-->
             <app-file-upload [ApplicationID]="ApplicationID"
                              [UploadFor]="fileAttrsName"
                              [isFinancial]="isFinancial"
+                             [uploadingPOP]="uploadingPOP"
                              (passFileName)="onPassFileName($event)"
                              (onUploadFinished)="onFileDelete($event, 0)"
                              (onUploadSuccess)="onFileUpload($event)">

@@ -431,7 +431,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
       ;
     } else {
-
+      // Filters Kyle 16/01/24
       const sanitizedFilterValue = filterValue.replace(/[^\w\s]/g, '');
       const regex = new RegExp(sanitizedFilterValue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
       // Render the rows after applying the filter
@@ -440,14 +440,31 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.dataSource = this.Applications.filter(user => {
 
         const sanitizedProjectNumber = (user.ProjectNumber || '').replace(/[^\w\s]/g, '');
-        return regex.test(sanitizedProjectNumber.toUpperCase());
+        const sanitizedFullName = (user.FullName || '').replace(/[^\w\s]/g, '');
+        const sanitizedStage = (user.CurrentStage || '').replace(/[^\w\s]/g, '');
+        const sanitizedStatus = (user.ApplicationStatus || '').replace(/[^\w\s]/g, '');
+        const sanitizedType = (user.TypeOfApplication || '').replace(/[^\w\s]/g, '');
+        const sanitizedApplicationAge = (user.TestApplicationAge || '').toString();
+        const sanitizedStageAge = (user.TestApplicationStageAge || '').toString();
+        const sanitizedDateCreated = (user.DateCreated || '').replace(/[^\w\s]/g, '');
+
+        return regex.test(sanitizedProjectNumber.toUpperCase()) ||
+          regex.test(sanitizedFullName.toUpperCase()) ||
+          regex.test(sanitizedStage.toUpperCase()) ||
+          regex.test(sanitizedStatus.toUpperCase()) ||
+          regex.test(sanitizedType.toUpperCase()) ||
+          regex.test(sanitizedApplicationAge.toUpperCase()) ||
+          regex.test(sanitizedStageAge.toUpperCase()) ||
+          regex.test(sanitizedDateCreated.toUpperCase());
       });
 
       this.applicationsTable?.renderRows();
       this.newList = [...this.dataSource];
       console.log(this.newList);
-      // Extract and return the filtered project numbers
-      return this.newList.map(user => user.ProjectNumber || "");
+      // Extract and return newList
+      return this.newList;
+      
+       // Filters Kyle 16/01/24
     }
   }
 
@@ -1396,6 +1413,7 @@ this.Applications.push(tempApplicationList);
             const tempApplicationListShared = {} as ApplicationList;
             const current = data.dateSet[i];
             console.log("current", current)
+            tempApplicationListShared.UserID = current.userID; // icasaDetailsDisplay Sindiswa 16 January 2024, it seems like this fixed the undefined UserID issue for external users checking on their applications
             tempApplicationList.ApplicationID = current.applicationID;
             tempApplicationList.FullName = current.fullName;
             tempApplicationList.TypeOfApplication = current.typeOfApplication;

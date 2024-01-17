@@ -85,21 +85,23 @@
             <mat-checkbox [(ngModel)]="isRepresentingTelecommsCompany"> Check this box ONLY IF your company offers telecommunications services </mat-checkbox>
           </div>
           <div class="row" *ngIf="!showTelecommsPrompt || isRepresentingTelecommsCompany">
-            <div class="col-11">
+<!-- icasaDetailsDisplay Sindiswa 16 January 2024 -->
+            <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="extApplicantICASANumber" placeholder="Enter ICASA Number" name="extApplicantICASANumber" #icasaNumberInput="ngModel" [required]="isRepresentingTelecommsCompany">
+                <input type="text" class="form-control" [(ngModel)]="extApplicantICASANumber" placeholder="Enter ICASA Number" name="extApplicantICASANumber" #icasaNumberInput="ngModel" [required]="isRepresentingTelecommsCompany" title="This field is mandatory for all electronic communications service providers.">
                 <label for="extApplicantICASANumber">ICASA Number *</label>
               </div>
             </div>
-            <div class="col-1 d-flex align-items-center">
-              <mat-icon aria-hidden="false" aria-label="Info icon" fontIcon="info" matTooltip="This field is mandatory for all electronic communications service providers."></mat-icon>
-            </div>
 
+           <!--<div class="col-1 d-flex align-items-center">
+              <mat-icon aria-hidden="false" aria-label="Info icon" fontIcon="info" matTooltip="This field is mandatory for all electronic communications service providers."></mat-icon>
+            </div>-->
+<!-- endof icasaDetailsDisplay Sindiswa 15 January 2024 -->
           </div>
           <!--<div *ngIf="isRepresentingTelecommsCompany && !extApplicantICASANumber">
             <div class="alert alert-danger">An ICASA License Number is required for telecomms companies /This field is mandatory for all electronic communications service providers.</div>
           </div>-->
-          <!--end of icasadetails Sindiswa 10 January 2024-->
+         <!--end of icasadetails Sindiswa 10 January 2024-->
           <!--  <div class="form-floating mb-3 mt-3">
     <select class="form-select" aria-label="Default select example" formControlName="newZoneSubDemartment">
       <option selected value="0">Select a SubDepartment</option>
