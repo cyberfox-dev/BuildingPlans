@@ -1135,7 +1135,6 @@ export class NewWayleaveComponent implements OnInit {
                 "Distributed", false, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
                   if (data.responseCode == 1) {
 
-                    alert("Application Created");
                     if (isPlanning == false) {
                       this.AddProfessinal(contractorData, engineerData);
                     }
@@ -1151,13 +1150,14 @@ export class NewWayleaveComponent implements OnInit {
 
 
                   this.router.navigate(["/home"]);
+                  this.openSnackBar("Application Created");
                   if (this.isDraft === false) {
                     this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
                     /*              this.addToSubDepartmentForComment();*/
                     this.notificationsService.addUpdateNotification(0, "Application Submission", "New wayleave application submission", false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserID, this.applicationID, "Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.").subscribe((data: any) => {
 
                       if (data.responseCode == 1) {
-                        alert(data.responseMessage);
+                    
 
                       }
                       else {
@@ -1303,7 +1303,7 @@ export class NewWayleaveComponent implements OnInit {
                     this.notificationsService.addUpdateNotification(0, "Application Created", "New wayleave application", false, obj.userID, this.CurrentUser.appUserID, this.applicationID, "A Wayleave application with ID ${this.applicationID} has just been captured. As the zone admin of " + obj.zoneName + "in" + obj.subDepartmentName + " , please assign a reviewer to the application.").subscribe((data: any) => {
 
                       if (data.responseCode == 1) {
-                        alert(data.responseMessage);
+                 
 
                       }
                       else {
@@ -1448,11 +1448,12 @@ export class NewWayleaveComponent implements OnInit {
                       this.AddProfessinal(contractorData, engineerData);
                     }
                     // this.UploadDocuments(data.dateSet);
-                    this.openSnackBar("Application Created");
+
                     this.shared.setApplicationID(0);
                     this.shared.clearContractorData();
                     this.shared.clearEngineerData();
                     this.router.navigate(["/home"]);
+                    this.openSnackBar("Application Created");
 
                     /*  this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");*/
                     /*              this.addToSubDepartmentForComment();*/
@@ -1689,7 +1690,8 @@ export class NewWayleaveComponent implements OnInit {
         this.shared.setApplicationID(0);
         this.shared.clearContractorData();
         this.shared.clearEngineerData();
-        alert("Client Application Created");
+        
+
 
         this.addToZoneForComment();
         this.getCurrentInvoiceNumberForGen(this.clientName + ' ' + this.clientSurname);
@@ -1710,6 +1712,7 @@ export class NewWayleaveComponent implements OnInit {
       this.sendEmailToDepartment("EMB");
 
       this.router.navigate(["/home"]);
+      this.openSnackBar("Application Created");
       console.log("responseAddapplication", data);
     }, error => {
       console.log("Error", error);
@@ -1748,53 +1751,66 @@ export class NewWayleaveComponent implements OnInit {
       }
 
     }
+    if (this.isDraft == true) {
+      debugger;
+
+      if (this.PSM = "") {
+        this.draftApplicationsService.addUpdateDraftApplication(this.currentDraftID, this.applicationID, this.CurrentUser.appUserId, this.externalName + " " + this.externalSurname, this.externalEmail, null, this.externalAddress, this.clientRefNo, this.clientCompanyRegNo, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null, null).subscribe((data: any) => {
+          this.openSnackBar("Draft Saved!");
+          this.SavedProjectSizeSelections();
+          this.router.navigate(["/home"]);
+          console.log("response", data);
 
 
-    this.applicationsService.addUpdateApplication(this.applicationID, this.CurrentUser.appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, "Phone", this.externalAddress, null, null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.externalAddress, appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", this.isDraft, null, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
-      if (data.responseCode == 1) {
-
-        this.SavedProjectSizeSelections();
-        if (this.isDraft == true) {
-          this.draftApplicationsService.addUpdateDraftApplication(0, this.applicationID, this.CurrentUser.appUserId, this.externalName + " " + this.externalSurname, this.externalEmail, "Phone", this.externalAddress, this.clientRefNo, this.clientCompanyRegNo, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, appUserId, null, contractorData[0].name, engineerData[0].name).subscribe((data: any) => {
-            if (data.responseCode === 1) {
-
-              alert("Draft Saved")
-
-            }
-            else {
-              alert(data.responseMessage);
-
-            }
-            console.log("response", data);
-
-
-          }, error => {
-            console.log("Error: ", error);
-          })
-        }
-        if (isPlanning == false) {
-          this.AddProfessinal(contractorData, engineerData);
-        }
-
-        // this.UploadDocuments(data.dateSet);
-        // this.onAutoLinkDepartment();
-        this.shared.setApplicationID(0);
-        this.shared.clearContractorData();
-        this.shared.clearEngineerData();
-        alert("Application Created");
-
-        if (this.isDraft === false) {
-          this.addToZoneForComment();
-          this.getCurrentInvoiceNumberForGen(this.externalName + ' ' + this.externalSurname);
-        }
-
+        }, error => {
+          console.log("Error: ", error);
+        })
       }
       else {
-        alert("Failed To Create Application");
+        for (var i = 0; i < this.TOENAMES.length; i++) {
+          let current = this.TOENAMES[i].toString();
+          if (i > 0) {
+            this.TOE2 = this.TOE2 + ", " + current
+          } else {
+            this.TOE2 = current;
+          }
+        }
+        this.draftApplicationsService.addUpdateDraftApplication(this.currentDraftID, this.applicationID, this.CurrentUser.appUserId, this.externalName + " " + this.externalSurname, this.externalEmail, null, this.externalAddress, this.clientRefNo, this.clientCompanyRegNo, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE2, this.expectedStartDate, this.expectedEndType, appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null, null).subscribe((data: any) => {
+          this.openSnackBar("Draft Saved!");
+          this.SavedProjectSizeSelections();
+          this.router.navigate(["/home"]);
+          console.log("response", data);
+
+
+        }, error => {
+          console.log("Error: ", error);
+        })
+
       }
-      if (this.isDraft === false) {
-        this.onCreateNotification();
-        const projectNum = "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear;
+    }
+    else {
+      this.applicationsService.addUpdateApplication(this.applicationID, this.CurrentUser.appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, "Phone", this.externalAddress, null, null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.externalAddress, appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Unpaid", this.isDraft, null, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+
+          this.SavedProjectSizeSelections();
+       
+          if (isPlanning == false) {
+            this.AddProfessinal(contractorData, engineerData);
+          }
+
+          // this.UploadDocuments(data.dateSet);
+          // this.onAutoLinkDepartment();
+          this.shared.setApplicationID(0);
+          this.shared.clearContractorData();
+          this.shared.clearEngineerData();
+          
+
+       
+            this.addToZoneForComment();
+            this.getCurrentInvoiceNumberForGen(this.externalName + ' ' + this.externalSurname);
+          
+          this.onCreateNotification();
+          const projectNum = "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear;
 /*        this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + "<br><br><p>Your application (" + this.applicationID + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Thank you</p>");
 */        const emailContent = `
       <html>
@@ -1836,14 +1852,25 @@ export class NewWayleaveComponent implements OnInit {
     `;
 
 
-        this.notificationsService.sendEmail(this.CurrentUser.email, "New wayleave application", emailContent, emailContent);
-      }
-      this.router.navigate(["/home"]);
-      console.log("responseAddapplication", data);
-    }, error => {
-      console.log("Error", error);
-    })
-  }
+          this.notificationsService.sendEmail(this.CurrentUser.email, "New wayleave application", emailContent, emailContent);
+
+          this.router.navigate(["/home"]);
+          this.openSnackBar("Application Created");
+        }
+        else {
+          alert("Failed To Create Application");
+
+        }
+        console.log("responseAddapplication", data);
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+   
+         
+      
+    }
+   
 
   AddProfessinal(contractorData: any, engineerData: any): void {
     if (contractorData.length > 0) {
@@ -2891,6 +2918,7 @@ export class NewWayleaveComponent implements OnInit {
       // Navigate to home page
       this.router.navigate(["/home"]);
       alert("Your invoice has been created. You may find the invoice in the 'Financial' tab within your application");
+      this.openSnackBar("Application Created");
     }
   }
 
@@ -4810,7 +4838,7 @@ export class NewWayleaveComponent implements OnInit {
     debugger;
     this.draftApplicationsService.addUpdateDraftApplication(0, this.applicationID, this.CurrentUserProfile.appUserId, this.internalName + " " + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject
       , this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null, null).subscribe((data: any) => {
-        this.openSnackBar("Draft Saved!")
+        this.openSnackBar("Draft Saved!");
         this.router.navigate(["/home"]);
         console.log("response", data);
 
@@ -4824,7 +4852,7 @@ export class NewWayleaveComponent implements OnInit {
   openSnackBar(message: string) {
     this._snackBar.openFromComponent(SnackBarAlertsComponent, {
       data: { message }, // Pass the message as data to the component
-      duration: 3 * 1000,
+      duration: 2 * 1000,
       panelClass: ['green-snackbar'],
       verticalPosition: 'top',
     });

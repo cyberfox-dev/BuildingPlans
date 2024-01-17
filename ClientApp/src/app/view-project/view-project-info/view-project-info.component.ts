@@ -291,6 +291,7 @@ export class ViewProjectInfoComponent implements OnInit {
   ARCGISAPIData = {} as ARCGISAPIData;
   auditTrail: boolean = false;
   public isInternalUser: boolean = false;
+  public EMB: boolean = false;
   canReapply = false;
   public projectNo = "";
   createdByID: any | undefined;
@@ -432,6 +433,7 @@ export class ViewProjectInfoComponent implements OnInit {
   referComment: boolean;
   PacksTab: boolean = false;
   public InternalExternalUser: boolean=false;
+    isExternalApplicant: boolean;
 ;
  
   uploadFileEvt(imgFile: any) {
@@ -1862,89 +1864,112 @@ export class ViewProjectInfoComponent implements OnInit {
   extProxyApplicantPhyscialAddress = '';
 
   checkIfProxyApplication() {
+    this.userPofileService.getUserProfileById(this.CurrentApplicationBeingViewed[0].CreatedById).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+        //Gonna go ahead and assume that only internal people can apply for people
+        console.log("data", data.dateSet);
+
+        const currentUserProfile = data.dateSet[0];
+        const fullname = currentUserProfile.fullName;
+        if (currentUserProfile.isInternal == true) {
+          this.isExternalApplicant = false
+          this.toa = 'Internal User';
+          this.internalApplicantName = fullname.substring(0, fullname.indexOf(' '));
+          this.internalApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
+          this.internalApplicantDirectorate = currentUserProfile.directorate;
+          this.internalApplicantDepartment = currentUserProfile.departmentName;
+          this.internalApplicantTellNo = currentUserProfile.phoneNumber;
+          this.internalApplicantBranch = currentUserProfile.branch;
+          this.internalApplicantCostCenterNo = currentUserProfile.costCenterNumber;
+          this.internalApplicantCostCenterOwner = currentUserProfile.costCenterOwner;
+
+
+
+        }
+
+        else {
+          this.isExternalApplicant = true;
+          this.toa = 'External User';
+          this.extApplicantBpNoApplicant = currentUserProfile.bP_Number;
+          this.extApplicantCompanyName = currentUserProfile.companyName;
+          this.extApplicantCompanyRegNo = currentUserProfile.companyRegNo;
+          //this.extApplicantCompanyType = '';
+          this.extApplicantName = fullname.substring(0, fullname.indexOf(' '));
+          this.extApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
+          this.extApplicantTellNo = currentUserProfile.phoneNumber;
+          this.extApplicantEmail = currentUserProfile.email;
+          this.extApplicantPhyscialAddress = currentUserProfile.physcialAddress;
+          // this.extApplicantIDNumber = ''; todo chage the dto to include the id number
+
+
+        }
+
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+
+    })
+
+
+    this.userPofileService.getUserProfileById(this.CurrentApplicationBeingViewed[0].UserID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+        console.log("This is my originator's information, hopefully. Finger's crossed: ", data.dateSet);
+        const currentUserProfile = data.dateSet[0];
+        const fullname = currentUserProfile.fullName;
+        if (currentUserProfile.isInternal == true) {
+
+          this.toa = 'Internal User';
+          this.internalProxyApplicantName = fullname.substring(0, fullname.indexOf(' '));
+          this.internalProxyApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
+          this.internalProxyApplicantDirectorate = currentUserProfile.directorate;
+          this.internalProxyApplicantDepartment = currentUserProfile.departmentName; //not displayed?
+          this.internalProxyApplicantTellNo = currentUserProfile.phoneNumber; //not displayed?
+          this.internalProxyApplicantBranch = currentUserProfile.branch;
+          this.internalProxyApplicantCostCenterNo = currentUserProfile.costCenterNumber;
+          this.internalProxyApplicantCostCenterOwner = currentUserProfile.costCenterOwner;
+          this.internalProxyApplicant = true;
+        }
+        else {
+          this.toa = 'External User';
+          this.extProxyApplicantBpNoApplicant = currentUserProfile.bP_Number;
+          this.extProxyApplicantCompanyName = currentUserProfile.companyName;
+          this.extProxyApplicantCompanyRegNo = currentUserProfile.companyRegNo;
+          this.extProxyApplicantName = fullname.substring(0, fullname.indexOf(' '));
+          this.extProxyApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
+          this.extProxyApplicantTellNo = currentUserProfile.phoneNumber;
+          this.extProxyApplicantEmail = currentUserProfile.email;
+          this.extProxyApplicantPhyscialAddress = currentUserProfile.physcialAddress;
+          // this.extApplicantIDNumber = ''; todo chage the dto to include the id number
+          this.internalProxyApplicant = false;
+        }
+
+
+
+
+      }
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+
     if (this.CurrentApplicationBeingViewed[0].CreatedById != this.CurrentApplicationBeingViewed[0].UserID) {
       this.theirProxy = true;
-
-
-      this.userPofileService.getUserProfileById(this.CurrentApplicationBeingViewed[0].CreatedById).subscribe((data: any) => {
-        if (data.responseCode == 1) {
-
-          //Gonna go ahead and assume that only internal people can apply for people
-          console.log("data", data.dateSet);
-
-          const currentUserProfile = data.dateSet[0];
-          const fullname = currentUserProfile.fullName;
-
-            this.toa = 'Internal User';
-            this.internalApplicantName = fullname.substring(0, fullname.indexOf(' '));
-            this.internalApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
-            this.internalApplicantDirectorate = currentUserProfile.directorate;
-            this.internalApplicantDepartment = currentUserProfile.departmentName;
-            this.internalApplicantTellNo = currentUserProfile.phoneNumber;
-            this.internalApplicantBranch = currentUserProfile.branch;
-            this.internalApplicantCostCenterNo = currentUserProfile.costCenterNumber;
-            this.internalApplicantCostCenterOwner = currentUserProfile.costCenterOwner;
-
-        }
-
-        else {
-
-          alert(data.responseMessage);
-        }
-        console.log("reponse", data);
-
-      }, error => {
-        console.log("Error: ", error);
-
-      })
-
-
-      this.userPofileService.getUserProfileById(this.CurrentApplicationBeingViewed[0].UserID).subscribe((data: any) => {
-        if (data.responseCode == 1) {
-
-          console.log("This is my originator's information, hopefully. Finger's crossed: ", data.dateSet);
-          const currentUserProfile = data.dateSet[0];
-          const fullname = currentUserProfile.fullName;
-          if (currentUserProfile.isInternal == true) {
-
-            this.toa = 'Internal User';
-            this.internalProxyApplicantName = fullname.substring(0, fullname.indexOf(' '));
-            this.internalProxyApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
-            this.internalProxyApplicantDirectorate = currentUserProfile.directorate;
-            this.internalProxyApplicantDepartment = currentUserProfile.departmentName; //not displayed?
-            this.internalProxyApplicantTellNo = currentUserProfile.phoneNumber; //not displayed?
-            this.internalProxyApplicantBranch = currentUserProfile.branch;
-            this.internalProxyApplicantCostCenterNo = currentUserProfile.costCenterNumber;
-            this.internalProxyApplicantCostCenterOwner = currentUserProfile.costCenterOwner;
-            this.internalProxyApplicant = true;
-          }
-          else {
-            this.toa = 'External User';
-            this.extProxyApplicantBpNoApplicant = currentUserProfile.bP_Number;
-            this.extProxyApplicantCompanyName = currentUserProfile.companyName;
-            this.extProxyApplicantCompanyRegNo = currentUserProfile.companyRegNo;
-            this.extProxyApplicantName = fullname.substring(0, fullname.indexOf(' '));
-            this.extProxyApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
-            this.extProxyApplicantTellNo = currentUserProfile.phoneNumber;
-            this.extProxyApplicantEmail = currentUserProfile.email;
-            this.extProxyApplicantPhyscialAddress = currentUserProfile.physcialAddress;
-            // this.extApplicantIDNumber = ''; todo chage the dto to include the id number
-            this.internalProxyApplicant = false;
-          }
-
-
-
-
-        }
-        else {
-
-          alert(data.responseMessage);
-        }
-        console.log("reponse", data);
-
-      }, error => {
-        console.log("Error: ", error);
-      })
     }
     else {
       this.getUserProfileByUserID();
@@ -1952,19 +1977,19 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getUserProfileByUserID() {
-
+    debugger;
     this.userPofileService.getUserProfileById(this.createdByID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-
+        debugger;
 
         console.log("data", data.dateSet);
 
         const currentUserProfile = data.dateSet[0];
         const fullname = currentUserProfile.fullName;
-
+        debugger;
         if (currentUserProfile.isInternal == true) {
-
+          this.isExternalApplicant = false
           this.toa = 'Internal User';
           this.internalApplicantName = fullname.substring(0, fullname.indexOf(' '));
           this.internalApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
@@ -1978,7 +2003,9 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
         }
+      
         else {
+          this.isExternalApplicant = true;
           this.toa = 'External User';
           this.extApplicantBpNoApplicant = currentUserProfile.bP_Number;
           this.extApplicantCompanyName = currentUserProfile.companyName;
@@ -3787,6 +3814,8 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
+  //JJS - TODO :Bug anyone can move external application to paid, Added the if for the EMB users so that only they can move the applicant to paid
+
   getRolesLinkedToUser() {
 
     this.RolesList.splice(0, this.RolesList.length);
@@ -3806,12 +3835,12 @@ export class ViewProjectInfoComponent implements OnInit {
 
           this.RolesList.push(tempRolesList);
           if (tempRolesList.RoleName == "Applicant") {
-
             this.InternalExternalUser = true;
+          }
 
-
-
-
+          if (tempRolesList.RoleName == "EMB" || this.CurrentUserProfile[0].departmentName == "EMB") {
+           
+            this.EMB = true;
           }
           this.lockViewAccordingToRoles();
 

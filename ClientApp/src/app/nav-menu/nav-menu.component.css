@@ -164,7 +164,7 @@ body {
   align-items: flex-start;
 }
 .offcanvas{
-
+    z-index:999999999999;
 }
 
 
