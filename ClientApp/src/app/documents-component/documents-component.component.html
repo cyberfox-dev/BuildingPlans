@@ -1,7 +1,9 @@
 <div class="container-fluid">
   <button *ngIf="!isCalledInsidePermit" mat-raised-button color="action" (click)="openDocUpload(newSub)">Upload document</button>
   <!--permitupload Sindiswa 09 January 2024 - for the purpose of uploading documents under the "Permits" tab-->
-  <button *ngIf="isCalledInsidePermit" mat-raised-button color="action" [disabled]="hasDocument" (click)="openDocUpload(newSub)">Upload document</button>
+  <button *ngIf="isCalledInsidePermit && hasDocument == false" mat-raised-button color="action" [disabled]="hasDocument" (click)="openDocUpload(newSub)">Upload document</button>
+  <button mat-raised-button color="blue" *ngIf="isCalledInsidePermit && hasDocument" (click)="viewDocument(-1)" matTooltip="View document"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid-white.svg" class="icon"></button>
+
   <!--End of permitupload Sindiswa 09 January 2024 - for the purpose of uploading documents under the "Permits" tab-->
 </div>
 

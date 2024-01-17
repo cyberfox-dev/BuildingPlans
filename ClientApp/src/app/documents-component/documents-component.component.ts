@@ -3,6 +3,7 @@ import { MatTable } from '@angular/material/table';
 
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { DocumentUploadService } from '../service/DocumentUpload/document-upload.service';
+import { PermitComponentComponent } from 'src/app/permit-component/permit-component.component';
 import { SharedService } from "../shared/shared.service";
 import { PermitService } from '../service/Permit/permit.service';
 
@@ -42,8 +43,9 @@ export class DocumentsComponentComponent implements OnInit {
 
   @Input() isCalledInsidePermit: boolean = false; //default?
   @Input() permitSubForCommentID: any;
+  @Input() permitDocumentName: any | null;
   hasDocument: boolean = false;
-  constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService, private permitService : PermitService) { }
+  constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService, private permitService: PermitService, private permitComponentComponent: PermitComponentComponent) { }
 
   ngOnInit(): void {
     this.currentApplication = this.shared.getViewApplicationIndex();
@@ -131,40 +133,78 @@ export class DocumentsComponentComponent implements OnInit {
   }
 
   onFileUpload(event: any) {
+    if (this.isCalledInsidePermit) {
+      this.permitComponentComponent.getAllPermitForComment();
+    }
     
 
   }
 
   viewDocument(index: any) {
+    debugger;
+    if (this.permitDocumentName != null && index == -1) {
+      // Make an HTTP GET request to fetch the document
+      fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.permitDocumentName}`)
+        .then(response => {
+          if (response.ok) {
+            // The response status is in the 200 range
 
-    // Make an HTTP GET request to fetch the document
-    fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.DocumentsList[index].DocumentName}`)
-      .then(response => {
-        if (response.ok) {
-          // The response status is in the 200 range
+            return response.blob(); // Extract the response body as a Blob
 
-          return response.blob(); // Extract the response body as a Blob
+          } else {
+            throw new Error('Error fetching the document');
+          }
+        })
+        .then(blob => {
+          // Create a URL for the Blob object
+          const documentURL = URL.createObjectURL(blob);
 
-        } else {
-          throw new Error('Error fetching the document');
-        }
-      })
-      .then(blob => {
-        // Create a URL for the Blob object
-        const documentURL = URL.createObjectURL(blob);
+          window.open(documentURL, '_blank');
 
-        window.open(documentURL, '_blank');
+          // Download the document
+          const link = document.createElement('a');
+          link.href = documentURL;
+          link.download = this.DocumentsList[index].DocumentName; // Set the downloaded file name
+          link.click();
+        })
+        .catch(error => {
+          console.log(error);
+          // Handle the error appropriately
+        });
+    }
+    else {
 
-        // Download the document
-        const link = document.createElement('a');
-        link.href = documentURL;
-        link.download = this.DocumentsList[index].DocumentName; // Set the downloaded file name
-        link.click();
-      })
-      .catch(error => {
-        console.log(error);
-        // Handle the error appropriately
-      });
+      // Make an HTTP GET request to fetch the document
+      fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.DocumentsList[index].DocumentName}`)
+        .then(response => {
+          if (response.ok) {
+            // The response status is in the 200 range
+
+            return response.blob(); // Extract the response body as a Blob
+
+          } else {
+            throw new Error('Error fetching the document');
+          }
+        })
+        .then(blob => {
+          // Create a URL for the Blob object
+          const documentURL = URL.createObjectURL(blob);
+
+          window.open(documentURL, '_blank');
+
+          // Download the document
+          const link = document.createElement('a');
+          link.href = documentURL;
+          link.download = this.DocumentsList[index].DocumentName; // Set the downloaded file name
+          link.click();
+        })
+        .catch(error => {
+          console.log(error);
+          // Handle the error appropriately
+        });
+    }
+
+  
 
   }
 
@@ -227,6 +267,7 @@ export class DocumentsComponentComponent implements OnInit {
         console.log("API Response:", data);
         console.log("This is the response for the Has Document question", data.HasDocuments);
         this.hasDocument = data && data.dateSet.hasDocuments;
+      
       });
     }
   }
