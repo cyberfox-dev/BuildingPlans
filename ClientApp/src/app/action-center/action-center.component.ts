@@ -43,6 +43,7 @@ import 'tinymce/themes/silver';
 import 'tinymce/plugins/lists';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { DepartmentCirculationPlanningComponent } from '../department-circulation-planning/department-circulation-planning.component';
+import { ReviewerforcommentService } from '../service/ReviewerForComment/reviewerforcomment.service';
 
 declare var tinymce: any;
 
@@ -378,7 +379,8 @@ export class ActionCenterComponent implements OnInit {
     private notificationsService: NotificationsService,
     private manuallyAssignUsersService: ManuallyAssignUsersService,
     private sanitizer: DomSanitizer,
-    private _bottomSheet: MatBottomSheet
+    private _bottomSheet: MatBottomSheet,
+    private reviwerforCommentService: ReviewerforcommentService,
 
   ) { }
   openEnd(content: TemplateRef<any>) {
@@ -468,6 +470,7 @@ export class ActionCenterComponent implements OnInit {
     this.loggedInUsersEmail = this.CurrentUserProfile[0].email;
     this.loggedInUserName = this.CurrentUserProfile[0].fullName;
     this.getCurrentUserSubDepName();
+    this.newAssignORReassign(); //actionCentreEdits Sindiswa 16 January 2024
     this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
     if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
       this.getUsersByRoleName("Permit Issuer");
@@ -495,7 +498,7 @@ export class ActionCenterComponent implements OnInit {
     this.CheckApplicant();
     this.setProjectNumber();
 
-
+    
 
     
 
@@ -2106,7 +2109,7 @@ export class ActionCenterComponent implements OnInit {
   }
 
   onManuallyAssignUser() {
-    
+
 
     if (confirm("Are you sure you what to assign this project to " + this.UserSelectionForManualLink.selected[0].fullName + "?")) {
       this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.forManuallyAssignSubForCommentID, this.UserSelectionForManualLink.selected[0].id).subscribe((data: any) => {
@@ -3403,8 +3406,6 @@ export class ActionCenterComponent implements OnInit {
 
         break;
       }
-
-
 
 
       default: {
@@ -5119,9 +5120,221 @@ getAllCommentsByUserID() {
     }
   }
 
+  // #region actionCenterReassignReviewer Sindiswa 16 January 2024
+  hasReviewerAssignment: boolean = false;
+  assignedReviewerID: string = '';
+  assignedReviewerName: string = '';
+
+  newAssignORReassign() {
+    debugger;
+
+    this.subDepartmentForCommentService.getAssignedReviewer(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        console.log("Reviewer assignment information:", data.dateSet);
+
+          let current = data.dateSet[0];
+        if (current.userAssaignedToComment) {
+
+          this.hasReviewerAssignment = true;
+          this.assignedReviewerID = current.userAssaignedToComment;
+
+          this.userPofileService.getUserProfileById(this.assignedReviewerID).subscribe((data: any) => {
+
+
+              if (data.responseCode == 1) {
+
+
+                console.log("data", data.dateSet);
+                const assigned = data.dateSet[0]; //This should be the latest human's name!!
+                this.assignedReviewerName = assigned.fullName;
+                console.log("These are the assigned user's details", assigned);
+
+              }
+
+              else {
+
+                alert(data.responseMessage);
+              }
+              console.log("reponse", data);
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+    
+            return;
+          }
+          else {
+            this.hasReviewerAssignment = false;
+          }
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+    }, error => {
+      console.log("Error in terms of trying to figure out if a reviewer has been assigned to application: ", error);
+    })
+  }
+
+  newlySelectedReviewerID: string = '';
+  newlySelectedReviewerName: string = '';
+  adminNote: string = '';
+
+  openAssignToNewUser(adminNotes: any) {
+    this.newlySelectedReviewerID = this.UserSelectionForManualLink.selected[0].id;
+
+    this.userPofileService.getUserProfileById(this.UserSelectionForManualLink.selected[0].id).subscribe((data: any) => {
+
+
+      if (data.responseCode == 1) {
+
+
+        console.log("data", data.dateSet);
+        const newAssigned = data.dateSet[0]; //This should be the latest human's name!!
+        this.newlySelectedReviewerName = newAssigned.fullName;
+        console.log("These are the NEW assigned user's details", newAssigned);
+
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+    this.modalService.open(adminNotes, { backdrop: 'static', size: 'xl' });
+  }
+
+  textWithReviewerAssign() {
+    debugger;
+    if (this.hasReviewerAssignment == false) {
+      this.reviwerforCommentService.addUpdateReviewerForComment(0, this.ApplicationID, this.UserSelectionForManualLink.selected[0].id, "Initial Reviewer Assignment", "This has been done with no notes.", this.CurrentUser.appUserId, this.loggedInUsersSubDepartmentID, this.loggedInUsersSubDepartmentName, this.CurrentUserProfile[0].zoneID, this.CurrentUserProfile[0].zoneName).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+
+        }
+        else {
+          alert(data.responseMessage);
+
+        }
+        console.log("Assigned a reviewer to this zone", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+    }
+    else {
+
+      this.reviwerforCommentService.addUpdateReviewerForComment(0, this.ApplicationID, this.UserSelectionForManualLink.selected[0].id, "Assigning to Another Reviewer", this.adminNote, this.CurrentUser.appUserId, this.loggedInUsersSubDepartmentID, this.loggedInUsersSubDepartmentName, this.CurrentUserProfile[0].zoneID, this.CurrentUserProfile[0].zoneName).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          //need to make the other reviewer inactive or something
+        }
+        else {
+          alert(data.responseMessage);
+
+        }
+        console.log("Assigned another reviewer to this zone", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+    }
+  }
+
+  seniorReviewerDibs: boolean = false;
+  finalApproverDibs: boolean = false;
+
+  subDPTforComment: number;
+  userAssignedText: string = '';
+  commentState: string = '';
+
+  appointmentText: string = '';
+
+  takeApplication() {
+
+    //1. check the user assignement details first!
+    this.subDepartmentForCommentService.getAssignedReviewer(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe(async (data: any) => {
+      if (data.responseCode == 1) {
+        console.log("User assignment information:", data.dateSet);
+
+        let current = data.dateSet[0];
+
+        this.subDPTforComment = await current.subDepartmentForCommentID;
+        this.userAssignedText = await current.userAssaignedToComment;
+        this.commentState = await current.commentStatus;
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+    }, error => {
+      console.log("Error in terms of trying to figure out which 'state' the application is in:", error);
+    });
+
+    //2. can a person take an application?
+    if ((this.userAssignedText == "Senior Reviewer to comment" && this.commentState == "Referred") || (this.userAssignedText == "All users in Subdepartment FA" && this.commentState == "Approved")) {
+
+      if (this.commentState == "Referred") {
+        this.appointmentText = "Senior Reviewer - Self Appointed"
+      }
+      else if (this.commentState == "Approved") {
+        this.appointmentText = "Final Approver - Self Appointed"
+      }
+
+      var userConfirmed = window.confirm("Are you sure you want to take the application?");
+
+
+      if (userConfirmed) {
+
+        //this.subDepartmentForCommentService.addUpdateDepartmentForComment(this.subDPTforComment, null, null, null, this.CurrentUser.appUserId,null,null,null,null).subscribe((data: any) => {
+        this.subDepartmentForCommentService.assignSeniorReviewerOrFinalApprover(this.subDPTforComment, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+          //ADD AUDIT TRAIL THINGS
+          this.reviwerforCommentService.addUpdateReviewerForComment(0, this.ApplicationID, this.CurrentUser.appUserId, this.appointmentText, "User Officially Took Application", this.CurrentUser.appUserId, this.loggedInUsersSubDepartmentID, this.loggedInUsersSubDepartmentName, this.CurrentUserProfile[0].zoneID, this.CurrentUserProfile[0].zoneName).subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+              //need to make the other reviewer inactive or something
+            }
+            else {
+              alert(data.responseMessage);
+
+            }
+            console.log("Official user role assignement!", data);
+
+          }, error => {
+            console.log("Error: ", error);
+          });
+        })
+        console.log("Application taken!");
+      } else {
+
+        console.log("Application not taken.");
+      }
+    }
+    else if (this.userAssignedText === this.CurrentUser.appUserId) {
+      //ACTION CENTER OPENS WITH ENABLED BUTTONS
+    }
+    else {
+     //suggests that you don't have access therefore no Action Centre
+    }
+
+  }
+
+  letGoOFApplication() {
+
+  }
+  // #endregion
+
   
-
-
 }
 
 

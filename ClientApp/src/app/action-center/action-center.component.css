@@ -371,6 +371,11 @@ textarea {
 }
 
 
+/*actionCentreEdits Sindiswa 16 January 2024*/
+.centered-paragraph {
+  text-align: center;
+  margin-top: 20px; /* Adjust the margin-top value as needed */
+}
 
 
 

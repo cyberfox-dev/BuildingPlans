@@ -108,6 +108,26 @@ export class SubDepartmentForCommentService {
 
   }
 
+  // #region actionCentreEdits Sindiswa 16 January 2024
+  public getAssignedReviewer(applicationID: number | null, subDepartmentID: | null, zoneID: | null) {
+    debugger;
+    const body = {
+      ApplicationID: applicationID,
+      SubDepartmentID: subDepartmentID,
+      ZoneID: zoneID,
+    }
+    return this.httpClient.post(this.baseURL + "GetAssignedReviewer", body);
+
+  }
+
+  public assignSeniorReviewerOrFinalApprover(subDepartmentForCommentID: number | null, userAssaignedToComment?: string | null) {
+    const body = {
+      SubDepartmentForCommentID: subDepartmentForCommentID,
+      UserAssaignedToComment: userAssaignedToComment,
+    }
+    return this.httpClient.post(this.baseURL + "AssignSeniorReviewerOrFinalApprover", body);
+  }
+  // #endregion
 
 
 
