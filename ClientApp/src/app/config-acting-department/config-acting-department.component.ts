@@ -98,9 +98,9 @@ export class ConfigActingDepartmentComponent implements OnInit {
 
     this.getAllUserLinks(this.CurrentUserProfile[0].userID);
     this.UserList.forEach(user => {
-      debugger;
+      
       if (user.isDefault == false || user.isDefault == true) {
-        debugger;
+        
         user.isActive = false; // Deactivate other items
       }
     });
@@ -119,7 +119,7 @@ export class ConfigActingDepartmentComponent implements OnInit {
   getAllUserLinks(userId: string): void {
     this.zoneLinkService.getAllUserLinks(userId).subscribe(
       (data: any) => {
-        debugger;
+        
         if (data?.responseCode === 1 && data?.dateSet) {
           this.allZoneLinks = data.dateSet;
           this.SubDepartmentList = data.dateSet.map((link: ZoneLinks) => ({
@@ -136,9 +136,9 @@ export class ConfigActingDepartmentComponent implements OnInit {
   }
 
   updateZoneList(): void {
-    debugger;
+    
     if (this.selectedDep) {
-      debugger;
+      
       this.ZoneList = this.allZoneLinks
         .filter(link => link.subDepartmentId === this.selectedDep)
         .map(link => ({
@@ -162,7 +162,7 @@ export class ConfigActingDepartmentComponent implements OnInit {
 /*  items = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'];
   currentItem: string = this.items[0];*/
   toggleActive(item: UserList): void {
-    debugger;
+    
     this.UserList.forEach(user => {
       if (user !== item) {
         user.isActive = false; // Deactivate other items
@@ -180,20 +180,20 @@ export class ConfigActingDepartmentComponent implements OnInit {
   activateProfile(item: any) {
 
     const index = this.UserList.indexOf(item);
-    debugger;
+    
     if (confirm("Are you sure you want to change to this profile?")) {
       this.isLoading = true;
       this.userPofileService.updateActingDepartment(this.UserList[index].userProfileID).pipe(
         switchMap((data: Response) => {
           if (data.responseCode === 1) {
-            debugger;
+            
 
             return this.getUserProfile();
           }
           return throwError(data.responseMessage);
         }),
         tap((profileData: Response) => {
-          debugger;
+          
           const userId = profileData.dateSet[0].userProfileID;
           this.setLocalStorage("userProfile", profileData.dateSet);
           this.getAllRolesForUserForAllAG(userId);
@@ -277,7 +277,7 @@ export class ConfigActingDepartmentComponent implements OnInit {
         if (defaultUser) {
           defaultUser.isActive = true;
         }
-        debugger;
+        
 
 
       } else {
@@ -295,7 +295,7 @@ export class ConfigActingDepartmentComponent implements OnInit {
   }
 
   getUserProfile(): Observable<any> {
-    debugger;
+    
     const currentUser = JSON.parse(localStorage.getItem("LoggedInUserInfo"));
 
 
@@ -305,14 +305,14 @@ export class ConfigActingDepartmentComponent implements OnInit {
 
 
   getAllRolesForUserForAllAG(userId: number): void {
-    debugger;
+    
     this.accessGroupsService.getAllRolesForUserForAllAG(userId).subscribe(
       (data: any) => {
-        debugger;
+        
         if (data?.responseCode === 1 && data?.dateSet) {
           this.setLocalStorage("AllCurrentUserRoles", data.dateSet);
         } else {
-          debugger;
+          
           console.error("Invalid data structure received: ", data);
         }
       },

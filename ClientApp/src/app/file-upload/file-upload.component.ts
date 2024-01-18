@@ -47,7 +47,7 @@ export class FileUploadComponent implements OnInit {
   ngOnInit(): void {
     this.CurrentUser = JSON.parse(localStorage.getItem('LoggedInUserInfo') || '{}');
     this.currentApplication = this.shared.getViewApplicationIndex(); 
-    debugger;
+    
     if (this.ApplicationID == "isRep") {
 
     }
@@ -88,7 +88,7 @@ export class FileUploadComponent implements OnInit {
 
   uploadFile(files: any) {
     if (this.ApplicationID == "isRep") {
-      debugger;
+      
       if (files && files.length === 0) {
         return;
       }
@@ -105,20 +105,20 @@ export class FileUploadComponent implements OnInit {
 
       const fileNameParts = fileToUpload.name.split('.');
       this.fileExtention = fileNameParts.length > 1 ? `.${fileNameParts[fileNameParts.length - 1].toLowerCase()}` : "";
-      debugger;
+      
       if (fileNameParts.length > 2 || this.fileExtention === ".webp") {
         if (this.fileExtention === ".webp") {
           alert("You cannot upload .webp files!");
-          debugger;
+          
         } else {
           alert("Invalid file name.");
-          debugger;
+          
         }
         return;
       }
 
       if (this.UploadFor == "Doc") {
-        debugger;
+        
         if (this.ApplicationID === undefined) {
           this.fileUploadName = fileNameParts[0];
         } else {
@@ -127,24 +127,24 @@ export class FileUploadComponent implements OnInit {
 
       }
       else {
-        debugger;
+        
         this.fileUploadName = this.UploadFor.substring(' ');
       }
 
       const handleResponse = (data: any) => {
-        debugger;
+        
         if (data?.responseCode == 1) {
-          debugger;
+          
           const matchedDocument = data.dateSet.find(doc => doc.documentName === this.fileUploadName + this.fileExtention);
 
           if (matchedDocument) {
-            debugger;
+            
             alert('Oops, you cannot upload files with the same name!');
           } else {
             this.fileName = fileToUpload.name;
             this.passFileName.emit({ uploadFor: this.UploadFor, fileName: fileToUpload.name });
             this.UploadDocuments(fileToUpload, this.fileUploadName + this.fileExtention);
-            debugger;
+            
           }
         } else {
           alert(data?.responseMessage);
@@ -163,7 +163,7 @@ export class FileUploadComponent implements OnInit {
 
       serviceCall().subscribe(handleResponse, handleError);
     } else {
-      debugger;
+      
       if (files && files.length === 0) {
         return;
       }
@@ -180,27 +180,27 @@ export class FileUploadComponent implements OnInit {
 
       const fileNameParts = fileToUpload.name.split('.');
       this.fileExtention = fileNameParts.length > 1 ? `.${fileNameParts[fileNameParts.length - 1].toLowerCase()}` : "";
-      debugger;
+      
       if (fileNameParts.length > 2 || this.fileExtention === ".webp") {
         if (this.fileExtention === ".webp") {
           alert("You cannot upload .webp files!");
-          debugger;
+          
         } else {
           alert("Invalid file name.");
-          debugger;
+          
         }
         return;
       }
 
       if (this.UploadFor == "Doc") {
-        debugger;
+        
         if (this.ApplicationID === undefined) {
           this.currentApplication
           this.fileUploadName = fileNameParts[0] + "_appID";
         }
        //  Financial POP Kyle 15/01/24
         else if (this.uploadingPOP === true) {
-          debugger;
+          
           const projectNumber = this.currentApplication.ProjectNumber;
        
             this.fileUploadName = "Proof Of Payment _appID" + this.ApplicationID;
@@ -212,24 +212,24 @@ export class FileUploadComponent implements OnInit {
        //  Financial POP Kyle 15/01/24
       }
       else {
-        debugger;
+        
         this.fileUploadName = this.UploadFor.substring(' ') + "_appID" + this.ApplicationID;
       }
 
       const handleResponse = (data: any) => {
-        debugger;
+        
         if (data?.responseCode == 1) {
-          debugger;
+          
           const matchedDocument = data.dateSet.find(doc => doc.documentName === this.fileUploadName + this.fileExtention);
 
           if (matchedDocument) {
-            debugger;
+            
             alert('Oops, you cannot upload files with the same name!');
           } else {
             this.fileName = fileToUpload.name;
             this.passFileName.emit({ uploadFor: this.UploadFor, fileName: fileToUpload.name });
             this.UploadDocuments(fileToUpload, this.fileUploadName + this.fileExtention);
-            debugger;
+            
           }
         } else {
           alert(data?.responseMessage);
@@ -253,26 +253,26 @@ export class FileUploadComponent implements OnInit {
 
 
   onDeleteFile() {
-    debugger;
+    
     if (!this.fileName) {
       return; // No file selected, nothing to delete
     }
-    debugger;
+    
     const confirmDelete = confirm(`Are you sure you want to delete the file "${this.fileName}"?`);
-    debugger;
+    
     if (!confirmDelete) {
       return; // User cancelled the delete operation
     }
-    debugger;
+    
     if (this.ApplicationID == "isRep") {
       const handleResponse = (data: any) => {
-        debugger;
+        
         if (data?.responseCode == 1) {
-          debugger;
+          
           const matchedDocument = data.dateSet.find(doc => doc.documentName === this.fileUploadName + this.fileExtention);
 
           if (matchedDocument) {
-            debugger;
+            
             if (this.isFinancial) {
               this.financialService.deleteFinancial(matchedDocument.financialID).subscribe(response => {
                 if (response) { // Assuming server responds with true on successful deletion
@@ -303,7 +303,7 @@ export class FileUploadComponent implements OnInit {
 
           } else {
             alert('No matching file found in the server database.');
-            debugger;
+            
           }
         } else {
           alert(data?.responseMessage);
@@ -324,13 +324,13 @@ export class FileUploadComponent implements OnInit {
     }
     else {
       const handleResponse = (data: any) => {
-        debugger;
+        
         if (data?.responseCode == 1) {
-          debugger;
+          
           const matchedDocument = data.dateSet.find(doc => doc.documentName === this.fileUploadName + this.fileExtention);
 
           if (matchedDocument) {
-            debugger;
+            
             if (this.isFinancial) {
               this.financialService.deleteFinancial(matchedDocument.financialID).subscribe(response => {
                 if (response) { // Assuming server responds with true on successful deletion
@@ -361,7 +361,7 @@ export class FileUploadComponent implements OnInit {
 
           } else {
             alert('No matching file found in the server database.');
-            debugger;
+            
           }
         } else {
           alert(data?.responseMessage);
@@ -423,7 +423,7 @@ export class FileUploadComponent implements OnInit {
   }
 
   uploadFinished = (event: any, applicationID: any, applicationData: any) => {
-    debugger;
+    
     this.response = event;
     console.log("this.response", this.response);
     console.log("this.response?.dbPath", this.response?.dbPath);
@@ -437,7 +437,7 @@ export class FileUploadComponent implements OnInit {
       this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, null, applicationData.appUserId, this.CurrentUser.appUserId, this.shared.RepFileUploadCat, this.shared.RepFileUploadSubID, this.shared.RepFileUploadSubName, null, true, this.descriptionForDocRepoS).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
-          debugger;
+          
           // Emit the onUploadSuccess event after a successful upload
           this.onUploadSuccess.emit(event.body);
           this.shared.RepFileUploadCat = null;
@@ -458,7 +458,7 @@ export class FileUploadComponent implements OnInit {
         this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, applicationID, applicationData.appUserId, this.CurrentUser.appUserId, groupName).subscribe((data: any) => {
 
           if (data.responseCode == 1) {
-            debugger;
+            
             // Emit the onUploadSuccess event after a successful upload
             this.onUploadSuccess.emit(event.body);
           }
@@ -472,11 +472,11 @@ export class FileUploadComponent implements OnInit {
         })
       }
       else {
-        debugger;
+        
         this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, applicationID, applicationData.appUserId, this.CurrentUser.appUserId).subscribe((data: any) => {
-          debugger;
+          
           if (data.responseCode == 1) {
-            debugger;
+            
             // Emit the onUploadSuccess event after a successful upload
             this.onUploadSuccess.emit(event.body);
           }
@@ -496,7 +496,7 @@ export class FileUploadComponent implements OnInit {
 
 
   financialuploadFinished = (event: any, applicationID: any, applicationData: any) => {
-    debugger;
+    
     this.response = event;
     console.log("this.response", this.response);
     console.log("this.response?.dbPath", this.response?.dbPath);

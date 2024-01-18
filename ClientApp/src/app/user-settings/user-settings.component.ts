@@ -276,7 +276,7 @@ export class UserSettingsComponent implements OnInit {
 
         if (data.responseCode == 1) {
           alert(data.responseMessage);
-          debugger;
+          
           this.getUserProfileByUserID();
         }
 
@@ -350,7 +350,7 @@ export class UserSettingsComponent implements OnInit {
 
 
       this.userService.updatePassword(this.loggedInUsersEmail, this.newPassword).subscribe((data: any) => {
-        debugger;
+        
         if (data.responseCode === 1) {
 
 

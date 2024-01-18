@@ -97,14 +97,14 @@ export class ProjectSizeConfigComponent implements OnInit {
 
 
   setFilterActivityType() {
-    debugger;
+    
     this.dataSource = this.ProjectSizeCheckList.filter(df => df.projectSizeCheckListActivityType == this.projectSizeCheckActivityType);
     this.PSCheckListTable?.renderRows();
   }
 
 
   setFilterManDocCategory() {
-    debugger;
+    
     this.dataSource = this.ProjectSizeCheckList.filter(df => df.mandatoryDocumentCategory == this.manDocCategory);
     this.PSCheckListTable?.renderRows();
   }
@@ -168,7 +168,7 @@ export class ProjectSizeConfigComponent implements OnInit {
   }
 
   openEditCheckListItem(editProjectCheckListItem: any, index: any) {
-    debugger;
+    
     this.modalService.dismissAll();
     this.editingProjectCheckListItem.controls["editActivity"].setValue(this.ProjectSizeCheckList[index].projectSizeCheckListActivity);
     this.editingProjectCheckListItem.controls["editActivityType"].setValue(this.ProjectSizeCheckList[index].projectSizeCheckListActivityType);
@@ -197,12 +197,12 @@ export class ProjectSizeConfigComponent implements OnInit {
   }
 
   getAllProjectSizeCheckList() {
-    //debugger;
+    //
     this.ProjectSizeCheckList.splice(0, this.ProjectSizeCheckList.length);
     this.psCheckListService.getAllProjectSizeCheckList().subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        //debugger;
+        //
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempProjectSizeCheckList = {} as ProjectSizeCheckList;
           const current = data.dateSet[i];

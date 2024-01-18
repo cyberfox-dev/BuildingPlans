@@ -187,10 +187,10 @@ export class InternalUserUnassignedDepartmentComponent implements OnInit {
     });
   }
   getDepartmentID(subDepartmentID: number) {
-    debugger;
+    
     this.subDepartmentsService.getSubDepartmentBySubDepartmentID(subDepartmentID).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         this.theDepartmentID = data.dateSet[0].departmentID;
 
         console.log("All I want is the DepartmentID: ", data);

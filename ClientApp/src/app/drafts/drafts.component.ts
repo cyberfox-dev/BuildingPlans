@@ -64,15 +64,15 @@ export class DraftsComponent implements OnInit {
    
   }
   getAllDraftsForUser() {
-    debugger;
+    
     this.DraftsList.splice(0, this.DraftsList.length);
 
       this.draftApplicationService.getDraftedApplicationsListForExternal(this.CurrentUser.appUserId).subscribe((data: any) => {
-        debugger;
+        
         if (data.responseCode == 1) {
-          debugger;
+          
           for (let i = 0; i < data.dateSet.length; i++) {
-            debugger;
+            
             const tempDraftsList = {} as DraftsList;
             const current = data.dateSet[i];
             const date = current.dateCreated;
@@ -122,21 +122,21 @@ export class DraftsComponent implements OnInit {
     this.sharedService.isDraft = true;
     this.sharedService.clientUserID = this.DraftsList[index].UserID;
     this.modalService.dismissAll();
-    debugger;
+    
     this.userPofileService.getUserProfileById(this.DraftsList[index].UserID).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
         this.CurrentUserProfile = data.dateSet[0];
 
         if (this.CurrentUserInfo.isInternal == true && this.CurrentUser.appUserId == this.DraftsList[index].UserID) {
 
-          debugger;
+          
           this.sharedService.option = "internal";
           this.NewWayleaveComponent.internal = true;
         }
 
         else if (this.CurrentUserInfo.isInternal == true && this.CurrentUser.appUserId != this.DraftsList[index].UserID && this.CurrentUserProfile.isInternal == false) {
-          debugger;
+          
 
           this.sharedService.option = "client"
           this.NewWayleaveComponent.client = true;
@@ -147,13 +147,13 @@ export class DraftsComponent implements OnInit {
           this.NewWayleaveComponent.internalProxy = true;
 
         }
-        debugger;
+        
         this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: false } });
       }
       else {
         alert(data.responseMessage);
       }
-      debugger;
+      
 
     },
 
@@ -161,7 +161,7 @@ export class DraftsComponent implements OnInit {
         console.log("Error: ", error);
       }
     );
-    debugger;
+    
 
 
 
@@ -169,14 +169,14 @@ export class DraftsComponent implements OnInit {
   getLoggedInUser() {
     this.userPofileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         this.CurrentUserInfo = data.dateSet[0];
         this.getAllDraftsForUser();
       }
       else {
         alert(data.responseMessage);
       }
-      debugger;
+      
 
     },
 

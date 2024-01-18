@@ -717,10 +717,10 @@ export class NewWayleaveComponent implements OnInit {
     this.toggleButtonVisibility();
   }
   private toggleButtonVisibility() {
-    debugger;
+    
     const shouldShow = window.pageYOffset > this.scrollThreshold;
     if (shouldShow) {
-      debugger;
+      
 
       this.draft = true;
     } else {
@@ -1387,7 +1387,7 @@ export class NewWayleaveComponent implements OnInit {
 
     }
     if (this.isDraft == true) {
-      debugger;
+      
     
       if (this.PSM = "") {
 
@@ -1755,7 +1755,7 @@ export class NewWayleaveComponent implements OnInit {
 
     }
     if (this.isDraft == true) {
-      debugger;
+      
 
       if (this.PSM = "") {
         this.draftApplicationsService.addUpdateDraftApplication(this.currentDraftID, this.applicationID, this.CurrentUser.appUserId, this.externalName + " " + this.externalSurname, this.externalEmail, null, this.externalAddress, this.clientRefNo, this.clientCompanyRegNo, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null, null).subscribe((data: any) => {
@@ -1982,7 +1982,7 @@ export class NewWayleaveComponent implements OnInit {
     this.applicationID = this.shared.getApplicationID();
     this.isDraft = isDraft;
     console.log("What gaan an? " + this.shared.getApplicationID());
-    debugger;
+    
 
     if (this.applicationID === 0) {
 
@@ -3944,12 +3944,12 @@ export class NewWayleaveComponent implements OnInit {
     console.log("uniqueArray:", uniqueArray);
 
     uniqueArray.forEach((obj) => {
-      debugger;
+      
       this.zoneForCommentService.addUpdateZoneForComment(0, obj.subDepartmentID, this.applicationID, obj.zoneID, obj.zoneName, obj.userID).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           /*          alert(data.responseMessage);*/
-          debugger;
+          
           this.onAutoLinkDepartment(obj.subDepartmentID, obj.subDepartmentName, obj.zoneID, obj.zoneName);
 
         }
@@ -4738,7 +4738,7 @@ export class NewWayleaveComponent implements OnInit {
       if (data.responseCode === 1) {
         if (data.dateSet.length <= 1) {
           const current = data.dateSet[0];
-          debugger;
+          
           // Assign data to component properties
           this.currentDraftID = current.draftID;
           this.applicationID = applicationId;
@@ -4764,7 +4764,7 @@ export class NewWayleaveComponent implements OnInit {
         }
         else {
           const current = data.dateSet[data.dateSet.length - 1];
-          debugger;
+          
           // Assign data to component properties
           this.applicationID = applicationId;
           this.PSM = current.typeOfApplication + " Application";
@@ -4805,15 +4805,15 @@ export class NewWayleaveComponent implements OnInit {
     return option1 === option2;
   }
   CheckProjectSizeChecklistForDraft() {
-    debugger;
+    
     this.projectSizeSelectionService.getProjectSizedSelectionForApplication(this.applicationID).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
-          debugger;
+          
           const current = data.dateSet[i];
-          debugger;
+          
           const tempSelectionList = {} as ProjectSizeSelectionList
           tempSelectionList.selectedProject = current.selectedProject;
           tempSelectionList.projectDescription = current.projectDescription;
@@ -4839,7 +4839,7 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   AddUpdateDraftWayleave() {
-    debugger;
+    
     this.draftApplicationsService.addUpdateDraftApplication(0, this.applicationID, this.CurrentUserProfile.appUserId, this.internalName + " " + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject
       , this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null, null).subscribe((data: any) => {
         this.openSnackBar("Draft Saved!");

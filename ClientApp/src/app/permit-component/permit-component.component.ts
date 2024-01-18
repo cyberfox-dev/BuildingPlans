@@ -125,7 +125,7 @@ export class PermitComponentComponent implements OnInit {
 
   private readonly apiUrl: string = this.shared.getApiUrl() + '/api/';
   async CombinePTW() {
-    debugger;
+    
 
     for (var i = 0; i < this.PTCList.length; i++) {
 
@@ -159,21 +159,21 @@ export class PermitComponentComponent implements OnInit {
 
       .then(combinedPdfBlob => {
         // Do something with the combined PDF blob, like downloading it
-        debugger;
+        
         const link = document.createElement('a');
         link.href = URL.createObjectURL(combinedPdfBlob);
         link.download = 'combined.pdf';
         link.click();
       })
       .catch(error => {
-        debugger;
+        
         console.error('Error combining PDFs:', error);
       });
 
   }
 
   private async combinePDFs(pdfBlobs: Blob[]): Promise<Blob> {
-    debugger;
+    
     const combinedPdfDoc = await PDFDocument.create();
 
     for (const pdfBlob of pdfBlobs) {
@@ -182,13 +182,13 @@ export class PermitComponentComponent implements OnInit {
      
       const copiedPages = await combinedPdfDoc.copyPages(pdfDoc, pdfDoc.getPageIndices());
       copiedPages.forEach(page => {
-        debugger;
+        
         combinedPdfDoc.addPage(page);
       });
     }
-    debugger;
+    
     const combinedPdfBytes = await combinedPdfDoc.save();
-    debugger;
+    
     return new Blob([combinedPdfBytes], { type: 'application/pdf' });
   }
 

@@ -246,7 +246,7 @@ export class NotificationCenterComponent implements OnInit {
 
     this.NotificationsList.splice(0, this.NotificationsList.length);
     this.notificationService.getNotificationByUserID(this.CurrentUser.appUserId).subscribe((data: any) => {
-      debugger;
+      
       
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
@@ -288,7 +288,7 @@ export class NotificationCenterComponent implements OnInit {
     this.modalService.dismissAll();
   }
   onRefreshModal() {
-    debugger;
+    
     this.modalService.dismissAll();
 
     this.getAllNotifications();
@@ -296,22 +296,22 @@ export class NotificationCenterComponent implements OnInit {
   }
   
   getUserInfo() {
-    debugger;
+    
     this.userProfileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
       const current = data.dateSet[0];
       if (data.responseCode == 1) {
-        debugger;
+        
         this.internalUser = current.isInternal;
         this.fullName = current.fullName;
       }
       else {
-        debugger;
+        
         alert(data.responseMessage);
       }
       console.log("reponse", data);
 
     }, error => {
-      debugger;
+      
       console.log("Error: ", error);
     })
   }

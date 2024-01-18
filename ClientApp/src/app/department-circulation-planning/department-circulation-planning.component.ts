@@ -86,7 +86,7 @@ export class DepartmentCirculationPlanningComponent implements OnInit {
   getAllCommentsByUserID() {
 
     this.CommentDropDown.splice(0, this.CommentDropDown.length);
-    debugger;
+    
     this.commentService.getCommentByUserID(this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
