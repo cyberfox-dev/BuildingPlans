@@ -14,7 +14,7 @@ export class ReviewerforcommentService {
 
   public addUpdateReviewerForComment(reviewerForCommentID: number | null, applicationID: number | null, reviewerAssignedToComment:string |null, commentStatus: string | null, comment: string | null, createdByID: string|null, subdepartmentID: number | null, subdepartmentName: string|null, zoneID: number|null, zoneName:string|null) {
 
-    debugger;
+    
     const body = {
 
       ReviewerForCommentID: reviewerForCommentID,

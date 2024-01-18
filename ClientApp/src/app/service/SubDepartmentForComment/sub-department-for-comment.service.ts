@@ -110,7 +110,7 @@ export class SubDepartmentForCommentService {
 
   // #region actionCentreEdits Sindiswa 16 January 2024
   public getAssignedReviewer(applicationID: number | null, subDepartmentID: | null, zoneID: | null) {
-    debugger;
+    
     const body = {
       ApplicationID: applicationID,
       SubDepartmentID: subDepartmentID,

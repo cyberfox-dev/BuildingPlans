@@ -2931,7 +2931,7 @@ this.Applications.push(tempApplicationList);
 
 
       if (data.responseCode == 1) {
-        debugger;
+        
 
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempApplicationList = {} as ApplicationsList;

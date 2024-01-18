@@ -117,7 +117,7 @@ export class DocumentsComponentComponent implements OnInit {
       }
   }
   onPassFileName(event: { uploadFor: string; fileName: string }) {
-    debugger;
+    
     const { uploadFor, fileName } = event;
     const index = parseInt(uploadFor.substring('CoverLetter'.length));
     this.fileAttrsName = "Doc";
@@ -141,7 +141,7 @@ export class DocumentsComponentComponent implements OnInit {
   }
 
   viewDocument(index: any) {
-    debugger;
+    
     if (this.permitDocumentName != null && index == -1) {
       // Make an HTTP GET request to fetch the document
       fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.permitDocumentName}`)
@@ -219,9 +219,9 @@ export class DocumentsComponentComponent implements OnInit {
           const tempDocList = {} as DocumentsList;
 
           const current = data.dateSet[i];
-          const nameCheck = current.documentName.substring(0, 8);
-          debugger;
-          if (current.groupName != "Service Condition" && nameCheck != "Approval") {
+          const nameCheck = current.documentName.substring(0, 13);
+
+          if (current.documentName != "Service Condition" && nameCheck == "Approval Pack") {
             tempDocList.DocumentID = current.documentID;
             tempDocList.DocumentName = current.documentName;
             tempDocList.DocumentLocalPath = current.documentLocalPath;
