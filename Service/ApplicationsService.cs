@@ -400,7 +400,7 @@ namespace WayleaveManagementSystem.Service
 
 
 
-
+        //JJS 18Jan Added the createdByUserID part to the external so they can see the internal applications that they created if they did.
 
         //this method gets all the applications linked to a partcular user
         //We use DTO (a cutom list) because we may pull custom data from the database at some point, otherwise, we can just use the existing list.
@@ -457,7 +457,7 @@ namespace WayleaveManagementSystem.Service
             {
                 return await (
                    from Applications in _context.Application
-                   where Applications.UserID == userId && Applications.isActive == true && Applications.FullName != "" && Applications.FullName != null
+                   where Applications.isActive == true && Applications.FullName != "" && Applications.FullName != null && Applications.UserID == userId || Applications.CreatedById == userId
                    orderby Applications.DateCreated descending
                    select new ApplicationsDTO()
                    {
