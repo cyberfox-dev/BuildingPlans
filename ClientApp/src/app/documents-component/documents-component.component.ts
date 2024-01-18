@@ -231,12 +231,6 @@ export class DocumentsComponentComponent implements OnInit {
             this.DocumentsList.push(tempDocList);
           }
          
-
-
-
-         
-
-
         }
 
         this.DocumentsListTable?.renderRows();
