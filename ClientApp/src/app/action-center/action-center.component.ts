@@ -470,7 +470,8 @@ export class ActionCenterComponent implements OnInit {
     this.loggedInUsersEmail = this.CurrentUserProfile[0].email;
     this.loggedInUserName = this.CurrentUserProfile[0].fullName;
     this.getCurrentUserSubDepName();
-    this.newAssignORReassign(); //actionCentreEdits Sindiswa 16 January 2024
+    //this.newAssignORReassign(); //actionCentreEdits Sindiswa 16 January 2024
+    this.checkUserAssignSituation(); //actionCentreEdits Sindiswa 18 January 2024
     this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
     if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
       this.getUsersByRoleName("Permit Issuer");
@@ -1863,7 +1864,7 @@ export class ActionCenterComponent implements OnInit {
         
        
 
-        if (current.userAssaignedToComment == "Senior Reviewer to comment") {
+        if (current.userAssaignedToComment == "Senior Reviewer to comment" || current.commentStatus == "Referred" ) {
           
          
 
@@ -1921,8 +1922,8 @@ export class ActionCenterComponent implements OnInit {
         let current = data.dateSet[0];// Flag to track if a match is found
         
 
-       
-        if (current.userAssaignedToComment == "All users in Subdepartment FA") {
+       // projectTracker Sindiswa 19 January 2024
+        if (current.userAssaignedToComment == "All users in Subdepartment FA" || (current.userAssaignedToComment !== null && ( current.commentStatus == 'Approved'|| current.commentStatus === 'Rejected')) ) {
           
 
 
@@ -2612,7 +2613,7 @@ export class ActionCenterComponent implements OnInit {
   }
 
   onComment(interact: any) {
-    
+    debugger;
     let SubDepartmentName = "";
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
@@ -2625,7 +2626,7 @@ export class ActionCenterComponent implements OnInit {
 
       case "Approve": {
         
-       
+        debugger;
         if (this.WBSCheck == true) {
 
           //SubDepartmentForCommentService
@@ -2973,7 +2974,7 @@ export class ActionCenterComponent implements OnInit {
       }
 
       case "Reject": {
-        
+        debugger;
         if (confirm("Are you sure you want to reject this application?")) {
           this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Rejected", null, null,"All users in Subdepartment FA",false).subscribe((data: any) => {
 
@@ -3023,7 +3024,29 @@ export class ActionCenterComponent implements OnInit {
 
               this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application disapproved", emailContent, emailContent);
 /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application disapproved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have disapproved application " + this.projectNo + "with comment: <br><br><i>" + this.leaveAComment  + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/              this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application Disapproved", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have disapproved application " + this.projectNo + "with comment:" + this.leaveAComment).subscribe((data: any) => {
+*/
+              // #region what's up with this case?
+              debugger;
+              this.accessGroupsService.getUserBasedOnRoleName("FinalApprover", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+                debugger;
+                if (data.responseCode == 1) {
+                  debugger;
+                  console.log(data.dateSet);
+
+                  console.log("this.departmentAdminUsersgetAllLinkedRolesReponsethis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsers", this.departmentAdminUsers);
+                }
+                else {
+                  alert(data.responseMessage);
+                }
+                console.log("getAllLinkedRolesReponse", data);
+
+              }, error => {
+                console.log("getAllLinkedRolesReponseError: ", error);
+              })
+              // #endregion
+
+
+              this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application Disapproved", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have disapproved application " + this.projectNo + "with comment:" + this.leaveAComment).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
                   alert(data.responseMessage);
@@ -3041,7 +3064,6 @@ export class ActionCenterComponent implements OnInit {
               alert(data.responseMessage);
               //commentsService
               this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Rejected", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
-
                 if (data.responseCode == 1) {
 
                   alert(data.responseMessage);
@@ -3432,7 +3454,7 @@ export class ActionCenterComponent implements OnInit {
   }
 
   onCommentSR(interact: any) {
-    
+    debugger;
     let SubDepartmentName = "";
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
@@ -5176,6 +5198,37 @@ getAllCommentsByUserID() {
     })
   }
 
+
+  specialText: string = '';
+  checkUserAssignSituation() {
+
+    this.subDepartmentForCommentService.getAssignedReviewer(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        console.log("Reviewer assignment information:", data.dateSet);
+
+        let current = data.dateSet[0];
+        if (current.userAssaignedToComment !== "EndOfCommentProcess" && current.userAssaignedToComment !== "All users in Subdepartment FA" && current.userAssaignedToComment !== "Senior Reviewer to comment" ) {
+
+          this.hasReviewerAssignment = true;
+          this.newAssignORReassign();
+        }
+        else if (current.userAssaignedToComment === "EndOfCommentProcess" || current.userAssaignedToComment === "All users in Subdepartment FA" || current.userAssaignedToComment === "Senior Reviewer to comment") {
+          this.hasReviewerAssignment = false;
+          this.specialText = "Please note that this is the current 'state' of the application: " + current.userAssaignedToComment;
+          if (current.userAssaignedToComment === "EndOfCommentProcess") {
+            this.specialText = "Please note that this is the current 'state' of the application: End Of Comment Process";
+          }
+        }
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+    }, error => {
+      console.log("Error in terms of trying to figure out if a reviewer has been assigned to application: ", error);
+    })
+
+  }
   newlySelectedReviewerID: string = '';
   newlySelectedReviewerName: string = '';
   adminNote: string = '';
@@ -5250,18 +5303,16 @@ getAllCommentsByUserID() {
     }
   }
 
-  seniorReviewerDibs: boolean = false;
-  finalApproverDibs: boolean = false;
 
   subDPTforComment: number;
   userAssignedText: string = '';
   commentState: string = '';
 
   appointmentText: string = '';
+  asWhat: string;
 
-  takeApplication() {
+  actionCentreView(content: any) {
 
-    //1. check the user assignement details first!
     this.subDepartmentForCommentService.getAssignedReviewer(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe(async (data: any) => {
       if (data.responseCode == 1) {
         console.log("User assignment information:", data.dateSet);
@@ -5280,29 +5331,45 @@ getAllCommentsByUserID() {
       console.log("Error in terms of trying to figure out which 'state' the application is in:", error);
     });
 
-    //2. can a person take an application?
-    if ((this.userAssignedText == "Senior Reviewer to comment" && this.commentState == "Referred") || (this.userAssignedText == "All users in Subdepartment FA" && this.commentState == "Approved")) {
+    if (this.commentState == null) {
+      //This is so the Admin can assign
+      this.openXl(content);
+    }
+    else if (this.userAssignedText === this.CurrentUser.appUserId && (this.commentState == null || this.commentState == "Referred" || this.commentState == "Approved" || this.commentState == "Rejected" )) {
+      this.openXl(content);
+    }
+    else if (this.userAssignedText === "EndOfCommentProcess") {
+      alert("This application has reached the 'End Of Comment Process' stage");
+    }
+    else if ((this.userAssignedText == "Senior Reviewer to comment" && this.commentState == "Referred") || (this.userAssignedText == "All users in Subdepartment FA" && (this.commentState == "Approved" || this.commentState == "Rejected"))) {
 
       if (this.commentState == "Referred") {
-        this.appointmentText = "Senior Reviewer - Self Appointed"
+        this.appointmentText = "Senior Reviewer - Self Appointed";
+        this.asWhat = " Senior Reviewer"
       }
-      else if (this.commentState == "Approved") {
-        this.appointmentText = "Final Approver - Self Appointed"
+      else if (this.commentState == "Approved" || this.commentState == "Rejected") {
+        this.appointmentText = "Final Approver - Self Appointed";
+        this.asWhat = " Final Approver";
+       
       }
 
-      var userConfirmed = window.confirm("Are you sure you want to take the application?");
+      //var userConfirmed = window.confirm("This application stage is as follows: '" + this.userAssignedText + "' Do you want to take the application?");
+      var userConfirmed = window.confirm("Do you want to take on this application as a" + this.asWhat + "?");
 
 
       if (userConfirmed) {
 
-        //this.subDepartmentForCommentService.addUpdateDepartmentForComment(this.subDPTforComment, null, null, null, this.CurrentUser.appUserId,null,null,null,null).subscribe((data: any) => {
+
+
+        // update the SubDepartmentForComment table
+
         this.subDepartmentForCommentService.assignSeniorReviewerOrFinalApprover(this.subDPTforComment, this.CurrentUser.appUserId).subscribe((data: any) => {
 
-          //ADD AUDIT TRAIL THINGS
+          //4. update the ReviewerForComment table - audit trail things
           this.reviwerforCommentService.addUpdateReviewerForComment(0, this.ApplicationID, this.CurrentUser.appUserId, this.appointmentText, "User Officially Took Application", this.CurrentUser.appUserId, this.loggedInUsersSubDepartmentID, this.loggedInUsersSubDepartmentName, this.CurrentUserProfile[0].zoneID, this.CurrentUserProfile[0].zoneName).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
-              //need to make the other reviewer inactive or something
+              this.openXl(content);
             }
             else {
               alert(data.responseMessage);
@@ -5318,17 +5385,18 @@ getAllCommentsByUserID() {
       } else {
 
         console.log("Application not taken.");
+        return;
       }
-    }
-    else if (this.userAssignedText === this.CurrentUser.appUserId) {
-      //ACTION CENTER OPENS WITH ENABLED BUTTONS
-    }
-    else {
-     //suggests that you don't have access therefore no Action Centre
     }
 
   }
 
+  onCommentFA(interact: any) {
+
+  }
+  onReturnToSeniorReviewerClick() {
+
+  }
   letGoOFApplication() {
 
   }
