@@ -221,7 +221,7 @@ export class DocumentsComponentComponent implements OnInit {
           const current = data.dateSet[i];
           const nameCheck = current.documentName.substring(0, 13);
 
-          if (current.documentName != "Service Condition" && nameCheck == "Approval Pack") {
+          if (current.documentName != "Service Condition" && nameCheck != "Approval Pack") {
             tempDocList.DocumentID = current.documentID;
             tempDocList.DocumentName = current.documentName;
             tempDocList.DocumentLocalPath = current.documentLocalPath;
