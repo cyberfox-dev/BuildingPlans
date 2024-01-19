@@ -96,12 +96,12 @@ export class UserProfileService {
   }
 
   public userGainsApproval(professinalID: number) {
-    debugger;
+    
     return this.httpClient.post(this.baseURL + "UserGainsApproval", professinalID);
 
   }
   public noApproval(professinalID: number) {
-    debugger;
+    
 
     return this.httpClient.post(this.baseURL + "UserDoesntGainApproval", professinalID);
 

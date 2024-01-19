@@ -691,7 +691,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   openEditCommentModal(commentEditorModal: any, index: any) {
 
-    debugger;
+    
     this.currentIndex = index;
     this.editMyComment.controls["commentEdit"].setValue(this.CommentsList[index].Comment);
     //this.commentEdit = this.CommentsList[index].Comment;
@@ -1284,7 +1284,7 @@ export class ViewProjectInfoComponent implements OnInit {
           tempCommentList.Comment = current.comment;
           tempCommentList.CommentID = current.commentID;
 
-          debugger;
+          
           if (current.commentStatus == "Approved") {
             tempCommentList.CommentStatus = "Provisionally Approved";
           }
@@ -2043,17 +2043,17 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getUserProfileByUserID() {
-    debugger;
+    
     this.userPofileService.getUserProfileById(this.createdByID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        debugger;
+        
 
         console.log("data", data.dateSet);
 
         const currentUserProfile = data.dateSet[0];
         const fullname = currentUserProfile.fullName;
-        debugger;
+        
         if (currentUserProfile.isInternal == true) {
           this.isExternalApplicant = false
           this.toa = 'Internal User';

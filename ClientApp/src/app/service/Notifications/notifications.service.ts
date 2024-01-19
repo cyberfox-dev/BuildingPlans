@@ -19,7 +19,7 @@ export class NotificationsService {
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
   public addUpdateNotification(notificationID?: number | null, notificationName?: string | null, notificationDescription?: string | null, isRead?: boolean | null, userID?: string | null, createdByID?: string | null, applicationID?: number | null , message?:string | null) {
-    debugger;
+    
     const body = {
       NotificationID: notificationID,
       NotificationName: notificationName,
@@ -78,7 +78,7 @@ export class NotificationsService {
     });
 
 
-    debugger;
+    
     this.httpClient.post(this.sharedService.getApiUrl() + "/mailapi/" + "send-email", emailData, { headers }).subscribe(
       
 /*      this.httpClient.post("https://wayleave.capetown.gov.za/mailapi" + "/send-email", emailData, { headers }).subscribe(*/

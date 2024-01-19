@@ -291,7 +291,7 @@ export class NavMenuComponent implements OnInit {
   checkScroll() {
     // Detect the scroll position
     const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-    debugger;
+    
     // You can adjust this threshold value as needed
     const threshold = 100;
 
@@ -318,11 +318,11 @@ export class NavMenuComponent implements OnInit {
 
   }
   onPassFileName(event: { uploadFor: string; fileName: string }) {
-    debugger;
+    
     const { uploadFor, fileName } = event;
     const index = parseInt(uploadFor.substring('CoverLetter'.length));
     this.fileAttrsName = "Doc";
-    debugger;
+    
 
     this.shared.RepFileUploadCat = this.selected;
 
@@ -819,7 +819,7 @@ export class NavMenuComponent implements OnInit {
 
 
   refreshModal(repositoryModal) {
-    debugger;
+    
 /*    this.cdr.detectChanges();*/
     this.modalService.dismissAll(repositoryModal);
     this.modalService.open(repositoryModal, { centered: true, size: 'xl' });
@@ -830,7 +830,7 @@ export class NavMenuComponent implements OnInit {
 
 /*  *//*Repository Section*//*
   getAllDocsForRepository() {
-    debugger;
+    
     this.DocumentsList.splice(0, this.DocumentsList.length);
     this.documentUploadService.getAllDocumentsForRepository().subscribe((data: any) => {
 
@@ -888,7 +888,7 @@ export class NavMenuComponent implements OnInit {
   private readonly apiUrl: string = this.shared.getApiUrl() + '/api/';
 
   viewDocument(element: any) {
-    debugger;
+    
     // Make an HTTP GET request to fetch the document
     fetch(this.apiUrl + `documentUpload/GetDocument?filename=${element.DocumentName}`)
       .then(response => {
@@ -1033,7 +1033,7 @@ export class NavMenuComponent implements OnInit {
   descriptionForDocRepo = '';
 
   uploadFinished = (event: any, repositoryModal) => {
-    debugger;
+    
     this.response = event;
     console.log("this.response", this.response);
     console.log(this.descriptionForDocRepo);
@@ -1146,7 +1146,7 @@ export class NavMenuComponent implements OnInit {
 
 
   filterDepartment() {
-/*    debugger;
+/*    
     let string = this.select.toString();
     if (string == "All") {
 

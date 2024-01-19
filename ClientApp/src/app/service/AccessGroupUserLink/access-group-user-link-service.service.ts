@@ -43,7 +43,7 @@ export class AccessGroupUserLinkServiceService {
     return this.httpClient.post(this.baseURL + "GetAccessGroupsByUserProfileID", requestBody);
   }
   public getPeopleByAccessGroupAndSubDept(agID: number|null, subDepartmentId: number | null) {
-    debugger;
+    
     const requestBody = {
       AccessGroupID: agID,
       SubDepartmentID: subDepartmentId
@@ -51,7 +51,7 @@ export class AccessGroupUserLinkServiceService {
     return this.httpClient.post(this.baseURL + "GetPeopleByAccessGroupAndSubDept", requestBody);
   }
   public getPeopleByAccessGroupAndZone(agID: number | null, zoneId:number|null, subDepartmentId: number | null) {
-    debugger;
+    
     const requestBody = {
       AccessGroupID: agID,
       ZoneID: zoneId,
@@ -60,7 +60,7 @@ export class AccessGroupUserLinkServiceService {
     return this.httpClient.post(this.baseURL + "GetPeopleByAccessGroupZoneAndSubDept", requestBody);
   }
   public getPeopleByZone(zoneId: number | null) {
-    debugger;
+    
     const requestBody = {
       ZoneID: zoneId
     };

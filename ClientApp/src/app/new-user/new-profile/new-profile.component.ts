@@ -291,7 +291,7 @@ export class NewProfileComponent implements OnInit {
   }
 
   onNewProfileCreate(userID?: string | null, fullName?: string | null, email?: string | null, phoneNumber?: string | null, BpNo?: string | null, CompanyName?: string | null, CompanyRegNo?: string | null, PhyscialAddress?: string | null, ApplicantIDUpload?: string | null, ApplicantIDNumber?: string | null, refNumber?:string | null, companyType?: string | null) {
-    debugger;
+    
     if (this.showInternal) {
       ///// 
 
@@ -300,7 +300,7 @@ export class NewProfileComponent implements OnInit {
         if (data.responseCode == 1) {
 
           const current = data.dateSet[0];
-          debugger;
+          
           this.subDepartmentID = current.subDepartmentID;
           this.departmentID = current.departmentID;
           console.log("reponse this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID", this.subDepartmentID, this.departmentID);
@@ -404,18 +404,18 @@ export class NewProfileComponent implements OnInit {
 
     //#region icasadetails Sindiswa 10 January 2024 - so, there's an issue where the if statements don't run as expected so external users weren't being created appropriately, the following code block has been added to hopefully fix that
     else if (this.showExternal) {
-      debugger;
+      
 
       // icasadetails Sindiswa 10 January 2024
       this.userPofileService.addUpdateUserProfiles(0, this.CurrentUser.appUserId, this.extApplicantName + " " + this.extApplicantSurname, this.CurrentUser.email, this.extApplicantTellNo, this.showInternal,
         this.extApplicantBpNoApplicant, this.extApplicantCompanyName, this.extApplicantCompanyRegNo, this.extApplicantPhyscialAddress, null, null, null, null, null, null,
         this.extApplicantIDUpload, this.CurrentUser.appUserId, this.extApplicantIDNumber, Number(this.selectedZone), this.extApplicantVatNumber, null, this.extApplicantCompanyType, null, null, null, null, null, this.extApplicantName, this.extApplicantSurname, null, null, null, this.extApplicantICASANumber).subscribe((data: any) => {
-          debugger;
+          
           if (data.responseCode == 1) {
 
             alert(data.responseMessage);
 
-            debugger;
+            
             const linkedContractors = this.shared.getContactorData();
             const linkedEngineers = this.shared.getEngineerData();
 
@@ -466,7 +466,7 @@ export class NewProfileComponent implements OnInit {
           }
 
           else {
-            debugger;
+            
             alert(data.responseMessage);
             localStorage.removeItem('LoggedInUserInfo');
             localStorage.removeItem('userProfile');
@@ -482,11 +482,11 @@ export class NewProfileComponent implements OnInit {
     }
     //#endregion
     else if (userID != null || userID != "") {
-      debugger;
+      
       this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
       this.CurrentUser = JSON.parse(this.stringifiedData); 
 
-      debugger;
+      
       this.userPofileService.addUpdateUserProfiles(0, userID, fullName, email, phoneNumber, false, BpNo, CompanyName, CompanyRegNo,
         PhyscialAddress, null, null, null, null, null, null, ApplicantIDUpload, this.CurrentUser.appUserId, ApplicantIDNumber, null, null, refNumber, companyType).subscribe((data: any) => {
 
@@ -506,18 +506,18 @@ export class NewProfileComponent implements OnInit {
       })
     }
     else if (this.showInternal === false) {
-      debugger;
+      
 
       // icasadetails Sindiswa 10 January 2024
       this.userPofileService.addUpdateUserProfiles(0, this.CurrentUser.appUserId, this.extApplicantName + " " + this.extApplicantSurname, this.CurrentUser.email, this.extApplicantTellNo, this.showInternal,
         this.extApplicantBpNoApplicant, this.extApplicantCompanyName, this.extApplicantCompanyRegNo, this.extApplicantPhyscialAddress, null, null, null, null, null, null,
         this.extApplicantIDUpload, this.CurrentUser.appUserId, this.extApplicantIDNumber, Number(this.selectedZone), this.extApplicantVatNumber, null, this.extApplicantCompanyType, null,null, null, null, null, this.extApplicantName, this.extApplicantSurname, null, null, null, this.extApplicantICASANumber).subscribe((data: any) => {
-        debugger;
+        
         if (data.responseCode == 1) {
 
           alert(data.responseMessage);
 
-          debugger;
+          
           const linkedContractors = this.shared.getContactorData();
           const linkedEngineers = this.shared.getEngineerData();
 
@@ -568,7 +568,7 @@ export class NewProfileComponent implements OnInit {
         }
 
         else {
-          debugger;
+          
           alert(data.responseMessage);
           localStorage.removeItem('LoggedInUserInfo');
           localStorage.removeItem('userProfile');

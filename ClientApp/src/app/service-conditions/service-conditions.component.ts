@@ -52,7 +52,7 @@ export class ServiceConditionsComponent implements OnInit {
 
     this.DocumentsList.splice(0, this.DocumentsList.length);
     this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
 
@@ -70,7 +70,7 @@ export class ServiceConditionsComponent implements OnInit {
             this.DocumentsList.push(tempDocumentList);
           }
 
-          debugger;
+          
 
 
 
@@ -156,7 +156,7 @@ export class ServiceConditionsComponent implements OnInit {
     }
   }
   onPassFileName(event: { uploadFor: string; fileName: string }) {
-    debugger;
+    
     const { uploadFor, fileName } = event;
     const index = parseInt(uploadFor.substring('CoverLetter'.length));
     this.fileAttrsName = "Doc";
