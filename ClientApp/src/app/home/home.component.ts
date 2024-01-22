@@ -1253,7 +1253,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.Applications.splice(0, this.Applications.length);
 
     if (this.CurrentUserProfile[0].isInternal) {
-
+       
       /* this.applicationService.getApplicationsList(this.CurrentUser.appUserId, true).subscribe((data: any) => {
 
 
