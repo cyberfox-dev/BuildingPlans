@@ -1641,6 +1641,11 @@ export class ActionCenterComponent implements OnInit {
 
             this.previousReviewer = current.createdById;
           }
+          // #region comments Sindiswa 22 January 2023 - tbh I don't think think that this is able to distinguish between the Reviewer and Senior Reviewer
+          else if ((current.commentStatus == "Provisionally Approved" || current.commentStatus == "Rejected" || current.commentStatus == "Approved" || current.commentStatus == "Approved(Conditional)") && current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
+            this.previousReviewer = current.createdById;
+          }
+          // #endregion
           else {
             this.previousReviewer = null;
           }
@@ -1718,6 +1723,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   onReturnToReviewerClick() {
+    debugger;
     if (confirm("Are you sure you what return to previous reviewer?")) {
       
 
@@ -3471,7 +3477,8 @@ export class ActionCenterComponent implements OnInit {
       case "Approve": {
         
 
-        if (this.checked == true) {
+        //if (this.checked == true) {
+        if (this.WBSCheck == true) { //seniorReviewer Sindiswa 19 January 2024
 
           //SubDepartmentForCommentService
           this.onDepositRequiredClick();
@@ -3524,9 +3531,10 @@ export class ActionCenterComponent implements OnInit {
 
 
                   this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application approved", emailContent, emailContent);
-/*                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You, as a senior reviewer, have approved application " + this.projectNo + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application approved", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You, as a senior reviewer, have approved application " + this.projectNo).subscribe((data: any) => {
-
+                  /*                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You, as a senior reviewer, have approved application " + this.projectNo + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  */
+                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application provisionally approved", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You, as a senior reviewer, have approved application " + this.projectNo).subscribe((data: any) => {
+                    debugger;
                     if (data.responseCode == 1) {
                       alert(data.responseMessage);
 
@@ -3540,7 +3548,7 @@ export class ActionCenterComponent implements OnInit {
                     console.log("Error", error);
                   });
 
-                  alert(data.responseMessage);
+                  //alert(data.responseMessage);
 
                   //commentsService
                   this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
@@ -3608,16 +3616,16 @@ export class ActionCenterComponent implements OnInit {
                 console.log("Error: ", error);
               })
 
+              //}
+              this.refreshParent.emit();
+              this.moveToFinalApprovalForDepartment();
+              this.modalService.dismissAll();
+              this.router.navigate(["/home"]);
             }
-            this.refreshParent.emit();
-            this.moveToFinalApprovalForDepartment();
-            this.modalService.dismissAll();
-            this.router.navigate(["/home"]);
           }
-
-
+        }
           else {
-
+            if (confirm("Have you uploaded all revelevant documents?")) { 
             if (confirm("Are you sure you want to approve this application?")) {
      
               this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved", false, false, "All users in Subdepartment FA", false).subscribe((data: any) => {
@@ -3625,6 +3633,129 @@ export class ActionCenterComponent implements OnInit {
                 if (data.responseCode == 1) {
 
                   alert(data.responseMessage);
+
+                  // #region seniorReviewer Sindiswa 19 January 2024
+                  const emailContent = `
+    <html>
+    <head>
+      <style>
+        /* Define your font and styles here */
+        body {yu
+         font-family: 'Century Gothic';
+        }
+        .email-content {
+          padding: 20px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+        }
+        .footer {
+          margin-top: 20px;
+          color: #777;
+
+        }
+        .footer-logo {
+          display: inline-block;
+          vertical-align: middle;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="email-content">
+        <p>Dear ${this.loggedInUserName}</p>
+        <p>You have provisionally approved application ${this.projectNo}</p>
+           <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                      <p>
+          <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+        </p>
+         <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+      </div>
+
+    </body>
+  </html>
+ 
+       
+`;
+
+
+
+                  this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", emailContent, emailContent);
+
+                  this.accessGroupsService.GetUserAndZoneBasedOnRoleName("Final Approver", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+                    if (data.responseCode === 1) {
+                      // Filter out duplicates based on a unique property (e.g., email)
+                      const uniqueFinalApprovers = this.getUniqueFinalApprovers(data.dateSet, 'email');
+
+                      // Filter out final approvers for the current zone
+                      const finalApproversForCurrentZone = uniqueFinalApprovers.filter(approver => approver.zoneID === this.CurrentUserProfile[0].zoneID);
+                      finalApproversForCurrentZone.forEach(approver => {
+                        const emailContent12 = `
+    <html>
+    <head>
+      <style>
+        /* Define your font and styles here */
+        body {
+         font-family: 'Century Gothic';
+        }
+        .email-content {
+          padding: 20px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+        }
+        .footer {
+          margin-top: 20px;
+          color: #777;
+        }
+        .footer-logo {
+          display: inline-block;
+          vertical-align: middle;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="email-content">
+        <p>Dear ${approver.fullName}</p>
+        <p>Your sign-off is required on ${this.projectNo}. Kindly login to the Wayleave Management System and proceed accordingly.</p>
+           <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                      <p>
+          <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+        </p>
+         <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+      </div>
+
+    </body>
+  </html>
+ 
+       
+`;
+                        this.notificationsService.sendEmail(approver.email, "Request for Sign-of", emailContent12, emailContent12);
+                      });
+                      console.log("Filtered Final Approvers:", finalApproversForCurrentZone);
+                    } else {
+                      alert(data.responseMessage);
+                    }
+                  }, error => {
+                    console.log("Error fetching final approvers:", error);
+                  });
+
+                  // Function to get unique final approvers based on a property
+
+                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application provisionally approved", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have approved application " + this.projectNo).subscribe((data: any) => {
+
+                    if (data.responseCode == 1) {
+
+
+                    }
+                    else {
+                      alert(data.responseMessage);
+                    }
+
+                    console.log("response", data);
+                  }, error => {
+                    console.log("Error", error);
+                  });
+                  // #endregion
+
+
                   //commentsService                                                                                                                                                             //Change Wording Kyle 15/01/24
                   this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Provisionally Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
