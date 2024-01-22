@@ -603,8 +603,8 @@ export class ViewProjectInfoComponent implements OnInit {
       this.router.navigate(["/home"]);
     }
     
-
-    if (setValues.CurrentStageName == "PTW" || setValues.CurrentStageNumber >= 4) {
+    //Permit Tab Kyle 22/01/24
+    if (setValues.CurrentStageName == "PTW" || setValues.CurrentStageNumber <= 4) {
       this.showPermitTab = true;
       this.PacksTab = true;
     } else {
@@ -619,18 +619,18 @@ export class ViewProjectInfoComponent implements OnInit {
     } else {
       this.showStatusOfWorksTab = false;
     }
-    
+    //Permit Tab Kyle 22/01/24
     if (setValues.CurrentStageName == "Approval Pack Generation") {
       this.generateApproval = true;
-      this.showPermitTab = true;
+      this.showPermitTab = false;
       this.PacksTab = true;
     } else {
       this.generateApproval = false;
     }
-    
+    //Permit Tab Kyle 22/01/24
     if (setValues.CurrentStageName == "Approval Pack Generation" && this.CurrentUser.appUserId == this.applicationDataForView[0].CreatedById) {
       this.generateApprovalbtn = true;
-      this.showPermitTab = true;
+      this.showPermitTab = false;
       this.PacksTab = true;
     } else {
       this.generateApprovalbtn = false;
