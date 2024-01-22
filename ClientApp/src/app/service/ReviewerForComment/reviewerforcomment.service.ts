@@ -30,6 +30,13 @@ export class ReviewerforcommentService {
     }
     return this.httpClient.post(this.baseURL + "AddUpdateReviewerForComment", body)
   }
-
-   
+  // comments Sindiswa 19 January 2023
+  public getAssignementDetails(applicationID: number | null, subdepartmentID: number | null, zoneID: number | null) {
+    const body = {
+      ApplicationID: applicationID,
+      SubDepartmentID: subdepartmentID,
+      ZoneID: zoneID,
+    }
+    return this.httpClient.post(this.baseURL + "GetUserDetails", body);
+  }
 }

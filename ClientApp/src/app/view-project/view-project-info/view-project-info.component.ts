@@ -36,6 +36,7 @@ import { ApprovalPackComponent } from 'src/app/Packs//ApprovalPackComponent/appr
 
 import 'jspdf-autotable';
 import html2canvas from 'html2canvas';
+import { ReviewerforcommentService } from '../../service/ReviewerForComment/reviewerforcomment.service';
 
 
 export interface RolesList {
@@ -532,7 +533,8 @@ export class ViewProjectInfoComponent implements OnInit {
     private notificationsService: NotificationsService,
     private dialog: MatDialog,
     private sanitizer: DomSanitizer,
-    private approvalPack: ApprovalPackComponent
+    private approvalPack: ApprovalPackComponent,
+    private reviwerforCommentService: ReviewerforcommentService,
   ) { }
 
 
@@ -1286,6 +1288,12 @@ export class ViewProjectInfoComponent implements OnInit {
           if (current.commentStatus == "Approved") {
             tempCommentList.CommentStatus = "Provisionally Approved";
           }
+          else if (current.commentStatus == "Rejected") {
+            tempCommentList.CommentStatus = "Provisionally Rejected";
+          }
+          else if (current.commentStatus == "FinalReject") {
+            tempCommentList.CommentStatus = "Final Rejected";
+          }
           else {
             tempCommentList.CommentStatus = current.commentStatus;
           }
@@ -1313,8 +1321,29 @@ export class ViewProjectInfoComponent implements OnInit {
     })
   }
 
+  // #region comments Sindiswa 19 January 2024
+  getAppCollaborators() {
+    //mhmm, played myself - won't have the appropriate subdepartmentID and zoneID here
+    this.reviwerforCommentService.getAssignementDetails(this.ApplicationID, null, null).subscribe((data: any) => {
+      if (data.resposneCode == 1) {
+
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+  // #endregion
+
   modalTitle: string = "";
-  openReplyModal(replyModal: any, index: any, action: string) {
+  clarityType: string = ""; //comments Sindiswa 18 January 2024 - making the clarity more dynamic
+
+  openReplyModal(replyModal: any, index: any, action: string, commentStatus:string) {
     this.modalService.open(replyModal, { centered: true, size: 'lg' })
     this.currentIndex = index;
     if (this.CommentsList[index].isApplicantReplay != null) {
@@ -1332,6 +1361,13 @@ export class ViewProjectInfoComponent implements OnInit {
       this.modalTitle = 'Update Reply to Comment';
     }
 
+    //* comments Sindiswa 18 January 2024 - making the clarity more dynamic */
+    if (commentStatus === "Reviewer Clarity") {
+      this.clarityType = "Reviewer Clarified";
+    }
+    else if (commentStatus === "Clarity") {
+      this.clarityType = "Clarified";
+    }
   }
 
 
@@ -1473,7 +1509,8 @@ export class ViewProjectInfoComponent implements OnInit {
 
     if (currentComment.isClarifyCommentID == null) {
       if (confirm("Are you sure you want to add this reply?")) {
-        this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, null, "Clarified", null, numberOfComments, Currentreply).subscribe((data: any) => {
+
+        this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, null,/*comments Sindiswa 18 January 2024 - making the clarity more dynamic*/ this.clarityType , null, numberOfComments, Currentreply).subscribe((data: any) => {
 
           if (data.responseCode == 1) {
             this.getAllComments();
