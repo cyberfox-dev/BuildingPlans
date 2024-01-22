@@ -224,13 +224,13 @@ export class ActionCenterComponent implements OnInit {
   formattedDate = this.datePipe.transform(this.currentDate, 'yyyy-MM-dd');
   response: { dbPath: ''; } | undefined
   fileAttrsName = "Doc";
-    loggedInUsersEmail: any;
-    ACHeader: string;
+  loggedInUsersEmail: any;
+  ACHeader: string;
   WBSRequestedAlreadyLabel: boolean = false;
   projectNo: any;
 
-    WBSCHeckBox: boolean = true;
-    previousReviewer: any;
+  WBSCHeckBox: boolean = true;
+  previousReviewer: any;
   //  loggedInUserName: any;
   /*textfields*/
 
@@ -384,10 +384,10 @@ export class ActionCenterComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private _bottomSheet: MatBottomSheet,
     private reviwerforCommentService: ReviewerforcommentService,
-    private _bottomSheet: MatBottomSheet,
+   
     //Audit Trail Kyle
     private auditTrailService: AuditTrailService,
-     //Audit Trail Kyle
+    //Audit Trail Kyle
 
   ) { }
   openEnd(content: TemplateRef<any>) {
@@ -423,10 +423,10 @@ export class ActionCenterComponent implements OnInit {
     // setTimeout(() => {
     //this.getDepartmentManagerUserID();
     //Get Current Application Infomation 
-    
+
     this.initializeTinyMCE();
     this.applicationData = this.sharedService.getViewApplicationIndex();
-    console.log("venApplicationData:",this.applicationData);
+    console.log("venApplicationData:", this.applicationData);
     this.getAllSubDepartments();
 
 
@@ -438,21 +438,21 @@ export class ActionCenterComponent implements OnInit {
     }
 
     /*  this.getAllServiceItmes();*/
-  /*  this.getAllServiceItmesForDropdown();*/
- 
-      /*  this.getAllServiceItmes();*/
+    /*  this.getAllServiceItmesForDropdown();*/
+
+    /*  this.getAllServiceItmes();*/
 
 
-   
+
     this.CurrentApplication = this.viewProjectInfoComponent.getCurrentApplication();
-    
-    if (!this.CurrentApplication.ProjectNumber.startsWith("WL") ) {
+
+    if (!this.CurrentApplication.ProjectNumber.startsWith("WL")) {
       return;
     }
 
     if (this.CurrentApplication.isPlanning === true) {
-   
-     this.planningWayleave = true;
+
+      this.planningWayleave = true;
     }
 
     //// this giving some shit
@@ -464,14 +464,14 @@ export class ActionCenterComponent implements OnInit {
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
-      this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
+    this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
     console.log("WTFWTFWTFWTFWTFWTWFTWFWTFWTFWTWTF", this.CurrentUserProfile[0]);
     this.loggedInUsersIsAdmin = this.CurrentUserProfile[0].isDepartmentAdmin;
     this.loggedInUsersIsZoneAdmin = this.CurrentUserProfile[0].isZoneAdmin;
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
-    
+
     this.loggedInUsersSubDepartmentName = this.CurrentUserProfile[0].subDepartmentName;
     this.loggedInUsersDepartmentID = this.CurrentUserProfile[0].departmentID;
     this.loggedInUsersEmail = this.CurrentUserProfile[0].email;
@@ -482,7 +482,7 @@ export class ActionCenterComponent implements OnInit {
     this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
     if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
       this.getUsersByRoleName("Permit Issuer");
-      
+
       this.showPermitTab = true;
       this.canApprovePTW();
       this.getAllPermitForComment();
@@ -492,7 +492,7 @@ export class ActionCenterComponent implements OnInit {
     }
 
     this.getLinkedZones();
-  
+
     this.getAllStages();
 
 
@@ -506,13 +506,13 @@ export class ActionCenterComponent implements OnInit {
     this.CheckApplicant();
     this.setProjectNumber();
 
-    
 
-    
+
+
 
   }
   initializeTinyMCE() {
-    
+
     tinymce.init({
       selector: '#myTextarea', // Replace with the ID of your textarea
       plugins: ['lists', 'textcolor'],
@@ -531,7 +531,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   setProjectNumber() {
-    
+
     if (this.CurrentApplication.ProjectNumber == null) {
 
 
@@ -546,7 +546,7 @@ export class ActionCenterComponent implements OnInit {
   }
 
   onPassFileName(event: { uploadFor: string; fileName: string }) {
-   
+
     const { uploadFor, fileName } = event;
 
     this.fileAttrsName = "Doc";
@@ -565,29 +565,29 @@ export class ActionCenterComponent implements OnInit {
   }
 
   canApprovePTW() {
-    
+
     this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
-      
+
       if (data.responseCode == 1) {
-        
+
         for (var i = 0; i < data.dateSet.length; i++) {
-          
+
           let foundMatch = false;
           let current = data.dateSet[i];
           if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
-            
+
             for (var i = 0; i < this.permitIssuer.length; i++) {
 
-              
+
 
               if (this.permitIssuer[i].userID == this.CurrentUser.appUserId) {
 
-                
-               
+
+
                 if (current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
 
 
-                 
+
                   foundMatch = true;
                   break;
                 }
@@ -605,11 +605,11 @@ export class ActionCenterComponent implements OnInit {
           }
 
           else {
-           
+
             this.canApprovePermit = false;
           }
 
-         
+
           this.canApprovePermit = foundMatch;
         }
       }
@@ -632,19 +632,19 @@ export class ActionCenterComponent implements OnInit {
     //  if (data.responseCode == 1) {
     //    let foundMatch = false;
     //    let current = data.dateSet[0];// Flag to track if a match is found
-        
+
     //    if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
-          
+
     //      for (var i = 0; i < this.permitIssuer.length; i++) {
-            
+
 
 
     //        if (this.permitIssuer[i].userID == this.CurrentUser.appUserId) {
-              
+
 
 
     //          if (current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
-                
+
 
 
     //            foundMatch = true;
@@ -655,7 +655,7 @@ export class ActionCenterComponent implements OnInit {
 
 
     //        if (foundMatch) {
-              
+
 
     //          // A match was found, no need to continue checking
     //          break;
@@ -690,7 +690,7 @@ export class ActionCenterComponent implements OnInit {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempPTCList = {} as PTCList;
           const current = data.dateSet[i];
-          
+
           tempPTCList.PermitSubForCommentID = current.permitSubForCommentID;
           tempPTCList.ApplicationID = current.applicationID;
           tempPTCList.SubDepartmentID = current.subDepartmentID;
@@ -733,11 +733,11 @@ export class ActionCenterComponent implements OnInit {
           tempStageList.StageOrderNumber = current.stageOrderNumber;
 
           this.StagesList.push(tempStageList);
-          
+
           // this.sharedService.setStageData(this.StagesList);
         }
         this.CanComment();
-        console.log("this.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesList " , this.StagesList);
+        console.log("this.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesList ", this.StagesList);
       }
       else {
         //alert("Invalid Email or Password");
@@ -912,10 +912,10 @@ export class ActionCenterComponent implements OnInit {
     formData.append('file', file);
 
     this.sharedService.pushFileForTempFileUpload(file, "Permit" + ".pdf");
-     this.save();
+    this.save();
     // window.open(pdfUrl, '_blank')
 
-   // this.router.navigate(["/home"]);
+    // this.router.navigate(["/home"]);
 
   }
 
@@ -923,7 +923,7 @@ export class ActionCenterComponent implements OnInit {
 
   save() {
 
-   
+
 
 
     const filesForUpload = this.sharedService.pullFilesForUpload();
@@ -957,7 +957,7 @@ export class ActionCenterComponent implements OnInit {
 
   uploadFinishedF = (event: any) => {
     const currentApplication = this.sharedService.getViewApplicationIndex();
-    
+
     this.response = event;
     console.log("this.response", this.response);
     console.log("this.response?.dbPath", this.response?.dbPath);
@@ -965,7 +965,7 @@ export class ActionCenterComponent implements OnInit {
 
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
     console.log("documentName", documentName);
-    
+
     this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, this.CurrentUser.appUserId).subscribe((data: any) => {
       /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
       if (data.responseCode == 1) {
@@ -990,13 +990,13 @@ export class ActionCenterComponent implements OnInit {
     this.countApprove = 0;
     this.countReject = 0;
 
-      this.permitService.getPermitSubForCommentByApplicationID(currentApplication.applicationID).subscribe((data: any) => {
+    this.permitService.getPermitSubForCommentByApplicationID(currentApplication.applicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
 
         for (var i = 0; i < data.dateSet.length; i++) {
           const tempPTCList = {} as PTCList;
           const current = data.dateSet[i];
-          
+
           tempPTCList.PermitSubForCommentID = current.permitSubForCommentID;
           tempPTCList.ApplicationID = current.applicationID;
           tempPTCList.SubDepartmentID = current.subDepartmentID;
@@ -1005,7 +1005,7 @@ export class ActionCenterComponent implements OnInit {
           tempPTCList.PermitComment = current.permitComment;
           tempPTCList.PermitCommentStatus = current.permitCommentStatus;
 
-          
+
 
           if (tempPTCList.PermitCommentStatus == "Approved") {
             this.countApprove++;
@@ -1022,13 +1022,13 @@ export class ActionCenterComponent implements OnInit {
           this.countApprove = 0;
           this.countReject = 0;
           this.MoveToClosedStage(false);
-         // this.MoveToNextStage();
+          // this.MoveToNextStage();
         } else if (this.countReject++ >= 1 && this.SubDepartmentListForCheck.length == this.countApprove + this.countReject) {
           //Rejection Pack
-        
+
           this.countApprove = 0;
           this.countReject = 0;
-       //   this.MoveToClosedStage();
+          //   this.MoveToClosedStage();
         }
         else {
           this.countApprove = 0;
@@ -1057,30 +1057,30 @@ export class ActionCenterComponent implements OnInit {
 
     let SubDepartmentName = "";
     let PermitSubCommetID = 0;
-    
+
     //for (var i = 0; i < this.PTCList.length; i++) {
-      
+
     //  if (this.PTCList[i].SubDepartmentID == this.loggedInUsersSubDepartmentID) {
-        
+
     //    SubDepartmentName = this.PTCList[i].SubDepartmentName;
     //    PermitSubCommetID = this.PTCList[i].PermitSubForCommentID;
     //  }
     //}
 
-    
+
     this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        
-          let current = data.dateSet[0];
+
+        let current = data.dateSet[0];
         switch (interact) {
 
           case "Approve": {
             if (confirm("Are you sure you want to approve permit this application?")) {
-              
+
               this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
                 if (data.responseCode == 1) {
-                 
+
                   alert("Permit Approved");
                   this.CheckAllLinkedDepartmentsApproved();
                   this.router.navigate(["/home"]);
@@ -1103,7 +1103,7 @@ export class ActionCenterComponent implements OnInit {
           case "MeetOnSite": {
             if (confirm("Are you sure you want to meet applicant On site?")) {
               this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "MeetOnSite", this.CurrentUser.appUserId).subscribe((data: any) => {
-                if (data.responseCode == 1) {  
+                if (data.responseCode == 1) {
                   alert("Meet Applicant On Site");
                   this.router.navigate(["/home"]);
 
@@ -1150,7 +1150,7 @@ export class ActionCenterComponent implements OnInit {
             break;
           }
         }
-        
+
       }
       else {
         alert(data.responseMessage);
@@ -1163,7 +1163,7 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-    
+
   }
 
 
@@ -1189,10 +1189,10 @@ export class ActionCenterComponent implements OnInit {
                 if (data.responseCode == 1) {
 
 
-                
+
 
                   this.router.navigate(["/home"]);
-               
+
                   this.viewProjectInfoComponent.getAllComments();
                   this.CheckALLLinkedDepartmentsCommented(false);
                   this.openSnackBar("Application Actioned");
@@ -1257,7 +1257,7 @@ export class ActionCenterComponent implements OnInit {
               this.notificationsService.addUpdateNotification(0, "Application approved", "You have approved an application", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have approved application " + this.projectNo).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-                 
+
 
                 }
                 else {
@@ -1270,9 +1270,9 @@ export class ActionCenterComponent implements OnInit {
               });
 
 
-            
+
               //commentsService
-            
+
             }
             else {
               alert(data.responseMessage);
@@ -1294,15 +1294,15 @@ export class ActionCenterComponent implements OnInit {
 
             if (data.responseCode == 1) {
 
-           
+
               //commentsService
               this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "FinalReject", this.CurrentUser.appUserId, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-           
+
                   this.viewProjectInfoComponent.getAllComments();
-                 
-            
+
+
                   this.router.navigate(["/home"]);
                   this.CheckALLLinkedDepartmentsCommented(false);
                   this.openSnackBar("Application Actioned");
@@ -1328,7 +1328,7 @@ export class ActionCenterComponent implements OnInit {
           })
           this.modalService.dismissAll();
         }
-        
+
         break;
       }
 
@@ -1341,14 +1341,14 @@ export class ActionCenterComponent implements OnInit {
 
 
   getReviewerForLink() {
-    
+
     this.ReviewerUserList.splice(0, this.ReviewerUserList.length);
-   // this.ReviewerUserList = []; // Initialize the new list
-    
+    // this.ReviewerUserList = []; // Initialize the new list
+
     for (var i = 0; i < this.reviewerUsers.length; i++) {
-     
+
       var reviewer = this.reviewerUsers[i];
-     
+
       //for (var j = 0; j < this.UserZoneList.length; j++) {
       //  var userZone = this.UserZoneList[j];
 
@@ -1360,16 +1360,16 @@ export class ActionCenterComponent implements OnInit {
       //}
 
       const tempreviewer = {} as UserZoneList;
-      
+
 
       tempreviewer.Email = reviewer.email;
       tempreviewer.fullName = reviewer.fullName;
       tempreviewer.id = reviewer.userID;
       tempreviewer.zoneLinkID = reviewer.subDepartmentID;
-     
 
-              this.ReviewerUserList.push(tempreviewer);
-            }
+
+      this.ReviewerUserList.push(tempreviewer);
+    }
   }
 
   setRoles() {
@@ -1389,9 +1389,9 @@ export class ActionCenterComponent implements OnInit {
           }
 
           for (var i = 0; i < this.CurrentUserProfile.length; i++) {
-            
+
             if (this.loggedInUsersIsZoneAdmin == true && current.subDepartmentID == this.CurrentUserProfile[i].subDepartmentID && current.zoneID == this.CurrentUserProfile[i].zoneID && this.CurrentUserProfile[i].isDefault == true) {
-              
+
               //for (var j = 0; j < this.UserZoneList.length; j++) {
 
               //  if (this.UserZoneList[j].id == this.CurrentUser.appUserId) {
@@ -1413,7 +1413,7 @@ export class ActionCenterComponent implements OnInit {
               this.getUsersByRoleName("Reviewer");
             }
           }
-        
+
 
           if (this.loggedInUsersSubDepartmentID == this.ReticulationID) {
 
@@ -1435,35 +1435,35 @@ export class ActionCenterComponent implements OnInit {
 
 
   }
-  
+
   //setRoles() {
 
-   
+
   //  this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
   //    if (data.responseCode == 1) {
-       
+
   //      for (var i = 0; i < data.dateSet.length; i++) {
-         
+
   //        let current = data.dateSet[i];
   //        if (this.loggedInUsersIsAdmin == true) {
-           
+
   //          this.AssignProjectToZone = true;
-           
+
   //        }
   //        if (this.loggedInUsersIsZoneAdmin == true) {
-           
+
   //          for (var j = 0; j < this.UserZoneList.length; j++) {
-             
+
   //            if (this.UserZoneList[j].id == this.CurrentUser.appUserId) {
-               
+
   //              this.AssignUserForComment = true;
   //              if (this.ACHeader == "You can comment" || this.canCommentFinalApprover === true) {
 
   //              } else {
   //                this.ACHeader = "Assign to Reviewer for comment";
   //              }
-              
+
   //              this.getUsersByRoleName("Reviewer");
 
   //              break; // Exit the loop once a match is found
@@ -1489,42 +1489,42 @@ export class ActionCenterComponent implements OnInit {
   //    console.log("Error: ", error);
   //  })
 
-  
+
   //}
   OldsetRoles() {
-  
-   
+
+
     // this.getUsersByRoleName("Department Admin");
 
     console.log("this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].this.departmentAdminUsers[].", this.departmentAdminUsers);
-    
+
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
-     
+
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.SubDepartmentLinkedList[i].zoneID && this.loggedInUsersIsAdmin == true) {
-       
+
         this.AssignProjectToZone = true;
-       
+
       }
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.loggedInUsersIsZoneAdmin == true) {
-       
+
         for (var j = 0; j < this.UserZoneList.length; j++) {
-         
+
           if (this.UserZoneList[j].id == this.CurrentUser.appUserId) {
-           
+
             this.AssignUserForComment = true;
             this.getUsersByRoleName("Reviewer");
-  
+
             break; // Exit the loop once a match is found
           }
         }
       }
-     
+
       ////////////////////
       if (this.loggedInUsersSubDepartmentID == this.ReticulationID) {
-        
+
         this.CanAssignDepartment = true;
       } else {
-        
+
         this.CanAssignDepartment = false;
       }
     }
@@ -1564,47 +1564,47 @@ export class ActionCenterComponent implements OnInit {
   //  }
   //}
   getCurrentUsersZoneID(subID: number): Observable<number> {
-   
-  return this.zoneLinkService.getBySubAndUserID(subID, this.CurrentUser.appUserId).pipe(
-    tap((data: any) => {
-      console.log("reponse", data);
-    }),
-    map((data: any) => {
-      if (data.responseCode === 1 && data.dateSet && data.dateSet.length > 0) {
-        return data.dateSet[0].zoneID;
-      } else {
-        alert(data.responseMessage || "An unknown error occurred.");
-        return 0;
-      }
-    }),
-    catchError(error => {
-      console.error("Error fetching Zone ID:", error);
-  /*    this.ACHeader = "You Don't have anything to do on this project!";*/
-      this.canComment = false;
-      return of(0);
-    })
-  );
-}
+
+    return this.zoneLinkService.getBySubAndUserID(subID, this.CurrentUser.appUserId).pipe(
+      tap((data: any) => {
+        console.log("reponse", data);
+      }),
+      map((data: any) => {
+        if (data.responseCode === 1 && data.dateSet && data.dateSet.length > 0) {
+          return data.dateSet[0].zoneID;
+        } else {
+          alert(data.responseMessage || "An unknown error occurred.");
+          return 0;
+        }
+      }),
+      catchError(error => {
+        console.error("Error fetching Zone ID:", error);
+        /*    this.ACHeader = "You Don't have anything to do on this project!";*/
+        this.canComment = false;
+        return of(0);
+      })
+    );
+  }
 
 
 
 
   CanComment() {
-   // this.getDepartmentManagerUserID("Senior Reviewer");
-   
+    // this.getDepartmentManagerUserID("Senior Reviewer");
+
     //getBySubAndUserID
     ///let zoneID = Number(this.getCurrentUsersZoneID(this.loggedInUsersSubDepartmentID));
 
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
-      
+
       if (data.responseCode == 1) {
-       
+
         for (var i = 0; i < data.dateSet.length; i++) {
-         
+
           let current = data.dateSet[i];
           if (current.userAssaignedToComment == this.CurrentUser.appUserId) { /*&& current.userAssaignedToComment != this.userID*/
             this.canComment = true;
-          
+
             //if (this.canComment == true && this.canCommentFinalApprover == false) {
             //  this.ACHeader = "You can comment!";
             //}
@@ -1613,7 +1613,7 @@ export class ActionCenterComponent implements OnInit {
           else {
             //this.ACHeader = "You can't comment!";
             //this.canComment = false;
-          } 
+          }
         }
       }
       else {
@@ -1622,8 +1622,8 @@ export class ActionCenterComponent implements OnInit {
       }
       console.log("reponse", data);
       this.getUsersByRoleName("Senior Reviewer");
-      
-     // this.CanCommentFinalApprover();
+
+      // this.CanCommentFinalApprover();
     }, error => {
       console.log("Error: ", error);
     })
@@ -1641,7 +1641,7 @@ export class ActionCenterComponent implements OnInit {
         for (let i = 0; i < data.dateSet.length; i++) {
 
 
-          
+
           const current = data.dateSet[i];
 
           if (current.commentStatus == "Referred" && current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
@@ -1682,12 +1682,12 @@ export class ActionCenterComponent implements OnInit {
       }
       else {
         alert(data.responseMessage);
-        
+
       }
       console.log("reponse", data);
 
     }, error => {
-      
+
       console.log("Error: ", error);
     })
 
@@ -1704,7 +1704,7 @@ export class ActionCenterComponent implements OnInit {
       }
     }
     //commentsService
-    
+
     this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Reviewer Clarity", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -1732,7 +1732,7 @@ export class ActionCenterComponent implements OnInit {
   onReturnToReviewerClick() {
     debugger;
     if (confirm("Are you sure you what return to previous reviewer?")) {
-      
+
 
 
       this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, null, null, false, this.previousReviewer.userID, false).subscribe((data: any) => {
@@ -1803,7 +1803,7 @@ export class ActionCenterComponent implements OnInit {
             }
           }
           //commentsService
-          
+
           this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Returned", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
@@ -1842,57 +1842,57 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-    //  this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.forManuallyAssignSubForCommentID, this.previousReviewer).subscribe((data: any) => {
+      //  this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.forManuallyAssignSubForCommentID, this.previousReviewer).subscribe((data: any) => {
 
-    //    if (data.responseCode == 1) {
+      //    if (data.responseCode == 1) {
 
-    //      
-    //      this.viewProjectInfoComponent.getAllComments();
-    //      
-    //      this.refreshParent.emit();
-    //      //this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "New Wayleave Application", "check html", "Dear " + this.UserSelectionForManualLink.selected[0].fullName + ",<br><br>You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-    //    }
-    //    else {
-    //      alert(data.responseMessage);
+      //      
+      //      this.viewProjectInfoComponent.getAllComments();
+      //      
+      //      this.refreshParent.emit();
+      //      //this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "New Wayleave Application", "check html", "Dear " + this.UserSelectionForManualLink.selected[0].fullName + ",<br><br>You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+      //    }
+      //    else {
+      //      alert(data.responseMessage);
 
-    //    }
-    //    console.log("reponse", data);
-    //    this.modalService.dismissAll();
-    //    this.router.navigate(["/home"]);
+      //    }
+      //    console.log("reponse", data);
+      //    this.modalService.dismissAll();
+      //    this.router.navigate(["/home"]);
 
 
-    //  }, error => {
-    //    console.log("Error: ", error);
-    //  })
+      //  }, error => {
+      //    console.log("Error: ", error);
+      //  })
 
     }
   }
 
- 
+
   async CanCommentSeniorReviewer() {
-    
-   
+
+
 
     await this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
       if (data.responseCode == 1) {
         let foundMatch = false;
         let current = data.dateSet[0];// Flag to track if a match is found
-        
-       
 
-        if (current.userAssaignedToComment == "Senior Reviewer to comment" || current.commentStatus == "Referred" ) {
-          
-         
+
+
+        if (current.userAssaignedToComment == "Senior Reviewer to comment" || current.commentStatus == "Referred") {
+
+
 
           for (var i = 0; i < this.seniorReviewerUsers.length; i++) {
-           
+
 
             if (this.seniorReviewerUsers[i].userID == this.CurrentUser.appUserId) {
-             
-             
+
+
               if (current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
 
-                
+
                 foundMatch = true;
                 break;
               }
@@ -1900,7 +1900,7 @@ export class ActionCenterComponent implements OnInit {
             }
 
             if (foundMatch) {
-              
+
               // A match was found, no need to continue checking
               break;
             }
@@ -1910,12 +1910,12 @@ export class ActionCenterComponent implements OnInit {
           this.canCommentSeniorReviewer = false;
         }
 
-        
+
         this.canCommentSeniorReviewer = foundMatch;
-       
-  /*        this.ACHeader = "You can comment!";*/
-   
-       
+
+        /*        this.ACHeader = "You can comment!";*/
+
+
       } else {
         alert(data.responseMessage);
       }
@@ -1927,31 +1927,31 @@ export class ActionCenterComponent implements OnInit {
   }
 
 
- async CanCommentFinalApprover() {
-    
-   
+  async CanCommentFinalApprover() {
 
-   await this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+
+    await this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
       if (data.responseCode == 1) {
-       
+
         let foundMatch = false;
         let current = data.dateSet[0];// Flag to track if a match is found
-        
 
-       // projectTracker Sindiswa 19 January 2024
-        if (current.userAssaignedToComment == "All users in Subdepartment FA" || (current.userAssaignedToComment !== null && ( current.commentStatus == 'Approved'|| current.commentStatus === 'Rejected')) ) {
-          
+
+        // projectTracker Sindiswa 19 January 2024
+        if (current.userAssaignedToComment == "All users in Subdepartment FA" || (current.userAssaignedToComment !== null && (current.commentStatus == 'Approved' || current.commentStatus === 'Rejected'))) {
+
 
 
           for (var i = 0; i < this.finalApproverUsers.length; i++) {
 
 
             if (this.finalApproverUsers[i].userID == this.CurrentUser.appUserId) {
-              
+
               // Check if any userID in this.finalApproverUsers matches current.userAssaignedToComment
               if (current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
 
-                
+
                 foundMatch = true;
                 break;
               }
@@ -1959,22 +1959,22 @@ export class ActionCenterComponent implements OnInit {
             }
 
             if (foundMatch) {
-              
+
               // A match was found, no need to continue checking
               break;
             }
           }
         }
-          else {
-            this.canCommentFinalApprover = false;
-          }
-        
-        
+        else {
+          this.canCommentFinalApprover = false;
+        }
+
+
         this.canCommentFinalApprover = foundMatch;
         //if (this.ACHeader != "You can comment!") {
         //  this.ACHeader = "You can final approve!";
         //}
-        
+
       } else {
         alert(data.responseMessage);
       }
@@ -1989,7 +1989,7 @@ export class ActionCenterComponent implements OnInit {
   // OLd code 
   //CanCommentFinalApprover() {
   //  this.getUsersByRoleName("Final Approver");
-    
+
   //  this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
 
   //    if (data.responseCode == 1) {
@@ -2007,9 +2007,9 @@ export class ActionCenterComponent implements OnInit {
   //          this.canCommentFinalApprover = false;
   //        } 
   //      }
-       
 
-      
+
+
 
   //    }
   //    else {
@@ -2027,7 +2027,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   updateApplicationStatus() {
-    
+
     //this.getAllSubDepartments();
     let x = 0;
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
@@ -2040,12 +2040,12 @@ export class ActionCenterComponent implements OnInit {
       this.applicationsService.getApplicationsByApplicationID(this.ApplicationID).subscribe((data: any) => {
         if (data.responseCode == 1) {
           const current = data.dateSet[0];
-          
-          this.applicationsService.updateApplicationStage(this.ApplicationID, current.previousStageName, current.previousStageNumber ,current.currentStageName, current.currentStageNumber, current.nextStageName, current.nextStageNumber,"Distributed/Allocated").subscribe((data: any) => {
+
+          this.applicationsService.updateApplicationStage(this.ApplicationID, current.previousStageName, current.previousStageNumber, current.currentStageName, current.currentStageNumber, current.nextStageName, current.nextStageNumber, "Distributed/Allocated").subscribe((data: any) => {
             if (data.responseCode == 1) {
               const current = data.dateSet[0];
 
-             
+
 
 
             }
@@ -2080,23 +2080,23 @@ export class ActionCenterComponent implements OnInit {
 
 
   viewSelectedUserForApplication() {
-    
-    
+
+
     this.LinkedUserToSub.splice(0, this.LinkedUserToSub.length);
-   
+
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
       if (data.responseCode == 1) {
-       
+
         const current = data.dateSet[0];
-       
-        
+
+
         this.forManuallyAssignSubForCommentID = current.subDepartmentForCommentID;
-       
+
         for (var i = 0; i < this.UserZoneList.length; i++) {
-         
+
           if (this.UserZoneList[i].id == current.userAssaignedToComment) {
             const tempUserList = {} as UserZoneList;
-           
+
             tempUserList.fullName = this.UserZoneList[i].fullName;
             tempUserList.id = this.UserZoneList[i].id;
             tempUserList.zoneLinkID = this.UserZoneList[i].zoneLinkID;
@@ -2105,11 +2105,11 @@ export class ActionCenterComponent implements OnInit {
             this.LinkedUserToSub.push(tempUserList);
           }
         }
-       
+
         this.CanCommentSeniorReviewer();
-       
+
         this.CanCommentFinalApprover();
-        
+
 
       }
       else {
@@ -2132,14 +2132,14 @@ export class ActionCenterComponent implements OnInit {
       this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.forManuallyAssignSubForCommentID, this.UserSelectionForManualLink.selected[0].id).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
-          
-      
+
+
           this.getLinkedZones();
           this.updateApplicationStatus();
           this.MoveApplicationToAllocated();
           this.viewProjectInfoComponent.getAllComments();
           this.refreshParent.emit();
-          
+
           const emailContent = `
       <html>
         <head>
@@ -2184,8 +2184,8 @@ export class ActionCenterComponent implements OnInit {
 */          this.notificationsService.addUpdateNotification(0, "New Wayleave Application", "Application Assigned", false, this.CurrentUser.appUserID, this.UserSelectionForManualLink.selected[0].id, this.ApplicationID, "You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.").subscribe((data: any) => {
 
             if (data.responseCode == 1) {
-           
-              
+
+
             }
             else {
               alert(data.responseMessage);
@@ -2204,26 +2204,26 @@ export class ActionCenterComponent implements OnInit {
         this.modalService.dismissAll();
         this.openSnackBar("User Assigned Successfully");
         this.router.navigate(["/home"]);
-        
+
 
       }, error => {
         console.log("Error: ", error);
       })
 
     }
-  } 
+  }
 
 
 
-  getUsersByRoleName(roleName?: string |null) {
+  getUsersByRoleName(roleName?: string | null) {
 
     if (roleName == "Department Admin") {
       this.accessGroupsService.getUserBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
-        
+
         if (data.responseCode == 1) {
-          
+
           this.departmentAdminUsers = data.dateSet;
-          
+
           console.log("this.departmentAdminUsersgetAllLinkedRolesReponsethis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsers", this.departmentAdminUsers);
         }
         else {
@@ -2238,9 +2238,9 @@ export class ActionCenterComponent implements OnInit {
     }
     else if (roleName == "Senior Reviewer") {
       this.accessGroupsService.getUserBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
-       
+
         if (data.responseCode == 1) {
-         
+
           this.seniorReviewerUsers = data.dateSet;
         }
         else {
@@ -2268,10 +2268,10 @@ export class ActionCenterComponent implements OnInit {
       })
     }
     else if (roleName == "Reviewer") {
-      this.accessGroupsService.getUsersBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID,this.CurrentUserProfile[0].zoneID).subscribe((data: any) => {
+      this.accessGroupsService.getUsersBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
-          
+
           this.reviewerUsers = data.dateSet;
           this.getReviewerForLink();
         }
@@ -2315,11 +2315,11 @@ export class ActionCenterComponent implements OnInit {
       })
     }
     else if (roleName == "Permit Issuer") {
-      
+
       this.accessGroupsService.getUserBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
-        
+
         if (data.responseCode == 1) {
-          
+
           this.permitIssuer = data.dateSet;
           console.log("YEAHHHHHHHHHHHHHH", this.permitIssuer);
         }
@@ -2336,9 +2336,9 @@ export class ActionCenterComponent implements OnInit {
       alert("Could not find AG");
     }
 
-    
 
-    
+
+
 
   }
 
@@ -2374,39 +2374,39 @@ export class ActionCenterComponent implements OnInit {
 
     this.subDepartmentForCommentService.departmentForCommentFinalAppovalUserToComment(this.forManuallyAssignSubForCommentID, "All users in Subdepartment FA").subscribe((data: any) => {
 
-        if (data.responseCode == 1) {
+      if (data.responseCode == 1) {
 
-      
-          this.viewProjectInfoComponent.getAllComments();
-        }
-        else {
-          alert(data.responseMessage);
 
-        }
-        console.log("reponse", data);
+        this.viewProjectInfoComponent.getAllComments();
+      }
+      else {
+        alert(data.responseMessage);
 
-      }, error => {
-        console.log("Error: ", error);
-      })
+      }
+      console.log("reponse", data);
 
-    
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
   }
 
   onHopperClick() {
-    
+
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
 
-          const current = data.dateSet[0];
-          this.SubForCommentIDForHopper = current.subDepartmentForCommentID;
+        const current = data.dateSet[0];
+        this.SubForCommentIDForHopper = current.subDepartmentForCommentID;
 
-     
+
 
         if (confirm("Are you sure you what to assign this project to you?")) {
-         
-          this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.SubForCommentIDForHopper, this.CurrentUser.appUserId ).subscribe((data: any) => {
+
+          this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.SubForCommentIDForHopper, this.CurrentUser.appUserId).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
 
@@ -2439,22 +2439,22 @@ export class ActionCenterComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
-}
+  }
 
   getAllUsersLinkedToZoneByZoneID() {
-    
+
 
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        
+
         const current = data.dateSet[0];
-       
-        
+
+
         this.zoneService.getUsersLinkedByZoneID(current.zoneID).subscribe((data: any) => {
 
-         
+
           if (data.responseCode == 1) {
-            
+
             for (let i = 0; i < data.dateSet.length; i++) {
               const tempZoneList = {} as UserZoneList;
               const current = data.dateSet[i];
@@ -2462,12 +2462,12 @@ export class ActionCenterComponent implements OnInit {
               tempZoneList.fullName = current.fullName;
               tempZoneList.zoneLinkID = current.zoneLinkID;
               tempZoneList.Email = current.email;
-             
+
               this.UserZoneList.push(tempZoneList);
             }
             this.setRoles();
 
-            this.CheckIfCurrentUserCanUseHopper(); 
+            this.CheckIfCurrentUserCanUseHopper();
           }
           else {
             alert(data.responseMessage);
@@ -2494,9 +2494,9 @@ export class ActionCenterComponent implements OnInit {
       console.log("Error: ", error);
     })
 
-     
-  
-    
+
+
+
 
   }
 
@@ -2512,9 +2512,9 @@ export class ActionCenterComponent implements OnInit {
 
   //        const current = data.dateSet[i];
 
-          
 
-          
+
+
   //      }
   //    }
   //    else {
@@ -2554,7 +2554,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   //}
-  totalAmount:number;
+  totalAmount: number;
   rate: number;
   description: string;
   quantity: number;
@@ -2563,10 +2563,10 @@ export class ActionCenterComponent implements OnInit {
   remarks = '';
   vatApp = '';
   calculateTotalAmount() {
-    
+
     let rateVat = this.depositRequired.controls["total"].value;
     this.vatApp = this.depositRequired.controls["vatApplicable"].value;
-     this.rate = Number(this.depositRequired.controls["rate"].value);
+    this.rate = Number(this.depositRequired.controls["rate"].value);
     this.description = this.depositRequired.controls["description"].value;
     this.quantity = Number(this.depositRequired.controls["quantity"].value);
     if (this.vatApp == "true") {
@@ -2583,7 +2583,7 @@ export class ActionCenterComponent implements OnInit {
   }
 
   onDepositRequiredClick() {
-    
+
     let SubDepartmentName = "";
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
@@ -2594,9 +2594,9 @@ export class ActionCenterComponent implements OnInit {
     this.rate = Number(this.depositRequired.controls["rate"].value);
     this.description = this.depositRequired.controls["description"].value;
     this.quantity = Number(this.depositRequired.controls["quantity"].value);
-   this.remarks = this.depositRequired.controls["remarks"].value;
+    this.remarks = this.depositRequired.controls["remarks"].value;
     let rateVat = this.depositRequired.controls["total"].value;
-   let vatApp = this.depositRequired.controls["vatApplicable"].value
+    let vatApp = this.depositRequired.controls["vatApplicable"].value
     //let total = this.depositRequired.controls["total"].value;
 
     if (vatApp === "True") {
@@ -2641,7 +2641,7 @@ export class ActionCenterComponent implements OnInit {
     switch (interact) {
 
       case "Approve": {
-        
+
         debugger;
         if (this.WBSCheck == true) {
 
@@ -2694,11 +2694,11 @@ export class ActionCenterComponent implements OnInit {
 
 
                 this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", emailContent, emailContent);
-                
+
                 this.accessGroupsService.getUserBasedOnRoleName("FinalApprover", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
-                  
+
                   if (data.responseCode == 1) {
-                    
+
                     console.log(data.dateSet);
 
                     console.log("this.departmentAdminUsersgetAllLinkedRolesReponsethis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsers", this.departmentAdminUsers);
@@ -2716,7 +2716,7 @@ export class ActionCenterComponent implements OnInit {
 */                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application provisionally approved", false, this.CurrentUserProfile[0].UserID, this.CurrentUserProfile[0].UserID, this.ApplicationID, "You have approved application " + this.projectNo).subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
-                 
+
 
                   }
                   else {
@@ -2727,14 +2727,14 @@ export class ActionCenterComponent implements OnInit {
                 }, error => {
                   console.log("Error", error);
                 });
-              
+
 
                 //commentsService
                 this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Approved(Conditional)", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
 
-                 
+
                     this.viewProjectInfoComponent.getAllComments();
 
                   }
@@ -2873,12 +2873,12 @@ export class ActionCenterComponent implements OnInit {
 
 
                   this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", emailContent, emailContent);
-                  
+
                   this.accessGroupsService.GetUserAndZoneBasedOnRoleName("Final Approver", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
                     if (data.responseCode === 1) {
                       // Filter out duplicates based on a unique property (e.g., email)
                       const uniqueFinalApprovers = this.getUniqueFinalApprovers(data.dateSet, 'email');
-                      
+
                       // Filter out final approvers for the current zone
                       const finalApproversForCurrentZone = uniqueFinalApprovers.filter(approver => approver.zoneID === this.CurrentUserProfile[0].zoneID);
                       finalApproversForCurrentZone.forEach(approver => {
@@ -2937,7 +2937,7 @@ export class ActionCenterComponent implements OnInit {
 */                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application provisionally approved", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have approved application " + this.projectNo).subscribe((data: any) => {
 
                     if (data.responseCode == 1) {
-                   
+
 
                     }
                     else {
@@ -2949,13 +2949,13 @@ export class ActionCenterComponent implements OnInit {
                     console.log("Error", error);
                   });
 
-               
+
                   //commentsService                                                                                                                                                              //Change Wording Kyle 15/01/24
                   this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Provisionally Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
                     if (data.responseCode == 1) {
 
-                 
+
                       this.viewProjectInfoComponent.getAllComments();
                     }
                     else {
@@ -2977,11 +2977,11 @@ export class ActionCenterComponent implements OnInit {
               }, error => {
                 console.log("Error: ", error);
               })
-            /*  this.moveToFinalApprovalForDepartment();*/
+              /*  this.moveToFinalApprovalForDepartment();*/
               this.modalService.dismissAll();
               this.openSnackBar("Application Actioned");
               this.router.navigate(["/home"]);
-              
+
             }
 
           }
@@ -2992,7 +2992,7 @@ export class ActionCenterComponent implements OnInit {
       case "Reject": {
         debugger;
         if (confirm("Are you sure you want to reject this application?")) {
-          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Rejected", null, null,"All users in Subdepartment FA",false).subscribe((data: any) => {
+          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Rejected", null, null, "All users in Subdepartment FA", false).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
               const emailContent = `
@@ -3039,8 +3039,8 @@ export class ActionCenterComponent implements OnInit {
 
 
               this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application disapproved", emailContent, emailContent);
-/*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application disapproved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have disapproved application " + this.projectNo + "with comment: <br><br><i>" + this.leaveAComment  + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/
+              /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application disapproved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have disapproved application " + this.projectNo + "with comment: <br><br><i>" + this.leaveAComment  + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+              */
               // #region what's up with this case?
               debugger;
               this.accessGroupsService.getUserBasedOnRoleName("FinalApprover", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
@@ -3065,7 +3065,7 @@ export class ActionCenterComponent implements OnInit {
               this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application Disapproved", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have disapproved application " + this.projectNo + "with comment:" + this.leaveAComment).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-                 
+
 
                 }
                 else {
@@ -3077,12 +3077,12 @@ export class ActionCenterComponent implements OnInit {
                 console.log("Error", error);
               });
 
-            
+
               //commentsService
               this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Rejected", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
                 if (data.responseCode == 1) {
 
-                 
+
                   this.viewProjectInfoComponent.getAllComments();
                 }
                 else {
@@ -3109,13 +3109,13 @@ export class ActionCenterComponent implements OnInit {
           this.openSnackBar("Application Actioned");
           this.router.navigate(["/home"]);
         }
-       
+
         break;
       }
 
       case "Clarify": {
-        
-       // this.getDepartmentManagerUserID("Senior Reviewer");
+
+        // this.getDepartmentManagerUserID("Senior Reviewer");
         if (confirm("Are you sure you want to get clarity from applicant for this application?")) {
           this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
 
@@ -3164,8 +3164,8 @@ export class ActionCenterComponent implements OnInit {
 
 
               this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
-/*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/
+              /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+              */
               const emailContentApp = `
         <html>
         <head>
@@ -3191,7 +3191,7 @@ export class ActionCenterComponent implements OnInit {
         </head>
         <body>
           <div class="email-content">
-            <p>Dear ${this.applicationData.clientName }</p>
+            <p>Dear ${this.applicationData.clientName}</p>
             <p>A reviewer has asked you to clarify your application ${this.projectNo} with the comment:</p>
             <p>${this.leaveAComment}</p>
                <p >Please login to the <a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a> and provide a response</p>
@@ -3215,7 +3215,7 @@ export class ActionCenterComponent implements OnInit {
 */              this.notificationsService.addUpdateNotification(0, "Wayleave Application Request", "Request for clarification", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-                
+
 
                 }
                 else {
@@ -3229,7 +3229,7 @@ export class ActionCenterComponent implements OnInit {
               this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarificaion", false, this.CurrentUser.appUserID, this.applicationData.userID, this.ApplicationID, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
-                
+
 
                 }
                 else {
@@ -3240,13 +3240,13 @@ export class ActionCenterComponent implements OnInit {
               }, error => {
                 console.log("Error", error);
               });
-         
+
               //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null,null, this.loggedInUserName).subscribe((data: any) => {
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
 
-               
+
                   this.viewProjectInfoComponent.getAllComments();
                 }
                 else {
@@ -3277,15 +3277,15 @@ export class ActionCenterComponent implements OnInit {
         break;
       }
       case "Refer": {
-        
-        
-     
-        if (confirm("Are you sure you want to refer this application to Senior Reviewers?")) {
-          
-            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Referred", false, true, "Senior Reviewer to comment",false).subscribe((data: any) => {
 
-              if (data.responseCode == 1) {
-                const emailContent = `
+
+
+        if (confirm("Are you sure you want to refer this application to Senior Reviewers?")) {
+
+          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Referred", false, true, "Senior Reviewer to comment", false).subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+              const emailContent = `
         <html>
         <head>
           <style>
@@ -3326,15 +3326,15 @@ export class ActionCenterComponent implements OnInit {
            
     `;
 
-                this.accessGroupsService.GetUserAndZoneBasedOnRoleName("Senior Reviewer", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
-                  if (data.responseCode === 1) {
-                    // Filter out duplicates based on a unique property (e.g., email)
-                    const uniqueFinalApprovers = this.getUniqueFinalApprovers(data.dateSet, 'email');
-                    
-                    // Filter out final approvers for the current zone
-                    const finalApproversForCurrentZone = uniqueFinalApprovers.filter(approver => approver.zoneID === this.CurrentUserProfile[0].zoneID);
-                    finalApproversForCurrentZone.forEach(approver => {
-                      const emailContent12 = `
+              this.accessGroupsService.GetUserAndZoneBasedOnRoleName("Senior Reviewer", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+                if (data.responseCode === 1) {
+                  // Filter out duplicates based on a unique property (e.g., email)
+                  const uniqueFinalApprovers = this.getUniqueFinalApprovers(data.dateSet, 'email');
+
+                  // Filter out final approvers for the current zone
+                  const finalApproversForCurrentZone = uniqueFinalApprovers.filter(approver => approver.zoneID === this.CurrentUserProfile[0].zoneID);
+                  finalApproversForCurrentZone.forEach(approver => {
+                    const emailContent12 = `
         <html>
         <head>
           <style>
@@ -3374,40 +3374,40 @@ export class ActionCenterComponent implements OnInit {
      
            
     `;
-                      this.notificationsService.sendEmail(approver.email, "Request for Perusal", emailContent12, emailContent12);
-                    });
-                    console.log("Filtered Final Approvers:", finalApproversForCurrentZone);
-                  } else {
-                    alert(data.responseMessage);
-                  }
-                }, error => {
-                  console.log("Error fetching final approvers:", error);
-                });
+                    this.notificationsService.sendEmail(approver.email, "Request for Perusal", emailContent12, emailContent12);
+                  });
+                  console.log("Filtered Final Approvers:", finalApproversForCurrentZone);
+                } else {
+                  alert(data.responseMessage);
+                }
+              }, error => {
+                console.log("Error fetching final approvers:", error);
+              });
 
-                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application escalated", emailContent, emailContent);
+              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application escalated", emailContent, emailContent);
 /*                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application escalated", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have escalated application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
 */                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application escalated", false, this.CurrentUser.appUserID, this.CurrentUserProfile[0].UserID, this.ApplicationID, "You have escalated application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
-                  if (data.responseCode == 1) {
-                 
-
-                  }
-                  else {
-                    alert(data.responseMessage);
-                  }
-
-                  console.log("response", data);
-                }, error => {
-                  console.log("Error", error);
-                });
-              
-                //commentsService
-                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName,
+                if (data.responseCode == 1) {
 
 
+                }
+                else {
+                  alert(data.responseMessage);
+                }
+
+                console.log("response", data);
+              }, error => {
+                console.log("Error", error);
+              });
+
+              //commentsService
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName,
 
 
-                  this.leaveAComment, "Referred", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
+
+
+                this.leaveAComment, "Referred", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
 
@@ -3423,24 +3423,24 @@ export class ActionCenterComponent implements OnInit {
                 }, error => {
                   console.log("Error: ", error);
                 })
-                this.refreshParent.emit();
-              }
-              else {
-                alert(data.responseMessage);
+              this.refreshParent.emit();
+            }
+            else {
+              alert(data.responseMessage);
 
-              }
-              console.log("reponse", data);
+            }
+            console.log("reponse", data);
 
-            }, error => {
-              console.log("Error: ", error);
-            })
-            //alert("In progress");
+          }, error => {
+            console.log("Error: ", error);
+          })
+          //alert("In progress");
           this.modalService.dismissAll();
           this.openSnackBar("Application Actioned");
-            this.router.navigate(["/home"]);
-          }
-        
-       
+          this.router.navigate(["/home"]);
+        }
+
+
 
         break;
       }
@@ -3482,7 +3482,7 @@ export class ActionCenterComponent implements OnInit {
     switch (interact) {
 
       case "Approve": {
-        
+
 
         //if (this.checked == true) {
         if (this.WBSCheck == true) { //seniorReviewer Sindiswa 19 January 2024
@@ -3631,10 +3631,10 @@ export class ActionCenterComponent implements OnInit {
             }
           }
         }
-          else {
-            if (confirm("Have you uploaded all revelevant documents?")) { 
+        else {
+          if (confirm("Have you uploaded all revelevant documents?")) {
             if (confirm("Are you sure you want to approve this application?")) {
-     
+
               this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved", false, false, "All users in Subdepartment FA", false).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
@@ -3807,7 +3807,7 @@ export class ActionCenterComponent implements OnInit {
 
       case "Reject": {
         if (confirm("Are you sure you want to reject this application?")) {
-          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Rejected", false, false, "All users in Subdepartment FA",false).subscribe((data: any) => {
+          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Rejected", false, false, "All users in Subdepartment FA", false).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
 
@@ -3956,8 +3956,8 @@ export class ActionCenterComponent implements OnInit {
 
 
               this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
-/*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You, as a senior reviewer, have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/
+              /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You, as a senior reviewer, have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+              */
               const emailContent2 = `
         <html>
         <head>
@@ -4034,7 +4034,7 @@ export class ActionCenterComponent implements OnInit {
 
               alert(data.responseMessage);
               //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null,null, this.loggedInUserName).subscribe((data: any) => {
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
 
@@ -4067,7 +4067,7 @@ export class ActionCenterComponent implements OnInit {
         }
         break;
       }
-   
+
 
 
 
@@ -4081,9 +4081,9 @@ export class ActionCenterComponent implements OnInit {
 
 
   getAllUsersLinkedToZone(SubDepartmentID: any) {
-   
+
     this.ZoneList.splice(0, this.ZoneList.length);
-  
+
     this.zoneService.getZonesBySubDepartmentsID(SubDepartmentID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
@@ -4095,7 +4095,7 @@ export class ActionCenterComponent implements OnInit {
           tempZoneList.zoneName = current.zoneName;
           tempZoneList.subDepartmentID = current.subDepartmentID;
           tempZoneList.departmentID = current.departmentID;
-     
+
 
           this.ZoneList.push(tempZoneList);
           this.ZoneListTable?.renderRows();
@@ -4117,7 +4117,7 @@ export class ActionCenterComponent implements OnInit {
   }
 
   CheckIfCurrentUserCanUseHopper() {
-  
+
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID && this.SubDepartmentLinkedList[i].UserAssaignedToComment == undefined) {
 
@@ -4134,7 +4134,7 @@ export class ActionCenterComponent implements OnInit {
       }
 
     }
-    
+
   }
 
 
@@ -4147,7 +4147,7 @@ export class ActionCenterComponent implements OnInit {
 
   openAssignToZone(assignProjectToZone: any) {
     //this.getAllSubDepartments();
-    
+
     this.modalService.open(assignProjectToZone, { backdrop: 'static', size: 'xl' });
   }
 
@@ -4160,7 +4160,7 @@ export class ActionCenterComponent implements OnInit {
   openDepositOrWBSOption(depositOrWBSNumber: any) {
     this.modalService.open(depositOrWBSNumber, { centered: true });
   }
-  enterWBSNumberModal(wbsNumberModal:any) {
+  enterWBSNumberModal(wbsNumberModal: any) {
     this.modalService.open(wbsNumberModal, { backdrop: 'static', size: 'xl' });
   }
 
@@ -4187,19 +4187,19 @@ export class ActionCenterComponent implements OnInit {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempSubDepartmentList = {} as SubDepartmentList;
           const current = data.dateSet[i];
-         
+
           tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
           tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
-          
+
           tempSubDepartmentList.departmentID = current.departmentID;
           tempSubDepartmentList.dateUpdated = current.dateUpdated;
           tempSubDepartmentList.dateCreated = current.dateCreated;
           this.SubDepartmentList.push(tempSubDepartmentList);
           this.SubDepartmentListTable?.renderRows();
         }
-       
+
         this.SubDepartmentListTable?.renderRows();
-       // this.modalService.open(assign, { size: 'xl' });
+        // this.modalService.open(assign, { size: 'xl' });
       }
       else {
         //alert("Invalid Email or Password");
@@ -4221,7 +4221,7 @@ export class ActionCenterComponent implements OnInit {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempSubDepartmentLinkedList = {} as SubDepartmentList;
           const current = data.dateSet[i];
-   
+
           tempSubDepartmentLinkedList.subDepartmentID = current.subDepartmentID;
           tempSubDepartmentLinkedList.UserAssaignedToComment = current.userAssaignedToComment;
           tempSubDepartmentLinkedList.subDepartmentName = current.subDepartmentName;
@@ -4234,12 +4234,12 @@ export class ActionCenterComponent implements OnInit {
           this.SubDepartmentLinkedList.push(tempSubDepartmentLinkedList);
           this.SubDepartmentListTable?.renderRows();
         }
-       
+
         this.setRoles();
         this.SubDepartmentListTable?.renderRows();
         this.SubDepartmentLinkedListTable?.renderRows();
-       // this.modalService.open(assign, { size: 'xl' });
-      } 
+        // this.modalService.open(assign, { size: 'xl' });
+      }
       else {
         //alert("Invalid Email or Password");
         alert(data.responseMessage);
@@ -4256,20 +4256,20 @@ export class ActionCenterComponent implements OnInit {
   }
 
   deleteLinkedDepartmentForComment(index: number) {
-    
-   
+
+
     if (confirm("Are you sure to delete " + this.SubDepartmentLinkedList[index].subDepartmentName + "?")) {
-     
+
       this.subDepartmentForCommentService.deleteDepartmentForComment(this.SubDepartmentLinkedList[index].subdepartmentForCommentID).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 
           alert(data.responseMessage);
-         
+
         }
         else {
           alert(data.responseMessage);
-          
+
         }
         console.log("reponse", data);
 
@@ -4284,7 +4284,7 @@ export class ActionCenterComponent implements OnInit {
     //let currnetComment = this.leaveAComment;
     //console.log("commentName", commentName);
     //this.leaveAComment = currnetComment + " " + commentName;
-    
+
     this.leaveAComment = commentName;
   }
 
@@ -4294,7 +4294,7 @@ export class ActionCenterComponent implements OnInit {
     this.leaveACommentPermit = currnetComment + " " + commentName;
   }
 
-getAllCommentsByUserID() {
+  getAllCommentsByUserID() {
 
     this.CommentDropDown.splice(0, this.CommentDropDown.length);
 
@@ -4331,7 +4331,7 @@ getAllCommentsByUserID() {
 
   }
 
-  getAllServiceItmesForDropdown(deposit:any) {
+  getAllServiceItmesForDropdown(deposit: any) {
 
 
     this.serviceItemService.getAllServiceItem().subscribe((data: any) => {
@@ -4394,7 +4394,7 @@ getAllCommentsByUserID() {
   //}
 
   onPopulateDeposit() {
-    
+
     let selectedServiceItem = Number(this.selectSI);
 
     console.log("THIS IS THE SERVICE ITEM CODE", selectedServiceItem);
@@ -4424,7 +4424,7 @@ getAllCommentsByUserID() {
   }
 
   departmentSelectedForLink(department: any) {
-    
+
     this.selection.toggle(department);
 
   }
@@ -4444,7 +4444,7 @@ getAllCommentsByUserID() {
 
   onLinkDepartmentForComment() {
 
-  
+
 
     const selectDepartments = this.selection.selected;
 
@@ -4452,7 +4452,7 @@ getAllCommentsByUserID() {
 
 
     for (var i = 0; i < selectDepartments.length; i++) {
-      this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, selectDepartments[i].subDepartmentID, selectDepartments[i].subDepartmentName, null, null, this.CurrentUser.appUserId,null,null).subscribe((data: any) => {
+      this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, selectDepartments[i].subDepartmentID, selectDepartments[i].subDepartmentName, null, null, this.CurrentUser.appUserId, null, null).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 
@@ -4479,10 +4479,10 @@ getAllCommentsByUserID() {
   onLinkZoneForComment() {
 
     const selectZones = this.zoneSelection.selected;
- 
+
 
     for (var i = 0; i < selectZones.length; i++) {
-      this.zoneForCommentService.addUpdateZoneForComment(0, selectZones[i].subDepartmentID, this.ApplicationID, selectZones[i].zoneID, selectZones[i].zoneName ,this.CurrentUser.appUserId).subscribe((data: any) => {
+      this.zoneForCommentService.addUpdateZoneForComment(0, selectZones[i].subDepartmentID, this.ApplicationID, selectZones[i].zoneID, selectZones[i].zoneName, this.CurrentUser.appUserId).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 
@@ -4510,13 +4510,13 @@ getAllCommentsByUserID() {
 
 
   getLinkedZones() {
-    
+
     this.ZoneLinkedList.splice(0, this.ZoneLinkedList.length);
 
     this.zoneForCommentService.getZonesForComment(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
-      
+
       if (data.responseCode == 1) {
-        
+
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempZoneList = {} as ZoneList;
           const current = data.dateSet[i];
@@ -4531,8 +4531,8 @@ getAllCommentsByUserID() {
           this.ZoneListTable?.renderRows();
 
         }
-      
-        
+
+
         this.ZoneListTable?.renderRows();
         this.getAllUsersLinkedToZoneByZoneID();
 
@@ -4559,77 +4559,77 @@ getAllCommentsByUserID() {
 
     if (isPlanning === false) {
 
-    const currentApplication = this.sharedService.getViewApplicationIndex();
+      const currentApplication = this.sharedService.getViewApplicationIndex();
 
 
 
-    this.subDepartmentForCommentService.getSubDepartmentForComment(currentApplication.applicationID).subscribe((data: any) => {
+      this.subDepartmentForCommentService.getSubDepartmentForComment(currentApplication.applicationID).subscribe((data: any) => {
 
-      if (data.responseCode == 1) {
-       
-
-        for (var i = 0; i < data.dateSet.length; i++) {
-          const current = data.dateSet[i];
-
-          const tempSubDepartmentList = {} as SubDepartmentList;
-          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
-          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
-          tempSubDepartmentList.departmentID = current.departmentID;
-          tempSubDepartmentList.dateUpdated = current.dateUpdated;
-          tempSubDepartmentList.dateCreated = current.dateCreated;
-          tempSubDepartmentList.commentStatus = current.commentStatus;
+        if (data.responseCode == 1) {
 
 
-          if (tempSubDepartmentList.commentStatus == "Final Approved") {
-            this.countApprove++;
+          for (var i = 0; i < data.dateSet.length; i++) {
+            const current = data.dateSet[i];
+
+            const tempSubDepartmentList = {} as SubDepartmentList;
+            tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+            tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+            tempSubDepartmentList.departmentID = current.departmentID;
+            tempSubDepartmentList.dateUpdated = current.dateUpdated;
+            tempSubDepartmentList.dateCreated = current.dateCreated;
+            tempSubDepartmentList.commentStatus = current.commentStatus;
+
+
+            if (tempSubDepartmentList.commentStatus == "Final Approved") {
+              this.countApprove++;
+            }
+            if (tempSubDepartmentList.commentStatus == "Rejected") {
+              this.countReject++;
+            }
+
+            this.SubDepartmentListForCheck.push(tempSubDepartmentList);
           }
-          if (tempSubDepartmentList.commentStatus == "Rejected") {
-            this.countReject++;
+
+          if (this.SubDepartmentListForCheck.length == this.countApprove) {
+            /*          this.viewProjectInfoComponent.getAllCommentsForSpecialConditions();*/
+
+
+            /*          this.viewProjectInfoComponent.getAllSubDepForFinalApprove();*/
+
+
+            this.viewProjectInfoComponent.getAllComments();
+
+
+            this.countApprove = 0;
+            this.countReject = 0;
+            /*          this.viewProjectInfoComponent.onCreateApprovalPack();*/
+            this.MoveToNextStage();
+          } else if (this.countReject++ >= 1 && this.SubDepartmentListForCheck.length == this.countApprove + this.countReject) {
+            //Rejection Pack
+            this.viewProjectInfoComponent.getAllComments();
+            this.viewProjectInfoComponent.onCrreateRejectionPack();
+            this.countApprove = 0;
+            this.countReject = 0;
+            this.MoveToClosedStage(false);
+          }
+          else {
+            this.countApprove = 0;
+            this.countReject = 0;
           }
 
-          this.SubDepartmentListForCheck.push(tempSubDepartmentList);
-        }
-
-        if (this.SubDepartmentListForCheck.length == this.countApprove ) {
-/*          this.viewProjectInfoComponent.getAllCommentsForSpecialConditions();*/
-
-
-/*          this.viewProjectInfoComponent.getAllSubDepForFinalApprove();*/
-
-
-          this.viewProjectInfoComponent.getAllComments();
-
-
-          this.countApprove = 0;
-          this.countReject = 0;
-/*          this.viewProjectInfoComponent.onCreateApprovalPack();*/
-          this.MoveToNextStage();
-        } else if (this.countReject++ >= 1 && this.SubDepartmentListForCheck.length == this.countApprove + this.countReject) {
-          //Rejection Pack
-          this.viewProjectInfoComponent.getAllComments();
-          this.viewProjectInfoComponent.onCrreateRejectionPack();
-          this.countApprove = 0;
-          this.countReject = 0;
-          this.MoveToClosedStage(false);
         }
         else {
-          this.countApprove = 0;
-          this.countReject = 0;
+
+          alert(data.responseMessage);
         }
-
-      }
-      else {
-
-        alert(data.responseMessage);
-      }
-      console.log("reponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForComment", data);
+        console.log("reponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForCommentreponseGetSubDepartmentForComment", data);
 
 
-    }, error => {
-      console.log("Error: ", error);
-    })
+      }, error => {
+        console.log("Error: ", error);
+      })
 
-  }
+    }
     else {
 
       /*planning application moves to closed*/
@@ -4668,7 +4668,7 @@ getAllCommentsByUserID() {
             this.countApprove = 0;
             this.countReject = 0;
             this.MoveToClosedStage(true);
-          } 
+          }
 
         }
         else {
@@ -4682,17 +4682,17 @@ getAllCommentsByUserID() {
         console.log("Error: ", error);
       })
 
-}
+    }
 
   }
 
   MoveApplicationToAllocated() {
-    
+
     const currentApplication = this.sharedService.getViewApplicationIndex();
 
     this.subDepartmentForCommentService.getSubDepartmentForComment(currentApplication.applicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        
+
 
         for (var i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
@@ -4727,7 +4727,7 @@ getAllCommentsByUserID() {
           }, error => {
             console.log("Error", error);
           })
-      
+
         }
         else {
           this.assaignedToComment = 0;
@@ -4745,11 +4745,11 @@ getAllCommentsByUserID() {
       console.log("Error: ", error);
     })
 
-   
+
   }
 
   MoveToNextStage() {
-    
+
 
 
     this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, "Approval Pack Generation").subscribe((data: any) => {
@@ -4780,7 +4780,7 @@ getAllCommentsByUserID() {
         </head>
         <body>
           <div class="email-content">
-            <p>Dear ${this.applicationData.clientName },</p>
+            <p>Dear ${this.applicationData.clientName},</p>
             <p>Congratulations, your application with reference ${this.projectNo} has been approved. Please login to the Wayleave Management System and download your Wayleave Approval Pack.</p>
                 <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
                           <p>
@@ -4799,7 +4799,7 @@ getAllCommentsByUserID() {
 */        this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application approved", false, this.CurrentUserProfile[0].UserID, this.applicationData.userID, this.ApplicationID, "Congratulations, your application has been approved. Please log into the system to download your Approval Pack.").subscribe((data: any) => {
 
           if (data.responseCode == 1) {
-           
+
 
           }
           else {
@@ -4840,50 +4840,50 @@ getAllCommentsByUserID() {
   }
 
   MoveToClosedStage(isPlanning: boolean) {
+
+
+    /*    if (isPlanning === false) {
+          this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[this.StagesList.length].StageName, this.StagesList[this.StagesList.length].StageOrderNumber, this.StagesList[this.StagesList.length].StageName, this.StagesList[this.StagesList.length].StageOrderNumber, "Rejected & Closed").subscribe((data: any) => {
     
-   
-/*    if (isPlanning === false) {
-      this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[this.StagesList.length].StageName, this.StagesList[this.StagesList.length].StageOrderNumber, this.StagesList[this.StagesList.length].StageName, this.StagesList[this.StagesList.length].StageOrderNumber, "Rejected & Closed").subscribe((data: any) => {
-
-        if (data.responseCode == 1) {
-            alert("Application Rejected & Moved To Closed");
-
-
-          this.router.navigate(["/home"]);
-
+            if (data.responseCode == 1) {
+                alert("Application Rejected & Moved To Closed");
+    
+    
+              this.router.navigate(["/home"]);
+    
+            }
+            else {
+              alert(data.responseMessage);
+            }
+            console.log("responseAddapplication", data);
+          }, error => {
+            console.log("Error", error);
+          })
         }
-        else {
-          alert(data.responseMessage);
-        }
-        console.log("responseAddapplication", data);
-      }, error => {
-        console.log("Error", error);
-      })
-    }
-    else {*/
-     
-      this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, this.StagesList[5].StageName, this.StagesList[5].StageOrderNumber, this.StagesList[6].StageName, this.StagesList[6].StageOrderNumber, "Monitoring",null).subscribe((data: any) => {
-        
-        if (data.responseCode == 1) {
-          //Audit Trail Kyle 
-          this.onSaveToAuditTrail2("Permit to Work Generated");
-          this.onSaveToAuditTrail2("Application Moved To Monitoring Stage");
-          //Audit Traik Kyle 
-          alert("Application Moved To Monitoring");
-          this.modalService.dismissAll();
-          this.router.navigate(["/home"]);
+        else {*/
 
-        }
-        else {
-          alert(data.responseMessage);
-        }
-        console.log("responseAddapplication", data);
-      }, error => {
-        console.log("Error", error);
-      })
+    this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, this.StagesList[5].StageName, this.StagesList[5].StageOrderNumber, this.StagesList[6].StageName, this.StagesList[6].StageOrderNumber, "Monitoring", null).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        //Audit Trail Kyle 
+        this.onSaveToAuditTrail2("Permit to Work Generated");
+        this.onSaveToAuditTrail2("Application Moved To Monitoring Stage");
+        //Audit Traik Kyle 
+        alert("Application Moved To Monitoring");
+        this.modalService.dismissAll();
+        this.router.navigate(["/home"]);
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("responseAddapplication", data);
+    }, error => {
+      console.log("Error", error);
+    })
 
     /*}*/
-   
+
 
     //}
 
@@ -4935,7 +4935,7 @@ getAllCommentsByUserID() {
   }
 
 
-  deleteLinkedZoneForComment(index: number) { 
+  deleteLinkedZoneForComment(index: number) {
 
 
     if (confirm("Are you sure to delete " + this.ZoneLinkedList[index].zoneName + "?")) {
@@ -4962,7 +4962,7 @@ getAllCommentsByUserID() {
   }
 
   getUserInternalOrExternal() {
-    
+
     this.userPofileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
 
 
@@ -4970,9 +4970,9 @@ getAllCommentsByUserID() {
 
 
         console.log("data", data.dateSet);
-    const currentUserProfile = data.dateSet[0];
+        const currentUserProfile = data.dateSet[0];
         console.log("WOPERIWEPORIPWEOIRPOWERIOPWERIPOWEIRPWEORIPWOERIPWEORIPWEOIRPOWER", currentUserProfile.isInternal);
-    
+
         if (currentUserProfile.isInternal == true) {
 
           this.isInternalUser = true;
@@ -5004,23 +5004,23 @@ getAllCommentsByUserID() {
   onCreateWBSNumber() {
 
     let WBS = String(this.wbs.controls["wbsnumber"].value);
-   
+
     this.depositRequiredService.addUpdateWBSNUmber(this.CurrentUser.appUserId, WBS).subscribe((data: any) => {
 
-        if (data.responseCode == 1) {
+      if (data.responseCode == 1) {
 
-          alert(data.responseMessage);
-          this.viewProjectInfoComponent.getAllComments();
-        }
-        else {
-          alert(data.responseMessage);
+        alert(data.responseMessage);
+        this.viewProjectInfoComponent.getAllComments();
+      }
+      else {
+        alert(data.responseMessage);
 
-        }
-        console.log("reponse", data);
+      }
+      console.log("reponse", data);
 
-      }, error => {
-        console.log("Error: ", error);
-      }) 
+    }, error => {
+      console.log("Error: ", error);
+    })
 
   }
 
@@ -5035,7 +5035,7 @@ getAllCommentsByUserID() {
 
   getUserRoles() {
 
-    const templist = this.sharedService.getCurrentUserRoles(); 
+    const templist = this.sharedService.getCurrentUserRoles();
 
     for (var i = 0; i < templist.length; i++) {
       const current = templist[i];
@@ -5045,7 +5045,7 @@ getAllCommentsByUserID() {
       newList.RoleName = current.RoleName;
 
       this.UserROle.push(newList);
-    
+
     }
     console.log("this.UserROlethis.UserROlethis.UserROlethis.UserROlethis.UserROlethis.UserROlethis.UserROlethis.UserROlethis.UserROlethis.UserROle:", this.UserROle);
     //const role = {} as UserROle;
@@ -5068,20 +5068,20 @@ getAllCommentsByUserID() {
   message = '';
 
   fileName: string = '';
-  fileUploadName = '';  
+  fileUploadName = '';
   @Input() UploadFor: any;
   fileExtention = '';
-  fileToUpload : any;
+  fileToUpload: any;
   fName = '';
   loading: boolean = false;
   uploadFile = (files: any) => {
-    
+
     if (files.length === 0) {
       return;
     }
 
     this.fileToUpload = <File>files[0];
-    this.fileExtention =this.fileToUpload.name.substring(this.fileToUpload.name.indexOf('.'));
+    this.fileExtention = this.fileToUpload.name.substring(this.fileToUpload.name.indexOf('.'));
     this.fileUploadName = this.fileToUpload.name.substring(0, this.fileToUpload.name.indexOf('.')) + this.UploadFor;
     let fName = this.fileUploadName;
     this.fileAttrs[0] = fName;
@@ -5093,45 +5093,45 @@ getAllCommentsByUserID() {
     this.loading = true;
     this.saveBtn = false;
 
-    
+
 
     const formData = new FormData();
     formData.append('file', this.fileToUpload, this.fileUploadName + this.fileExtention);
 
 
 
-   /* const filesForUpload = this.sharedService.pullFilesForUpload();
-
-      const formData = new FormData();
-      let fileExtention = filesForUpload[0].UploadFor.substring(filesForUpload[0].UploadFor.indexOf('.'));
-      let fileUploadName = filesForUpload[0].UploadFor.substring(0, filesForUpload[0].UploadFor.indexOf('.')) + "-appID-" + this.ApplicationID;
-      formData.append('file', filesForUpload[0].formData, fileUploadName + fileExtention);*/
-
-
-
-
-      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
-        .subscribe({
-          next: (event) => {
-
-            
-            if (event.type === HttpEventType.UploadProgress && event.total) {
-              this.progress = Math.round(100 * event.loaded / event.total);
-            }
-            else if (event.type === HttpEventType.Response) {
-              this.message = 'Upload success.';
-              this.uploadFinished(event.body);
-
-            }
-          },
-          error: (err: HttpErrorResponse) => console.log(err)
-        });
+    /* const filesForUpload = this.sharedService.pullFilesForUpload();
  
-   
+       const formData = new FormData();
+       let fileExtention = filesForUpload[0].UploadFor.substring(filesForUpload[0].UploadFor.indexOf('.'));
+       let fileUploadName = filesForUpload[0].UploadFor.substring(0, filesForUpload[0].UploadFor.indexOf('.')) + "-appID-" + this.ApplicationID;
+       formData.append('file', filesForUpload[0].formData, fileUploadName + fileExtention);*/
+
+
+
+
+    this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+      .subscribe({
+        next: (event) => {
+
+
+          if (event.type === HttpEventType.UploadProgress && event.total) {
+            this.progress = Math.round(100 * event.loaded / event.total);
+          }
+          else if (event.type === HttpEventType.Response) {
+            this.message = 'Upload success.';
+            this.uploadFinished(event.body);
+
+          }
+        },
+        error: (err: HttpErrorResponse) => console.log(err)
+      });
+
+
   }
 
   uploadFinished = (event: any) => {
-    
+
     this.response = event;
     console.log("this.response", this.response);
     console.log("this.response?.dbPath", this.response?.dbPath);
@@ -5140,7 +5140,7 @@ getAllCommentsByUserID() {
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
     console.log("documentName", documentName);
 
-    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, this.CurrentUser.appUserId, null, this.loggedInUsersSubDepartmentID, this.loggedInUserSubDepartmentName,true).subscribe((data: any) => {
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, this.CurrentUser.appUserId, null, this.loggedInUsersSubDepartmentID, this.loggedInUserSubDepartmentName, true).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         this.loading = false;
@@ -5159,7 +5159,7 @@ getAllCommentsByUserID() {
   loggedInUserSubDepartmentName = '';
   getCurrentUserSubDepName() {
     this.subDepartment.getSubDepartmentBySubDepartmentID(this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
-     
+
       const current = data.dateSet[0];
       if (data.responseCode == 1) {
         this.loggedInUserSubDepartmentName = current.subDepartmentName
@@ -5173,9 +5173,9 @@ getAllCommentsByUserID() {
     })
   }
 
-  Approve(){
+  Approve() {
     this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Final Approved", false, false, "EndOfCommentProcess", true).subscribe((data: any) => {
-      
+
       if (data.responseCode == 1) {
 
         alert(data.responseMessage);
@@ -5183,11 +5183,11 @@ getAllCommentsByUserID() {
         this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, this.loggedInUserSubDepartmentName, this.leaveAComment, "Final Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
           if (data.responseCode == 1) {
-            
+
 
             alert(data.responseMessage);
             this.CheckALLLinkedDepartmentsCommented(true);
-/*            this.MoveToClosedStage(true);*/
+            /*            this.MoveToClosedStage(true);*/
 
           }
           else {
@@ -5209,8 +5209,8 @@ getAllCommentsByUserID() {
     }, error => {
       console.log("Error: ", error);
     })
-}
-  
+  }
+
   getServicesByDepID() {
 
     this.serviceItemService.getServiceItemByDepID(this.loggedInUsersDepartmentID).subscribe((data: any) => {
@@ -5237,16 +5237,16 @@ getAllCommentsByUserID() {
   CurrentUserZoneName = '';
 
   getZoneForCurrentUser() {
-    
+
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-       
-        
-          let current = data.dateSet[0];
+
+
+        let current = data.dateSet[0];
 
         this.CurrentUserZoneName = current.zoneName;
-    
+
       }
       else {
         alert(data.responseMessage);
@@ -5260,14 +5260,14 @@ getAllCommentsByUserID() {
       console.log("Error: ", error);
     })
 
-    
+
   }
 
   checkIfWbsRequired() {
-    
+
     if (this.CurrentApplication.wbsrequired == true) {
-        this.WBSRequestedAlreadyLabel = true;
-        this.WBSCHeckBox = false;
+      this.WBSRequestedAlreadyLabel = true;
+      this.WBSCHeckBox = false;
 
     }
     else {
@@ -5296,13 +5296,13 @@ getAllCommentsByUserID() {
   assignedReviewerName: string = '';
 
   newAssignORReassign() {
-    
+
 
     this.subDepartmentForCommentService.getAssignedReviewer(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe((data: any) => {
       if (data.responseCode == 1) {
         console.log("Reviewer assignment information:", data.dateSet);
 
-          let current = data.dateSet[0];
+        let current = data.dateSet[0];
         if (current.userAssaignedToComment) {
 
           this.hasReviewerAssignment = true;
@@ -5311,31 +5311,31 @@ getAllCommentsByUserID() {
           this.userPofileService.getUserProfileById(this.assignedReviewerID).subscribe((data: any) => {
 
 
-              if (data.responseCode == 1) {
+            if (data.responseCode == 1) {
 
 
-                console.log("data", data.dateSet);
-                const assigned = data.dateSet[0]; //This should be the latest human's name!!
-                this.assignedReviewerName = assigned.fullName;
-                console.log("These are the assigned user's details", assigned);
+              console.log("data", data.dateSet);
+              const assigned = data.dateSet[0]; //This should be the latest human's name!!
+              this.assignedReviewerName = assigned.fullName;
+              console.log("These are the assigned user's details", assigned);
 
-              }
+            }
 
-              else {
+            else {
 
-                alert(data.responseMessage);
-              }
-              console.log("reponse", data);
+              alert(data.responseMessage);
+            }
+            console.log("reponse", data);
 
-            }, error => {
-              console.log("Error: ", error);
-            })
-    
-            return;
-          }
-          else {
-            this.hasReviewerAssignment = false;
-          }
+          }, error => {
+            console.log("Error: ", error);
+          })
+
+          return;
+        }
+        else {
+          this.hasReviewerAssignment = false;
+        }
       }
       else {
         alert(data.responseMessage);
@@ -5355,7 +5355,7 @@ getAllCommentsByUserID() {
         console.log("Reviewer assignment information:", data.dateSet);
 
         let current = data.dateSet[0];
-        if (current.userAssaignedToComment !== "EndOfCommentProcess" && current.userAssaignedToComment !== "All users in Subdepartment FA" && current.userAssaignedToComment !== "Senior Reviewer to comment" ) {
+        if (current.userAssaignedToComment !== "EndOfCommentProcess" && current.userAssaignedToComment !== "All users in Subdepartment FA" && current.userAssaignedToComment !== "Senior Reviewer to comment") {
 
           this.hasReviewerAssignment = true;
           this.newAssignORReassign();
@@ -5412,7 +5412,7 @@ getAllCommentsByUserID() {
   }
 
   textWithReviewerAssign() {
-    
+
     if (this.hasReviewerAssignment == false) {
       this.reviwerforCommentService.addUpdateReviewerForComment(0, this.ApplicationID, this.UserSelectionForManualLink.selected[0].id, "Initial Reviewer Assignment", "This has been done with no notes.", this.CurrentUser.appUserId, this.loggedInUsersSubDepartmentID, this.loggedInUsersSubDepartmentName, this.CurrentUserProfile[0].zoneID, this.CurrentUserProfile[0].zoneName).subscribe((data: any) => {
 
@@ -5483,7 +5483,7 @@ getAllCommentsByUserID() {
       //This is so the Admin can assign
       this.openXl(content);
     }
-    else if (this.userAssignedText === this.CurrentUser.appUserId && (this.commentState == null || this.commentState == "Referred" || this.commentState == "Approved" || this.commentState == "Rejected" )) {
+    else if (this.userAssignedText === this.CurrentUser.appUserId && (this.commentState == null || this.commentState == "Referred" || this.commentState == "Approved" || this.commentState == "Rejected")) {
       this.openXl(content);
     }
     else if (this.userAssignedText === "EndOfCommentProcess") {
@@ -5498,7 +5498,7 @@ getAllCommentsByUserID() {
       else if (this.commentState == "Approved" || this.commentState == "Rejected") {
         this.appointmentText = "Final Approver - Self Appointed";
         this.asWhat = " Final Approver";
-       
+
       }
 
       //var userConfirmed = window.confirm("This application stage is as follows: '" + this.userAssignedText + "' Do you want to take the application?");
@@ -5550,10 +5550,10 @@ getAllCommentsByUserID() {
   }
   // #endregion
 
-  
-  }
+
+
   //Audit Trail Kyle
-  onSaveToAuditTrail2(description :string) {
+  onSaveToAuditTrail2(description: string) {
     this.auditTrailService.addUpdateAuditTrailItem(0, this.ApplicationID, description, true, this.CurrentUserProfile[0].subDepartmentName, this.CurrentUserProfile[0].zoneName, this.CurrentUser.appUserId).subscribe((data: any) => {
       if (data.responseCode == 1) {
 
@@ -5563,12 +5563,12 @@ getAllCommentsByUserID() {
       }
     }, error => {
       console.log("Error", error);
-    
+
     })
   }
-   //Audit Trail Kyle
-
+  //Audit Trail Kyle
 }
+
 
 
 

@@ -537,7 +537,7 @@ export class ViewProjectInfoComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private approvalPack: ApprovalPackComponent,
     private reviwerforCommentService: ReviewerforcommentService,
-    private approvalPack: ApprovalPackComponent,
+   
     //Audit Trail Kyle
     private auditTrailService: AuditTrailService,
     //Audit Trail Kyle
