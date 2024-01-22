@@ -44,6 +44,9 @@ import 'tinymce/plugins/lists';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { DepartmentCirculationPlanningComponent } from '../department-circulation-planning/department-circulation-planning.component';
 
+//Audit Trail Kyle
+import { AuditTrailService } from '../service/AuditTrail/audit-trail.service';
+ //Audit Trail Kyle
 declare var tinymce: any;
 
 
@@ -378,7 +381,10 @@ export class ActionCenterComponent implements OnInit {
     private notificationsService: NotificationsService,
     private manuallyAssignUsersService: ManuallyAssignUsersService,
     private sanitizer: DomSanitizer,
-    private _bottomSheet: MatBottomSheet
+    private _bottomSheet: MatBottomSheet,
+    //Audit Trail Kyle
+    private auditTrailService: AuditTrailService,
+     //Audit Trail Kyle
 
   ) { }
   openEnd(content: TemplateRef<any>) {
@@ -1069,7 +1075,7 @@ export class ActionCenterComponent implements OnInit {
               
               this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
                 if (data.responseCode == 1) {
-                  
+                 
                   alert("Permit Approved");
                   this.CheckAllLinkedDepartmentsApproved();
                   this.router.navigate(["/home"]);
@@ -1092,7 +1098,7 @@ export class ActionCenterComponent implements OnInit {
           case "MeetOnSite": {
             if (confirm("Are you sure you want to meet applicant On site?")) {
               this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "MeetOnSite", this.CurrentUser.appUserId).subscribe((data: any) => {
-                if (data.responseCode == 1) {
+                if (data.responseCode == 1) {  
                   alert("Meet Applicant On Site");
                   this.router.navigate(["/home"]);
 
@@ -1337,25 +1343,25 @@ export class ActionCenterComponent implements OnInit {
      
       //for (var j = 0; j < this.UserZoneList.length; j++) {
       //  var userZone = this.UserZoneList[j];
-       
+
       //  if (reviewer.userID === userZone.id) {
-         
+
       //    this.ReviewerUserList.push(userZone); // Save the matching userZone in the new list
       //    console.log("THIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINKTHIS IS THE ZONE FOR THE CURRENT USER I THINK", userZone)
       //  }
       //}
 
-      const tempreviewer = {} as UserZoneList;
-      debugger;
+              const tempreviewer = {} as UserZoneList;
+              debugger;
 
-      tempreviewer.Email = reviewer.email;
-      tempreviewer.fullName = reviewer.fullName;
-      tempreviewer.id = reviewer.userID;
-      tempreviewer.zoneLinkID = reviewer.subDepartmentID;
-     
+              tempreviewer.Email = reviewer.email;
+              tempreviewer.fullName = reviewer.fullName;
+              tempreviewer.id = reviewer.userID;
+              tempreviewer.zoneLinkID = reviewer.subDepartmentID;
 
-      this.ReviewerUserList.push(tempreviewer);
-    }
+
+              this.ReviewerUserList.push(tempreviewer);
+            }
   }
 
   setRoles() {
@@ -2196,7 +2202,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   getUsersByRoleName(roleName?: string |null) {
-    
+
     if (roleName == "Department Admin") {
       this.accessGroupsService.getUserBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
         
@@ -4646,7 +4652,12 @@ getAllCommentsByUserID() {
         }, error => {
           console.log("Error", error);
         });
-        alert("Application moved to Approval Pack Generation"); 
+
+        //Audit Trail KyleS
+        this.onSaveToAuditTrail2("Approval pack generated for application");
+        //Audit Trail Kyle
+        alert("Application moved to Approval Pack Generation");
+
         this.router.navigate(["/home"]);
 
       }
@@ -4696,8 +4707,10 @@ getAllCommentsByUserID() {
       this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, this.StagesList[5].StageName, this.StagesList[5].StageOrderNumber, this.StagesList[6].StageName, this.StagesList[6].StageOrderNumber, "Monitoring",null).subscribe((data: any) => {
         
         if (data.responseCode == 1) {
-          
-
+          //Audit Trail Kyle 
+          this.onSaveToAuditTrail2("Permit to Work Generated");
+          this.onSaveToAuditTrail2("Application Moved To Monitoring Stage");
+          //Audit Traik Kyle 
           alert("Application Moved To Monitoring");
           this.modalService.dismissAll();
           this.router.navigate(["/home"]);
@@ -5118,9 +5131,21 @@ getAllCommentsByUserID() {
       this.DepositCHeckBox = true;
     }
   }
+  //Audit Trail Kyle
+  onSaveToAuditTrail2(description :string) {
+    this.auditTrailService.addUpdateAuditTrailItem(0, this.ApplicationID, description, true, this.CurrentUserProfile[0].subDepartmentName, this.CurrentUserProfile[0].zoneName, this.CurrentUser.appUserId).subscribe((data: any) => {
+      if (data.responseCode == 1) {
 
-  
-
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+    
+    })
+  }
+   //Audit Trail Kyle
 
 }
 
