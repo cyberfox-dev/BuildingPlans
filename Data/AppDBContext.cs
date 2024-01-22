@@ -52,6 +52,7 @@ namespace WayleaveManagementSystem.Data
         public DbSet<ContactDetails> ContactDetails { get; set; }
 
         public DbSet<AccessGroups> AccessGroups { get; set; }
+        public DbSet<ReviewerAssignment> ReviewerForComment { get; set; } //actionCentreEdits Sindiswa 17 January 2024
         public DbSet<TypeOfExcavation> TypesOfExcavation { get; set; }
         public DbSet<Config> Config { get; set; }
         public DbSet<AccessGroupUserLink> AccessGroupUserLink { get; set; }

@@ -138,6 +138,15 @@ export class ApplicationsService {
     return this.httpClient.post(this.baseURL + "GetApplicationsForFinalReview", body);
   }
 
+  //JJS TODO: getting all applications for EMB so that the projects appear for them in my reviews
+
+  public getApplicationsForEMB(UserID: string) {
+    const body = {
+      UserID: UserID
+    };
+    return this.httpClient.post(this.baseURL + "GetApplicationsForEMB", body);
+  }
+
   public getApplicationsForDepartment(ZoneID: number, SubDepartmentID: number) {
     const body = {
       ZoneID: ZoneID,

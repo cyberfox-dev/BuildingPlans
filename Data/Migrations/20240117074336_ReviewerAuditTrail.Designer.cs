@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WayleaveManagementSystem.Data;
 
@@ -11,9 +12,10 @@ using WayleaveManagementSystem.Data;
 namespace WayleaveManagementSystem.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240117074336_ReviewerAuditTrail")]
+    partial class ReviewerAuditTrail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -461,47 +463,7 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
-            //Audit Trail Kyle 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.AuditTrail", b =>
-                {
-                    b.Property<int?>("AuditTrailID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("AuditTrailID"), 1L, 1);
-
-                    b.Property<int?>("ApplicationID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("IsInternal")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SubDepartmentName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ZoneName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("isActive")
-                        .HasColumnType("bit");
-
-                    b.HasKey("AuditTrailID");
-
-                    b.ToTable("AuditTrail");
-                });
-            //Audit Trail Kyle 
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.CommentBuilder", b =>
                 {
                     b.Property<int>("CommentID")

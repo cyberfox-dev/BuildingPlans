@@ -21,6 +21,7 @@
         <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid-green.svg" class="icon2" *ngIf=" element.commentStatus === FinalApproved">
         <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid-blue.svg" class="icon2" *ngIf="element.commentStatus === ApprovedConditional || element.commentStatus === Approved">
         <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid-red.svg" class="icon2" *ngIf="element.commentStatus === Rejected">
+        <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid-red.svg" class="icon2" *ngIf="element.commentStatus === FinalReject">
 
         <!--<img src="assets/fontawesome-free-6.4.2-web/svgs/regular/clock-regular.svg" class="icon2" *ngIf="element.commentStatus !== FinalApproved && element.commentStatus !== ApprovedConditional && element.commentStatus !== Approved && element.isAwaitingClarity === false && element.IsRefered === false && element.commentStatus !== Rejected || element.commentStatus === Null">-->
         <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/clock-regular.svg" class="icon2" *ngIf="element?.UserAssaignedToComment === null"> <!-- projectTracker Sindiswa 15 January 2024 -->
@@ -34,7 +35,8 @@
         <!--<i class="fa fa-retweet blueRefer" aria-hidden="true" *ngIf="element.IsRefered"></i>-->
         <p class="greenThumbsUpText" *ngIf=" element.commentStatus === FinalApproved">Final Approved</p>
         <p class="blueThumbsUpText" *ngIf="element.commentStatus === ApprovedConditional ||element.commentStatus === Approved">Prov. Approved</p>
-        <p class="redThumbsDownText" *ngIf="element.commentStatus === Rejected">Rejected</p>
+        <p class="redThumbsDownText" *ngIf="element.commentStatus === Rejected">Prov. Not Approved</p>
+        <p class="redThumbsDownText" *ngIf="element.commentStatus === FinalReject">Final Rejected</p>
 
         <!--<p class="yellowTimerText" *ngIf="element.commentStatus !== FinalApproved && element.commentStatus !== ApprovedConditional && element.commentStatus !== Approved && element.isAwaitingClarity === false && element.IsRefered === false && element.commentStatus !== Rejected || element.commentStatus === Null">Waiting</p>-->
         <p class="yellowTimerText" *ngIf="element?.UserAssaignedToComment === null">Waiting</p> <!-- projectTracker Sindiswa 15 January 2024 -->
@@ -43,8 +45,8 @@
         <p class="blueReferText" *ngIf="element.IsRefered">Referred</p>
 
         <!-- projectTracker Sindiswa 12 January 2024 -->
-        <img class="icon2" src="assets/fontawesome-free-6.4.2-web/svgs/regular/pen-to-square.svg" *ngIf="element?.UserAssaignedToComment !== null && element?.commentStatus === null" />
-        <p class="" *ngIf="element?.UserAssaignedToComment !== null && element?.commentStatus === null">Assigned</p>
+        <img class="icon2" src="assets/fontawesome-free-6.4.2-web/svgs/regular/pen-to-square.svg" *ngIf="element?.UserAssaignedToComment !== null && element?.UserAssaignedToComment !== 'EndOfCommentProcess' && element?.UserAssaignedToComment !== 'All users in Subdepartment FA' && element?.UserAssaignedToComment !== 'Senior Reviewer to comment' && element?.commentStatus === null" />
+        <p class="" *ngIf="element?.UserAssaignedToComment !== null && element?.UserAssaignedToComment !== 'EndOfCommentProcess' && element?.UserAssaignedToComment !== 'All users in Subdepartment FA' && element?.UserAssaignedToComment !== 'Senior Reviewer to comment' && element?.commentStatus === null">Assigned</p>
         <!-- projectTracker Sindiswa 12 January 2024 -->
       </div>
     </td>

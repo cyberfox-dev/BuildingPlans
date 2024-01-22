@@ -12,7 +12,7 @@ export class DraftApplicationsService {
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
   public addUpdateDraftApplication(draftID: number | null, applicationID: number | null, userID: string | null, fullName: string | null, email: string | null, phoneNumber: string | null, physicalAddress: string | null, referenceNumber: string | null, companyRegNo: string | null, typeOfapplication: string | "Unknown", wBSNumber: string | null, physicalAddressOfProject: string | "Unknown", descriptionOfProject: string | "Unknown", natureOfWork: string | "Unknown", excavationType: string | "Unknown", expectedStartDate: any | "Unknown", expectedEndDate: any | "Unknown", createdById: string | null, projectNumber: string | null,engineer:string|"Unknown" , contractor:string|"Unknown") {
-    debugger;
+    
     const body = {
      
       DraftID: draftID,
@@ -43,7 +43,7 @@ export class DraftApplicationsService {
   }
 
   public getDraftedApplicationsList(userID: string ) {
-    debugger;
+    
     const body = {
       UserID:userID
     }
@@ -68,7 +68,7 @@ export class DraftApplicationsService {
   }
 
   public getDraftedApplicationsListForExternal(UserId: string) {
-    debugger;
+    
     const body = {
       UserID: UserId
     }

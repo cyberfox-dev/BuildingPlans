@@ -13,7 +13,7 @@ export class DocumentRepositoryConfigService {
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
   public addUpdateDocumentCategory(documentRepID:number|null , documentCategory:string|null, departmentID:number|null, createdByID:string| null ) {
-    debugger;
+    
     const body = {
       
       DocumentsRepositoryID: documentRepID,

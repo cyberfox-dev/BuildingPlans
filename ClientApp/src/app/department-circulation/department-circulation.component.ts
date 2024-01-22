@@ -56,14 +56,25 @@ export class DepartmentCirculationComponent implements OnInit {
   Null = null;
   approveOrRejection = '';
 
-  constructor(private subDepartmentForCommentService: SubDepartmentForCommentService, private sharedService: SharedService, /* projectTracker Sindiswa 12 January 2024 */ private userProfileService: UserProfileService ){ }
-  displayedColumns: string[] = ['subDepartmentName','zoneName' ,'indication', 'zoneUser']; // projectTracker Sindiswa 12 January 2024
+  constructor(private subDepartmentForCommentService: SubDepartmentForCommentService, private sharedService: SharedService, /* projectTracker Sindiswa 12 January 2024 */ private userProfileService: UserProfileService) { }
+
+  //displayedColumns: string[] = ['subDepartmentName','zoneName' ,'zoneUser','indication']; // projectTracker Sindiswa 12 January 2024, 17 January 2024
+  displayedColumns: string[] = [];
   dataSource = this.SubDepartmentList;
   @ViewChild(MatTable) SubDepartmentListTable: MatTable<SubDepartmentList> | undefined;
-  ngOnInit(): void {
 
+  stringifiedData: any;
+  CurrentUser: any;
+  isInternalLoggedinUser: boolean;
+
+  ngOnInit(): void {
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
+    this.getUserInternalOrExternal();
     
     this.getLinkedDepartments();
+
+    
 
   }
  
@@ -116,10 +127,17 @@ export class DepartmentCirculationComponent implements OnInit {
           tempSubDepartmentList.UserAssaignedToComment = current.userAssaignedToComment; //projectTracker Sindiswa 12 January 2024
 
           //#region projectTracker Sindiswa 15 January 2024
+          if (tempSubDepartmentList.UserAssaignedToComment === "EndOfCommentProcess") {
+            tempSubDepartmentList.zoneUser = "End Of Comment Process";
+          }
+          else {
+            tempSubDepartmentList.zoneUser = current.userAssaignedToComment;
+          }
+         
           if (tempSubDepartmentList.UserAssaignedToComment === null) {
             tempSubDepartmentList.zoneUser = "Not Yet Assigned to Reviewer";
-}
-          else {
+          } //edited on the 17th by Sindiswa, 10:10, 12:20
+          else if (tempSubDepartmentList.UserAssaignedToComment !== "EndOfCommentProcess" && tempSubDepartmentList.UserAssaignedToComment !== "All users in Subdepartment FA" && tempSubDepartmentList.UserAssaignedToComment !== "Senior Reviewer to comment") {
             tempSubDepartmentList.zoneUser = await this.getUserName(current.userAssaignedToComment);
           }
           //#endregion
@@ -185,4 +203,43 @@ export class DepartmentCirculationComponent implements OnInit {
   }*/
 
   // #endregion
+
+
+
+  getUserInternalOrExternal() {
+
+    this.userProfileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
+
+
+      if (data.responseCode == 1) {
+
+
+        console.log("data", data.dateSet);
+        const currentUserProfile = data.dateSet[0];
+        console.log("Is the user internal or external?", currentUserProfile.isInternal);
+
+        if (currentUserProfile.isInternal == true) {
+
+          this.isInternalLoggedinUser = true;
+          this.displayedColumns = ['subDepartmentName', 'zoneName', 'zoneUser', 'indication'];
+        }
+        else {
+          this.isInternalLoggedinUser = false;
+          this.displayedColumns = ['subDepartmentName', 'zoneName', 'indication'];
+        }
+
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+
 }

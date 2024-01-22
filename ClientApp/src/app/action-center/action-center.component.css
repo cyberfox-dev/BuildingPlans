@@ -170,6 +170,7 @@ table {
   height: 44px;
   font-size: 16px;
 }
+/* actionCentreEdits Sindiswa 18 January*/
 .cont2 {
   display: flex;
   justify-content: space-around;
@@ -177,7 +178,16 @@ table {
   flex-wrap: nowrap;
   align-items: center;
   align-content: space-around;
-  padding:5px;
+  padding: 10px;
+}
+.mat-returnToSeniorReviewerBTN {
+  /* margin-bottom: 10px; */
+  background-color: darkseagreen;
+  color: #fff;
+  width: 100%;
+  height: 40px;
+  margin: 20px;
+  /* margin-bottom: 32px; */
 }
 ::ng-deep.mat-menu-panel {
   max-width: initial !important;
@@ -371,6 +381,11 @@ textarea {
 }
 
 
+/*actionCentreEdits Sindiswa 16 January 2024*/
+.centered-paragraph {
+  text-align: center;
+  margin-top: 20px; /* Adjust the margin-top value as needed */
+}
 
 
 

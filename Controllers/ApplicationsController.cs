@@ -287,6 +287,29 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        //JJS TODO: getting all applications for EMB so that the projects appear for them in my reviews
+
+        [HttpPost("GetApplicationsForEMB")]
+        public async Task<object> GetApplicationsForEMB([FromBody] ApplicationsBindingModel model)
+        {
+            try
+            {
+                if (model.UserID.Length <= 0)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Error, Applications could not be retrieved.", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.GetApplicationsForEMB(model.UserID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Applications retrieved successfully", result));
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
         [HttpPost("GetApplicationsForDepartment")]
         public async Task<object> GetApplicationsForDepartment([FromBody] ApplicationsBindingModel model)
         {

@@ -475,7 +475,7 @@ export class DepartmentConfigComponent implements OnInit {
 
 
     this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
-    debugger;
+    
     this.subDepartment.getSubDepartmentsByDepartmentID(this.DepartmentList[index].departmentID).subscribe((data: any) => {
 
       console.log("Got SubDepartments", data.dateSet);
@@ -993,7 +993,7 @@ export class DepartmentConfigComponent implements OnInit {
 
   onSelectToPopulateZoneUserTable(event: any, viewlinkedZones: any) {
     this.UserZoneList.splice(0, this.UserZoneList.length);
-    debugger;
+    
     if (event.target.value > 0) {
       console.log(event.target.value);
       this.zoneService.getUsersLinkedByZoneID(Number(event.target.value)).subscribe((data: any) => {
@@ -1190,28 +1190,28 @@ export class DepartmentConfigComponent implements OnInit {
   }
 
   onSelectToPopulateZone(event: any) {
-    debugger;
+    
     if (event.target.value > 0) {
 
       this.ZoneDropdown.splice(0, this.ZoneDropdown.length);
       this.zoneService.getZonesBySubDepartmentsID(event.target.value).subscribe((data: any) => {
-        debugger;
+        
         if (data.responseCode == 1) {
-          debugger;
+          
           for (let i = 0; i < data.dateSet.length; i++) {
             const tempZoneList = {} as ZoneDropdown;
             const current = data.dateSet[i];
             tempZoneList.zoneID = current.zoneID;
             tempZoneList.zoneName = current.zoneName;
-            debugger;
+            
             this.ZoneDropdown.push(tempZoneList);
-            debugger;
+            
           }
 
 
         }
         else {
-          debugger;
+          
           alert(data.responseMessage);
         }
 
@@ -1347,15 +1347,15 @@ export class DepartmentConfigComponent implements OnInit {
   }
 
   openNewUserlinkedToZone(newUserLinkedToZone: any, index: any) {
-    debugger;
+    
     this.SubDepartmentDropdown.splice(0, this.SubDepartmentDropdown.length);
     this.subDepartment.getSubDepartmentsByDepartmentID(this.DepartmentList[index].departmentID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        debugger;
+        
 
         for (let i = 0; i < data.dateSet.length; i++) {
-          debugger;
+          
           const tempSubDepartmentList = {} as SubDepartmentDropdown;
           const current = data.dateSet[i];
           tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
@@ -1377,7 +1377,7 @@ export class DepartmentConfigComponent implements OnInit {
       console.log("Error: ", error);
     })
 
-    debugger;
+    
     this.modalService.open(newUserLinkedToZone, { backdrop: 'static', centered: true, size: 'xl' });
   }
   toggle() {
@@ -1387,14 +1387,14 @@ export class DepartmentConfigComponent implements OnInit {
   
 
   getSubDemartmentBySubDepartmentID(subDepID:number ) {
-    debugger;
+    
     this.subDepartment.getSubDepartmentBySubDepartmentID( subDepID).subscribe((data: any) => {
      
       console.log("Got SubDepartment", data.dateSet);
      
 
       if (data.responseCode == 1) {
-        debugger;
+        
           const tempSubDepartmentList = {} as SubDepartmentList;
           const current = data.dateSet[0];
           tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
@@ -1424,16 +1424,16 @@ export class DepartmentConfigComponent implements OnInit {
   }
   onSaveForEditGlCodeAndProfitCenter(selectedSubDepartment:any )
   {
-    debugger;
+    
     this.subDepartment.addUpdateSubDepartment(selectedSubDepartment.subDepartmentID, selectedSubDepartment.subDepartmentName, null, null, selectedSubDepartment.glCode, selectedSubDepartment.profitCenter,null,null).subscribe((data: any) => {
      
       if (data.responseCode == 1) {
-        debugger;
+        
         alert("Update for " + selectedSubDepartment.subDepartmentName+ " Successful");
 
       }
       else {
-        debugger;
+        
         alert(data.responseMessage);
       }
       console.log("reponse", data);
@@ -1448,12 +1448,12 @@ export class DepartmentConfigComponent implements OnInit {
     this.subDepartment.addUpdateSubDepartment(selectedSubDepartment.subDepartmentID, selectedSubDepartment.subDepartmentName, null, null, null,null,selectedSubDepartment.permitExpiration, null).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        debugger;
+        
         alert("Update for " + selectedSubDepartment.subDepartmentName + " Successful");
         this.modalService.dismissAll();
       }
       else {
-        debugger;
+        
         alert(data.responseMessage);
       }
       console.log("reponse", data);

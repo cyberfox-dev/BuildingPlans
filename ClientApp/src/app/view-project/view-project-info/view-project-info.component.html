@@ -48,7 +48,7 @@
   <app-action-center [ApplicationID]="ApplicationID" (refreshParent)="ngOnInit()" *ngIf="isInternalUser && InternalExternalUser == false" (optionEvent)="reciveOption($event)" class="animationSlideUp"></app-action-center>
   <button mat-button color="action" [matMenuTriggerFor]="actions" class="animationSlideUp"> <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ellipsis-vertical-solid.svg" class="icon"></button>
   <mat-menu #actions="matMenu">
-    <button mat-menu-item (click)="openPaidDate(paidDateModal)" *ngIf="isInternalUser"> Move to Paid</button>
+    <button mat-menu-item (click)="openPaidDate(paidDateModal)" *ngIf="EMB"> Move to Paid</button>
     <!--<button mat-menu-item (click)="MoveToNextStage()" *ngIf="isInternalUser">Move to Next Stage</button>-->
     <button mat-menu-item (click)="MoveToNextStage()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon"> Cancel Application</button>
     <button mat-menu-item (click)="goToNewWayleave(true)" *ngIf="canReapply"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/arrow-rotate-right-solid.svg" class="icon"> Re-apply</button>
@@ -111,7 +111,7 @@
             <div class="row" *ngFor="let commentsList of CommentsList; let i = index" [style.margin-left.px]="(i % 2 === 0) ? 60 : 80" [style.margin-right.px]="(i % 2 === 0) ? 60 : 80">
               <div class="col s12 m12 l12" *ngIf="!(commentsList.CommentStatus === 'Referred' && referComment)">
                 <!---Change Wording Kyle 15/01/24-->
-                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Provisionally Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved' " [class.Reject]="commentsList.CommentStatus === 'FinalReject'||commentsList.CommentStatus === 'Rejected'" [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'" [class.refer]="commentsList.CommentStatus === 'Referred'" [class.returned]="commentsList.CommentStatus === 'Returned'" [class.reviewerClarify]="commentsList.CommentStatus === 'Reviewer Clarity'">
+                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Provisionally Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved' " [class.Reject]="commentsList.CommentStatus === 'FinalReject'||commentsList.CommentStatus === 'Rejected'||commentsList.CommentStatus === 'Provisionally Rejected'|| commentsList.CommentStatus === 'Final Rejected' " [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'" [class.reviewerClarify]="commentsList.CommentStatus === 'Reviewer Clarified' || commentsList.CommentStatus === 'Reviewer Clarity'" [class.refer]="commentsList.CommentStatus === 'Referred'" [class.returned]="commentsList.CommentStatus === 'Returned'">
 
                 <li class="event" data-date="">
 
@@ -133,11 +133,12 @@
                   <br />
 
                   <!--Applicant Clarity-->
-                  <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarify' && canClarify ||commentsList.CommentStatus === 'Reviewer Clarity' && canReviewerClarify" (click)="openReplyModal(replyModal,i,'Reply')">Reply</button>
-                  <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarified'&& canClarify" (click)="openReplyModal(replyModal,i, 'Update')">Update Reply</button>
-                  <div class="row" *ngIf="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null">
+                  <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarify' && canClarify || commentsList.CommentStatus === 'Reviewer Clarity' && canReviewerClarify" (click)="openReplyModal(replyModal,i,'Reply', commentsList.CommentStatus)">Reply</button>
+                  <button mat-raised-button color="clarify" *ngIf="(commentsList.CommentStatus === 'Clarified' && canClarify) || ( commentsList.CommentStatus === 'Reviewer Clarified' && canReviewerClarify)"  (click)="openReplyModal(replyModal,i, 'Update', commentsList.CommentStatus)">Update Reply</button>
+                  <div class="row" *ngIf="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified' || commentsList.CommentStatus === 'Reviewer Clarified' || commentsList.CommentStatus === 'Reviewer Clarity'  && commentsList.isApplicantReplay !== null">
                     <label *ngIf="commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null"> <strong><em>Applicant's Reply:</em></strong></label>
-                    <div class="form-floating mb-3 mt-3" *ngIf="commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null">
+                    <label *ngIf="commentsList.CommentStatus === 'Reviewer Clarified' && commentsList.isApplicantReplay !== null"> <strong><em>Reviewer's Reply:</em></strong></label>
+                    <div class="form-floating mb-3 mt-3" *ngIf="(commentsList.CommentStatus === 'Clarified' || commentsList.CommentStatus === 'Reviewer Clarified') && commentsList.isApplicantReplay !== null">
                       <!--<input type="text" class="form-control" value="{{commentsList.isApplicantReplay}}" id="ApplicantReply" name="ApplicantReply" disabled>--> <!--[(ngModel)]="ApplicantReply"-->
 
                       <div class="disabled-textbox" [innerHTML]="sanitizeHTML(commentsList.isApplicantReplay)" id="ApplicantReply"></div>
@@ -713,7 +714,7 @@
         APPLICANT
         <div class="line right-line"></div>
       </div>
-
+      <div *ngIf="isExternalApplicant == false">
       <div class="row">
         <div class="col">
           <div class="form-floating mb-3 mt-3">
@@ -755,6 +756,84 @@
             <input type="text" class="form-control" [(ngModel)]="internalApplicantCostCenterOwner" placeholder="Enter Cost Center Owner" disabled>
             <label for="applicantTellNo">Cost Center Owner</label>
           </div>
+        </div>
+      </div>
+    </div>
+      <div *ngIf="isExternalApplicant">
+        <div class="row">
+          <div class="col">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="extApplicantBpNoApplicant" placeholder="Enter BP Number" disabled>
+                <label for="bpNoApplicant">BP Number</label>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyName" placeholder="Enter Company Name" disabled>
+              <label for="address">Company Name</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyRegNo" placeholder="Enter Company Reg No" disabled>
+              <label for="address">Company Reg No.</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="email" class="form-control" [(ngModel)]="extApplicantCompanyType" placeholder="Select Company Type" disabled>
+              <label for="applicantEmail">Company Type</label>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantName" placeholder="Enter First Name" disabled>
+              <label for="name">Name</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantSurname" placeholder="Enter Surname" disabled>
+              <label for="surname">Surname</label>
+            </div>
+          </div>
+        </div>
+
+
+
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address" disabled>
+              <label for="applicantTellNo">Physcial Address</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="tel" class="form-control" [(ngModel)]="extApplicantTellNo" placeholder="Enter Tell No." disabled>
+              <label for="applicantTellNo">Cell No.</label>
+            </div>
+
+          </div>
+
+        </div>
+        <div class="row">
+
+
+          <div class="form-floating mb-3 mt-3">
+            <input type="email" class="form-control" [(ngModel)]="extApplicantEmail" placeholder="Enter Email" disabled>
+            <label for="applicantEmail">Email</label>
+          </div>
+
         </div>
       </div>
     </div>

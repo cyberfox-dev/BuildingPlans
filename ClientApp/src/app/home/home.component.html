@@ -290,9 +290,9 @@
 
 
           <div class="cont2">
-            <button mat-raised-button color="client" [class.matactive]="option ==='internal'" (click)="cardchange('internal')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon"> Yourself</button>
+            <button mat-raised-button color="client" [class.matactive]="option ==='internal'" (click)="cardchange('internal')" *ngIf="ActingAsInternal == false"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon"> Yourself</button>
+            <button mat-raised-button color="client" [class.matactive]="option ==='external'" (click)="cardchange('external')"  *ngIf="ActingAsInternal"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon"> Yourself External</button>
             <button mat-raised-button color="client" [class.matactive]="option ==='client'" (click)="cardchange('client')"> <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon"> Client</button>
-
           </div>
         </div>
 
