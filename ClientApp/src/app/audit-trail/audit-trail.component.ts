@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { SharedService } from "src/app/shared/shared.service";
 
 @Component({
   selector: 'app-audit-trail',
@@ -7,9 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AuditTrailComponent implements OnInit {
 
-  constructor() { }
+  constructor(private modalService: NgbModal,) { }
 
   ngOnInit(): void {
   }
 
+
+  openDownloadReport(downloadReport: any) {
+    this.modalService.open(downloadReport, { centered: true, size: 'xl' });
+  }
 }

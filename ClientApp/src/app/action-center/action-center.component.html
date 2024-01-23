@@ -64,7 +64,7 @@
 
     </div>
 
-    <div class="cont2" *ngIf="canCommentSeniorReviewer == true">
+    <div class="cont2" *ngIf="canCommentSeniorReviewer == true && canCommentFinalApprover == false">
       <button mat-raised-button color="approveBTN" (click)="onCommentSR('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">   Prov. Approved</button>
       <button mat-raised-button color="rejectBTN" (click)="onCommentSR('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon"> Prov. Not Approved</button>
       <button mat-raised-button color="clarifyBTN" (click)="onCommentSR('Clarify');sendOption()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
@@ -72,7 +72,7 @@
       <button mat-raised-button color="consultWithReviewerBTN" (click)="onReviewerClarityClick()"><i class="fa fa-comments" aria-hidden="true"></i>  Consult With Reviewer</button> <!---->
 
     </div>
-    <div class="cont2" *ngIf="canCommentFinalApprover == true">
+    <div class="cont2" *ngIf="canCommentFinalApprover == true && canCommentSeniorReviewer == false">
       <!-- -->
       <button mat-raised-button color="approveBTN" (click)="FinalApprove('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approved</button>
       <button mat-raised-button color="rejectBTN" (click)="FinalApprove('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon"> Not Approved</button>

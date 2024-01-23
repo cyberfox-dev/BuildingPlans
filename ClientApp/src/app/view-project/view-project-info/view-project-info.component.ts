@@ -38,7 +38,9 @@ import 'jspdf-autotable';
 import html2canvas from 'html2canvas';
 import { ReviewerforcommentService } from '../../service/ReviewerForComment/reviewerforcomment.service';
 
-
+//Audit Trail Kyle
+import { AuditTrailService } from '../../service/AuditTrail/audit-trail.service';
+//Audit Trail Kyle 
 export interface RolesList {
   RoleID: number;
   RoleName: string;
@@ -535,6 +537,10 @@ export class ViewProjectInfoComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private approvalPack: ApprovalPackComponent,
     private reviwerforCommentService: ReviewerforcommentService,
+   
+    //Audit Trail Kyle
+    private auditTrailService: AuditTrailService,
+    //Audit Trail Kyle
   ) { }
 
 
@@ -597,8 +603,8 @@ export class ViewProjectInfoComponent implements OnInit {
       this.router.navigate(["/home"]);
     }
     
-
-    if (setValues.CurrentStageName == "PTW" || setValues.CurrentStageNumber >= 4) {
+    //Permit Tab Kyle 22/01/24
+    if (setValues.CurrentStageName == "PTW" || setValues.CurrentStageNumber <= 4) {
       this.showPermitTab = true;
       this.PacksTab = true;
     } else {
@@ -613,18 +619,18 @@ export class ViewProjectInfoComponent implements OnInit {
     } else {
       this.showStatusOfWorksTab = false;
     }
-    
+    //Permit Tab Kyle 22/01/24
     if (setValues.CurrentStageName == "Approval Pack Generation") {
       this.generateApproval = true;
-      this.showPermitTab = true;
+      this.showPermitTab = false;
       this.PacksTab = true;
     } else {
       this.generateApproval = false;
     }
-    
+    //Permit Tab Kyle 22/01/24
     if (setValues.CurrentStageName == "Approval Pack Generation" && this.CurrentUser.appUserId == this.applicationDataForView[0].CreatedById) {
       this.generateApprovalbtn = true;
-      this.showPermitTab = true;
+      this.showPermitTab = false;
       this.PacksTab = true;
     } else {
       this.generateApprovalbtn = false;
@@ -684,6 +690,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getLinkedDepartmentsFORAPPROVAL();
     this.CheckForApprovalPackDownload(); 
 
+    this.auditTrail = true;
     
   }
 
@@ -1224,6 +1231,9 @@ export class ViewProjectInfoComponent implements OnInit {
             console.log("Error: ", error);
           })
         }
+        //Audit Trail Kyle
+        this.onSaveToAuditTrail("User has applied for permit");
+         //Audit Trail Kyle
       }
       else {
 
@@ -2220,8 +2230,11 @@ export class ViewProjectInfoComponent implements OnInit {
                 if (data.responseCode == 1) {
 
                   alert(data.responseMessage);
-                  this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application payment", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" +"WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-
+                  this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application payment", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  //Audit Trail Kyle
+                  this.onSaveToAuditTrail("Application moved to Paid");
+                  this.onSaveToAuditTrail("Application distributed to Departments");
+                  //Audit Trail Kyle
 
                 }
                 else {
@@ -2275,7 +2288,7 @@ export class ViewProjectInfoComponent implements OnInit {
       this.permitTextBox = true;
       this.startDate = this.applicationDataForView[0].permitStartDate.toString();
       this.permitDate = "Permit has been applied, with a start date of: " + this.startDate.substring(0, this.startDate.indexOf('T'));
-
+     
     }
 
 
@@ -3632,9 +3645,13 @@ export class ViewProjectInfoComponent implements OnInit {
 
             this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.projectNo, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
             this.modalService.dismissAll();
+            //Audit Trail Kyle
+            this.onSaveToAuditTrail("Approval Pack Downloaded");
+            this.onSaveToAuditTrail("Application moved to PTW Stage");
+            //Audit Trail Kyle
             alert("Application moved to PTW. You may now apply for permit.");
             this.router.navigate(["/home"]);
-
+            
           }
           else {
             alert(data.responseMessage);
@@ -4439,5 +4456,25 @@ export class ViewProjectInfoComponent implements OnInit {
 
     }
   }
- 
+
+  //Audit Trail Kyle
+  onSaveToAuditTrail(description: string) {
+    this.auditTrailService.addUpdateAuditTrailItem(0, this.applicationData.applicationID, description, this.CurrentUserProfile[0].isInternal, this.CurrentUserProfile[0].subDepartmentName, this.CurrentUserProfile[0].zoneName, this.CurrentUser.appUserId).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+       /* alert(data.responseMessage);*/
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+    })
+
+   
+  }
+
+  
+
+
+ //Audit Trail Kyle
 }
