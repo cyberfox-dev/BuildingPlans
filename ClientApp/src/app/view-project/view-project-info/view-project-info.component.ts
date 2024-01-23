@@ -604,7 +604,8 @@ export class ViewProjectInfoComponent implements OnInit {
     }
     
     //Permit Tab Kyle 22/01/24
-    if (setValues.CurrentStageName == "PTW" || setValues.CurrentStageNumber <= 4) {
+    debugger;
+    if (setValues.CurrentStageName == "PTW") {
       this.showPermitTab = true;
       this.PacksTab = true;
     } else {
@@ -623,7 +624,7 @@ export class ViewProjectInfoComponent implements OnInit {
     if (setValues.CurrentStageName == "Approval Pack Generation") {
       this.generateApproval = true;
       this.showPermitTab = false;
-      this.PacksTab = true;
+
     } else {
       this.generateApproval = false;
     }
@@ -634,7 +635,7 @@ export class ViewProjectInfoComponent implements OnInit {
       this.PacksTab = true;
     } else {
       this.generateApprovalbtn = false;
-      
+ 
     }
     if (this.CurrentUser.appUserId == this.applicationDataForView[0].CreatedById) {
       this.referComment = true;
