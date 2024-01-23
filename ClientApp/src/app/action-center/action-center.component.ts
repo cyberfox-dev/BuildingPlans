@@ -2907,8 +2907,8 @@ export class ActionCenterComponent implements OnInit {
       </html>
      
            
-    `;
-                        this.notificationsService.sendEmail(approver.email, "Request for Sign-of", emailContent12, emailContent12);
+    `;/*jjs commit 23JAN24 - typoFix for Email for Sign off, Applicant filter dashbaord table fix*/
+                        this.notificationsService.sendEmail(approver.email, "Request for Sign-off", emailContent12, emailContent12);
                       });
                       console.log("Filtered Final Approvers:", finalApproversForCurrentZone);
                     } else {
@@ -4672,7 +4672,7 @@ getAllCommentsByUserID() {
         }, error => {
           console.log("Error", error);
         });
-        alert("Application moved to Approval Pack Generation"); 
+
         this.router.navigate(["/home"]);
 
       }
