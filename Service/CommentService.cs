@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel;
 using System;
 using WayleaveManagementSystem.Data.Migrations;
+using iText.StyledXmlParser.Jsoup.Nodes;
 
 namespace WayleaveManagementSystem.Service
 {
@@ -161,15 +162,16 @@ namespace WayleaveManagementSystem.Service
                 }
                 ).ToListAsync();
         }
-
+        //JJS Approval Pack and rejection pack 25Jan2024
         public async Task<List<CommentDTO>> GetCommentsForSpecialConditions(int? applicationID)
         {
             return await (
-                from comment in _context.Comments
-                where comment.ApplicationID == applicationID && comment.CommentStatus == "Approved" || comment.ApplicationID == applicationID && comment.CommentStatus == "Final Approved" 
-                select new CommentDTO()
+            from comment in _context.Comments
+                where comment.ApplicationID == applicationID && comment.CommentStatus == "Approved" || comment.ApplicationID == applicationID && comment.CommentStatus == "Final Approved" || comment.ApplicationID == applicationID && comment.CommentStatus == "Provisionally Approved"
+            select new CommentDTO()
                 {
                     CommentID = comment.CommentID,
+
                     Comment = comment.Comment,
                     ApplicationID = comment.ApplicationID,
                     SubDepartmentForCommentID = comment.SubDepartmentForCommentID,
