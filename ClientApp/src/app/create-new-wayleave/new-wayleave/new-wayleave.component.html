@@ -39,11 +39,11 @@
 <div class="content-body">
   <h2 *ngIf="isPlanning === false">Create New Wayleave</h2>
   <h2 *ngIf="isPlanning === true">Create New Request for Services Information</h2>
-  <div class="cont5">
+<!--  <div class="cont5">
   <button  mat-raised-button color="draft" (click)="DraftOption(); onWayleaveCreate(CurrentUser.appUserId,false,true);" *ngIf="draft && stepper.selectedIndex === 1" class="floating-button2">Save project as a draft</button>
   <button  mat-raised-button color="draft" (click)="DraftOption(); onWayleaveCreate(CurrentUser.appUserId,false,true);" *ngIf="stepper.selectedIndex === 1" >Save project as a draft</button>
 
-    </div>
+    </div>-->
   <!--Stepper-->
   <div class="MainContainer">
   <mat-horizontal-stepper linear #stepper>

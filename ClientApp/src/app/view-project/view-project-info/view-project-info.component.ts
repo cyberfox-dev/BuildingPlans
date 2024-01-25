@@ -265,7 +265,7 @@ export interface AllSubDepartmentList {
 }
 
 var img = new Image();
-img.src = 'assets/cctlogoblack.png';
+img.src = 'assets/cctlogoblackk.png';
 
 interface jsPDFWithPlugin extends jsPDF {
   autotable: (options: UserOptions) => jsPDF;
@@ -615,7 +615,8 @@ export class ViewProjectInfoComponent implements OnInit {
     }
     
     //Permit Tab Kyle 22/01/24
-    if (setValues.CurrentStageName == "PTW" || setValues.CurrentStageNumber <= 4) {
+    debugger;
+    if (setValues.CurrentStageName == "PTW") {
       this.showPermitTab = true;
       this.PacksTab = true;
     } else {
@@ -634,7 +635,7 @@ export class ViewProjectInfoComponent implements OnInit {
     if (setValues.CurrentStageName == "Approval Pack Generation") {
       this.generateApproval = true;
       this.showPermitTab = false;
-      this.PacksTab = true;
+
     } else {
       this.generateApproval = false;
     }
@@ -645,7 +646,7 @@ export class ViewProjectInfoComponent implements OnInit {
       this.PacksTab = true;
     } else {
       this.generateApprovalbtn = false;
-      
+ 
     }
     if (this.CurrentUser.appUserId == this.applicationDataForView[0].CreatedById) {
       this.referComment = true;
@@ -681,7 +682,7 @@ export class ViewProjectInfoComponent implements OnInit {
     
 
     this.checkIfWbsRequired();
-    /*    this.getAllSubDepForReject();*/
+        this.getAllSubDepForReject();
     /*    this.getAllSubDepForReject();*/
     this.canReapply = this.sharedService.getCanReapply();
     console.log("canReapplyVen: ", this.canReapply);
@@ -737,7 +738,7 @@ export class ViewProjectInfoComponent implements OnInit {
     }
     else if (this.receivedata == "Rejected") {
       this.rejected = true;
-      this.onCrreateRejectionPack();
+
     }
     else {
 
@@ -1779,7 +1780,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     // Logo
     const img = new Image();
-    img.src = 'assets/cctlogoblack.png';
+    img.src = 'assets/cctlogoblackk.png';
 
     // Add logo to PDF document
     doc.addImage(img, 'png', 10, 10, 60, 20);
@@ -2465,7 +2466,13 @@ export class ViewProjectInfoComponent implements OnInit {
 
           tempSubDepCommentStatusList.SubDepName = current.subDepartmentName + " : "+current.zoneName;
           tempSubDepCommentStatusList.ApplicationID = current.applicationID;
-          tempSubDepCommentStatusList.Comment = current.comment;
+          if (current.commentStatus == 'Approved' || current.commentStatus == 'Provisionally Approved') {
+            tempSubDepCommentStatusList.Comment = "Approver Comment : \n"+current.comment;
+          }
+          if (current.commentStatus == 'Final Approved') {
+            tempSubDepCommentStatusList.Comment = "Final Approver Comment : \n" + current.comment;
+          }
+         
           tempSubDepCommentStatusList.DateCreated = current.dateCreated;
          
           
@@ -2617,16 +2624,17 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getAllSubDepForReject() {
-
+ 
     this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
-
-
+ 
+      debugger;
       if (data.responseCode == 1) {
-
+        debugger;
         for (var i = 0; i < data.dateSet.length; i++) {
           const tempSubDepCommentStatusList = {} as SubDepSubDepRejectList;
-
+          debugger;
           const current = data.dateSet[i];
+          debugger;
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
           tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
           tempSubDepCommentStatusList.ApplicationID = current.applicationID;
@@ -2685,14 +2693,19 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
 
+    //JJS Approval Pack and rejection pack 25Jan2024
+
 
 
 
   onCreateApprovalPack() {
 
-    
+
+
+
+
     /*    this.getAllSubDepFroConditionalApprove();*/
-    const subDepCommentsMap = new Map();
+
 
     const doc = new jsPDF({
       orientation: 'portrait',
@@ -2737,7 +2750,7 @@ export class ViewProjectInfoComponent implements OnInit {
     const page7 = new Image();
     const page8 = new Image();
     const page9 = new Image();
-    const page10 = new Image();
+/*    const page10 = new Image();
     const page11 = new Image();
     const page12 = new Image();
     const page13 = new Image();
@@ -2772,86 +2785,74 @@ export class ViewProjectInfoComponent implements OnInit {
     const page42 = new Image();
     const page43 = new Image();
     const page44 = new Image();
-    const page45 = new Image();
+    const page45 = new Image();*/
 
-    img.src = 'assets/cctlogoblack.png';
-    footer2.src = 'assets/Packs/footer2.PNG';
+    img.src = 'assets/cctlogoblackk.png';
+    footer2.src = 'assets/Packs/footer2.png';
     footer.src = 'assets/Packs/base.jpg';
-    page1.src = 'assets/Packs/Updated/19October2023Update/1.jpg';
-    page2.src = 'assets/Packs/Updated/19October2023Update/2.jpg';
-    page3.src = 'assets/Packs/Updated/19October2023Update/3.jpg';
-    page4.src = 'assets/Packs/Updated/19October2023Update/4.jpg';
-    page5.src = 'assets/Packs/Updated/19October2023Update/5.jpg';
-    page6.src = 'assets/Packs/Updated/19October2023Update/6.jpg';
-    page7.src = 'assets/Packs/Updated/19October2023Update/7.jpg';
-    page8.src = 'assets/Packs/Updated/19October2023Update/8.jpg';
-    page9.src = 'assets/Packs/Updated/19October2023Update/9.jpg';
-    page10.src = 'assets/Packs/Updated/19October2023Update/10.jpg';
+    page1.src = 'assets/Packs/Updated/24Jan2024/1.png';
+    page2.src = 'assets/Packs/Updated/24Jan2024/2.png';
+    page3.src = 'assets/Packs/Updated/24Jan2024/3.png';
+    page4.src = 'assets/Packs/Updated/24Jan2024/4.png';
+    page5.src = 'assets/Packs/Updated/24Jan2024/5.png';
+    page6.src = 'assets/Packs/Updated/24Jan2024/6.png';
+    page7.src = 'assets/Packs/Updated/24Jan2024/7.png';
+    page8.src = 'assets/Packs/Updated/24Jan2024/8.png';
+    page9.src = 'assets/Packs/Updated/24Jan2024/9.png';
+/*    page10.src = 'assets/Packs/Updated/19October2023Update/10.jpg';
     page11.src = 'assets/Packs/Updated/19October2023Update/11.jpg';
-/*    page12.src = 'assets/Packs/Updated/12.PNG';
-    page13.src = 'assets/Packs/Updated/13.PNG';
-    page14.src = 'assets/Packs/Updated/14.PNG';
-    page15.src = 'assets/Packs/Updated/15.PNG';
-    page16.src = 'assets/Packs/Updated/16.PNG';
-    page17.src = 'assets/Packs/Updated/17.PNG';
-    page18.src = 'assets/Packs/Updated/18.PNG';
-    page19.src = 'assets/Packs/Updated/19.PNG';
-    page20.src = 'assets/Packs/Updated/20.PNG';
-    page21.src = 'assets/Packs/Updated/21.PNG';
-    page22.src = 'assets/Packs/Updated/22.PNG';
-    page23.src = 'assets/Packs/Updated/23.PNG';
-    page24.src = 'assets/Packs/Updated/24.PNG';
-    page25.src = 'assets/Packs/Updated/25.PNG';
-    page26.src = 'assets/Packs/Updated/26.PNG';
-    page27.src = 'assets/Packs/Updated/27.PNG';
-    page28.src = 'assets/Packs/Updated/28.PNG';
-    page29.src = 'assets/Packs/Updated/29.PNG';*/
-    /*  page30.src = 'assets/Packs/page30.PNG';
-        page31.src = 'assets/Packs/page31.PNG';
-        page32.src = 'assets/Packs/page32.PNG';
-        page33.src = 'assets/Packs/page33.PNG';
-        page34.src = 'assets/Packs/page34.PNG';
-        page35.src = 'assets/Packs/page35.PNG';
-        page36.src = 'assets/Packs/page36.PNG';
-        page37.src = 'assets/Packs/page37.PNG';
-        page38.src = 'assets/Packs/page38.PNG';
-        page39.src = 'assets/Packs/page39.PNG';
-        page40.src = 'assets/Packs/page40.PNG';
-        page41.src = 'assets/Packs/page41.PNG';
-        page42.src = 'assets/Packs/page42.PNG';
-        page43.src = 'assets/Packs/page43.PNG';
-        page44.src = 'assets/Packs/page44.PNG';
-        page45.src = 'assets/Packs/page45.PNG';*/
+      page12.src = 'assets/Packs/Updated/12.PNG';*/
+
 
     doc.addFont('assets/century-gothic/CenturyGothic.ttf', 'CustomFont', 'normal');
     doc.addFont('assets/century-gothic/GOTHICB0.TTF', 'CustomFontBold', '', 'bold');
     doc.setFont('CustomFont', 'normal');
 
-    doc.addImage(footer, 'jpg', 0, 0, 210, 297);
+
 
     // Add logo to PDF document
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.addImage(img, 'png', 6, 10, 50, 16);
 
     // Set font for specific text
     doc.setFontSize(10); // Increase font size for specific text
 
     // Add text with various formatting
-    doc.setFont('CustomFontBold','bold'); // Use your custom font
-    doc.text('CITY OF CAPE TOWN', 200, 15, { align: 'right'});
+    /*  doc.setFont('CustomFontBold','bold');*/ // Use your custom font
     doc.setFont('CustomFont', 'normal');
-    doc.text('Civic Centre, 12 Hertzog Boulevard', 200, 24, { align: 'right' });
+    doc.text('Cape Town Civic Centre', 200, 17, { align: 'right' });
 
-    doc.text('CAPE TOWN 8000', 200, 29, { align: 'right' });
+    doc.text('12 Hertzog Boulevard', 200, 22, { align: 'right' });
+
+    doc.text('CAPE TOWN 8000', 200, 27, { align: 'right' });
 
     // Set font back to regular
 
     doc.setFontSize(10); // Return to the regular font size
     doc.setFont('CustomFontBold', 'bold'); // Use your custom font
-    doc.text('Website:', 200, 35, { align: 'right' });
-    doc.setFont('CustomFont', 'normal');
-    doc.text('https://www.capetown.gov.za', 200, 40, { align: 'right' });
+    doc.text('Website:', 147, 35, { align: 'right' });
+
     doc.setFont('CustomFontBold', 'bold'); // Use your custom font
-    doc.text('Project Number: '+ this.ProjectNum, 200, 45, { align: 'right' });
+    doc.setTextColor(0, 88, 112); // Set text color to #005870
+
+    // Use the 'decoration' property to add an underline
+
+
+    doc.textWithLink('https://www.capetown.gov.za', 200, 35, { align: 'right', lineHeightFactor: 1.5 });
+
+    doc.setTextColor(0, 0, 0); // Set text color to #005870
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
+    doc.text('Portal:', 138, 40, { align: 'right' });
+
+
+    doc.setTextColor(0, 88, 112); // Set text color to #005870
+
+    // Use the 'decoration' property to add an underline
+
+    doc.textWithLink('https://wayleave.capetown.gov.za/', 200, 40, { align: 'right' });
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
+    doc.setTextColor(0, 0, 0); // Set text color to #005870
+
+    doc.text('Reference Number: ' + this.ProjectNum, 200, 50, { align: 'right' });
     doc.setFont('CustomFont', 'normal');
     // Add extra space
     doc.text('', 10, 55); // Add an empty line for spacing
@@ -2870,9 +2871,10 @@ export class ViewProjectInfoComponent implements OnInit {
 
     //paragraph 
 
-    doc.text('A summary of the outcome of this wayleave application is provided below. Department specific wayleave approval or rejection letters are further attached.In the case of a wayleave rejection, please make contact with the relevant Line Department as soon as possible.', 10, 90, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.text('A summary of the outcome of this wayleave application is provided below. Department specific wayleave approval or rejection letters are attached.In the case of a wayleave rejection, please make contact with the relevant line department as soon as possible', 10, 90, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
     doc.text('Status Summary:', 10, 115, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
-
+    doc.setFont('CustomFont', 'normal');
 
     this.SubDepFinalApproveList.forEach((deposit) => {
       const row = [
@@ -2888,13 +2890,14 @@ export class ViewProjectInfoComponent implements OnInit {
 
     doc.text("Based on the summary above, the wayleave application is approved. Kindly proceed to apply for a permit to work before commencement of any work on site.", 10, 190, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });//
     doc.setFontSize(12);
-    
-
-
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
+    doc.text('CITY OF CAPE TOWN', 10, 240, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFont', 'italic');
+    doc.text('Future Planning and Resilience Directorate', 10, 245, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
 
     autoTable(doc, {
       head: headers,
-
+      headStyles: { fillColor: '#005870' },
       startY: 120,
       body: data,
       styles: {
@@ -2902,32 +2905,30 @@ export class ViewProjectInfoComponent implements OnInit {
         halign: 'justify',
         fontSize: 8,
         valign: 'middle',
-
-
+        // Use the correct color notation here
       },
-
       columnStyles: {
         0: { cellWidth: 70, fontStyle: 'bold' },
         1: { cellWidth: 50 },
         2: { cellWidth: 60 },
-
-
       }
-
-
     });
-
     //Special conditions page
     doc.addPage();
+    
     doc.addFont('assets/century-gothic/CenturyGothic.ttf', 'CustomFont', 'normal');
     doc.addFont('assets/century-gothic/GOTHICB0.TTF', 'CustomFontBold', '', 'bold');
     doc.setFont('CustomFontBold', 'bold');
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+   
     doc.setFontSize(16);
-    doc.text('Special Conditions', 10, 45, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify', });
-
-    
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
+    doc.setTextColor(0, 88, 112); // Set text color to #005870
+    doc.text('SPECIAL CONDITIONS', 10, 18, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify', });
+    doc.setTextColor(0, 0, 0); // Set text color to #005870
     console.log(this.SubDepCommentsForSpecialConditions);
+
+    // Process comments and organize by sub-department
+    const subDepCommentsMap = new Map();
     this.SubDepCommentsForSpecialConditions.forEach((deposit) => {
       if (subDepCommentsMap.has(deposit.SubDepName)) {
         console.log(`Adding comment to existing sub-department: ${deposit.SubDepName}`);
@@ -2939,12 +2940,13 @@ export class ViewProjectInfoComponent implements OnInit {
     });
 
     console.log(subDepCommentsMap);
-    let yOffset = 60; // Starting Y-coordinate for the list
-    let currentPage = 1;
-    let maxPageHeight = doc.internal.pageSize.height - 50; // Adjust as needed
 
-    const headerHeight = 60; // Height of the header (image and project number)
-    const footerHeight = 45; // Height of the footer
+    let yOffset = 40; // Starting Y-coordinate for the list
+    let currentPage = 2;
+    let maxPageHeight = doc.internal.pageSize.height - 4; // Adjust as needed
+
+    const headerHeight = 30; // Height of the header (image and project number)
+    const footerHeight = 25; // Height of the footer
 
     // Initialize variables to track available space and Y-coordinate
     let remainingPageSpace = maxPageHeight - yOffset - footerHeight;
@@ -2960,9 +2962,6 @@ export class ViewProjectInfoComponent implements OnInit {
         currentPage++;
         yOffset = headerHeight; // Reset the Y-coordinate for the new page, leaving space for the header
         remainingPageSpace = maxPageHeight - yOffset - footerHeight;
-        doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-
-
       }
 
       doc.text(subDepName, 10, yOffset, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
@@ -2972,7 +2971,7 @@ export class ViewProjectInfoComponent implements OnInit {
       doc.setFont('CustomFont', 'normal');
 
       // Combine and join the comments for the same sub-department name
-      const combinedComments = comments.join('. ');
+      const combinedComments = comments.join('\n');
 
       // Check if there's enough space for comments on the current page
       const commentDimensions = doc.getTextDimensions(combinedComments);
@@ -2982,15 +2981,18 @@ export class ViewProjectInfoComponent implements OnInit {
         yOffset = headerHeight; // Reset the Y-coordinate for the new page, leaving space for the header
         remainingPageSpace = maxPageHeight - yOffset - footerHeight;
       }
+
       const originalFontSize = doc.getFontSize(); // Store the original font size
       doc.setFontSize(8); // Set a smaller font size for comments
+
       // Handle text wrapping for comments
       const lineHeight = 1.2; // Adjust the line height as needed
-      const lineHeightFactor = doc.getLineHeightFactor() ;
+      const lineHeightFactor = doc.getLineHeightFactor();
       doc.setLineHeightFactor(lineHeightFactor);
 
       // Handle text wrapping for comments with reduced line spacing
       let commentLines = doc.splitTextToSize(combinedComments, 190);
+
       for (const line of commentLines) {
         if (yOffset + doc.getTextDimensions(line).h > maxPageHeight - footerHeight) {
           doc.addPage();
@@ -2998,9 +3000,34 @@ export class ViewProjectInfoComponent implements OnInit {
           yOffset = headerHeight; // Reset the Y-coordinate for the new page, leaving space for the header
           remainingPageSpace = maxPageHeight - yOffset - footerHeight;
         }
+        debugger;
+        // Check if the sub-department commentStatus is Approved or Provisionally Approved
+        if (comments.length > 0 && comments[0].commentStatus === 'Approved' || comments[0].commentStatus === 'Provisionally Approved') {
+          // Display Approver Comment heading
+          doc.setFont('CustomFontBold', 'bold');
+          doc.text('Approver Comment:', 10, yOffset, { maxWidth: 190, align: 'left' });
+          yOffset += doc.getTextDimensions('Approver Comment:').h + 2;
 
-        doc.text(line, 10, yOffset, { maxWidth: 190, align: 'left' });
-        yOffset += doc.getTextDimensions(line).h + 5; // Adjust the line spacing here
+          // Display the comment
+          doc.setFont('CustomFont', 'normal');
+          doc.text(line, 10, yOffset, { maxWidth: 190, align: 'left' });
+          yOffset += doc.getTextDimensions(line).h + 5; // Adjust the line spacing here
+
+          // Display Final Approver heading
+          doc.setFont('CustomFontBold', 'bold');
+          doc.text('Final Approver:', 10, yOffset, { maxWidth: 190, align: 'left' });
+          yOffset += doc.getTextDimensions('Final Approver:').h + 2;
+
+          // Display the final approver comment
+          doc.setFont('CustomFont', 'normal');
+          doc.text(comments[0].finalApproverComment, 10, yOffset, { maxWidth: 190, align: 'left' });
+          yOffset += doc.getTextDimensions(comments[0].finalApproverComment).h + 5; // Adjust the line spacing here
+        } else {
+          // If not Approved or Provisionally Approved, display regular comments
+          doc.text(line, 10, yOffset, { maxWidth: 190, align: 'left' });
+          yOffset += doc.getTextDimensions(line).h + 5; // Adjust the line spacing here
+        }
+
         remainingPageSpace -= doc.getTextDimensions(line).h + 5;
       }
 
@@ -3015,22 +3042,13 @@ export class ViewProjectInfoComponent implements OnInit {
       doc.line(10, yOffset, 200, yOffset);
       yOffset += 20;
     });
-
     // Optionally, you can add a page count in the footer
-    for (let i = 1; i <= currentPage; i++) {
-      doc.setPage(i);
-      doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    
 
-
-
-    }
-
-    // Reset the page to the last page
-    doc.setPage(currentPage);
 
     //Contact information Page
     /*    doc.addPage();
-        doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+          
         doc.setFontSize(10);
         doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
         doc.setFontSize(16);
@@ -3085,115 +3103,115 @@ export class ViewProjectInfoComponent implements OnInit {
     */
     //PAGE 1
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
-   
 
 
-    doc.addImage(page1, 'jpg', 0, 0, 210, 297); // Full A4 size
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-/*    doc.addImage(footer, 'png', 7, 255, 205, 45);*/
+
+    doc.addImage(page1, 'png', 0, 0, 210, 297); // Full A4 size
+
+    /*    doc.addImage(footer, 'png', 7, 255, 205, 45);*/
 
     //PAGE 2
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
 
 
-    doc.addImage(page2, 'jpg', 0, 0, 210, 297);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+    doc.addImage(page2, 'png', 0, 0, 210, 297);
+
 
 
 
     //PAGE 3
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
 
 
 
-    doc.addImage(page3, 'jpg', 0, 0, 210, 297);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+    doc.addImage(page3, 'png', 0, 0, 210, 297);
+
 
 
     //PAGE 4
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
 
 
 
-    doc.addImage(page4, 'jpg', 0, 0, 210, 297);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+    doc.addImage(page4, 'png', 0, 0, 210, 297);
+
 
 
     //PAGE 5
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
 
 
 
-    doc.addImage(page5, 'jpg', 0, 0, 210, 297);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+    doc.addImage(page5, 'png', 0, 0, 210, 297);
+
 
 
     //PAGE 6
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
 
 
 
-    doc.addImage(page6, 'jpg', 0, 0, 210, 297);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+    doc.addImage(page6, 'png', 0, 0, 210, 297);
+
 
 
     //PAGE 7
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
 
 
 
-    doc.addImage(page7, 'jpg', 0, 0, 210, 297);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+    doc.addImage(page7, 'png', 0, 0, 210, 297);
+ 
 
 
     //PAGE 8
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
 
 
-    doc.addImage(page8, 'jpg', 0, 0, 210, 297);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+    doc.addImage(page8, 'png', 0, 0, 210, 297);
+ 
 
 
     //PAGE 9
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
 
 
 
-    doc.addImage(page9, 'jpg', 0, 0, 210, 297);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+    doc.addImage(page9, 'png', 0, -2, 210, 297);
 
 
-    //PAGE 10
+
+/*    //PAGE 10
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
 
 
@@ -3204,392 +3222,29 @@ export class ViewProjectInfoComponent implements OnInit {
 
     //PAGE 11
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
 
 
 
     doc.addImage(page11, 'jpg', 0, 0, 210, 297);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });*/
 
 
-  /*  //PAGE 12
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page12, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 13
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page13, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 14
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page14, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 15
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page15, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 16
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page16, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 17
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page17, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 18
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page18, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 19
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page19, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 20
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page20, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 21
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page21, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 22
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page22, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 23
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page23, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 24
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page24, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 25
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page25, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-
-    //PAGE 26
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page26, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 27
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page27, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 28
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page28, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 29
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page29, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);*/
-
-    //PAGE 30
-    /* doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page30, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 31
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page31, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 32
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page32, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 33
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page33, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 34
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page34, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 35
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page35, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 36
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page36, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 37
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page37, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 38
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page38, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 39
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page39, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 40
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page40, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 41
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page41, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 42
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page42, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 43
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page43, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 44
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page44, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 45
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page45, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);*/
+  
 
     // Save PDF document
+    for (let i = 0; i <= currentPage; i++) {
+      doc.setPage(i);
+
+      doc.setFontSize(10);
+   
+      doc.addImage(footer2, 'png', 0, 0, 210, 297);
+      doc.text("Page " + i + " of " + currentPage, 100, 285, { align: 'center' });
+    }
+
+    // Reset the page to the last page
 
     const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
     const file = new File([pdfData], 'approval_pack.pdf', { type: 'application/pdf' });
@@ -3599,6 +3254,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     this.sharedService.pushFileForTempFileUpload(file, "Approval Pack" + ".pdf");
     this.save();
+
   }
 
 
@@ -3691,8 +3347,249 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
 
-
   onCrreateRejectionPack() {
+
+
+
+    this.getAllSubDepForReject();
+
+    /*    this.getAllSubDepFroConditionalApprove();*/
+
+
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    /*    const doc = new jsPDF('portrait', 'px', 'a4') as jsPDFWithPlugin;*/
+
+    // Set up table
+    const startY = 50; // set the starting Y position for the table
+    const headers = [
+      [
+        'Department',
+        'Status',
+      ]
+    ];
+
+
+   
+
+    const data: any[] = [];
+
+    const img = new Image();
+    const footer = new Image();
+    const footer2 = new Image();
+
+
+    img.src = 'assets/cctlogoblackk.png';
+    footer2.src = 'assets/Packs/footer2.png';
+    footer.src = 'assets/Packs/base.jpg';
+
+
+
+    doc.addFont('assets/century-gothic/CenturyGothic.ttf', 'CustomFont', 'normal');
+    doc.addFont('assets/century-gothic/GOTHICB0.TTF', 'CustomFontBold', '', 'bold');
+    doc.setFont('CustomFont', 'normal');
+
+
+
+    // Add logo to PDF document
+    doc.addImage(img, 'png', 6, 10, 50, 16);
+
+    // Set font for specific text
+    doc.setFontSize(10); // Increase font size for specific text
+
+    // Add text with various formatting
+    /*  doc.setFont('CustomFontBold','bold');*/ // Use your custom font
+    doc.setFont('CustomFont', 'normal');
+    doc.text('Cape Town Civic Centre', 200, 17, { align: 'right' });
+
+    doc.text('12 Hertzog Boulevard', 200, 22, { align: 'right' });
+
+    doc.text('CAPE TOWN 8000', 200, 27, { align: 'right' });
+
+    // Set font back to regular
+
+    doc.setFontSize(10); // Return to the regular font size
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
+    doc.text('Website:', 147, 35, { align: 'right' });
+
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
+    doc.setTextColor(0, 88, 112); // Set text color to #005870
+
+    // Use the 'decoration' property to add an underline
+
+
+    doc.textWithLink('https://www.capetown.gov.za', 200, 35, { align: 'right', lineHeightFactor: 1.5 });
+
+    doc.setTextColor(0, 0, 0); // Set text color to #005870
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
+    doc.text('Portal:', 138, 40, { align: 'right' });
+
+
+    doc.setTextColor(0, 88, 112); // Set text color to #005870
+
+    // Use the 'decoration' property to add an underline
+
+    doc.textWithLink('https://wayleave.capetown.gov.za/', 200, 40, { align: 'right' });
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
+    doc.setTextColor(0, 0, 0); // Set text color to #005870
+
+    doc.text('Reference Number: ' + this.ProjectNum, 200, 50, { align: 'right' });
+    doc.setFont('CustomFont', 'normal');
+    // Add extra space
+    doc.text('', 10, 55); // Add an empty line for spacing
+
+    doc.setFontSize(10); // Restore the regular font size
+
+    // Adding information underneath the logo
+    doc.text('DATE : ' + this.formattedDate, 10, 60, { align: 'left' });
+
+    doc.text('WAYLEAVE APPLICATION: ' + this.DescriptionOfProject, 10, 70, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
+
+    doc.text('Dear ' + this.clientName, 10, 80, { align: 'left' });
+
+
+    //this is for the project details
+
+    //paragraph 
+
+    doc.text('A summary of the outcome of this wayleave application is provided below. Department specific wayleave approval or rejection letters are attached.In the case of a wayleave rejection, please make contact with the relevant line department as soon as possible', 10, 90, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
+    doc.text('Status Summary:', 10, 115, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFont', 'normal');
+    debugger;
+    this.SubDepSubDepRejectList.forEach((deposit) => {
+      const row = [
+        deposit.SubDepName,
+        deposit.CommentStatus,
+
+      ];
+      data.push(row);
+    });
+    doc.setLineHeightFactor(60);
+    doc.setFontSize(10); // add this line to set the font size
+
+    doc.text("Based on the summary above, the wayleave application is rejected. Please contact the relevant department for guidance on the way forward.", 10, 190, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });//
+    doc.setFontSize(12);
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
+    doc.text('CITY OF CAPE TOWN', 10, 240, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFont', 'italic');
+    doc.text('Future Planning and Resilience Directorate', 10, 245, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+
+    autoTable(doc, {
+      head: headers,
+      headStyles: { fillColor: '#005870' },
+      startY: 120,
+      body: data,
+      styles: {
+        overflow: 'visible',
+        halign: 'justify',
+        fontSize: 8,
+        valign: 'middle',
+        // Use the correct color notation here
+      },
+      columnStyles: {
+        0: { cellWidth: 70, fontStyle: 'bold' },
+        1: { cellWidth: 70 },
+
+      }
+    });
+    //Special conditions page
+  
+
+    // Save PDF document
+   
+
+    // Reset the page to the last page
+
+    const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
+    const file = new File([pdfData], 'rejection_pack.pdf', { type: 'application/pdf' });
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.sharedService.pushFileForTempFileUpload(file, "Rejection Pack" + ".pdf");
+    this.saveRejection();
+
+  }
+
+
+
+  saveRejection() {
+
+    const filesForUpload = this.sharedService.pullFilesForUpload();
+    for (let i = 0; i < filesForUpload.length; i++) {
+      const formData = new FormData();
+      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "_appID" + this.ApplicationID;
+      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+        .subscribe({
+          next: (event) => {
+            if (event.type === HttpEventType.UploadProgress && event.total) {
+              this.progress = Math.round(100 * event.loaded / event.total);
+            } else if (event.type === HttpEventType.Response) {
+              this.message = 'Upload success.';
+              this.uploadFinishedRejection(event.body);
+            }
+          },
+          error: (err: HttpErrorResponse) => console.log(err)
+        });
+    }
+
+  }
+
+
+
+
+
+  uploadFinishedRejection = (event: any) => {
+    this.response = event;
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
+
+
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
+
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, "System Generated Pack", "System Generated Pack").subscribe((data: any) => {
+      /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
+      if (data.responseCode == 1) {
+
+        console.log(this.StagesList);
+
+       
+
+         
+
+         
+            this.modalService.dismissAll();
+            this.router.navigate(["/home"]);
+
+        
+
+      }
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+  }
+
+
+
+
+
+  /*onCrreateRejectionPack() {
+
+
+
+
 
     this.getAllSubDepForReject();
     const doc = new jsPDF({
@@ -3723,7 +3620,7 @@ export class ViewProjectInfoComponent implements OnInit {
     // Add logo to PDF document
 
     // Add logo to PDF document
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+      
     doc.setFontSize(10);
     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
     //adding information underneath the logo
@@ -3787,7 +3684,7 @@ export class ViewProjectInfoComponent implements OnInit {
     // Save PDF document
     doc.save('Rejection Pack:' + this.CurrentUser.userProfileID);
 
-  }
+  }*/
 
 
   goToNewWayleave(applicationType: boolean) { //application type refers to whether it is a brand new application or if it is a reapply.
@@ -4408,10 +4305,17 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
 
+  public isLoading: boolean = false;
+  OpenLoadingModal() {
+    if (confirm("Are You Sure You Want To Download Your Approval Pack ?")) {
+      this.isLoading = true;
+       this.getContactDetails();
+    }
+   
+    else {
 
-  OpenLoadingModal(approvalPackLoading) {
-    this.modalService.open(approvalPackLoading, { centered: true, size: 'xl' })
-    this.getContactDetails();
+    }
+
 
   }
 
