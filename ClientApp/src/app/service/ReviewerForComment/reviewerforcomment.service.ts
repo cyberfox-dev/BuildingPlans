@@ -12,9 +12,9 @@ export class ReviewerforcommentService {
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
-  public addUpdateReviewerForComment(reviewerForCommentID: number | null, applicationID: number | null, reviewerAssignedToComment:string |null, commentStatus: string | null, comment: string | null, createdByID: string|null, subdepartmentID: number | null, subdepartmentName: string|null, zoneID: number|null, zoneName:string|null) {
+  public addUpdateReviewerForComment(reviewerForCommentID: number | null, applicationID: number | null, reviewerAssignedToComment: string | null, commentStatus: string | null, comment: string | null, createdByID: string | null, subdepartmentID: number | null, subdepartmentName: string | null, zoneID: number | null, zoneName: string | null) {
 
-    
+
     const body = {
 
       ReviewerForCommentID: reviewerForCommentID,
@@ -38,5 +38,35 @@ export class ReviewerforcommentService {
       ZoneID: zoneID,
     }
     return this.httpClient.post(this.baseURL + "GetUserDetails", body);
+  }
+
+  //Audit trail Kyle
+  public getAllReviewerForCommentItems() {
+    return this.httpClient.get(this.baseURL + "GetAllReviewerForCommentItems");
+  }
+
+  public getAllReviewerForCommentForApplication(applicationID: number | null) {
+    const body = {
+      ApplicationID: applicationID
+    }
+
+    return this.httpClient.post(this.baseURL + "GetAllReviewerForCommentForApplication", body);
+  }
+
+  public getAllReviewersForSubDepartmentAndZone(subDepartmentName: string | null, zoneName: string | null) {
+    const body = {
+      SubDepartmentName: subDepartmentName,
+      ZoneName:zoneName,
+    }
+
+    return this.httpClient.post(this.baseURL + "GetAllReviewersForSubDepartmentAndZone", body);
+  }
+
+  public getAllReviewersForCommentsByUser(userId: string | null) {
+    const body = {
+      CreatedById:userId 
+    }
+
+    return this.httpClient.post(this.baseURL + " GetAllReviewersForCommentsByUser", body);
   }
 }

@@ -157,7 +157,13 @@ export class SharedService {
   RepFileUploadCat?: any | null;
     userIDForWalkIn: any;
   isDraft: boolean;
-   
+
+  //Audit Trail Kyle
+  isReports: boolean = false;
+  isViewReport: boolean = false;
+  auditTrail: boolean = false;
+  //Audit Trail Kyle
+
   setCheckEmail(data: any) {
     this.checkEmail = data;
     console.log("Set method" + this.checkEmail);

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SharedService } from 'src/app/shared/shared.service';
+import * as XLSX from 'xlsx';
 
 @Injectable({
   providedIn: 'root'
@@ -38,5 +39,26 @@ export class AuditTrailService {
     }
     return this.httpClient.post(this.baseURL + "DeleteAuditTrailItemByAuditTrailID", body);
   }
-  
+
+  public getAllAuditTrailItems() {
+    return this.httpClient.get(this.baseURL + "GetAllAuditTrailItems");
+  }
+
+  public getAllAuditTrailsItemsForSubDepartmentAndZone(subDepartmentName: string | null, zoneName: string | null) {
+    const body = {
+      SubDepartmentName: subDepartmentName,
+      ZoneName:zoneName
+    }
+
+    return this.httpClient.post(this.baseURL + "GetAllAuditTrailItemsForSubDepartmentAndZone", body);
+  }
+
+  public getAllAuditTrailItemsForInternalUser(userID: string | null) {
+    const body = {
+      CreatedById : userID
+    }
+
+    return this.httpClient.post(this.baseURL + "GetAllAuditTrailItemsForInternalUser", body);
+  }
+  //Audit Trail Kyle
 }

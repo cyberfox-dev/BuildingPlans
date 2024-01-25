@@ -271,7 +271,10 @@ import { SystemAlertConfigComponent } from 'src/app/system-alert-config/system-a
     DocumentRepositoryConfigComponent,
     DraftsComponent,
     ApprovalPackComponent,
-    DocumentsComponentComponent
+    DocumentsComponentComponent,
+    //Audit Trail Kyle
+    AuditTrailComponent,
+    //Audit Trail Kyle
   ],
   bootstrap: [AppComponent]
 })

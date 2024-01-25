@@ -282,6 +282,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   CurrentUser: any;
   stringifiedData: any;
   stringifiedDataUserProfile: any;
+ 
   CurrentUserProfile: any;
   public canReapply: boolean = false;
 
@@ -547,6 +548,11 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.getAllStages();
       this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
       this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
+
+      //Audit Trail Kyle
+      this.sharedService.isViewReport = false;
+      this.sharedService.isReports = false;
+      //Audit Trail Kyle 
 
       this.getRolesLinkedToUser();
       this.UpdateProjectNumberConfig();
@@ -1226,7 +1232,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   
            // this.rolesTable?.renderRows();
-          console.log("getAllLinkedRolesReponse", data.dateSet);
+          console.log("getAllLinkedRolesReponseForUser", data.dateSet);
         
        
        
