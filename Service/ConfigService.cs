@@ -140,6 +140,9 @@ namespace WayleaveManagementSystem.Service
             return await (
                 from config in _context.Config
                 where config.ConfigName == configName && config.isActive == true
+                //Banner Kyle
+                orderby config.DateCreated 
+                ascending
                 select new ConfigDTO()
                 {
                     ConfigID = config.ConfigID,

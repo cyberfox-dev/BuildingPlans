@@ -225,6 +225,7 @@ export interface AllInternalUserProfileList {
 
 
 
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -296,6 +297,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   appAge: number;
   escalateBtn: boolean = false;
 
+  //Banner Kyle 26/01/24
+  showBanner: boolean = false;
+  //Banner kYLE 26/01/24
 
   /*Client details*/
   clientUserID = '';
@@ -591,17 +595,61 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   //builder's break banner
+  //Banner Kyle 26/01/24
+  alertMessage: string;
+  startDate: string;
+  endDate: string;
+  isBannerVisible() {
+  
+    this.configService.getConfigsByConfigName("Alert").subscribe((data: any) => {
+     
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
 
-  isBannerVisible(): boolean {
-    const currentDate = new Date();
-    const startDate = new Date(2023, 11, 1); // 1 Dec 2023
-    const endDate = new Date(2024, 0, 5);   // 5 Jan 2024
-    //const endDate = new Date(2023, 11, 5);   // 5 December 2023 - used to test
+          const current = data.dateSet[i];
 
-    return currentDate >= startDate && currentDate <= endDate;
+          const startEnd = current.utilitySlot1;
+          const currentDate = new Date();
+
+          let start  = startEnd.substring(0, startEnd.indexOf(" "));
+          let end = startEnd.substring(startEnd.indexOf(" ") + 1);
+
+          let startDate = this.parseDate(start);
+          let endDate = this.parseDate(end);
+
+        
+          debugger;
+          if (currentDate >= startDate && currentDate < endDate) {
+            debugger;
+            this.showBanner = true;
+            this.alertMessage = current.utilitySlot3.toUpperCase();
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            this.startDate = `${startDate.getDate()} ${months[startDate.getMonth()]} ${startDate.getFullYear()}`;
+
+            this.endDate = `${endDate.getDate()} ${months[endDate.getMonth()]} ${endDate.getFullYear()}`;
+            break;
+          }
+          else {
+            this.showBanner = false; 
+
+          }
+        }
+      } else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
+  private parseDate(dateString: any): Date {
 
-
+    return new Date(dateString);
+  }
+  //Banner Kyle 26/01/24
   Reviews: any;
 
 

@@ -6,17 +6,21 @@
 4.2 Indefinite ??
 5.
 -->
-
 <button mat-raised-button color="create" (click)="openCreateModal(newAlert)">Create a New System Alert</button>
 
-<h1>All Alerts</h1>
 
-<div *ngIf="dataSource.length > 0; else noAlerts">
+<div *ngIf="dataSource.length > 0">
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
     <ng-container matColumnDef="Message">
       <th mat-header-cell *matHeaderCellDef> Message </th>
       <td mat-cell *matCellDef="let element"> {{element.message}} </td>
     </ng-container>
+    <!-----------Banner Kyle 26/01/24-------------->
+    <ng-container matColumnDef="Status">
+      <th mat-header-cell *matHeaderCellDef> Status </th>
+      <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+    </ng-container>
+    <!-----------Banner Kyle 26/01/24-------------->
     <ng-container matColumnDef="StartDate">
       <th mat-header-cell *matHeaderCellDef> Start Date </th>
       <td mat-cell *matCellDef="let element"> {{element.startDate}} </td>
@@ -30,10 +34,12 @@
       <td mat-cell *matCellDef="let element"> {{element.dateCreated  | date:'yyyy-MM-dd' }} </td>
     </ng-container>
     <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef>  </th>
+      <th mat-header-cell *matHeaderCellDef> actions </th>
       <td mat-cell *matCellDef="let i = index;let element">
-        <button mat-raised-button color="warni" matTooltip="Remove Alert" (click)=" deleteAlert(i, element);"><i class="fa fa-trash"></i></button>
-        <!--<button mat-raised-button color="orange" matTooltip="Edit Alert" (click)=" editAlert(element, editAlert);"><i class="fa fa-pencil"></i></button>-->
+
+        <button mat-raised-button color="orange" matTooltip="Edit Alert" (click)="  onOpenEditAlert(i,editAlert)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/pencil-solid.svg" class="icon"></button>
+        <button mat-raised-button color="warni" matTooltip="Remove Alert" (click)=" deleteAlert(i, element);"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid-white.svg" class="icon"></button>
+
       </td>
     </ng-container>
 
@@ -42,23 +48,16 @@
   </table>
 
 </div>
-<ng-template #noAlerts>
-  ><p>There are no alerts in the DB.</p>
-</ng-template>
-<hr />
-<h1>Active Alerts</h1>
-<p>There are no current alerts.</p>
-<hr />
-<h1>Upcoming Alerts</h1>
-<p>There are no upcoming alerts.</p>
 
 <ng-template #newAlert let-modal>
 
   <div class="modal-header">
     <h4 class="modal-title">Creating a new system alert</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+
   </div>
   <div class="modal-body">
+    
     <div class="row">
       <div class="col">
         <div class="form-floating mb-3 mt-3">
@@ -91,16 +90,16 @@
 </ng-template>
 
 <ng-template #editAlert let-modal>
-
+  <!-----------Banner Kyle 26/01/24-------------->
   <div class="modal-header">
-    <h4 class="modal-title">Editing an existing system alert</h4>
+    <h4 class="modal-title">Editting a system alert</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
     <div class="row">
       <div class="col">
         <div class="form-floating mb-3 mt-3">
-          <input type="text" class="form-control" name="bannerMessage" id="bannerMessage" [(ngModel)]="bannerMessage" placeholder="Enter Alert Message" />
+          <input type="text" class="form-control" name="bannerMessage" id="bannerMessage" [(ngModel)]="editBannerMessage" placeholder="Enter Alert Message" />
           <label name="name">Alert Message</label>
         </div>
       </div>
@@ -108,22 +107,23 @@
     <div class="row">
       <div class="col">
         <div class="form-floating mb-3 mt-3">
-          <input type="date" class="form-control" [(ngModel)]="startDate" id="startDate" name="startDate" [min]="getCurrentDate()">
+          <input type="date" class="form-control" [(ngModel)]="editStartDate" id="startDate" name="startDate">
           <label for="name">Start Date</label>
         </div>
       </div>
 
       <div class="col">
         <div class="form-floating mb-3 mt-3">
-          <input type="date" class="form-control" [(ngModel)]="endDate" id="endDate" name="endDate" [min]="startDate">
+          <input type="date" class="form-control" [(ngModel)]="editEndDate" id="endDate" name="endDate" [min]="editStartDate">
           <label for="name">Completion Date</label>
         </div>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" (click)="createNewAlert()">Save</button>
+    <button type="submit" class="btn btn-outline-success" (click)="onSaveEdittedAlert();modal.dismiss('Cross click')">Save</button>
   </div>
 
+  <!-----------Banner Kyle 26/01/24-------------->
 
 </ng-template>
