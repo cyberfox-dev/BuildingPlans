@@ -10,5 +10,6 @@
         public string? SubDepartmentName { get; set; }
         public string? ZoneName { get; set; }
         public string? CreatedById { get; set; }
+        
     }
 }

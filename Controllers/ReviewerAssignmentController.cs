@@ -126,5 +126,145 @@ namespace WayleaveManagementSystem.Controllers
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
+        //Audit Trail Kyle
+        [HttpGet("GetAllReviewerForCommentItems")]
+        public async Task<object> GetAllReviewerForCommentItems()
+        {
+            try
+            {
+                var result = await (
+                    from details in _context.ReviewerForComment
+                    where details.isActive == true
+                    orderby details.DateCreated 
+                    ascending
+                    select new ReviewerAssignementDTO()
+                    {
+                        ReviewerForCommentID = details.ReviewerForCommentID,
+                        ApplicationID = details.ApplicationID,
+                        ReviewerAssignedToComment = details.ReviewerAssignedToComment,
+                        CommentStatus = details.CommentStatus,
+                        Comment = details.Comment,
+                        SubDepartmentID = details.SubDepartmentID,
+                        SubDepartmentName = details.SubDepartmentName,
+                        ZoneID = details.ZoneID,
+                        ZoneName = details.ZoneName,
+                        CreatedById = details.CreatedById,
+                        DateCreated =details.DateCreated,
+                        DateUpdated = details.DateUpdated
+
+                    }).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Service Items", result));
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+        [HttpPost("GetAllReviewerForCommentForApplication")]
+        public async Task<object> GetAllReviewerForCommentForApplication([FromBody] ReviewerAssignmentBindingModel model)
+        {
+            try
+            {
+                var result = await (
+                    from details in _context.ReviewerForComment
+                    where details.ApplicationID == model.ApplicationID && details.isActive == true
+                    orderby details.DateCreated
+                    ascending
+                    select new ReviewerAssignementDTO()
+                    {
+                        ReviewerForCommentID = details.ReviewerForCommentID,
+                        ApplicationID = details.ApplicationID,
+                        ReviewerAssignedToComment = details.ReviewerAssignedToComment,
+                        CommentStatus = details.CommentStatus,
+                        Comment = details.Comment,
+                        SubDepartmentID = details.SubDepartmentID,
+                        SubDepartmentName = details.SubDepartmentName,
+                        ZoneID = details.ZoneID,
+                        ZoneName = details.ZoneName,
+                        CreatedById = details.CreatedById,
+                        DateCreated = details.DateCreated,
+                        DateUpdated = details.DateUpdated
+
+                    }).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All  Items for application", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+        [HttpPost("GetAllReviewersForSubDepartmentAndZone")]
+        public async Task<object> GetAllReviewersForSubDepartmentAndZone([FromBody] ReviewerAssignmentBindingModel model)
+        {
+            try
+            {
+                var result = await (
+                    from details in _context.ReviewerForComment
+                    where details.SubDepartmentName == model.SubDepartmentName && details.ZoneName == model.ZoneName && details.isActive == true
+                    select new ReviewerAssignementDTO()
+                    {
+                        ReviewerForCommentID = details.ReviewerForCommentID,
+                        ApplicationID = details.ApplicationID,
+                        ReviewerAssignedToComment = details.ReviewerAssignedToComment,
+                        CommentStatus = details.CommentStatus,
+                        Comment = details.Comment,
+                        SubDepartmentID = details.SubDepartmentID,
+                        SubDepartmentName = details.SubDepartmentName,
+                        ZoneID = details.ZoneID,
+                        ZoneName = details.ZoneName,
+                        CreatedById = details.CreatedById,
+                        DateCreated = details.DateCreated,
+                        DateUpdated = details.DateUpdated
+
+                    }).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All  Items for Sub Department and Zone ", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+        [HttpPost("GetAllReviewersForCommentsByUser")]
+        public async Task<object> GetAllReviewersForCommentsByUser([FromBody] ReviewerAssignementDTO model)
+        {
+            try
+            {
+                var result = await (
+                    from details in _context.ReviewerForComment
+                    where details.CreatedById == model.CreatedById && details.isActive == true
+                    orderby details.DateCreated
+                    ascending
+                    select new ReviewerAssignementDTO()
+                    {
+                        ReviewerForCommentID = details.ReviewerForCommentID,
+                        ApplicationID = details.ApplicationID,
+                        ReviewerAssignedToComment = details.ReviewerAssignedToComment,
+                        CommentStatus = details.CommentStatus,
+                        Comment = details.Comment,
+                        SubDepartmentID = details.SubDepartmentID,
+                        SubDepartmentName = details.SubDepartmentName,
+                        ZoneID = details.ZoneID,
+                        ZoneName = details.ZoneName,
+                        CreatedById = details.CreatedById,
+                        DateCreated = details.DateCreated,
+                        DateUpdated = details.DateUpdated
+
+                    }).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All  Items Created By Internal User ", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+        //Audit Trail Kyle
     }
 }

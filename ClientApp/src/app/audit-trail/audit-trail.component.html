@@ -1,10 +1,192 @@
-<button mat-raised-button color="blue" (click)="openDownloadReport(downloadReport)">Download Report</button>
 
 
-<ng-template #downloadReport let-modal>
+
+<ng-template #downloadReports let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Please select range of report you wish to download</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="clearAll()"></button>
   </div>
-  
+
+  <div class="modal-body">
+
+    <div class="container-fluid">
+      <mat-form-field>
+        <mat-label>Select range of data you wish to download</mat-label>
+        <mat-select [(ngModel)]="selectionType" (selectionChange)="onCheckSelection()">
+          <mat-option value="byDate">
+            Select by Dates
+          </mat-option>
+          <mat-option value="subZone">
+            SubDepartment And Zone
+          </mat-option>
+          <mat-option value="subZoneTime">
+            SubDepartment And Zone Within A Time Range
+          </mat-option>
+          <mat-option value="internalUser">
+            For a specific Internal User
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+
+    </div>
+
+    <div class="row" *ngIf="showDate">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="date" class="form-control" [(ngModel)]="expectedStartDate" id="startDate" placeholder="Enter Start Date" name="expectedStartDate" [max]="getCurrentDate() " (change)=" onDateChange()"> <!--[min]="getCurrentDate()"-->
+          <label for="name">Start Date</label>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="date" class="form-control" [(ngModel)]="expectedEndType" id="endDate" placeholder="" name="expectedEndType" [max]="getCurrentDate() " (change)="getAuditTrailDataByDateRange()" [disabled]="endDateEnabled === false">
+          <label for="name">Completion Date</label>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid" *ngIf="showSub || showSubDate">
+      <mat-form-field>
+        <mat-label>Select SubDepartment</mat-label>
+        <mat-select [(ngModel)]="selectedSubDepartment" (selectionChange)=" getZonesForSubDepartment()">
+          <mat-option *ngFor=" let subDepartment of  SubDepartmentList" [value]="subDepartment">
+            {{subDepartment.SubDepartmentName}}
+          </mat-option>
+
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="container-fluid" *ngIf="showZone">
+      <mat-form-field>
+        <mat-label>Select Zone for SubDepartment</mat-label>
+        <mat-select [(ngModel)]="zoneName" (selectionChange)="getAuditTrailForDepartmentAndZone()">
+          <mat-option *ngFor=" let zone of  ZonesList" [value]="zone.ZoneName">
+            {{zone.ZoneName}}
+          </mat-option>
+
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="row" *ngIf="showSubDate">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="date" class="form-control" [(ngModel)]="expectedStartDateSub" id="startDate" placeholder="Enter Start Date" name="expectedStartDate" [max]="getCurrentDate() " (change)=" onDateChange()"> <!--[min]="getCurrentDate()"-->
+          <label for="name">Start Date</label>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="date" class="form-control" [(ngModel)]="expectedEndTypeSub" id="endDate" placeholder="" name="expectedEndType" [max]="getCurrentDate() " (change)=" getAuditTrailForDepartmentAndZoneWithinRange()" [disabled]="endDateEnabled === false">
+          <label for="name">Completion Date</label>
+        </div>
+      </div>
+    </div>
+
+   
+
+  </div>
+  <div class="modal-footer">
+
+    <button type="submit" class="btn btn-outline-success" *ngIf="showInternalUsers === false" (click)=" sortDataRange();clearAll()" [disabled]="selectionType == ''">Save</button>
+    <button type="submit" class="btn btn-outline-success" *ngIf="showInternalUsers === true" (click)="  openInternalUser(internalUsers)" [disabled]="selectionType == ''">Select</button>
+  </div>
+
+</ng-template>
+<button mat-raised-button color="blue" *ngIf="getReport" (click)=" sortDataRange()">Download Report</button>
+
+<table mat-table *ngIf="getReport" [dataSource]="dataSource" class="mat-elevation-z8">
+
+
+  <ng-container matColumnDef="AssignedTo">
+    <th mat-header-cell *matHeaderCellDef>Assign To  </th>
+    <td mat-cell *matCellDef="let element"> {{element.AssignedTo}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Description">
+    <th mat-header-cell *matHeaderCellDef> Description </th>
+    <td mat-cell *matCellDef="let element">{{element.Description}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Comment">
+    <th mat-header-cell *matHeaderCellDef>Comment </th>
+    <td mat-cell *matCellDef="let element">{{element.Comment}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="isInternal">
+    <th mat-header-cell *matHeaderCellDef> Internal User </th>
+    <td mat-cell *matCellDef="let element">{{element.isInternal}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="SubDepartmentName">
+    <th mat-header-cell *matHeaderCellDef> Sub Department </th>
+    <td mat-cell *matCellDef="let element">{{element.SubDepartmentName}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="ZoneName">
+    <th mat-header-cell *matHeaderCellDef> Zone </th>
+    <td mat-cell *matCellDef="let element">{{element.ZoneName}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="CreatedBy">
+    <th mat-header-cell *matHeaderCellDef> Created By </th>
+    <td mat-cell *matCellDef="let element">{{element.CreatedBy}} </td>
+  </ng-container>
+
+
+  <ng-container matColumnDef="DateCreated">
+    <th mat-header-cell *matHeaderCellDef> Description </th>
+    <td mat-cell *matCellDef="let element">{{element.DateCreated}} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<ng-template #internalUsers let-modal >
+
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Please select range of report you wish to download</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="clearAll()"></button>
+  </div>
+
+  <div class="modal-body">
+
+    <mat-form-field>
+      <mat-label>Filter</mat-label>
+      <!--<input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>-->
+      <input matInput (keyup)="applyInternalClientFilter($event)" placeholder="Ex. ium" #input>
+    </mat-form-field>
+
+    <table mat-table class="mat-elevation-z8" [dataSource]="dataSourceUsers" >
+
+
+      <ng-container matColumnDef="fullName">
+        <th mat-header-cell *matHeaderCellDef> User Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Select</th>
+        <td mat-cell *matCellDef="let i = index">
+
+          <mat-radio-button class="example-margin" [(ngModel)]="selectedRowIndex" [value]="i" [checked]="selectedRowIndex === i " (click)="getAllAuditTrailItemsForInternalUser(i);openInternalUser(internalUsers)"></mat-radio-button>
+        </td>
+
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef=" displayedColumnsUsers"></tr>
+      <tr mat-row *matRowDef="let row; columns:  displayedColumnsUsers;"></tr>
+    </table>
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)=" sortDataRange();modal.close('Save click')">Save</button>
+    <button type="submit" class="btn btn-outline-success" (click)="getAllInternalUsers();openInternalUser(internalUsers)">Reset</button>
+  </div>
+
 </ng-template>

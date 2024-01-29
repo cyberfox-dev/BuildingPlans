@@ -102,8 +102,10 @@ namespace WayleaveManagementSystem.Controllers
             {
                 var result = await (
                     from AuditTrail in _context.AuditTrail
-                    where AuditTrail.ApplicationID == model.ApplicationID && AuditTrail.isActive == true
-                    select new AuditTrail()
+                    where AuditTrail.ApplicationID == model.ApplicationID && AuditTrail.isActive == true 
+                    orderby AuditTrail.DateCreated 
+                    ascending
+                    select new AuditTrialDTO()
                     {
                         AuditTrailID = AuditTrail.AuditTrailID,
                         ApplicationID = AuditTrail.ApplicationID,
@@ -160,5 +162,101 @@ namespace WayleaveManagementSystem.Controllers
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
+
+        [HttpGet("GetAllAuditTrailItems")]
+        public async Task<object> GetAllAuditTrailItems()
+        {
+            try
+            {
+                var result = await (
+                    from AuditTrail in _context.AuditTrail
+                    where AuditTrail.isActive == true
+                    orderby AuditTrail.DateCreated
+                    ascending
+                    select new AuditTrialDTO()
+                    {
+                        AuditTrailID = AuditTrail.AuditTrailID,
+                        ApplicationID = AuditTrail.ApplicationID,
+                        Description = AuditTrail.Description,
+                        IsInternal = AuditTrail.IsInternal,
+                        SubDepartmentName = AuditTrail.SubDepartmentName,
+                        ZoneName = AuditTrail.ZoneName,
+                        CreatedById = AuditTrail.CreatedById,
+                        DateCreated = AuditTrail.DateCreated,
+                        DateUpdated = AuditTrail.DateUpdated,
+                        isActive = AuditTrail.isActive
+                    }).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Audit Trail Items", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+        [HttpPost("GetAllAuditTrailItemsForSubDepartmentAndZone")]
+        public async Task<object> GetAllAuditTrailItemsForSubDepartmentAndZone([FromBody] AuditTrailBindingModel model)
+        {
+            try
+            {
+                var result = await (
+                    from AuditTrail in _context.AuditTrail
+                    where AuditTrail.SubDepartmentName == model.SubDepartmentName && AuditTrail.ZoneName == model.ZoneName && AuditTrail.isActive == true
+                    select new AuditTrialDTO()
+                    {
+                        AuditTrailID = AuditTrail.AuditTrailID,
+                        ApplicationID = AuditTrail.ApplicationID,
+                        Description = AuditTrail.Description,
+                        IsInternal = AuditTrail.IsInternal,
+                        SubDepartmentName = AuditTrail.SubDepartmentName,
+                        ZoneName = AuditTrail.ZoneName,
+                        CreatedById = AuditTrail.CreatedById,
+                        DateCreated = AuditTrail.DateCreated,
+                        DateUpdated = AuditTrail.DateUpdated,
+                        isActive = AuditTrail.isActive
+                    }).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Audit Trail Items for Sub Department And Zone ", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+        [HttpPost("GetAllAuditTrailItemsForInternalUser")]
+        public async Task<object> GetAllAuditTrailItemsForInternalUser([FromBody] AuditTrailBindingModel model)
+        {
+            try
+            {
+                var result = await (
+                    from AuditTrail in _context.AuditTrail
+                    where AuditTrail.CreatedById == model.CreatedById && AuditTrail.isActive == true
+                    orderby AuditTrail.DateCreated
+                    ascending
+                    select new AuditTrialDTO()
+                    {
+                        AuditTrailID = AuditTrail.AuditTrailID,
+                        ApplicationID = AuditTrail.ApplicationID,
+                        Description = AuditTrail.Description,
+                        IsInternal = AuditTrail.IsInternal,
+                        SubDepartmentName = AuditTrail.SubDepartmentName,
+                        ZoneName = AuditTrail.ZoneName,
+                        CreatedById = AuditTrail.CreatedById,
+                        DateCreated = AuditTrail.DateCreated,
+                        DateUpdated = AuditTrail.DateUpdated,
+                        isActive = AuditTrail.isActive
+
+                    }).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Audit Trail Items for Internal User", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
     }
+    //Audit Trail Kyle 
 }

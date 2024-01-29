@@ -445,7 +445,11 @@ export class ViewProjectInfoComponent implements OnInit {
   public InternalExternalUser: boolean=false;
     isExternalApplicant: boolean;
 ;
- 
+ //Audit Trail Kyle
+  stringifiedDataRoles: any;
+  AllCurrentUserRoles: any;
+  //Audit Trail Kyle
+
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -578,6 +582,13 @@ export class ViewProjectInfoComponent implements OnInit {
     // #region icasaDetailsDisplay Sindiswa 16 January 2024, when the logged in user is external the "Applicant" details show funny | USERID??
 
     // #endregion icasaDetailsDisplay Sindiswa 16 January 2024
+    //Audit Trail Kyle
+    this.stringifiedDataRoles = JSON.parse(JSON.stringify(localStorage.getItem('AllCurrentUserRoles')));
+    this.AllCurrentUserRoles = JSON.parse(this.stringifiedDataRoles);
+
+    this.onCheckAllCurrentUserRole();
+    // Audit Trail Kyle
+
 
     const today = new Date();
     const twoWeeksFromNow = new Date();
@@ -691,7 +702,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getLinkedDepartmentsFORAPPROVAL();
     this.CheckForApprovalPackDownload(); 
 
-    this.auditTrail = true;
+   
     
   }
 
@@ -4377,7 +4388,17 @@ export class ViewProjectInfoComponent implements OnInit {
    
   }
 
-  
+  onCheckAllCurrentUserRole() {
+    for (let i = 0; i < this.AllCurrentUserRoles.length; i++) {
+      const roleName = this.AllCurrentUserRoles[i].roleName;
+
+      if (roleName == "Audit Trail") {
+
+        this.auditTrail = true;
+        this.sharedService.isViewReport = true;
+      }
+    }
+  }
 
 
  //Audit Trail Kyle

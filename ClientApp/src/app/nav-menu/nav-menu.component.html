@@ -406,7 +406,12 @@
 </ng-template>
 
 
+<!----------------Audit Trail Kyle------------------->
+<ng-template #reports let-modal>
+  <app-audit-trail></app-audit-trail>
 
+
+</ng-template>
 
 
 <!--Side Nav-->
@@ -425,6 +430,9 @@
       <button mat-button class="sideNavIcons" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid-black.svg" class="icon">  Comment Builder</button>
       <button mat-button class="sideNavIcons" (click)="goToConfig();offcanvas.dismiss('Cross click')" *ngIf="Configurations"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/gear-solid.svg" class="icon">    Configurations</button>
       <button mat-button class="sideNavIcons" (click)="openNotificationsModal()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bell-solid.svg" class="icon">   Notifications</button>
+      <!----Audit Trail Kyle---->
+      <button mat-button class="sideNavIcons" (click)="openReports(reports)" *ngIf="Reports"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/book-journal-whills.svg" class="icon"> Reports</button>
+      <!----Audit Trail Kyle---->
       <button mat-button class="sideNavIcons" (click)="goToSettings();offcanvas.dismiss('Cross click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/circle-user-regular.svg" class="icon">   User Settings</button>
       <button mat-button class="sideNavIcons" (click)="LogoutUser();offcanvas.dismiss('Cross click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/right-from-bracket-solid.svg" class="icon">   Log Out</button>
 
