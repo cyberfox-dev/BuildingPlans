@@ -4752,7 +4752,7 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-    this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, "Approval Pack Generation").subscribe((data: any) => {
+    this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, "APG").subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         const emailContent = `

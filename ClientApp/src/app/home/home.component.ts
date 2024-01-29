@@ -1846,7 +1846,7 @@ this.Applications.push(tempApplicationList);
   
       for (var i = 0; i < this.applicationDataForView.length; i++) {
         const current = this.applicationDataForView[i];
-        if (current.ApplicationStatus == "PTW Pending" || current.ApplicationStatus == "Approval Pack Generation" || current.ApplicationStatus == "Monitoring") {
+        if (current.ApplicationStatus == "PTW Pending" || current.ApplicationStatus == "APG" || current.ApplicationStatus == "Monitoring") {
           this.approveCount++;
   
         }
@@ -1939,7 +1939,7 @@ this.Applications.push(tempApplicationList);
   filterByApproved() {
     
     if (this.filter == false) {
-      this.dataSource = this.Applications.filter(df => df.ApplicationStatus == "Approval Pack Generation" || df.ApplicationStatus == "Final Approval" || df.ApplicationStatus == "PTW Pending");
+      this.dataSource = this.Applications.filter(df => df.ApplicationStatus == "APG" || df.ApplicationStatus == "Final Approval" || df.ApplicationStatus == "PTW Pending");
       this.filter = true;
     }
     else {
@@ -2231,7 +2231,7 @@ this.Applications.push(tempApplicationList);
   recentApprovedCount() {
     // Filter the dataSource based on the "Status" column
     const approvedApplications = this.Applications.filter((element) => {
-      return element.ApplicationStatus === 'PTW Pending' || element.ApplicationStatus === 'Approval Pack Generation';
+      return element.ApplicationStatus === 'PTW Pending' || element.ApplicationStatus === 'APG';
     });
 
     // Update the unpaidcount variable with the count of "Unpaid" applications
