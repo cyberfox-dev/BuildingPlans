@@ -514,7 +514,7 @@ export class ActionCenterComponent implements OnInit {
   initializeTinyMCE() {
 
     tinymce.init({
-      selector: '#myTextarea', // Replace with the ID of your textarea
+      selector: '#myTextarea', // Replace with the ID of your textarea 
       plugins: ['lists', 'textcolor'],
       toolbar: 'bold italic | numlist bullist forecolor backcolor',
       menubar: false
