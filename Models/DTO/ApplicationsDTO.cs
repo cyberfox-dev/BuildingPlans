@@ -57,5 +57,7 @@ namespace WayleaveManagementSystem.Models.DTO
    
 
         public int? ZoneID { get; set; }
+
+        public int? ReApplyCount { get; set; } //reapply Sindiswa 24 January 2024
     }
 }

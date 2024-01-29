@@ -477,7 +477,7 @@
 <ng-template #moreFilter let-modal>
   <div class="modal-header">
     <h3 class="modal-title" id="modal-basic-title">Filter the internal user list</h3>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click');onFilterButtonClick();"></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click');onFilterButtonClick();clearFormFields();"></button> <!-- departmentManager Sindiswa 22 January 2024-->
   </div>
   <div class="modal-body">
     <div class="row">

@@ -37,6 +37,7 @@ import { ApprovalPackComponent } from 'src/app/Packs//ApprovalPackComponent/appr
 import 'jspdf-autotable';
 import html2canvas from 'html2canvas';
 import { ReviewerforcommentService } from '../../service/ReviewerForComment/reviewerforcomment.service';
+import { Subscription } from 'rxjs';
 
 
 export interface RolesList {
@@ -203,6 +204,7 @@ export interface ApplicationList {
   wbsrequired: boolean;
   Coordinates: string;
   UserID: any;
+  //reapplyCount: number, // reapply Sindiswa 25 January 2024
 }
 
 
@@ -379,6 +381,7 @@ export class ViewProjectInfoComponent implements OnInit {
   @ViewChild('pdfTable', { static: false }) pdfTable: ElementRef;
 
   ApplicationID: number | undefined;
+  ReApplyCount: number | undefined; //reapply Sindiswa 25 January 2024
  
   CurrentUser: any;
   //Convert the local storage JSON data to an array object
@@ -420,6 +423,8 @@ export class ViewProjectInfoComponent implements OnInit {
   startDate: string;
   selectPaidDate: Date;
 
+  showFormerApps: boolean;
+  fromReApplyArchive: boolean;
 
   fileAttrs = "Upload File:";
   fileAttrsName = "Doc";
@@ -537,6 +542,7 @@ export class ViewProjectInfoComponent implements OnInit {
     private reviwerforCommentService: ReviewerforcommentService,
   ) { }
 
+  routerSubscription: Subscription; //reapply Sindiswa 26 January 2024
 
 
   ngOnInit(): void {
@@ -580,12 +586,12 @@ export class ViewProjectInfoComponent implements OnInit {
     this.minDate = twoWeeksFromNow.toISOString().split('T')[0];
 
 
+    //#region reapply Sindiswa 26 January 2024
 
-
-
-
-    
-
+    this.showFormerApps = this.sharedService.getShowFormerApps();
+    this.fromReApplyArchive = this.sharedService.getFromReApplyArchive();
+    this.routerSubscription = this.sharedService.getRoutingToOldAapp();
+    // #endregion
     const setValues = this.applicationDataForView[0];
 
     if (setValues != null || setValues != undefined) {
@@ -686,9 +692,15 @@ export class ViewProjectInfoComponent implements OnInit {
 
     
   }
-
-
-
+  // #region reapply Sindiswa 26 January 2024
+  ngOnDestroy() {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+    //this.sharedService.setShowFormerApps(true);
+    //this.sharedService.setFromReApplyArchive(false);
+  }
+  // #endregion
   openEditCommentModal(commentEditorModal: any, index: any) {
 
     
@@ -2343,6 +2355,48 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   }
+  // #region reapply Sindiswa 22 January 2024
+  moveToClosed() {
+
+    const isConfirmed = confirm("Are you sure you want to close this application?");
+
+    if (isConfirmed) {
+      this.applicationsService.updateApplicationStage(this.CurrentApplicationBeingViewed[0].applicationID, this.CurrentApplicationBeingViewed[0].CurrentStageName, this.CurrentApplicationBeingViewed[0].CurrentStageNumber, "Closed", 6, null, null, "Closed").subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          alert("Application Moved to Closed");
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("response closing application", data);
+      }, error => {
+        console.log("Error closing application", error);
+      })
+    }
+  }
+
+  deleteApplication() {
+   
+    const isConfirmed = confirm("Are you sure you want to delete this application?");
+  
+    if (isConfirmed) {
+      this.applicationsService.deleteApplication(this.CurrentApplicationBeingViewed[0].applicationID).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          alert("This application has been deleted.");
+        } else {
+          alert(data.responseMessage);
+        }
+        console.log("response deleting application: ", data);
+      }, error => {
+        console.log("Error deleting application", error);
+      });
+    }
+  }
+
+  // #endregion
+
   setInterface() {
 
 
@@ -3761,17 +3815,63 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
-
+  // #region reapply Sindiswa 22 January 2024
   goToNewWayleave(applicationType: boolean) { //application type refers to whether it is a brand new application or if it is a reapply.
-    this.sharedService.setReapply(applicationType);
-    this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId, false,false);
-    //console.log("Test: " + this.sharedService.getApplicationID())
-    /*        this.router.navigate(["/new-wayleave"]);*/
-    this.viewContainerRef.clear();
+    debugger;
 
+    this.applicationsService.getApplicationsByApplicationID(this.ApplicationID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        this.ReApplyCount = data.dateSet[0].reApplyCount !== null ? data.dateSet[0].reApplyCount : 0; //wait, did I just reinvent the wheel?
+
+          console.log(`This is the reapply count: ${this.ReApplyCount}`);
+       
+        if (this.ReApplyCount < 4) {
+
+          if (this.ReApplyCount != 0) {
+            alert(`You have already re-applied ${this.ReApplyCount -1} time(s).`);
+          }
+          const confirm = window.confirm('Are you sure you want to reapply and edit the details of this application?');
+
+          if (confirm) {
+            this.sharedService.setApplicationID(this.ApplicationID); //reapply Sindiswa 22 January 2024
+            this.sharedService.setOldApplicationID(this.ApplicationID); //reapply Sindiswa 24 January 2024
+            this.sharedService.setReapply(applicationType);
+            this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId, false, false);
+            //console.log("Test: " + this.sharedService.getApplicationID())
+            /*        this.router.navigate(["/new-wayleave"]);*/
+            this.viewContainerRef.clear();
+          }
+        }
+        else {
+          alert("You have depleted all your reapplication attempts and can no longer reapply");
+        }
+      }
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse while trying to reapply", data);
+
+    }, error => {
+      console.log("Error while trying to reapply: ", error);
+    })
+
+    /*const confirm = window.confirm('Are you sure you want to reapply and edit the details of this application?');
+
+    if (confirm) {
+      this.sharedService.setApplicationID(this.ApplicationID); //reapply Sindiswa 22 January 2024
+      this.sharedService.setOldApplicationID(this.ApplicationID); //reapply Sindiswa 24 January 2024
+      this.sharedService.setReapply(applicationType);
+      this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId, false, false);
+      //console.log("Test: " + this.sharedService.getApplicationID())
+      //        this.router.navigate(["/new-wayleave"]);
+      this.viewContainerRef.clear();
+    }*/
   }
 
-
+  // #endregion
 
 
 

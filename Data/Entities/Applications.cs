@@ -61,5 +61,6 @@ namespace WayleaveManagementSystem.Data.Entities
         Distributed 
          */
 
+        public int? ReApplyCount { get; set; } //reapply Sindiswa 22 January 2024
     }
 }

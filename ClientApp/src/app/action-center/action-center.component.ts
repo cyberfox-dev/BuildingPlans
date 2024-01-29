@@ -5474,6 +5474,11 @@ getAllCommentsByUserID() {
     }
     else if (this.userAssignedText === "EndOfCommentProcess") {
       alert("This application has reached the 'End Of Comment Process' stage");
+      // actionCentre Sindiswa 22 January 2024 - the permit issuer can't open their action centre view
+      console.log("Can this user approvePermit?? PermitStage:" + this.permit + " CanApprove: " + this.canApprovePermit); 
+      if (this.permit && this.canApprovePermit) {
+        this.openXl(content);
+      }
     }
     else if ((this.userAssignedText == "Senior Reviewer to comment" && this.commentState == "Referred") || (this.userAssignedText == "All users in Subdepartment FA" && (this.commentState == "Approved" || this.commentState == "Rejected"))) {
 

@@ -42,15 +42,18 @@
 <h1 *ngIf="CurrentApplicationBeingViewed[0].isPlanning === false" class="animationSlideUp">Application Information</h1>
 <h1 *ngIf="CurrentApplicationBeingViewed[0].isPlanning === true" class="animationSlideUp">Application Planning Information</h1>
 <h2 class="animationSlideUp">Project Number {{projectNo}}</h2>
-
-<div class="cont1">
+<div>
+  <h3 *ngIf="fromReApplyArchive == true" style="color:deeppink;">The applicant has reapplied, you're currently looking at an older version of their application</h3>
+</div>
+<div class="cont1" *ngIf="fromReApplyArchive == false">
 
   <app-action-center [ApplicationID]="ApplicationID" (refreshParent)="ngOnInit()" *ngIf="isInternalUser && InternalExternalUser == false" (optionEvent)="reciveOption($event)" class="animationSlideUp"></app-action-center>
   <button mat-button color="action" [matMenuTriggerFor]="actions" class="animationSlideUp"> <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ellipsis-vertical-solid.svg" class="icon"></button>
   <mat-menu #actions="matMenu">
     <button mat-menu-item (click)="openPaidDate(paidDateModal)" *ngIf="EMB"> Move to Paid</button>
     <!--<button mat-menu-item (click)="MoveToNextStage()" *ngIf="isInternalUser">Move to Next Stage</button>-->
-    <button mat-menu-item (click)="MoveToNextStage()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon"> Cancel Application</button>
+    <!--<button mat-menu-item (click)="MoveToNextStage()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon"> Cancel Application</button>--><!--reapply Sindiswa 22 January 2023-->
+    <button mat-menu-item (click)=" moveToClosed()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon"> Cancel Application</button>
     <button mat-menu-item (click)="goToNewWayleave(true)" *ngIf="canReapply"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/arrow-rotate-right-solid.svg" class="icon"> Re-apply</button>
     <!--<button mat-menu-item (click)="validate()"><i class="fa fa-repeat" aria-hidden="true"></i> Test BP</button>-->
 
@@ -58,7 +61,7 @@
   </mat-menu>
 
 </div>
-<div class="cont7">
+<div class="cont7" *ngIf="fromReApplyArchive == false">
   <button mat-raised-button color="generatePackBtn" (click)="OpenLoadingModal(approvalPackLoading)" *ngIf="generateApprovalbtn">Generate My Approval Pack</button>
 </div>
 
@@ -347,9 +350,9 @@
   <mat-tab label="Financials">
     <div class="container-fluid">
       <div class="container-fluid">
-        <button mat-raised-button color="permit" (click)="openDocUpload(newSub)">Upload document</button>
+        <button mat-raised-button color="permit" (click)="openDocUpload(newSub)" [disabled]="fromReApplyArchive == true">Upload document</button>
         <!---- Financial POP Kyle 15/01/24-->
-        <button  *ngIf="applicationDataForView[0].ApplicationStatus == 'Unpaid' && uploadedPOP == false" (click)="openDocUpload(newSub);OnPOPUpload()" mat-raised-button color="permit" >Upload Proof Of Payment</button>
+        <button  *ngIf="applicationDataForView[0].ApplicationStatus == 'Unpaid' && uploadedPOP == false" (click)="openDocUpload(newSub);OnPOPUpload()" mat-raised-button color="permit" [disabled]="fromReApplyArchive == true" >Upload Proof Of Payment</button>
         <!----Financial POP Kyle 15/01/24-->
 
       </div>
@@ -933,7 +936,7 @@
   <mat-tab label="Permits" *ngIf="showPermitTab">
 
 
-    <button mat-raised-button color="permit" (click)="openPermitModal(permitModal)" *ngIf="permitBtn">Apply For Permit</button>
+    <button mat-raised-button color="permit" (click)="openPermitModal(permitModal)" *ngIf="permitBtn" [disabled]="fromReApplyArchive == true">Apply For Permit</button>
     <br>
     <br>
     <input type="text" class="form-control" [(ngModel)]="permitDate" id="permitDate" *ngIf="permitTextBox" disabled>
@@ -982,10 +985,13 @@
     </app-service-conditions>
 
   </mat-tab>
-
+    <!--Old versions of wayleave application--------------------------------------------------------------------------------->
+    <mat-tab label="Former Wayleave Applications" *ngIf="showFormerApps == true">
+      <app-old-application-versions></app-old-application-versions>
+    </mat-tab>
   </mat-tab-group>
 
-
+  
 
 </div>
 

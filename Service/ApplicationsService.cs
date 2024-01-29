@@ -8,6 +8,9 @@ using WayleaveManagementSystem.Models.BindingModel;
 using System.Net.NetworkInformation;
 using WayleaveManagementSystem.Models.DTO;
 using System.Xml.Serialization;
+using System;
+using WayleaveManagementSystem.Data.Migrations;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WayleaveManagementSystem.Service
 {
@@ -307,7 +310,7 @@ namespace WayleaveManagementSystem.Service
 
             return await (
                from Applications in _context.Application
-               where Applications.ApplicationID == applicationID
+               where Applications.ApplicationID == applicationID && Applications.isActive == true //reapply Sindiswa 26 January 2024
                select new ApplicationsDTO()
                {
                    ApplicationID = Applications.ApplicationID,
@@ -344,6 +347,7 @@ namespace WayleaveManagementSystem.Service
                    permitStartDate = Applications.PermitStartDate,
                    WBSRequired = Applications.WBSRequired,
                    Coordinates = Applications.Coordinates,
+                   ReApplyCount = Applications.ReApplyCount, //reapply Sindiswa 26 January 2024
                }
                ).ToListAsync();
 
@@ -450,6 +454,7 @@ namespace WayleaveManagementSystem.Service
                        DatePaid = Applications.DatePaid,
                        WBSRequired = Applications.WBSRequired,
                        Coordinates = Applications.Coordinates,
+                       ReApplyCount = Applications.ReApplyCount, //reapply Sindiswa 26 January 2024
                    }
                    ).ToListAsync();
             }
@@ -457,7 +462,7 @@ namespace WayleaveManagementSystem.Service
             {
                 return await (
                    from Applications in _context.Application
-                   where Applications.isActive == true && Applications.FullName != "" && Applications.FullName != null && Applications.UserID == userId || Applications.CreatedById == userId
+                   where Applications.isActive == true && Applications.FullName != "" && Applications.FullName != null && (Applications.UserID == userId || Applications.CreatedById == userId) //reapply Sindiswa 26 January 2024
                    orderby Applications.DateCreated descending
                    select new ApplicationsDTO()
                    {
@@ -497,6 +502,7 @@ namespace WayleaveManagementSystem.Service
                        DatePaid = Applications.DatePaid,
                        WBSRequired = Applications.WBSRequired,
                        Coordinates = Applications.Coordinates,
+                       ReApplyCount = Applications.ReApplyCount, //reapply Sindiswa 26 January 2024
                    }
                    ).ToListAsync();
             }
@@ -895,5 +901,144 @@ namespace WayleaveManagementSystem.Service
                     }
            ).ToListAsync();
         }
+
+        #region  reapply Sindiswa 26 January 2024
+        /*public async Task<bool> IncreaseReapplyCount(string projectNumber)
+        {
+            var applicationsWithProjectNumber = _context.Application.Where(x => x.ProjectNumber == projectNumber).ToList();
+
+            if (applicationsWithProjectNumber.Any())
+            {
+                foreach (var tempApplicationTable in applicationsWithProjectNumber)
+                {
+                    //tempApplicationTable.ReApplyCount++; // Increase the ReApplyCount by 1
+                    tempApplicationTable.ReApplyCount = (tempApplicationTable.ReApplyCount ?? 0) + 1;
+                    _context.Update(tempApplicationTable);
+                }
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+
+        }*/
+        public async Task<bool> IncreaseReapplyCount(string projectNumber)
+        {
+            var applicationsWithProjectNumber = await _context.Application
+                .Where(x => x.ProjectNumber == projectNumber)
+                .ToListAsync();
+
+            if (applicationsWithProjectNumber.Any())
+            {
+                var reapplyCount = applicationsWithProjectNumber.Count;
+
+                foreach (var tempApplicationTable in applicationsWithProjectNumber)
+                {
+                    tempApplicationTable.ReApplyCount = reapplyCount;
+                    _context.Update(tempApplicationTable);
+                }
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        public async Task<Applications> DeActivateOldAppsAfterReapply(string projectNumber)
+        {
+            var latestEntry = await (
+                from Applications in _context.Application
+                where Applications.ProjectNumber == projectNumber
+                orderby Applications.DateCreated descending
+                select Applications
+            ).FirstOrDefaultAsync();
+
+            if (latestEntry != null)
+            {
+                var applicationsToUpdate = await (
+                    from Applications in _context.Application
+                    where Applications.isActive == true
+                        && Applications.ProjectNumber == projectNumber
+                        && Applications.ApplicationID != latestEntry.ApplicationID
+                    select Applications
+                ).ToListAsync();
+
+                foreach (var application in applicationsToUpdate)
+                {
+                    application.isActive = false;
+                    application.ApplicationStatus = "Closed";
+                    application.CurrentStageName = "Closed";
+                    application.CurrentStageNumber = 6;
+                    application.CurrentStageStartDate = DateTime.Now;
+                    application.NextStageName = null;
+                    application.NextStageNumber = null;
+                }
+
+                await _context.SaveChangesAsync();
+                return latestEntry;
+            }
+            // No action needed if there's only one entry for the projectNumber
+            return null;
+        }
+
+        public async Task<List<ApplicationsDTO>> GetApplicationsByProjectNumberRA(string projectNumber)
+        {
+            return await (
+               from Applications in _context.Application
+               where  Applications.ProjectNumber == projectNumber //&& Applications.isActive == true
+               orderby Applications.DateCreated descending
+               select new ApplicationsDTO()
+               {
+                   ApplicationID = Applications.ApplicationID,
+                   UserID = Applications.UserID,
+                   FullName = Applications.FullName,
+                   Email = Applications.Email,
+                   PhoneNumber = Applications.PhoneNumber,
+                   PhysicalAddress = Applications.PhyscialAddress,
+                   ReferenceNumber = Applications.ReferenceNumber,
+                   CompanyRegNo = Applications.CompanyRegNo,
+                   TypeOfApplication = Applications.TypeOfApplication,
+                   NotificationNumber = Applications.NotificationNumber,
+                   WBSNumber = Applications.WBSNumber,
+                   PhysicalAddressOfProject = Applications.PhysicalAddressOfProject,
+                   DescriptionOfProject = Applications.DescriptionOfProject,
+                   NatureOfWork = Applications.NatureOfWork,
+                   ExcavationType = Applications.ExcavationType,
+                   ExpectedStartDate = Applications.ExpectedStartDate,
+                   ExpectedEndDate = Applications.ExpectedEndDate,
+                   Location = Applications.Location,
+                   DateCreated = Applications.DateCreated,
+                   DateUpdated = Applications.DateUpdated,
+                   CreatedById = Applications.CreatedById,
+                   isActive = Applications.isActive,
+                   PreviousStageName = Applications.PreviousStageName,
+                   ApplicationStatus = Applications.ApplicationStatus,
+                   CurrentStageName = Applications.CurrentStageName,
+                   CurrentStageNumber = Applications.CurrentStageNumber,
+                   CurrentStageStartDate = Applications.CurrentStageStartDate,
+                   NextStageName = Applications.NextStageName,
+                   NextStageNumber = Applications.NextStageNumber,
+                   PreviousStageNumber = Applications.PreviousStageNumber,
+                   ProjectNumber = Applications.ProjectNumber,
+                   isPlanning = Applications.isPlanning,
+                   permitStartDate = Applications.PermitStartDate,
+                   WBSRequired = Applications.WBSRequired,
+                   Coordinates = Applications.Coordinates,
+               }
+               ).Skip(1) // Skip the latest application
+                .ToListAsync();
+        }
+
+        #endregion
+
+
     }
 }

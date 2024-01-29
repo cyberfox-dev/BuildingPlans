@@ -408,6 +408,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['ProjectNumber', 'FullName', 'Stage', 'Status', 'TypeOfApplication', 'AplicationAge', 'StageAge', 'DateCreated', 'actions'];
   dataSource = this.Applications;
 
+  routerSubscription: Subscription; //reapply Sindiswa 26 January 2024
 
   openSnackBar(message: string) {
     this._snackBar.openFromComponent(SnackBarAlertsComponent, {
@@ -541,7 +542,15 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
     setTimeout(() => {
-      
+
+      // #region reapply Sindiswa 26 January 2024
+      /*this.routerSubscription = this.sharedService.getRoutingToOldAapp();
+      if (this.routerSubscription) {
+        this.routerSubscription.unsubscribe();
+      }*/
+      this.sharedService.setShowFormerApps(true);
+      this.sharedService.setFromReApplyArchive(false);
+      // #endregion
       this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
       this.CurrentUser = JSON.parse(this.stringifiedData);
       this.getAllStages();
@@ -1582,7 +1591,8 @@ this.Applications.push(tempApplicationList);
 
 
   viewProject(index: any) {
-    
+    debugger;
+    this.sharedService.getShowFormerApps(); //reapply Sindiswa 26 January 2024
     console.log("FIND", this.applicationDataForView[index]);
     if (this.newList.length > 0) {
       
@@ -1590,10 +1600,11 @@ this.Applications.push(tempApplicationList);
         // Assuming this.applicationDataForView and newList are your arrays
 
         const desiredApplicationID = this.newList[index].ApplicationID; // Replace [0] with the specific index you want to match
-
+        debugger;
         const foundRow = this.applicationDataForView.find(item => item.applicationID === desiredApplicationID);
 
         if (foundRow) {
+          debugger;
           this.applicationDataForViewToShared.push(foundRow);
           break;
           // Do something with the found row
@@ -1610,7 +1621,7 @@ this.Applications.push(tempApplicationList);
       
       this.applicationDataForViewToShared.push(this.applicationDataForView[index]);
     }
-
+    debugger;
 
     console.log("this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]", this.applicationDataForView[index]);
     this.sharedService.setViewApplicationIndex(this.applicationDataForViewToShared);
@@ -1874,7 +1885,7 @@ this.Applications.push(tempApplicationList);
   async CheckIfCanReapply(element: any, index: any) {
 
 
-    
+    debugger;
 
 
     this.relatedApplications.splice(0, this.relatedApplications.length);
