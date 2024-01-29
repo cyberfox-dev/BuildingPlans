@@ -45,6 +45,7 @@ export class DocumentsComponentComponent implements OnInit {
   @Input() permitSubForCommentID: any;
   @Input() permitDocumentName: any | null;
   hasDocument: boolean = false;
+  fromReApplyArchive: boolean; //reapply Sindiswa 26 January 2024
   constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService, private permitService: PermitService, private permitComponentComponent: PermitComponentComponent) { }
 
   ngOnInit(): void {
@@ -53,6 +54,7 @@ export class DocumentsComponentComponent implements OnInit {
 
     this.getAllDocsForApplication();
     this.hasPermitSubForCommentDocument();
+    this.fromReApplyArchive = this.shared.getFromReApplyArchive(); //reapply Sindiswa 26 January 2024
   }
 
   uploadFileEvt(imgFile: any) {

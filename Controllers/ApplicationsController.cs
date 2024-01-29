@@ -331,6 +331,82 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        // reapply Sindiswa 24 January 2024
 
+        [HttpPost("IncreaseReapplyCount")]
+        public async Task<object> IncreaseReapplyCount([FromBody] ApplicationsBindingModel model)
+        {
+            try
+            {
+                if(model.ProjectNumber == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+
+                    var result = await _applicationsService.IncreaseReapplyCount(model.ProjectNumber);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Applications count increased successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+        // reapply Sindiswa 25 January 2024
+        [HttpPost("DeActivateOldAppsAfterReapply")]
+        public async Task<object> DeActivateOldAppsAfterReapply([FromBody] ApplicationsBindingModel model)
+        {
+            try
+            {
+
+                if (model.ProjectNumber == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.DeActivateOldAppsAfterReapply(model.ProjectNumber);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Applications deactivated successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        //reapply Sindiswa 26 January 2024
+        [HttpPost("GetApplicationsByProjectNumberRA")]
+        public async Task<object> GetApplicationsByProjectNumberRA([FromBody] ApplicationStagesBindingModel model)
+        {
+            try
+            {
+
+                if (model.ProjectNumber == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.GetApplicationsByProjectNumberRA(model.ProjectNumber);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application Deleted Successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
     }
 }

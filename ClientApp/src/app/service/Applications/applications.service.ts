@@ -155,4 +155,29 @@ export class ApplicationsService {
     return this.httpClient.post(this.baseURL + "GetApplicationsForDepartment", body);
   }
 
+  // reapply Sindiswa 24 January 2024
+  public increaseReapplyCount(ProjectNumber: string) {
+    debugger;
+    const body = {
+      ProjectNumber: ProjectNumber
+    }
+    return this.httpClient.post(this.baseURL + "IncreaseReapplyCount", body);
+  }
+  // reapply Sindiswa 25 January 2024
+  public makeOldAppDisappear(ProjectNumber: string) {
+    debugger;
+    const body = {
+      ProjectNumber: ProjectNumber
+    }
+    return this.httpClient.post(this.baseURL + "DeActivateOldAppsAfterReapply", body);
+  }
+  //reapply Sindiswa 26 January 2024
+  public getApplicationsByProjectNumberRA(ProjectNumber: string) {
+
+    const body = {
+      ProjectNumber: ProjectNumber
+    }
+    return this.httpClient.post(this.baseURL + "GetApplicationsByProjectNumberRA", body);
+
+  }
 }

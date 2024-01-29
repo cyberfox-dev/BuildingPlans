@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <button mat-raised-button color="action" (click)="openDocUpload(newSub)">Upload document</button>
+  <button mat-raised-button color="action" (click)="openDocUpload(newSub)" [disabled]="fromReApplyArchive == true">Upload document</button> <!-- reapply Sindiswa 26 January 2024 - added a condition to disable buttons when viewing old applications-->
 </div>
 
 <table mat-table [dataSource]="dataSourceService" class="mat-elevation-z8">

@@ -39,7 +39,7 @@ export class ServiceConditionsComponent implements OnInit {
   applicationDataForView: any;
   hasFile: boolean;
   fileCount = 0;
-
+  fromReApplyArchive: boolean; //reapply Sindiswa 26 January 2024
   constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService) { }
 
   ngOnInit(): void {
@@ -47,6 +47,7 @@ export class ServiceConditionsComponent implements OnInit {
     this.ApplicationID = this.currentApplication.applicationID;
 
     this.getAllDocsForServiceConditions();
+    this.fromReApplyArchive = this.shared.getFromReApplyArchive(); // reapply Sindiswa 26 January 2024
   }
   getAllDocsForServiceConditions() {
 

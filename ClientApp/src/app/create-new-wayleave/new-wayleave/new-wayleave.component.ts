@@ -215,7 +215,8 @@ export interface ApplicationList {
   ExpectedEndDate: Date,
   Location: string,
   clientCellNo: string,
-  CreatedById: number,
+  //CreatedById: number,
+  CreatedById: any,
   ApplicationStatus: string,
   CurrentStageName: string,
   CurrentStageNumber: number,
@@ -330,8 +331,10 @@ export class NewWayleaveComponent implements OnInit {
   descriptionOfProject = '';
   natureOfWork = '';
   excavationType = '';
-  expectedStartDate: Date = new Date();
-  expectedEndType: Date = new Date();
+  /*expectedStartDate: Date = new Date();
+  expectedEndType: Date = new Date();*/
+  expectedStartDate: any; 
+  expectedEndType: any;
   coordinates = '';
 
   TOENAMES: any;
@@ -684,6 +687,9 @@ export class NewWayleaveComponent implements OnInit {
     if (this.isDraft == true) {
       this.onPopulateDraftInfo(this.shared.applicationID);
 
+    }
+    if (this.reapply == true) {
+      this.initializeReapply(); //reapply Sindiswa 26 January 2024
     }
 
   }
@@ -1354,6 +1360,286 @@ export class NewWayleaveComponent implements OnInit {
   }
 
 
+  // #region reapply Sindiswa 23 January 2024
+
+  configPart1: string;
+  configPart2: string;
+  configPart3: string;
+  internalWayleaveReApplyCreate(appUserId: string, isPlanning: boolean): void {
+    /*    this.shared.setApplicationID(this.notificationNumber);*/
+
+    console.log("Turtle Turtle, where are you? 3" + appUserId);
+
+    this.physicalAddressOfProject = this.shared.getAddressData();
+    this.coordinates = this.shared.getCoordinateData();
+    const contractorData = this.shared.getContactorData();
+    const engineerData = this.shared.getEngineerData();
+
+    let previousStageName = "";
+    let CurrentStageName = "";
+    let NextStageName = "";
+
+    let previousStageNameIn = "";
+    let CurrentStageNameIn = "";
+    let NextStageNameIn = "";
+
+    for (var i = 0; i < this.StagesList.length; i++) {
+
+      if (this.StagesList[i].StageOrderNumber == 1) {
+        previousStageName = this.StagesList[i - 1].StageName
+        CurrentStageName = this.StagesList[i].StageName;
+        NextStageName = this.StagesList[i + 1].StageName
+      }
+      else if (this.StagesList[i].StageOrderNumber == 2) {
+        previousStageNameIn = this.StagesList[i - 2].StageName
+        CurrentStageNameIn = this.StagesList[i].StageName;
+        NextStageNameIn = this.StagesList[i + 1].StageName
+      }
+
+    }
+    if (this.isDraft == true) {
+
+
+      if (this.PSM = "") {
+
+
+        this.draftApplicationsService.addUpdateDraftApplication(this.currentDraftID, this.applicationID, appUserId, this.internalName + " " + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null, null).subscribe((data: any) => {
+          this.openSnackBar("Draft Saved!");
+          this.SavedProjectSizeSelections();
+          this.router.navigate(["/home"]);
+          console.log("response", data);
+
+
+        }, error => {
+          console.log("Error: ", error);
+        })
+      }
+      else {
+        for (var i = 0; i < this.TOENAMES.length; i++) {
+          let current = this.TOENAMES[i].toString();
+          if (i > 0) {
+            this.TOE2 = this.TOE2 + ", " + current
+          } else {
+            this.TOE2 = current;
+          }
+        }
+        this.draftApplicationsService.addUpdateDraftApplication(this.currentDraftID, this.applicationID, appUserId, this.internalName + " " + this.internalSurname, this.CurrentUser.email, null, null, null, null, this.ProjectSizeMessage, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE2, this.expectedStartDate, this.expectedEndType, this.CurrentUser.appUserId, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null, null).subscribe((data: any) => {
+          this.openSnackBar("Draft Saved!")
+          this.SavedProjectSizeSelections();
+          this.router.navigate(["/home"]);
+          console.log("response", data);
+
+
+        }, error => {
+          console.log("Error: ", error);
+        })
+
+      }
+    }
+    else {
+
+
+
+          //Reapplications won't use the config table
+
+          const colonIndex = this.reapplyProjectNumber.indexOf(":");
+
+          if (colonIndex !== -1) {
+            // Extract parts dynamically
+            const prefix = this.reapplyProjectNumber.substring(0, colonIndex + 1);   // "WL:"
+            const remainingText = this.reapplyProjectNumber.substring(colonIndex + 1); // "1/10/23"
+
+            // Split the remaining text using "/"
+            const parts = remainingText.split("/");
+
+            // Logging the results
+            console.log("Prefix:", prefix);
+            console.log("First Part:", parts[0]);
+            console.log("Second Part:", parts[1]);
+            console.log("Third Part:", parts[2]);
+
+            this.configPart1 = parts[0];
+            this.configPart2 = parts[1];
+            this.configPart3 = parts[2];
+          } else {
+            console.log("Invalid input format");
+          }
+
+              this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, null, null, null,
+                null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE,
+                this.expectedStartDate, this.expectedEndType, null, this.CurrentUser.appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3,
+                "Distributed", this.isDraft, "WL:" + this.configPart1 + "/" + this.configPart2 + "/" + this.configPart3, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
+                  if (data.responseCode == 1) {
+                    this.SavedProjectSizeSelections();
+
+                    if (isPlanning == false) {
+                      this.AddProfessinal(contractorData, engineerData);
+                    }
+                    // this.UploadDocuments(data.dateSet);
+
+                    this.shared.setApplicationID(0);
+                    this.shared.clearContractorData();
+                    this.shared.clearEngineerData();
+                    this.router.navigate(["/home"]);
+                    this.openSnackBar("Application Created");
+
+                    /*  this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application submission", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");*/
+                    /*              this.addToSubDepartmentForComment();*/
+                    this.notificationsService.addUpdateNotification(0, "Application Submission", "Revised Wayleave Submission: WL:" + (Number(this.configNumberOfProject) + 1).toString() , false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserID, this.applicationID, "Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been captured. You will be notified once your application has reached the next stage in the process.").subscribe((data: any) => {
+
+                      if (data.responseCode == 1) {
+
+
+
+                        const projectNum = "WL:" + this.configPart1 + "/" + this.configPart2 + "/" + this.configPart3;
+                        const emailContent = `
+      <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.CurrentUser.fullName},</p>
+            <p>Your re-application ${projectNum} for a Wayleave has been captured.Please use this reference number in all further correspondence. You will be notified once your application proceeds to the next stage. </p>
+           <p>Should you have any queries, please contact <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+                <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+    `;
+
+
+                        this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave re-application", emailContent, emailContent);
+                        /*              this.addToSubDepartmentForComment();*/
+                        this.Emailmessage = "A Wayleave application with ID " + this.applicationID + " and project reference number:" + projectNum + " has just been captured. You will be notified once your application has reached the next stage in the process.";
+                        this.onCreateNotification();
+
+
+
+
+                        //Send emails to zone department admins
+                        this.shared.distributionList.forEach((obj) => {
+
+
+                          const emailContent2 = `
+      <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${obj.fullName},</p>
+            <p>A Wayleave application with Wayleave No. ${projectNum} has just been recaptured. As the zone admin of ${obj.zoneName} in ${obj.subDepartmentName}, please assign a reviewer to the application.</p>
+            <p>Should you have any queries, please contact <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+                <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+    `;
+
+
+                          this.notificationsService.sendEmail(obj.email, "Wayleave re-application", emailContent2, emailContent2);
+                          this.notificationsService.addUpdateNotification(0, "Application Created", "Wayleave re-application", false, obj.userID, this.CurrentUser.appUserID, this.applicationID, "A Wayleave application with ID ${this.applicationID} has just been captured. As the zone admin of " + obj.zoneName + "in" + obj.subDepartmentName + " , please assign a reviewer to the application.").subscribe((data: any) => {
+
+                            if (data.responseCode == 1) {
+
+                              this.applicationsService.increaseReapplyCount(projectNum).subscribe((data: any) => {
+                                debugger;
+                                if (data.responseCode == 1) {
+                                  this.applicationsService.makeOldAppDisappear(projectNum).subscribe((data: any) => {
+
+                                  })
+                                }
+
+                               
+
+                              })
+                            }
+                            else {
+                              alert(data.responseMessage);
+                            }
+
+                            console.log("response", data);
+                          }, error => {
+                            console.log("Error", error);
+                          })
+
+
+
+                        })
+                        this.addToZoneForComment();
+                      }
+                      else {
+                        alert(data.responseMessage);
+                      }
+
+                      console.log("response", data);
+                    }, error => {
+                      console.log("Error", error);
+                    });
+                  }
+                  else {
+                    alert("Failed To Create Application");
+                  }
+
+
+
+                  console.log("responseAddapplication", data);
+                }, error => {
+                  console.log("Error", error);
+              });
+    }
+  }
+
+
+  // #endregion
+
   internalWayleaveCreate(appUserId: string, isPlanning: boolean): void {
     /*    this.shared.setApplicationID(this.notificationNumber);*/
 
@@ -1975,15 +2261,49 @@ export class NewWayleaveComponent implements OnInit {
 
 
   onWayleaveCreate(appUserId, isPlanning: boolean, isDraft: boolean) {
-
+    debugger;
     console.log("Turtle Turtle, where are you? " + appUserId);
 
     //get ApplicationID form Shared to check if must update
     this.applicationID = this.shared.getApplicationID();
+    this.oldApplicationID = this.shared.getOldApplicationID();
     this.isDraft = isDraft;
     console.log("What gaan an? " + this.shared.getApplicationID());
-    
+    this.reapply = this.shared.getReapply();
+    // #region Sindiswa 24 January 2024
+    if (this.reapply == true && this.oldApplicationID === this.applicationID) {
+      debugger;
+      this.shared.clearContractorData();
+      this.shared.clearEngineerData();
 
+      this.applicationsService.addUpdateApplication(0, appUserId, this.internalName + " " + this.internalSurname, null, null, null, null, null, this.typeOfApplication, null, this.wbsNumber, null, this.descriptionOfProject, this.natureOfWork,
+        this.excavationType, this.expectedStartDate, this.expectedEndType, null, appUserId, null, null, null, null, null, null, null, null, this.reapplyProjectNumber, false, null, null, null, null).subscribe((data: any) => {
+
+      /*this.applicationsService.addUpdateApplication(0, appUserId, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, isDraft, null, isPlanning, null, null, null).subscribe((data: any) => {*/
+        if (data.responseCode == 1) {
+
+
+          //Set ApplicationID to Update
+          this.shared.setApplicationID(data.dateSet.applicationID);
+
+          this.shared.userIDForWalkIn = appUserId;
+          this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
+        }
+        else {
+
+          alert("GIS Error");
+        }
+
+        console.log("Response when adding a new application that is actually a reapplication", data);
+
+      }, error => {
+        console.log("Error when reapplying", error);
+        console.log("Reapplication user id" + appUserId);
+      })
+    }
+    // #endregion
     if (this.applicationID === 0) {
 
       this.shared.clearContractorData();
@@ -2011,7 +2331,6 @@ export class NewWayleaveComponent implements OnInit {
         console.log("Turtle?!!!!!" + appUserId);
       })
     }
-
     else {
       //check to see if this is saving a draft application
 
@@ -2051,8 +2370,10 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
-
-        if (this.internal && this.option != "proxy") {
+        if (this.shared.reapply === true && this.internal) {
+          this.internalWayleaveReApplyCreate(appUserId, isPlanning);
+        }
+        else if (this.internal && this.option != "proxy") {
 
           this.internalWayleaveCreate(appUserId, isPlanning);
           console.log('Co-ordinates:', this.coordinates);
@@ -2076,6 +2397,7 @@ export class NewWayleaveComponent implements OnInit {
           console.log('Co-ordinates:', this.coordinates);
 
         }
+
 
 
       }
@@ -3843,21 +4165,85 @@ export class NewWayleaveComponent implements OnInit {
 
   }
 
+  reapplyProjectNumber: any;
+  oldApplicationID: number;
+  selectedExcavationTypes: string[] = [];
   //Pulls previous application data for modification during reapplication by user
-  initializeReapply() {
-
+  async initializeReapply() {
+    debugger;
     this.ApplicationListForReapply.push(this.shared.getViewApplicationIndex());
     this.reapply = this.shared.getReapply();
 
     //Checks if this application is a re-apply or normal application and if reapply, prepopulates the textboxes and selections for the end-user with data from their previous application.
     if (this.reapply == true) {
+      //this.oldApplicationID = this.ApplicationListForReapply[0].applicationID;
       this.typeOfApplication = this.ApplicationListForReapply[0].TypeOfApplication;
+      this.PSM = this.ApplicationListForReapply[0].TypeOfApplication + " Application";
       this.notificationNumber = this.ApplicationListForReapply[0].NotificationNumber;
       this.wbsNumber = this.ApplicationListForReapply[0].WBSNumber;
-      this.physicalAddressOfProject = this.ApplicationListForReapply[0].PhysicalAddressOfProject;
+      //this.physicalAddressOfProject = this.ApplicationListForReapply[0].PhysicalAddressOfProject; //shouldn't push this
       this.descriptionOfProject = this.ApplicationListForReapply[0].DescriptionOfProject;
       this.natureOfWork = this.ApplicationListForReapply[0].NatureOfWork;
       this.excavationType = this.ApplicationListForReapply[0].ExcavationType;
+      this.reapplyProjectNumber = this.ApplicationListForReapply[0].ProjectNumber;
+
+      if (this.ApplicationListForReapply[0].ExcavationType.includes(', ')) {
+        this.TOENAMES = this.ApplicationListForReapply[0].ExcavationType.split(', ');
+      } else {
+        this.TOENAMES = [this.ApplicationListForReapply[0].ExcavationType];
+      }
+
+      this.CheckProjectSizeChecklistForReApply(this.ApplicationListForReapply[0].applicationID);
+
+      this.expectedStartDate = this.ApplicationListForReapply[0].ExpectedStartDate;
+      this.expectedEndType = this.ApplicationListForReapply[0].ExpectedEndDate;
+      this.expectedStartDate = this.datePipe.transform(this.ApplicationListForReapply[0].ExpectedStartDate, 'yyyy-MM-dd');
+      this.expectedEndType = this.datePipe.transform(this.ApplicationListForReapply[0].ExpectedEndDate, 'yyyy-MM-dd');
+
+      // #region reapply Sindiswa 23 January 2024
+      console.log("Current User: ", this.CurrentUserProfile); //undefined?
+      console.log("Application: ", this.ApplicationListForReapply[0]);
+
+      this.userPofileService.getUserProfileById(this.ApplicationListForReapply[0].CreatedById)
+        .subscribe((data: any) => {
+          if (data.responseCode == 1) {
+            debugger;
+            const defaultProfile = data.dateSet.find(profile => profile.isDefault === true);
+
+            if (defaultProfile) {
+              console.log("Default Profile: ", defaultProfile);
+              this.internalName = defaultProfile.fullName.split(' ')[0];
+              this.internalSurname = defaultProfile.fullName.split(' ')[1];
+              this.internalCostCenterNumber = defaultProfile.costCenterNumber;
+              this.internalCostCenterOwner = defaultProfile.costCenterOwner;
+              this.internalDepartmentName = defaultProfile.departmentName;
+              this.internalBranch = defaultProfile.branch;
+            } else {
+              console.log("No default profile found");
+            }
+
+            console.log(data.responseMessage);
+          } else {
+            console.log(data.responseMessage);
+          }
+          console.log("All Profiles: ", data.dateSet);
+        }, error => {
+          console.log("Error: ", error);
+        });
+
+      this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: false } });
+
+      console.log("Type of Application: ", this.typeOfApplication);
+      console.log("Notification Number: ", this.notificationNumber);
+      console.log("WBS Number: ", this.wbsNumber);
+      console.log("Physical Address of Project: ", this.physicalAddressOfProject);
+      console.log("Description of Project: ", this.descriptionOfProject);
+      console.log("Nature of Work: ", this.natureOfWork);
+      console.log("Excavation Type: ", this.excavationType);
+      console.log("Expected Start Date: ", this.expectedStartDate);
+      console.log("Expected End Date: ", this.expectedEndType);
+
+      // #endregion
 
       //Populate date selector
       ////method 1
@@ -3879,8 +4265,9 @@ export class NewWayleaveComponent implements OnInit {
       //this.expectedStartDate = new Date(this.formattedDate);
 
       /*          this.expectedStartDatetest = "2023/15/15";*/
-      this.expectedStartDate = this.ApplicationListForReapply[0].ExpectedStartDate;
-      this.expectedEndType = this.ApplicationListForReapply[0].ExpectedEndDate;
+
+      //this.expectedStartDate = this.ApplicationListForReapply[0].ExpectedStartDate; //reapply Sindiswa 23 January 2024 - moved this up
+      //this.expectedEndType = this.ApplicationListForReapply[0].ExpectedEndDate; //reapply Sindiswa 23 January 2024 - moved this up
     } else {
       this.projectNumber = '';
 
@@ -3888,8 +4275,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
   }
-
-
+ 
   savetypesOFexcavation() {
 
     // console.log("lhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfhlhsdhfkshdfkshdfjkshdkljfhjklsdhfjkshdfsdkjfh ", "Hi");
@@ -4084,10 +4470,12 @@ export class NewWayleaveComponent implements OnInit {
   categorizedProjectSizeCheckList: { [key: string]: ProjectSizeCheckList[] } = {};
 
   getAllProjectSizeCheckList() {
+    debugger;
     this.ProjectSizeCheckList.splice(0, this.ProjectSizeCheckList.length);
 
     this.projectSizeCheckListService.getAllProjectSizeCheckList().subscribe((data: any) => {
       if (data.responseCode == 1) {
+        debugger;
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempProjectSizeCheckList = {} as ProjectSizeCheckList;
           const current = data.dateSet[i];
@@ -4111,7 +4499,7 @@ export class NewWayleaveComponent implements OnInit {
       else {
         alert(data.responseMessage);
       }
-      console.log("response", data);
+      console.log("response of all project size checklist", data);
     }, error => {
       console.log("Error: ", error);
     });
@@ -4805,7 +5193,7 @@ export class NewWayleaveComponent implements OnInit {
     return option1 === option2;
   }
   CheckProjectSizeChecklistForDraft() {
-    
+    debugger;
     this.projectSizeSelectionService.getProjectSizedSelectionForApplication(this.applicationID).subscribe((data: any) => {
       
       if (data.responseCode == 1) {
@@ -4837,6 +5225,45 @@ export class NewWayleaveComponent implements OnInit {
     });
 
   }
+
+  // #region reapply Sindiswa 23 January 2024
+  CheckProjectSizeChecklistForReApply(appID: any) {
+    debugger;
+    this.projectSizeSelectionService.getProjectSizedSelectionForApplication(appID).subscribe(async (data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+
+          const current = data.dateSet[i];
+
+          const tempSelectionList = {} as ProjectSizeSelectionList
+          tempSelectionList.selectedProject = await current.selectedProject;
+          tempSelectionList.projectDescription = await current.projectDescription;
+
+          // Find the item in this.ProjectSizeCheckList that matches the selectionList
+          const matchedItem = this.ProjectSizeCheckList.find(item => item.ProjectSizeCheckListActivity === tempSelectionList.projectDescription);
+          this.ProjectSizeSelectionList.push(tempSelectionList)
+          debugger;
+          if (matchedItem) {
+            debugger;
+            // Use the SelectionModel to select the item
+            this.selectionProjectSizeCheck.select(matchedItem);
+          }
+        }
+        console.log("This is the project size checklist stuff", data.dateSet)
+        this.cdr.detectChanges();
+        this.CheckToPopulateManDoc();
+
+      } else {
+        alert(data.response);
+      }
+    }, error => {
+      console.log("Error", error);
+    });
+
+  }
+  // #endregion
 
   AddUpdateDraftWayleave() {
     

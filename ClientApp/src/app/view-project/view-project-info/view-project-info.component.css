@@ -9,6 +9,17 @@ h1 {
   font-weight: bold;
   margin-top: 70px
 }
+h3 {
+  font-family: 'Nunito', sans-serif;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: 20px; /* Adjust as needed */
+  padding-bottom: 20px; /* Adjust as needed */
+  color: #343a40;
+  font-size: 30px; /* Adjust as needed */
+  font-weight: bold;
+  margin-top: 20px; /* Adjust as needed */
+}
 .loading-screen {
   display: flex;
   flex-direction: column;
