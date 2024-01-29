@@ -514,7 +514,7 @@ export class ActionCenterComponent implements OnInit {
   initializeTinyMCE() {
 
     tinymce.init({
-      selector: '#myTextarea', // Replace with the ID of your textarea
+      selector: '#myTextarea', // Replace with the ID of your textarea 
       plugins: ['lists', 'textcolor'],
       toolbar: 'bold italic | numlist bullist forecolor backcolor',
       menubar: false
@@ -4752,7 +4752,7 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-    this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, "Approval Pack Generation").subscribe((data: any) => {
+    this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[3].StageName, this.StagesList[3].StageOrderNumber, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, "APG").subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         const emailContent = `
@@ -5488,6 +5488,11 @@ export class ActionCenterComponent implements OnInit {
     }
     else if (this.userAssignedText === "EndOfCommentProcess") {
       alert("This application has reached the 'End Of Comment Process' stage");
+      // actionCentre Sindiswa 22 January 2024 - the permit issuer can't open their action centre view
+      console.log("Can this user approvePermit?? PermitStage:" + this.permit + " CanApprove: " + this.canApprovePermit); 
+      if (this.permit && this.canApprovePermit) {
+        this.openXl(content);
+      }
     }
     else if ((this.userAssignedText == "Senior Reviewer to comment" && this.commentState == "Referred") || (this.userAssignedText == "All users in Subdepartment FA" && (this.commentState == "Approved" || this.commentState == "Rejected"))) {
 

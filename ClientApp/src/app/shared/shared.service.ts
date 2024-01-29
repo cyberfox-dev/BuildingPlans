@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 export interface FileDocument {
   fileName: string;
@@ -132,6 +133,13 @@ export class SharedService {
   errorForRegister?: boolean;
   clientEmailAdress?: string | null;
 
+  //#region reapply Sindisiswa 26 January 2024
+  oldApplicationID: number; //used when reapplying
+  showFormerApps: boolean = true;
+  fromReApplyArchive: boolean = false;
+  routerSubscription: Subscription;
+  //#endregion
+
   userProfileData: any;
   FileDocument: FileDocument[] = [];
   contactorData: ProfessionalList[] = [];
@@ -164,6 +172,27 @@ export class SharedService {
   auditTrail: boolean = false;
   //Audit Trail Kyle
 
+
+  // #region reapply Sindisiswa 26 January 2024
+  setShowFormerApps(data: any) {
+    this.showFormerApps = data;
+  }
+  getShowFormerApps() {
+    return this.showFormerApps;
+  }
+  setFromReApplyArchive(data: any) {
+    this.fromReApplyArchive = data;
+  }
+  getFromReApplyArchive() {
+    return this.fromReApplyArchive;
+  }
+  setRoutingToOldAapp(data:any) {
+    this.routerSubscription = data;
+  }
+  getRoutingToOldAapp() {
+    return this.routerSubscription;
+  }
+  // #endregion
   setCheckEmail(data: any) {
     this.checkEmail = data;
     console.log("Set method" + this.checkEmail);
@@ -316,6 +345,14 @@ export class SharedService {
   getCoordinateData() {
     return this.coordinates;
   }
+  // #region reapply Sindiswa 24 January 2024
+  setOldApplicationID(data: any) {
+    this.oldApplicationID = data;
+  }
+  getOldApplicationID() {
+   return this.oldApplicationID;
+  }
+  // #endregion
 
   //Using NotificationNumber for now, until the ApplicationID is created
   setApplicationID(data: any) {
@@ -406,7 +443,8 @@ export class SharedService {
     return this.canReapply;
   }
 
-  setReapply(data: any) {
+    setReapply(data: any) {
+      debugger;
     this.reapply = data; //application type refers to whether it is a brand new application or if it is a reapply.
   }
 

@@ -1,5 +1,7 @@
-﻿using WayleaveManagementSystem.Data.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
+using WayleaveManagementSystem.Data.Entities;
 using WayleaveManagementSystem.DTO;
+using WayleaveManagementSystem.Models.BindingModel;
 using WayleaveManagementSystem.Models.DTO;
 
 namespace WayleaveManagementSystem.IServices
@@ -28,6 +30,11 @@ namespace WayleaveManagementSystem.IServices
         Task<List<ApplicationsDTO>> GetApplicationsForEMB(string UserID);
         Task<List<ApplicationsDTO>> GetApplicationsForDepartment(int? ZoneID, int? subDepartmentID);
 
-        
+        #region reapply Sindiswa 26 January 2023
+        public Task<bool> IncreaseReapplyCount(string projectNumber); // reapply Sindiswa 24 January 2024
+
+        public Task<Applications> DeActivateOldAppsAfterReapply(string projectNumber);
+        Task<List<ApplicationsDTO>> GetApplicationsByProjectNumberRA(string projectNumber);
+        #endregion
     }
 }
