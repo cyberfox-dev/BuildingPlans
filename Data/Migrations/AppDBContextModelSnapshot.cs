@@ -464,7 +464,47 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
+            //Audit Trail Kyle 
+            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.AuditTrail", b =>
+                {
+                    b.Property<int?>("AuditTrailID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("AuditTrailID"), 1L, 1);
+
+                    b.Property<int?>("ApplicationID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsInternal")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SubDepartmentName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ZoneName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("AuditTrailID");
+
+                    b.ToTable("AuditTrail");
+                });
+            //Audit Trail Kyle 
             modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.CommentBuilder", b =>
                 {
                     b.Property<int>("CommentID")

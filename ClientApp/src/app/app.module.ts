@@ -272,7 +272,10 @@ import { OldApplicationVersionsComponent } from './old-application-versions/old-
     DocumentRepositoryConfigComponent,
     DraftsComponent,
     ApprovalPackComponent,
-    DocumentsComponentComponent
+    DocumentsComponentComponent,
+    //Audit Trail Kyle
+    AuditTrailComponent,
+    //Audit Trail Kyle
   ],
   bootstrap: [AppComponent]
 })

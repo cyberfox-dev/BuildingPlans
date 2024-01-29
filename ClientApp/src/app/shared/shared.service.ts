@@ -166,6 +166,13 @@ export class SharedService {
     userIDForWalkIn: any;
   isDraft: boolean;
 
+  //Audit Trail Kyle
+  isReports: boolean = false;
+  isViewReport: boolean = false;
+  auditTrail: boolean = false;
+  //Audit Trail Kyle
+
+
   // #region reapply Sindisiswa 26 January 2024
   setShowFormerApps(data: any) {
     this.showFormerApps = data;

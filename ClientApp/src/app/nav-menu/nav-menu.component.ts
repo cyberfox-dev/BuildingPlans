@@ -175,7 +175,11 @@ export class NavMenuComponent implements OnInit {
   isLoading: boolean = false;
 
 
-
+  //Audit Trail Kyle
+  stringifiedDataRoles: any;
+  AllCurrentUserRoles: any;
+  Reports: boolean = false;
+  //Audit Trail Kyle
 
 
 
@@ -214,6 +218,12 @@ export class NavMenuComponent implements OnInit {
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.getUserProfileByUserID();
     this.getRolesLinkedToUser();
+
+    //Audit Trail Kyle
+    this.stringifiedDataRoles = JSON.parse(JSON.stringify(localStorage.getItem('AllCurrentUserRoles')));
+    this.AllCurrentUserRoles = JSON.parse(this.stringifiedDataRoles);
+    this.onCheckAllCurrentUserRoles();
+    //Audit Trail Kyle
     /*    this.UserRoles = this.shared.getCurrentUserRoles();*/
     /*    this.setCurrentUserRoles();*/
 
@@ -227,7 +237,7 @@ export class NavMenuComponent implements OnInit {
     this.getAllDepartments();
     this.getAllFAQ();
 
-
+   
  
   }
 
@@ -280,7 +290,7 @@ export class NavMenuComponent implements OnInit {
         this.CommentBuilder = true;
         this.selectDepartmentForUpload = true;
       }
-      
+    
     }
 
 
@@ -339,7 +349,11 @@ export class NavMenuComponent implements OnInit {
 
 
   }
-
+  //Audit Trail Kyle
+  openReports(reports: any) {
+    this.modalService.open(reports, { centered: true, size: 'xl' });
+    this.shared.isReports = true;
+  }
   openUserActingDepModal() {
     this.dialog.open(ConfigActingDepartmentComponent, {
       width: '60%',
@@ -1260,6 +1274,17 @@ export class NavMenuComponent implements OnInit {
   onWindowScroll() {
     const scrollY = window.scrollY || document.documentElement.scrollTop;
     this.isTransparent = scrollY < 460; // Adjust the scroll threshold as needed
+  }
+
+  //Audit Trail Kyle
+  onCheckAllCurrentUserRoles() {
+    debugger;
+    for (let i = 0; i < this.AllCurrentUserRoles.length; i++) {
+      const roleName = this.AllCurrentUserRoles[i].roleName;
+      if (roleName === "Audit Trail") {
+        this.Reports = true;
+      }
+    }
   }
   
 }

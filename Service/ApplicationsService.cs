@@ -408,13 +408,14 @@ namespace WayleaveManagementSystem.Service
 
         //this method gets all the applications linked to a partcular user
         //We use DTO (a cutom list) because we may pull custom data from the database at some point, otherwise, we can just use the existing list.
+        /*jjs commit 23JAN24 - typoFix for Email for Sign off, Applicant filter dashbaord table fix*/
         public async Task<List<ApplicationsDTO>> GetApplicationsList(string userId, bool isInternal)
         {
             if (isInternal)
             {
                 return await (
                    from Applications in _context.Application
-                   where Applications.isActive == true && Applications.FullName != "" && Applications.FullName != null
+                   where Applications.isActive == true && Applications.FullName != "" && Applications.FullName != null 
                    orderby Applications.DateCreated descending
                    select new ApplicationsDTO()
                    {
