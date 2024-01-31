@@ -53,7 +53,7 @@
     <mat-step>
 
       <form>
-        <ng-template matStepLabel>Application Details</ng-template>
+        <ng-template matStepLabel>Applicant Details</ng-template> <!--wayleaveCreate Sindiswa 31 January 2024-->
         <div class="detials">
           <div class="card">
             <h3><span>Applicant details</span></h3>
@@ -336,8 +336,18 @@
 
 
       <ng-template matStepLabel>Project Details</ng-template>
+      <div>
+        <div class="row">
+
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="natureOfWork" id="Email" placeholder="Type your description here..." name="natureOfWork">
+            <label for="name">Describe the type or nature of the work to be undertaken. Note that this information will serve as the title for the application.</label>
+            <small class="text-muted">Click and write description inside the textbox above</small>
+          </div>
+        </div>
+      </div>
       <div class="card">
-        <h3><span>Project Details</span></h3>
+        <h3><span>Project Size</span></h3><!--wayleaveCreate Sindiswa 31 January 2024-->
       </div>
       <div class="container-fluid">
         <div class="alert alert-warning">
@@ -383,21 +393,22 @@
       </div>-->
         </div>
       </div>
-      <div class="row">
-        <!--          <div class="col">
-      <div class="form-floating mb-3 mt-3">
-        <input type="text" class="form-control" [(ngModel)]="physicalAddressOfProject" id="Address" placeholder="Enter Address" name="physicalAddressOfProject">
-        <label for="name">Physical Address</label>
-      </div>
-    </div>-->
+      <!--<div class="row">-->  <!--wayleaveCreate Sindiswa 31 January 2024-->
+      <!--          <div class="col">
+    <div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" [(ngModel)]="physicalAddressOfProject" id="Address" placeholder="Enter Address" name="physicalAddressOfProject">
+      <label for="name">Physical Address</label>
+    </div>
+  </div>-->
+      <!--wayleaveCreate Sindiswa 31 January 2024-->
+      <!--<div class="form-floating mb-3 mt-3">
+      <input type="text" class="form-control" [(ngModel)]="natureOfWork" id="Email" placeholder="Enter Email" name="natureOfWork">
+      <label for="name">Type/Nature of works to be undertaken. Note that this will also appear as your Application Title</label>
+    </div>
 
-        <div class="form-floating mb-3 mt-3">
-          <input type="text" class="form-control" [(ngModel)]="natureOfWork" id="Email" placeholder="Enter Email" name="natureOfWork">
-          <label for="name">Type/Nature of works to be undertaken. Note that this will also appear as your Application Title</label>
-        </div>
 
-
-      </div>
+  </div>-->
+      <!--wayleaveCreate Sindiswa 31 January 2024-->
 
 
 
@@ -408,25 +419,34 @@
           <div class="card">
             <h3><span>Type Of Excavation</span></h3>
           </div>
+          <!--wayleaveCreate Sindiswa 31 January 2024-->
+          <div class="container-fluid">
+            <div class="alert alert-warning">
+              <h4><strong>Compulsory Field</strong> - <em>To proceed, use the dropdown menu below and choose the relevant types of excavation.</em> </h4>
+            </div>
+          </div>
+          <!--wayleaveCreate Sindiswa 31 January 2024-->
           <!--          <div class="container-fluid" *ngIf="PSM == ''">
 
-              <mat-form-field>
-                <mat-label>Types Of Excavation</mat-label>
-                <mat-select [(ngModel)]="TOENAMES" multiple>
+        <mat-form-field>
+          <mat-label>Types Of Excavation</mat-label>
+          <mat-select [(ngModel)]="TOENAMES" multiple>
 
-                  <mat-option *ngFor="let TOE of TypeOfExcavationList" (selectionChange)="CheckTOES()" [value]="TOE.typeOfExcavationName">{{TOE.typeOfExcavationName}}</mat-option>
-                </mat-select>
-              </mat-form-field>
+            <mat-option *ngFor="let TOE of TypeOfExcavationList" (selectionChange)="CheckTOES()" [value]="TOE.typeOfExcavationName">{{TOE.typeOfExcavationName}}</mat-option>
+          </mat-select>
+        </mat-form-field>
 
-            </div>-->
+      </div>-->
           <div class="container-fluid">
             <mat-form-field>
               <mat-label>Types Of Excavation</mat-label>
-              <mat-select [(ngModel)]="TOENAMES" [compareWith]="compareExcavationTypes" (selectionChange)="CheckTOES()" multiple>
+              <mat-select [(ngModel)]="TOENAMES" [compareWith]="compareExcavationTypes" (selectionChange)="CheckTOES()" multiple required>
+                <!--wayleaveCreate Sindiswa 31 January 2024-->
                 <mat-option *ngFor="let TOE of TypeOfExcavationList" [value]="TOE.typeOfExcavationName">
                   {{TOE.typeOfExcavationName}}
                 </mat-option>
               </mat-select>
+              <mat-error *ngIf="!TOENAMES?.length">Please select at least one type of excavation.</mat-error><!--wayleaveCreate Sindiswa 31 January 2024-->
             </mat-form-field>
 
           </div>
@@ -487,7 +507,7 @@
       <div class="cont">
         <button mat-raised-button color="primary" matStepperPrevious>Back</button>
         <!--Physical address Of project Kyle 16/01/24-->
-        <button mat-raised-button color="primary" matStepperNext (click)="CheckTOES()" [disabled]="PSM == '' || addressSaved == false">Next</button>
+        <button mat-raised-button color="primary" matStepperNext (click)="CheckTOES()" [disabled]="!TOENAMES?.length || PSM == '' || addressSaved == false">Next</button> <!--wayleaveCreate Sindiswa 31 January 2024-->
         <!--Physical address Of project Kyle 16/01/24-->
       </div>
     </mat-step>

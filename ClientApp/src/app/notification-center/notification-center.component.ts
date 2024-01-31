@@ -20,6 +20,7 @@ export interface NotificationsList {
   UserID: number;
   IsRead: boolean;
   DateCreated: string;
+  DateCreatedwithTIME: string;
   Message: string;
 }
 export interface OldNotificationsList {
@@ -30,6 +31,7 @@ export interface OldNotificationsList {
   UserID: number;
   IsRead: boolean;
   DateCreated: string;
+  DateCreatedwithTIME: string;
   Message: any;
 }
 
@@ -58,7 +60,7 @@ export class NotificationCenterComponent implements OnInit {
   viewNotification: any;
 
   constructor(private modalService: NgbModal, private sharedService: SharedService, private userProfileService: UserProfileService, private notificationService: NotificationsService, private applicationService: ApplicationsService, private hhtp: HttpClient, private router: Router, private dialog: MatDialog) { }
-
+ fakeDatenow: any = new Date();
   ngOnInit(): void {
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
@@ -67,7 +69,8 @@ export class NotificationCenterComponent implements OnInit {
     this.getAllNotifications();
     this.getAllReadNotifications();
     this.getUserInfo();
-   
+
+    console.log(`This is the time now${this.fakeDatenow}`)
   }
 
   openModal(Notifications: any) {
@@ -102,7 +105,7 @@ export class NotificationCenterComponent implements OnInit {
             tempNotificationsList.NotificationName = current.notificationName;
             tempNotificationsList.NotificationDescription = current.notificationDescription;
             tempNotificationsList.DateCreated = current.dateCreated.substring(0, date.indexOf('T'));
-
+            tempNotificationsList.DateCreatedwithTIME = current.dateCreated;
 
             this.OldNotificationsList.push(tempNotificationsList);
           }
@@ -188,6 +191,7 @@ export class NotificationCenterComponent implements OnInit {
           tempNotificationsList.ApplicationID = current.applicationID;
           tempNotificationsList.NotificationID = current.notificationID;
           tempNotificationsList.Message = current.message;
+          tempNotificationsList.DateCreatedwithTIME = current.dateCreated;
 
           this.ApplicationID = current.applicationID;
           this.MessageList = tempNotificationsList;
@@ -275,6 +279,7 @@ export class NotificationCenterComponent implements OnInit {
           tempNotificationsList.ApplicationID = current.applicationID;
           tempNotificationsList.NotificationID = current.notificationID;
           tempNotificationsList.Message = current.message;
+          tempNotificationsList.DateCreatedwithTIME = current.dateCreated;
 
           this.ApplicationID = current.applicationID;
           this.MessageList = tempNotificationsList;
@@ -440,6 +445,7 @@ getAllNotifications() {
             tempNotificationsList.NotificationName = current.notificationName;
             tempNotificationsList.NotificationDescription = current.notificationDescription;
             tempNotificationsList.DateCreated = current.dateCreated.substring(0, date.indexOf('T'));
+            tempNotificationsList.DateCreatedwithTIME = current.dateCreated;
 
             this.NotificationsList.push(tempNotificationsList);
           }
@@ -496,7 +502,8 @@ getAllNotifications() {
     })
   }
 
-  getTimeAgo(dateCreated: string): string {
+  // #region notifications Sindiswa 31 January 2024 - turns out I DIDN"T EVEN NEED A NEW METHOD, the issue was the substring time... Oh, well!
+  /*getTimeAgo(dateCreated: string): string {
     const now = new Date();
     const createdDate = new Date(dateCreated + 'T00:00:00Z'); // Assume the time part is always 00:00:00 UTC
     const timeDifference = now.getTime() - createdDate.getTime();
@@ -509,7 +516,35 @@ getAllNotifications() {
       const daysAgo = Math.floor(hoursAgo / 24);
       return `${daysAgo} day${daysAgo !== 1 ? 's' : ''} ago`;
     }
+  }*/
+
+  getTimeAgo(dateCreated: string): string {
+    const now: any = new Date();
+    const createdDate: any = new Date(dateCreated);
+
+    // Check if it's a future date
+    if (isNaN(createdDate.getTime()) || createdDate > now) {
+      return 'In the future';
+    }
+
+    const timeDifferenceMinutes = Math.floor((now - createdDate) / (1000 * 60));
+
+    if (timeDifferenceMinutes < 60) {
+      return `${timeDifferenceMinutes} minute${timeDifferenceMinutes !== 1 ? 's' : ''} ago`;
+    }
+
+    const timeDifferenceHours = Math.floor(timeDifferenceMinutes / 60);
+    if (timeDifferenceHours < 24) {
+      return `${timeDifferenceHours} hour${timeDifferenceHours !== 1 ? 's' : ''} ago`;
+    }
+
+    const timeDifferenceDays = Math.floor(timeDifferenceHours / 24);
+    return `${timeDifferenceDays} day${timeDifferenceDays !== 1 ? 's' : ''} ago`;
   }
+
+  //#endregion
+
+
 }
 
 
