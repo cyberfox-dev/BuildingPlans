@@ -50,7 +50,23 @@ export class NotificationsService {
     return this.httpClient.post(this.baseURL + "GetNotificationByUserID", body);
 
   }
+  // #region escalation Sindiswa 30 January 2024 & 31 January 2024
+  public getNotificationsForUserID(userID?: string) {
+    debugger;
+    const body = {
+  
+      UserID: userID,
 
+    }
+    return this.httpClient.post(this.baseURL + "GetNotificationsForUserID", body);
+
+  }
+  public getNotificationByNotificationID(notificationID: any) {
+
+    return this.httpClient.post(this.baseURL + "GetNotificationByNotificationID", notificationID);
+
+  }
+  // #endregion
   public sendEmail(to: string, subject: string, text: string, html: string): void {
     const emailData = {
       to: to,

@@ -36,5 +36,9 @@ namespace WayleaveManagementSystem.IServices
         public Task<Applications> DeActivateOldAppsAfterReapply(string projectNumber);
         Task<List<ApplicationsDTO>> GetApplicationsByProjectNumberRA(string projectNumber);
         #endregion
+
+        public Task<bool> EscalateApplication(int? applicationID);
+        public Task<bool> CancelEscalation(int? applicationID);
+
     }
 }

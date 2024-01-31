@@ -114,6 +114,49 @@ namespace WayleaveManagementSystem.Service
                 }
                 ).ToListAsync();
         }
-
+        #region escalation Sindiswa 30 January 2024 & 31 January 2024
+        public async Task<List<NotificationDTO>> GetNotificationsForUserID(string? userID)
+        {
+            return await (
+                from Notification in _context.Notification
+                where Notification.isActive == true && Notification.UserID == userID
+                select new NotificationDTO()
+                {
+                    NotificationID = Notification.NotificationID,
+                    NotificationName = Notification.NotificationName,
+                    NotificationDescription = Notification.NotificationDescription,
+                    IsRead = Notification.IsRead,
+                    UserID = Notification.UserID,
+                    ApplicationID = Notification.ApplicationID,
+                    DateCreated = Notification.DateCreated,
+                    DateUpdated = Notification.DateUpdated,
+                    CreatedById = Notification.CreatedById,
+                    Message = Notification.Message,
+                    isActive = true
+                }
+                ).ToListAsync();
+        }
+        public async Task<List<NotificationDTO>> GetNotificationByNotificationID(int? notificationID)
+        {
+            return await (
+                from Notification in _context.Notification
+                where Notification.isActive == true && Notification.NotificationID == notificationID
+                select new NotificationDTO()
+                {
+                    NotificationID = Notification.NotificationID,
+                    NotificationName = Notification.NotificationName,
+                    NotificationDescription = Notification.NotificationDescription,
+                    IsRead = Notification.IsRead,
+                    UserID = Notification.UserID,
+                    ApplicationID = Notification.ApplicationID,
+                    DateCreated = Notification.DateCreated,
+                    DateUpdated = Notification.DateUpdated,
+                    CreatedById = Notification.CreatedById,
+                    Message = Notification.Message,
+                    isActive = true
+                }
+                ).ToListAsync();
+        }
+        #endregion
     }
 }

@@ -166,6 +166,8 @@ export class SharedService {
     userIDForWalkIn: any;
   isDraft: boolean;
 
+  isEscalated: boolean;
+  EMBLoggedIn: boolean = false;
   //Audit Trail Kyle
   isReports: boolean = false;
   isViewReport: boolean = false;
@@ -193,6 +195,23 @@ export class SharedService {
     return this.routerSubscription;
   }
   // #endregion
+  // #region escalation Sindiswa 29 January 2024
+  setIsEscalated(data: any) {
+    this.isEscalated = data;
+  }
+  getIsEscalatedDeets() {
+    return this.isEscalated;
+  }
+  // #endregion
+  // #region escalation Sindiswa 30 January 2024
+  setIsEMBUser(data: any) {
+    this.EMBLoggedIn = data;
+  }
+  getIsEMBUser() {
+    return this.EMBLoggedIn;
+  }
+  // #endregion
+
   setCheckEmail(data: any) {
     this.checkEmail = data;
     console.log("Set method" + this.checkEmail);

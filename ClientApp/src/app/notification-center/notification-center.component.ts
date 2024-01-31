@@ -10,6 +10,7 @@ import { ApplicationsService } from '../service/Applications/applications.servic
 import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http';
 import { Input } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { concat } from 'rxjs';
 
 export interface NotificationsList {
   NotificationID: number;
@@ -82,8 +83,12 @@ export class NotificationCenterComponent implements OnInit {
 
    
     this.OldNotificationsList.splice(0, this.OldNotificationsList.length);
-    this.notificationService.getNotificationByUserID(this.CurrentUser.appUserId).subscribe((data: any) => {
-      
+    //this.notificationService.getNotificationByUserID(this.CurrentUser.appUserId).subscribe((data: any) => {
+    const firstObservable = this.notificationService.getNotificationByUserID(this.CurrentUser.appUserId);
+    const secondObservable = this.notificationService.getNotificationsForUserID(this.CurrentUser.appUserId);
+
+    concat(firstObservable, secondObservable).subscribe(
+      (data: any) => {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempNotificationsList = {} as OldNotificationsList;
@@ -129,7 +134,94 @@ export class NotificationCenterComponent implements OnInit {
     });
   }
 
-  getSelectedNotification(applicationID: number) {
+  getSelectedNotificationNew(notificationID: number) {
+    this.dialog.closeAll();
+
+    this.NotificationsList.splice(0, this.NotificationsList.length);
+    this.notificationService.getNotificationByNotificationID(notificationID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        console.log("This is the selected notification:", data.dateSet);
+        const current = data.dateSet[0];
+
+
+        if (current.isRead == false) {
+          const tempNotificationsList = {} as NotificationsList;
+
+          const date = current.dateCreated;
+          tempNotificationsList.ApplicationID = current.applicationID;
+          tempNotificationsList.NotificationName = current.notificationName;
+          tempNotificationsList.NotificationDescription = current.notificationDescription;
+          tempNotificationsList.NotificationID = current.notificationID;
+          tempNotificationsList.Message = current.message;
+          tempNotificationsList.IsRead = true;
+          tempNotificationsList.UserID = current.userID;
+
+          this.ApplicationID = current.applicationID;
+          this.MessageList = tempNotificationsList;
+          this.notificationService.addUpdateNotification(tempNotificationsList.NotificationID, tempNotificationsList.NotificationName, tempNotificationsList.NotificationDescription, tempNotificationsList.IsRead, null, null, tempNotificationsList.ApplicationID, tempNotificationsList.Message).subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+              /*alert(data.responseMessage);*/
+
+            }
+            else {
+              alert(data.responseMessage);
+            }
+
+            console.log("response", data);
+          }, error => {
+            console.log("Error", error);
+          })
+
+
+
+          this.OldNotificationsList = [];
+
+        }
+        else {
+          const tempNotificationsList = {} as NotificationsList;
+          const date = current.dateCreated;
+          tempNotificationsList.NotificationName = current.notificationName;
+          tempNotificationsList.NotificationDescription = current.notificationDescription;
+          tempNotificationsList.ApplicationID = current.applicationID;
+          tempNotificationsList.NotificationID = current.notificationID;
+          tempNotificationsList.Message = current.message;
+
+          this.ApplicationID = current.applicationID;
+          this.MessageList = tempNotificationsList;
+
+        }
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+      console.log("notification", this.MessageList);
+      this.NotificationsList.sort((a, b) => {
+        return new Date(b.DateCreated).getTime() - new Date(a.DateCreated).getTime();
+      });
+    
+        this.OldNotificationsList.sort((a, b) => {
+      return new Date(b.DateCreated).getTime() - new Date(a.DateCreated).getTime();
+    });
+
+
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+    if (this.internalUser === true) {
+      this.openNotificationInternal(this.Internal);
+    }
+    else {
+      this.openNotificationExternal(this.External)
+    }
+  }
+   getSelectedNotification(applicationID: number) {
     this.dialog.closeAll();
 
     this.NotificationsList.splice(0, this.NotificationsList.length);
@@ -242,6 +334,8 @@ export class NotificationCenterComponent implements OnInit {
     })
 
   }
+  // #region escalation Sindiswa 30 January 2024
+  /*
   getAllNotifications() {
 
     this.NotificationsList.splice(0, this.NotificationsList.length);
@@ -283,7 +377,93 @@ export class NotificationCenterComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
-  }
+    // #region escalation Sindiswa 30 January 2024
+    this.notificationService.getNotificationsForUserID(this.CurrentUser.appUserId).subscribe((data: any) => {
+
+
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempNotificationsList = {} as NotificationsList;
+          const current = data.dateSet[i];
+          console.log(current);
+          if (current.isRead == false) {
+
+            const date = current.dateCreated;
+            tempNotificationsList.ApplicationID = current.applicationID;
+            tempNotificationsList.NotificationID = current.notificationID;
+            tempNotificationsList.NotificationName = current.notificationName;
+            tempNotificationsList.NotificationDescription = current.notificationDescription;
+            tempNotificationsList.DateCreated = current.dateCreated.substring(0, date.indexOf('T'));
+
+
+            this.NotificationsList.push(tempNotificationsList);
+          }
+          // this.sharedService.setStageData(this.StagesList);
+          this.NotificationsList.sort((a, b) => {
+            return new Date(b.DateCreated).getTime() - new Date(a.DateCreated).getTime();
+          });
+
+          this.OldNotificationsList.sort((a, b) => {
+            return new Date(b.DateCreated).getTime() - new Date(a.DateCreated).getTime();
+          });
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+    // #endregion
+  }*/
+
+
+getAllNotifications() {
+  this.NotificationsList.splice(0, this.NotificationsList.length);
+
+  const firstObservable = this.notificationService.getNotificationByUserID(this.CurrentUser.appUserId);
+  const secondObservable = this.notificationService.getNotificationsForUserID(this.CurrentUser.appUserId);
+
+  concat(firstObservable, secondObservable).subscribe(
+    (data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempNotificationsList = {} as NotificationsList;
+          const current = data.dateSet[i];
+
+          if (current.isRead == false) {
+            const date = current.dateCreated;
+            tempNotificationsList.ApplicationID = current.applicationID;
+            tempNotificationsList.NotificationID = current.notificationID;
+            tempNotificationsList.NotificationName = current.notificationName;
+            tempNotificationsList.NotificationDescription = current.notificationDescription;
+            tempNotificationsList.DateCreated = current.dateCreated.substring(0, date.indexOf('T'));
+
+            this.NotificationsList.push(tempNotificationsList);
+          }
+        }
+
+        this.NotificationsList.sort((a, b) => {
+          return new Date(b.DateCreated).getTime() - new Date(a.DateCreated).getTime();
+        });
+
+        this.OldNotificationsList.sort((a, b) => {
+          return new Date(b.DateCreated).getTime() - new Date(a.DateCreated).getTime();
+        });
+      } else {
+        alert(data.responseMessage);
+      }
+      console.log("response", data);
+    },
+    error => {
+      console.log("Error: ", error);
+    }
+  );
+}
+
+// #endregion
   onClose() {
     this.modalService.dismissAll();
   }
