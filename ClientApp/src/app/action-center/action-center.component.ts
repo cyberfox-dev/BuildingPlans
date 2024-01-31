@@ -5743,7 +5743,7 @@ export class ActionCenterComponent implements OnInit {
     })
   }
    //Service Information Kyle 31/01/24
-}
+
 
   //#region escalation Sindiswa 30 January 2024 & 31 January 2024
   async onGoToEscalationActionCentre(escalatedToEMB: any) {
