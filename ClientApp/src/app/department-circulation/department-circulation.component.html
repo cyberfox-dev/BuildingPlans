@@ -28,6 +28,11 @@
 
         <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid-orange.svg" class="icon2" *ngIf="element.isAwaitingClarity">
         <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/retweet-solid-purple.svg" class="icon2" *ngIf="element.IsRefered">
+        <!---- Service Information Kyle 31/01/24-->
+        <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/check-double.svg" class="icon2" *ngIf="element.commentStatus ==='Completed'">
+        <p *ngIf="element.commentStatus === 'Completed'">Complete</p>
+        <!---- Service Information Kyle 31/01/24-->
+
         <!--        <i class="fa fa-thumbs-up blueThumbsUp" aria-hidden="true" *ngIf="element.commentStatus === ApprovedConditional ||element.commentStatus === Approved"></i>-->
         <!--  <i class="fa fa-thumbs-down redThumbsDown" aria-hidden="true" *ngIf="element.commentStatus === Rejected"></i>-->
         <!--        <i class="fa fa-clock-o yellowTimer" aria-hidden="true" *ngIf="element.commentStatus !== FinalApproved && element.commentStatus !== ApprovedConditional && element.commentStatus !== Approved && element.isAwaitingClarity === false && element.IsRefered === false && element.commentStatus !== Rejected || element.commentStatus === Null"></i>-->

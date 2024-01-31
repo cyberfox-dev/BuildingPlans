@@ -164,7 +164,87 @@
     </div>
 
   </div>
+  <!-- Service Information Kyle 31/01/24-->
+  <div class="modal-body" *ngIf="CurrentApplication.isPlanning === true">
+    <div class="cont">
+      <button mat-raised-button color="blue" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false" (click)="openAssignToUser(assignProjectToUser)">Assign User For Comment</button>
+      <button mat-raised-button color="blue" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == true && ServiceInfoDocumentsList.length == 0 " (click)="openAssignToUser(assignProjectToUser)">Assign Another User For Comment</button>
+      <button mat-raised-button color="blue" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false" (click)=" AdminAssigningIsPlanningToSelf()">Assign To Myself</button>
+    </div>
+    <mat-tab-group *ngIf="CurrentApplication.isPlanning === true && hasReviewerAssignment === true">
+      <mat-tab label="Upload Documents">
 
+
+        <div class="cont">
+          <mat-form-field *ngIf="CurrentApplication.isPlanning === true && hasReviewerAssignment === true">
+            <div>
+              <mat-toolbar>
+
+                <!-- <input matInput [(ngModel)]="fileAttrs[0]" readonly name="name" />-->
+
+                <div class="row">
+                  <div class="container-fluid">
+                    <div class="row" style="margin-bottom:15px;">
+                      <div class="container-fluid">
+
+                        <input matInput [(ngModel)]="fileAttrs" readonly name="name" />
+                        <!-- app-file-upload Component -->
+                        <div class="row" style="margin-bottom:35px;">
+                          <div class="container-fluid">
+                            <app-file-upload [ApplicationID]="ApplicationID"
+                                             [isPlanningDoc]="CurrentApplication.isPlanning"
+                                             [UploadFor]="fileAttrsName"
+                                             (passFileName)="onPassFileName($event)"
+                                             (onUploadFinished)="onFileDelete($event, 0)"
+                                             (onUploadSuccess)="onFileUpload($event)">
+                            </app-file-upload>
+                          </div>
+                        </div>
+
+
+
+
+                      </div>
+
+                    </div>
+
+                  </div>
+                </div>
+              </mat-toolbar>
+            </div>
+          </mat-form-field>
+        </div>
+        <div class="modal-footer" *ngIf="CurrentApplication.isPlanning === true && hasReviewerAssignment === true">
+          <button type="submit" class="btn btn-outline-success" (click)="onSaveDocumentUpload(content)">Save Upload</button>
+        </div>
+      </mat-tab>
+      <mat-tab label="View Uploads" *ngIf="ServiceInfoDocumentsList.length > 0">
+        <table mat-table class="mat-elevation-z8" [dataSource]="dataSourceServiceInfoDocuments">
+
+          <ng-container matColumnDef="DocumentName">
+            <th mat-header-cell *matHeaderCellDef>Document Name</th>
+            <td mat-cell *matCellDef="let element"> {{element.DocumentName}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>actions</th>
+            <td mat-cell *matCellDef="let i = index">
+              <button mat-raised-button color="blue2" matTooltip="View document"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid-white.svg" class="icon"></button>
+              <button mat-raised-button color="warn" matTooltip="Delete document" (click)="onDeleteDocument(i,content)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid-white.svg" class="icon"></button>
+            </td>
+            <td mat-cell *matCellDef="let element">  </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsDocs"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumnsDocs;"></tr>
+        </table>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+  <div class="cont6" *ngIf="ServiceInfoDocumentsList.length > 0">
+    <button mat-raised-button color="approveBTN" (click)=" Approve() "><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon"> Move to next stage</button>
+  </div>
+  <!-- Service Information Kyle 31/01/24-->
 </ng-template>
 
 

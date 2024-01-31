@@ -21,6 +21,9 @@ export class FileUploadComponent implements OnInit {
   @Input() uploadingPOP: boolean | null;
   //  Financial POP Kyle 15/01/24
 
+  //Service Information Kyle 
+  @Input() isPlanningDoc: boolean | null;
+  //Service Information Kyle 
   @Input() isCalledInsidePermit: boolean | null;
   @Input() permitSubForCommentID: any;
 
@@ -41,13 +44,19 @@ export class FileUploadComponent implements OnInit {
   fileUploadName: string;
   fileExtention: string;
   currentApplication: any;
-  
+   //Service Information Kyle 31/01/24
+  stringifiedDataUserProfile: any;
+  CurrentUserProfile: any;
+  //Service Information Kyle 31/01/24
   constructor(private http: HttpClient, private shared: SharedService, private documentUploadService: DocumentUploadService, private financialService: FinancialService, private permitService: PermitService) { }
 
   ngOnInit(): void {
     this.CurrentUser = JSON.parse(localStorage.getItem('LoggedInUserInfo') || '{}');
-    this.currentApplication = this.shared.getViewApplicationIndex(); 
-    
+    this.currentApplication = this.shared.getViewApplicationIndex();
+     //Service Information Kyle 31/01/24
+    this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
+    this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
+     //Service Information Kyle 31/01/24
     if (this.ApplicationID == "isRep") {
 
     }
@@ -411,6 +420,11 @@ export class FileUploadComponent implements OnInit {
               this.permitUploadFinished(event.body, this.permitSubForCommentID);
             }
             // #endregion
+            //Service Information Kyle 31/01/24
+            if (this.isPlanningDoc) {
+              this.isPlanningUploadFinished(event.body, this.ApplicationID, this.CurrentUser);
+            }
+             //Service Information Kyle 31/01/24
             else {
               this.uploadFinished(event.body, this.ApplicationID, this.CurrentUser); // Pass CurrentUser assuming it contains relevant user data. Adjust as needed.
             }
@@ -543,4 +557,28 @@ export class FileUploadComponent implements OnInit {
     })
   }
   // #endregion
+
+   //Service Information Kyle 31/01/24
+  isPlanningUploadFinished = (event: any, applicationID: any, applicationData: any) => {
+    this.response = event;
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, applicationID, applicationData.appUserId, this.CurrentUser.appUserId, "Service Information", this.CurrentUserProfile[0].subDepartmentID, this.CurrentUserProfile[0].subDepartmentName,true).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        // Emit the onUploadSuccess event after a successful upload
+        this.onUploadSuccess.emit(event.body);
+     
+      }
+
+
+
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+   //Service Information Kyle 31/01/24
 }

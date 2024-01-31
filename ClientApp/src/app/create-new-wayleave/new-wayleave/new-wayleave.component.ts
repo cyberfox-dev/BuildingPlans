@@ -5324,7 +5324,9 @@ export class NewWayleaveComponent implements OnInit {
     //'It looks like you are about to upload some files. Are you sure you want to proceed? Double-check to ensure you have selected the correct files for upload.'
     const isConfirmed = window.confirm('Are you sure you want to upload these files? Click "Cancel" to double-check your selections.');
     if (isConfirmed) {
-      this.onWayleaveCreate(appUserId, false, false);
+          //Service Information Kyle 31/01/24
+      this.onWayleaveCreate(appUserId, this.isPlanning, false);
+          //Service Information Kyle 31/01/24
     }
 
   }

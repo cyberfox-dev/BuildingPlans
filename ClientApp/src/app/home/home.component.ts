@@ -813,13 +813,20 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   openXl(Prof: any) {
-    this.modalService.open(Prof, {
-      centered: true,
-      size: 'xl',
-      backdrop: 'static', // Prevent clicking outside the modal to close it
-      keyboard: false // Prevent pressing the ESC key to close the modal
-    });
-
+    //Service Conditions Kyle
+    if (this.isPlanning == false) {
+      this.modalService.open(Prof, {
+        centered: true,
+        size: 'xl',
+        backdrop: 'static', // Prevent clicking outside the modal to close it
+        keyboard: false // Prevent pressing the ESC key to close the modal
+      });
+    }
+    else {
+      //Service Information Kyle 31/01/24
+      this.populateClientInfo();
+    }
+        //Service Information Kyle 31/01/24
   }
 
   openNewClient(newClient: any) {
@@ -1089,11 +1096,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   populateClientInfo() {
-    if (confirm("Are you sure you are done?")) {
-      
+       //Service Information Kyle 31/01/24
+    if (this.isPlanning == false) {
+      if (confirm("Are you sure you are done?")) {
+
+        this.createWayleave(this.applicationType, this.isPlanning);
+      }
+    }
+    else {
       this.createWayleave(this.applicationType, this.isPlanning);
     }
-
+       //Service Information Kyle 31/01/24
 
 
   }

@@ -180,8 +180,17 @@ export interface RolesList {
   //RoleType: string;
   //RoleDescription: string;
 }
-
- 
+ //Service Information Kyle 31/01/24
+export interface ServiceInfoDocumentsList {
+  DocumentID: number;
+  DocumentName: string;
+  ApplicationID: number;
+  DocumentLocation: any;
+  DocumentGroup: string;
+  SubDepartmentName: string;
+  isPlanning: boolean;
+}
+  //Service Information Kyle 31/01/24
 
 
 
@@ -292,7 +301,11 @@ export class ActionCenterComponent implements OnInit {
   StagesList: StagesList[] = [];
   CommentsList: CommentsList[] = [];
 
-
+   //Service Information Kyle 31/01/24
+  ServiceInfoDocumentsList: ServiceInfoDocumentsList[] = [];
+  displayedColumnsDocs: string[] = ['DocumentName', 'actions'];
+  dataSourceServiceInfoDocuments = this.ServiceInfoDocumentsList;
+   //Service Information Kyle 31/01/24
   ZoneList: ZoneList[] = [];
   ZoneLinkedList: ZoneList[] = [];
   UserZoneList: UserZoneList[] = [];
@@ -505,7 +518,7 @@ export class ActionCenterComponent implements OnInit {
     this.checkIfWbsRequired();
     this.CheckApplicant();
     this.setProjectNumber();
-
+    this.getAllDocumentsForServiceInformation();
 
 
 
@@ -4653,7 +4666,7 @@ export class ActionCenterComponent implements OnInit {
             tempSubDepartmentList.dateCreated = current.dateCreated;
             tempSubDepartmentList.commentStatus = current.commentStatus;
 
-            if (tempSubDepartmentList.commentStatus == "Final Approved") {
+            if (tempSubDepartmentList.commentStatus == "Completed") {
               this.countApprove++;
             }
             if (tempSubDepartmentList.commentStatus == "Rejected") {
@@ -4669,7 +4682,12 @@ export class ActionCenterComponent implements OnInit {
             this.countReject = 0;
             this.MoveToClosedStage(true);
           }
-
+           //Service Information Kyle 31/01/24
+          else {
+            this.modalService.dismissAll();
+            this.router.navigate(["/home"]);
+          }
+           //Service Information Kyle 31/01/24
         }
         else {
 
@@ -4862,26 +4880,50 @@ export class ActionCenterComponent implements OnInit {
         }
         else {*/
 
-    this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, this.StagesList[5].StageName, this.StagesList[5].StageOrderNumber, this.StagesList[6].StageName, this.StagesList[6].StageOrderNumber, "Monitoring", null).subscribe((data: any) => {
+     //Service Information Kyle 31/01/24
+    if (isPlanning == false) {
+      //Service Information Kyle 31/01/24
 
-      if (data.responseCode == 1) {
-        //Audit Trail Kyle 
-        this.onSaveToAuditTrail2("Permit to Work Generated");
-        this.onSaveToAuditTrail2("Application Moved To Monitoring Stage");
-        //Audit Traik Kyle 
-        alert("Application Moved To Monitoring");
-        this.modalService.dismissAll();
-        this.router.navigate(["/home"]);
+      this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, this.StagesList[5].StageName, this.StagesList[5].StageOrderNumber, this.StagesList[6].StageName, this.StagesList[6].StageOrderNumber, "Monitoring", null).subscribe((data: any) => {
 
-      }
-      else {
-        alert(data.responseMessage);
-      }
-      console.log("responseAddapplication", data);
-    }, error => {
-      console.log("Error", error);
-    })
+        if (data.responseCode == 1) {
+          //Audit Trail Kyle 
+          this.onSaveToAuditTrail2("Permit to Work Generated");
+          this.onSaveToAuditTrail2("Application Moved To Monitoring Stage");
+          //Audit Traik Kyle 
+          alert("Application Moved To Monitoring");
+          this.modalService.dismissAll();
+          this.router.navigate(["/home"]);
 
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("responseAddapplication", data);
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+     //Service Information Kyle 31/01/24
+    else {
+      this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[6].StageName, this.StagesList[6].StageOrderNumber, "Null", null, "Closed", null).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+         
+          alert("Application Moved To Closed");
+          this.modalService.dismissAll();
+          this.router.navigate(["/home"]);
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("responseAddapplication", data);
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+     //Service Information Kyle 31/01/24
     /*}*/
 
 
@@ -5174,41 +5216,45 @@ export class ActionCenterComponent implements OnInit {
   }
 
   Approve() {
-    this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Final Approved", false, false, "EndOfCommentProcess", true).subscribe((data: any) => {
+     //Service Information Kyle 31/01/24
+    if (confirm("Have you uploaded all relevant documents ?")) {
+       //Service Information Kyle 31/01/24
+      this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Completed", false, false, "EndOfCommentProcess", true).subscribe((data: any) => {
 
-      if (data.responseCode == 1) {
+        if (data.responseCode == 1) {
 
-        alert(data.responseMessage);
-        //commentsService
-        this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, this.loggedInUserSubDepartmentName, this.leaveAComment, "Final Approved", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
+          alert(data.responseMessage);
+          //commentsService
+          this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, this.loggedInUserSubDepartmentName, this.leaveAComment, "Complete", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
-          if (data.responseCode == 1) {
+            if (data.responseCode == 1) {
 
 
-            alert(data.responseMessage);
-            this.CheckALLLinkedDepartmentsCommented(true);
-            /*            this.MoveToClosedStage(true);*/
+              alert(data.responseMessage);
+              this.CheckALLLinkedDepartmentsCommented(true);
+              /*            this.MoveToClosedStage(true);*/
 
-          }
-          else {
-            alert(data.responseMessage);
+            }
+            else {
+              alert(data.responseMessage);
 
-          }
-          console.log("reponse", data);
+            }
+            console.log("reponse", data);
 
-        }, error => {
-          console.log("Error: ", error);
-        })
-      }
-      else {
-        alert(data.responseMessage);
+          }, error => {
+            console.log("Error: ", error);
+          })
+        }
+        else {
+          alert(data.responseMessage);
 
-      }
-      console.log("reponse", data);
+        }
+        console.log("reponse", data);
 
-    }, error => {
-      console.log("Error: ", error);
-    })
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
   }
 
   getServicesByDepID() {
@@ -5460,7 +5506,7 @@ export class ActionCenterComponent implements OnInit {
   asWhat: string;
 
   actionCentreView(content: any) {
-
+ 
     this.subDepartmentForCommentService.getAssignedReviewer(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe(async (data: any) => {
       if (data.responseCode == 1) {
         console.log("User assignment information:", data.dateSet);
@@ -5478,7 +5524,7 @@ export class ActionCenterComponent implements OnInit {
     }, error => {
       console.log("Error in terms of trying to figure out which 'state' the application is in:", error);
     });
-
+   
     if (this.commentState == null) {
       //This is so the Admin can assign
       this.openXl(content);
@@ -5572,6 +5618,109 @@ export class ActionCenterComponent implements OnInit {
     })
   }
   //Audit Trail Kyle
+  //Service Information Kyle 31/01/24
+  AdminAssigningIsPlanningToSelf() {
+    if (confirm("Are you sure you what to assign this project to yourself ?")) {
+      this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.forManuallyAssignSubForCommentID, this.CurrentUser.appUserId).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          this.getLinkedZones();
+          this.updateApplicationStatus();
+          this.MoveApplicationToAllocated();
+          this.viewProjectInfoComponent.getAllComments();
+          this.hasReviewerAssignment = true;
+        }
+        else {
+          alert(data.responseMessage);
+
+        }
+        console.log("Assigned to self", data);
+
+      }, error => {
+        console.log("Error: ", error);
+
+      })
+
+
+      this.reviwerforCommentService.addUpdateReviewerForComment(0, this.ApplicationID, this.CurrentUser.appUserId, "Initial Reviewer Assignment", "This has been done with no notes.", this.CurrentUser.appUserId, this.loggedInUsersSubDepartmentID, this.loggedInUsersSubDepartmentName, this.CurrentUserProfile[0].zoneID, this.CurrentUserProfile[0].zoneName).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+
+        }
+        else {
+          alert(data.responseMessage);
+
+        }
+        console.log("Assigned a reviewer to this zone", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+  }
+
+  getAllDocumentsForServiceInformation() {
+    this.ServiceInfoDocumentsList.splice(0, this.ServiceInfoDocumentsList.length);
+    this.documentUploadService.getAllDocumentsForApplicationForPlanning(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempDocList = {} as ServiceInfoDocumentsList;
+          const current = data.dateSet[i];
+
+          if (current.subDepartmentName == this.CurrentUserProfile[0].subDepartmentName) {
+            tempDocList.DocumentID = current.documentID;
+            tempDocList.DocumentName = current.documentName;
+            tempDocList.ApplicationID = current.applicationID;
+            tempDocList.DocumentGroup = current.documentGroup;
+            tempDocList.SubDepartmentName = current.subDepartmentName;
+            tempDocList.DocumentLocation = current.documentLocalPath;
+            tempDocList.isPlanning = current.isPlanning;
+
+            this.ServiceInfoDocumentsList.push(tempDocList);
+          }
+         
+        }
+
+        this.dataSourceServiceInfoDocuments = this.ServiceInfoDocumentsList;
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("Got all isPlanning Docs", data);
+
+    }, error => {
+      console.log("Error: ", error)
+    })
+  }
+
+  onSaveDocumentUpload(content: any) {
+    this.modalService.dismissAll();
+    this.getAllDocumentsForServiceInformation();
+    this.actionCentreView(content);
+  }
+
+  onDeleteDocument(index: any,content:any) {
+    const document = this.ServiceInfoDocumentsList[index];
+
+    this.documentUploadService.deleteDocument(document.DocumentID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        this.getAllDocumentsForServiceInformation();
+        alert(data.responseMessage);
+        this.modalService.dismissAll();
+        this.actionCentreView(content);
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("Got all isPlanning Docs", data);
+
+    }, error => {
+      console.log("Error: ", error)
+    })
+  }
+   //Service Information Kyle 31/01/24
 }
 
 

@@ -42,7 +42,9 @@
     <!--<img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon4"> -->
     <button mat-raised-button color="createWayleave" *ngIf="showBanner ===false " class="animationSlideDown" (click)="goToNewWayleave(false,false)">Create New Wayleave</button>
     <button mat-raised-button color="createWayleave2" *ngIf="showBanner === true " disabled matTooltip="Creating new applications is currently not allowed." class="animationSlideDown">Create New Wayleave</button>
-    <button mat-raised-button color="createWayleave2" class="animationSlideDown" matTooltip="Future Enhancement" disabled>Request for Services Information (Disabled)</button>
+    <!-- Service Information Kyle 31/01/24-->
+    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToNewWayleave(false,true)">Request for Services Information </button>
+    <!-- Service Information Kyle 31/01/24-->
   </div>
 
   <!--Banner Kyle 26/01/24-->
@@ -295,7 +297,9 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-success " *ngIf="gotDrafts == true " (click)="openDrafts(drafts)">View Draft Wayleaves</button>
+      <!-- Service Information Kyle 31/01/24-->
+      <button type="button" class="btn btn-outline-success " *ngIf="gotDrafts == true && isPlanning == false " (click)="openDrafts(drafts)">View Draft Wayleaves</button>
+      <!-- Service Information Kyle 31/01/24-->
       <button type="button" class="btn btn-outline-success" (click)="sendOption();modal.dismiss('Cross click')">Continue</button>
 
     </div>
