@@ -228,6 +228,7 @@ export interface AllInternalUserProfileList {
 
 
 
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -299,6 +300,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   appAge: number;
   escalateBtn: boolean = false;
 
+  //Banner Kyle 26/01/24
+  showBanner: boolean = false;
+  //Banner kYLE 26/01/24
 
   /*Client details*/
   clientUserID = '';
@@ -619,17 +623,61 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   //builder's break banner
+  //Banner Kyle 26/01/24
+  alertMessage: string;
+  startDate: string;
+  endDate: string;
+  isBannerVisible() {
+  
+    this.configService.getConfigsByConfigName("Alert").subscribe((data: any) => {
+     
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
 
-  isBannerVisible(): boolean {
-    const currentDate = new Date();
-    const startDate = new Date(2023, 11, 1); // 1 Dec 2023
-    const endDate = new Date(2024, 0, 5);   // 5 Jan 2024
-    //const endDate = new Date(2023, 11, 5);   // 5 December 2023 - used to test
+          const current = data.dateSet[i];
 
-    return currentDate >= startDate && currentDate <= endDate;
+          const startEnd = current.utilitySlot1;
+          const currentDate = new Date();
+
+          let start  = startEnd.substring(0, startEnd.indexOf(" "));
+          let end = startEnd.substring(startEnd.indexOf(" ") + 1);
+
+          let startDate = this.parseDate(start);
+          let endDate = this.parseDate(end);
+
+        
+          debugger;
+          if (currentDate >= startDate && currentDate < endDate) {
+            debugger;
+            this.showBanner = true;
+            this.alertMessage = current.utilitySlot3.toUpperCase();
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            this.startDate = `${startDate.getDate()} ${months[startDate.getMonth()]} ${startDate.getFullYear()}`;
+
+            this.endDate = `${endDate.getDate()} ${months[endDate.getMonth()]} ${endDate.getFullYear()}`;
+            break;
+          }
+          else {
+            this.showBanner = false; 
+
+          }
+        }
+      } else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
+  private parseDate(dateString: any): Date {
 
-
+    return new Date(dateString);
+  }
+  //Banner Kyle 26/01/24
   Reviews: any;
 
 
@@ -784,13 +832,20 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   openXl(Prof: any) {
-    this.modalService.open(Prof, {
-      centered: true,
-      size: 'xl',
-      backdrop: 'static', // Prevent clicking outside the modal to close it
-      keyboard: false // Prevent pressing the ESC key to close the modal
-    });
-
+    //Service Conditions Kyle
+    if (this.isPlanning == false) {
+      this.modalService.open(Prof, {
+        centered: true,
+        size: 'xl',
+        backdrop: 'static', // Prevent clicking outside the modal to close it
+        keyboard: false // Prevent pressing the ESC key to close the modal
+      });
+    }
+    else {
+      //Service Information Kyle 31/01/24
+      this.populateClientInfo();
+    }
+        //Service Information Kyle 31/01/24
   }
 
   openNewClient(newClient: any) {
@@ -1060,11 +1115,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   populateClientInfo() {
-    if (confirm("Are you sure you are done?")) {
-      
+       //Service Information Kyle 31/01/24
+    if (this.isPlanning == false) {
+      if (confirm("Are you sure you are done?")) {
+
+        this.createWayleave(this.applicationType, this.isPlanning);
+      }
+    }
+    else {
       this.createWayleave(this.applicationType, this.isPlanning);
     }
-
+       //Service Information Kyle 31/01/24
 
 
   }
@@ -1877,7 +1938,7 @@ this.Applications.push(tempApplicationList);
   
       for (var i = 0; i < this.applicationDataForView.length; i++) {
         const current = this.applicationDataForView[i];
-        if (current.ApplicationStatus == "PTW Pending" || current.ApplicationStatus == "Approval Pack Generation" || current.ApplicationStatus == "Monitoring") {
+        if (current.ApplicationStatus == "PTW Pending" || current.ApplicationStatus == "APG" || current.ApplicationStatus == "Monitoring") {
           this.approveCount++;
   
         }
@@ -1970,7 +2031,7 @@ this.Applications.push(tempApplicationList);
   filterByApproved() {
     
     if (this.filter == false) {
-      this.dataSource = this.Applications.filter(df => df.ApplicationStatus == "Approval Pack Generation" || df.ApplicationStatus == "Final Approval" || df.ApplicationStatus == "PTW Pending");
+      this.dataSource = this.Applications.filter(df => df.ApplicationStatus == "APG" || df.ApplicationStatus == "Final Approval" || df.ApplicationStatus == "PTW Pending");
       this.filter = true;
     }
     else {
@@ -2262,7 +2323,7 @@ this.Applications.push(tempApplicationList);
   recentApprovedCount() {
     // Filter the dataSource based on the "Status" column
     const approvedApplications = this.Applications.filter((element) => {
-      return element.ApplicationStatus === 'PTW Pending' || element.ApplicationStatus === 'Approval Pack Generation';
+      return element.ApplicationStatus === 'PTW Pending' || element.ApplicationStatus === 'APG';
     });
 
     // Update the unpaidcount variable with the count of "Unpaid" applications
