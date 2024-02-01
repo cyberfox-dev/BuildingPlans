@@ -135,6 +135,9 @@ namespace WayleaveManagementSystem.Service
                     isClarifyCommentID = comment.isClarifyCommentID,
                     isApplicantReplay = comment.isApplicantReplay,
                     UserName = comment.UserName,
+                    //Comments Kyle 01/02/24
+                    ZoneName = comment.ZoneName,
+                    //Comments Kyle 01/02/24
                 }
                 ).ToListAsync();
         }
