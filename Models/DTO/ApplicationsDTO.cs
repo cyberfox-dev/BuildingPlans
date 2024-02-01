@@ -59,5 +59,10 @@ namespace WayleaveManagementSystem.Models.DTO
         public int? ZoneID { get; set; }
 
         public int? ReApplyCount { get; set; } //reapply Sindiswa 24 January 2024
+
+        public bool? isEscalated { get; set; } //escalation Sindiswa 29 January 2024
+        public DateTime? EscalationDate { get; set; } //escalation Sindiswa 31 January 2024
+
+        public DateTime? EMBActionDate { get; set; } //escalation Sindiswa 31 January 2024
     }
 }

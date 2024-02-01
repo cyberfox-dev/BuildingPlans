@@ -1,6 +1,7 @@
 <div class="cont5">
   <!--<button mat-raised-button color="createWayleave" (click)="openXl(content)">Action Center</button>-->
-  <button mat-raised-button color="createWayleave" (click)="actionCentreView(content)">Action Center</button>
+  <button mat-raised-button color="createWayleave" (click)="actionCentreView(content)" *ngIf="!EMBLoggedIn">Action Center</button>
+  <button mat-raised-button color="createWayleave" (click)="onGoToEscalationActionCentre(escalatedToEMB)"  *ngIf="EMBLoggedIn">Action Center</button>
 </div>
 
 
@@ -251,6 +252,50 @@
 <!--modal for when they click deposit required-->
 <!---->
 
+<ng-template #escalatedToEMB let-modal>
+  <div class="modal-header">
+    <h1 class="modal-title">EMB Action Center</h1>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <p class="text-center">Only {{this.departmentsDone}} out of {{this.totalDepartments}} departments have either final approved or final rejected the application. Would you like to send a reminder to the other department admins?</p>
+    <mat-form-field class="example-full-width">
+      <mat-label>Enter any additional notes for department admin(s) (optional).</mat-label>
+      <textarea matInput [(ngModel)]="embMessage" placeholder="Type your additional notes here." id="myTextarea"></textarea>
+    </mat-form-field>
+    <div class="cont2">
+      <button mat-raised-button color="clarifyBTN" (click)="sendEmailsToDepartments();modal.close('Save click');"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/paper-plane.svg" class="icon"> Send Reminder</button>
+
+    </div>
+    <hr />
+    <table mat-table [dataSource]=" dataSourceViewDepartmentsForEMBComment" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="subDepartmentName">
+        <th mat-header-cell *matHeaderCellDef> SubDepartment Name  </th>
+        <td mat-cell *matCellDef="let element"> {{element.subDepartmentName}} </td>
+      </ng-container>
+      <ng-container matColumnDef="zoneName">
+        <th mat-header-cell *matHeaderCellDef> Zone Name  </th>
+        <td mat-cell *matCellDef="let element"> {{element.zoneName}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Progress </th>
+        <td mat-cell *matCellDef="let i = index; let element">
+          <!-- Display different text based on departmentDone and departmentYetToAssign -->
+          <span *ngIf="element.departmentDone">End of Comment Process</span>
+          <span *ngIf="element.departmentYetToAssign">No Reviewer has been assigned</span>
+          <span *ngIf="!element.departmentDone && !element.departmentYetToAssign">In Process</span>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef=" displayedColumnsViewDepartmentsForEMBComment"></tr>
+      <tr mat-row *matRowDef="let row; columns:  displayedColumnsViewDepartmentsForEMBComment;"></tr>
+    </table>
+
+  </div>
+</ng-template>
 
 <ng-template #deposit let-modal>
   <div class="modal-header">

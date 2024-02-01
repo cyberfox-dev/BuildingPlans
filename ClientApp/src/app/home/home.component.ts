@@ -83,6 +83,9 @@ export interface ApplicationsList {
   CurrentStage: string,
   ApplicationStatus: string,
   ProjectNumber: string;
+  isEscalated: boolean; //escalation Sindiswa 29 January 2024
+  EscalationDate: any; //escalation Sindiswa 31 January 2024
+  EMBActionDate: any; //escalation Sindiswa 31 January 2024
 }
 
 
@@ -541,7 +544,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
   //Filtered list is duplicated sometimes??
 
-
   ngOnInit(): void {
 
 
@@ -562,6 +564,23 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
       this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
 
+      // #region escalation Sindiswa 29 January 2024 - just debugging
+      console.log("These are the current user's details - I want to find out if they are EMB or nah", this.CurrentUserProfile);
+      console.log("Is this the directorate?", this.CurrentUserProfile[0].directorate);
+      // #endregion
+
+
+      // #region escalation Sindiswa 30 January 2024 - EMB "department" neh?
+
+      if (this.CurrentUserProfile[0].directorate == 'EMB' || this.CurrentUserProfile[0].departmentName == 'EMB' || this.CurrentUserProfile[0].subDepartmentName == 'EMB'
+        || this.CurrentUserProfile[0].departmentID == 28 || this.CurrentUserProfile[0].subDepartmentID == 1021) {
+
+        this.sharedService.setIsEMBUser(true);
+      }
+      else {
+        this.sharedService.setIsEMBUser(false);
+      }
+      // #endregion
       //Audit Trail Kyle
       this.sharedService.isViewReport = false;
       this.sharedService.isReports = false;
@@ -1291,6 +1310,7 @@ export class HomeComponent implements OnInit, OnDestroy {
                   tempApplicationList.TypeOfApplication = current.typeOfApplication;
                   tempApplicationList.CurrentStage = current.currentStageName;
                   tempApplicationList.ApplicationStatus = current.applicationStatus;
+                  tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
                   tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
                   tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
@@ -1364,6 +1384,11 @@ export class HomeComponent implements OnInit, OnDestroy {
                   tempApplicationListShared.isPlanning = current.isPlanning;
                   tempApplicationListShared.permitStartDate = current.permitStartDate;
 
+                  //#region escalation Sindiswa 31 January 2024
+                  tempApplicationList.isEscalated = current.isEscalated;
+                  tempApplicationList.EscalationDate = current.escalationDate;
+                  tempApplicationList.EMBActionDate = current.embActionDate;
+                 //#endregion
 
                   this.applicationDataForView.push(tempApplicationListShared);
                   console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -1633,6 +1658,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.ApplicationStatus = current.applicationStatus;
             this.date = current.dateCreated;
             tempApplicationList.DateCreated = this.date.substring(0, current.dateCreated.indexOf('T'));;;
+            tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
             if (current.projectNumber != null) {
               tempApplicationList.ProjectNumber = current.projectNumber;
@@ -1695,6 +1721,11 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.isPlanning = current.isPlanning;
 
 
+            //#region escalation Sindiswa 31 January 2024
+            tempApplicationList.isEscalated = current.isEscalated;
+            tempApplicationList.EscalationDate = current.escalationDate;
+            tempApplicationList.EMBActionDate = current.embActionDate;
+            //#endregion
 
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -2368,6 +2399,7 @@ this.Applications.push(tempApplicationList);
           tempApplicationList.TypeOfApplication = current.typeOfApplication;
           tempApplicationList.CurrentStage = current.currentStageName;
           tempApplicationList.ApplicationStatus = current.applicationStatus;
+          tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
           tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
           tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
@@ -2443,6 +2475,12 @@ this.Applications.push(tempApplicationList);
           tempApplicationListShared.permitStartDate = current.permitStartDate;
 
 
+          //#region escalation Sindiswa 31 January 2024
+          tempApplicationList.isEscalated = current.isEscalated;
+          tempApplicationList.EscalationDate = current.escalationDate;
+          tempApplicationList.EMBActionDate = current.embActionDate;
+          //#endregion
+
           this.applicationDataForView.push(tempApplicationListShared);
           console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
           this.Applications.push(tempApplicationList);
@@ -2508,9 +2546,166 @@ this.Applications.push(tempApplicationList);
     let number = 21;
 
 
+    // #region escalation Sindiswa 29 January 2024
+    debugger;
+    if (this.CurrentUserProfile[0].directorate == 'EMB' || this.CurrentUserProfile[0].departmentName == 'EMB' || this.CurrentUserProfile[0].subDepartmentName == 'EMB'
+      || this.CurrentUserProfile[0].departmentID == 28 || this.CurrentUserProfile[0].subDepartmentID == 1021) {
+      this.applicationService.getApplicationsForEMB(this.CurrentUser.appUserId).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          console.log("This is the data - here are the escalated applications:", data.dateSet)
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempApplicationList = {} as ApplicationsList;
+            const tempApplicationListShared = {} as ApplicationList;
+            const current = data.dateSet[i];
+            debugger;
 
 
-    if (this.CurrentUserProfile[0].isZoneAdmin == true) {
+
+
+            console.log("current", current)
+            tempApplicationList.ApplicationID = current.applicationID;
+            tempApplicationList.FullName = current.fullName;
+            tempApplicationList.TypeOfApplication = current.typeOfApplication;
+            tempApplicationList.CurrentStage = current.currentStageName;
+            tempApplicationList.ApplicationStatus = current.applicationStatus;
+            tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
+
+            tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+            tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
+
+            /*cal application age*/
+
+            const currentDate = new Date();
+            const dateCreated = new Date(tempApplicationList.DateCreated);
+            const timeDiff = currentDate.getTime() - dateCreated.getTime();
+            const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationAge = daysDiff;
+
+            /*cal stage age*/
+            const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
+            const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+            const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationStageAge = stageDateDiff;
+            console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
+
+
+
+            if (current.projectNumber != null) {
+              tempApplicationList.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationList.ProjectNumber = (current.applicationID).toString();
+            }
+
+
+            /*            do {
+                          tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
+                        } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
+            //save here to send to the shared
+
+            //tempApplicationListShared.applicationID = current. ;
+            tempApplicationListShared.applicationID = current.applicationID;
+            tempApplicationListShared.clientName = current.fullName;
+            tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAddress = current.physicalAddress;
+            tempApplicationListShared.clientRefNo = current.referenceNumber;
+            tempApplicationListShared.CompanyRegNo = current.companyRegNo;
+            tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
+            tempApplicationListShared.NotificationNumber = current.notificationNumber;
+            tempApplicationListShared.WBSNumber = current.wbsNumber;
+            tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
+            tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
+            tempApplicationListShared.NatureOfWork = current.natureOfWork;
+            tempApplicationListShared.ExcavationType = current.excavationType;
+            tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
+            tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
+            tempApplicationListShared.Location = current.location;
+            tempApplicationListShared.clientCellNo = current.phoneNumber;
+            tempApplicationListShared.CreatedById = current.createdById;
+            tempApplicationListShared.UserID = current.userID;//
+            tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+            tempApplicationListShared.CurrentStageName = current.currentStageName;
+            tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+
+            tempApplicationListShared.NextStageName = current.nextStageName;
+            tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+            tempApplicationListShared.PreviousStageName = current.previousStageName;
+            tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+            tempApplicationListShared.DatePaid = current.datePaid;
+            tempApplicationListShared.wbsrequired = current.wbsRequired;
+            tempApplicationListShared.Coordinates = current.coordinates;
+            if (current.projectNumber != null) {
+              tempApplicationListShared.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+            }
+
+            tempApplicationListShared.isPlanning = current.isPlanning;
+            tempApplicationListShared.permitStartDate = current.permitStartDate;
+
+
+            //#region escalation Sindiswa 31 January 2024
+            tempApplicationList.isEscalated = current.isEscalated;
+            tempApplicationList.EscalationDate = current.escalationDate;
+            tempApplicationList.EMBActionDate = current.embActionDate;
+            //#endregion
+
+            this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(current.applicationID, this.CurrentUserProfile.subDepartmentID)
+              .subscribe((data: any) => {
+                if (data.responseCode == 1) {
+
+                  this.processApplication(data.dateSet, current.applicationID);
+                } else {
+                  alert(data.responseMessage);
+                }
+
+
+              }, error => {
+                console.log("Error: ", error);
+              });
+            this.applicationDataForView.push(tempApplicationListShared);
+            console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+            this.Applications.push(tempApplicationList);
+            /*Cehcing the escaltion date*/
+            this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+
+                const current = data.dateSet[0];
+                console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
+                this.viewEscalateDate = current.configDescription;
+                if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
+                  this.escalateBtn = true;
+                }
+
+              }
+              else {
+                alert("Error");
+              }
+
+              console.log("response", data);
+            }, error => {
+              console.log("Error", error);
+            })
+          }
+          this.dataSource = this.Applications.filter(df => df.DateCreated);
+          console.log("WEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEEEEEEEWEWEWEWEWEWEWEWEWEWEWE", this.applicationsForUsersZoneList);
+
+          console.log("Got all applications", data.dateSet);
+        }
+        else {
+          alert(data.responseMessage);
+        }
+
+      })
+    }
+
+    // #endregion
+
+
+
+      if (this.CurrentUserProfile[0].isZoneAdmin == true) {
       
       this.applicationService.getApplicationsForDepAdmin(this.CurrentUserProfile[0].zoneID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
@@ -2529,6 +2724,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.TypeOfApplication = current.typeOfApplication;
             tempApplicationList.CurrentStage = current.currentStageName;
             tempApplicationList.ApplicationStatus = current.applicationStatus;
+            tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
             tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
             tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
@@ -2694,6 +2890,7 @@ this.Applications.push(tempApplicationList);
                     tempApplicationList.TypeOfApplication = current.typeOfApplication;
                     tempApplicationList.CurrentStage = current.currentStageName;
                     tempApplicationList.ApplicationStatus = current.applicationStatus;
+                    tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
                     tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
                     tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
@@ -2816,7 +3013,7 @@ this.Applications.push(tempApplicationList);
               }
 
             }
-           
+            
           }
 
 
@@ -2841,6 +3038,7 @@ this.Applications.push(tempApplicationList);
                   tempApplicationList.TypeOfApplication = current.typeOfApplication;
                   tempApplicationList.CurrentStage = current.currentStageName;
                   tempApplicationList.ApplicationStatus = current.applicationStatus;
+                  tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
                   tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
                   tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
@@ -2913,6 +3111,13 @@ this.Applications.push(tempApplicationList);
 
                   tempApplicationListShared.isPlanning = current.isPlanning;
                   tempApplicationListShared.permitStartDate = current.permitStartDate;
+
+
+                  //#region escalation Sindiswa 31 January 2024
+                  tempApplicationList.isEscalated = current.isEscalated;
+                  tempApplicationList.EscalationDate = current.escalationDate;
+                  tempApplicationList.EMBActionDate = current.embActionDate;
+                  //#endregion
 
 
                   this.applicationDataForView.push(tempApplicationListShared);
@@ -3009,6 +3214,7 @@ this.Applications.push(tempApplicationList);
           tempApplicationList.TypeOfApplication = current.typeOfApplication;
           tempApplicationList.CurrentStage = current.currentStageName;
           tempApplicationList.ApplicationStatus = current.applicationStatus;
+          tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
           tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
           tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
@@ -3081,6 +3287,13 @@ this.Applications.push(tempApplicationList);
 
           tempApplicationListShared.isPlanning = current.isPlanning;
           tempApplicationListShared.permitStartDate = current.permitStartDate;
+
+
+          //#region escalation Sindiswa 31 January 2024
+          tempApplicationList.isEscalated = current.isEscalated;
+          tempApplicationList.EscalationDate = current.escalationDate;
+          tempApplicationList.EMBActionDate = current.embActionDate;
+          //#endregion
 
 
           this.applicationDataForView.push(tempApplicationListShared);
@@ -3163,6 +3376,7 @@ this.Applications.push(tempApplicationList);
           tempApplicationList.TypeOfApplication = current.typeOfApplication;
           tempApplicationList.CurrentStage = current.currentStageName;
           tempApplicationList.ApplicationStatus = current.applicationStatus;
+          tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
           tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
           tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
@@ -3235,6 +3449,13 @@ this.Applications.push(tempApplicationList);
 
           tempApplicationListShared.isPlanning = current.isPlanning;
           tempApplicationListShared.permitStartDate = current.permitStartDate;
+
+
+          //#region escalation Sindiswa 31 January 2024
+          tempApplicationList.isEscalated = current.isEscalated;
+          tempApplicationList.EscalationDate = current.escalationDate;
+          tempApplicationList.EMBActionDate = current.embActionDate;
+          //#endregion
 
 
           this.applicationDataForView.push(tempApplicationListShared);
@@ -3321,6 +3542,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.TypeOfApplication = current.typeOfApplication;
             tempApplicationList.CurrentStage = current.currentStageName;
             tempApplicationList.ApplicationStatus = current.applicationStatus;
+            tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
             tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
             tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
@@ -3395,6 +3617,13 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.permitStartDate = current.permitStartDate;
 
 
+            //#region escalation Sindiswa 31 January 2024
+            tempApplicationList.isEscalated = current.isEscalated;
+            tempApplicationList.EscalationDate = current.escalationDate;
+            tempApplicationList.EMBActionDate = current.embActionDate;
+            //#endregion
+
+
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
             this.Applications.push(tempApplicationList);
@@ -3458,6 +3687,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.TypeOfApplication = current.typeOfApplication;
             tempApplicationList.CurrentStage = current.currentStageName;
             tempApplicationList.ApplicationStatus = current.applicationStatus;
+            tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
             this.date = current.dateCreated;
             tempApplicationList.DateCreated = this.date.substring(0, current.dateCreated.indexOf('T'));;;
 
@@ -3521,6 +3751,13 @@ this.Applications.push(tempApplicationList);
             }
 
             tempApplicationListShared.isPlanning = current.isPlanning;
+
+
+            //#region escalation Sindiswa 31 January 2024
+            tempApplicationList.isEscalated = current.isEscalated;
+            tempApplicationList.EscalationDate = current.escalationDate;
+            tempApplicationList.EMBActionDate = current.embActionDate;
+            //#endregion
 
 
 
@@ -3598,6 +3835,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.TypeOfApplication = current.typeOfApplication;
             tempApplicationList.CurrentStage = current.currentStageName;
             tempApplicationList.ApplicationStatus = current.applicationStatus;
+            tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
             tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
             tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
@@ -3670,6 +3908,13 @@ this.Applications.push(tempApplicationList);
 
             tempApplicationListShared.isPlanning = current.isPlanning;
             tempApplicationListShared.permitStartDate = current.permitStartDate;
+
+
+            //#region escalation Sindiswa 31 January 2024
+            tempApplicationList.isEscalated = current.isEscalated;
+            tempApplicationList.EscalationDate = current.escalationDate;
+            tempApplicationList.EMBActionDate = current.embActionDate;
+            //#endregion
 
 
             this.applicationDataForView.push(tempApplicationListShared);
@@ -3743,6 +3988,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.TypeOfApplication = current.typeOfApplication;
             tempApplicationList.CurrentStage = current.currentStageName;
             tempApplicationList.ApplicationStatus = current.applicationStatus;
+            tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
             tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
             tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
@@ -3815,6 +4061,13 @@ this.Applications.push(tempApplicationList);
 
             tempApplicationListShared.isPlanning = current.isPlanning;
             tempApplicationListShared.permitStartDate = current.permitStartDate;
+
+
+            //#region escalation Sindiswa 31 January 2024
+            tempApplicationList.isEscalated = current.isEscalated;
+            tempApplicationList.EscalationDate = current.escalationDate;
+            tempApplicationList.EMBActionDate = current.embActionDate;
+            //#endregion
 
 
             this.applicationDataForView.push(tempApplicationListShared);
@@ -3893,6 +4146,7 @@ this.Applications.push(tempApplicationList);
               tempApplicationList.TypeOfApplication = current.typeOfApplication;
               tempApplicationList.CurrentStage = current.currentStageName;
               tempApplicationList.ApplicationStatus = current.applicationStatus;
+              tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
               tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
               tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
@@ -3967,6 +4221,13 @@ this.Applications.push(tempApplicationList);
               tempApplicationListShared.permitStartDate = current.permitStartDate;
 
 
+              //#region escalation Sindiswa 31 January 2024
+              tempApplicationList.isEscalated = current.isEscalated;
+              tempApplicationList.EscalationDate = current.escalationDate;
+              tempApplicationList.EMBActionDate = current.embActionDate;
+              //#endregion
+
+
               this.applicationDataForView.push(tempApplicationListShared);
               console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
               this.Applications.push(tempApplicationList);
@@ -4027,6 +4288,7 @@ this.Applications.push(tempApplicationList);
               tempApplicationList.TypeOfApplication = current.typeOfApplication;
               tempApplicationList.CurrentStage = current.currentStageName;
               tempApplicationList.ApplicationStatus = current.applicationStatus;
+              tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
               this.date = current.dateCreated;
               tempApplicationList.DateCreated = this.date.substring(0, current.dateCreated.indexOf('T'));;;
 
@@ -4092,6 +4354,11 @@ this.Applications.push(tempApplicationList);
               tempApplicationListShared.isPlanning = current.isPlanning;
 
 
+              //#region escalation Sindiswa 31 January 2024
+              tempApplicationList.isEscalated = current.isEscalated;
+              tempApplicationList.EscalationDate = current.escalationDate;
+              tempApplicationList.EMBActionDate = current.embActionDate;
+              //#endregion
 
               this.applicationDataForView.push(tempApplicationListShared);
               console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -5505,152 +5772,163 @@ this.Applications.push(tempApplicationList);
 
 
   filterForCurrentReviews() {
+    debugger;
     this.applicationDataForView = [];
     this.Applications = [];
     this.applicationsForUsersZoneList.splice(0, this.applicationsForUsersZoneList.length);
-    this.applicationService.getApplicationsList(this.CurrentUser.appUserId, true).subscribe((data: any) => {
+      this.applicationService.getApplicationsList(this.CurrentUser.appUserId, true).subscribe((data: any) => {
 
 
-      if (data.responseCode == 1) {
+        if (data.responseCode == 1) {
 
 
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempApplicationList = {} as ApplicationsList;
-          const tempApplicationListShared = {} as ApplicationList;
-          const current = data.dateSet[i];
-
-
-
-
-
-          console.log("current", current)
-          tempApplicationList.ApplicationID = current.applicationID;
-          tempApplicationList.FullName = current.fullName;
-          tempApplicationList.TypeOfApplication = current.typeOfApplication;
-          tempApplicationList.CurrentStage = current.currentStageName;
-          tempApplicationList.ApplicationStatus = current.applicationStatus;
-
-          tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
-          tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
-
-          /*cal application age*/
-
-          const currentDate = new Date();
-          const dateCreated = new Date(tempApplicationList.DateCreated);
-          const timeDiff = currentDate.getTime() - dateCreated.getTime();
-          const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
-          tempApplicationList.TestApplicationAge = daysDiff;
-
-          /*cal stage age*/
-          const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
-          const stageDate = currentDate.getTime() - stageDateCreated.getTime();
-          const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
-          tempApplicationList.TestApplicationStageAge = stageDateDiff;
-          console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempApplicationList = {} as ApplicationsList;
+            const tempApplicationListShared = {} as ApplicationList;
+            const current = data.dateSet[i];
 
 
 
-          if (current.projectNumber != null) {
-            tempApplicationList.ProjectNumber = current.projectNumber;
-          } else {
-            tempApplicationList.ProjectNumber = (current.applicationID).toString();
-          }
 
 
-          /*            do {
-                        tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
-                      } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
-          //save here to send to the shared
+            console.log("current", current)
+            tempApplicationList.ApplicationID = current.applicationID;
+            tempApplicationList.FullName = current.fullName;
+            tempApplicationList.TypeOfApplication = current.typeOfApplication;
+            tempApplicationList.CurrentStage = current.currentStageName;
+            tempApplicationList.ApplicationStatus = current.applicationStatus;
+            tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
-          //tempApplicationListShared.applicationID = current. ;
-          tempApplicationListShared.applicationID = current.applicationID;
-          tempApplicationListShared.clientName = current.fullName;
-          tempApplicationListShared.clientEmail = current.email;
-          tempApplicationListShared.clientAddress = current.physicalAddress;
-          tempApplicationListShared.clientRefNo = current.referenceNumber;
-          tempApplicationListShared.CompanyRegNo = current.companyRegNo;
-          tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
-          tempApplicationListShared.NotificationNumber = current.notificationNumber;
-          tempApplicationListShared.WBSNumber = current.wbsNumber;
-          tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
-          tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
-          tempApplicationListShared.NatureOfWork = current.natureOfWork;
-          tempApplicationListShared.ExcavationType = current.excavationType;
-          tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
-          tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
-          tempApplicationListShared.Location = current.location;
-          tempApplicationListShared.clientCellNo = current.phoneNumber;
-          tempApplicationListShared.CreatedById = current.createdById;
-          tempApplicationListShared.UserID = current.userID;//
-          tempApplicationListShared.ApplicationStatus = current.applicationStatus;
-          tempApplicationListShared.CurrentStageName = current.currentStageName;
-          tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+            tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+            tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
 
-          tempApplicationListShared.NextStageName = current.nextStageName;
-          tempApplicationListShared.NextStageNumber = current.nextStageNumber;
-          tempApplicationListShared.PreviousStageName = current.previousStageName;
-          tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
-          tempApplicationListShared.DatePaid = current.datePaid;
-          tempApplicationListShared.wbsrequired = current.wbsRequired;
-          tempApplicationListShared.Coordinates = current.coordinates;
-          if (current.projectNumber != null) {
-            tempApplicationListShared.ProjectNumber = current.projectNumber;
-          } else {
-            tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
-          }
+            /*cal application age*/
 
-          tempApplicationListShared.isPlanning = current.isPlanning;
-          tempApplicationListShared.permitStartDate = current.permitStartDate;
-          
-          this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(current.applicationID, this.CurrentUserProfile.subDepartmentID)
-            .subscribe((data: any) => {
+            const currentDate = new Date();
+            const dateCreated = new Date(tempApplicationList.DateCreated);
+            const timeDiff = currentDate.getTime() - dateCreated.getTime();
+            const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationAge = daysDiff;
+
+            /*cal stage age*/
+            const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
+            const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+            const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationStageAge = stageDateDiff;
+            console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
+
+
+
+            if (current.projectNumber != null) {
+              tempApplicationList.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationList.ProjectNumber = (current.applicationID).toString();
+            }
+
+
+            /*            do {
+                          tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
+                        } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
+            //save here to send to the shared
+
+            //tempApplicationListShared.applicationID = current. ;
+            tempApplicationListShared.applicationID = current.applicationID;
+            tempApplicationListShared.clientName = current.fullName;
+            tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAddress = current.physicalAddress;
+            tempApplicationListShared.clientRefNo = current.referenceNumber;
+            tempApplicationListShared.CompanyRegNo = current.companyRegNo;
+            tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
+            tempApplicationListShared.NotificationNumber = current.notificationNumber;
+            tempApplicationListShared.WBSNumber = current.wbsNumber;
+            tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
+            tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
+            tempApplicationListShared.NatureOfWork = current.natureOfWork;
+            tempApplicationListShared.ExcavationType = current.excavationType;
+            tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
+            tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
+            tempApplicationListShared.Location = current.location;
+            tempApplicationListShared.clientCellNo = current.phoneNumber;
+            tempApplicationListShared.CreatedById = current.createdById;
+            tempApplicationListShared.UserID = current.userID;//
+            tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+            tempApplicationListShared.CurrentStageName = current.currentStageName;
+            tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+
+            tempApplicationListShared.NextStageName = current.nextStageName;
+            tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+            tempApplicationListShared.PreviousStageName = current.previousStageName;
+            tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+            tempApplicationListShared.DatePaid = current.datePaid;
+            tempApplicationListShared.wbsrequired = current.wbsRequired;
+            tempApplicationListShared.Coordinates = current.coordinates;
+            if (current.projectNumber != null) {
+              tempApplicationListShared.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+            }
+
+            tempApplicationListShared.isPlanning = current.isPlanning;
+            tempApplicationListShared.permitStartDate = current.permitStartDate;
+
+
+            //#region escalation Sindiswa 31 January 2024
+            tempApplicationList.isEscalated = current.isEscalated;
+            tempApplicationList.EscalationDate = current.escalationDate;
+            tempApplicationList.EMBActionDate = current.embActionDate;
+            //#endregion
+
+            this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(current.applicationID, this.CurrentUserProfile.subDepartmentID)
+              .subscribe((data: any) => {
+                if (data.responseCode == 1) {
+
+                  this.processApplication(data.dateSet, current.applicationID);
+                } else {
+                  alert(data.responseMessage);
+                }
+
+
+              }, error => {
+                console.log("Error: ", error);
+              });
+            this.applicationDataForView.push(tempApplicationListShared);
+            console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+            this.Applications.push(tempApplicationList);
+            /*Cehcing the escaltion date*/
+            this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
+
               if (data.responseCode == 1) {
-                
-                this.processApplication(data.dateSet, current.applicationID);
-              } else {
-                alert(data.responseMessage);
+
+                const current = data.dateSet[0];
+                console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
+                this.viewEscalateDate = current.configDescription;
+                if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
+                  this.escalateBtn = true;
+                }
+
+              }
+              else {
+                alert("Error");
               }
 
-
+              console.log("response", data);
             }, error => {
-              console.log("Error: ", error);
-            });
-          this.applicationDataForView.push(tempApplicationListShared);
-          console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
-          this.Applications.push(tempApplicationList);
-          /*Cehcing the escaltion date*/
-          this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
+              console.log("Error", error);
+            })
+          }
+          this.dataSource = this.Applications.filter(df => df.DateCreated);
+          console.log("WEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEEEEEEEWEWEWEWEWEWEWEWEWEWEWE", this.applicationsForUsersZoneList);
 
-            if (data.responseCode == 1) {
-
-              const current = data.dateSet[0];
-              console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
-              this.viewEscalateDate = current.configDescription;
-              if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
-                this.escalateBtn = true;
-              }
-
-            }
-            else {
-              alert("Error");
-            }
-
-            console.log("response", data);
-          }, error => {
-            console.log("Error", error);
-          })
+          console.log("Got all applications", data.dateSet);
         }
-        this.dataSource = this.Applications.filter(df => df.DateCreated);
-        console.log("WEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEEEEEEEWEWEWEWEWEWEWEWEWEWEWE", this.applicationsForUsersZoneList);
+        else {
+          alert(data.responseMessage);
+        }
 
-        console.log("Got all applications", data.dateSet);
-      }
-      else {
-        alert(data.responseMessage);
-      }
+      })
 
-    })
-  }
+    
+ }
 
   getZonesForApplication(applicationID: number) {
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(applicationID, this.CurrentUserProfile.subDepartmentID)
@@ -5697,4 +5975,27 @@ this.Applications.push(tempApplicationList);
     // After processing all applications, filter the dataSource based on DateCreated
 
   }
+
+  // #region escalation Sindiswa 29 January 2024
+  escalateApplication(element: any) {
+    debugger;
+    const confirm = window.confirm("Are you sure you want to escalate this application?");
+
+    if (confirm) {
+      this.applicationService.escalateApplication(element.ApplicationID).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          console.log(`An application with the following project number ${element.ProjectNumber} has been escalated.`);
+          this.router.navigate(["/home"]); //will this refresh?
+          location.reload();
+        }
+      })
+
+    }
+  }
+
+  EMBReviews() {
+
+  }
+  // #endregion
 }

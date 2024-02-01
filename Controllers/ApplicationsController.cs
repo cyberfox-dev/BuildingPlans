@@ -117,7 +117,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _applicationsService.GetApplicationsByApplicationID(applicationID);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application Deleted Successfully", result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application Details Gotten Successfully", result));
                 }
 
             }
@@ -212,7 +212,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _applicationsService.GetApplicationsByProjectNumber(model.ProjectNumber);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application Deleted Successfully", result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application Details Gotten Successfully", result));
                 }
 
             }
@@ -396,7 +396,59 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _applicationsService.GetApplicationsByProjectNumberRA(model.ProjectNumber);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application Deleted Successfully", result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application Details Gathered Successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        //escalation Sindiswa 29 January 2024
+        [HttpPost("EscalateApplication")]
+        public async Task<object> EscalateApplication([FromBody] ApplicationStagesBindingModel model)
+        {
+            try
+            {
+
+                if (model.ApplicationID == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.EscalateApplication(model.ApplicationID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application Escalated Successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+        [HttpPost("CancelEscalation")]
+        public async Task<object> CancelEscalation([FromBody] ApplicationStagesBindingModel model)
+        {
+            try
+            {
+
+                if (model.ApplicationID == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.CancelEscalation(model.ApplicationID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application De-Escalated Successfully", result));
                 }
 
             }

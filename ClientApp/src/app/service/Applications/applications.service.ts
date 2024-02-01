@@ -180,4 +180,20 @@ export class ApplicationsService {
     return this.httpClient.post(this.baseURL + "GetApplicationsByProjectNumberRA", body);
 
   }
+  //escalation Sindiswa 29 January 2024
+  public escalateApplication(applicationID?: number | null) {
+    const body = {
+      ApplicationID: applicationID,
+    }
+    return this.httpClient.post(this.baseURL + "EscalateApplication", body);
+
+  }
+  //escalation Sindiswa 30 January 2024
+  public cancelEscalation(applicationID?: number | null) {
+    const body = {
+      ApplicationID: applicationID,
+    }
+    return this.httpClient.post(this.baseURL + "CancelEscalation", body);
+
+  }
 }

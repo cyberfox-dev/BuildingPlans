@@ -5,12 +5,14 @@
   </div>
 <mat-tab-group class="mat-dialog-content">
   <mat-tab label="New Notifications">
-    <div class="timeline__event animated fade-in-bottom  timeline__event--type2" *ngFor="let notification of NotificationsList" (click)="getSelectedNotification(notification.ApplicationID)">
+    <!--<div class="timeline__event animated fade-in-bottom  timeline__event--type2" *ngFor="let notification of NotificationsList" (click)="getSelectedNotification(notification.ApplicationID)">-->
+    <div class="timeline__event animated fade-in-bottom  timeline__event--type2" *ngFor="let notification of NotificationsList" (click)="getSelectedNotificationNew(notification.NotificationID)">
+      <!--escalation 31 January 2024-->
       <div class="timeline__event__icon">
         <div class="timeline__event__date">
           {{ notification.NotificationName }}
           <br>
-          <span class="daysAgo">{{ getTimeAgo(notification.DateCreated) }}</span>
+          <span class="daysAgo">{{ getTimeAgo(notification.DateCreatedwithTIME) }}</span> <!--notifications Sindiswa 31 January 2024-->
         </div>
       </div>
       <div class="timeline__event__content">
@@ -18,7 +20,9 @@
           Application {{ notification.ApplicationID }}
         </div>
         <div class="timeline__event__description">
-          <p>Application {{ notification.ApplicationID }} has been created on {{ notification.DateCreated }}</p>
+          <p *ngIf="notification.NotificationDescription === 'New wayleave application'">Application {{ notification.ApplicationID }} has been created on {{ notification.DateCreated }}</p>
+          <p *ngIf="notification.NotificationDescription === 'Escalated wayleave application'">Application {{ notification.ApplicationID }} has been escalated on {{ notification.DateCreated }}</p>
+          <!--Need to check the application Assigned things!-->
         </div>
       </div>
     </div>
@@ -26,12 +30,13 @@
 
   <mat-tab label="Old Notifications">
 
-    <div class="timeline__event animated fade-in-bottom  timeline__event--type2seen" *ngFor="let notifications of OldNotificationsList" (click)="getSelectedNotification(notifications.ApplicationID)">
+    <!--<div class="timeline__event animated fade-in-bottom  timeline__event--type2seen" *ngFor="let notifications of OldNotificationsList" (click)="getSelectedNotification(notifications.ApplicationID)">-->
+    <div class="timeline__event animated fade-in-bottom  timeline__event--type2seen" *ngFor="let notifications of OldNotificationsList" (click)="getSelectedNotificationNew(notifications.NotificationID)"> <!--escalation 31 January 2024-->
       <div class="timeline__event__icon">
         <div class="timeline__event__date">
           {{notifications.NotificationName}}
           <br>
-          <span class="daysAgo">  {{ getTimeAgo(notifications.DateCreated) }} </span>
+          <span class="daysAgo">  {{ getTimeAgo(notifications.DateCreatedwithTIME) }} </span> <!--notifications Sindiswa 31 January 2024-->
         </div>
       </div>
       <div class="timeline__event__content">
@@ -39,7 +44,8 @@
           Application {{notifications.ApplicationID}}
         </div>
         <div class="timeline__event__description">
-          <p>Application {{notifications.ApplicationID}} has been created on {{notifications.DateCreated}}</p>
+          <p *ngIf="notifications.NotificationDescription === 'New wayleave application'">Application {{ notifications.ApplicationID }} has been created on {{ notifications.DateCreated }}</p>
+          <p *ngIf="notifications.NotificationDescription === 'Escalated wayleave application'">Application {{ notifications.ApplicationID }} has been escalated on {{ notifications.DateCreated }}</p>
         </div>
 
       </div>
@@ -115,7 +121,7 @@
       </div>
       <div>
 
-        <p style="font-size:20px;">Application {{this.MessageList.NotificationDescription}}</p>
+        <p style="font-size:20px;">{{this.MessageList.NotificationDescription}}</p> <!--escalation Sindiswa 31 January 2024 - removed the word "Application" that was next to the description-->
       </div>
     </div>
 

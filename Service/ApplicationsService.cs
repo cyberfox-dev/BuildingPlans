@@ -348,6 +348,9 @@ namespace WayleaveManagementSystem.Service
                    WBSRequired = Applications.WBSRequired,
                    Coordinates = Applications.Coordinates,
                    ReApplyCount = Applications.ReApplyCount, //reapply Sindiswa 26 January 2024
+                   isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
+                   EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
+                   EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
                }
                ).ToListAsync();
 
@@ -456,6 +459,9 @@ namespace WayleaveManagementSystem.Service
                        WBSRequired = Applications.WBSRequired,
                        Coordinates = Applications.Coordinates,
                        ReApplyCount = Applications.ReApplyCount, //reapply Sindiswa 26 January 2024
+                       isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
+                       EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
+                       EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
                    }
                    ).ToListAsync();
             }
@@ -504,6 +510,10 @@ namespace WayleaveManagementSystem.Service
                        WBSRequired = Applications.WBSRequired,
                        Coordinates = Applications.Coordinates,
                        ReApplyCount = Applications.ReApplyCount, //reapply Sindiswa 26 January 2024
+                       isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
+
+                       EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
+                       EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
                    }
                    ).ToListAsync();
             }
@@ -650,6 +660,10 @@ namespace WayleaveManagementSystem.Service
                    permitStartDate = Applications.PermitStartDate,
                    WBSRequired = Applications.WBSRequired,
                    Coordinates = Applications.Coordinates,
+                   ReApplyCount = Applications.ReApplyCount, //reapply Sindiswa 26 January 2024
+                   isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
+                   EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
+                   EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
                }
                ).ToListAsync();
         }
@@ -699,7 +713,11 @@ namespace WayleaveManagementSystem.Service
                     permitStartDate = Applications.PermitStartDate,
                     WBSRequired = Applications.WBSRequired,
                     Coordinates = Applications.Coordinates,
-                }
+                    ReApplyCount = Applications.ReApplyCount, //reapply Sindiswa 26 January 2024
+                    isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
+                    EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
+                    EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
+                    }
            ).ToListAsync();
         }
 
@@ -750,6 +768,10 @@ namespace WayleaveManagementSystem.Service
                         permitStartDate = Applications.PermitStartDate,
                         WBSRequired = Applications.WBSRequired,
                         Coordinates = Applications.Coordinates,
+                        ReApplyCount = Applications.ReApplyCount, //reapply Sindiswa 26 January 2024
+                        isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
+                        EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
+                        EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
                     }
            ).ToListAsync();
         }
@@ -800,17 +822,21 @@ namespace WayleaveManagementSystem.Service
                         permitStartDate = Applications.PermitStartDate,
                         WBSRequired = Applications.WBSRequired,
                         Coordinates = Applications.Coordinates,
+                        ReApplyCount = Applications.ReApplyCount, //reapply Sindiswa 26 January 2024
+                        isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
+                        EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
+                        EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
                     }
            ).ToListAsync();
         }
-
+     
         public async Task<List<ApplicationsDTO>> GetApplicationsForEMB(string userId)
         {
             return await (
                     from Applications in _context.Application
                     join SubDepartmentComment in _context.SubDepartmentForComment
                     on Applications.ApplicationID equals SubDepartmentComment.ApplicationID
-                    where Applications.isActive == true && Applications.ApplicationStatus == "Unpaid"
+                    where Applications.isActive == true &&  Applications.isEscalated == true // Applications.ApplicationStatus == "Unpaid" -- escalation Sindiswa 29 January 2024, well there's already a filter by Unpaid method moss
 
                     orderby Applications.DateCreated descending
                     select new ApplicationsDTO()
@@ -850,9 +876,16 @@ namespace WayleaveManagementSystem.Service
                         permitStartDate = Applications.PermitStartDate,
                         WBSRequired = Applications.WBSRequired,
                         Coordinates = Applications.Coordinates,
+                        ReApplyCount = Applications.ReApplyCount, //reapply Sindiswa 26 January 2024
+                        isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
+                        EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
+                        EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
                     }
-           ).ToListAsync();
+           ).Distinct().ToListAsync();
         }
+        
+
+
         public async Task<List<ApplicationsDTO>> GetApplicationsForDepartment(int? zoneId, int? subDepartmentID)
         {
             return await (
@@ -899,6 +932,10 @@ namespace WayleaveManagementSystem.Service
                         permitStartDate = Applications.PermitStartDate,
                         WBSRequired = Applications.WBSRequired,
                         Coordinates = Applications.Coordinates,
+                        ReApplyCount = Applications.ReApplyCount, //reapply Sindiswa 26 January 2024
+                        isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
+                        EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
+                        EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
                     }
            ).ToListAsync();
         }
@@ -1033,6 +1070,10 @@ namespace WayleaveManagementSystem.Service
                    permitStartDate = Applications.PermitStartDate,
                    WBSRequired = Applications.WBSRequired,
                    Coordinates = Applications.Coordinates,
+                   ReApplyCount = Applications.ReApplyCount, //reapply Sindiswa 26 January 2024
+                   isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
+                   EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
+                   EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
                }
                ).Skip(1) // Skip the latest application
                 .ToListAsync();
@@ -1040,6 +1081,48 @@ namespace WayleaveManagementSystem.Service
 
         #endregion
 
+        public async Task<bool> EscalateApplication(int? applicationID)
+        {
+            // Check if the record exists in the db
+            var tempApplicationTable = await _context.Application.FindAsync(applicationID);
+
+            if (tempApplicationTable == null)
+            {
+                return false;
+            }
+            else
+            {
+                // Set isEscalated to true
+                tempApplicationTable.isEscalated = true;
+                tempApplicationTable.EscalationDate = DateTime.Now;
+                tempApplicationTable.EMBActionDate = null;
+
+                // Update the entity in the database
+                _context.Application.Update(tempApplicationTable);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+        }
+
+        public async Task<bool> CancelEscalation(int? applicationID)
+        {
+            var tempApplicationTable = await _context.Application.FindAsync(applicationID);
+
+            if (tempApplicationTable == null)
+            {
+                return false;
+            }
+            else
+            {
+                // Set isEscalated to true
+                tempApplicationTable.isEscalated = false;
+                tempApplicationTable.EMBActionDate = DateTime.Now;
+                // Update the entity in the database
+                _context.Application.Update(tempApplicationTable);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+        }
 
     }
 }

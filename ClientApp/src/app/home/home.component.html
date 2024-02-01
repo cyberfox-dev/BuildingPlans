@@ -246,8 +246,8 @@
               <button mat-raised-button color="blue" matTooltip="View Application" (click)="CheckIfCanReapply(element,i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid.svg" class="icon"></button>
 
 
-
-              <button mat-raised-button color="warn" matTooltip="Escalate" *ngIf="applications.TestApplicationAge >= this.viewEscalateDate"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/stairs-solid.svg" class="icon red"></button>
+              <!--escalation Sindiswa 29 January 2024-->
+              <button mat-raised-button color="warn" matTooltip="Escalate" (click)="escalateApplication(element)" *ngIf="applications.TestApplicationAge >= this.viewEscalateDate && (applications.isEscalated == null || applications.isEscalated == true)" [disabled]="element.isEscalated"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/stairs-solid.svg" class="icon red"></button>
             </div>
             <div class="menu">
               <button mat-button color="action" [matMenuTriggerFor]="actions"> <i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>

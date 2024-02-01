@@ -64,6 +64,13 @@ export interface SubDepartmentList {
   UserAssaignedToComment: string | null;
   commentStatus: string | null;
 }
+// #region escalation Sindiswa 30 January 2024
+export interface SubDepartmentListForComment extends SubDepartmentList {
+  zoneName: string;
+  departmentDone: boolean;
+  departmentYetToAssign:boolean;
+}
+// #endregion
 
 export interface ServiceItemList {
   serviceItemID: number;
@@ -300,6 +307,7 @@ export class ActionCenterComponent implements OnInit {
   ServiceItemList: ServiceItemList[] = [];
   StagesList: StagesList[] = [];
   CommentsList: CommentsList[] = [];
+  LinkedSubDepartmentsList: SubDepartmentListForComment[] = []; //escalation Sindiswa 30 January 2024
 
    //Service Information Kyle 31/01/24
   ServiceInfoDocumentsList: ServiceInfoDocumentsList[] = [];
@@ -340,7 +348,12 @@ export class ActionCenterComponent implements OnInit {
   @ViewChild(MatTable) SubDepartmentLinkedListTable: MatTable<SubDepartmentList> | undefined;
   @ViewChild(MatTable) ZoneListTable: MatTable<ZoneList> | undefined;
 
+  //#region escalation Sindiswa 30 January 2024
 
+  displayedColumnsViewDepartmentsForEMBComment: string[] = ['subDepartmentName', 'zoneName', 'actions'];
+  dataSourceViewDepartmentsForEMBComment = this.LinkedSubDepartmentsList;
+  @ViewChild(MatTable) SubDepartmentsListTable: MatTable<SubDepartmentListForComment> | undefined;
+  //#endregion
 
   closeResult!: string;
   stringifiedDataUserProfile: any;
@@ -423,6 +436,8 @@ export class ActionCenterComponent implements OnInit {
 
   leaveAComment = "";
 
+  EMBLoggedIn: boolean; ///escalation Sindiswa 30 January 2024
+
   sanitizeHTML(comment: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(comment);
   }
@@ -436,18 +451,19 @@ export class ActionCenterComponent implements OnInit {
     // setTimeout(() => {
     //this.getDepartmentManagerUserID();
     //Get Current Application Infomation 
-
+    this.EMBLoggedIn = this.sharedService.getIsEMBUser();
     this.initializeTinyMCE();
     this.applicationData = this.sharedService.getViewApplicationIndex();
     console.log("venApplicationData:", this.applicationData);
     this.getAllSubDepartments();
-
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
 
     if (this.CurrentUser == null) {
       console.log("Not");
     }
     else {
-      console.log(this.CurrentUser);
+      console.log("This is the Current User's Details",this.CurrentUser);
     }
 
     /*  this.getAllServiceItmes();*/
@@ -479,6 +495,7 @@ export class ActionCenterComponent implements OnInit {
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
+    console.log("This is the Current User's Details", this.CurrentUserProfile);
     console.log("WTFWTFWTFWTFWTFWTWFTWFWTFWTFWTWTF", this.CurrentUserProfile[0]);
     this.loggedInUsersIsAdmin = this.CurrentUserProfile[0].isDepartmentAdmin;
     this.loggedInUsersIsZoneAdmin = this.CurrentUserProfile[0].isZoneAdmin;
@@ -5506,7 +5523,7 @@ export class ActionCenterComponent implements OnInit {
   asWhat: string;
 
   actionCentreView(content: any) {
- 
+    debugger;
     this.subDepartmentForCommentService.getAssignedReviewer(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe(async (data: any) => {
       if (data.responseCode == 1) {
         console.log("User assignment information:", data.dateSet);
@@ -5535,12 +5552,12 @@ export class ActionCenterComponent implements OnInit {
     else if (this.userAssignedText === "EndOfCommentProcess") {
       alert("This application has reached the 'End Of Comment Process' stage");
       // actionCentre Sindiswa 22 January 2024 - the permit issuer can't open their action centre view
-      console.log("Can this user approvePermit?? PermitStage:" + this.permit + " CanApprove: " + this.canApprovePermit); 
+      console.log("Can this user approvePermit?? PermitStage:" + this.permit + " CanApprove: " + this.canApprovePermit);
       if (this.permit && this.canApprovePermit) {
         this.openXl(content);
       }
     }
-    else if ((this.userAssignedText == "Senior Reviewer to comment" && this.commentState == "Referred") || (this.userAssignedText == "All users in Subdepartment FA" && (this.commentState == "Approved" || this.commentState == "Rejected"))) {
+    else if ((this.userAssignedText == "Senior Reviewer to comment" && this.commentState == "Referred") || (this.userAssignedText == "All users in Subdepartment FA" && (this.commentState == "Approved" || this.commentState == "Approved(Conditional)" || this.commentState == "Rejected"))) {
 
       if (this.commentState == "Referred") {
         this.appointmentText = "Senior Reviewer - Self Appointed";
@@ -5588,6 +5605,11 @@ export class ActionCenterComponent implements OnInit {
       }
     }
 
+    //#region escalation Sindiswa 31 January 2024 - saw card while working on escalation tings, need to add someone has already taken application text
+    else if ((this.userAssignedText != null && this.userAssignedText != "Senior Reviewer to comment" && this.userAssignedText != "All users in Subdepartment FA") && (this.commentState == "Approved" || this.commentState == "Referred"  || this.commentState == "Approved(Conditional)" || this.commentState == "Rejected")) {
+      alert("This application is currently under review by a senior reviewer or final approver.");
+    }
+    //#endregion
   }
 
   onCommentFA(interact: any) {
@@ -5721,8 +5743,252 @@ export class ActionCenterComponent implements OnInit {
     })
   }
    //Service Information Kyle 31/01/24
-}
 
+
+  //#region escalation Sindiswa 30 January 2024 & 31 January 2024
+  async onGoToEscalationActionCentre(escalatedToEMB: any) {
+    debugger;
+    await this.getEscalationDetails();
+
+    if (this.isEscalated == true) {
+      await this.getRelavantDepartments();
+      this.modalService.open(escalatedToEMB, { backdrop: 'static', size: 'xl' });
+    }
+    else {
+      alert("This application has NOT been escalated.")
+    }
+  }
+  isEscalated: boolean;
+  async getEscalationDetails() {
+    try {
+      const data: any = await this.applicationsService.getApplicationsByApplicationID(this.ApplicationID).toPromise();
+
+      if (data.responseCode == 1) {
+        const current = data.dateSet[0];
+        this.isEscalated = await current.isEscalated;
+        console.log("Has this application been escalated?", this.isEscalated);
+      } else {
+        alert(data.responseMessage);
+      }
+
+      console.log("This application's data", data);
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  }
+  totalDepartments: number = 0;
+  departmentsYetToAssign: number = 0;
+  departmentsDone: number = 0;
+
+  embMessage: any;
+  subDepartmentIDsNotDone: number[] = [];
+  zoneIDsNotDone: number[] = [];
+ async getRelavantDepartments() {
+   debugger;
+   try {
+     this.LinkedSubDepartmentsList.splice(0, this.LinkedSubDepartmentsList.length);
+
+     const data: any = await this.subDepartmentForCommentService.getSubDepartmentForComment(this.ApplicationID).toPromise();
+     if (data.responseCode == 1) {
+       debugger;
+       for (let i = 0; i < data.dateSet.length; i++) {
+         const current = data.dateSet[i];
+
+         const departmentDone = current.userAssaignedToComment === "EndOfCommentProcess";
+         const departmentYetToAssign = current.userAssaignedToComment === null && current.commentStatus === null;
+
+         const tempSubdepartmentList: SubDepartmentListForComment = {
+           subDepartmentName: current.subDepartmentName,
+           zoneName: current.zoneName,
+           subDepartmentID: current.subDepartmentID,
+           zoneID: current.zoneID,
+           UserAssaignedToComment: current.userAssaignedToComment,
+           commentStatus: current.commentStatus,
+           //
+          departmentID: 0, //random default value
+          dateUpdated: current.dateUpdated,
+          dateCreated: current.dateCreated,
+          subdepartmentForCommentID: current.subDepartmentForCommentID,
+           //other
+           departmentDone: departmentDone,
+           departmentYetToAssign: departmentYetToAssign,
+         };
+
+         this.totalDepartments++;
+         if (current.userAssaignedToComment == "EndOfCommentProcess") {
+           this.departmentsDone++;
+
+         }
+         else if (current.userAssaignedToComment == null && current.commentStatus == null) {
+           this.departmentsYetToAssign++;
+           this.subDepartmentIDsNotDone.push(current.subDepartmentID);
+           this.zoneIDsNotDone.push(current.zoneID);
+         }
+         else {
+           this.subDepartmentIDsNotDone.push(current.subDepartmentID); //This will help me push the SubDepartmentIDs of the SUBDEP still in process
+           this.zoneIDsNotDone.push(current.zoneID); 
+         }
+
+         this.LinkedSubDepartmentsList.push(tempSubdepartmentList);
+       }
+       this.SubDepartmentsListTable?.renderRows();
+     }
+     else {
+       alert(data.responseMessage);
+
+     }
+     console.log("These are the departements linked to this application, gather and get EMB to commment", data.dateSet);
+   }
+   catch (error) {
+     console.log("Error while getting details EMB needs to comment: ", error);
+   }
+
+  }
+
+  async getUserListForSubDepartment(subDepartmentID: number, zoneID: number): Promise<any> {
+    try {
+      debugger;
+
+      const userData: any = await this.accessGroupsService.getUsersBasedOnRoleName("Department Admin", subDepartmentID, zoneID).toPromise();
+      // Get users with the role "Department Admin" for the specified subdepartment
+      //const userData: any = await this.getUserBySubDepartmentAndRoleName(subDepartmentID, "Department Admin").toPromise(); //this method isn't specific enough?
+
+      if (userData.responseCode === 1) {
+        let departmentAdminUsers = userData.dateSet;
+
+        // Remove duplicates based on subDepartmentID, zoneID, and email
+        const tempList = departmentAdminUsers;
+
+        const seenCombinations = {};
+
+        departmentAdminUsers = tempList.filter(item => {
+          const key = `${item.subDepartmentID}-${item.zoneID}-${item.email}`;
+
+          if (!seenCombinations[key]) {
+            seenCombinations[key] = true;
+            return true;
+          }
+
+          return false;
+        });
+
+        // Return the processed user data
+        return departmentAdminUsers;
+      } else {
+        console.error("Error while fetching Department Admin users:", userData.responseMessage);
+        return null; // Or handle the error in an appropriate way
+      }
+    } catch (error) {
+      console.error("Error while fetching Department Admin users:", error);
+      return null; // Or handle the error in an appropriate way
+    }
+  }
+
+  async sendEmailsToDepartments() {
+    debugger;
+
+    try {
+
+      for (let i = 0; i < this.subDepartmentIDsNotDone.length; i++) {
+        const subDepartmentID = this.subDepartmentIDsNotDone[i];
+        const zoneID = this.zoneIDsNotDone[i];
+        const departmentAdminUsers = await this.getUserListForSubDepartment(subDepartmentID, zoneID);
+
+        if (departmentAdminUsers !== null) {
+          console.log("Department Admin Users for Subdepartment ID", subDepartmentID, ":", departmentAdminUsers);
+
+          for (const obj of departmentAdminUsers) {
+            const emailContent2 = `
+    <html>
+      <head>
+        <style>
+          /* Define your font and styles here */
+          body {
+           font-family: 'Century Gothic';
+          }
+          .email-content {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+          }
+          .footer {
+            margin-top: 20px;
+            color: #777;
+          }
+          .footer-logo {
+            display: inline-block;
+            vertical-align: middle;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="email-content">
+          <p>Dear ${obj.fullName},</p>
+          <p>A Wayleave application with Wayleave No. ${this.projectNo} was escalated by the applicant/client. As the zone admin of ${obj.zoneName} in ${obj.subDepartmentName}, please see to the completion of the approval/rejection process.</p>
+           ${this.embMessage ? `<p>Additional Notes: ${this.embMessage}</p>` : ''}
+          <p>Should you have any queries, please contact <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+              <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                        <p>
+            <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+          </p>
+           <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+        </div>
+
+      </body>
+    </html>
+  `;
+
+
+            this.notificationsService.sendEmail(obj.email, "Escalated wayleave application", emailContent2, emailContent2);
+            this.notificationsService.addUpdateNotification(0, "Application Needs Immediate Attention", "Escalated wayleave application", false, obj.userID, this.CurrentUser.appUserID /*This is null for some reason??*/, this.ApplicationID, `The Wayleave application with Wayleave No. ${this.projectNo} was escalated by the applicant/client. As the zone admin of ` + obj.zoneName + " in " + obj.subDepartmentName + `, please see to the completion of the approval/rejection process. ${this.embMessage ? `\n\nAdditional Notes: ${this.embMessage}` : ''}`).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+                console.log(data.responseMessage);
+
+              }
+              else {
+                alert(data.responseMessage);
+              }
+
+              console.log("response", data);
+            }, error => {
+              console.log("Error", error);
+            });
+
+          }
+
+        }
+        else {
+          console.error("Error while getting Department Admin users for Subdepartment ID", subDepartmentID);
+        }
+      }
+
+      console.log("All emails sent successfully!?");
+
+      this.applicationsService.cancelEscalation(this.ApplicationID).subscribe((data:any) => {
+        if (data.responseCode == 1) {
+          console.log(data.responseMessage);
+          this.router.navigate(["/home"]);
+          location.reload();
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("response", data);
+      }, error => {
+        console.log("Error", error);
+      });
+     
+    }
+    catch (error) {
+      console.error("Error sending department escalation notices", error);
+    }
+
+  }
+  
+  
+  //#endregion
+}
 
 
 
