@@ -92,6 +92,8 @@ export class DocumentsComponentComponent implements OnInit {
     if (!window.confirm("Are you sure you want to upload the file?")) {
       // Use the stored event data
       this.onFileDelete(this.lastUploadEvent, 0);
+    } else {
+      this.permitComponentComponent.getAllPermitForComment();
     }
     // Rest of the logic...
   }
@@ -116,6 +118,7 @@ export class DocumentsComponentComponent implements OnInit {
         this.hasFile = false;
       } else {
         this.hasFile = true;
+       
       }
   }
   onPassFileName(event: { uploadFor: string; fileName: string }) {
@@ -263,6 +266,7 @@ export class DocumentsComponentComponent implements OnInit {
         console.log("API Response:", data);
         console.log("This is the response for the Has Document question", data.HasDocuments);
         this.hasDocument = data && data.dateSet.hasDocuments;
+       
       
       });
     }

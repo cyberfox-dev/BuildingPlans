@@ -4,6 +4,7 @@ import { MatTable } from '@angular/material/table';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { PermitService } from 'src/app/service/Permit/permit.service'
 import { SharedService } from "../shared/shared.service";
+import { ApplicationsService } from '../service/Applications/applications.service';
 import { PDFDocument } from 'pdf-lib';
 
 
@@ -47,12 +48,14 @@ export class PermitComponentComponent implements OnInit {
     stringifiedDataCurrentUserProfile: any;
     CurrentUserProfile: any;
     CanIssuePermit: boolean;
-  constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private permitService: PermitService, private shared: SharedService) { }
+    CanConsolidate: boolean;
+  constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private permitService: PermitService, private shared: SharedService, private applicationsService: ApplicationsService,) { }
 
   ngOnInit(): void {
     this.getAllPermitForComment();
     this.stringifiedDataCurrentUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataCurrentUserProfile);
+    
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('AllCurrentUserRoles')));
     this.AllCurrentUserRoles = JSON.parse(this.stringifiedData);
     for (var i = 0; i < this.AllCurrentUserRoles.length; i++) {
@@ -63,10 +66,12 @@ export class PermitComponentComponent implements OnInit {
         this.CanIssuePermit = false;
       }
     }
-
+    this.checkIfCanConsolidate();
   }
 
   @Input() ApplicationID;
+  @Input() ApplicantID;
+  @Input() OriginatorID;
 
   openPermitModal(content:any) {
 
@@ -77,7 +82,7 @@ export class PermitComponentComponent implements OnInit {
     this.PTCList.splice(0, this.PTCList.length);
     this.permitService.getPermitSubForCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
-
+        debugger;
 
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempPTCList = {} as PTCList;
@@ -105,7 +110,7 @@ export class PermitComponentComponent implements OnInit {
 
         }
         this.PTCListTable?.renderRows();
-
+        this.updateApplicationStatus();
       }
       else {
         //alert("Invalid Email or Password");
@@ -119,7 +124,74 @@ export class PermitComponentComponent implements OnInit {
     })
   }
 
+  checkIfCanConsolidate() {
+    let x = 0;
+    debugger;
+    for (var i = 0; i < this.PTCList.length; i++) {
+      debugger;
+      if (this.PTCList[i].PermitDocName != null) {
+        x++;
+      }
+    }
+    if (x === this.PTCList.length) {
+      this.CanConsolidate = true;
+    } else {
+      this.CanConsolidate = false;
+    }
+  }
 
+  updateApplicationStatus() {
+    let x = 0;
+    debugger;
+    for (var i = 0; i < this.PTCList.length; i++) {
+      debugger;
+      if (this.PTCList[i].PermitDocName != null) {
+        x++; debugger;
+      }
+     
+    }
+
+    if (x === this.PTCList.length) {
+      this.applicationsService.getApplicationsByApplicationID(this.ApplicationID).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          const current = data.dateSet[0];
+
+          this.applicationsService.updateApplicationStage(this.ApplicationID, current.previousStageName, current.previousStageNumber, current.currentStageName, current.currentStageNumber, current.nextStageName, current.nextStageNumber, "PTW Genaration").subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              const current = data.dateSet[0];
+
+
+
+
+            }
+            else {
+
+              alert(data.responseMessage);
+            }
+            console.log("reponseGetSubDepartmentForComment", data);
+
+
+          }, error => {
+            console.log("Error: ", error);
+          })
+          console.log("reponseGetSubDepartmentForCommentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
+
+
+        }
+        else {
+
+          alert(data.responseMessage);
+        }
+        console.log("reponseGetSubDepartmentForComment", data);
+
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+
+
+  }
 
 
 
