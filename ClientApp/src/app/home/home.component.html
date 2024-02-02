@@ -276,10 +276,11 @@
     </div>
 
   </div>
-
+  <!--JJS 02Feb changed the external user acting as internal text for the modal and made them go straight to choose an exsisting internal client-->
   <ng-template #internalOpt let-modal>
     <div class="modal-header">
-      <h6 class="modal-title" id="modal-basic-title">As an internal applicant are you applying for :</h6>
+      <h6 class="modal-title" id="modal-basic-title" *ngIf="ActingAsInternal == false">As an internal applicant are you applying for :</h6>
+      <h6 class="modal-title" id="modal-basic-title"  *ngIf="ActingAsInternal">As an external applicant are you applying for :</h6>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
@@ -322,7 +323,8 @@
           <div class="cont2">
             <button mat-raised-button color="client" [class.cardactive]="option ==='client'" (click)="cardchange('client');modal.dismiss('Cross click'); openNewClient(newClient)"> <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon">  New Client</button>
             <!--<button mat-raised-button color="internal" (click)="openUser(user);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'"><i class="fa fa-user" aria-hidden="true"></i> Existing Client</button>-->
-            <button mat-raised-button color="internal" (click)="openChoice(choiceEC);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon">  Existing Client</button>
+            <button mat-raised-button color="internal" (click)="openChoice(choiceEC);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'" *ngIf="ActingAsInternal == false"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon">  Existing Client</button>
+            <button mat-raised-button color="internal" (click)="openChoiceExternalActingAsInternal(internalUser);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'" *ngIf="ActingAsInternal"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon">  Existing Client</button>
           </div>
         </div>
 
