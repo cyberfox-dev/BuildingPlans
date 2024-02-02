@@ -5315,29 +5315,51 @@ this.Applications.push(tempApplicationList);
   }
 
   openInternalUserClient(internalUser: any) {
-    this.modalService.open(internalUser, { backdrop: 'static', centered: true, size: 'xl' });
-  }
+   
+      this.modalService.open(internalUser, { backdrop: 'static', centered: true, size: 'xl' });
+      
 
+    }
+  
+/*  <!--JJS 02Feb changed the external user acting as internal text for the modal and made them go straight to choose an exsisting internal client-->*/
   openChoice(choiceEC: any) {
+    
     this.modalService.open(choiceEC, { backdrop: 'static', centered: true, size: 'xl' });
   }
+  openChoiceExternalActingAsInternal(internalUser: any){
+    if (this.ActingAsInternal == true) {
 
-
-  handleChoice(internalUser: any, user: any) {
-    if (this.isInternalUser) {
       this.internalUserSelected.emit();
       this.sharedService.option = 'proxy';
-      if (this.isInternalUser == true) {
-
-      }
-      else {
-
-      }
       this.openInternalUserClient(internalUser);
-    } else {
-      this.externalClientSelected.emit();
-      this.openExternalClient(user);
+      this.modalService.dismissAll();
+      this.modalService.open(internalUser, { backdrop: 'static', centered: true, size: 'xl' });
     }
+  }
+
+  handleChoice(internalUser: any, user: any) {
+    if (this.ActingAsInternal == false) {
+      if (this.isInternalUser) {
+        this.internalUserSelected.emit();
+        this.sharedService.option = 'proxy';
+        if (this.isInternalUser == true) {
+
+        }
+        else {
+
+        }
+        this.openInternalUserClient(internalUser);
+      } else {
+        this.externalClientSelected.emit();
+        this.openExternalClient(user);
+      }
+    }
+    else {
+      this.internalUserSelected.emit();
+      this.sharedService.option = 'proxy';
+      this.openInternalUserClient(internalUser);
+    }
+   
   }
   openSpin(spin) {
     this.modalService.open(spin, { backdrop: 'static', centered: true, size: 'xl' });
