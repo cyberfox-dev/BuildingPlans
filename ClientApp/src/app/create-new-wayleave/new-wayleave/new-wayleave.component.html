@@ -337,26 +337,37 @@
 
       <ng-template matStepLabel>Project Details</ng-template>
       <div>
-        <div class="row">
-
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="natureOfWork" id="Email" placeholder="Type your description here..." name="natureOfWork">
-            <label for="name">Describe the type or nature of the work to be undertaken. Note that this information will serve as the title for the application.</label>
-            <small class="text-muted">Click and write description inside the textbox above</small>
+          <br/>
+          <div class="container-fluid">
+              <div class="alert alert-warning">
+                  <h4><strong>Compulsory Field</strong> - <em>Click and write description inside the textbox above</em> </h4>
+              </div>
           </div>
-        </div>
+          <div class="row">
+
+              <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="natureOfWork" id="Email" placeholder="Type your description here..." name="natureOfWork">
+                  <label for="name">Describe the type or nature of the work to be undertaken. Note that this information will serve as the title for the application.</label>
+
+
+              </div>
+          </div>
       </div>
       <div class="card">
         <h3><span>Project Size</span></h3><!--wayleaveCreate Sindiswa 31 January 2024-->
       </div>
       <div class="container-fluid">
-        <div class="alert alert-warning">
-          <!-- compulsoryProjectSize Sindiswa 15 January 2024 -->
-          <h4><strong>Compulsory Field</strong> - <em>To determine project size, click the button below and make applicable selections.</em> </h4>
-          <!-- end of compulsoryProjectSize Sindiswa 15 January 2024 -->
-        </div>
+          <div class="alert alert-warning">
+              <!-- compulsoryProjectSize Sindiswa 15 January 2024 -->
+              <h4><strong>Compulsory Field</strong> - <em>To determine project size, click the button below and make applicable selections.</em> </h4>
+              <!-- end of compulsoryProjectSize Sindiswa 15 January 2024 -->
+          </div>
+          <br />
+          <div class="container-fluid23">
+          <button mat-raised-button color="projectSize" matTooltip="Please check the 'Project Size Criteria.pdf' in the Repository. You'll find it in the top right-hand menu." (click)="openMandatoryDocumentCategory(MandatoryDocumentCategory)">Determine Project Size</button>
+          </div>
       </div>
-      <button mat-raised-button color="projectSize" matTooltip="Please check the 'Project Size Criteria.pdf' in the Repository. You'll find it in the top right-hand menu." (click)="openMandatoryDocumentCategory(MandatoryDocumentCategory)">Determine Project Size</button>
+     
       <div *ngIf="PSM != ''">
         <div class="alert alert-info" role="alert" *ngIf="projectSizeAlert || onPopulateDraftInfo">{{PSM}}</div>
       </div>

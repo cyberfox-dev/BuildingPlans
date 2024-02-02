@@ -3271,9 +3271,9 @@ export class ActionCenterComponent implements OnInit {
                 console.log("Error", error);
               });
 
-              //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
-
+              //commentsService                                                                                                                                                                                                                                        //Comments Kyle 01/02/24
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
+                                                                                                                                                                                                                                                                        //Comments Kyle 01/02/24
                 if (data.responseCode == 1) {
 
 
@@ -3435,10 +3435,10 @@ export class ActionCenterComponent implements OnInit {
               this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName,
 
 
-
-
-                this.leaveAComment, "Referred", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
-
+                                                                                                              
+                                                                                                                //Comments Kyle 01/02/24
+                this.leaveAComment, "Referred", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
+                                                                                                                //Comments Kyle 01/02/24
                   if (data.responseCode == 1) {
 
                     alert(data.responseMessage);
@@ -5241,8 +5241,8 @@ export class ActionCenterComponent implements OnInit {
         if (data.responseCode == 1) {
 
           alert(data.responseMessage);
-          //commentsService
-          this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, this.loggedInUserSubDepartmentName, this.leaveAComment, "Complete", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
+          //commentsService                                                                                                                                                                                                                                                           //Comments Kyle 01/02/24
+          this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, this.loggedInUserSubDepartmentName, "Documents Uploaded", "Complete", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
 
