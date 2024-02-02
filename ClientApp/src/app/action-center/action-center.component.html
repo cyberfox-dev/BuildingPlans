@@ -67,14 +67,15 @@
 
     </div>
 
-    <div class="cont2" *ngIf="canCommentSeniorReviewer == true && canCommentFinalApprover == false && userAssignedText ==CurrentUser.appUserId"> <!--Final Approver && Senior Approver Kyle 01/02/24-->
-       
-        <button mat-raised-button color="approveBTN" (click)="onCommentSR('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">   Prov. Approved</button>
-        <button mat-raised-button color="rejectBTN" (click)="onCommentSR('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon"> Prov. Not Approved</button>
-        <button mat-raised-button color="clarifyBTN" (click)="onCommentSR('Clarify');sendOption()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
-        <button mat-raised-button color="returnToReviewerBTN" (click)="onReturnToReviewerClick()"><i class="fa fa-reply" aria-hidden="true"></i>  Return To Reviewer</button>
-        <button mat-raised-button color="consultWithReviewerBTN" (click)="onReviewerClarityClick()"><i class="fa fa-comments" aria-hidden="true"></i>  Consult With Reviewer</button> <!---->
+    <div class="cont2" *ngIf="canCommentSeniorReviewer == true && canCommentFinalApprover == false && userAssignedText ==CurrentUser.appUserId">
+      <!--Final Approver && Senior Approver Kyle 01/02/24-->
 
+      <button mat-raised-button color="approveBTN" (click)="onCommentSR('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">   Prov. Approved</button>
+      <button mat-raised-button color="rejectBTN" (click)="onCommentSR('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon"> Prov. Not Approved</button>
+        <button mat-raised-button color="clarifyBTN" (click)="onCommentSR('Clarify');sendOption()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
+      <button mat-raised-button color="returnToReviewerBTN" (click)="onReturnToReviewerClick()"><i class="fa fa-reply" aria-hidden="true"></i>  Return To Reviewer</button>
+      <button mat-raised-button color="consultWithReviewerBTN" (click)="onReviewerClarityClick()"><i class="fa fa-comments" aria-hidden="true"></i>  Consult With Reviewer</button> <!---->
+      
     </div>
    
     <div class="cont2" *ngIf="canCommentFinalApprover == true && canCommentSeniorReviewer == false && userAssignedText == CurrentUser.appUserId"> <!--Final Approver && Senior Approver Kyle 01/02/24-->
@@ -83,11 +84,16 @@
       <button mat-raised-button color="approveBTN" (click)="FinalApprove('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approved</button>
       <button mat-raised-button color="rejectBTN" (click)="FinalApprove('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon"> Not Approved</button>
 
-      <button mat-raised-button color="clarifyBTN" (click)="onCommentFA('Clarify')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
+      <button mat-raised-button color="clarifyBTN" [matMenuTriggerFor]="menu"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
       <button mat-raised-button color="returnToReviewerBTN" (click)="onReturnToReviewerClick()"><i class="fa fa-reply" aria-hidden="true"></i>  Return To Reviewer</button>
       <button mat-raised-button color="returnToSeniorReviewerBTN" (click)="onReturnToSeniorReviewerClick()"><i class="fa fa-reply" aria-hidden="true"></i>  Return To Senior Reviewer</button>
      
-      
+      <mat-menu #menu="matMenu" yPosition="above" width="100%">
+        <ng-container>
+          <button mat-menu-item (click)="onCommentFA('Clarify')">Applicant</button>
+          <button mat-menu-item (click)="onCommentFA('Reviewer')">Previous Reviewer</button>
+        </ng-container>
+      </mat-menu>
       <!--Final Approver && Senior Approver Kyle 01/02/24-->
     </div>
    

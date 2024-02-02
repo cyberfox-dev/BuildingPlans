@@ -458,6 +458,10 @@ export class ViewProjectInfoComponent implements OnInit {
   AllCurrentUserRoles: any;
   //Audit Trail Kyle
 
+  //Final Approver && Senior Approver Kyle 01/02/24
+  reviewerToReply: boolean = false;
+  //Final Approver && Senior Approver Kyle 01/02/24
+
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -709,9 +713,10 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getServiceItem("003");
     this.getAllSubDepartments();
     this.getLinkedDepartmentsFORAPPROVAL();
-    this.CheckForApprovalPackDownload(); 
-  
-   
+    this.CheckForApprovalPackDownload();
+    //Final Approver && Senior Approver Kyle 01/02/24
+    this.onCheckReviewerCanReply();
+   //Final Approver && Senior Approver Kyle 01/02/24
     
   }
   // #region reapply Sindiswa 26 January 2024
@@ -1231,7 +1236,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   }
-
+  
 
   onAutoLinkForPermit() {
 
@@ -1320,32 +1325,65 @@ export class ViewProjectInfoComponent implements OnInit {
           tempCommentList.ApplicationID = current.applicationID;
           tempCommentList.Comment = current.comment;
           tempCommentList.CommentID = current.commentID;
+          //Final Approver && Senior Approver Kyle 01/02/24
+          if (this.CurrentUserProfile[0].isInternal == true) {
+            if (current.commentStatus == "Approved") {
+              tempCommentList.CommentStatus = "Provisionally Approved";
+            }
+            else if (current.commentStatus == "Rejected") {
+              tempCommentList.CommentStatus = "Provisionally Rejected";
+            }
+            else if (current.commentStatus == "FinalReject") {
+              tempCommentList.CommentStatus = "Final Rejected";
+            }
+           
+            else {
+              tempCommentList.CommentStatus = current.commentStatus;
+            }
 
-          
-          if (current.commentStatus == "Approved") {
-            tempCommentList.CommentStatus = "Provisionally Approved";
+            tempCommentList.SubDepartmentForCommentID = current.subDepartmentForCommentID;
+            tempCommentList.SubDepartmentName = current.subDepartmentName;
+            tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
+            tempCommentList.isApplicantReplay = current.isApplicantReplay;
+            tempCommentList.UserName = current.userName;
+            //Comments Kyle 01/02/24
+            tempCommentList.ZoneName = current.zoneName;
+            //Comments Kyle 01/02/24
+            tempCommentList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+            this.CommentsList.push(tempCommentList);
+            console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", current);
           }
-          else if (current.commentStatus == "Rejected") {
-            tempCommentList.CommentStatus = "Provisionally Rejected";
-          }
-          else if (current.commentStatus == "FinalReject") {
-            tempCommentList.CommentStatus = "Final Rejected";
-          }
+
           else {
-            tempCommentList.CommentStatus = current.commentStatus;
-          }
+            if (current.commentStatus != "Reviewer Clarify") {
+              if (current.commentStatus == "Approved") {
+                tempCommentList.CommentStatus = "Provisionally Approved";
+              }
+              else if (current.commentStatus == "Rejected") {
+                tempCommentList.CommentStatus = "Provisionally Rejected";
+              }
+              else if (current.commentStatus == "FinalReject") {
+                tempCommentList.CommentStatus = "Final Rejected";
+              }
+              else {
+                tempCommentList.CommentStatus = current.commentStatus;
+              }
 
-          tempCommentList.SubDepartmentForCommentID = current.subDepartmentForCommentID;
-          tempCommentList.SubDepartmentName = current.subDepartmentName;
-          tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
-          tempCommentList.isApplicantReplay = current.isApplicantReplay;
-          tempCommentList.UserName = current.userName;
-          //Comments Kyle 01/02/24
-          tempCommentList.ZoneName = current.zoneName;
-           //Comments Kyle 01/02/24
-          tempCommentList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
-          this.CommentsList.push(tempCommentList);
-          console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", current);
+              tempCommentList.SubDepartmentForCommentID = current.subDepartmentForCommentID;
+              tempCommentList.SubDepartmentName = current.subDepartmentName;
+              tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
+              tempCommentList.isApplicantReplay = current.isApplicantReplay;
+              tempCommentList.UserName = current.userName;
+              //Comments Kyle 01/02/24
+              tempCommentList.ZoneName = current.zoneName;
+              //Comments Kyle 01/02/24
+              tempCommentList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+              this.CommentsList.push(tempCommentList);
+              console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", current);
+            }
+           
+          }  
+          
 
         }
 
@@ -1402,13 +1440,14 @@ export class ViewProjectInfoComponent implements OnInit {
     }
 
     //* comments Sindiswa 18 January 2024 - making the clarity more dynamic */
-    if (commentStatus === "Reviewer Clarity") {
+    if (commentStatus === "Reviewer Clarity" || commentStatus === "Reviewer Clarify") {
       this.clarityType = "Reviewer Clarified";
     }
-    else if (commentStatus === "Clarify") {
+    else if (commentStatus === "Clarify" ) {
       this.clarityType = "Clarified";
     }
   }
+
 
 
   //async getSelectedDepartment(subDepID:number) {
@@ -1546,7 +1585,15 @@ export class ViewProjectInfoComponent implements OnInit {
         numberOfComments++;
       }
     }
-   
+     //Final Approver && Senior Approver Kyle 01/02/24
+    let commentStatus = "";
+    if (this.clarityType == "Reviewer Clarified") {
+      commentStatus = "Approved";
+    }
+    else {
+      commentStatus = null;
+    }
+    //Final Approver && Senior Approver Kyle 01/02/24
     if (currentComment.isClarifyCommentID == null) {
       if (confirm("Are you sure you want to add this reply?")) {
         
@@ -1554,11 +1601,12 @@ export class ViewProjectInfoComponent implements OnInit {
 
           if (data.responseCode == 1) {
             this.getAllComments();
-            this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, null, false, null, null, null).subscribe((data: any) => {
+            this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, commentStatus, false, null, null, null).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
-
-             
+                 //Final Approver && Senior Approver Kyle 01/02/24
+                this.modalService.dismissAll();
+                this.router.navigate(["/home"]);
                 
 
               }
@@ -1596,11 +1644,12 @@ export class ViewProjectInfoComponent implements OnInit {
             this.getAllComments();
 
 
-            this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, null, false, null, null, null).subscribe((data: any) => {
+            this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, commentStatus, false, null, null, null).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
 
-
+                this.modalService.dismissAll();
+                this.router.navigate(["/home"]);
 
 
               }
@@ -4505,7 +4554,31 @@ export class ViewProjectInfoComponent implements OnInit {
       }
     }
   }
+  //Audit Trail Kyle
+  //Final Approver && Senior Approver Kyle 01/02/24
+  
+  onCheckReviewerCanReply() {
+    if (this.CurrentUserProfile[0].isInternal == true) {
+      debugger;
+      this.reviwerforCommentService.getAllReviewerForCommentForApplication(this.ApplicationID).subscribe((data: any) => {
+        debugger;
+        if (data.responseCode == 1) {
+          const index = data.dateSet.length - 2;
+          const current = data.dateSet[index];
 
-
- //Audit Trail Kyle
+          if (current.reviewerAssignedToComment == this.CurrentUser.appUserId) {
+            this.reviewerToReply = true;
+          }
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("responseAddapplication", data);
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+    //Final Approver && Senior Approver Kyle 01/02/24
+  }
+ 
 }

@@ -5672,7 +5672,7 @@ export class ActionCenterComponent implements OnInit {
       //This is so the Admin can assign
       this.openXl(content);
     }
-    else if (this.userAssignedText === this.CurrentUser.appUserId && (this.commentState == null || this.commentState == "Referred" || this.commentState == "Approved" || this.commentState == "Rejected")) {
+    else if (this.userAssignedText === this.CurrentUser.appUserId && (this.commentState == null || this.commentState == "Referred" || this.commentState == "Approved" || this.commentState == "Rejected" )) {
       this.openXl(content);
     }
     else if (this.userAssignedText === "EndOfCommentProcess") {
@@ -5717,15 +5717,19 @@ export class ActionCenterComponent implements OnInit {
         SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
       }
     }
-    switch (interact) {
-      case "Clarify": {
+    if (this.leaveAComment == null) {
+      alert("Please leave a comment on what you need clafication on");
+    }
+    else {
+      switch (interact) {
+        case "Clarify": {
 
-        // this.getDepartmentManagerUserID("Senior Reviewer");
-        if (confirm("Are you sure you want to get clarity from applicant for this application?")) {
-          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
+          // this.getDepartmentManagerUserID("Senior Reviewer");
+          if (confirm("Are you sure you want to get clarity from applicant for this application?")) {
+            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
 
-            if (data.responseCode == 1) {
-              const emailContent = `
+              if (data.responseCode == 1) {
+                const emailContent = `
         <html>
         <head>
           <style>
@@ -5768,10 +5772,10 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
-              /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-              */
-              const emailContentApp = `
+                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
+                /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                */
+                const emailContentApp = `
         <html>
         <head>
           <style>
@@ -5815,71 +5819,236 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
+                this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
 /*              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
 */              this.notificationsService.addUpdateNotification(0, "Wayleave Application Request", "Request for clarification", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
-                if (data.responseCode == 1) {
+                  if (data.responseCode == 1) {
 
 
-                }
-                else {
-                  alert(data.responseMessage);
-                }
+                  }
+                  else {
+                    alert(data.responseMessage);
+                  }
 
-                console.log("response", data);
-              }, error => {
-                console.log("Error", error);
-              });
-              this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarificaion", false, this.CurrentUser.appUserID, this.applicationData.userID, this.ApplicationID, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+                  console.log("response", data);
+                }, error => {
+                  console.log("Error", error);
+                });
+                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarificaion", false, this.CurrentUser.appUserID, this.applicationData.userID, this.ApplicationID, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
-                if (data.responseCode == 1) {
-
-
-                }
-                else {
-                  alert(data.responseMessage);
-                }
-
-                console.log("response", data);
-              }, error => {
-                console.log("Error", error);
-              });
-
-              //commentsService                                                                                                                                                                                                                                        //Comments Kyle 01/02/24
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
-                //Comments Kyle 01/02/24
-                if (data.responseCode == 1) {
+                  if (data.responseCode == 1) {
 
 
-                  this.viewProjectInfoComponent.getAllComments();
-                }
-                else {
-                  alert(data.responseMessage);
+                  }
+                  else {
+                    alert(data.responseMessage);
+                  }
 
-                }
-                console.log("reponse", data);
+                  console.log("response", data);
+                }, error => {
+                  console.log("Error", error);
+                });
 
-              }, error => {
-                console.log("Error: ", error);
-              })
-              this.refreshParent.emit();
-            }
-            else {
-              alert(data.responseMessage);
+                //commentsService                                                                                                                                                                                                                                        //Comments Kyle 01/02/24
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
+                  //Comments Kyle 01/02/24
+                  if (data.responseCode == 1) {
 
-            }
-            console.log("reponse", data);
 
-          }, error => {
-            console.log("Error: ", error);
-          })
-          // alert("In progress");
-          this.modalService.dismissAll();
-          this.openSnackBar("Application Actioned");
-          this.router.navigate(["/home"]);
+                    this.viewProjectInfoComponent.getAllComments();
+                  }
+                  else {
+                    alert(data.responseMessage);
+
+                  }
+                  console.log("reponse", data);
+
+                }, error => {
+                  console.log("Error: ", error);
+                })
+                this.refreshParent.emit();
+              }
+              else {
+                alert(data.responseMessage);
+
+              }
+              console.log("reponse", data);
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+            // alert("In progress");
+            this.modalService.dismissAll();
+            this.openSnackBar("Application Actioned");
+            this.router.navigate(["/home"]);
+          }
+          break;
         }
-        break;
+
+        case "Reviewer": {
+          if (confirm("Are you sure you want to get clarity from the previouse reviewer?")) {
+            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+                const emailContent = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.loggedInUserName}</p>
+            <p>You have requested clarity on ${this.projectNo} with the comment:</p>
+            <p>${this.leaveAComment}</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+     
+           
+    `;
+
+
+
+                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
+                /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                */
+                const emailContentApp = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.previousReviewer.fullName}</p>
+            <p>A reviewer has asked you to clarify your application ${this.projectNo} with the comment:</p>
+            <p>${this.leaveAComment}</p>
+               <p >Please login to the <a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a> and provide a response</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+     
+           
+    `;
+
+
+
+                this.notificationsService.sendEmail(this.previousReviewer.email, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
+/*              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+*/              this.notificationsService.addUpdateNotification(0, "Wayleave Application Request", "Request for clarification", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+
+                  if (data.responseCode == 1) {
+
+
+                  }
+                  else {
+                    alert(data.responseMessage);
+                  }
+
+                  console.log("response", data);
+                }, error => {
+                  console.log("Error", error);
+                });
+                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarificaion", false, this.CurrentUser.appUserID, this.previousReviewer.userID
+                  , this.ApplicationID, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+
+                    if (data.responseCode == 1) {
+
+
+                    }
+                    else {
+                      alert(data.responseMessage);
+                    }
+
+                    console.log("response", data);
+                  }, error => {
+                    console.log("Error", error);
+                  });
+
+                //commentsService                                                                                                                                                                                                                                        //Comments Kyle 01/02/24
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Reviewer Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
+                  //Comments Kyle 01/02/24
+                  if (data.responseCode == 1) {
+
+
+                    this.viewProjectInfoComponent.getAllComments();
+                  }
+                  else {
+                    alert(data.responseMessage);
+
+                  }
+                  console.log("reponse", data);
+
+                }, error => {
+                  console.log("Error: ", error);
+                })
+                this.refreshParent.emit();
+              }
+              else {
+                alert(data.responseMessage);
+
+              }
+              console.log("reponse", data);
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+            // alert("In progress");
+            this.modalService.dismissAll();
+            this.openSnackBar("Application Actioned");
+            this.router.navigate(["/home"]);
+          }
+          break;
+
+        }
       }
     }
   }
