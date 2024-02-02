@@ -168,6 +168,9 @@ export interface CommentsList {
   isClarifyCommentID?: number; 
   isApplicantReplay?: string; 
   UserName: string;
+   //Comments Kyle 01/02/24
+  ZoneName: string;
+   //Comments Kyle 01/02/24
   DateCreated: any;
 }
 
@@ -578,7 +581,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
     
-
+   
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
     console.log("000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", this.applicationDataForView[0]);
@@ -707,7 +710,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getAllSubDepartments();
     this.getLinkedDepartmentsFORAPPROVAL();
     this.CheckForApprovalPackDownload(); 
-
+  
    
     
   }
@@ -1337,6 +1340,9 @@ export class ViewProjectInfoComponent implements OnInit {
           tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
           tempCommentList.isApplicantReplay = current.isApplicantReplay;
           tempCommentList.UserName = current.userName;
+          //Comments Kyle 01/02/24
+          tempCommentList.ZoneName = current.zoneName;
+           //Comments Kyle 01/02/24
           tempCommentList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
           this.CommentsList.push(tempCommentList);
           console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", current);
@@ -1399,7 +1405,7 @@ export class ViewProjectInfoComponent implements OnInit {
     if (commentStatus === "Reviewer Clarity") {
       this.clarityType = "Reviewer Clarified";
     }
-    else if (commentStatus === "Clarity") {
+    else if (commentStatus === "Clarify") {
       this.clarityType = "Clarified";
     }
   }
@@ -1540,10 +1546,10 @@ export class ViewProjectInfoComponent implements OnInit {
         numberOfComments++;
       }
     }
-
+   
     if (currentComment.isClarifyCommentID == null) {
       if (confirm("Are you sure you want to add this reply?")) {
-
+        
         this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, null,/*comments Sindiswa 18 January 2024 - making the clarity more dynamic*/ this.clarityType , null, numberOfComments, Currentreply).subscribe((data: any) => {
 
           if (data.responseCode == 1) {
@@ -1553,7 +1559,7 @@ export class ViewProjectInfoComponent implements OnInit {
               if (data.responseCode == 1) {
 
              
-
+                
 
               }
               else {
@@ -2248,9 +2254,9 @@ export class ViewProjectInfoComponent implements OnInit {
           this.configMonthYear = current.utilitySlot2;
           this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
             if (data.responseCode == 1) {
-
-              this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, null, null, "Distributed", null, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, false,null,this.selectPaidDate).subscribe((data: any) => {
-
+               //Service Information Kyle 31/01/24                                                                                                                                                                                                                                                                                                                                                                         //Service Information Kyle
+              this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, null, null, "Distributed", null, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, this.CurrentApplicationBeingViewed[0].isPlanning, null, this.selectPaidDate).subscribe((data: any) => {
+               //Service Information Kyle 31/01/24
                 if (data.responseCode == 1) {
 
                   alert(data.responseMessage);

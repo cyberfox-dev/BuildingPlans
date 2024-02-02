@@ -4551,30 +4551,58 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   deleteUploader(index: number) {
-
+    debugger;
     let currentList2 = this.MandatoryDocumentsLinkedStagesList.getValue();
     let current = currentList2[index];
+    //Delete Uploader Kyle 29-01-24
+    let hasDoc: Boolean = false;
+    
+    this.documentUploadService.getAllDocumentsForApplication(this.shared.applicationID).subscribe(async(data: any) => {
+      debugger;
+      if (data.responseCode == 1) {
+        //Check if there's an uploaded file for the current document
+        for (let i = 0; i < data.dateSet.length; i++) {
+          debugger;
+          const doc = data.dateSet[i].documentName;
+          const docName = doc.substring(0, doc.indexOf("_"));
+          debugger;
+          if (docName == current.mandatoryDocumentName) {
+            hasDoc = true;
+          }
+        }
 
-    // Check if there's an uploaded file for the current document
-    if (current.mandatoryDocumentName || current.mandatoryDocumentName != undefined || current.mandatoryDocumentName != null) {
-      // If a file has been uploaded for this document, show an alert to inform the user
-      alert('A file has been uploaded for this document. Please remove the file first before removing.');
+        if (hasDoc == true) {
+          // If a file has been uploaded for this document, show an alert to inform the user
+          alert('A file has been uploaded for this document. Please remove the file first before removing.');
 
-    }
-    else {
-      let currentList = this.MandatoryDocumentsLinkedStagesList.getValue();
+        }
+        else {
+          if (confirm("Are you sure you want to remove this document upload?")) {
+            let currentList = this.MandatoryDocumentsLinkedStagesList.getValue();
 
-      // Remove the item at the given index
-      currentList.splice(index, 1);
+            // Remove the item at the given index
+            currentList.splice(index, 1);
 
-      // Update the BehaviorSubject with the modified list
-      this.MandatoryDocumentsLinkedStagesList.next(currentList);
+            // Update the BehaviorSubject with the modified list
+            this.MandatoryDocumentsLinkedStagesList.next(currentList);
 
-      // If you're updating some UI or state based on the list change, call the appropriate function
-      this.updateMandatoryDocumentsLinkedStagesList(currentList);
-    }
+            // If you're updating some UI or state based on the list change, call the appropriate function
+            this.updateMandatoryDocumentsLinkedStagesList(currentList);
+          }
+        }
 
+      }
+      else {
 
+        alert(data.responseMessage);
+      }
+      
+
+    }, error => {
+      console.log("Error: ", error);
+
+    })
+      //Delete Uploader Kyle 29-01-24
   }
 
   addUploader(index: any) {
@@ -5296,7 +5324,9 @@ export class NewWayleaveComponent implements OnInit {
     //'It looks like you are about to upload some files. Are you sure you want to proceed? Double-check to ensure you have selected the correct files for upload.'
     const isConfirmed = window.confirm('Are you sure you want to upload these files? Click "Cancel" to double-check your selections.');
     if (isConfirmed) {
-      this.onWayleaveCreate(appUserId, false, false);
+          //Service Information Kyle 31/01/24
+      this.onWayleaveCreate(appUserId, this.isPlanning, false);
+          //Service Information Kyle 31/01/24
     }
 
   }
