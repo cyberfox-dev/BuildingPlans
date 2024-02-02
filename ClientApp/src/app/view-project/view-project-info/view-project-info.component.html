@@ -940,38 +940,38 @@
     <mat-tab label="Permits" *ngIf="showPermitTab">
 
 
-    <button mat-raised-button color="permit" (click)="openPermitModal(permitModal)" *ngIf="permitBtn" [disabled]="fromReApplyArchive == true">Apply For Permit</button>
-    <br>
-    <br>
-    <input type="text" class="form-control" [(ngModel)]="permitDate" id="permitDate" *ngIf="permitTextBox" disabled>
+        <button mat-raised-button color="permit" (click)="openPermitModal(permitModal)" *ngIf="permitBtn" [disabled]="fromReApplyArchive == true">Apply For Permit</button>
+        <br>
+        <br>
+        <input type="text" class="form-control" [(ngModel)]="permitDate" id="permitDate" *ngIf="permitTextBox" disabled>
 
-      <ng-template #permitModal let-modal>
-        <div class="modal-header">
-          <h4 class="modal-title" id="modal-basic-title">Please select a date for your permit</h4>
-          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-        </div>
-        <div class="modal-body">
-
-
-
-          <div class="row">
-
-            <div class="form-floating mb-3 mt-3">
-              <input type="date" class="form-control" [(ngModel)]="permitStartDate" id="permitStartDate" [min]="minDate" placeholder="Enter the start date for the permit">
-              <label for="permitStartDate">Select Start Date</label>
+        <ng-template #permitModal let-modal>
+            <div class="modal-header">
+                <h4 class="modal-title" id="modal-basic-title">Please select a date for your permit</h4>
+                <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
             </div>
-
-          </div>
-
+            <div class="modal-body">
 
 
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-success" (click)="updateStartDateForPermit();modal.close('Save click')">Save</button>
-        </div>
-      </ng-template>
 
-      <app-permit-component [ApplicationID]="ApplicationID"></app-permit-component>
+                <div class="row">
+
+                    <div class="form-floating mb-3 mt-3">
+                        <input type="date" class="form-control" [(ngModel)]="permitStartDate" id="permitStartDate" [min]="minDate" placeholder="Enter the start date for the permit">
+                        <label for="permitStartDate">Select Start Date</label>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-success" (click)="updateStartDateForPermit();modal.close('Save click')">Save</button>
+            </div>
+        </ng-template>
+        
+        <app-permit-component [ApplicationID]="ApplicationID" [ApplicantID]="CurrentApplicationBeingViewed[0].UserID" [OriginatorID]="CurrentApplicationBeingViewed[0].CreatedById" [ApplicationID]="ApplicationID"></app-permit-component>
 
     </mat-tab>
 

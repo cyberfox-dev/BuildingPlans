@@ -4,6 +4,7 @@ import { SharedService } from 'src/app/shared/shared.service';
 import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-upload.service';
 import { FinancialService } from 'src/app/service/Financial/financial.service';
 import { PermitService } from '../service/Permit/permit.service';
+import { PermitComponentComponent } from 'src/app/permit-component/permit-component.component';
 
 
 
@@ -48,7 +49,7 @@ export class FileUploadComponent implements OnInit {
   stringifiedDataUserProfile: any;
   CurrentUserProfile: any;
   //Service Information Kyle 31/01/24
-  constructor(private http: HttpClient, private shared: SharedService, private documentUploadService: DocumentUploadService, private financialService: FinancialService, private permitService: PermitService) { }
+  constructor(private http: HttpClient, private shared: SharedService, private documentUploadService: DocumentUploadService, private financialService: FinancialService, private permitService: PermitService, private permitComponentComponent: PermitComponentComponent) { }
 
   ngOnInit(): void {
     this.CurrentUser = JSON.parse(localStorage.getItem('LoggedInUserInfo') || '{}');
@@ -550,6 +551,7 @@ export class FileUploadComponent implements OnInit {
 
         // Emit the onUploadSuccess event after a successful upload
         this.onUploadSuccess.emit(event.body);
+       
       }
 
     }, error => {
