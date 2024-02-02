@@ -17,6 +17,8 @@
       <!-- actionCentreEdits Sindiswa 16 January 2024 -->
       <button mat-raised-button color="blue" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false" (click)="openAssignToUser(assignProjectToUser)">Assign User For Comment</button>
       <button mat-raised-button color="blue" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == true" (click)="openAssignToUser(assignProjectToUser)">Assign Another User For Comment</button>
+      <button mat-raised-button color="blue" *ngIf="canCommentFinalApprover == true && canCommentSeniorReviewer == false && userAssignedText !==CurrentUser.appUserId" (click)=" takeOnthisApplication()">Take Application As A Final Approver </button> <!--Final Approver && Senior Approver Kyle 01/02/24-->
+      <button mat-raised-button color="blue" *ngIf="canCommentSeniorReviewer == true && canCommentFinalApprover == false && userAssignedText !==CurrentUser.appUserId" (click)=" takeOnthisApplication()">Take Application As A Senior Reviewer </button> <!--Final Approver && Senior Approver Kyle 01/02/24-->
       <!-- endof actionCentreEdits Sindiswa 16 January 2024 -->
       <!-- <button mat-raised-button color="blue" *ngIf="hopperButton == true" (click)="onHopperClick()">Hopper</button>-->
     </div>
@@ -33,14 +35,14 @@
 
 
     <br>
-    <mat-form-field class="example-full-width" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true">
+    <mat-form-field class="example-full-width" *ngIf="(canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true) && userAssignedText == CurrentUser.appUserId"> <!--Final Approver && Senior Approver Kyle 01/02/24-->
       <!--  || canCommentFinalApprover == true-->
       <mat-label>Type new Comment/Special Condition. Please also make reference to the Services Conditions tab, if documents have been uploaded. </mat-label> <!-- actionCentreEdits Sindiswa 15 January 2024-->
       <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea"></textarea>
 
 
     </mat-form-field>
-    <div class="cont2">
+    <div class="cont2" *ngIf="userAssignedText == CurrentUser.appUserId"> <!--Final Approver && Senior Approver Kyle 01/02/24-->
 
       <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true">Select A Comment From Your Comment Builder</button>
       <!--     <button mat-raised-button color="purple" (click)="openBottomSheet()">Select A Comment From Your Comment Builder</button>
@@ -65,24 +67,30 @@
 
     </div>
 
-    <div class="cont2" *ngIf="canCommentSeniorReviewer == true && canCommentFinalApprover == false">
-      <button mat-raised-button color="approveBTN" (click)="onCommentSR('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">   Prov. Approved</button>
-      <button mat-raised-button color="rejectBTN" (click)="onCommentSR('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon"> Prov. Not Approved</button>
-      <button mat-raised-button color="clarifyBTN" (click)="onCommentSR('Clarify');sendOption()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
-      <button mat-raised-button color="returnToReviewerBTN" (click)="onReturnToReviewerClick()"><i class="fa fa-reply" aria-hidden="true"></i>  Return To Reviewer</button>
-      <button mat-raised-button color="consultWithReviewerBTN" (click)="onReviewerClarityClick()"><i class="fa fa-comments" aria-hidden="true"></i>  Consult With Reviewer</button> <!---->
+    <div class="cont2" *ngIf="canCommentSeniorReviewer == true && canCommentFinalApprover == false && userAssignedText ==CurrentUser.appUserId"> <!--Final Approver && Senior Approver Kyle 01/02/24-->
+       
+        <button mat-raised-button color="approveBTN" (click)="onCommentSR('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">   Prov. Approved</button>
+        <button mat-raised-button color="rejectBTN" (click)="onCommentSR('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon"> Prov. Not Approved</button>
+        <button mat-raised-button color="clarifyBTN" (click)="onCommentSR('Clarify');sendOption()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
+        <button mat-raised-button color="returnToReviewerBTN" (click)="onReturnToReviewerClick()"><i class="fa fa-reply" aria-hidden="true"></i>  Return To Reviewer</button>
+        <button mat-raised-button color="consultWithReviewerBTN" (click)="onReviewerClarityClick()"><i class="fa fa-comments" aria-hidden="true"></i>  Consult With Reviewer</button> <!---->
 
     </div>
-    <div class="cont2" *ngIf="canCommentFinalApprover == true && canCommentSeniorReviewer == false">
-      <!-- -->
+   
+    <div class="cont2" *ngIf="canCommentFinalApprover == true && canCommentSeniorReviewer == false && userAssignedText == CurrentUser.appUserId"> <!--Final Approver && Senior Approver Kyle 01/02/24-->
+    
+
       <button mat-raised-button color="approveBTN" (click)="FinalApprove('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approved</button>
       <button mat-raised-button color="rejectBTN" (click)="FinalApprove('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon"> Not Approved</button>
 
-      <button mat-raised-button color="clarifyBTN" (click)="onCommentFA('Clarify');sendOption()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
+      <button mat-raised-button color="clarifyBTN" (click)="onCommentFA('Clarify')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
       <button mat-raised-button color="returnToReviewerBTN" (click)="onReturnToReviewerClick()"><i class="fa fa-reply" aria-hidden="true"></i>  Return To Reviewer</button>
       <button mat-raised-button color="returnToSeniorReviewerBTN" (click)="onReturnToSeniorReviewerClick()"><i class="fa fa-reply" aria-hidden="true"></i>  Return To Senior Reviewer</button>
-
+     
+      
+      <!--Final Approver && Senior Approver Kyle 01/02/24-->
     </div>
+   
     <div class="cont3">
       <!--this is for the wbs number -->
       <div *ngIf="WBSCHeckBox">
@@ -280,7 +288,7 @@
       </ng-container>
 
 
-      <ng-container matColumnDef="actions">
+      <ng-container matColumnDef="progress"> <!--notifications Sindiswa 01 February 2024 - changed column name when text text was being formatted funny-->
         <th mat-header-cell *matHeaderCellDef> Progress </th>
         <td mat-cell *matCellDef="let i = index; let element">
           <!-- Display different text based on departmentDone and departmentYetToAssign -->

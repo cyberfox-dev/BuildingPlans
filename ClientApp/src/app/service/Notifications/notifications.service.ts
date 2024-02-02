@@ -19,7 +19,7 @@ export class NotificationsService {
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
   public addUpdateNotification(notificationID?: number | null, notificationName?: string | null, notificationDescription?: string | null, isRead?: boolean | null, userID?: string | null, createdByID?: string | null, applicationID?: number | null , message?:string | null) {
-    
+    debugger;
     const body = {
       NotificationID: notificationID,
       NotificationName: notificationName,

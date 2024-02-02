@@ -448,7 +448,8 @@ namespace WayleaveManagementSystem.Service
 
                 tempSubDepForCommentTable.DateUpdated = DateTime.Now;
                 tempSubDepForCommentTable.isActive = true;
-
+                //Comments Kyle 01/02/24
+                tempSubDepForCommentTable.IsRefered = false;
                 _context.Update(tempSubDepForCommentTable);
                 await _context.SaveChangesAsync();
                 return tempSubDepForCommentTable;
