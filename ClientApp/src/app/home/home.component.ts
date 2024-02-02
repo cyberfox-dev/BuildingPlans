@@ -38,6 +38,7 @@ import { SnackBarAlertsComponent } from '../snack-bar-alerts/snack-bar-alerts.co
 import { DraftApplicationsService } from '../service/DraftApplications/draft-applications.service';
 import { DraftsComponent } from 'src/app/drafts/drafts.component';
 import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentForComment/sub-department-for-comment.service';
+import { NotificationsService } from '../service/Notifications/notifications.service';
 
 export interface EngineerList {
   professinalID: number;
@@ -400,6 +401,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private subDepartmentForCommentService: SubDepartmentForCommentService,
     private _snackBar: MatSnackBar, private renderer: Renderer2, private el: ElementRef,
     private draftApplicationService: DraftApplicationsService,
+    private notificationsService: NotificationsService, // notifications Sindiswa 01 Februart 2024
   ) {
     this.currentDate = new Date();
     this.previousMonth = this.currentDate.getMonth();
@@ -5976,16 +5978,37 @@ this.Applications.push(tempApplicationList);
 
   }
 
+  appID: number;
+  projNum: string;
   // #region escalation Sindiswa 29 January 2024
   escalateApplication(element: any) {
     debugger;
+
+    this.appID = element.ApplicationID;
+    this.projNum = element.ProjectNumber;
     const confirm = window.confirm("Are you sure you want to escalate this application?");
 
     if (confirm) {
-      this.applicationService.escalateApplication(element.ApplicationID).subscribe((data: any) => {
+      this.applicationService.escalateApplication(element.ApplicationID).subscribe(async(data: any) => {
 
         if (data.responseCode == 1) {
+          debugger;
           console.log(`An application with the following project number ${element.ProjectNumber} has been escalated.`);
+
+          //Hebana, do they want an email AND a notification
+          // #region notifications Sindiswa 01 February 2024
+
+          const embUsers = await this.getUniqueEmbUsers();
+
+          if (embUsers !== null) {
+            this.sendEmailToEmb(embUsers);
+          }
+          else {
+            console.error("Error while fetching EMB users:", embUsers.responseMessage);
+          }
+
+          // #endregion
+
           this.router.navigate(["/home"]); //will this refresh?
           location.reload();
         }
@@ -5993,9 +6016,111 @@ this.Applications.push(tempApplicationList);
 
     }
   }
+  async getUniqueEmbUsers(): Promise<any> {
+    debugger;
+    try {
+      const embUserData: any = await this.userPofileService.getUsersBySubDepartmentName("EMB").toPromise(); 
+      //const embUserData: any = await this.accessGroupsService.getUserBasedOnRoleName("EMB", 1021).toPromise();
 
-  EMBReviews() {
+      if (embUserData.responseCode === 1) {
+        let embUsers = embUserData.dateSet;
 
+        const tempList = embUsers;
+
+        const seenCombinations = {};
+
+        embUsers = tempList.filter(item => {
+          const key = `${item.subDepartmentID}-${item.zoneID}-${item.email}`;
+
+          if (!seenCombinations[key]) {
+            seenCombinations[key] = true;
+            return true;
+          }
+
+          return false;
+        });
+        console.log("Unique EMB users identified:", embUsers);
+        return embUsers;
+      } else {
+        console.error("Error while fetching EMB users:", embUserData.responseMessage);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching EMB users:", error);
+      return null;
+    }
+  }
+  sendEmailToEmb(embUsers: any[]): void {
+    debugger;
+    try {
+      for (const obj of embUsers) {
+        const emailContent2 = `
+    <html>
+      <head>
+        <style>
+          /* Define your font and styles here */
+          body {
+           font-family: 'Century Gothic';
+          }
+          .email-content {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+          }
+          .footer {
+            margin-top: 20px;
+            color: #777;
+          }
+          .footer-logo {
+            display: inline-block;
+            vertical-align: middle;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="email-content">
+          <p>Dear ${obj.fullName},</p>
+          <p>A Wayleave application with Wayleave No. ${this.projNum} was escalated by the applicant/client. As an EMB user, please follow up with the relevant departments currently handling this application.</p>
+          <p>Should you have any queries, please contact <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+              <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                        <p>
+            <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+          </p>
+           <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+        </div>
+
+      </body>
+    </html>
+  `;
+
+
+        // Send email to EMB user
+        this.notificationsService.sendEmail(obj.email, "Escalated wayleave application", emailContent2, emailContent2);
+
+        // Add update notification
+        debugger;
+        this.notificationsService.addUpdateNotification(
+          0,
+          "Application Needs Immediate Attention",
+          "Escalated wayleave application",
+          false,
+          obj.userID,
+          this.CurrentUser?.appUserID ?? null,
+          this.appID,
+          `The Wayleave application with Wayleave No. ${this.projNum} was escalated by the applicant/client. As an EMB user, please follow up with the relevant departments currently handling this application.` 
+        ).subscribe((data: any) => {
+          if (data.responseCode === 1) {
+            console.log(data.responseMessage);
+          } else {
+            alert(data.responseMessage);
+          }
+        });
+      }
+
+      console.log("All EMB emails sent successfully!?");
+   } catch (error) {
+      console.error("Error sending EMB escalation notices", error);
+    }
   }
   // #endregion
 }

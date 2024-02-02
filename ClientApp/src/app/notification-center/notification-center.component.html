@@ -4,52 +4,71 @@
 <button mat-button mat-dialog-close>X</button>
   </div>
 <mat-tab-group class="mat-dialog-content">
+
   <mat-tab label="New Notifications">
-    <!--<div class="timeline__event animated fade-in-bottom  timeline__event--type2" *ngFor="let notification of NotificationsList" (click)="getSelectedNotification(notification.ApplicationID)">-->
-    <div class="timeline__event animated fade-in-bottom  timeline__event--type2" *ngFor="let notification of NotificationsList" (click)="getSelectedNotificationNew(notification.NotificationID)">
-      <!--escalation 31 January 2024-->
-      <div class="timeline__event__icon">
-        <div class="timeline__event__date">
-          {{ notification.NotificationName }}
-          <br>
-          <span class="daysAgo">{{ getTimeAgo(notification.DateCreatedwithTIME) }}</span> <!--notifications Sindiswa 31 January 2024-->
+    <div *ngIf="NotificationsList && NotificationsList.length > 0; else noNotificationsText">
+      <!--<div class="timeline__event animated fade-in-bottom  timeline__event--type2" *ngFor="let notification of NotificationsList" (click)="getSelectedNotification(notification.ApplicationID)">-->
+      <div class="timeline__event animated fade-in-bottom  timeline__event--type2" *ngFor="let notification of NotificationsList" (click)="getSelectedNotificationNew(notification.NotificationID)">
+        <!--escalation 31 January 2024-->
+        <div class="timeline__event__icon">
+          <div class="timeline__event__date">
+            {{ notification.NotificationName }}
+            <br>
+            <span class="daysAgo">{{ getTimeAgo(notification.DateCreatedwithTIME) }}</span> <!--notifications Sindiswa 31 January 2024-->
+          </div>
         </div>
-      </div>
-      <div class="timeline__event__content">
-        <div class="timeline__event__title">
-          Application {{ notification.ApplicationID }}
-        </div>
-        <div class="timeline__event__description">
-          <p *ngIf="notification.NotificationDescription === 'New wayleave application'">Application {{ notification.ApplicationID }} has been created on {{ notification.DateCreated }}</p>
-          <p *ngIf="notification.NotificationDescription === 'Escalated wayleave application'">Application {{ notification.ApplicationID }} has been escalated on {{ notification.DateCreated }}</p>
-          <!--Need to check the application Assigned things!-->
+        <div class="timeline__event__content">
+          <div class="timeline__event__title">
+            Application {{ notification.ApplicationID }}
+          </div>
+          <div class="timeline__event__description">
+            <p *ngIf="notification.NotificationDescription === 'New wayleave application'">Application {{ notification.ApplicationID }} has been created on {{ notification.DateCreated }}</p>
+            <p *ngIf="notification.NotificationDescription === 'Escalated wayleave application'">Application {{ notification.ApplicationID }} has been escalated on {{ notification.DateCreated }}</p>
+            <p *ngIf="notification.NotificationDescription === 'Wayleave application assignment'|| notification.NotificationDescription === 'Application Assigned'">Application {{ notification.ApplicationID }} was assigned to you on the {{ notification.DateCreated }}</p>
+          </div>
         </div>
       </div>
     </div>
   </mat-tab>
-
+  <ng-template #noNotificationsText>
+    <!-- Display centered text when the list is empty -->
+    <br />
+    <div class="centered-text">
+      {{ OldNotificationsList.length === 0 ? 'You have no notifications' : 'You\'re all caught up' }}
+    </div>
+  </ng-template>
   <mat-tab label="Old Notifications">
 
     <!--<div class="timeline__event animated fade-in-bottom  timeline__event--type2seen" *ngFor="let notifications of OldNotificationsList" (click)="getSelectedNotification(notifications.ApplicationID)">-->
-    <div class="timeline__event animated fade-in-bottom  timeline__event--type2seen" *ngFor="let notifications of OldNotificationsList" (click)="getSelectedNotificationNew(notifications.NotificationID)"> <!--escalation 31 January 2024-->
-      <div class="timeline__event__icon">
-        <div class="timeline__event__date">
-          {{notifications.NotificationName}}
-          <br>
-          <span class="daysAgo">  {{ getTimeAgo(notifications.DateCreatedwithTIME) }} </span> <!--notifications Sindiswa 31 January 2024-->
+    <div *ngIf="OldNotificationsList && OldNotificationsList.length > 0; else noOldNotificationsText">
+      <div class="timeline__event animated fade-in-bottom  timeline__event--type2seen" *ngFor="let notifications of OldNotificationsList" (click)="getSelectedNotificationNew(notifications.NotificationID)">
+        <!--escalation 31 January 2024-->
+        <div class="timeline__event__icon">
+          <div class="timeline__event__date">
+            {{notifications.NotificationName}}
+            <br>
+            <span class="daysAgo">  {{ getTimeAgo(notifications.DateCreatedwithTIME) }} </span> <!--notifications Sindiswa 31 January 2024-->
+          </div>
         </div>
-      </div>
-      <div class="timeline__event__content">
-        <div class="timeline__event__title">
-          Application {{notifications.ApplicationID}}
-        </div>
-        <div class="timeline__event__description">
-          <p *ngIf="notifications.NotificationDescription === 'New wayleave application'">Application {{ notifications.ApplicationID }} has been created on {{ notifications.DateCreated }}</p>
-          <p *ngIf="notifications.NotificationDescription === 'Escalated wayleave application'">Application {{ notifications.ApplicationID }} has been escalated on {{ notifications.DateCreated }}</p>
-        </div>
+        <div class="timeline__event__content">
+          <div class="timeline__event__title">
+            Application {{notifications.ApplicationID}}
+          </div>
+          <div class="timeline__event__description">
+            <p *ngIf="notifications.NotificationDescription === 'New wayleave application'">Application {{ notifications.ApplicationID }} has been created on {{ notifications.DateCreated }}</p>
+            <p *ngIf="notifications.NotificationDescription === 'Escalated wayleave application'">Application {{ notifications.ApplicationID }} has been escalated on {{ notifications.DateCreated }}</p>
+            <p *ngIf="notifications.NotificationDescription === 'Wayleave application assignment' || notifications.NotificationDescription === 'Application Assigned'">Application {{ notifications.ApplicationID }} was assigned to you on the {{ notifications.DateCreated }}</p>
+          </div>
 
+        </div>
       </div>
     </div>
+    <ng-template #noOldNotificationsText>
+      <br />
+      <div class="centered-text">
+        You have no viewed notifications.
+      </div>
+    </ng-template>
   </mat-tab>
 
 </mat-tab-group>
