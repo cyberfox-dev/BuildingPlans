@@ -34,7 +34,7 @@
     </div>-->
   <!--  <button class="btn" (click)="openSnackBar()"><a><i class="fa fa-plus"></i> Create New Wayleave</a></button>-->
   <!--Banner Kyle 26/01/24-->
-  <div  style="background: red; text-align: center; font-size: xx-large; color: white; padding: 10px; line-height: 0.8;" *ngIf="showBanner">
+  <div style="background: red; text-align: center; font-size: xx-large; color: white; padding: 10px; line-height: 0.8;" *ngIf="showBanner">
     {{alertMessage}}<br />From {{startDate}} To {{endDate}}
   </div>
 
@@ -280,7 +280,7 @@
   <ng-template #internalOpt let-modal>
     <div class="modal-header">
       <h6 class="modal-title" id="modal-basic-title" *ngIf="ActingAsInternal == false">As an internal applicant are you applying for :</h6>
-      <h6 class="modal-title" id="modal-basic-title"  *ngIf="ActingAsInternal">As an external applicant are you applying for :</h6>
+      <h6 class="modal-title" id="modal-basic-title" *ngIf="ActingAsInternal">As an external applicant are you applying for :</h6>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
@@ -1463,4 +1463,8 @@
 
   </ng-template>
 
+  <!----Clarifications Alerts Kyle-->
 
+  <app-application-alerts></app-application-alerts>
+
+  <!----Clarifications Alerts Kyle-->

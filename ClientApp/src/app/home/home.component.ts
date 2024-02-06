@@ -228,8 +228,6 @@ export interface AllInternalUserProfileList {
 }
 
 
-
-
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -606,7 +604,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.Reviews = 'Current';
       //this.ServerType = this.sharedService.getServerType();
       this.isBannerVisible();
-
+     
       /*      this.initializeApp();*/
       //this.function();
     }, 100);

@@ -20,7 +20,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Comments> AddUpdateComment(int? commentID, int? applicationID, int? subDepartmentForCommentID,int? subDepartmentID , string? subDepartmentName , string commentName,string? commentStatus ,string? creadtedByID, int? isClarifyCommentID,string? isApplicantReplay, string? UserName, string? zoneName)
+        public async Task<Comments> AddUpdateComment(int? commentID, int? applicationID, int? subDepartmentForCommentID, int? subDepartmentID, string? subDepartmentName, string commentName, string? commentStatus, string? creadtedByID, int? isClarifyCommentID, string? isApplicantReplay, string? UserName, string? zoneName, string?canReplyUserID)
         {
 
             if (commentID == 0)
@@ -50,6 +50,7 @@ namespace WayleaveManagementSystem.Service
                     isApplicantReplay = isApplicantReplay,
                     UserName = UserName,
                     ZoneName = zoneName,
+                    CanReplyUserID = canReplyUserID,
                 };
 
                 //After the inizlization add to the db
@@ -138,6 +139,7 @@ namespace WayleaveManagementSystem.Service
                     //Comments Kyle 01/02/24
                     ZoneName = comment.ZoneName,
                     //Comments Kyle 01/02/24
+                    CanReplyUserID = comment.CanReplyUserID,//Clarifications Alerts Kyle 
                 }
                 ).ToListAsync();
         }
@@ -188,9 +190,37 @@ namespace WayleaveManagementSystem.Service
                     isApplicantReplay = comment.isApplicantReplay,
                     UserName = comment.UserName,
                     ZoneName = comment.ZoneName,
-                }
+                CanReplyUserID = comment.CanReplyUserID,//Clarifications Alerts Kyle 
+            }
                 ).ToListAsync();
         }
+        //Clarify Alerts Kyle 
+        public async Task<List<CommentDTO>> GetAllCommentsAwaitingClarity(string? canReplyUserID)
+        {
+            return await (
+                from comment in _context.Comments
+                where comment.CanReplyUserID == canReplyUserID && comment.isApplicantReplay == null && (comment.CommentStatus == "Reviewer Clarify" || comment.CommentStatus == "Clarify") && comment.isActive == true
+                select new CommentDTO()
+                {
+                    CommentID = comment.CommentID,
 
+                    Comment = comment.Comment,
+                    ApplicationID = comment.ApplicationID,
+                    SubDepartmentForCommentID = comment.SubDepartmentForCommentID,
+                    CommentStatus = comment.CommentStatus,
+                    DateCreated = comment.DateCreated,
+                    DateUpdated = comment.DateUpdated,
+                    CreatedById = comment.CreatedById,
+                    SubDepartmentID = comment.SubDepartmentID,
+                    SubDepartmentName = comment.SubDepartmentName,
+                    isClarifyCommentID = comment.isClarifyCommentID,
+                    isApplicantReplay = comment.isApplicantReplay,
+                    UserName = comment.UserName,
+                    ZoneName = comment.ZoneName,
+                    CanReplyUserID = comment.CanReplyUserID,//Clarifications Alerts Kyle 
+
+                }).ToListAsync();
+        }
+        //Clarify Alerts Kyle 
     }
 }

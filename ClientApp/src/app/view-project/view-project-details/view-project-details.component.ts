@@ -58,7 +58,7 @@ export class ViewProjectDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     const setValues = this.applicationDataForView[0];
-
+    debugger;
     this.viewProjectDetails.controls["typeOfApplication"].setValue(setValues.TypeOfApplication);
     this.viewProjectDetails.controls["notificationNumber"].setValue(setValues.NotificationNumber);
     this.viewProjectDetails.controls["WBSNo"].setValue(setValues.WBSNumber);

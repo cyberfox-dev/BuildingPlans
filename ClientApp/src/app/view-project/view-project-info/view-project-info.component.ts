@@ -171,6 +171,8 @@ export interface CommentsList {
    //Comments Kyle 01/02/24
   ZoneName: string;
    //Comments Kyle 01/02/24
+   //Clarifications Alert
+  CanReplyUserID: string;
   DateCreated: any;
 }
 
@@ -617,7 +619,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.routerSubscription = this.sharedService.getRoutingToOldAapp();
     // #endregion
     const setValues = this.applicationDataForView[0];
-
+ 
     if (setValues != null || setValues != undefined) {
 
       this.ApplicationID = setValues.applicationID;
@@ -714,9 +716,6 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getAllSubDepartments();
     this.getLinkedDepartmentsFORAPPROVAL();
     this.CheckForApprovalPackDownload();
-    //Final Approver && Senior Approver Kyle 01/02/24
-    this.onCheckReviewerCanReply();
-   //Final Approver && Senior Approver Kyle 01/02/24
     
   }
   // #region reapply Sindiswa 26 January 2024
@@ -1349,6 +1348,8 @@ export class ViewProjectInfoComponent implements OnInit {
             //Comments Kyle 01/02/24
             tempCommentList.ZoneName = current.zoneName;
             //Comments Kyle 01/02/24
+            //Clarifications Alerts Kyle
+            tempCommentList.CanReplyUserID = current.canReplyUserID;
             tempCommentList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
             this.CommentsList.push(tempCommentList);
             console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", current);
@@ -4555,30 +4556,6 @@ export class ViewProjectInfoComponent implements OnInit {
     }
   }
   //Audit Trail Kyle
-  //Final Approver && Senior Approver Kyle 01/02/24
-  
-  onCheckReviewerCanReply() {
-    if (this.CurrentUserProfile[0].isInternal == true) {
-      debugger;
-      this.reviwerforCommentService.getAllReviewerForCommentForApplication(this.ApplicationID).subscribe((data: any) => {
-        debugger;
-        if (data.responseCode == 1) {
-          const index = data.dateSet.length - 2;
-          const current = data.dateSet[index];
-
-          if (current.reviewerAssignedToComment == this.CurrentUser.appUserId) {
-            this.reviewerToReply = true;
-          }
-        }
-        else {
-          alert(data.responseMessage);
-        }
-        console.log("responseAddapplication", data);
-      }, error => {
-        console.log("Error", error);
-      })
-    }
-    //Final Approver && Senior Approver Kyle 01/02/24
-  }
+ 
  
 }

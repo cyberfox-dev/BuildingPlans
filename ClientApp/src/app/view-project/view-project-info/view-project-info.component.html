@@ -69,6 +69,7 @@
 </div>
 
 
+
 <div class="container-fluid cont6 animationFadeIn">
 
   <mat-tab-group>
@@ -123,7 +124,7 @@
 
                     <!---Comments Kyle 01/02/24 -->
                     <h3>{{commentsList.SubDepartmentName}}({{commentsList.ZoneName}}) - {{commentsList.CommentStatus}}</h3>
-                  
+
                     <h5 *ngIf="isInternalUser && InternalExternalUser == false">{{commentsList.UserName}}</h5>
                     <div class="cont2">
                       <div [innerHTML]="sanitizeHTML(commentsList.Comment)"></div>
@@ -134,13 +135,15 @@
                       {{commentsList.Comment}}
                     </p>-->
 
-                    <br/>
                     <br />
+                    
+                    <br />
+                    
                     <h6>{{commentsList.DateCreated}}</h6>
                     <br />
 
                     <!--Applicant Clarity-->
-                    <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarify' && canClarify || commentsList.CommentStatus === 'Reviewer Clarity' && canReviewerClarify || (commentsList.CommentStatus === 'Reviewer Clarify' && reviewerToReply == true)" (click)="openReplyModal(replyModal,i,'Reply', commentsList.CommentStatus)">Reply</button>
+                    <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarify' && canClarify || commentsList.CommentStatus === 'Reviewer Clarity' && canReviewerClarify || (commentsList.CommentStatus === 'Reviewer Clarify' && commentsList.CanReplyUserID == this.CurrentUser.appUserId)" (click)="openReplyModal(replyModal,i,'Reply', commentsList.CommentStatus)">Reply</button>
                     <button mat-raised-button color="clarify" *ngIf="(commentsList.CommentStatus === 'Clarified' && canClarify) || ( commentsList.CommentStatus === 'Reviewer Clarified' && canReviewerClarify)" (click)="openReplyModal(replyModal,i, 'Update', commentsList.CommentStatus)">Update Reply</button>
                     <div class="row" *ngIf="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified' || commentsList.CommentStatus === 'Reviewer Clarified' || commentsList.CommentStatus === 'Reviewer Clarity'  && commentsList.isApplicantReplay !== null">
                       <label *ngIf="commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null"> <strong><em>Applicant's Reply:</em></strong></label>
@@ -351,13 +354,13 @@
     </mat-tab>-->
     <!--------------------------------------------------------Financial--------------------------------------------------->
 
-  <mat-tab label="Financials">
-    <div class="container-fluid">
+    <mat-tab label="Financials">
       <div class="container-fluid">
-        <button mat-raised-button color="permit" (click)="openDocUpload(newSub)" [disabled]="fromReApplyArchive == true">Upload document</button>
-        <!---- Financial POP Kyle 15/01/24-->
-        <button  *ngIf="applicationDataForView[0].ApplicationStatus == 'Unpaid' && uploadedPOP == false" (click)="openDocUpload(newSub);OnPOPUpload()" mat-raised-button color="permit" [disabled]="fromReApplyArchive == true" >Upload Proof Of Payment</button>
-        <!----Financial POP Kyle 15/01/24-->
+        <div class="container-fluid">
+          <button mat-raised-button color="permit" (click)="openDocUpload(newSub)" [disabled]="fromReApplyArchive == true">Upload document</button>
+          <!---- Financial POP Kyle 15/01/24-->
+          <button *ngIf="applicationDataForView[0].ApplicationStatus == 'Unpaid' && uploadedPOP == false" (click)="openDocUpload(newSub);OnPOPUpload()" mat-raised-button color="permit" [disabled]="fromReApplyArchive == true">Upload Proof Of Payment</button>
+          <!----Financial POP Kyle 15/01/24-->
 
         </div>
 
@@ -940,38 +943,38 @@
     <mat-tab label="Permits" *ngIf="showPermitTab">
 
 
-        <button mat-raised-button color="permit" (click)="openPermitModal(permitModal)" *ngIf="permitBtn" [disabled]="fromReApplyArchive == true">Apply For Permit</button>
-        <br>
-        <br>
-        <input type="text" class="form-control" [(ngModel)]="permitDate" id="permitDate" *ngIf="permitTextBox" disabled>
+      <button mat-raised-button color="permit" (click)="openPermitModal(permitModal)" *ngIf="permitBtn" [disabled]="fromReApplyArchive == true">Apply For Permit</button>
+      <br>
+      <br>
+      <input type="text" class="form-control" [(ngModel)]="permitDate" id="permitDate" *ngIf="permitTextBox" disabled>
 
-        <ng-template #permitModal let-modal>
-            <div class="modal-header">
-                <h4 class="modal-title" id="modal-basic-title">Please select a date for your permit</h4>
-                <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+      <ng-template #permitModal let-modal>
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">Please select a date for your permit</h4>
+          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+        </div>
+        <div class="modal-body">
+
+
+
+          <div class="row">
+
+            <div class="form-floating mb-3 mt-3">
+              <input type="date" class="form-control" [(ngModel)]="permitStartDate" id="permitStartDate" [min]="minDate" placeholder="Enter the start date for the permit">
+              <label for="permitStartDate">Select Start Date</label>
             </div>
-            <div class="modal-body">
+
+          </div>
 
 
 
-                <div class="row">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-success" (click)="updateStartDateForPermit();modal.close('Save click')">Save</button>
+        </div>
+      </ng-template>
 
-                    <div class="form-floating mb-3 mt-3">
-                        <input type="date" class="form-control" [(ngModel)]="permitStartDate" id="permitStartDate" [min]="minDate" placeholder="Enter the start date for the permit">
-                        <label for="permitStartDate">Select Start Date</label>
-                    </div>
-
-                </div>
-
-
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-success" (click)="updateStartDateForPermit();modal.close('Save click')">Save</button>
-            </div>
-        </ng-template>
-        
-        <app-permit-component [ApplicationID]="ApplicationID" [ApplicantID]="CurrentApplicationBeingViewed[0].UserID" [OriginatorID]="CurrentApplicationBeingViewed[0].CreatedById" [ApplicationID]="ApplicationID"></app-permit-component>
+      <app-permit-component [ApplicationID]="ApplicationID" [ApplicantID]="CurrentApplicationBeingViewed[0].UserID" [OriginatorID]="CurrentApplicationBeingViewed[0].CreatedById" [ApplicationID]="ApplicationID"></app-permit-component>
 
     </mat-tab>
 
@@ -988,14 +991,14 @@
 
       </app-service-conditions>
 
-  </mat-tab>
+    </mat-tab>
     <!--Old versions of wayleave application--------------------------------------------------------------------------------->
     <mat-tab label="Former Wayleave Applications" *ngIf="showFormerApps == true">
       <app-old-application-versions></app-old-application-versions>
     </mat-tab>
   </mat-tab-group>
 
-  
+
 
 </div>
 

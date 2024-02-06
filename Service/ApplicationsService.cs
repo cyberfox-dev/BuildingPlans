@@ -351,6 +351,7 @@ namespace WayleaveManagementSystem.Service
                    isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
                    EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
                    EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
+                   ProjectNumber = Applications.ProjectNumber,// Clarifications Alerts Kyle
                }
                ).ToListAsync();
 

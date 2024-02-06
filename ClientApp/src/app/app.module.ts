@@ -101,6 +101,7 @@ import { ApprovalPackComponent } from 'src/app/Packs/ApprovalPackComponent/appro
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { SystemAlertConfigComponent } from 'src/app/system-alert-config/system-alert-config.component';
 import { OldApplicationVersionsComponent } from './old-application-versions/old-application-versions.component'; //reapply Sindiswa 26 January 2024
+import { ApplicationAlertsComponent } from 'src/app/application-alerts/application-alerts.component'; //Clarify Alerts Kyle 
 
 //import { MatExpansionModule } from '@angular/material/expansion';
 
@@ -187,7 +188,9 @@ import { OldApplicationVersionsComponent } from './old-application-versions/old-
 
     DraftsComponent,
       ApprovalPackComponent,
-      OldApplicationVersionsComponent, //reapply Sindiswa 25 January 2024
+    OldApplicationVersionsComponent, //reapply Sindiswa 25 January 2024
+    ApplicationAlertsComponent,//Clarify Alerts Kyle 
+
 
 
   ],
@@ -276,6 +279,8 @@ import { OldApplicationVersionsComponent } from './old-application-versions/old-
     //Audit Trail Kyle
     AuditTrailComponent,
     //Audit Trail Kyle
+    ApplicationAlertsComponent,//Clarify Alerts Kyle 
+
   ],
   bootstrap: [AppComponent]
 })
