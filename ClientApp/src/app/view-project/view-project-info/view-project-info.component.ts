@@ -4133,8 +4133,9 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
-  viewDocument(index: any) {
+  /*viewDocument(index: any) {
 
+    debugger;
     // Make an HTTP GET request to fetch the document
     fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.FinancialDocumentsList[index].FinancialDocumentName}`)
       .then(response => {
@@ -4159,7 +4160,62 @@ export class ViewProjectInfoComponent implements OnInit {
         // Handle the error appropriately
       });
 
+  }*/
+
+  // altered slightly to ensure that a png is downloaded instead of doing iframe tings
+  viewDocument(index: any) {
+    debugger;
+    const filename = this.FinancialDocumentsList[index].FinancialDocumentName;
+    const extension = filename.split('.').pop().toLowerCase();
+
+    if (extension === 'png') {
+      // If the document is a PNG image, initiate download
+      fetch(this.apiUrl + `documentUpload/GetDocument?filename=${filename}`)
+        .then(response => {
+          if (response.ok) {
+            return response.blob();
+          } else {
+            throw new Error('Error fetching the document');
+          }
+        })
+        .then(blob => {
+          // Create a temporary link element to trigger the download
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', filename);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        })
+        .catch(error => {
+          console.log(error);
+          // Handle the error appropriately
+        });
+    } else {
+      // For other document types, such as PDF, continue to use an iframe
+      fetch(this.apiUrl + `documentUpload/GetDocument?filename=${filename}`)
+        .then(response => {
+          if (response.ok) {
+            return response.blob();
+          } else {
+            throw new Error('Error fetching the document');
+          }
+        })
+        .then(blob => {
+          const documentURL = URL.createObjectURL(blob);
+          const iframe = document.createElement('iframe');
+          iframe.src = documentURL;
+          document.body.appendChild(iframe);
+        })
+        .catch(error => {
+          console.log(error);
+          // Handle the error appropriately
+        });
+    }
   }
+
+
 
   getFinancial() {
     this.FinancialDocumentsList.splice(0, this.FinancialDocumentsList.length);

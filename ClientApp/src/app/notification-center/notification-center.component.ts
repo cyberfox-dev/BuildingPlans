@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild, ElementRef, ViewContainerRef } from '@angular/core'; //routeToProject
 import { MatIconModule } from '@angular/material/icon';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
@@ -34,8 +34,60 @@ export interface OldNotificationsList {
   DateCreatedwithTIME: string;
   Message: any;
 }
+//#region routingToProject
+export interface ApplicationList {
+  applicationID: number,
+  clientName: string,
+  clientEmail: string,
+  clientAddress: string,
+  clientRefNo: string,
+  CompanyRegNo: string,
+  TypeOfApplication: string,
+  NotificationNumber: string,
+  WBSNumber: string,
+  PhysicalAddressOfProject: string,
+  DescriptionOfProject: string,
+  NatureOfWork: string,
+  ExcavationType: string,
+  ExpectedStartDate: Date,
+  ExpectedEndDate: Date,
+  Location: string,
+  clientCellNo: string,
+  CreatedById: number,
+  ApplicationStatus: string,
+  CurrentStageName: string,
+  CurrentStageNumber: number,
+  CurrentStageStartDate: Date,
+  NextStageName: string,
+  NextStageNumber: number,
+  PreviousStageName: string,
+  PreviousStageNumber: number,
+  ProjectNumber: string,
+  isPlanning?: boolean,
+  permitStartDate: Date,
+  DatePaid: Date;
+  wbsrequired: boolean;
+  Coordinates: string,
+  userID: string,
+  UserID: any;
+}
 
-
+export interface ApplicationsList {
+  ApplicationID: number;
+  FullName: string;
+  /*  ReferenceNumber: string;*/
+  TypeOfApplication: any;
+  DateCreated: any;
+  TestApplicationAge: number,
+  TestApplicationStageAge: number,
+  CurrentStage: string,
+  ApplicationStatus: string,
+  ProjectNumber: string;
+  isEscalated: boolean; //escalation Sindiswa 29 January 2024
+  EscalationDate: any; //escalation Sindiswa 31 January 2024
+  EMBActionDate: any; //escalation Sindiswa 31 January 2024
+}
+//#endregion
 
 @Component({
   selector: 'app-notification-center',
@@ -59,7 +111,8 @@ export class NotificationCenterComponent implements OnInit {
 
   viewNotification: any;
 
-  constructor(private modalService: NgbModal, private sharedService: SharedService, private userProfileService: UserProfileService, private notificationService: NotificationsService, private applicationService: ApplicationsService, private hhtp: HttpClient, private router: Router, private dialog: MatDialog) { }
+  constructor(private modalService: NgbModal, private sharedService: SharedService, private userProfileService: UserProfileService, private notificationService: NotificationsService, private applicationService: ApplicationsService, private hhtp: HttpClient, private router: Router, private dialog: MatDialog, /*routeToProject*/
+    private viewContainerRef: ViewContainerRef,) { }
  fakeDatenow: any = new Date();
   ngOnInit(): void {
 
@@ -544,7 +597,112 @@ getAllNotifications() {
 
   //#endregion
 
+  // #region routingToProject
+  specificApplication: ApplicationList[] = [];
+  Applications: ApplicationsList[] = [];
+  public canReapply: boolean = false;
+  goToApplication(appID: any) {
+    debugger;
+    this.applicationService.getApplicationsByApplicationID(appID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        debugger;
 
+        for (let i = 0; i < data.dateSet.length; i++) {
+
+          const tempApplicationList = {} as ApplicationsList;
+          const tempApplicationListShared = {} as ApplicationList;
+          const current = data.dateSet[i];
+
+          tempApplicationListShared.applicationID = current.applicationID;
+          tempApplicationListShared.clientName = current.fullName;
+          tempApplicationListShared.clientEmail = current.email;
+          tempApplicationListShared.clientAddress = current.physicalAddress;
+          tempApplicationListShared.clientRefNo = current.referenceNumber;
+          tempApplicationListShared.CompanyRegNo = current.companyRegNo;
+          tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
+          tempApplicationListShared.NotificationNumber = current.notificationNumber;
+          tempApplicationListShared.WBSNumber = current.wbsNumber;
+          tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
+          tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
+          tempApplicationListShared.NatureOfWork = current.natureOfWork;
+          tempApplicationListShared.ExcavationType = current.excavationType;
+          tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
+          tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
+          tempApplicationListShared.Location = current.location;
+          tempApplicationListShared.clientCellNo = current.phoneNumber;
+          tempApplicationListShared.CreatedById = current.createdById;
+
+          tempApplicationListShared.UserID = current.userID;
+          tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+          tempApplicationListShared.CurrentStageName = current.currentStageName;
+          tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+
+          tempApplicationListShared.NextStageName = current.nextStageName;
+          tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+          tempApplicationListShared.PreviousStageName = current.previousStageName;
+          tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+          tempApplicationListShared.DatePaid = current.datePaid;
+          tempApplicationListShared.wbsrequired = current.wbsRequired;
+          tempApplicationListShared.Coordinates = current.coordinates;
+          if (current.projectNumber != null) {
+            tempApplicationListShared.ProjectNumber = current.projectNumber;
+          } else {
+            tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+          }
+
+          tempApplicationListShared.isPlanning = current.isPlanning;
+          tempApplicationListShared.permitStartDate = current.permitStartDate;
+
+
+          //#region escalation Sindiswa 31 January 2024
+          tempApplicationList.isEscalated = current.isEscalated;
+          tempApplicationList.EscalationDate = current.escalationDate;
+          tempApplicationList.EMBActionDate = current.embActionDate;
+          //#endregion
+
+         
+
+          this.specificApplication.push(tempApplicationListShared);
+          this.Applications.push(tempApplicationList);
+        }
+
+
+        console.log("Hi, from notifications 1", this.specificApplication);
+        if (data.dateSet.length < 3) {
+
+          this.canReapply = true;
+          this.sharedService.setCanReapply(true);
+        } else {
+          this.canReapply = false;
+          this.sharedService.setCanReapply(false);
+        }
+
+        this.viewSpecificProject();
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+
+  viewSpecificProject() {
+    this.sharedService.getShowFormerApps();
+    //this.specificApplication.push(this.specificApplication[0]);
+    console.log("Hi, from notifications 2", this.specificApplication);
+    this.sharedService.setViewApplicationIndex(this.specificApplication);
+
+    this.viewContainerRef.clear();
+    this.router.navigate(["/view-project-info"]);
+  }
+  //#endregion
 }
+
 
 

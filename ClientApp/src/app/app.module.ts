@@ -279,6 +279,7 @@ import { ApplicationAlertsComponent } from 'src/app/application-alerts/applicati
     //Audit Trail Kyle
     AuditTrailComponent,
     //Audit Trail Kyle
+    UserManagementComponent, //actingAsInternal Sindiswa 05 February 2024
     ApplicationAlertsComponent,//Clarify Alerts Kyle 
 
   ],

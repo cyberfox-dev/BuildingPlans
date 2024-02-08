@@ -151,7 +151,12 @@
       <div class="email-content">
         <p>Dear  {{this.fullName}},</p>
         <p>{{this.MessageList.Message}}</p>
-
+        <!-- routingToProject Sindiswa 05 February 2024-->
+        <br />
+        <p>
+          Click the button to route to mentioned application:
+          <button type="button" (click)="goToApplication(this.MessageList.ApplicationID);modal.dismiss('Cross click')">Go to Application</button>
+        </p>
       </div>
     </div>
     <div class="modal-footer">

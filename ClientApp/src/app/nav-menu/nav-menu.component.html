@@ -313,7 +313,7 @@
       <button mat-button class="sideNavIcons" (click)="openRepositoryModal(repositoryModal)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/box-archive-solid.svg" class="icon">   Document Repository</button>
       <button mat-button class="sideNavIcons" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid-black.svg" class="icon">  Comment Builder</button>
       <button mat-button class="sideNavIcons" (click)="goToConfig();offcanvas.dismiss('Cross click')" *ngIf="Configurations"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/gear-solid.svg" class="icon">    Configurations</button>
-      <button mat-button class="sideNavIcons" (click)="openNotificationsModal()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bell-solid.svg" class="icon">   Notifications</button>
+      <button mat-button class="sideNavIcons" (click)="openNotificationsModal();offcanvas.dismiss('Cross click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bell-solid.svg" class="icon">   Notifications</button><!--routingToProject Sindiswa 05 February 2024-->
       <!----Audit Trail Kyle---->
       <button mat-button class="sideNavIcons" (click)="openReports(reports)" *ngIf="Reports"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/book-journal-whills.svg" class="icon"> Reports</button>
       <!----Audit Trail Kyle---->

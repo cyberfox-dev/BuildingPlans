@@ -198,3 +198,46 @@ img {
   height: 252px;
   animation: spin 4s linear infinite;
 }
+
+/* actingAsInternal Sindiswa 02 February 2024 */
+/* Your custom container style */
+.custom-container {
+  width: 100%;
+  max-width: 1200px; /* Adjust the maximum width as per your design */
+  margin: 0 auto; /* Center the container */
+}
+
+/* Your custom row style */
+.custom-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -15px; /* Adjust for potential gutters between columns */
+}
+
+/* Your custom column style */
+.custom-col {
+  flex: 1; /* Columns should take equal width */
+  padding: 0 15px; /* Adjust for potential gutters between columns */
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .custom-col {
+    flex: 0 0 100%; /* Columns should take full width on smaller screens */
+  }
+}
+
+.custom-form-field {
+
+}
+/* actingAsInternal Sindiswa 05 February 2024 */
+#extIntApplicantPhyscialAddress .pac-container {
+  z-index: 100000000 !important;
+}
+.modal-body .form-floating .pac-container {
+  z-index: 100000000;
+}
+div.pac-container.pac-logo ::after  {
+  z-index: 100000000;
+}
+
