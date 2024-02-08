@@ -248,3 +248,7 @@ h3 {
   user-select: none;
 }
 
+.pac-container {
+  position: absolute !important;
+  z-index: 100000000 !important;
+}

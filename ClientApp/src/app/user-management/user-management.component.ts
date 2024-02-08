@@ -18,6 +18,15 @@ import { UserService } from '../service/User/user.service';
 import { NewProfileComponent } from '../new-user/new-profile/new-profile.component';
 import { SharedService } from '../shared/shared.service';
 import { NotificationsService } from '../service/Notifications/notifications.service';
+
+//#region actingAsInternal Sindiswa 02 February 2024
+import { GooglePlaceDirective } from 'ngx-google-places-autocomplete';
+import { Address } from 'ngx-google-places-autocomplete/objects/address';
+import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { BpNumberService } from 'src/app/service/BPNumber/bp-number.service'
+import { BusinessPartnerService } from '../service/BusinessPartner/business-partner.service';
+//#endregion
 //import { access } from 'fs';
 //import * as internal from 'stream';
 
@@ -150,9 +159,45 @@ export class UserManagementComponent implements OnInit {
   selectedUsersDepartmentID: number;
   ZoneName: string;
 
-  constructor(private cdr: ChangeDetectorRef, private userService: UserService, private newProfileComponent: NewProfileComponent, private sharedService: SharedService, private notificationService: NotificationsService,
-    private userPofileService: UserProfileService, private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private zoneService: ZonesService, private zoneLinkService: ZoneLinkService, private subDepartmentService: SubDepartmentsService, private departmentService: DepartmentsService, private accessGroupLinkService: AccessGroupUserLinkServiceService, private zonesService: ZonesService) { }
+  //#region actingAsInternal Sindiswa 02 February 2024
+  @ViewChild("placesRef") placesRef: GooglePlaceDirective | undefined;
+  googlePlacesOptions = {
+    types: [],
+    componentRestrictions: { country: 'ZA' }
+  } as unknown as Options
 
+  externalInternalForm: FormGroup;
+  //#endregion
+
+  constructor(private cdr: ChangeDetectorRef, private userService: UserService, private newProfileComponent: NewProfileComponent, private sharedService: SharedService, private notificationService: NotificationsService,
+    private userPofileService: UserProfileService, private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private zoneService: ZonesService, private zoneLinkService: ZoneLinkService, private subDepartmentService: SubDepartmentsService, private departmentService: DepartmentsService, private accessGroupLinkService: AccessGroupUserLinkServiceService, private zonesService: ZonesService, /*actingAsInternal Sindiswa 05 February 2024*/ private fb: FormBuilder, private bpNumberService: BpNumberService,
+    private businessPartnerService: BusinessPartnerService,) {
+
+    this.externalInternalForm = this.fb.group({
+      // Define form controls and their validations here
+    });
+  }
+    //#region actingAsInternal Sindiswa 05 February 2024
+  handleAddressChange(extIntApplicantPhyscialAddress: Address) {
+    debugger;
+    console.log("Address changed:", extIntApplicantPhyscialAddress);
+    this.extIntApplicantPhyscialAddress = extIntApplicantPhyscialAddress.formatted_address;
+  }
+
+  testBp2(BpNo: any): Promise<boolean> {
+    return this.businessPartnerService.validateBP(Number(BpNo))
+      .toPromise()
+      .then((response: any) => {
+        const apiResponse = response.Response;
+        return apiResponse === "X";
+      })
+      .catch((error: any) => {
+        // Handle API error
+        console.error('API error:', error);
+        return false; // Return false in case of an error
+      });
+  }
+  // #endregion
   ngOnInit(): void {
     this.getAllAccessGroup();
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
@@ -173,7 +218,6 @@ export class UserManagementComponent implements OnInit {
     //this.getAllAccessGroups();
     this.getAllDepartments();
   }
-
 
   getUserProfiles() {
     //if (this.CurrentUserProfile.) {
@@ -3380,4 +3424,148 @@ export class UserManagementComponent implements OnInit {
       return;
     }
   }
+
+  //#region actingAsInternal Sindiswa 02 February 2024
+
+  extIntApplicantBpNoApplicant = '';
+  extIntApplicantCompanyName = '';
+  extIntApplicantCompanyRegNo = '';
+  extIntApplicantCompanyType = '';
+  extIntApplicantName = '';
+  extIntApplicantSurname = '';
+  extIntApplicantTellNo = '';
+  extIntApplicantEmail = '';
+  extIntApplicantPhyscialAddress = '';
+  extIntApplicantIDNumber = '';
+  extIntApplicantIDUpload: any;
+  extIntApplicantICASANumber = '';
+  extIntApplicantVatNumber = '';
+
+  showTelecommsPrompt = true;
+  isRepresentingTelecommsCompany = false;
+
+  actingAsInternalUserID: string = '';
+  actingAsInternalUserProfileID: number;
+  actingAsInternalAGID: number;
+
+  nameRegex: RegExp = /^[A-Za-z]+(-[A-Za-z]+)?$/;
+  emailRegex: RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  openCreateActingAsInternalUser(newActingUser: any) {
+
+    this.modalService.open(newActingUser, { centered: true, size: 'xl' });
+  }
+ 
+  async addNewActingUser() {
+    const confirm = window.confirm("Are you sure you want to create an 'external-acting-as-internal' user with these details?");
+
+    const emailExists = await this.userService.emailExists(this.extIntApplicantEmail).toPromise();
+    const validBPNumber = await this.testBp2(this.extIntApplicantBpNoApplicant);
+
+    if (confirm && !emailExists && validBPNumber) {
+      this.creatingActingUser();
+    }
+    else if (emailExists && !validBPNumber) {
+      alert("The provided email is associated with an existing user and the entered BP Number is invalid.");
+    }
+    else if (emailExists) {
+      alert("The provided email is associated with an existing user.");
+    }
+    else if (!validBPNumber){
+      alert("The entered BP Number is invalid.");
+    }
+  }
+
+  creatingActingUser() {
+    //this.getAllAccessGroup(); //this method is called on ngOnInit so all should be fine neh
+    this.actingAsInternalAGID = this.getAccessGroupIdByName("Acting As Internal");
+    console.log("This is the access group ID ya 'Acting as Internal'", this.actingAsInternalAGID);
+    debugger;
+    this.userService.register(this.extIntApplicantName + " " + this.extIntApplicantSurname, this.extIntApplicantEmail, "12345").subscribe(async (data: any) => {
+      if (data.responseCode == 1) {
+        debugger;
+        this.actingAsInternalUserID = await data.dateSet.appUserId;
+        console.log("This is the new user's UserID", this.actingAsInternalUserID);
+        this.userPofileService.addUpdateUserProfiles(0, this.actingAsInternalUserID, this.extIntApplicantName + " " + this.extIntApplicantSurname, this.extIntApplicantEmail, this.extIntApplicantTellNo, /* this ninja is NOT internal */false, /* validating this isn't fun */ this.extIntApplicantBpNoApplicant, this.extIntApplicantCompanyName, this.extIntApplicantCompanyRegNo,
+          this.extIntApplicantPhyscialAddress, null, null, null, null, null, null, /* POPI said no ID things */ null, this.CurrentUser.appUserId, /* POPI said no ID things */ null, null, this.extIntApplicantVatNumber,  /* what refnumber now? */ null, this.extIntApplicantCompanyType, null, null, null, null, null, this.extIntApplicantName, this.extIntApplicantSurname,
+          null, null, true, this.extIntApplicantICASANumber, null).subscribe(async (userData: any) => {
+
+            this.actingAsInternalUserProfileID = await userData.dateSet.userProfileID;
+
+            if (userData.responseCode == 1) {
+              debugger;
+              console.log("This is the new user's UserProfileID", this.actingAsInternalUserProfileID);
+              //shnap, aren't access groups linked to zones and subdepartments now? AccessGroupUserLink
+              this.accessGroupsService.addUpdateAccessGroupUserLink(0, /*what's "Acting As Internal"'s AccessGroupID? */ this.actingAsInternalAGID, this.actingAsInternalUserID, this.CurrentUser.appUserId,/*zoneID*/ null, /*subDepartmentID*/ null, this.actingAsInternalUserProfileID).subscribe((accessGULData: any) => {
+                if (accessGULData.responseCode == 1) {
+                  this.sendNotoficationsToNewUser(this.extIntApplicantName + " " + this.extIntApplicantSurname, this.extIntApplicantEmail);
+                }
+                else {
+                  console.log("Adding acting as internal user access group user link response", userData.responseMessage)
+                }
+              }, accessGULError => {
+                console.log("Error while trying to add/update acting as internal user access group user link: ", accessGULError);
+              });
+            }
+            else {
+              console.log("Creating acting as internal user profile response", userData.responseMessage)
+            }
+          }, userError => {
+            console.log("Error while trying to add/update user profile for acting as internal user: ", userError);
+          });
+        
+
+    
+      } else {
+        console.log("Acting as internal login creation response",data.responseMessage);
+      }
+    }, error => {
+      console.log("Error while trying to create/register a new acting as internal user: ", error);
+    });
+
+  }
+
+
+  sendNotoficationsToNewUser(fullName: string, applicantEmail: any) {
+    const newProfileContent =
+      `<html>
+          <head>
+            <style>
+              body {
+                    font-family: Arial, sans-serif;
+              }
+             .email-content {
+                    padding: 20px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+            }
+            .footer {
+                  margin-top: 20px;
+                  color: #777;
+            }
+            .footer-logo {
+                  display: inline-block;
+                  vertical-align: middle;
+            }
+          </style>
+          </head>
+          <body>
+           <div class="email-content">
+             <p>Dear ${fullName},</p>
+             <p>We would like to inform you that a user of the CCT Wayleave Management System has created an external user profile on your behalf. You can <a href="https://wayleave.capetown.gov.za/">login here</a> using the default password "12345". We strongly recommend changing this password at your earliest convenience for enhanced security.</p>
+             <p>If you have any questions or require assistance, feel free to reach out to us via email at <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a>.</p>
+          </div>
+          <div class="footer">
+
+            <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+            <p>Regards,<br>Wayleave Management System</p>
+            <p>
+              <a href="#">CCT Web</a> | <a href="#">Contacts</a> | <a href="#">Media</a> | <a href="#">Report a fault</a> | <a href="#">Accounts</a>
+            </p>
+          </body>
+          </html>`;
+    this.notificationService.sendEmail(applicantEmail, `WMS - External User Profile Created for ${fullName} | Ability to Act as Internal User`, newProfileContent, newProfileContent);
+  }
+
+  // #endregion
 }

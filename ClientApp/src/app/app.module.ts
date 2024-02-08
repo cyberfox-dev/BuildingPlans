@@ -187,7 +187,7 @@ import { OldApplicationVersionsComponent } from './old-application-versions/old-
 
     DraftsComponent,
       ApprovalPackComponent,
-      OldApplicationVersionsComponent, //reapply Sindiswa 25 January 2024
+    OldApplicationVersionsComponent, //reapply Sindiswa 25 January 2024
 
 
   ],
@@ -276,6 +276,7 @@ import { OldApplicationVersionsComponent } from './old-application-versions/old-
     //Audit Trail Kyle
     AuditTrailComponent,
     //Audit Trail Kyle
+    UserManagementComponent, //actingAsInternal Sindiswa 05 February 2024
   ],
   bootstrap: [AppComponent]
 })

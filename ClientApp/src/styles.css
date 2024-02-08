@@ -347,3 +347,6 @@ quill-editor {
   min-height: 500px;
   overflow-y: auto;
 }
+.pac-container {
+  z-index: 1000000 !important;
+}

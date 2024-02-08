@@ -4123,7 +4123,7 @@ export class NewWayleaveComponent implements OnInit {
   onCreateNotification() {
 
     this.notiName = "Application Created";
-    this.notiDescription = this.applicationID + " was created ";
+    this.notiDescription = this.applicationID + " was created "; // this ain't on - EXTERNAL notifications need more content
 
     this.notificationsService.addUpdateNotification(0, this.notiName, this.notiDescription, false, this.DepartmentAdminList[0].userId, this.CurrentUser.appUserId, this.applicationID, this.Emailmessage).subscribe((data: any) => {
 

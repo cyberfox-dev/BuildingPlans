@@ -1,7 +1,7 @@
-<div *ngIf="dataSource.length === 0">
-  <p>This is the original application, applicant has not reapplied</p>
+<div *ngIf="dataSource.length === 0" style="text-align: center; padding-top: 20px;">
+  <h3 style="text-align: center;">This is the original application, the applicant has not reapplied.</h3>
 </div>
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8 animationFadeIn">
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8 animationFadeIn" *ngIf="dataSource.length > 0">
 
 
   <ng-container matColumnDef="Stage">
