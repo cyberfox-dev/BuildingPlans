@@ -1681,6 +1681,7 @@ export class ActionCenterComponent implements OnInit {
           // #region comments Sindiswa 22 January 2023 - tbh I don't think think that this is able to distinguish between the Reviewer and Senior Reviewer
           else if ((current.commentStatus == "Provisionally Approved" || current.commentStatus == "Rejected" || current.commentStatus == "Approved" || current.commentStatus == "Approved(Conditional)") && current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
             this.previousReviewer = current.createdById;
+           
           }
           // #endregion
           else {
@@ -1688,7 +1689,6 @@ export class ActionCenterComponent implements OnInit {
           }
 
         }
-
         if (this.previousReviewer != null) {
           this.userPofileService.getUserProfileById(this.previousReviewer).subscribe((data: any) => {
             if (data.responseCode == 1) {
@@ -1708,6 +1708,8 @@ export class ActionCenterComponent implements OnInit {
         else {
 
         }
+      
+       
 
       }
       else {
@@ -1724,8 +1726,8 @@ export class ActionCenterComponent implements OnInit {
 
   }
 
-
-
+ 
+   
   onReviewerClarityClick() {
     let SubDepartmentName = "";
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
@@ -3271,8 +3273,9 @@ export class ActionCenterComponent implements OnInit {
                 console.log("Error", error);
               });
 
-              //commentsService                                                                                                                                                                                                                                        //Comments Kyle 01/02/24
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
+              //commentsService
+              debugger;//Comments Kyle 01/02/24
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.CurrentApplication.UserID).subscribe((data: any) => {
                                                                                                                                                                                                                                                                         //Comments Kyle 01/02/24
                 if (data.responseCode == 1) {
 
@@ -3939,7 +3942,7 @@ export class ActionCenterComponent implements OnInit {
       case "Clarify": {
         // this.getDepartmentManagerUserID("Senior Reviewer");
         if (confirm("Are you sure you want to get clarity from applicant for this application?")) {
-          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
+          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", false, null, this.CurrentApplicant, null).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
               const emailContent = `
@@ -4064,7 +4067,8 @@ export class ActionCenterComponent implements OnInit {
 
               alert(data.responseMessage);
               //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName).subscribe((data: any) => {
+              debugger;
+              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.CurrentApplication.UserID).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
 
@@ -5591,6 +5595,7 @@ export class ActionCenterComponent implements OnInit {
     debugger;
     this.subDepartmentForCommentService.getAssignedReviewer(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe(async (data: any) => {
       if (data.responseCode == 1) {
+        debugger;
         console.log("User assignment information:", data.dateSet);
 
         let current = data.dateSet[0];
@@ -5598,6 +5603,7 @@ export class ActionCenterComponent implements OnInit {
         this.subDPTforComment = await current.subDepartmentForCommentID;
         this.userAssignedText = await current.userAssaignedToComment;
         this.commentState = await current.commentStatus;
+        this.openActionCenter(content);
       }
       else {
         alert(data.responseMessage);
@@ -5606,12 +5612,69 @@ export class ActionCenterComponent implements OnInit {
     }, error => {
       console.log("Error in terms of trying to figure out which 'state' the application is in:", error);
     });
-   
+
+  
+
+  }
+  //Final Approver && Senior Approver Kyle 01/02/24
+  takeOnthisApplication() {
+    var userConfirmed = window.confirm("Do you want to take on this application as a" + this.asWhat + "?");
+
+        if (userConfirmed) {
+
+
+
+          // update the SubDepartmentForComment table
+
+          this.subDepartmentForCommentService.assignSeniorReviewerOrFinalApprover(this.subDPTforComment, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+            //4. update the ReviewerForComment table - audit trail things
+            this.reviwerforCommentService.addUpdateReviewerForComment(0, this.ApplicationID, this.CurrentUser.appUserId, this.appointmentText, "User Officially Took Application", this.CurrentUser.appUserId, this.loggedInUsersSubDepartmentID, this.loggedInUsersSubDepartmentName, this.CurrentUserProfile[0].zoneID, this.CurrentUserProfile[0].zoneName).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+                this.subDepartmentForCommentService.getAssignedReviewer(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe(async (data: any) => {
+                  if (data.responseCode == 1) {
+                    console.log("User assignment information:", data.dateSet);
+
+                    let current = data.dateSet[0];
+
+                    this.subDPTforComment = await current.subDepartmentForCommentID;
+                    this.userAssignedText = await current.userAssaignedToComment;
+                    this.commentState = await current.commentStatus;
+                    
+                  }
+                  else {
+                    alert(data.responseMessage);
+
+                  }
+                }, error => {
+                  console.log("Error in terms of trying to figure out which 'state' the application is in:", error);
+                });
+              }
+              else {
+                alert(data.responseMessage);
+
+              }
+              console.log("Official user role assignement!", data);
+
+            }, error => {
+              console.log("Error: ", error);
+            });
+          })
+          console.log("Application taken!");
+        } else {
+
+          console.log("Application not taken.");
+          return;
+        }
+  }
+  openActionCenter(content: any) {
+    debugger;
     if (this.commentState == null) {
       //This is so the Admin can assign
       this.openXl(content);
     }
-    else if (this.userAssignedText === this.CurrentUser.appUserId && (this.commentState == null || this.commentState == "Referred" || this.commentState == "Approved" || this.commentState == "Rejected")) {
+    else if (this.userAssignedText === this.CurrentUser.appUserId && (this.commentState == null || this.commentState == "Referred" || this.commentState == "Approved" || this.commentState == "Rejected" )) {
       this.openXl(content);
     }
     else if (this.userAssignedText === "EndOfCommentProcess") {
@@ -5623,63 +5686,375 @@ export class ActionCenterComponent implements OnInit {
       }
     }
     else if ((this.userAssignedText == "Senior Reviewer to comment" && this.commentState == "Referred") || (this.userAssignedText == "All users in Subdepartment FA" && (this.commentState == "Approved" || this.commentState == "Approved(Conditional)" || this.commentState == "Rejected"))) {
-
+    
       if (this.commentState == "Referred") {
         this.appointmentText = "Senior Reviewer - Self Appointed";
         this.asWhat = " Senior Reviewer"
+        this.openXl(content);//Final Approver && Senior Approver Kyle 01/02/24
+       
       }
+      
       else if (this.commentState == "Approved" || this.commentState == "Rejected") {
         this.appointmentText = "Final Approver - Self Appointed";
         this.asWhat = " Final Approver";
-
+        this.canCommentFinalApprover;
+        this.canCommentSeniorReviewer;
+        this.openXl(content);//Final Approver && Senior Approver Kyle 01/02/24
       }
-
-      //var userConfirmed = window.confirm("This application stage is as follows: '" + this.userAssignedText + "' Do you want to take the application?");
-      var userConfirmed = window.confirm("Do you want to take on this application as a" + this.asWhat + "?");
-
-
-      if (userConfirmed) {
-
-
-
-        // update the SubDepartmentForComment table
-
-        this.subDepartmentForCommentService.assignSeniorReviewerOrFinalApprover(this.subDPTforComment, this.CurrentUser.appUserId).subscribe((data: any) => {
-
-          //4. update the ReviewerForComment table - audit trail things
-          this.reviwerforCommentService.addUpdateReviewerForComment(0, this.ApplicationID, this.CurrentUser.appUserId, this.appointmentText, "User Officially Took Application", this.CurrentUser.appUserId, this.loggedInUsersSubDepartmentID, this.loggedInUsersSubDepartmentName, this.CurrentUserProfile[0].zoneID, this.CurrentUserProfile[0].zoneName).subscribe((data: any) => {
-
-            if (data.responseCode == 1) {
-              this.openXl(content);
-            }
-            else {
-              alert(data.responseMessage);
-
-            }
-            console.log("Official user role assignement!", data);
-
-          }, error => {
-            console.log("Error: ", error);
-          });
-        })
-        console.log("Application taken!");
-      } else {
-
-        console.log("Application not taken.");
-        return;
-      }
+     
     }
-
-    //#region escalation Sindiswa 31 January 2024 - saw card while working on escalation tings, need to add someone has already taken application text
-    else if ((this.userAssignedText != null && this.userAssignedText != "Senior Reviewer to comment" && this.userAssignedText != "All users in Subdepartment FA") && (this.commentState == "Approved" || this.commentState == "Referred"  || this.commentState == "Approved(Conditional)" || this.commentState == "Rejected")) {
+    else if ((this.userAssignedText != null && this.userAssignedText != "Senior Reviewer to comment" && this.userAssignedText != "All users in Subdepartment FA") && (this.commentState == "Approved" || this.commentState == "Referred" || this.commentState == "Approved(Conditional)" || this.commentState == "Rejected")) {
       alert("This application is currently under review by a senior reviewer or final approver.");
     }
-    //#endregion
+  
   }
-
+  //Final Approver && Senior Approver Kyle 01/02/24
   onCommentFA(interact: any) {
+   
+    
 
+    let SubDepartmentName = "";
+    for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
+      if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
+        SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
+      }
+    }
+    if (this.leaveAComment == null) {
+      alert("Please leave a comment on what you need clafication on");
+    }
+    else {
+      switch (interact) {
+        case "Clarify": {
+
+          // this.getDepartmentManagerUserID("Senior Reviewer");
+          if (confirm("Are you sure you want to get clarity from applicant for this application?")) {
+            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+                const emailContent = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.loggedInUserName}</p>
+            <p>You have requested clarity on ${this.projectNo} with the comment:</p>
+            <p>${this.leaveAComment}</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+     
+           
+    `;
+
+
+
+                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
+                /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                */
+                const emailContentApp = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.applicationData.clientName}</p>
+            <p>A reviewer has asked you to clarify your application ${this.projectNo} with the comment:</p>
+            <p>${this.leaveAComment}</p>
+               <p >Please login to the <a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a> and provide a response</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+     
+           
+    `;
+
+
+
+                this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
+/*              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+*/              this.notificationsService.addUpdateNotification(0, "Wayleave Application Request", "Request for clarification", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+
+                  if (data.responseCode == 1) {
+
+
+                  }
+                  else {
+                    alert(data.responseMessage);
+                  }
+
+                  console.log("response", data);
+                }, error => {
+                  console.log("Error", error);
+                });
+                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarificaion", false, this.CurrentUser.appUserID, this.applicationData.userID, this.ApplicationID, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+
+                  if (data.responseCode == 1) {
+
+
+                  }
+                  else {
+                    alert(data.responseMessage);
+                  }
+
+                  console.log("response", data);
+                }, error => {
+                  console.log("Error", error);
+                });
+
+                //commentsService                                                                                                                                                                                                                                        //Comments Kyle 01/02/24 //Clarify Alerts Kyle 
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.CurrentApplication.UserID).subscribe((data: any) => {
+                  //Comments Kyle 01/02/24
+                  if (data.responseCode == 1) {
+
+
+                    this.viewProjectInfoComponent.getAllComments();
+                  }
+                  else {
+                    alert(data.responseMessage);
+
+                  }
+                  console.log("reponse", data);
+
+                }, error => {
+                  console.log("Error: ", error);
+                })
+                this.refreshParent.emit();
+              }
+              else {
+                alert(data.responseMessage);
+
+              }
+              console.log("reponse", data);
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+            // alert("In progress");
+            this.modalService.dismissAll();
+            this.openSnackBar("Application Actioned");
+            this.router.navigate(["/home"]);
+          }
+          break;
+        }
+
+        case "Reviewer": {
+          if (confirm("Are you sure you want to get clarity from the previouse reviewer?")) {
+            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+                const emailContent = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.loggedInUserName}</p>
+            <p>You have requested clarity on ${this.projectNo} with the comment:</p>
+            <p>${this.leaveAComment}</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+     
+           
+    `;
+
+
+
+                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
+                /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                */
+                const emailContentApp = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.previousReviewer.fullName}</p>
+            <p>A reviewer has asked you to clarify your application ${this.projectNo} with the comment:</p>
+            <p>${this.leaveAComment}</p>
+               <p >Please login to the <a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a> and provide a response</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+     
+           
+    `;
+
+
+
+                this.notificationsService.sendEmail(this.previousReviewer.email, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
+/*              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+*/              this.notificationsService.addUpdateNotification(0, "Wayleave Application Request", "Request for clarification", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+
+                  if (data.responseCode == 1) {
+
+
+                  }
+                  else {
+                    alert(data.responseMessage);
+                  }
+
+                  console.log("response", data);
+                }, error => {
+                  console.log("Error", error);
+                });
+                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarificaion", false, this.CurrentUser.appUserID, this.previousReviewer.userID
+                  , this.ApplicationID, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+
+                    if (data.responseCode == 1) {
+
+
+                    }
+                    else {
+                      alert(data.responseMessage);
+                    }
+
+                    console.log("response", data);
+                  }, error => {
+                    console.log("Error", error);
+                  });
+
+                //commentsService                                                                                                                                                                                                                                        //Comments Kyle 01/02/24
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Reviewer Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.previousReviewer.userID).subscribe((data: any) => {
+                  //Comments Kyle 01/02/24
+                  if (data.responseCode == 1) {
+
+
+                    this.viewProjectInfoComponent.getAllComments();
+                  }
+                  else {
+                    alert(data.responseMessage);
+
+                  }
+                  console.log("reponse", data);
+
+                }, error => {
+                  console.log("Error: ", error);
+                })
+                this.refreshParent.emit();
+              }
+              else {
+                alert(data.responseMessage);
+
+              }
+              console.log("reponse", data);
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+            // alert("In progress");
+            this.modalService.dismissAll();
+            this.openSnackBar("Application Actioned");
+            this.router.navigate(["/home"]);
+          }
+          break;
+
+        }
+      }
+    }
   }
+   //Final Approver && Senior Approver Kyle 01/02/24
   onReturnToSeniorReviewerClick() {
 
   }
@@ -6051,7 +6426,7 @@ export class ActionCenterComponent implements OnInit {
 
   }
   
-  
+ 
   //#endregion
 }
 

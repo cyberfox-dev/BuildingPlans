@@ -28,6 +28,9 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public string? ZoneName { get; set; }
 
+        //Clarify Alerts Kyle 
+        public string? CanReplyUserID{ get; set; }
+        //Clarify Alert Kyle 
         
 
         //The CreatedBy is the user who created the comment

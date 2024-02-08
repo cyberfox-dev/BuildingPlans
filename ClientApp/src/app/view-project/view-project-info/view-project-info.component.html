@@ -69,6 +69,7 @@
 </div>
 
 
+
 <div class="container-fluid cont6 animationFadeIn">
 
   <mat-tab-group>
@@ -117,30 +118,32 @@
             <div class="row" *ngFor="let commentsList of CommentsList; let i = index" [style.margin-left.px]="(i % 2 === 0) ? 60 : 80" [style.margin-right.px]="(i % 2 === 0) ? 60 : 80">
               <div class="col s12 m12 l12" *ngIf="!(commentsList.CommentStatus === 'Referred' && referComment)">
                 <!---Change Wording Kyle 15/01/24-->
-                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Provisionally Approved'||commentsList.CommentStatus === 'Approved(Conditional)' " [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved'|| commentsList.CommentStatus === 'Complete' " [class.Reject]="commentsList.CommentStatus === 'FinalReject'||commentsList.CommentStatus === 'Rejected'||commentsList.CommentStatus === 'Provisionally Rejected'|| commentsList.CommentStatus === 'Final Rejected' " [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'" [class.reviewerClarify]="commentsList.CommentStatus === 'Reviewer Clarified' || commentsList.CommentStatus === 'Reviewer Clarity'" [class.refer]="commentsList.CommentStatus === 'Referred'" [class.returned]="commentsList.CommentStatus === 'Returned'">
+                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Provisionally Approved'||commentsList.CommentStatus === 'Approved(Conditional)' " [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved'|| commentsList.CommentStatus === 'Complete' " [class.Reject]="commentsList.CommentStatus === 'FinalReject'||commentsList.CommentStatus === 'Rejected'||commentsList.CommentStatus === 'Provisionally Rejected'|| commentsList.CommentStatus === 'Final Rejected' " [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'|| commentsList.CommentStatus === 'Reviewer Clarify'" [class.reviewerClarify]="commentsList.CommentStatus === 'Reviewer Clarified' || commentsList.CommentStatus === 'Reviewer Clarity'" [class.refer]="commentsList.CommentStatus === 'Referred'" [class.returned]="commentsList.CommentStatus === 'Returned'">
 
                   <li class="event" data-date="">
 
                     <!---Comments Kyle 01/02/24 -->
                     <h3>{{commentsList.SubDepartmentName}}({{commentsList.ZoneName}}) - {{commentsList.CommentStatus}}</h3>
-                  
+
                     <h5 *ngIf="isInternalUser && InternalExternalUser == false">{{commentsList.UserName}}</h5>
                     <div class="cont2">
                       <div [innerHTML]="sanitizeHTML(commentsList.Comment)"></div>
-                      <button mat-raised-button color="blue" *ngIf="commentsList.CommentStatus != 'FinalApproved'  &&   this.subDepNameForClarify === commentsList.SubDepartmentName" (click)="openEditCommentModal(commentEditorModal, i)">Edit Comment</button>
+                      <button mat-raised-button color="blue" *ngIf="commentsList.CommentStatus != 'FinalApproved'  &&   this.subDepNameForClarify === commentsList.SubDepartmentName && commentsList.UserName === this.CurrentUser.fullName" (click)="openEditCommentModal(commentEditorModal, i)">Edit Comment</button>
                     </div>
                     <!--<p>
 
                       {{commentsList.Comment}}
                     </p>-->
 
-
                     <br />
+                    
+                    <br />
+                    
                     <h6>{{commentsList.DateCreated}}</h6>
                     <br />
 
                     <!--Applicant Clarity-->
-                    <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarify' && canClarify || commentsList.CommentStatus === 'Reviewer Clarity' && canReviewerClarify" (click)="openReplyModal(replyModal,i,'Reply', commentsList.CommentStatus)">Reply</button>
+                    <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarify' && canClarify || commentsList.CommentStatus === 'Reviewer Clarity' && canReviewerClarify || (commentsList.CommentStatus === 'Reviewer Clarify' && commentsList.CanReplyUserID == this.CurrentUser.appUserId)" (click)="openReplyModal(replyModal,i,'Reply', commentsList.CommentStatus)">Reply</button>
                     <button mat-raised-button color="clarify" *ngIf="(commentsList.CommentStatus === 'Clarified' && canClarify) || ( commentsList.CommentStatus === 'Reviewer Clarified' && canReviewerClarify)" (click)="openReplyModal(replyModal,i, 'Update', commentsList.CommentStatus)">Update Reply</button>
                     <div class="row" *ngIf="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified' || commentsList.CommentStatus === 'Reviewer Clarified' || commentsList.CommentStatus === 'Reviewer Clarity'  && commentsList.isApplicantReplay !== null">
                       <label *ngIf="commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null"> <strong><em>Applicant's Reply:</em></strong></label>
@@ -351,13 +354,13 @@
     </mat-tab>-->
     <!--------------------------------------------------------Financial--------------------------------------------------->
 
-  <mat-tab label="Financials">
-    <div class="container-fluid">
+    <mat-tab label="Financials">
       <div class="container-fluid">
-        <button mat-raised-button color="permit" (click)="openDocUpload(newSub)" [disabled]="fromReApplyArchive == true">Upload document</button>
-        <!---- Financial POP Kyle 15/01/24-->
-        <button  *ngIf="applicationDataForView[0].ApplicationStatus == 'Unpaid' && uploadedPOP == false" (click)="openDocUpload(newSub);OnPOPUpload()" mat-raised-button color="permit" [disabled]="fromReApplyArchive == true" >Upload Proof Of Payment</button>
-        <!----Financial POP Kyle 15/01/24-->
+        <div class="container-fluid">
+          <button mat-raised-button color="permit" (click)="openDocUpload(newSub)" [disabled]="fromReApplyArchive == true">Upload document</button>
+          <!---- Financial POP Kyle 15/01/24-->
+          <button *ngIf="applicationDataForView[0].ApplicationStatus == 'Unpaid' && uploadedPOP == false" (click)="openDocUpload(newSub);OnPOPUpload()" mat-raised-button color="permit" [disabled]="fromReApplyArchive == true">Upload Proof Of Payment</button>
+          <!----Financial POP Kyle 15/01/24-->
 
         </div>
 
@@ -940,10 +943,10 @@
     <mat-tab label="Permits" *ngIf="showPermitTab">
 
 
-    <button mat-raised-button color="permit" (click)="openPermitModal(permitModal)" *ngIf="permitBtn" [disabled]="fromReApplyArchive == true">Apply For Permit</button>
-    <br>
-    <br>
-    <input type="text" class="form-control" [(ngModel)]="permitDate" id="permitDate" *ngIf="permitTextBox" disabled>
+      <button mat-raised-button color="permit" (click)="openPermitModal(permitModal)" *ngIf="permitBtn" [disabled]="fromReApplyArchive == true">Apply For Permit</button>
+      <br>
+      <br>
+      <input type="text" class="form-control" [(ngModel)]="permitDate" id="permitDate" *ngIf="permitTextBox" disabled>
 
       <ng-template #permitModal let-modal>
         <div class="modal-header">
@@ -971,7 +974,7 @@
         </div>
       </ng-template>
 
-      <app-permit-component [ApplicationID]="ApplicationID"></app-permit-component>
+      <app-permit-component [ApplicationID]="ApplicationID" [ApplicantID]="CurrentApplicationBeingViewed[0].UserID" [OriginatorID]="CurrentApplicationBeingViewed[0].CreatedById" [ApplicationID]="ApplicationID"></app-permit-component>
 
     </mat-tab>
 
@@ -988,14 +991,14 @@
 
       </app-service-conditions>
 
-  </mat-tab>
+    </mat-tab>
     <!--Old versions of wayleave application--------------------------------------------------------------------------------->
     <mat-tab label="Former Wayleave Applications" *ngIf="showFormerApps == true">
       <app-old-application-versions></app-old-application-versions>
     </mat-tab>
   </mat-tab-group>
 
-  
+
 
 </div>
 

@@ -18,6 +18,7 @@ using WayleaveManagementSystem.BindingModel;
 using WayleaveManagementSystem.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
+using System;
 
 namespace WayleaveManagementSystem.Controllers
 {
@@ -47,8 +48,8 @@ namespace WayleaveManagementSystem.Controllers
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
-                {
-                    var result = await _commentService.AddUpdateComment(model.CommentID,model.ApplicationID, model.SubDepartmentForCommentID,model.SubDepartmentID ,model.SubDepartmentName ,model.Comment, model.CommentStatus ,model.CreatedById, model.isClarifyCommentID,model.isApplicantReplay,model.UserName,model.ZoneName);
+                {                                                                                                                                                                                                                         
+                    var result = await _commentService.AddUpdateComment(model.CommentID,model.ApplicationID, model.SubDepartmentForCommentID,model.SubDepartmentID ,model.SubDepartmentName ,model.Comment, model.CommentStatus ,model.CreatedById, model.isClarifyCommentID,model.isApplicantReplay,model.UserName,model.ZoneName,model.CanReplyUserID); //Clarify Alert Kyle
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.CommentID > 0 ? "Comment Updated Successfully" : "Comment Added Successfully"), result));
                 }
 
@@ -163,6 +164,21 @@ namespace WayleaveManagementSystem.Controllers
         }
 
         //GetCommentsForSpecialConditions
+
+        //Clarify Alerts Kyle 
+        [HttpPost("GetAllCommentsAwaitingClarity")]
+        public async Task<object> GetAllCommentsAwaitingClarity([FromBody] CommentBindingModel model)
+        {
+            if (model.CanReplyUserID== null)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+            }
+            else
+            {
+                var result = await _commentService.GetAllCommentsAwaitingClarity(model.CanReplyUserID);
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Comments List Created", result));
+            }
+        }
 
     }
 

@@ -14,6 +14,7 @@
         public string? isApplicantReplay { get; set; }
         public string? UserName { get; set; }
         public string? ZoneName { get; set; }
+        public string? CanReplyUserID { get; set; }
 
     }
 }
