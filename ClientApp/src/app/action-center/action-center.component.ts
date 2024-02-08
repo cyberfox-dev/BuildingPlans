@@ -2665,7 +2665,7 @@ export class ActionCenterComponent implements OnInit {
     let SubDepartmentName = "";
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
-        SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
+        SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;``
       }
     }
     //console.log("SubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentName", SubDepartmentName);
@@ -5719,7 +5719,8 @@ export class ActionCenterComponent implements OnInit {
         SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
       }
     }
-    if (this.leaveAComment == null) {
+
+    if (this.leaveAComment == "") {
       alert("Please leave a comment on what you need clafication on");
     }
     else {
@@ -5728,10 +5729,11 @@ export class ActionCenterComponent implements OnInit {
 
           // this.getDepartmentManagerUserID("Senior Reviewer");
           if (confirm("Are you sure you want to get clarity from applicant for this application?")) {
-            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
+         
+              this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
 
-              if (data.responseCode == 1) {
-                const emailContent = `
+                if (data.responseCode == 1) {
+                  const emailContent = `
         <html>
         <head>
           <style>
@@ -5774,10 +5776,10 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
-                /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-                */
-                const emailContentApp = `
+                  this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
+                  /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  */
+                  const emailContentApp = `
         <html>
         <head>
           <style>
@@ -5821,79 +5823,82 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-                this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
+                  this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
 /*              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
 */              this.notificationsService.addUpdateNotification(0, "Wayleave Application Request", "Request for clarification", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
-                  if (data.responseCode == 1) {
+                    if (data.responseCode == 1) {
 
 
-                  }
-                  else {
-                    alert(data.responseMessage);
-                  }
+                    }
+                    else {
+                      alert(data.responseMessage);
+                    }
 
-                  console.log("response", data);
-                }, error => {
-                  console.log("Error", error);
-                });
-                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarificaion", false, this.CurrentUser.appUserID, this.applicationData.userID, this.ApplicationID, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+                    console.log("response", data);
+                  }, error => {
+                    console.log("Error", error);
+                  });
+                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarificaion", false, this.CurrentUser.appUserID, this.applicationData.userID, this.ApplicationID, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
-                  if (data.responseCode == 1) {
-
-
-                  }
-                  else {
-                    alert(data.responseMessage);
-                  }
-
-                  console.log("response", data);
-                }, error => {
-                  console.log("Error", error);
-                });
-
-                //commentsService                                                                                                                                                                                                                                        //Comments Kyle 01/02/24 //Clarify Alerts Kyle 
-                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.CurrentApplication.UserID).subscribe((data: any) => {
-                  //Comments Kyle 01/02/24
-                  if (data.responseCode == 1) {
+                    if (data.responseCode == 1) {
 
 
-                    this.viewProjectInfoComponent.getAllComments();
-                  }
-                  else {
-                    alert(data.responseMessage);
+                    }
+                    else {
+                      alert(data.responseMessage);
+                    }
 
-                  }
-                  console.log("reponse", data);
+                    console.log("response", data);
+                  }, error => {
+                    console.log("Error", error);
+                  });
 
-                }, error => {
-                  console.log("Error: ", error);
-                })
-                this.refreshParent.emit();
-              }
-              else {
-                alert(data.responseMessage);
+                  //commentsService                                                                                                                                                                                                                                        //Comments Kyle 01/02/24 //Clarify Alerts Kyle 
+                  this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Applicant Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.CurrentApplication.UserID).subscribe((data: any) => {
+                    //Comments Kyle 01/02/24
+                    if (data.responseCode == 1) {
 
-              }
-              console.log("reponse", data);
 
-            }, error => {
-              console.log("Error: ", error);
-            })
-            // alert("In progress");
-            this.modalService.dismissAll();
-            this.openSnackBar("Application Actioned");
-            this.router.navigate(["/home"]);
+                      this.viewProjectInfoComponent.getAllComments();
+                    }
+                    else {
+                      alert(data.responseMessage);
+
+                    }
+                    console.log("reponse", data);
+
+                  }, error => {
+                    console.log("Error: ", error);
+                  })
+                  this.refreshParent.emit();
+                }
+                else {
+                  alert(data.responseMessage);
+
+                }
+                console.log("reponse", data);
+
+              }, error => {
+                console.log("Error: ", error);
+              })
+              // alert("In progress");
+              this.modalService.dismissAll();
+              this.openSnackBar("Application Actioned");
+              this.router.navigate(["/home"]);
+            
+            
           }
           break;
         }
 
         case "Reviewer": {
           if (confirm("Are you sure you want to get clarity from the previouse reviewer?")) {
-            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
+           
+              this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
 
-              if (data.responseCode == 1) {
-                const emailContent = `
+                if (data.responseCode == 1) {
+                  const emailContent = `
         <html>
         <head>
           <style>
@@ -5936,10 +5941,10 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
-                /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-                */
-                const emailContentApp = `
+                  this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
+                  /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  */
+                  const emailContentApp = `
         <html>
         <head>
           <style>
@@ -5983,24 +5988,9 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-                this.notificationsService.sendEmail(this.previousReviewer.email, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
+                  this.notificationsService.sendEmail(this.previousReviewer.email, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
 /*              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
 */              this.notificationsService.addUpdateNotification(0, "Wayleave Application Request", "Request for clarification", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
-
-                  if (data.responseCode == 1) {
-
-
-                  }
-                  else {
-                    alert(data.responseMessage);
-                  }
-
-                  console.log("response", data);
-                }, error => {
-                  console.log("Error", error);
-                });
-                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarificaion", false, this.CurrentUser.appUserID, this.previousReviewer.userID
-                  , this.ApplicationID, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
                     if (data.responseCode == 1) {
 
@@ -6014,44 +6004,61 @@ export class ActionCenterComponent implements OnInit {
                   }, error => {
                     console.log("Error", error);
                   });
+                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarificaion", false, this.CurrentUser.appUserID, this.previousReviewer.userID
+                    , this.ApplicationID, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
-                //commentsService                                                                                                                                                                                                                                        //Comments Kyle 01/02/24
-                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Reviewer Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.previousReviewer.userID).subscribe((data: any) => {
-                  //Comments Kyle 01/02/24
-                  if (data.responseCode == 1) {
+                      if (data.responseCode == 1) {
 
 
-                    this.viewProjectInfoComponent.getAllComments();
-                  }
-                  else {
-                    alert(data.responseMessage);
+                      }
+                      else {
+                        alert(data.responseMessage);
+                      }
 
-                  }
-                  console.log("reponse", data);
+                      console.log("response", data);
+                    }, error => {
+                      console.log("Error", error);
+                    });
 
-                }, error => {
-                  console.log("Error: ", error);
-                })
-                this.refreshParent.emit();
-              }
-              else {
-                alert(data.responseMessage);
+                  //commentsService                                                                                                                                                                                                                                        //Comments Kyle 01/02/24
+                  this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Reviewer Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.previousReviewer.userID).subscribe((data: any) => {
+                    //Comments Kyle 01/02/24
+                    if (data.responseCode == 1) {
 
-              }
-              console.log("reponse", data);
 
-            }, error => {
-              console.log("Error: ", error);
-            })
-            // alert("In progress");
-            this.modalService.dismissAll();
-            this.openSnackBar("Application Actioned");
-            this.router.navigate(["/home"]);
+                      this.viewProjectInfoComponent.getAllComments();
+                    }
+                    else {
+                      alert(data.responseMessage);
+
+                    }
+                    console.log("reponse", data);
+
+                  }, error => {
+                    console.log("Error: ", error);
+                  })
+                  this.refreshParent.emit();
+                }
+                else {
+                  alert(data.responseMessage);
+
+                }
+                console.log("reponse", data);
+
+              }, error => {
+                console.log("Error: ", error);
+              })
+              // alert("In progress");
+              this.modalService.dismissAll();
+              this.openSnackBar("Application Actioned");
+              this.router.navigate(["/home"]);
+            }
+            
           }
           break;
 
         }
-      }
+      
     }
   }
    //Final Approver && Senior Approver Kyle 01/02/24

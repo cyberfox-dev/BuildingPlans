@@ -238,7 +238,7 @@ export class ApplicationAlertsComponent implements OnInit {
       else {
         alert(data.responseMessage);
       }
-
+      console.log("KyleKyleKyle", this.ClarificationsList);
 
     }, error => {
       console.log("Error: ", error);

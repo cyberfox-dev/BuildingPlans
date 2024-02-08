@@ -462,6 +462,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   //Final Approver && Senior Approver Kyle 01/02/24
   reviewerToReply: boolean = false;
+  progressBar: number = 0;
   //Final Approver && Senior Approver Kyle 01/02/24
 
   uploadFileEvt(imgFile: any) {
@@ -716,7 +717,8 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getAllSubDepartments();
     this.getLinkedDepartmentsFORAPPROVAL();
     this.CheckForApprovalPackDownload();
-    
+    //Progress bar Kyle 07-02-24
+    this.CalCulateApprovalProgess();
   }
   // #region reapply Sindiswa 26 January 2024
   ngOnDestroy() {
@@ -1441,7 +1443,7 @@ export class ViewProjectInfoComponent implements OnInit {
     }
 
     //* comments Sindiswa 18 January 2024 - making the clarity more dynamic */
-    if (commentStatus === "Reviewer Clarity" || commentStatus === "Reviewer Clarify") {
+    if (commentStatus === "Reviewer Clarity" || commentStatus === "Reviewer Clarify" || commentStatus == "Applicant Clarifiy") {
       this.clarityType = "Reviewer Clarified";
     }
     else if (commentStatus === "Clarify" ) {
@@ -1527,7 +1529,7 @@ export class ViewProjectInfoComponent implements OnInit {
     //    if (data.responseCode == 1) {
     //      this.getAllComments();
 
-    //      
+    //
     //      this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, null, false, null, null, null).subscribe((data: any) => {
 
     //        if (data.responseCode == 1) {
@@ -4555,7 +4557,77 @@ export class ViewProjectInfoComponent implements OnInit {
       }
     }
   }
-  //Audit Trail Kyle
- 
- 
+  /*Progess bar Kyle 07-02-24*/
+  progressColor: string;
+  startColor: string = '#09DFD7';
+  endColor: string = '#098CDF';
+  CalCulateApprovalProgess() {
+    this.subDepartmentForCommentService.getSubDepartmentForComment(this.applicationDataForView[0].applicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        debugger;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+
+          if (current.commentStatus == null && current.userAssignedToComment != null) {
+            this.progressBar = this.progressBar + 33.34;
+          }
+
+          if (current.commentStatus == "Clarify") {
+            this.progress = this.progress + 50;
+          }
+
+          if (current.commentStatus == "Approved" || current.commentStatus == "Approved(Conditionally)") {
+            this.progressBar = this.progressBar + 67.67;
+          }
+
+          if (current.commentStatus == "Final Approved" || current.commentStatus == "Completed") {
+            this.progressBar = this.progressBar + 100;
+          }
+        }
+        let progress = (this.progressBar / data.dateSet.length).toFixed(2);
+        this.progressBar = parseFloat(progress);
+        this.getProgressBarColor(this.progressBar);
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+    })
+  }
+
+  getProgressBarColor(percentage: number): string {
+    // Calculate the middle color dynamically based on the percentage
+    const middleColor = this.calculateColor(percentage, this.startColor, this.endColor);
+
+    // Construct the gradient color using the start, middle, and end colors
+    return `linear-gradient(to right, ${this.startColor}, ${middleColor} ${percentage}%, ${this.endColor})`;
+  }
+
+  calculateColor(percentage: number, startColor: string, endColor: string): string {
+    // Interpolate the color between start and end colors based on the percentage
+    const startRgb = this.hexToRgb(startColor);
+    const endRgb = this.hexToRgb(endColor);
+    const interpolatedRgb = {
+      r: Math.round(startRgb.r + (endRgb.r - startRgb.r) * (percentage / 100)),
+      g: Math.round(startRgb.g + (endRgb.g - startRgb.g) * (percentage / 100)),
+      b: Math.round(startRgb.b + (endRgb.b - startRgb.b) * (percentage / 100))
+    };
+    return `rgb(${interpolatedRgb.r}, ${interpolatedRgb.g}, ${interpolatedRgb.b})`;
+  }
+
+  hexToRgb(hex: string): { r: number, g: number, b: number } {
+    // Convert a hex color to RGB format
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null;
+  }
+  testing() {
+    debugger;
+    this.CurrentApplicationBeingViewed[0];
+  }
+  /*Progess bar Kyle 07-02-24*/
 }
