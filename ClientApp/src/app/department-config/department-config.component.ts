@@ -63,7 +63,8 @@ export interface SubDepartmentList {
 
 export interface SubDepartmentDropdown {
   subDepartmentID: number;
-  subDepartmentName: string ;
+  subDepartmentName: string;
+  needsZXNumber: boolean;
 }
 export interface ZoneDropdown {
   zoneID: number;
@@ -647,7 +648,7 @@ export class DepartmentConfigComponent implements OnInit {
 
 
 
-          this.subDepartment.addUpdateSubDepartment(0, newSubDepName, data.dateSet.departmentID, this.CurrentUser.appUserId, GlCode, ProfitCenter,null,null).subscribe((data: any) => {
+          this.subDepartment.addUpdateSubDepartment(0, newSubDepName, data.dateSet.departmentID, this.CurrentUser.appUserId, GlCode, ProfitCenter,null,null, null).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
 
@@ -704,7 +705,7 @@ export class DepartmentConfigComponent implements OnInit {
     this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
     console.log("this.SubDepartmentList", this.SubDepartmentList);
 
-    this.subDepartment.addUpdateSubDepartment(0, newSubDepName, this.CurrentDepartmentID, this.CurrentUser.appUserId, null, null,null,null).subscribe((data: any) => {
+    this.subDepartment.addUpdateSubDepartment(0, newSubDepName, this.CurrentDepartmentID, this.CurrentUser.appUserId, null, null,null,null, null).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
@@ -1425,7 +1426,7 @@ export class DepartmentConfigComponent implements OnInit {
   onSaveForEditGlCodeAndProfitCenter(selectedSubDepartment:any )
   {
     
-    this.subDepartment.addUpdateSubDepartment(selectedSubDepartment.subDepartmentID, selectedSubDepartment.subDepartmentName, null, null, selectedSubDepartment.glCode, selectedSubDepartment.profitCenter,null,null).subscribe((data: any) => {
+    this.subDepartment.addUpdateSubDepartment(selectedSubDepartment.subDepartmentID, selectedSubDepartment.subDepartmentName, null, null, selectedSubDepartment.glCode, selectedSubDepartment.profitCenter,null,null, null).subscribe((data: any) => {
      
       if (data.responseCode == 1) {
         
@@ -1445,7 +1446,7 @@ export class DepartmentConfigComponent implements OnInit {
 
   //Kyle Gounder 08-01-24
   onSavePermitExpiration(selectedSubDepartment) {
-    this.subDepartment.addUpdateSubDepartment(selectedSubDepartment.subDepartmentID, selectedSubDepartment.subDepartmentName, null, null, null,null,selectedSubDepartment.permitExpiration, null).subscribe((data: any) => {
+    this.subDepartment.addUpdateSubDepartment(selectedSubDepartment.subDepartmentID, selectedSubDepartment.subDepartmentName, null, null, null,null,selectedSubDepartment.permitExpiration, null, null).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         
@@ -1462,6 +1463,86 @@ export class DepartmentConfigComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
+
+  //#region zxNum Sindiswa 08 February 2024
+  selectedDepartmentName: string;
+  SubdepartmentZXList: SubDepartmentDropdown[] = [];
+
+  displayedColumnsZX: string[] = ['name', 'zxBool'];
+  dataSourceZX = this.SubdepartmentZXList;
+  @ViewChild(MatTable) subDepartmentsTable: MatTable<SubDepartmentDropdown> | undefined;
+
+  onViewSetZXNumber(index: number, zxNumberModal: any) {
+    this.selectedDepartmentName = this.DepartmentList[index].departmentName;
+    this.SubDepartmentDropdown.splice(0, this.SubDepartmentDropdown.length);
+    this.SubdepartmentZXList.splice(0, this.SubdepartmentZXList.length);
+    this.subDepartment.getSubDepartmentsByDepartmentID(this.DepartmentList[index].departmentID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepartmentList = {} as SubDepartmentDropdown;
+          const current = data.dateSet[i];
+          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.needsZXNumber = current.needsZXNumber;
+
+          this.SubDepartmentDropdown.push(tempSubDepartmentList);
+          this.SubdepartmentZXList.push(tempSubDepartmentList);
+
+        }
+        this.subDepartmentsTable.renderRows();
+        this.modalService.open(zxNumberModal, { backdrop: 'static', centered: true, size: 'lg' });
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+  }
+  selectedZXSubdepartmentID: number;
+  selectedZXSubdepartmentName: string;
+  selectedZXneedsZXNumber: boolean;
+  //onSelectSubDepartment(subDepID, zxNumberSubDptModal) {
+  onSelectSubDepartment(selectedSubDepartment, zxNumberSubDptModal) {
+
+    this.selectedZXSubdepartmentID = selectedSubDepartment.subDepartmentID;
+    this.selectedZXSubdepartmentName = selectedSubDepartment.subDepartmentName;
+    this.selectedZXneedsZXNumber = selectedSubDepartment.needsZXNumber;
+    this.modalService.open(zxNumberSubDptModal, { backdrop: 'static', centered: true, size: 'lg' });
+  }
+
+  onSaveZXNumberBool() {
+    const confirm = window.confirm("Are you sure you want to change this setting?");
+
+    if (confirm) {
+      this.subDepartment.addUpdateSubDepartment(this.selectedZXSubdepartmentID, this.selectedZXSubdepartmentName, null, null, null, null, null, null, this.selectedZXneedsZXNumber).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          alert("Configuration has been changed accordingly.");
+          this.getAllSubDepartments();
+
+          this.selectedZXSubdepartmentID = null ;
+          this.selectedZXSubdepartmentName = null;
+          this.selectedZXneedsZXNumber = null;
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("Saving ZX Number things", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+  }
+  // #endregion
 }
 enum Tabs {
   View_linked_sub_departments = 0,

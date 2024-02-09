@@ -21,7 +21,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }  
 
-        public async Task<SubDepartments> AddUpdateSubDepartments(int? subDepartmentID, string? subDepartmentName, int? DepartmentID, string? createdByID, string? profitCenter, string? GlCode , int? PermitExpiration, int? WayleaveExpiration)  
+        public async Task<SubDepartments> AddUpdateSubDepartments(int? subDepartmentID, string? subDepartmentName, int? DepartmentID, string? createdByID, string? profitCenter, string? GlCode , int? PermitExpiration, int? WayleaveExpiration, bool? needsZXNumber)  
         {
             if(subDepartmentID == 0) 
             { 
@@ -43,7 +43,8 @@ namespace WayleaveManagementSystem.Service
                     GLCode = GlCode,
                     PermitExpiration = PermitExpiration,
                     WayleaveExpiration = WayleaveExpiration,
-                    isActive = true
+                    isActive = true, 
+                    needsZXNumber = needsZXNumber
 
                 };
 
@@ -80,7 +81,13 @@ namespace WayleaveManagementSystem.Service
                 {
                     tempSubDepartmentsTable.WayleaveExpiration = WayleaveExpiration;
                 }
-                    tempSubDepartmentsTable.DateUpdated = DateTime.Now;
+                #region zxNum Sindiswa 08 Fenruary 2024
+                if (needsZXNumber != null)
+                {
+                    tempSubDepartmentsTable.needsZXNumber = needsZXNumber;
+                }
+                #endregion
+                tempSubDepartmentsTable.DateUpdated = DateTime.Now;
                 
                
                
@@ -151,7 +158,8 @@ namespace WayleaveManagementSystem.Service
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     isActive = true,
-                    isSetForAutomaticDistribution = SubDepartments.isSetForAutomaticDistribution
+                    isSetForAutomaticDistribution = SubDepartments.isSetForAutomaticDistribution,
+                    needsZXNumber = SubDepartments.needsZXNumber //zxNum Sindiswa 08 Fenruary 2024
                 }
                 ).ToListAsync();
         }
@@ -237,7 +245,8 @@ namespace WayleaveManagementSystem.Service
                     DepartmentID = SubDepartments.DepartmentID,
                     DateCreated = SubDepartments.DateCreated,
                     DateUpdated = SubDepartments.DateUpdated,
-                    isActive = true
+                    isActive = true,
+                    needsZXNumber = SubDepartments.needsZXNumber //zxNum Sindiswa 08 Fenruary 2024
 
 
                 }
@@ -260,7 +269,8 @@ namespace WayleaveManagementSystem.Service
                     WayleaveExpiration = SubDepartments.WayleaveExpiration,
                     DateCreated = SubDepartments.DateCreated,
                     DateUpdated = SubDepartments.DateUpdated,
-                    isActive = true
+                    isActive = true,
+                    needsZXNumber = SubDepartments.needsZXNumber //zxNum Sindiswa 08 Fenruary 2024
                 }
                 ).ToListAsync();
         }
@@ -283,7 +293,8 @@ namespace WayleaveManagementSystem.Service
                     DepartmentID = SubDepartments.DepartmentID,
                     DateCreated = SubDepartments.DateCreated,
                     DateUpdated = SubDepartments.DateUpdated,
-                    isActive = true
+                    isActive = true,
+                    needsZXNumber = SubDepartments.needsZXNumber //zxNum Sindiswa 08 Fenruary 2024
 
 
                 }
