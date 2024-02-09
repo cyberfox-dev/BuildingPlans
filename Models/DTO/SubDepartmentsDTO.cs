@@ -19,6 +19,7 @@
         public int? CreatedById { get; set; }
         public bool? isActive { get; set; }
         public bool? isSetForAutomaticDistribution { get; set; }
+        public bool? needsZXNumber { get; set; } //zxNum Sindiswa 08 February 2024
 
     }
 }

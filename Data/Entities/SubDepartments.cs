@@ -22,7 +22,7 @@ namespace WayleaveManagementSystem.Data.Entities
         public int? PermitExpiration { get; set; }
         public int? WayleaveExpiration { get; set; }
 
-
+        public bool? needsZXNumber { get; set; } //zxNum Sindiswa 08 February 2024
 
     }
 }

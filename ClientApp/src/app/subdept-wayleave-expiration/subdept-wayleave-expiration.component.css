@@ -1,0 +1,73 @@
+table {
+  width: 80%;
+  margin: 0 auto;
+  margin-bottom: 30px;
+  box-shadow: none;
+}
+
+.mat-column-name {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 70% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+.mat-column-days {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 15% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+
+.mat-column-action {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 15% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  text-align: center;
+}
+
+.mat-row:hover {
+  background-color: #f0f0f0; /* Change this color to your desired highlight color */
+}
+
+.mat-orange {
+  background-color: #ff9900;
+  color: #fff;
+}
+
+.mat-blue {
+  background-color: #20c997;
+  color: #fff;
+}
+
+.mat-create {
+  background-color: #005870;
+  color: #fff;
+}
+
+.center {
+  text-align: center;
+}

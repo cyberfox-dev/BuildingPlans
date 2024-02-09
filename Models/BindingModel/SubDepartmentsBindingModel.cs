@@ -16,5 +16,6 @@
         public int? WayleaveExpiration { get; set; }
         public string? CreatedById { get; set; }
         public bool? isActive { get; set; }
+        public bool? needsZXNumber { get; set; } //zxNum Sindiswa 08 February 2024
     }
 }
