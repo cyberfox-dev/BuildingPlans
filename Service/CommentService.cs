@@ -199,7 +199,7 @@ namespace WayleaveManagementSystem.Service
         {
             return await (
                 from comment in _context.Comments
-                where comment.CanReplyUserID == canReplyUserID && comment.isApplicantReplay == null && (comment.CommentStatus == "Reviewer Clarify" || comment.CommentStatus == "Clarify") && comment.isActive == true
+                where comment.CanReplyUserID == canReplyUserID && comment.isApplicantReplay == null && (comment.CommentStatus == "Reviewer Clarify" || comment.CommentStatus == "Clarify" || comment.CommentStatus == "Applicant Clarify") && comment.isActive == true
                 select new CommentDTO()
                 {
                     CommentID = comment.CommentID,

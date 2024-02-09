@@ -65,13 +65,19 @@
 <div class="cont7">
   <button mat-raised-button color="generatePackBtn" (click)="OpenLoadingModal()" *ngIf="generateApprovalbtn">Generate My Approval Pack</button>
 
-
+  
 </div>
 
 
 
 <div class="container-fluid cont6 animationFadeIn">
-
+  <!--  Progess bar Kyle 07-02-24-->
+  <div class="progress-bar-container" *ngIf="CurrentApplicationBeingViewed[0].CurrentStageName == 'Department Distribution'">
+    <div class="progress-text">Distribution Stage Progress {{progressBar}}%</div>
+    <div class="progress-bar" [style.width.%]="progressBar" [style.background]="getProgressBarColor(progressBar)">
+    </div>
+  </div>
+  <!--  Progess bar Kyle 07-02-24-->
   <mat-tab-group>
 
     <!--------------------------------------------------------Project Information  *ngIf="generateApprovalbtn"--------------------------------------------------->
@@ -118,7 +124,7 @@
             <div class="row" *ngFor="let commentsList of CommentsList; let i = index" [style.margin-left.px]="(i % 2 === 0) ? 60 : 80" [style.margin-right.px]="(i % 2 === 0) ? 60 : 80">
               <div class="col s12 m12 l12" *ngIf="!(commentsList.CommentStatus === 'Referred' && referComment)">
                 <!---Change Wording Kyle 15/01/24-->
-                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Provisionally Approved'||commentsList.CommentStatus === 'Approved(Conditional)' " [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved'|| commentsList.CommentStatus === 'Complete' " [class.Reject]="commentsList.CommentStatus === 'FinalReject'||commentsList.CommentStatus === 'Rejected'||commentsList.CommentStatus === 'Provisionally Rejected'|| commentsList.CommentStatus === 'Final Rejected' " [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'|| commentsList.CommentStatus === 'Reviewer Clarify'" [class.reviewerClarify]="commentsList.CommentStatus === 'Reviewer Clarified' || commentsList.CommentStatus === 'Reviewer Clarity'" [class.refer]="commentsList.CommentStatus === 'Referred'" [class.returned]="commentsList.CommentStatus === 'Returned'">
+                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Provisionally Approved'||commentsList.CommentStatus === 'Approved(Conditional)' " [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved'|| commentsList.CommentStatus === 'Complete' " [class.Reject]="commentsList.CommentStatus === 'FinalReject'||commentsList.CommentStatus === 'Rejected'||commentsList.CommentStatus === 'Provisionally Rejected'|| commentsList.CommentStatus === 'Final Rejected' " [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'|| commentsList.CommentStatus === 'Reviewer Clarify' || commentsList.CommentStatus == 'Applicant Clarify'" [class.reviewerClarify]="commentsList.CommentStatus === 'Reviewer Clarified' || commentsList.CommentStatus === 'Reviewer Clarity'" [class.refer]="commentsList.CommentStatus === 'Referred'" [class.returned]="commentsList.CommentStatus === 'Returned'">
 
                   <li class="event" data-date="">
 
@@ -136,9 +142,9 @@
                     </p>-->
 
                     <br />
-                    
+
                     <br />
-                    
+
                     <h6>{{commentsList.DateCreated}}</h6>
                     <br />
 
@@ -920,6 +926,7 @@
                </div>
              </div>-->
       </div>
+
       <!--</li>
       -->
 
