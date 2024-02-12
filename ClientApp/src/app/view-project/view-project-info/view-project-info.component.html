@@ -124,7 +124,7 @@
             <div class="row" *ngFor="let commentsList of CommentsList; let i = index" [style.margin-left.px]="(i % 2 === 0) ? 60 : 80" [style.margin-right.px]="(i % 2 === 0) ? 60 : 80">
               <div class="col s12 m12 l12" *ngIf="!(commentsList.CommentStatus === 'Referred' && referComment)">
                 <!---Change Wording Kyle 15/01/24-->
-                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Provisionally Approved'||commentsList.CommentStatus === 'Approved(Conditional)' " [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved'|| commentsList.CommentStatus === 'Complete' " [class.Reject]="commentsList.CommentStatus === 'FinalReject'||commentsList.CommentStatus === 'Rejected'||commentsList.CommentStatus === 'Provisionally Rejected'|| commentsList.CommentStatus === 'Final Rejected' " [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'|| commentsList.CommentStatus === 'Reviewer Clarify' || commentsList.CommentStatus == 'Applicant Clarify'" [class.reviewerClarify]="commentsList.CommentStatus === 'Reviewer Clarified' || commentsList.CommentStatus === 'Reviewer Clarity'" [class.refer]="commentsList.CommentStatus === 'Referred'" [class.returned]="commentsList.CommentStatus === 'Returned'">
+                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Provisionally Approved'||commentsList.CommentStatus === 'Approved(Conditional)' " [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved'|| commentsList.CommentStatus === 'Complete' " [class.Reject]="commentsList.CommentStatus === 'FinalReject'||commentsList.CommentStatus === 'Rejected'||commentsList.CommentStatus === 'Provisionally Rejected'|| commentsList.CommentStatus === 'Final Rejected' " [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'|| commentsList.CommentStatus === 'Reviewer Clarify' || commentsList.CommentStatus == 'Applicant Clarify' || commentsList.CommentStatus ==='Applicant Clarified'" [class.reviewerClarify]="commentsList.CommentStatus === 'Reviewer Clarified' || commentsList.CommentStatus === 'Reviewer Clarity'" [class.refer]="commentsList.CommentStatus === 'Referred'" [class.returned]="commentsList.CommentStatus === 'Returned'">
 
                   <li class="event" data-date="">
 
@@ -132,10 +132,13 @@
                     <h3>{{commentsList.SubDepartmentName}}({{commentsList.ZoneName}}) - {{commentsList.CommentStatus}}</h3>
 
                     <h5 *ngIf="isInternalUser && InternalExternalUser == false">{{commentsList.UserName}}</h5>
+                    <br /> 
                     <div class="cont2">
                       <div [innerHTML]="sanitizeHTML(commentsList.Comment)"></div>
-                      <button mat-raised-button color="blue" *ngIf="commentsList.CommentStatus != 'FinalApproved'  &&   this.subDepNameForClarify === commentsList.SubDepartmentName && commentsList.UserName === this.CurrentUser.fullName" (click)="openEditCommentModal(commentEditorModal, i)">Edit Comment</button>
+                      <button mat-raised-button color="blue" *ngIf="commentsList.CommentStatus != 'FinalApproved'  &&   CurrentUserProfile[0].subDepartmentName === commentsList.SubDepartmentName && commentsList.UserName === this.CurrentUser.fullName" (click)="openEditCommentModal(commentEditorModal, i)">Edit Comment</button>
+                     
                     </div>
+
                     <!--<p>
 
                       {{commentsList.Comment}}
@@ -149,8 +152,8 @@
                     <br />
 
                     <!--Applicant Clarity-->
-                    <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarify' && canClarify || commentsList.CommentStatus === 'Reviewer Clarity' && canReviewerClarify || (commentsList.CommentStatus === 'Reviewer Clarify' && commentsList.CanReplyUserID == this.CurrentUser.appUserId)" (click)="openReplyModal(replyModal,i,'Reply', commentsList.CommentStatus)">Reply</button>
-                    <button mat-raised-button color="clarify" *ngIf="(commentsList.CommentStatus === 'Clarified' && canClarify) || ( commentsList.CommentStatus === 'Reviewer Clarified' && canReviewerClarify)" (click)="openReplyModal(replyModal,i, 'Update', commentsList.CommentStatus)">Update Reply</button>
+                    <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarify' && canClarify || commentsList.CommentStatus === 'Reviewer Clarity' && canReviewerClarify || ((commentsList.CommentStatus === 'Reviewer Clarify' || commentsList.CommentStatus === 'Applicant Clarify')  && commentsList.CanReplyUserID == this.CurrentUser.appUserId)" (click)="openReplyModal(replyModal,i,'Reply', commentsList.CommentStatus)">Reply</button>
+                    <button mat-raised-button color="clarify" *ngIf="(commentsList.CommentStatus === 'Clarified' && canClarify) || ( commentsList.CommentStatus === 'Reviewer Clarified' && canReviewerClarify) || ((CurrentUser.appUserId == commentsList.CanReplyUserID ) && commentsList. isApplicantReplay !== null)" (click)="openReplyModal(replyModal,i, 'Update', commentsList.CommentStatus)">Update Reply</button>
                     <div class="row" *ngIf="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified' || commentsList.CommentStatus === 'Reviewer Clarified' || commentsList.CommentStatus === 'Reviewer Clarity'  && commentsList.isApplicantReplay !== null">
                       <label *ngIf="commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null"> <strong><em>Applicant's Reply:</em></strong></label>
                       <label *ngIf="commentsList.CommentStatus === 'Reviewer Clarified' && commentsList.isApplicantReplay !== null"> <strong><em>Reviewer's Reply:</em></strong></label>
@@ -223,55 +226,11 @@
       <div class="modal-body">
         <form>
           <div class="row">
-            <!--<div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="reply" id="reply" name="reply" placeholder="Edit Comment">2
-              <label for="reply">Enter in a reply</label>
-            </div>-->
 
-            <form [formGroup]="myNewReply">
-              <quill-editor formControlName="reply" [readOnly]="false">
-                <div quill-editor-toolbar>
-                  <span class="ql-formats">
-                    <button class="ql-bold" [title]="'Bold'"></button>
-                    <select class="ql-color" [title]="'Text Color'">
-                      <option value="rgb(0, 0, 0)" selected></option>
-                      <option value="rgb(255, 0, 0)"></option>
-                      <option value="rgb(255, 153, 0)"></option>
-                      <option value="rgb(255, 255, 0)"></option>
-                      <option value="rgb(0, 255, 0)"></option>
-                      <option value="rgb(0, 255, 255)"></option>
-                      <option value="rgb(0, 0, 255)"></option>
-                      <!-- Add other color options as needed -->
-                    </select>
-                    <button class="ql-italic" [title]="'Italic'"></button>
-                    <button class="ql-underline" [title]="'Underline'"></button>
-                    <button class="ql-strike" [title]="'Strikethrough'"></button>
-                    <button class="ql-script" value="sub"></button>
-                    <button class="ql-script" value="super"></button>
-                    <button class="ql-list" [title]="'Bullet List'" [value]="'bullet'"></button>
-                    <button class="ql-list" [title]="'Numbered List'" [value]="'ordered'"></button>
-                    <!--<button class="ql-link" [title]="'Enter URL'"></button>-->
-                    <button class="ql-indent" [value]="'-1'"></button>
-                    <button class="ql-indent" [value]="'+1'"></button>
-                    <select class="ql-align" [title]="'Alignment'">
-                      <option selected></option>
-                      <option value="center"></option>
-                      <option value="right"></option>
-                      <option value="justify"></option>
-                    </select>
-                    <select class="ql-header">
-                      <option value="false" selected></option>
-                      <option value="1"></option>
-                      <option value="2"></option>
-                      <option value="3"></option>
-                      <option value="4"></option>
-                      <option value="5"></option>
-                      <option value="6"></option>
-                    </select>
-                  </span>
-                </div>
-              </quill-editor>
-            </form>
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="reply" id="reply" name="reply" placeholder="Edit Comment">
+              <label for="reply">Enter in a reply</label>
+            </div>
 
           </div>
         </form>
@@ -292,59 +251,16 @@
         <form>
 
 
-          <!--<div class="row">
+          <div class="row">
 
-            <div class="form-floating mb-3 mt-3">-->
-          <!--<input type="text" [(ngModel)]="commentEdit" name="commentEdit" class="form-control" id="commentEdit" placeholder="Update Comment">-->
-          <!--<quill-editor [(ngModel)]="commentEdit" [readOnly]="false">-->
-          <form [formGroup]="editMyComment">
-            <quill-editor formControlName="commentEdit" [ngModel]="editMyComment.controls['commentEdit'].value" [readOnly]="false">
-              <div quill-editor-toolbar>
-                <span class="ql-formats">
-                  <button class="ql-bold" [title]="'Bold'"></button>
-                  <select class="ql-color" [title]="'Text Color'">
-                    <option value="rgb(0, 0, 0)" selected></option>
-                    <option value="rgb(255, 0, 0)"></option>
-                    <option value="rgb(255, 153, 0)"></option>
-                    <option value="rgb(255, 255, 0)"></option>
-                    <option value="rgb(0, 255, 0)"></option>
-                    <option value="rgb(0, 255, 255)"></option>
-                    <option value="rgb(0, 0, 255)"></option>
-                    <!-- Add other color options as needed -->
-                  </select>
-                  <button class="ql-italic" [title]="'Italic'"></button>
-                  <button class="ql-underline" [title]="'Underline'"></button>
-                  <button class="ql-strike" [title]="'Strikethrough'"></button>
-                  <button class="ql-script" value="sub"></button>
-                  <button class="ql-script" value="super"></button>
-                  <button class="ql-list" [title]="'Bullet List'" [value]="'bullet'"></button>
-                  <button class="ql-list" [title]="'Numbered List'" [value]="'ordered'"></button>
-                  <!--<button class="ql-link" [title]="'Enter URL'"></button>-->
-                  <button class="ql-indent" [value]="'-1'"></button>
-                  <button class="ql-indent" [value]="'+1'"></button>
-                  <select class="ql-align" [title]="'Alignment'">
-                    <option selected></option>
-                    <option value="center"></option>
-                    <option value="right"></option>
-                    <option value="justify"></option>
-                  </select>
-                  <select class="ql-header">
-                    <option value="false" selected></option>
-                    <option value="1"></option>
-                    <option value="2"></option>
-                    <option value="3"></option>
-                    <option value="4"></option>
-                    <option value="5"></option>
-                    <option value="6"></option>
-                  </select>
-                </span>
-              </div>
-            </quill-editor>
-          </form>
+            <div class="form-floating mb-3 mt-3">
+          <input type="text" [(ngModel)]="commentEdit" name="commentEdit" class="form-control" id="commentEdit" placeholder="Update Comment">
+          
+         
           <!--<label for="commentEdit">Update Comment</label>-->
-          <!--</div>
+          </div>
 
-          </div>-->
+          </div>
 
 
         </form>

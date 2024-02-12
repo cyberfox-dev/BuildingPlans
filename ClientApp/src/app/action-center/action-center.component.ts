@@ -1659,11 +1659,10 @@ export class ActionCenterComponent implements OnInit {
     })
   }
 
-
-
+ 
 
   getPreviousReviewerUserID() {
-
+    debugger;
 
     this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
@@ -1671,7 +1670,7 @@ export class ActionCenterComponent implements OnInit {
         for (let i = 0; i < data.dateSet.length; i++) {
 
 
-
+          debugger;
           const current = data.dateSet[i];
 
           if (current.commentStatus == "Referred" && current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
@@ -1683,6 +1682,10 @@ export class ActionCenterComponent implements OnInit {
             this.previousReviewer = current.createdById;
            
           }
+          else if (current.commentStatus == "Reviewer Clarified" && current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
+            this.previousReviewer = current.canReplyUserID;
+          }
+       
           // #endregion
           else {
             this.previousReviewer = null;
@@ -5719,14 +5722,14 @@ export class ActionCenterComponent implements OnInit {
         SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
       }
     }
-
+    debugger;
     if (this.leaveAComment == "") {
       alert("Please leave a comment on what you need clafication on");
     }
     else {
       switch (interact) {
         case "Clarify": {
-
+          debugger;
           // this.getDepartmentManagerUserID("Senior Reviewer");
           if (confirm("Are you sure you want to get clarity from applicant for this application?")) {
          
@@ -5853,7 +5856,7 @@ export class ActionCenterComponent implements OnInit {
                   }, error => {
                     console.log("Error", error);
                   });
-
+                  debugger;
                   //commentsService                                                                                                                                                                                                                                        //Comments Kyle 01/02/24 //Clarify Alerts Kyle 
                   this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Applicant Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.CurrentApplication.UserID).subscribe((data: any) => {
                     //Comments Kyle 01/02/24
@@ -5894,10 +5897,11 @@ export class ActionCenterComponent implements OnInit {
 
         case "Reviewer": {
           if (confirm("Are you sure you want to get clarity from the previouse reviewer?")) {
-           
-              this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
-
+            debugger;
+            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentUser.appUserId, null).subscribe((data: any) => {
+                debugger;
                 if (data.responseCode == 1) {
+                  debugger;
                   const emailContent = `
         <html>
         <head>
@@ -5938,7 +5942,7 @@ export class ActionCenterComponent implements OnInit {
      
            
     `;
-
+                  debugger;
 
 
                   this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
@@ -6019,13 +6023,14 @@ export class ActionCenterComponent implements OnInit {
                     }, error => {
                       console.log("Error", error);
                     });
-
+                  debugger;
                   //commentsService                                                                                                                                                                                                                                        //Comments Kyle 01/02/24
                   this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Reviewer Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.previousReviewer.userID).subscribe((data: any) => {
                     //Comments Kyle 01/02/24
+                    debugger;
                     if (data.responseCode == 1) {
 
-
+                      console.log("Comment Created Kyle");
                       this.viewProjectInfoComponent.getAllComments();
                     }
                     else {

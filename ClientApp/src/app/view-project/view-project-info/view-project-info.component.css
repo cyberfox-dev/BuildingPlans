@@ -1138,15 +1138,15 @@ quill-editor {
   transform: translate(-50%, -50%);
   color: black;
   font-weight: 500;
-  font-size: 1.2rem;
+  font-size: 0.65rem;
  
   z-index: 1;
 }
 
 .progress-bar-container {
   position: relative;
-  width: 80%;
-  margin-left: 10%;
+  width: 35%;
+  margin-left: 32.5%;
   height: 25px; /* Adjust height as needed */
   border-block: solid;
   border-block-color: #005870;

@@ -463,6 +463,8 @@ export class ViewProjectInfoComponent implements OnInit {
   //Final Approver && Senior Approver Kyle 01/02/24
   reviewerToReply: boolean = false;
   progressBar: number = 0;
+  reply: string = "";
+ commentEdit: string = "";
   //Final Approver && Senior Approver Kyle 01/02/24
 
   uploadFileEvt(imgFile: any) {
@@ -733,7 +735,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     
     this.currentIndex = index;
-    this.editMyComment.controls["commentEdit"].setValue(this.CommentsList[index].Comment);
+    this.commentEdit = this.CommentsList[index].Comment;
     //this.commentEdit = this.CommentsList[index].Comment;
     console.log("This is what you're trying to edit", this.CommentsList[index].Comment);
 
@@ -1346,6 +1348,7 @@ export class ViewProjectInfoComponent implements OnInit {
             tempCommentList.SubDepartmentName = current.subDepartmentName;
             tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
             tempCommentList.isApplicantReplay = current.isApplicantReplay;
+
             tempCommentList.UserName = current.userName;
             //Comments Kyle 01/02/24
             tempCommentList.ZoneName = current.zoneName;
@@ -1428,10 +1431,10 @@ export class ViewProjectInfoComponent implements OnInit {
     this.modalService.open(replyModal, { centered: true, size: 'lg' })
     this.currentIndex = index;
     if (this.CommentsList[index].isApplicantReplay != null) {
-      //this.reply = this.CommentsList[index].isApplicantReplay;
-      this.myNewReply.controls["reply"].setValue(this.CommentsList[index].isApplicantReplay);
+      this.reply = this.CommentsList[index].isApplicantReplay;
+     
     } else {
-      this.myNewReply.controls["reply"].setValue("");
+      this.reply = "";
     }
 
     this.subDepartmentForComment = this.CommentsList[index].SubDepartmentForCommentID;
@@ -1443,8 +1446,11 @@ export class ViewProjectInfoComponent implements OnInit {
     }
 
     //* comments Sindiswa 18 January 2024 - making the clarity more dynamic */
-    if (commentStatus === "Reviewer Clarity" || commentStatus === "Reviewer Clarify" || commentStatus == "Applicant Clarifiy") {
+    if (commentStatus === "Reviewer Clarity" || commentStatus === "Reviewer Clarify" ) {
       this.clarityType = "Reviewer Clarified";
+    }
+    else if (commentStatus == "Applicant Clarify") {
+      this.clarityType = "Applicant Clarified";
     }
     else if (commentStatus === "Clarify" ) {
       this.clarityType = "Clarified";
@@ -1484,7 +1490,7 @@ export class ViewProjectInfoComponent implements OnInit {
   // TODO: make sure that comments update
 
   updateComment() {
-    let CurrentComment = this.editMyComment.controls["commentEdit"].value;
+    let CurrentComment =this.commentEdit;
     console.log("This is the updated comment", CurrentComment);
     //let CurrentComment = this.commentEdit;
 
@@ -1573,11 +1579,12 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   }
+  
 
   createReply() {
     //let Currentreply = this.reply;
-    let Currentreply = this.myNewReply.controls["reply"].value;
-
+    let Currentreply = this.reply;
+    
     //this.ApplicantReply = Currentreply;
     // this.replyCreated = true;
 
@@ -1590,7 +1597,7 @@ export class ViewProjectInfoComponent implements OnInit {
     }
      //Final Approver && Senior Approver Kyle 01/02/24
     let commentStatus = "";
-    if (this.clarityType == "Reviewer Clarified") {
+    if (this.clarityType == "Reviewer Clarified" || this.clarityType == "Applicant Clarified") {
       commentStatus = "Approved";
     }
     else {
@@ -2490,7 +2497,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
         console.log("data", data.dateSet);
-
+        debugger;
         const currentUserProfile = data.dateSet[0];
         this.depID = currentUserProfile.departmentID;
         this.getUserDep();
@@ -2528,10 +2535,10 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
         if (data.responseCode == 1) {
-
+          debugger;
           for (var i = 0; i < data.dateSet.length; i++) {
             const tempSubDepartmentList = {} as SubDepartmentList;
-
+            debugger;
             const current = data.dateSet[i];
             this.subDepNameForClarify = current.subDepartmentName;
             tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
@@ -4629,7 +4636,7 @@ export class ViewProjectInfoComponent implements OnInit {
           }
 
           if (current.commentStatus == "Clarify") {
-            this.progress = this.progress + 50;
+            this.progressBar = this.progressBar + 50;
           }
 
           if (current.commentStatus == "Approved" || current.commentStatus == "Approved(Conditionally)") {
@@ -4681,9 +4688,6 @@ export class ViewProjectInfoComponent implements OnInit {
       b: parseInt(result[3], 16)
     } : null;
   }
-  testing() {
-    debugger;
-    this.CurrentApplicationBeingViewed[0];
-  }
+ 
   /*Progess bar Kyle 07-02-24*/
 }
