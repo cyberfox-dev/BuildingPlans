@@ -65,6 +65,8 @@ export interface SubDepartmentDropdown {
   subDepartmentID: number;
   subDepartmentName: string;
   needsZXNumber: boolean;
+  permitExpiration: number;
+  wayleaveExpiration: number;
 }
 export interface ZoneDropdown {
   zoneID: number;
@@ -1543,6 +1545,99 @@ export class DepartmentConfigComponent implements OnInit {
     }
   }
   // #endregion
+
+  //#region
+  SubdepartmentExpiryList: SubDepartmentDropdown[] = [];
+  selectedExpirySubdepartmentName: string;
+  selectedExpirySubdepartmentID: number;
+
+  displayedColumnsExpiry: string[] = ['name', 'wayleaveExpiry', 'permitExpiry', 'actions'];
+  dataSourceExpiry = this.SubdepartmentExpiryList;
+  @ViewChild(MatTable) subDepartmentsExpiryTable: MatTable<SubDepartmentDropdown> | undefined;
+
+
+
+  onViewSetExpiration(index: number, expirationDays: any) {
+    this.selectedDepartmentName = this.DepartmentList[index].departmentName;
+    this.SubDepartmentDropdown.splice(0, this.SubDepartmentDropdown.length);
+    this.SubdepartmentExpiryList.splice(0, this.SubdepartmentExpiryList.length);
+
+    this.subDepartment.getSubDepartmentsByDepartmentID(this.DepartmentList[index].departmentID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempSubDepartmentList = {} as SubDepartmentDropdown;
+          const current = data.dateSet[i];
+          tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.needsZXNumber = current.needsZXNumber;
+          tempSubDepartmentList.permitExpiration = current.permitExpiration;
+          tempSubDepartmentList.wayleaveExpiration = current.wayleaveExpiration;
+
+          this.SubDepartmentDropdown.push(tempSubDepartmentList);
+          this.SubdepartmentExpiryList.push(tempSubDepartmentList);
+
+        }
+        this.subDepartmentsExpiryTable.renderRows();
+        this.modalService.open(expirationDays, { backdrop: 'static', centered: true, size: 'xl' });
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  selectedWayleaveExpiration: number;
+  selectedPermitExpiration: number;
+  onSelectExpirationSubdepartment(index: number, expirationSubDptDays: any ) {
+
+    this.selectedExpirySubdepartmentID = this.SubdepartmentExpiryList[index].subDepartmentID;
+    this.selectedExpirySubdepartmentName = this.SubdepartmentExpiryList[index].subDepartmentName;
+    this.selectedWayleaveExpiration = this.SubdepartmentExpiryList[index].permitExpiration;
+    this.selectedPermitExpiration = this.SubdepartmentExpiryList[index].wayleaveExpiration;
+    this.modalService.open(expirationSubDptDays, { backdrop: 'static', centered: true, size: 'lg' });
+  }
+
+  onSaveExpiarationDays() {
+
+    if (this.selectedPermitExpiration === null || this.selectedPermitExpiration === undefined || this.selectedWayleaveExpiration === null || this.selectedWayleaveExpiration === undefined) {
+      alert("Inputs can't be null.");
+    }
+    else { 
+
+    const confirm = window.confirm("Are you sure you want to update the expiration day settings?");
+
+      if (confirm) {
+        this.subDepartment.addUpdateSubDepartment(this.selectedExpirySubdepartmentID, this.selectedExpirySubdepartmentName, null, null, null, null, this.selectedPermitExpiration, this.selectedWayleaveExpiration, null).subscribe((data: any) => {
+          if (data.responseCode == 1) {
+            alert("Expiration configurations has been changed accordingly.");
+            this.getAllSubDepartments();
+
+            this.selectedExpirySubdepartmentID = null;
+            this.selectedExpirySubdepartmentName = null;
+            this.selectedWayleaveExpiration = null;
+            this.selectedPermitExpiration = null;
+          }
+          else {
+            alert(data.responseMessage);
+          }
+          console.log("Saving Expiartion day things", data);
+
+        }, error => {
+          console.log("Error: ", error);
+        })
+      }
+    }
+  }
+  //#endregion
 }
 enum Tabs {
   View_linked_sub_departments = 0,

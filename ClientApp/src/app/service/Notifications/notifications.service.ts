@@ -109,4 +109,15 @@ export class NotificationsService {
     );
   }
 
+  // #region notifications Sindiswa 12 February 2024
+  public getNotificationsCount(userID: string) {
+    debugger;
+    const body = {
+
+      UserID: userID,
+
+    }
+    return this.httpClient.post(this.baseURL + "GetUnreadNotificationsCount", body);
+  }
+  // #endregion
 }

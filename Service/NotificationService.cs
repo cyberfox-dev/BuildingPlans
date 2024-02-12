@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel;
 using System;
 using WayleaveManagementSystem.Models.DTO;
+using WayleaveManagementSystem.Data.Migrations;
 
 namespace WayleaveManagementSystem.Service
 {
@@ -158,5 +159,14 @@ namespace WayleaveManagementSystem.Service
                 ).ToListAsync();
         }
         #endregion
+        //notifications Sindiswa 31 January 2024
+        public async Task<int> GetUnreadNotificationsCount(string? userID)
+        {
+            return await(
+                from Notification in _context.Notification
+                where Notification.isActive == true && Notification.UserID == userID && Notification.IsRead == false
+                select Notification
+            ).CountAsync();
+        }
     }
 }

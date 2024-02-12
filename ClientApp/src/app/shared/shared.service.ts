@@ -479,4 +479,39 @@ export class SharedService {
     this.userRoles = data;
   }
 
+  // #region selectedProfessionals and notifications Sindiswa 12 February 2024
+  isSelectedEngineer: boolean;
+  isSelectedContractor: boolean;
+
+  setCanGoNextAfterEngineerSelection(data) {
+    this.isSelectedEngineer = data;
+  }
+
+  setCanGoNextAfterContractorSelection(data) {
+    this.isSelectedContractor = data;
+  }
+
+  getCanGoNextE() {
+    return this.isSelectedEngineer;
+  }
+
+  getCanGoNextC() {
+    return this.isSelectedContractor;
+  }
+
+  hasNotifications: boolean;
+  notificationsQuantity: number;
+  sethasNotifications(data) {
+    this.hasNotifications = data;
+  }
+  getHasNotifications() {
+    return this.hasNotifications;
+  }
+  setNotificationsQuantity(data) {
+    this.notificationsQuantity = data;
+  }
+  getNotificationsQuantity() {
+    return this.notificationsQuantity
+  }
+  // #endregion
 }
