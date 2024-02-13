@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild ,AfterViewInit} from '@angular/core';
 import { MatTable } from '@angular/material/table';
 
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
@@ -21,7 +21,7 @@ export interface DocumentsList {
   templateUrl: './documents-component.component.html',
   styleUrls: ['./documents-component.component.css']
 })
-export class DocumentsComponentComponent implements OnInit {
+export class DocumentsComponentComponent implements OnInit{
 
   @Input() ApplicationID: number;
   @Input() ServiceConditionActive: boolean | null; 
@@ -41,9 +41,14 @@ export class DocumentsComponentComponent implements OnInit {
     hasFile: boolean;
   fileCount = 0;
 
+  stringifiedDataUserProfile: any;
+  CurrentUserProfile: any;
+
   @Input() isCalledInsidePermit: boolean = false; //default?
   @Input() permitSubForCommentID: any;
   @Input() permitDocumentName: any | null;
+  @Input() permitCommentStatus: string | null;//Permit Kyle 13-02-24
+
   hasDocument: boolean = false;
   fromReApplyArchive: boolean; //reapply Sindiswa 26 January 2024
   constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService, private permitService: PermitService, private permitComponentComponent: PermitComponentComponent) { }
@@ -51,12 +56,15 @@ export class DocumentsComponentComponent implements OnInit {
   ngOnInit(): void {
     this.currentApplication = this.shared.getViewApplicationIndex();
     this.ApplicationID = this.currentApplication.applicationID;
-
+    //Permit Kyle 13-02-24
+    this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
+    this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
+    //Permit Kyle 13-02-24
     this.getAllDocsForApplication();
     this.hasPermitSubForCommentDocument();
     this.fromReApplyArchive = this.shared.getFromReApplyArchive(); //reapply Sindiswa 26 January 2024
   }
-
+ 
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -89,7 +97,7 @@ export class DocumentsComponentComponent implements OnInit {
   }
 
   ConfirmUpload() {
-    if (!window.confirm("Are you sure you want to upload the file?")) {
+    if (!window.confirm("Are you sure you want to upload the file? You cannot change or delete this document once you save!")) {
       // Use the stored event data
       this.onFileDelete(this.lastUploadEvent, 0);
     } else {
@@ -130,7 +138,7 @@ export class DocumentsComponentComponent implements OnInit {
     this.fileCount = this.fileCount + 1;
   }
   onFileDelete(event: any, index: number) {
-
+   
     this.fileAttrsName = "Doc";
     this.hasFile = false;
     //this.getAllDocsForApplication();
@@ -139,10 +147,9 @@ export class DocumentsComponentComponent implements OnInit {
 
   onFileUpload(event: any) {
     if (this.isCalledInsidePermit) {
-      this.permitComponentComponent.getAllPermitForComment();
+        this.permitComponentComponent.getAllPermitForComment();
     }
-    
-
+   
   }
 
   viewDocument(index: any) {
@@ -262,7 +269,7 @@ export class DocumentsComponentComponent implements OnInit {
     console.log("This is the acquired permitforSubCommentID", this.permitSubForCommentID);
     if (this.isCalledInsidePermit) {
       this.permitService.hasPermitSubForCommentDocuments(this.permitSubForCommentID).subscribe((data) => {
-
+    
         console.log("API Response:", data);
         console.log("This is the response for the Has Document question", data.HasDocuments);
         this.hasDocument = data && data.dateSet.hasDocuments;
@@ -272,4 +279,28 @@ export class DocumentsComponentComponent implements OnInit {
     }
   }
   // #endregion
+  //Permit Kyle 13-02-24
+  deletePermitDocument() {
+
+    debugger;
+    if (confirm("Are you sure you want to delete this document?")) {
+
+      this.permitService.deleteDocumentFromPermitSubForComment(this.ApplicationID, this.permitSubForCommentID).subscribe((data: any) => {
+        debugger;
+        if (data.responseCode == 1) {
+          alert(data.responseMessage);
+          this.hasPermitSubForCommentDocument()
+        }
+        else {
+          alert(data.responseMessage);
+
+        }
+
+      }, error => {
+        console.log("ErrorGetAllDocsForApplication: ", error);
+      })
+    }
+    
+  }
+  //Permit Kyle 13-02-24
 }

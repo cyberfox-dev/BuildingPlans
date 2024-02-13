@@ -510,11 +510,12 @@ export class ActionCenterComponent implements OnInit {
     //this.newAssignORReassign(); //actionCentreEdits Sindiswa 16 January 2024
     this.checkUserAssignSituation(); //actionCentreEdits Sindiswa 18 January 2024
     this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
+    debugger;
     if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
       this.getUsersByRoleName("Permit Issuer");
 
       this.showPermitTab = true;
-      this.canApprovePTW();
+     
       this.getAllPermitForComment();
     }
     else {
@@ -595,20 +596,20 @@ export class ActionCenterComponent implements OnInit {
   }
 
   canApprovePTW() {
-
+    debugger;
     this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
-
+      debugger;
       if (data.responseCode == 1) {
-
+        debugger;
         for (var i = 0; i < data.dateSet.length; i++) {
-
+       
           let foundMatch = false;
           let current = data.dateSet[i];
           if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
 
             for (var i = 0; i < this.permitIssuer.length; i++) {
 
-
+              debugger;
 
               if (this.permitIssuer[i].userID == this.CurrentUser.appUserId) {
 
@@ -616,7 +617,7 @@ export class ActionCenterComponent implements OnInit {
 
                 if (current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
 
-
+                  debugger;
 
                   foundMatch = true;
                   break;
@@ -932,7 +933,7 @@ export class ActionCenterComponent implements OnInit {
     //  startY: startY + 30, // add 30 units of Y position to create space between the tables
     //});
 
-    doc.save("Permit.pdf");
+    /*doc.save("Permit.pdf");*/
     const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
     const file = new File([pdfData], 'Permit', { type: 'application/pdf' });
 
@@ -1019,7 +1020,7 @@ export class ActionCenterComponent implements OnInit {
 
     this.countApprove = 0;
     this.countReject = 0;
-
+    this.PTCList.splice(0, this.PTCListForCheck.length);
     this.permitService.getPermitSubForCommentByApplicationID(currentApplication.applicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
 
@@ -1051,7 +1052,7 @@ export class ActionCenterComponent implements OnInit {
           this.generatePTW(currentApplication.ProjectNumber)
           this.countApprove = 0;
           this.countReject = 0;
-          this.MoveToClosedStage(false);
+          /*this.MoveToClosedStage(false);*/
           // this.MoveToNextStage();
         } else if (this.countReject++ >= 1 && this.SubDepartmentListForCheck.length == this.countApprove + this.countReject) {
           //Rejection Pack
@@ -2356,6 +2357,7 @@ export class ActionCenterComponent implements OnInit {
         if (data.responseCode == 1) {
 
           this.permitIssuer = data.dateSet;
+          this.canApprovePTW();
           console.log("YEAHHHHHHHHHHHHHH", this.permitIssuer);
         }
         else {
@@ -5681,11 +5683,15 @@ export class ActionCenterComponent implements OnInit {
       this.openXl(content);
     }
     else if (this.userAssignedText === "EndOfCommentProcess") {
-      alert("This application has reached the 'End Of Comment Process' stage");
+      
       // actionCentre Sindiswa 22 January 2024 - the permit issuer can't open their action centre view
       console.log("Can this user approvePermit?? PermitStage:" + this.permit + " CanApprove: " + this.canApprovePermit);
+      debugger;
       if (this.permit && this.canApprovePermit) {
         this.openXl(content);
+      }
+      else {
+        alert("This application has reached the 'End Of Comment Process' stage");
       }
     }
     else if ((this.userAssignedText == "Senior Reviewer to comment" && this.commentState == "Referred") || (this.userAssignedText == "All users in Subdepartment FA" && (this.commentState == "Approved" || this.commentState == "Approved(Conditional)" || this.commentState == "Rejected"))) {

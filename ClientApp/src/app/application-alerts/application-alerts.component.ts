@@ -5,6 +5,8 @@ import { ApplicationsService } from '../service/Applications/applications.servic
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SharedService } from '../shared/shared.service';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
+import { PermitService } from '../service/Permit/permit.service';
+
 //Clarifications Alerts Kyle
 export interface Clarifications {
   ApplicationID: number;
@@ -56,7 +58,7 @@ export interface ApplicationList {
 })
 export class ApplicationAlertsComponent implements OnInit {
 
-  constructor(private commentsService: CommentsService, private applicationService: ApplicationsService, private modalService: NgbModal, private shared: SharedService, private router: Router) { }
+  constructor(private commentsService: CommentsService, private applicationService: ApplicationsService, private modalService: NgbModal, private shared: SharedService, private router: Router, private permitService: PermitService) { }
   ClarificationsList: Clarifications[] = [];
 
   @ViewChild(MatTable) clarificationsTable: MatTable<any> | undefined;
@@ -66,7 +68,7 @@ export class ApplicationAlertsComponent implements OnInit {
   @ViewChild("clarifications", { static: true }) clarify!: ElementRef;
 
   applicationList: ApplicationList[] = [];
-
+  permitHasDoc = [];
   stringifiedData: any;
   CurrentUser: any;
 
@@ -213,7 +215,7 @@ export class ApplicationAlertsComponent implements OnInit {
 
   getAllPendingApprovalPacksForUser() {
     debugger;
-    this.applicationService.getApplicationsList(this.CurrentUser.appUserId, this.CurrentUserProfile[0].isInternal).subscribe((data: any) => {
+    this.applicationService.getApplicationsList(this.CurrentUser.appUserId, this.CurrentUserProfile[0].isInternal).subscribe(async(data: any) => {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempApplicationAlert = {} as Clarifications;
@@ -226,6 +228,22 @@ export class ApplicationAlertsComponent implements OnInit {
 
             this.ClarificationsList.push(tempApplicationAlert);
             
+          }
+
+          if (current.createdById == this.CurrentUser.appUserId && current.currentStageName == "PTW") {
+            
+           const hasDocs =  await this.checkIfHasDocs(current.applicationID);
+            debugger;
+            
+            if (hasDocs.length > 0 && (hasDocs.includes(false) == false)) {
+              debugger;
+              tempApplicationAlert.ApplicationID = current.applicationID;
+              tempApplicationAlert.Description = "Consolidate Permit To Work";
+              tempApplicationAlert.ProjectNumber = current.projectNumber;
+
+              this.ClarificationsList.push(tempApplicationAlert);
+            }
+
           }
         }
         this.dataSourceClarifications = this.ClarificationsList;
@@ -244,6 +262,39 @@ export class ApplicationAlertsComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
- 
+  async checkIfHasDocs(applicationID: number): Promise<any>{
+    try {
+      const data: any = await this.permitService.getPermitSubForCommentByApplicationID(applicationID).toPromise();
+      if (data.responseCode == 1) {
+        this.permitHasDoc = [];
+        for (let i = 0; i < data.dateSet.length; i++) {
+          debugger;
+          const current = data.dateSet[i].permitSubForCommentID;
+
+          const dataDoc: any = await this.permitService.hasPermitSubForCommentDocuments(current).toPromise();
+            if (dataDoc.responseCode == 1) {
+              debugger;
+              const hasDocs = dataDoc.dateSet.hasDocuments;
+
+              this.permitHasDoc.push(hasDocs);
+
+            }
+           
+           
+
+         
+        }
+        console.log("has Documents", this.permitHasDoc , data);
+        return this.permitHasDoc;
+
+      } else {
+        //alert(data.responseMessage);
+        throw new Error(data.responseMessage);
+      }
+    } catch (error: any) {
+      console.log("Error:", error);
+      throw error;
+    }
+  }
 }
 
