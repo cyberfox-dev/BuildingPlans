@@ -692,6 +692,8 @@ export class NewWayleaveComponent implements OnInit {
       this.initializeReapply(); //reapply Sindiswa 26 January 2024
     }
 
+    this.shared.getCanGoNextC();
+    this.shared.getCanGoNextE();
   }
 
 
@@ -1846,7 +1848,8 @@ export class NewWayleaveComponent implements OnInit {
 
 
                           this.notificationsService.sendEmail(obj.email, "New wayleave application", emailContent2, emailContent2);
-                          this.notificationsService.addUpdateNotification(0, "Application Created", "New wayleave application", false, obj.userID, this.CurrentUser.appUserID, this.applicationID, "A Wayleave application with ID ${this.applicationID} has just been captured. As the zone admin of " + obj.zoneName + "in" + obj.subDepartmentName + " , please assign a reviewer to the application.").subscribe((data: any) => {
+                          //selectOnCreate Sindiswa 09 February 2024
+                          this.notificationsService.addUpdateNotification(0, "Application Created", "New wayleave application", false, obj.userID, this.CurrentUser.appUserID, this.applicationID, `A Wayleave application with ID ${this.applicationID} has just been captured. As the zone admin of ${obj.zoneName} in ${obj.subDepartmentName}, please assign a reviewer to the application.`).subscribe((data: any) => {
 
                             if (data.responseCode == 1) {
 

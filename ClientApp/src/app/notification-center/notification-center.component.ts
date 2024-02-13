@@ -11,6 +11,7 @@ import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/ht
 import { Input } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { concat } from 'rxjs';
+import { NavMenuComponent } from '../nav-menu/nav-menu.component';
 
 export interface NotificationsList {
   NotificationID: number;
@@ -112,7 +113,7 @@ export class NotificationCenterComponent implements OnInit {
   viewNotification: any;
 
   constructor(private modalService: NgbModal, private sharedService: SharedService, private userProfileService: UserProfileService, private notificationService: NotificationsService, private applicationService: ApplicationsService, private hhtp: HttpClient, private router: Router, private dialog: MatDialog, /*routeToProject*/
-    private viewContainerRef: ViewContainerRef,) { }
+    private viewContainerRef: ViewContainerRef) { }
  fakeDatenow: any = new Date();
   ngOnInit(): void {
 
@@ -478,7 +479,8 @@ export class NotificationCenterComponent implements OnInit {
   }*/
 
 
-getAllNotifications() {
+  getAllNotifications() {
+    debugger;
   this.NotificationsList.splice(0, this.NotificationsList.length);
 
   const firstObservable = this.notificationService.getNotificationByUserID(this.CurrentUser.appUserId);
@@ -527,13 +529,19 @@ getAllNotifications() {
     this.modalService.dismissAll();
   }
   onRefreshModal() {
+    debugger;
     
     this.modalService.dismissAll();
 
     this.getAllNotifications();
     this.getAllReadNotifications();
+   
   }
-  
+  //#region notifications Sindiswa 12 February 2024
+  updateCount() {
+    window.location.reload(); // Uhh, there has to be a better way
+  }
+  //#endregion
   getUserInfo() {
     
     this.userProfileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
@@ -597,7 +605,7 @@ getAllNotifications() {
 
   //#endregion
 
-  // #region routingToProject
+  // #region routingToProject Sindiswa 
   specificApplication: ApplicationList[] = [];
   Applications: ApplicationsList[] = [];
   public canReapply: boolean = false;

@@ -43,13 +43,16 @@ export class SelectEngineerTableComponent implements OnInit {
   dataSourceProfessials = this.ProfessialList;
   clickedRowsProfessials = new Set<ProfessialList>();
   ProfessionalsDataForShared: ProfessialList[] = [];
+
+  isSelectNoneButtonSelected: boolean = false;
+  isProfessionalSelected: boolean = false;
   constructor(private professionalService: ProfessionalService, private shared: SharedService) { }
 
   ngOnInit(): void {
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.getProfessionalsListByProfessionalType(this.PrfessionalType,this.UserID)
-
+    this.getGoNext();
 
   }
   refreshTable() {
@@ -212,7 +215,8 @@ export class SelectEngineerTableComponent implements OnInit {
 
 
 
-  SetSharedData(row:any) {
+  SetSharedData(row: any) {
+    debugger;
      const tempData = {} as ProfessialList;
     const currentRow = row;
 
@@ -230,7 +234,9 @@ export class SelectEngineerTableComponent implements OnInit {
 
       this.ProfessionalsDataForShared.push(tempData);
     this.pushToShared();
-    
+    this.isSelectNoneButtonSelected = false;
+    this.isProfessionalSelected = true;
+    this.getGoNext();
   }
 
   pushToShared() {
@@ -244,10 +250,14 @@ export class SelectEngineerTableComponent implements OnInit {
   }
 
   clearAllEngineers() {
+    debugger;
     this.clickedRowsProfessials.clear();
 
     this.ProfessionalsDataForShared.splice(0, this.ProfessionalsDataForShared.length);
     this.pushToShared();
+    this.isSelectNoneButtonSelected = true;
+    this.isProfessionalSelected = false;
+    this.getGoNext();
   }
 
   onAddEngineer(bpNoApplicant: string, professionalRegNo: string, name: string, surname: string, applicantEmail: string, applicantTellNo: string, engineerIDNo: string, appUserId?:string | null ) {
@@ -517,6 +527,23 @@ export class SelectEngineerTableComponent implements OnInit {
 
     this.ProfessialTable?.renderRows();
 
+
+  }
+
+  getGoNext() {
+    debugger;
+    if ((this.isSelectNoneButtonSelected == false && this.isProfessionalSelected == true) || (this.isSelectNoneButtonSelected == true && this.isProfessionalSelected == false)) {
+      this.shared.setCanGoNextAfterEngineerSelection(true);
+      this.shared.getCanGoNextE();
+      this.shared.getCanGoNextC();
+    }
+    else {
+      this.shared.setCanGoNextAfterEngineerSelection(false);
+      this.shared.getCanGoNextE();
+      this.shared.getCanGoNextC();
+    }
+    console.log("Appropriate engineer selections?", this.shared.isSelectedEngineer);
+    console.log("Appropriate contractor selections?", this.shared.isSelectedContractor);
 
   }
 }

@@ -58,7 +58,7 @@
           <div class="card">
             <h3><span>Applicant details</span></h3>
           </div>
-          
+
           <!------------------------------------------------------------EXTERNAL------------------------------------------------------------------>
           <!--<app-external-details *ngIf="external"></app-external-details>-->
           <div *ngIf="external">
@@ -275,28 +275,28 @@
 
           <!--Only if they are a client do they see these divs to create a new engineer and contractor-->
           <!--<div class="container-fluid" *ngIf="client">
-            <div class="card">
-              <h3><span>Please create an engineer</span></h3>
-            </div>
-            <app-new-egineer></app-new-egineer>
+    <div class="card">
+      <h3><span>Please create an engineer</span></h3>
+    </div>
+    <app-new-egineer></app-new-egineer>
 
-            <div class="card" >
-              <h3><span>Please create a contractor</span></h3>
-            </div>
+    <div class="card" >
+      <h3><span>Please create a contractor</span></h3>
+    </div>
 
-            <app-new-contractor></app-new-contractor>
-          </div>-->
+    <app-new-contractor></app-new-contractor>
+  </div>-->
           <!--the applicant selecting an engineer-->
           <div class="card" *ngIf="isPlanning === false ">
             <h3><span>Please select an engineer</span></h3>
           </div>
           <!--  <div class="container-fluid">-->
           <!--<div class="row">
-              <button type="button" class="createNewEngin" (click)="openXl(content)">
-                Create New Engineer
-              </button>
-            </div>
-          </div>-->
+      <button type="button" class="createNewEngin" (click)="openXl(content)">
+        Create New Engineer
+      </button>
+    </div>
+  </div>-->
           <!--Table displaying the engineers-->
           <app-select-engineer-table [UserID]='clientUserID' [PrfessionalType]='Engineer' *ngIf="isPlanning === false"></app-select-engineer-table>
 
@@ -304,13 +304,13 @@
           <div class="card" *ngIf="isPlanning === false">
             <h3><span>Please select a contractor</span></h3>
           </div>
-          <app-select-engineer-table [UserID]='clientUserID' [PrfessionalType]='Contractor' *ngIf="isPlanning === false"></app-select-engineer-table>
-
+          <!--<app-select-engineer-table [UserID]='clientUserID' [PrfessionalType]='Contractor' *ngIf="isPlanning === false"></app-select-engineer-table>-->
+          <app-select-contractor-table [PrfessionalType]='Contractor' *ngIf="isPlanning === false"></app-select-contractor-table>
 
           <!--<div class="card" *ngIf="isPlanning === false && client == true">
-            <h3><span>Please select a contractor</span></h3>
-          </div>
-          <app-select-contractor-table [PrfessionalType]='Contractor' *ngIf="isPlanning === false && client == true"></app-select-contractor-table>-->
+    <h3><span>Please select a contractor</span></h3>
+  </div>
+  <app-select-contractor-table [PrfessionalType]='Contractor' *ngIf="isPlanning === false && client == true"></app-select-contractor-table>-->
 
         </div>
 
@@ -325,7 +325,7 @@
       </form>
       <div class="cont">
         <button mat-raised-button color="primary" matStepperPrevious disabled>Back</button>
-        <button mat-raised-button color="primary" matStepperNext>Next</button>
+        <button mat-raised-button color="primary" matStepperNext  [disabled]="!shared?.isSelectedContractor || !shared?.isSelectedEngineer"  matTooltip="Make sure to choose the 'select none' option if there are no professionals that you'd like to link to this application.">Next</button>
       </div>
     </mat-step>
 
@@ -340,7 +340,7 @@
           <br/>
           <div class="container-fluid">
               <div class="alert alert-warning">
-                  <h4><strong>Compulsory Field</strong> - <em>Click and write description inside the textbox above</em> </h4>
+                  <h4><strong>Compulsory Field</strong> - <em>Click and write description inside the textbox below.</em> </h4>
               </div>
           </div>
           <div class="row">
