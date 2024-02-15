@@ -615,7 +615,7 @@ export class NewWayleaveComponent implements OnInit {
     console.log("this.CurrentUserProfile ", this.CurrentUserProfile);
 
     if (this.CurrentUserProfile[0].isInternal == false) {
-
+      debugger;
       this.external = true;
       this.internal = false;
       this.client = false;
