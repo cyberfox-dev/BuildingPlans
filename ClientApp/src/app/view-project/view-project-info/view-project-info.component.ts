@@ -2387,7 +2387,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.applicationsService.addUpdateApplication(this.CurrentApplicationBeingViewed[0].applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.permitStartDate).subscribe((data: any) => {
       if (data.responseCode == 1) {
         this.onAutoLinkForPermit();
-
+        this.router.navigate(["/home"]);/*Permit Kyle 13-02-24*/
       }
       else {
         alert(data.responseMessage);

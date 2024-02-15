@@ -7,6 +7,7 @@ using WayleaveManagementSystem.Models;
 using WayleaveManagementSystem.Models.BindingModel;
 using WayleaveManagementSystem.Models.DTO;
 
+
 namespace WayleaveManagementSystem.Controllers
 {
     [Route("api/[controller]")]
@@ -109,6 +110,8 @@ namespace WayleaveManagementSystem.Controllers
                         {
                             tempPermitSubForComment.ZoneName = model.ZoneName;
                         }
+
+
                         #region permitupload Sindiswa 08 January 2024 - for the purpose of uploading documents under the "Permits" tab
                         if (model.DocumentLocalPath != null)
                         {
@@ -366,9 +369,47 @@ namespace WayleaveManagementSystem.Controllers
 
         }
         #endregion
+        /*Permit Kyle 13-02-24*/
+        [HttpPost("DeleteDocumentFromPermitSubForComment")]
+        public async Task<object> DeleteDocumentFromPermitSubForComment([FromBody] PermitSubForCommentBindingModel model)
+        {
+            try
+            {
+                var tempPermitSubForComment = _context.PermitSubForComment.FirstOrDefault(x => x.PermitSubForCommentID == model.PermitSubForCommentID && x.ApplicationID == model.ApplicationID );
 
+                if (tempPermitSubForComment == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", false));
 
+                }
+
+                else
+                {
+                    var dbPath = tempPermitSubForComment.DocumentLocalPath;
+
+                    var fullPath = Path.Combine(Directory.GetCurrentDirectory(), dbPath);
+                    if (System.IO.File.Exists(fullPath)) {
+                        System.IO.File.Delete(fullPath);
+                    }
+
+                    tempPermitSubForComment.DocumentLocalPath = null;
+                    tempPermitSubForComment.PermitDocName = null;
+
+                    _context.PermitSubForComment.Update(tempPermitSubForComment);
+                    _context.SaveChanges();
+
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Permit Deleted SuccessFully", true));
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+
+        }
     }
 
 
+    /*Permit Kyle 13-02-24*/
 }

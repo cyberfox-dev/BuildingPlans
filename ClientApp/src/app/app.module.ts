@@ -281,8 +281,8 @@ import { SubdeptWayleaveExpirationComponent } from './subdept-wayleave-expiratio
     AuditTrailComponent,
     //Audit Trail Kyle
     UserManagementComponent, //actingAsInternal Sindiswa 05 February 2024
-    ApplicationAlertsComponent,//Clarify Alerts Kyle 
-
+    ApplicationAlertsComponent,//Clarify Alerts Kyle
+  
   ],
   bootstrap: [AppComponent]
 })

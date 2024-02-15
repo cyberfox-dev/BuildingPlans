@@ -65,6 +65,14 @@ export class PermitService {
     return this.httpClient.post<any>(this.baseURL + 'HasPermitSubForCommentDocuments', permitSubForCommentID);
   }
   // #endregion
+  // Permit Kyle 13-02-24
+  public deleteDocumentFromPermitSubForComment(applicationID: number | null, permitSubForCommentID: number |null) {
+    const body = {
+      ApplicationID: applicationID,
+      PermitSubForCommentID: permitSubForCommentID
+    }
 
-
+    return this.httpClient.post(this.baseURL + "DeleteDocumentFromPermitSubForComment",body)
+  }
+  // Permit Kyle 13-02-24
 }

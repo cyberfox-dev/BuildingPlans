@@ -10,7 +10,7 @@ import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/n
 import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
 import { ConfigService } from 'src/app/service/Config/config.service';
-import { Subscription, tap } from 'rxjs';
+import { Subscription, concat, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SelectEngineerTableComponent } from 'src/app/select-engineer-table/select-engineer-table.component';
 import { SelectContractorTableComponent } from 'src/app/select-contractor-table/select-contractor-table.component';
@@ -39,6 +39,8 @@ import { DraftApplicationsService } from '../service/DraftApplications/draft-app
 import { DraftsComponent } from 'src/app/drafts/drafts.component';
 import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentForComment/sub-department-for-comment.service';
 import { NotificationsService } from '../service/Notifications/notifications.service';
+import { NotificationCenterComponent } from '../notification-center/notification-center.component';
+import { NotificationsList } from '../notification-center/notification-center.component';
 
 export interface EngineerList {
   professinalID: number;
@@ -400,6 +402,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private _snackBar: MatSnackBar, private renderer: Renderer2, private el: ElementRef,
     private draftApplicationService: DraftApplicationsService,
     private notificationsService: NotificationsService, // notifications Sindiswa 01 Februart 2024
+    private notificationsComponent: NotificationCenterComponent, // notifications Sindiswa 09 February 2024
   ) {
     this.currentDate = new Date();
     this.previousMonth = this.currentDate.getMonth();
@@ -546,6 +549,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
+    debugger;
 
 
     setTimeout(() => {
@@ -564,6 +568,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
       this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
 
+
+  
       // #region escalation Sindiswa 29 January 2024 - just debugging
       console.log("These are the current user's details - I want to find out if they are EMB or nah", this.CurrentUserProfile);
       console.log("Is this the directorate?", this.CurrentUserProfile[0].directorate);
@@ -604,6 +610,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.Reviews = 'Current';
       //this.ServerType = this.sharedService.getServerType();
       this.isBannerVisible();
+
      
       /*      this.initializeApp();*/
       //this.function();
@@ -6154,4 +6161,6 @@ this.Applications.push(tempApplicationList);
     }
   }
   // #endregion
+
+
 }

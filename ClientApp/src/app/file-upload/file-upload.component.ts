@@ -296,6 +296,7 @@ export class FileUploadComponent implements OnInit {
                 alert('An error occurred while deleting the file.');
               });
             }
+          
             else {
               this.documentUploadService.deleteDocument(matchedDocument.documentID).subscribe(response => {
                 if (response) { // Assuming server responds with true on successful deletion
@@ -331,6 +332,27 @@ export class FileUploadComponent implements OnInit {
         : () => this.documentUploadService.getAllDocumentsForRepository();
 
       serviceCall().subscribe(handleResponse, handleError);
+    }
+
+    else if (this.isCalledInsidePermit) {
+      debugger;
+      this.permitService.deleteDocumentFromPermitSubForComment(this.ApplicationID, this.permitSubForCommentID).subscribe((data: any) => {
+        debugger;
+        if (data.responseCode == 1) {
+       
+          this.fileName = '';
+          this.onUploadFinished.emit();
+        }
+        else {
+          alert(data.responseMessage);
+
+        }
+      
+
+      }, error => {
+        console.log("ErrorGetPermitDocForApplication: ", error);
+      })
+      
     }
     else {
       const handleResponse = (data: any) => {
@@ -425,8 +447,8 @@ export class FileUploadComponent implements OnInit {
             if (this.isPlanningDoc) {
               this.isPlanningUploadFinished(event.body, this.ApplicationID, this.CurrentUser);
             }
-             //Service Information Kyle 31/01/24
-            else {
+            //Service Information Kyle 31/01/24
+            else if ((this.isFinancial == false || this.isFinancial == null) && (this.isCalledInsidePermit == false || this.isCalledInsidePermit == null) && (this.isPlanningDoc == false || this.isPlanningDoc == null)) {
               this.uploadFinished(event.body, this.ApplicationID, this.CurrentUser); // Pass CurrentUser assuming it contains relevant user data. Adjust as needed.
             }
            
@@ -487,7 +509,7 @@ export class FileUploadComponent implements OnInit {
         })
       }
       else {
-        
+     
         this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, applicationID, applicationData.appUserId, this.CurrentUser.appUserId).subscribe((data: any) => {
           
           if (data.responseCode == 1) {
@@ -544,11 +566,11 @@ export class FileUploadComponent implements OnInit {
   permitUploadFinished = (event: any, permitSubForCommentID: any) => {
     this.response = event;
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
-
+    debugger;
     //
     this.permitService.addUpdatePermitSubForComment(permitSubForCommentID, null, null, null, null, null, null, null, null, null, this.response?.dbPath, documentName).subscribe((data: any) => {
       if (data.responseCode == 1) {
-
+        debugger;
         // Emit the onUploadSuccess event after a successful upload
         this.onUploadSuccess.emit(event.body);
        

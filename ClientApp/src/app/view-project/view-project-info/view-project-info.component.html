@@ -896,8 +896,8 @@
           <button type="button" class="btn btn-outline-success" (click)="updateStartDateForPermit();modal.close('Save click')">Save</button>
         </div>
       </ng-template>
-
-      <app-permit-component [ApplicationID]="ApplicationID" [ApplicantID]="CurrentApplicationBeingViewed[0].UserID" [OriginatorID]="CurrentApplicationBeingViewed[0].CreatedById" [ApplicationID]="ApplicationID"></app-permit-component>
+                                                                                                                                                                                                                <!--Permit Kyle 13-02-24-->
+      <app-permit-component [ApplicationID]="ApplicationID" [ApplicantID]="CurrentApplicationBeingViewed[0].UserID" [OriginatorID]="CurrentApplicationBeingViewed[0].CreatedById" [ApplicationID]="ApplicationID" [PermitBtn]="permitBtn"></app-permit-component>
 
     </mat-tab>
 
