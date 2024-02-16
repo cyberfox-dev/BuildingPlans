@@ -5,6 +5,7 @@ import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-u
 import { FinancialService } from 'src/app/service/Financial/financial.service';
 import { PermitService } from '../service/Permit/permit.service';
 import { PermitComponentComponent } from 'src/app/permit-component/permit-component.component';
+import { MobileFieldTrackingService } from '../service/MFT/mobile-field-tracking.service';
 
 
 
@@ -27,7 +28,7 @@ export class FileUploadComponent implements OnInit {
   //Service Information Kyle 
   @Input() isCalledInsidePermit: boolean | null;
   @Input() permitSubForCommentID: any;
-
+  
   @Input() ServiceConditionActive: boolean | null;
   @Output() public onUploadFinished = new EventEmitter();
   @Output() public passFileName = new EventEmitter<{ uploadFor: string; fileName: string }>();
@@ -48,8 +49,12 @@ export class FileUploadComponent implements OnInit {
    //Service Information Kyle 31/01/24
   stringifiedDataUserProfile: any;
   CurrentUserProfile: any;
+  MFTID: number = 0;
+
+  @Input() isStatusOfWork: boolean | null;
+  @Input() MftNote: string | null;
   //Service Information Kyle 31/01/24
-  constructor(private http: HttpClient, private shared: SharedService, private documentUploadService: DocumentUploadService, private financialService: FinancialService, private permitService: PermitService, private permitComponentComponent: PermitComponentComponent) { }
+  constructor(private http: HttpClient, private shared: SharedService, private documentUploadService: DocumentUploadService, private financialService: FinancialService, private permitService: PermitService, private permitComponentComponent: PermitComponentComponent, private MFTService: MobileFieldTrackingService) { }
 
   ngOnInit(): void {
     this.CurrentUser = JSON.parse(localStorage.getItem('LoggedInUserInfo') || '{}');
@@ -354,6 +359,25 @@ export class FileUploadComponent implements OnInit {
       })
       
     }
+    //Status of works Kyle 16-02-24
+    else if (this.isStatusOfWork) {
+      this.MFTService.deleteDocumentFromMFT(this.ApplicationID, this.fileUploadName + this.fileExtention).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          debugger;
+          this.fileName = '';
+          this.MFTID = data.dateSet.mftid;
+          this.onUploadFinished.emit();
+        }
+        else {
+          alert(data.responseMessage);
+
+        }
+
+
+      }, error => {
+        console.log("ErrorGetPermitDocForApplication: ", error);
+      })
+    }
     else {
       const handleResponse = (data: any) => {
         
@@ -447,8 +471,11 @@ export class FileUploadComponent implements OnInit {
             if (this.isPlanningDoc) {
               this.isPlanningUploadFinished(event.body, this.ApplicationID, this.CurrentUser);
             }
+            if (this.isStatusOfWork) {
+              this.isStatusOfWorkUploadFinished(event.body, this.ApplicationID, this.CurrentUser);
+            }
             //Service Information Kyle 31/01/24
-            else if ((this.isFinancial == false || this.isFinancial == null) && (this.isCalledInsidePermit == false || this.isCalledInsidePermit == null) && (this.isPlanningDoc == false || this.isPlanningDoc == null)) {
+            else if ((this.isFinancial == false || this.isFinancial == null) && (this.isCalledInsidePermit == false || this.isCalledInsidePermit == null) && (this.isPlanningDoc == false || this.isPlanningDoc == null) && (this.isStatusOfWork == false || this.isStatusOfWork == null)) {
               this.uploadFinished(event.body, this.ApplicationID, this.CurrentUser); // Pass CurrentUser assuming it contains relevant user data. Adjust as needed.
             }
            
@@ -594,6 +621,29 @@ export class FileUploadComponent implements OnInit {
         // Emit the onUploadSuccess event after a successful upload
         this.onUploadSuccess.emit(event.body);
      
+      }
+
+
+
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  //Status of works Kyle 16-02-24
+  isStatusOfWorkUploadFinished = (event: any, applicationID: any, applicationData: any) => {
+    this.response = event;
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    debugger;
+    this.MFTService.addUpdateMFT(this.MFTID,this.MftNote,applicationID,documentName,this.response?.dbPath,this.CurrentUser.appUserId,this.CurrentUser.fullName).subscribe((data: any) => {
+      debugger;
+      if (data.responseCode == 1) {
+        debugger;
+        // Emit the onUploadSuccess event after a successful upload
+        this.onUploadSuccess.emit(event.body);
+
       }
 
 

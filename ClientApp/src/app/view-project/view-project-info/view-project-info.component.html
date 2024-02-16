@@ -11,17 +11,26 @@
 
       <mat-form-field class="example-full-width">
         <mat-label>Type A Note</mat-label>
-        <input matInput [(ngModel)]="mftNote" id="mftNote" name="mftNote">
+        <input matInput [(ngModel)]="mftNote" id="mftNote" name="mftNote" (keyup)="onCheckMFTNote($event)">
       </mat-form-field>
+      <p *ngIf="showUpload === false "><strong>* Note </strong> : <em>You must type a note in order to upload a file</em> </p>
       <mat-form-field>
         <div>
-          <mat-toolbar>
 
-            <input matInput [(ngModel)]="fileAttrs" readonly name="name" placeholder="Select An Image" />
+          <input matInput [(ngModel)]="fileAttrs" readonly name="name" placeholder="Select An Image" />
 
+          <mat-toolbar *ngIf="showUpload">
             <div class="row" style="margin-bottom:15px;">
               <div class="container-fluid">
-                <app-file-upload [UploadFor]="'CoverLetter'+0" (passFileName)="onPassFileName($event)"></app-file-upload>
+                <ng-container>
+                  <app-file-upload [ApplicationID]="ApplicationID"
+                                   [UploadFor]="fileAttrsName"
+                                   [isStatusOfWork]="true"
+                                   [MftNote]="mftNote"
+                                   (passFileName)="onPassFileName($event)"
+                                   (onUploadFinished)="onFileDelete($event, 0)"
+                                   (onUploadSuccess)="onFileUpload($event)"></app-file-upload>
+                </ng-container>
 
               </div>
             </div>
@@ -807,44 +816,14 @@
 
     <!--------------------------------------------------------Tracking--------------------------------------------------->
 
-
+    <!-----Status of works Kyle 16-02-24-->
     <mat-tab label="Status of Works" *ngIf="showStatusOfWorksTab">
-      <button mat-raised-button color="blue" (click)="openXl(MFTModal)">Create New Note</button>
 
-      <div class="row" *ngFor="let mftList of MFTList; let i = index">
-        <div class="col s12 m12 l12">
+      <button mat-raised-button color="permit" (click)="openXl(MFTModal)">Create New Note</button>
+      <app-status-of-works [ApplicationID]="ApplicationID"></app-status-of-works>
 
-          <ul class="timeline">
+     
 
-            <li class="event" data-date="">
-
-
-              <h3>{{mftList.MFTNote}} - {{mftList.DateCreated}}</h3>
-              <p>
-
-                {{mftList.DocumentName}}
-              </p>
-
-            </li>
-
-          </ul>
-        </div>
-        <!--</div>-->
-        <!-- <div class="cards" *ngFor="let mftList of MFTList; let i = index">
-         <li class="cards_item">
-           <div class="card">
-             <div class="card_content">
-               <p class="card_text">Note Created By : {{mftList.FullName}}</p>
-               <p class="card_text">{{mftList.MFTNote}}</p>
-               <div class="cont89">
-                 <p class="card_text">{{mftList.DateCreated}}</p>
-                 <button mat-raised-button color="blue" *ngIf="mftList.DocumentName !== null " (click)="viewImage(i)">View Image</button>
-               </div>
-             </div>-->
-      </div>
-
-      <!--</li>
-      -->
 
     </mat-tab>
 

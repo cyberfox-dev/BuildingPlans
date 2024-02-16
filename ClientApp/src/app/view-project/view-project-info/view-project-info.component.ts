@@ -29,8 +29,9 @@ import { ServiceItemService } from 'src/app/service/ServiceItems/service-item.se
 import { ContactDetailsService } from 'src/app/service/ContactDetails/contact-details.service';
 import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
 import { MatDialog } from '@angular/material/dialog';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 import { ApprovalPackComponent } from 'src/app/Packs//ApprovalPackComponent/approval-pack.component';
+import { StatusOfWorksComponent } from 'src/app/status-of-works/status-of-works.component';
 
 /*import { PdfGenerationService } from 'src/app/service/PDFGeneration/pdf-generation.service';*/
 
@@ -56,6 +57,7 @@ export interface MFTList {
   DateCreated: Date;
   ApplicationNumber: number;
   FullName: string;
+  DocURL: any;
 }
 
 export interface SubDepartmentListFORAPPROVAL {
@@ -433,7 +435,7 @@ export class ViewProjectInfoComponent implements OnInit {
   showFormerApps: boolean;
   fromReApplyArchive: boolean;
 
-  fileAttrs = "Upload File:";
+  fileAttrs = "Upload File:" ;
   fileAttrsName = "Doc";
 
   ApForUpload: string;
@@ -512,7 +514,7 @@ export class ViewProjectInfoComponent implements OnInit {
     reply: ['', Validators.required],
   })
 
-
+  
 
 
   @ViewChild(MatTable) FinancialListTable: MatTable<DocumentsList> | undefined;
@@ -527,6 +529,8 @@ export class ViewProjectInfoComponent implements OnInit {
   fileCount = 0;
   ApprovalDoqnload = true;
   generateApprovalbtn = false;
+
+ 
 
   constructor(private modalService: NgbModal,
     private sharedService: SharedService,
@@ -561,6 +565,7 @@ export class ViewProjectInfoComponent implements OnInit {
    
     //Audit Trail Kyle
     private auditTrailService: AuditTrailService,
+    private statusOfWorksComponent: StatusOfWorksComponent,
     //Audit Trail Kyle
   ) { }
 
@@ -711,7 +716,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.checkIfCanReviwerReply();
     this.checkIfPermitExsist();
     this.getFinancial();
-    this.getMFTForApplication();
+    
     this.getEMBUsers();
     this.getServiceItem("001");
     this.getServiceItem("002");
@@ -4279,128 +4284,32 @@ export class ViewProjectInfoComponent implements OnInit {
     this.fileCount = this.fileCount + 1;
   }
 
-
-
-  getMFTForApplication() {
-    const imageDiv = document.getElementById('imageDiv'); // Get the existing <div> element by ID
-    this.MFTList.splice(0, this.MFTList.length);
-    this.MFTService.getMFTByApplicationID(this.ApplicationID).subscribe((data: any) => {
-
-      if (data.responseCode == 1) {
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempMFTList = {} as MFTList;
-          const current = data.dateSet[i];
-          tempMFTList.MFTID = current.mftid;
-          tempMFTList.MFTNote = current.mftNote;
-          tempMFTList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));;
-          tempMFTList.DocumentName = current.documentName;
-          tempMFTList.DocumentLocalPath = current.documentLocalPath;
-          tempMFTList.ApplicationNumber = current.applicationID;
-          tempMFTList.FullName = current.fullName;
-
-          console.log("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT", current);
-          console.log("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT", this.MFTList);
-          this.MFTList.push(tempMFTList);
-
-          /* fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.MFTList[i].DocumentName}`)
-             .then(response => {
-               if (response.ok) {
-                 // The response status is in the 200 range
+  @ViewChild('imageDiv') imageDiv: ElementRef;
  
-                 return response.blob(); // Extract the response body as a Blob
- 
-               } else {
-                 throw new Error('Error fetching the document');
-               }
-             })
-             .then(blob => {
-               const imageURL = URL.createObjectURL(blob);
- 
-               // Display the image using an <img> element
-               const imgElement = document.createElement('img');
-               imgElement.src = imageURL;
- 
-               // Get a reference to the div with the ID 'myDiv'
-               const myDiv = document.getElementById('card_image');
- 
-               // Append the <img> element to the 'myDiv' div
-               myDiv.appendChild(imgElement);
- 
-               
-             })
-             .catch(error => {
-               console.log(error);
-               // Handle the error appropriately
-             });*/
 
-
-        }
-
-
-        // console.log("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT", this.DocumentsList[0]);
-
-      }
-      else {
-        alert(data.responseMessage);
-
-      }
-      console.log("reponseGetAllDocsForApplication", data);
-
-    }, error => {
-      console.log("ErrorGetAllDocsForApplication: ", error);
-    })
-  }
 
   saveNote() {
+    const mftId = this.fileUploadComponent.MFTID;
+    if (this.hasFile || mftId != 0) {
+      this.statusOfWorksComponent.getMFTForApplication();
+      this.modalService.dismissAll();
+      this.mftNote = '';
+    }
 
-
-    const filesForUpload = this.sharedService.pullFilesForUpload();
-
-
-    if (filesForUpload.length === 0) {
-
-      this.MFTService.addUpdateMFT(0, this.mftNote, this.ApplicationID, null, null, this.CurrentUser.appUserId, this.CurrentUser.fullName).subscribe((data: any) => {
-        /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
+    else {
+      this.MFTService.addUpdateMFT(0, this.mftNote, this.ApplicationID, null, null, this.CurrentUser.appUserId, this.CurrentUser.fullname).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          alert(data.responseMessage);
-          this.getMFTForApplication();
+          this.statusOfWorksComponent.getMFTForApplication();
+          this.mftNote = '';
+          this.fileUploadComponent.MFTID = 0;
+          this.modalService.dismissAll();
+
         }
-
-      }, error => {
-        console.log("Error: ", error);
       })
-
     }
-    else{
-      for (var i = 0; i < filesForUpload.length; i++) {
-        const formData = new FormData();
-        let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
-        let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + null;
-        formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
-
-
-
-
-        this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
-          .subscribe({
-            next: (event) => {
-
-
-              if (event.type === HttpEventType.UploadProgress && event.total)
-                this.progress = Math.round(100 * event.loaded / event.total);
-              else if (event.type === HttpEventType.Response) {
-                this.message = 'Upload success.';
-                this.uploadFinishedNotes(event.body);
-
-              }
-            },
-            error: (err: HttpErrorResponse) => console.log(err)
-          });
-      }
-    }
-
   }
   mftNote = '';
+   
 
   uploadFinishedNotes(event) {
 
@@ -4416,7 +4325,7 @@ export class ViewProjectInfoComponent implements OnInit {
       /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
       if (data.responseCode == 1) {
         alert(data.responseMessage);
-        this.getMFTForApplication();
+        this.statusOfWorksComponent.getMFTForApplication();
       }
 
     }, error => {
@@ -4688,6 +4597,18 @@ export class ViewProjectInfoComponent implements OnInit {
       b: parseInt(result[3], 16)
     } : null;
   }
- 
+
+  //Status of works Kyle 16-02-24
+  showUpload: boolean = false;
+  onCheckMFTNote(event:Event):void {
+    debugger;
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    if (filterValue == '') {
+      this.showUpload = false
+    }
+    else {
+      this.showUpload = true;
+    }
+  }
   /*Progess bar Kyle 07-02-24*/
 }
