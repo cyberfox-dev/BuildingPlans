@@ -129,6 +129,7 @@ export interface ApplicationList {
   userID:string,
   //Coordinates: string
   UserID: any;
+  clientAlternativeEmail: string; // chekingNotifications Sindiswa 13 February 2024
 }
 
 
@@ -1355,6 +1356,7 @@ export class HomeComponent implements OnInit, OnDestroy {
                   tempApplicationListShared.applicationID = current.applicationID;
                   tempApplicationListShared.clientName = current.fullName;
                   tempApplicationListShared.clientEmail = current.email;
+                  tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
                   tempApplicationListShared.clientAddress = current.physicalAddress;
                   tempApplicationListShared.clientRefNo = current.referenceNumber;
                   tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -1693,6 +1695,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.applicationID = current.applicationID;
             tempApplicationListShared.clientName = current.fullName;
             tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
             tempApplicationListShared.clientAddress = current.physicalAddress;
             tempApplicationListShared.clientRefNo = current.referenceNumber;
             tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -2132,9 +2135,46 @@ this.Applications.push(tempApplicationList);
     this.relatedApplications.splice(0, this.relatedApplications.length);
 
     //this.sharedService.getProjectNumber() i removed this
+    // #region checkingNotifications Sindiswa 15 February 2024
+    if (element.ProjectNumber === null || element.ProjectNumber === undefined || !element.ProjectNumber.startsWith("WL:")) { 
+      this.canReapply = false;
+      this.sharedService.setCanReapply(false);
+      console.log("You cannot reapply.");
+
+      this.sharedService.setProjectNumber(element.ProjectNumber);
+
+      await this.applicationService.getApplicationsByProjectNumber(element.ProjectNumber).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          console.log("This should be the unpaid external's project", data);
+
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempRelatedApplications = {} as ApplicationList;
+            const current = data.dateSet[i];
+            tempRelatedApplications.ProjectNumber = current.projectNumber;
+
+            this.relatedApplications.push(tempRelatedApplications);
+         
+          }
+
+        }
+        else {
+         
+          alert(data.responseMessage);
+        }
+        console.log("Reponse while viewing unpaid external project:", data);
+
+        this.viewProject(index);
+
+      }, error => {
+        console.log("Error while viewing unpaid external project: ", error);
+      })
 
 
-    if (this.newList.length <= 0) {
+    }
+    // #endregion
+
+    //if (this.newList.length <= 0) { //checkingNotifications Sindiswa 15 February 2024 - 
+    else if (this.newList.length <= 0) {
 
       this.sharedService.setProjectNumber(element.ProjectNumber);
 
@@ -2444,6 +2484,7 @@ this.Applications.push(tempApplicationList);
           tempApplicationListShared.applicationID = current.applicationID;
           tempApplicationListShared.clientName = current.fullName;
           tempApplicationListShared.clientEmail = current.email;
+          tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
           tempApplicationListShared.clientAddress = current.physicalAddress;
           tempApplicationListShared.clientRefNo = current.referenceNumber;
           tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -2615,6 +2656,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.applicationID = current.applicationID;
             tempApplicationListShared.clientName = current.fullName;
             tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
             tempApplicationListShared.clientAddress = current.physicalAddress;
             tempApplicationListShared.clientRefNo = current.referenceNumber;
             tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -2764,6 +2806,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.applicationID = current.applicationID;
             tempApplicationListShared.clientName = current.fullName;
             tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
             tempApplicationListShared.clientAddress = current.physicalAddress;
             tempApplicationListShared.clientRefNo = current.referenceNumber;
             tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -2935,6 +2978,7 @@ this.Applications.push(tempApplicationList);
                   tempApplicationListShared.applicationID = current.applicationID;
                   tempApplicationListShared.clientName = current.fullName;
                   tempApplicationListShared.clientEmail = current.email;
+                  tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
                   tempApplicationListShared.clientAddress = current.physicalAddress;
                   tempApplicationListShared.clientRefNo = current.referenceNumber;
                   tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -3083,6 +3127,7 @@ this.Applications.push(tempApplicationList);
               tempApplicationListShared.applicationID = current.applicationID;
               tempApplicationListShared.clientName = current.fullName;
               tempApplicationListShared.clientEmail = current.email;
+              tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
               tempApplicationListShared.clientAddress = current.physicalAddress;
               tempApplicationListShared.clientRefNo = current.referenceNumber;
               tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -3259,6 +3304,7 @@ this.Applications.push(tempApplicationList);
           tempApplicationListShared.applicationID = current.applicationID;
           tempApplicationListShared.clientName = current.fullName;
           tempApplicationListShared.clientEmail = current.email;
+          tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
           tempApplicationListShared.clientAddress = current.physicalAddress;
           tempApplicationListShared.clientRefNo = current.referenceNumber;
           tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -3421,6 +3467,7 @@ this.Applications.push(tempApplicationList);
           tempApplicationListShared.applicationID = current.applicationID;
           tempApplicationListShared.clientName = current.fullName;
           tempApplicationListShared.clientEmail = current.email;
+          tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
           tempApplicationListShared.clientAddress = current.physicalAddress;
           tempApplicationListShared.clientRefNo = current.referenceNumber;
           tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -3587,6 +3634,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.applicationID = current.applicationID;
             tempApplicationListShared.clientName = current.fullName;
             tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
             tempApplicationListShared.clientAddress = current.physicalAddress;
             tempApplicationListShared.clientRefNo = current.referenceNumber;
             tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -3724,6 +3772,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.applicationID = current.applicationID;
             tempApplicationListShared.clientName = current.fullName;
             tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
             tempApplicationListShared.clientAddress = current.physicalAddress;
             tempApplicationListShared.clientRefNo = current.referenceNumber;
             tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -3880,6 +3929,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.applicationID = current.applicationID;
             tempApplicationListShared.clientName = current.fullName;
             tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
             tempApplicationListShared.clientAddress = current.physicalAddress;
             tempApplicationListShared.clientRefNo = current.referenceNumber;
             tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -4033,6 +4083,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.applicationID = current.applicationID;
             tempApplicationListShared.clientName = current.fullName;
             tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
             tempApplicationListShared.clientAddress = current.physicalAddress;
             tempApplicationListShared.clientRefNo = current.referenceNumber;
             tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -4191,6 +4242,7 @@ this.Applications.push(tempApplicationList);
               tempApplicationListShared.applicationID = current.applicationID;
               tempApplicationListShared.clientName = current.fullName;
               tempApplicationListShared.clientEmail = current.email;
+              tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
               tempApplicationListShared.clientAddress = current.physicalAddress;
               tempApplicationListShared.clientRefNo = current.referenceNumber;
               tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -4325,6 +4377,7 @@ this.Applications.push(tempApplicationList);
               tempApplicationListShared.applicationID = current.applicationID;
               tempApplicationListShared.clientName = current.fullName;
               tempApplicationListShared.clientEmail = current.email;
+              tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
               tempApplicationListShared.clientAddress = current.physicalAddress;
               tempApplicationListShared.clientRefNo = current.referenceNumber;
               tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -5864,6 +5917,7 @@ this.Applications.push(tempApplicationList);
           tempApplicationListShared.applicationID = current.applicationID;
           tempApplicationListShared.clientName = current.fullName;
           tempApplicationListShared.clientEmail = current.email;
+          tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
           tempApplicationListShared.clientAddress = current.physicalAddress;
           tempApplicationListShared.clientRefNo = current.referenceNumber;
           tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -6123,7 +6177,10 @@ this.Applications.push(tempApplicationList);
 
         // Send email to EMB user
         this.notificationsService.sendEmail(obj.email, "Escalated wayleave application", emailContent2, emailContent2);
-
+        if (obj.alternativeEmail) {
+          this.notificationsService.sendEmail(obj.alternativeEmail, "Escalated wayleave application", emailContent2, emailContent2);
+        }
+        
         // Add update notification
         debugger;
         this.notificationsService.addUpdateNotification(
@@ -6132,8 +6189,8 @@ this.Applications.push(tempApplicationList);
           "Escalated wayleave application",
           false,
           obj.userID,
-          this.CurrentUser?.appUserID ?? null,
-          this.appID,
+          /*checkingNotifications Sindiswa 12 February 2024*/ this.appID,
+          this.CurrentUser?.appUserId ?? null,
           `The Wayleave application with Wayleave No. ${this.projNum} was escalated by the applicant/client. As an EMB user, please follow up with the relevant departments currently handling this application.`
         ).subscribe((data: any) => {
           if (data.responseCode === 1) {

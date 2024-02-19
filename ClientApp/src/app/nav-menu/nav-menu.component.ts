@@ -219,7 +219,7 @@ export class NavMenuComponent implements OnInit {
       if (data.responseCode == 1) {
         this.shared.setNotificationsQuantity(data.dateSet);
 
-        if (data.dateSet > 1) {
+        if (data.dateSet > 0) {
           this.shared.sethasNotifications(true);
         }
         else {

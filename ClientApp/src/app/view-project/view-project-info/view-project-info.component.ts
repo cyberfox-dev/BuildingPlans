@@ -211,6 +211,7 @@ export interface ApplicationList {
   wbsrequired: boolean;
   Coordinates: string;
   UserID: any;
+  clientAlternativeEmail: string; // chekingNotifications Sindiswa 13 February 2024
   //reapplyCount: number, // reapply Sindiswa 25 January 2024
 }
 
@@ -2302,7 +2303,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   ChangeApplicationStatusToPaid() {
-
+    debugger;
     if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Unpaid") {
 
       this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
@@ -2314,12 +2315,52 @@ export class ViewProjectInfoComponent implements OnInit {
           this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
             if (data.responseCode == 1) {
                //Service Information Kyle 31/01/24                                                                                                                                                                                                                                                                                                                                                                         //Service Information Kyle
-              this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, null, null, "Distributed", null, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, this.CurrentApplicationBeingViewed[0].isPlanning, null, this.selectPaidDate).subscribe((data: any) => {
+              this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, null, null, "Distributed", null, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, this.CurrentApplicationBeingViewed[0].isPlanning, null, this.selectPaidDate).subscribe((data: any) => {
                //Service Information Kyle 31/01/24
                 if (data.responseCode == 1) {
 
                   alert(data.responseMessage);
-                  this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application payment", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application payment", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>You have moved application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave to paid. <br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  if (this.CurrentUserProfile[0].alternativeEmail) {
+                    this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application payment", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>You have moved application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave to paid. <br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  }
+
+                  this.notificationsService.sendEmail(this.CurrentApplicationBeingViewed[0].clientEmail, "Wayleave application payment", "check html", "Dear " + this.CurrentApplicationBeingViewed[0].clientName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  if (this.CurrentApplicationBeingViewed[0].clientAlternativeEmail) { 
+                    this.notificationsService.sendEmail(this.CurrentApplicationBeingViewed[0].clientAlternativeEmail, "Wayleave application payment", "check html", "Dear " + this.CurrentApplicationBeingViewed[0].clientName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  }
+                  // #region checkingNotifications Sindiswa 15 February 2024
+                  this.notificationsService.addUpdateNotification(0, "Wayleave applicant payment ", "Wayleave applicant payment ", false, this.CurrentApplicationBeingViewed[0].UserID, this.ApplicationID, this.CurrentUser.appUserId, "Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process."  ).subscribe((data: any) => {
+
+                    if (data.responseCode == 1) {
+
+
+                    }
+                    else {
+                      alert(data.responseMessage);
+                    }
+
+                    console.log("response", data);
+                  }, error => {
+                    console.log("Error", error);
+                  });
+
+                  this.notificationsService.addUpdateNotification(0, "Wayleave applicant payment ", "Wayleave applicant payment ", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserId, "You have moved application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid.").subscribe((data: any) => {
+
+                    if (data.responseCode == 1) {
+
+
+                    }
+                    else {
+                      alert(data.responseMessage);
+                    }
+
+                    console.log("response", data);
+                  }, error => {
+                    console.log("Error", error);
+                  });
+                  // #endregion
+
                   //Audit Trail Kyle
                   this.onSaveToAuditTrail("Application moved to Paid");
                   this.onSaveToAuditTrail("Application distributed to Departments");
@@ -2384,7 +2425,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   updateStartDateForPermit() {
-    this.applicationsService.addUpdateApplication(this.CurrentApplicationBeingViewed[0].applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.permitStartDate).subscribe((data: any) => {
+    this.applicationsService.addUpdateApplication(this.CurrentApplicationBeingViewed[0].applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.permitStartDate).subscribe((data: any) => {
       if (data.responseCode == 1) {
         this.onAutoLinkForPermit();
 
@@ -3430,6 +3471,9 @@ export class ViewProjectInfoComponent implements OnInit {
           if (data.responseCode == 1) {
 
             this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.projectNo, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+            if (this.applicationData.clientAlternativeEmail) { //checkingNotifications Sindiswa 15 February 2024
+              this.notificationsService.sendEmail(this.applicationData.clientAlternativeEmail, "Wayleave Application #" + this.projectNo, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+            }
             this.modalService.dismissAll();
             //Audit Trail Kyle
             this.onSaveToAuditTrail("Approval Pack Downloaded");
@@ -3876,7 +3920,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     let WBS = this.addWBSNumber.controls["wbsnumber"].value;
 
-    this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, WBS, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+    this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, WBS, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         alert("Updated Applications WBS");
@@ -4550,6 +4594,9 @@ export class ViewProjectInfoComponent implements OnInit {
       if (data.responseCode == 1) {
 
         this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.projectNo, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+        if (this.applicationData.clientAlternativeEmail) { //checkingNotifications Sindiswa 15 February 2024
+          this.notificationsService.sendEmail(this.applicationData.clientAlternativeEmail, "Wayleave Application #" + this.projectNo, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+        }
         this.modalService.dismissAll();
         alert("Application moved to PTW");
         this.router.navigate(["/home"]);

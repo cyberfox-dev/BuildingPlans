@@ -22,7 +22,21 @@
             Application {{ notification.ApplicationID }}
           </div>
           <div class="timeline__event__description">
+            <!--checkingNotifications Sindiswa 15 February 2024-->
+            <p *ngIf="notification.NotificationDescription === 'Wayleave applicant payment '">Application {{ notification.ApplicationID }} payment processed on {{ notification.DateCreated }}</p>
+            <p *ngIf="notification.NotificationDescription === 'Application returned by senior reviewer'">Application {{ notification.ApplicationID }} was returned by senior reviewer on {{ notification.DateCreated }}</p>
+            <p *ngIf="notification.NotificationDescription === 'Application provisionally approved'">Application {{ notification.ApplicationID }} was provisionally approved on {{ notification.DateCreated }}</p>
+            <p *ngIf="notification.NotificationDescription === 'Application Disapproved'">Application {{ notification.ApplicationID }} was disapproved on {{ notification.DateCreated }}</p>
+            <p *ngIf="notification.NotificationDescription === 'Request for clarification'">Clarity was requested for application {{ notification.ApplicationID }} on {{ notification.DateCreated }}</p>
+            <p *ngIf="notification.NotificationDescription === 'You have approved an application'">You approved application {{ notification.ApplicationID }}  on {{ notification.DateCreated }}</p>
+            <p *ngIf="notification.NotificationDescription === 'You have rejected an application'">You rejected application {{ notification.ApplicationID }}  on {{ notification.DateCreated }}</p>
+            <p *ngIf="notification.NotificationDescription === 'Application escalated'">Application {{ notification.ApplicationID }}  was referred on {{ notification.DateCreated }}</p>
+            <p *ngIf="notification.NotificationDescription === 'Application approved'">Application {{ notification.ApplicationID }}  was approved on {{ notification.DateCreated }}</p> <!--this goes with the message that tells you to download the approval pack-->
+            <!--checkingNotifications Sindiswa 13 February 2024-->
+            <p *ngIf="notification.NotificationDescription === 'New wayleave application submission' || notification.NotificationDescription.endsWith(' was created ')"> Application {{ notification.ApplicationID }} created on {{ notification.DateCreated | date:'dd MMMM yyyy'}}</p>
             <p *ngIf="notification.NotificationDescription === 'New wayleave application'">Application {{ notification.ApplicationID }} has been created on {{ notification.DateCreated }}</p>
+            <p *ngIf="notification.NotificationDescription === 'Wayleave re-application'">Applicant reapplied on {{ notification.DateCreated }}</p>
+            <p *ngIf="notification.NotificationDescription.startsWith('Revised Wayleave Submission: WL:')">You reapplied on {{ notification.DateCreated }}</p>
             <p *ngIf="notification.NotificationDescription === 'Escalated wayleave application'">Application {{ notification.ApplicationID }} has been escalated on {{ notification.DateCreated }}</p>
             <p *ngIf="notification.NotificationDescription === 'Wayleave application assignment'|| notification.NotificationDescription === 'Application Assigned'">Application {{ notification.ApplicationID }} was assigned to you on the {{ notification.DateCreated }}</p>
           </div>
@@ -55,7 +69,22 @@
             Application {{notifications.ApplicationID}}
           </div>
           <div class="timeline__event__description">
+            <!--checkingNotifications Sindiswa 15 February 2024-->
+            <p *ngIf="notifications.NotificationDescription === 'Wayleave applicant payment '">Application {{ notifications.ApplicationID }} payment processed on {{ notifications.DateCreated }}</p>
+            <p *ngIf="notifications.NotificationDescription === 'Application returned by senior reviewer'">Application {{ notifications.ApplicationID }} was returned by senior reviewer on {{ notifications.DateCreated }}</p>
+            <p *ngIf="notifications.NotificationDescription === 'Application provisionally approved'">Application {{ notifications.ApplicationID }} was provisionally approved on {{ notifications.DateCreated }}</p>
+            <p *ngIf="notifications.NotificationDescription === 'Application Disapproved'">Application {{ notifications.ApplicationID }} was disapproved on {{ notifications.DateCreated }}</p>
+            <p *ngIf="notifications.NotificationDescription === 'Request for clarification'">Clarity was requested for application {{ notifications.ApplicationID }} on {{ notifications.DateCreated }}</p>
+            <p *ngIf="notifications.NotificationDescription === 'You have approved an application'">You approved application {{ notifications.ApplicationID }}  on {{ notifications.DateCreated }}</p>
+
+            <p *ngIf="notifications.NotificationDescription === 'You have rejected an application'">You rejected application {{ notifications.ApplicationID }}  on {{ notifications.DateCreated }}</p>
+            <p *ngIf="notifications.NotificationDescription === 'Application escalated'">Application {{ notifications.ApplicationID }}  was referred on {{ notifications.DateCreated }}</p>
+            <p *ngIf="notifications.NotificationDescription === 'Application approved'">Application {{ notifications.ApplicationID }}  was approved on {{ notifications.DateCreated }}</p> <!--this goes with the message that tells you to download the approval pack-->
+            <!--checkingNotifications Sindiswa 13 February 2024-->
+            <p *ngIf="notifications.NotificationDescription === 'New wayleave application submission' || notifications.NotificationDescription.endsWith(' was created ')"> Application {{ notifications.ApplicationID }} created on {{ notifications.DateCreated | date:'dd MMMM yyyy'}}</p>
             <p *ngIf="notifications.NotificationDescription === 'New wayleave application'">Application {{ notifications.ApplicationID }} has been created on {{ notifications.DateCreated }}</p>
+            <p *ngIf="notifications.NotificationDescription === 'Wayleave re-application'">Applicant reapplied on {{ notifications.DateCreated }}</p>
+            <p *ngIf="notifications.NotificationDescription.startsWith('Revised Wayleave Submission: WL:')">You reapplied on {{ notifications.DateCreated }}</p>
             <p *ngIf="notifications.NotificationDescription === 'Escalated wayleave application'">Application {{ notifications.ApplicationID }} has been escalated on {{ notifications.DateCreated }}</p>
             <p *ngIf="notifications.NotificationDescription === 'Wayleave application assignment' || notifications.NotificationDescription === 'Application Assigned'">Application {{ notifications.ApplicationID }} was assigned to you on the {{ notifications.DateCreated }}</p>
           </div>
@@ -150,7 +179,8 @@
     <div class="email-body">
       <div class="email-content">
         <p>Dear  {{this.fullName}},</p>
-        <p>{{this.MessageList.Message}}</p>
+        <!--<p>{{this.MessageList.Message}}</p>-->
+        <p [innerHTML]="this.MessageList.Message"></p>
         <!-- routingToProject Sindiswa 05 February 2024-->
         <br />
         <p>
@@ -165,7 +195,8 @@
         <img class="email-footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
         <p>Regards,<br>Wayleave Management System</p>
         <p>
-          <a href="#">CCT Web</a> | <a href="#">Contacts</a> | <a href="#">Media</a> | <a href="#">Report a fault</a> | <a href="#">Accounts</a>
+          <!--checkingNotifications Sindiswa 14 February 2024-->
+          <a href="https://www.capetown.gov.za/" target="_blank">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us" target="_blank">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news" target="_blank">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html" target="_blank">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>
         </p>
       </div>
     </div>
@@ -185,7 +216,8 @@
       <div class="email-content">
         <div class="email-content">
           <p>Dear   {{this.fullName}},</p>
-          <p>{{this.MessageList.Message}}</p>
+          <!--<p>{{this.MessageList.Message}}</p>-->
+          <p [innerHTML]="this.MessageList.Message"></p>
           <p>Should you have any queries, please contact us at <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
         </div>
       </div>
@@ -196,7 +228,8 @@
         <img class="email-footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
         <p>Regards,<br>Wayleave Management System</p>
         <p>
-          <a href="#">CCT Web</a> | <a href="#">Contacts</a> | <a href="#">Media</a> | <a href="#">Report a fault</a> | <a href="#">Accounts</a>
+          <!--checkingNotifications Sindiswa 14 February 2024-->
+          <a href="https://www.capetown.gov.za/" target="_blank">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us" target="_blank">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news" target="_blank">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html" target="_blank">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>
         </p>
       </div>
     </div>
