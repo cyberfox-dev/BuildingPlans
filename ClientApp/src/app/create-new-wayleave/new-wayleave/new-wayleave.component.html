@@ -32,25 +32,22 @@
 </ng-template>
 
 <!--<app-internal-option (optionEvent)="reciveOption($event)" *ngIf="internal"></app-internal-option>-->
-
-
-
-
+ <!-- //JJS-15-02-2024 Fixing the delete drafts (wasn't deleting)-->
 <div class="content-body">
   <h2 *ngIf="isPlanning === false">Create New Wayleave</h2>
   <h2 *ngIf="isPlanning === true">Create New Request for Services Information</h2>
-<!--  <div class="cont5">
-  <button  mat-raised-button color="draft" (click)="DraftOption(); onWayleaveCreate(CurrentUser.appUserId,false,true);" *ngIf="draft && stepper.selectedIndex === 1" class="floating-button2">Save project as a draft</button>
-  <button  mat-raised-button color="draft" (click)="DraftOption(); onWayleaveCreate(CurrentUser.appUserId,false,true);" *ngIf="stepper.selectedIndex === 1" >Save project as a draft</button>
+  <div class="cont5">
+    <button mat-raised-button color="draft" (click)="DraftOption(); onWayleaveCreate(CurrentUser.appUserId,false,true);" *ngIf="draft && stepper.selectedIndex === 1" class="floating-button2">Save project as a draft</button>
+    <button mat-raised-button color="draft" (click)="DraftOption(); onWayleaveCreate(CurrentUser.appUserId,false,true);" *ngIf="stepper.selectedIndex === 1">Save project as a draft</button>
 
-    </div>-->
+  </div>
   <!--Stepper-->
   <div class="MainContainer">
-  <mat-horizontal-stepper linear #stepper>
+    <mat-horizontal-stepper linear #stepper>
 
-    <!---------------------------------------------------------------Application Details----------------------------------------------------------->
+      <!---------------------------------------------------------------Application Details----------------------------------------------------------->
 
-    <mat-step>
+      <mat-step>
 
       <form>
         <ng-template matStepLabel>Applicant Details</ng-template> <!--wayleaveCreate Sindiswa 31 January 2024-->
@@ -72,233 +69,233 @@
               </div>
 
 
-              <div *ngIf="telecomms" class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="externalICASANumber" id=" externalICASANumber" name="externalICASANumber" disabled>
-                  <label for="name">ICASA Number</label>
-                </div>
-              </div>
-              <!-- end of icasadetails Sindiswa 10 January 2024 -->
-            </div>
-
-            <!--Displaying the applicants information into textboxes-->
-
-            <div class="row">
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="externalName" id="externalName" name="externalName" disabled>
-                  <label for="name">Name</label>
-                </div>
-              </div>
-
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="externalSurname" id="externalSurname" name="externalSurname" disabled>
-                  <label for="name">Surname</label>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="externalAddress" id="externalAddress" name="externalAddress" disabled>
-                  <label for="name">Physical Address</label>
-                </div>
-              </div>
-
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="externalEmail" id="externalEmail" name="externalEmail" disabled>
-                  <label for="name">Email</label>
-                </div>
-              </div>
-            </div>
-
-          </div>
-          <!------------------------------------------------------------INTERNAL---------------------------------------------------------------->
-          <!-- <app-internal-details *ngIf="internal"></app-internal-details>-->
-          <div *ngIf="internal || internalProxy">
-
-            <div class="row">
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="internalName" id="InternalName" placeholder="Enter First Name" name="name" disabled>
-                  <label for="name">Name</label>
-                </div>
-              </div>
-
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="internalSurname" id="Surname" placeholder="Enter Surname" name="surname" disabled>
-                  <label for="name">Surname</label>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="internalDepartmentName" id="internalDepartment" placeholder="Enter Address" name="internalDepartment" disabled>
-                  <label for="name">Department</label>
-                </div>
-              </div>
-
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="internalBranch" id="internalBranch" placeholder="Enter Branch" name="Branch" disabled>
-                  <label for="name">Branch</label>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="internalCostCenterNumber" id="internalCostCenterNumber" placeholder="Enter CostCenterNumber" name="internalCostCenterNumber" disabled>
-                  <label for="name">Cost Center Number</label>
-                </div>
-              </div>
-
-              <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="internalCostCenterOwner" id="internalCostCenterOwner" placeholder="Enter internalCostCenterOwner" name="internalCostCenterOwner" disabled>
-                  <label for="name">Cost Center Owner</label>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-
-          <!-- <app-client-details *ngIf="client"></app-client-details>-->
-          <!--  ----------------------------------------------------------CLIENT---------------------------------------------------------------->
-
-          <div *ngIf="client">
-            <div class="container-fluid">
-
-              <!--  <button mat-raised-button color="blue" (click)="openExsistingClientModal(user)">Create for an existing client</button>-->
-
-              <form>
-                <div class="row">
-                  <div class="col">
-                    <div class="form-floating mb-3 mt-3">
-                      <input type="text" class="form-control" [(ngModel)]="clientName" name="clientName" placeholder="Enter First Name">
-                      <label for="clientName">Name</label>
-                    </div>
-                  </div>
-
-                  <div class="col">
-                    <div class="form-floating mb-3 mt-3">
-                      <input type="text" class="form-control" [(ngModel)]="clientSurname" name="clientSurname" placeholder="Enter Surname">
-                      <label for="clientSurname">Surname</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col">
-                    <div class="form-floating mb-3 mt-3">
-                      <input type="text" class="form-control" [(ngModel)]="clientEmail" name="clientEmail" placeholder="Enter Email">
-                      <label for="clientEmail">Email</label>
-                    </div>
-                  </div>
-
-                  <div class="col">
-                    <div class="form-floating mb-3 mt-3">
-                      <input type="text" class="form-control" [(ngModel)]="clientCellNo" name="clientCellNo" placeholder="Enter Cell Number">
-                      <label for="clientCellNo">Cell Number</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col">
-                    <div class="form-floating mb-3 mt-3">
-                      <input type="text" class="form-control" [(ngModel)]="clientIDNumber" name="clientIDNumber" placeholder="Enter ID Number">
-                      <label for="extApplicantIDNumber">ID Number</label>
-                    </div>
-                  </div>
-                  <!--Not auto-populating: Reference Number-->
-                  <div class="col">
-                    <div class="form-floating mb-3 mt-3">
-                      <input type="text" class="form-control" [(ngModel)]="clientRefNo" name="clientRefNo" placeholder="Enter Ref No">
-                      <label for="clientRefNo">Reference Number</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col">
-                    <div class="form-floating mb-3 mt-3">
-                      <input type="text" class="form-control" [(ngModel)]="clientBPNum" name="clientBPNum" placeholder="Enter BP Number">
-                      <label for="bpNoApplicant">BP Number</label>
-                    </div>
-                  </div>
-                  <div class="col">
-                    <div class="form-floating mb-3 mt-3">
-                      <input type="text" class="form-control" [(ngModel)]="clientCompanyName" name="clientCompanyName" placeholder="Enter Company Name">
-                      <label for="address">Company Name</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col">
-                    <div class="form-floating mb-3 mt-3">
-                      <input type="text" class="form-control" [(ngModel)]="clientCompanyRegNo" name="clientCompanyRegNo" placeholder="Enter Company Reg No">
-                      <label for="address">Company Reg No.</label>
-                    </div>
-                  </div>
-                  <!--Not auto-populating: Company Type-->
-                  <div class="col">
-                    <div class="form-floating mb-3 mt-3">
-                      <input type="email" class="form-control" [(ngModel)]="clientCompanyType" name="clientCompanyType" placeholder="Select Company Type">
-                      <label for="applicantEmail">Company Type</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
+                <div *ngIf="telecomms" class="col">
                   <div class="form-floating mb-3 mt-3">
-                    <input type="email" class="form-control" [(ngModel)]="clientPhysicalAddress" name="clientPhysicalAddress" placeholder="Select Address">
-                    <label for="applicantEmail">Address</label>
+                    <input type="text" class="form-control" [(ngModel)]="externalICASANumber" id=" externalICASANumber" name="externalICASANumber" disabled>
+                    <label for="name">ICASA Number</label>
                   </div>
-
-
-
                 </div>
-                <div class="row" *ngIf="newClient">
-                  <h5>Please upload a copy of your ID</h5>
-                  <div class="input-group">
-                    <input type="file" class="form-control" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                <!-- end of icasadetails Sindiswa 10 January 2024 -->
+              </div>
 
+              <!--Displaying the applicants information into textboxes-->
+
+              <div class="row">
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="externalName" id="externalName" name="externalName" disabled>
+                    <label for="name">Name</label>
                   </div>
-
                 </div>
-              </form>
+
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="externalSurname" id="externalSurname" name="externalSurname" disabled>
+                    <label for="name">Surname</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="externalAddress" id="externalAddress" name="externalAddress" disabled>
+                    <label for="name">Physical Address</label>
+                  </div>
+                </div>
+
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="externalEmail" id="externalEmail" name="externalEmail" disabled>
+                    <label for="name">Email</label>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <!------------------------------------------------------------INTERNAL---------------------------------------------------------------->
+            <!-- <app-internal-details *ngIf="internal"></app-internal-details>-->
+            <div *ngIf="internal || internalProxy">
+
+              <div class="row">
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="internalName" id="InternalName" placeholder="Enter First Name" name="name" disabled>
+                    <label for="name">Name</label>
+                  </div>
+                </div>
+
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="internalSurname" id="Surname" placeholder="Enter Surname" name="surname" disabled>
+                    <label for="name">Surname</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="internalDepartmentName" id="internalDepartment" placeholder="Enter Address" name="internalDepartment" disabled>
+                    <label for="name">Department</label>
+                  </div>
+                </div>
+
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="internalBranch" id="internalBranch" placeholder="Enter Branch" name="Branch" disabled>
+                    <label for="name">Branch</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="internalCostCenterNumber" id="internalCostCenterNumber" placeholder="Enter CostCenterNumber" name="internalCostCenterNumber" disabled>
+                    <label for="name">Cost Center Number</label>
+                  </div>
+                </div>
+
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="internalCostCenterOwner" id="internalCostCenterOwner" placeholder="Enter internalCostCenterOwner" name="internalCostCenterOwner" disabled>
+                    <label for="name">Cost Center Owner</label>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
-          </div>
 
-          <!--Only if they are a client do they see these divs to create a new engineer and contractor-->
-          <!--<div class="container-fluid" *ngIf="client">
-    <div class="card">
-      <h3><span>Please create an engineer</span></h3>
-    </div>
-    <app-new-egineer></app-new-egineer>
+            <!-- <app-client-details *ngIf="client"></app-client-details>-->
+            <!--  ----------------------------------------------------------CLIENT---------------------------------------------------------------->
 
-    <div class="card" >
-      <h3><span>Please create a contractor</span></h3>
-    </div>
+            <div *ngIf="client">
+              <div class="container-fluid">
 
-    <app-new-contractor></app-new-contractor>
-  </div>-->
-          <!--the applicant selecting an engineer-->
-          <div class="card" *ngIf="isPlanning === false ">
-            <h3><span>Please select an engineer</span></h3>
-          </div>
-          <!--  <div class="container-fluid">-->
-          <!--<div class="row">
-      <button type="button" class="createNewEngin" (click)="openXl(content)">
-        Create New Engineer
-      </button>
-    </div>
-  </div>-->
-          <!--Table displaying the engineers-->
-          <app-select-engineer-table [UserID]='clientUserID' [PrfessionalType]='Engineer' *ngIf="isPlanning === false"></app-select-engineer-table>
+                <!--  <button mat-raised-button color="blue" (click)="openExsistingClientModal(user)">Create for an existing client</button>-->
+
+                <form>
+                  <div class="row">
+                    <div class="col">
+                      <div class="form-floating mb-3 mt-3">
+                        <input type="text" class="form-control" [(ngModel)]="clientName" name="clientName" placeholder="Enter First Name">
+                        <label for="clientName">Name</label>
+                      </div>
+                    </div>
+
+                    <div class="col">
+                      <div class="form-floating mb-3 mt-3">
+                        <input type="text" class="form-control" [(ngModel)]="clientSurname" name="clientSurname" placeholder="Enter Surname">
+                        <label for="clientSurname">Surname</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      <div class="form-floating mb-3 mt-3">
+                        <input type="text" class="form-control" [(ngModel)]="clientEmail" name="clientEmail" placeholder="Enter Email">
+                        <label for="clientEmail">Email</label>
+                      </div>
+                    </div>
+
+                    <div class="col">
+                      <div class="form-floating mb-3 mt-3">
+                        <input type="text" class="form-control" [(ngModel)]="clientCellNo" name="clientCellNo" placeholder="Enter Cell Number">
+                        <label for="clientCellNo">Cell Number</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      <div class="form-floating mb-3 mt-3">
+                        <input type="text" class="form-control" [(ngModel)]="clientIDNumber" name="clientIDNumber" placeholder="Enter ID Number">
+                        <label for="extApplicantIDNumber">ID Number</label>
+                      </div>
+                    </div>
+                    <!--Not auto-populating: Reference Number-->
+                    <div class="col">
+                      <div class="form-floating mb-3 mt-3">
+                        <input type="text" class="form-control" [(ngModel)]="clientRefNo" name="clientRefNo" placeholder="Enter Ref No">
+                        <label for="clientRefNo">Reference Number</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      <div class="form-floating mb-3 mt-3">
+                        <input type="text" class="form-control" [(ngModel)]="clientBPNum" name="clientBPNum" placeholder="Enter BP Number">
+                        <label for="bpNoApplicant">BP Number</label>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="form-floating mb-3 mt-3">
+                        <input type="text" class="form-control" [(ngModel)]="clientCompanyName" name="clientCompanyName" placeholder="Enter Company Name">
+                        <label for="address">Company Name</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      <div class="form-floating mb-3 mt-3">
+                        <input type="text" class="form-control" [(ngModel)]="clientCompanyRegNo" name="clientCompanyRegNo" placeholder="Enter Company Reg No">
+                        <label for="address">Company Reg No.</label>
+                      </div>
+                    </div>
+                    <!--Not auto-populating: Company Type-->
+                    <div class="col">
+                      <div class="form-floating mb-3 mt-3">
+                        <input type="email" class="form-control" [(ngModel)]="clientCompanyType" name="clientCompanyType" placeholder="Select Company Type">
+                        <label for="applicantEmail">Company Type</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="form-floating mb-3 mt-3">
+                      <input type="email" class="form-control" [(ngModel)]="clientPhysicalAddress" name="clientPhysicalAddress" placeholder="Select Address">
+                      <label for="applicantEmail">Address</label>
+                    </div>
+
+
+
+                  </div>
+                  <div class="row" *ngIf="newClient">
+                    <h5>Please upload a copy of your ID</h5>
+                    <div class="input-group">
+                      <input type="file" class="form-control" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+
+                    </div>
+
+                  </div>
+                </form>
+              </div>
+
+            </div>
+
+            <!--Only if they are a client do they see these divs to create a new engineer and contractor-->
+            <!--<div class="container-fluid" *ngIf="client">
+              <div class="card">
+                <h3><span>Please create an engineer</span></h3>
+              </div>
+              <app-new-egineer></app-new-egineer>
+
+              <div class="card" >
+                <h3><span>Please create a contractor</span></h3>
+              </div>
+
+              <app-new-contractor></app-new-contractor>
+            </div>-->
+            <!--the applicant selecting an engineer-->
+            <div class="card" *ngIf="isPlanning === false ">
+              <h3><span>Please select an engineer</span></h3>
+            </div>
+            <!--  <div class="container-fluid">-->
+            <!--<div class="row">
+                <button type="button" class="createNewEngin" (click)="openXl(content)">
+                  Create New Engineer
+                </button>
+              </div>
+            </div>-->
+            <!--Table displaying the engineers-->
+            <app-select-engineer-table [UserID]='clientUserID' [PrfessionalType]='Engineer' *ngIf="isPlanning === false"></app-select-engineer-table>
 
 
           <div class="card" *ngIf="isPlanning === false">
@@ -307,12 +304,13 @@
           <!--<app-select-engineer-table [UserID]='clientUserID' [PrfessionalType]='Contractor' *ngIf="isPlanning === false"></app-select-engineer-table>-->
           <app-select-contractor-table [PrfessionalType]='Contractor' *ngIf="isPlanning === false"></app-select-contractor-table>
 
-          <!--<div class="card" *ngIf="isPlanning === false && client == true">
-    <h3><span>Please select a contractor</span></h3>
-  </div>
-  <app-select-contractor-table [PrfessionalType]='Contractor' *ngIf="isPlanning === false && client == true"></app-select-contractor-table>-->
 
-        </div>
+            <!--<div class="card" *ngIf="isPlanning === false && client == true">
+              <h3><span>Please select a contractor</span></h3>
+            </div>
+            <app-select-contractor-table [PrfessionalType]='Contractor' *ngIf="isPlanning === false && client == true"></app-select-contractor-table>-->
+
+          </div>
 
 
 
@@ -329,15 +327,15 @@
       </div>
     </mat-step>
 
-    <!---------------------------------------------------------------Project Details----------------------------------------------------------->
-    <mat-step>
+      <!---------------------------------------------------------------Project Details----------------------------------------------------------->
+      <mat-step>
 
 
 
 
-      <ng-template matStepLabel>Project Details</ng-template>
-      <div>
-          <br/>
+        <ng-template matStepLabel>Project Details</ng-template>
+        <div>
+          <br />
           <div class="container-fluid">
               <div class="alert alert-warning">
                   <h4><strong>Compulsory Field</strong> - <em>Click and write description inside the textbox below.</em> </h4>
@@ -345,259 +343,259 @@
           </div>
           <div class="row">
 
-              <div class="form-floating mb-3 mt-3">
-                  <input type="text" class="form-control" [(ngModel)]="natureOfWork" id="Email" placeholder="Type your description here..." name="natureOfWork">
-                  <label for="name">Describe the type or nature of the work to be undertaken. Note that this information will serve as the title for the application.</label>
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="natureOfWork" id="Email" placeholder="Type your description here..." name="natureOfWork">
+              <label for="name">Describe the type or nature of the work to be undertaken. Note that this information will serve as the title for the application.</label>
 
 
-              </div>
+            </div>
           </div>
-      </div>
-      <div class="card">
-        <h3><span>Project Size</span></h3><!--wayleaveCreate Sindiswa 31 January 2024-->
-      </div>
-      <div class="container-fluid">
+        </div>
+        <div class="card">
+          <h3><span>Project Size</span></h3><!--wayleaveCreate Sindiswa 31 January 2024-->
+        </div>
+        <div class="container-fluid">
           <div class="alert alert-warning">
-              <!-- compulsoryProjectSize Sindiswa 15 January 2024 -->
-              <h4><strong>Compulsory Field</strong> - <em>To determine project size, click the button below and make applicable selections.</em> </h4>
-              <!-- end of compulsoryProjectSize Sindiswa 15 January 2024 -->
+            <!-- compulsoryProjectSize Sindiswa 15 January 2024 -->
+            <h4><strong>Compulsory Field</strong> - <em>To determine project size, click the button below and make applicable selections.</em> </h4>
+            <!-- end of compulsoryProjectSize Sindiswa 15 January 2024 -->
           </div>
           <br />
           <div class="container-fluid23">
-          <button mat-raised-button color="projectSize" matTooltip="Please check the 'Project Size Criteria.pdf' in the Repository. You'll find it in the top right-hand menu." (click)="openMandatoryDocumentCategory(MandatoryDocumentCategory)">Determine Project Size</button>
+            <button mat-raised-button color="projectSize" matTooltip="Please check the 'Project Size Criteria.pdf' in the Repository. You'll find it in the top right-hand menu." (click)="openMandatoryDocumentCategory(MandatoryDocumentCategory)">Determine Project Size</button>
           </div>
-      </div>
-     
-      <div *ngIf="PSM != ''">
-        <div class="alert alert-info" role="alert" *ngIf="projectSizeAlert || onPopulateDraftInfo">{{PSM}}</div>
-      </div>
-      <!--Out with the old-->
-      <!--<mat-form-field appearance="fill">
-    <mat-label>Select type of application</mat-label>
-    <mat-select [(ngModel)]="typeOfApplication" name="typeOfApplication">
-      <mat-option value="Small">Small</mat-option>MandatoryDocumentCategory
-      <mat-option value="Medium">Medium</mat-option>
-      <mat-option value="Large">Large</mat-option>
-      <mat-option value="Emergency">Emergency</mat-option>
-
-    </mat-select>
-  </mat-form-field>-->
-      <!--  <button mat-raised-button color="primary" (click)="openTypeOfApplicationModal()">Type Of Application</button>
-  -->
-
-      <div class="row">
-        <!--          <div class="col">
-      <div class="form-floating mb-3 mt-3">
-        <input type="text" class="form-control" [(ngModel)]="notificationNumber" id="NotificationNo" placeholder="Enter Notification Number" name="notificationNo">
-        <label for="name">Notification Number</label>
-      </div>
-    </div>-->
-
-        <div class="col">
-          <!--  <div class="form-floating mb-3 mt-3">
-        <input type="text" class="form-control" [(ngModel)]="wbsNumber" id="WBSNo" placeholder="Enter WBS Number" name="wbsNo">
-        <label for="name">WBS Number</label>
-      </div>-->
-          <!--            <div class="form-floating mb-3 mt-3">
-        <input type="text" class="form-control" [(ngModel)]="descriptionOfProject" id="Description" placeholder="Enter Description" name="descriptionOfProject">
-        <label for="name">Description of Proposed Construction Work</label>
-      </div>-->
         </div>
-      </div>
-      <!--<div class="row">-->  <!--wayleaveCreate Sindiswa 31 January 2024-->
-      <!--          <div class="col">
-    <div class="form-floating mb-3 mt-3">
-      <input type="text" class="form-control" [(ngModel)]="physicalAddressOfProject" id="Address" placeholder="Enter Address" name="physicalAddressOfProject">
-      <label for="name">Physical Address</label>
-    </div>
-  </div>-->
-      <!--wayleaveCreate Sindiswa 31 January 2024-->
-      <!--<div class="form-floating mb-3 mt-3">
-      <input type="text" class="form-control" [(ngModel)]="natureOfWork" id="Email" placeholder="Enter Email" name="natureOfWork">
-      <label for="name">Type/Nature of works to be undertaken. Note that this will also appear as your Application Title</label>
-    </div>
 
+        <div *ngIf="PSM != ''">
+          <div class="alert alert-info" role="alert" *ngIf="projectSizeAlert || onPopulateDraftInfo">{{PSM}}</div>
+        </div>
+        <!--Out with the old-->
+        <!--<mat-form-field appearance="fill">
+          <mat-label>Select type of application</mat-label>
+          <mat-select [(ngModel)]="typeOfApplication" name="typeOfApplication">
+            <mat-option value="Small">Small</mat-option>MandatoryDocumentCategory
+            <mat-option value="Medium">Medium</mat-option>
+            <mat-option value="Large">Large</mat-option>
+            <mat-option value="Emergency">Emergency</mat-option>
 
-  </div>-->
-      <!--wayleaveCreate Sindiswa 31 January 2024-->
+          </mat-select>
+        </mat-form-field>-->
+        <!--  <button mat-raised-button color="primary" (click)="openTypeOfApplicationModal()">Type Of Application</button>
+        -->
 
+        <div class="row">
+          <!--          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="notificationNumber" id="NotificationNo" placeholder="Enter Notification Number" name="notificationNo">
+              <label for="name">Notification Number</label>
+            </div>
+          </div>-->
 
-
-
-      <div class="row">
-        <div class="typeOfExcavation">
-
-          <div class="card">
-            <h3><span>Type Of Excavation</span></h3>
+          <div class="col">
+            <!--  <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="wbsNumber" id="WBSNo" placeholder="Enter WBS Number" name="wbsNo">
+              <label for="name">WBS Number</label>
+            </div>-->
+            <!--            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="descriptionOfProject" id="Description" placeholder="Enter Description" name="descriptionOfProject">
+              <label for="name">Description of Proposed Construction Work</label>
+            </div>-->
           </div>
-          <!--wayleaveCreate Sindiswa 31 January 2024-->
-          <div class="container-fluid">
-            <div class="alert alert-warning">
-              <h4><strong>Compulsory Field</strong> - <em>To proceed, use the dropdown menu below and choose the relevant types of excavation.</em> </h4>
+        </div>
+        <!--<div class="row">-->  <!--wayleaveCreate Sindiswa 31 January 2024-->
+        <!--          <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="physicalAddressOfProject" id="Address" placeholder="Enter Address" name="physicalAddressOfProject">
+            <label for="name">Physical Address</label>
+          </div>
+        </div>-->
+        <!--wayleaveCreate Sindiswa 31 January 2024-->
+        <!--<div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="natureOfWork" id="Email" placeholder="Enter Email" name="natureOfWork">
+            <label for="name">Type/Nature of works to be undertaken. Note that this will also appear as your Application Title</label>
+          </div>
+
+
+        </div>-->
+        <!--wayleaveCreate Sindiswa 31 January 2024-->
+
+
+
+
+        <div class="row">
+          <div class="typeOfExcavation">
+
+            <div class="card">
+              <h3><span>Type Of Excavation</span></h3>
+            </div>
+            <!--wayleaveCreate Sindiswa 31 January 2024-->
+            <div class="container-fluid">
+              <div class="alert alert-warning">
+                <h4><strong>Compulsory Field</strong> - <em>To proceed, use the dropdown menu below and choose the relevant types of excavation.</em> </h4>
+              </div>
+            </div>
+            <!--wayleaveCreate Sindiswa 31 January 2024-->
+            <!--          <div class="container-fluid" *ngIf="PSM == ''">
+
+              <mat-form-field>
+                <mat-label>Types Of Excavation</mat-label>
+                <mat-select [(ngModel)]="TOENAMES" multiple>
+
+                  <mat-option *ngFor="let TOE of TypeOfExcavationList" (selectionChange)="CheckTOES()" [value]="TOE.typeOfExcavationName">{{TOE.typeOfExcavationName}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+            </div>-->
+            <div class="container-fluid">
+              <mat-form-field>
+                <mat-label>Types Of Excavation</mat-label>
+                <mat-select [(ngModel)]="TOENAMES" [compareWith]="compareExcavationTypes" (selectionChange)="CheckTOES()" multiple required>
+                  <!--wayleaveCreate Sindiswa 31 January 2024-->
+                  <mat-option *ngFor="let TOE of TypeOfExcavationList" [value]="TOE.typeOfExcavationName">
+                    {{TOE.typeOfExcavationName}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="!TOENAMES?.length">Please select at least one type of excavation.</mat-error><!--wayleaveCreate Sindiswa 31 January 2024-->
+              </mat-form-field>
+
+            </div>
+
+          </div>
+        </div>
+
+
+
+        <div class="card">
+          <h3><span>Expected Start & End Dates </span></h3>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="date" class="form-control" [(ngModel)]="expectedStartDate" id="startDate" placeholder="Enter Start Date" name="expectedStartDate" [min]="getCurrentDate()"> <!--[min]="getCurrentDate()"-->
+              <label for="name">Start Date</label>
             </div>
           </div>
-          <!--wayleaveCreate Sindiswa 31 January 2024-->
-          <!--          <div class="container-fluid" *ngIf="PSM == ''">
 
-        <mat-form-field>
-          <mat-label>Types Of Excavation</mat-label>
-          <mat-select [(ngModel)]="TOENAMES" multiple>
-
-            <mat-option *ngFor="let TOE of TypeOfExcavationList" (selectionChange)="CheckTOES()" [value]="TOE.typeOfExcavationName">{{TOE.typeOfExcavationName}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-      </div>-->
-          <div class="container-fluid">
-            <mat-form-field>
-              <mat-label>Types Of Excavation</mat-label>
-              <mat-select [(ngModel)]="TOENAMES" [compareWith]="compareExcavationTypes" (selectionChange)="CheckTOES()" multiple required>
-                <!--wayleaveCreate Sindiswa 31 January 2024-->
-                <mat-option *ngFor="let TOE of TypeOfExcavationList" [value]="TOE.typeOfExcavationName">
-                  {{TOE.typeOfExcavationName}}
-                </mat-option>
-              </mat-select>
-              <mat-error *ngIf="!TOENAMES?.length">Please select at least one type of excavation.</mat-error><!--wayleaveCreate Sindiswa 31 January 2024-->
-            </mat-form-field>
-
-          </div>
-
-        </div>
-      </div>
-
-
-
-      <div class="card">
-        <h3><span>Expected Start & End Dates </span></h3>
-      </div>
-      <div class="row">
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="date" class="form-control" [(ngModel)]="expectedStartDate" id="startDate" placeholder="Enter Start Date" name="expectedStartDate" [min]="getCurrentDate()"> <!--[min]="getCurrentDate()"-->
-            <label for="name">Start Date</label>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="date" class="form-control" [(ngModel)]="expectedEndType" id="endDate" placeholder="" name="expectedEndType" [min]="expectedStartDate">
+              <label for="name">Completion Date</label>
+            </div>
           </div>
         </div>
 
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="date" class="form-control" [(ngModel)]="expectedEndType" id="endDate" placeholder="" name="expectedEndType" [min]="expectedStartDate">
-            <label for="name">Completion Date</label>
-          </div>
+        <!---------------------------------------------------------------Map----------------------------------------------------------->
+        <div class="card" *ngIf="map">
+          <h3><span>Location</span></h3>
         </div>
-      </div>
+        <!--<app-project-details-map *ngIf="map"></app-project-details-map>-->
+        <div *ngIf="map">
+          <!--<div class="row">
+          <div class="form-floating mb-3 mt-3">-->
+          <!--<input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address">-->
+          <!--<input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" />
+              <label for="applicantTellNo">Physical Address</label>
+            </div>
+          </div>-->
 
-      <!---------------------------------------------------------------Map----------------------------------------------------------->
-      <div class="card" *ngIf="map">
-        <h3><span>Location</span></h3>
-      </div>
-      <!--<app-project-details-map *ngIf="map"></app-project-details-map>-->
-      <div *ngIf="map">
-        <!--<div class="row">
-    <div class="form-floating mb-3 mt-3">-->
-        <!--<input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address">-->
-        <!--<input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" />
-        <label for="applicantTellNo">Physical Address</label>
-      </div>
-    </div>-->
-
-        <app-project-details-map [data]="ARCGISAPIData"></app-project-details-map>
+          <app-project-details-map [data]="ARCGISAPIData"></app-project-details-map>
 
 
 
-      </div>
-      <div class="alert alert-warning" *ngIf="client">
-        <h4>This project is being created for a client, because of this a drawing needs to be provided of the location of works on the next step.</h4>
-      </div>
-      <!--Physical address Of project Kyle 16/01/24-->
-      <div class="alert alert-warning" *ngIf="client == false">
-        <h4><strong>Note*</strong><em> In order to proceed to the next step a drawing needs to be provided of the location of works on the map</em></h4>
-      </div>
-      <!--Physical address Of project Kyle 16/01/24-->
-
-
-      <div class="cont">
-        <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+        </div>
+        <div class="alert alert-warning" *ngIf="client">
+          <h4>This project is being created for a client, because of this a drawing needs to be provided of the location of works on the next step.</h4>
+        </div>
         <!--Physical address Of project Kyle 16/01/24-->
-        <button mat-raised-button color="primary" matStepperNext (click)="CheckTOES()" [disabled]="!TOENAMES?.length || PSM == '' || addressSaved == false">Next</button> <!--wayleaveCreate Sindiswa 31 January 2024-->
+        <div class="alert alert-warning" *ngIf="client == false">
+          <h4><strong>Note*</strong><em> In order to proceed to the next step a drawing needs to be provided of the location of works on the map</em></h4>
+        </div>
         <!--Physical address Of project Kyle 16/01/24-->
-      </div>
-    </mat-step>
+
+
+        <div class="cont">
+          <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+          <!--Physical address Of project Kyle 16/01/24-->
+          <button mat-raised-button color="primary" matStepperNext (click)="CheckTOES()" [disabled]="!TOENAMES?.length || PSM == '' || addressSaved == false">Next</button> <!--wayleaveCreate Sindiswa 31 January 2024-->
+          <!--Physical address Of project Kyle 16/01/24-->
+        </div>
+      </mat-step>
 
 
 
 
 
-    <!---------------------------------------------------------------uploading docs----------------------------------------------------------->
+      <!---------------------------------------------------------------uploading docs----------------------------------------------------------->
 
-    <mat-step>
-      <form>
-        <ng-template matStepLabel>Document Uploads</ng-template>
-
-
-        <!--        <button mat-raised-button color="draft" class="floating-button2" (click)= "DraftOption();onWayleaveCreate(CurrentUser.appUserId,false,true)">Save project as a draft</button>-->
-
-      </form>
-      <mat-list *ngFor="let manDoc of MandatoryDocumentsLinkedStagesList | async; let i=index; trackBy: trackByFn" [attr.data-index]="i">
-        <mat-list-item> {{manDoc.mandatoryDocumentName}}</mat-list-item>
-        <mat-form-field>
-          <div>
-            <mat-toolbar>
-              <!-- Display files names -->
-              <input matInput readonly name="name" class="textFuckingBox" /> <!--[(ngModel)]="fileAttrs[i]"-->
-              <!-- app-file-upload Component -->
-
-              <div class="container-fluid">
-                <app-file-upload [ApplicationID]="applicationID"
-                                 [UploadFor]="manDoc.mandatoryDocumentName"
-                                 (passFileName)="onPassFileName($event,i)"
-                                 (onUploadFinished)="onFileDelete($event, i)"
-                                 (onUploadSuccess)="onFileUpload($event)">
-                </app-file-upload>
-              </div>
-
-              <!--<button *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)">Add Another Upload</button>-->
-              <button mat-raised-button color="addNewUploadButtonColor" *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)" matTooltip="Add New Upload"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon"></button>
-              <button mat-raised-button color="warn" *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)" matTooltip="Delete"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid.svg" class="icon red"></button>
-              <!--  <button *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)">Delete</button>-->
-            </mat-toolbar>
-          </div>
-        </mat-form-field>
-      </mat-list>
-
-      <div class="container04">
-        <mat-progress-bar mode="indeterminate" *ngIf="successfulUploads >0 && successfulUploads < totalDocs"></mat-progress-bar>
+      <mat-step>
+        <form>
+          <ng-template matStepLabel>Document Uploads</ng-template>
 
 
+          <!--        <button mat-raised-button color="draft" class="floating-button2" (click)= "DraftOption();onWayleaveCreate(CurrentUser.appUserId,false,true)">Save project as a draft</button>-->
 
-        <!--Notification?!-->
-        <!--
-          <button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)="onWayleaveCreate(CurrentUser.appUserId,false,false)">
+        </form>
+        <mat-list *ngFor="let manDoc of MandatoryDocumentsLinkedStagesList | async; let i=index; trackBy: trackByFn" [attr.data-index]="i">
+          <mat-list-item> {{manDoc.mandatoryDocumentName}}</mat-list-item>
+          <mat-form-field>
+            <div>
+              <mat-toolbar>
+                <!-- Display files names -->
+                <input matInput readonly name="name" class="textFuckingBox" /> <!--[(ngModel)]="fileAttrs[i]"-->
+                <!-- app-file-upload Component -->
+
+                <div class="container-fluid">
+                  <app-file-upload [ApplicationID]="applicationID"
+                                   [UploadFor]="manDoc.mandatoryDocumentName"
+                                   (passFileName)="onPassFileName($event,i)"
+                                   (onUploadFinished)="onFileDelete($event, i)"
+                                   (onUploadSuccess)="onFileUpload($event)">
+                  </app-file-upload>
+                </div>
+
+                <!--<button *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)">Add Another Upload</button>-->
+                <button mat-raised-button color="addNewUploadButtonColor" *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)" matTooltip="Add New Upload"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon"></button>
+                <button mat-raised-button color="warn" *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)" matTooltip="Delete"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid.svg" class="icon red"></button>
+                <!--  <button *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)">Delete</button>-->
+              </mat-toolbar>
+            </div>
+          </mat-form-field>
+        </mat-list>
+
+        <div class="container04">
+          <mat-progress-bar mode="indeterminate" *ngIf="successfulUploads >0 && successfulUploads < totalDocs"></mat-progress-bar>
+
+
+
+          <!--Notification?!-->
+          <!--
+            <button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)="onWayleaveCreate(CurrentUser.appUserId,false,false)">
+              Create Application
+            </button>
+          -->
+          <button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)="confirmAndCreate(CurrentUser.appUserId)">
             Create Application
           </button>
-        -->
-        <button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)="confirmAndCreate(CurrentUser.appUserId)">
-          Create Application
-        </button>
 
-        <!--<button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)="openDocUpload(doubleCheckDocUploads)">
-          Create Application
-        </button>-->
-        <!--  <img src="assets/Loading.png" *ngIf="successfulUploads >0 && successfulUploads < totalDocs" class="logo2">-->
-        <p *ngIf="successfulUploads > 0 && successfulUploads < totalDocs">Uploading Documents. You may continue to upload remaining documents if needed.</p>
-        <p *ngIf="successfulUploads < totalDocs">Successful Uploads: {{successfulUploads}} of {{totalDocs}}</p>
+          <!--<button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)="openDocUpload(doubleCheckDocUploads)">
+            Create Application
+          </button>-->
+          <!--  <img src="assets/Loading.png" *ngIf="successfulUploads >0 && successfulUploads < totalDocs" class="logo2">-->
+          <p *ngIf="successfulUploads > 0 && successfulUploads < totalDocs">Uploading Documents. You may continue to upload remaining documents if needed.</p>
+          <p *ngIf="successfulUploads < totalDocs">Successful Uploads: {{successfulUploads}} of {{totalDocs}}</p>
 
 
-      </div>
+        </div>
 
-      <div class="cont">
-        <button mat-raised-button color="primary" matStepperPrevious>Back</button>
-      </div>
-    </mat-step>
+        <div class="cont">
+          <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+        </div>
+      </mat-step>
 
 
 
-  </mat-horizontal-stepper>
-</div>
+    </mat-horizontal-stepper>
+  </div>
 </div>
 
 
@@ -609,286 +607,254 @@
   </div>
   <div class="modal-body">
     <table mat-table [dataSource]="dataSourceIntermediateUploads" class="mat-elevation-z8">
- 
+
       <ng-container matColumnDef="appManDoc">
-              <th mat-header-cell *matHeaderCellDef> Required Document </th>
-              <td mat-cell *matCellDef="let element"> {{element.mandatoryDocumentName}} </td>
-            </ng-container>
+        <th mat-header-cell *matHeaderCellDef> Required Document </th>
+        <td mat-cell *matCellDef="let element"> {{element.mandatoryDocumentName}} </td>
+      </ng-container>
 
-            <ng-container matColumnDef="yourUpload">
-              <th mat-header-cell *matHeaderCellDef> Your Upload </th>
-              <td mat-cell *matCellDef="let element"> {{element.yourUpload}} </td>
-            </ng-container>
+      <ng-container matColumnDef="yourUpload">
+        <th mat-header-cell *matHeaderCellDef> Your Upload </th>
+        <td mat-cell *matCellDef="let element"> {{element.yourUpload}} </td>
+      </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumnsCurrentUploads"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumnsCurrentUploads;"></tr>
-          </table>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-warning btn-lg" matTooltip="Go back and change uploads" (click)="modal.dismiss('Cross click')">NO</button>
-        <button type="button" class="btn btn-outline-success btn-lg" matTooltip="Create application" (click)="onWayleaveCreate(CurrentUser.appUserId,false,false);modal.close('Save click')">YES</button>
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsCurrentUploads"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsCurrentUploads;"></tr>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-warning btn-lg" matTooltip="Go back and change uploads" (click)="modal.dismiss('Cross click')">NO</button>
+    <button type="button" class="btn btn-outline-success btn-lg" matTooltip="Create application" (click)="onWayleaveCreate(CurrentUser.appUserId,false,false);modal.close('Save click')">YES</button>
 
-      </div>
+  </div>
 
-    </ng-template>
+</ng-template>
 
-    <!--choose existing-->
-      <!--<ng-template #user let-modal>
-      <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Choose the user</h4>
-        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-      </div>
-      <div class="modal-body">
+<!--choose existing-->
+<!--<ng-template #user let-modal>
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Choose the user</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+</div>
+<div class="modal-body">
 
-        <div class="container-fluid">
-          <mat-form-field>
-            <mat-label>Filter</mat-label>
-            <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
-          </mat-form-field>
+  <div class="container-fluid">
+    <mat-form-field>
+      <mat-label>Filter</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+    </mat-form-field>
 
-          <table mat-table [dataSource]="dataSourceLinkUsers" class="mat-elevation-z8">-->
-      <!--*ngIf="showZoneUserTable"-->
-      <!--<ng-container matColumnDef="idNumber">
-              <th mat-header-cell *matHeaderCellDef> ID Number </th>
-              <td mat-cell *matCellDef="let element"> {{element.idNumber}} </td>
-            </ng-container>
+    <table mat-table [dataSource]="dataSourceLinkUsers" class="mat-elevation-z8">-->
+<!--*ngIf="showZoneUserTable"-->
+<!--<ng-container matColumnDef="idNumber">
+          <th mat-header-cell *matHeaderCellDef> ID Number </th>
+          <td mat-cell *matCellDef="let element"> {{element.idNumber}} </td>
+        </ng-container>
 
-            <ng-container matColumnDef="fullName">
-              <th mat-header-cell *matHeaderCellDef> User Name </th>
-              <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
-            </ng-container>
+        <ng-container matColumnDef="fullName">
+          <th mat-header-cell *matHeaderCellDef> User Name </th>
+          <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
+        </ng-container>
 
 
-            <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef>Select</th>
-              <td mat-cell *matCellDef="let i = index">
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Select</th>
+          <td mat-cell *matCellDef="let i = index">
 
-                <mat-radio-button class="example-margin" (click)="getUserID(i)"></mat-radio-button>
-              </td>
+            <mat-radio-button class="example-margin" (click)="getUserID(i)"></mat-radio-button>
+          </td>
 
-            </ng-container>
+        </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumnsLinkUsers"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumnsLinkUsers;"></tr>
-          </table>
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsLinkUsers"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsLinkUsers;"></tr>
+      </table>
 
-        </div>
+    </div>
 
-      </div>
+  </div>
 
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-outline-success" (click)="populateClientInfo();modal.close('Save click')">Save</button>
-      </div>
-    </ng-template>-->
-      <!--end-->
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="populateClientInfo();modal.close('Save click')">Save</button>
+  </div>
+</ng-template>-->
+<!--end-->
 
-      <ng-template #content let-modal>
-        <div class="modal-header">
-          <h4 class="modal-title" id="modal-basic-title">Creating a new engineer</h4>
-          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-        </div>
-        <div class="modal-body">
-          <form>
-            <div class="mb-3">
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Creating a new engineer</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="mb-3">
 
-              <div class="row">
-                <div class="col">
-                  <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control" id="BpNoApplicant" [(ngModel)]="bpNoApplicant" placeholder="Enter BP Number" name="bpNoApplicant">
-                    <label for="bpNoApplicant">BP Number</label>
-                  </div>
-                </div>
-                <div class="col">
-                  <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control" id="professionalRegNo" [(ngModel)]="professionalRegNo" placeholder="Professional Reg No" name="professionalRegNo">
-                    <label for="professionalRegNo">Professional Reg No.</label>
-                  </div>
-                </div>
-                <div class="col">
-                  <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control" id="engineerIDNo" [(ngModel)]="engineerIDNo" placeholder="Engineer ID Number" name="engineerIDNo">
-                    <label for="engineerIDNo">ID Number</label>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col">
-                  <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control" id="Name" [(ngModel)]="name" placeholder="Enter First Name" name="name">
-                    <label for="name">Name</label>
-                  </div>
-                </div>
-                <div class="col">
-                  <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control" id="Surname" [(ngModel)]="surname" placeholder="Enter Surname" name="surname">
-                    <label for="surname">Surname</label>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col">
-                  <div class="form-floating mb-3 mt-3">
-                    <input type="tel" class="form-control" id="ApplicantTel" [(ngModel)]="applicantTellNo" placeholder="Enter Tell No." name="applicantTellNo">
-                    <label for="applicantTellNo">Cell No.</label>
-                  </div>
-                </div>
-                <div class="col">
-                  <div class="form-floating mb-3 mt-3">
-                    <input type="email" class="form-control" id="ApplicantEmail" [(ngModel)]="applicantEmail" placeholder="Enter Email" name="applicantEmail">
-                    <label for="applicantEmail">Email</label>
-                  </div>
-                </div>
-              </div>
-
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="BpNoApplicant" [(ngModel)]="bpNoApplicant" placeholder="Enter BP Number" name="bpNoApplicant">
+              <label for="bpNoApplicant">BP Number</label>
             </div>
-          </form>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="professionalRegNo" [(ngModel)]="professionalRegNo" placeholder="Professional Reg No" name="professionalRegNo">
+              <label for="professionalRegNo">Professional Reg No.</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="engineerIDNo" [(ngModel)]="engineerIDNo" placeholder="Engineer ID Number" name="engineerIDNo">
+              <label for="engineerIDNo">ID Number</label>
+            </div>
+          </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click');onAddEngineer()">Save</button>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="Name" [(ngModel)]="name" placeholder="Enter First Name" name="name">
+              <label for="name">Name</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="Surname" [(ngModel)]="surname" placeholder="Enter Surname" name="surname">
+              <label for="surname">Surname</label>
+            </div>
+          </div>
         </div>
-      </ng-template>
-
-      <ng-template #content let-modal>
-        <div class="modal-header">
-          <h4 class="modal-title" id="modal-basic-title">Creating a new engineer</h4>
-          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="tel" class="form-control" id="ApplicantTel" [(ngModel)]="applicantTellNo" placeholder="Enter Tell No." name="applicantTellNo">
+              <label for="applicantTellNo">Cell No.</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="email" class="form-control" id="ApplicantEmail" [(ngModel)]="applicantEmail" placeholder="Enter Email" name="applicantEmail">
+              <label for="applicantEmail">Email</label>
+            </div>
+          </div>
         </div>
-        <div class="modal-body">
 
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click');onAddEngineer()">Save</button>
-        </div>
-      </ng-template>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click');onAddEngineer()">Save</button>
+  </div>
+</ng-template>
 
-      <!-- modal #MandatoryDocumentCategory -->
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Creating a new engineer</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
 
-      <ng-template #MandatoryDocumentCategory let-modal>
-        <div class="modal-header">
-          <h4 class="modal-title" id="modal-basic-title">Determine Type of Application</h4>
-          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-        </div>
-        <div class="modal-body">
-          <br />
-          <p>Inaccuracy of information provided in this section may result in a delay in Wayleave approval.</p>
-          <br />
-          <mat-accordion>
-            <!-- Loop through each activity type -->
-            <mat-expansion-panel *ngFor="let activityType of categorizedProjectSizeCheckList | keyvalue">
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  {{ activityType.key }}
-                </mat-panel-title>
-              </mat-expansion-panel-header>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click');onAddEngineer()">Save</button>
+  </div>
+</ng-template>
 
-              <!-- The table for each activity type -->
-              <table mat-table [dataSource]="activityType.value" class="mat-elevation-z8">
+<!-- modal #MandatoryDocumentCategory -->
 
-                <!-- Column for ProjectSizeCheckListActivity -->
-                <ng-container matColumnDef="ProjectSizeCheckListActivity">
-                  <th mat-header-cell *matHeaderCellDef> Activity </th>
-                  <td mat-cell *matCellDef="let element"> {{element.ProjectSizeCheckListActivity}} </td>
-                </ng-container>
+<ng-template #MandatoryDocumentCategory let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Determine Type of Application</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <br />
+    <p>Inaccuracy of information provided in this section may result in a delay in Wayleave approval.</p>
+    <br />
+    <mat-accordion>
+      <!-- Loop through each activity type -->
+      <mat-expansion-panel *ngFor="let activityType of categorizedProjectSizeCheckList | keyvalue">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ activityType.key }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
 
-                <!-- Column for actions with checkbox -->
-                <ng-container matColumnDef="actions">
-                  <th mat-header-cell *matHeaderCellDef>Yes</th>
-                  <td mat-cell *matCellDef="let element">
-                    <mat-checkbox class="example-margin"
-                                  (change)="selectedProjectSizeCheckList(element)"
-                                  [checked]="selectionProjectSizeCheck.isSelected(element)">
-                    </mat-checkbox>
-                  </td>
-                </ng-container>
+        <!-- The table for each activity type -->
+        <table mat-table [dataSource]="activityType.value" class="mat-elevation-z8">
 
-                <!-- Header and row definitions -->
-                <tr mat-header-row *matHeaderRowDef="['ProjectSizeCheckListActivity', 'actions']"></tr>
-                <tr mat-row *matRowDef="let row; columns: ['ProjectSizeCheckListActivity', 'actions'];"></tr>
-              </table>
-            </mat-expansion-panel>
-          </mat-accordion>
-        </div>
-        <!--<div class="modal-body">
-        <table mat-table [dataSource]="dataSourceProjectSizeCheckList" class="mat-elevation-z8">-->
-        <!--<ng-container matColumnDef="ProjectSizeCheckListRowNumber">
-        <th mat-header-cell *matHeaderCellDef> Row Number </th>
-
-        <td mat-cell *matCellDef="let element"> {{element.ProjectSizeCheckListRowNumber}} </td>
-      </ng-container>-->
-        <!--<ng-container matColumnDef="ProjectSizeCheckListActivity">
+          <!-- Column for ProjectSizeCheckListActivity -->
+          <ng-container matColumnDef="ProjectSizeCheckListActivity">
             <th mat-header-cell *matHeaderCellDef> Activity </th>
-
             <td mat-cell *matCellDef="let element"> {{element.ProjectSizeCheckListActivity}} </td>
           </ng-container>
 
-
+          <!-- Column for actions with checkbox -->
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef>Yes</th>
             <td mat-cell *matCellDef="let element">
-
-              <mat-checkbox class="example-margin" (change)="selectedProjectSizeCheckList(element)" [checked]="selectionProjectSizeCheck.isSelected(element)"></mat-checkbox>
-
+              <mat-checkbox class="example-margin"
+                            (change)="selectedProjectSizeCheckList(element)"
+                            [checked]="selectionProjectSizeCheck.isSelected(element)">
+              </mat-checkbox>
             </td>
-            <td mat-cell *matCellDef="let element">  </td>
           </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="ProjectSizeCheckListColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: ProjectSizeCheckListColumns;"></tr>
+          <!-- Header and row definitions -->
+          <tr mat-header-row *matHeaderRowDef="['ProjectSizeCheckListActivity', 'actions']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['ProjectSizeCheckListActivity', 'actions'];"></tr>
         </table>
-      </div>-->
-        <div class="modal-footer">
-          <button class="infoTool" matTooltip="Please check the 'Project Size Criteria.pdf' in the Repository. You'll find it in the top right-hand menu."><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/circle-info-solid.svg" class="icon"></button>
-          <button type="button" (click)="CheckToPopulateManDoc();StoreSelectionProjectCheckListItems();modal.close('Save click')" class="btn btn-outline-success">Save</button>  <!--(click)="onLinkUser();modal.close('Save click')"-->
-          <button type="button" matTooltip="View selected project size criteria" (click)="openViewSelection(viewSelection); CheckToPopulateManDoc()" class="btn btn-outline-success">View Selections</button>
-        </div>
-      </ng-template>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+  <!--<div class="modal-body">
+  <table mat-table [dataSource]="dataSourceProjectSizeCheckList" class="mat-elevation-z8">-->
+  <!--<ng-container matColumnDef="ProjectSizeCheckListRowNumber">
+    <th mat-header-cell *matHeaderCellDef> Row Number </th>
+
+    <td mat-cell *matCellDef="let element"> {{element.ProjectSizeCheckListRowNumber}} </td>
+  </ng-container>-->
+  <!--<ng-container matColumnDef="ProjectSizeCheckListActivity">
+        <th mat-header-cell *matHeaderCellDef> Activity </th>
+
+        <td mat-cell *matCellDef="let element"> {{element.ProjectSizeCheckListActivity}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Yes</th>
+        <td mat-cell *matCellDef="let element">
+
+          <mat-checkbox class="example-margin" (change)="selectedProjectSizeCheckList(element)" [checked]="selectionProjectSizeCheck.isSelected(element)"></mat-checkbox>
+
+        </td>
+        <td mat-cell *matCellDef="let element">  </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="ProjectSizeCheckListColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: ProjectSizeCheckListColumns;"></tr>
+    </table>
+  </div>-->
+  <div class="modal-footer">
+    <button class="infoTool" matTooltip="Please check the 'Project Size Criteria.pdf' in the Repository. You'll find it in the top right-hand menu."><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/circle-info-solid.svg" class="icon"></button>
+    <button type="button" (click)="CheckToPopulateManDoc();StoreSelectionProjectCheckListItems();modal.close('Save click')" class="btn btn-outline-success">Save</button>  <!--(click)="onLinkUser();modal.close('Save click')"-->
+    <button type="button" matTooltip="View selected project size criteria" (click)="openViewSelection(viewSelection); CheckToPopulateManDoc()" class="btn btn-outline-success">View Selections</button>
+  </div>
+</ng-template>
 
 
 
 
-      <!--<mat-tab-group>
+<!--<mat-tab-group>
 
-      <mat-tab label="Small">-->
-      <!--<mat-form-field>
-      <mat-label>Filter</mat-label>
-      <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
-    </mat-form-field>-->
-      <!--<form>
-          <div class="container-fluid">
-            <table mat-table [dataSource]="MandatoryDocumentUploadListSmall" class="mat-elevation-z8">
-
-
-              <ng-container matColumnDef="mandatoryDocumentName">
-                <th mat-header-cell *matHeaderCellDef> Mandatory Document Name </th>
-
-                <td mat-cell *matCellDef="let element"> {{element.mandatoryDocumentName}} </td>
-              </ng-container>
-
-
-              <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let element">
-
-                  <mat-checkbox class="example-margin" (change)="selectedSmall(element)" [checked]="selectionSmall.isSelected(element)"></mat-checkbox>
-
-                </td>
-                <td mat-cell *matCellDef="let element">  </td>
-              </ng-container>
-
-              <tr mat-header-row *matHeaderRowDef="displayedColumnsSmall"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumnsSmall;"></tr>
-            </table>
-
-          </div>
-        </form>
-      </mat-tab>
-
-
-      <mat-tab label="Medium">
-
-
-        <table mat-table [dataSource]="MandatoryDocumentUploadListMedium" class="mat-elevation-z8">
+<mat-tab label="Small">-->
+<!--<mat-form-field>
+  <mat-label>Filter</mat-label>
+  <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+</mat-form-field>-->
+<!--<form>
+      <div class="container-fluid">
+        <table mat-table [dataSource]="MandatoryDocumentUploadListSmall" class="mat-elevation-z8">
 
 
           <ng-container matColumnDef="mandatoryDocumentName">
@@ -902,91 +868,123 @@
             <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let element">
 
-              <mat-checkbox class="example-margin" (change)="selectedMedium(element)" [checked]="selectionMedium.isSelected(element)"></mat-checkbox>
+              <mat-checkbox class="example-margin" (change)="selectedSmall(element)" [checked]="selectionSmall.isSelected(element)"></mat-checkbox>
 
             </td>
             <td mat-cell *matCellDef="let element">  </td>
           </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumnsMedium"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumnsMedium;"></tr>
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsSmall"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumnsSmall;"></tr>
         </table>
 
-      </mat-tab>
-
-      <mat-tab label="Large">
-
-
-        <table mat-table [dataSource]="MandatoryDocumentUploadListLarge" class="mat-elevation-z8">
+      </div>
+    </form>
+  </mat-tab>
 
 
-          <ng-container matColumnDef="mandatoryDocumentName">
-            <th mat-header-cell *matHeaderCellDef> Mandatory Document Name </th>
-
-            <td mat-cell *matCellDef="let element"> {{element.mandatoryDocumentName}} </td>
-          </ng-container>
+  <mat-tab label="Medium">
 
 
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let element">
-
-              <mat-checkbox class="example-margin" (change)="selectedLarge(element)" [checked]="selectionLarge.isSelected(element)"></mat-checkbox>
-
-            </td>
-            <td mat-cell *matCellDef="let element">  </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumnsLarge"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumnsLarge;"></tr>
-        </table>
-
-      </mat-tab>
-
-      <mat-tab label="Emergency">
+    <table mat-table [dataSource]="MandatoryDocumentUploadListMedium" class="mat-elevation-z8">
 
 
-        <table mat-table [dataSource]="MandatoryDocumentUploadListEmergency" class="mat-elevation-z8">
+      <ng-container matColumnDef="mandatoryDocumentName">
+        <th mat-header-cell *matHeaderCellDef> Mandatory Document Name </th>
+
+        <td mat-cell *matCellDef="let element"> {{element.mandatoryDocumentName}} </td>
+      </ng-container>
 
 
-          <ng-container matColumnDef="mandatoryDocumentName">
-            <th mat-header-cell *matHeaderCellDef> Mandatory Document Name </th>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
 
-            <td mat-cell *matCellDef="let element"> {{element.mandatoryDocumentName}} </td>
-          </ng-container>
+          <mat-checkbox class="example-margin" (change)="selectedMedium(element)" [checked]="selectionMedium.isSelected(element)"></mat-checkbox>
+
+        </td>
+        <td mat-cell *matCellDef="let element">  </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsMedium"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsMedium;"></tr>
+    </table>
+
+  </mat-tab>
+
+  <mat-tab label="Large">
 
 
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let element">
+    <table mat-table [dataSource]="MandatoryDocumentUploadListLarge" class="mat-elevation-z8">
 
-              <mat-checkbox class="example-margin" (change)="selectedEmergency(element)" [checked]="selectionEmergency.isSelected(element)"></mat-checkbox>
 
-            </td>
-            <td mat-cell *matCellDef="let element">  </td>
-          </ng-container>
+      <ng-container matColumnDef="mandatoryDocumentName">
+        <th mat-header-cell *matHeaderCellDef> Mandatory Document Name </th>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumnsEmergency"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumnsEmergency;"></tr>
-        </table>
+        <td mat-cell *matCellDef="let element"> {{element.mandatoryDocumentName}} </td>
+      </ng-container>
 
-      </mat-tab>
-    </mat-tab-group>-->
-      <ng-template #viewSelection let-modal>
 
-        <div class="modal-header">
-          <h4 class="modal-title" id="modal-basic-title">Determine Type of Application</h4>
-          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-        </div>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
 
-        <div class="modal-body " *ngFor="let projects of ProjectSizeSelectionList ">
-          <div class="alert alert-info" role="alert">
-            <span>{{projects.selectedProject}} :  {{projects.projectDescription}}</span>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <div class="alert alert-info" role="alert" *ngIf="PSM">
-            These selections will give you a {{PSM}}
-          </div>
-        </div>
-      </ng-template>
+          <mat-checkbox class="example-margin" (change)="selectedLarge(element)" [checked]="selectionLarge.isSelected(element)"></mat-checkbox>
+
+        </td>
+        <td mat-cell *matCellDef="let element">  </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsLarge"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsLarge;"></tr>
+    </table>
+
+  </mat-tab>
+
+  <mat-tab label="Emergency">
+
+
+    <table mat-table [dataSource]="MandatoryDocumentUploadListEmergency" class="mat-elevation-z8">
+
+
+      <ng-container matColumnDef="mandatoryDocumentName">
+        <th mat-header-cell *matHeaderCellDef> Mandatory Document Name </th>
+
+        <td mat-cell *matCellDef="let element"> {{element.mandatoryDocumentName}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+
+          <mat-checkbox class="example-margin" (change)="selectedEmergency(element)" [checked]="selectionEmergency.isSelected(element)"></mat-checkbox>
+
+        </td>
+        <td mat-cell *matCellDef="let element">  </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsEmergency"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsEmergency;"></tr>
+    </table>
+
+  </mat-tab>
+</mat-tab-group>-->
+<ng-template #viewSelection let-modal>
+
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Determine Type of Application</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body " *ngFor="let projects of ProjectSizeSelectionList ">
+    <div class="alert alert-info" role="alert">
+      <span>{{projects.selectedProject}} :  {{projects.projectDescription}}</span>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="alert alert-info" role="alert" *ngIf="PSM">
+      These selections will give you a {{PSM}}
+    </div>
+  </div>
+</ng-template>

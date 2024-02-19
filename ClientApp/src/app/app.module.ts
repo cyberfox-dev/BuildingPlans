@@ -103,7 +103,7 @@ import { SystemAlertConfigComponent } from 'src/app/system-alert-config/system-a
 import { OldApplicationVersionsComponent } from './old-application-versions/old-application-versions.component'; //reapply Sindiswa 26 January 2024
 import { ApplicationAlertsComponent } from 'src/app/application-alerts/application-alerts.component'; //Clarify Alerts Kyle
 import { SubdeptWayleaveExpirationComponent } from './subdept-wayleave-expiration/subdept-wayleave-expiration.component'; //wayleaveExpiry Sindiswa 08 February 2024
-
+import { StatusOfWorksComponent } from './status-of-works/status-of-works.component';
 //import { MatExpansionModule } from '@angular/material/expansion';
 
 //import { MapModule } from 'arcgis-js-api';
@@ -192,6 +192,9 @@ import { SubdeptWayleaveExpirationComponent } from './subdept-wayleave-expiratio
     OldApplicationVersionsComponent, //reapply Sindiswa 25 January 2024
     ApplicationAlertsComponent,//Clarify Alerts Kyle 
     SubdeptWayleaveExpirationComponent, //wayleaveExpiry Sindiswa 08 February 2024
+    StatusOfWorksComponent,
+
+
 
 
   ],
@@ -281,8 +284,8 @@ import { SubdeptWayleaveExpirationComponent } from './subdept-wayleave-expiratio
     AuditTrailComponent,
     //Audit Trail Kyle
     UserManagementComponent, //actingAsInternal Sindiswa 05 February 2024
-    ApplicationAlertsComponent,//Clarify Alerts Kyle 
-
+    ApplicationAlertsComponent,//Clarify Alerts Kyle
+    StatusOfWorksComponent,
   ],
   bootstrap: [AppComponent]
 })
