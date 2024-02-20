@@ -10,6 +10,7 @@ namespace WayleaveManagementSystem.Models.DTO
         public string? UserID { get; set; }
         public string? FullName { get; set; }
         public string? Email { get; set; }
+        public string? AlternativeEmail { get; set; } // chekingNotifications Sindiswa 15 February 2024
         public string? PhoneNumber { get; set; }
         public string? PhysicalAddress { get; set; }
         public string? ReferenceNumber { get; set; }

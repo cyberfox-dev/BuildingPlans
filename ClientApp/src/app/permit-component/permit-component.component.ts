@@ -125,7 +125,7 @@ export class PermitComponentComponent implements OnInit {
         }
         this.PTCListTable?.renderRows();
         this.checkIfCanConsolidate();//Permit Kyle 13-02-24
-        this.updateApplicationStatus();
+      /*  this.updateApplicationStatus();*/
       }
       else {
         //alert("Invalid Email or Password");

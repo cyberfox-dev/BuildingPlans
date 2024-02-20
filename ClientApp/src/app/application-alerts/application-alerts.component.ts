@@ -49,6 +49,7 @@ export interface ApplicationList {
   userID: string,
   //Coordinates: string
   UserID: any;
+  clientAlternativeEmail: string; //checkingNotifications Sindiswa 15 February 2024
 }
 
 @Component({
@@ -153,6 +154,7 @@ export class ApplicationAlertsComponent implements OnInit {
           tempApplicationListShared.applicationID = current.applicationID;
           tempApplicationListShared.clientName = current.fullName;
           tempApplicationListShared.clientEmail = current.email;
+          tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
           tempApplicationListShared.clientAddress = current.physicalAddress;
           tempApplicationListShared.clientRefNo = current.referenceNumber;
           tempApplicationListShared.CompanyRegNo = current.companyRegNo;

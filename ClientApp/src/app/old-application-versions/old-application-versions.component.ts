@@ -44,6 +44,7 @@ export interface ApplicationList {
   userID: string,
   //Coordinates: string
   UserID: any;
+  clientAlternativeEmail: string; // chekingNotifications Sindiswa 13 February 2024
 }
 export interface ApplicationsList {
   ApplicationID: number;
@@ -159,6 +160,7 @@ export class OldApplicationVersionsComponent implements OnInit {
           tempApplicationListShared.applicationID = current.applicationID;
           tempApplicationListShared.clientName = current.fullName;
           tempApplicationListShared.clientEmail = current.email;
+          tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 19 February 2024
           tempApplicationListShared.clientAddress = current.physicalAddress;
           tempApplicationListShared.clientRefNo = current.referenceNumber;
           tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -207,9 +209,10 @@ export class OldApplicationVersionsComponent implements OnInit {
       }
       else {
         //alert("Invalid Email or Password");
-        alert(data.responseMessage);
+        //alert(data.responseMessage); //This always ays "Parameters are missing??" || NVM
+        console.log("Does this application have old versions?",data.responseMessage)
       }
-      console.log("reponse", data);
+      console.log("reponse", data); 
 
     }, error => {
       console.log("Error: ", error);

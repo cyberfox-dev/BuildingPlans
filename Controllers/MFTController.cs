@@ -134,6 +134,8 @@ namespace WayleaveManagementSystem.Controllers
                 var result = await (
                from mft in _context.MFT
                where mft.ApplicationID == applicationID && mft.isActive == true
+               orderby mft.DateCreated
+               ascending
                select new MFTDTO()
                {
 
@@ -162,6 +164,42 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpPost("DeleteDocumentFromMFT")]
+        public async Task<object> DeleteDocumentFromMFT([FromBody] MFTBindingModel model)
+        {
+            try
+            {
+                var tempMFT = _context.MFT.FirstOrDefault(x => x.ApplicationID == model.ApplicationID && x.DocumentName == model.DocumentName);
+
+                if(tempMFT == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var dbPath = tempMFT.DocumentLocalPath;
+
+                    var fullPath = Path.Combine(Directory.GetCurrentDirectory(), dbPath);
+                    if (System.IO.File.Exists(fullPath))
+                    {
+                        System.IO.File.Delete(fullPath);
+                    }
+
+                    tempMFT.DocumentLocalPath = null;
+                    tempMFT.DocumentName = null;
+
+                    _context.MFT.Update(tempMFT);
+                    _context.SaveChanges();
+
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "MFT Document Deleted Successfully", tempMFT));
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
 
     }
 
