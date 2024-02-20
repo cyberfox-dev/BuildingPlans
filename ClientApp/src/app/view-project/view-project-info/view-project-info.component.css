@@ -973,6 +973,7 @@ button {
   }
 }
 
+
 @keyframes fade-in-top {
   0% {
     opacity: 0;
@@ -1127,9 +1128,19 @@ quill-editor {
   left: 0;
   height: 100%;
   background-color: #33FF57; /* Set default background color for progress bar */
-  border-radius:30px;
+  border-radius: 30px;
+  animation: fill-progress 2s ease-in forwards;
 }
 
+@keyframes fill-progress {
+  from {
+    width: 0%; /* Start with 0% width */
+  }
+
+  to {
+    width: var(--progressBar); /* Fill up to the progressBar width */
+  }
+}
 
 .progress-text {
   position: absolute;

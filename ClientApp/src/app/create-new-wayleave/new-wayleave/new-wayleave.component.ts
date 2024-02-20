@@ -5550,7 +5550,13 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
+  /*JJS Commit 20-02-24 character count */
+  text: string = '';
+  maxLength: number = 230;
 
+  updateCharacterCount() {
+    return this.text.length;
+  }
 
 
 }

@@ -6446,6 +6446,14 @@ export class ActionCenterComponent implements OnInit {
   
  
   //#endregion
+
+  /*JJS Commit 20-02-24 character count */
+  text: string = '';
+  maxLength: number = 250;
+
+  updateCharacterCount() {
+    return this.text.length;
+  }
 }
 
 

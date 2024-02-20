@@ -721,11 +721,12 @@ this.userService.login(email, password).pipe(
 
       // icasadetails Sindiswa 10 January 2024 - I temporarily commmented some conditions out because I don't have a valid BP Number, for some reason this 1000110197 didn't work
       if (this.validNameSurname && this.validEmail && this.matchingRegPasswords) {
-      //if (this.validNameSurname && this.validEmail && this.matchingRegPasswords && ((this.internalUserNoBP && !this.externalWValidBP) || (this.externalWValidBP && !this.internalUserNoBP))) {
-        this.regFormReadOnly = true;
-        this.showDuplicatePassInput = false;
-        this.onSendOTP();
-
+/*JJS Commit 20-02-24*/
+        if (this.validNameSurname && this.validEmail && this.matchingRegPasswords && ((this.internalUserNoBP && !this.externalWValidBP) || (this.externalWValidBP && !this.internalUserNoBP))) {
+          this.regFormReadOnly = true;
+          this.showDuplicatePassInput = false;
+          this.onSendOTP();
+        }
       }
       else {
         alert("OTP not sent: make sure to fill-in all fields appropriately.");
