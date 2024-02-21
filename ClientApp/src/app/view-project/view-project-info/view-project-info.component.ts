@@ -4615,7 +4615,7 @@ export class ViewProjectInfoComponent implements OnInit {
         }
         let progress = (this.progressBar / data.dateSet.length).toFixed(2);
         this.progressBar = parseFloat(progress);
-        this.getProgressBarColor(this.progressBar);
+/*        this.getProgressBarColor(this.progressBar);*/
       }
       else {
         alert(data.responseMessage);
@@ -4624,6 +4624,7 @@ export class ViewProjectInfoComponent implements OnInit {
       console.log("Error", error);
     })
   }
+
 
   getProgressBarColor(percentage: number): string {
     // Calculate the middle color dynamically based on the percentage
