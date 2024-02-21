@@ -8,6 +8,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatTable } from '@angular/material/table';
 import { ApplicationsService } from '../service/Applications/applications.service';
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 export interface DraftsList {
   DraftId: number;
@@ -54,7 +55,7 @@ export class DraftsComponent implements OnInit {
   draftsLength: string;
   CurrentUserProfile: any;
 
-  constructor(private router: Router, private sharedService: SharedService, private draftApplicationService: DraftApplicationsService, private NewWayleaveComponent: NewWayleaveComponent, private modalService: NgbModal, private applicationService: ApplicationsService, private userPofileService: UserProfileService,) { }
+  constructor(private cdr: ChangeDetectorRef,private router: Router, private sharedService: SharedService, private draftApplicationService: DraftApplicationsService, private NewWayleaveComponent: NewWayleaveComponent, private modalService: NgbModal, private applicationService: ApplicationsService, private userPofileService: UserProfileService,) { }
 
   ngOnInit(): void {
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
@@ -164,6 +165,33 @@ export class DraftsComponent implements OnInit {
     
 
 
+
+  }
+
+    //JJS-15-02-2024 Fixing the delete drafts (wasn't deleting)
+  onSelectDelete(index: number) {
+    if (confirm("Are you sure you want to delete this draft?")) {
+
+      this.draftApplicationService.deleteDraftedApplication(this.DraftsList[index].DraftId).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          this.getAllDraftsForUser();
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+
+    },
+
+      (error) => {
+        console.log("Error: ", error);
+      }
+      );
+    }
+    else{
+    
+    }
 
   }
   getLoggedInUser() {

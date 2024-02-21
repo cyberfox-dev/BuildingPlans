@@ -83,7 +83,8 @@ h6 {
   margin-bottom: 40px;
 }
 .card_image{
-    width:50px;
+  /*  width:50px;
+    height:50px;*/
 }
 /*MFT*/
 
@@ -973,6 +974,7 @@ button {
   }
 }
 
+
 @keyframes fade-in-top {
   0% {
     opacity: 0;
@@ -1127,9 +1129,19 @@ quill-editor {
   left: 0;
   height: 100%;
   background-color: #33FF57; /* Set default background color for progress bar */
-  border-radius:30px;
+  border-radius: 30px;
+  animation: fill-progress 2s ease-in forwards;
 }
 
+@keyframes fill-progress {
+  from {
+    width: 0%; /* Start with 0% width */
+  }
+
+  to {
+    width: var(--progressBar); /* Fill up to the progressBar width */
+  }
+}
 
 .progress-text {
   position: absolute;
@@ -1152,5 +1164,29 @@ quill-editor {
   border-block-color: #005870;
   margin-bottom: 20px;
   border-radius: 30px;
+}
+
+image-container {
+    height : 100%;
+    width :100% ;
+   /* margin-right:0;
+    margin-left:70%;*/
+}
+.iframe{
+    width:100%;
+    height:100%;
+}
+.cont9{
+    margin:10px;
+    display:flex;
+}
+.cont10 {
+  margin: 10px;
+
+}
+.MFTImage {
+  margin-left: 90%;
+  width: auto%; /* Set the width to 50% */
+ max-height:100px; /* Maintain aspect ratio */
 }
 /*Progess bar Kyle 07-02-24*/

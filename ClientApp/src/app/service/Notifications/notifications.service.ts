@@ -18,7 +18,7 @@ export class NotificationsService {
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
-  public addUpdateNotification(notificationID?: number | null, notificationName?: string | null, notificationDescription?: string | null, isRead?: boolean | null, userID?: string | null, createdByID?: string | null, applicationID?: number | null , message?:string | null) {
+  public addUpdateNotification(notificationID?: number | null, notificationName?: string | null, notificationDescription?: string | null, isRead?: boolean | null, userID?: string | null, applicationID?: number | null, createdByID?: string | null, message?:string | null) {
     debugger;
     const body = {
       NotificationID: notificationID,
@@ -109,4 +109,15 @@ export class NotificationsService {
     );
   }
 
+  // #region notifications Sindiswa 12 February 2024
+  public getNotificationsCount(userID: string) {
+    debugger;
+    const body = {
+
+      UserID: userID,
+
+    }
+    return this.httpClient.post(this.baseURL + "GetUnreadNotificationsCount", body);
+  }
+  // #endregion
 }

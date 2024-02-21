@@ -31,6 +31,7 @@ import { DocumentRepositoryComponent } from 'src/app/document-repository/documen
 import { NotificationCenterComponent } from 'src/app/notification-center/notification-center.component';
 import { ConfigActingDepartmentComponent } from 'src/app/config-acting-department/config-acting-department.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { Subject } from 'rxjs';
 
 
 
@@ -209,7 +210,36 @@ export class NavMenuComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustHtml(html);
   }
 
+  // #region notifications Sindiswa 12 February 2024
+  hasNotifications: boolean;
+  notificationsQuantity: number;
+  getNotificationDetails(userId: string) {
+    debugger;
+    this.notificationsService.getNotificationsCount(userId).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        this.shared.setNotificationsQuantity(data.dateSet);
 
+        if (data.dateSet > 0) {
+          this.shared.sethasNotifications(true);
+        }
+        else {
+          this.shared.sethasNotifications(false);
+        }
+      } else {
+        alert(data.responseMessage);
+      }
+      console.log("I tried getting the notifications count", data);
+      this.notificationsQuantity = this.shared.getNotificationsQuantity(); //this.notificationsQuantity
+      this.hasNotifications = this.shared.getHasNotifications(); //this.hasNotifications
+
+      console.log("This is the quantity", this.notificationsQuantity);
+      console.log("This is the notifications boolean", this.hasNotifications);
+    }, error => {
+      console.log("Error while getting the notifications count: ", error);
+    });
+  }
+
+  // #endregion
   ngOnInit() {
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
@@ -237,8 +267,13 @@ export class NavMenuComponent implements OnInit {
     this.getAllDepartments();
     this.getAllFAQ();
 
-   
- 
+    this.getNotificationDetails(this.CurrentUser.appUserId); // notifications Sindiswa 12 February 2024
+
+    this.notificationsQuantity = this.shared.getNotificationsQuantity(); //this.notificationsQuantity
+    this.hasNotifications = this.shared.getHasNotifications(); //this.hasNotifications
+
+    console.log("This is the quantity", this.notificationsQuantity);
+    console.log("This is the notifications boolean", this.hasNotifications);
   }
 
   onPageChange(event: PageEvent) {

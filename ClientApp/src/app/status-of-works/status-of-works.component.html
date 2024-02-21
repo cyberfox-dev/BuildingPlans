@@ -1,0 +1,82 @@
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+  <ng-container matColumnDef="CreatedBy">
+    <th mat-header-cell *matHeaderCellDef>Created BY</th>
+    <td mat-cell *matCellDef="let element">{{element.FullName}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="MFTNote">
+    <th mat-header-cell *matHeaderCellDef>Note</th>
+    <td mat-cell *matCellDef="let element">{{element.MFTNote}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="DateCreated">
+    <th mat-header-cell *matHeaderCellDef>Date Created </th>
+    <td mat-cell *matCellDef="let element">{{element.DateCreated}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="DocPreview">
+    <th mat-header-cell *matHeaderCellDef>Preview </th>
+    <td mat-cell *matCellDef="let element"><img [src]="element.DocURL "class="image" alt="Image"></td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let i = index">
+      <button mat-raised-button color="blue" matTooltip="view full document" (click)=" viewFullImage(i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid.svg" class="icon blue"></button>
+      <br   />
+      <button mat-raised-button color="green" matTooltip="Add Infringement" (click)="getAllServiceItems(infringement)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid
+                                                                                                                            .svg" class="icon"></button>
+    </td>
+    <td mat-cell *matCellDef="let element"> </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+</table>
+
+
+<ng-template #infringement let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Add an infringement tariff</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+
+    <table mat-table [dataSource]="dataSourceServiceItems" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="ServiceItemCode">
+        <th mat-header-cell *matHeaderCellDef>Service Item Code</th>
+        <td mat-cell *matCellDef="let element">{{element.ServiceItemCode}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Rate">
+        <th mat-header-cell *matHeaderCellDef>Rate</th>
+        <td mat-cell *matCellDef="let element">{{element.Rate}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Total">
+        <th mat-header-cell *matHeaderCellDef>Total Including VAT </th>
+        <td mat-cell *matCellDef="let element">{{element.RateIncVat}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let i = index">
+          <mat-checkbox></mat-checkbox>
+        </td>
+        <td mat-cell *matCellDef="let element"> </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsServiceItem"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsServiceItem;"></tr>
+
+    </table>
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+  </div>
+</ng-template>

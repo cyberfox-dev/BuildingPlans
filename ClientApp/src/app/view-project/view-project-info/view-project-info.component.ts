@@ -29,8 +29,9 @@ import { ServiceItemService } from 'src/app/service/ServiceItems/service-item.se
 import { ContactDetailsService } from 'src/app/service/ContactDetails/contact-details.service';
 import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
 import { MatDialog } from '@angular/material/dialog';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 import { ApprovalPackComponent } from 'src/app/Packs//ApprovalPackComponent/approval-pack.component';
+import { StatusOfWorksComponent } from 'src/app/status-of-works/status-of-works.component';
 
 /*import { PdfGenerationService } from 'src/app/service/PDFGeneration/pdf-generation.service';*/
 
@@ -56,6 +57,7 @@ export interface MFTList {
   DateCreated: Date;
   ApplicationNumber: number;
   FullName: string;
+  DocURL: any;
 }
 
 export interface SubDepartmentListFORAPPROVAL {
@@ -211,6 +213,7 @@ export interface ApplicationList {
   wbsrequired: boolean;
   Coordinates: string;
   UserID: any;
+  clientAlternativeEmail: string; // chekingNotifications Sindiswa 13 February 2024
   //reapplyCount: number, // reapply Sindiswa 25 January 2024
 }
 
@@ -433,7 +436,7 @@ export class ViewProjectInfoComponent implements OnInit {
   showFormerApps: boolean;
   fromReApplyArchive: boolean;
 
-  fileAttrs = "Upload File:";
+  fileAttrs = "Upload File:" ;
   fileAttrsName = "Doc";
 
   ApForUpload: string;
@@ -512,7 +515,7 @@ export class ViewProjectInfoComponent implements OnInit {
     reply: ['', Validators.required],
   })
 
-
+  
 
 
   @ViewChild(MatTable) FinancialListTable: MatTable<DocumentsList> | undefined;
@@ -527,6 +530,8 @@ export class ViewProjectInfoComponent implements OnInit {
   fileCount = 0;
   ApprovalDoqnload = true;
   generateApprovalbtn = false;
+
+ 
 
   constructor(private modalService: NgbModal,
     private sharedService: SharedService,
@@ -561,6 +566,7 @@ export class ViewProjectInfoComponent implements OnInit {
    
     //Audit Trail Kyle
     private auditTrailService: AuditTrailService,
+    private statusOfWorksComponent: StatusOfWorksComponent,
     //Audit Trail Kyle
   ) { }
 
@@ -633,7 +639,7 @@ export class ViewProjectInfoComponent implements OnInit {
     }
     
     //Permit Tab Kyle 22/01/24
-    debugger;
+    
     if (setValues.CurrentStageName == "PTW") {
       this.showPermitTab = true;
       this.PacksTab = true;
@@ -711,7 +717,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.checkIfCanReviwerReply();
     this.checkIfPermitExsist();
     this.getFinancial();
-    this.getMFTForApplication();
+    
     this.getEMBUsers();
     this.getServiceItem("001");
     this.getServiceItem("002");
@@ -794,10 +800,11 @@ export class ViewProjectInfoComponent implements OnInit {
 
           const tempSubDepartmentLinkedList = {} as AllSubDepartmentList;
           const current = data.dateSet[i];
-
+/*JJS Commit 20-02-24*/
           tempSubDepartmentLinkedList.subDepartmentID = current.subDepartmentID;
           tempSubDepartmentLinkedList.UserAssaignedToComment = current.userAssaignedToComment;
-          tempSubDepartmentLinkedList.subDepartmentName = current.subDepartmentName;
+          debugger;
+          tempSubDepartmentLinkedList.subDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempSubDepartmentLinkedList.departmentID = current.departmentID;
           tempSubDepartmentLinkedList.dateUpdated = current.dateUpdated;
           tempSubDepartmentLinkedList.dateCreated = current.dateCreated;
@@ -1343,9 +1350,10 @@ export class ViewProjectInfoComponent implements OnInit {
             else {
               tempCommentList.CommentStatus = current.commentStatus;
             }
-
+            
             tempCommentList.SubDepartmentForCommentID = current.subDepartmentForCommentID;
-            tempCommentList.SubDepartmentName = current.subDepartmentName;
+            /*tempCommentList.SubDepartmentName = current.subDepartmentName;*/
+            tempCommentList.SubDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
             tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
             tempCommentList.isApplicantReplay = current.isApplicantReplay;
 
@@ -1376,7 +1384,7 @@ export class ViewProjectInfoComponent implements OnInit {
               }
 
               tempCommentList.SubDepartmentForCommentID = current.subDepartmentForCommentID;
-              tempCommentList.SubDepartmentName = current.subDepartmentName;
+              tempCommentList.SubDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
               tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
               tempCommentList.isApplicantReplay = current.isApplicantReplay;
               tempCommentList.UserName = current.userName;
@@ -1807,7 +1815,7 @@ export class ViewProjectInfoComponent implements OnInit {
           tempDepositRequired.Rate = current.rate;
           tempDepositRequired.SubDepartmentForCommentID = current.subDepartmentForCommentID;
           tempDepositRequired.SubDepartmentID = current.subDepartmentID;
-          tempDepositRequired.SubDepartmentName = current.subDepartmentName;
+          tempDepositRequired.SubDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempDepositRequired.WBS = current.wbs;
 
 
@@ -2302,7 +2310,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   ChangeApplicationStatusToPaid() {
-
+    debugger;
     if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Unpaid") {
 
       this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
@@ -2314,12 +2322,52 @@ export class ViewProjectInfoComponent implements OnInit {
           this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
             if (data.responseCode == 1) {
                //Service Information Kyle 31/01/24                                                                                                                                                                                                                                                                                                                                                                         //Service Information Kyle
-              this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, null, null, "Distributed", null, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, this.CurrentApplicationBeingViewed[0].isPlanning, null, this.selectPaidDate).subscribe((data: any) => {
+              this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, null, null, "Distributed", null, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, this.CurrentApplicationBeingViewed[0].isPlanning, null, this.selectPaidDate).subscribe((data: any) => {
                //Service Information Kyle 31/01/24
                 if (data.responseCode == 1) {
 
                   alert(data.responseMessage);
-                  this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application payment", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application payment", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>You have moved application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave to paid. <br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  if (this.CurrentUserProfile[0].alternativeEmail) {
+                    this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application payment", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>You have moved application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave to paid. <br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  }
+
+                  this.notificationsService.sendEmail(this.CurrentApplicationBeingViewed[0].clientEmail, "Wayleave application payment", "check html", "Dear " + this.CurrentApplicationBeingViewed[0].clientName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  if (this.CurrentApplicationBeingViewed[0].clientAlternativeEmail) { 
+                    this.notificationsService.sendEmail(this.CurrentApplicationBeingViewed[0].clientAlternativeEmail, "Wayleave application payment", "check html", "Dear " + this.CurrentApplicationBeingViewed[0].clientName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  }
+                  // #region checkingNotifications Sindiswa 15 February 2024
+                  this.notificationsService.addUpdateNotification(0, "Wayleave applicant payment ", "Wayleave applicant payment ", false, this.CurrentApplicationBeingViewed[0].UserID, this.ApplicationID, this.CurrentUser.appUserId, "Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process."  ).subscribe((data: any) => {
+
+                    if (data.responseCode == 1) {
+
+
+                    }
+                    else {
+                      alert(data.responseMessage);
+                    }
+
+                    console.log("response", data);
+                  }, error => {
+                    console.log("Error", error);
+                  });
+
+                  this.notificationsService.addUpdateNotification(0, "Wayleave applicant payment ", "Wayleave applicant payment ", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserId, "You have moved application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid.").subscribe((data: any) => {
+
+                    if (data.responseCode == 1) {
+
+
+                    }
+                    else {
+                      alert(data.responseMessage);
+                    }
+
+                    console.log("response", data);
+                  }, error => {
+                    console.log("Error", error);
+                  });
+                  // #endregion
+
                   //Audit Trail Kyle
                   this.onSaveToAuditTrail("Application moved to Paid");
                   this.onSaveToAuditTrail("Application distributed to Departments");
@@ -2384,10 +2432,10 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   updateStartDateForPermit() {
-    this.applicationsService.addUpdateApplication(this.CurrentApplicationBeingViewed[0].applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.permitStartDate).subscribe((data: any) => {
+    this.applicationsService.addUpdateApplication(this.CurrentApplicationBeingViewed[0].applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.permitStartDate).subscribe((data: any) => {
       if (data.responseCode == 1) {
         this.onAutoLinkForPermit();
-
+        this.router.navigate(["/home"]);/*Permit Kyle 13-02-24*/
       }
       else {
         alert(data.responseMessage);
@@ -2497,7 +2545,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
         console.log("data", data.dateSet);
-        debugger;
+        
         const currentUserProfile = data.dateSet[0];
         this.depID = currentUserProfile.departmentID;
         this.getUserDep();
@@ -2535,12 +2583,12 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
         if (data.responseCode == 1) {
-          debugger;
+          
           for (var i = 0; i < data.dateSet.length; i++) {
             const tempSubDepartmentList = {} as SubDepartmentList;
-            debugger;
+            
             const current = data.dateSet[i];
-            this.subDepNameForClarify = current.subDepartmentName;
+            this.subDepNameForClarify = current.subDepartmentName.replace(/\r?\n|\r/g, '');
             tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
 
 
@@ -2579,25 +2627,33 @@ export class ViewProjectInfoComponent implements OnInit {
           const tempSubDepCommentStatusList = {} as SubDepCommentsForSpecialConditions;
 
           const current = data.dateSet[i];
-          tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
+/*JJS Commit 20-02-24*/
+          if (current.comment != null) {
 
 
+            tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
 
-          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName + " : "+current.zoneName;
-          tempSubDepCommentStatusList.ApplicationID = current.applicationID;
-          if (current.commentStatus == 'Approved' || current.commentStatus == 'Provisionally Approved') {
-            tempSubDepCommentStatusList.Comment = "Approver Comment : \n"+current.comment;
+
+            debugger;
+            let SubName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
+            tempSubDepCommentStatusList.SubDepName = SubName + " : " + current.zoneName;
+            tempSubDepCommentStatusList.ApplicationID = current.applicationID;
+            if (current.commentStatus == 'Approved' || current.commentStatus == 'Provisionally Approved') {
+              tempSubDepCommentStatusList.Comment = "Reviewer Comment : \n" + current.comment;
+            }
+            if (current.commentStatus == 'Final Approved') {
+              tempSubDepCommentStatusList.Comment = "Final Approver Comment : \n" + current.comment;
+            }
+
+            tempSubDepCommentStatusList.DateCreated = current.dateCreated;
+
+
+            tempSubDepCommentStatusList.UserName = current.userName;
+            this.SubDepCommentsForSpecialConditions.push(tempSubDepCommentStatusList);
           }
-          if (current.commentStatus == 'Final Approved') {
-            tempSubDepCommentStatusList.Comment = "Final Approver Comment : \n" + current.comment;
-          }
-         
-          tempSubDepCommentStatusList.DateCreated = current.dateCreated;
-         
-          
-          tempSubDepCommentStatusList.UserName = current.userName;
-          this.SubDepCommentsForSpecialConditions.push(tempSubDepCommentStatusList);
+          else {
 
+          }
 
         }
         this.onCreateApprovalPack();
@@ -2629,7 +2685,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
           const current = data.dateSet[i];
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
-          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
+          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempSubDepCommentStatusList.ApplicationID = current.applicationID;
           tempSubDepCommentStatusList.Comment = current.comment;
           tempSubDepCommentStatusList.DateCreated = current.dateCreated;
@@ -2675,7 +2731,7 @@ export class ViewProjectInfoComponent implements OnInit {
           tempContactDetailsList.CellNo = current.cellNo;
           tempContactDetailsList.Email = current.email;
           tempContactDetailsList.ZoneID = current.zoneID;
-          tempContactDetailsList.SubDepName = current.subDepartmentName;
+          tempContactDetailsList.SubDepName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempContactDetailsList.ZoneName = current.zoneName
           this.ContactDetailsList.push(tempContactDetailsList);
 
@@ -2711,7 +2767,7 @@ export class ViewProjectInfoComponent implements OnInit {
           const current = data.dateSet[i];
           console.log("FINAL APPROVED THE APPLICATION ", current);
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
-          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
+          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempSubDepCommentStatusList.ApplicationID = current.applicationID;
           tempSubDepCommentStatusList.Comment = current.comment;
           tempSubDepCommentStatusList.DateCreated = current.dateCreated;
@@ -2746,16 +2802,16 @@ export class ViewProjectInfoComponent implements OnInit {
  
     this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
  
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         for (var i = 0; i < data.dateSet.length; i++) {
           const tempSubDepCommentStatusList = {} as SubDepSubDepRejectList;
-          debugger;
+          
           const current = data.dateSet[i];
-          debugger;
+          
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
-          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
+          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempSubDepCommentStatusList.ApplicationID = current.applicationID;
           tempSubDepCommentStatusList.Comment = current.comment;
           tempSubDepCommentStatusList.DateCreated = current.dateCreated;
@@ -2983,14 +3039,14 @@ export class ViewProjectInfoComponent implements OnInit {
 
     doc.text('WAYLEAVE APPLICATION: ' + this.DescriptionOfProject, 10, 70, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
 
-    doc.text('Dear ' + this.clientName, 10, 80, { align: 'left' });
+    doc.text('Dear ' + this.clientName, 10, 84, { align: 'left' });
 
 
     //this is for the project details
 
     //paragraph 
 
-    doc.text('A summary of the outcome of this wayleave application is provided below. Department specific wayleave approval or rejection letters are attached.In the case of a wayleave rejection, please make contact with the relevant line department as soon as possible', 10, 90, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.text('A summary of the outcome of this wayleave application is provided below. Department specific wayleave approval or rejection letters are attached. In the case of a wayleave rejection, please make contact with the relevant line department as soon as possible', 10, 95, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
     doc.setFont('CustomFontBold', 'bold'); // Use your custom font
     doc.text('Status Summary:', 10, 115, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
     doc.setFont('CustomFont', 'normal');
@@ -3021,15 +3077,15 @@ export class ViewProjectInfoComponent implements OnInit {
       body: data,
       styles: {
         overflow: 'visible',
-        halign: 'justify',
+        halign: 'left',
         fontSize: 8,
         valign: 'middle',
         // Use the correct color notation here
       },
       columnStyles: {
-        0: { cellWidth: 70, fontStyle: 'bold' },
-        1: { cellWidth: 50 },
-        2: { cellWidth: 60 },
+        0: { cellWidth: 90,  },
+        1: { cellWidth: 30 },
+        2: { cellWidth: 50 },
       }
     });
     //Special conditions page
@@ -3119,13 +3175,13 @@ export class ViewProjectInfoComponent implements OnInit {
           yOffset = headerHeight; // Reset the Y-coordinate for the new page, leaving space for the header
           remainingPageSpace = maxPageHeight - yOffset - footerHeight;
         }
-        debugger;
+        
         // Check if the sub-department commentStatus is Approved or Provisionally Approved
-        if (comments.length > 0 && comments[0].commentStatus === 'Approved' || comments[0].commentStatus === 'Provisionally Approved') {
+        if (comments.length > 0 && comments[0].commentStatus === 'Approved' || comments[0].commentStatus === 'Provisionally Approved' || comments[0].commentStatus === 'Approved(Conditional)') {
           // Display Approver Comment heading
           doc.setFont('CustomFontBold', 'bold');
-          doc.text('Approver Comment:', 10, yOffset, { maxWidth: 190, align: 'left' });
-          yOffset += doc.getTextDimensions('Approver Comment:').h + 2;
+          doc.text('Reviewer Comment:', 10, yOffset, { maxWidth: 190, align: 'left' });
+          yOffset += doc.getTextDimensions('Reviewer Comment:').h + 2;
 
           // Display the comment
           doc.setFont('CustomFont', 'normal');
@@ -3430,6 +3486,9 @@ export class ViewProjectInfoComponent implements OnInit {
           if (data.responseCode == 1) {
 
             this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.projectNo, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+            if (this.applicationData.clientAlternativeEmail) { //checkingNotifications Sindiswa 15 February 2024
+              this.notificationsService.sendEmail(this.applicationData.clientAlternativeEmail, "Wayleave Application #" + this.projectNo, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+            }
             this.modalService.dismissAll();
             //Audit Trail Kyle
             this.onSaveToAuditTrail("Approval Pack Downloaded");
@@ -3579,7 +3638,7 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.setFont('CustomFontBold', 'bold'); // Use your custom font
     doc.text('Status Summary:', 10, 115, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
     doc.setFont('CustomFont', 'normal');
-    debugger;
+    
     this.SubDepSubDepRejectList.forEach((deposit) => {
       const row = [
         deposit.SubDepName,
@@ -3807,7 +3866,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   // #region reapply Sindiswa 22 January 2024
   goToNewWayleave(applicationType: boolean) { //application type refers to whether it is a brand new application or if it is a reapply.
-    debugger;
+    
 
     this.applicationsService.getApplicationsByApplicationID(this.ApplicationID).subscribe((data: any) => {
 
@@ -3876,7 +3935,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     let WBS = this.addWBSNumber.controls["wbsnumber"].value;
 
-    this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, WBS, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+    this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, WBS, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         alert("Updated Applications WBS");
@@ -3929,7 +3988,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
           const tempSubDepartmentList = {} as SubDepartmentList;
           tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
-          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempSubDepartmentList.departmentID = current.departmentID;
           tempSubDepartmentList.dateUpdated = current.dateUpdated;
           tempSubDepartmentList.dateCreated = current.dateCreated;
@@ -4142,7 +4201,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   /*viewDocument(index: any) {
 
-    debugger;
+    
     // Make an HTTP GET request to fetch the document
     fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.FinancialDocumentsList[index].FinancialDocumentName}`)
       .then(response => {
@@ -4171,7 +4230,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   // altered slightly to ensure that a png is downloaded instead of doing iframe tings
   viewDocument(index: any) {
-    debugger;
+    
     const filename = this.FinancialDocumentsList[index].FinancialDocumentName;
     const extension = filename.split('.').pop().toLowerCase();
 
@@ -4279,128 +4338,32 @@ export class ViewProjectInfoComponent implements OnInit {
     this.fileCount = this.fileCount + 1;
   }
 
-
-
-  getMFTForApplication() {
-    const imageDiv = document.getElementById('imageDiv'); // Get the existing <div> element by ID
-    this.MFTList.splice(0, this.MFTList.length);
-    this.MFTService.getMFTByApplicationID(this.ApplicationID).subscribe((data: any) => {
-
-      if (data.responseCode == 1) {
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempMFTList = {} as MFTList;
-          const current = data.dateSet[i];
-          tempMFTList.MFTID = current.mftid;
-          tempMFTList.MFTNote = current.mftNote;
-          tempMFTList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));;
-          tempMFTList.DocumentName = current.documentName;
-          tempMFTList.DocumentLocalPath = current.documentLocalPath;
-          tempMFTList.ApplicationNumber = current.applicationID;
-          tempMFTList.FullName = current.fullName;
-
-          console.log("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT", current);
-          console.log("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT", this.MFTList);
-          this.MFTList.push(tempMFTList);
-
-          /* fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.MFTList[i].DocumentName}`)
-             .then(response => {
-               if (response.ok) {
-                 // The response status is in the 200 range
+  @ViewChild('imageDiv') imageDiv: ElementRef;
  
-                 return response.blob(); // Extract the response body as a Blob
- 
-               } else {
-                 throw new Error('Error fetching the document');
-               }
-             })
-             .then(blob => {
-               const imageURL = URL.createObjectURL(blob);
- 
-               // Display the image using an <img> element
-               const imgElement = document.createElement('img');
-               imgElement.src = imageURL;
- 
-               // Get a reference to the div with the ID 'myDiv'
-               const myDiv = document.getElementById('card_image');
- 
-               // Append the <img> element to the 'myDiv' div
-               myDiv.appendChild(imgElement);
- 
-               
-             })
-             .catch(error => {
-               console.log(error);
-               // Handle the error appropriately
-             });*/
 
-
-        }
-
-
-        // console.log("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT", this.DocumentsList[0]);
-
-      }
-      else {
-        alert(data.responseMessage);
-
-      }
-      console.log("reponseGetAllDocsForApplication", data);
-
-    }, error => {
-      console.log("ErrorGetAllDocsForApplication: ", error);
-    })
-  }
 
   saveNote() {
+    const mftId = this.fileUploadComponent.MFTID;
+    if (this.hasFile || mftId != 0) {
+      this.statusOfWorksComponent.getMFTForApplication();
+      this.modalService.dismissAll();
+      this.mftNote = '';
+    }
 
-
-    const filesForUpload = this.sharedService.pullFilesForUpload();
-
-
-    if (filesForUpload.length === 0) {
-
-      this.MFTService.addUpdateMFT(0, this.mftNote, this.ApplicationID, null, null, this.CurrentUser.appUserId, this.CurrentUser.fullName).subscribe((data: any) => {
-        /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
+    else {
+      this.MFTService.addUpdateMFT(0, this.mftNote, this.ApplicationID, null, null, this.CurrentUser.appUserId, this.CurrentUser.fullname).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          alert(data.responseMessage);
-          this.getMFTForApplication();
+          this.statusOfWorksComponent.getMFTForApplication();
+          this.mftNote = '';
+          this.fileUploadComponent.MFTID = 0;
+          this.modalService.dismissAll();
+
         }
-
-      }, error => {
-        console.log("Error: ", error);
       })
-
     }
-    else{
-      for (var i = 0; i < filesForUpload.length; i++) {
-        const formData = new FormData();
-        let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
-        let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + null;
-        formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
-
-
-
-
-        this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
-          .subscribe({
-            next: (event) => {
-
-
-              if (event.type === HttpEventType.UploadProgress && event.total)
-                this.progress = Math.round(100 * event.loaded / event.total);
-              else if (event.type === HttpEventType.Response) {
-                this.message = 'Upload success.';
-                this.uploadFinishedNotes(event.body);
-
-              }
-            },
-            error: (err: HttpErrorResponse) => console.log(err)
-          });
-      }
-    }
-
   }
   mftNote = '';
+   
 
   uploadFinishedNotes(event) {
 
@@ -4416,7 +4379,7 @@ export class ViewProjectInfoComponent implements OnInit {
       /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
       if (data.responseCode == 1) {
         alert(data.responseMessage);
-        this.getMFTForApplication();
+        this.statusOfWorksComponent.getMFTForApplication();
       }
 
     }, error => {
@@ -4477,7 +4440,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
           const tempSubDepartmentList = {} as SubDepartmentListFORAPPROVAL;
           tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
-          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempSubDepartmentList.departmentID = current.departmentID;
           tempSubDepartmentList.dateUpdated = current.dateUpdated;
           tempSubDepartmentList.dateCreated = current.dateCreated;
@@ -4550,6 +4513,9 @@ export class ViewProjectInfoComponent implements OnInit {
       if (data.responseCode == 1) {
 
         this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.projectNo, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+        if (this.applicationData.clientAlternativeEmail) { //checkingNotifications Sindiswa 15 February 2024
+          this.notificationsService.sendEmail(this.applicationData.clientAlternativeEmail, "Wayleave Application #" + this.projectNo, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+        }
         this.modalService.dismissAll();
         alert("Application moved to PTW");
         this.router.navigate(["/home"]);
@@ -4627,7 +4593,7 @@ export class ViewProjectInfoComponent implements OnInit {
   CalCulateApprovalProgess() {
     this.subDepartmentForCommentService.getSubDepartmentForComment(this.applicationDataForView[0].applicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
 
@@ -4688,6 +4654,20 @@ export class ViewProjectInfoComponent implements OnInit {
       b: parseInt(result[3], 16)
     } : null;
   }
- 
+
+  //Status of works Kyle 16-02-24
+  showUpload: boolean = false;
+  onCheckMFTNote(event:Event):void {
+    debugger;
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    if (filterValue == '') {
+      this.showUpload = false
+    }
+    else {
+      this.showUpload = true;
+    }
+  }
   /*Progess bar Kyle 07-02-24*/
+
+
 }

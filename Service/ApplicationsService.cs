@@ -23,7 +23,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string? userID, string? fullName, string? email, string? phoneNumber, string? physicalAddress, string? referenceNumber, string? companyRegNo, string? typeOfApplication, string? notificationNumber, string? wBSNumber, string? physicalAddressOfProject, string? descriptionOfProject, string? natureOfWork, string? excavationType, DateTime? expectedStartDate, DateTime? expectedEndDate, string? location, string? createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus, bool? isDrafted, string? projectNumber, bool? isPlanning, DateTime? PermitStartDate, DateTime? DatePaid, bool? WBSRequired, string? Coordinates)
+        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string? userID, string? fullName, string? email, string? alternativeEmail, string? phoneNumber, string? physicalAddress, string? referenceNumber, string? companyRegNo, string? typeOfApplication, string? notificationNumber, string? wBSNumber, string? physicalAddressOfProject, string? descriptionOfProject, string? natureOfWork, string? excavationType, DateTime? expectedStartDate, DateTime? expectedEndDate, string? location, string? createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus, bool? isDrafted, string? projectNumber, bool? isPlanning, DateTime? PermitStartDate, DateTime? DatePaid, bool? WBSRequired, string? Coordinates)
         {
 
             if (ApplicationID == 0)
@@ -45,6 +45,7 @@ namespace WayleaveManagementSystem.Service
                     UserID = userID,
                     FullName = fullName,
                     Email = email,
+                    AlternativeEmail = alternativeEmail,
                     PhoneNumber = phoneNumber,
                     PhyscialAddress = physicalAddress,
                     ReferenceNumber = referenceNumber,
@@ -101,7 +102,12 @@ namespace WayleaveManagementSystem.Service
                 {
                     tempApplicationTable.Email = email;
                 }
-
+                #region checkingNotifications Sindiswa 15 February 2024
+                if (alternativeEmail != null)
+                {
+                    tempApplicationTable.AlternativeEmail = alternativeEmail;
+                }
+                #endregion
                 if (phoneNumber != null)
                 {
                     tempApplicationTable.PhoneNumber = phoneNumber;
@@ -317,6 +323,7 @@ namespace WayleaveManagementSystem.Service
                    UserID = Applications.UserID,
                    FullName = Applications.FullName,
                    Email = Applications.Email,
+                   AlternativeEmail = Applications.AlternativeEmail, // checkingNotifications Sindiswa 15 February 2024
                    PhoneNumber = Applications.PhoneNumber,
                    PhysicalAddress = Applications.PhyscialAddress,
                    ReferenceNumber = Applications.ReferenceNumber,
@@ -427,6 +434,7 @@ namespace WayleaveManagementSystem.Service
                        UserID = Applications.UserID,
                        FullName = Applications.FullName,
                        Email = Applications.Email,
+                       AlternativeEmail = Applications.AlternativeEmail, // checkingNotifications Sindiswa 15 February 2024
                        PhoneNumber = Applications.PhoneNumber,
                        PhysicalAddress = Applications.PhyscialAddress,
                        ReferenceNumber = Applications.ReferenceNumber,
@@ -478,6 +486,7 @@ namespace WayleaveManagementSystem.Service
                        UserID = Applications.UserID,
                        FullName = Applications.FullName,
                        Email = Applications.Email,
+                       AlternativeEmail = Applications.AlternativeEmail, // checkingNotifications Sindiswa 15 February 2024
                        PhoneNumber = Applications.PhoneNumber,
                        PhysicalAddress = Applications.PhyscialAddress,
                        ReferenceNumber = Applications.ReferenceNumber,
@@ -539,6 +548,7 @@ namespace WayleaveManagementSystem.Service
                        UserID = Applications.UserID,
                        FullName = Applications.FullName,
                        Email = Applications.Email,
+                       AlternativeEmail = Applications.AlternativeEmail, // checkingNotifications Sindiswa 15 February 2024
                        PhoneNumber = Applications.PhoneNumber,
                        PhysicalAddress = Applications.PhyscialAddress,
                        ReferenceNumber = Applications.ReferenceNumber,
@@ -584,6 +594,7 @@ namespace WayleaveManagementSystem.Service
                        UserID = Applications.UserID,
                        FullName = Applications.FullName,
                        Email = Applications.Email,
+                       AlternativeEmail = Applications.AlternativeEmail, // checkingNotifications Sindiswa 15 February 2024
                        PhoneNumber = Applications.PhoneNumber,
                        PhysicalAddress = Applications.PhyscialAddress,
                        ReferenceNumber = Applications.ReferenceNumber,
@@ -630,6 +641,7 @@ namespace WayleaveManagementSystem.Service
                    UserID = Applications.UserID,
                    FullName = Applications.FullName,
                    Email = Applications.Email,
+                   AlternativeEmail = Applications.AlternativeEmail, // checkingNotifications Sindiswa 15 February 2024
                    PhoneNumber = Applications.PhoneNumber,
                    PhysicalAddress = Applications.PhyscialAddress,
                    ReferenceNumber = Applications.ReferenceNumber,
@@ -683,6 +695,7 @@ namespace WayleaveManagementSystem.Service
                     UserID = Applications.UserID,
                     FullName = Applications.FullName,
                     Email = Applications.Email,
+                    AlternativeEmail = Applications.AlternativeEmail, // checkingNotifications Sindiswa 15 February 2024
                     PhoneNumber = Applications.PhoneNumber,
                     PhysicalAddress = Applications.PhyscialAddress,
                     ReferenceNumber = Applications.ReferenceNumber,
@@ -738,6 +751,7 @@ namespace WayleaveManagementSystem.Service
                         UserID = Applications.UserID,
                         FullName = Applications.FullName,
                         Email = Applications.Email,
+                        AlternativeEmail = Applications.AlternativeEmail, // checkingNotifications Sindiswa 15 February 2024
                         PhoneNumber = Applications.PhoneNumber,
                         PhysicalAddress = Applications.PhyscialAddress,
                         ReferenceNumber = Applications.ReferenceNumber,
@@ -792,6 +806,7 @@ namespace WayleaveManagementSystem.Service
                         UserID = Applications.UserID,
                         FullName = Applications.FullName,
                         Email = Applications.Email,
+                        AlternativeEmail = Applications.AlternativeEmail, // checkingNotifications Sindiswa 15 February 2024
                         PhoneNumber = Applications.PhoneNumber,
                         PhysicalAddress = Applications.PhyscialAddress,
                         ReferenceNumber = Applications.ReferenceNumber,
@@ -846,6 +861,7 @@ namespace WayleaveManagementSystem.Service
                         UserID = Applications.UserID,
                         FullName = Applications.FullName,
                         Email = Applications.Email,
+                        AlternativeEmail = Applications.AlternativeEmail, // checkingNotifications Sindiswa 15 February 2024
                         PhoneNumber = Applications.PhoneNumber,
                         PhysicalAddress = Applications.PhyscialAddress,
                         ReferenceNumber = Applications.ReferenceNumber,
@@ -902,6 +918,7 @@ namespace WayleaveManagementSystem.Service
                         UserID = Applications.UserID,
                         FullName = Applications.FullName,
                         Email = Applications.Email,
+                        AlternativeEmail = Applications.AlternativeEmail, // checkingNotifications Sindiswa 15 February 2024
                         PhoneNumber = Applications.PhoneNumber,
                         PhysicalAddress = Applications.PhyscialAddress,
                         ReferenceNumber = Applications.ReferenceNumber,
@@ -1040,6 +1057,7 @@ namespace WayleaveManagementSystem.Service
                    UserID = Applications.UserID,
                    FullName = Applications.FullName,
                    Email = Applications.Email,
+                   AlternativeEmail = Applications.AlternativeEmail, // checkingNotifications Sindiswa 15 February 2024
                    PhoneNumber = Applications.PhoneNumber,
                    PhysicalAddress = Applications.PhyscialAddress,
                    ReferenceNumber = Applications.ReferenceNumber,

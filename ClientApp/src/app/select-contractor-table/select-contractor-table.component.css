@@ -31,3 +31,7 @@ td {
   border-radius: 9px;
   --box-shadow-color: rgba(255, 215, 97, 0.48);
 }
+
+.selected {
+  border: 3px solid green; /* Add border */
+}

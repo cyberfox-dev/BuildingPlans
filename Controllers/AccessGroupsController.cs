@@ -882,6 +882,7 @@ namespace WayleaveManagementSystem.Controllers
                         UserID = upItem.UserID,
                         FullName = upItem.FullName,
                         Email = upItem.Email,
+                        AlternativeEmail = upItem.AlternativeEmail, //checkingNotifications Sindiswa 16 February 2024
                         PhoneNumber = upItem.PhoneNumber,
                         Directorate = upItem.Directorate,
                         zoneName = ztItem.ZoneName,

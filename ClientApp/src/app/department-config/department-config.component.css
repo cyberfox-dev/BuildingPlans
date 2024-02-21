@@ -223,4 +223,8 @@ h3 {
   margin-top: 50px;
 }
 
-
+/* expirations Sindiswa 12 February 2024 */
+.error-message {
+  color: red;
+  font-size: 12px;
+}

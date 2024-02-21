@@ -11,6 +11,7 @@ import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/ht
 import { Input } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { concat } from 'rxjs';
+import { NavMenuComponent } from '../nav-menu/nav-menu.component';
 
 export interface NotificationsList {
   NotificationID: number;
@@ -70,6 +71,7 @@ export interface ApplicationList {
   Coordinates: string,
   userID: string,
   UserID: any;
+  clientAlternativeEmail: string; // chekingNotifications Sindiswa 13 February 2024
 }
 
 export interface ApplicationsList {
@@ -112,7 +114,7 @@ export class NotificationCenterComponent implements OnInit {
   viewNotification: any;
 
   constructor(private modalService: NgbModal, private sharedService: SharedService, private userProfileService: UserProfileService, private notificationService: NotificationsService, private applicationService: ApplicationsService, private hhtp: HttpClient, private router: Router, private dialog: MatDialog, /*routeToProject*/
-    private viewContainerRef: ViewContainerRef,) { }
+    private viewContainerRef: ViewContainerRef) { }
  fakeDatenow: any = new Date();
   ngOnInit(): void {
 
@@ -139,11 +141,13 @@ export class NotificationCenterComponent implements OnInit {
 
    
     this.OldNotificationsList.splice(0, this.OldNotificationsList.length);
+    // checkingNotifications Sindiswa 12 February 2024
     //this.notificationService.getNotificationByUserID(this.CurrentUser.appUserId).subscribe((data: any) => {
-    const firstObservable = this.notificationService.getNotificationByUserID(this.CurrentUser.appUserId);
-    const secondObservable = this.notificationService.getNotificationsForUserID(this.CurrentUser.appUserId);
+    /*const firstObservable = this.notificationService.getNotificationByUserID(this.CurrentUser.appUserId);
+ const secondObservable = this.notificationService.getNotificationsForUserID(this.CurrentUser.appUserId);
 
-    concat(firstObservable, secondObservable).subscribe(
+   concat(firstObservable, secondObservable).subscribe(*/
+    this.notificationService.getNotificationsForUserID(this.CurrentUser.appUserId).subscribe(
       (data: any) => {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
@@ -216,7 +220,8 @@ export class NotificationCenterComponent implements OnInit {
 
           this.ApplicationID = current.applicationID;
           this.MessageList = tempNotificationsList;
-          this.notificationService.addUpdateNotification(tempNotificationsList.NotificationID, tempNotificationsList.NotificationName, tempNotificationsList.NotificationDescription, tempNotificationsList.IsRead, null, null, tempNotificationsList.ApplicationID, tempNotificationsList.Message).subscribe((data: any) => {
+          // checkingNotifications Sindiswa 12 February 2024
+          this.notificationService.addUpdateNotification(tempNotificationsList.NotificationID, tempNotificationsList.NotificationName, tempNotificationsList.NotificationDescription, tempNotificationsList.IsRead, null, tempNotificationsList.ApplicationID, null, tempNotificationsList.Message).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
               /*alert(data.responseMessage);*/
@@ -278,7 +283,7 @@ export class NotificationCenterComponent implements OnInit {
       this.openNotificationExternal(this.External)
     }
   }
-   getSelectedNotification(applicationID: number) {
+  getSelectedNotification(applicationID: number) {
     this.dialog.closeAll();
 
     this.NotificationsList.splice(0, this.NotificationsList.length);
@@ -304,7 +309,8 @@ export class NotificationCenterComponent implements OnInit {
 
           this.ApplicationID = current.applicationID;
           this.MessageList = tempNotificationsList;
-          this.notificationService.addUpdateNotification(tempNotificationsList.NotificationID, tempNotificationsList.NotificationName, tempNotificationsList.NotificationDescription, tempNotificationsList.IsRead, null, null, tempNotificationsList.ApplicationID, tempNotificationsList.Message).subscribe((data: any) => {
+          // checkingNotifications Sindiswa 12 February 2024
+          this.notificationService.addUpdateNotification(tempNotificationsList.NotificationID, tempNotificationsList.NotificationName, tempNotificationsList.NotificationDescription, tempNotificationsList.IsRead, null, tempNotificationsList.ApplicationID, null, tempNotificationsList.Message).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
               /*alert(data.responseMessage);*/
@@ -478,13 +484,18 @@ export class NotificationCenterComponent implements OnInit {
   }*/
 
 
-getAllNotifications() {
+  getAllNotifications() {
+    debugger;
   this.NotificationsList.splice(0, this.NotificationsList.length);
 
-  const firstObservable = this.notificationService.getNotificationByUserID(this.CurrentUser.appUserId);
+    /* checkingNotifications Sindiswa 13 February 2024, now that UserID and CreatedByID aren't made null randomly, can now fetch ONLY notifications FOR human
+       Wait, what's going to happen to everything that happened before this though? DZIN DZIN - Welp, I'm just going to go ahead and assume everyone is all caught up */
+
+  /*const firstObservable = this.notificationService.getNotificationByUserID(this.CurrentUser.appUserId);
   const secondObservable = this.notificationService.getNotificationsForUserID(this.CurrentUser.appUserId);
 
-  concat(firstObservable, secondObservable).subscribe(
+    concat(firstObservable, secondObservable).subscribe(*/
+    this.notificationService.getNotificationsForUserID(this.CurrentUser.appUserId).subscribe(
     (data: any) => {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
@@ -527,13 +538,19 @@ getAllNotifications() {
     this.modalService.dismissAll();
   }
   onRefreshModal() {
+    debugger;
     
     this.modalService.dismissAll();
 
     this.getAllNotifications();
     this.getAllReadNotifications();
+   
   }
-  
+  //#region notifications Sindiswa 12 February 2024
+  updateCount() {
+    window.location.reload(); // Uhh, there has to be a better way
+  }
+  //#endregion
   getUserInfo() {
     
     this.userProfileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
@@ -597,7 +614,7 @@ getAllNotifications() {
 
   //#endregion
 
-  // #region routingToProject
+  // #region routingToProject Sindiswa 
   specificApplication: ApplicationList[] = [];
   Applications: ApplicationsList[] = [];
   public canReapply: boolean = false;
@@ -616,6 +633,7 @@ getAllNotifications() {
           tempApplicationListShared.applicationID = current.applicationID;
           tempApplicationListShared.clientName = current.fullName;
           tempApplicationListShared.clientEmail = current.email;
+          tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
           tempApplicationListShared.clientAddress = current.physicalAddress;
           tempApplicationListShared.clientRefNo = current.referenceNumber;
           tempApplicationListShared.CompanyRegNo = current.companyRegNo;

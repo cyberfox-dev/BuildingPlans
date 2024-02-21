@@ -6,7 +6,11 @@ import { PermitService } from 'src/app/service/Permit/permit.service'
 import { SharedService } from "../shared/shared.service";
 import { ApplicationsService } from '../service/Applications/applications.service';
 import { PDFDocument } from 'pdf-lib';
-
+//Permit Kyle 13-02-24
+import { StagesService } from '../service/Stages/stages.service';
+import { AuditTrailService } from '../service/AuditTrail/audit-trail.service';
+import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
+//Permit Kyle 13-02-24
 
 //PTC = Permit To Comment
 export interface PTCList {
@@ -22,7 +26,14 @@ export interface PTCList {
   PermitDocName: string;
   DocumentLocalPath: string;
 }
-
+//Permit Kyle 13-02-24
+export interface StagesList {
+  StageID: number;
+  StageName: string;
+  StageOrderNumber: number;
+  CurrentUser: any
+}
+//Permit Kyle 13-02-24
 @Component({
   selector: 'app-permit-component',
   templateUrl: './permit-component.component.html',
@@ -32,6 +43,8 @@ export interface PTCList {
 export class PermitComponentComponent implements OnInit {
 
   PTCList: PTCList[] = [];
+  StagesList: StagesList[] = [];//Permit Kyle 13-02-24
+
   //permitupload Sindiswa 08 January 2024
   displayedColumns: string[] = ['subDepartmentName','zoneName' ,'comment' ,'indication', 'addDocument'];
   dataSource = this.PTCList;
@@ -48,8 +61,8 @@ export class PermitComponentComponent implements OnInit {
     stringifiedDataCurrentUserProfile: any;
     CurrentUserProfile: any;
     CanIssuePermit: boolean;
-    CanConsolidate: boolean;
-  constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private permitService: PermitService, private shared: SharedService, private applicationsService: ApplicationsService,) { }
+  CanConsolidate: boolean;
+  constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private permitService: PermitService, private shared: SharedService, private applicationsService: ApplicationsService, private stagesService: StagesService, private auditTrailService: AuditTrailService,private router :Router) { }
 
   ngOnInit(): void {
     this.getAllPermitForComment();
@@ -66,13 +79,14 @@ export class PermitComponentComponent implements OnInit {
         this.CanIssuePermit = false;
       }
     }
-    this.checkIfCanConsolidate();
+    
+    this.getAllStages();//Permit Kyle 13-02-24
   }
 
   @Input() ApplicationID;
   @Input() ApplicantID;
   @Input() OriginatorID;
-
+  @Input() PermitBtn: boolean | null;//Permit Kyle 13-02-24
   openPermitModal(content:any) {
 
     this.modalService.open(content, { size: 'lg' });
@@ -110,7 +124,8 @@ export class PermitComponentComponent implements OnInit {
 
         }
         this.PTCListTable?.renderRows();
-        this.updateApplicationStatus();
+        this.checkIfCanConsolidate();//Permit Kyle 13-02-24
+      /*  this.updateApplicationStatus();*/
       }
       else {
         //alert("Invalid Email or Password");
@@ -118,7 +133,7 @@ export class PermitComponentComponent implements OnInit {
       }
       this.PTCListTable?.renderRows();
       console.log("reponse", data);
-
+      console.log("PTCList", this.PTCList);
     }, error => {
       console.log("Error: ", error);
     })
@@ -138,6 +153,8 @@ export class PermitComponentComponent implements OnInit {
     } else {
       this.CanConsolidate = false;
     }
+
+    
   }
 
   updateApplicationStatus() {
@@ -236,12 +253,14 @@ export class PermitComponentComponent implements OnInit {
         link.href = URL.createObjectURL(combinedPdfBlob);
         link.download = 'combined.pdf';
         link.click();
+        
       })
       .catch(error => {
         
         console.error('Error combining PDFs:', error);
       });
 
+    this.moveToClosedStage();//Permit Kyle 13-02-24
   }
 
   private async combinePDFs(pdfBlobs: Blob[]): Promise<Blob> {
@@ -263,5 +282,76 @@ export class PermitComponentComponent implements OnInit {
     
     return new Blob([combinedPdfBytes], { type: 'application/pdf' });
   }
+  //Permit Kyle 13-02-24
+  getAllStages() {
 
+    this.StagesList.splice(0, this.StagesList.length);
+
+    this.stagesService.getAllStages().subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempStageList = {} as StagesList;
+          const current = data.dateSet[i];
+          tempStageList.StageID = current.stageID;
+          tempStageList.StageName = current.stageName;
+          tempStageList.StageOrderNumber = current.stageOrderNumber;
+
+          this.StagesList.push(tempStageList);
+
+          // this.sharedService.setStageData(this.StagesList);
+        }
+       
+        console.log("this.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesList ", this.StagesList);
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  moveToClosedStage() {
+    debugger;
+    this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, this.StagesList[5].StageName, this.StagesList[5].StageOrderNumber, this.StagesList[6].StageName, this.StagesList[6].StageOrderNumber, "Monitoring", null).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        debugger;
+        //Audit Trail Kyle 
+        this.onSaveToAuditTrail2("Permit to Work Generated");
+        this.onSaveToAuditTrail2("Application Moved To Monitoring Stage");
+        //Audit Traik Kyle 
+        alert("Application Moved To Monitoring");
+        this.modalService.dismissAll();
+        this.router.navigate(["/home"]);
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("responseAddapplication", data);
+    }, error => {
+      console.log("Error", error);
+    })
+  }
+
+  onSaveToAuditTrail2(description: string) {
+    this.auditTrailService.addUpdateAuditTrailItem(0, this.ApplicationID, description, true, this.CurrentUserProfile[0].subDepartmentName, this.CurrentUserProfile[0].zoneName, this.CurrentUserProfile[0].userID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+
+    })
+  }
+  //Permit Kyle 13-02-24
 }
