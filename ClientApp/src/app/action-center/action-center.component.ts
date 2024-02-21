@@ -35,6 +35,7 @@ import { NotificationsService } from 'src/app/service/Notifications/notification
 import { ManuallyAssignUsersService } from 'src/app/service/ManuallyAssignUsers/manually-assign-users.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SnackBarAlertsComponent } from '../snack-bar-alerts/snack-bar-alerts.component';
+
 import { tap } from 'rxjs/operators';
 import 'tinymce';
 import 'tinymce/themes/silver';
@@ -47,6 +48,8 @@ import { ReviewerforcommentService } from '../service/ReviewerForComment/reviewe
 
 //Audit Trail Kyle
 import { AuditTrailService } from '../service/AuditTrail/audit-trail.service';
+import { FinancialService } from '../service/Financial/financial.service';
+import { ConfigService } from '../service/Config/config.service';
  //Audit Trail Kyle
 declare var tinymce: any;
 
@@ -63,7 +66,10 @@ export interface SubDepartmentList {
   subdepartmentForCommentID: number | null;
   UserAssaignedToComment: string | null;
   commentStatus: string | null;
+  
+  
 }
+
 // #region escalation Sindiswa 30 January 2024
 export interface SubDepartmentListForComment extends SubDepartmentList {
   zoneName: string;
@@ -80,6 +86,7 @@ export interface ServiceItemList {
   totalVat: number;
   dateCreated: any;
   vatApplicable: boolean;
+  isChecked: boolean;
 }
 
 export interface StagesList {
@@ -305,15 +312,17 @@ export class ActionCenterComponent implements OnInit {
   CommentDropDown: CommentDropDown[] = [];
   ServiceItemCodeDropdown: ServiceItemCodeDropdown[] = [];
   ServiceItemList: ServiceItemList[] = [];
+  PermitIssuerSuperVisionFeeList: ServiceItemList[] = [];
+  SupervisionFeesList: ServiceItemList[] = [];
   StagesList: StagesList[] = [];
   CommentsList: CommentsList[] = [];
   LinkedSubDepartmentsList: SubDepartmentListForComment[] = []; //escalation Sindiswa 30 January 2024
 
-   //Service Information Kyle 31/01/24
+  //Service Information Kyle 31/01/24
   ServiceInfoDocumentsList: ServiceInfoDocumentsList[] = [];
   displayedColumnsDocs: string[] = ['DocumentName', 'actions'];
   dataSourceServiceInfoDocuments = this.ServiceInfoDocumentsList;
-   //Service Information Kyle 31/01/24
+  //Service Information Kyle 31/01/24
   ZoneList: ZoneList[] = [];
   ZoneLinkedList: ZoneList[] = [];
   UserZoneList: UserZoneList[] = [];
@@ -378,6 +387,9 @@ export class ActionCenterComponent implements OnInit {
   CanAssignDepartment: boolean;
   canCommentFinalApprover: boolean;
   manualLinkStatus: string;
+ //Permit Kyle 13-02 - 24
+  supervisionFeeChecked: boolean = false;
+  accountNumber: any;
 
   constructor(
     private offcanvasService: NgbOffcanvas,
@@ -410,9 +422,11 @@ export class ActionCenterComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private _bottomSheet: MatBottomSheet,
     private reviwerforCommentService: ReviewerforcommentService,
-   
+
     //Audit Trail Kyle
+    private financialService: FinancialService,
     private auditTrailService: AuditTrailService,
+    private configService :ConfigService,
     //Audit Trail Kyle
 
   ) { }
@@ -463,7 +477,7 @@ export class ActionCenterComponent implements OnInit {
       console.log("Not");
     }
     else {
-      console.log("This is the Current User's Details",this.CurrentUser);
+      console.log("This is the Current User's Details", this.CurrentUser);
     }
 
     /*  this.getAllServiceItmes();*/
@@ -515,7 +529,7 @@ export class ActionCenterComponent implements OnInit {
       this.getUsersByRoleName("Permit Issuer");
 
       this.showPermitTab = true;
-     
+
       this.getAllPermitForComment();
     }
     else {
@@ -537,7 +551,7 @@ export class ActionCenterComponent implements OnInit {
     this.CheckApplicant();
     this.setProjectNumber();
     this.getAllDocumentsForServiceInformation();
-
+    this.GetSubDepartment();
 
 
 
@@ -602,7 +616,7 @@ export class ActionCenterComponent implements OnInit {
       if (data.responseCode == 1) {
         debugger;
         for (var i = 0; i < data.dateSet.length; i++) {
-       
+
           let foundMatch = false;
           let current = data.dateSet[i];
           if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
@@ -1114,7 +1128,7 @@ export class ActionCenterComponent implements OnInit {
 
                   alert("Permit Approved");
                   this.CheckAllLinkedDepartmentsApproved();
-                  this.router.navigate(["/home"]);
+                 
 
                 }
                 else {
@@ -1127,6 +1141,11 @@ export class ActionCenterComponent implements OnInit {
                 console.log("Error: ", error);
               })
               this.modalService.dismissAll();
+              if (this.supervisionFeeChecked) {
+                debugger;
+                this.getCurrentInvoiceNumberForGen(this.CurrentApplicant);
+              }
+             
             }
             break;
           }
@@ -1660,7 +1679,7 @@ export class ActionCenterComponent implements OnInit {
     })
   }
 
- 
+
 
   getPreviousReviewerUserID() {
     debugger;
@@ -1681,12 +1700,12 @@ export class ActionCenterComponent implements OnInit {
           // #region comments Sindiswa 22 January 2023 - tbh I don't think think that this is able to distinguish between the Reviewer and Senior Reviewer
           else if ((current.commentStatus == "Provisionally Approved" || current.commentStatus == "Rejected" || current.commentStatus == "Approved" || current.commentStatus == "Approved(Conditional)") && current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
             this.previousReviewer = current.createdById;
-           
+
           }
           else if (current.commentStatus == "Reviewer Clarified" && current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
             this.previousReviewer = current.canReplyUserID;
           }
-       
+
           // #endregion
           else {
             this.previousReviewer = null;
@@ -1712,8 +1731,8 @@ export class ActionCenterComponent implements OnInit {
         else {
 
         }
-      
-       
+
+
 
       }
       else {
@@ -1730,8 +1749,8 @@ export class ActionCenterComponent implements OnInit {
 
   }
 
- 
-   
+
+
   onReviewerClarityClick() {
     let SubDepartmentName = "";
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
@@ -2670,7 +2689,7 @@ export class ActionCenterComponent implements OnInit {
     let SubDepartmentName = "";
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
-        SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;``
+        SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName; ``
       }
     }
     //console.log("SubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentName", SubDepartmentName);
@@ -3281,7 +3300,7 @@ export class ActionCenterComponent implements OnInit {
               //commentsService
               debugger;//Comments Kyle 01/02/24
               this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.CurrentApplication.UserID).subscribe((data: any) => {
-                                                                                                                                                                                                                                                                        //Comments Kyle 01/02/24
+                //Comments Kyle 01/02/24
                 if (data.responseCode == 1) {
 
 
@@ -3443,10 +3462,10 @@ export class ActionCenterComponent implements OnInit {
               this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName,
 
 
-                                                                                                              
-                                                                                                                //Comments Kyle 01/02/24
+
+                //Comments Kyle 01/02/24
                 this.leaveAComment, "Referred", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
-                                                                                                                //Comments Kyle 01/02/24
+                  //Comments Kyle 01/02/24
                   if (data.responseCode == 1) {
 
                     alert(data.responseMessage);
@@ -4708,12 +4727,12 @@ export class ActionCenterComponent implements OnInit {
             this.countReject = 0;
             this.MoveToClosedStage(true);
           }
-           //Service Information Kyle 31/01/24
+          //Service Information Kyle 31/01/24
           else {
             this.modalService.dismissAll();
             this.router.navigate(["/home"]);
           }
-           //Service Information Kyle 31/01/24
+          //Service Information Kyle 31/01/24
         }
         else {
 
@@ -4906,7 +4925,7 @@ export class ActionCenterComponent implements OnInit {
         }
         else {*/
 
-     //Service Information Kyle 31/01/24
+    //Service Information Kyle 31/01/24
     if (isPlanning == false) {
       //Service Information Kyle 31/01/24
 
@@ -4930,12 +4949,12 @@ export class ActionCenterComponent implements OnInit {
         console.log("Error", error);
       })
     }
-     //Service Information Kyle 31/01/24
+    //Service Information Kyle 31/01/24
     else {
       this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, this.StagesList[6].StageName, this.StagesList[6].StageOrderNumber, "Null", null, "Closed", null).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
-         
+
           alert("Application Moved To Closed");
           this.modalService.dismissAll();
           this.router.navigate(["/home"]);
@@ -4949,7 +4968,7 @@ export class ActionCenterComponent implements OnInit {
         console.log("Error", error);
       })
     }
-     //Service Information Kyle 31/01/24
+    //Service Information Kyle 31/01/24
     /*}*/
 
 
@@ -5242,9 +5261,9 @@ export class ActionCenterComponent implements OnInit {
   }
 
   Approve() {
-     //Service Information Kyle 31/01/24
+    //Service Information Kyle 31/01/24
     if (confirm("Have you uploaded all relevant documents ?")) {
-       //Service Information Kyle 31/01/24
+      //Service Information Kyle 31/01/24
       this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Completed", false, false, "EndOfCommentProcess", true).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
@@ -5524,7 +5543,7 @@ export class ActionCenterComponent implements OnInit {
   }
 
   //#region notifications Sindiswa 01 February 2024
-  async sendNotificationToReviewer(reviewerUserID:string) {
+  async sendNotificationToReviewer(reviewerUserID: string) {
     const selectedReviewerData: any = await this.userPofileService.getUserProfileById(reviewerUserID).toPromise();
 
     if (selectedReviewerData.responseCode == 1) {
@@ -5618,60 +5637,60 @@ export class ActionCenterComponent implements OnInit {
       console.log("Error in terms of trying to figure out which 'state' the application is in:", error);
     });
 
-  
+
 
   }
   //Final Approver && Senior Approver Kyle 01/02/24
   takeOnthisApplication() {
     var userConfirmed = window.confirm("Do you want to take on this application as a" + this.asWhat + "?");
 
-        if (userConfirmed) {
+    if (userConfirmed) {
 
 
 
-          // update the SubDepartmentForComment table
+      // update the SubDepartmentForComment table
 
-          this.subDepartmentForCommentService.assignSeniorReviewerOrFinalApprover(this.subDPTforComment, this.CurrentUser.appUserId).subscribe((data: any) => {
+      this.subDepartmentForCommentService.assignSeniorReviewerOrFinalApprover(this.subDPTforComment, this.CurrentUser.appUserId).subscribe((data: any) => {
 
-            //4. update the ReviewerForComment table - audit trail things
-            this.reviwerforCommentService.addUpdateReviewerForComment(0, this.ApplicationID, this.CurrentUser.appUserId, this.appointmentText, "User Officially Took Application", this.CurrentUser.appUserId, this.loggedInUsersSubDepartmentID, this.loggedInUsersSubDepartmentName, this.CurrentUserProfile[0].zoneID, this.CurrentUserProfile[0].zoneName).subscribe((data: any) => {
+        //4. update the ReviewerForComment table - audit trail things
+        this.reviwerforCommentService.addUpdateReviewerForComment(0, this.ApplicationID, this.CurrentUser.appUserId, this.appointmentText, "User Officially Took Application", this.CurrentUser.appUserId, this.loggedInUsersSubDepartmentID, this.loggedInUsersSubDepartmentName, this.CurrentUserProfile[0].zoneID, this.CurrentUserProfile[0].zoneName).subscribe((data: any) => {
 
+          if (data.responseCode == 1) {
+            this.subDepartmentForCommentService.getAssignedReviewer(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe(async (data: any) => {
               if (data.responseCode == 1) {
-                this.subDepartmentForCommentService.getAssignedReviewer(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe(async (data: any) => {
-                  if (data.responseCode == 1) {
-                    console.log("User assignment information:", data.dateSet);
+                console.log("User assignment information:", data.dateSet);
 
-                    let current = data.dateSet[0];
+                let current = data.dateSet[0];
 
-                    this.subDPTforComment = await current.subDepartmentForCommentID;
-                    this.userAssignedText = await current.userAssaignedToComment;
-                    this.commentState = await current.commentStatus;
-                    
-                  }
-                  else {
-                    alert(data.responseMessage);
+                this.subDPTforComment = await current.subDepartmentForCommentID;
+                this.userAssignedText = await current.userAssaignedToComment;
+                this.commentState = await current.commentStatus;
 
-                  }
-                }, error => {
-                  console.log("Error in terms of trying to figure out which 'state' the application is in:", error);
-                });
               }
               else {
                 alert(data.responseMessage);
 
               }
-              console.log("Official user role assignement!", data);
-
             }, error => {
-              console.log("Error: ", error);
+              console.log("Error in terms of trying to figure out which 'state' the application is in:", error);
             });
-          })
-          console.log("Application taken!");
-        } else {
+          }
+          else {
+            alert(data.responseMessage);
 
-          console.log("Application not taken.");
-          return;
-        }
+          }
+          console.log("Official user role assignement!", data);
+
+        }, error => {
+          console.log("Error: ", error);
+        });
+      })
+      console.log("Application taken!");
+    } else {
+
+      console.log("Application not taken.");
+      return;
+    }
   }
   openActionCenter(content: any) {
     debugger;
@@ -5679,15 +5698,15 @@ export class ActionCenterComponent implements OnInit {
       //This is so the Admin can assign
       this.openXl(content);
     }
-    else if (this.userAssignedText === this.CurrentUser.appUserId && (this.commentState == null || this.commentState == "Referred" || this.commentState == "Approved" || this.commentState == "Rejected" )) {
+    else if (this.userAssignedText === this.CurrentUser.appUserId && (this.commentState == null || this.commentState == "Referred" || this.commentState == "Approved" || this.commentState == "Rejected")) {
       this.openXl(content);
     }
     else if (this.userAssignedText === "EndOfCommentProcess") {
-      
+
       // actionCentre Sindiswa 22 January 2024 - the permit issuer can't open their action centre view
       console.log("Can this user approvePermit?? PermitStage:" + this.permit + " CanApprove: " + this.canApprovePermit);
       debugger;
-      if (this.permit && this.canApprovePermit) {
+      if (this.permit && this.canApprovePermit/* && this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[4]*/) {
         this.openXl(content);
       }
       else {
@@ -5695,14 +5714,14 @@ export class ActionCenterComponent implements OnInit {
       }
     }
     else if ((this.userAssignedText == "Senior Reviewer to comment" && this.commentState == "Referred") || (this.userAssignedText == "All users in Subdepartment FA" && (this.commentState == "Approved" || this.commentState == "Approved(Conditional)" || this.commentState == "Rejected"))) {
-    
+
       if (this.commentState == "Referred") {
         this.appointmentText = "Senior Reviewer - Self Appointed";
         this.asWhat = " Senior Reviewer"
         this.openXl(content);//Final Approver && Senior Approver Kyle 01/02/24
-       
+
       }
-      
+
       else if (this.commentState == "Approved" || this.commentState == "Rejected") {
         this.appointmentText = "Final Approver - Self Appointed";
         this.asWhat = " Final Approver";
@@ -5710,17 +5729,17 @@ export class ActionCenterComponent implements OnInit {
         this.canCommentSeniorReviewer;
         this.openXl(content);//Final Approver && Senior Approver Kyle 01/02/24
       }
-     
+
     }
     else if ((this.userAssignedText != null && this.userAssignedText != "Senior Reviewer to comment" && this.userAssignedText != "All users in Subdepartment FA") && (this.commentState == "Approved" || this.commentState == "Referred" || this.commentState == "Approved(Conditional)" || this.commentState == "Rejected")) {
       alert("This application is currently under review by a senior reviewer or final approver.");
     }
-  
+
   }
   //Final Approver && Senior Approver Kyle 01/02/24
   onCommentFA(interact: any) {
-   
-    
+
+
 
     let SubDepartmentName = "";
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
@@ -5738,11 +5757,11 @@ export class ActionCenterComponent implements OnInit {
           debugger;
           // this.getDepartmentManagerUserID("Senior Reviewer");
           if (confirm("Are you sure you want to get clarity from applicant for this application?")) {
-         
-              this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
 
-                if (data.responseCode == 1) {
-                  const emailContent = `
+            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+                const emailContent = `
         <html>
         <head>
           <style>
@@ -5785,10 +5804,10 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-                  this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
-                  /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-                  */
-                  const emailContentApp = `
+                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
+                /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                */
+                const emailContentApp = `
         <html>
         <head>
           <style>
@@ -5832,71 +5851,71 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-                  this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
+                this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
 /*              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
 */              this.notificationsService.addUpdateNotification(0, "Wayleave Application Request", "Request for clarification", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
-                    if (data.responseCode == 1) {
+                  if (data.responseCode == 1) {
 
 
-                    }
-                    else {
-                      alert(data.responseMessage);
-                    }
+                  }
+                  else {
+                    alert(data.responseMessage);
+                  }
 
-                    console.log("response", data);
-                  }, error => {
-                    console.log("Error", error);
-                  });
-                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarificaion", false, this.CurrentUser.appUserID, this.applicationData.userID, this.ApplicationID, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+                  console.log("response", data);
+                }, error => {
+                  console.log("Error", error);
+                });
+                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarificaion", false, this.CurrentUser.appUserID, this.applicationData.userID, this.ApplicationID, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
-                    if (data.responseCode == 1) {
-
-
-                    }
-                    else {
-                      alert(data.responseMessage);
-                    }
-
-                    console.log("response", data);
-                  }, error => {
-                    console.log("Error", error);
-                  });
-                  debugger;
-                  //commentsService                                                                                                                                                                                                                                        //Comments Kyle 01/02/24 //Clarify Alerts Kyle 
-                  this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Applicant Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.CurrentApplication.UserID).subscribe((data: any) => {
-                    //Comments Kyle 01/02/24
-                    if (data.responseCode == 1) {
+                  if (data.responseCode == 1) {
 
 
-                      this.viewProjectInfoComponent.getAllComments();
-                    }
-                    else {
-                      alert(data.responseMessage);
+                  }
+                  else {
+                    alert(data.responseMessage);
+                  }
 
-                    }
-                    console.log("reponse", data);
+                  console.log("response", data);
+                }, error => {
+                  console.log("Error", error);
+                });
+                debugger;
+                //commentsService                                                                                                                                                                                                                                        //Comments Kyle 01/02/24 //Clarify Alerts Kyle 
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Applicant Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.CurrentApplication.UserID).subscribe((data: any) => {
+                  //Comments Kyle 01/02/24
+                  if (data.responseCode == 1) {
 
-                  }, error => {
-                    console.log("Error: ", error);
-                  })
-                  this.refreshParent.emit();
-                }
-                else {
-                  alert(data.responseMessage);
 
-                }
-                console.log("reponse", data);
+                    this.viewProjectInfoComponent.getAllComments();
+                  }
+                  else {
+                    alert(data.responseMessage);
 
-              }, error => {
-                console.log("Error: ", error);
-              })
-              // alert("In progress");
-              this.modalService.dismissAll();
-              this.openSnackBar("Application Actioned");
-              this.router.navigate(["/home"]);
-            
-            
+                  }
+                  console.log("reponse", data);
+
+                }, error => {
+                  console.log("Error: ", error);
+                })
+                this.refreshParent.emit();
+              }
+              else {
+                alert(data.responseMessage);
+
+              }
+              console.log("reponse", data);
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+            // alert("In progress");
+            this.modalService.dismissAll();
+            this.openSnackBar("Application Actioned");
+            this.router.navigate(["/home"]);
+
+
           }
           break;
         }
@@ -5905,10 +5924,10 @@ export class ActionCenterComponent implements OnInit {
           if (confirm("Are you sure you want to get clarity from the previouse reviewer?")) {
             debugger;
             this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentUser.appUserId, null).subscribe((data: any) => {
+              debugger;
+              if (data.responseCode == 1) {
                 debugger;
-                if (data.responseCode == 1) {
-                  debugger;
-                  const emailContent = `
+                const emailContent = `
         <html>
         <head>
           <style>
@@ -5948,13 +5967,13 @@ export class ActionCenterComponent implements OnInit {
      
            
     `;
-                  debugger;
+                debugger;
 
 
-                  this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
-                  /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-                  */
-                  const emailContentApp = `
+                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
+                /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                */
+                const emailContentApp = `
         <html>
         <head>
           <style>
@@ -5998,9 +6017,24 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-                  this.notificationsService.sendEmail(this.previousReviewer.email, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
+                this.notificationsService.sendEmail(this.previousReviewer.email, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
 /*              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
 */              this.notificationsService.addUpdateNotification(0, "Wayleave Application Request", "Request for clarification", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+
+                  if (data.responseCode == 1) {
+
+
+                  }
+                  else {
+                    alert(data.responseMessage);
+                  }
+
+                  console.log("response", data);
+                }, error => {
+                  console.log("Error", error);
+                });
+                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarificaion", false, this.CurrentUser.appUserID, this.previousReviewer.userID
+                  , this.ApplicationID, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
                     if (data.responseCode == 1) {
 
@@ -6014,65 +6048,50 @@ export class ActionCenterComponent implements OnInit {
                   }, error => {
                     console.log("Error", error);
                   });
-                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarificaion", false, this.CurrentUser.appUserID, this.previousReviewer.userID
-                    , this.ApplicationID, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
-
-                      if (data.responseCode == 1) {
-
-
-                      }
-                      else {
-                        alert(data.responseMessage);
-                      }
-
-                      console.log("response", data);
-                    }, error => {
-                      console.log("Error", error);
-                    });
+                debugger;
+                //commentsService                                                                                                                                                                                                                                        //Comments Kyle 01/02/24
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Reviewer Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.previousReviewer.userID).subscribe((data: any) => {
+                  //Comments Kyle 01/02/24
                   debugger;
-                  //commentsService                                                                                                                                                                                                                                        //Comments Kyle 01/02/24
-                  this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Reviewer Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.previousReviewer.userID).subscribe((data: any) => {
-                    //Comments Kyle 01/02/24
-                    debugger;
-                    if (data.responseCode == 1) {
+                  if (data.responseCode == 1) {
 
-                      console.log("Comment Created Kyle");
-                      this.viewProjectInfoComponent.getAllComments();
-                    }
-                    else {
-                      alert(data.responseMessage);
+                    console.log("Comment Created Kyle");
+                    this.viewProjectInfoComponent.getAllComments();
+                  }
+                  else {
+                    alert(data.responseMessage);
 
-                    }
-                    console.log("reponse", data);
+                  }
+                  console.log("reponse", data);
 
-                  }, error => {
-                    console.log("Error: ", error);
-                  })
-                  this.refreshParent.emit();
-                }
-                else {
-                  alert(data.responseMessage);
+                }, error => {
+                  console.log("Error: ", error);
+                })
+                this.refreshParent.emit();
+              }
+              else {
+                alert(data.responseMessage);
 
-                }
-                console.log("reponse", data);
+              }
+              console.log("reponse", data);
 
-              }, error => {
-                console.log("Error: ", error);
-              })
-              // alert("In progress");
-              this.modalService.dismissAll();
-              this.openSnackBar("Application Actioned");
-              this.router.navigate(["/home"]);
-            }
-            
+            }, error => {
+              console.log("Error: ", error);
+            })
+            // alert("In progress");
+            this.modalService.dismissAll();
+            this.openSnackBar("Application Actioned");
+            this.router.navigate(["/home"]);
           }
-          break;
 
         }
-      
+          break;
+
+      }
+
     }
   }
-   //Final Approver && Senior Approver Kyle 01/02/24
+  //Final Approver && Senior Approver Kyle 01/02/24
   onReturnToSeniorReviewerClick() {
 
   }
@@ -6158,7 +6177,7 @@ export class ActionCenterComponent implements OnInit {
 
             this.ServiceInfoDocumentsList.push(tempDocList);
           }
-         
+
         }
 
         this.dataSourceServiceInfoDocuments = this.ServiceInfoDocumentsList;
@@ -6180,7 +6199,7 @@ export class ActionCenterComponent implements OnInit {
     this.actionCentreView(content);
   }
 
-  onDeleteDocument(index: any,content:any) {
+  onDeleteDocument(index: any, content: any) {
     const document = this.ServiceInfoDocumentsList[index];
 
     this.documentUploadService.deleteDocument(document.DocumentID).subscribe((data: any) => {
@@ -6200,7 +6219,7 @@ export class ActionCenterComponent implements OnInit {
       console.log("Error: ", error)
     })
   }
-   //Service Information Kyle 31/01/24
+  //Service Information Kyle 31/01/24
 
 
   //#region escalation Sindiswa 30 January 2024 & 31 January 2024
@@ -6241,65 +6260,66 @@ export class ActionCenterComponent implements OnInit {
   embMessage: any;
   subDepartmentIDsNotDone: number[] = [];
   zoneIDsNotDone: number[] = [];
- async getRelavantDepartments() {
-   debugger;
-   try {
-     this.LinkedSubDepartmentsList.splice(0, this.LinkedSubDepartmentsList.length);
+  async getRelavantDepartments() {
+    debugger;
+    try {
+      this.LinkedSubDepartmentsList.splice(0, this.LinkedSubDepartmentsList.length);
 
-     const data: any = await this.subDepartmentForCommentService.getSubDepartmentForComment(this.ApplicationID).toPromise();
-     if (data.responseCode == 1) {
-       debugger;
-       for (let i = 0; i < data.dateSet.length; i++) {
-         const current = data.dateSet[i];
+      const data: any = await this.subDepartmentForCommentService.getSubDepartmentForComment(this.ApplicationID).toPromise();
+      if (data.responseCode == 1) {
+        debugger;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
 
-         const departmentDone = current.userAssaignedToComment === "EndOfCommentProcess";
-         const departmentYetToAssign = current.userAssaignedToComment === null && current.commentStatus === null;
+          const departmentDone = current.userAssaignedToComment === "EndOfCommentProcess";
+          const departmentYetToAssign = current.userAssaignedToComment === null && current.commentStatus === null;
 
-         const tempSubdepartmentList: SubDepartmentListForComment = {
-           subDepartmentName: current.subDepartmentName,
-           zoneName: current.zoneName,
-           subDepartmentID: current.subDepartmentID,
-           zoneID: current.zoneID,
-           UserAssaignedToComment: current.userAssaignedToComment,
-           commentStatus: current.commentStatus,
-           //
-          departmentID: 0, //random default value
-          dateUpdated: current.dateUpdated,
-          dateCreated: current.dateCreated,
-          subdepartmentForCommentID: current.subDepartmentForCommentID,
-           //other
-           departmentDone: departmentDone,
-           departmentYetToAssign: departmentYetToAssign,
-         };
+          const tempSubdepartmentList: SubDepartmentListForComment = {
+            subDepartmentName: current.subDepartmentName,
+            zoneName: current.zoneName,
+            subDepartmentID: current.subDepartmentID,
+            zoneID: current.zoneID,
+            UserAssaignedToComment: current.userAssaignedToComment,
+            commentStatus: current.commentStatus,
+            //
+            departmentID: 0, //random default value
+            dateUpdated: current.dateUpdated,
+            dateCreated: current.dateCreated,
+            subdepartmentForCommentID: current.subDepartmentForCommentID,
+            //other
+            departmentDone: departmentDone,
+            departmentYetToAssign: departmentYetToAssign,
+           
+          };
 
-         this.totalDepartments++;
-         if (current.userAssaignedToComment == "EndOfCommentProcess") {
-           this.departmentsDone++;
+          this.totalDepartments++;
+          if (current.userAssaignedToComment == "EndOfCommentProcess") {
+            this.departmentsDone++;
 
-         }
-         else if (current.userAssaignedToComment == null && current.commentStatus == null) {
-           this.departmentsYetToAssign++;
-           this.subDepartmentIDsNotDone.push(current.subDepartmentID);
-           this.zoneIDsNotDone.push(current.zoneID);
-         }
-         else {
-           this.subDepartmentIDsNotDone.push(current.subDepartmentID); //This will help me push the SubDepartmentIDs of the SUBDEP still in process
-           this.zoneIDsNotDone.push(current.zoneID); 
-         }
+          }
+          else if (current.userAssaignedToComment == null && current.commentStatus == null) {
+            this.departmentsYetToAssign++;
+            this.subDepartmentIDsNotDone.push(current.subDepartmentID);
+            this.zoneIDsNotDone.push(current.zoneID);
+          }
+          else {
+            this.subDepartmentIDsNotDone.push(current.subDepartmentID); //This will help me push the SubDepartmentIDs of the SUBDEP still in process
+            this.zoneIDsNotDone.push(current.zoneID);
+          }
 
-         this.LinkedSubDepartmentsList.push(tempSubdepartmentList);
-       }
-       this.SubDepartmentsListTable?.renderRows();
-     }
-     else {
-       alert(data.responseMessage);
+          this.LinkedSubDepartmentsList.push(tempSubdepartmentList);
+        }
+        this.SubDepartmentsListTable?.renderRows();
+      }
+      else {
+        alert(data.responseMessage);
 
-     }
-     console.log("These are the departements linked to this application, gather and get EMB to commment", data.dateSet);
-   }
-   catch (error) {
-     console.log("Error while getting details EMB needs to comment: ", error);
-   }
+      }
+      console.log("These are the departements linked to this application, gather and get EMB to commment", data.dateSet);
+    }
+    catch (error) {
+      console.log("Error while getting details EMB needs to comment: ", error);
+    }
 
   }
 
@@ -6423,7 +6443,7 @@ export class ActionCenterComponent implements OnInit {
 
       console.log("All emails sent successfully!?");
 
-      this.applicationsService.cancelEscalation(this.ApplicationID).subscribe((data:any) => {
+      this.applicationsService.cancelEscalation(this.ApplicationID).subscribe((data: any) => {
         if (data.responseCode == 1) {
           console.log(data.responseMessage);
           this.router.navigate(["/home"]);
@@ -6436,16 +6456,623 @@ export class ActionCenterComponent implements OnInit {
       }, error => {
         console.log("Error", error);
       });
-     
+
     }
     catch (error) {
       console.error("Error sending department escalation notices", error);
     }
 
   }
-  
- 
+
+
   //#endregion
+   //Permit Kyle 13-02 - 24
+  getAllServiceItemsForPermit(supervisionFee: any) {
+    debugger;
+
+    if (this.supervisionFeeChecked == false) {
+      this.supervisionFeeChecked = true;
+    }
+    else {
+      this.supervisionFeeChecked = false;
+    }
+
+    if (this.supervisionFeeChecked) {
+      this.PermitIssuerSuperVisionFeeList.splice(0, this.PermitIssuerSuperVisionFeeList.length);
+      this.serviceItemService.getAllServiceItemsByCategory("Permit").subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempServiceItem = {} as ServiceItemList;
+            const current = data.dateSet[i];
+
+            tempServiceItem.serviceItemID = current.serviceItemID;
+            tempServiceItem.serviceItemCode = current.serviceItemCode;
+            tempServiceItem.Rate = current.rate;
+            tempServiceItem.Description = current.description;
+            tempServiceItem.totalVat = current.totalVat;
+            tempServiceItem.vatApplicable = current.vatApplicable;
+            tempServiceItem.dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
+            tempServiceItem.isChecked = false;
+
+            this.PermitIssuerSuperVisionFeeList.push(tempServiceItem);
+          }
+          this.modalService.open(supervisionFee, { centered: true, size: 'l' });
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("response", data);
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+  }
+
+  superVisionFee: number = 0;
+
+  onCheckServiceItem(index: number) {
+    const item = this.PermitIssuerSuperVisionFeeList[index];
+    if (item) {
+      debugger;
+      item.isChecked = !item.isChecked;
+      if (item.isChecked) {
+        debugger;
+        this.superVisionFee = this.superVisionFee + item.Rate;
+      } else {
+        debugger;
+        this.superVisionFee = this.superVisionFee - item.Rate;
+      }
+      // Optionally, trigger change detection
+
+    }
+  }
+
+  saveAllPermitSupervisionFees() {
+    let supervisionFee = 0;
+    debugger;
+    for (let i = 0; i < this.PermitIssuerSuperVisionFeeList.length; i++) {
+      const current = this.PermitIssuerSuperVisionFeeList[i];
+
+      if (current.isChecked == true) {
+        debugger;
+        supervisionFee = supervisionFee + current.totalVat;
+        this.SupervisionFeesList.push(current);
+      }
+    }
+
+    this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        let current = data.dateSet[0];
+
+
+
+
+        this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Approved", this.CurrentUser.appUserId, null, null, null, null, null, false).subscribe((data: any) => {
+          if (data.responseCode == 1) {
+
+
+
+          }
+          else {
+            alert(data.responseMessage);
+
+          }
+          console.log("reponse", data);
+
+        }, error => {
+          console.log("Error: ", error);
+        })
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("response", data);
+    }, error => {
+      console.log("Error", error);
+    })
+
+
+  }
+  generatedInvoiceNumber: string;
+  generateInvoice(ClientName: string) {
+    debugger;
+      // Create a new PDF
+      const doc = new jsPDF();
+
+      // Add company logo
+      const logo = new Image();
+      logo.src = 'assets/cctlogoblack.png';
+      doc.addImage(logo, 'png', 10, 10, 60, 20);
+
+      // Add invoice title
+      this.addInvoiceTitle(doc);
+
+      // Add client details
+      this.addClientDetails(doc, ClientName);
+
+      // Add company contact details
+      this.addCompanyDetails(doc);
+
+      // Calculate payable by date
+      const payableByDate = this.calculatePayableByDate();
+
+      // Set the starting Y position for the table
+      let startY = 100;
+
+      // Generate service items table, cost details and calculate total cost
+      startY = this.addServiceItemsAndCostDetails(doc, startY);
+
+      startY += 8; // adjust this value as needed
+
+      // Add account details
+      startY = this.addAccountDetails(doc, payableByDate, startY);
+
+      // Reduce the gap before the next section
+      startY -= 28; // adjust this value as needed
+
+      // Add payment options and consequences of non-payment
+      startY = this.addPaymentDetails(doc, startY);
+
+      // Increase the gap before the next section
+      startY += 20;
+
+      // Add pay points notice
+      startY = this.addPayPointsNotice(doc, startY);
+
+      startY -= 35; // adjust this value as needed
+
+
+      // Add vendors image
+
+      //  const vendors = new Image();
+      //vendors.src = 'assets/vendors.jpg';
+
+      //const pageWidth = doc.internal.pageSize.getWidth();
+      //const aspectRatio = vendors.width / vendors.height; // assumes vendors Image object contains width and height properties
+      //const imgHeightOnPage = pageWidth / aspectRatio;
+
+      //doc.addImage(vendors, 'JPEG', 0, startY + 40, pageWidth, imgHeightOnPage);
+
+
+      const vendors = new Image();
+      vendors.src = 'assets/vendors.jpg';
+      doc.addImage(vendors, 'JPEG', 15, startY + 25, 180, 20);
+
+      // Save the PDF as a blob object and push it for temporary upload
+      this.saveAndUploadPDF(doc);
+      // this.generateInvoiceSplit(ClientName, payableByDate,);
+
+      // Navigate to home page
+    this.router.navigate(["/home"]);
+    this.notificationsService.addUpdateNotification(0, "Invoice Generated", "Invoice Generated For Permit", false, this.CurrentApplication.UserID, this.CurrentUser.appUserId, this.ApplicationID, "An invoice has been generated which can be found in the financials section of your application , please pay this so that the wayleave process may proceed").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        alert(data.responseMessage);
+      }
+      else {
+        alert(data.responseMessage);
+      }
+     
+    }, error => {
+      console.log("Error", error);
+    })
+     
+    
+  }
+
+  addInvoiceTitle(doc) {
+    autoTable(doc, {
+      body: [['Wayleave Supervision Fee Invoice' + this.loggedInUsersSubDepartmentName]],
+      styles: { halign: 'right', fontSize: 20, textColor: '#000000' },
+      theme: 'plain'
+    });
+  }
+
+  addClientDetails(doc, ClientName) {
+    autoTable(doc, {
+      body: [['Invoice to:  ' + ClientName
+        + '\nWayleave Reference: ' + this.ApplicationID
+        + '\nTax invoice number: ' + this.generatedInvoiceNumber
+        + '\nDate: ' + this.formattedDate
+        + '\nCustomer VAT registration number: No.4500193497'
+        + '\nBusiness partner number: No.4500193497']],
+      styles: { halign: 'right' },
+      theme: 'plain'
+    });
+  }
+
+  addCompanyDetails(doc) {
+    autoTable(doc, {
+      body: [['Civic Centre'
+        + '\n12 Hertzog Boulevard 8001'
+        + '\nPO Box 655 Cape Town 8000'
+        + '\nVAT registration number: 4500193497'
+        + '\nEmail: wayleaves@capetown.gov.za'
+        + '\nWeb address: www.capetown.gov.za']],
+      styles: { halign: 'left' },
+      theme: 'plain'
+    });
+  }
+
+  calculatePayableByDate() {
+    function addBusinessDays(date, days) {
+      date = new Date(date);
+      let count = 0;
+      while (count < days) {
+        date.setDate(date.getDate() + 1);
+        if (date.getDay() !== 0 && date.getDay() !== 6) { // not a weekend, so increment count
+          count++;
+        }
+      }
+      return date;
+    }
+
+    const formattedDateObj = new Date(this.formattedDate);
+    return addBusinessDays(formattedDateObj, 7);
+  }
+
+  addServiceItemsAndCostDetails(doc, startY) {
+    // Generate table body based on ServiceItemList data and calculate the total cost
+    let totalCost = 0;
+    let tableBody = this.SupervisionFeesList.map(item => {
+      const amount = item.Rate; // Assuming amount equals rate for each item
+      totalCost += amount;
+      return ['1', 'Supervision Fee', amount, amount];
+    });
+
+    // Calculate the VAT and total amount due
+    const vat = totalCost * 0.15;
+    const totalAmountDue = totalCost + vat;
+
+    // Add cost details directly to the table body
+    tableBody.push(
+      ['Amount Due', '', '', totalCost.toFixed(2)],
+      ['VAT (15%)', '', '', vat.toFixed(2)],
+      ['Total Amount Due', '', '', totalAmountDue.toFixed(2)]
+    );
+
+    // Add the combined table to the document
+    autoTable(doc, {
+      head: [['Quantity', 'Description', 'Unit', 'Amount']],
+      body: tableBody,
+      theme: 'grid',
+      styles: { cellPadding: 1, lineWidth: 0.1, lineColor: [220, 220, 220], cellWidth: 'wrap', fillColor: [255, 255, 255] }, // setting cell color to white
+      headStyles: { fillColor: [180, 180, 180] }, // setting header color to a darker grey
+      startY: startY,
+      margin: { top: 20 }
+    });
+
+    // Return the new startY value
+    return startY + 40; // decreased from 60 + 20
+  }
+
+  addAccountDetails(doc, payableByDate, startY) {
+    const boxContent = 'Profit Centre: ' + this.UserSubDepartment.profitCenter
+      + '\nGL Acc: ' + this.UserSubDepartment.glCode;
+      + '\nPayable by: ' + payableByDate.toISOString().slice(0, 10); // Format date as YYYY-MM-DD
+
+    autoTable(doc, {
+      body: [[boxContent]],
+      styles: { halign: 'center', valign: 'middle', fillColor: [255, 255, 255] }, // white fill color
+      theme: 'grid',
+      startY: startY,
+    });
+
+    return startY + 30; // adjust this value as needed
+  }
+
+
+
+  addPaymentDetails(doc, startY) {
+    autoTable(doc, {
+      body: [['Please Note:\n\n'
+        + '1. Payment options:\n\n'
+        + '(a) Electronic payments (EFT): Select the City of Cape Town as a bank-listed beneficiary on your bank\'s website. Use the reference number provided above.\n'
+        + '(b) Direct deposit at Nedbank: Please present your reference number to the bank teller.\n'
+        + '(c) Cash, debit card, credit card and other: Please present your reference number to the cashier.\n\n'
+        + '2. Failure to pay could result in:\n\n'
+        + '(a) The lapse of your application, resulting in the need for re-application\n'
+        + '(b) Necessity for re-application with no guarantee of similar conditions / requirements']],
+      styles: { halign: 'left' },
+      theme: 'plain',
+      startY: startY + 20 // adjust this value to create space between the tables
+    });
+    return startY + 20 + 20; // decreased from 100 + 20
+  }
+
+  addPayPointsNotice(doc, startY) {
+    autoTable(doc, {
+      body: [['Pay points: City of Cape Town cash offices or the vendors below:']],
+      styles: { halign: 'left' },
+      theme: 'plain',
+      startY: startY + 20 // adjust this value to create space between the tables
+    });
+    return startY + 20 + 20; // decreased from 100 + 20
+  }
+
+  saveAndUploadPDF(doc) {
+    const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
+    const file = new File([pdfData], 'Wayleave Supervision Fee Invoice - ' + this.loggedInUsersSubDepartmentName +'.pdf', { type: 'application / pdf' });
+
+    // Prepare the form data
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.sharedService.pushFileForTempFileUpload(file, "Wayleave Supervision Fee Invoice" + this.loggedInUsersSubDepartmentName + ".pdf");
+    this.save2();
+  }
+
+
+  save2() {
+    const filesForUpload = this.sharedService.pullFilesForUpload();
+    for (let i = 0; i < filesForUpload.length; i++) {
+      const formData = new FormData();
+      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "_appID" + this.ApplicationID;
+      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+        .subscribe({
+          next: (event) => {
+            if (event.type === HttpEventType.UploadProgress && event.total) {
+              this.progress = Math.round(100 * event.loaded / event.total);
+            } else if (event.type === HttpEventType.Response) {
+              this.message = 'Upload success.';
+              this.uploadFinishedF2(event.body);
+            }
+          },
+          error: (err: HttpErrorResponse) => console.log(err)
+        });
+    }
+
+  }
+
+
+  saveAndUploadPDFSplit(doc) {
+    this.sharedService.FileDocument = [];
+    doc.save("invoiceSplit.pdf");
+    const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
+    const file = new File([pdfData], 'Wayleave Supervision Fee Invoice Split.pdf', { type: 'application/pdf' });
+
+    // Prepare the form data
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.sharedService.pushFileForTempFileUpload(file, "Wayleave Supervision Fee Invoice Split" + ".pdf");
+    this.save();
+  }
+
+
+  addServiceItemsAndCostDetailsSJ(doc, startY) {
+    // Generate table body based on ServiceItemList data and calculate the total cost
+    let totalCost = 0;
+    let tableBody = this.SupervisionFeesList.map(item => {
+      const amount = item.Rate; // Assuming amount equals rate for each item
+      totalCost += amount;
+
+      let profitCenter = '';
+      let glCode = '';
+      this.loggedInUsersDepartment
+
+      return ['1', 'Supervistion Fees', amount, amount, profitCenter, glCode];
+    });
+
+    // Calculate the VAT and total amount due
+    const vat = totalCost * 0.15;
+    const totalAmountDue = totalCost + vat;
+
+    // Add cost details directly to the table body
+    tableBody.push(
+      ['Amount Due', '', '', totalCost.toFixed(2), '', ''],
+      ['VAT (15%)', '', '', vat.toFixed(2), '', ''],
+      ['Total Amount Due', '', '', totalAmountDue.toFixed(2), '', '']
+    );
+
+    // Add the combined table to the document
+    autoTable(doc, {
+      head: [['Quantity', 'Description', 'Unit', 'Amount', 'Profit Center', 'GL Code']],
+      body: tableBody,
+      theme: 'grid',
+      styles: { cellPadding: 1, lineWidth: 0.1, lineColor: [220, 220, 220], cellWidth: 'wrap', fillColor: [255, 255, 255] }, // setting cell color to white
+      headStyles: { fillColor: [180, 180, 180] }, // setting header color to a darker grey
+      startY: startY,
+      margin: { top: 20 }
+    });
+
+    // Return the new startY value
+    return startY + 40; // decreased from 60 + 20
+  }
+
+
+
+  generateInvoiceSplit(ClientName: string, payableByDate: string) {
+
+    // Create a new PDF
+    const doc = new jsPDF();
+
+    // Add company logo
+    const logo = new Image();
+    logo.src = 'assets/cctlogoblack.png';
+    doc.addImage(logo, 'png', 10, 10, 60, 20);
+
+    // Add invoice title
+    this.addInvoiceTitle(doc);
+
+    // Add client details
+    this.addClientDetails(doc, ClientName);
+
+    // Add company contact details
+    this.addCompanyDetails(doc);
+
+
+    // Set the starting Y position for the table
+    let startY = 100;
+
+    // Generate service items table, cost details and calculate total cost
+    startY = this.addServiceItemsAndCostDetailsSJ(doc, startY);
+
+    startY += 8; // adjust this value as needed
+
+    // Add account details
+    startY = this.addAccountDetails(doc, payableByDate, startY);
+
+    // Reduce the gap before the next section
+    startY -= 28; // adjust this value as needed
+
+    // Add payment options and consequences of non-payment
+    startY = this.addPaymentDetails(doc, startY);
+
+    // Increase the gap before the next section
+    startY += 20;
+
+    // Add pay points notice
+    startY = this.addPayPointsNotice(doc, startY);
+
+    startY -= 35; // adjust this value as needed
+
+
+    // Add vendors image
+
+    //  const vendors = new Image();
+    //vendors.src = 'assets/vendors.jpg';
+
+    //const pageWidth = doc.internal.pageSize.getWidth();
+    //const aspectRatio = vendors.width / vendors.height; // assumes vendors Image object contains width and height properties
+    //const imgHeightOnPage = pageWidth / aspectRatio;
+
+    //doc.addImage(vendors, 'JPEG', 0, startY + 40, pageWidth, imgHeightOnPage);
+
+
+    const vendors = new Image();
+    vendors.src = 'assets/vendors.jpg';
+    doc.addImage(vendors, 'JPEG', 15, startY + 25, 180, 20);
+
+    // Save the PDF as a blob object and push it for temporary upload
+    this.saveAndUploadPDFSplit(doc);
+
+    // Navigate to home page
+    this.router.navigate(["/home"]);
+
+  }
+
+
+
+
+  uploadFinishedF2 = (event: any) => {
+
+    this.response = event;
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
+
+
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
+
+    this.financialService.addUpdateFinancial(0, documentName, "Financial-" + this.CurrentUserProfile[0].subDepartmentName, documentName, this.response?.dbPath, this.ApplicationID, "System Generated Invoice").subscribe((data: any) => {
+      /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
+      if (data.responseCode == 1) {
+
+      }
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+  UserSubDepartment: any; 
+    async GetSubDepartment() {
+      try {
+        const data: any = await this.subDepartment.getSubDepartmentsList().toPromise();
+
+        if (data.responseCode == 1) {
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const current = data.dateSet[i];
+
+            if (this.loggedInUsersSubDepartmentName == current.subDepartmentName) {
+              this.UserSubDepartment = current;
+              break;
+            
+            }
+          
+          }
+         
+        } else {
+          alert(data.responseMessage);
+        }
+
+        console.log("This application's data", data);
+      } catch (error) {
+        console.log("Error: ", error);
+      }
+    }
+  
+  getCDV(ClientName: string) {
+
+    const accountString = this.accountNumber.toString();
+    const weights = [3, 2, 1, 2, 3, 4, 5, 6];
+
+    // Throw an error if the account number is not 8 digits long
+    if (accountString.length !== 8) {
+      throw new Error('Account number must be 8 digits long');
+    }
+
+    let sum = 0;
+
+    for (let i = 0; i < 8; i++) {
+      const digit = parseInt(accountString.charAt(i));
+      sum += digit * weights[i];
+    }
+
+    const cdv = sum % 9;
+
+    //alert(this.accountNumber.toString() + cdv.toString());
+    this.generatedInvoiceNumber = this.accountNumber.toString() + cdv.toString();
+
+    this.generateInvoice(ClientName);
+
+
+
+  }
+
+  async getCurrentInvoiceNumberForGen(ClientName: string) {
+    await this.configService.getConfigsByConfigName("InvoiceNumber").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        const current = data.dateSet[0];
+        this.accountNumber = current.utilitySlot1;
+        let newInvoiceForConfig = Number(current.utilitySlot1) + 1;
+
+        this.configService.addUpdateConfig(current.configID, null, null, newInvoiceForConfig.toString(), null, null, null).subscribe((data: any) => {
+          if (data.responseCode == 1) {
+
+            this.getCDV(ClientName);
+
+          }
+          else {
+            //alert("Invalid Email or Password");
+            alert(data.responseMessage);
+          }
+          console.log("addUpdateConfigReponse", data);
+
+        }, error => {
+          console.log("addUpdateConfigError: ", error);
+        })
+
+
+
+
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("getConfigsByConfigNameReponse", data);
+
+    }, error => {
+      console.log("getConfigsByConfigNameError: ", error);
+    })
+  }
+   //Permit Kyle 13-02 - 24
 }
 
 

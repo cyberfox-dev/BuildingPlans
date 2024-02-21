@@ -61,4 +61,12 @@ export class ServiceItemService {
     return this.httpClient.post(this.baseURL + "GetServiceItemByDepID", depID);
 
   }
+
+  public getAllServiceItemsByCategory(category: string | null) {
+    const body = {
+      Category: category
+    }
+
+    return this.httpClient.post(this.baseURL + "GetAllServiceItemsByCategory", body);
+  }
 }

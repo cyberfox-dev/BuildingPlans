@@ -222,9 +222,39 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+        //Permit Kyle 13-02 - 24
+        [HttpPost("GetFinancialsForApplicationByType")]
+        public async Task<object> GetFinancialsForApplicationByType([FromBody] FinancialBindingModel model)
+        {
+            try
+            {
+                var result = await (
+                    from financial in _context.Financial
+                    where financial.ApplicationID == model.ApplicationID && financial.FinancialType == model.FinancialType && financial.isActive == true
+                    select new FinancialDTO()
+                    {
+                        FinancialID = financial.FinancialID,
+                        FinancialName = financial.FinancialName,
+                        FinancialType = financial.FinancialType,
+                        DocumentName = financial.DocumentName,
+                        ApplicationID = financial.ApplicationID,
+                        DocumentLocalPath = financial.DocumentLocalPath,
+                        CreatedById = financial.CreatedById,
+
+                    }).ToListAsync();
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Documents For Application By Category", result));
+
+            }
+            catch (Exception ex)
+            {
 
 
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+        //Permit Kyle 13-02 - 24
     }
 
- 
+
 }

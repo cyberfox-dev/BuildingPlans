@@ -130,4 +130,15 @@ table {
   hyphens: auto;
   text-align: center;
 }
+
+.statusUnpaid{
+  color: #ffad30;
+  text-align:left;
+}
+
+.statusPaid {
+  color:#42640c;
+  text-align:left;
+
+}
 /*Permit Kyle 13-02-24*/

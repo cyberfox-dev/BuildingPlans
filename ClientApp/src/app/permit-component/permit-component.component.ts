@@ -10,6 +10,7 @@ import { PDFDocument } from 'pdf-lib';
 import { StagesService } from '../service/Stages/stages.service';
 import { AuditTrailService } from '../service/AuditTrail/audit-trail.service';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
+import { FinancialService } from '../service/Financial/financial.service';
 //Permit Kyle 13-02-24
 
 //PTC = Permit To Comment
@@ -25,6 +26,9 @@ export interface PTCList {
   PermitCommentStatus: string;
   PermitDocName: string;
   DocumentLocalPath: string;
+  isPaid: boolean;
+  hasDoc: boolean;
+ 
 }
 //Permit Kyle 13-02-24
 export interface StagesList {
@@ -46,7 +50,7 @@ export class PermitComponentComponent implements OnInit {
   StagesList: StagesList[] = [];//Permit Kyle 13-02-24
 
   //permitupload Sindiswa 08 January 2024
-  displayedColumns: string[] = ['subDepartmentName','zoneName' ,'comment' ,'indication', 'addDocument'];
+  displayedColumns: string[] = ['subDepartmentName','zoneName' ,'comment' ,'indication', 'addDocument','status','moveToPaid'];
   dataSource = this.PTCList;
   MeetOnSite = "MeetOnSite";
   Approved = "Approved";
@@ -62,10 +66,17 @@ export class PermitComponentComponent implements OnInit {
     CurrentUserProfile: any;
     CanIssuePermit: boolean;
   CanConsolidate: boolean;
-  constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private permitService: PermitService, private shared: SharedService, private applicationsService: ApplicationsService, private stagesService: StagesService, private auditTrailService: AuditTrailService,private router :Router) { }
+  isEMB: boolean;
+  isCalledInsidePermit: boolean;
+
+  constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private permitService: PermitService, private shared: SharedService, private applicationsService: ApplicationsService, private stagesService: StagesService, private auditTrailService: AuditTrailService,private router :Router , private financialService :FinancialService) { }
 
   ngOnInit(): void {
     this.getAllPermitForComment();
+
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
+
     this.stringifiedDataCurrentUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataCurrentUserProfile);
     
@@ -78,9 +89,14 @@ export class PermitComponentComponent implements OnInit {
       else {
         this.CanIssuePermit = false;
       }
+      this.isCalledInsidePermit = true;
+      
     }
     
     this.getAllStages();//Permit Kyle 13-02-24
+    if (this.CurrentUserProfile[0].subDepartmentName == "EMB") {
+      this.isEMB = true;
+    }
   }
 
   @Input() ApplicationID;
@@ -118,7 +134,18 @@ export class PermitComponentComponent implements OnInit {
           tempPTCList.ZoneName = current.zoneName;
           tempPTCList.PermitDocName = current.permitDocName;
           tempPTCList.DocumentLocalPath = current.documentLocalPath;
-         
+          tempPTCList.isPaid = current.isPaid;
+          debugger;
+          if (current.permitDocName != null && current.documentLocalPath != null) {
+            debugger;
+            tempPTCList.hasDoc = true;
+          }
+          else {
+            tempPTCList.hasDoc = false;
+          }
+          if (tempPTCList.isPaid == null) {
+            tempPTCList.isPaid = false;
+          }
 
           this.PTCList.push(tempPTCList);
 
@@ -133,7 +160,7 @@ export class PermitComponentComponent implements OnInit {
       }
       this.PTCListTable?.renderRows();
       console.log("reponse", data);
-      console.log("PTCList", this.PTCList);
+      console.log("PTCList", this.PTCList, this.CurrentUserProfile[0].userID);
     }, error => {
       console.log("Error: ", error);
     })
@@ -144,7 +171,7 @@ export class PermitComponentComponent implements OnInit {
     debugger;
     for (var i = 0; i < this.PTCList.length; i++) {
       debugger;
-      if (this.PTCList[i].PermitDocName != null) {
+      if (this.PTCList[i].PermitDocName != null && this.PTCList[i].isPaid == true) {
         x++;
       }
     }
@@ -352,6 +379,86 @@ export class PermitComponentComponent implements OnInit {
       console.log("Error", error);
 
     })
+  }
+  //Permit Kyle 13-02-24
+  getPermitDocument(index: any) {
+    const category = "Financial-" + this.PTCList[index].SubDepartmentName;
+    this.financialService.getFinancialsForApplicationByType(this.ApplicationID, category).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        const current = data.dateSet[0];
+
+        this.getPermitInvoice(current.documentName);
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+    })
+  }
+  getPermitInvoice(permitDocumentName: any) {
+    debugger;
+    
+    fetch(this.apiUrl + `documentUpload/GetDocument?filename=${permitDocumentName}`)
+      .then(response => {
+        if (response.ok) {
+          // The response status is in the 200 range
+
+          return response.blob(); // Extract the response body as a Blob
+
+        } else {
+          throw new Error('Error fetching the document');
+        }
+      })
+      .then(blob => {
+        // Create a URL for the Blob object
+        const documentURL = URL.createObjectURL(blob);
+
+        window.open(documentURL, '_blank');
+
+        // Download the document
+        const link = document.createElement('a');
+        link.href = documentURL;
+        link.download = permitDocumentName; // Set the downloaded file name
+        link.click();
+      })
+      .catch(error => {
+        console.log(error);
+        // Handle the error appropriately
+      });
+  }
+
+  moveToPaid(index: any) {
+    const permitForComment = this.PTCList[index];
+    if (confirm("Are you sure you want to move this to paid?")) {
+      this.permitService.addUpdatePermitSubForComment(permitForComment.PermitSubForCommentID, permitForComment.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, true).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          alert("Permit for Sub Department moved to paid");
+          this.router.navigate(["/home"]);
+        }
+        else {
+          alert(data.responseMessage);
+        }
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+  }
+
+  requestForDelete(index: any) {
+    const permitForSubComment = this.PTCList[index];
+    if (confirm("Are you sure you want to request an EMB user to remove the permit document ?")) {
+      this.permitService.addUpdatePermitSubForComment(permitForSubComment.PermitSubForCommentID, null, null, null, null, null, null, null, null, null, null, null, true).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          alert("Request for delete submitted successfully");
+        }
+        else {
+          alert(data.responseMessage);
+        }
+      }, error => {
+        console.log("Error", error);
+      })
+    }
   }
   //Permit Kyle 13-02-24
 }

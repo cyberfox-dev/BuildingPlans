@@ -75,6 +75,8 @@ export class ApplicationAlertsComponent implements OnInit {
   stringifiedDataUserProfile: any;
   CurrentUserProfile: any;
 
+  isEMB: boolean;
+
   applicationData: any;
   ngOnInit(): void {
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
@@ -83,8 +85,11 @@ export class ApplicationAlertsComponent implements OnInit {
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
 
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
-
+    this.isEMB = this.shared.EMBLoggedIn;
     this.getAllClarificationsAlerts();
+
+
+
   }
   getAllClarificationsAlerts() {
     debugger;
@@ -105,7 +110,7 @@ export class ApplicationAlertsComponent implements OnInit {
           this.ClarificationsList.push(tempClarifyAlert);
         }
 
-       this.getAllPendingApprovalPacksForUser();
+        this.getAllPendingApprovalPacksForUser();
       }
       else {
         alert(data.responseMessage);
@@ -140,7 +145,7 @@ export class ApplicationAlertsComponent implements OnInit {
 
   goToApplication(index: any) {
     const projectNumber = this.ClarificationsList[index].ProjectNumber;
-   
+
     this.shared.setProjectNumber(projectNumber);
 
     this.applicationService.getApplicationsByProjectNumber(projectNumber).subscribe((data: any) => {
@@ -193,8 +198,8 @@ export class ApplicationAlertsComponent implements OnInit {
           this.applicationList.push(tempApplicationListShared)
 
         }
-     
-        
+
+
         this.shared.getShowFormerApps();
 
         this.shared.setViewApplicationIndex(this.applicationList);
@@ -215,7 +220,7 @@ export class ApplicationAlertsComponent implements OnInit {
 
   getAllPendingApprovalPacksForUser() {
     debugger;
-    this.applicationService.getApplicationsList(this.CurrentUser.appUserId, this.CurrentUserProfile[0].isInternal).subscribe(async(data: any) => {
+    this.applicationService.getApplicationsList(this.CurrentUser.appUserId, this.CurrentUserProfile[0].isInternal).subscribe(async (data: any) => {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempApplicationAlert = {} as Clarifications;
@@ -227,14 +232,14 @@ export class ApplicationAlertsComponent implements OnInit {
             tempApplicationAlert.ProjectNumber = current.projectNumber;
 
             this.ClarificationsList.push(tempApplicationAlert);
-            
+
           }
 
           if (current.createdById == this.CurrentUser.appUserId && current.currentStageName == "PTW") {
-            
-           const hasDocs =  await this.checkIfHasDocs(current.applicationID);
+
+            const hasDocs = await this.checkIfHasDocs(current.applicationID);
             debugger;
-            
+
             if (hasDocs.length > 0 && (hasDocs.includes(false) == false)) {
               debugger;
               tempApplicationAlert.ApplicationID = current.applicationID;
@@ -246,6 +251,8 @@ export class ApplicationAlertsComponent implements OnInit {
 
           }
         }
+
+
         this.dataSourceClarifications = this.ClarificationsList;
         this.clarificationsTable?.renderRows();
         if (this.ClarificationsList.length > 0) {
@@ -262,7 +269,7 @@ export class ApplicationAlertsComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
-  async checkIfHasDocs(applicationID: number): Promise<any>{
+  async checkIfHasDocs(applicationID: number): Promise<any> {
     try {
       const data: any = await this.permitService.getPermitSubForCommentByApplicationID(applicationID).toPromise();
       if (data.responseCode == 1) {
@@ -272,19 +279,19 @@ export class ApplicationAlertsComponent implements OnInit {
           const current = data.dateSet[i].permitSubForCommentID;
 
           const dataDoc: any = await this.permitService.hasPermitSubForCommentDocuments(current).toPromise();
-            if (dataDoc.responseCode == 1) {
-              debugger;
-              const hasDocs = dataDoc.dateSet.hasDocuments;
+          if (dataDoc.responseCode == 1) {
+            debugger;
+            const hasDocs = dataDoc.dateSet.hasDocuments;
 
-              this.permitHasDoc.push(hasDocs);
+            this.permitHasDoc.push(hasDocs);
 
-            }
-           
-           
+          }
 
-         
+
+
+
         }
-        console.log("has Documents", this.permitHasDoc , data);
+        console.log("has Documents", this.permitHasDoc, data);
         return this.permitHasDoc;
 
       } else {
@@ -296,5 +303,38 @@ export class ApplicationAlertsComponent implements OnInit {
       throw error;
     }
   }
+
+  //getAllRequestsForDeletes() {
+  //  this.permitService.getAllRequestsForDelete().subscribe(async (data: any) => {
+  //    if (data.responseCode == 1) {
+  //      for (let i = 0; i < data.dateSet.length; i++) {
+  //        const tempDeleteRequest = {} as Clarifications;
+  //        const current = data.dateSet[i];
+
+  //        tempDeleteRequest.ApplicationID = current.applicationID;
+  //        tempDeleteRequest.Description = "Request for delete of permit for " + current.subDepartmentName;
+  //        tempDeleteRequest.ProjectNumber = await this.getProjectNumberForApplication(current.applicationID);
+
+  //        this.ClarificationsList.push(tempDeleteRequest);hj
+  //      }
+  //      this.dataSourceClarifications = this.ClarificationsList;
+  //      this.clarificationsTable?.renderRows();
+  //      if (this.ClarificationsList.length > 0) {
+
+  //        this.openClarificationsAlerts();
+  //      }
+  //    }
+  //    else {
+  //      alert(data.responseMessage);
+  //    }
+
+
+  //  }, error => {
+  //    console.log("Error: ", error);
+
+
+  //  })
+  //}
 }
+
 

@@ -468,6 +468,7 @@ export class ViewProjectInfoComponent implements OnInit {
   reply: string = "";
  commentEdit: string = "";
   //Final Approver && Senior Approver Kyle 01/02/24
+  canCreateNote: boolean = false;
 
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
@@ -610,6 +611,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.AllCurrentUserRoles = JSON.parse(this.stringifiedDataRoles);
 
     this.onCheckAllCurrentUserRole();
+  
     // Audit Trail Kyle
 
 
@@ -3949,7 +3951,12 @@ export class ViewProjectInfoComponent implements OnInit {
           if (tempSubDepartmentList.commentStatus == "Rejected") {
             this.countReject++;
           }
+          //Permit Kyle 13-02 - 24
+          if (tempSubDepartmentList.subDepartmentName == this.CurrentUserProfile[0].subDepartmentName && current.zoneName == this.CurrentUserProfile[0].zoneName) {
+            this.canCreateNote = true;
+          }
 
+          
           this.SubDepartmentList.push(tempSubDepartmentList);
         }
 

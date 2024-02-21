@@ -819,7 +819,7 @@
     <!-----Status of works Kyle 16-02-24-->
     <mat-tab label="Status of Works" *ngIf="showStatusOfWorksTab">
 
-      <button mat-raised-button color="permit" (click)="openXl(MFTModal)">Create New Note</button>
+      <button mat-raised-button *ngIf="canCreateNote === true" color="permit" (click)="openXl(MFTModal)">Create New Note</button>
       <app-status-of-works [ApplicationID]="ApplicationID"></app-status-of-works>
 
      

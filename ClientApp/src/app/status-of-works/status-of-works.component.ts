@@ -30,6 +30,7 @@ export interface SubDepartmentForCommentList {
   subdepartmentForCommentID: number | null;
   UserAssaignedToComment: string | null;
   commentStatus: string | null;
+  zoneName: string;
 }
 
 export interface ServiceItemsList {
@@ -65,8 +66,30 @@ export class StatusOfWorksComponent implements OnInit {
   displayedColumnsServiceItem: string[] = ['ServiceItemCode', 'Rate', 'Total', 'actions'];
   dataSourceServiceItems = this.serviceItemList;
 
+  stringifiedData: any;
+  CurrentUser: any;
+
+  stringifiedDataRoles: any;
+  AllCurrentUserRoles: any;
+
+  stringifiedDataUserProfile: any;
+  CurrentUserProfile: any;
+
+  canCreateNote: boolean = false;
+  MFTUser: boolean = false;
+
   ngOnInit(): void {
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
+
+    this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
+    this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
+
+    this.stringifiedDataRoles = JSON.parse(JSON.stringify(localStorage.getItem('AllCurrentUserRoles')));
+    this.AllCurrentUserRoles = JSON.parse(this.stringifiedDataRoles);
+
     this.getMFTForApplication();
+    this.checkUserRole(); 
   }
 
   getMFTForApplication() {
@@ -187,7 +210,12 @@ export class StatusOfWorksComponent implements OnInit {
 
           tempSubDepartment.subDepartmentID = current.subDepartmentID;
           tempSubDepartment.subDepartmentName = current.subDepartmentName;
+          tempSubDepartment.zoneName = current.zoneName;
 
+
+          if (this.CurrentUserProfile[0].subDepartmentName == current.subDepartmentName && this.CurrentUserProfile[0].zoneName == current.zoneName) {
+            this.canCreateNote = true;
+          }
           this.SubDepartmentForCommentList.push(tempSubDepartment)
         }
       } else {
@@ -230,5 +258,29 @@ export class StatusOfWorksComponent implements OnInit {
       console.log("ErrorGetAllSubDepartmentsForComment: ", error);
 
     })
+  }
+
+  checkUserRole() {
+    for (let i = 0; i < this.AllCurrentUserRoles.length; i++) {
+      const userRole = this.AllCurrentUserRoles[i].roleName;
+
+      if (userRole == "MFT") {
+        this.MFTUser = true;
+      }
+    }
+
+    console.log("this MFTUSer & CanCreateNote", this.MFTUser, this.canCreateNote);
+  }
+
+  onCheckInfringement(index: any) {
+    let isCheck = this.serviceItemList[index].isChecked;
+    if (isCheck == false) {
+      isCheck = true;
+    }
+
+    else {
+      isCheck = false;
+    }
+
   }
 }
