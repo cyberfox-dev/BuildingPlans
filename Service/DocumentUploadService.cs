@@ -19,7 +19,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
         //Implementing the interface Methods
-        public async Task<DocumentUpload> AddUpdateDocument(int? documentID, string documentName, string? DocumentLocalPath, int? applicationID, string? assignedUserID, string createdById,string? groupName, int?subDepID, string? subDepName, bool? isPlanning, bool? isRepository,string? description)
+        public async Task<DocumentUpload> AddUpdateDocument(int? documentID, string documentName, string? DocumentLocalPath, int? applicationID, string? assignedUserID, string createdById, string? groupName, int? subDepID, string? subDepName, bool? isPlanning, bool? isRepository, string? description)
         {
 
             if (documentID == 0)
@@ -62,7 +62,7 @@ namespace WayleaveManagementSystem.Service
             {
 
 
-                
+
                 tempDocumentUpload.DocumentGroupName = groupName;
                 tempDocumentUpload.SubDepartmentID = subDepID;
                 tempDocumentUpload.SubDepartmentName = subDepName;
@@ -87,13 +87,13 @@ namespace WayleaveManagementSystem.Service
             else
             {
                 var dbPath = tempDocumentUpload.DocumentLocalPath;
-               
+
                 var fullPath = Path.Combine(Directory.GetCurrentDirectory(), dbPath);
                 if (File.Exists(fullPath))
                 {
                     File.Delete(fullPath);
                 }
-                
+
 
 
                 // Update the database record
@@ -106,7 +106,7 @@ namespace WayleaveManagementSystem.Service
                 return true;
             }
 
-            
+
         }
 
 
@@ -162,10 +162,10 @@ namespace WayleaveManagementSystem.Service
               }
               ).ToListAsync();
 
-        } 
-        
-        
-        
+        }
+
+
+
         public async Task<List<DocumentUploadDTO>> GetAllDocumentsForApplicationForPlanning(int? applicationID)
         {
 
@@ -242,6 +242,8 @@ namespace WayleaveManagementSystem.Service
             }
             return documentUploadDTO;
         }
+
+       
     }
 
-    }
+}

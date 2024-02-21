@@ -20,5 +20,6 @@ namespace WayleaveManagementSystem.IServices
         Task<List<DocumentUploadDTO>> GetAllDocuments();
         Task<List<DocumentUploadDTO>> GetAllDocumentsForRepository();
         Task<List<DocumentUploadDTO>> GetAllDocumentsForUser(string assignedUserID);
+      
     }
 }

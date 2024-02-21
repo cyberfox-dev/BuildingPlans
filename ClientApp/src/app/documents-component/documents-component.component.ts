@@ -46,8 +46,9 @@ export class DocumentsComponentComponent implements OnInit{
 
   @Input() isCalledInsidePermit: boolean = false; //default?
   @Input() permitSubForCommentID: any;
-  @Input() permitDocumentName: any | null;
-  @Input() permitCommentStatus: string | null;//Permit Kyle 13-02-24
+  @Input() permitDocumentName: any |null;
+  @Input() permitCommentStatus: string;//Permit Kyle 13-02-24
+  
 
   hasDocument: boolean = false;
   fromReApplyArchive: boolean; //reapply Sindiswa 26 January 2024
@@ -63,6 +64,8 @@ export class DocumentsComponentComponent implements OnInit{
     this.getAllDocsForApplication();
     this.hasPermitSubForCommentDocument();
     this.fromReApplyArchive = this.shared.getFromReApplyArchive(); //reapply Sindiswa 26 January 2024
+   
+
   }
  
   uploadFileEvt(imgFile: any) {
@@ -276,6 +279,7 @@ export class DocumentsComponentComponent implements OnInit{
        
       
       });
+      console.log("PermitCommentStatusDocuments", this.permitCommentStatus, this.hasDocument, this.isCalledInsidePermit);
     }
   }
   // #endregion
