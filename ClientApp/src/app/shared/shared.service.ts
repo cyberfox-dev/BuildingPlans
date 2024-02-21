@@ -66,7 +66,8 @@ export interface ApplicationList {
   Coordinates: string,
   userID: string
   //Coordinates: string
-  UserID: any;
+    UserID: any;
+  clientAlternativeEmail: string; // checkingNotifications Sindiswa 15 February 2024
 }
 
 
@@ -100,7 +101,7 @@ export interface DistributionList {
   userID: string;
   zoneID: number;
   zoneName: string;
-
+  alternativeEmail: string; // chekingNotifications Sindiswa 13 February 2024
 }
 
 export interface ConfigList {

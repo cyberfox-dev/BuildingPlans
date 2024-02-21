@@ -342,13 +342,13 @@
               </div>
           </div>
           <div class="row">
-
+            <!--JJS Commit 20-02-24-->
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="natureOfWork" id="Email" placeholder="Type your description here..." name="natureOfWork">
+              <input type="text" class="form-control" [(ngModel)]="natureOfWork" id="Email" placeholder="Type your description here..." name="natureOfWork" maxlength="230" (input)="updateCharacterCount()">
               <label for="name">Describe the type or nature of the work to be undertaken. Note that this information will serve as the title for the application.</label>
-
-
+              <div>{{ natureOfWork.length }}/250</div>
             </div>
+
           </div>
         </div>
         <div class="card">

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WayleaveManagementSystem.Data;
 
@@ -11,9 +12,10 @@ using WayleaveManagementSystem.Data;
 namespace WayleaveManagementSystem.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240215095227_ApplicationAltEmail")]
+    partial class ApplicationAltEmail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1284,9 +1286,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("PermitDocName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("RequestForDelete")
-                        .HasColumnType("bit");
-
                     b.Property<int?>("SubDepartmentID")
                         .HasColumnType("int");
 
@@ -1303,9 +1302,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("isActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("isPaid")
                         .HasColumnType("bit");
 
                     b.HasKey("PermitSubForCommentID");

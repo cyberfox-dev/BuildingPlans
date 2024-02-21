@@ -139,6 +139,7 @@ export interface ApplicationList {
   isPlanning?: boolean,
   permitStartDate: Date,
   userID: string,
+  clientAlternativeEmail: string, //checkingNotifications Sindiswa 15 February 2024
 }
 
 export interface ZoneList {
@@ -184,6 +185,7 @@ export interface UserZoneList {
   fullName: string;
   zoneLinkID?: any
   Email: string;
+  alternativeEmail: string; //checkingNotifications Sindiswa 15 February 2024
 }
 
 export interface RolesList {
@@ -1300,11 +1302,14 @@ export class ActionCenterComponent implements OnInit {
 
 
               this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application approved", emailContent, emailContent);
+              if (this.CurrentUserProfile[0].alternativeEmail){ //checkingNotifications Sindiswa 15 February 2024
+                this.notificationsService.sendEmail(this.CurrentUserProfile[0].alternativeEmail, "Application approved", emailContent, emailContent);
+              }
 
 
 
 
-              this.notificationsService.addUpdateNotification(0, "Application approved", "You have approved an application", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have approved application " + this.projectNo).subscribe((data: any) => {
+              this.notificationsService.addUpdateNotification(0, "Application approved", "You have approved an application", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserId,  "You have approved application " + this.projectNo).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
 
@@ -1349,6 +1354,81 @@ export class ActionCenterComponent implements OnInit {
               this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "FinalReject", this.CurrentUser.appUserId, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
+
+                  //#region checkingNotifications Sindiswa 16 February 2024
+
+
+                  const emailContent = `
+        <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.loggedInUserName}</p>
+            <p>You have rejected application ${this.projectNo}</p>
+               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+     
+           
+    `;
+
+
+
+                  this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application rejected", emailContent, emailContent);
+                  if (this.CurrentUserProfile[0].alternativeEmail) { //checkingNotifications Sindiswa 15 February 2024
+                    this.notificationsService.sendEmail(this.CurrentUserProfile[0].alternativeEmail, "Application rejected", emailContent, emailContent);
+                  }
+
+
+
+
+                  this.notificationsService.addUpdateNotification(0, "Application approved", "You have rejected an application", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserId, "You have rejected application " + this.projectNo).subscribe((data: any) => {
+
+                    if (data.responseCode == 1) {
+
+
+                    }
+                    else {
+                      alert(data.responseMessage);
+                    }
+
+                    console.log("response", data);
+                  }, error => {
+                    console.log("Error", error);
+                  });
+
+
+
+
+                  // #endregion
+
+
 
                   this.viewProjectInfoComponent.getAllComments();
 
@@ -1834,8 +1914,11 @@ export class ActionCenterComponent implements OnInit {
 
 
           this.notificationsService.sendEmail(this.previousReviewer.email, "Application Returned By Senior Reviewer", emailContent, emailContent);
+          if (this.previousReviewer.alternativeEmail) {
+            this.notificationsService.sendEmail(this.previousReviewer.alternativeEmail, "Application Returned By Senior Reviewer", emailContent, emailContent);
+          }
 /*          this.notificationsService.sendEmail(this.previousReviewer.email, "Application Returned By Senior Reviewer", "Check html", "Dear " + this.previousReviewer.fullName + ",<br><br>Application: " + this.projectNo + ", Returned By Senior Reviewer" + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/          this.notificationsService.addUpdateNotification(0, "Application Returned", "Application returned by senior reviewer", false, this.CurrentUser.appUserID, this.previousReviewer.UserID, this.ApplicationID, "Application: " + this.projectNo + ", Returned By Senior Reviewer").subscribe((data: any) => {
+*/          this.notificationsService.addUpdateNotification(0, "Application Returned", "Application returned by senior reviewer", false, this.previousReviewer.UserID, this.ApplicationID, this.CurrentUser.appUserId, "Application: " + this.projectNo + ", Returned By Senior Reviewer").subscribe((data: any) => {
 
             if (data.responseCode == 1) {
               alert(data.responseMessage);
@@ -2155,7 +2238,8 @@ export class ActionCenterComponent implements OnInit {
             tempUserList.fullName = this.UserZoneList[i].fullName;
             tempUserList.id = this.UserZoneList[i].id;
             tempUserList.zoneLinkID = this.UserZoneList[i].zoneLinkID;
-            tempUserList.Email = this.UserZoneList[i].Email
+            tempUserList.Email = this.UserZoneList[i].Email;
+            tempUserList.alternativeEmail = this.UserZoneList[i].alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
 
             this.LinkedUserToSub.push(tempUserList);
           }
@@ -2234,13 +2318,20 @@ export class ActionCenterComponent implements OnInit {
     `;
 
 
-          this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "New wayleave application", emailContent, emailContent);
+          this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "Review Wayleave Application", emailContent, emailContent);
+          if (this.UserSelectionForManualLink.selected[0].alternativeEmail) { //checkingNotifications 15 February 2024
+            this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].alternativeEmail, "Review Wayleave Application", emailContent, emailContent);
+           }
 /*          this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "New Wayleave Application", "check html", "Dear " + this.UserSelectionForManualLink.selected[0].fullName + ",<br><br>You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/          this.notificationsService.addUpdateNotification(0, "Review Wayleave Application", "Application Assigned", false, this.CurrentUser.appUserID, this.UserSelectionForManualLink.selected[0].id, this.ApplicationID, "You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.").subscribe((data: any) => {
+*/          this.notificationsService.addUpdateNotification(0, "Review Wayleave Application", "Application Assigned", false, this.UserSelectionForManualLink.selected[0].id, this.ApplicationID,  this.CurrentUser.appUserId, "You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.").subscribe((data: any) => {
 
             if (data.responseCode == 1) {
 
-
+              console.log("This is what happens when a reviewer is assigned:");
+              console.log("These are the selected human's details?", this.UserSelectionForManualLink.selected[0]);
+              console.log("This should be the reviewer's UserID", this.UserSelectionForManualLink.selected[0].id);
+              console.log("This should be the logged in admin's UserID - original assignment", this.CurrentUser.appUserID);
+              console.log("This should be the logged in admin's UserID", this.CurrentUser.appUserId);
             }
             else {
               alert(data.responseMessage);
@@ -2518,6 +2609,7 @@ export class ActionCenterComponent implements OnInit {
               tempZoneList.fullName = current.fullName;
               tempZoneList.zoneLinkID = current.zoneLinkID;
               tempZoneList.Email = current.email;
+              tempZoneList.alternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
 
               this.UserZoneList.push(tempZoneList);
             }
@@ -2750,6 +2842,9 @@ export class ActionCenterComponent implements OnInit {
 
 
                 this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", emailContent, emailContent);
+                if (this.CurrentUserProfile[0].alternativeEmail) { //checkingNotifications Sindiswa 15 February 2024
+                  this.notificationsService.sendEmail(this.CurrentUserProfile[0].alternativeEmail, "Application provisionally approved", emailContent, emailContent);
+                }
 
                 this.accessGroupsService.getUserBasedOnRoleName("FinalApprover", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
 
@@ -2769,7 +2864,7 @@ export class ActionCenterComponent implements OnInit {
                 })
 
 /*                  this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have approved application " + this.projectNo + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application provisionally approved", false, this.CurrentUserProfile[0].UserID, this.CurrentUserProfile[0].UserID, this.ApplicationID, "You have approved application " + this.projectNo).subscribe((data: any) => {
+*/                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application provisionally approved", false, this.CurrentUserProfile[0].UserID, this.ApplicationID, this.CurrentUserProfile[0].UserID,  "You have approved application " + this.projectNo).subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
 
@@ -2833,7 +2928,7 @@ export class ActionCenterComponent implements OnInit {
             //let total = this.depositRequired.controls["total"].value;
 
 
-            this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.WBSCheck, null).subscribe((data: any) => {
+            this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.WBSCheck, null).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
                 alert("Updated Applications WBS");
@@ -2929,7 +3024,9 @@ export class ActionCenterComponent implements OnInit {
 
 
                   this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", emailContent, emailContent);
-
+                  if (this.CurrentUserProfile[0].alternativeEmail) { //checkingNotifications
+                    this.notificationsService.sendEmail(this.CurrentUserProfile[0].alternativeEmail, "Application provisionally approved", emailContent, emailContent);
+                  }
                   this.accessGroupsService.GetUserAndZoneBasedOnRoleName("Final Approver", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
                     if (data.responseCode === 1) {
                       // Filter out duplicates based on a unique property (e.g., email)
@@ -2977,7 +3074,11 @@ export class ActionCenterComponent implements OnInit {
      
            
     `;/*jjs commit 23JAN24 - typoFix for Email for Sign off, Applicant filter dashbaord table fix*/
+                        debugger;
                         this.notificationsService.sendEmail(approver.email, "Request for Sign-off", emailContent12, emailContent12);
+                        if (approver.alternativeEmail) { 
+                          this.notificationsService.sendEmail(approver.alternativeEmail, "Request for Sign-off", emailContent12, emailContent12);
+                        }
                       });
                       console.log("Filtered Final Approvers:", finalApproversForCurrentZone);
                     } else {
@@ -2990,7 +3091,7 @@ export class ActionCenterComponent implements OnInit {
                 // Function to get unique final approvers based on a property
 
 /*                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have approved application " + this.projectNo + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application provisionally approved", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have approved application " + this.projectNo).subscribe((data: any) => {
+*/                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application provisionally approved", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserId, "You have approved application " + this.projectNo).subscribe((data: any) => {
 
                     if (data.responseCode == 1) {
 
@@ -3095,6 +3196,9 @@ export class ActionCenterComponent implements OnInit {
 
 
               this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application disapproved", emailContent, emailContent);
+              if (this.CurrentUserProfile[0].alternativeEmail) { //checkingNotifications Sindiswa 15 February 2024
+                this.notificationsService.sendEmail(this.CurrentUserProfile[0].alternativeEmail, "Application disapproved", emailContent, emailContent);
+              }
               /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application disapproved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have disapproved application " + this.projectNo + "with comment: <br><br><i>" + this.leaveAComment  + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
               */
               // #region what's up with this case?
@@ -3118,7 +3222,7 @@ export class ActionCenterComponent implements OnInit {
               // #endregion
 
 
-              this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application Disapproved", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have disapproved application " + this.projectNo + "with comment:" + this.leaveAComment).subscribe((data: any) => {
+              this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application Disapproved", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserId, "You have disapproved application " + this.projectNo + "with comment:" + this.leaveAComment).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
 
@@ -3220,6 +3324,9 @@ export class ActionCenterComponent implements OnInit {
 
 
               this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
+              if (this.CurrentUserProfile[0].alternativeEmail) { //checkingNotifications Sindiswa 15 February 2024
+                this.notificationsService.sendEmail(this.CurrentUserProfile[0].alternativeEmail, "Request for clarification", emailContent, emailContent);
+              }
               /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
               */
               const emailContentApp = `
@@ -3267,8 +3374,11 @@ export class ActionCenterComponent implements OnInit {
 
 
               this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
+              if (this.applicationData.clientAlternativeEmail) { 
+                this.notificationsService.sendEmail(this.applicationData.clientAlternativeEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
+              }
 /*              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/              this.notificationsService.addUpdateNotification(0, "Wayleave Application Request", "Request for clarification", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+*/              this.notificationsService.addUpdateNotification(0, "Wayleave Application Clarification Request", "Request for clarification", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserId,  "You have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
 
@@ -3282,7 +3392,7 @@ export class ActionCenterComponent implements OnInit {
               }, error => {
                 console.log("Error", error);
               });
-              this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarificaion", false, this.CurrentUser.appUserID, this.applicationData.userID, this.ApplicationID, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+              this.notificationsService.addUpdateNotification(0, "Wayleave Application Clarification Request", "Request for clarificaion", false, this.applicationData.userID, this.ApplicationID, this.CurrentUser.appUserId,  "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
 
@@ -3443,7 +3553,7 @@ export class ActionCenterComponent implements OnInit {
 
               this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application escalated", emailContent, emailContent);
 /*                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application escalated", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have escalated application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application escalated", false, this.CurrentUser.appUserID, this.CurrentUserProfile[0].UserID, this.ApplicationID, "You have escalated application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+*/                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application escalated", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUserProfile[0].UserID,  "You have escalated application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
 
@@ -3595,9 +3705,12 @@ export class ActionCenterComponent implements OnInit {
 
 
                   this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application approved", emailContent, emailContent);
+                  if (this.CurrentUserProfile[0].alternativeEmail) {
+                    this.notificationsService.sendEmail(this.CurrentUserProfile[0].alternativeEmail, "Application approved", emailContent, emailContent);
+                  }
                   /*                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You, as a senior reviewer, have approved application " + this.projectNo + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
                   */
-                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application provisionally approved", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You, as a senior reviewer, have approved application " + this.projectNo).subscribe((data: any) => {
+                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application provisionally approved", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserId,  "You, as a senior reviewer, have approved application " + this.projectNo).subscribe((data: any) => {
                     debugger;
                     if (data.responseCode == 1) {
                       alert(data.responseMessage);
@@ -3743,6 +3856,9 @@ export class ActionCenterComponent implements OnInit {
 
 
                   this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", emailContent, emailContent);
+                  if (this.CurrentUserProfile[0].alternativeEmail) { //checkingNotifications Sindiswa 15 February 2024
+                    this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application provisionally approved", emailContent, emailContent);
+                  }
 
                   this.accessGroupsService.GetUserAndZoneBasedOnRoleName("Final Approver", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
                     if (data.responseCode === 1) {
@@ -3792,6 +3908,9 @@ export class ActionCenterComponent implements OnInit {
        
 `;
                         this.notificationsService.sendEmail(approver.email, "Request for Sign-of", emailContent12, emailContent12);
+                        if (approver.alternativeEmail) { //TODO: checkNotifications Sindiswa 15 february 2024 - double checkthis HOW?????????
+                        this.notificationsService.sendEmail(approver.alternativeEmail, "Request for Sign-of", emailContent12, emailContent12);
+                        }
                       });
                       console.log("Filtered Final Approvers:", finalApproversForCurrentZone);
                     } else {
@@ -3803,7 +3922,7 @@ export class ActionCenterComponent implements OnInit {
 
                   // Function to get unique final approvers based on a property
 
-                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application provisionally approved", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have approved application " + this.projectNo).subscribe((data: any) => {
+                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application provisionally approved", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserId, "You have approved application " + this.projectNo).subscribe((data: any) => {
 
                     if (data.responseCode == 1) {
 
@@ -3916,9 +4035,12 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-                  this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application disapproved", emailContent, emailContent);
+                  this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application disapproved", emailContent, emailContent); //This is when a senior reviewer rejects
+                  if (this.CurrentUserProfile[0].alternativeEmail) { 
+                    this.notificationsService.sendEmail(this.CurrentUserProfile[0].alternativeEmail, "Application disapproved", emailContent, emailContent);
+                  }
 /*                  this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application disapproved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You, as a senior reviewer, have disapproved application " + this.projectNo + "with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application Disapproved", false, this.CurrentUser.appUserID, this.CurrentUserProfile[0].UserID, this.ApplicationID, "You, as a senior reviewer, have disapproved application " + this.projectNo + "with comment:" + this.leaveAComment).subscribe((data: any) => {
+*/                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application Disapproved", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUserProfile[0].UserID, "You, as a senior reviewer, have disapproved application " + this.projectNo + "with comment:" + this.leaveAComment).subscribe((data: any) => {
 
                     if (data.responseCode == 1) {
                       alert(data.responseMessage);
@@ -3932,6 +4054,71 @@ export class ActionCenterComponent implements OnInit {
                   }, error => {
                     console.log("Error", error);
                   });
+
+
+                  //#region checkingNotifications Sindiswa 16 February 2024 - when SR rejects FA needs to still final reject no?
+                  this.accessGroupsService.GetUserAndZoneBasedOnRoleName("Final Approver", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+                    if (data.responseCode === 1) {
+                      // Filter out duplicates based on a unique property (e.g., email)
+                      const uniqueFinalApprovers = this.getUniqueFinalApprovers(data.dateSet, 'email');
+
+                      // Filter out final approvers for the current zone
+                      const finalApproversForCurrentZone = uniqueFinalApprovers.filter(approver => approver.zoneID === this.CurrentUserProfile[0].zoneID);
+                      finalApproversForCurrentZone.forEach(approver => {
+                        const emailContent12 = `
+    <html>
+    <head>
+      <style>
+        /* Define your font and styles here */
+        body {
+         font-family: 'Century Gothic';
+        }
+        .email-content {
+          padding: 20px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+        }
+        .footer {
+          margin-top: 20px;
+          color: #777;
+        }
+        .footer-logo {
+          display: inline-block;
+          vertical-align: middle;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="email-content">
+        <p>Dear ${approver.fullName}</p>
+        <p>Your sign-off is required on ${this.projectNo}. Kindly login to the Wayleave Management System and proceed accordingly.</p>
+           <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                      <p>
+          <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+        </p>
+         <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+      </div>
+
+    </body>
+  </html>
+ 
+       
+`;
+                        this.notificationsService.sendEmail(approver.email, "Request for Sign-of", emailContent12, emailContent12);
+                        if (approver.alaternativeEmail) {
+                          this.notificationsService.sendEmail(approver.alaternativeEmail, "Request for Sign-of", emailContent12, emailContent12);
+                        }
+                      });
+                      console.log("Filtered Final Approvers:", finalApproversForCurrentZone);
+                    } else {
+                      alert(data.responseMessage);
+                    }
+                  }, error => {
+                    console.log("Error fetching final approvers:", error);
+                  });
+
+                  // #endregion
+
 
                   alert(data.responseMessage);
                   this.viewProjectInfoComponent.getAllComments();
@@ -4013,6 +4200,9 @@ export class ActionCenterComponent implements OnInit {
 
 
               this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
+              if (this.CurrentUserProfile[0].alternativeEmail) {
+                this.notificationsService.sendEmail(this.CurrentUserProfile[0].alternativeEmail, "Request for clarification", emailContent, emailContent);
+              }
               /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You, as a senior reviewer, have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
               */
               const emailContent2 = `
@@ -4058,9 +4248,13 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.projectNo, emailContent2, emailContent2);
+            this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.projectNo, emailContent2, emailContent2);
+
+              if (this.applicationData.clientAlternativeEmail) {
+                this.notificationsService.sendEmail(this.applicationData.clientAlternativeEmail, "Wayleave Application #" + this.projectNo, emailContent2, emailContent2);
+              }
 /*              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.projectNo, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/              this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarification", false, this.CurrentUserProfile[0].UserID, this.CurrentUserProfile[0].UserID, this.ApplicationID, "You, as a senior reviewer, have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+*/            this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarification", false, this.CurrentUserProfile[0].UserID, this.ApplicationID, this.CurrentUserProfile[0].UserID,  "You, as a senior reviewer, have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
                   alert(data.responseMessage);
@@ -4070,11 +4264,11 @@ export class ActionCenterComponent implements OnInit {
                   alert(data.responseMessage);
                 }
 
-                console.log("response", data);
-              }, error => {
-                console.log("Error", error);
-              });
-              this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarification", false, this.CurrentUserProfile[0].UserIDhis.CurrentUser.UserID, this.applicationData.userID, this.ApplicationID, "A reviewer has asked that you clarify your application " + this.projectNo + " with comment: " + this.leaveAComment).subscribe((data: any) => {
+                  console.log("response", data);
+                }, error => {
+                  console.log("Error", error);
+                });
+              this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarification", false, this.applicationData.userID, this.ApplicationID, this.CurrentUserProfile[0].UserID,  "A reviewer has asked that you clarify your application " + this.projectNo + " with comment: " + this.leaveAComment).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
                   alert(data.responseMessage);
@@ -4084,10 +4278,10 @@ export class ActionCenterComponent implements OnInit {
                   alert(data.responseMessage);
                 }
 
-                console.log("response", data);
-              }, error => {
-                console.log("Error", error);
-              });
+                  console.log("response", data);
+                }, error => {
+                  console.log("Error", error);
+                });
 
               alert(data.responseMessage);
               //commentsService
@@ -4118,7 +4312,7 @@ export class ActionCenterComponent implements OnInit {
 
           }, error => {
             console.log("Error: ", error);
-          })
+        })
           // alert("In progress");
           this.modalService.dismissAll();
           this.router.navigate(["/home"]);
@@ -4775,7 +4969,7 @@ export class ActionCenterComponent implements OnInit {
           }
         }
         if (this.SubDepartmentListForCheck.length == this.assaignedToComment) {
-          this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "Distributed/Allocated", null, null, null).subscribe((data: any) => {
+          this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "Distributed/Allocated", null, null, null).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
               alert(data.responseMessage);
@@ -4858,8 +5052,11 @@ export class ActionCenterComponent implements OnInit {
 
 
         this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.projectNo, emailContent, emailContent);
+        if (this.applicationData.clientAlternativeEmail) {
+          this.notificationsService.sendEmail(this.applicationData.clientAlternativeEmail, "Wayleave Application #" + this.projectNo, emailContent, emailContent);
+        }
 /*        this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.projectNo, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Congratulations, your application has been approved. Please log into the system to download your Approval Pack.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/        this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application approved", false, this.CurrentUserProfile[0].UserID, this.applicationData.userID, this.ApplicationID, "Congratulations, your application has been approved. Please log into the system to download your Approval Pack.").subscribe((data: any) => {
+*/        this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application approved", false, this.applicationData.userID, this.ApplicationID, this.CurrentUserProfile[0].UserID,  "Congratulations, your application has been approved. Please log into the system to download your Approval Pack.").subscribe((data: any) => {
 
           if (data.responseCode == 1) {
 
@@ -5591,7 +5788,10 @@ export class ActionCenterComponent implements OnInit {
 
 
       this.notificationsService.sendEmail(current.email, "Wayleave application assignment", emailContent2, emailContent2);
-      this.notificationsService.addUpdateNotification(0, "Review wayleave application", "Wayleave application assignment", false, current.userID, this.CurrentUser.appUserID /*This is null for some reason??*/, this.ApplicationID, `A department admin has assigned you as the reviewer of  Wayleave No. ${this.projectNo}. As the reviewer of ${current.zoneName} in ${current.subDepartmentName}, please see to the provisional approval/rejection of said application.`).subscribe((data: any) => {
+      if (current.alternativeEmail) { 
+        this.notificationsService.sendEmail(current.alternativeEmail, "Wayleave application assignment", emailContent2, emailContent2);
+      }
+      this.notificationsService.addUpdateNotification(0, "Review wayleave application", "Wayleave application assignment", false, current.userID, this.ApplicationID, this.CurrentUser.appUserId /*This is null for some reason?? the issue was the variable name*/,  `A department admin has assigned you as the reviewer of  Wayleave No. ${this.projectNo}. As the reviewer of ${current.zoneName} in ${current.subDepartmentName}, please see to the provisional approval/rejection of said application.`).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           console.log(data.responseMessage);
@@ -5804,10 +6004,14 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
-                /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-                */
-                const emailContentApp = `
+                  this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
+                  if (this.CurrentUserProfile[0].alternativeEmail) {
+                    this.notificationsService.sendEmail(this.CurrentUserProfile[0].alternativeEmail, "Request for clarification", emailContent, emailContent);
+                  }
+                
+                  /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  */
+                  const emailContentApp = `
         <html>
         <head>
           <style>
@@ -5851,9 +6055,12 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-                this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
+                  this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
+                  if (this.applicationData.clientAlternativeEmail) { 
+                    this.notificationsService.sendEmail(this.applicationData.clientAlternativeEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
+                  }
 /*              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/              this.notificationsService.addUpdateNotification(0, "Wayleave Application Request", "Request for clarification", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+*/              this.notificationsService.addUpdateNotification(0, "Wayleave Application Request", "Request for clarification", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserId,  "You have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
 
@@ -5863,11 +6070,11 @@ export class ActionCenterComponent implements OnInit {
                     alert(data.responseMessage);
                   }
 
-                  console.log("response", data);
-                }, error => {
-                  console.log("Error", error);
-                });
-                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarificaion", false, this.CurrentUser.appUserID, this.applicationData.userID, this.ApplicationID, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+                    console.log("response", data);
+                  }, error => {
+                    console.log("Error", error);
+                  });
+                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarificaion", false, this.applicationData.userID,  this.ApplicationID,  this.CurrentUser.appUserId, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
 
@@ -5921,10 +6128,10 @@ export class ActionCenterComponent implements OnInit {
         }
 
         case "Reviewer": {
-          if (confirm("Are you sure you want to get clarity from the previouse reviewer?")) {
+          if (confirm("Are you sure you want to get clarity from the previous reviewer?")) {
             debugger;
             this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentUser.appUserId, null).subscribe((data: any) => {
-              debugger;
+                debugger;
               if (data.responseCode == 1) {
                 debugger;
                 const emailContent = `
@@ -5953,7 +6160,7 @@ export class ActionCenterComponent implements OnInit {
         <body>
           <div class="email-content">
             <p>Dear ${this.loggedInUserName}</p>
-            <p>You have requested clarity on ${this.projectNo} with the comment:</p>
+            <p>You have requested reviewer clarity on ${this.projectNo} with the comment:</p>
             <p>${this.leaveAComment}</p>
                <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
                           <p>
@@ -5971,6 +6178,9 @@ export class ActionCenterComponent implements OnInit {
 
 
                 this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
+                if (this.CurrentUserProfile[0].alternativeEmail) { 
+                  this.notificationsService.sendEmail(this.CurrentUserProfile[0].alternativeEmail, "Request for clarification", emailContent, emailContent);
+              }
                 /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
                 */
                 const emailContentApp = `
@@ -5999,7 +6209,7 @@ export class ActionCenterComponent implements OnInit {
         <body>
           <div class="email-content">
             <p>Dear ${this.previousReviewer.fullName}</p>
-            <p>A reviewer has asked you to clarify your application ${this.projectNo} with the comment:</p>
+            <p>A final approver has asked you to clarify application ${this.projectNo} with the comment:</p>
             <p>${this.leaveAComment}</p>
                <p >Please login to the <a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a> and provide a response</p>
                <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
@@ -6018,8 +6228,11 @@ export class ActionCenterComponent implements OnInit {
 
 
                 this.notificationsService.sendEmail(this.previousReviewer.email, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
+                if (this.previousReviewer.alternativeEmail) { 
+                  this.notificationsService.sendEmail(this.previousReviewer.alternativeEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
+                }
 /*              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/              this.notificationsService.addUpdateNotification(0, "Wayleave Application Request", "Request for clarification", false, this.CurrentUser.appUserID, this.CurrentUser.appUserID, this.ApplicationID, "You have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+*/              this.notificationsService.addUpdateNotification(0, "Wayleave Application Request", "Request for clarification", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserId,  "You have asked a snenior reviewer to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
                   if (data.responseCode == 1) {
 
@@ -6029,12 +6242,12 @@ export class ActionCenterComponent implements OnInit {
                     alert(data.responseMessage);
                   }
 
-                  console.log("response", data);
-                }, error => {
-                  console.log("Error", error);
-                });
-                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarificaion", false, this.CurrentUser.appUserID, this.previousReviewer.userID
-                  , this.ApplicationID, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+                    console.log("response", data);
+                  }, error => {
+                    console.log("Error", error);
+                  });
+                  this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarificaion", false, this.CurrentUser.appUserId, this.ApplicationID, this.previousReviewer.userID
+                    ,"A final approver has asked that you clarify application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
                     if (data.responseCode == 1) {
 
@@ -6418,7 +6631,10 @@ export class ActionCenterComponent implements OnInit {
 
 
             this.notificationsService.sendEmail(obj.email, "Escalated wayleave application", emailContent2, emailContent2);
-            this.notificationsService.addUpdateNotification(0, "Application Needs Immediate Attention", "Escalated wayleave application", false, obj.userID, this.CurrentUser.appUserID /*This is null for some reason??*/, this.ApplicationID, `The Wayleave application with Wayleave No. ${this.projectNo} was escalated by the applicant/client. As the zone admin of ` + obj.zoneName + " in " + obj.subDepartmentName + `, please see to the completion of the approval/rejection process. ${this.embMessage ? `\n\nAdditional Notes: ${this.embMessage}` : ''}`).subscribe((data: any) => {
+            if (obj.alternativeEmail) {
+              this.notificationsService.sendEmail(obj.alternativeEmail, "Escalated wayleave application", emailContent2, emailContent2);
+            }
+            this.notificationsService.addUpdateNotification(0, "Application Needs Immediate Attention", "Escalated wayleave application", false, obj.userID, this.ApplicationID, this.CurrentUser.appUserId /*This is null for some reason?? well, this.CurrentUser.appUserID was wrong*/,  `The Wayleave application with Wayleave No. ${this.projectNo} was escalated by the applicant/client. As the zone admin of ` + obj.zoneName + " in " + obj.subDepartmentName + `, please see to the completion of the approval/rejection process. ${this.embMessage ? `\n\nAdditional Notes: ${this.embMessage}` : ''}`).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
                 console.log(data.responseMessage);
@@ -7073,6 +7289,14 @@ export class ActionCenterComponent implements OnInit {
     })
   }
    //Permit Kyle 13-02 - 24
+
+  /*JJS Commit 20-02-24 character count */
+  text: string = '';
+  maxLength: number = 250;
+
+  updateCharacterCount() {
+    return this.text.length;
+  }
 }
 
 

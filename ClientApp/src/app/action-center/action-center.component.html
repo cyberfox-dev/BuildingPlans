@@ -26,29 +26,25 @@
     <br>
     <mat-divider *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && showPermitTab === false"></mat-divider>
     <!--    <mat-form-field>
-      <mat-label>Select A Comment From Your Comment Builder</mat-label>
-      <mat-select [(value)]="select" (selectionChange)="filterDepartment()" [(ngModel)]="selectDepFilterName">
-        <mat-option *ngFor="let comment of CommentList" value="{{comment.commentID}}">{{comment.commentName}}</mat-option>
-      </mat-select>
-    </mat-form-field>-->
-
-
-
+    <mat-label>Select A Comment From Your Comment Builder</mat-label>
+    <mat-select [(value)]="select" (selectionChange)="filterDepartment()" [(ngModel)]="selectDepFilterName">
+      <mat-option *ngFor="let comment of CommentList" value="{{comment.commentID}}">{{comment.commentName}}</mat-option>
+    </mat-select>
+  </mat-form-field>-->
+    <!--JJS Commit 20-02-24-->
     <br>
-    <mat-form-field class="example-full-width" *ngIf="(canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true) && userAssignedText == CurrentUser.appUserId">
-      <!--Final Approver && Senior Approver Kyle 01/02/24-->
-      <!--  || canCommentFinalApprover == true-->
-      <mat-label>Type new Comment/Special Condition. Please also make reference to the Services Conditions tab, if documents have been uploaded. </mat-label> <!-- actionCentreEdits Sindiswa 15 January 2024-->
-      <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea"></textarea>
-
-
+    <mat-form-field class="example-full-width" *ngIf="(canComment || canCommentFinalApprover || canCommentSeniorReviewer) && userAssignedText == CurrentUser.appUserId">
+      <mat-label>Type new Comment/Special Condition. Please also make reference to the Services Conditions tab, if documents have been uploaded.</mat-label>
+      <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea" maxlength="250" (input)="updateCharacterCount()"></textarea>
+      <div>{{ leaveAComment.length }}/250</div>
     </mat-form-field>
+
     <div class="cont2" *ngIf="userAssignedText == CurrentUser.appUserId">
       <!--Final Approver && Senior Approver Kyle 01/02/24-->
 
       <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true">Select A Comment From Your Comment Builder</button>
       <!--     <button mat-raised-button color="purple" (click)="openBottomSheet()">Select A Comment From Your Comment Builder</button>
-      -->
+    -->
       <!--<mat-menu #menu="matMenu" xPosition="before">-->
       <!-- actionCentreEdits Sindiswa 15 January 2024 - a blank box will NO LONGER SHOW if comment list length is less than 1-->
       <mat-menu #menu="matMenu" yPosition="above" width="100%">
@@ -89,7 +85,7 @@
 
       <button mat-raised-button color="clarifyBTN" [matMenuTriggerFor]="menu"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
       <button mat-raised-button color="returnToReviewerBTN" (click)="onReturnToReviewerClick()"><i class="fa fa-reply" aria-hidden="true"></i>  Return To Reviewer</button>
-      <button mat-raised-button color="returnToSeniorReviewerBTN" (click)="onReturnToSeniorReviewerClick()"><i class="fa fa-reply" aria-hidden="true"></i>  Return To Senior Reviewer</button>
+      <button mat-raised-button color="returnToSeniorReviewerBTN" (click)="onReturnToSeniorReviewerClick()"><i class="fa fa-reply" aria-hidden="true"></i>  Return To Senior Reviewer  </button>
 
       <mat-menu #menu="matMenu" yPosition="above" width="100%">
         <ng-container>
@@ -149,8 +145,8 @@
 
 
       <!--  WBSCheck: boolean = false;
-      checked: boolean = false;
-      DepositCheck: boolean = false;-->
+    checked: boolean = false;
+    DepositCheck: boolean = false;-->
       <!--this is for the deposit required  (click)="saveDeposit(deposit)"-->
       <div *ngIf="DepositCHeckBox">
         <mat-checkbox class="example-margin" *ngIf="canComment == true || canCommentSeniorReviewer == true && canCommentFinalApprover == false" [(ngModel)]="DepositCheck" (click)="getAllServiceItmesForDropdown(deposit)">Deposit Required</mat-checkbox>

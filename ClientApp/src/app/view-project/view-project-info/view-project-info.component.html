@@ -86,6 +86,9 @@
     <div class="progress-bar" [style.width.%]="progressBar" [style.background]="getProgressBarColor(progressBar)">
     </div>
   </div>
+
+
+
   <!--  Progess bar Kyle 07-02-24-->
   <mat-tab-group>
 
@@ -141,11 +144,11 @@
                     <h3>{{commentsList.SubDepartmentName}}({{commentsList.ZoneName}}) - {{commentsList.CommentStatus}}</h3>
 
                     <h5 *ngIf="isInternalUser && InternalExternalUser == false">{{commentsList.UserName}}</h5>
-                    <br /> 
+                    <br />
                     <div class="cont2">
                       <div [innerHTML]="sanitizeHTML(commentsList.Comment)"></div>
                       <button mat-raised-button color="blue" *ngIf="commentsList.CommentStatus != 'FinalApproved'  &&   CurrentUserProfile[0].subDepartmentName === commentsList.SubDepartmentName && commentsList.UserName === this.CurrentUser.fullName" (click)="openEditCommentModal(commentEditorModal, i)">Edit Comment</button>
-                     
+
                     </div>
 
                     <!--<p>
@@ -263,11 +266,11 @@
           <div class="row">
 
             <div class="form-floating mb-3 mt-3">
-          <input type="text" [(ngModel)]="commentEdit" name="commentEdit" class="form-control" id="commentEdit" placeholder="Update Comment">
-          
-         
-          <!--<label for="commentEdit">Update Comment</label>-->
-          </div>
+              <input type="text" [(ngModel)]="commentEdit" name="commentEdit" class="form-control" id="commentEdit" placeholder="Update Comment">
+
+
+              <!--<label for="commentEdit">Update Comment</label>-->
+            </div>
 
           </div>
 
@@ -360,13 +363,11 @@
 
 
     <!------------------------------------------------------------Packs---------------------------------------------------------->
-
-    <mat-tab label="Packs" *ngIf="PacksTab">
-      <app-approval-pack [ApplicationID]="ApplicationID"
-                         [ServiceConditionActive]="false"></app-approval-pack>
-    </mat-tab>
-
-
+    <!--JJS Commit 20-02-24-->
+    <!--    <mat-tab label="Packs" *ngIf="PacksTab">
+        <app-approval-pack [ApplicationID]="ApplicationID"
+                           [ServiceConditionActive]="false"></app-approval-pack>
+      </mat-tab>-->
     <!--------------------------------------------------------Applicant--------------------------------------------------->
 
     <mat-tab label="Applicant">
@@ -822,9 +823,6 @@
       <button mat-raised-button *ngIf="canCreateNote === true" color="permit" (click)="openXl(MFTModal)">Create New Note</button>
       <app-status-of-works [ApplicationID]="ApplicationID"></app-status-of-works>
 
-     
-
-
     </mat-tab>
 
 
@@ -875,7 +873,7 @@
           <button type="button" class="btn btn-outline-success" (click)="updateStartDateForPermit();modal.close('Save click')">Save</button>
         </div>
       </ng-template>
-                                                                                                                                                                                                                <!--Permit Kyle 13-02-24-->
+      <!--Permit Kyle 13-02-24-->
       <app-permit-component [ApplicationID]="ApplicationID" [ApplicantID]="CurrentApplicationBeingViewed[0].UserID" [OriginatorID]="CurrentApplicationBeingViewed[0].CreatedById" [ApplicationID]="ApplicationID" [PermitBtn]="permitBtn"></app-permit-component>
 
     </mat-tab>
