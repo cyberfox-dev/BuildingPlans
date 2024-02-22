@@ -81,11 +81,14 @@
 
 <div class="container-fluid cont6 animationFadeIn">
   <!--  Progess bar Kyle 07-02-24-->
+  <div class="cont8">
   <div class="progress-bar-container" *ngIf="CurrentApplicationBeingViewed[0].CurrentStageName == 'Department Distribution'">
-    <div class="progress-text">Distribution Stage Progress {{progressBar}}%</div>
-    <div class="progress-bar" [style.width.%]="progressBar" [style.background]="getProgressBarColor(progressBar)">
+    <div class="progress-text" [@countUp]="progressBar">Distribution Stage Progress {{progressBar}}%</div>
+    <div class="progress-bar" [style.--progressBar]="progressBar + '%'">
     </div>
   </div>
+
+    </div>
 
 
 
@@ -173,9 +176,6 @@
                         <!--<input type="text" class="form-control" value="{{commentsList.isApplicantReplay}}" id="ApplicantReply" name="ApplicantReply" disabled> [(ngModel)]="ApplicantReply">-->
 
                         <div class="disabled-textbox" [innerHTML]="sanitizeHTML(commentsList.isApplicantReplay)" id="ApplicantReply"></div>
-
-
-
 
                       </div>
                     </div>
@@ -816,7 +816,6 @@
 
 
     <!--------------------------------------------------------Tracking--------------------------------------------------->
-
     <!-----Status of works Kyle 16-02-24-->
     <mat-tab label="Status of Works" *ngIf="showStatusOfWorksTab">
 

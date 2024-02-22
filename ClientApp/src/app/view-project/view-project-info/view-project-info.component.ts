@@ -239,7 +239,7 @@ export interface ContactDetailsList {
   ContactDetailID: number;
   FullName: string;
   CellNo: string;
-  Email: Date;
+  Email: string;
   SubDepID: number;
   SubDepName: string;
   ZoneID: number;
@@ -254,8 +254,8 @@ export interface DepositRequired {
   Desciption: string;
   SubDepartmentID: number;
   SubDepartmentForCommentID: number;
-  Rate: number;
-  Quantity: number;
+  Rate: any;
+  Quantity: any;
   ServiceItemCodeserviceItemCode?: string | null;
   SubDepartmentName?: string | null;
   WBS?: string;
@@ -806,7 +806,7 @@ export class ViewProjectInfoComponent implements OnInit {
 /*JJS Commit 20-02-24*/
           tempSubDepartmentLinkedList.subDepartmentID = current.subDepartmentID;
           tempSubDepartmentLinkedList.UserAssaignedToComment = current.userAssaignedToComment;
-          debugger;
+          
           tempSubDepartmentLinkedList.subDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempSubDepartmentLinkedList.departmentID = current.departmentID;
           tempSubDepartmentLinkedList.dateUpdated = current.dateUpdated;
@@ -851,7 +851,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.serviceItemService.getServiceItemByServiceItemCode(serviceItemCode).subscribe((data: any) => {
       if (data.responseCode == 1) {
 
-
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempServiceItemList = {} as ServiceItemList;
           const current = data.dateSet[i];
@@ -1838,6 +1838,7 @@ export class ViewProjectInfoComponent implements OnInit {
           tempDepositRequired.DepositRequiredID = current.depositRequiredID;
           tempDepositRequired.Desciption = current.desciption;
           tempDepositRequired.Quantity = current.quantity;
+          debugger;
           tempDepositRequired.Rate = current.rate;
           tempDepositRequired.SubDepartmentForCommentID = current.subDepartmentForCommentID;
           tempDepositRequired.SubDepartmentID = current.subDepartmentID;
@@ -2336,7 +2337,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   ChangeApplicationStatusToPaid() {
-    debugger;
+    
     if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Unpaid") {
 
       this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
@@ -2660,7 +2661,7 @@ export class ViewProjectInfoComponent implements OnInit {
             tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
 
 
-            debugger;
+            
             let SubName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
             tempSubDepCommentStatusList.SubDepName = SubName + " : " + current.zoneName;
             tempSubDepCommentStatusList.ApplicationID = current.applicationID;
@@ -4646,7 +4647,7 @@ export class ViewProjectInfoComponent implements OnInit {
         }
         let progress = (this.progressBar / data.dateSet.length).toFixed(2);
         this.progressBar = parseFloat(progress);
-        this.getProgressBarColor(this.progressBar);
+/*        this.getProgressBarColor(this.progressBar);*/
       }
       else {
         alert(data.responseMessage);
@@ -4655,6 +4656,7 @@ export class ViewProjectInfoComponent implements OnInit {
       console.log("Error", error);
     })
   }
+
 
   getProgressBarColor(percentage: number): string {
     // Calculate the middle color dynamically based on the percentage
@@ -4689,7 +4691,7 @@ export class ViewProjectInfoComponent implements OnInit {
   //Status of works Kyle 16-02-24
   showUpload: boolean = false;
   onCheckMFTNote(event:Event):void {
-    debugger;
+    
     const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
     if (filterValue == '') {
       this.showUpload = false

@@ -168,10 +168,10 @@ export class DepartmentCirculationComponent implements OnInit {
   async getUserName(userID: any): Promise<string> {
     try {
       const data: any = await this.userProfileService.getUserProfileById(userID).toPromise();
-      debugger;
+      
       if (data.responseCode === 1) {
         console.log("Data captured while trying to get username", data);
-        debugger;
+        
         return data.dateSet[0].fullName;
       } else {
         throw new Error("Couldn't quite get the username: " + data.responseMessage);

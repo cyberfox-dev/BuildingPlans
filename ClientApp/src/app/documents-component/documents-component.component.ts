@@ -286,11 +286,11 @@ export class DocumentsComponentComponent implements OnInit{
   //Permit Kyle 13-02-24
   deletePermitDocument() {
 
-    debugger;
+    
     if (confirm("Are you sure you want to delete this document?")) {
 
       this.permitService.deleteDocumentFromPermitSubForComment(this.ApplicationID, this.permitSubForCommentID).subscribe((data: any) => {
-        debugger;
+        
         if (data.responseCode == 1) {
           alert(data.responseMessage);
           this.hasPermitSubForCommentDocument()

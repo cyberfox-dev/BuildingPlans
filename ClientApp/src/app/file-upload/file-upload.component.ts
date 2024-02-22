@@ -340,9 +340,9 @@ export class FileUploadComponent implements OnInit {
     }
 
     else if (this.isCalledInsidePermit) {
-      debugger;
+      
       this.permitService.deleteDocumentFromPermitSubForComment(this.ApplicationID, this.permitSubForCommentID).subscribe((data: any) => {
-        debugger;
+        
         if (data.responseCode == 1) {
        
           this.fileName = '';
@@ -363,7 +363,7 @@ export class FileUploadComponent implements OnInit {
     else if (this.isStatusOfWork) {
       this.MFTService.deleteDocumentFromMFT(this.ApplicationID, this.fileUploadName + this.fileExtention).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          debugger;
+          
           this.fileName = '';
           this.MFTID = data.dateSet.mftid;
           this.onUploadFinished.emit();
@@ -593,11 +593,11 @@ export class FileUploadComponent implements OnInit {
   permitUploadFinished = (event: any, permitSubForCommentID: any) => {
     this.response = event;
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
-    debugger;
+    
     //
     this.permitService.addUpdatePermitSubForComment(permitSubForCommentID, null, null, null, null, null, null, null, null, null, this.response?.dbPath, documentName).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         // Emit the onUploadSuccess event after a successful upload
         this.onUploadSuccess.emit(event.body);
        
@@ -636,11 +636,11 @@ export class FileUploadComponent implements OnInit {
   isStatusOfWorkUploadFinished = (event: any, applicationID: any, applicationData: any) => {
     this.response = event;
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
-    debugger;
+    
     this.MFTService.addUpdateMFT(this.MFTID,this.MftNote,applicationID,documentName,this.response?.dbPath,this.CurrentUser.appUserId,this.CurrentUser.fullName).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         // Emit the onUploadSuccess event after a successful upload
         this.onUploadSuccess.emit(event.body);
 

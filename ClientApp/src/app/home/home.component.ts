@@ -550,7 +550,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    debugger;
+    
 
 
     setTimeout(() => {
@@ -654,9 +654,9 @@ export class HomeComponent implements OnInit, OnDestroy {
           let endDate = this.parseDate(end);
 
 
-          debugger;
+          
           if (currentDate >= startDate && currentDate < endDate) {
-            debugger;
+            
             this.showBanner = true;
             this.alertMessage = current.utilitySlot3.toUpperCase();
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -1296,18 +1296,18 @@ export class HomeComponent implements OnInit, OnDestroy {
 
             this.InternalExternalUser = true;
             this.FilterBtn = false;
-            debugger;
+            
             this.applicationService.getApplicationsList(this.CurrentUser.appUserId, false).subscribe((data: any) => {
-              debugger;
+              
 
               if (data.responseCode == 1) {
 
-                debugger;
+                
                 for (let i = 0; i < data.dateSet.length; i++) {
                   const tempApplicationList = {} as ApplicationsList;
                   const tempApplicationListShared = {} as ApplicationList;
                   const current = data.dateSet[i];
-                  debugger;
+                  
 
 
 
@@ -1835,7 +1835,7 @@ this.Applications.push(tempApplicationList);
 
 
   viewProject(index: any) {
-    debugger;
+    
     this.sharedService.getShowFormerApps(); //reapply Sindiswa 26 January 2024
     console.log("FIND", this.applicationDataForView[index]);
     if (this.newList.length > 0) {
@@ -1844,11 +1844,11 @@ this.Applications.push(tempApplicationList);
         // Assuming this.applicationDataForView and newList are your arrays
 
         const desiredApplicationID = this.newList[index].ApplicationID; // Replace [0] with the specific index you want to match
-        debugger;
+        
         const foundRow = this.applicationDataForView.find(item => item.applicationID === desiredApplicationID);
 
         if (foundRow) {
-          debugger;
+          
           this.applicationDataForViewToShared.push(foundRow);
           break;
           // Do something with the found row
@@ -1865,7 +1865,7 @@ this.Applications.push(tempApplicationList);
 
       this.applicationDataForViewToShared.push(this.applicationDataForView[index]);
     }
-    debugger;
+    
 
     console.log("this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]", this.applicationDataForView[index]);
     this.sharedService.setViewApplicationIndex(this.applicationDataForViewToShared);
@@ -2133,7 +2133,7 @@ this.Applications.push(tempApplicationList);
   async CheckIfCanReapply(element: any, index: any) {
 
 
-    debugger;
+    
 
 
     this.relatedApplications.splice(0, this.relatedApplications.length);
@@ -2599,7 +2599,7 @@ this.Applications.push(tempApplicationList);
 
 
     // #region escalation Sindiswa 29 January 2024
-    debugger;
+    
     if (this.CurrentUserProfile[0].directorate == 'EMB' || this.CurrentUserProfile[0].departmentName == 'EMB' || this.CurrentUserProfile[0].subDepartmentName == 'EMB'
       || this.CurrentUserProfile[0].departmentID == 28 || this.CurrentUserProfile[0].subDepartmentID == 1021) {
       this.applicationService.getApplicationsForEMB(this.CurrentUser.appUserId).subscribe((data: any) => {
@@ -2611,7 +2611,7 @@ this.Applications.push(tempApplicationList);
             const tempApplicationList = {} as ApplicationsList;
             const tempApplicationListShared = {} as ApplicationList;
             const current = data.dateSet[i];
-            debugger;
+            
 
 
 
@@ -3086,7 +3086,7 @@ this.Applications.push(tempApplicationList);
               const tempApplicationList = {} as ApplicationsList;
               const tempApplicationListShared = {} as ApplicationList;
               const current = data.dateSet[i];
-              debugger;
+              
              //JJS-15-02-2024 Fixing the delete drafts (wasn't deleting)-->
               const isDuplicate = this.Applications.some(app => app.ApplicationID === current.applicationID);
 
@@ -5865,7 +5865,7 @@ this.Applications.push(tempApplicationList);
 
 
   filterForCurrentReviews() {
-    debugger;
+    
     this.applicationDataForView = [];
     this.Applications = [];
     this.applicationsForUsersZoneList.splice(0, this.applicationsForUsersZoneList.length);
@@ -6074,7 +6074,7 @@ this.Applications.push(tempApplicationList);
   projNum: string;
   // #region escalation Sindiswa 29 January 2024
   escalateApplication(element: any) {
-    debugger;
+    
 
     this.appID = element.ApplicationID;
     this.projNum = element.ProjectNumber;
@@ -6084,7 +6084,7 @@ this.Applications.push(tempApplicationList);
       this.applicationService.escalateApplication(element.ApplicationID).subscribe(async (data: any) => {
 
         if (data.responseCode == 1) {
-          debugger;
+          
           console.log(`An application with the following project number ${element.ProjectNumber} has been escalated.`);
 
           //Hebana, do they want an email AND a notification
@@ -6109,7 +6109,7 @@ this.Applications.push(tempApplicationList);
     }
   }
   async getUniqueEmbUsers(): Promise<any> {
-    debugger;
+    
     try {
       const embUserData: any = await this.userPofileService.getUsersBySubDepartmentName("EMB").toPromise();
       //const embUserData: any = await this.accessGroupsService.getUserBasedOnRoleName("EMB", 1021).toPromise();
@@ -6143,7 +6143,7 @@ this.Applications.push(tempApplicationList);
     }
   }
   sendEmailToEmb(embUsers: any[]): void {
-    debugger;
+    
     try {
       for (const obj of embUsers) {
         const emailContent2 = `
@@ -6193,7 +6193,7 @@ this.Applications.push(tempApplicationList);
         }
         
         // Add update notification
-        debugger;
+        
         this.notificationsService.addUpdateNotification(
           0,
           "Application Needs Immediate Attention",

@@ -158,7 +158,7 @@ export class ApplicationsService {
 
   // reapply Sindiswa 24 January 2024
   public increaseReapplyCount(ProjectNumber: string) {
-    debugger;
+    
     const body = {
       ProjectNumber: ProjectNumber
     }
@@ -166,7 +166,7 @@ export class ApplicationsService {
   }
   // reapply Sindiswa 25 January 2024
   public makeOldAppDisappear(ProjectNumber: string) {
-    debugger;
+    
     const body = {
       ProjectNumber: ProjectNumber
     }

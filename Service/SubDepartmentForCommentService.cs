@@ -399,7 +399,7 @@ namespace WayleaveManagementSystem.Service
                    CreatedById = subDepartmentForComment.CreatedById,
                    ZoneID = subDepartmentForComment.ZoneID,
                    ZoneName = subDepartmentForComment.ZoneName,
-
+                   isActive = subDepartmentForComment.isActive,
                }
                ).ToListAsync();
         }
