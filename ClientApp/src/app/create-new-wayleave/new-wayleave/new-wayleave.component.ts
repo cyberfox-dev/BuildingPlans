@@ -619,7 +619,7 @@ export class NewWayleaveComponent implements OnInit {
     console.log("this.CurrentUserProfile ", this.CurrentUserProfile);
 
     if (this.CurrentUserProfile[0].isInternal == false) {
-      debugger;
+      
       this.external = true;
       this.internal = false;
       this.client = false;
@@ -1691,7 +1691,7 @@ export class NewWayleaveComponent implements OnInit {
                               console.log("I wonder what would happen if instead of using CurrentUser I used CurrentUserProfile", this.CurrentUserProfile);
                               console.log("TBH I have no idea why this.CurrentUser.appUserID is null from time to time???!", this.CurrentUser.appUserId);
                               this.applicationsService.increaseReapplyCount(projectNum).subscribe((data: any) => {
-                                debugger;
+                                
                                 if (data.responseCode == 1) {
                                   this.applicationsService.makeOldAppDisappear(projectNum).subscribe((data: any) => {
 
@@ -2443,7 +2443,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
   onWayleaveCreate(appUserId, isPlanning: boolean, isDraft: boolean) {
-    debugger;
+    
     console.log("Turtle Turtle, where are you? " + appUserId);
 
     //get ApplicationID form Shared to check if must update
@@ -2454,7 +2454,7 @@ export class NewWayleaveComponent implements OnInit {
     this.reapply = this.shared.getReapply();
     // #region Sindiswa 24 January 2024
     if (this.reapply == true && this.oldApplicationID === this.applicationID) {
-      debugger;
+      
       this.shared.clearContractorData();
       this.shared.clearEngineerData();
 
@@ -4353,7 +4353,7 @@ export class NewWayleaveComponent implements OnInit {
   selectedExcavationTypes: string[] = [];
   //Pulls previous application data for modification during reapplication by user
   async initializeReapply() {
-    debugger;
+    
     this.ApplicationListForReapply.push(this.shared.getViewApplicationIndex());
     this.reapply = this.shared.getReapply();
 
@@ -4390,7 +4390,7 @@ export class NewWayleaveComponent implements OnInit {
       this.userPofileService.getUserProfileById(this.ApplicationListForReapply[0].CreatedById)
         .subscribe((data: any) => {
           if (data.responseCode == 1) {
-            debugger;
+            
             const defaultProfile = data.dateSet.find(profile => profile.isDefault === true);
 
             if (defaultProfile) {
@@ -4653,12 +4653,12 @@ export class NewWayleaveComponent implements OnInit {
   categorizedProjectSizeCheckList: { [key: string]: ProjectSizeCheckList[] } = {};
 
   getAllProjectSizeCheckList() {
-    debugger;
+    
     this.ProjectSizeCheckList.splice(0, this.ProjectSizeCheckList.length);
 
     this.projectSizeCheckListService.getAllProjectSizeCheckList().subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempProjectSizeCheckList = {} as ProjectSizeCheckList;
           const current = data.dateSet[i];
@@ -4734,21 +4734,21 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   deleteUploader(index: number) {
-    debugger;
+    
     let currentList2 = this.MandatoryDocumentsLinkedStagesList.getValue();
     let current = currentList2[index];
     //Delete Uploader Kyle 29-01-24
     let hasDoc: Boolean = false;
     
     this.documentUploadService.getAllDocumentsForApplication(this.shared.applicationID).subscribe(async(data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
         //Check if there's an uploaded file for the current document
         for (let i = 0; i < data.dateSet.length; i++) {
-          debugger;
+          
           const doc = data.dateSet[i].documentName;
           const docName = doc.substring(0, doc.indexOf("_"));
-          debugger;
+          
           if (docName == current.mandatoryDocumentName) {
             hasDoc = true;
           }
@@ -4887,11 +4887,11 @@ export class NewWayleaveComponent implements OnInit {
 
   public sendEmailToDepartment(subDepartmentName: string) {
 
-    debugger;
+    
     this.userPofileService.getUsersBySubDepartmentName(subDepartmentName).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         //data.forEach((obj) => { // checkingNotifications Sindiswa 15 February 2024 - removed this, it wasn't tapping into the user's information
         data.dateSet.forEach((obj) => {
           this.notificationsService.sendEmail(obj.email, "New wayleave application submission", "check html", "Dear " + subDepartmentName + "User" + "<br><br>An application with ID " + this.applicationID + " for wayleave has just been captured.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
@@ -5410,7 +5410,7 @@ export class NewWayleaveComponent implements OnInit {
     return option1 === option2;
   }
   CheckProjectSizeChecklistForDraft() {
-    debugger;
+    
     this.projectSizeSelectionService.getProjectSizedSelectionForApplication(this.applicationID).subscribe((data: any) => {
       
       if (data.responseCode == 1) {
@@ -5445,7 +5445,7 @@ export class NewWayleaveComponent implements OnInit {
 
   // #region reapply Sindiswa 23 January 2024
   CheckProjectSizeChecklistForReApply(appID: any) {
-    debugger;
+    
     this.projectSizeSelectionService.getProjectSizedSelectionForApplication(appID).subscribe(async (data: any) => {
 
       if (data.responseCode == 1) {
@@ -5461,9 +5461,9 @@ export class NewWayleaveComponent implements OnInit {
           // Find the item in this.ProjectSizeCheckList that matches the selectionList
           const matchedItem = this.ProjectSizeCheckList.find(item => item.ProjectSizeCheckListActivity === tempSelectionList.projectDescription);
           this.ProjectSizeSelectionList.push(tempSelectionList)
-          debugger;
+          
           if (matchedItem) {
-            debugger;
+            
             // Use the SelectionModel to select the item
             this.selectionProjectSizeCheck.select(matchedItem);
           }

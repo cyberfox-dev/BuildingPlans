@@ -148,7 +148,7 @@ export class StatusOfWorksComponent implements OnInit {
 
           
         }
-        debugger;
+        
         this.dataSource = this.MFTList;
         this.mftTable?.renderRows();
         console.log("this datasource", this.dataSource);

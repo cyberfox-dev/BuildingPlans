@@ -17,7 +17,7 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public double? Rate { get; set; }
 
-        public double? Quantity { get; set; }
+        public int? Quantity { get; set; }
 
         public double? TotalAmount { get; set; }
 

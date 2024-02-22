@@ -112,7 +112,7 @@ export class PermitComponentComponent implements OnInit {
     this.PTCList.splice(0, this.PTCList.length);
     this.permitService.getPermitSubForCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
 
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempPTCList = {} as PTCList;
@@ -135,9 +135,9 @@ export class PermitComponentComponent implements OnInit {
           tempPTCList.PermitDocName = current.permitDocName;
           tempPTCList.DocumentLocalPath = current.documentLocalPath;
           tempPTCList.isPaid = current.isPaid;
-          debugger;
+          
           if (current.permitDocName != null && current.documentLocalPath != null) {
-            debugger;
+            
             tempPTCList.hasDoc = true;
           }
           else {
@@ -168,9 +168,9 @@ export class PermitComponentComponent implements OnInit {
 
   checkIfCanConsolidate() {
     let x = 0;
-    debugger;
+    
     for (var i = 0; i < this.PTCList.length; i++) {
-      debugger;
+      
       if (this.PTCList[i].PermitDocName != null && this.PTCList[i].isPaid == true) {
         x++;
       }
@@ -186,11 +186,11 @@ export class PermitComponentComponent implements OnInit {
 
   updateApplicationStatus() {
     let x = 0;
-    debugger;
+    
     for (var i = 0; i < this.PTCList.length; i++) {
-      debugger;
+      
       if (this.PTCList[i].PermitDocName != null) {
-        x++; debugger;
+        x++; 
       }
      
     }
@@ -344,11 +344,11 @@ export class PermitComponentComponent implements OnInit {
   }
 
   moveToClosedStage() {
-    debugger;
+    
     this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, this.StagesList[5].StageName, this.StagesList[5].StageOrderNumber, this.StagesList[6].StageName, this.StagesList[6].StageOrderNumber, "Monitoring", null).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        debugger;
+        
         //Audit Trail Kyle 
         this.onSaveToAuditTrail2("Permit to Work Generated");
         this.onSaveToAuditTrail2("Application Moved To Monitoring Stage");
@@ -397,7 +397,7 @@ export class PermitComponentComponent implements OnInit {
     })
   }
   getPermitInvoice(permitDocumentName: any) {
-    debugger;
+    
     
     fetch(this.apiUrl + `documentUpload/GetDocument?filename=${permitDocumentName}`)
       .then(response => {

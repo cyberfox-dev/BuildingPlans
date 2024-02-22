@@ -225,7 +225,7 @@ export class SelectContractorTableComponent implements OnInit {
 
 
   SetSharedData(row: any) {
-    debugger;
+    
 
     this.isSelectNoneButtonSelected = false;
     this.isProfessionalSelected = true;
@@ -262,7 +262,7 @@ export class SelectContractorTableComponent implements OnInit {
   }
 
   clearAllEngineers() {
-    debugger;
+    
     this.clickedRowsProfessials.clear();
 
     this.ProfessionalsDataForShared.splice(0, this.ProfessionalsDataForShared.length);
@@ -349,7 +349,7 @@ export class SelectContractorTableComponent implements OnInit {
   }
 
   getGoNext() {
-    debugger;
+    
     if ((this.isSelectNoneButtonSelected == false && this.isProfessionalSelected == true) || (this.isSelectNoneButtonSelected == true && this.isProfessionalSelected == false)) {
       this.shared.setCanGoNextAfterContractorSelection(true);
       this.shared.getCanGoNextE();

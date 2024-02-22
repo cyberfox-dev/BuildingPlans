@@ -179,7 +179,7 @@ export class UserManagementComponent implements OnInit {
   }
     //#region actingAsInternal Sindiswa 05 February 2024
   handleAddressChange(extIntApplicantPhyscialAddress: Address) {
-    debugger;
+    
     console.log("Address changed:", extIntApplicantPhyscialAddress);
     this.extIntApplicantPhyscialAddress = extIntApplicantPhyscialAddress.formatted_address;
   }
@@ -3480,10 +3480,10 @@ export class UserManagementComponent implements OnInit {
     //this.getAllAccessGroup(); //this method is called on ngOnInit so all should be fine neh
     this.actingAsInternalAGID = this.getAccessGroupIdByName("Acting As Internal");
     console.log("This is the access group ID ya 'Acting as Internal'", this.actingAsInternalAGID);
-    debugger;
+    
     this.userService.register(this.extIntApplicantName + " " + this.extIntApplicantSurname, this.extIntApplicantEmail, "12345").subscribe(async (data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         this.actingAsInternalUserID = await data.dateSet.appUserId;
         console.log("This is the new user's UserID", this.actingAsInternalUserID);
         this.userPofileService.addUpdateUserProfiles(0, this.actingAsInternalUserID, this.extIntApplicantName + " " + this.extIntApplicantSurname, this.extIntApplicantEmail, this.extIntApplicantTellNo, /* this ninja is NOT internal */false, /* validating this isn't fun */ this.extIntApplicantBpNoApplicant, this.extIntApplicantCompanyName, this.extIntApplicantCompanyRegNo,
@@ -3493,7 +3493,7 @@ export class UserManagementComponent implements OnInit {
             this.actingAsInternalUserProfileID = await userData.dateSet.userProfileID;
 
             if (userData.responseCode == 1) {
-              debugger;
+              
               console.log("This is the new user's UserProfileID", this.actingAsInternalUserProfileID);
               //shnap, aren't access groups linked to zones and subdepartments now? AccessGroupUserLink
               this.accessGroupsService.addUpdateAccessGroupUserLink(0, /*what's "Acting As Internal"'s AccessGroupID? */ this.actingAsInternalAGID, this.actingAsInternalUserID, this.CurrentUser.appUserId,/*zoneID*/ null, /*subDepartmentID*/ null, this.actingAsInternalUserProfileID).subscribe((accessGULData: any) => {

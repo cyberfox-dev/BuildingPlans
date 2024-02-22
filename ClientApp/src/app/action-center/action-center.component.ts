@@ -82,7 +82,7 @@ export interface ServiceItemList {
   serviceItemID: number;
   serviceItemCode: string;
   Description: string;
-  Rate: number;
+  Rate: any;
   totalVat: number;
   dateCreated: any;
   vatApplicable: boolean;
@@ -526,7 +526,7 @@ export class ActionCenterComponent implements OnInit {
     //this.newAssignORReassign(); //actionCentreEdits Sindiswa 16 January 2024
     this.checkUserAssignSituation(); //actionCentreEdits Sindiswa 18 January 2024
     this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
-    debugger;
+    
     if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
       this.getUsersByRoleName("Permit Issuer");
 
@@ -612,11 +612,11 @@ export class ActionCenterComponent implements OnInit {
   }
 
   canApprovePTW() {
-    debugger;
+    
     this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         for (var i = 0; i < data.dateSet.length; i++) {
 
           let foundMatch = false;
@@ -625,7 +625,7 @@ export class ActionCenterComponent implements OnInit {
 
             for (var i = 0; i < this.permitIssuer.length; i++) {
 
-              debugger;
+              
 
               if (this.permitIssuer[i].userID == this.CurrentUser.appUserId) {
 
@@ -633,7 +633,7 @@ export class ActionCenterComponent implements OnInit {
 
                 if (current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
 
-                  debugger;
+                  
 
                   foundMatch = true;
                   break;
@@ -1144,7 +1144,7 @@ export class ActionCenterComponent implements OnInit {
               })
               this.modalService.dismissAll();
               if (this.supervisionFeeChecked) {
-                debugger;
+                
                 this.getCurrentInvoiceNumberForGen(this.CurrentApplicant);
               }
              
@@ -1762,7 +1762,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   getPreviousReviewerUserID() {
-    debugger;
+    
 
     this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
@@ -1770,7 +1770,7 @@ export class ActionCenterComponent implements OnInit {
         for (let i = 0; i < data.dateSet.length; i++) {
 
 
-          debugger;
+          
           const current = data.dateSet[i];
 
           if (current.commentStatus == "Referred" && current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
@@ -1865,7 +1865,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   onReturnToReviewerClick() {
-    debugger;
+    
     if (confirm("Are you sure you what return to previous reviewer?")) {
 
 
@@ -2777,7 +2777,7 @@ export class ActionCenterComponent implements OnInit {
   }
 
   onComment(interact: any) {
-    debugger;
+    
     let SubDepartmentName = "";
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
@@ -2790,7 +2790,7 @@ export class ActionCenterComponent implements OnInit {
 
       case "Approve": {
 
-        debugger;
+        
         if (this.WBSCheck == true) {
 
           //SubDepartmentForCommentService
@@ -3074,7 +3074,7 @@ export class ActionCenterComponent implements OnInit {
      
            
     `;/*jjs commit 23JAN24 - typoFix for Email for Sign off, Applicant filter dashbaord table fix*/
-                        debugger;
+                        
                         this.notificationsService.sendEmail(approver.email, "Request for Sign-off", emailContent12, emailContent12);
                         if (approver.alternativeEmail) { 
                           this.notificationsService.sendEmail(approver.alternativeEmail, "Request for Sign-off", emailContent12, emailContent12);
@@ -3147,7 +3147,7 @@ export class ActionCenterComponent implements OnInit {
       }
 
       case "Reject": {
-        debugger;
+        
         if (confirm("Are you sure you want to reject this application?")) {
           this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Rejected", null, null, "All users in Subdepartment FA", false).subscribe((data: any) => {
 
@@ -3202,11 +3202,11 @@ export class ActionCenterComponent implements OnInit {
               /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application disapproved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have disapproved application " + this.projectNo + "with comment: <br><br><i>" + this.leaveAComment  + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
               */
               // #region what's up with this case?
-              debugger;
+              
               this.accessGroupsService.getUserBasedOnRoleName("FinalApprover", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
-                debugger;
+                
                 if (data.responseCode == 1) {
-                  debugger;
+                  
                   console.log(data.dateSet);
 
                   console.log("this.departmentAdminUsersgetAllLinkedRolesReponsethis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsers", this.departmentAdminUsers);
@@ -3408,7 +3408,7 @@ export class ActionCenterComponent implements OnInit {
               });
 
               //commentsService
-              debugger;//Comments Kyle 01/02/24
+              //Comments Kyle 01/02/24
               this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.CurrentApplication.UserID).subscribe((data: any) => {
                 //Comments Kyle 01/02/24
                 if (data.responseCode == 1) {
@@ -3637,7 +3637,7 @@ export class ActionCenterComponent implements OnInit {
   }
 
   onCommentSR(interact: any) {
-    debugger;
+    
     let SubDepartmentName = "";
     for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
       if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
@@ -3711,7 +3711,7 @@ export class ActionCenterComponent implements OnInit {
                   /*                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application approved", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You, as a senior reviewer, have approved application " + this.projectNo + ".<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
                   */
                   this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application provisionally approved", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserId,  "You, as a senior reviewer, have approved application " + this.projectNo).subscribe((data: any) => {
-                    debugger;
+                    
                     if (data.responseCode == 1) {
                       alert(data.responseMessage);
 
@@ -4285,7 +4285,7 @@ export class ActionCenterComponent implements OnInit {
 
               alert(data.responseMessage);
               //commentsService
-              debugger;
+              
               this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.CurrentApplication.UserID).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
@@ -4661,6 +4661,7 @@ export class ActionCenterComponent implements OnInit {
           tempServiceItemList.serviceItemCode = current.serviceItemCode;
           this.depositRequired.controls["vatApplicable"].setValue(current.vatApplicable);
           this.depositRequired.controls["description"].setValue(current.description);
+          
           this.depositRequired.controls["rate"].setValue(current.rate);
           this.depositRequired.controls["total"].setValue(current.totalVat);
           this.depositRequired.controls["remarks"].setValue(current.remarks);
@@ -5819,11 +5820,11 @@ export class ActionCenterComponent implements OnInit {
     debugger;
     this.subDepartmentForCommentService.getAssignedReviewer(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe(async (data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         console.log("User assignment information:", data.dateSet);
-
+        debugger;
         let current = data.dateSet[0];
-
+        debugger;
         this.subDPTforComment = await current.subDepartmentForCommentID;
         this.userAssignedText = await current.userAssaignedToComment;
         this.commentState = await current.commentStatus;
@@ -5898,14 +5899,14 @@ export class ActionCenterComponent implements OnInit {
       //This is so the Admin can assign
       this.openXl(content);
     }
-    else if (this.userAssignedText === this.CurrentUser.appUserId && (this.commentState == null || this.commentState == "Referred" || this.commentState == "Approved" || this.commentState == "Rejected")) {
+    else if (this.userAssignedText === this.CurrentUser.appUserId && (this.commentState == null || this.commentState == "Referred" || this.commentState == "Approved" || this.commentState == "Rejected" || this.commentState == "Approved(Conditional)")) {
       this.openXl(content);
     }
     else if (this.userAssignedText === "EndOfCommentProcess") {
 
       // actionCentre Sindiswa 22 January 2024 - the permit issuer can't open their action centre view
       console.log("Can this user approvePermit?? PermitStage:" + this.permit + " CanApprove: " + this.canApprovePermit);
-      debugger;
+      
       if (this.permit && this.canApprovePermit/* && this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[4]*/) {
         this.openXl(content);
       }
@@ -5913,6 +5914,7 @@ export class ActionCenterComponent implements OnInit {
         alert("This application has reached the 'End Of Comment Process' stage");
       }
     }
+    
     else if ((this.userAssignedText == "Senior Reviewer to comment" && this.commentState == "Referred") || (this.userAssignedText == "All users in Subdepartment FA" && (this.commentState == "Approved" || this.commentState == "Approved(Conditional)" || this.commentState == "Rejected"))) {
 
       if (this.commentState == "Referred") {
@@ -5921,16 +5923,17 @@ export class ActionCenterComponent implements OnInit {
         this.openXl(content);//Final Approver && Senior Approver Kyle 01/02/24
 
       }
-
-      else if (this.commentState == "Approved" || this.commentState == "Rejected") {
+      else if (this.commentState == "Approved" || this.commentState == "Rejected" || this.commentState == "Approved(Conditional)") {//JJS fixed action center wont open for some users, it was beacuse we wasnt checking commentState approved conditional
         this.appointmentText = "Final Approver - Self Appointed";
         this.asWhat = " Final Approver";
         this.canCommentFinalApprover;
         this.canCommentSeniorReviewer;
         this.openXl(content);//Final Approver && Senior Approver Kyle 01/02/24
       }
+     
 
     }
+   
     else if ((this.userAssignedText != null && this.userAssignedText != "Senior Reviewer to comment" && this.userAssignedText != "All users in Subdepartment FA") && (this.commentState == "Approved" || this.commentState == "Referred" || this.commentState == "Approved(Conditional)" || this.commentState == "Rejected")) {
       alert("This application is currently under review by a senior reviewer or final approver.");
     }
@@ -5947,14 +5950,14 @@ export class ActionCenterComponent implements OnInit {
         SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
       }
     }
-    debugger;
+    
     if (this.leaveAComment == "") {
       alert("Please leave a comment on what you need clafication on");
     }
     else {
       switch (interact) {
         case "Clarify": {
-          debugger;
+          
           // this.getDepartmentManagerUserID("Senior Reviewer");
           if (confirm("Are you sure you want to get clarity from applicant for this application?")) {
 
@@ -6088,7 +6091,7 @@ export class ActionCenterComponent implements OnInit {
                 }, error => {
                   console.log("Error", error);
                 });
-                debugger;
+                
                 //commentsService                                                                                                                                                                                                                                        //Comments Kyle 01/02/24 //Clarify Alerts Kyle 
                 this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Applicant Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.CurrentApplication.UserID).subscribe((data: any) => {
                   //Comments Kyle 01/02/24
@@ -6129,11 +6132,11 @@ export class ActionCenterComponent implements OnInit {
 
         case "Reviewer": {
           if (confirm("Are you sure you want to get clarity from the previous reviewer?")) {
-            debugger;
+            
             this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentUser.appUserId, null).subscribe((data: any) => {
-                debugger;
+                
               if (data.responseCode == 1) {
-                debugger;
+                
                 const emailContent = `
         <html>
         <head>
@@ -6174,7 +6177,7 @@ export class ActionCenterComponent implements OnInit {
      
            
     `;
-                debugger;
+                
 
 
                 this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
@@ -6261,11 +6264,11 @@ export class ActionCenterComponent implements OnInit {
                   }, error => {
                     console.log("Error", error);
                   });
-                debugger;
+                
                 //commentsService                                                                                                                                                                                                                                        //Comments Kyle 01/02/24
                 this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Reviewer Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.previousReviewer.userID).subscribe((data: any) => {
                   //Comments Kyle 01/02/24
-                  debugger;
+                  
                   if (data.responseCode == 1) {
 
                     console.log("Comment Created Kyle");
@@ -6437,7 +6440,7 @@ export class ActionCenterComponent implements OnInit {
 
   //#region escalation Sindiswa 30 January 2024 & 31 January 2024
   async onGoToEscalationActionCentre(escalatedToEMB: any) {
-    debugger;
+    
     await this.getEscalationDetails();
 
     if (this.isEscalated == true) {
@@ -6474,13 +6477,13 @@ export class ActionCenterComponent implements OnInit {
   subDepartmentIDsNotDone: number[] = [];
   zoneIDsNotDone: number[] = [];
   async getRelavantDepartments() {
-    debugger;
+    
     try {
       this.LinkedSubDepartmentsList.splice(0, this.LinkedSubDepartmentsList.length);
 
       const data: any = await this.subDepartmentForCommentService.getSubDepartmentForComment(this.ApplicationID).toPromise();
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
 
@@ -6538,7 +6541,7 @@ export class ActionCenterComponent implements OnInit {
 
   async getUserListForSubDepartment(subDepartmentID: number, zoneID: number): Promise<any> {
     try {
-      debugger;
+      
 
       const userData: any = await this.accessGroupsService.getUsersBasedOnRoleName("Department Admin", subDepartmentID, zoneID).toPromise();
       // Get users with the role "Department Admin" for the specified subdepartment
@@ -6576,7 +6579,7 @@ export class ActionCenterComponent implements OnInit {
   }
 
   async sendEmailsToDepartments() {
-    debugger;
+    
 
     try {
 
@@ -6684,7 +6687,7 @@ export class ActionCenterComponent implements OnInit {
   //#endregion
    //Permit Kyle 13-02 - 24
   getAllServiceItemsForPermit(supervisionFee: any) {
-    debugger;
+    
 
     if (this.supervisionFeeChecked == false) {
       this.supervisionFeeChecked = true;
@@ -6729,13 +6732,13 @@ export class ActionCenterComponent implements OnInit {
   onCheckServiceItem(index: number) {
     const item = this.PermitIssuerSuperVisionFeeList[index];
     if (item) {
-      debugger;
+      
       item.isChecked = !item.isChecked;
       if (item.isChecked) {
-        debugger;
+        
         this.superVisionFee = this.superVisionFee + item.Rate;
       } else {
-        debugger;
+        
         this.superVisionFee = this.superVisionFee - item.Rate;
       }
       // Optionally, trigger change detection
@@ -6745,12 +6748,12 @@ export class ActionCenterComponent implements OnInit {
 
   saveAllPermitSupervisionFees() {
     let supervisionFee = 0;
-    debugger;
+    
     for (let i = 0; i < this.PermitIssuerSuperVisionFeeList.length; i++) {
       const current = this.PermitIssuerSuperVisionFeeList[i];
 
       if (current.isChecked == true) {
-        debugger;
+        
         supervisionFee = supervisionFee + current.totalVat;
         this.SupervisionFeesList.push(current);
       }
@@ -6794,7 +6797,7 @@ export class ActionCenterComponent implements OnInit {
   }
   generatedInvoiceNumber: string;
   generateInvoice(ClientName: string) {
-    debugger;
+    
       // Create a new PDF
       const doc = new jsPDF();
 

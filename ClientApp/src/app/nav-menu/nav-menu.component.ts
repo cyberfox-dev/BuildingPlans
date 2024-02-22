@@ -214,7 +214,7 @@ export class NavMenuComponent implements OnInit {
   hasNotifications: boolean;
   notificationsQuantity: number;
   getNotificationDetails(userId: string) {
-    debugger;
+    
     this.notificationsService.getNotificationsCount(userId).subscribe((data: any) => {
       if (data.responseCode == 1) {
         this.shared.setNotificationsQuantity(data.dateSet);
@@ -1313,7 +1313,7 @@ export class NavMenuComponent implements OnInit {
 
   //Audit Trail Kyle
   onCheckAllCurrentUserRoles() {
-    debugger;
+    
     for (let i = 0; i < this.AllCurrentUserRoles.length; i++) {
       const roleName = this.AllCurrentUserRoles[i].roleName;
       if (roleName === "Audit Trail") {
