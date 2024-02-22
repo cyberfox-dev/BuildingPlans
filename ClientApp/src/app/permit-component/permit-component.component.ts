@@ -11,6 +11,8 @@ import { StagesService } from '../service/Stages/stages.service';
 import { AuditTrailService } from '../service/AuditTrail/audit-trail.service';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { FinancialService } from '../service/Financial/financial.service';
+import { UserProfileService } from '../service/UserProfile/user-profile.service';
+import { NotificationsService } from '../service/Notifications/notifications.service';
 //Permit Kyle 13-02-24
 
 //PTC = Permit To Comment
@@ -28,6 +30,8 @@ export interface PTCList {
   DocumentLocalPath: string;
   isPaid: boolean;
   hasDoc: boolean;
+  hasSuperVisionFee: boolean;
+  
  
 }
 //Permit Kyle 13-02-24
@@ -36,6 +40,14 @@ export interface StagesList {
   StageName: string;
   StageOrderNumber: number;
   CurrentUser: any
+}
+
+//Request for delete Kyle 22-02-24
+export interface EMBUsersList {
+  UserProfileID: string;
+  UserID: string;
+  UserFullName: string;
+  UserEmail: string;
 }
 //Permit Kyle 13-02-24
 @Component({
@@ -48,6 +60,7 @@ export class PermitComponentComponent implements OnInit {
 
   PTCList: PTCList[] = [];
   StagesList: StagesList[] = [];//Permit Kyle 13-02-24
+  EMBUsersList: EMBUsersList[] = [];
 
   //permitupload Sindiswa 08 January 2024
   displayedColumns: string[] = ['subDepartmentName','zoneName' ,'comment' ,'indication', 'addDocument','status','moveToPaid'];
@@ -68,8 +81,9 @@ export class PermitComponentComponent implements OnInit {
   CanConsolidate: boolean;
   isEMB: boolean;
   isCalledInsidePermit: boolean;
+  projectNumber: string;
 
-  constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private permitService: PermitService, private shared: SharedService, private applicationsService: ApplicationsService, private stagesService: StagesService, private auditTrailService: AuditTrailService,private router :Router , private financialService :FinancialService) { }
+  constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private permitService: PermitService, private shared: SharedService, private applicationsService: ApplicationsService, private stagesService: StagesService, private auditTrailService: AuditTrailService,private router :Router , private financialService :FinancialService ,private userProfileService:UserProfileService,private notificationsService:NotificationsService) { }
 
   ngOnInit(): void {
     this.getAllPermitForComment();
@@ -82,6 +96,11 @@ export class PermitComponentComponent implements OnInit {
     
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('AllCurrentUserRoles')));
     this.AllCurrentUserRoles = JSON.parse(this.stringifiedData);
+
+       //Request for delete Kyle 22-02-24
+    this.getProjectNumberForApplication();
+    this.getAllEMBUsers();
+
     for (var i = 0; i < this.AllCurrentUserRoles.length; i++) {
       if (this.AllCurrentUserRoles[i].roleName == "Issue Permit") {
         this.CanIssuePermit = true;
@@ -146,7 +165,7 @@ export class PermitComponentComponent implements OnInit {
           if (tempPTCList.isPaid == null) {
             tempPTCList.isPaid = false;
           }
-
+          tempPTCList.hasSuperVisionFee = current.hasSupervisionFee; //Request For Delete Kyle 22-02-24
           this.PTCList.push(tempPTCList);
 
         }
@@ -171,9 +190,18 @@ export class PermitComponentComponent implements OnInit {
     debugger;
     for (var i = 0; i < this.PTCList.length; i++) {
       debugger;
-      if (this.PTCList[i].PermitDocName != null && this.PTCList[i].isPaid == true) {
-        x++;
+       //Request for delete Kyle 22-02-24
+      if (this.PTCList[i].hasSuperVisionFee == true) {
+        if (this.PTCList[i].PermitDocName != null && this.PTCList[i].isPaid == true) {
+          x++;
+        }
+        else {
+          if (this.PTCList[i].PermitDocName != null) {
+            x++;
+          }
+        }
       }
+     
     }
     if (x === this.PTCList.length) {
       this.CanConsolidate = true;
@@ -430,8 +458,9 @@ export class PermitComponentComponent implements OnInit {
 
   moveToPaid(index: any) {
     const permitForComment = this.PTCList[index];
+    const movedToPaidDate = new Date();
     if (confirm("Are you sure you want to move this to paid?")) {
-      this.permitService.addUpdatePermitSubForComment(permitForComment.PermitSubForCommentID, permitForComment.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, true).subscribe((data: any) => {
+      this.permitService.addUpdatePermitSubForComment(permitForComment.PermitSubForCommentID, permitForComment.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, true, null, movedToPaidDate).subscribe((data: any) => {
         if (data.responseCode == 1) {
           alert("Permit for Sub Department moved to paid");
           this.router.navigate(["/home"]);
@@ -450,6 +479,7 @@ export class PermitComponentComponent implements OnInit {
     if (confirm("Are you sure you want to request an EMB user to remove the permit document ?")) {
       this.permitService.addUpdatePermitSubForComment(permitForSubComment.PermitSubForCommentID, null, null, null, null, null, null, null, null, null, null, null, true).subscribe((data: any) => {
         if (data.responseCode == 1) {
+          this.RequestForDeleteEmail(); //Request for delete Kyle 22-02-24
           alert("Request for delete submitted successfully");
         }
         else {
@@ -461,4 +491,153 @@ export class PermitComponentComponent implements OnInit {
     }
   }
   //Permit Kyle 13-02-24
+  //Request for delete Kyle 22-02-24
+  RequestForDeleteEmail() {
+    const emailContentOriginator = `
+      <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+              font-family: Arial, sans-serif;
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.CurrentUserProfile[0].fullName},</p>
+            <p>You have successfully requested a permit document to delete by an EMB User for ${this.projectNumber}. You will be notified once your request has been carried out which will then allow you to upload a new permit document. </p>
+            <p>Should you have any queries, please contact <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+                <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+        </body>
+      </html>
+    `;
+
+    this.notificationsService.sendEmail(this.CurrentUser.email, "Request For Delete", emailContentOriginator, emailContentOriginator);
+    this.notificationsService.addUpdateNotification(0, "Request Submmited", "Request For Delete", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserID, "Your request for a delete of a permit document for project " + this.projectNumber + "was successful.  You will be notified once the document has been deleted.").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        alert(data.responseMessage);
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+    })
+
+    for (let i = 0; i < this.EMBUsersList.length; i++) {
+      const EMBUser = this.EMBUsersList[i];
+
+      const emailContentEMBUsers = `
+      <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+              font-family: Arial, sans-serif;
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.EMBUsersList[i].UserFullName},</p>
+            <p>A user has submitted a request for a permit document be delete for  ${this.projectNumber} in ${this.CurrentUserProfile[0].subDepartmentName}  ${this.CurrentUserProfile[0].zoneName}. The application will appear in a pop up on your dash board until this request has been attenden to. </p>
+            <p>Should you have any queries, please contact <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+                <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+        </body>
+      </html>
+    `;
+
+      this.notificationsService.sendEmail(EMBUser.UserEmail, "Request For Delete", emailContentEMBUsers, emailContentEMBUsers);
+      this.notificationsService.addUpdateNotification(0, "Request For Delete", " Requested for permit document delete.", false, EMBUser.UserID, this.ApplicationID, this.CurrentUser.appUserId, "A user has requested a permit document to be delete for " + this.projectNumber + " in " + this.CurrentUserProfile[0].subDepartmentName + " " + this.CurrentUserProfile[0].zoneName + " . PLease attend to this as soon as possible.").subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          console.log(data.responseMessage)
+        }
+        else {
+          alert(data.responseMessage);
+        }
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+  }
+
+  getAllEMBUsers() {
+    this.userProfileService.getUsersBySubDepartmentName("EMB").subscribe((data: any) => {
+      debugger;
+      if (data.responseCode == 1) {
+        debugger;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempUser = {} as EMBUsersList;
+          const current = data.dateSet[i];
+
+          tempUser.UserProfileID = current.userProfileID;
+          tempUser.UserID = current.userID;
+          tempUser.UserFullName = current.fullName;
+          tempUser.UserEmail = current.eamil;
+
+          this.EMBUsersList.push(tempUser);
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+    })
+  }
+
+  getProjectNumberForApplication() {
+    this.applicationsService.getApplicationsByApplicationID(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        const current = data.dateSet[0];
+
+        this.projectNumber = current.projectNumber;
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+    })
+  }
+
+ 
+   //Request for delete Kyle 22-02-24
 }

@@ -13,7 +13,7 @@ export class PermitService {
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
 
-  public addUpdatePermitSubForComment(permitSubForCommentID: number | null, applicationID: number | null, subDepartmentID: number | null, subDepartmentName: string | null, userAssaignedToComment: string | null, permitComment: string | null, permitCommentStatus: string | null, createdByID: string | null, zoneID?: number | null, zoneName?: string | null, documentLocalPath?: any | null, documentName?: string | null, requestForDelete?: boolean | null, isPaid?: boolean | null) {
+  public addUpdatePermitSubForComment(permitSubForCommentID: number | null, applicationID: number | null, subDepartmentID: number | null, subDepartmentName: string | null, userAssaignedToComment: string | null, permitComment: string | null, permitCommentStatus: string | null, createdByID: string | null, zoneID?: number | null, zoneName?: string | null, documentLocalPath?: any | null, documentName?: string | null, requestForDelete?: boolean | null, isPaid?: boolean | null, hasSupervisionFee?: boolean | null, moveToPaidDate?:any | null) {
 
     const body = {
       PermitSubForCommentID: permitSubForCommentID,
@@ -31,7 +31,9 @@ export class PermitService {
       PermitDocName: documentName,
       // #endregion
       RequestForDelete: requestForDelete,
-      isPaid:isPaid,
+      isPaid: isPaid,
+      hasSupervisionFee: hasSupervisionFee,
+      MoveToPaidDate: moveToPaidDate,
     }
     return this.httpClient.post(this.baseURL + "AddUpdatePermitSubForComment", body);
 

@@ -253,14 +253,19 @@ export class ApplicationAlertsComponent implements OnInit {
 
           }
         }
-
-
-        this.dataSourceClarifications = this.ClarificationsList;
-        this.clarificationsTable?.renderRows();
-        if (this.ClarificationsList.length > 0) {
-
-          this.openClarificationsAlerts();
+         //Request For Delete Kyle 22-02-24
+        if (this.isEMB == true) {
+          this.getAllRequestsForDeletes();
         }
+        else {
+          this.dataSourceClarifications = this.ClarificationsList;
+          this.clarificationsTable?.renderRows();
+          if (this.ClarificationsList.length > 0) {
+
+            this.openClarificationsAlerts();
+          }
+        }
+       
       }
       else {
         alert(data.responseMessage);
@@ -305,38 +310,38 @@ export class ApplicationAlertsComponent implements OnInit {
       throw error;
     }
   }
+  //Request For Delete Kyle 22-02-24
+  getAllRequestsForDeletes() {
+    this.permitService.getAllRequestsForDelete().subscribe(async (data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempDeleteRequest = {} as Clarifications;
+          const current = data.dateSet[i];
 
-  //getAllRequestsForDeletes() {
-  //  this.permitService.getAllRequestsForDelete().subscribe(async (data: any) => {
-  //    if (data.responseCode == 1) {
-  //      for (let i = 0; i < data.dateSet.length; i++) {
-  //        const tempDeleteRequest = {} as Clarifications;
-  //        const current = data.dateSet[i];
+          tempDeleteRequest.ApplicationID = current.applicationID;
+          tempDeleteRequest.Description = "Request for delete of permit for " + current.subDepartmentName;
+          tempDeleteRequest.ProjectNumber = await this.getProjectNumberForApplication(current.applicationID);
 
-  //        tempDeleteRequest.ApplicationID = current.applicationID;
-  //        tempDeleteRequest.Description = "Request for delete of permit for " + current.subDepartmentName;
-  //        tempDeleteRequest.ProjectNumber = await this.getProjectNumberForApplication(current.applicationID);
+          this.ClarificationsList.push(tempDeleteRequest);
+        }
+        this.dataSourceClarifications = this.ClarificationsList;
+        this.clarificationsTable?.renderRows();
+        if (this.ClarificationsList.length > 0) {
 
-  //        this.ClarificationsList.push(tempDeleteRequest);hj
-  //      }
-  //      this.dataSourceClarifications = this.ClarificationsList;
-  //      this.clarificationsTable?.renderRows();
-  //      if (this.ClarificationsList.length > 0) {
-
-  //        this.openClarificationsAlerts();
-  //      }
-  //    }
-  //    else {
-  //      alert(data.responseMessage);
-  //    }
-
-
-  //  }, error => {
-  //    console.log("Error: ", error);
+          this.openClarificationsAlerts();
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
 
 
-  //  })
-  //}
+    }, error => {
+      console.log("Error: ", error);
+
+
+    })
+  }
 }
 
 

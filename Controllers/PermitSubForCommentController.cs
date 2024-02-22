@@ -66,6 +66,8 @@ namespace WayleaveManagementSystem.Controllers
 
                             RequestForDelete = model.RequestForDelete,
                             isPaid = model.isPaid,
+                            hasSuperVisionFee = model.hasSuperVisionFee,
+                            MoveToPaidDate = model.MoveToPaidDate,
                         };
 
                         await _context.PermitSubForComment.AddAsync(tempPermitSubForComment);
@@ -132,6 +134,14 @@ namespace WayleaveManagementSystem.Controllers
                         if(model.isPaid != null)
                         {
                             tempPermitSubForComment.isPaid = model.isPaid;
+                        }
+                        if(model.hasSuperVisionFee != null)
+                        {
+                            tempPermitSubForComment.hasSuperVisionFee = model.hasSuperVisionFee;
+                        }
+                        if(model.MoveToPaidDate != null)
+                        {
+                            tempPermitSubForComment.MoveToPaidDate = model.MoveToPaidDate;
                         }
                         tempPermitSubForComment.DateUpdated = DateTime.Now;
                         #endregion
@@ -260,6 +270,8 @@ namespace WayleaveManagementSystem.Controllers
                     #endregion
                     isPaid = permitSubForComment.isPaid,
                     RequestForDelete = permitSubForComment.RequestForDelete,
+                    hasSuperVisionFee = permitSubForComment.hasSuperVisionFee,
+                    MoveToPaidDate = permitSubForComment.MoveToPaidDate,
 
                 }
                 ).ToListAsync();
@@ -310,6 +322,8 @@ namespace WayleaveManagementSystem.Controllers
                                       ZoneName = s.ZoneName,
                                       RequestForDelete = s.RequestForDelete,
                                       isPaid = s.isPaid,
+                                      hasSuperVisionFee = s.hasSuperVisionFee,
+                                      MoveToPaidDate = s.MoveToPaidDate,
                                   })
                                   .ToListAsync();
 
@@ -333,7 +347,8 @@ namespace WayleaveManagementSystem.Controllers
                     ZoneName = permitSubForComment.ZoneName,
                     RequestForDelete = permitSubForComment.RequestForDelete,
                     isPaid = permitSubForComment.isPaid,
-
+                    hasSuperVisionFee = permitSubForComment.hasSuperVisionFee,
+                    MoveToPaidDate = permitSubForComment.MoveToPaidDate,
                 }
                 ).ToListAsync();
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All PermitSubForComment By ID", result));
@@ -410,6 +425,7 @@ namespace WayleaveManagementSystem.Controllers
 
                     tempPermitSubForComment.DocumentLocalPath = null;
                     tempPermitSubForComment.PermitDocName = null;
+                    tempPermitSubForComment.RequestForDelete = false;
 
                     _context.PermitSubForComment.Update(tempPermitSubForComment);
                     _context.SaveChanges();
@@ -447,6 +463,8 @@ namespace WayleaveManagementSystem.Controllers
                         ZoneName = permitSubForComment.ZoneName,
                         RequestForDelete = permitSubForComment.RequestForDelete,
                         isPaid = permitSubForComment.isPaid,
+                        hasSuperVisionFee = permitSubForComment.hasSuperVisionFee,
+                        MoveToPaidDate = permitSubForComment.MoveToPaidDate,
 
                     }).ToListAsync();
 

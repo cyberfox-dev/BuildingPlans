@@ -22,6 +22,8 @@
 
         public bool? isPaid { get; set; }
         public bool? RequestForDelete { get; set; }
+        public bool? hasSuperVisionFee { get; set; }
+        public DateTime? MoveToPaidDate { get; set; }
 
         #region permitupload Sindiswa 08 January 2024 - for the purpose of uploading documents under the "Permits" tab
         public string? PermitDocName { get; set; }

@@ -1124,29 +1124,48 @@ export class ActionCenterComponent implements OnInit {
 
           case "Approve": {
             if (confirm("Are you sure you want to approve permit this application?")) {
-
-              this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Approved", this.CurrentUser.appUserId).subscribe((data: any) => {
-                if (data.responseCode == 1) {
-
-                  alert("Permit Approved");
-                  this.CheckAllLinkedDepartmentsApproved();
-                 
-
-                }
-                else {
-                  alert(data.responseMessage);
-
-                }
-                console.log("reponse", data);
-
-              }, error => {
-                console.log("Error: ", error);
-              })
-              this.modalService.dismissAll();
+              //Request For Delete Kyle 22-02-24
               if (this.supervisionFeeChecked) {
-                debugger;
-                this.getCurrentInvoiceNumberForGen(this.CurrentApplicant);
+                this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Approved", this.CurrentUser.appUserId,null,null,null,null,false,false,true).subscribe((data: any) => {
+                  if (data.responseCode == 1) {
+
+                    this.getCurrentInvoiceNumberForGen(this.CurrentApplicant);
+                    alert("Permit Approved");
+                    this.CheckAllLinkedDepartmentsApproved();
+
+
+                  }
+                  else {
+                    alert(data.responseMessage);
+
+                  }
+                  console.log("reponse", data);
+
+                }, error => {
+                  console.log("Error: ", error);
+                })
               }
+              else {
+                this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Approved", this.CurrentUser.appUserId,null,null,null,null,false,false,false).subscribe((data: any) => {
+                  if (data.responseCode == 1) {
+                   
+                    alert("Permit Approved");
+                    this.CheckAllLinkedDepartmentsApproved();
+
+
+                  }
+                  else {
+                    alert(data.responseMessage);
+
+                  }
+                  console.log("reponse", data);
+
+                }, error => {
+                  console.log("Error: ", error);
+                })
+              }
+              this.modalService.dismissAll();
+             
              
             }
             break;
@@ -1154,21 +1173,44 @@ export class ActionCenterComponent implements OnInit {
 
           case "MeetOnSite": {
             if (confirm("Are you sure you want to meet applicant On site?")) {
-              this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "MeetOnSite", this.CurrentUser.appUserId).subscribe((data: any) => {
-                if (data.responseCode == 1) {
-                  alert("Meet Applicant On Site");
-                  this.router.navigate(["/home"]);
+              if (this.supervisionFeeChecked) {
+                if (confirm("Are you sure you want to meet applicant On site?")) {
+                  this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "MeetOnSite", this.CurrentUser.appUserId,null,null,null,null,false,false,true).subscribe((data: any) => {
+                    if (data.responseCode == 1) {
+                      this.getCurrentInvoiceNumberForGen(this.CurrentApplicant);
+                      alert("Meet Applicant On Site");
+                      this.router.navigate(["/home"]);
 
+                    }
+                    else {
+                      alert(data.responseMessage);
+
+                    }
+                    console.log("reponse", data);
+
+                  }, error => {
+                    console.log("Error: ", error);
+                  })
+                  this.modalService.dismissAll();
                 }
-                else {
-                  alert(data.responseMessage);
+              }
+              else {
+                this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "MeetOnSite", this.CurrentUser.appUserId,null,null,null,null,false,false,false).subscribe((data: any) => {
+                  if (data.responseCode == 1) {
+                    alert("Meet Applicant On Site");
+                    this.router.navigate(["/home"]);
 
-                }
-                console.log("reponse", data);
+                  }
+                  else {
+                    alert(data.responseMessage);
 
-              }, error => {
-                console.log("Error: ", error);
-              })
+                  }
+                  console.log("reponse", data);
+
+                }, error => {
+                  console.log("Error: ", error);
+                })
+              }
               this.modalService.dismissAll();
             }
             break;
