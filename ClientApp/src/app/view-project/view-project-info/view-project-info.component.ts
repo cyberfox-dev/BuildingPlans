@@ -2440,6 +2440,7 @@ export class ViewProjectInfoComponent implements OnInit {
     }
 
   }
+  
 
   checkIfPermitExsist() {
 
@@ -2454,7 +2455,7 @@ export class ViewProjectInfoComponent implements OnInit {
       this.permitDate = "Permit has been applied, with a start date of: " + this.startDate.substring(0, this.startDate.indexOf('T'));
      
     }
-
+    
 
   }
 

@@ -323,7 +323,8 @@
       </form>
       <div class="cont">
         <button mat-raised-button color="primary" matStepperPrevious disabled>Back</button>
-        <button mat-raised-button color="primary" matStepperNext  [disabled]="!shared?.isSelectedContractor || !shared?.isSelectedEngineer"  matTooltip="Make sure to choose the 'select none' option if there are no professionals that you'd like to link to this application.">Next</button>
+        <button mat-raised-button color="primary" matStepperNext *ngIf="isPlanning == false" [disabled]="!shared?.isSelectedContractor || !shared?.isSelectedEngineer" matTooltip="Make sure to choose the 'select none' option if there are no professionals that you'd like to link to this application.">Next</button>
+        <button mat-raised-button color="primary" matStepperNext *ngIf="isPlanning == true" matTooltip="Make sure to choose the 'select none' option if there are no professionals that you'd like to link to this application.">Next</button>
       </div>
     </mat-step>
 

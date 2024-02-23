@@ -6456,8 +6456,9 @@ export class ActionCenterComponent implements OnInit {
   }
 
   onSaveDocumentUpload(content: any) {
-    this.modalService.dismissAll();
     this.getAllDocumentsForServiceInformation();
+    this.modalService.dismissAll();
+    
     this.actionCentreView(content);
   }
 
