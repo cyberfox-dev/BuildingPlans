@@ -176,6 +176,7 @@ export interface CommentsList {
    //Clarifications Alert
   CanReplyUserID: string;
   DateCreated: any;
+  HasReply: boolean;
 }
 
 export interface ApplicationList {
@@ -1165,6 +1166,7 @@ export class ViewProjectInfoComponent implements OnInit {
     else {
       this.canClarify = false;
     }
+    console.log("CanReply", this.canClarify);
   }
 
   checkIfCanReviwerReply() {
@@ -1366,8 +1368,14 @@ export class ViewProjectInfoComponent implements OnInit {
             //Clarifications Alerts Kyle
             tempCommentList.CanReplyUserID = current.canReplyUserID;
             tempCommentList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+            debugger;
+            if (tempCommentList.CommentStatus == "Clarified" || tempCommentList.CommentStatus == " Reviewer Clarified" || tempCommentList.CommentStatus == " Applicant Clarified") {
+              tempCommentList.HasReply = true;
+            }
+
             this.CommentsList.push(tempCommentList);
             console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", current);
+            console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", tempCommentList);
           }
 
           else {
@@ -1394,8 +1402,17 @@ export class ViewProjectInfoComponent implements OnInit {
               tempCommentList.ZoneName = current.zoneName;
               //Comments Kyle 01/02/24
               tempCommentList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+              debugger;
+              if (tempCommentList.CommentStatus == "Clarified" || tempCommentList.CommentStatus == " Reviewer Clarified" || tempCommentList.CommentStatus == "Applicant Clarified") {
+                tempCommentList.HasReply = true;
+              }
+              else {
+                tempCommentList.HasReply = false;
+              }
+
               this.CommentsList.push(tempCommentList);
               console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", current);
+              console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLISTKyle", tempCommentList);
             }
            
           }  
@@ -1597,7 +1614,7 @@ export class ViewProjectInfoComponent implements OnInit {
     
     //this.ApplicantReply = Currentreply;
     // this.replyCreated = true;
-
+    debugger;
     const currentComment = this.CommentsList[this.currentIndex];
     let numberOfComments = 0;
     for (var i = 0; i < this.CommentsList.length; i++) {
@@ -1607,6 +1624,9 @@ export class ViewProjectInfoComponent implements OnInit {
     }
      //Final Approver && Senior Approver Kyle 01/02/24
     let commentStatus = "";
+    let updateStatus = currentComment.CommentStatus;
+
+    debugger;
     if (this.clarityType == "Reviewer Clarified" || this.clarityType == "Applicant Clarified") {
       commentStatus = "Approved";
     }
@@ -1616,18 +1636,18 @@ export class ViewProjectInfoComponent implements OnInit {
     //Final Approver && Senior Approver Kyle 01/02/24
     if (currentComment.isClarifyCommentID == null) {
       if (confirm("Are you sure you want to add this reply?")) {
-        
-        this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, null,/*comments Sindiswa 18 January 2024 - making the clarity more dynamic*/ this.clarityType , null, numberOfComments, Currentreply).subscribe((data: any) => {
+
+        this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, null,/*comments Sindiswa 18 January 2024 - making the clarity more dynamic*/ this.clarityType, null, numberOfComments, Currentreply).subscribe((data: any) => {
 
           if (data.responseCode == 1) {
             this.getAllComments();
             this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, commentStatus, false, null, null, null).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
-                 //Final Approver && Senior Approver Kyle 01/02/24
+                //Final Approver && Senior Approver Kyle 01/02/24
                 this.modalService.dismissAll();
                 this.router.navigate(["/home"]);
-                
+
 
               }
               else {
@@ -1656,10 +1676,14 @@ export class ViewProjectInfoComponent implements OnInit {
         })
       }
     }
-    else if (currentComment.isClarifyCommentID != null && currentComment.isClarifyCommentID == numberOfComments) {
+    else  if (currentComment.isClarifyCommentID != null && currentComment.isClarifyCommentID == numberOfComments) {
       if (confirm("Are you sure you want to update this replay? You will not be able to update the reply again.")) {
-        this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, null, "Clarified", null, 1, Currentreply).subscribe((data: any) => {
 
+        if (updateStatus == "Applicant Clarified" || updateStatus == "Reviewer Clarified") {
+          commentStatus = "Approved";
+        }
+        this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, null, this.clarityType, null, 1, Currentreply).subscribe((data: any) => {
+          
           if (data.responseCode == 1) {
             this.getAllComments();
 
@@ -2416,6 +2440,7 @@ export class ViewProjectInfoComponent implements OnInit {
     }
 
   }
+  
 
   checkIfPermitExsist() {
 
@@ -2430,7 +2455,7 @@ export class ViewProjectInfoComponent implements OnInit {
       this.permitDate = "Permit has been applied, with a start date of: " + this.startDate.substring(0, this.startDate.indexOf('T'));
      
     }
-
+    
 
   }
 

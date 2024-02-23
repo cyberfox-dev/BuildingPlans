@@ -1,46 +1,40 @@
 import { Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
-import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
-import { ApplicationsService } from '../service/Applications/applications.service';
 import { MatTable } from '@angular/material/table';
-import { CommentList } from '../nav-menu/nav-menu.component';
+import { Router } from "@angular/router";
+import { ApplicationsService } from '../service/Applications/applications.service';
 //import { ApplicationList } from '../shared/shared.service';
-import { SharedService } from "src/app/shared/shared.service"
-import { StagesService } from '../service/Stages/stages.service';
-import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component';
-import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
-import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
-import { ConfigService } from 'src/app/service/Config/config.service';
-import { Subscription, concat, tap } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { SelectEngineerTableComponent } from 'src/app/select-engineer-table/select-engineer-table.component';
-import { SelectContractorTableComponent } from 'src/app/select-contractor-table/select-contractor-table.component';
-import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
-import { LoginComponent } from 'src/app/login/login.component';
-import { MatStepper } from '@angular/material/stepper';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { ChangeDetectorRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSelect } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatStepper } from '@angular/material/stepper';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Subscription } from 'rxjs';
+import { ConfigActingDepartmentComponent } from 'src/app/config-acting-department/config-acting-department.component';
+import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component';
+import { LoginComponent } from 'src/app/login/login.component';
+import { SelectContractorTableComponent } from 'src/app/select-contractor-table/select-contractor-table.component';
+import { SelectEngineerTableComponent } from 'src/app/select-engineer-table/select-engineer-table.component';
+import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
+import { ConfigService } from 'src/app/service/Config/config.service';
+import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
+import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentForComment/sub-department-for-comment.service';
+import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
+import { SharedService } from "src/app/shared/shared.service";
+import { ContractorList } from '../edit-contractor/edit-contractor.component';
+import { NewProfileComponent } from '../new-user/new-profile/new-profile.component';
+import { NotificationCenterComponent } from '../notification-center/notification-center.component';
+import { BusinessPartnerService } from '../service/BusinessPartner/business-partner.service';
+import { DraftApplicationsService } from '../service/DraftApplications/draft-applications.service';
+import { NotificationsService } from '../service/Notifications/notifications.service';
+import { StagesService } from '../service/Stages/stages.service';
+import { SubDepartmentsService } from '../service/SubDepartments/sub-departments.service';
+import { UserService } from '../service/User/user.service';
 import { ZoneForCommentService } from '../service/ZoneForComment/zone-for-comment.service';
 import { ZoneLinkService } from '../service/ZoneLink/zone-link.service';
-import { SubDepartmentsService } from '../service/SubDepartments/sub-departments.service';
-import { trigger, state, style, animate, transition } from '@angular/animations';
-import { ChangeDetectorRef } from '@angular/core';
-import { MatSelect } from '@angular/material/select';
-import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
-import { UserService } from '../service/User/user.service';
-import { NewProfileComponent } from '../new-user/new-profile/new-profile.component';
-import { BusinessPartnerService } from '../service/BusinessPartner/business-partner.service';
-import { ContractorList } from '../edit-contractor/edit-contractor.component';
-import { MatDialog } from '@angular/material/dialog';
-import { ConfigActingDepartmentComponent } from 'src/app/config-acting-department/config-acting-department.component';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackBarAlertsComponent } from '../snack-bar-alerts/snack-bar-alerts.component';
-import { DraftApplicationsService } from '../service/DraftApplications/draft-applications.service';
-import { DraftsComponent } from 'src/app/drafts/drafts.component';
-import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentForComment/sub-department-for-comment.service';
-import { NotificationsService } from '../service/Notifications/notifications.service';
-import { NotificationCenterComponent } from '../notification-center/notification-center.component';
-import { NotificationsList } from '../notification-center/notification-center.component';
 
 export interface EngineerList {
   professinalID: number;
@@ -738,6 +732,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   sendOption() {
     //  this.optionEvent.emit(this.option);
+    debugger;
     if (this.option == "internal") {
       /* this.optionEvent.emit(this.option);*/
 
@@ -1910,7 +1905,7 @@ this.Applications.push(tempApplicationList);
     console.log("THIS IS THE APPLICATION TYPE", applicationType);
     this.sharedService.setReapply(applicationType);
 
-
+    debugger;
     if (this.option == "client" || this.option == 'proxy') {
 
       this.NewWayleaveComponent.onWayleaveCreate(this.userID, isPlanning, false);

@@ -29,6 +29,9 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public bool? RequestForDelete { get; set; }
 
+        public bool? hasSuperVisionFee { get; set; }
+        public DateTime? MoveToPaidDate { get; set; }
+
         #region permitupload Sindiswa 08 January 2024 - for the purpose of uploading documents under the "Permits" tab
         //Each person who's been Assigned to Comment can upload a permit document?
 
