@@ -192,25 +192,28 @@ export class PermitComponentComponent implements OnInit {
     
     for (var i = 0; i < this.PTCList.length; i++) {
       debugger;
-       //Request for delete Kyle 22-02-24
+      //Request for delete Kyle 22-02-24
       if (this.PTCList[i].hasSuperVisionFee == true) {
         if (this.PTCList[i].PermitDocName != null && this.PTCList[i].isPaid == true) {
           x++;
         }
-        else {
-          if (this.PTCList[i].PermitDocName != null) {
-            x++;
-          }
+
+      }
+      else {
+        if (this.PTCList[i].PermitDocName != null) {
+          x++;
         }
       }
+
      
     }
+    
     if (x === this.PTCList.length) {
       this.CanConsolidate = true;
     } else {
       this.CanConsolidate = false;
     }
-
+    console.log("CanConsolidate", this.CanConsolidate)
     
   }
 
