@@ -115,6 +115,7 @@ export class PermitComponentComponent implements OnInit {
     this.getAllStages();//Permit Kyle 13-02-24
     if (this.CurrentUserProfile[0].subDepartmentName == "EMB") {
       this.isEMB = true;
+      console.log("isEMB", this.isEMB);
     }
   }
 
@@ -165,7 +166,8 @@ export class PermitComponentComponent implements OnInit {
           if (tempPTCList.isPaid == null) {
             tempPTCList.isPaid = false;
           }
-          tempPTCList.hasSuperVisionFee = current.hasSupervisionFee; //Request For Delete Kyle 22-02-24
+          debugger;
+          tempPTCList.hasSuperVisionFee = current.hasSuperVisionFee; //Request For Delete Kyle 22-02-24
           this.PTCList.push(tempPTCList);
 
         }

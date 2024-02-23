@@ -1151,6 +1151,7 @@ export class ActionCenterComponent implements OnInit {
                    
                     alert("Permit Approved");
                     this.CheckAllLinkedDepartmentsApproved();
+                    this.router.navigate(["/home"]);
 
 
                   }
