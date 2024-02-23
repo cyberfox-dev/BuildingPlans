@@ -313,7 +313,7 @@ export class NavMenuComponent implements OnInit {
       if (this.RolesList[i].RoleName == "Developer Config" || this.RolesList[i].RoleName == "Department Admin") {
         this.Configurations = true;
       }
-      if (this.RolesList[i].RoleName == "Developer Config" || this.RolesList[i].RoleName == "Configuration") {
+      if (this.RolesList[i].RoleName == "Developer Config" ) {
         this.cyberfoxConfigs = true;
       }
 
