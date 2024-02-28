@@ -2466,7 +2466,7 @@ export class ViewProjectInfoComponent implements OnInit {
   
 
   checkIfPermitExsist() {
-
+    debugger;
     if (this.applicationDataForView[0].CreatedById == this.CurrentUser.appUserId) {
       this.permitBtn = true;
       this.permitTextBox = false;
@@ -2485,6 +2485,7 @@ export class ViewProjectInfoComponent implements OnInit {
   updateStartDateForPermit() {
     this.applicationsService.addUpdateApplication(this.CurrentApplicationBeingViewed[0].applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.permitStartDate).subscribe((data: any) => {
       if (data.responseCode == 1) {
+        debugger;
         this.onAutoLinkForPermit();
         this.router.navigate(["/home"]);/*Permit Kyle 13-02-24*/
       }
@@ -2583,7 +2584,6 @@ export class ViewProjectInfoComponent implements OnInit {
       });
     }
   }
-
   // #endregion
 
   setInterface() {
@@ -4758,7 +4758,8 @@ export class ViewProjectInfoComponent implements OnInit {
             }
             
           }
-          this.sharedService.setApplicationID(this.ApplicationID);
+         
+         
           this.openPermitModal(permitModal);
           
         }

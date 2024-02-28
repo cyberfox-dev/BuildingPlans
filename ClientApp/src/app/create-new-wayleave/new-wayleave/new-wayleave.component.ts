@@ -522,6 +522,7 @@ export class NewWayleaveComponent implements OnInit {
   draftExcavationType: string = "";
   projectNum: string;
   fibreNetworkLicenses: boolean = false;
+  validProjectSizeSelection: boolean = false;
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -2411,20 +2412,7 @@ export class NewWayleaveComponent implements OnInit {
 
     for (var i = 0; i < this.TOENAMES.length; i++) {
       let current = this.TOENAMES[i].toString();
-      if (current == "Drilling") {
-        const newList = this.MandatoryDocumentUploadListDrilling.map(current => {
-          const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
-          tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
-          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
-          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
-          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
-          tempMandatoryDocumentsLinkedStagesList.stageName = null;
-          tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
-          return tempMandatoryDocumentsLinkedStagesList;
-        });
-
-        tempList = tempList.concat(newList);
-      }
+      
     }
 
     // Assuming MandatoryDocumentsLinkedStagesList is an observable, extract its current value
@@ -5119,10 +5107,10 @@ export class NewWayleaveComponent implements OnInit {
     }
     if (LUMCount > 0 && (smallCount == 0 && mediumCount == 0 && largeCount == 0)) {
       alert("You have made asn LUM selection only ,you are required to make another selection along with it in order to proceed");
-
+      this.validProjectSizeSelection = false;
     }
     else {
-      this.modalService.dismissAll();
+      this.validProjectSizeSelection = true;
     }
   }
 
@@ -5289,7 +5277,10 @@ export class NewWayleaveComponent implements OnInit {
 
       this.ProjectSizeSelectionList.push(tempSelectionList);
     }
-    
+
+    if (this.validProjectSizeSelection == true) {
+      this.modalService.dismissAll();
+    }
   }
   SavedProjectSizeSelections() {
 

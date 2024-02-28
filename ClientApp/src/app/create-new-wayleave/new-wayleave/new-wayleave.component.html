@@ -982,12 +982,12 @@
   </div>
 
   <div class="modal-body " *ngFor="let projects of ProjectSizeSelectionList ">
-    <div class="alert alert-info" role="alert">
+    <div class="alert alert-info projectSizeSelection" role="alert">
       <span>{{projects.selectedProject}} :  {{projects.projectDescription}}</span>
     </div>
   </div>
   <div class="modal-footer">
-    <div class="alert alert-info" role="alert" *ngIf="PSM">
+    <div class="alert alert-info projectSizeSelection" role="alert" *ngIf="PSM">
       These selections will give you a {{PSM}}
     </div>
   </div>

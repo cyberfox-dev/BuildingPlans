@@ -875,7 +875,7 @@
                   <!-- app-file-upload Component -->
 
                   <div class="container-fluid">
-                    <app-file-upload [ApplicationID]="ApplicationID"
+                    <app-file-upload [ApplicationID]="CurrentApplicationBeingViewed[0].applicationID"
                                      [UploadFor]="manDoc.mandatoryDocumentName"
                                      (passFileName)="onPassFileName($event)"
                                      (onUploadFinished)="onFileDelete2($event,i)"
