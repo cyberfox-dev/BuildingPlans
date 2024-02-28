@@ -198,4 +198,23 @@ export class ApplicationsService {
     return this.httpClient.post(this.baseURL + "CancelEscalation", body);
 
   }
+  //#region zxNum-and-contractorAccount Sindiswa 28 February 2024
+  public addUpdateZXNumbers(applicationID?: number | null, WaterZXNumber?: string | null, RIMZXNumber?: string | null) {
+    debugger;
+    const body = {
+
+      ApplicationID: applicationID,
+      WaterZXNumber: WaterZXNumber,
+      RIMZXNumber: RIMZXNumber,
+    }
+    return this.httpClient.post(this.baseURL + "AddUpdateZXNumbers", body);
+
+  }
+
+  public getZXDetails(applicationID: number) {
+
+    return this.httpClient.post(this.baseURL + "GetZXDetails", applicationID);
+
+  }
+  //#endregion
 }

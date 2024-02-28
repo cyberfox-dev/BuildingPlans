@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WayleaveManagementSystem.Data;
 
@@ -11,9 +12,10 @@ using WayleaveManagementSystem.Data;
 namespace WayleaveManagementSystem.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240221073300_FibreNetworkLicensee")]
+    partial class FibreNetworkLicensee
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -331,9 +333,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("NatureOfWork")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("NetworkLicenses")
-                        .HasColumnType("bit");
-
                     b.Property<string>("NextStageName")
                         .HasColumnType("nvarchar(max)");
 
@@ -364,9 +363,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("ProjectNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RIMZXNumber")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("ReApplyCount")
                         .HasColumnType("int");
 
@@ -391,9 +387,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<bool?>("WBSRequired")
                         .HasColumnType("bit");
 
-                    b.Property<string>("WaterZXNumber")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("isActive")
                         .HasColumnType("bit");
 
@@ -401,6 +394,9 @@ namespace WayleaveManagementSystem.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool?>("isEscalated")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("isFNLConfirmation")
                         .HasColumnType("bit");
 
                     b.Property<bool?>("isPlanning")
@@ -753,8 +749,8 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("Desciption")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Quantity")
-                        .HasColumnType("int");
+                    b.Property<double?>("Quantity")
+                        .HasColumnType("float");
 
                     b.Property<double?>("Rate")
                         .HasColumnType("float");
@@ -1284,9 +1280,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("DocumentLocalPath")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("MoveToPaidDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("PermitComment")
                         .HasColumnType("nvarchar(max)");
 
@@ -1295,9 +1288,6 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.Property<string>("PermitDocName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("RequestForDelete")
-                        .HasColumnType("bit");
 
                     b.Property<int?>("SubDepartmentID")
                         .HasColumnType("int");
@@ -1314,13 +1304,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("ZoneName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("hasSuperVisionFee")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("isActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("isPaid")
                         .HasColumnType("bit");
 
                     b.HasKey("PermitSubForCommentID");
@@ -2158,9 +2142,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("NatureOfWork")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("NetworkLicenses")
-                        .HasColumnType("bit");
-
                     b.Property<string>("NextStageName")
                         .HasColumnType("nvarchar(max)");
 
@@ -2188,9 +2169,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("ProjectNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RIMZXNumber")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("ReApplyCount")
                         .HasColumnType("int");
 
@@ -2212,9 +2190,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<bool?>("WBSRequired")
                         .HasColumnType("bit");
 
-                    b.Property<string>("WaterZXNumber")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("ZoneID")
                         .HasColumnType("int");
 
@@ -2228,6 +2203,9 @@ namespace WayleaveManagementSystem.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool?>("isEscalated")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("isFNLConfirmation")
                         .HasColumnType("bit");
 
                     b.Property<bool?>("isPlanning")
