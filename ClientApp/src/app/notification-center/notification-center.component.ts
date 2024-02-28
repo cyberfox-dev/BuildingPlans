@@ -72,6 +72,7 @@ export interface ApplicationList {
   userID: string,
   UserID: any;
   clientAlternativeEmail: string; // chekingNotifications Sindiswa 13 February 2024
+  NetworkLicensees: any;
 }
 
 export interface ApplicationsList {
@@ -485,7 +486,7 @@ export class NotificationCenterComponent implements OnInit {
 
 
   getAllNotifications() {
-    debugger;
+    
   this.NotificationsList.splice(0, this.NotificationsList.length);
 
     /* checkingNotifications Sindiswa 13 February 2024, now that UserID and CreatedByID aren't made null randomly, can now fetch ONLY notifications FOR human
@@ -538,7 +539,7 @@ export class NotificationCenterComponent implements OnInit {
     this.modalService.dismissAll();
   }
   onRefreshModal() {
-    debugger;
+    
     
     this.modalService.dismissAll();
 
@@ -619,10 +620,10 @@ export class NotificationCenterComponent implements OnInit {
   Applications: ApplicationsList[] = [];
   public canReapply: boolean = false;
   goToApplication(appID: any) {
-    debugger;
+    
     this.applicationService.getApplicationsByApplicationID(appID).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
 
         for (let i = 0; i < data.dateSet.length; i++) {
 

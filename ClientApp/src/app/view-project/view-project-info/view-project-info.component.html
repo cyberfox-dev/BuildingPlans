@@ -81,11 +81,17 @@
 
 <div class="container-fluid cont6 animationFadeIn">
   <!--  Progess bar Kyle 07-02-24-->
+  <div class="cont8">
   <div class="progress-bar-container" *ngIf="CurrentApplicationBeingViewed[0].CurrentStageName == 'Department Distribution'">
-    <div class="progress-text">Distribution Stage Progress {{progressBar}}%</div>
-    <div class="progress-bar" [style.width.%]="progressBar" [style.background]="getProgressBarColor(progressBar)">
+    <div class="progress-text" [@countUp]="progressBar">Distribution Stage Progress {{progressBar}}%</div>
+    <div class="progress-bar" [style.--progressBar]="progressBar + '%'">
     </div>
   </div>
+
+    </div>
+
+
+
   <!--  Progess bar Kyle 07-02-24-->
   <mat-tab-group>
 
@@ -141,11 +147,11 @@
                     <h3>{{commentsList.SubDepartmentName}}({{commentsList.ZoneName}}) - {{commentsList.CommentStatus}}</h3>
 
                     <h5 *ngIf="isInternalUser && InternalExternalUser == false">{{commentsList.UserName}}</h5>
-                    <br /> 
+                    <br />
                     <div class="cont2">
                       <div [innerHTML]="sanitizeHTML(commentsList.Comment)"></div>
                       <button mat-raised-button color="blue" *ngIf="commentsList.CommentStatus != 'FinalApproved'  &&   CurrentUserProfile[0].subDepartmentName === commentsList.SubDepartmentName && commentsList.UserName === this.CurrentUser.fullName" (click)="openEditCommentModal(commentEditorModal, i)">Edit Comment</button>
-                     
+
                     </div>
 
                     <!--<p>
@@ -161,18 +167,15 @@
                     <br />
 
                     <!--Applicant Clarity-->
-                    <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarify' && canClarify || commentsList.CommentStatus === 'Reviewer Clarity' && canReviewerClarify || ((commentsList.CommentStatus === 'Reviewer Clarify' || commentsList.CommentStatus === 'Applicant Clarify')  && commentsList.CanReplyUserID == this.CurrentUser.appUserId)" (click)="openReplyModal(replyModal,i,'Reply', commentsList.CommentStatus)">Reply</button>
-                    <button mat-raised-button color="clarify" *ngIf="(commentsList.CommentStatus === 'Clarified' && canClarify) || ( commentsList.CommentStatus === 'Reviewer Clarified' && canReviewerClarify) || ((CurrentUser.appUserId == commentsList.CanReplyUserID ) && commentsList. isApplicantReplay !== null)" (click)="openReplyModal(replyModal,i, 'Update', commentsList.CommentStatus)">Update Reply</button>
-                    <div class="row" *ngIf="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified' || commentsList.CommentStatus === 'Reviewer Clarified' || commentsList.CommentStatus === 'Reviewer Clarity'  && commentsList.isApplicantReplay !== null">
-                      <label *ngIf="commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null"> <strong><em>Applicant's Reply:</em></strong></label>
-                      <label *ngIf="commentsList.CommentStatus === 'Reviewer Clarified' && commentsList.isApplicantReplay !== null"> <strong><em>Reviewer's Reply:</em></strong></label>
-                      <div class="form-floating mb-3 mt-3" *ngIf="(commentsList.CommentStatus === 'Clarified' || commentsList.CommentStatus === 'Reviewer Clarified') && commentsList.isApplicantReplay !== null">
-                        <!--<input type="text" class="form-control" value="{{commentsList.isApplicantReplay}}" id="ApplicantReply" name="ApplicantReply" disabled>--> <!--[(ngModel)]="ApplicantReply"-->
+                    <button mat-raised-button color="clarify" *ngIf=" (commentsList.CommentStatus === 'Clarify' && canClarify) || (commentsList.CommentStatus === 'Reviewer Clarity' && canReviewerClarify )|| (commentsList.CommentStatus === 'Reviewer Clarify' || commentsList.CommentStatus === 'Applicant Clarify' && canClarify)" (click)="openReplyModal(replyModal,i,'Reply', commentsList.CommentStatus)">Reply</button>
+                    <button mat-raised-button color="clarify" *ngIf="(commentsList.CommentStatus === 'Clarified' && canClarify) || ( commentsList.CommentStatus === 'Reviewer Clarified' && canReviewerClarify) || (canClarify && commentsList. isApplicantReplay !== null)" (click)="openReplyModal(replyModal,i, 'Update', commentsList.CommentStatus)">Update Reply</button>
+                    <div class="row" *ngIf=" commentsList.HasReply === true && commentsList.isApplicantReplay != null">
+                      <label *ngIf="(commentsList.CommentStatus === 'Clarified' || commentsList.CommentStatus === 'Applicant Clarified') && commentsList.isApplicantReplay != null"> <strong><em>Applicant's Reply:</em></strong></label>
+                      <label *ngIf="commentsList.CommentStatus === 'Reviewer Clarified' && commentsList.isApplicantReplay != null"> <strong><em>Reviewer's Reply:</em></strong></label>
+                      <div class="form-floating mb-3 mt-3" *ngIf="commentsList.HasReply === true && commentsList.isApplicantReplay != null">
+                        <!--<input type="text" class="form-control" value="{{commentsList.isApplicantReplay}}" id="ApplicantReply" name="ApplicantReply" disabled> [(ngModel)]="ApplicantReply">-->
 
                         <div class="disabled-textbox" [innerHTML]="sanitizeHTML(commentsList.isApplicantReplay)" id="ApplicantReply"></div>
-
-
-
 
                       </div>
                     </div>
@@ -263,11 +266,11 @@
           <div class="row">
 
             <div class="form-floating mb-3 mt-3">
-          <input type="text" [(ngModel)]="commentEdit" name="commentEdit" class="form-control" id="commentEdit" placeholder="Update Comment">
-          
-         
-          <!--<label for="commentEdit">Update Comment</label>-->
-          </div>
+              <input type="text" [(ngModel)]="commentEdit" name="commentEdit" class="form-control" id="commentEdit" placeholder="Update Comment">
+
+
+              <!--<label for="commentEdit">Update Comment</label>-->
+            </div>
 
           </div>
 
@@ -360,13 +363,11 @@
 
 
     <!------------------------------------------------------------Packs---------------------------------------------------------->
-
-    <mat-tab label="Packs" *ngIf="PacksTab">
-      <app-approval-pack [ApplicationID]="ApplicationID"
-                         [ServiceConditionActive]="false"></app-approval-pack>
-    </mat-tab>
-
-
+    <!--JJS Commit 20-02-24-->
+    <!--    <mat-tab label="Packs" *ngIf="PacksTab">
+        <app-approval-pack [ApplicationID]="ApplicationID"
+                           [ServiceConditionActive]="false"></app-approval-pack>
+      </mat-tab>-->
     <!--------------------------------------------------------Applicant--------------------------------------------------->
 
     <mat-tab label="Applicant">
@@ -815,15 +816,11 @@
 
 
     <!--------------------------------------------------------Tracking--------------------------------------------------->
-
     <!-----Status of works Kyle 16-02-24-->
     <mat-tab label="Status of Works" *ngIf="showStatusOfWorksTab">
 
-      <button mat-raised-button color="permit" (click)="openXl(MFTModal)">Create New Note</button>
+      <button mat-raised-button *ngIf="canCreateNote === true" color="permit" (click)="openXl(MFTModal)">Create New Note</button>
       <app-status-of-works [ApplicationID]="ApplicationID"></app-status-of-works>
-
-     
-
 
     </mat-tab>
 
@@ -845,7 +842,7 @@
     <mat-tab label="Permits" *ngIf="showPermitTab">
 
 
-      <button mat-raised-button color="permit" (click)="openPermitModal(permitModal)" *ngIf="permitBtn" [disabled]="fromReApplyArchive == true">Apply For Permit</button>
+      <button mat-raised-button color="permit" (click)=" getAllManDocForPTWStage(permitModal)" *ngIf="permitBtn" [disabled]="fromReApplyArchive == true">Apply For Permit</button>
       <br>
       <br>
       <input type="text" class="form-control" [(ngModel)]="permitDate" id="permitDate" *ngIf="permitTextBox" disabled>
@@ -853,7 +850,7 @@
       <ng-template #permitModal let-modal>
         <div class="modal-header">
           <h4 class="modal-title" id="modal-basic-title">Please select a date for your permit</h4>
-          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+          <button type="button" class="btn-close" aria-label="Close" (click)=" ClosePermitStartDateModal()"></button>
         </div>
         <div class="modal-body">
 
@@ -868,14 +865,38 @@
 
           </div>
 
+          <mat-list *ngFor="let manDoc of  MandatoryDocumentUploadList ; let i = index">
+            <mat-list-item> {{manDoc.mandatoryDocumentName}}</mat-list-item>
+            <mat-form-field class="manDoc" >
+              <div>
+                <mat-toolbar>
+                  <!-- Display files names -->
+                  <input matInput readonly name="name" class="textFuckingBox" /> <!--[(ngModel)]="fileAttrs[i]"-->
+                  <!-- app-file-upload Component -->
+
+                  <div class="container-fluid">
+                    <app-file-upload [ApplicationID]="ApplicationID"
+                                     [UploadFor]="manDoc.mandatoryDocumentName"
+                                     (passFileName)="onPassFileName($event)"
+                                     (onUploadFinished)="onFileDelete2($event,i)"
+                                     (onUploadSuccess)="onFileUpload2($event,i)">
+                    </app-file-upload>
+                  </div>
+                  <button mat-raised-button color="blue2"  *ngIf="manDoc.hasFile === true" matTooltip="View Document"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid.svg" class="icon blue"></button>
+                </mat-toolbar>
+               
+              </div>
+            </mat-form-field>
+          </mat-list>
+
 
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-success" (click)="updateStartDateForPermit();modal.close('Save click')">Save</button>
+          <button type="button" class="btn btn-outline-success" [disabled]="fileCount !== MandatoryDocumentUploadList.length || permitStartDate === null || permitStartDate === undefined " (click)="updateStartDateForPermit();modal.close('Save click')">Save</button>
         </div>
       </ng-template>
-                                                                                                                                                                                                                <!--Permit Kyle 13-02-24-->
+      <!--Permit Kyle 13-02-24-->
       <app-permit-component [ApplicationID]="ApplicationID" [ApplicantID]="CurrentApplicationBeingViewed[0].UserID" [OriginatorID]="CurrentApplicationBeingViewed[0].CreatedById" [ApplicationID]="ApplicationID" [PermitBtn]="permitBtn"></app-permit-component>
 
     </mat-tab>

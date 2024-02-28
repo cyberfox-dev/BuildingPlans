@@ -244,3 +244,6 @@ _Pvt_Extensions
 /Data/Entities/DraftedProjects.cs
 /Models/BindingModel/DraftedProjectsBindingModel.cs
 /Models/DTO/DraftedProjectsDTO.cs
+/Controllers/WayleavePermitExpirationController.cs
+/Data/Entities/WayleavePermitExpiration.cs
+/Models/BindingModel/WayleavePermitExpirationBindingModel.cs

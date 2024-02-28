@@ -216,7 +216,7 @@ export class SelectEngineerTableComponent implements OnInit {
 
 
   SetSharedData(row: any) {
-    debugger;
+    
      const tempData = {} as ProfessialList;
     const currentRow = row;
 
@@ -250,7 +250,7 @@ export class SelectEngineerTableComponent implements OnInit {
   }
 
   clearAllEngineers() {
-    debugger;
+    
     this.clickedRowsProfessials.clear();
 
     this.ProfessionalsDataForShared.splice(0, this.ProfessionalsDataForShared.length);
@@ -531,7 +531,7 @@ export class SelectEngineerTableComponent implements OnInit {
   }
 
   getGoNext() {
-    debugger;
+    
     if ((this.isSelectNoneButtonSelected == false && this.isProfessionalSelected == true) || (this.isSelectNoneButtonSelected == true && this.isProfessionalSelected == false)) {
       this.shared.setCanGoNextAfterEngineerSelection(true);
       this.shared.getCanGoNextE();

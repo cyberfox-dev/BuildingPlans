@@ -12,7 +12,7 @@ export class ApplicationsService {
 
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
-  public addUpdateApplication(ApplicationID?: number | null, userID?: string | null, fullName?: string | null, email?: string | null,/*checkingNotifications Sindiswa 15 February 2024*/ alternativeEmail?: string | null, phoneNumber?: string | null, physicalAddress?: string | null, referenceNumber?: string | null, companyRegNo?: string | null, typeOfApplication?: string | null, notificationNumber?: string | null, wbsNumber?: string | null, physicalAddressOfProject?: string | null, descriptionOfProject?: string | null, natureOfWork?: string | null, excavationType?: string | null, expectedStartDate?: Date | null, expectedEndDate?: Date | null, location?: string | null, createdById?: string | null, previousStageName?: string | null, previousStageNumber?: number | null, currentStageName?: string | null, currentStageNumber?: number | null, nextStageName?: string | null, nextStageNumber?: number | null, applicationStatus?: string | null, isDrafted?: boolean, projectNumber?: string | null, isPlanning?: boolean | null, permitStartDate?: Date | null, datePaid?: Date | null, WBSRequired?: boolean | null, coordinates?: string | null) {
+  public addUpdateApplication(ApplicationID?: number | null, userID?: string | null, fullName?: string | null, email?: string | null,/*checkingNotifications Sindiswa 15 February 2024*/ alternativeEmail?: string | null, phoneNumber?: string | null, physicalAddress?: string | null, referenceNumber?: string | null, companyRegNo?: string | null, typeOfApplication?: string | null, notificationNumber?: string | null, wbsNumber?: string | null, physicalAddressOfProject?: string | null, descriptionOfProject?: string | null, natureOfWork?: string | null, excavationType?: string | null, expectedStartDate?: Date | null, expectedEndDate?: Date | null, location?: string | null, createdById?: string | null, previousStageName?: string | null, previousStageNumber?: number | null, currentStageName?: string | null, currentStageNumber?: number | null, nextStageName?: string | null, nextStageNumber?: number | null, applicationStatus?: string | null, isDrafted?: boolean, projectNumber?: string | null, isPlanning?: boolean | null, permitStartDate?: Date | null, datePaid?: Date | null, WBSRequired?: boolean | null, coordinates?: string | null ,networkLicenses?: boolean |null) {
 
     const body = {
       ApplicationID: ApplicationID,
@@ -48,6 +48,7 @@ export class ApplicationsService {
       DatePaid: datePaid,
       WBSRequired: WBSRequired,
       Coordinates: coordinates,
+      NetworkLicense:networkLicenses
   
     }
     return this.httpClient.post(this.baseURL + "AddUpdateApplication", body);
@@ -158,7 +159,7 @@ export class ApplicationsService {
 
   // reapply Sindiswa 24 January 2024
   public increaseReapplyCount(ProjectNumber: string) {
-    debugger;
+    
     const body = {
       ProjectNumber: ProjectNumber
     }
@@ -166,7 +167,7 @@ export class ApplicationsService {
   }
   // reapply Sindiswa 25 January 2024
   public makeOldAppDisappear(ProjectNumber: string) {
-    debugger;
+    
     const body = {
       ProjectNumber: ProjectNumber
     }

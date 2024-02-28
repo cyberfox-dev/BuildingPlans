@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WayleaveManagementSystem.Data;
 
@@ -11,9 +12,10 @@ using WayleaveManagementSystem.Data;
 namespace WayleaveManagementSystem.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240221130839_HasSuperVisionFee")]
+    partial class HasSuperVisionFee
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -330,9 +332,6 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.Property<string>("NatureOfWork")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("NetworkLicenses")
-                        .HasColumnType("bit");
 
                     b.Property<string>("NextStageName")
                         .HasColumnType("nvarchar(max)");
@@ -747,8 +746,8 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("Desciption")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Quantity")
-                        .HasColumnType("int");
+                    b.Property<double?>("Quantity")
+                        .HasColumnType("float");
 
                     b.Property<double?>("Rate")
                         .HasColumnType("float");
@@ -2151,9 +2150,6 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.Property<string>("NatureOfWork")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("NetworkLicenses")
-                        .HasColumnType("bit");
 
                     b.Property<string>("NextStageName")
                         .HasColumnType("nvarchar(max)");

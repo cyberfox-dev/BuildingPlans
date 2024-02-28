@@ -17,7 +17,7 @@ namespace WayleaveManagementSystem.IServices
         Task<List<MandatoryDocumentUploadDTO>> GetAllMandatoryDocuments();
 
 
-
+        Task<List<MandatoryDocumentUploadDTO>> GetAllMandatoryDocumentsLinkedToStage(string? stageName);
 
     }
 }

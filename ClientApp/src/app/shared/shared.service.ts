@@ -68,6 +68,7 @@ export interface ApplicationList {
   //Coordinates: string
     UserID: any;
   clientAlternativeEmail: string; // checkingNotifications Sindiswa 15 February 2024
+  NetworkLicensees: string; //Project size Kyle 27-02-24
 }
 
 
@@ -464,7 +465,7 @@ export class SharedService {
   }
 
     setReapply(data: any) {
-      debugger;
+      
     this.reapply = data; //application type refers to whether it is a brand new application or if it is a reapply.
   }
 

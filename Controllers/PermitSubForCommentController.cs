@@ -64,6 +64,10 @@ namespace WayleaveManagementSystem.Controllers
                             PermitDocName = model.PermitDocName,
                             #endregion
 
+                            RequestForDelete = model.RequestForDelete,
+                            isPaid = model.isPaid,
+                            hasSuperVisionFee = model.hasSuperVisionFee,
+                            MoveToPaidDate = model.MoveToPaidDate,
                         };
 
                         await _context.PermitSubForComment.AddAsync(tempPermitSubForComment);
@@ -120,6 +124,24 @@ namespace WayleaveManagementSystem.Controllers
                         if (model.PermitDocName != null)
                         {
                             tempPermitSubForComment.PermitDocName = model.PermitDocName;
+                        }
+
+                        if(model.RequestForDelete != null)
+                        {
+                            tempPermitSubForComment.RequestForDelete = model.RequestForDelete;
+                        }
+
+                        if(model.isPaid != null)
+                        {
+                            tempPermitSubForComment.isPaid = model.isPaid;
+                        }
+                        if(model.hasSuperVisionFee != null)
+                        {
+                            tempPermitSubForComment.hasSuperVisionFee = model.hasSuperVisionFee;
+                        }
+                        if(model.MoveToPaidDate != null)
+                        {
+                            tempPermitSubForComment.MoveToPaidDate = model.MoveToPaidDate;
                         }
                         tempPermitSubForComment.DateUpdated = DateTime.Now;
                         #endregion
@@ -246,7 +268,10 @@ namespace WayleaveManagementSystem.Controllers
                     PermitDocName = permitSubForComment.PermitDocName,
                     DocumentLocalPath = permitSubForComment.DocumentLocalPath,
                     #endregion
-
+                    isPaid = permitSubForComment.isPaid,
+                    RequestForDelete = permitSubForComment.RequestForDelete,
+                    hasSuperVisionFee = permitSubForComment.hasSuperVisionFee,
+                    MoveToPaidDate = permitSubForComment.MoveToPaidDate,
 
                 }
                 ).ToListAsync();
@@ -295,6 +320,10 @@ namespace WayleaveManagementSystem.Controllers
                                       CreatedById = s.CreatedById,
                                       ZoneID = s.ZoneID,
                                       ZoneName = s.ZoneName,
+                                      RequestForDelete = s.RequestForDelete,
+                                      isPaid = s.isPaid,
+                                      hasSuperVisionFee = s.hasSuperVisionFee,
+                                      MoveToPaidDate = s.MoveToPaidDate,
                                   })
                                   .ToListAsync();
 
@@ -316,8 +345,10 @@ namespace WayleaveManagementSystem.Controllers
                     PermitCommentStatus = permitSubForComment.PermitCommentStatus,
                     ZoneID = permitSubForComment.ZoneID,
                     ZoneName = permitSubForComment.ZoneName,
-
-
+                    RequestForDelete = permitSubForComment.RequestForDelete,
+                    isPaid = permitSubForComment.isPaid,
+                    hasSuperVisionFee = permitSubForComment.hasSuperVisionFee,
+                    MoveToPaidDate = permitSubForComment.MoveToPaidDate,
                 }
                 ).ToListAsync();
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All PermitSubForComment By ID", result));
@@ -394,6 +425,7 @@ namespace WayleaveManagementSystem.Controllers
 
                     tempPermitSubForComment.DocumentLocalPath = null;
                     tempPermitSubForComment.PermitDocName = null;
+                    tempPermitSubForComment.RequestForDelete = false;
 
                     _context.PermitSubForComment.Update(tempPermitSubForComment);
                     _context.SaveChanges();
@@ -407,6 +439,41 @@ namespace WayleaveManagementSystem.Controllers
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
 
+        }
+     
+        [HttpGet("GetAllRequestsForDelete")]
+        public async Task<object> GetAllRequestsForDelete()
+        {
+            try
+            {
+                var result = await (
+                    from permitSubForComment in _context.PermitSubForComment
+                    where permitSubForComment.RequestForDelete == true && permitSubForComment.isActive == true
+                    select new PermitSubForCommentDTO()
+                    {
+                        PermitSubForCommentID = permitSubForComment.PermitSubForCommentID,
+                        ApplicationID = permitSubForComment.ApplicationID,
+                        SubDepartmentID = permitSubForComment.SubDepartmentID,
+                        SubDepartmentName = permitSubForComment.SubDepartmentName,
+                        UserAssaignedToComment = permitSubForComment.UserAssaignedToComment,
+                        CreatedById = permitSubForComment.CreatedById,
+                        PermitComment = permitSubForComment.PermitComment,
+                        PermitCommentStatus = permitSubForComment.PermitCommentStatus,
+                        ZoneID = permitSubForComment.ZoneID,
+                        ZoneName = permitSubForComment.ZoneName,
+                        RequestForDelete = permitSubForComment.RequestForDelete,
+                        isPaid = permitSubForComment.isPaid,
+                        hasSuperVisionFee = permitSubForComment.hasSuperVisionFee,
+                        MoveToPaidDate = permitSubForComment.MoveToPaidDate,
+
+                    }).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Requests For Delete", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
         }
     }
 

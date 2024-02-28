@@ -77,7 +77,7 @@ export class SystemAlertConfigComponent implements OnInit {
 
   alertCreate() {
      //Banner Kyle 26-01-24
-    debugger;
+    
     const start = this.startDate.toString();
     const end = this.endDate.toString();
     const match = this.Alerts.map(x => (start >= x.startDate && end <= x.endDate) || (start <= x.startDate && end <= x.endDate) || (end >= x.startDate && end <= x.endDate));
@@ -133,21 +133,21 @@ export class SystemAlertConfigComponent implements OnInit {
 
           tempAlertList.baseUrl = current.utilitySlot2;
           tempAlertList.message = current.utilitySlot3;
-          debugger;
+          
           //Banner Kyle 26-01-24
           this.currentDate = this.getCurrentDate();
           if (this.currentDate >= dateValues[0] && this.currentDate <= dateValues[1]) {
-            debugger;
+            
             tempAlertList.status = "Active";
           }
 
           if (this.currentDate > dateValues[0] && this.currentDate > dateValues[1]) {
-            debugger;
+            
             tempAlertList.status = "Completed";
           }
 
           if (this.currentDate < dateValues[0] && this.currentDate < dateValues[1]) {
-            debugger;
+            
             tempAlertList.status = "Pending";
           }
            //Banner Kyle 26-01-24
@@ -190,7 +190,7 @@ export class SystemAlertConfigComponent implements OnInit {
   }
 
   onSaveEdittedAlert() {
-    debugger;
+    
     const start = this.editStartDate.toString();
     const end = this.editEndDate.toString();
     const match = this.Alerts.map(x => x.configAlertId != this.configId && ((start >= x.startDate && end <= x.endDate) || (start <= x.startDate && end <= x.endDate) || (end >= x.startDate && end <= x.endDate)));

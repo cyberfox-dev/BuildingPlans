@@ -39,5 +39,14 @@ export class FinancialService {
     return this.httpClient.post(this.baseURL + "GetFinancialByApplicationID", ApplicationID);
 
   }
+    //Permit Kyle 13-02-24
+  public getFinancialsForApplicationByType(applicationID: number, financialType :string) {
+    const body = {
+      ApplicationID: applicationID,
+      FinancialType: financialType
+    }
 
+    return this.httpClient.post(this.baseURL + "GetFinancialsForApplicationByType", body);
+  }
+  //Permit Kyle 13-02-24
 }

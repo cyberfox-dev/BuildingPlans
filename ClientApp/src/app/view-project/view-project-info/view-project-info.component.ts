@@ -32,6 +32,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeHtml, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 import { ApprovalPackComponent } from 'src/app/Packs//ApprovalPackComponent/approval-pack.component';
 import { StatusOfWorksComponent } from 'src/app/status-of-works/status-of-works.component';
+import { MandatoryDocumentUploadService } from 'src/app/service/MandatoryDocumentUpload/mandatory-document-upload.service';
 
 /*import { PdfGenerationService } from 'src/app/service/PDFGeneration/pdf-generation.service';*/
 
@@ -167,7 +168,7 @@ export interface CommentsList {
   CommentStatus: string;
   SubDepartmentForCommentID: number;
   SubDepartmentName?: string;
-  isClarifyCommentID?: number; 
+  isClarifyCommentID?: number;
   isApplicantReplay?: string; 
   UserName: string;
    //Comments Kyle 01/02/24
@@ -176,6 +177,7 @@ export interface CommentsList {
    //Clarifications Alert
   CanReplyUserID: string;
   DateCreated: any;
+  HasReply: boolean;
 }
 
 export interface ApplicationList {
@@ -238,7 +240,7 @@ export interface ContactDetailsList {
   ContactDetailID: number;
   FullName: string;
   CellNo: string;
-  Email: Date;
+  Email: string;
   SubDepID: number;
   SubDepName: string;
   ZoneID: number;
@@ -253,8 +255,8 @@ export interface DepositRequired {
   Desciption: string;
   SubDepartmentID: number;
   SubDepartmentForCommentID: number;
-  Rate: number;
-  Quantity: number;
+  Rate: any;
+  Quantity: any;
   ServiceItemCodeserviceItemCode?: string | null;
   SubDepartmentName?: string | null;
   WBS?: string;
@@ -272,6 +274,15 @@ export interface AllSubDepartmentList {
   commentStatus: string | null;
   GLCode: string | null;
   ProfitCenter: string | null;
+}
+   //Project size Kyle 27-02-24
+export interface MandatoryDocumentUploadList {
+  mandatoryDocumentID: number;
+  mandatoryDocumentName: string;
+  stageID: number;
+  dateCreated: any;
+  mandatoryDocumentCategory: string;
+  hasFile: boolean;
 }
 
 var img = new Image();
@@ -387,7 +398,8 @@ export class ViewProjectInfoComponent implements OnInit {
   ServiceItemList: ServiceItemList[] = [];
   AllSubDepartmentList: AllSubDepartmentList[] = [];
   SubDepartmentListFORAPPROVAL: SubDepartmentListFORAPPROVAL[] = [];
-  
+  MandatoryDocumentUploadList: MandatoryDocumentUploadList[] = [];
+
   @ViewChild('pdfTable', { static: false }) pdfTable: ElementRef;
 
   ApplicationID: number | undefined;
@@ -457,7 +469,7 @@ export class ViewProjectInfoComponent implements OnInit {
   PacksTab: boolean = false;
   public InternalExternalUser: boolean=false;
     isExternalApplicant: boolean;
-;
+  SuccessfulUploads: number = 0;
  //Audit Trail Kyle
   stringifiedDataRoles: any;
   AllCurrentUserRoles: any;
@@ -469,6 +481,7 @@ export class ViewProjectInfoComponent implements OnInit {
   reply: string = "";
  commentEdit: string = "";
   //Final Approver && Senior Approver Kyle 01/02/24
+  canCreateNote: boolean = false;
 
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
@@ -567,6 +580,7 @@ export class ViewProjectInfoComponent implements OnInit {
     //Audit Trail Kyle
     private auditTrailService: AuditTrailService,
     private statusOfWorksComponent: StatusOfWorksComponent,
+    private mandatroyDocumentUploadService: MandatoryDocumentUploadService,
     //Audit Trail Kyle
   ) { }
 
@@ -611,6 +625,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.AllCurrentUserRoles = JSON.parse(this.stringifiedDataRoles);
 
     this.onCheckAllCurrentUserRole();
+  
     // Audit Trail Kyle
 
 
@@ -639,7 +654,7 @@ export class ViewProjectInfoComponent implements OnInit {
     }
     
     //Permit Tab Kyle 22/01/24
-    debugger;
+    
     if (setValues.CurrentStageName == "PTW") {
       this.showPermitTab = true;
       this.PacksTab = true;
@@ -800,10 +815,11 @@ export class ViewProjectInfoComponent implements OnInit {
 
           const tempSubDepartmentLinkedList = {} as AllSubDepartmentList;
           const current = data.dateSet[i];
-
+/*JJS Commit 20-02-24*/
           tempSubDepartmentLinkedList.subDepartmentID = current.subDepartmentID;
           tempSubDepartmentLinkedList.UserAssaignedToComment = current.userAssaignedToComment;
-          tempSubDepartmentLinkedList.subDepartmentName = current.subDepartmentName;
+          
+          tempSubDepartmentLinkedList.subDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempSubDepartmentLinkedList.departmentID = current.departmentID;
           tempSubDepartmentLinkedList.dateUpdated = current.dateUpdated;
           tempSubDepartmentLinkedList.dateCreated = current.dateCreated;
@@ -847,7 +863,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.serviceItemService.getServiceItemByServiceItemCode(serviceItemCode).subscribe((data: any) => {
       if (data.responseCode == 1) {
 
-
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempServiceItemList = {} as ServiceItemList;
           const current = data.dateSet[i];
@@ -1162,6 +1178,7 @@ export class ViewProjectInfoComponent implements OnInit {
     else {
       this.canClarify = false;
     }
+    console.log("CanReply", this.canClarify);
   }
 
   checkIfCanReviwerReply() {
@@ -1234,6 +1251,14 @@ export class ViewProjectInfoComponent implements OnInit {
     this.fileCount = this.fileCount - 1;
 
   }
+
+  onFileDelete2(event: any, index: number) {
+    this.MandatoryDocumentUploadList[index].hasFile = false
+    this.fileAttrsName = "Doc";
+
+    //this.getAllDocsForApplication();
+    this.fileCount = this.fileCount - 1;
+  }
   changeHasFile() {
     if (this.hasFile) {
       this.hasFile = false;
@@ -1242,10 +1267,13 @@ export class ViewProjectInfoComponent implements OnInit {
     }
   }
   onFileUpload(event: any) {
+   
 
-
+    
   }
-  
+  onFileUpload2(event: any, index: any) {
+    this.MandatoryDocumentUploadList[index].hasFile = true;
+  }
 
   onAutoLinkForPermit() {
 
@@ -1349,9 +1377,10 @@ export class ViewProjectInfoComponent implements OnInit {
             else {
               tempCommentList.CommentStatus = current.commentStatus;
             }
-
+            
             tempCommentList.SubDepartmentForCommentID = current.subDepartmentForCommentID;
-            tempCommentList.SubDepartmentName = current.subDepartmentName;
+            /*tempCommentList.SubDepartmentName = current.subDepartmentName;*/
+            tempCommentList.SubDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
             tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
             tempCommentList.isApplicantReplay = current.isApplicantReplay;
 
@@ -1362,8 +1391,14 @@ export class ViewProjectInfoComponent implements OnInit {
             //Clarifications Alerts Kyle
             tempCommentList.CanReplyUserID = current.canReplyUserID;
             tempCommentList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+            debugger;
+            if (tempCommentList.CommentStatus == "Clarified" || tempCommentList.CommentStatus == " Reviewer Clarified" || tempCommentList.CommentStatus == " Applicant Clarified") {
+              tempCommentList.HasReply = true;
+            }
+
             this.CommentsList.push(tempCommentList);
             console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", current);
+            console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", tempCommentList);
           }
 
           else {
@@ -1382,7 +1417,7 @@ export class ViewProjectInfoComponent implements OnInit {
               }
 
               tempCommentList.SubDepartmentForCommentID = current.subDepartmentForCommentID;
-              tempCommentList.SubDepartmentName = current.subDepartmentName;
+              tempCommentList.SubDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
               tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
               tempCommentList.isApplicantReplay = current.isApplicantReplay;
               tempCommentList.UserName = current.userName;
@@ -1390,8 +1425,17 @@ export class ViewProjectInfoComponent implements OnInit {
               tempCommentList.ZoneName = current.zoneName;
               //Comments Kyle 01/02/24
               tempCommentList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+              debugger;
+              if (tempCommentList.CommentStatus == "Clarified" || tempCommentList.CommentStatus == " Reviewer Clarified" || tempCommentList.CommentStatus == "Applicant Clarified") {
+                tempCommentList.HasReply = true;
+              }
+              else {
+                tempCommentList.HasReply = false;
+              }
+
               this.CommentsList.push(tempCommentList);
               console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", current);
+              console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLISTKyle", tempCommentList);
             }
            
           }  
@@ -1593,7 +1637,7 @@ export class ViewProjectInfoComponent implements OnInit {
     
     //this.ApplicantReply = Currentreply;
     // this.replyCreated = true;
-
+    debugger;
     const currentComment = this.CommentsList[this.currentIndex];
     let numberOfComments = 0;
     for (var i = 0; i < this.CommentsList.length; i++) {
@@ -1603,6 +1647,9 @@ export class ViewProjectInfoComponent implements OnInit {
     }
      //Final Approver && Senior Approver Kyle 01/02/24
     let commentStatus = "";
+    let updateStatus = currentComment.CommentStatus;
+
+    debugger;
     if (this.clarityType == "Reviewer Clarified" || this.clarityType == "Applicant Clarified") {
       commentStatus = "Approved";
     }
@@ -1612,18 +1659,18 @@ export class ViewProjectInfoComponent implements OnInit {
     //Final Approver && Senior Approver Kyle 01/02/24
     if (currentComment.isClarifyCommentID == null) {
       if (confirm("Are you sure you want to add this reply?")) {
-        
-        this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, null,/*comments Sindiswa 18 January 2024 - making the clarity more dynamic*/ this.clarityType , null, numberOfComments, Currentreply).subscribe((data: any) => {
+
+        this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, null,/*comments Sindiswa 18 January 2024 - making the clarity more dynamic*/ this.clarityType, null, numberOfComments, Currentreply).subscribe((data: any) => {
 
           if (data.responseCode == 1) {
             this.getAllComments();
             this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, commentStatus, false, null, null, null).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
-                 //Final Approver && Senior Approver Kyle 01/02/24
+                //Final Approver && Senior Approver Kyle 01/02/24
                 this.modalService.dismissAll();
                 this.router.navigate(["/home"]);
-                
+
 
               }
               else {
@@ -1652,10 +1699,14 @@ export class ViewProjectInfoComponent implements OnInit {
         })
       }
     }
-    else if (currentComment.isClarifyCommentID != null && currentComment.isClarifyCommentID == numberOfComments) {
+    else  if (currentComment.isClarifyCommentID != null && currentComment.isClarifyCommentID == numberOfComments) {
       if (confirm("Are you sure you want to update this replay? You will not be able to update the reply again.")) {
-        this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, null, "Clarified", null, 1, Currentreply).subscribe((data: any) => {
 
+        if (updateStatus == "Applicant Clarified" || updateStatus == "Reviewer Clarified") {
+          commentStatus = "Approved";
+        }
+        this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, null, this.clarityType, null, 1, Currentreply).subscribe((data: any) => {
+          
           if (data.responseCode == 1) {
             this.getAllComments();
 
@@ -1810,10 +1861,11 @@ export class ViewProjectInfoComponent implements OnInit {
           tempDepositRequired.DepositRequiredID = current.depositRequiredID;
           tempDepositRequired.Desciption = current.desciption;
           tempDepositRequired.Quantity = current.quantity;
+          debugger;
           tempDepositRequired.Rate = current.rate;
           tempDepositRequired.SubDepartmentForCommentID = current.subDepartmentForCommentID;
           tempDepositRequired.SubDepartmentID = current.subDepartmentID;
-          tempDepositRequired.SubDepartmentName = current.subDepartmentName;
+          tempDepositRequired.SubDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempDepositRequired.WBS = current.wbs;
 
 
@@ -2308,7 +2360,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   ChangeApplicationStatusToPaid() {
-    debugger;
+    
     if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Unpaid") {
 
       this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
@@ -2411,6 +2463,7 @@ export class ViewProjectInfoComponent implements OnInit {
     }
 
   }
+  
 
   checkIfPermitExsist() {
 
@@ -2425,7 +2478,7 @@ export class ViewProjectInfoComponent implements OnInit {
       this.permitDate = "Permit has been applied, with a start date of: " + this.startDate.substring(0, this.startDate.indexOf('T'));
      
     }
-
+    
 
   }
 
@@ -2543,7 +2596,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
         console.log("data", data.dateSet);
-        debugger;
+        
         const currentUserProfile = data.dateSet[0];
         this.depID = currentUserProfile.departmentID;
         this.getUserDep();
@@ -2581,12 +2634,12 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
         if (data.responseCode == 1) {
-          debugger;
+          
           for (var i = 0; i < data.dateSet.length; i++) {
             const tempSubDepartmentList = {} as SubDepartmentList;
-            debugger;
+            
             const current = data.dateSet[i];
-            this.subDepNameForClarify = current.subDepartmentName;
+            this.subDepNameForClarify = current.subDepartmentName.replace(/\r?\n|\r/g, '');
             tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
 
 
@@ -2625,25 +2678,33 @@ export class ViewProjectInfoComponent implements OnInit {
           const tempSubDepCommentStatusList = {} as SubDepCommentsForSpecialConditions;
 
           const current = data.dateSet[i];
-          tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
+/*JJS Commit 20-02-24*/
+          if (current.comment != null) {
 
 
+            tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
 
-          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName + " : "+current.zoneName;
-          tempSubDepCommentStatusList.ApplicationID = current.applicationID;
-          if (current.commentStatus == 'Approved' || current.commentStatus == 'Provisionally Approved') {
-            tempSubDepCommentStatusList.Comment = "Approver Comment : \n"+current.comment;
+
+            
+            let SubName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
+            tempSubDepCommentStatusList.SubDepName = SubName + " : " + current.zoneName;
+            tempSubDepCommentStatusList.ApplicationID = current.applicationID;
+            if (current.commentStatus == 'Approved' || current.commentStatus == 'Provisionally Approved') {
+              tempSubDepCommentStatusList.Comment = "Reviewer Comment : \n" + current.comment;
+            }
+            if (current.commentStatus == 'Final Approved') {
+              tempSubDepCommentStatusList.Comment = "Final Approver Comment : \n" + current.comment;
+            }
+
+            tempSubDepCommentStatusList.DateCreated = current.dateCreated;
+
+
+            tempSubDepCommentStatusList.UserName = current.userName;
+            this.SubDepCommentsForSpecialConditions.push(tempSubDepCommentStatusList);
           }
-          if (current.commentStatus == 'Final Approved') {
-            tempSubDepCommentStatusList.Comment = "Final Approver Comment : \n" + current.comment;
-          }
-         
-          tempSubDepCommentStatusList.DateCreated = current.dateCreated;
-         
-          
-          tempSubDepCommentStatusList.UserName = current.userName;
-          this.SubDepCommentsForSpecialConditions.push(tempSubDepCommentStatusList);
+          else {
 
+          }
 
         }
         this.onCreateApprovalPack();
@@ -2675,7 +2736,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
           const current = data.dateSet[i];
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
-          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
+          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempSubDepCommentStatusList.ApplicationID = current.applicationID;
           tempSubDepCommentStatusList.Comment = current.comment;
           tempSubDepCommentStatusList.DateCreated = current.dateCreated;
@@ -2721,7 +2782,7 @@ export class ViewProjectInfoComponent implements OnInit {
           tempContactDetailsList.CellNo = current.cellNo;
           tempContactDetailsList.Email = current.email;
           tempContactDetailsList.ZoneID = current.zoneID;
-          tempContactDetailsList.SubDepName = current.subDepartmentName;
+          tempContactDetailsList.SubDepName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempContactDetailsList.ZoneName = current.zoneName
           this.ContactDetailsList.push(tempContactDetailsList);
 
@@ -2757,7 +2818,7 @@ export class ViewProjectInfoComponent implements OnInit {
           const current = data.dateSet[i];
           console.log("FINAL APPROVED THE APPLICATION ", current);
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
-          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
+          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempSubDepCommentStatusList.ApplicationID = current.applicationID;
           tempSubDepCommentStatusList.Comment = current.comment;
           tempSubDepCommentStatusList.DateCreated = current.dateCreated;
@@ -2792,16 +2853,16 @@ export class ViewProjectInfoComponent implements OnInit {
  
     this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
  
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         for (var i = 0; i < data.dateSet.length; i++) {
           const tempSubDepCommentStatusList = {} as SubDepSubDepRejectList;
-          debugger;
+          
           const current = data.dateSet[i];
-          debugger;
+          
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
-          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
+          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempSubDepCommentStatusList.ApplicationID = current.applicationID;
           tempSubDepCommentStatusList.Comment = current.comment;
           tempSubDepCommentStatusList.DateCreated = current.dateCreated;
@@ -3029,14 +3090,14 @@ export class ViewProjectInfoComponent implements OnInit {
 
     doc.text('WAYLEAVE APPLICATION: ' + this.DescriptionOfProject, 10, 70, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
 
-    doc.text('Dear ' + this.clientName, 10, 80, { align: 'left' });
+    doc.text('Dear ' + this.clientName, 10, 84, { align: 'left' });
 
 
     //this is for the project details
 
     //paragraph 
 
-    doc.text('A summary of the outcome of this wayleave application is provided below. Department specific wayleave approval or rejection letters are attached.In the case of a wayleave rejection, please make contact with the relevant line department as soon as possible', 10, 90, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.text('A summary of the outcome of this wayleave application is provided below. Department specific wayleave approval or rejection letters are attached. In the case of a wayleave rejection, please make contact with the relevant line department as soon as possible', 10, 95, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
     doc.setFont('CustomFontBold', 'bold'); // Use your custom font
     doc.text('Status Summary:', 10, 115, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
     doc.setFont('CustomFont', 'normal');
@@ -3067,15 +3128,15 @@ export class ViewProjectInfoComponent implements OnInit {
       body: data,
       styles: {
         overflow: 'visible',
-        halign: 'justify',
+        halign: 'left',
         fontSize: 8,
         valign: 'middle',
         // Use the correct color notation here
       },
       columnStyles: {
-        0: { cellWidth: 70, fontStyle: 'bold' },
-        1: { cellWidth: 50 },
-        2: { cellWidth: 60 },
+        0: { cellWidth: 90,  },
+        1: { cellWidth: 30 },
+        2: { cellWidth: 50 },
       }
     });
     //Special conditions page
@@ -3165,13 +3226,13 @@ export class ViewProjectInfoComponent implements OnInit {
           yOffset = headerHeight; // Reset the Y-coordinate for the new page, leaving space for the header
           remainingPageSpace = maxPageHeight - yOffset - footerHeight;
         }
-        debugger;
+        
         // Check if the sub-department commentStatus is Approved or Provisionally Approved
-        if (comments.length > 0 && comments[0].commentStatus === 'Approved' || comments[0].commentStatus === 'Provisionally Approved') {
+        if (comments.length > 0 && comments[0].commentStatus === 'Approved' || comments[0].commentStatus === 'Provisionally Approved' || comments[0].commentStatus === 'Approved(Conditional)') {
           // Display Approver Comment heading
           doc.setFont('CustomFontBold', 'bold');
-          doc.text('Approver Comment:', 10, yOffset, { maxWidth: 190, align: 'left' });
-          yOffset += doc.getTextDimensions('Approver Comment:').h + 2;
+          doc.text('Reviewer Comment:', 10, yOffset, { maxWidth: 190, align: 'left' });
+          yOffset += doc.getTextDimensions('Reviewer Comment:').h + 2;
 
           // Display the comment
           doc.setFont('CustomFont', 'normal');
@@ -3628,7 +3689,7 @@ export class ViewProjectInfoComponent implements OnInit {
     doc.setFont('CustomFontBold', 'bold'); // Use your custom font
     doc.text('Status Summary:', 10, 115, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
     doc.setFont('CustomFont', 'normal');
-    debugger;
+    
     this.SubDepSubDepRejectList.forEach((deposit) => {
       const row = [
         deposit.SubDepName,
@@ -3856,7 +3917,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   // #region reapply Sindiswa 22 January 2024
   goToNewWayleave(applicationType: boolean) { //application type refers to whether it is a brand new application or if it is a reapply.
-    debugger;
+    
 
     this.applicationsService.getApplicationsByApplicationID(this.ApplicationID).subscribe((data: any) => {
 
@@ -3978,7 +4039,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
           const tempSubDepartmentList = {} as SubDepartmentList;
           tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
-          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempSubDepartmentList.departmentID = current.departmentID;
           tempSubDepartmentList.dateUpdated = current.dateUpdated;
           tempSubDepartmentList.dateCreated = current.dateCreated;
@@ -3993,7 +4054,12 @@ export class ViewProjectInfoComponent implements OnInit {
           if (tempSubDepartmentList.commentStatus == "Rejected") {
             this.countReject++;
           }
+          //Permit Kyle 13-02 - 24
+          if (tempSubDepartmentList.subDepartmentName == this.CurrentUserProfile[0].subDepartmentName && current.zoneName == this.CurrentUserProfile[0].zoneName) {
+            this.canCreateNote = true;
+          }
 
+          
           this.SubDepartmentList.push(tempSubDepartmentList);
         }
 
@@ -4191,7 +4257,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   /*viewDocument(index: any) {
 
-    debugger;
+    
     // Make an HTTP GET request to fetch the document
     fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.FinancialDocumentsList[index].FinancialDocumentName}`)
       .then(response => {
@@ -4220,7 +4286,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   // altered slightly to ensure that a png is downloaded instead of doing iframe tings
   viewDocument(index: any) {
-    debugger;
+    
     const filename = this.FinancialDocumentsList[index].FinancialDocumentName;
     const extension = filename.split('.').pop().toLowerCase();
 
@@ -4430,7 +4496,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
           const tempSubDepartmentList = {} as SubDepartmentListFORAPPROVAL;
           tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
-          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempSubDepartmentList.departmentID = current.departmentID;
           tempSubDepartmentList.dateUpdated = current.dateUpdated;
           tempSubDepartmentList.dateCreated = current.dateCreated;
@@ -4583,7 +4649,7 @@ export class ViewProjectInfoComponent implements OnInit {
   CalCulateApprovalProgess() {
     this.subDepartmentForCommentService.getSubDepartmentForComment(this.applicationDataForView[0].applicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
 
@@ -4605,7 +4671,7 @@ export class ViewProjectInfoComponent implements OnInit {
         }
         let progress = (this.progressBar / data.dateSet.length).toFixed(2);
         this.progressBar = parseFloat(progress);
-        this.getProgressBarColor(this.progressBar);
+/*        this.getProgressBarColor(this.progressBar);*/
       }
       else {
         alert(data.responseMessage);
@@ -4614,6 +4680,7 @@ export class ViewProjectInfoComponent implements OnInit {
       console.log("Error", error);
     })
   }
+
 
   getProgressBarColor(percentage: number): string {
     // Calculate the middle color dynamically based on the percentage
@@ -4648,14 +4715,71 @@ export class ViewProjectInfoComponent implements OnInit {
   //Status of works Kyle 16-02-24
   showUpload: boolean = false;
   onCheckMFTNote(event:Event):void {
-    debugger;
+    
     const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
     if (filterValue == '') {
       this.showUpload = false
     }
     else {
       this.showUpload = true;
+      
     }
   }
   /*Progess bar Kyle 07-02-24*/
+     //Project size Kyle 27-02-24
+  getAllManDocForPTWStage(permitModal:any) {
+    if (this.applicationDataForView[0].permitStartDate == null && this.applicationDataForView[0].CurrentStageName == "PTW") {
+      this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);
+      this.mandatroyDocumentUploadService.getAllMandatoryDocumentsLinkedToStage(this.applicationDataForView[0].CurrentStageName).subscribe((data: any) => {
+        debugger;
+        if (data.responseCode == 1) {
+          for (let i = 0; i < data.dateSet.length; i++) {
+
+            const tempMandatoryDocList = {} as MandatoryDocumentUploadList;
+            const current = data.dateSet[i];
+            const applicationSize = this.applicationDataForView[0].TypeOfApplication;
+
+            if (applicationSize == "Large") {
+              tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
+              tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
+              tempMandatoryDocList.stageID = current.stageID;
+              tempMandatoryDocList.dateCreated = current.dateCreated;
+              tempMandatoryDocList.hasFile = false;
+              this.MandatoryDocumentUploadList.push(tempMandatoryDocList);
+            }
+
+            else if (applicationSize != "Large" && current.mandatoryDocumentName != "Construction Program or Phasing Program") {
+              tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
+              tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
+              tempMandatoryDocList.stageID = current.stageID;
+              tempMandatoryDocList.dateCreated = current.dateCreated;
+              tempMandatoryDocList.hasFile = false;
+              this.MandatoryDocumentUploadList.push(tempMandatoryDocList);
+            }
+            
+          }
+          this.sharedService.setApplicationID(this.ApplicationID);
+          this.openPermitModal(permitModal);
+          
+        }
+        
+        else {
+          alert(data.responseMessage);
+        }
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+
+  }
+
+  ClosePermitStartDateModal() {
+    debugger;
+    if (this.fileCount == 0) {
+      this.modalService.dismissAll();
+    }
+    else {
+      alert("Please delete documents uploaded if you wish to close without saving");
+    }
+  }
 }

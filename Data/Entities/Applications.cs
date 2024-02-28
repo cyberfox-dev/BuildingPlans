@@ -67,5 +67,7 @@ namespace WayleaveManagementSystem.Data.Entities
         public DateTime? EscalationDate { get; set; } //escalation Sindiswa 31 January 2024
 
         public DateTime? EMBActionDate { get; set; } //escalation Sindiswa 31 January 2024
+
+        public bool? NetworkLicenses { get; set; } //Project size Kyle 27-02-24
     }
 }

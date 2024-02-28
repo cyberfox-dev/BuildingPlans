@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WayleaveManagementSystem.Data;
 
@@ -11,9 +12,10 @@ using WayleaveManagementSystem.Data;
 namespace WayleaveManagementSystem.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240219070147_PermitSupervisionFee")]
+    partial class PermitSupervisionFee
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -268,9 +270,6 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("ApplicationID"), 1L, 1);
 
-                    b.Property<string>("AlternativeEmail")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ApplicationStatus")
                         .HasColumnType("nvarchar(max)");
 
@@ -330,9 +329,6 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.Property<string>("NatureOfWork")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("NetworkLicenses")
-                        .HasColumnType("bit");
 
                     b.Property<string>("NextStageName")
                         .HasColumnType("nvarchar(max)");
@@ -747,8 +743,8 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("Desciption")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Quantity")
-                        .HasColumnType("int");
+                    b.Property<double?>("Quantity")
+                        .HasColumnType("float");
 
                     b.Property<double?>("Rate")
                         .HasColumnType("float");
@@ -1278,9 +1274,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("DocumentLocalPath")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("MoveToPaidDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("PermitComment")
                         .HasColumnType("nvarchar(max)");
 
@@ -1290,13 +1283,13 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("PermitDocName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("RequestForDelete")
-                        .HasColumnType("bit");
-
                     b.Property<int?>("SubDepartmentID")
                         .HasColumnType("int");
 
                     b.Property<string>("SubDepartmentName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SupervisionFee")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserAssaignedToComment")
@@ -1307,9 +1300,6 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.Property<string>("ZoneName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("hasSuperVisionFee")
-                        .HasColumnType("bit");
 
                     b.Property<bool>("isActive")
                         .HasColumnType("bit");
@@ -2086,9 +2076,6 @@ namespace WayleaveManagementSystem.Data.Migrations
 
             modelBuilder.Entity("WayleaveManagementSystem.Models.DTO.ApplicationsDTO", b =>
                 {
-                    b.Property<string>("AlternativeEmail")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("ApplicationID")
                         .HasColumnType("int");
 
@@ -2151,9 +2138,6 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.Property<string>("NatureOfWork")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("NetworkLicenses")
-                        .HasColumnType("bit");
 
                     b.Property<string>("NextStageName")
                         .HasColumnType("nvarchar(max)");

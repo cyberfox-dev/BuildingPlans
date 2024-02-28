@@ -44,7 +44,8 @@ export interface ApplicationList {
   userID: string,
   //Coordinates: string
   UserID: any;
-  clientAlternativeEmail: string; // chekingNotifications Sindiswa 13 February 2024
+  clientAlternativeEmail: string;
+  NetworkLicensees: any// chekingNotifications Sindiswa 13 February 2024
 }
 export interface ApplicationsList {
   ApplicationID: number;
@@ -100,7 +101,7 @@ export class OldApplicationVersionsComponent implements OnInit {
 
 
   getOldApplicationVersions() {
-    debugger;
+    
     this.projectNumber = this.sharedService.getProjectNumber();
     console.log("This is the project number that has been fetched: " + this.sharedService.getProjectNumber());
     this.applicationsService.getApplicationsByProjectNumberRA(this.projectNumber).subscribe((data: any) => {
@@ -220,7 +221,7 @@ export class OldApplicationVersionsComponent implements OnInit {
   }
 
   viewProject(index: any) {
-    debugger;
+    
     console.log("FIND", this.applicationDataForView[index]);
 
     this.applicationDataForViewToShared = [this.applicationDataForView[index]];

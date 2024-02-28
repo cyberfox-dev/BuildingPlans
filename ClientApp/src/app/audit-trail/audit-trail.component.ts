@@ -253,7 +253,7 @@ export class AuditTrailComponent implements OnInit {
     this.reviewerForCommentService.getAllReviewerForCommentForApplication(this.applicationData[0].applicationID).subscribe(async (data: any) => {
       if (data.responseCode == 1) {
         
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
 
           const tempAuditTrail = {} as AuditTrailList;
@@ -293,7 +293,7 @@ export class AuditTrailComponent implements OnInit {
   
   }
   sortDataRange() {
-    debugger;
+    
 
     let sortedArray = [...this.AuditTrailList].sort((a, b) => {
       const dateA = this.parseDate(a.DateCreated);
@@ -303,7 +303,7 @@ export class AuditTrailComponent implements OnInit {
     });
 
     if (sortedArray.length !== 0) {
-      debugger;
+      
       this.generateExcelFile(sortedArray, this.fileName);
     }
   }
@@ -369,7 +369,7 @@ export class AuditTrailComponent implements OnInit {
       if (data.responseCode == 1) {
 
         
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
 
           const tempAuditTrail = {} as AuditTrailList;
@@ -407,7 +407,7 @@ export class AuditTrailComponent implements OnInit {
   
   }
   generateExcelFile = (data: AuditTrailList[], fileName: string): void => {
-    debugger;
+    
     // Create a worksheet from JSON data with left-aligned cells
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data, {
       header: Object.keys(data[0]), // Assuming all objects have the same keys
@@ -504,7 +504,7 @@ export class AuditTrailComponent implements OnInit {
 
     // Create a Blob from the binary data
     const blob = new Blob([binaryData], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' } );
-    debugger;
+    
     // Save the file using file-saver
     FileSaver.saveAs(blob, `${fileName}.xlsx`);
   };
@@ -518,10 +518,10 @@ export class AuditTrailComponent implements OnInit {
   }
 
   onCheckSelection() {
-    debugger;
+    
    
     if (this.selectionType == "byDate") {
-      debugger;
+      
       this.showDate = true;
       this.showSub = false;
       this.showZone = false;
@@ -624,7 +624,7 @@ export class AuditTrailComponent implements OnInit {
     this.fileName = "Audit Trail For Zone " + this.zoneName + " in Sub Department " + this.selectedSubDepartment.SubDepartmentName; 
     this.AuditTrailList.splice(0, this.AuditTrailList.length);
 
-    debugger;
+    
     this.auditTrailService.getAllAuditTrailsItemsForSubDepartmentAndZone(this.selectedSubDepartment.SubDepartmentName, this.zoneName).subscribe(async (data: any) => {
 
       if (data.responseCode == 1) {
@@ -671,7 +671,7 @@ export class AuditTrailComponent implements OnInit {
     this.reviewerForCommentService.getAllReviewersForSubDepartmentAndZone(this.selectedSubDepartment.SubDepartmentName, this.zoneName).subscribe(async (data: any) => {
       if (data.responseCode == 1) {
 
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
 
           const tempAuditTrail = {} as AuditTrailList;
@@ -708,7 +708,7 @@ export class AuditTrailComponent implements OnInit {
     this.fileName = "Audit Trail For Zone " + this.zoneName + " in Sub Department " + this.selectedSubDepartment.SubDepartmentName + " From " + this.expectedStartDateSub + " To " + this.expectedEndTypeSub;
     this.AuditTrailList.splice(0, this.AuditTrailList.length);
 
-    debugger;
+    
     this.auditTrailService.getAllAuditTrailsItemsForSubDepartmentAndZone(this.selectedSubDepartment.SubDepartmentName, this.zoneName).subscribe(async (data: any) => {
 
       if (data.responseCode == 1) {
@@ -721,11 +721,11 @@ export class AuditTrailComponent implements OnInit {
           const current = data.dateSet[i];
 
           const dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
-          debugger;
+          
           if (dateCreated >= this.expectedStartDateSub && dateCreated <= this.expectedEndTypeSub)
            
           {
-            debugger;
+            
             tempAuditTrail.ApplicationID = current.applicationID;
             tempAuditTrail.AssignedTo = "Null";
             tempAuditTrail.Comment = "Null";
@@ -760,13 +760,13 @@ export class AuditTrailComponent implements OnInit {
     this.reviewerForCommentService.getAllReviewersForSubDepartmentAndZone(this.selectedSubDepartment.SubDepartmentName, this.zoneName).subscribe(async (data: any) => {
       if (data.responseCode == 1) {
 
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
 
           const tempAuditTrail = {} as AuditTrailList;
           const current = data.dateSet[i];
           const dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
-          debugger;
+          
           if (dateCreated >= this.expectedStartDateSub && dateCreated <= this.expectedEndTypeSub) {
             tempAuditTrail.ApplicationID = current.applicationID;
             tempAuditTrail.AssignedTo = await this.getUserNameById(current.reviewerAssignedToComment);
@@ -831,13 +831,13 @@ export class AuditTrailComponent implements OnInit {
   }
 
   getAllAuditTrailItemsForInternalUser(index: any) {
-    debugger;
+    
     const User = this.InternalUserList[index];
     this.selectedRowIndex = 0;
     this.fileName = "Reports For " + User.fullName; 
     this.AuditTrailList.splice(0, this.AuditTrailList.length);
 
-    debugger;
+    
     this.auditTrailService.getAllAuditTrailItemsForInternalUser(User.userID).subscribe(async (data: any) => {
 
       if (data.responseCode == 1) {
@@ -884,7 +884,7 @@ export class AuditTrailComponent implements OnInit {
     this.reviewerForCommentService.getAllReviewersForCommentsByUser(User.userID).subscribe(async (data: any) => {
       if (data.responseCode == 1) {
 
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
 
           const tempAuditTrail = {} as AuditTrailList;

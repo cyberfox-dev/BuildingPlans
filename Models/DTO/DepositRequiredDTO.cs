@@ -12,7 +12,7 @@
         public int? SubDepartmentForCommentID { get; set; }
         public int? SubDepartmentID { get; set; }
         public double? Rate { get; set; }
-        public double? Quantity { get; set; }
+        public int? Quantity { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
         public string? CreatedById { get; set; }

@@ -10,6 +10,9 @@ import { PDFDocument } from 'pdf-lib';
 import { StagesService } from '../service/Stages/stages.service';
 import { AuditTrailService } from '../service/AuditTrail/audit-trail.service';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
+import { FinancialService } from '../service/Financial/financial.service';
+import { UserProfileService } from '../service/UserProfile/user-profile.service';
+import { NotificationsService } from '../service/Notifications/notifications.service';
 //Permit Kyle 13-02-24
 
 //PTC = Permit To Comment
@@ -25,6 +28,11 @@ export interface PTCList {
   PermitCommentStatus: string;
   PermitDocName: string;
   DocumentLocalPath: string;
+  isPaid: boolean;
+  hasDoc: boolean;
+  hasSuperVisionFee: boolean;
+  
+ 
 }
 //Permit Kyle 13-02-24
 export interface StagesList {
@@ -32,6 +40,14 @@ export interface StagesList {
   StageName: string;
   StageOrderNumber: number;
   CurrentUser: any
+}
+
+//Request for delete Kyle 22-02-24
+export interface EMBUsersList {
+  UserProfileID: string;
+  UserID: string;
+  UserFullName: string;
+  UserEmail: string;
 }
 //Permit Kyle 13-02-24
 @Component({
@@ -44,9 +60,10 @@ export class PermitComponentComponent implements OnInit {
 
   PTCList: PTCList[] = [];
   StagesList: StagesList[] = [];//Permit Kyle 13-02-24
+  EMBUsersList: EMBUsersList[] = [];
 
   //permitupload Sindiswa 08 January 2024
-  displayedColumns: string[] = ['subDepartmentName','zoneName' ,'comment' ,'indication', 'addDocument'];
+  displayedColumns: string[] = ['subDepartmentName','zoneName' ,'comment' ,'indication', 'addDocument','status','moveToPaid'];
   dataSource = this.PTCList;
   MeetOnSite = "MeetOnSite";
   Approved = "Approved";
@@ -62,15 +79,28 @@ export class PermitComponentComponent implements OnInit {
     CurrentUserProfile: any;
     CanIssuePermit: boolean;
   CanConsolidate: boolean;
-  constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private permitService: PermitService, private shared: SharedService, private applicationsService: ApplicationsService, private stagesService: StagesService, private auditTrailService: AuditTrailService,private router :Router) { }
+  isEMB: boolean;
+  isCalledInsidePermit: boolean;
+  projectNumber: string;
+
+  constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private permitService: PermitService, private shared: SharedService, private applicationsService: ApplicationsService, private stagesService: StagesService, private auditTrailService: AuditTrailService,private router :Router , private financialService :FinancialService ,private userProfileService:UserProfileService,private notificationsService:NotificationsService) { }
 
   ngOnInit(): void {
     this.getAllPermitForComment();
+
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
+
     this.stringifiedDataCurrentUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataCurrentUserProfile);
     
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('AllCurrentUserRoles')));
     this.AllCurrentUserRoles = JSON.parse(this.stringifiedData);
+
+       //Request for delete Kyle 22-02-24
+    this.getProjectNumberForApplication();
+    this.getAllEMBUsers();
+
     for (var i = 0; i < this.AllCurrentUserRoles.length; i++) {
       if (this.AllCurrentUserRoles[i].roleName == "Issue Permit") {
         this.CanIssuePermit = true;
@@ -78,9 +108,15 @@ export class PermitComponentComponent implements OnInit {
       else {
         this.CanIssuePermit = false;
       }
+      this.isCalledInsidePermit = true;
+      
     }
     
     this.getAllStages();//Permit Kyle 13-02-24
+    if (this.CurrentUserProfile[0].subDepartmentName == "EMB") {
+      this.isEMB = true;
+      console.log("isEMB", this.isEMB);
+    }
   }
 
   @Input() ApplicationID;
@@ -96,7 +132,7 @@ export class PermitComponentComponent implements OnInit {
     this.PTCList.splice(0, this.PTCList.length);
     this.permitService.getPermitSubForCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
 
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempPTCList = {} as PTCList;
@@ -118,8 +154,20 @@ export class PermitComponentComponent implements OnInit {
           tempPTCList.ZoneName = current.zoneName;
           tempPTCList.PermitDocName = current.permitDocName;
           tempPTCList.DocumentLocalPath = current.documentLocalPath;
-         
-
+          tempPTCList.isPaid = current.isPaid;
+          
+          if (current.permitDocName != null && current.documentLocalPath != null) {
+            
+            tempPTCList.hasDoc = true;
+          }
+          else {
+            tempPTCList.hasDoc = false;
+          }
+          if (tempPTCList.isPaid == null) {
+            tempPTCList.isPaid = false;
+          }
+          debugger;
+          tempPTCList.hasSuperVisionFee = current.hasSuperVisionFee; //Request For Delete Kyle 22-02-24
           this.PTCList.push(tempPTCList);
 
         }
@@ -133,7 +181,7 @@ export class PermitComponentComponent implements OnInit {
       }
       this.PTCListTable?.renderRows();
       console.log("reponse", data);
-      console.log("PTCList", this.PTCList);
+      console.log("PTCList", this.PTCList, this.CurrentUserProfile[0].userID);
     }, error => {
       console.log("Error: ", error);
     })
@@ -141,29 +189,41 @@ export class PermitComponentComponent implements OnInit {
 
   checkIfCanConsolidate() {
     let x = 0;
-    debugger;
+    
     for (var i = 0; i < this.PTCList.length; i++) {
       debugger;
-      if (this.PTCList[i].PermitDocName != null) {
-        x++;
+      //Request for delete Kyle 22-02-24
+      if (this.PTCList[i].hasSuperVisionFee == true) {
+        if (this.PTCList[i].PermitDocName != null && this.PTCList[i].isPaid == true) {
+          x++;
+        }
+
       }
+      else {
+        if (this.PTCList[i].PermitDocName != null) {
+          x++;
+        }
+      }
+
+     
     }
+    
     if (x === this.PTCList.length) {
       this.CanConsolidate = true;
     } else {
       this.CanConsolidate = false;
     }
-
+    console.log("CanConsolidate", this.CanConsolidate)
     
   }
 
   updateApplicationStatus() {
     let x = 0;
-    debugger;
+    
     for (var i = 0; i < this.PTCList.length; i++) {
-      debugger;
+      
       if (this.PTCList[i].PermitDocName != null) {
-        x++; debugger;
+        x++; 
       }
      
     }
@@ -317,11 +377,11 @@ export class PermitComponentComponent implements OnInit {
   }
 
   moveToClosedStage() {
-    debugger;
+    
     this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, this.StagesList[5].StageName, this.StagesList[5].StageOrderNumber, this.StagesList[6].StageName, this.StagesList[6].StageOrderNumber, "Monitoring", null).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        debugger;
+        
         //Audit Trail Kyle 
         this.onSaveToAuditTrail2("Permit to Work Generated");
         this.onSaveToAuditTrail2("Application Moved To Monitoring Stage");
@@ -354,4 +414,235 @@ export class PermitComponentComponent implements OnInit {
     })
   }
   //Permit Kyle 13-02-24
+  getPermitDocument(index: any) {
+    const category = "Financial-" + this.PTCList[index].SubDepartmentName;
+    this.financialService.getFinancialsForApplicationByType(this.ApplicationID, category).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        const current = data.dateSet[0];
+
+        this.getPermitInvoice(current.documentName);
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+    })
+  }
+  getPermitInvoice(permitDocumentName: any) {
+    
+    
+    fetch(this.apiUrl + `documentUpload/GetDocument?filename=${permitDocumentName}`)
+      .then(response => {
+        if (response.ok) {
+          // The response status is in the 200 range
+
+          return response.blob(); // Extract the response body as a Blob
+
+        } else {
+          throw new Error('Error fetching the document');
+        }
+      })
+      .then(blob => {
+        // Create a URL for the Blob object
+        const documentURL = URL.createObjectURL(blob);
+
+        window.open(documentURL, '_blank');
+
+        // Download the document
+        const link = document.createElement('a');
+        link.href = documentURL;
+        link.download = permitDocumentName; // Set the downloaded file name
+        link.click();
+      })
+      .catch(error => {
+        console.log(error);
+        // Handle the error appropriately
+      });
+  }
+
+  moveToPaid(index: any) {
+    const permitForComment = this.PTCList[index];
+    const movedToPaidDate = new Date();
+    if (confirm("Are you sure you want to move this to paid?")) {
+      this.permitService.addUpdatePermitSubForComment(permitForComment.PermitSubForCommentID, permitForComment.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, true, null, movedToPaidDate).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          alert("Permit for Sub Department moved to paid");
+          this.router.navigate(["/home"]);
+        }
+        else {
+          alert(data.responseMessage);
+        }
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+  }
+
+  requestForDelete(index: any) {
+    const permitForSubComment = this.PTCList[index];
+    if (confirm("Are you sure you want to request an EMB user to remove the permit document ?")) {
+      this.permitService.addUpdatePermitSubForComment(permitForSubComment.PermitSubForCommentID, null, null, null, null, null, null, null, null, null, null, null, true).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          this.RequestForDeleteEmail(); //Request for delete Kyle 22-02-24
+          alert("Request for delete submitted successfully");
+        }
+        else {
+          alert(data.responseMessage);
+        }
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+  }
+  //Permit Kyle 13-02-24
+  //Request for delete Kyle 22-02-24
+  RequestForDeleteEmail() {
+    const emailContentOriginator = `
+      <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+              font-family: Arial, sans-serif;
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.CurrentUserProfile[0].fullName},</p>
+            <p>You have successfully requested a permit document to delete by an EMB User for ${this.projectNumber}. You will be notified once your request has been carried out which will then allow you to upload a new permit document. </p>
+            <p>Should you have any queries, please contact <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+                <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+        </body>
+      </html>
+    `;
+
+    this.notificationsService.sendEmail(this.CurrentUser.email, "Request For Delete", emailContentOriginator, emailContentOriginator);
+    this.notificationsService.addUpdateNotification(0, "Request Submmited", "Request For Delete", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserID, "Your request for a delete of a permit document for project " + this.projectNumber + "was successful.  You will be notified once the document has been deleted.").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        alert(data.responseMessage);
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+    })
+
+    for (let i = 0; i < this.EMBUsersList.length; i++) {
+      const EMBUser = this.EMBUsersList[i];
+
+      const emailContentEMBUsers = `
+      <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+              font-family: Arial, sans-serif;
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.EMBUsersList[i].UserFullName},</p>
+            <p>A user has submitted a request for a permit document be delete for  ${this.projectNumber} in ${this.CurrentUserProfile[0].subDepartmentName}  ${this.CurrentUserProfile[0].zoneName}. The application will appear in a pop up on your dash board until this request has been attenden to. </p>
+            <p>Should you have any queries, please contact <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+                <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+        </body>
+      </html>
+    `;
+
+      this.notificationsService.sendEmail(EMBUser.UserEmail, "Request For Delete", emailContentEMBUsers, emailContentEMBUsers);
+      this.notificationsService.addUpdateNotification(0, "Request For Delete", " Requested for permit document delete.", false, EMBUser.UserID, this.ApplicationID, this.CurrentUser.appUserId, "A user has requested a permit document to be delete for " + this.projectNumber + " in " + this.CurrentUserProfile[0].subDepartmentName + " " + this.CurrentUserProfile[0].zoneName + " . PLease attend to this as soon as possible.").subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          console.log(data.responseMessage)
+        }
+        else {
+          alert(data.responseMessage);
+        }
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+  }
+
+  getAllEMBUsers() {
+    this.userProfileService.getUsersBySubDepartmentName("EMB").subscribe((data: any) => {
+      debugger;
+      if (data.responseCode == 1) {
+        debugger;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempUser = {} as EMBUsersList;
+          const current = data.dateSet[i];
+
+          tempUser.UserProfileID = current.userProfileID;
+          tempUser.UserID = current.userID;
+          tempUser.UserFullName = current.fullName;
+          tempUser.UserEmail = current.eamil;
+
+          this.EMBUsersList.push(tempUser);
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+    })
+  }
+
+  getProjectNumberForApplication() {
+    this.applicationsService.getApplicationsByApplicationID(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        const current = data.dateSet[0];
+
+        this.projectNumber = current.projectNumber;
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+    })
+  }
+
+ 
+   //Request for delete Kyle 22-02-24
 }

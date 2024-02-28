@@ -1,46 +1,40 @@
 import { Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
-import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
-import { ApplicationsService } from '../service/Applications/applications.service';
 import { MatTable } from '@angular/material/table';
-import { CommentList } from '../nav-menu/nav-menu.component';
+import { Router } from "@angular/router";
+import { ApplicationsService } from '../service/Applications/applications.service';
 //import { ApplicationList } from '../shared/shared.service';
-import { SharedService } from "src/app/shared/shared.service"
-import { StagesService } from '../service/Stages/stages.service';
-import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component';
-import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
-import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
-import { ConfigService } from 'src/app/service/Config/config.service';
-import { Subscription, concat, tap } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { SelectEngineerTableComponent } from 'src/app/select-engineer-table/select-engineer-table.component';
-import { SelectContractorTableComponent } from 'src/app/select-contractor-table/select-contractor-table.component';
-import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
-import { LoginComponent } from 'src/app/login/login.component';
-import { MatStepper } from '@angular/material/stepper';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { ChangeDetectorRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSelect } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatStepper } from '@angular/material/stepper';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Subscription } from 'rxjs';
+import { ConfigActingDepartmentComponent } from 'src/app/config-acting-department/config-acting-department.component';
+import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component';
+import { LoginComponent } from 'src/app/login/login.component';
+import { SelectContractorTableComponent } from 'src/app/select-contractor-table/select-contractor-table.component';
+import { SelectEngineerTableComponent } from 'src/app/select-engineer-table/select-engineer-table.component';
+import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
+import { ConfigService } from 'src/app/service/Config/config.service';
+import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
+import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentForComment/sub-department-for-comment.service';
+import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
+import { SharedService } from "src/app/shared/shared.service";
+import { ContractorList } from '../edit-contractor/edit-contractor.component';
+import { NewProfileComponent } from '../new-user/new-profile/new-profile.component';
+import { NotificationCenterComponent } from '../notification-center/notification-center.component';
+import { BusinessPartnerService } from '../service/BusinessPartner/business-partner.service';
+import { DraftApplicationsService } from '../service/DraftApplications/draft-applications.service';
+import { NotificationsService } from '../service/Notifications/notifications.service';
+import { StagesService } from '../service/Stages/stages.service';
+import { SubDepartmentsService } from '../service/SubDepartments/sub-departments.service';
+import { UserService } from '../service/User/user.service';
 import { ZoneForCommentService } from '../service/ZoneForComment/zone-for-comment.service';
 import { ZoneLinkService } from '../service/ZoneLink/zone-link.service';
-import { SubDepartmentsService } from '../service/SubDepartments/sub-departments.service';
-import { trigger, state, style, animate, transition } from '@angular/animations';
-import { ChangeDetectorRef } from '@angular/core';
-import { MatSelect } from '@angular/material/select';
-import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
-import { UserService } from '../service/User/user.service';
-import { NewProfileComponent } from '../new-user/new-profile/new-profile.component';
-import { BusinessPartnerService } from '../service/BusinessPartner/business-partner.service';
-import { ContractorList } from '../edit-contractor/edit-contractor.component';
-import { MatDialog } from '@angular/material/dialog';
-import { ConfigActingDepartmentComponent } from 'src/app/config-acting-department/config-acting-department.component';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackBarAlertsComponent } from '../snack-bar-alerts/snack-bar-alerts.component';
-import { DraftApplicationsService } from '../service/DraftApplications/draft-applications.service';
-import { DraftsComponent } from 'src/app/drafts/drafts.component';
-import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentForComment/sub-department-for-comment.service';
-import { NotificationsService } from '../service/Notifications/notifications.service';
-import { NotificationCenterComponent } from '../notification-center/notification-center.component';
-import { NotificationsList } from '../notification-center/notification-center.component';
 
 export interface EngineerList {
   professinalID: number;
@@ -130,6 +124,7 @@ export interface ApplicationList {
   //Coordinates: string
   UserID: any;
   clientAlternativeEmail: string; // chekingNotifications Sindiswa 13 February 2024
+  NetworkLicensees:string;
 }
 
 
@@ -550,7 +545,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    debugger;
+    
 
 
     setTimeout(() => {
@@ -654,9 +649,9 @@ export class HomeComponent implements OnInit, OnDestroy {
           let endDate = this.parseDate(end);
 
 
-          debugger;
+          
           if (currentDate >= startDate && currentDate < endDate) {
-            debugger;
+            
             this.showBanner = true;
             this.alertMessage = current.utilitySlot3.toUpperCase();
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -738,6 +733,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   sendOption() {
     //  this.optionEvent.emit(this.option);
+    debugger;
     if (this.option == "internal") {
       /* this.optionEvent.emit(this.option);*/
 
@@ -1296,18 +1292,18 @@ export class HomeComponent implements OnInit, OnDestroy {
 
             this.InternalExternalUser = true;
             this.FilterBtn = false;
-            debugger;
+            
             this.applicationService.getApplicationsList(this.CurrentUser.appUserId, false).subscribe((data: any) => {
-              debugger;
+              
 
               if (data.responseCode == 1) {
 
-                debugger;
+                
                 for (let i = 0; i < data.dateSet.length; i++) {
                   const tempApplicationList = {} as ApplicationsList;
                   const tempApplicationListShared = {} as ApplicationList;
                   const current = data.dateSet[i];
-                  debugger;
+                  
 
 
 
@@ -1399,6 +1395,15 @@ export class HomeComponent implements OnInit, OnDestroy {
                   tempApplicationList.EMBActionDate = current.embActionDate;
                   //#endregion
 
+
+                  //Project size Kyle 27-02-24
+                  debugger;
+                  if (current.networkLicenses == true) {
+                    tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+                  }
+                  else {
+                    tempApplicationListShared.NetworkLicensees = "Not working";
+                  }
                   this.applicationDataForView.push(tempApplicationListShared);
                   console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
                   this.Applications.push(tempApplicationList);
@@ -1727,9 +1732,14 @@ this.Applications.push(tempApplicationList);
             } else {
               tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
             }
-
+            debugger;
             tempApplicationListShared.isPlanning = current.isPlanning;
-
+            if (current.networkLicenses == true) {
+              tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+            }
+            else {
+              tempApplicationListShared.NetworkLicensees = " ";
+            }
 
             //#region escalation Sindiswa 31 January 2024
             tempApplicationList.isEscalated = current.isEscalated;
@@ -1835,7 +1845,7 @@ this.Applications.push(tempApplicationList);
 
 
   viewProject(index: any) {
-    debugger;
+    
     this.sharedService.getShowFormerApps(); //reapply Sindiswa 26 January 2024
     console.log("FIND", this.applicationDataForView[index]);
     if (this.newList.length > 0) {
@@ -1844,11 +1854,11 @@ this.Applications.push(tempApplicationList);
         // Assuming this.applicationDataForView and newList are your arrays
 
         const desiredApplicationID = this.newList[index].ApplicationID; // Replace [0] with the specific index you want to match
-        debugger;
+        
         const foundRow = this.applicationDataForView.find(item => item.applicationID === desiredApplicationID);
 
         if (foundRow) {
-          debugger;
+          
           this.applicationDataForViewToShared.push(foundRow);
           break;
           // Do something with the found row
@@ -1865,7 +1875,7 @@ this.Applications.push(tempApplicationList);
 
       this.applicationDataForViewToShared.push(this.applicationDataForView[index]);
     }
-    debugger;
+    
 
     console.log("this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]", this.applicationDataForView[index]);
     this.sharedService.setViewApplicationIndex(this.applicationDataForViewToShared);
@@ -1910,7 +1920,7 @@ this.Applications.push(tempApplicationList);
     console.log("THIS IS THE APPLICATION TYPE", applicationType);
     this.sharedService.setReapply(applicationType);
 
-
+    debugger;
     if (this.option == "client" || this.option == 'proxy') {
 
       this.NewWayleaveComponent.onWayleaveCreate(this.userID, isPlanning, false);
@@ -2133,7 +2143,7 @@ this.Applications.push(tempApplicationList);
   async CheckIfCanReapply(element: any, index: any) {
 
 
-    debugger;
+    
 
 
     this.relatedApplications.splice(0, this.relatedApplications.length);
@@ -2599,7 +2609,7 @@ this.Applications.push(tempApplicationList);
 
 
     // #region escalation Sindiswa 29 January 2024
-    debugger;
+    
     if (this.CurrentUserProfile[0].directorate == 'EMB' || this.CurrentUserProfile[0].departmentName == 'EMB' || this.CurrentUserProfile[0].subDepartmentName == 'EMB'
       || this.CurrentUserProfile[0].departmentID == 28 || this.CurrentUserProfile[0].subDepartmentID == 1021) {
       this.applicationService.getApplicationsForEMB(this.CurrentUser.appUserId).subscribe((data: any) => {
@@ -2611,7 +2621,7 @@ this.Applications.push(tempApplicationList);
             const tempApplicationList = {} as ApplicationsList;
             const tempApplicationListShared = {} as ApplicationList;
             const current = data.dateSet[i];
-            debugger;
+            
 
 
 
@@ -3086,7 +3096,7 @@ this.Applications.push(tempApplicationList);
               const tempApplicationList = {} as ApplicationsList;
               const tempApplicationListShared = {} as ApplicationList;
               const current = data.dateSet[i];
-              debugger;
+              
              //JJS-15-02-2024 Fixing the delete drafts (wasn't deleting)-->
               const isDuplicate = this.Applications.some(app => app.ApplicationID === current.applicationID);
 
@@ -3359,7 +3369,12 @@ this.Applications.push(tempApplicationList);
           tempApplicationList.EMBActionDate = current.embActionDate;
           //#endregion
 
-
+          if (current.networkLicenses == true) {
+            tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+          }
+          else {
+            tempApplicationListShared.NetworkLicensees = " ";
+          }
           this.applicationDataForView.push(tempApplicationListShared);
           console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
           this.Applications.push(tempApplicationList);
@@ -3521,7 +3536,12 @@ this.Applications.push(tempApplicationList);
           tempApplicationList.EscalationDate = current.escalationDate;
           tempApplicationList.EMBActionDate = current.embActionDate;
           //#endregion
-
+          if (current.networkLicenses == true) {
+            tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+          }
+          else {
+            tempApplicationListShared.NetworkLicensees = " ";
+          }
 
           this.applicationDataForView.push(tempApplicationListShared);
           console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -3688,7 +3708,12 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.EscalationDate = current.escalationDate;
             tempApplicationList.EMBActionDate = current.embActionDate;
             //#endregion
-
+            if (current.networkLicenses == true) {
+              tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+            }
+            else {
+              tempApplicationListShared.NetworkLicensees = " ";
+            }
 
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -3826,7 +3851,12 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.EMBActionDate = current.embActionDate;
             //#endregion
 
-
+            if (current.networkLicenses == true) {
+              tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+            }
+            else {
+              tempApplicationListShared.NetworkLicensees = " ";
+            }
 
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -3983,7 +4013,12 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.EscalationDate = current.escalationDate;
             tempApplicationList.EMBActionDate = current.embActionDate;
             //#endregion
-
+            if (current.networkLicenses == true) {
+              tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+            }
+            else {
+              tempApplicationListShared.NetworkLicensees = " ";
+            }
 
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -4138,7 +4173,12 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.EMBActionDate = current.embActionDate;
             //#endregion
 
-
+            if (current.networkLicenses == true) {
+              tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+            }
+            else {
+              tempApplicationListShared.NetworkLicensees = " ";
+            }
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
             this.Applications.push(tempApplicationList);
@@ -4296,7 +4336,12 @@ this.Applications.push(tempApplicationList);
               tempApplicationList.EscalationDate = current.escalationDate;
               tempApplicationList.EMBActionDate = current.embActionDate;
               //#endregion
-
+              if (current.networkLicenses == true) {
+                tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+              }
+              else {
+                tempApplicationListShared.NetworkLicensees = " ";
+              }
 
               this.applicationDataForView.push(tempApplicationListShared);
               console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -4430,7 +4475,12 @@ this.Applications.push(tempApplicationList);
               tempApplicationList.EscalationDate = current.escalationDate;
               tempApplicationList.EMBActionDate = current.embActionDate;
               //#endregion
-
+              if (current.networkLicenses == true) {
+                tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+              }
+              else {
+                tempApplicationListShared.NetworkLicensees = " ";
+              }
               this.applicationDataForView.push(tempApplicationListShared);
               console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
 
@@ -5865,7 +5915,7 @@ this.Applications.push(tempApplicationList);
 
 
   filterForCurrentReviews() {
-    debugger;
+    
     this.applicationDataForView = [];
     this.Applications = [];
     this.applicationsForUsersZoneList.splice(0, this.applicationsForUsersZoneList.length);
@@ -5971,7 +6021,12 @@ this.Applications.push(tempApplicationList);
           tempApplicationList.EscalationDate = current.escalationDate;
           tempApplicationList.EMBActionDate = current.embActionDate;
           //#endregion
-
+          if (current.networkLicenses == true) {
+            tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+          }
+          else {
+            tempApplicationListShared.NetworkLicensees = " ";
+          }
           this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(current.applicationID, this.CurrentUserProfile.subDepartmentID)
             .subscribe((data: any) => {
               if (data.responseCode == 1) {
@@ -6074,7 +6129,7 @@ this.Applications.push(tempApplicationList);
   projNum: string;
   // #region escalation Sindiswa 29 January 2024
   escalateApplication(element: any) {
-    debugger;
+    
 
     this.appID = element.ApplicationID;
     this.projNum = element.ProjectNumber;
@@ -6084,7 +6139,7 @@ this.Applications.push(tempApplicationList);
       this.applicationService.escalateApplication(element.ApplicationID).subscribe(async (data: any) => {
 
         if (data.responseCode == 1) {
-          debugger;
+          
           console.log(`An application with the following project number ${element.ProjectNumber} has been escalated.`);
 
           //Hebana, do they want an email AND a notification
@@ -6109,7 +6164,7 @@ this.Applications.push(tempApplicationList);
     }
   }
   async getUniqueEmbUsers(): Promise<any> {
-    debugger;
+    
     try {
       const embUserData: any = await this.userPofileService.getUsersBySubDepartmentName("EMB").toPromise();
       //const embUserData: any = await this.accessGroupsService.getUserBasedOnRoleName("EMB", 1021).toPromise();
@@ -6143,7 +6198,7 @@ this.Applications.push(tempApplicationList);
     }
   }
   sendEmailToEmb(embUsers: any[]): void {
-    debugger;
+    
     try {
       for (const obj of embUsers) {
         const emailContent2 = `
@@ -6193,7 +6248,7 @@ this.Applications.push(tempApplicationList);
         }
         
         // Add update notification
-        debugger;
+        
         this.notificationsService.addUpdateNotification(
           0,
           "Application Needs Immediate Attention",
