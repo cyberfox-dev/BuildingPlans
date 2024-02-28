@@ -2261,8 +2261,10 @@ export class NewWayleaveComponent implements OnInit {
           
 
        
-            this.addToZoneForComment();
-            this.getCurrentInvoiceNumberForGen(this.externalName + ' ' + this.externalSurname);
+          this.addToZoneForComment();
+          //#region zxNum-and-contractorAccount Sindiswa 28 February 2024 - follow this method because invoice should no longer be generated at this stage
+          this.getCurrentInvoiceNumberForGen(this.externalName + ' ' + this.externalSurname);
+          //#endregion
           
           //this.onCreateNotification();
           this.notificationsService.addUpdateNotification(0, "Application Submission", "New wayleave application submission", false, this.CurrentUser.appUserId, this.applicationID, this.CurrentUser.appUserId, `Your application for a Wayleave from The City of Cape Town has been assigned Ticket number ${this.applicationID}. Kindly upload proof of payment of the required non - refundable application fee by <strong>21 days from application date</strong>. Failure to make this payment will result in cancellation of the ticket.`).subscribe((data: any) => {
@@ -2325,6 +2327,14 @@ export class NewWayleaveComponent implements OnInit {
           }
 
           this.sendEmailToDepartment("EMB"); //checkingNotifications Sindiswa 15 February 2024
+          //#region zxNum-and-contractorAccount Sindiswa 28 February 2024
+          this.sendEmailToZXDepartment("Roads & Infrastructure Management");
+          this.sendEmailToZXDepartment("Water & Waste");
+          //#endregion
+          
+
+          //
+         
           this.router.navigate(["/home"]);
           this.openSnackBar("Application Created");
         }
@@ -3285,7 +3295,7 @@ export class NewWayleaveComponent implements OnInit {
     //alert(this.accountNumber.toString() + cdv.toString());
     this.generatedInvoiceNumber = this.accountNumber.toString() + cdv.toString();
 
-    this.generateInvoice(ClientName);
+    //this.generateInvoice(ClientName); //zxNum-and-contractorAccount Sindiswa 28 February 2024 - commented out because invoice not created at this stage
 
 
   }
@@ -4919,6 +4929,55 @@ export class NewWayleaveComponent implements OnInit {
       console.log("Error", error);
     });
   }
+
+  //#region zxNum-and-contractorAccount Sindiswa 28 February 2024
+  public sendEmailToZXDepartment(subDepartmentName: string) {
+
+
+    this.userPofileService.getUsersBySubDepartmentName(subDepartmentName).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        //data.forEach((obj) => { // checkingNotifications Sindiswa 15 February 2024 - removed this, it wasn't tapping into the user's information
+        data.dateSet.forEach((obj) => {
+          this.notificationsService.sendEmail(obj.email, "New wayleave application submission needs ZX number", "check html", "Dear " + subDepartmentName + "User" + "<br><br>An application with ID " + this.applicationID + " for wayleave has just been captured. Log in and enter the ZX number for said application.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+          if (obj.alternativeEmail) {
+            this.notificationsService.sendEmail(obj.alternativeEmail, "New wayleave application submission needs ZX number", "check html", "Dear " + subDepartmentName + "User" + "<br><br>An application with ID " + this.applicationID + " for wayleave has just been captured. Log in and enter the ZX number for said application.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+
+          }
+          //this.notificationsService.addUpdateNotification(0, "Wayleave Created", "New wayleave application submission", false, this.CurrentUser.appUserId, this.applicationID, obj.userID,  "An application with ID " + this.applicationID + " for wayleave has just been captured.").subscribe((data: any) => {
+          this.notificationsService.addUpdateNotification(0, "Wayleave Created", "New wayleave application submission needs ZX number", false, obj.userID, this.applicationID, this.CurrentUser.appUserId, "An application with ID " + this.applicationID + " for wayleave has just been captured. Log in and fill in the ZX number.").subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+              console.log(data.responseMessage);
+
+            }
+            else {
+              alert(data.responseMessage);
+            }
+
+            console.log("response", data);
+          }, error => {
+            console.log("Error", error);
+          })
+
+        })
+
+
+
+        alert(data.responseMessage);
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+      console.log("response", data);
+    }, error => {
+      console.log("Error", error);
+    });
+  }
+  //#endregion
 
   projectSizeAlert = false;
   ProjectSizeMessage = "";

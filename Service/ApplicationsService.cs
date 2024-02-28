@@ -1156,6 +1156,47 @@ namespace WayleaveManagementSystem.Service
                 return true;
             }
         }
+        #region zxNum-and-contractorAccount Sindiswa 28 February 2024
+        public async Task<Applications> AddUpdateZXNumbers(int? ApplicationID, string? WaterZXNumber, string? RIMZXNumber)
+        {
+            if (ApplicationID == 0)
+            {
+                ApplicationID = null;
+            }
 
+
+            //this checks is the record exists in the db
+            var tempApplicationTable = _context.Application.FirstOrDefault(x => x.ApplicationID == ApplicationID);
+
+
+            if (WaterZXNumber != null)
+            {
+                tempApplicationTable.WaterZXNumber = WaterZXNumber;
+            }
+            if (RIMZXNumber != null)
+            {
+                tempApplicationTable.RIMZXNumber = RIMZXNumber;
+            }
+
+            _context.Update(tempApplicationTable);
+            await _context.SaveChangesAsync();
+            return tempApplicationTable;
+            
+        }
+        public async Task<List<ApplicationsDTO>> GetZXDetails(int applicationID)
+        {
+            return await (
+              from Applications in _context.Application
+              where Applications.ApplicationID == applicationID && Applications.isActive == true 
+              select new ApplicationsDTO()
+    
+                    {
+                      WaterZXNumber = Applications.WaterZXNumber, 
+                      RIMZXNumber = Applications.RIMZXNumber,
+                    }
+           ).ToListAsync();
+        }
+
+        #endregion
     }
 }

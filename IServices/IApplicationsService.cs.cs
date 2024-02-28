@@ -40,5 +40,8 @@ namespace WayleaveManagementSystem.IServices
         public Task<bool> EscalateApplication(int? applicationID);
         public Task<bool> CancelEscalation(int? applicationID);
 
+        Task<Applications> AddUpdateZXNumbers(int? ApplicationID, string? WaterZXNumber, string? RIMZXNumber); //zxNum-and-contractorAccount Sindiswa 28 February 2024
+        Task<List<ApplicationsDTO>> GetZXDetails(int applicationID);//zxNum-and-contractorAccount Sindiswa 28 February 2024
+
     }
 }
