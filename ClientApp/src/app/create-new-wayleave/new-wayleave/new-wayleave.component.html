@@ -808,7 +808,7 @@
 
 
       </mat-expansion-panel>
-      <mat-checkbox  (change)="onFibreNetworkLicense($event)" >I hereby confirm that all Fibre Network Licensees have been contacted regarding trench sharing and existing services</mat-checkbox>
+      <mat-checkbox  (change)="onFibreNetworkLicense($event)" [checked]="fibreNetworkLicenses">I hereby confirm that all Fibre Network Licensees have been contacted regarding trench sharing and existing services</mat-checkbox>
     </mat-accordion>
   </div>
   <!--<div class="modal-body">

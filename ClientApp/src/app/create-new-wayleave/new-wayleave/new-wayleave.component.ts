@@ -5114,16 +5114,16 @@ export class NewWayleaveComponent implements OnInit {
       console.log("this.totalDocs;this.totalDocs", this.totalDocs);
 
          //Project size Kyle 27-02-24
-      if (LUMCount > 0 && (smallCount == 0 && mediumCount == 0 && largeCount == 0)) {
-        alert("You have made asn LUM selection only ,you are required to make another selection along with it in order to proceed");
-
-      }
-      else {
-        this.modalService.dismissAll();
-      }
+     
 
     }
+    if (LUMCount > 0 && (smallCount == 0 && mediumCount == 0 && largeCount == 0)) {
+      alert("You have made asn LUM selection only ,you are required to make another selection along with it in order to proceed");
 
+    }
+    else {
+      this.modalService.dismissAll();
+    }
   }
 
 
