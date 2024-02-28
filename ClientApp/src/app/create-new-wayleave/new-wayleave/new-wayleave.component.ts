@@ -5308,7 +5308,7 @@ export class NewWayleaveComponent implements OnInit {
       );
     }
     //Project size Kyle 27-02-24
-    this.applicationsService.addUpdateApplication(this.applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, true).subscribe((data: any) => {
+    this.applicationsService.addUpdateApplication(this.applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.fibreNetworkLicenses).subscribe((data: any) => {
       if (data.responseCode == 1) {
 
       } else {
