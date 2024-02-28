@@ -397,8 +397,6 @@ export class NewWayleaveComponent implements OnInit {
   selectionLarge = new SelectionModel<MandatoryDocumentsLinkedStagesList>(true, []);
   selectionEmergency = new SelectionModel<MandatoryDocumentsLinkedStagesList>(true, []);
 
-
-
   SubDepartmentList: SubDepartmentList[] = [];
 
   professionalList: any[];
@@ -523,6 +521,7 @@ export class NewWayleaveComponent implements OnInit {
   isDraft: boolean = false;
   draftExcavationType: string = "";
   projectNum: string;
+  fibreNetworkLicenses: boolean = false;
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -4870,6 +4869,7 @@ export class NewWayleaveComponent implements OnInit {
 
     const newList = list.map(current => {
       const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
+      if (current.mandatoryDocumentName != "Construction Program or Phasing Program" && current.mandatoryDocumentName != "Traffic Management Plan" && current.mandatoryDocumentName != "Drill plan")   //Project size Kyle 27-02-24
       tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
       tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
       tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
@@ -5010,7 +5010,6 @@ export class NewWayleaveComponent implements OnInit {
     let smallCount = 0;
     let mediumCount = 0;
     let largeCount = 0;
-    let emergencyCount = 0;
     let LUMCount = 0;
 
     for (var i = 0; i < this.ProjectSizeCheckList.length; i++) {
@@ -5028,9 +5027,7 @@ export class NewWayleaveComponent implements OnInit {
         else if (current.MandatoryDocumentCategory == "LUM") {
           LUMCount++;
         }
-        else {
-          emergencyCount++;
-        }
+       
       }
 
     }
@@ -5057,7 +5054,7 @@ export class NewWayleaveComponent implements OnInit {
         this.ProjectSizeMessage = "Small";
         this.PSM = "Small Application";
       }
-    } else if (mediumCount > 0 || largeCount > 0 || emergencyCount > 0) {
+    } else if (mediumCount > 0 || largeCount > 0 ) {
       if (largeCount > 0) {
 
         this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
@@ -5082,37 +5079,6 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
-    if (emergencyCount > 0) {
-      let tempList = []; // Temporary list to collect all new entries
-
-      const newList = this.MandatoryDocumentUploadListEmergency.map(current => {
-
-        const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
-        tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
-        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
-        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
-        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
-        tempMandatoryDocumentsLinkedStagesList.stageName = null;
-        tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
-        return tempMandatoryDocumentsLinkedStagesList;
-      });
-
-      tempList = tempList.concat(newList);
-
-      // Assuming MandatoryDocumentsLinkedStagesList is an observable, extract its current value
-      const currentList = this.MandatoryDocumentsLinkedStagesList.getValue();
-
-      // Concatenate currentList and tempList
-      const updatedList = currentList.concat(tempList);
-
-      this.MandatoryDocumentsLinkedStagesList.next(updatedList);
-      this.projectSizeAlert = true;
-      this.ProjectSizeMessage = "Emergency";
-      this.PSM = "Emergency Application";
-      this.totalDocs = updatedList.length;
-      this.totalDocs2 = Number(this.totalDocs).toString();
-      console.log("this.totalDocs;this.totalDocs", this.totalDocs);
-    }
 
 
     if (LUMCount > 0) {
@@ -5132,6 +5098,10 @@ export class NewWayleaveComponent implements OnInit {
 
       tempList = tempList.concat(newList);
 
+
+
+
+
       // Assuming MandatoryDocumentsLinkedStagesList is an observable, extract its current value
       const currentList = this.MandatoryDocumentsLinkedStagesList.getValue();
 
@@ -5142,8 +5112,17 @@ export class NewWayleaveComponent implements OnInit {
       this.totalDocs = updatedList.length;
       this.totalDocs2 = Number(this.totalDocs).toString();
       console.log("this.totalDocs;this.totalDocs", this.totalDocs);
-    }
 
+         //Project size Kyle 27-02-24
+      if (LUMCount > 0 && (smallCount == 0 && mediumCount == 0 && largeCount == 0)) {
+        alert("You have made asn LUM selection only ,you are required to make another selection along with it in order to proceed");
+
+      }
+      else {
+        this.modalService.dismissAll();
+      }
+
+    }
 
   }
 
@@ -5310,7 +5289,7 @@ export class NewWayleaveComponent implements OnInit {
 
       this.ProjectSizeSelectionList.push(tempSelectionList);
     }
-
+    
   }
   SavedProjectSizeSelections() {
 
@@ -5328,8 +5307,17 @@ export class NewWayleaveComponent implements OnInit {
         }
       );
     }
+    //Project size Kyle 27-02-24
+    this.applicationsService.addUpdateApplication(this.applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, true).subscribe((data: any) => {
+      if (data.responseCode == 1) {
 
+      } else {
+        alert(data.response);
+      }
+    }, error => {
+      console.log("Error", error);
 
+    })
   }
   DraftOption() {
     this.isDraft = true;
@@ -5743,6 +5731,17 @@ export class NewWayleaveComponent implements OnInit {
   updateCharacterCount() {
     return this.text.length;
   }
-
-
+     //Project size Kyle 27-02-24
+  onFibreNetworkLicense(event: any) {
+    debugger;
+    if (this.fibreNetworkLicenses == false) {
+      debugger;
+      this.fibreNetworkLicenses = true;
+    }
+    else {
+      debugger;
+      this.fibreNetworkLicenses = false;
+    }
+    
+  }
 }

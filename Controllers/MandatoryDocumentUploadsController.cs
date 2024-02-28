@@ -151,7 +151,29 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpPost("GetAllMandatoryDocumentsLinkedToStage")]
+        public async Task<object>GetAllMandatoryDocumentsLinkedToStage([FromBody] MandatoryDocumentStageLinkBindingModel model)
+        {
+            try
+            {
+                if(model.StageName == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _mandatoryDocumentUploadsService.GetAllMandatoryDocumentsLinkedToStage(model.StageName);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Comments List Created", result));
+                }
+            }
+            catch (Exception ex)
+            {
 
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
     }
 
 }

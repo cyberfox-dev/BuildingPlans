@@ -102,6 +102,7 @@ export class FileUploadComponent implements OnInit {
   }
 
   uploadFile(files: any) {
+   
     if (this.ApplicationID == "isRep") {
       
       if (files && files.length === 0) {
@@ -178,8 +179,7 @@ export class FileUploadComponent implements OnInit {
 
       serviceCall().subscribe(handleResponse, handleError);
     } else {
-      
-      if (files && files.length === 0) {
+       if (files && files.length === 0) {
         return;
       }
 

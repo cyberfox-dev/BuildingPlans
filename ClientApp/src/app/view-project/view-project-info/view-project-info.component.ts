@@ -32,6 +32,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeHtml, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 import { ApprovalPackComponent } from 'src/app/Packs//ApprovalPackComponent/approval-pack.component';
 import { StatusOfWorksComponent } from 'src/app/status-of-works/status-of-works.component';
+import { MandatoryDocumentUploadService } from 'src/app/service/MandatoryDocumentUpload/mandatory-document-upload.service';
 
 /*import { PdfGenerationService } from 'src/app/service/PDFGeneration/pdf-generation.service';*/
 
@@ -167,7 +168,7 @@ export interface CommentsList {
   CommentStatus: string;
   SubDepartmentForCommentID: number;
   SubDepartmentName?: string;
-  isClarifyCommentID?: number; 
+  isClarifyCommentID?: number;
   isApplicantReplay?: string; 
   UserName: string;
    //Comments Kyle 01/02/24
@@ -273,6 +274,15 @@ export interface AllSubDepartmentList {
   commentStatus: string | null;
   GLCode: string | null;
   ProfitCenter: string | null;
+}
+   //Project size Kyle 27-02-24
+export interface MandatoryDocumentUploadList {
+  mandatoryDocumentID: number;
+  mandatoryDocumentName: string;
+  stageID: number;
+  dateCreated: any;
+  mandatoryDocumentCategory: string;
+  hasFile: boolean;
 }
 
 var img = new Image();
@@ -388,7 +398,8 @@ export class ViewProjectInfoComponent implements OnInit {
   ServiceItemList: ServiceItemList[] = [];
   AllSubDepartmentList: AllSubDepartmentList[] = [];
   SubDepartmentListFORAPPROVAL: SubDepartmentListFORAPPROVAL[] = [];
-  
+  MandatoryDocumentUploadList: MandatoryDocumentUploadList[] = [];
+
   @ViewChild('pdfTable', { static: false }) pdfTable: ElementRef;
 
   ApplicationID: number | undefined;
@@ -458,7 +469,7 @@ export class ViewProjectInfoComponent implements OnInit {
   PacksTab: boolean = false;
   public InternalExternalUser: boolean=false;
     isExternalApplicant: boolean;
-;
+  SuccessfulUploads: number = 0;
  //Audit Trail Kyle
   stringifiedDataRoles: any;
   AllCurrentUserRoles: any;
@@ -569,6 +580,7 @@ export class ViewProjectInfoComponent implements OnInit {
     //Audit Trail Kyle
     private auditTrailService: AuditTrailService,
     private statusOfWorksComponent: StatusOfWorksComponent,
+    private mandatroyDocumentUploadService: MandatoryDocumentUploadService,
     //Audit Trail Kyle
   ) { }
 
@@ -1239,6 +1251,14 @@ export class ViewProjectInfoComponent implements OnInit {
     this.fileCount = this.fileCount - 1;
 
   }
+
+  onFileDelete2(event: any, index: number) {
+    this.MandatoryDocumentUploadList[index].hasFile = false
+    this.fileAttrsName = "Doc";
+
+    //this.getAllDocsForApplication();
+    this.fileCount = this.fileCount - 1;
+  }
   changeHasFile() {
     if (this.hasFile) {
       this.hasFile = false;
@@ -1247,10 +1267,13 @@ export class ViewProjectInfoComponent implements OnInit {
     }
   }
   onFileUpload(event: any) {
+   
 
-
+    
   }
-  
+  onFileUpload2(event: any, index: any) {
+    this.MandatoryDocumentUploadList[index].hasFile = true;
+  }
 
   onAutoLinkForPermit() {
 
@@ -4699,9 +4722,64 @@ export class ViewProjectInfoComponent implements OnInit {
     }
     else {
       this.showUpload = true;
+      
     }
   }
   /*Progess bar Kyle 07-02-24*/
+     //Project size Kyle 27-02-24
+  getAllManDocForPTWStage(permitModal:any) {
+    if (this.applicationDataForView[0].permitStartDate == null && this.applicationDataForView[0].CurrentStageName == "PTW") {
+      this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);
+      this.mandatroyDocumentUploadService.getAllMandatoryDocumentsLinkedToStage(this.applicationDataForView[0].CurrentStageName).subscribe((data: any) => {
+        debugger;
+        if (data.responseCode == 1) {
+          for (let i = 0; i < data.dateSet.length; i++) {
 
+            const tempMandatoryDocList = {} as MandatoryDocumentUploadList;
+            const current = data.dateSet[i];
+            const applicationSize = this.applicationDataForView[0].TypeOfApplication;
 
+            if (applicationSize == "Large") {
+              tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
+              tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
+              tempMandatoryDocList.stageID = current.stageID;
+              tempMandatoryDocList.dateCreated = current.dateCreated;
+              tempMandatoryDocList.hasFile = false;
+              this.MandatoryDocumentUploadList.push(tempMandatoryDocList);
+            }
+
+            else if (applicationSize != "Large" && current.mandatoryDocumentName != "Construction Program or Phasing Program") {
+              tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
+              tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
+              tempMandatoryDocList.stageID = current.stageID;
+              tempMandatoryDocList.dateCreated = current.dateCreated;
+              tempMandatoryDocList.hasFile = false;
+              this.MandatoryDocumentUploadList.push(tempMandatoryDocList);
+            }
+            
+          }
+          this.sharedService.setApplicationID(this.ApplicationID);
+          this.openPermitModal(permitModal);
+          
+        }
+        
+        else {
+          alert(data.responseMessage);
+        }
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+
+  }
+
+  ClosePermitStartDateModal() {
+    debugger;
+    if (this.fileCount == 0) {
+      this.modalService.dismissAll();
+    }
+    else {
+      alert("Please delete documents uploaded if you wish to close without saving");
+    }
+  }
 }

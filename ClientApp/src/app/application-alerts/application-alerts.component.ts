@@ -50,6 +50,7 @@ export interface ApplicationList {
   //Coordinates: string
   UserID: any;
   clientAlternativeEmail: string; //checkingNotifications Sindiswa 15 February 2024
+  NetworkLicensees: string;
 }
 
 @Component({
@@ -193,7 +194,9 @@ export class ApplicationAlertsComponent implements OnInit {
           } else {
             tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
           }
-
+          if (current.networkLicenses == true) {
+            tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+          }
           tempApplicationListShared.isPlanning = current.isPlanning;
           tempApplicationListShared.permitStartDate = current.permitStartDate;
 
@@ -209,6 +212,7 @@ export class ApplicationAlertsComponent implements OnInit {
         console.log("application", application);
         this.modalService.dismissAll();
         this.router.navigate(["/view-project-info"]);
+
       }
       else {
         alert(data.responseMessage);

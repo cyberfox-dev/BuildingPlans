@@ -124,6 +124,7 @@ export interface ApplicationList {
   //Coordinates: string
   UserID: any;
   clientAlternativeEmail: string; // chekingNotifications Sindiswa 13 February 2024
+  NetworkLicensees:string;
 }
 
 
@@ -1394,6 +1395,15 @@ export class HomeComponent implements OnInit, OnDestroy {
                   tempApplicationList.EMBActionDate = current.embActionDate;
                   //#endregion
 
+
+                  //Project size Kyle 27-02-24
+                  debugger;
+                  if (current.networkLicenses == true) {
+                    tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+                  }
+                  else {
+                    tempApplicationListShared.NetworkLicensees = "Not working";
+                  }
                   this.applicationDataForView.push(tempApplicationListShared);
                   console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
                   this.Applications.push(tempApplicationList);
@@ -1722,9 +1732,14 @@ this.Applications.push(tempApplicationList);
             } else {
               tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
             }
-
+            debugger;
             tempApplicationListShared.isPlanning = current.isPlanning;
-
+            if (current.networkLicenses == true) {
+              tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+            }
+            else {
+              tempApplicationListShared.NetworkLicensees = " ";
+            }
 
             //#region escalation Sindiswa 31 January 2024
             tempApplicationList.isEscalated = current.isEscalated;
@@ -3354,7 +3369,12 @@ this.Applications.push(tempApplicationList);
           tempApplicationList.EMBActionDate = current.embActionDate;
           //#endregion
 
-
+          if (current.networkLicenses == true) {
+            tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+          }
+          else {
+            tempApplicationListShared.NetworkLicensees = " ";
+          }
           this.applicationDataForView.push(tempApplicationListShared);
           console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
           this.Applications.push(tempApplicationList);
@@ -3516,7 +3536,12 @@ this.Applications.push(tempApplicationList);
           tempApplicationList.EscalationDate = current.escalationDate;
           tempApplicationList.EMBActionDate = current.embActionDate;
           //#endregion
-
+          if (current.networkLicenses == true) {
+            tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+          }
+          else {
+            tempApplicationListShared.NetworkLicensees = " ";
+          }
 
           this.applicationDataForView.push(tempApplicationListShared);
           console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -3683,7 +3708,12 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.EscalationDate = current.escalationDate;
             tempApplicationList.EMBActionDate = current.embActionDate;
             //#endregion
-
+            if (current.networkLicenses == true) {
+              tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+            }
+            else {
+              tempApplicationListShared.NetworkLicensees = " ";
+            }
 
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -3821,7 +3851,12 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.EMBActionDate = current.embActionDate;
             //#endregion
 
-
+            if (current.networkLicenses == true) {
+              tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+            }
+            else {
+              tempApplicationListShared.NetworkLicensees = " ";
+            }
 
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -3978,7 +4013,12 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.EscalationDate = current.escalationDate;
             tempApplicationList.EMBActionDate = current.embActionDate;
             //#endregion
-
+            if (current.networkLicenses == true) {
+              tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+            }
+            else {
+              tempApplicationListShared.NetworkLicensees = " ";
+            }
 
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -4133,7 +4173,12 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.EMBActionDate = current.embActionDate;
             //#endregion
 
-
+            if (current.networkLicenses == true) {
+              tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+            }
+            else {
+              tempApplicationListShared.NetworkLicensees = " ";
+            }
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
             this.Applications.push(tempApplicationList);
@@ -4291,7 +4336,12 @@ this.Applications.push(tempApplicationList);
               tempApplicationList.EscalationDate = current.escalationDate;
               tempApplicationList.EMBActionDate = current.embActionDate;
               //#endregion
-
+              if (current.networkLicenses == true) {
+                tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+              }
+              else {
+                tempApplicationListShared.NetworkLicensees = " ";
+              }
 
               this.applicationDataForView.push(tempApplicationListShared);
               console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -4425,7 +4475,12 @@ this.Applications.push(tempApplicationList);
               tempApplicationList.EscalationDate = current.escalationDate;
               tempApplicationList.EMBActionDate = current.embActionDate;
               //#endregion
-
+              if (current.networkLicenses == true) {
+                tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+              }
+              else {
+                tempApplicationListShared.NetworkLicensees = " ";
+              }
               this.applicationDataForView.push(tempApplicationListShared);
               console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
 
@@ -5966,7 +6021,12 @@ this.Applications.push(tempApplicationList);
           tempApplicationList.EscalationDate = current.escalationDate;
           tempApplicationList.EMBActionDate = current.embActionDate;
           //#endregion
-
+          if (current.networkLicenses == true) {
+            tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+          }
+          else {
+            tempApplicationListShared.NetworkLicensees = " ";
+          }
           this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(current.applicationID, this.CurrentUserProfile.subDepartmentID)
             .subscribe((data: any) => {
               if (data.responseCode == 1) {

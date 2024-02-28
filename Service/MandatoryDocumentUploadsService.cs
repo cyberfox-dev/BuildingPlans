@@ -167,5 +167,32 @@ namespace WayleaveManagementSystem.Service
                  ).ToListAsync();
         }
 
+        public async Task<List<MandatoryDocumentUploadDTO>>GetAllMandatoryDocumentsLinkedToStage(string? stageName)
+        {
+            var doc = await (
+                from document in _context.MandatoryDocumentStageLink
+                where document.StageName == stageName && document.isActive == true
+                select document.MandatoryDocumentID).ToListAsync();
+
+            var result = await (
+                from manDoc in _context.MandatoryDocumentUploads
+                where manDoc.isActive == true && doc.Contains(manDoc.MandatoryDocumentID)
+                select new MandatoryDocumentUploadDTO()
+                {
+                    MandatoryDocumentID = manDoc.MandatoryDocumentID,
+                    MandatoryDocumentName = manDoc.MandatoryDocumentName,
+                    /*DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,*/
+
+                    DateCreated = manDoc.DateCreated,
+                    DateUpdated = manDoc.DateUpdated,
+                    MandatoryDocumentCategory = manDoc.MandatoryDocumentCategory,
+                    CreatedById = manDoc.CreatedById,
+                    isActive = true
+                }).ToListAsync();
+
+            return result;
+        }
+                
     }
 }

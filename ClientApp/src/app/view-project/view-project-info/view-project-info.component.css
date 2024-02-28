@@ -857,8 +857,14 @@ a {
   margin-top: -77px;
 }
 
+.mat-blue2 {
+  background-color: #ccdee2;
+  color: #005870;
+
+}
+
 button {
-/*  margin: 10px;*/
+  /*  margin: 10px;*/
 }
 
 .mat-column-name {
@@ -877,7 +883,7 @@ button {
 }
 
 .mat-form-field {
-  margin: 40px 0;
+/*  margin: 40px 0;*/
   width: 100%;
 }
 
@@ -1191,3 +1197,14 @@ image-container {
     justify-content:center;
 }
 /*Progess bar Kyle 07-02-24*/
+.manDoc{
+    width:100%
+}
+.textFuckingBox {
+  display: none;
+}
+
+.viewButton{
+
+    margin : 0 ;
+}
