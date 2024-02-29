@@ -750,9 +750,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getFinancial();
     
     this.getEMBUsers();
-    this.getServiceItem("001");
-    this.getServiceItem("002");
-    this.getServiceItem("003");
+
     this.getAllSubDepartments();
     this.getLinkedDepartmentsFORAPPROVAL();
     this.CheckForApprovalPackDownload();
@@ -4944,6 +4942,18 @@ export class ViewProjectInfoComponent implements OnInit {
     //1. is this how one saves in local storage?
     localStorage.setItem('contractorAccountDetails', this.contractorAccountDetails);
     //2. create the invoice now?!
+    this.NewWayleaveComponent.getServiceItem("001");
+    this.NewWayleaveComponent.getServiceItem("002");
+    this.NewWayleaveComponent.getServiceItem("003");
+   
+    this.genInvoice();
+   
   }
+  genInvoice() {
+    this.NewWayleaveComponent.getCurrentInvoiceNumberForGen("Turtle Speed", this.ApplicationID);
+  }
+
+
+
   //#endregion
 }
