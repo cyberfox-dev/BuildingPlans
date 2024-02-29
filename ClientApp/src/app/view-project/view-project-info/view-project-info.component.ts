@@ -4851,6 +4851,7 @@ export class ViewProjectInfoComponent implements OnInit {
       if (data.responseCode == 1) {
         //this.getZXNumberDetails();
         this.getZXNumberDetailsAfterZXEntry();
+        alert("Save Successful");
       }
       else {
         alert(data.responseMessage);
@@ -4866,6 +4867,7 @@ export class ViewProjectInfoComponent implements OnInit {
       if (data.responseCode == 1) {
         //this.getZXNumberDetails();
         this.getZXNumberDetailsAfterZXEntry();
+        alert("Save Successful");
       }
       else {
         alert(data.responseMessage);
