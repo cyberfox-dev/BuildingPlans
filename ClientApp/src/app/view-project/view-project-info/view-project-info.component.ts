@@ -653,8 +653,15 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
     //#region reapply Sindiswa 26 January 2024
+    debugger;
+/*JJS Commit 29-02-24(removed full-screen mode for maps and sorted approval pack btn and former wayleave tab)*/
+    if (this.sharedService.getShowFormerApps.length > 0) {
+      this.showFormerApps = true
+    }
+    else {
+      this.showFormerApps = false;
+    }
 
-    this.showFormerApps = this.sharedService.getShowFormerApps();
     this.fromReApplyArchive = this.sharedService.getFromReApplyArchive();
     this.routerSubscription = this.sharedService.getRoutingToOldAapp();
     // #endregion
