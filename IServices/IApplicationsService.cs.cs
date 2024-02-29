@@ -10,7 +10,7 @@ namespace WayleaveManagementSystem.IServices
     {
 
         //Task<Professionals> - This is the return type so its going to ruturn it in the fromt of the professinals model
-        Task<Applications> AddUpdateApplication(int? ApplicationID, string? userID, string? fullName, string? email,/*checkingNotifications Sindiswa 15 February 2024*/ string? alternativeEmail, string? phoneNumber, string? physicalAddress, string? referenceNumber, string? companyRegNo, string? typeOfApplication, string? notificationNumber, string? wBSNumber, string? physicalAddressOfProject, string? descriptionOfProject, string? natureOfWork, string? excavationType, DateTime? expectedStartDate, DateTime? expectedEndDate, string? location, string createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus, bool? isDrafted, string? projectNumber, bool? isPlanning, DateTime? PermitStartDate, DateTime? DatePaid,bool? WBSRequired,string? Coordinates);
+        Task<Applications> AddUpdateApplication(int? ApplicationID, string? userID, string? fullName, string? email,/*checkingNotifications Sindiswa 15 February 2024*/ string? alternativeEmail, string? phoneNumber, string? physicalAddress, string? referenceNumber, string? companyRegNo, string? typeOfApplication, string? notificationNumber, string? wBSNumber, string? physicalAddressOfProject, string? descriptionOfProject, string? natureOfWork, string? excavationType, DateTime? expectedStartDate, DateTime? expectedEndDate, string? location, string createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus, bool? isDrafted, string? projectNumber, bool? isPlanning, DateTime? PermitStartDate, DateTime? DatePaid,bool? WBSRequired,string? Coordinates ,bool? NetworkLicenses);
 
         Task<bool> UpdateApplicationStage(int? ApplicationID,string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus, string? projectNumber);
 
@@ -39,6 +39,9 @@ namespace WayleaveManagementSystem.IServices
 
         public Task<bool> EscalateApplication(int? applicationID);
         public Task<bool> CancelEscalation(int? applicationID);
+
+        Task<Applications> AddUpdateZXNumbers(int? ApplicationID, string? WaterZXNumber, string? RIMZXNumber); //zxNum-and-contractorAccount Sindiswa 28 February 2024
+        Task<List<ApplicationsDTO>> GetZXDetails(int applicationID);//zxNum-and-contractorAccount Sindiswa 28 February 2024
 
     }
 }

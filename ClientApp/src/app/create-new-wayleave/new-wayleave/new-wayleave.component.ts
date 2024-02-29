@@ -397,8 +397,6 @@ export class NewWayleaveComponent implements OnInit {
   selectionLarge = new SelectionModel<MandatoryDocumentsLinkedStagesList>(true, []);
   selectionEmergency = new SelectionModel<MandatoryDocumentsLinkedStagesList>(true, []);
 
-
-
   SubDepartmentList: SubDepartmentList[] = [];
 
   professionalList: any[];
@@ -523,6 +521,8 @@ export class NewWayleaveComponent implements OnInit {
   isDraft: boolean = false;
   draftExcavationType: string = "";
   projectNum: string;
+  fibreNetworkLicenses: boolean = false;
+  validProjectSizeSelection: boolean = false;
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -2261,8 +2261,10 @@ export class NewWayleaveComponent implements OnInit {
           
 
        
-            this.addToZoneForComment();
-            this.getCurrentInvoiceNumberForGen(this.externalName + ' ' + this.externalSurname);
+          this.addToZoneForComment();
+          //#region zxNum-and-contractorAccount Sindiswa 28 February 2024 - follow this method because invoice should no longer be generated at this stage
+          this.getCurrentInvoiceNumberForGen(this.externalName + ' ' + this.externalSurname);
+          //#endregion
           
           //this.onCreateNotification();
           this.notificationsService.addUpdateNotification(0, "Application Submission", "New wayleave application submission", false, this.CurrentUser.appUserId, this.applicationID, this.CurrentUser.appUserId, `Your application for a Wayleave from The City of Cape Town has been assigned Ticket number ${this.applicationID}. Kindly upload proof of payment of the required non - refundable application fee by <strong>21 days from application date</strong>. Failure to make this payment will result in cancellation of the ticket.`).subscribe((data: any) => {
@@ -2325,6 +2327,14 @@ export class NewWayleaveComponent implements OnInit {
           }
 
           this.sendEmailToDepartment("EMB"); //checkingNotifications Sindiswa 15 February 2024
+          //#region zxNum-and-contractorAccount Sindiswa 28 February 2024
+          this.sendEmailToZXDepartment("Roads & Infrastructure Management");
+          this.sendEmailToZXDepartment("Water & Waste");
+          //#endregion
+          
+
+          //
+         
           this.router.navigate(["/home"]);
           this.openSnackBar("Application Created");
         }
@@ -2412,20 +2422,7 @@ export class NewWayleaveComponent implements OnInit {
 
     for (var i = 0; i < this.TOENAMES.length; i++) {
       let current = this.TOENAMES[i].toString();
-      if (current == "Drilling") {
-        const newList = this.MandatoryDocumentUploadListDrilling.map(current => {
-          const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
-          tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
-          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
-          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
-          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
-          tempMandatoryDocumentsLinkedStagesList.stageName = null;
-          tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
-          return tempMandatoryDocumentsLinkedStagesList;
-        });
-
-        tempList = tempList.concat(newList);
-      }
+      
     }
 
     // Assuming MandatoryDocumentsLinkedStagesList is an observable, extract its current value
@@ -3298,7 +3295,7 @@ export class NewWayleaveComponent implements OnInit {
     //alert(this.accountNumber.toString() + cdv.toString());
     this.generatedInvoiceNumber = this.accountNumber.toString() + cdv.toString();
 
-    this.generateInvoice(ClientName);
+    //this.generateInvoice(ClientName); //zxNum-and-contractorAccount Sindiswa 28 February 2024 - commented out because invoice not created at this stage
 
 
   }
@@ -4870,6 +4867,7 @@ export class NewWayleaveComponent implements OnInit {
 
     const newList = list.map(current => {
       const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
+      if (current.mandatoryDocumentName != "Construction Program or Phasing Program" && current.mandatoryDocumentName != "Traffic Management Plan" && current.mandatoryDocumentName != "Drill plan")   //Project size Kyle 27-02-24
       tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
       tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
       tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
@@ -4931,6 +4929,55 @@ export class NewWayleaveComponent implements OnInit {
       console.log("Error", error);
     });
   }
+
+  //#region zxNum-and-contractorAccount Sindiswa 28 February 2024
+  public sendEmailToZXDepartment(subDepartmentName: string) {
+
+
+    this.userPofileService.getUsersBySubDepartmentName(subDepartmentName).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        //data.forEach((obj) => { // checkingNotifications Sindiswa 15 February 2024 - removed this, it wasn't tapping into the user's information
+        data.dateSet.forEach((obj) => {
+          this.notificationsService.sendEmail(obj.email, "New wayleave application submission needs ZX number", "check html", "Dear " + subDepartmentName + "User" + "<br><br>An application with ID " + this.applicationID + " for wayleave has just been captured. Log in and enter the ZX number for said application.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+          if (obj.alternativeEmail) {
+            this.notificationsService.sendEmail(obj.alternativeEmail, "New wayleave application submission needs ZX number", "check html", "Dear " + subDepartmentName + "User" + "<br><br>An application with ID " + this.applicationID + " for wayleave has just been captured. Log in and enter the ZX number for said application.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+
+          }
+          //this.notificationsService.addUpdateNotification(0, "Wayleave Created", "New wayleave application submission", false, this.CurrentUser.appUserId, this.applicationID, obj.userID,  "An application with ID " + this.applicationID + " for wayleave has just been captured.").subscribe((data: any) => {
+          this.notificationsService.addUpdateNotification(0, "Wayleave Created", "New wayleave application submission needs ZX number", false, obj.userID, this.applicationID, this.CurrentUser.appUserId, "An application with ID " + this.applicationID + " for wayleave has just been captured. Log in and fill in the ZX number.").subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+              console.log(data.responseMessage);
+
+            }
+            else {
+              alert(data.responseMessage);
+            }
+
+            console.log("response", data);
+          }, error => {
+            console.log("Error", error);
+          })
+
+        })
+
+
+
+        alert(data.responseMessage);
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+      console.log("response", data);
+    }, error => {
+      console.log("Error", error);
+    });
+  }
+  //#endregion
 
   projectSizeAlert = false;
   ProjectSizeMessage = "";
@@ -5010,7 +5057,6 @@ export class NewWayleaveComponent implements OnInit {
     let smallCount = 0;
     let mediumCount = 0;
     let largeCount = 0;
-    let emergencyCount = 0;
     let LUMCount = 0;
 
     for (var i = 0; i < this.ProjectSizeCheckList.length; i++) {
@@ -5028,9 +5074,7 @@ export class NewWayleaveComponent implements OnInit {
         else if (current.MandatoryDocumentCategory == "LUM") {
           LUMCount++;
         }
-        else {
-          emergencyCount++;
-        }
+       
       }
 
     }
@@ -5057,7 +5101,7 @@ export class NewWayleaveComponent implements OnInit {
         this.ProjectSizeMessage = "Small";
         this.PSM = "Small Application";
       }
-    } else if (mediumCount > 0 || largeCount > 0 || emergencyCount > 0) {
+    } else if (mediumCount > 0 || largeCount > 0 ) {
       if (largeCount > 0) {
 
         this.updateMandatoryDocumentsLinkedStagesList(this.MandatoryDocumentUploadListLarge);
@@ -5082,37 +5126,6 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
-    if (emergencyCount > 0) {
-      let tempList = []; // Temporary list to collect all new entries
-
-      const newList = this.MandatoryDocumentUploadListEmergency.map(current => {
-
-        const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
-        tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
-        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
-        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
-        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
-        tempMandatoryDocumentsLinkedStagesList.stageName = null;
-        tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
-        return tempMandatoryDocumentsLinkedStagesList;
-      });
-
-      tempList = tempList.concat(newList);
-
-      // Assuming MandatoryDocumentsLinkedStagesList is an observable, extract its current value
-      const currentList = this.MandatoryDocumentsLinkedStagesList.getValue();
-
-      // Concatenate currentList and tempList
-      const updatedList = currentList.concat(tempList);
-
-      this.MandatoryDocumentsLinkedStagesList.next(updatedList);
-      this.projectSizeAlert = true;
-      this.ProjectSizeMessage = "Emergency";
-      this.PSM = "Emergency Application";
-      this.totalDocs = updatedList.length;
-      this.totalDocs2 = Number(this.totalDocs).toString();
-      console.log("this.totalDocs;this.totalDocs", this.totalDocs);
-    }
 
 
     if (LUMCount > 0) {
@@ -5132,6 +5145,10 @@ export class NewWayleaveComponent implements OnInit {
 
       tempList = tempList.concat(newList);
 
+
+
+
+
       // Assuming MandatoryDocumentsLinkedStagesList is an observable, extract its current value
       const currentList = this.MandatoryDocumentsLinkedStagesList.getValue();
 
@@ -5142,9 +5159,18 @@ export class NewWayleaveComponent implements OnInit {
       this.totalDocs = updatedList.length;
       this.totalDocs2 = Number(this.totalDocs).toString();
       console.log("this.totalDocs;this.totalDocs", this.totalDocs);
+
+         //Project size Kyle 27-02-24
+     
+
     }
-
-
+    if (LUMCount > 0 && (smallCount == 0 && mediumCount == 0 && largeCount == 0)) {
+      alert("You have made asn LUM selection only ,you are required to make another selection along with it in order to proceed");
+      this.validProjectSizeSelection = false;
+    }
+    else {
+      this.validProjectSizeSelection = true;
+    }
   }
 
 
@@ -5311,6 +5337,9 @@ export class NewWayleaveComponent implements OnInit {
       this.ProjectSizeSelectionList.push(tempSelectionList);
     }
 
+    if (this.validProjectSizeSelection == true) {
+      this.modalService.dismissAll();
+    }
   }
   SavedProjectSizeSelections() {
 
@@ -5328,8 +5357,17 @@ export class NewWayleaveComponent implements OnInit {
         }
       );
     }
+    //Project size Kyle 27-02-24
+    this.applicationsService.addUpdateApplication(this.applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.fibreNetworkLicenses).subscribe((data: any) => {
+      if (data.responseCode == 1) {
 
+      } else {
+        alert(data.response);
+      }
+    }, error => {
+      console.log("Error", error);
 
+    })
   }
   DraftOption() {
     this.isDraft = true;
@@ -5743,6 +5781,17 @@ export class NewWayleaveComponent implements OnInit {
   updateCharacterCount() {
     return this.text.length;
   }
-
-
+     //Project size Kyle 27-02-24
+  onFibreNetworkLicense(event: any) {
+    debugger;
+    if (this.fibreNetworkLicenses == false) {
+      debugger;
+      this.fibreNetworkLicenses = true;
+    }
+    else {
+      debugger;
+      this.fibreNetworkLicenses = false;
+    }
+    
+  }
 }

@@ -13,6 +13,8 @@ import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { FinancialService } from '../service/Financial/financial.service';
 import { UserProfileService } from '../service/UserProfile/user-profile.service';
 import { NotificationsService } from '../service/Notifications/notifications.service';
+import { DocumentUploadService } from '../service/DocumentUpload/document-upload.service';
+
 //Permit Kyle 13-02-24
 
 //PTC = Permit To Comment
@@ -83,7 +85,7 @@ export class PermitComponentComponent implements OnInit {
   isCalledInsidePermit: boolean;
   projectNumber: string;
 
-  constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private permitService: PermitService, private shared: SharedService, private applicationsService: ApplicationsService, private stagesService: StagesService, private auditTrailService: AuditTrailService,private router :Router , private financialService :FinancialService ,private userProfileService:UserProfileService,private notificationsService:NotificationsService) { }
+  constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private permitService: PermitService, private shared: SharedService, private applicationsService: ApplicationsService, private stagesService: StagesService, private auditTrailService: AuditTrailService, private router: Router, private financialService: FinancialService, private userProfileService: UserProfileService, private notificationsService: NotificationsService, private documentUploadService: DocumentUploadService) { }
 
   ngOnInit(): void {
     this.getAllPermitForComment();
@@ -319,7 +321,7 @@ export class PermitComponentComponent implements OnInit {
         
         console.error('Error combining PDFs:', error);
       });
-
+     
     this.moveToClosedStage();//Permit Kyle 13-02-24
   }
 

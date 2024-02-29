@@ -72,6 +72,7 @@ export interface ApplicationList {
   userID: string,
   UserID: any;
   clientAlternativeEmail: string; // chekingNotifications Sindiswa 13 February 2024
+  NetworkLicensees: any;
 }
 
 export interface ApplicationsList {

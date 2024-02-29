@@ -805,7 +805,10 @@
           <tr mat-header-row *matHeaderRowDef="['ProjectSizeCheckListActivity', 'actions']"></tr>
           <tr mat-row *matRowDef="let row; columns: ['ProjectSizeCheckListActivity', 'actions'];"></tr>
         </table>
+
+
       </mat-expansion-panel>
+      <mat-checkbox  (change)="onFibreNetworkLicense($event)" [checked]="fibreNetworkLicenses">I hereby confirm that all Fibre Network Licensees have been contacted regarding trench sharing and existing services</mat-checkbox>
     </mat-accordion>
   </div>
   <!--<div class="modal-body">
@@ -838,7 +841,7 @@
   </div>-->
   <div class="modal-footer">
     <button class="infoTool" matTooltip="Please check the 'Project Size Criteria.pdf' in the Repository. You'll find it in the top right-hand menu."><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/circle-info-solid.svg" class="icon"></button>
-    <button type="button" (click)="CheckToPopulateManDoc();StoreSelectionProjectCheckListItems();modal.close('Save click')" class="btn btn-outline-success">Save</button>  <!--(click)="onLinkUser();modal.close('Save click')"-->
+    <button type="button" [disabled]="fibreNetworkLicenses == false" (click)="CheckToPopulateManDoc();StoreSelectionProjectCheckListItems()" class="btn btn-outline-success">Save</button>  <!--(click)="onLinkUser();modal.close('Save click')"-->
     <button type="button" matTooltip="View selected project size criteria" (click)="openViewSelection(viewSelection); CheckToPopulateManDoc()" class="btn btn-outline-success">View Selections</button>
   </div>
 </ng-template>
@@ -979,12 +982,12 @@
   </div>
 
   <div class="modal-body " *ngFor="let projects of ProjectSizeSelectionList ">
-    <div class="alert alert-info" role="alert">
+    <div class="alert alert-info projectSizeSelection" role="alert">
       <span>{{projects.selectedProject}} :  {{projects.projectDescription}}</span>
     </div>
   </div>
   <div class="modal-footer">
-    <div class="alert alert-info" role="alert" *ngIf="PSM">
+    <div class="alert alert-info projectSizeSelection" role="alert" *ngIf="PSM">
       These selections will give you a {{PSM}}
     </div>
   </div>

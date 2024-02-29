@@ -32,13 +32,13 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
 
-                if (model == null || !ModelState.IsValid )
+                if (model == null || !ModelState.IsValid)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
-                       var result = await _applicationsService.AddUpdateApplication(model.ApplicationID, model.UserID, model.FullName, model.Email, model.AlternativeEmail, model.PhoneNumber, model.PhysicalAddress, model.ReferenceNumber, model.CompanyRegNo, model.TypeOfApplication, model.NotificationNumber, model.WBSNumber, model.PhysicalAddressOfProject, model.DescriptionOfProject, model.NatureOfWork, model.ExcavationType, model.ExpectedStartDate, model.ExpectedEndDate, model.Location, model.CreatedById, model.PreviousStageName,model.PreviousStageNumber, model.CurrentStageName, model.CurrentStageNumber, model.NextStageName, model.NextStageNumber, model.ApplicationStatus, model.isDrafted,model.ProjectNumber, model.isPlanning, model.PermitStartDate, model.DatePaid,model.WBSRequired,model.Coordinates);
+                    var result = await _applicationsService.AddUpdateApplication(model.ApplicationID, model.UserID, model.FullName, model.Email, model.AlternativeEmail, model.PhoneNumber, model.PhysicalAddress, model.ReferenceNumber, model.CompanyRegNo, model.TypeOfApplication, model.NotificationNumber, model.WBSNumber, model.PhysicalAddressOfProject, model.DescriptionOfProject, model.NatureOfWork, model.ExcavationType, model.ExpectedStartDate, model.ExpectedEndDate, model.Location, model.CreatedById, model.PreviousStageName, model.PreviousStageNumber, model.CurrentStageName, model.CurrentStageNumber, model.NextStageName, model.NextStageNumber, model.ApplicationStatus, model.isDrafted, model.ProjectNumber, model.isPlanning, model.PermitStartDate, model.DatePaid, model.WBSRequired, model.Coordinates, model.NetworkLicenses);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ApplicationID > 0 ? "Application Updated Successfully" : "Application Added Successfully"), result));
                 }
 
@@ -58,13 +58,13 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
 
-                if (model == null || ModelState.IsValid == false )
+                if (model == null || ModelState.IsValid == false)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
-                    var result = await _applicationsService.UpdateApplicationStage(model.ApplicationID, model.PreviousStageName, model.PreviousStageNumber, model.CurrentStageName, model.CurrentStageNumber, model.NextStageName, model.NextStageNumber, model.ApplicationStatus,model.ProjectNumber);
+                    var result = await _applicationsService.UpdateApplicationStage(model.ApplicationID, model.PreviousStageName, model.PreviousStageNumber, model.CurrentStageName, model.CurrentStageNumber, model.NextStageName, model.NextStageNumber, model.ApplicationStatus, model.ProjectNumber);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, ("Stage Updated Successfully"), result));
                 }
 
@@ -157,7 +157,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _applicationsService.GetApplicationsList(modal.UserID,modal.isInternal);
+                    var result = await _applicationsService.GetApplicationsList(modal.UserID, modal.isInternal);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Applications List Created", result));
                 }
 
@@ -338,7 +338,7 @@ namespace WayleaveManagementSystem.Controllers
         {
             try
             {
-                if(model.ProjectNumber == null)
+                if (model.ProjectNumber == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
@@ -460,5 +460,60 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
+        #region zxNum-and-contractorAccount Sindiswa 28 February 2024
+        [HttpPost("AddUpdateZXNumbers")]
+        public async Task<object> AddUpdateZXNumbers([FromBody] ApplicationsBindingModel model){
+
+            try
+            {
+
+                if (model == null || !ModelState.IsValid)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.AddUpdateZXNumbers(model.ApplicationID, model.WaterZXNumber, model.RIMZXNumber);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "ZX Number(s) Added Successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+
+        }
+
+        [HttpPost("GetZXDetails")]
+        public async Task<object> GetZXDetails([FromBody] int applicationID)
+        {
+            try
+            {
+
+                if (applicationID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.GetZXDetails(applicationID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application ZX Details Gotten Successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+        #endregion
+
     }
 }

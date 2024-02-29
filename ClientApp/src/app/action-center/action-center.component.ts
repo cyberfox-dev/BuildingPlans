@@ -573,7 +573,7 @@ export class ActionCenterComponent implements OnInit {
 
 
   ngOnDestroy() {
-    this.refreshService.disableRefreshNavigation();
+   /* this.refreshService.disableRefreshNavigation();*/
   }
 
 

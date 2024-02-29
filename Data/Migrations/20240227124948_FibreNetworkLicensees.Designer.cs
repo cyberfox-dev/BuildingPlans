@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WayleaveManagementSystem.Data;
 
@@ -11,9 +12,10 @@ using WayleaveManagementSystem.Data;
 namespace WayleaveManagementSystem.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240227124948_FibreNetworkLicensees")]
+    partial class FibreNetworkLicensees
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -364,9 +366,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("ProjectNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RIMZXNumber")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("ReApplyCount")
                         .HasColumnType("int");
 
@@ -390,9 +389,6 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.Property<bool?>("WBSRequired")
                         .HasColumnType("bit");
-
-                    b.Property<string>("WaterZXNumber")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("isActive")
                         .HasColumnType("bit");
@@ -2188,9 +2184,6 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Property<string>("ProjectNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RIMZXNumber")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("ReApplyCount")
                         .HasColumnType("int");
 
@@ -2211,9 +2204,6 @@ namespace WayleaveManagementSystem.Data.Migrations
 
                     b.Property<bool?>("WBSRequired")
                         .HasColumnType("bit");
-
-                    b.Property<string>("WaterZXNumber")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ZoneID")
                         .HasColumnType("int");

@@ -65,5 +65,10 @@ namespace WayleaveManagementSystem.Models.DTO
         public DateTime? EscalationDate { get; set; } //escalation Sindiswa 31 January 2024
 
         public DateTime? EMBActionDate { get; set; } //escalation Sindiswa 31 January 2024
+        public bool? NetworkLicenses { get; set; } //Project size Kyle 27-02-24
+        #region zxNum-and-contractorAccount Sindiswa 28 February 2024
+        public string? WaterZXNumber { get; set; }
+        public string? RIMZXNumber { get; set; }
+        #endregion
     }
 }

@@ -67,11 +67,19 @@ export class FileUploadComponent implements OnInit {
 
     }
     else {
-      if (this.UploadFor === "Doc" || !this.UploadFor) {
-        this.ApplicationID = this.currentApplication?.applicationID;
-      } else {
-        this.ApplicationID = this.shared.getApplicationID();
-      }
+      
+        if (this.UploadFor === "Doc" || !this.UploadFor) {
+          this.ApplicationID = this.currentApplication?.applicationID;
+        } else {
+          if (this.ApplicationID === 0) {
+            this.ApplicationID = this.shared.getApplicationID();
+          }
+          else {
+             //this is for the permit
+          }
+        
+        }
+      
     }
   }
 
@@ -102,6 +110,7 @@ export class FileUploadComponent implements OnInit {
   }
 
   uploadFile(files: any) {
+   
     if (this.ApplicationID == "isRep") {
       
       if (files && files.length === 0) {
@@ -178,8 +187,7 @@ export class FileUploadComponent implements OnInit {
 
       serviceCall().subscribe(handleResponse, handleError);
     } else {
-      
-      if (files && files.length === 0) {
+       if (files && files.length === 0) {
         return;
       }
 

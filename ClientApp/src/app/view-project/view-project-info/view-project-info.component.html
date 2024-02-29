@@ -285,6 +285,52 @@
     <!--     <mat-tab label="Messaging">
 
     </mat-tab>-->
+    <!--------------------------------------------------------ZX NUMBER CONFIGURATION--------------------------------------------------->
+    <mat-tab label="Pre-Invoice Information" *ngIf="showPreInvoice">
+
+      <div class="container-fluid">
+
+        <div class="row">
+          <div class="col-md-11">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" placeholder="ZX Number" [(ngModel)]="wdmZXNumber" [disabled]="!waterZXEnabled">
+              <label for="wdmZXNumber">Water & Waste ZX Number</label>
+            </div>
+          </div>
+          <div class="col-md-1 d-flex align-items-center">
+            <div class="mb-3 mt-3"><button mat-raised-button color="blue" (click)="saveWaterZXNumber()" [disabled]="!waterZXEnabled">Save</button></div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-11">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" placeholder="ZX Number" [(ngModel)]="rimZXNumber" [disabled]="!rimZXEnabled">
+              <label for="rimZXNumber">Roads & Infrastructure Management ZX Number</label>
+            </div>
+          </div>
+          <div class="col-md-1 d-flex align-items-center">
+            <div class="mb-3 mt-3"><button mat-raised-button color="blue" (click)="saveRIMZXNumber()" [disabled]="!rimZXEnabled">Save</button></div>
+          </div>
+        </div>
+
+        <div class="row" *ngIf="showEMBInput">
+          <div class="col-md-11">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" placeholder="Contractor Account Details" [(ngModel)]="contractorAccountDetails" [disabled]="!contractorInfEnabled">
+              <label for="contractorAccountDetails">Contractor Account Details (from EMB)</label>
+            </div>
+          </div>
+          <div class="col-md-1 d-flex align-items-center">
+            <div class="mb-3 mt-3"><button mat-raised-button color="blue" (click)="saveContractorDetails()" [disabled]="!contractorInfEnabled">Save</button></div>
+          </div>
+        </div>
+
+
+      </div>
+    </mat-tab>
+
+
     <!--------------------------------------------------------Financial--------------------------------------------------->
 
     <mat-tab label="Financials">
@@ -841,7 +887,7 @@
     <mat-tab label="Permits" *ngIf="showPermitTab">
 
 
-      <button mat-raised-button color="permit" (click)="openPermitModal(permitModal)" *ngIf="permitBtn" [disabled]="fromReApplyArchive == true">Apply For Permit</button>
+      <button mat-raised-button color="permit" (click)=" getAllManDocForPTWStage(permitModal)" *ngIf="permitBtn" [disabled]="fromReApplyArchive == true">Apply For Permit</button>
       <br>
       <br>
       <input type="text" class="form-control" [(ngModel)]="permitDate" id="permitDate" *ngIf="permitTextBox" disabled>
@@ -849,7 +895,7 @@
       <ng-template #permitModal let-modal>
         <div class="modal-header">
           <h4 class="modal-title" id="modal-basic-title">Please select a date for your permit</h4>
-          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+          <button type="button" class="btn-close" aria-label="Close" (click)=" ClosePermitStartDateModal()"></button>
         </div>
         <div class="modal-body">
 
@@ -864,11 +910,35 @@
 
           </div>
 
+          <mat-list *ngFor="let manDoc of  MandatoryDocumentUploadList ; let i = index">
+            <mat-list-item> {{manDoc.mandatoryDocumentName}}</mat-list-item>
+            <mat-form-field class="manDoc" >
+              <div>
+                <mat-toolbar>
+                  <!-- Display files names -->
+                  <input matInput readonly name="name" class="textFuckingBox" /> <!--[(ngModel)]="fileAttrs[i]"-->
+                  <!-- app-file-upload Component -->
+
+                  <div class="container-fluid">
+                    <app-file-upload [ApplicationID]="CurrentApplicationBeingViewed[0].applicationID"
+                                     [UploadFor]="manDoc.mandatoryDocumentName"
+                                     (passFileName)="onPassFileName($event)"
+                                     (onUploadFinished)="onFileDelete2($event,i)"
+                                     (onUploadSuccess)="onFileUpload2($event,i)">
+                    </app-file-upload>
+                  </div>
+                  <button mat-raised-button color="blue2"  *ngIf="manDoc.hasFile === true" matTooltip="View Document"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid.svg" class="icon blue"></button>
+                </mat-toolbar>
+               
+              </div>
+            </mat-form-field>
+          </mat-list>
+
 
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-success" (click)="updateStartDateForPermit();modal.close('Save click')">Save</button>
+          <button type="button" class="btn btn-outline-success" [disabled]="fileCount !== MandatoryDocumentUploadList.length || permitStartDate === null || permitStartDate === undefined " (click)="updateStartDateForPermit();modal.close('Save click')">Save</button>
         </div>
       </ng-template>
       <!--Permit Kyle 13-02-24-->

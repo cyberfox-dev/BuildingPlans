@@ -32,6 +32,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeHtml, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 import { ApprovalPackComponent } from 'src/app/Packs//ApprovalPackComponent/approval-pack.component';
 import { StatusOfWorksComponent } from 'src/app/status-of-works/status-of-works.component';
+import { MandatoryDocumentUploadService } from 'src/app/service/MandatoryDocumentUpload/mandatory-document-upload.service';
 
 /*import { PdfGenerationService } from 'src/app/service/PDFGeneration/pdf-generation.service';*/
 
@@ -167,7 +168,7 @@ export interface CommentsList {
   CommentStatus: string;
   SubDepartmentForCommentID: number;
   SubDepartmentName?: string;
-  isClarifyCommentID?: number; 
+  isClarifyCommentID?: number;
   isApplicantReplay?: string; 
   UserName: string;
    //Comments Kyle 01/02/24
@@ -273,6 +274,15 @@ export interface AllSubDepartmentList {
   commentStatus: string | null;
   GLCode: string | null;
   ProfitCenter: string | null;
+}
+   //Project size Kyle 27-02-24
+export interface MandatoryDocumentUploadList {
+  mandatoryDocumentID: number;
+  mandatoryDocumentName: string;
+  stageID: number;
+  dateCreated: any;
+  mandatoryDocumentCategory: string;
+  hasFile: boolean;
 }
 
 var img = new Image();
@@ -388,7 +398,8 @@ export class ViewProjectInfoComponent implements OnInit {
   ServiceItemList: ServiceItemList[] = [];
   AllSubDepartmentList: AllSubDepartmentList[] = [];
   SubDepartmentListFORAPPROVAL: SubDepartmentListFORAPPROVAL[] = [];
-  
+  MandatoryDocumentUploadList: MandatoryDocumentUploadList[] = [];
+
   @ViewChild('pdfTable', { static: false }) pdfTable: ElementRef;
 
   ApplicationID: number | undefined;
@@ -458,7 +469,7 @@ export class ViewProjectInfoComponent implements OnInit {
   PacksTab: boolean = false;
   public InternalExternalUser: boolean=false;
     isExternalApplicant: boolean;
-;
+  SuccessfulUploads: number = 0;
  //Audit Trail Kyle
   stringifiedDataRoles: any;
   AllCurrentUserRoles: any;
@@ -471,7 +482,11 @@ export class ViewProjectInfoComponent implements OnInit {
  commentEdit: string = "";
   //Final Approver && Senior Approver Kyle 01/02/24
   canCreateNote: boolean = false;
-
+  showPreInvoice: boolean = false //zxNum-and-contractorAccount Sindiswa 28 February 2024
+  waterZXEnabled: boolean = false;
+  rimZXEnabled: boolean = false;
+  contractorInfEnabled: boolean = false;
+  showEMBInput: boolean = false;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -569,6 +584,7 @@ export class ViewProjectInfoComponent implements OnInit {
     //Audit Trail Kyle
     private auditTrailService: AuditTrailService,
     private statusOfWorksComponent: StatusOfWorksComponent,
+    private mandatroyDocumentUploadService: MandatoryDocumentUploadService,
     //Audit Trail Kyle
   ) { }
 
@@ -606,17 +622,29 @@ export class ViewProjectInfoComponent implements OnInit {
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
     
     // #region icasaDetailsDisplay Sindiswa 16 January 2024, when the logged in user is external the "Applicant" details show funny | USERID??
+    console.log("This is the current user's details --- 280200224", this.CurrentUserProfile);
+
 
     // #endregion icasaDetailsDisplay Sindiswa 16 January 2024
     //Audit Trail Kyle
     this.stringifiedDataRoles = JSON.parse(JSON.stringify(localStorage.getItem('AllCurrentUserRoles')));
     this.AllCurrentUserRoles = JSON.parse(this.stringifiedDataRoles);
-
+    console.log("This is the current user's roles --- 280200224", this.AllCurrentUserRoles);
     this.onCheckAllCurrentUserRole();
   
     // Audit Trail Kyle
 
-
+    //#region zxNum-and-contractorAccount Sindiswa 28 February 2024
+    if (this.CurrentUserProfile[0].departmentID == 28 /*EMB*/ || (this.AllCurrentUserRoles.some(role => role.roleName === "Department Admin") && (this.CurrentUserProfile[0].departmentID == 24 /*Water*/ || this.CurrentUserProfile[0].departmentID == 25/*RIM*/))) {
+      this.showPreInvoice = true;
+      if (this.AllCurrentUserRoles.some(role => role.roleName === "Department Admin") && (this.CurrentUserProfile[0].departmentID == 24 /*Water*/ )) {
+        this.waterZXEnabled = true;
+      }
+      if (this.AllCurrentUserRoles.some(role => role.roleName === "Department Admin") && (this.CurrentUserProfile[0].departmentID == 25/*RIM*/)) {
+        this.rimZXEnabled = true;
+      }
+    }
+    //#endregion
     const today = new Date();
     const twoWeeksFromNow = new Date();
     twoWeeksFromNow.setDate(today.getDate() + 14); // Add 14 days to the current date
@@ -737,6 +765,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.CheckForApprovalPackDownload();
     //Progress bar Kyle 07-02-24
     this.CalCulateApprovalProgess();
+    this.getZXNumberDetails();//
   }
   // #region reapply Sindiswa 26 January 2024
   ngOnDestroy() {
@@ -1246,6 +1275,14 @@ export class ViewProjectInfoComponent implements OnInit {
     this.fileCount = this.fileCount - 1;
 
   }
+
+  onFileDelete2(event: any, index: number) {
+    this.MandatoryDocumentUploadList[index].hasFile = false
+    this.fileAttrsName = "Doc";
+
+    //this.getAllDocsForApplication();
+    this.fileCount = this.fileCount - 1;
+  }
   changeHasFile() {
     if (this.hasFile) {
       this.hasFile = false;
@@ -1254,10 +1291,13 @@ export class ViewProjectInfoComponent implements OnInit {
     }
   }
   onFileUpload(event: any) {
+   
 
-
+    
   }
-  
+  onFileUpload2(event: any, index: any) {
+    this.MandatoryDocumentUploadList[index].hasFile = true;
+  }
 
   onAutoLinkForPermit() {
 
@@ -2450,7 +2490,7 @@ export class ViewProjectInfoComponent implements OnInit {
   
 
   checkIfPermitExsist() {
-
+    debugger;
     if (this.applicationDataForView[0].CreatedById == this.CurrentUser.appUserId) {
       this.permitBtn = true;
       this.permitTextBox = false;
@@ -2469,6 +2509,7 @@ export class ViewProjectInfoComponent implements OnInit {
   updateStartDateForPermit() {
     this.applicationsService.addUpdateApplication(this.CurrentApplicationBeingViewed[0].applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.permitStartDate).subscribe((data: any) => {
       if (data.responseCode == 1) {
+        debugger;
         this.onAutoLinkForPermit();
         this.router.navigate(["/home"]);/*Permit Kyle 13-02-24*/
       }
@@ -2567,7 +2608,6 @@ export class ViewProjectInfoComponent implements OnInit {
       });
     }
   }
-
   // #endregion
 
   setInterface() {
@@ -4706,9 +4746,211 @@ export class ViewProjectInfoComponent implements OnInit {
     }
     else {
       this.showUpload = true;
+      
     }
   }
   /*Progess bar Kyle 07-02-24*/
+     //Project size Kyle 27-02-24
+  getAllManDocForPTWStage(permitModal:any) {
+    if (this.applicationDataForView[0].permitStartDate == null && this.applicationDataForView[0].CurrentStageName == "PTW") {
+      this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);
+      this.mandatroyDocumentUploadService.getAllMandatoryDocumentsLinkedToStage(this.applicationDataForView[0].CurrentStageName).subscribe((data: any) => {
+        debugger;
+        if (data.responseCode == 1) {
+          for (let i = 0; i < data.dateSet.length; i++) {
+
+            const tempMandatoryDocList = {} as MandatoryDocumentUploadList;
+            const current = data.dateSet[i];
+            const applicationSize = this.applicationDataForView[0].TypeOfApplication;
+
+            if (applicationSize == "Large") {
+              tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
+              tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
+              tempMandatoryDocList.stageID = current.stageID;
+              tempMandatoryDocList.dateCreated = current.dateCreated;
+              tempMandatoryDocList.hasFile = false;
+              this.MandatoryDocumentUploadList.push(tempMandatoryDocList);
+            }
+
+            else if (applicationSize != "Large" && current.mandatoryDocumentName != "Construction Program or Phasing Program") {
+              tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
+              tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
+              tempMandatoryDocList.stageID = current.stageID;
+              tempMandatoryDocList.dateCreated = current.dateCreated;
+              tempMandatoryDocList.hasFile = false;
+              this.MandatoryDocumentUploadList.push(tempMandatoryDocList);
+            }
+            
+          }
+         
+         
+          this.openPermitModal(permitModal);
+          
+        }
+        
+        else {
+          alert(data.responseMessage);
+        }
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+
+  }
+
+  ClosePermitStartDateModal() {
+    debugger;
+    if (this.fileCount == 0) {
+      this.modalService.dismissAll();
+    }
+    else {
+      alert("Please delete documents uploaded if you wish to close without saving");
+    }
+  }
+
+  //#region zxNum-and-contractorAccount Sindiswa 28 February 2024
+  wdmZXNumber: string;
+  rimZXNumber: string;
+  contractorAccountDetails: string;
+  saveWaterZXNumber() {
+    this.applicationsService.addUpdateZXNumbers(this.ApplicationID, this.wdmZXNumber, null).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        //this.getZXNumberDetails();
+        this.getZXNumberDetailsAfterZXEntry();
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+    })
+  }
+
+  saveRIMZXNumber() {
+    debugger;
+    this.applicationsService.addUpdateZXNumbers(this.ApplicationID, null, this.rimZXNumber).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        //this.getZXNumberDetails();
+        this.getZXNumberDetailsAfterZXEntry();
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+    })
+  }
+
+  getZXNumberDetailsAfterZXEntry() {
+    this.applicationsService.getZXDetails(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        console.log("This is what I found while looking for ZX details", data);
+        this.wdmZXNumber = data.dateSet[0].waterZXNumber;
+        this.rimZXNumber = data.dateSet[0].rimzxNumber;
+        if (data.dateSet[0].waterZXNumber.trim() !== "") {
+          this.waterZXEnabled = false;
+        }
+        if (data.dateSet[0].rimzxNumber.trim() !== "") {
+          this.rimZXEnabled = false;
+        }
+        if (data.dateSet[0].waterZXNumber.trim() !== "" && data.dateSet[0].rimzxNumber.trim() !== "") {
+          this.showEMBInput = true;
+
+          this.notifyEMBtoAddContractorDetails();
+
+          if (this.CurrentUserProfile[0].departmentID == 28) {
+            this.contractorInfEnabled = true;
+          }
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+    })
+
+  }
+
+  getZXNumberDetails() {
+    this.applicationsService.getZXDetails(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        console.log("This is what I found while looking for ZX details", data);
+        this.wdmZXNumber = data.dateSet[0].waterZXNumber;
+        this.rimZXNumber = data.dateSet[0].rimzxNumber;
+        if (data.dateSet[0].waterZXNumber.trim() !== "") {
+          this.waterZXEnabled = false;
+        }
+        if (data.dateSet[0].rimzxNumber.trim() !== "") {
+          this.rimZXEnabled = false;
+        }
+        if (data.dateSet[0].waterZXNumber.trim() !== "" && data.dateSet[0].rimzxNumber.trim() !== "") {
+          this.showEMBInput = true;
+
+          if (this.CurrentUserProfile[0].departmentID == 28) { 
+            this.contractorInfEnabled = true;
+          }
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+    })
+   
+  }
+
+  notifyEMBtoAddContractorDetails() {
+    this.userPofileService.getUsersBySubDepartmentName("EMB").subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        //data.forEach((obj) => { // checkingNotifications Sindiswa 15 February 2024 - removed this, it wasn't tapping into the user's information
+        data.dateSet.forEach((obj) => {
+          this.notificationsService.sendEmail(obj.email, "New wayleave application submission needs contractor account details", "check html", "Dear EMB User" + "<br><br>An application with ID " + this.ApplicationID + " for wayleave now has the required ZX numbers, enter the contractor's contact details so that an invoice can be generated.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+          if (obj.alternativeEmail) {
+            this.notificationsService.sendEmail(obj.alternativeEmail, "New wayleave application submission needs contractor account details", "check html", "Dear EMB User" + "<br><br>An application with ID " + this.ApplicationID + " for wayleave now has the required ZX numbers, enter the contractor's contact details so that an invoice can be generated.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+
+          }
+          //this.notificationsService.addUpdateNotification(0, "Wayleave Created", "New wayleave application submission", false, this.CurrentUser.appUserId, this.applicationID, obj.userID,  "An application with ID " + this.applicationID + " for wayleave has just been captured.").subscribe((data: any) => {
+          this.notificationsService.addUpdateNotification(0, "Wayleave Created", "New wayleave application submission needs contractor account details", false, obj.userID, this.ApplicationID, this.CurrentUser.appUserId, "An application with ID " + this.ApplicationID + " for wayleave now has the required ZX numbers, enter the contractor's contact details so that an invoice can be generated.").subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+              console.log(data.responseMessage);
+
+            }
+            else {
+              alert(data.responseMessage);
+            }
+
+            console.log("response", data);
+          }, error => {
+            console.log("Error", error);
+          })
+
+        })
 
 
+
+        alert(data.responseMessage);
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+      console.log("response", data);
+    }, error => {
+      console.log("Error", error);
+    });
+
+  }
+
+  saveContractorDetails() {
+    //1. is this how one saves in local storage?
+    localStorage.setItem('contractorAccountDetails', this.contractorAccountDetails);
+    //2. create the invoice now?!
+  }
+  //#endregion
 }

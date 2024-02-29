@@ -44,7 +44,8 @@ export interface ApplicationList {
   userID: string,
   //Coordinates: string
   UserID: any;
-  clientAlternativeEmail: string; // chekingNotifications Sindiswa 13 February 2024
+  clientAlternativeEmail: string;
+  NetworkLicensees: any// chekingNotifications Sindiswa 13 February 2024
 }
 export interface ApplicationsList {
   ApplicationID: number;

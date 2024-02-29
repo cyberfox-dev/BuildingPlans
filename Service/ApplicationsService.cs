@@ -23,7 +23,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string? userID, string? fullName, string? email, string? alternativeEmail, string? phoneNumber, string? physicalAddress, string? referenceNumber, string? companyRegNo, string? typeOfApplication, string? notificationNumber, string? wBSNumber, string? physicalAddressOfProject, string? descriptionOfProject, string? natureOfWork, string? excavationType, DateTime? expectedStartDate, DateTime? expectedEndDate, string? location, string? createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus, bool? isDrafted, string? projectNumber, bool? isPlanning, DateTime? PermitStartDate, DateTime? DatePaid, bool? WBSRequired, string? Coordinates)
+        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string? userID, string? fullName, string? email, string? alternativeEmail, string? phoneNumber, string? physicalAddress, string? referenceNumber, string? companyRegNo, string? typeOfApplication, string? notificationNumber, string? wBSNumber, string? physicalAddressOfProject, string? descriptionOfProject, string? natureOfWork, string? excavationType, DateTime? expectedStartDate, DateTime? expectedEndDate, string? location, string? createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus, bool? isDrafted, string? projectNumber, bool? isPlanning, DateTime? PermitStartDate, DateTime? DatePaid, bool? WBSRequired, string? Coordinates ,bool? NetworkLicenses)
         {
 
             if (ApplicationID == 0)
@@ -77,6 +77,7 @@ namespace WayleaveManagementSystem.Service
                     isPlanning = isPlanning,
                     PermitStartDate = PermitStartDate,
                     Coordinates = Coordinates,
+                    NetworkLicenses =NetworkLicenses,
                 };
 
                 //After the inizlization add to the db
@@ -246,6 +247,10 @@ namespace WayleaveManagementSystem.Service
                 {
                     tempApplicationTable.Coordinates = Coordinates;
                 }
+                if(NetworkLicenses != null )
+                {
+                    tempApplicationTable.NetworkLicenses = NetworkLicenses;
+                }
 
                 _context.Update(tempApplicationTable);
                 await _context.SaveChangesAsync();
@@ -359,6 +364,7 @@ namespace WayleaveManagementSystem.Service
                    EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
                    EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
                    ProjectNumber = Applications.ProjectNumber,// Clarifications Alerts Kyle
+                   NetworkLicenses = Applications.NetworkLicenses
                }
                ).ToListAsync();
 
@@ -471,6 +477,7 @@ namespace WayleaveManagementSystem.Service
                        isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
                        EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
                        EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
+                       NetworkLicenses  = Applications.NetworkLicenses,
                    }
                    ).ToListAsync();
             }
@@ -524,6 +531,7 @@ namespace WayleaveManagementSystem.Service
 
                        EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
                        EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
+                       NetworkLicenses = Applications.NetworkLicenses,//Project size Kyle 27-02-24
                    }
                    ).ToListAsync();
             }
@@ -677,6 +685,7 @@ namespace WayleaveManagementSystem.Service
                    isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
                    EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
                    EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
+                   NetworkLicenses = Applications.NetworkLicenses,//Project size Kyle 27-02-24
                }
                ).ToListAsync();
         }
@@ -731,6 +740,7 @@ namespace WayleaveManagementSystem.Service
                     isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
                     EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
                     EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
+                        NetworkLicenses = Applications.NetworkLicenses,//Project size Kyle 27-02-24
                     }
            ).ToListAsync();
         }
@@ -787,6 +797,7 @@ namespace WayleaveManagementSystem.Service
                         isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
                         EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
                         EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
+                        NetworkLicenses = Applications.NetworkLicenses,//Project size Kyle 27-02-24
                     }
            ).ToListAsync();
         }
@@ -842,6 +853,7 @@ namespace WayleaveManagementSystem.Service
                         isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
                         EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
                         EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
+                        NetworkLicenses = Applications.NetworkLicenses,//Project size Kyle 27-02-24
                     }
            ).ToListAsync();
         }
@@ -897,6 +909,7 @@ namespace WayleaveManagementSystem.Service
                         isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
                         EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
                         EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
+                        NetworkLicenses = Applications.NetworkLicenses,//Project size Kyle 27-02-24
                     }
            ).Distinct().ToListAsync();
         }
@@ -954,6 +967,7 @@ namespace WayleaveManagementSystem.Service
                         isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
                         EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
                         EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
+                        NetworkLicenses = Applications.NetworkLicenses,//Project size Kyle 27-02-24
                     }
            ).ToListAsync();
         }
@@ -1142,6 +1156,47 @@ namespace WayleaveManagementSystem.Service
                 return true;
             }
         }
+        #region zxNum-and-contractorAccount Sindiswa 28 February 2024
+        public async Task<Applications> AddUpdateZXNumbers(int? ApplicationID, string? WaterZXNumber, string? RIMZXNumber)
+        {
+            if (ApplicationID == 0)
+            {
+                ApplicationID = null;
+            }
 
+
+            //this checks is the record exists in the db
+            var tempApplicationTable = _context.Application.FirstOrDefault(x => x.ApplicationID == ApplicationID);
+
+
+            if (WaterZXNumber != null)
+            {
+                tempApplicationTable.WaterZXNumber = WaterZXNumber;
+            }
+            if (RIMZXNumber != null)
+            {
+                tempApplicationTable.RIMZXNumber = RIMZXNumber;
+            }
+
+            _context.Update(tempApplicationTable);
+            await _context.SaveChangesAsync();
+            return tempApplicationTable;
+            
+        }
+        public async Task<List<ApplicationsDTO>> GetZXDetails(int applicationID)
+        {
+            return await (
+              from Applications in _context.Application
+              where Applications.ApplicationID == applicationID && Applications.isActive == true 
+              select new ApplicationsDTO()
+    
+                    {
+                      WaterZXNumber = Applications.WaterZXNumber, 
+                      RIMZXNumber = Applications.RIMZXNumber,
+                    }
+           ).ToListAsync();
+        }
+
+        #endregion
     }
 }

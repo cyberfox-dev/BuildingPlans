@@ -12,7 +12,7 @@ export class ApplicationsService {
 
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
-  public addUpdateApplication(ApplicationID?: number | null, userID?: string | null, fullName?: string | null, email?: string | null,/*checkingNotifications Sindiswa 15 February 2024*/ alternativeEmail?: string | null, phoneNumber?: string | null, physicalAddress?: string | null, referenceNumber?: string | null, companyRegNo?: string | null, typeOfApplication?: string | null, notificationNumber?: string | null, wbsNumber?: string | null, physicalAddressOfProject?: string | null, descriptionOfProject?: string | null, natureOfWork?: string | null, excavationType?: string | null, expectedStartDate?: Date | null, expectedEndDate?: Date | null, location?: string | null, createdById?: string | null, previousStageName?: string | null, previousStageNumber?: number | null, currentStageName?: string | null, currentStageNumber?: number | null, nextStageName?: string | null, nextStageNumber?: number | null, applicationStatus?: string | null, isDrafted?: boolean, projectNumber?: string | null, isPlanning?: boolean | null, permitStartDate?: Date | null, datePaid?: Date | null, WBSRequired?: boolean | null, coordinates?: string | null) {
+  public addUpdateApplication(ApplicationID?: number | null, userID?: string | null, fullName?: string | null, email?: string | null,/*checkingNotifications Sindiswa 15 February 2024*/ alternativeEmail?: string | null, phoneNumber?: string | null, physicalAddress?: string | null, referenceNumber?: string | null, companyRegNo?: string | null, typeOfApplication?: string | null, notificationNumber?: string | null, wbsNumber?: string | null, physicalAddressOfProject?: string | null, descriptionOfProject?: string | null, natureOfWork?: string | null, excavationType?: string | null, expectedStartDate?: Date | null, expectedEndDate?: Date | null, location?: string | null, createdById?: string | null, previousStageName?: string | null, previousStageNumber?: number | null, currentStageName?: string | null, currentStageNumber?: number | null, nextStageName?: string | null, nextStageNumber?: number | null, applicationStatus?: string | null, isDrafted?: boolean, projectNumber?: string | null, isPlanning?: boolean | null, permitStartDate?: Date | null, datePaid?: Date | null, WBSRequired?: boolean | null, coordinates?: string | null ,networkLicenses?: boolean |null) {
 
     const body = {
       ApplicationID: ApplicationID,
@@ -48,6 +48,7 @@ export class ApplicationsService {
       DatePaid: datePaid,
       WBSRequired: WBSRequired,
       Coordinates: coordinates,
+      NetworkLicenses:networkLicenses
   
     }
     return this.httpClient.post(this.baseURL + "AddUpdateApplication", body);
@@ -76,7 +77,7 @@ export class ApplicationsService {
 
 
   public deleteApplication(applicationID: number) {
-
+    debugger;
     return this.httpClient.post(this.baseURL + "DeleteApplication", applicationID);
 
   }
@@ -197,4 +198,23 @@ export class ApplicationsService {
     return this.httpClient.post(this.baseURL + "CancelEscalation", body);
 
   }
+  //#region zxNum-and-contractorAccount Sindiswa 28 February 2024
+  public addUpdateZXNumbers(applicationID?: number | null, WaterZXNumber?: string | null, RIMZXNumber?: string | null) {
+    debugger;
+    const body = {
+
+      ApplicationID: applicationID,
+      WaterZXNumber: WaterZXNumber,
+      RIMZXNumber: RIMZXNumber,
+    }
+    return this.httpClient.post(this.baseURL + "AddUpdateZXNumbers", body);
+
+  }
+
+  public getZXDetails(applicationID: number) {
+
+    return this.httpClient.post(this.baseURL + "GetZXDetails", applicationID);
+
+  }
+  //#endregion
 }

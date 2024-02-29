@@ -68,6 +68,7 @@ export interface ApplicationList {
   //Coordinates: string
     UserID: any;
   clientAlternativeEmail: string; // checkingNotifications Sindiswa 15 February 2024
+  NetworkLicensees: string; //Project size Kyle 27-02-24
 }
 
 
