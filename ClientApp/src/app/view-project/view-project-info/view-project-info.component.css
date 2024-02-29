@@ -137,7 +137,7 @@ h6 {
   flex-wrap: nowrap;
   justify-content: center;
   align-items: baseline;
-  margin-bottom: -36px;
+  margin-bottom: -62px;
 }
 .cont {
   display: flex;
@@ -151,7 +151,7 @@ h6 {
 }
 .cont6 {
   top: 252px;
-  margin-top: 133px;
+  margin-top: 174px;
   position: absolute;
 }
 
@@ -953,7 +953,7 @@ button {
 .mat-generatePackBtn{
   background-color: #f48a36;
   color: #fff;
-  margin-left: 22px;
+/*  margin-left: 22px;*/
 }
 
 :host ::ng-deep .mat-tab-label-active {
