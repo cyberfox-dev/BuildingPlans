@@ -317,8 +317,8 @@
         <div class="row" *ngIf="showEMBInput">
           <div class="col-md-11">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" placeholder="Contractor Account Details" [(ngModel)]="contractorAccountDetails" [disabled]="!contractorInfEnabled">
-              <label for="contractorAccountDetails">Contractor Account Details (from EMB)</label>
+              <input type="text" class="form-control" placeholder="Contract Account Details" [(ngModel)]="contractorAccountDetails" [disabled]="!contractorInfEnabled">
+              <label for="contractorAccountDetails">Contract Account Details (from EMB)</label>
             </div>
           </div>
           <div class="col-md-1 d-flex align-items-center">
@@ -335,13 +335,15 @@
 
     <mat-tab label="Financials">
       <div class="container-fluid">
-        <div class="container-fluid">
-          <button mat-raised-button color="permit" (click)="openDocUpload(newSub)" [disabled]="fromReApplyArchive == true">Upload document</button>
-          <!---- Financial POP Kyle 15/01/24-->
-          <button *ngIf="applicationDataForView[0].ApplicationStatus == 'Unpaid' && uploadedPOP == false" (click)="openDocUpload(newSub);OnPOPUpload()" mat-raised-button color="permit" [disabled]="fromReApplyArchive == true">Upload Proof Of Payment</button>
-          <!----Financial POP Kyle 15/01/24-->
+          <div class="container-fluid">
+              <button mat-raised-button color="permit" (click)="openDocUpload(newSub)" [disabled]="fromReApplyArchive == true">Upload document</button>
+              <!---- Financial POP Kyle 15/01/24-->
+              <!--<button  (click)="genInvoice()" mat-raised-button color="permit" [disabled]="fromReApplyArchive == true">Generate Invoice</button>-->
+              <button *ngIf="applicationDataForView[0].ApplicationStatus == 'Unpaid' && uploadedPOP == false" (click)="openDocUpload(newSub);OnPOPUpload()" mat-raised-button color="permit" [disabled]="fromReApplyArchive == true">Upload Proof Of Payment</button>
 
-        </div>
+              <!----Financial POP Kyle 15/01/24-->
+
+          </div>
 
 
         <table mat-table [dataSource]="dataSourceDoc" class="mat-elevation-z8">

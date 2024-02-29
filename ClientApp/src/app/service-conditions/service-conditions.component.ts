@@ -61,7 +61,7 @@ export class ServiceConditionsComponent implements OnInit {
           const current = data.dateSet[i];
 /*JJS Commit 20-02-24*/
           const nameCheck = current.documentName.substring(0, 13);
-          if (current.groupName == "Service Condition" || nameCheck == "Approval Pack" || nameCheck== "Rejection Pack") {
+          if (current.groupName == "Service Condition" || nameCheck == "Approval Pack" || nameCheck== "Rejection Pack" || current.groupName == "Permits") {
             tempDocumentList.DocumentID = current.documentID;
             tempDocumentList.DocumentName = current.documentName;
             tempDocumentList.DocumentLocalPath = current.documentLocalPath;

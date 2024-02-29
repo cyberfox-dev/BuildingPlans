@@ -14,6 +14,7 @@ import { FinancialService } from '../service/Financial/financial.service';
 import { UserProfileService } from '../service/UserProfile/user-profile.service';
 import { NotificationsService } from '../service/Notifications/notifications.service';
 import { DocumentUploadService } from '../service/DocumentUpload/document-upload.service';
+import { HttpClient, HttpErrorResponse, HttpEventType } from '@angular/common/http';
 
 //Permit Kyle 13-02-24
 
@@ -84,8 +85,9 @@ export class PermitComponentComponent implements OnInit {
   isEMB: boolean;
   isCalledInsidePermit: boolean;
   projectNumber: string;
+  currentStageName: string;
 
-  constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private permitService: PermitService, private shared: SharedService, private applicationsService: ApplicationsService, private stagesService: StagesService, private auditTrailService: AuditTrailService, private router: Router, private financialService: FinancialService, private userProfileService: UserProfileService, private notificationsService: NotificationsService, private documentUploadService: DocumentUploadService) { }
+  constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private permitService: PermitService, private shared: SharedService, private applicationsService: ApplicationsService, private stagesService: StagesService, private auditTrailService: AuditTrailService, private router: Router, private financialService: FinancialService, private userProfileService: UserProfileService, private notificationsService: NotificationsService, private documentUploadService: DocumentUploadService, private http: HttpClient,) { }
 
   ngOnInit(): void {
     this.getAllPermitForComment();
@@ -210,7 +212,7 @@ export class PermitComponentComponent implements OnInit {
      
     }
     
-    if (x === this.PTCList.length) {
+    if (x === this.PTCList.length ) {
       this.CanConsolidate = true;
     } else {
       this.CanConsolidate = false;
@@ -305,26 +307,89 @@ export class PermitComponentComponent implements OnInit {
 
 
     }
-
+    //Combine permit Kyle 29-02-24
     this.combinePDFs(this.pdfBlobs)
 
       .then(combinedPdfBlob => {
         // Do something with the combined PDF blob, like downloading it
-        
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(combinedPdfBlob);
-        link.download = 'combined.pdf';
-        link.click();
-        
+
+        //const link = document.createElement('a');
+        //link.href = URL.createObjectURL(combinedPdfBlob);
+        //link.download = 'combined.pdf';
+        //link.click();
+        debugger;
+        const file = new File([combinedPdfBlob], 'permits.pdf', { type: 'application/pdf' });
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        this.shared.pushFileForTempFileUpload(file, "Permits" + ".pdf");
+        this.save();
       })
       .catch(error => {
         
         console.error('Error combining PDFs:', error);
       });
-     
-    this.moveToClosedStage();//Permit Kyle 13-02-24
+   
+   //Permit Kyle 13-02-24
+
   }
 
+
+  response: { dbPath: ''; } | undefined
+  progress: number = 0;
+  message = '';
+
+  save() {
+    debugger;
+    const filesForUpload = this.shared.pullFilesForUpload();
+    for (let i = 0; i < filesForUpload.length; i++) {
+      const formData = new FormData();
+      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "_appID" + this.ApplicationID;
+      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+        .subscribe({
+          next: (event) => {
+            if (event.type === HttpEventType.UploadProgress && event.total) {
+              this.progress = Math.round(100 * event.loaded / event.total);
+            } else if (event.type === HttpEventType.Response) {
+              this.message = 'Upload success.';
+              this.uploadFinished(event.body);
+            }
+          },
+          error: (err: HttpErrorResponse) => console.log(err)
+        });
+    }
+
+  }
+
+
+  uploadFinished = (event: any) => {
+    debugger;
+    this.response = event;
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
+
+
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
+
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, "System Generated Pack", "System Generated Pack","Permits").subscribe((data: any) => {
+      /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
+      debugger;
+      if (data.responseCode == 1) {
+        this.moveToClosedStage();
+      }
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+  }
+  //Combine permit Kyle 29-02-24
   private async combinePDFs(pdfBlobs: Blob[]): Promise<Blob> {
     
     const combinedPdfDoc = await PDFDocument.create();
@@ -636,6 +701,8 @@ export class PermitComponentComponent implements OnInit {
         const current = data.dateSet[0];
 
         this.projectNumber = current.projectNumber;
+        this.currentStageName = current.currentStageName;
+        console.log("Permits Stage name and project number", current);
       }
       else {
         alert(data.responseMessage);
@@ -647,4 +714,5 @@ export class PermitComponentComponent implements OnInit {
 
  
    //Request for delete Kyle 22-02-24
+ 
 }
