@@ -8,7 +8,7 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
+            /*migrationBuilder.AddColumn<string>(
                 name: "RIMZXNumber",
                 table: "ApplicationListDTO",
                 type: "nvarchar(max)",
@@ -18,7 +18,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                 name: "WaterZXNumber",
                 table: "ApplicationListDTO",
                 type: "nvarchar(max)",
-                nullable: true);
+                nullable: true);*/
 
             migrationBuilder.AddColumn<string>(
                 name: "RIMZXNumber",
@@ -35,13 +35,13 @@ namespace WayleaveManagementSystem.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+/*            migrationBuilder.DropColumn(
                 name: "RIMZXNumber",
                 table: "ApplicationListDTO");
 
             migrationBuilder.DropColumn(
                 name: "WaterZXNumber",
-                table: "ApplicationListDTO");
+                table: "ApplicationListDTO");*/
 
             migrationBuilder.DropColumn(
                 name: "RIMZXNumber",
