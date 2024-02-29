@@ -1749,6 +1749,7 @@ this.Applications.push(tempApplicationList);
 
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+            /*console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.tempApplicationList);*/
 
             this.Applications.push(tempApplicationList);
 

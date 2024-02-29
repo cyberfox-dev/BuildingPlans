@@ -286,6 +286,7 @@ import { StatusOfWorksComponent } from './status-of-works/status-of-works.compon
     UserManagementComponent, //actingAsInternal Sindiswa 05 February 2024
     ApplicationAlertsComponent,//Clarify Alerts Kyle
     StatusOfWorksComponent,
+  
   ],
   bootstrap: [AppComponent]
 })

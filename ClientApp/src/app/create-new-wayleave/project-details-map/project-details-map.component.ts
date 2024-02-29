@@ -733,12 +733,12 @@ export class ProjectDetailsMapComponent implements OnInit {
       map.add(featureLayer);
 
       map.add(featureLayerLine);
-
-      const fullscreen = new Fullscreen({
+/*JJS Commit 29-02-24(removed full-screen mode for maps and sorted approval pack btn and former wayleave tab)*/
+     /* const fullscreen = new Fullscreen({
         view: view
       });
 
-      view.ui.add(fullscreen, 'bottom-left');
+      view.ui.add(fullscreen, 'bottom-left');*/
 
       // Create a polygon feature in the layer
       //featureLayer.applyEdits({

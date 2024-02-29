@@ -653,8 +653,15 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
     //#region reapply Sindiswa 26 January 2024
+    debugger;
+/*JJS Commit 29-02-24(removed full-screen mode for maps and sorted approval pack btn and former wayleave tab)*/
+    if (this.sharedService.getShowFormerApps.length > 0) {
+      this.showFormerApps = true
+    }
+    else {
+      this.showFormerApps = false;
+    }
 
-    this.showFormerApps = this.sharedService.getShowFormerApps();
     this.fromReApplyArchive = this.sharedService.getFromReApplyArchive();
     this.routerSubscription = this.sharedService.getRoutingToOldAapp();
     // #endregion
@@ -750,9 +757,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getFinancial();
     
     this.getEMBUsers();
-    this.getServiceItem("001");
-    this.getServiceItem("002");
-    this.getServiceItem("003");
+
     this.getAllSubDepartments();
     this.getLinkedDepartmentsFORAPPROVAL();
     this.CheckForApprovalPackDownload();
@@ -4980,6 +4985,18 @@ export class ViewProjectInfoComponent implements OnInit {
     //1. is this how one saves in local storage?
     localStorage.setItem('contractorAccountDetails', this.contractorAccountDetails);
     //2. create the invoice now?!
+    this.NewWayleaveComponent.getServiceItem("001");
+    this.NewWayleaveComponent.getServiceItem("002");
+    this.NewWayleaveComponent.getServiceItem("003");
+   
+    this.genInvoice();
+   
   }
+  genInvoice() {
+    this.NewWayleaveComponent.getCurrentInvoiceNumberForGen("Turtle Speed", this.ApplicationID);
+  }
+
+
+
   //#endregion
 }
