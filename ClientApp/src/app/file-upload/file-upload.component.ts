@@ -67,11 +67,19 @@ export class FileUploadComponent implements OnInit {
 
     }
     else {
-      if (this.UploadFor === "Doc" || !this.UploadFor) {
-        this.ApplicationID = this.currentApplication?.applicationID;
-      } else {
-        this.ApplicationID = this.shared.getApplicationID();
-      }
+      
+        if (this.UploadFor === "Doc" || !this.UploadFor) {
+          this.ApplicationID = this.currentApplication?.applicationID;
+        } else {
+          if (this.ApplicationID === 0) {
+            this.ApplicationID = this.shared.getApplicationID();
+          }
+          else {
+             //this is for the permit
+          }
+        
+        }
+      
     }
   }
 

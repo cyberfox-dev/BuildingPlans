@@ -286,17 +286,36 @@ export class ApplicationAlertsComponent implements OnInit {
       if (data.responseCode == 1) {
         this.permitHasDoc = [];
         for (let i = 0; i < data.dateSet.length; i++) {
-          
-          const current = data.dateSet[i].permitSubForCommentID;
 
-          const dataDoc: any = await this.permitService.hasPermitSubForCommentDocuments(current).toPromise();
-          if (dataDoc.responseCode == 1) {
-            
-            const hasDocs = dataDoc.dateSet.hasDocuments;
+          const current = data.dateSet[i];
+          if (current.hasSuperVisionFee == false) {
+            const dataDoc: any = await this.permitService.hasPermitSubForCommentDocuments(current.permitSubForCommentID).toPromise();
+            if (dataDoc.responseCode == 1) {
 
-            this.permitHasDoc.push(hasDocs);
+              const hasDocs = dataDoc.dateSet.hasDocuments;
+
+              this.permitHasDoc.push(hasDocs);
+
+            }
+          }
+          else if (current.hasSuperVisionFee == true && current.isPaid == true) {
+            const dataDoc: any = await this.permitService.hasPermitSubForCommentDocuments(current.permitSubForCommentID).toPromise();
+            if (dataDoc.responseCode == 1) {
+
+              const hasDocs = dataDoc.dateSet.hasDocuments;
+
+              this.permitHasDoc.push(hasDocs);
+
+            }
 
           }
+          else {
+            this.permitHasDoc.push(false);
+            //pushing false into array because permitSubForComment has unpaid supervision fee
+          }
+        
+      
+         
 
 
 

@@ -773,3 +773,7 @@ mat-button-toggle {
     transform: translateY(0);
   }
 }
+
+.projectSizeSelection{
+    width:100%;
+}

@@ -48,7 +48,7 @@ export class ApplicationsService {
       DatePaid: datePaid,
       WBSRequired: WBSRequired,
       Coordinates: coordinates,
-      NetworkLicense:networkLicenses
+      NetworkLicenses:networkLicenses
   
     }
     return this.httpClient.post(this.baseURL + "AddUpdateApplication", body);
@@ -77,7 +77,7 @@ export class ApplicationsService {
 
 
   public deleteApplication(applicationID: number) {
-
+    debugger;
     return this.httpClient.post(this.baseURL + "DeleteApplication", applicationID);
 
   }

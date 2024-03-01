@@ -36,7 +36,8 @@ import { HomeComponent } from 'src/app/home/home.component';
 import { ZoneForCommentService } from 'src/app/service/ZoneForComment/zone-for-comment.service';
 import { FinancialService } from 'src/app/service/Financial/financial.service';
 import { ServiceItemService } from 'src/app/service/ServiceItems/service-item.service';
-import {  ProjectSizeCheckListService} from 'src/app/service/ProjectSizeCheckList/project-size-check-list.service';
+import { ProjectSizeCheckListService } from 'src/app/service/ProjectSizeCheckList/project-size-check-list.service';
+
 import { SelectionModel } from '@angular/cdk/collections';
 import { BehaviorSubject } from 'rxjs';
 import { ProjectSizedSelectionService } from 'src/app/service/ProjectSizedSelection/project-sized-selection.service';
@@ -522,6 +523,9 @@ export class NewWayleaveComponent implements OnInit {
   draftExcavationType: string = "";
   projectNum: string;
   fibreNetworkLicenses: boolean = false;
+  validProjectSizeSelection: boolean = false;
+    stringifiedDataCAD: any;
+    CAD: any;
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -574,6 +578,8 @@ export class NewWayleaveComponent implements OnInit {
     private projectSizeSelectionService: ProjectSizedSelectionService,
     private draftApplicationsService: DraftApplicationsService,
     private cdr: ChangeDetectorRef,
+   
+
   ) { }
 
   ngOnInit(): void {
@@ -2096,7 +2102,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
         this.addToZoneForComment();
-        this.getCurrentInvoiceNumberForGen(this.clientName + ' ' + this.clientSurname);
+        //this.getCurrentInvoiceNumberForGen(this.clientName + ' ' + this.clientSurname); Kyle Gounden
 
 
       }
@@ -2262,7 +2268,7 @@ export class NewWayleaveComponent implements OnInit {
        
           this.addToZoneForComment();
           //#region zxNum-and-contractorAccount Sindiswa 28 February 2024 - follow this method because invoice should no longer be generated at this stage
-          this.getCurrentInvoiceNumberForGen(this.externalName + ' ' + this.externalSurname);
+          //this.getCurrentInvoiceNumberForGen(this.externalName + ' ' + this.externalSurname);kyle Gounden
           //#endregion
           
           //this.onCreateNotification();
@@ -2421,20 +2427,7 @@ export class NewWayleaveComponent implements OnInit {
 
     for (var i = 0; i < this.TOENAMES.length; i++) {
       let current = this.TOENAMES[i].toString();
-      if (current == "Drilling") {
-        const newList = this.MandatoryDocumentUploadListDrilling.map(current => {
-          const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
-          tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
-          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
-          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
-          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
-          tempMandatoryDocumentsLinkedStagesList.stageName = null;
-          tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
-          return tempMandatoryDocumentsLinkedStagesList;
-        });
-
-        tempList = tempList.concat(newList);
-      }
+      
     }
 
     // Assuming MandatoryDocumentsLinkedStagesList is an observable, extract its current value
@@ -2452,7 +2445,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
   onWayleaveCreate(appUserId, isPlanning: boolean, isDraft: boolean) {
-    
+    debugger;
     console.log("Turtle Turtle, where are you? " + appUserId);
 
     //get ApplicationID form Shared to check if must update
@@ -2463,7 +2456,7 @@ export class NewWayleaveComponent implements OnInit {
     this.reapply = this.shared.getReapply();
     // #region Sindiswa 24 January 2024
     if (this.reapply == true && this.oldApplicationID === this.applicationID) {
-      
+      debugger;
       this.shared.clearContractorData();
       this.shared.clearEngineerData();
 
@@ -2483,7 +2476,7 @@ export class NewWayleaveComponent implements OnInit {
           this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
         }
         else {
-
+          debugger;
           alert("GIS Error");
         }
 
@@ -3245,7 +3238,12 @@ export class NewWayleaveComponent implements OnInit {
     this.modalService.open(doubleCheckDocUploads, { size: 'xl' });
   }
 
-  async getCurrentInvoiceNumberForGen(ClientName: string) {
+  async getCurrentInvoiceNumberForGen(ClientName: string, ApplicationID: number | null) {
+    
+    if (this.applicationID === 0) {
+      this.applicationID = ApplicationID;
+    }
+
     await this.configService.getConfigsByConfigName("InvoiceNumber").subscribe((data: any) => {
       if (data.responseCode == 1) {
         const current = data.dateSet[0];
@@ -3307,8 +3305,8 @@ export class NewWayleaveComponent implements OnInit {
     //alert(this.accountNumber.toString() + cdv.toString());
     this.generatedInvoiceNumber = this.accountNumber.toString() + cdv.toString();
 
-    //this.generateInvoice(ClientName); //zxNum-and-contractorAccount Sindiswa 28 February 2024 - commented out because invoice not created at this stage
-
+    this.generateInvoice(ClientName); //zxNum-and-contractorAccount Sindiswa 28 February 2024 - commented out because invoice not created at this stage
+    debugger;
 
   }
 
@@ -3354,16 +3352,21 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   getSubByName(subDepName: string) {
+    if (this.SubDepartmentList.length == null) {
+      this.getAllSubDepartments();
+    }
     for (let i = 0; i < this.SubDepartmentList.length; i++) {
       if (this.SubDepartmentList[i].subDepartmentName === subDepName) {
         return this.SubDepartmentList[i];
       }
     }
+    alert("Invoice Subdepartment broke");
     return null;  // or you might want to throw an error
   }
 
 
   generateInvoice(ClientName: string) {
+    debugger;
     if (!this.internal) {
       // Create a new PDF
       const doc = new jsPDF();
@@ -3432,9 +3435,11 @@ export class NewWayleaveComponent implements OnInit {
       // this.generateInvoiceSplit(ClientName, payableByDate,);
 
       // Navigate to home page
+      debugger;
       this.router.navigate(["/home"]);
-      alert("Your invoice has been created. You may find the invoice in the 'Financial' tab within your application");
-      this.openSnackBar("Application Created");
+     //alert("Your invoice has been created. You may find the invoice in the 'Financial' tab within your application");
+      alert("Applicant invoice has been created. They will be notified the invoice in the 'Financial' tab within this application");
+      this.openSnackBar("Applicant invoice has been created");
     }
   }
 
@@ -3447,12 +3452,16 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   addClientDetails(doc, ClientName) {
+    debugger;
+    this.stringifiedDataCAD = JSON.parse(JSON.stringify(localStorage.getItem('contractorAccountDetails')));
+    this.CAD = JSON.parse(this.stringifiedDataCAD);
     autoTable(doc, {
       body: [['Invoice to:  ' + ClientName
         + '\nWayleave Reference: ' + this.applicationID
         + '\nTax invoice number: ' + this.generatedInvoiceNumber
         + '\nDate: ' + this.formattedDate
         + '\nCustomer VAT registration number: No.4500193497'
+ + '\nContract Account Details: ' + this.CAD 
         + '\nBusiness partner number: No.4500193497']],
       styles: { halign: 'right' },
       theme: 'plain'
@@ -3525,9 +3534,12 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   addAccountDetails(doc, payableByDate, startY) {
-    const boxContent = 'Profit Centre: ' + this.getSubByName("EMB").ProfitCenter
-      + '\nGL Acc: ' + this.getSubByName("EMB").GLCode
+  
+
+    const boxContent = 'Profit Centre: ' + /*this.getSubByName("EMB").ProfitCenter*/"232323"
+      + '\nGL Acc: ' + /*this.getSubByName("EMB").GLCode*/ "232323"
       + '\nPayable by: ' + payableByDate.toISOString().slice(0, 10); // Format date as YYYY-MM-DD
+   
 
     autoTable(doc, {
       body: [[boxContent]],
@@ -3569,26 +3581,31 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   saveAndUploadPDF(doc) {
+    debugger;
     const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
     const file = new File([pdfData], 'Wayleave Application Fee Invoice.pdf', { type: 'application/pdf' });
 
     // Prepare the form data
     const formData = new FormData();
     formData.append('file', file);
-
+    debugger;
     this.shared.pushFileForTempFileUpload(file, "Wayleave Application Fee Invoice" + ".pdf");
+    debugger;
     this.save();
+    debugger;
   }
 
 
   save() {
+    debugger;
+    
     const filesForUpload = this.shared.pullFilesForUpload();
     for (let i = 0; i < filesForUpload.length; i++) {
       const formData = new FormData();
       let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
       let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "_appID" + this.applicationID;
       formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
-
+      debugger;
       this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
         .subscribe({
           next: (event) => {
@@ -3596,6 +3613,7 @@ export class NewWayleaveComponent implements OnInit {
               this.progress = Math.round(100 * event.loaded / event.total);
             } else if (event.type === HttpEventType.Response) {
               this.message = 'Upload success.';
+              debugger;
               this.uploadFinishedF(event.body);
             }
           },
@@ -5178,10 +5196,10 @@ export class NewWayleaveComponent implements OnInit {
     }
     if (LUMCount > 0 && (smallCount == 0 && mediumCount == 0 && largeCount == 0)) {
       alert("You have made asn LUM selection only ,you are required to make another selection along with it in order to proceed");
-
+      this.validProjectSizeSelection = false;
     }
     else {
-      this.modalService.dismissAll();
+      this.validProjectSizeSelection = true;
     }
   }
 
@@ -5348,7 +5366,10 @@ export class NewWayleaveComponent implements OnInit {
 
       this.ProjectSizeSelectionList.push(tempSelectionList);
     }
-    
+
+    if (this.validProjectSizeSelection == true) {
+      this.modalService.dismissAll();
+    }
   }
   SavedProjectSizeSelections() {
 

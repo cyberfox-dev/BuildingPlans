@@ -104,6 +104,7 @@ export class RefreshService {
   }
 
   disableRefreshNavigation() {
+    debugger;
     window.removeEventListener('beforeunload', this.handleWindowBeforeUnload);
     window.removeEventListener('load', this.handleWindowLoad);
   }

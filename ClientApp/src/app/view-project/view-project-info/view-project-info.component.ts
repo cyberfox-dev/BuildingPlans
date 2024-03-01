@@ -653,8 +653,15 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
     //#region reapply Sindiswa 26 January 2024
+    debugger;
+/*JJS Commit 29-02-24(removed full-screen mode for maps and sorted approval pack btn and former wayleave tab)*/
+    if (this.sharedService.getShowFormerApps.length > 0) {
+      this.showFormerApps = true
+    }
+    else {
+      this.showFormerApps = false;
+    }
 
-    this.showFormerApps = this.sharedService.getShowFormerApps();
     this.fromReApplyArchive = this.sharedService.getFromReApplyArchive();
     this.routerSubscription = this.sharedService.getRoutingToOldAapp();
     // #endregion
@@ -750,15 +757,16 @@ export class ViewProjectInfoComponent implements OnInit {
     this.getFinancial();
     
     this.getEMBUsers();
-    this.getServiceItem("001");
-    this.getServiceItem("002");
-    this.getServiceItem("003");
+
     this.getAllSubDepartments();
     this.getLinkedDepartmentsFORAPPROVAL();
     this.CheckForApprovalPackDownload();
     //Progress bar Kyle 07-02-24
     this.CalCulateApprovalProgess();
     this.getZXNumberDetails();//
+    
+
+    
   }
   // #region reapply Sindiswa 26 January 2024
   ngOnDestroy() {
@@ -2483,7 +2491,7 @@ export class ViewProjectInfoComponent implements OnInit {
   
 
   checkIfPermitExsist() {
-
+    debugger;
     if (this.applicationDataForView[0].CreatedById == this.CurrentUser.appUserId) {
       this.permitBtn = true;
       this.permitTextBox = false;
@@ -2502,6 +2510,7 @@ export class ViewProjectInfoComponent implements OnInit {
   updateStartDateForPermit() {
     this.applicationsService.addUpdateApplication(this.CurrentApplicationBeingViewed[0].applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.permitStartDate).subscribe((data: any) => {
       if (data.responseCode == 1) {
+        debugger;
         this.onAutoLinkForPermit();
         this.router.navigate(["/home"]);/*Permit Kyle 13-02-24*/
       }
@@ -2600,7 +2609,6 @@ export class ViewProjectInfoComponent implements OnInit {
       });
     }
   }
-
   // #endregion
 
   setInterface() {
@@ -4744,7 +4752,17 @@ export class ViewProjectInfoComponent implements OnInit {
   }
   /*Progess bar Kyle 07-02-24*/
      //Project size Kyle 27-02-24
-  getAllManDocForPTWStage(permitModal:any) {
+  getAllManDocForPTWStage(permitModal: any) {
+    const excavations = this.ExcavationType.split(",");
+    var hasDrilling = false;
+   
+    for (let i = 0; i < excavations.length; i++) {
+      if (excavations[i].trim() == "Drilling") {
+        hasDrilling = true;
+      }
+
+    }
+    debugger;
     if (this.applicationDataForView[0].permitStartDate == null && this.applicationDataForView[0].CurrentStageName == "PTW") {
       this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);
       this.mandatroyDocumentUploadService.getAllMandatoryDocumentsLinkedToStage(this.applicationDataForView[0].CurrentStageName).subscribe((data: any) => {
@@ -4755,27 +4773,51 @@ export class ViewProjectInfoComponent implements OnInit {
             const tempMandatoryDocList = {} as MandatoryDocumentUploadList;
             const current = data.dateSet[i];
             const applicationSize = this.applicationDataForView[0].TypeOfApplication;
+            debugger;
+            if (hasDrilling == true) {
+              debugger;
+              if (applicationSize == "Large") {
+                tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
+                tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
+                tempMandatoryDocList.stageID = current.stageID;
+                tempMandatoryDocList.dateCreated = current.dateCreated;
+                tempMandatoryDocList.hasFile = false;
+                this.MandatoryDocumentUploadList.push(tempMandatoryDocList);
+              }
 
-            if (applicationSize == "Large") {
-              tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
-              tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
-              tempMandatoryDocList.stageID = current.stageID;
-              tempMandatoryDocList.dateCreated = current.dateCreated;
-              tempMandatoryDocList.hasFile = false;
-              this.MandatoryDocumentUploadList.push(tempMandatoryDocList);
+              else if (applicationSize != "Large" && current.mandatoryDocumentName != "Construction Program or Phasing Program") {
+                tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
+                tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
+                tempMandatoryDocList.stageID = current.stageID;
+                tempMandatoryDocList.dateCreated = current.dateCreated;
+                tempMandatoryDocList.hasFile = false;
+                this.MandatoryDocumentUploadList.push(tempMandatoryDocList);
+              }
             }
-
-            else if (applicationSize != "Large" && current.mandatoryDocumentName != "Construction Program or Phasing Program") {
-              tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
-              tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
-              tempMandatoryDocList.stageID = current.stageID;
-              tempMandatoryDocList.dateCreated = current.dateCreated;
-              tempMandatoryDocList.hasFile = false;
-              this.MandatoryDocumentUploadList.push(tempMandatoryDocList);
+            else {
+              debugger;
+              if (applicationSize == "Large" && current.mandatoryDocumentName != "Drill plan") {
+                tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
+                tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
+                tempMandatoryDocList.stageID = current.stageID;
+                tempMandatoryDocList.dateCreated = current.dateCreated;
+                tempMandatoryDocList.hasFile = false;
+                this.MandatoryDocumentUploadList.push(tempMandatoryDocList);
+              }
+              else if (applicationSize != "Large" && current.mandatoryDocumentName != "Construction Program or Phasing Program" && current.mandatoryDocumentName != "Drill plan") {
+                tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
+                tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
+                tempMandatoryDocList.stageID = current.stageID;
+                tempMandatoryDocList.dateCreated = current.dateCreated;
+                tempMandatoryDocList.hasFile = false;
+                this.MandatoryDocumentUploadList.push(tempMandatoryDocList);
+              }
             }
-            
           }
-          this.sharedService.setApplicationID(this.ApplicationID);
+
+          
+
+          console.log("apply for permit document upload list",this.MandatoryDocumentUploadList)
           this.openPermitModal(permitModal);
           
         }
@@ -4809,6 +4851,7 @@ export class ViewProjectInfoComponent implements OnInit {
       if (data.responseCode == 1) {
         //this.getZXNumberDetails();
         this.getZXNumberDetailsAfterZXEntry();
+        alert("Save Successful");
       }
       else {
         alert(data.responseMessage);
@@ -4824,6 +4867,7 @@ export class ViewProjectInfoComponent implements OnInit {
       if (data.responseCode == 1) {
         //this.getZXNumberDetails();
         this.getZXNumberDetailsAfterZXEntry();
+        alert("Save Successful");
       }
       else {
         alert(data.responseMessage);
@@ -4943,6 +4987,18 @@ export class ViewProjectInfoComponent implements OnInit {
     //1. is this how one saves in local storage?
     localStorage.setItem('contractorAccountDetails', this.contractorAccountDetails);
     //2. create the invoice now?!
+    this.NewWayleaveComponent.getServiceItem("001");
+    this.NewWayleaveComponent.getServiceItem("002");
+    this.NewWayleaveComponent.getServiceItem("003");
+   
+    this.genInvoice();
+   
   }
+  genInvoice() {
+    this.NewWayleaveComponent.getCurrentInvoiceNumberForGen("Turtle Speed", this.ApplicationID);
+  }
+
+
+
   //#endregion
 }
