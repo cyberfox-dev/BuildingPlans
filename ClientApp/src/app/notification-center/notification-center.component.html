@@ -23,6 +23,7 @@
           </div>
           <div class="timeline__event__description">
             <!--checkingNotifications Sindiswa 15 February 2024-->
+            <p *ngIf="notification.NotificationDescription === 'New wayleave application submission needs contractor account details'">Application {{ notification.ApplicationID }} created on the {{ notification.DateCreated }} by an external applicant needs ZX number input.</p> <!--zxNum-and-contractorAccount Sindiswa 28 February 2024-->
             <p *ngIf="notification.NotificationDescription === 'New wayleave application submission needs ZX number'">Application {{ notification.ApplicationID }} created on the {{ notification.DateCreated }} by an external applicant needs ZX number input.</p> <!--zxNum-and-contractorAccount Sindiswa 28 February 2024-->
             <p *ngIf="notification.NotificationDescription === 'Wayleave applicant payment '">Application {{ notification.ApplicationID }} payment processed on {{ notification.DateCreated }}</p>
             <p *ngIf="notification.NotificationDescription === 'Application returned by senior reviewer'">Application {{ notification.ApplicationID }} was returned by senior reviewer on {{ notification.DateCreated }}</p>
@@ -71,6 +72,7 @@
           </div>
           <div class="timeline__event__description">
             <!--checkingNotifications Sindiswa 15 February 2024-->
+            <p *ngIf="notifications.NotificationDescription === 'New wayleave application submission needs contractor account details'">Application {{ notifications.ApplicationID }} created on the {{ notifications.DateCreated }} by an external applicant needs ZX number input.</p> <!--zxNum-and-contractorAccount Sindiswa 28 February 2024-->
             <p *ngIf="notifications.NotificationDescription === 'New wayleave application submission needs ZX number'">Application {{ notifications.ApplicationID }} created on the {{ notifications.DateCreated }} by an external applicant needs ZX number input.</p> <!--zxNum-and-contractorAccount Sindiswa 28 February 2024-->
             <p *ngIf="notifications.NotificationDescription === 'Wayleave applicant payment '">Application {{ notifications.ApplicationID }} payment processed on {{ notifications.DateCreated }}</p>
             <p *ngIf="notifications.NotificationDescription === 'Application returned by senior reviewer'">Application {{ notifications.ApplicationID }} was returned by senior reviewer on {{ notifications.DateCreated }}</p>
