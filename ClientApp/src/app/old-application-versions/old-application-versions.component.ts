@@ -46,6 +46,7 @@ export interface ApplicationList {
   UserID: any;
   clientAlternativeEmail: string;
   NetworkLicensees: any// chekingNotifications Sindiswa 13 February 2024
+  ContractorAccountDetails: string; //zxNumberUpdate Sindiswa 01 March 2024
 }
 export interface ApplicationsList {
   ApplicationID: number;
@@ -197,7 +198,7 @@ export class OldApplicationVersionsComponent implements OnInit {
 
           tempApplicationListShared.isPlanning = current.isPlanning;
           tempApplicationListShared.permitStartDate = current.permitStartDate;
-
+          tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
 
 
           this.applicationDataForView.push(tempApplicationListShared);

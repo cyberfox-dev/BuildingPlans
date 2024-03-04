@@ -43,5 +43,6 @@ namespace WayleaveManagementSystem.IServices
         Task<Applications> AddUpdateZXNumbers(int? ApplicationID, string? WaterZXNumber, string? RIMZXNumber); //zxNum-and-contractorAccount Sindiswa 28 February 2024
         Task<List<ApplicationsDTO>> GetZXDetails(int applicationID);//zxNum-and-contractorAccount Sindiswa 28 February 2024
 
+        Task<Applications> AddUpdateContractorAccountDetails(int? ApplicationID, string? ContractorAccountDetails); //zxNumberUpdate Sindiswa 01 March 2024
     }
 }

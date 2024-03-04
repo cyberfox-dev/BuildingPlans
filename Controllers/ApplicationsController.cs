@@ -515,5 +515,33 @@ namespace WayleaveManagementSystem.Controllers
         }
         #endregion
 
+        [HttpPost("AddUpdateContractorAccountDetails")]
+        public async Task<object> AddUpdateContractorAccountDetails([FromBody] ApplicationsBindingModel model)
+        {
+
+            try
+            {
+
+                if (model == null || !ModelState.IsValid)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.AddUpdateContractorAccountDetails(model.ApplicationID, model.ContractorAccountDetails);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Contractor Details Added/Updated Successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+
+        }
+
     }
 }

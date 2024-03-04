@@ -33,7 +33,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _departmentsService.AddUpdateDepartments(model.DepartmentID, model.DepartmentName,model.hasSubDepartment ,model.CreatedById);
+                    var result = await _departmentsService.AddUpdateDepartments(model.DepartmentID, model.DepartmentName,model.hasSubDepartment ,model.CreatedById,/*zxNumberUpdate Sindiswa 01 March 2024 - didn't realise this existed*/ model.needsZXNumber);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.DepartmentID > 0 ? "Department Updated Successfully" : "Department Added Successfully"), result));
                 }
 

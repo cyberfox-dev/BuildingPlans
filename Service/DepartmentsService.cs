@@ -18,7 +18,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Departments> AddUpdateDepartments(int? departmentID, string departmentName, bool hasSubDepartment, string? createdById )
+        public async Task<Departments> AddUpdateDepartments(int? departmentID, string departmentName, bool hasSubDepartment, string? createdById, /*zxNumberUpdate Sindiswa 01 March 2024*/bool? needsZXNumber)
         {
             if (departmentID == 0) 
             {
@@ -36,7 +36,8 @@ namespace WayleaveManagementSystem.Service
                     DateUpdated = DateTime.Now,
                     CreatedById = createdById,
                     isActive = true,
-                    hasSubDepartment = hasSubDepartment
+                    hasSubDepartment = hasSubDepartment,
+                    needsZXNumber = needsZXNumber //zxNumberUpdate Sindiswa 01 March 2024
                 };
 
                 await _context.DepartmentsTable.AddAsync(tempDepartmentsTable);
@@ -47,7 +48,22 @@ namespace WayleaveManagementSystem.Service
             }
             else 
             {
-                tempDepartmentsTable.DepartmentName = departmentName;
+
+                #region zxNumberUpdate Sindiswa 01 March 2024
+                if (departmentName != null)
+                {
+                    tempDepartmentsTable.DepartmentName = departmentName;
+                }
+                if (hasSubDepartment !=null)
+                {
+                    tempDepartmentsTable.hasSubDepartment = hasSubDepartment;
+                }
+                if (needsZXNumber != null)
+                {
+                    tempDepartmentsTable.needsZXNumber = needsZXNumber;
+                }
+                #endregion
+               
                 tempDepartmentsTable.DateUpdated = DateTime.Now;
                 tempDepartmentsTable.isActive = true;
 
@@ -89,9 +105,8 @@ namespace WayleaveManagementSystem.Service
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     isActive = true,
-                    hasSubDepartment = Departments.hasSubDepartment
-
-
+                    hasSubDepartment = Departments.hasSubDepartment,
+                    needsZXNumber = Departments.needsZXNumber,// zxNumberUpdate Sindiswa 01 March 2024
                 }
                 ).ToListAsync();
         }
@@ -108,9 +123,21 @@ namespace WayleaveManagementSystem.Service
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     isActive = true,
-                    hasSubDepartment = Departments.hasSubDepartment
+                    hasSubDepartment = Departments.hasSubDepartment,
+                    needsZXNumber = Departments.needsZXNumber,// zxNumberUpdate Sindiswa 01 March 2024
                 }
                 ).ToListAsync();
         }
+
+        #region zxNumberUpdate Sindiswa 04 March 2024
+        public async Task<int> CountDepartmentsThatNeedZXNumber()
+        {
+            return await (
+                from department in _context.DepartmentsTable
+                where department.isActive == true && department.needsZXNumber == true
+                select department
+            ).CountAsync();
+        }
+        #endregion
     }
 }
