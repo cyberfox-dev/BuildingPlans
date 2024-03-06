@@ -171,7 +171,7 @@ export class ProjectDetailsMapComponent implements OnInit {
     private subDepartmentForCommentService: SubDepartmentForCommentService,
     private zoneForCommentService: ZoneForCommentService,
     private notificationsService: NotificationsService,
-    private mapService: MapService
+    private mapService: MapService,
 
     //Physical address of project Kyle 16/01/24
     private newWayleaveComponent : NewWayleaveComponent,
@@ -1055,6 +1055,10 @@ export class ProjectDetailsMapComponent implements OnInit {
 
               // Do something with the address (e.g., display it on the UI)
               this.sharedService.setAddressData(address);
+
+              //Physical address of project Kyle 16/01/24
+              this.newWayleaveComponent.addressSaved = true;
+              //Physical address of project Kyle 16/01/24
             })
             .catch((error) => {
               console.error("Reverse Geocoding Error:", error);
