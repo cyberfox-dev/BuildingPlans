@@ -153,8 +153,8 @@ export class ConfigurationComponent implements OnInit {
 
 
 
-  onFAQDelete(index:any) {
-    if (confirm("Are you sure to delete this question?" + this.FAQList[index].FAQID)) {
+  onFAQDelete(index: any) {
+    if (confirm("Are you sure to delete this question?" + this.FAQList[index].Question)) {
       
       this.faq.deleteFAQ(this.FAQList[index].FAQID).subscribe((data: any) => {
         

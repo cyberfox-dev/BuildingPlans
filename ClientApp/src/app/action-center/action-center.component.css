@@ -155,11 +155,12 @@ table {
 }
 .mat-purple {
   margin: 10px;
-  background-color: #ea2a74;
-  color: #fff;
-  width: 50px;
+  background-color: #ccdee2;
+  color: #005870;
+  width: 100%;
   height: 44px;
-  font-size:16px;
+
+  opacity: 70%;
 }
 .mat-orange {
   margin: 10px;
@@ -169,6 +170,7 @@ table {
   height: 44px;
   font-size: 16px;
 }
+/* actionCentreEdits Sindiswa 18 January*/
 .cont2 {
   display: flex;
   justify-content: space-around;
@@ -176,7 +178,16 @@ table {
   flex-wrap: nowrap;
   align-items: center;
   align-content: space-around;
-  padding:5px;
+  padding: 10px;
+}
+.mat-returnToSeniorReviewerBTN {
+  /* margin-bottom: 10px; */
+  background-color: darkseagreen;
+  color: #fff;
+  width: 100%;
+  height: 40px;
+  margin: 20px;
+  /* margin-bottom: 32px; */
 }
 ::ng-deep.mat-menu-panel {
   max-width: initial !important;
@@ -220,10 +231,10 @@ table {
 
 
 .example-full-width {
-  width: 100%;
+  width: 97%;
   background-color: white;
   color: black;
-  height: 182px;
+  height: 122px;
 }
 
 .actioncenter {
@@ -370,6 +381,74 @@ textarea {
 }
 
 
+/*actionCentreEdits Sindiswa 16 January 2024*/
+.centered-paragraph {
+  text-align: center;
+  margin-top: 20px; /* Adjust the margin-top value as needed */
+}
+/*notification Sindiswa 01 February 2024*/
+mat-column-subDepartmentName {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 40% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  text-align: center;
+}
+mat-column-zoneName {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 30% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  text-align: center;
+}
+/*notification Sindiswa 01 February 2024*/
+/*Service Information Kyle 31/01/24 */
+.mat-column-actions {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 15% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  text-align: center;
+}
 
-
-
+.mat-column-DocumentName {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 60% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+.mat-blue2 {
+  margin: 10px;
+  background-color: #005870;
+  color: #fff;
+ 
+}
+/*Service Information Kyle 31/01/24 */

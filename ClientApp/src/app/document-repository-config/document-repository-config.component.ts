@@ -61,13 +61,13 @@ export class DocumentRepositoryConfigComponent implements OnInit {
   }
 
   getAllDocumentCategories() {
-    debugger;
+    
     this.documentsCategoryList = [];
     this.documentsCategoryList.splice(0, this.documentsCategoryList.length);
     this.documentRepositoryService.getAllDocumentCategories().subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode === 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempCategoryList = {} as DocumentsCategoryList;
           const current = data.dateSet[i];
@@ -79,16 +79,16 @@ export class DocumentRepositoryConfigComponent implements OnInit {
 
           this.departmentsService.getDepartmentByDepartmentID(current.departmentID).subscribe((data: any) => {
             if (data.responseCode === 1) {
-              debugger;
+              
               tempCategoryList.departmentName = data.dateSet[0].departmentName;
             } else {
-              debugger;
+              
               
             }
 
             console.log("response", data);
           }, error => {
-            debugger;
+            
             console.log("Error", error);
           });
           this.documentsCategoryList.push(tempCategoryList);
@@ -97,13 +97,13 @@ export class DocumentRepositoryConfigComponent implements OnInit {
         
         this.dataSource.data = this.documentsCategoryList;
       } else {
-        debugger;
+        
         alert(data.responseMessage);
       }
 
       console.log("response", data);
     }, error => {
-      debugger;
+      
       console.log("Error", error);
     });
   }
@@ -116,27 +116,27 @@ export class DocumentRepositoryConfigComponent implements OnInit {
 
 
    AddUpdateDocumentCategory(documentRepositoryID: number, DepartmentID: any, newDocumentCategory: string) {
-    debugger;
+    
 
     if (DepartmentID == "All") {
-      debugger;
+      
       for (let i = 0; i < this.DepartmentsList.length; i++) {
         console.log("This is the current user:", this.CurrentUser);
         this.documentRepositoryService.addUpdateDocumentCategory(documentRepositoryID, newDocumentCategory, this.DepartmentsList[i].departmentID, this.CurrentUser.appUserId)
           .subscribe((data: any) => {
             if (data.responseCode === 1) {
-              debugger;
+              
               
 
               /*alert(data.responseMessage);*/
             } else {
-              debugger;
+              
               alert(data.responseMessage);
             }
            
             console.log("response", data);
           }, error => {
-            debugger;
+            
             console.log("Error", error);
           });
           
@@ -149,18 +149,18 @@ export class DocumentRepositoryConfigComponent implements OnInit {
       this.documentRepositoryService.addUpdateDocumentCategory(documentRepositoryID, newDocumentCategory, DepartmentID, this.CurrentUser.appUserId)
         .subscribe((data: any) => {
           if (data.responseCode === 1) {
-            debugger;
+            
 
             this.getAllDocumentCategories();
             /*alert(data.responseMessage)*/;
           } else {
-            debugger;
+            
             alert(data.responseMessage);
           }
 
           console.log("response", data);
         }, error => {
-          debugger;
+          
           console.log("Error", error);
         });
     }
@@ -171,16 +171,16 @@ export class DocumentRepositoryConfigComponent implements OnInit {
   
   
   getAllDepartments() {
-    debugger;
+    
     
     this.DepartmentsList.splice(0, this.DepartmentsList.length);
     this.departmentsService.getDepartmentsList().subscribe((data: any) => {
       if (data.responseCode === 1) {
-        debugger;
+        
 
         for (let i = 0; i < data.dateSet.length; i++)
         {
-          debugger;
+          
 
           const tempDepartmentsList = {} as DepartmentsList;
           const current = data.dateSet[i];
@@ -202,22 +202,22 @@ export class DocumentRepositoryConfigComponent implements OnInit {
   }
 
   onDeleteCategoryByCategoryID(index:number) {
-    debugger;
+    
     if (confirm("Are you sure to delete " + this.documentsCategoryList[index].documentCategoryName + "?")) {
       this.documentRepositoryService.deleteDocumentCategoryByID(this.documentsCategoryList[index].documentCategoryId).subscribe((data: any) => {
         if (data.responseCode === 1) {
-          debugger;
+          
           alert(data.responseMessage)
           this.getAllDocumentCategories();
         }
         else {
-          debugger;
+          
           alert(data.responseMessage);
         }
 
         console.log("response", data);
       }, error => {
-        debugger;
+        
         console.log("Error", error);
 
       })

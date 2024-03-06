@@ -8,12 +8,9 @@
   <mat-tab-group>
 
     <!--<mat-tab label="Roles">-->
-
-      <!-- <app-new-role></app-new-role>-->
-
-      <!--<app-roles-config></app-roles-config>
-    </mat-tab>-->
-
+    <!-- <app-new-role></app-new-role>-->
+    <!--<app-roles-config></app-roles-config>
+  </mat-tab>-->
     <!-----------------------------------------------------------Line Departments configuration-------------------------------------------------------------->
 
     <mat-tab label="Departments/Zones">
@@ -25,7 +22,7 @@
     <!--<mat-tab label="Zones">-->
     <!--      <app-new-zone></app-new-zone>-->
     <!--<app-zone-config></app-zone-config>
-    </mat-tab>-->
+  </mat-tab>-->
     <!-----------------------------------------------------------Acess Groups configuration-------------------------------------------------------------->
 
     <mat-tab label="Access Groups">
@@ -33,10 +30,9 @@
     </mat-tab>
 
     <!-----------------------------------------------------------Mandatory Docs configuration-------------------------------------------------------------->
-
     <!--<mat-tab label="Mandatory Docs">
-      <app-mandatory-docs-config></app-mandatory-docs-config>
-    </mat-tab>-->
+    <app-mandatory-docs-config></app-mandatory-docs-config>
+  </mat-tab>-->
     <!-----------------------------------------------------------GL Code configuration-------------------------------------------------------------->
     <mat-tab label="GL Code">
       <app-gl-code-config></app-gl-code-config>
@@ -51,9 +47,8 @@
     <!----------------------------------------------------------Project Size Config------------------------------------------------------------------------->
     <!--<mat-tab label="Project Size">
 
-      <app-project-size-config></app-project-size-config>
-    </mat-tab>-->
-
+    <app-project-size-config></app-project-size-config>
+  </mat-tab>-->
     <!-----------------------------------------------------------CSV configuration-------------------------------------------------------------->
     <!-----------------------------------------------------------CSV configuration-------------------------------------------------------------->
     <mat-tab *ngIf="isCSVVisible" label="CSV">
@@ -95,7 +90,12 @@
     <mat-tab label="Types Of Excavation">
       <app-type-of-excavation></app-type-of-excavation>
     </mat-tab>
-
+    <!-----------Banner Kyle 26/01/24-------------->
+    <!-----------------------------------------------------------System Alerts----------------------------------------------------------------------->
+    <mat-tab label="System Alert">
+      <app-system-alert-config></app-system-alert-config>
+    </mat-tab>
+    <!-----------Banner Kyle 26/01/24-------------->
     <!-----------------------------------------------------------FAQ-------------------------------------------------------------->
 
     <mat-tab label="FAQ">
@@ -110,10 +110,11 @@
               Question : {{faqList.Question}}
             </mat-panel-title>
           </div>
-          <!--<button mat-raised-button color="warn" ><i class="fa fa-trash" aria-hidden="true"></i></button>-->
+          <button mat-raised-button color="warn" (click)="onFAQDelete(i)"><i class="fa fa-trash" aria-hidden="true"></i></button>
         </mat-expansion-panel-header>
 
         <mat-label>Answer : {{faqList.Answer}}</mat-label>
+
       </mat-expansion-panel>
     </mat-tab>
 
@@ -124,7 +125,7 @@
     </mat-tab>
 
     <!-----------------------------------------------------Document Repository------------------------------------------------->
-    <mat-tab label =" Document Repository">
+    <mat-tab label=" Document Repository">
       <app-document-repository-config></app-document-repository-config>
     </mat-tab>
   </mat-tab-group>

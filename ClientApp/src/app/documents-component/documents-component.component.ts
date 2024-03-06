@@ -1,8 +1,9 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild ,AfterViewInit} from '@angular/core';
 import { MatTable } from '@angular/material/table';
 
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { DocumentUploadService } from '../service/DocumentUpload/document-upload.service';
+import { PermitComponentComponent } from 'src/app/permit-component/permit-component.component';
 import { SharedService } from "../shared/shared.service";
 import { PermitService } from '../service/Permit/permit.service';
 
@@ -20,7 +21,7 @@ export interface DocumentsList {
   templateUrl: './documents-component.component.html',
   styleUrls: ['./documents-component.component.css']
 })
-export class DocumentsComponentComponent implements OnInit {
+export class DocumentsComponentComponent implements OnInit{
 
   @Input() ApplicationID: number;
   @Input() ServiceConditionActive: boolean | null; 
@@ -37,22 +38,36 @@ export class DocumentsComponentComponent implements OnInit {
   dataSourceDoc = this.DocumentsList;
     currentApplication: any;
     applicationDataForView: any;
-    hasFile: boolean;
+  hasFile: boolean;
   fileCount = 0;
+
+  stringifiedDataUserProfile: any;
+  CurrentUserProfile: any;
 
   @Input() isCalledInsidePermit: boolean = false; //default?
   @Input() permitSubForCommentID: any;
+  @Input() permitDocumentName: any |null;
+  @Input() permitCommentStatus: string;//Permit Kyle 13-02-24
+  
+
   hasDocument: boolean = false;
-  constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService, private permitService : PermitService) { }
+  fromReApplyArchive: boolean; //reapply Sindiswa 26 January 2024
+  constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService, private permitService: PermitService, private permitComponentComponent: PermitComponentComponent) { }
 
   ngOnInit(): void {
     this.currentApplication = this.shared.getViewApplicationIndex();
     this.ApplicationID = this.currentApplication.applicationID;
-
+    //Permit Kyle 13-02-24
+    this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
+    this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
+    //Permit Kyle 13-02-24
     this.getAllDocsForApplication();
     this.hasPermitSubForCommentDocument();
-  }
+    this.fromReApplyArchive = this.shared.getFromReApplyArchive(); //reapply Sindiswa 26 January 2024
+   
 
+  }
+ 
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -85,9 +100,11 @@ export class DocumentsComponentComponent implements OnInit {
   }
 
   ConfirmUpload() {
-    if (!window.confirm("Are you sure you want to upload the file?")) {
+    if (!window.confirm("Are you sure you want to upload the file? You cannot change or delete this document once you save!")) {
       // Use the stored event data
       this.onFileDelete(this.lastUploadEvent, 0);
+    } else {
+      this.permitComponentComponent.getAllPermitForComment();
     }
     // Rest of the logic...
   }
@@ -101,6 +118,7 @@ export class DocumentsComponentComponent implements OnInit {
       }
 
     } else {
+      this.permitComponentComponent.getAllPermitForComment();
       this.modalService.dismissAll();
     }
 
@@ -112,18 +130,19 @@ export class DocumentsComponentComponent implements OnInit {
         this.hasFile = false;
       } else {
         this.hasFile = true;
+       
       }
   }
   onPassFileName(event: { uploadFor: string; fileName: string }) {
-    debugger;
+    
     const { uploadFor, fileName } = event;
     const index = parseInt(uploadFor.substring('CoverLetter'.length));
     this.fileAttrsName = "Doc";
-    this.hasFile = true;
+   /* this.hasFile = true;*/
     this.fileCount = this.fileCount + 1;
   }
   onFileDelete(event: any, index: number) {
-
+   
     this.fileAttrsName = "Doc";
     this.hasFile = false;
     //this.getAllDocsForApplication();
@@ -131,40 +150,77 @@ export class DocumentsComponentComponent implements OnInit {
   }
 
   onFileUpload(event: any) {
-    
-
+    if (this.isCalledInsidePermit) {
+        /*this.permitComponentComponent.getAllPermitForComment();*/
+    }
+   
   }
 
   viewDocument(index: any) {
+    
+    if (this.permitDocumentName != null && index == -1) {
+      // Make an HTTP GET request to fetch the document
+      fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.permitDocumentName}`)
+        .then(response => {
+          if (response.ok) {
+            // The response status is in the 200 range
 
-    // Make an HTTP GET request to fetch the document
-    fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.DocumentsList[index].DocumentName}`)
-      .then(response => {
-        if (response.ok) {
-          // The response status is in the 200 range
+            return response.blob(); // Extract the response body as a Blob
 
-          return response.blob(); // Extract the response body as a Blob
+          } else {
+            throw new Error('Error fetching the document');
+          }
+        })
+        .then(blob => {
+          // Create a URL for the Blob object
+          const documentURL = URL.createObjectURL(blob);
 
-        } else {
-          throw new Error('Error fetching the document');
-        }
-      })
-      .then(blob => {
-        // Create a URL for the Blob object
-        const documentURL = URL.createObjectURL(blob);
+          window.open(documentURL, '_blank');
 
-        window.open(documentURL, '_blank');
+          // Download the document
+          const link = document.createElement('a');
+          link.href = documentURL;
+          link.download = this.DocumentsList[index].DocumentName; // Set the downloaded file name
+          link.click();
+        })
+        .catch(error => {
+          console.log(error);
+          // Handle the error appropriately
+        });
+    }
+    else {
 
-        // Download the document
-        const link = document.createElement('a');
-        link.href = documentURL;
-        link.download = this.DocumentsList[index].DocumentName; // Set the downloaded file name
-        link.click();
-      })
-      .catch(error => {
-        console.log(error);
-        // Handle the error appropriately
-      });
+      // Make an HTTP GET request to fetch the document
+      fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.DocumentsList[index].DocumentName}`)
+        .then(response => {
+          if (response.ok) {
+            // The response status is in the 200 range
+
+            return response.blob(); // Extract the response body as a Blob
+
+          } else {
+            throw new Error('Error fetching the document');
+          }
+        })
+        .then(blob => {
+          // Create a URL for the Blob object
+          const documentURL = URL.createObjectURL(blob);
+
+          window.open(documentURL, '_blank');
+
+          // Download the document
+          const link = document.createElement('a');
+          link.href = documentURL;
+          link.download = this.DocumentsList[index].DocumentName; // Set the downloaded file name
+          link.click();
+        })
+        .catch(error => {
+          console.log(error);
+          // Handle the error appropriately
+        });
+    }
+
+  
 
   }
 
@@ -177,9 +233,11 @@ export class DocumentsComponentComponent implements OnInit {
         
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDocList = {} as DocumentsList;
+
           const current = data.dateSet[i];
-          debugger;
-          if (current.groupName != "Service Condition") {
+          const nameCheck = current.documentName.substring(0, 13);
+
+          if (current.documentName != "Service Condition" && nameCheck != "Approval Pack") {
             tempDocList.DocumentID = current.documentID;
             tempDocList.DocumentName = current.documentName;
             tempDocList.DocumentLocalPath = current.documentLocalPath;
@@ -189,12 +247,6 @@ export class DocumentsComponentComponent implements OnInit {
             this.DocumentsList.push(tempDocList);
           }
          
-
-
-
-         
-
-
         }
 
         this.DocumentsListTable?.renderRows();
@@ -221,12 +273,39 @@ export class DocumentsComponentComponent implements OnInit {
     console.log("This is the acquired permitforSubCommentID", this.permitSubForCommentID);
     if (this.isCalledInsidePermit) {
       this.permitService.hasPermitSubForCommentDocuments(this.permitSubForCommentID).subscribe((data) => {
-
+    
         console.log("API Response:", data);
         console.log("This is the response for the Has Document question", data.HasDocuments);
         this.hasDocument = data && data.dateSet.hasDocuments;
+       
+      
       });
+      console.log("PermitCommentStatusDocuments", this.permitCommentStatus, this.hasDocument, this.isCalledInsidePermit);
     }
   }
   // #endregion
+  //Permit Kyle 13-02-24
+  deletePermitDocument() {
+
+    
+    if (confirm("Are you sure you want to delete this document?")) {
+
+      this.permitService.deleteDocumentFromPermitSubForComment(this.ApplicationID, this.permitSubForCommentID).subscribe((data: any) => {
+        
+        if (data.responseCode == 1) {
+          alert(data.responseMessage);
+          this.hasPermitSubForCommentDocument()
+        }
+        else {
+          alert(data.responseMessage);
+
+        }
+
+      }, error => {
+        console.log("ErrorGetAllDocsForApplication: ", error);
+      })
+    }
+    
+  }
+  //Permit Kyle 13-02-24
 }

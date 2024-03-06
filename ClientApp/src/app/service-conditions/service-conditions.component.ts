@@ -39,7 +39,7 @@ export class ServiceConditionsComponent implements OnInit {
   applicationDataForView: any;
   hasFile: boolean;
   fileCount = 0;
-
+  fromReApplyArchive: boolean; //reapply Sindiswa 26 January 2024
   constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService) { }
 
   ngOnInit(): void {
@@ -47,18 +47,21 @@ export class ServiceConditionsComponent implements OnInit {
     this.ApplicationID = this.currentApplication.applicationID;
 
     this.getAllDocsForServiceConditions();
+    this.fromReApplyArchive = this.shared.getFromReApplyArchive(); // reapply Sindiswa 26 January 2024
   }
   getAllDocsForServiceConditions() {
 
     this.DocumentsList.splice(0, this.DocumentsList.length);
     this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
 
           const tempDocumentList = {} as DocumentsList;
           const current = data.dateSet[i];
-          if (current.groupName == "Service Condition") {
+/*JJS Commit 20-02-24*/
+          const nameCheck = current.documentName.substring(0, 13);
+          if (current.groupName == "Service Condition" || nameCheck == "Approval Pack" || nameCheck== "Rejection Pack" || current.groupName == "Permits") {
             tempDocumentList.DocumentID = current.documentID;
             tempDocumentList.DocumentName = current.documentName;
             tempDocumentList.DocumentLocalPath = current.documentLocalPath;
@@ -70,7 +73,7 @@ export class ServiceConditionsComponent implements OnInit {
             this.DocumentsList.push(tempDocumentList);
           }
 
-          debugger;
+          
 
 
 
@@ -156,7 +159,7 @@ export class ServiceConditionsComponent implements OnInit {
     }
   }
   onPassFileName(event: { uploadFor: string; fileName: string }) {
-    debugger;
+    
     const { uploadFor, fileName } = event;
     const index = parseInt(uploadFor.substring('CoverLetter'.length));
     this.fileAttrsName = "Doc";

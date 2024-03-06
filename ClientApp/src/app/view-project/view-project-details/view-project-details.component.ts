@@ -30,6 +30,7 @@ export interface ApplicationList {
   PreviousStageName: string,
   PreviousStageNumber: number,
   Coordinates: string,
+  NetworkLicensees: string;
 }
 
 @Component({
@@ -51,6 +52,7 @@ export class ViewProjectDetailsComponent implements OnInit {
     expectedEndDate: ['', Validators.required],
     physicalAddressOfProject: ['', Validators.required],
     coordinates: ['', Validators.required],
+    fibreNetworkLicensees: ['',Validators.required],
   }) 
   applicationDataForView: ApplicationList[] = [];
   constructor(private sharedService: SharedService, private formBuilder: FormBuilder) { }
@@ -58,7 +60,7 @@ export class ViewProjectDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     const setValues = this.applicationDataForView[0];
-
+    debugger;
     this.viewProjectDetails.controls["typeOfApplication"].setValue(setValues.TypeOfApplication);
     this.viewProjectDetails.controls["notificationNumber"].setValue(setValues.NotificationNumber);
     this.viewProjectDetails.controls["WBSNo"].setValue(setValues.WBSNumber);
@@ -66,13 +68,15 @@ export class ViewProjectDetailsComponent implements OnInit {
     this.viewProjectDetails.controls["descriptionOfWork"].setValue(setValues.DescriptionOfProject);
     this.viewProjectDetails.controls["typeOfWorks"].setValue(setValues.NatureOfWork);
     this.viewProjectDetails.controls["typeOfExcavation"].setValue(setValues.ExcavationType);
-    this.viewProjectDetails.controls["expectedStartDate"].setValue(setValues.ExpectedStartDate.toString().substring(0, setValues.ExpectedStartDate.toString().indexOf('T')));
-    this.viewProjectDetails.controls["expectedEndDate"].setValue(setValues.ExpectedEndDate.toString().substring(0, setValues.ExpectedEndDate.toString().indexOf('T')));
+  /*JJS Commit 20-02-24*/
+
     this.viewProjectDetails.controls["physicalAddressOfProject"].setValue(setValues.PhysicalAddressOfProject);
     this.viewProjectDetails.controls["coordinates"].setValue(setValues.Coordinates);
-
-
-   // this.viewProjectDetails.controls["typeOfApplication"].setValue(this.applicationDataForView.)
+    this.viewProjectDetails.controls["expectedEndDate"].setValue(setValues.ExpectedEndDate.toString().substring(0, setValues.ExpectedEndDate.toString().indexOf('T')));
+    this.viewProjectDetails.controls["expectedStartDate"].setValue(setValues.ExpectedStartDate.toString().substring(0, setValues.ExpectedStartDate.toString().indexOf('T')));
+    this.viewProjectDetails.controls["fibreNetworkLicensees"].setValue(setValues.NetworkLicensees);
+    // this.viewProjectDetails.controls["typeOfApplication"].setValue(this.applicationDataForView.)
+   
   }
 
 

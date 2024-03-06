@@ -18,6 +18,7 @@ using WayleaveManagementSystem.BindingModel;
 using WayleaveManagementSystem.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
+using WayleaveManagementSystem.Data.Migrations;
 
 namespace WayleaveManagementSystem.Controllers
 {
@@ -115,8 +116,81 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        [HttpPost("GetNotificationsForUserID")]
+        public async Task<object> GetNotificationsForUserID([FromBody] NotificationBindingModel model)
+        {
+            try
+            {
+
+                if (model.UserID.Length < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _notificationService.GetNotificationsForUserID(model.UserID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got all notifications for user", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
 
 
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+        [HttpPost("GetNotificationByNotificationID")]
+        public async Task<object> GetNotificationByNotificationID([FromBody] int? notificationID)
+        {
+            try
+            {
+
+                if (notificationID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _notificationService.GetNotificationByNotificationID(notificationID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Notifications List Created", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+        [HttpPost("GetUnreadNotificationsCount")]
+        public async Task<object> GetUnreadNotificationsCount([FromBody] NotificationBindingModel model)
+        {
+            try
+            {
+
+                if (model.UserID.Length < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _notificationService.GetUnreadNotificationsCount(model.UserID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Notifications Count Acquired", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
     }
 
 }

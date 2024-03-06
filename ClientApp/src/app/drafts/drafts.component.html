@@ -52,11 +52,13 @@
       <td mat-cell *matCellDef="let element"> {{element.DateCreated}} </td>
     </ng-container>
 
+
+    <!--//JJS-15-02-2024 Fixing the delete drafts (wasn't deleting)-->
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let i = index">
         <button mat-raised-button color="orange" matTooltip="Select Draft" (click)=" onSelectDraft(i)" mat-dialog-close><i class="fa fa-pencil"></i></button>
-        <button mat-raised-button color="warni" matTooltip="Delete Draft"><i class="fa fa-trash"></i></button>
+        <button mat-raised-button color="warni" matTooltip="Delete Draft" (click)=" onSelectDelete(i)"><i class="fa fa-trash"></i></button>
       </td>
     </ng-container>
 

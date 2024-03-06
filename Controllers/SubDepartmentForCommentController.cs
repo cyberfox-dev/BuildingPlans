@@ -276,8 +276,64 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-       
-        
+        #region actionCentreEdits Sindiswa 16 January 2024
+
+        //1. Need to create a way to check if a reviewer has been assigned
+
+        [HttpPost("GetAssignedReviewer")]
+        public async Task<object> GetAssignedReviewer([FromBody] SubDepartmentForCommentBindingModel model)
+        {
+            try
+            {
+
+                if (model.ApplicationID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _subDepartmentForCommentService.GetAssignedReviewer(model.ApplicationID, model.SubDepartmentID, model.ZoneID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Department For Comment List Created for Specific Zone", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        [HttpPost("AssignSeniorReviewerOrFinalApprover")]
+        public async Task<object> AssignSeniorReviewerOrFinalApprover([FromBody] SubDepartmentForCommentBindingModel model)
+        {
+            try
+            {
+
+                if (model == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _subDepartmentForCommentService.AssignSeniorReviewerOrFinalApprover(model.SubDepartmentForCommentID, model.UserAssaignedToComment);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.SubDepartmentForCommentID > 0 ? "Department For Comment Updated Successfully" : "Department For Comment Added Successfully"), result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        #endregion
+
     }
 
 }

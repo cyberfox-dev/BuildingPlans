@@ -628,6 +628,7 @@ namespace WayleaveManagementSystem.Service
                         UserID = upItem.UserID,
                         FullName = upItem.FullName,
                         Email = upItem.Email,
+                        AlternativeEmail = upItem.AlternativeEmail, //checkingNotifications Sindiswa 15 February 2024
                         PhoneNumber = upItem.PhoneNumber,
                         Directorate = upItem.Directorate,
                         zoneName = ztItem.ZoneName,
@@ -754,6 +755,7 @@ namespace WayleaveManagementSystem.Service
             }
         }
 
+       
     }
 
 }

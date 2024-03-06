@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel;
 using System;
 using WayleaveManagementSystem.Models.DTO;
+using WayleaveManagementSystem.Data.Migrations;
 
 namespace WayleaveManagementSystem.Service
 {
@@ -114,6 +115,58 @@ namespace WayleaveManagementSystem.Service
                 }
                 ).ToListAsync();
         }
-
+        #region escalation Sindiswa 30 January 2024 & 31 January 2024
+        public async Task<List<NotificationDTO>> GetNotificationsForUserID(string? userID)
+        {
+            return await (
+                from Notification in _context.Notification
+                where Notification.isActive == true && Notification.UserID == userID
+                select new NotificationDTO()
+                {
+                    NotificationID = Notification.NotificationID,
+                    NotificationName = Notification.NotificationName,
+                    NotificationDescription = Notification.NotificationDescription,
+                    IsRead = Notification.IsRead,
+                    UserID = Notification.UserID,
+                    ApplicationID = Notification.ApplicationID,
+                    DateCreated = Notification.DateCreated,
+                    DateUpdated = Notification.DateUpdated,
+                    CreatedById = Notification.CreatedById,
+                    Message = Notification.Message,
+                    isActive = true
+                }
+                ).ToListAsync();
+        }
+        public async Task<List<NotificationDTO>> GetNotificationByNotificationID(int? notificationID)
+        {
+            return await (
+                from Notification in _context.Notification
+                where Notification.isActive == true && Notification.NotificationID == notificationID
+                select new NotificationDTO()
+                {
+                    NotificationID = Notification.NotificationID,
+                    NotificationName = Notification.NotificationName,
+                    NotificationDescription = Notification.NotificationDescription,
+                    IsRead = Notification.IsRead,
+                    UserID = Notification.UserID,
+                    ApplicationID = Notification.ApplicationID,
+                    DateCreated = Notification.DateCreated,
+                    DateUpdated = Notification.DateUpdated,
+                    CreatedById = Notification.CreatedById,
+                    Message = Notification.Message,
+                    isActive = true
+                }
+                ).ToListAsync();
+        }
+        #endregion
+        //notifications Sindiswa 31 January 2024
+        public async Task<int> GetUnreadNotificationsCount(string? userID)
+        {
+            return await(
+                from Notification in _context.Notification
+                where Notification.isActive == true && Notification.UserID == userID && Notification.IsRead == false
+                select Notification
+            ).CountAsync();
+        }
     }
 }

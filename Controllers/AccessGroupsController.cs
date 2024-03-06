@@ -754,7 +754,8 @@ namespace WayleaveManagementSystem.Controllers
                     from accessGroupUserLink in _context.AccessGroupUserLink
                     where accessGroupUserLink.AccessGroupID == AgID[0]
                           && accessGroupUserLink.SubDepartmentID == model.SubDepartmentID
-                          && accessGroupUserLink.ZoneID == model.ZoneID
+                          //Reviewers List Kyle 22/01/24
+                          && accessGroupUserLink.ZoneID == model.ZoneID && accessGroupUserLink.isActive == true
                     select accessGroupUserLink.UserID).ToListAsync();
 
                 var result = await (
@@ -881,6 +882,7 @@ namespace WayleaveManagementSystem.Controllers
                         UserID = upItem.UserID,
                         FullName = upItem.FullName,
                         Email = upItem.Email,
+                        AlternativeEmail = upItem.AlternativeEmail, //checkingNotifications Sindiswa 16 February 2024
                         PhoneNumber = upItem.PhoneNumber,
                         Directorate = upItem.Directorate,
                         zoneName = ztItem.ZoneName,

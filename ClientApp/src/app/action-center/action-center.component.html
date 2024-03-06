@@ -1,5 +1,7 @@
 <div class="cont5">
-  <button mat-raised-button color="createWayleave" (click)="openXl(content)">Action Center</button>
+  <!--<button mat-raised-button color="createWayleave" (click)="openXl(content)">Action Center</button>-->
+  <button mat-raised-button color="createWayleave" (click)="actionCentreView(content)" *ngIf="!EMBLoggedIn">Action Center</button>
+  <button mat-raised-button color="createWayleave" (click)="onGoToEscalationActionCentre(escalatedToEMB)" *ngIf="EMBLoggedIn">Action Center</button>
 </div>
 
 
@@ -12,84 +14,51 @@
     <div class="cont">
       <!--<button mat-raised-button color="blue" *ngIf="CanAssignDepartment == true && canCommentFinalApprover == false && showPermitTab === false" (click)="openAssignDepartment(assign)">Assign Department to Project</button>-->
       <!--<button mat-raised-button color="blue" *ngIf="AssignProjectToZone == true && canCommentFinalApprover == false && showPermitTab === false" (click)="openAssignToZone(assignProjectToZone)">Assign Project to Zone</button>-->
-      <button mat-raised-button color="blue" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && showPermitTab === false" (click)="openAssignToUser(assignProjectToUser)">Assign User For Comment</button>
+      <!-- actionCentreEdits Sindiswa 16 January 2024 -->
+      <button mat-raised-button color="blue" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false" (click)="openAssignToUser(assignProjectToUser)">Assign User For Comment</button>
+      <button mat-raised-button color="blue" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == true" (click)="openAssignToUser(assignProjectToUser)">Assign Another User For Comment</button>
+      <button mat-raised-button color="blue" *ngIf="canCommentFinalApprover == true && canCommentSeniorReviewer == false && userAssignedText !==CurrentUser.appUserId" (click)=" takeOnthisApplication()">Take Application As A Final Approver </button> <!--Final Approver && Senior Approver Kyle 01/02/24-->
+      <button mat-raised-button color="blue" *ngIf="canCommentSeniorReviewer == true && canCommentFinalApprover == false && userAssignedText !==CurrentUser.appUserId" (click)=" takeOnthisApplication()">Take Application As A Senior Reviewer </button> <!---PTW flow Kyle 06-03-24-->
+      <button mat-raised-button color="blue" *ngIf="showPermitTab === true && CanAssignPermitIssuer === true" (click)="getAllPermitIssuersForSubDepartment(permitIssuers)">Assign Permit Issuer To Application</button>
+      <!-- endof actionCentreEdits Sindiswa 16 January 2024 -->
       <!-- <button mat-raised-button color="blue" *ngIf="hopperButton == true" (click)="onHopperClick()">Hopper</button>-->
     </div>
 
     <br>
-    <mat-divider *ngIf="CurrentApplication.isPlanning != true || canCommentFinalApprover != true"></mat-divider>
+    <mat-divider *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && showPermitTab === false"></mat-divider>
+    <!--    <mat-form-field>
+      <mat-label>Select A Comment From Your Comment Builder</mat-label>
+      <mat-select [(value)]="select" (selectionChange)="filterDepartment()" [(ngModel)]="selectDepFilterName">
+        <mat-option *ngFor="let comment of CommentList" value="{{comment.commentID}}">{{comment.commentName}}</mat-option>
+      </mat-select>
+    </mat-form-field>-->
+    <!--JJS Commit 20-02-24-->
     <br>
-    <!--<mat-form-field class="example-full-width" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true">-->
-      <!--|| canCommentFinalApprover == true-->
-      <!--<mat-label>Type New Comment/Special Condition </mat-label>
-  <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea"></textarea>-->
+    <mat-form-field class="example-full-width" *ngIf="(canComment || canCommentFinalApprover || canCommentSeniorReviewer) && userAssignedText == CurrentUser.appUserId">
+      <mat-label>Type new Comment/Special Condition. Please also make reference to the Services Conditions tab, if documents have been uploaded.</mat-label>
+      <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea" maxlength="250" (input)="updateCharacterCount()"></textarea>
+      <div>{{ leaveAComment.length }}/250</div>
+    </mat-form-field>
 
-  
-      <div class="example-full-width" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true">
-        <quill-editor [(ngModel)]="leaveAComment" [readOnly]="false">
-          <div quill-editor-toolbar>
-            <span class="ql-formats">
-              <button class="ql-bold" [title]="'Bold'"></button>
-              <select class="ql-color" [title]="'Text Color'">
-                <option value="rgb(0, 0, 0)" selected></option>
-                <option value="rgb(255, 0, 0)"></option>
-                <option value="rgb(255, 153, 0)"></option>
-                <option value="rgb(255, 255, 0)"></option>
-                <option value="rgb(0, 255, 0)"></option>
-                <option value="rgb(0, 255, 255)"></option>
-                <option value="rgb(0, 0, 255)"></option>
-                <!-- Add other color options as needed -->
-              </select>
-              <button class="ql-italic" [title]="'Italic'"></button>
-              <button class="ql-underline" [title]="'Underline'"></button>
-              <button class="ql-strike" [title]="'Strikethrough'"></button>
-              <button class="ql-script" value="sub"></button>
-              <button class="ql-script" value="super"></button>
-              <button class="ql-list" [title]="'Bullet List'" [value]="'bullet'"></button>
-              <button class="ql-list" [title]="'Numbered List'" [value]="'ordered'"></button>
-              <!--<button class="ql-link" [title]="'Enter URL'"></button>-->
-              <button class="ql-indent" [value]="'-1'"></button>
-              <button class="ql-indent" [value]="'+1'"></button>
-              <select class="ql-align" [title]="'Alignment'">
-                <option selected></option>
-                <option value="center"></option>
-                <option value="right"></option>
-                <option value="justify"></option>
-              </select>
-              <select class="ql-header">
-                <option value="false" selected></option>
-                <option value="1"></option>
-                <option value="2"></option>
-                <option value="3"></option>
-                <option value="4"></option>
-                <option value="5"></option>
-                <option value="6"></option>
-              </select>
-              <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"></button>
-              <!--<mat-menu #menu="matMenu" xPosition="before">-->
-              <mat-menu #menu="matMenu" xPosition="after">
-                <!--<button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>-->
-                <button type="button" mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)"> <span [innerHTML]="sanitizeHTML(comment.commentName)"></span></button>
+    <div class="cont2" *ngIf="userAssignedText == CurrentUser.appUserId">
+      <!--Final Approver && Senior Approver Kyle 01/02/24-->
 
-              </mat-menu>
-            </span>
-          </div>
-        </quill-editor>
-      </div>
-  
-      <div class="cont2">
-        <!--</mat-form-field>-->
-        <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"></button>
-        <!--<mat-menu #menu="matMenu" xPosition="before">-->
-        <mat-menu #menu="matMenu" xPosition="after">
-          <!--<button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button>-->
-          <button type="button" mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)"> <span [innerHTML]="sanitizeHTML(comment.commentName)"></span></button>
+      <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true">Select A Comment From Your Comment Builder</button>
+      <!--     <button mat-raised-button color="purple" (click)="openBottomSheet()">Select A Comment From Your Comment Builder</button>
+      -->
+      <!--<mat-menu #menu="matMenu" xPosition="before">-->
+      <!-- actionCentreEdits Sindiswa 15 January 2024 - a blank box will NO LONGER SHOW if comment list length is less than 1-->
+      <mat-menu #menu="matMenu" yPosition="above" width="100%">
+        <ng-container *ngIf="CommentDropDown.length > 0; else noComments"> <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)">{{comment.commentName}} </button></ng-container>
+        <ng-template #noComments>
+          <p style="padding: 10px; color: red; font-style: italic;">There are no comments in your comment collection.</p>
+        </ng-template><!--  <button type="button" mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)"> <span [innerHTML]="sanitizeHTML(comment.commentName)"></span></button>-->
 
-        </mat-menu>
-      </div>
+      </mat-menu>
+    </div>
 
 
-    <div class="cont2" *ngIf="canComment == true && canCommentFinalApprover == false">
+    <div class="cont2" *ngIf="canComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false">
       <button mat-raised-button color="approveBTN" (click)="onComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon"> Prov. Approved</button>
       <button mat-raised-button color="rejectBTN" (click)="onComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">   Prov. Not Approved</button>
       <button mat-raised-button color="clarifyBTN" (click)="onComment('Clarify');sendOption()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
@@ -97,20 +66,37 @@
 
     </div>
 
-    <div class="cont2" *ngIf="canCommentSeniorReviewer == true">
+    <div class="cont2" *ngIf="canCommentSeniorReviewer == true && canCommentFinalApprover == false && userAssignedText ==CurrentUser.appUserId">
+      <!--Final Approver && Senior Approver Kyle 01/02/24-->
+
       <button mat-raised-button color="approveBTN" (click)="onCommentSR('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">   Prov. Approved</button>
       <button mat-raised-button color="rejectBTN" (click)="onCommentSR('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon"> Prov. Not Approved</button>
       <button mat-raised-button color="clarifyBTN" (click)="onCommentSR('Clarify');sendOption()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
       <button mat-raised-button color="returnToReviewerBTN" (click)="onReturnToReviewerClick()"><i class="fa fa-reply" aria-hidden="true"></i>  Return To Reviewer</button>
-      <button mat-raised-button color="consultWithReviewerBTN" (click)="onReviewerClarityClick()"  ><i class="fa fa-comments" aria-hidden="true"></i>  Consult With Reviewer</button> <!---->
+      <button mat-raised-button color="consultWithReviewerBTN" (click)="onReviewerClarityClick()"><i class="fa fa-comments" aria-hidden="true"></i>  Consult With Reviewer</button> <!---->
 
     </div>
-    <div class="cont2" *ngIf="canCommentFinalApprover == true">
-      <!-- -->
+
+    <div class="cont2" *ngIf="canCommentFinalApprover == true && canCommentSeniorReviewer == false && userAssignedText == CurrentUser.appUserId">
+      <!--Final Approver && Senior Approver Kyle 01/02/24-->
+
+
       <button mat-raised-button color="approveBTN" (click)="FinalApprove('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approved</button>
       <button mat-raised-button color="rejectBTN" (click)="FinalApprove('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon"> Not Approved</button>
 
+      <button mat-raised-button color="clarifyBTN" [matMenuTriggerFor]="menu"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
+      <button mat-raised-button color="returnToReviewerBTN" (click)="onReturnToReviewerClick()"><i class="fa fa-reply" aria-hidden="true"></i>  Return To Reviewer</button>
+      <button mat-raised-button color="returnToSeniorReviewerBTN" (click)="onReturnToSeniorReviewerClick()"><i class="fa fa-reply" aria-hidden="true"></i>  Return To Senior Reviewer  </button>
+
+      <mat-menu #menu="matMenu" yPosition="above" width="100%">
+        <ng-container>
+          <button mat-menu-item (click)="onCommentFA('Clarify')">Applicant</button>
+          <button mat-menu-item (click)="onCommentFA('Reviewer')">Previous Reviewer</button>
+        </ng-container>
+      </mat-menu>
+      <!--Final Approver && Senior Approver Kyle 01/02/24-->
     </div>
+
     <div class="cont3">
       <!--this is for the wbs number -->
       <div *ngIf="WBSCHeckBox">
@@ -160,47 +146,178 @@
 
 
       <!--  WBSCheck: boolean = false;
-  checked: boolean = false;
-  DepositCheck: boolean = false;-->
+      checked: boolean = false;
+      DepositCheck: boolean = false;-->
       <!--this is for the deposit required  (click)="saveDeposit(deposit)"-->
-      <div *ngIf="DepositCHeckBox">
-        <mat-checkbox class="example-margin" *ngIf="canComment == true || canCommentSeniorReviewer == true && canCommentFinalApprover == false" [(ngModel)]="DepositCheck" (click)="getAllServiceItmesForDropdown(deposit)">Deposit Required</mat-checkbox>
+      <div class="row" *ngIf="DepositCHeckBox">
+        <div class="col">
+          <mat-checkbox class="example-margin" *ngIf="canComment == true || canCommentSeniorReviewer == true && canCommentFinalApprover == false" [(ngModel)]="DepositCheck" (click)="getAllServiceItmesForDropdown(deposit)">Deposit Required</mat-checkbox>
+        </div>
+        <div class="col">
+          <mat-checkbox class="example-margin" *ngIf="canComment == true || canCommentSeniorReviewer == true && canCommentFinalApprover == false" [checked]="supervisionFeeChecked" (change)="getAllServiceItemsForPermit(supervisionFee)">Add supervision fee</mat-checkbox>
         </div>
       </div>
-
-
-      <mat-spinner [diameter]="20" *ngIf="loading"></mat-spinner>
-      <button mat-raised-button color="saveDoc" (click)="saveDocument()" *ngIf="CurrentApplication.isPlanning === true && saveBtn">Save</button>
-      <div class="cont4" *ngIf="permit && canApprovePermit">
-        <mat-form-field class="example-full-width">
-          <!--|| canCommentFinalApprover == true-->
-          <mat-label>Type new comment</mat-label>
-          <textarea matInput [(ngModel)]="leaveACommentPermit" placeholder="Eg. This is good"></textarea>
-
-        </mat-form-field>
-        <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"></button>
-        <mat-menu #menu="matMenu" xPosition="before">
-          <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateCommentPermit(comment.commentName)">{{comment.commentName}} </button>
-
-        </mat-menu>
-
-
-      </div>
-      <div class="cont6" *ngIf="permit && canApprovePermit">
-        <button mat-raised-button color="approvePermit" *ngIf="canApprovePermit" (click)="PermitIssue('Approve')">Approve Permit</button>
-        <button mat-raised-button color="meetOnSite" *ngIf="canApprovePermit" (click)="PermitIssue('MeetOnSite')">Meet On Site</button>
-        <button mat-raised-button color="rejectPermit" *ngIf="canApprovePermit" (click)="PermitIssue('Reject')">Reject Permit</button>
-      </div>
-
     </div>
 
+
+    <mat-spinner [diameter]="20" *ngIf="loading"></mat-spinner>
+    <button mat-raised-button color="saveDoc" (click)="saveDocument()" *ngIf="CurrentApplication.isPlanning === true && saveBtn">Save</button>
+    <div class="cont4" *ngIf="permit && canApprovePermit">
+      <mat-form-field class="example-full-width">
+        <!--|| canCommentFinalApprover == true-->
+        <mat-label>Type new comment</mat-label>
+        <textarea matInput [(ngModel)]="leaveACommentPermit" placeholder="Eg. This is good"></textarea>
+
+      </mat-form-field>
+      <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"></button>
+      <mat-menu #menu="matMenu" xPosition="before">
+        <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateCommentPermit(comment.commentName)">{{comment.commentName}} </button>
+
+      </mat-menu>
+
+
+    </div>
+    <div class="cont6" *ngIf="permit && canApprovePermit">
+      <button mat-raised-button color="approvePermit" *ngIf="canApprovePermit" (click)="PermitIssue('Approve')">Approve Permit</button>
+      <button mat-raised-button color="meetOnSite" *ngIf="canApprovePermit" (click)="PermitIssue('MeetOnSite')">Meet On Site</button>
+      <button mat-raised-button color="rejectPermit" *ngIf="canApprovePermit" (click)="PermitIssue('Reject')">Reject Permit</button>
+    </div>
+    <!-- Permit Kyle 13-02 - 24-->
+
+  </div>
+  <!-- Permit Kyle 13-02 - 24-->
+  <!-- Service Information Kyle 31/01/24-->
+  <div class="modal-body" *ngIf="CurrentApplication.isPlanning === true">
+    <div class="cont">
+      <button mat-raised-button color="blue" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false" (click)="openAssignToUser(assignProjectToUser)">Assign User For Comment</button>
+      <button mat-raised-button color="blue" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == true && ServiceInfoDocumentsList.length == 0 " (click)="openAssignToUser(assignProjectToUser)">Assign Another User For Comment</button>
+      <button mat-raised-button color="blue" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false" (click)=" AdminAssigningIsPlanningToSelf()">Assign To Myself</button>
+    </div>
+    <mat-tab-group *ngIf="CurrentApplication.isPlanning === true && hasReviewerAssignment === true">
+      <mat-tab label="Upload Documents">
+
+
+        <div class="cont">
+          <mat-form-field *ngIf="CurrentApplication.isPlanning === true && hasReviewerAssignment === true">
+            <div>
+              <mat-toolbar>
+
+                <!-- <input matInput [(ngModel)]="fileAttrs[0]" readonly name="name" />-->
+
+                <div class="row">
+                  <div class="container-fluid">
+                    <div class="row" style="margin-bottom:15px;">
+                      <div class="container-fluid">
+
+                        <input matInput [(ngModel)]="fileAttrs" readonly name="name" />
+                        <!-- app-file-upload Component -->
+                        <div class="row" style="margin-bottom:35px;">
+                          <div class="container-fluid">
+                            <app-file-upload [ApplicationID]="ApplicationID"
+                                             [isPlanningDoc]="CurrentApplication.isPlanning"
+                                             [UploadFor]="fileAttrsName"
+                                             (passFileName)="onPassFileName($event)"
+                                             (onUploadFinished)="onFileDelete($event, 0)"
+                                             (onUploadSuccess)="onFileUpload($event)">
+                            </app-file-upload>
+                          </div>
+                        </div>
+
+
+
+
+                      </div>
+
+                    </div>
+
+                  </div>
+                </div>
+              </mat-toolbar>
+            </div>
+          </mat-form-field>
+        </div>
+        <div class="modal-footer" *ngIf="CurrentApplication.isPlanning === true && hasReviewerAssignment === true">
+          <button type="submit" class="btn btn-outline-success" (click)="onSaveDocumentUpload(content)">Save Upload</button>
+        </div>
+      </mat-tab>
+      <mat-tab label="View Uploads" *ngIf="ServiceInfoDocumentsList.length > 0">
+        <table mat-table class="mat-elevation-z8" [dataSource]="dataSourceServiceInfoDocuments">
+
+          <ng-container matColumnDef="DocumentName">
+            <th mat-header-cell *matHeaderCellDef>Document Name</th>
+            <td mat-cell *matCellDef="let element"> {{element.DocumentName}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>actions</th>
+            <td mat-cell *matCellDef="let i = index">
+              <button mat-raised-button color="blue2" matTooltip="View document"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid-white.svg" class="icon"></button>
+              <button mat-raised-button color="warn" matTooltip="Delete document" (click)="onDeleteDocument(i,content)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid-white.svg" class="icon"></button>
+            </td>
+            <td mat-cell *matCellDef="let element">  </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsDocs"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumnsDocs;"></tr>
+        </table>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+  <div class="cont6" *ngIf="ServiceInfoDocumentsList.length > 0">
+    <button mat-raised-button color="approveBTN" (click)=" Approve() "><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon"> Move to next stage</button>
+  </div>
+  <!-- Service Information Kyle 31/01/24-->
 </ng-template>
 
 
 <!--modal for when they click deposit required-->
-
 <!---->
 
+<ng-template #escalatedToEMB let-modal>
+  <div class="modal-header">
+    <h1 class="modal-title">EMB Action Center</h1>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <p class="text-center">Only {{this.departmentsDone}} out of {{this.totalDepartments}} departments have either final approved or final rejected the application. Would you like to send a reminder to the other department admins?</p>
+    <mat-form-field class="example-full-width">
+      <mat-label>Enter any additional notes for department admin(s) (optional).</mat-label>
+      <textarea matInput [(ngModel)]="embMessage" placeholder="Type your additional notes here." id="myTextarea"></textarea>
+    </mat-form-field>
+    <div class="cont2">
+      <button mat-raised-button color="clarifyBTN" (click)="sendEmailsToDepartments();modal.close('Save click');"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/paper-plane.svg" class="icon"> Send Reminder</button>
+
+    </div>
+    <hr />
+    <table mat-table [dataSource]=" dataSourceViewDepartmentsForEMBComment" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="subDepartmentName">
+        <th mat-header-cell *matHeaderCellDef> SubDepartment Name  </th>
+        <td mat-cell *matCellDef="let element"> {{element.subDepartmentName}} </td>
+      </ng-container>
+      <ng-container matColumnDef="zoneName">
+        <th mat-header-cell *matHeaderCellDef> Zone Name  </th>
+        <td mat-cell *matCellDef="let element"> {{element.zoneName}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="progress">
+        <!--notifications Sindiswa 01 February 2024 - changed column name when text text was being formatted funny-->
+        <th mat-header-cell *matHeaderCellDef> Progress </th>
+        <td mat-cell *matCellDef="let i = index; let element">
+          <!-- Display different text based on departmentDone and departmentYetToAssign -->
+          <span *ngIf="element.departmentDone">End of Comment Process</span>
+          <span *ngIf="element.departmentYetToAssign">No Reviewer has been assigned</span>
+          <span *ngIf="!element.departmentDone && !element.departmentYetToAssign">In Process</span>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef=" displayedColumnsViewDepartmentsForEMBComment"></tr>
+      <tr mat-row *matRowDef="let row; columns:  displayedColumnsViewDepartmentsForEMBComment;"></tr>
+    </table>
+
+  </div>
+</ng-template>
 
 <ng-template #deposit let-modal>
   <div class="modal-header">
@@ -401,10 +518,11 @@
   </div>
 
 </ng-template>
-
+<!-- actionCenterReassignReviewer Sindiswa 16 January 2024-->
 <ng-template #assignProjectToUser let-modal>
   <div class="modal-header">
-    <h1 class="modal-title">Assign User For Comment</h1>
+    <h1 class="modal-title" *ngIf="hasReviewerAssignment == false">Assign User For Comment</h1>
+    <h1 class="modal-title" *ngIf="hasReviewerAssignment == true">Assign Another User For Comment</h1>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
@@ -418,10 +536,13 @@
           </select>
 
         </div>-->
-
+        <p class="centered-paragraph" *ngIf="hasReviewerAssignment == true">This application has already been assigned to {{assignedReviewerName}}</p>
+        <p class="centered-paragraph" *ngIf="hasReviewerAssignment == false">{{specialText}}</p>
         <table mat-table [dataSource]="dataSourceViewUsersForLink" class="mat-elevation-z8">
 
-          
+
+
+
 
 
           <ng-container matColumnDef="fullName">
@@ -433,7 +554,7 @@
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef>Actions</th>
             <td mat-cell *matCellDef="let i = index;let element">
-              <mat-radio-button class="example-margin" (change)="userSelectedForManualLink(element)" [checked]="UserSelectionForManualLink.isSelected(element)">
+              <mat-radio-button class="example-margin" (change)="userSelectedForManualLink(element)" [checked]="UserSelectionForManualLink.isSelected(element)" [disabled]="element.fullName === assignedReviewerName">
               </mat-radio-button>
             </td>
           </ng-container>
@@ -443,21 +564,22 @@
         </table>
       </mat-tab>
 
-      <mat-tab label="View Selected User(s)">
+      <!-- endof actionCenterReassignReviewer Sindiswa 16 January 2024-->
+      <mat-tab label="View Selected User(s) ">
 
         <!--<div class="form-floating mb-3 mt-3" *ngIf="showZone">
           <select class="form-select" aria-label="Default select example" formControlName="viewSelectedZone" (change)="onSelectToPopulateZoneUsers($event,newUserLinkedToZone)">
             <option selected value="0">select a zone</option>
             <option *ngFor="let zone of ZoneDropdown" value="{{zone.zoneID}}">{{zone.zoneName}}</option>
           </select>
-           
+
         </div>-->
 
         <table mat-table [dataSource]="dataSourceViewUserForComment" class="mat-elevation-z8">
 
 
 
-      
+
 
 
 
@@ -468,8 +590,8 @@
 
 
           <!--<ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Actions</th>
-            <td mat-cell *matCellDef="let i = index;let element">-->
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let i = index;let element">-->
           <!-- <button mat-raised-button color="warn" (click)="deleteLinkedZoneForComment(i);modal.dismiss('Cross click')"><i class="fa fa-trash" aria-hidden="true"></i></button>-->
           <!--</td>
           </ng-container>-->
@@ -478,11 +600,13 @@
           <tr mat-row *matRowDef="let row; columns: displayedColumnsViewlinkedUserForComment;"></tr>
         </table>
 
+        <!-- ADD A CLARIFY!! NB: 17 January 2024-->
       </mat-tab>
     </mat-tab-group>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click');onManuallyAssignUser()">Save</button>
+    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click');textWithReviewerAssign();onManuallyAssignUser();" *ngIf="hasReviewerAssignment == false">Save</button>
+    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click');openAssignToNewUser(adminNotes)" *ngIf="hasReviewerAssignment == true">Save</button>
   </div>
 
 </ng-template>
@@ -529,3 +653,72 @@
   </div>
 </ng-template>
 
+<!-- actionCentreEdits Sindiswa 17 January 2024-->
+<ng-template #adminNotes let-modal>
+  <div class="modal-header">
+    <h1 class="modal-title">Add a Note for Selected Reviewer</h1>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <p class="centered-paragraph" *ngIf="hasReviewerAssignment == true">You're about to assign this application to {{newlySelectedReviewerName}}</p>
+    <mat-form-field class="example-full-width">
+      <mat-label>State why you're assigning this application to this new Reviewer. </mat-label>
+      <textarea matInput [(ngModel)]="adminNote" placeholder="Eg. Application is being handed over because..." id="myTextarea"></textarea>
+    </mat-form-field>
+  </div>
+  <div class="modal-footer">
+    <button mat-raised-button color="clarifyBTN" (click)="textWithReviewerAssign();onManuallyAssignUser();modal.close('Save click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"> Assign </button>
+  </div>
+</ng-template>
+<!-- endof actionCentreEdits Sindiswa 17 January 2024-->
+<!-- Permit Kyle 13-02 - 24-->
+<ng-template #supervisionFee let-modal>
+  <div class="modal-header">
+    <h1 class="modal-title">Slelect a supervision fee rate</h1>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+    <mat-checkbox style="align-items:flex-start; display:flex" (change)="onCheckServiceItem(i)" *ngFor="let items of PermitIssuerSuperVisionFeeList ; let i = index" [checked]="items.isChecked">{{items.serviceItemCode}} - R{{items.totalVat}}</mat-checkbox>
+  </div>
+
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="saveAllPermitSupervisionFees();modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+<!---PTW flow Kyle 06-03-24-->
+<ng-template #permitIssuers let-modal>
+  <div class="modal-header">
+    <h1 class="modal-title">Assign a Permit User to Application</h1>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+
+    <table mat-table [dataSource]="dataSourcePermitIssuers">
+      <ng-container matColumnDef="fullName">
+        <th mat-header-cell *matHeaderCellDef> User Name  </th>
+        <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let i = index;let element">
+          <mat-radio-button class="example-margin" (change)="PermitIssuerSelectedForManualLink(element)" [checked]="PermitIssuerForManualLink.isSelected(element)">
+          </mat-radio-button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsViewUsersForLink"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsViewUsersForLink;"></tr>
+    </table>
+
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-outline-success" (click)="onManuallyAssignPermitIssuer()">Save</button>
+    </div>
+  </div>
+
+
+</ng-template>
+<!-- Permit Kyle 13-02 - 24-->

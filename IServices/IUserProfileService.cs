@@ -31,5 +31,7 @@ namespace WayleaveManagementSystem.IServices
         Task<List<UserProfileDTO>> GetUsersBySubDepartmentName(string subDepartmentName);
         Task<object> GetUserByEmail(string email);
         Task<UserProfile> AdminConfig(int? userProfileID, bool? isDepartmentAdmin, bool? isZoneAdmin, string? createdById);
+
+       
     }
 }

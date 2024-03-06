@@ -18,8 +18,8 @@ export class NotificationsService {
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
-  public addUpdateNotification(notificationID?: number | null, notificationName?: string | null, notificationDescription?: string | null, isRead?: boolean | null, userID?: string | null, createdByID?: string | null, applicationID?: number | null , message?:string | null) {
-    debugger;
+  public addUpdateNotification(notificationID?: number | null, notificationName?: string | null, notificationDescription?: string | null, isRead?: boolean | null, userID?: string | null, applicationID?: number | null, createdByID?: string | null, message?:string | null) {
+    
     const body = {
       NotificationID: notificationID,
       NotificationName: notificationName,
@@ -50,7 +50,23 @@ export class NotificationsService {
     return this.httpClient.post(this.baseURL + "GetNotificationByUserID", body);
 
   }
+  // #region escalation Sindiswa 30 January 2024 & 31 January 2024
+  public getNotificationsForUserID(userID?: string) {
+    
+    const body = {
+  
+      UserID: userID,
 
+    }
+    return this.httpClient.post(this.baseURL + "GetNotificationsForUserID", body);
+
+  }
+  public getNotificationByNotificationID(notificationID: any) {
+
+    return this.httpClient.post(this.baseURL + "GetNotificationByNotificationID", notificationID);
+
+  }
+  // #endregion
   public sendEmail(to: string, subject: string, text: string, html: string): void {
     const emailData = {
       to: to,
@@ -78,7 +94,7 @@ export class NotificationsService {
     });
 
 
-    debugger;
+    
     this.httpClient.post(this.sharedService.getApiUrl() + "/mailapi/" + "send-email", emailData, { headers }).subscribe(
       
 /*      this.httpClient.post("https://wayleave.capetown.gov.za/mailapi" + "/send-email", emailData, { headers }).subscribe(*/
@@ -93,4 +109,15 @@ export class NotificationsService {
     );
   }
 
+  // #region notifications Sindiswa 12 February 2024
+  public getNotificationsCount(userID: string) {
+    
+    const body = {
+
+      UserID: userID,
+
+    }
+    return this.httpClient.post(this.baseURL + "GetUnreadNotificationsCount", body);
+  }
+  // #endregion
 }

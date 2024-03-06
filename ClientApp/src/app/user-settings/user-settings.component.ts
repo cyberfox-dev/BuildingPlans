@@ -67,6 +67,9 @@ export class UserSettingsComponent implements OnInit {
   extApplicantEmailAlt = '';
   extApplicantTellNoAlt = '';
 
+  externalApplicantICASANumber = ''; //icasadetails Sindiswa 10 January 2024
+  telecomms: boolean = false; //icasadetails Sindiswa 10 January 2024
+
 /*internal*/
   internalApplicantName = '';
   internalApplicantSurname = '';
@@ -101,7 +104,7 @@ export class UserSettingsComponent implements OnInit {
   extApplicantEmailAltEdit = '';
   extApplicantTellNoAltEdit = '';
 
-
+  externalApplicantICASANumberEdit = ''; //icasadetails Sindiswa 10 January 2024
   /*EditForInternal*/
 
   internalApplicantNameEdit = '';
@@ -193,12 +196,15 @@ export class UserSettingsComponent implements OnInit {
           this.extApplicantPhyscialAddress = currentUserProfile.physcialAddress;
           /*this.extApplicantCompanyType = currentUserProfile.idNumber;*/
           this.extApplicantIDNumber = currentUserProfile.idNumber;
-          this.extApplicantVatNumber = currentUserProfile.vatNumber;
+          this.extApplicantVatNumber = currentUserProfile.vatNumber;  // JJS VAT number not being pulled through on "Edit my details" modal 22Jan24
          /* this.extApplicantIDNumber = currentUserProfile.;*/
           this.isInternal = false;
 
           this.extApplicantEmailAlt = currentUserProfile.alternativeEmail;
           this.extApplicantTellNoAlt = currentUserProfile.alternativePhoneNumber;
+
+          this.externalApplicantICASANumber = currentUserProfile.icasaLicense; //icasadetails Sindiswa 10 January 2024
+          this.telecomms = this.externalApplicantICASANumber !== null && this.externalApplicantICASANumber !== undefined && this.externalApplicantICASANumber !== ''; //icasadetails Sindiswa 10 January 2024
         }
         this.userProfileID = currentUserProfile.userProfileID;
       }
@@ -242,9 +248,11 @@ export class UserSettingsComponent implements OnInit {
       this.extApplicantEmailEdit = this.extApplicantEmail;
       this.extApplicantPhyscialAddressEdit = this.extApplicantPhyscialAddress;
       this.extApplicantIDNumberEdit = '';
+      this.extApplicantVatNumberEdit = this.extApplicantVatNumber;//// JJS VAT number not being pulled through on "Edit my details" modal 22Jan24
 
       this.extApplicantEmailAltEdit = this.extApplicantEmailAlt;
       this.extApplicantTellNoAltEdit = this.extApplicantTellNoAlt;
+      this.externalApplicantICASANumberEdit = this.externalApplicantICASANumber; //icasadetails Sindiswa 10 January 2024
     }
 
     this.modalService.open(userProfileEditModal,{ centered: true, size: 'lg' });
@@ -269,7 +277,7 @@ export class UserSettingsComponent implements OnInit {
 
         if (data.responseCode == 1) {
           alert(data.responseMessage);
-          debugger;
+          
           this.getUserProfileByUserID();
         }
 
@@ -285,8 +293,8 @@ export class UserSettingsComponent implements OnInit {
     }
     if (this.isInternal == false) {
       this.userPofileService.addUpdateUserProfiles(Number(this.userProfileID), this.CurrentUser.appUserId, this.extApplicantNameEdit + " " + this.extApplicantSurnameEdit, this.extApplicantEmailEdit, this.extApplicantTellNoEdit, false, null, this.extApplicantCompanyNameEdit, this.extApplicantCompanyRegNoEdit,
-        this.extApplicantPhyscialAddressEdit, null, null, null, null, null, null, null, this.CurrentUser.appUserId, null, null, null, null, null, null, null, null, this.extApplicantEmailAltEdit, this.extApplicantTellNoAltEdit, this.extApplicantNameEdit,
-        this.extApplicantSurnameEdit).subscribe((data: any) => {
+        this.extApplicantPhyscialAddressEdit, null, null, null, null, null, null, null, this.CurrentUser.appUserId, null, null, this.extApplicantVatNumberEdit, null, null, null, null, null, this.extApplicantEmailAltEdit, this.extApplicantTellNoAltEdit, this.extApplicantNameEdit,
+        this.extApplicantSurnameEdit, /* icasadetails Sindiswa 10 January 2024 - the arguments on the right of this comment have been recently added */ null, null, null, this.externalApplicantICASANumberEdit).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
           alert(data.responseMessage);
@@ -343,7 +351,7 @@ export class UserSettingsComponent implements OnInit {
 
 
       this.userService.updatePassword(this.loggedInUsersEmail, this.newPassword).subscribe((data: any) => {
-        debugger;
+        
         if (data.responseCode === 1) {
 
 

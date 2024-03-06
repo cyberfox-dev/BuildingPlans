@@ -32,13 +32,13 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
 
-                if (model == null || !ModelState.IsValid )
+                if (model == null || !ModelState.IsValid)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
-                       var result = await _applicationsService.AddUpdateApplication(model.ApplicationID, model.UserID, model.FullName, model.Email, model.PhoneNumber, model.PhysicalAddress, model.ReferenceNumber, model.CompanyRegNo, model.TypeOfApplication, model.NotificationNumber, model.WBSNumber, model.PhysicalAddressOfProject, model.DescriptionOfProject, model.NatureOfWork, model.ExcavationType, model.ExpectedStartDate, model.ExpectedEndDate, model.Location, model.CreatedById, model.PreviousStageName,model.PreviousStageNumber, model.CurrentStageName, model.CurrentStageNumber, model.NextStageName, model.NextStageNumber, model.ApplicationStatus, model.isDrafted,model.ProjectNumber, model.isPlanning, model.PermitStartDate, model.DatePaid,model.WBSRequired,model.Coordinates);
+                    var result = await _applicationsService.AddUpdateApplication(model.ApplicationID, model.UserID, model.FullName, model.Email, model.AlternativeEmail, model.PhoneNumber, model.PhysicalAddress, model.ReferenceNumber, model.CompanyRegNo, model.TypeOfApplication, model.NotificationNumber, model.WBSNumber, model.PhysicalAddressOfProject, model.DescriptionOfProject, model.NatureOfWork, model.ExcavationType, model.ExpectedStartDate, model.ExpectedEndDate, model.Location, model.CreatedById, model.PreviousStageName, model.PreviousStageNumber, model.CurrentStageName, model.CurrentStageNumber, model.NextStageName, model.NextStageNumber, model.ApplicationStatus, model.isDrafted, model.ProjectNumber, model.isPlanning, model.PermitStartDate, model.DatePaid, model.WBSRequired, model.Coordinates, model.NetworkLicenses);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ApplicationID > 0 ? "Application Updated Successfully" : "Application Added Successfully"), result));
                 }
 
@@ -58,13 +58,13 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
 
-                if (model == null || ModelState.IsValid == false )
+                if (model == null || ModelState.IsValid == false)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
-                    var result = await _applicationsService.UpdateApplicationStage(model.ApplicationID, model.PreviousStageName, model.PreviousStageNumber, model.CurrentStageName, model.CurrentStageNumber, model.NextStageName, model.NextStageNumber, model.ApplicationStatus,model.ProjectNumber);
+                    var result = await _applicationsService.UpdateApplicationStage(model.ApplicationID, model.PreviousStageName, model.PreviousStageNumber, model.CurrentStageName, model.CurrentStageNumber, model.NextStageName, model.NextStageNumber, model.ApplicationStatus, model.ProjectNumber);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, ("Stage Updated Successfully"), result));
                 }
 
@@ -117,7 +117,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _applicationsService.GetApplicationsByApplicationID(applicationID);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application Deleted Successfully", result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application Details Gotten Successfully", result));
                 }
 
             }
@@ -157,7 +157,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _applicationsService.GetApplicationsList(modal.UserID,modal.isInternal);
+                    var result = await _applicationsService.GetApplicationsList(modal.UserID, modal.isInternal);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Applications List Created", result));
                 }
 
@@ -212,7 +212,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _applicationsService.GetApplicationsByProjectNumber(model.ProjectNumber);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application Deleted Successfully", result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application Details Gotten Successfully", result));
                 }
 
             }
@@ -287,6 +287,29 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        //JJS TODO: getting all applications for EMB so that the projects appear for them in my reviews
+
+        [HttpPost("GetApplicationsForEMB")]
+        public async Task<object> GetApplicationsForEMB([FromBody] ApplicationsBindingModel model)
+        {
+            try
+            {
+                if (model.UserID.Length <= 0)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Error, Applications could not be retrieved.", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.GetApplicationsForEMB(model.UserID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Applications retrieved successfully", result));
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
         [HttpPost("GetApplicationsForDepartment")]
         public async Task<object> GetApplicationsForDepartment([FromBody] ApplicationsBindingModel model)
         {
@@ -308,6 +331,217 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
+        // reapply Sindiswa 24 January 2024
+
+        [HttpPost("IncreaseReapplyCount")]
+        public async Task<object> IncreaseReapplyCount([FromBody] ApplicationsBindingModel model)
+        {
+            try
+            {
+                if (model.ProjectNumber == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+
+                    var result = await _applicationsService.IncreaseReapplyCount(model.ProjectNumber);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Applications count increased successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+        // reapply Sindiswa 25 January 2024
+        [HttpPost("DeActivateOldAppsAfterReapply")]
+        public async Task<object> DeActivateOldAppsAfterReapply([FromBody] ApplicationsBindingModel model)
+        {
+            try
+            {
+
+                if (model.ProjectNumber == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.DeActivateOldAppsAfterReapply(model.ProjectNumber);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Applications deactivated successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        //reapply Sindiswa 26 January 2024
+        [HttpPost("GetApplicationsByProjectNumberRA")]
+        public async Task<object> GetApplicationsByProjectNumberRA([FromBody] ApplicationStagesBindingModel model)
+        {
+            try
+            {
+
+                if (model.ProjectNumber == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.GetApplicationsByProjectNumberRA(model.ProjectNumber);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application Details Gathered Successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        //escalation Sindiswa 29 January 2024
+        [HttpPost("EscalateApplication")]
+        public async Task<object> EscalateApplication([FromBody] ApplicationStagesBindingModel model)
+        {
+            try
+            {
+
+                if (model.ApplicationID == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.EscalateApplication(model.ApplicationID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application Escalated Successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+        [HttpPost("CancelEscalation")]
+        public async Task<object> CancelEscalation([FromBody] ApplicationStagesBindingModel model)
+        {
+            try
+            {
+
+                if (model.ApplicationID == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.CancelEscalation(model.ApplicationID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application De-Escalated Successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+        #region zxNum-and-contractorAccount Sindiswa 28 February 2024
+        [HttpPost("AddUpdateZXNumbers")]
+        public async Task<object> AddUpdateZXNumbers([FromBody] ApplicationsBindingModel model){
+
+            try
+            {
+
+                if (model == null || !ModelState.IsValid)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.AddUpdateZXNumbers(model.ApplicationID, model.WaterZXNumber, model.RIMZXNumber);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "ZX Number(s) Added Successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+
+        }
+
+        [HttpPost("GetZXDetails")]
+        public async Task<object> GetZXDetails([FromBody] int applicationID)
+        {
+            try
+            {
+
+                if (applicationID < 1)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.GetZXDetails(applicationID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application ZX Details Gotten Successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+        #endregion
+
+        [HttpPost("AddUpdateContractorAccountDetails")]
+        public async Task<object> AddUpdateContractorAccountDetails([FromBody] ApplicationsBindingModel model)
+        {
+
+            try
+            {
+
+                if (model == null || !ModelState.IsValid)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.AddUpdateContractorAccountDetails(model.ApplicationID, model.ContractorAccountDetails);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Contractor Details Added/Updated Successfully", result));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+
+        }
 
     }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SharedService } from 'src/app/shared/shared.service';
+import { borderBottomLeftRadius } from 'html2canvas/dist/types/css/property-descriptors/border-radius';
 
 @Injectable({
   providedIn: 'root'
@@ -12,13 +13,14 @@ export class ApplicationsService {
 
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
-  public addUpdateApplication(ApplicationID?: number | null, userID?: string | null, fullName?: string | null, email?: string | null, phoneNumber?: string | null, physicalAddress?: string | null, referenceNumber?: string | null, companyRegNo?: string | null, typeOfApplication?: string | null, notificationNumber?: string | null, wbsNumber?: string | null, physicalAddressOfProject?: string | null, descriptionOfProject?: string | null, natureOfWork?: string | null, excavationType?: string | null, expectedStartDate?: Date | null, expectedEndDate?: Date | null, location?: string | null, createdById?: string | null, previousStageName?: string | null, previousStageNumber?: number | null, currentStageName?: string | null, currentStageNumber?: number | null, nextStageName?: string | null, nextStageNumber?: number | null, applicationStatus?: string | null, isDrafted?: boolean, projectNumber?: string | null, isPlanning?: boolean | null, permitStartDate?: Date | null, datePaid?: Date | null, WBSRequired?: boolean | null, coordinates?: string | null) {
+  public addUpdateApplication(ApplicationID?: number | null, userID?: string | null, fullName?: string | null, email?: string | null,/*checkingNotifications Sindiswa 15 February 2024*/ alternativeEmail?: string | null, phoneNumber?: string | null, physicalAddress?: string | null, referenceNumber?: string | null, companyRegNo?: string | null, typeOfApplication?: string | null, notificationNumber?: string | null, wbsNumber?: string | null, physicalAddressOfProject?: string | null, descriptionOfProject?: string | null, natureOfWork?: string | null, excavationType?: string | null, expectedStartDate?: Date | null, expectedEndDate?: Date | null, location?: string | null, createdById?: string | null, previousStageName?: string | null, previousStageNumber?: number | null, currentStageName?: string | null, currentStageNumber?: number | null, nextStageName?: string | null, nextStageNumber?: number | null, applicationStatus?: string | null, isDrafted?: boolean, projectNumber?: string | null, isPlanning?: boolean | null, permitStartDate?: Date | null, datePaid?: Date | null, WBSRequired?: boolean | null, coordinates?: string | null ,networkLicenses?: boolean |null) {
 
     const body = {
       ApplicationID: ApplicationID,
       UserID: userID,
       FullName: fullName,
       Email: email,
+      AlternativeEmail: alternativeEmail, //checkingNotifications Sindiswa 15 February 2024
       PhysicalAddress: physicalAddress,
       ReferenceNumber: referenceNumber,
       CompanyRegNo: companyRegNo,
@@ -47,6 +49,7 @@ export class ApplicationsService {
       DatePaid: datePaid,
       WBSRequired: WBSRequired,
       Coordinates: coordinates,
+      NetworkLicenses:networkLicenses
   
     }
     return this.httpClient.post(this.baseURL + "AddUpdateApplication", body);
@@ -75,7 +78,7 @@ export class ApplicationsService {
 
 
   public deleteApplication(applicationID: number) {
-
+    debugger;
     return this.httpClient.post(this.baseURL + "DeleteApplication", applicationID);
 
   }
@@ -138,6 +141,15 @@ export class ApplicationsService {
     return this.httpClient.post(this.baseURL + "GetApplicationsForFinalReview", body);
   }
 
+  //JJS TODO: getting all applications for EMB so that the projects appear for them in my reviews
+
+  public getApplicationsForEMB(UserID: string) {
+    const body = {
+      UserID: UserID
+    };
+    return this.httpClient.post(this.baseURL + "GetApplicationsForEMB", body);
+  }
+
   public getApplicationsForDepartment(ZoneID: number, SubDepartmentID: number) {
     const body = {
       ZoneID: ZoneID,
@@ -146,4 +158,77 @@ export class ApplicationsService {
     return this.httpClient.post(this.baseURL + "GetApplicationsForDepartment", body);
   }
 
+  // reapply Sindiswa 24 January 2024
+  public increaseReapplyCount(ProjectNumber: string) {
+    
+    const body = {
+      ProjectNumber: ProjectNumber
+    }
+    return this.httpClient.post(this.baseURL + "IncreaseReapplyCount", body);
+  }
+  // reapply Sindiswa 25 January 2024
+  public makeOldAppDisappear(ProjectNumber: string) {
+    
+    const body = {
+      ProjectNumber: ProjectNumber
+    }
+    return this.httpClient.post(this.baseURL + "DeActivateOldAppsAfterReapply", body);
+  }
+  //reapply Sindiswa 26 January 2024
+  public getApplicationsByProjectNumberRA(ProjectNumber: string) {
+
+    const body = {
+      ProjectNumber: ProjectNumber
+    }
+    return this.httpClient.post(this.baseURL + "GetApplicationsByProjectNumberRA", body);
+
+  }
+  //escalation Sindiswa 29 January 2024
+  public escalateApplication(applicationID?: number | null) {
+    const body = {
+      ApplicationID: applicationID,
+    }
+    return this.httpClient.post(this.baseURL + "EscalateApplication", body);
+
+  }
+  //escalation Sindiswa 30 January 2024
+  public cancelEscalation(applicationID?: number | null) {
+    const body = {
+      ApplicationID: applicationID,
+    }
+    return this.httpClient.post(this.baseURL + "CancelEscalation", body);
+
+  }
+  //#region zxNum-and-contractorAccount Sindiswa 28 February 2024
+  public addUpdateZXNumbers(applicationID?: number | null, WaterZXNumber?: string | null, RIMZXNumber?: string | null) {
+    debugger;
+    const body = {
+
+      ApplicationID: applicationID,
+      WaterZXNumber: WaterZXNumber,
+      RIMZXNumber: RIMZXNumber,
+    }
+    return this.httpClient.post(this.baseURL + "AddUpdateZXNumbers", body);
+
+  }
+
+  public getZXDetails(applicationID: number) {
+
+    return this.httpClient.post(this.baseURL + "GetZXDetails", applicationID);
+
+  }
+  //#endregion
+
+  //#region
+  public addUpdateContractorAccountDetails(applicationID: number, contractorAccountDetails:string) {
+
+    const body = {
+      ApplicationID: applicationID,
+      ContractorAccountDetails: contractorAccountDetails,
+    }
+
+    return this.httpClient.post(this.baseURL + "AddUpdateContractorAccountDetails", body);
+
+  }
+  //#endregion
 }

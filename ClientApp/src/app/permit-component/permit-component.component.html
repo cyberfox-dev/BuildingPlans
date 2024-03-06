@@ -1,3 +1,6 @@
+
+<button mat-raised-button color="action" *ngIf="CanConsolidate && (CurrentUserProfile[0].userID == ApplicantID || CurrentUserProfile[0].userID == OriginatorID) && PermitBtn === false && currentStageName === 'PTW'" (click)="CombinePTW()">Consolidate PTW</button> <!--*ngIf="" [disabled]=""-->
+
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
   <!-- Position Column -->
@@ -13,7 +16,7 @@
 
   <ng-container matColumnDef="comment" class="approve">
     <th mat-header-cell *matHeaderCellDef>Comment</th>
-    <td mat-cell *matCellDef="let element" >{{element.PermitComment}}</td>
+    <td mat-cell *matCellDef="let element">{{element.PermitComment}}</td>
   </ng-container>
 
 
@@ -34,20 +37,47 @@
     </td>
   </ng-container>
 
-  <!-- TODO: Check permitUpload Sindiswa 08 January 2024 -->
   <ng-container matColumnDef="addDocument" class="approve">
     <th mat-header-cell *matHeaderCellDef>Document Upload</th>
     <td mat-cell *matCellDef="let element">
-      <app-documents-component [ApplicationID]="ApplicationID"
-                               [ServiceConditionActive]="false"
-                               [isCalledInsidePermit]="true"
-                               [permitSubForCommentID]="element.PermitSubForCommentID">
+      <ng-container *ngIf="element.SubDepartmentID == CurrentUserProfile[0].subDepartmentID && element.ZoneID == CurrentUserProfile[0].zoneID  && CanIssuePermit || CurrentUserProfile[0].subDepartmentName == 'EMB'">
+        <app-documents-component [ApplicationID]="ApplicationID"
+                                 [ServiceConditionActive]="false"
+                                 [isCalledInsidePermit]="isCalledInsidePermit"
+                                 [permitSubForCommentID]="element.PermitSubForCommentID"
+                                 [permitDocumentName]="element.PermitDocName"
+                                 [permitCommentStatus]="element.PermitCommentStatus">
 
-      </app-documents-component>
+        </app-documents-component>
+      </ng-container>
+    </td>
+  </ng-container>
+  <!---Permit Kyle 13-02-24-->
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef>Status</th>
+    <td mat-cell *matCellDef="let element ; let i = index">
+      <div *ngIf="element.hasSuperVisionFee == true && (element.PermitCommentStatus === 'Approved'|| element.PermitCommentStatus === 'MeetOnSite')">
+        <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/clock-regular.svg" class="icon" *ngIf="element.isPaid == false" (click)="getPermitDocument(i)">
+        <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid-green.svg" class="icon" *ngIf="element.isPaid == true">
+        <p class="statusUnpaid" *ngIf="element.isPaid == false">Pending Payment</p>
+        <p class="statusPaid" *ngIf="element.isPaid == true"> Paid</p>
+      </div>
     </td>
   </ng-container>
 
+  <ng-container matColumnDef="moveToPaid">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element ; let i = index">
+      <button mat-raised-button (click)=" moveToPaid(i)" *ngIf="element. hasSuperVisionFee == true && isEMB == true && (element. PermitCommentStatus == 'Approved' || element. PermitCommentStatus == 'MeetOnSite') && element.isPaid == false" color="create">Move To Paid</button> 
+      <button mat-raised-button (click)=" requestForDelete(i)" color="create" *ngIf="element.hasDoc && CurrentUser.appUserId == element.UserAssaignedToComment">Request For Delete</button>
+    </td>
+  </ng-container>
+
+  <!---Permit Kyle 13-02-24-->
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row [ngClass]="{'approve': row.action === 'H'}" *matRowDef="let row; columns: displayedColumns;"></tr>
+  <tr mat-row [ngClass]="{'approve': row.action === 'H'}" *matRowDef="let row; columns: displayedColumns"></tr>
 
 </table>
+
+
+<h3>*Please note that this version of the PTW module is still under development. Some features may not be enabled!</h3>

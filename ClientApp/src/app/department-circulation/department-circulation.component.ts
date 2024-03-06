@@ -2,6 +2,8 @@ import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/cor
 import { MatTable } from '@angular/material/table';
 import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentForComment/sub-department-for-comment.service';
 import { SharedService } from "src/app/shared/shared.service";
+import { UserProfileService } from '../service/UserProfile/user-profile.service'; //projectTracker Sindiswa 12 January 2024
+import { Observable, catchError, map, of } from 'rxjs'; //projectTracker Sindiswa 12 January 2024
 
 export interface PeriodicElement {
   dep: string;
@@ -21,6 +23,7 @@ export interface SubDepartmentList {
   commentStatus: string | null;
   zoneID: number;
   zoneName: string;
+  zoneUser: string;
 }
 const ELEMENT_DATA: PeriodicElement[] = [
   { dep: 'Water & Sanitation', indication:'green' },
@@ -46,23 +49,35 @@ export class DepartmentCirculationComponent implements OnInit {
   ApprovedConditional = "Approved(Conditional)";
   Approved = "Approved";
   Rejected = "Rejected";
+  FinalReject = "FinalReject";
   FinalApproved = "Final Approved";
   SubDepartmentList: SubDepartmentList[] = [];
   applicationDataForView: any;
   Null = null;
   approveOrRejection = '';
 
-  constructor(private subDepartmentForCommentService: SubDepartmentForCommentService, private sharedService: SharedService ){ }
-  displayedColumns: string[] = ['subDepartmentName','zoneName' ,'indication'];
+  constructor(private subDepartmentForCommentService: SubDepartmentForCommentService, private sharedService: SharedService, /* projectTracker Sindiswa 12 January 2024 */ private userProfileService: UserProfileService) { }
+
+  //displayedColumns: string[] = ['subDepartmentName','zoneName' ,'zoneUser','indication']; // projectTracker Sindiswa 12 January 2024, 17 January 2024
+  displayedColumns: string[] = [];
   dataSource = this.SubDepartmentList;
   @ViewChild(MatTable) SubDepartmentListTable: MatTable<SubDepartmentList> | undefined;
-  ngOnInit(): void {
 
+  stringifiedData: any;
+  CurrentUser: any;
+  isInternalLoggedinUser: boolean;
+
+  ngOnInit(): void {
+    this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
+    this.CurrentUser = JSON.parse(this.stringifiedData);
+    this.getUserInternalOrExternal();
     
     this.getLinkedDepartments();
- 
-  }
 
+    
+
+  }
+ 
   setIcon() {
   
   }
@@ -86,7 +101,7 @@ export class DepartmentCirculationComponent implements OnInit {
 
   
 
-    this.subDepartmentForCommentService.getSubDepartmentForComment(currentApplication.applicationID).subscribe((data: any) => {
+    this.subDepartmentForCommentService.getSubDepartmentForComment(currentApplication.applicationID).subscribe(async (data: any) => {
 
       if (data.responseCode == 1) {
 
@@ -109,8 +124,23 @@ export class DepartmentCirculationComponent implements OnInit {
           } else {
             tempSubDepartmentList.zoneName = current.zoneName;
           }
-          
-          
+          tempSubDepartmentList.UserAssaignedToComment = current.userAssaignedToComment; //projectTracker Sindiswa 12 January 2024
+
+          //#region projectTracker Sindiswa 15 January 2024
+          if (tempSubDepartmentList.UserAssaignedToComment === "EndOfCommentProcess") {
+            tempSubDepartmentList.zoneUser = "End Of Comment Process";
+          }
+          else {
+            tempSubDepartmentList.zoneUser = current.userAssaignedToComment;
+          }
+         
+          if (tempSubDepartmentList.UserAssaignedToComment === null) {
+            tempSubDepartmentList.zoneUser = "Not Yet Assigned to Reviewer";
+          } //edited on the 17th by Sindiswa, 10:10, 12:20
+          else if (tempSubDepartmentList.UserAssaignedToComment !== "EndOfCommentProcess" && tempSubDepartmentList.UserAssaignedToComment !== "All users in Subdepartment FA" && tempSubDepartmentList.UserAssaignedToComment !== "Senior Reviewer to comment") {
+            tempSubDepartmentList.zoneUser = await this.getUserName(current.userAssaignedToComment);
+          }
+          //#endregion
 
           this.SubDepartmentList.push(tempSubDepartmentList);
         }
@@ -129,5 +159,87 @@ export class DepartmentCirculationComponent implements OnInit {
     })
 
   }
+
+
+  // #region projectTracker Sindiswa 12 January 2024
+
+
+
+  async getUserName(userID: any): Promise<string> {
+    try {
+      const data: any = await this.userProfileService.getUserProfileById(userID).toPromise();
+      
+      if (data.responseCode === 1) {
+        console.log("Data captured while trying to get username", data);
+        
+        return data.dateSet[0].fullName;
+      } else {
+        throw new Error("Couldn't quite get the username: " + data.responseMessage);
+      }
+    } catch (error) {
+      console.error("Error: ", error);
+      throw error; // Rethrow the error for the calling code to handle if needed
+    }
+  }
+
+
+  /*
+  userName: string = '';
+  getUserName(userID: any) {
+
+    this.userProfileService.getUserProfileById(userID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+        this.userName = data.dateSet[0].fullName;
+      }
+      else {
+        alert("Couldn't quite get the username: " +  data.responseMessage);
+      }
+      console.log("Data captured while trying to get username", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }*/
+
+  // #endregion
+
+
+
+  getUserInternalOrExternal() {
+
+    this.userProfileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
+
+
+      if (data.responseCode == 1) {
+
+
+        console.log("data", data.dateSet);
+        const currentUserProfile = data.dateSet[0];
+        console.log("Is the user internal or external?", currentUserProfile.isInternal);
+
+        if (currentUserProfile.isInternal == true) {
+
+          this.isInternalLoggedinUser = true;
+          this.displayedColumns = ['subDepartmentName', 'zoneName', 'zoneUser', 'indication'];
+        }
+        else {
+          this.isInternalLoggedinUser = false;
+          this.displayedColumns = ['subDepartmentName', 'zoneName', 'indication'];
+        }
+
+      }
+
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
 
 }

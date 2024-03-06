@@ -31,6 +31,7 @@ import { DocumentRepositoryComponent } from 'src/app/document-repository/documen
 import { NotificationCenterComponent } from 'src/app/notification-center/notification-center.component';
 import { ConfigActingDepartmentComponent } from 'src/app/config-acting-department/config-acting-department.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { Subject } from 'rxjs';
 
 
 
@@ -146,7 +147,7 @@ export class NavMenuComponent implements OnInit {
   cyberfoxConfigs: boolean = false;
   Configurations: boolean = false;
   CommentBuilder: boolean = false;
-
+  actingDep: boolean = false;
   public isInternalUser: boolean = false;
   Links: boolean = false;
   Icons: boolean = true;
@@ -163,6 +164,7 @@ export class NavMenuComponent implements OnInit {
   UserRoles: import("C:/CyberfoxProjects/WayleaveManagementSystem/ClientApp/src/app/shared/shared.service").RolesList[];
   selectedOptionText: string;
   lastUploadEvent: any;
+    public InternalExternalUser: boolean = false;
 
   constructor(private offcanvasService: NgbOffcanvas, private sanitizer: DomSanitizer, private modalService: NgbModal, private accessGroupsService: AccessGroupsService, private http: HttpClient, private documentUploadService: DocumentUploadService, private router: Router, private shared: SharedService, private formBuilder: FormBuilder, private commentService: CommentBuilderService, private userPofileService: UserProfileService, private notificationsService: NotificationsService, private subDepartment: SubDepartmentsService, private applicationsService: ApplicationsService, private faq: FrequentlyAskedQuestionsService, private dialog: MatDialog) { }
 
@@ -174,7 +176,11 @@ export class NavMenuComponent implements OnInit {
   isLoading: boolean = false;
 
 
-
+  //Audit Trail Kyle
+  stringifiedDataRoles: any;
+  AllCurrentUserRoles: any;
+  Reports: boolean = false;
+  //Audit Trail Kyle
 
 
 
@@ -204,7 +210,36 @@ export class NavMenuComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustHtml(html);
   }
 
+  // #region notifications Sindiswa 12 February 2024
+  hasNotifications: boolean;
+  notificationsQuantity: number;
+  getNotificationDetails(userId: string) {
+    
+    this.notificationsService.getNotificationsCount(userId).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        this.shared.setNotificationsQuantity(data.dateSet);
 
+        if (data.dateSet > 0) {
+          this.shared.sethasNotifications(true);
+        }
+        else {
+          this.shared.sethasNotifications(false);
+        }
+      } else {
+        alert(data.responseMessage);
+      }
+      console.log("I tried getting the notifications count", data);
+      this.notificationsQuantity = this.shared.getNotificationsQuantity(); //this.notificationsQuantity
+      this.hasNotifications = this.shared.getHasNotifications(); //this.hasNotifications
+
+      console.log("This is the quantity", this.notificationsQuantity);
+      console.log("This is the notifications boolean", this.hasNotifications);
+    }, error => {
+      console.log("Error while getting the notifications count: ", error);
+    });
+  }
+
+  // #endregion
   ngOnInit() {
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
@@ -213,6 +248,12 @@ export class NavMenuComponent implements OnInit {
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.getUserProfileByUserID();
     this.getRolesLinkedToUser();
+
+    //Audit Trail Kyle
+    this.stringifiedDataRoles = JSON.parse(JSON.stringify(localStorage.getItem('AllCurrentUserRoles')));
+    this.AllCurrentUserRoles = JSON.parse(this.stringifiedDataRoles);
+    this.onCheckAllCurrentUserRoles();
+    //Audit Trail Kyle
     /*    this.UserRoles = this.shared.getCurrentUserRoles();*/
     /*    this.setCurrentUserRoles();*/
 
@@ -226,8 +267,13 @@ export class NavMenuComponent implements OnInit {
     this.getAllDepartments();
     this.getAllFAQ();
 
+    this.getNotificationDetails(this.CurrentUser.appUserId); // notifications Sindiswa 12 February 2024
 
- 
+    this.notificationsQuantity = this.shared.getNotificationsQuantity(); //this.notificationsQuantity
+    this.hasNotifications = this.shared.getHasNotifications(); //this.hasNotifications
+
+    console.log("This is the quantity", this.notificationsQuantity);
+    console.log("This is the notifications boolean", this.hasNotifications);
   }
 
   onPageChange(event: PageEvent) {
@@ -267,7 +313,7 @@ export class NavMenuComponent implements OnInit {
       if (this.RolesList[i].RoleName == "Developer Config" || this.RolesList[i].RoleName == "Department Admin") {
         this.Configurations = true;
       }
-      if (this.RolesList[i].RoleName == "Developer Config" || this.RolesList[i].RoleName == "Configuration") {
+      if (this.RolesList[i].RoleName == "Developer Config" ) {
         this.cyberfoxConfigs = true;
       }
 
@@ -279,6 +325,7 @@ export class NavMenuComponent implements OnInit {
         this.CommentBuilder = true;
         this.selectDepartmentForUpload = true;
       }
+    
     }
 
 
@@ -289,7 +336,7 @@ export class NavMenuComponent implements OnInit {
   checkScroll() {
     // Detect the scroll position
     const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-    debugger;
+    
     // You can adjust this threshold value as needed
     const threshold = 100;
 
@@ -316,11 +363,11 @@ export class NavMenuComponent implements OnInit {
 
   }
   onPassFileName(event: { uploadFor: string; fileName: string }) {
-    debugger;
+    
     const { uploadFor, fileName } = event;
     const index = parseInt(uploadFor.substring('CoverLetter'.length));
     this.fileAttrsName = "Doc";
-    debugger;
+    
 
     this.shared.RepFileUploadCat = this.selected;
 
@@ -337,7 +384,11 @@ export class NavMenuComponent implements OnInit {
 
 
   }
-
+  //Audit Trail Kyle
+  openReports(reports: any) {
+    this.modalService.open(reports, { centered: true, size: 'xl' });
+    this.shared.isReports = true;
+  }
   openUserActingDepModal() {
     this.dialog.open(ConfigActingDepartmentComponent, {
       width: '60%',
@@ -376,6 +427,9 @@ export class NavMenuComponent implements OnInit {
           tempRolesList.RoleName = current.roleName;
 
           this.RolesList.push(tempRolesList);
+          if (tempRolesList.RoleName == "Applicant") {
+            this.InternalExternalUser = true;
+          }
           this.lockViewAccordingToRoles();
 
 
@@ -665,7 +719,7 @@ export class NavMenuComponent implements OnInit {
 
 
   goHome() {
-
+    debugger;
     this.deleteWayleaveWhenGoHome();
 
   }
@@ -687,7 +741,7 @@ export class NavMenuComponent implements OnInit {
 
   /*For something to to not something*/
   deleteWayleaveWhenGoHome() {
-
+    debugger;
     let appID = this.shared.getApplicationID();
     if (appID != 0) {
       this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
@@ -714,6 +768,7 @@ export class NavMenuComponent implements OnInit {
 
     let appID = this.shared.getApplicationID();
     if (appID != 0) {
+      debugger;
       this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
         if (data.responseCode == 1) {
 
@@ -735,9 +790,10 @@ export class NavMenuComponent implements OnInit {
   }
 
   deleteWayleaveWhenOnLogout() {
-
+    debugger;
     let appID = this.shared.getApplicationID();
     if (appID != 0) {
+      debugger;
       this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
         if (data.responseCode == 1) {
 
@@ -766,6 +822,7 @@ export class NavMenuComponent implements OnInit {
 
     let appID = this.shared.getApplicationID();
     if (appID != 0) {
+      debugger;
       this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
         if (data.responseCode == 1) {
 
@@ -790,6 +847,7 @@ export class NavMenuComponent implements OnInit {
 
     let appID = this.shared.getApplicationID();
     if (appID != 0) {
+      debugger;
       this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
         if (data.responseCode == 1) {
 
@@ -814,7 +872,7 @@ export class NavMenuComponent implements OnInit {
 
 
   refreshModal(repositoryModal) {
-    debugger;
+    
 /*    this.cdr.detectChanges();*/
     this.modalService.dismissAll(repositoryModal);
     this.modalService.open(repositoryModal, { centered: true, size: 'xl' });
@@ -825,7 +883,7 @@ export class NavMenuComponent implements OnInit {
 
 /*  *//*Repository Section*//*
   getAllDocsForRepository() {
-    debugger;
+    
     this.DocumentsList.splice(0, this.DocumentsList.length);
     this.documentUploadService.getAllDocumentsForRepository().subscribe((data: any) => {
 
@@ -883,7 +941,7 @@ export class NavMenuComponent implements OnInit {
   private readonly apiUrl: string = this.shared.getApiUrl() + '/api/';
 
   viewDocument(element: any) {
-    debugger;
+    
     // Make an HTTP GET request to fetch the document
     fetch(this.apiUrl + `documentUpload/GetDocument?filename=${element.DocumentName}`)
       .then(response => {
@@ -1028,7 +1086,7 @@ export class NavMenuComponent implements OnInit {
   descriptionForDocRepo = '';
 
   uploadFinished = (event: any, repositoryModal) => {
-    debugger;
+    
     this.response = event;
     console.log("this.response", this.response);
     console.log(this.descriptionForDocRepo);
@@ -1141,7 +1199,7 @@ export class NavMenuComponent implements OnInit {
 
 
   filterDepartment() {
-/*    debugger;
+/*    
     let string = this.select.toString();
     if (string == "All") {
 
@@ -1255,6 +1313,17 @@ export class NavMenuComponent implements OnInit {
   onWindowScroll() {
     const scrollY = window.scrollY || document.documentElement.scrollTop;
     this.isTransparent = scrollY < 460; // Adjust the scroll threshold as needed
+  }
+
+  //Audit Trail Kyle
+  onCheckAllCurrentUserRoles() {
+    
+    for (let i = 0; i < this.AllCurrentUserRoles.length; i++) {
+      const roleName = this.AllCurrentUserRoles[i].roleName;
+      if (roleName === "Audit Trail") {
+        this.Reports = true;
+      }
+    }
   }
   
 }

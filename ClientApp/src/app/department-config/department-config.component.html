@@ -79,8 +79,12 @@
   <ng-container matColumnDef="actionsDep">
     <th mat-header-cell *matHeaderCellDef>Action</th>
     <td mat-cell *matCellDef="let i = index">
+      <!--<button mat-raised-button color="success" matTooltip="Set boolean for ZX Number" (click)="onViewSetZXNumber(i,zxNumberModal )"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/hashtag_white.svg" class="icon"></button>-->
+      <button mat-raised-button color="success" matTooltip="Set boolean for ZX Number" (click)="onViewSetZXNumber2(i,zxNumberDptModal )"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/hashtag_white.svg" class="icon"></button><!--zxNumberUpdate Sindiswa 01 March 2024-->
       <!----KyleGounder 08-01-24    permit expiration button----->
-      <button mat-raised-button color="orange" matTooltip="Permit Expiration Days" (click)="forViewPopulateSubDepartmentDropDown(i,selectSubdepartment);setCurrentDepartmentID(i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/book-solid.svg" class="icon"></button>
+      <!--<button mat-raised-button color="orange" matTooltip="Permit Expiration Days" (click)="forViewPopulateSubDepartmentDropDown(i,selectSubdepartment);setCurrentDepartmentID(i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/book-solid.svg" class="icon"></button>-->
+      <!-- expirations Sindiswa 12 February 2024 -->
+      <button mat-raised-button color="orange" matTooltip="Wayleave & Permit Expiration Days" (click)="onViewSetExpiration(i, expirationDays)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/book-solid.svg" class="icon"></button>
       <button mat-raised-button color="warn" matTooltip="Delete Department" (click)="onDeleteDepartment(i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid-white.svg" class="icon"></button>
 
     </td>
@@ -640,3 +644,174 @@
 
 </ng-template>
 <!----KyleGounder 08-01-24----->
+<!----zxNum Sindiswa 08 February 2024---->
+<ng-template #zxNumberModal let-modal>
+  <div class="modal-header">
+    <h2 class="modal-title">The {{this.selectedDepartmentName}} department's ZX Number configurations</h2>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body" [(ngModel)]="selectedSubDepartment">
+    <table mat-table [dataSource]="dataSourceZX" class="mat-elevation-z8">
+
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>SubDepartment Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.subDepartmentName}} </td>
+      </ng-container>
+      <ng-container matColumnDef="zxBool">
+        <th mat-header-cell *matHeaderCellDef> Needs ZX Number </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.needsZXNumber ? 'Yes' : (element.needsZXNumber === null ? 'No' : 'No') }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsZX"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsZX;"></tr>
+    </table>
+    <p>Select a subdepartment that you would like to configure: </p>
+    <!--<select class="form-select" [(ngModel)]="subDepID">
+
+      <option *ngFor="let subDemartment of SubDepartmentDropdown " value="{{subDemartment.subDepartmentID}}">{{subDemartment.subDepartmentName}} </option>-->
+    <select class="form-select" [(ngModel)]="selectedSubDepartment">
+
+      <option *ngFor="let subDepartment of SubDepartmentDropdown " [ngValue]="subDepartment">{{subDepartment.subDepartmentName}} </option>
+    </select>
+  </div>
+  <div class="modal-footer">
+    <!--<button type="submit" class="btn btn-outline-success" (click)="  onSelectSubDepartment(subDepID, zxNumberSubDptModal)">Save</button>-->
+    <button type="submit" class="btn btn-outline-success" (click)="  onSelectSubDepartment(selectedSubDepartment, zxNumberSubDptModal);modal.dismiss('Cross click')">Open Config</button>
+  </div>
+
+
+</ng-template>
+
+<ng-template #zxNumberSubDptModal let-modal>
+  <div class="modal-header">
+    <h2 class="modal-title">Configure {{ this.selectedZXSubdepartmentName}}'s ZX Number requirements?</h2>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+    <div class="form-floating mb-3 mt-3 text-center">
+      <p>Toggle to make set this subdepartment's zx number settings.</p>
+      <div class="form-floating mb-3 mt-3 d-flex justify-content-between align-items-center">
+        <span class="toggle-label">Not Required</span>
+        <mat-slide-toggle [(ngModel)]="selectedZXneedsZXNumber" color="primary"></mat-slide-toggle>
+        <span class="toggle-label">Required</span>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="onSaveZXNumberBool();modal.dismiss('Cross click')">Save</button>
+  </div>
+
+
+</ng-template>
+
+
+<!--zxNumberUpdate Sindiswa 01 March 2024-->
+
+<ng-template #zxNumberDptModal let-modal>
+  <div class="modal-header">
+    <h2 class="modal-title">Configure {{ this.selectedDepartmentName}}'s ZX Number requirements?</h2>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+    <div class="form-floating mb-3 mt-3 text-center">
+      <p>Toggle to set this directorate's zx number settings.</p>
+      <div class="form-floating mb-3 mt-3 d-flex justify-content-between align-items-center">
+        <span class="toggle-label">Not Required</span>
+        <mat-slide-toggle [(ngModel)]="selectedZXneedsZXNumber" color="primary"></mat-slide-toggle>
+        <span class="toggle-label">Required</span>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="onSaveZXNumberBool2();modal.dismiss('Cross click')">Save</button>
+  </div>
+
+
+</ng-template>
+
+<!--expirations Sindiswa 12 February 2024-->
+<ng-template #expirationDays let-modal>
+  <div class="modal-header">
+    <h2 class="modal-title">The {{this.selectedDepartmentName}} department's Wayleave and Permit Expiration configurations</h2>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body" [(ngModel)]="selectedSubDepartment">
+    <table mat-table [dataSource]="dataSourceExpiry" class="mat-elevation-z8">
+
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>SubDepartment Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.subDepartmentName}} </td>
+      </ng-container>
+      <ng-container matColumnDef="wayleaveExpiry">
+        <th mat-header-cell *matHeaderCellDef> Days before Wayleave Expiration </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.wayleaveExpiration ? element.wayleaveExpiration : 'Not yet set' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="permitExpiry">
+        <th mat-header-cell *matHeaderCellDef> Days before Permit Expiration </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.permitExpiration ? element.permitExpiration : 'Not yet set' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Action</th>
+        <td mat-cell *matCellDef="let i = index">
+          <button mat-raised-button color="orange" matTooltip="Edit Expiration Configurations" (click)="onSelectExpirationSubdepartment(i,expirationSubDptDays );modal.dismiss('Cross click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/pencil-solid.svg" class="icon"></button>
+
+        </td>
+        <td mat-cell *matCellDef="let element">  </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsExpiry"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsExpiry;"></tr>
+    </table>
+  </div>
+</ng-template>
+
+
+<ng-template #expirationSubDptDays let-modal>
+  <div class="modal-header">
+    <h2 class="modal-title">Configure {{ this.selectedExpirySubdepartmentName}}'s Expiration Days?</h2>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+    <div class="form-group">
+      <label for="wayleaveExpiration">Wayleave Expiration:  </label>
+      <input type="text" id="wayleaveExpiration" [(ngModel)]="selectedWayleaveExpiration" #wayleaveExpirationInput="ngModel" name="wayleaveExpiration" min="0" required pattern="^\d+(?:-[\d]+)*$" class="form-control">
+      <div *ngIf="!wayleaveExpirationInput.valid && (wayleaveExpirationInput.dirty || wayleaveExpirationInput.touched)">
+        <div *ngIf="wayleaveExpirationInput.errors?.required">
+          <span class="error-message">Wayleave expiration is required.</span>
+        </div>
+        <div *ngIf="wayleaveExpirationInput.errors?.pattern">
+          <span class="error-message">Wayleave expiration must contain only numeric values.</span>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div class="form-group">
+      <label for="permitExpiration">Permit Expiration:  </label>
+      <input type="text" id="permitExpiration" [(ngModel)]="selectedPermitExpiration" #permitExpirationInput="ngModel" name="permitExpiration" min="0" required pattern="^\d+(?:-[\d]+)*$" class="form-control">
+      <div *ngIf="!permitExpirationInput.valid && (permitExpirationInput.dirty || permitExpirationInput.touched)">
+        <div *ngIf="permitExpirationInput.errors?.required">
+          <span class="error-message">Permit expiration is required.</span>
+        </div>
+        <div *ngIf="permitExpirationInput.errors?.pattern">
+          <span class="error-message">Permit expiration must contain only numeric values.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="onSaveExpiarationDays(); modal.dismiss('Cross click')">Save</button>
+  </div>
+</ng-template>
+

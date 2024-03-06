@@ -52,13 +52,16 @@ namespace WayleaveManagementSystem.Data
         public DbSet<ContactDetails> ContactDetails { get; set; }
 
         public DbSet<AccessGroups> AccessGroups { get; set; }
+        public DbSet<ReviewerAssignment> ReviewerForComment { get; set; } //actionCentreEdits Sindiswa 17 January 2024
         public DbSet<TypeOfExcavation> TypesOfExcavation { get; set; }
         public DbSet<Config> Config { get; set; }
         public DbSet<AccessGroupUserLink> AccessGroupUserLink { get; set; }
         public DbSet<AccessGroupRoleLink> AccessGroupRoleLink { get; set; }
         public DbSet<PermitSubForComment> PermitSubForComment { get; set; }
-
+        //Audit Trail Kyle 
+        public DbSet<AuditTrail> AuditTrail { get; set; }
         public DbSet<DocumentsRepository> DocumentsRepository { get; set; }
+        public DbSet<ZXNumberLog> ZXNumberLog { get; set; } //zxNumberUpdate Sindiswa 01 March 2024
         // Virtual Db Sets for SPs go here
         public virtual DbSet<UserSpDTO> UserSpDTOs { get; set; }
 

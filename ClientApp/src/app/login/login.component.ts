@@ -329,7 +329,7 @@ export class LoginComponent implements OnInit {
         return throwError(data.responseMessage);
       }),
       tap((profileData: LoginResponse) => {
-        debugger;
+        
         const userId = profileData.dateSet[0].userProfileID;
         this.setLocalStorage("userProfile", profileData.dateSet);
         this.getAllRolesForUserForAllAG(userId);
@@ -719,7 +719,8 @@ this.userService.login(email, password).pipe(
     try {
       await this.onChecksRegistration();
 
-
+      // icasadetails Sindiswa 10 January 2024 - I temporarily commmented some conditions out because I don't have a valid BP Number, for some reason this 1000110197 didn't work
+      //if (this.validNameSurname && this.validEmail && this.matchingRegPasswords) {
       if (this.validNameSurname && this.validEmail && this.matchingRegPasswords && ((this.internalUserNoBP && !this.externalWValidBP) || (this.externalWValidBP && !this.internalUserNoBP))) {
         this.regFormReadOnly = true;
         this.showDuplicatePassInput = false;
@@ -871,7 +872,7 @@ this.userService.login(email, password).pipe(
     ApplicantIDUpload?: string | null,
     ApplicantIDNumber?: string | null
   ) {
-    debugger;
+    
     let onLoginForm = true;
     let clientRegisterPassword = null;
     // If the method is called without parameters, then get the values from the form
@@ -884,7 +885,7 @@ this.userService.login(email, password).pipe(
     } else {
       onLoginForm = false;
     }
-    debugger;
+    
     this.VerifyBP(BpNo);
 
     this.testBp(BpNo).subscribe(isBpValid => {
@@ -906,7 +907,7 @@ this.userService.login(email, password).pipe(
         alert("Please enter a valid email address!");
         return;
       }
-      debugger;
+      
       // Count the number of spaces in the full name
       let numberOfSpaces = 0;
       if (clientFullName != null) {
@@ -924,7 +925,7 @@ this.userService.login(email, password).pipe(
         this.userService.register(clientFullName, clientEmail, clientRegisterPassword).subscribe((data: any) => {
           if (data.responseCode == 1) {
             if (onLoginForm === false) {
-              debugger;
+              
               this.sharedService.userIDForWalkIn == data.dateSet.appUserId;
               this.newProfileComponent.onNewProfileCreate(
                 data.dateSet.appUserId,
@@ -940,7 +941,7 @@ this.userService.login(email, password).pipe(
               );
               this.sharedService.errorForRegister = false;
             }
-            debugger;
+            
             this.sharedService.clientUserID = data.dateSet.appUserId;
             localStorage.setItem("LoggedInUserInfo", JSON.stringify(data.dateSet));
             this.sharedService.newUserProfileBp = BpNo;
@@ -954,7 +955,7 @@ this.userService.login(email, password).pipe(
         });
       }
       else {
-        debugger;
+        
         // If BP Number is valid, proceed with user registration
         this.userService.register(clientFullName, clientEmail, "Password@" + clientFullName).subscribe((data: any) => {
           if (data.responseCode == 1) {
@@ -1355,7 +1356,7 @@ this.userService.login(email, password).pipe(
   }
 
   sendOTPForPasswordReset() {
-    debugger;
+    
     this.otpPassword = '';
     const digits = 5; // Specify the number of digits for your OTP
 
@@ -1413,7 +1414,7 @@ this.userService.login(email, password).pipe(
   }
 
   validateOTP(newPasswordModal: any) {
-    debugger;
+    
     if (this.otpPasswordReset === this.otpPassword) {
       this.modalService.dismissAll();
       this.modalService.open(newPasswordModal, { centered: true, size: 'lg', backdrop: 'static' });
@@ -1430,7 +1431,7 @@ this.userService.login(email, password).pipe(
 
 
       this.userService.updatePassword(this.emailPasswordReset, this.newPassword).subscribe((data: any) => {
-        debugger;
+        
         if (data.responseCode === 1) {
 
 
@@ -1503,7 +1504,7 @@ this.userService.login(email, password).pipe(
   getConfigForMaintenanceMode() {
     this.configService.getConfigsByConfigName("MaintenanceMode").subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
           const current = data.dateSet[0];
           if (current.isActive == false) {
             this.isMaintenanceMode = false;

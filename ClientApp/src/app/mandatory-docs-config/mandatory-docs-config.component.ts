@@ -175,7 +175,7 @@ export class MandatoryDocsConfigComponent implements OnInit {
     console.log("THIS IS A TEST TO SEE WHATS ",this.MandatoryDocumentUploadList[index].mandatoryDocumentID);
     this.mandatoryDocumentStageLink.getAllMandatoryDocumentStageLinkByStageID(this.MandatoryDocumentUploadList[index].mandatoryDocumentID).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
 
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
@@ -209,7 +209,7 @@ export class MandatoryDocsConfigComponent implements OnInit {
 
 
   setFilterManDocCategory() {
-    debugger;
+    
     this.dataSource = this.MandatoryDocumentUploadList.filter(df => df.mandatoryDocumentCategory == this.manDocCategory);
     this.MandatoryDocumentUploadTable?.renderRows();
     //This is what will be used for methods that need the index...
@@ -217,7 +217,7 @@ export class MandatoryDocsConfigComponent implements OnInit {
   }
 
   getAllMandatoryDocs() {
-    debugger;
+    
     this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);
 
     this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);

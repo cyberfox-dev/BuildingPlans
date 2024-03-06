@@ -9,6 +9,17 @@ h1 {
   font-weight: bold;
   margin-top: 70px
 }
+h3 {
+  font-family: 'Nunito', sans-serif;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: 20px; /* Adjust as needed */
+  padding-bottom: 20px; /* Adjust as needed */
+  color: #343a40;
+  font-size: 30px; /* Adjust as needed */
+  font-weight: bold;
+  margin-top: 20px; /* Adjust as needed */
+}
 .loading-screen {
   display: flex;
   flex-direction: column;
@@ -40,7 +51,9 @@ h1 {
 
 .cont2 {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
 }
 .mat-white {
   bottom: 53px;
@@ -57,6 +70,12 @@ h5 {
   font-size: 14px;
   margin-top: -13px;
 }
+h6 {
+  opacity: 50%;
+  font-size: 14px;
+  margin-top: -46px;
+  text-align: end;
+}
 .maps {
   position: center;
   text-align: center;
@@ -64,7 +83,8 @@ h5 {
   margin-bottom: 40px;
 }
 .card_image{
-    width:50px;
+  /*  width:50px;
+    height:50px;*/
 }
 /*MFT*/
 
@@ -117,7 +137,7 @@ h5 {
   flex-wrap: nowrap;
   justify-content: center;
   align-items: baseline;
-  margin-bottom: -36px;
+  margin-bottom: -62px;
 }
 .cont {
   display: flex;
@@ -131,7 +151,7 @@ h5 {
 }
 .cont6 {
   top: 252px;
-  margin-top: 217px;
+  margin-top: 174px;
   position: absolute;
 }
 
@@ -552,7 +572,7 @@ h1.header {
 /*reviewerClarify*/
 
 .reviewerClarify {
-  border-left: 8px solid #ffb100;
+  border-left: 8px solid deeppink; /* comments Sindiswa 18 January 2024 - changing reviewer clarity and interactions pink */
   border-bottom-right-radius: 2px;
   border-top-right-radius: 2px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
@@ -604,7 +624,7 @@ h1.header {
     }
 
     .reviewerClarify .event:after {
-      box-shadow: 0 0 0 8px #ffb100;
+      box-shadow: 0 0 0 8px deeppink; /* comments Sindiswa 18 January 2024 - changing reviewer clarity and interactions pink */
       left: -30px;
       background: #212121;
       border-radius: 50%;
@@ -832,13 +852,19 @@ a {
   }
 
 .mat-blue {
-  background-color: #005a71;
-  color: #fff;
-  margin: 10px;
+  background-color: #ccdee2;
+  color: #005870;
+  margin-top: -77px;
+}
+
+.mat-blue2 {
+  background-color: #ccdee2;
+  color: #005870;
+
 }
 
 button {
-/*  margin: 10px;*/
+  /*  margin: 10px;*/
 }
 
 .mat-column-name {
@@ -857,7 +883,7 @@ button {
 }
 
 .mat-form-field {
-  margin: 40px 0;
+/*  margin: 40px 0;*/
   width: 100%;
 }
 
@@ -933,7 +959,7 @@ button {
 .mat-generatePackBtn{
   background-color: #f48a36;
   color: #fff;
-  margin-left: 22px;
+/*  margin-left: 22px;*/
 }
 
 :host ::ng-deep .mat-tab-label-active {
@@ -953,6 +979,7 @@ button {
     transform: translateY(0);
   }
 }
+
 
 @keyframes fade-in-top {
   0% {
@@ -1040,4 +1067,144 @@ quill-editor {
   pointer-events: none; /* Ignore mouse events, making it visually appear disabled */
   color: #777; /* Text color to make it less prominent */
   border-radius: 8px;
+}
+
+/*JJS - Changed the approval packing loading screen to match the other loading screens*/
+
+
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(255 255 255);
+  z-index: 9999;
+  animation: fadein 0.5s linear forwards;
+}
+
+.text {
+  font-size: 24px;
+  color: black;
+  margin-top: 20px;
+}
+
+.text2 {
+  font-size: 12px;
+  color: black;
+  margin-top: 10px;
+}
+
+.logo2 {
+  width: 252px;
+  height: 252px;
+  animation: spin 4s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadein {
+
+  0% {
+    opacity: 0.1;
+  }
+
+  100% {
+    opacity: 1;
+  }
+
+}
+/*Progess bar Kyle 07-02-24*/
+
+
+
+.progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: #ccdee2; /* Set default background color for progress bar */
+  border-radius: 0px 30px 30px 0px;
+  animation: fill-progress 4s forwards; /* Keep the final state of the animation */
+}
+
+@keyframes fill-progress {
+  0% {
+    width: 0%; /* Start with 0% width */
+  }
+
+  100% {
+    width: var(--progressBar); /* Fill up to the progressBar width */
+  }
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #005870;
+  font-weight: 600;
+  font-size: 14px;
+  z-index: 1;
+}
+
+.progress-bar-container {
+  position: relative;
+  width: 100%;
+  height: 37px;
+  border: 1px solid #62626221;
+  margin-bottom: 36px;
+}
+
+
+image-container {
+    height : 100%;
+    width :100% ;
+   /* margin-right:0;
+    margin-left:70%;*/
+}
+.iframe{
+    width:100%;
+    height:100%;
+}
+.cont9{
+    margin:10px;
+    display:flex;
+}
+.cont10 {
+  margin: 10px;
+
+}
+.MFTImage {
+  margin-left: 90%;
+  width: auto%; /* Set the width to 50% */
+ max-height:100px; /* Maintain aspect ratio */
+}
+.cont8{
+    display:flex;
+    justify-content:center;
+}
+/*Progess bar Kyle 07-02-24*/
+.manDoc{
+    width:100%
+}
+.textFuckingBox {
+  display: none;
+}
+
+.viewButton{
+
+    margin : 0 ;
 }

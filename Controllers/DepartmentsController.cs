@@ -33,7 +33,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _departmentsService.AddUpdateDepartments(model.DepartmentID, model.DepartmentName,model.hasSubDepartment ,model.CreatedById);
+                    var result = await _departmentsService.AddUpdateDepartments(model.DepartmentID, model.DepartmentName,model.hasSubDepartment ,model.CreatedById, /*zxNumberUpdate Sindiswa 01 March 2024*/model.needsZXNumber);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.DepartmentID > 0 ? "Department Updated Successfully" : "Department Added Successfully"), result));
                 }
 
@@ -117,5 +117,24 @@ namespace WayleaveManagementSystem.Controllers
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
+
+        #region zxNumberUpdate Sindiswa 04 March 2024
+        [HttpGet("CountDepartmentsThatNeedZXNumber")]
+        public async Task<object> CountDepartmentsThatNeedZXNumber()
+        {
+            try
+            {
+                  // Assuming you have a service method to count departments with true needsZXNumber
+                    var count = await _departmentsService.CountDepartmentsThatNeedZXNumber();
+
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got the number of Departments that need ZX Number", count));
+                
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+        #endregion
     }
 }

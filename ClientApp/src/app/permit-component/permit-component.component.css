@@ -110,3 +110,35 @@ table {
   color: #d0c400bd;
   font-size: 29px;
 }
+/*Permit Kyle 13-02-24*/
+.mat-action {
+  color: white;
+  background-color: #005870;
+  margin: 10px;
+}
+.mat-column-addDocument {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 20% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  text-align: center;
+}
+
+.statusUnpaid{
+  color: #ffad30;
+  text-align:left;
+}
+
+.statusPaid {
+  color:#42640c;
+  text-align:left;
+
+}
+/*Permit Kyle 13-02-24*/

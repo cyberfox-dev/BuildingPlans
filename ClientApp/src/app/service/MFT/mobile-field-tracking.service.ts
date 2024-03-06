@@ -39,5 +39,13 @@ export class MobileFieldTrackingService {
 
   }
 
+  public deleteDocumentFromMFT(applicationID: number | null, documentName: string | null) {
 
+    const body = {
+      ApplicationID: applicationID,
+      DocumentName :documentName
+    }
+
+    return this.httpClient.post(this.baseURL + "DeleteDocumentFromMFT", body);
+  }
 }

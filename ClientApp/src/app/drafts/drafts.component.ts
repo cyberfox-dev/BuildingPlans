@@ -8,6 +8,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatTable } from '@angular/material/table';
 import { ApplicationsService } from '../service/Applications/applications.service';
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 export interface DraftsList {
   DraftId: number;
@@ -54,7 +55,7 @@ export class DraftsComponent implements OnInit {
   draftsLength: string;
   CurrentUserProfile: any;
 
-  constructor(private router: Router, private sharedService: SharedService, private draftApplicationService: DraftApplicationsService, private NewWayleaveComponent: NewWayleaveComponent, private modalService: NgbModal, private applicationService: ApplicationsService, private userPofileService: UserProfileService,) { }
+  constructor(private cdr: ChangeDetectorRef,private router: Router, private sharedService: SharedService, private draftApplicationService: DraftApplicationsService, private NewWayleaveComponent: NewWayleaveComponent, private modalService: NgbModal, private applicationService: ApplicationsService, private userPofileService: UserProfileService,) { }
 
   ngOnInit(): void {
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
@@ -64,15 +65,15 @@ export class DraftsComponent implements OnInit {
    
   }
   getAllDraftsForUser() {
-    debugger;
+    
     this.DraftsList.splice(0, this.DraftsList.length);
 
       this.draftApplicationService.getDraftedApplicationsListForExternal(this.CurrentUser.appUserId).subscribe((data: any) => {
-        debugger;
+        
         if (data.responseCode == 1) {
-          debugger;
+          
           for (let i = 0; i < data.dateSet.length; i++) {
-            debugger;
+            
             const tempDraftsList = {} as DraftsList;
             const current = data.dateSet[i];
             const date = current.dateCreated;
@@ -98,9 +99,11 @@ export class DraftsComponent implements OnInit {
             this.DraftsList.push(tempDraftsList);
 
           }
-          this.DraftsList.sort((a, b) => new Date(b.DateCreated).getTime() - new Date(a.DateCreated).getTime());
-          this.draftsLength = this.DraftsList.length.toString();
-          this.draftDataSource = this.DraftsList.filter(df => df.DateCreated);
+
+          this.draftDataSource = this.DraftsList
+            .filter(df => df.DateCreated)
+            .sort((a, b) => new Date(b.DateCreated).getTime() - new Date(a.DateCreated).getTime());
+
           this.DraftsTable.renderRows();
         }
         else {
@@ -120,21 +123,21 @@ export class DraftsComponent implements OnInit {
     this.sharedService.isDraft = true;
     this.sharedService.clientUserID = this.DraftsList[index].UserID;
     this.modalService.dismissAll();
-    debugger;
+    
     this.userPofileService.getUserProfileById(this.DraftsList[index].UserID).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
         this.CurrentUserProfile = data.dateSet[0];
 
         if (this.CurrentUserInfo.isInternal == true && this.CurrentUser.appUserId == this.DraftsList[index].UserID) {
 
-          debugger;
+          
           this.sharedService.option = "internal";
           this.NewWayleaveComponent.internal = true;
         }
 
         else if (this.CurrentUserInfo.isInternal == true && this.CurrentUser.appUserId != this.DraftsList[index].UserID && this.CurrentUserProfile.isInternal == false) {
-          debugger;
+          
 
           this.sharedService.option = "client"
           this.NewWayleaveComponent.client = true;
@@ -145,13 +148,13 @@ export class DraftsComponent implements OnInit {
           this.NewWayleaveComponent.internalProxy = true;
 
         }
-        debugger;
+        
         this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: false } });
       }
       else {
         alert(data.responseMessage);
       }
-      debugger;
+      
 
     },
 
@@ -159,22 +162,49 @@ export class DraftsComponent implements OnInit {
         console.log("Error: ", error);
       }
     );
-    debugger;
+    
 
 
+
+  }
+
+    //JJS-15-02-2024 Fixing the delete drafts (wasn't deleting)
+  onSelectDelete(index: number) {
+    if (confirm("Are you sure you want to delete this draft?")) {
+
+      this.draftApplicationService.deleteDraftedApplication(this.DraftsList[index].DraftId).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          this.getAllDraftsForUser();
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+
+    },
+
+      (error) => {
+        console.log("Error: ", error);
+      }
+      );
+    }
+    else{
+    
+    }
 
   }
   getLoggedInUser() {
     this.userPofileService.getUserProfileById(this.CurrentUser.appUserId).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         this.CurrentUserInfo = data.dateSet[0];
         this.getAllDraftsForUser();
       }
       else {
         alert(data.responseMessage);
       }
-      debugger;
+      
 
     },
 

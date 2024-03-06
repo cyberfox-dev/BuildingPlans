@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel;
 using System.Security.Policy;
 using WayleaveManagementSystem.Models.DTO;
+using System;
 
 namespace WayleaveManagementSystem.Service
 {
@@ -378,6 +379,89 @@ namespace WayleaveManagementSystem.Service
 
         }
 
+        #region actionCentreEdits Sindiswa 16 January 2024
+        public async Task<List<SubDepartmentForCommentDTO>> GetAssignedReviewer(int? ApplicationID, int? SubDepartmentID, int? ZoneID)
+        {
+            return await (
+               from subDepartmentForComment in _context.SubDepartmentForComment
+               where subDepartmentForComment.ApplicationID == ApplicationID && subDepartmentForComment.SubDepartmentID == SubDepartmentID && subDepartmentForComment.ZoneID == ZoneID && subDepartmentForComment.isActive == true
+               select new SubDepartmentForCommentDTO()
+               {
+                   SubDepartmentForCommentID = subDepartmentForComment.SubDepartmentForCommentID,
+                   ApplicationID = subDepartmentForComment.ApplicationID,
+                   SubDepartmentID = subDepartmentForComment.SubDepartmentID,
+                   SubDepartmentName = subDepartmentForComment.SubDepartmentName,
+                   UserAssaignedToComment = subDepartmentForComment.UserAssaignedToComment,
+                   CommentStatus = subDepartmentForComment.CommentStatus,
+                   isAwaitingClarity = subDepartmentForComment.isAwaitingClarity,
+                   IsRefered = subDepartmentForComment.IsRefered,
+                   ReferedToUserID = subDepartmentForComment.ReferedToUserID,
+                   CreatedById = subDepartmentForComment.CreatedById,
+                   ZoneID = subDepartmentForComment.ZoneID,
+                   ZoneName = subDepartmentForComment.ZoneName,
+                   isActive = subDepartmentForComment.isActive,
+               }
+               ).ToListAsync();
+        }
+
+        public async Task<SubDepartmentForComment> AssignSeniorReviewerOrFinalApprover(int? subDepartmentForCommentID,string? userAssaignedToComment)
+        {
+
+            if (subDepartmentForCommentID == 0)
+            {
+                subDepartmentForCommentID = null;
+            }
+            //this checks is the record exists in the db
+            var tempSubDepForCommentTable = _context.SubDepartmentForComment.FirstOrDefault(x => x.SubDepartmentForCommentID == subDepartmentForCommentID);
+
+
+            if (tempSubDepForCommentTable == null)
+            {
+                //create a new object of professional entity class then initialize the object with given infomation
+                tempSubDepForCommentTable = new SubDepartmentForComment()
+                {
+                    UserAssaignedToComment = userAssaignedToComment,
+                    isAwaitingClarity = false,
+                    IsRefered = false,
+                    ReferedToUserID = "Encountered a problem with updating the relevant details", // Sindiswa is using this column to sommer debug
+                    CreatedById = userAssaignedToComment,
+                    DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,
+                    isActive = true,
+                };
+
+
+
+                //After the inizlization add to the db
+                await _context.SubDepartmentForComment.AddAsync(tempSubDepForCommentTable);
+                await _context.SaveChangesAsync();
+                return tempSubDepForCommentTable;
+            }
+
+            else
+            {
+
+                if (userAssaignedToComment != null)
+                {
+                    tempSubDepForCommentTable.UserAssaignedToComment = userAssaignedToComment;
+                }
+
+                tempSubDepForCommentTable.DateUpdated = DateTime.Now;
+                tempSubDepForCommentTable.isActive = true;
+                //Comments Kyle 01/02/24
+                tempSubDepForCommentTable.IsRefered = false;
+                _context.Update(tempSubDepForCommentTable);
+                await _context.SaveChangesAsync();
+                return tempSubDepForCommentTable;
+            }
+
+
+
+        }
+
+
+
+        #endregion
 
     }
- }
+}

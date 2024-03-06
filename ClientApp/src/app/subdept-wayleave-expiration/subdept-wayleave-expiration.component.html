@@ -1,0 +1,49 @@
+<!--
+1. Table to display departments and current number of days in which wayleave expires after being sent to distribution fetch
+2. Editing amount of days with confirmation - number input
+3. There needs to be an expiry date config row inside the Config table
+-->
+<br/>
+<div class="center" *ngIf="isInitialized == false"><button  mat-raised-button color="create" (click)="initializeWLExpiry()">INITIALIZE WL EXPIRY CONFIG</button></div>
+<br *ngIf="isInitialized == false" />
+<hr *ngIf="isInitialized == false" />
+<br *ngIf="isInitialized == false" />
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+
+  <!--<ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef> SubDepartment Name </th>
+    <td mat-cell *matCellDef="let element"> {{element.SubdepartmentID}} </td>
+  </ng-container>-->
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>SubDepartment Name </th>
+    <td mat-cell *matCellDef="let element"> {{element.SubdepartmentName}} </td>
+  </ng-container>
+  <ng-container matColumnDef="days">
+    <th mat-header-cell *matHeaderCellDef> Days Before WL Expiry </th>
+    <td mat-cell *matCellDef="let element"> {{element.DaysBeforeExpiry}} </td>
+  </ng-container>
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-raised-button color="orange" matTooltip="Edit # of days" (click)="openEditDays(editExpiry, element.SubdepartmentID, element.SubdepartmentName, element.DaysBeforeExpiry)"> <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/pencil-solid.svg" class="icon"> </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<ng-template #editExpiry let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title" id="modal-basic-title">Change the amount of days before expiry for {{this.selectedSubDepartmentName}}</h3>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click');"></button>
+  </div>
+  <div class="modal-body">
+    <div class="center">
+      <label for="daysInput">Wayleaves will expire in:</label>&nbsp;
+      <input type="number" id="daysInput" name="daysInput" [(ngModel)]="newDaysBeforeExpiry" placeholder="11" min="11" max="100" step="1" (input)="onInputChange($event)">&nbsp; days &nbsp;
+      <button mat-raised-button color="primary" (click)="saveChanges()">Save</button>
+    </div>
+  </div>
+</ng-template>

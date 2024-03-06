@@ -11,7 +11,7 @@ import autoTable, { UserOptions } from 'jspdf-autotable';
 import { DatePipe } from '@angular/common';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
 import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component';
-import { ConfigService } from 'src/app/service/Config/config.service';
+import { ConfigService } from 'src/app/service/Config/config.service'; 
 import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-upload.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
@@ -29,15 +29,24 @@ import { ServiceItemService } from 'src/app/service/ServiceItems/service-item.se
 import { ContactDetailsService } from 'src/app/service/ContactDetails/contact-details.service';
 import { NotificationsService } from 'src/app/service/Notifications/notifications.service';
 import { MatDialog } from '@angular/material/dialog';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { ApprovalPackComponent } from 'src/app/Packs/approval-pack/approval-pack.component';
-import { RejectionPackComponent } from 'src/app/Packs/rejection-pack/rejection-pack.component';
+import { DomSanitizer, SafeHtml, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
+import { ApprovalPackComponent } from 'src/app/Packs//ApprovalPackComponent/approval-pack.component';
+import { StatusOfWorksComponent } from 'src/app/status-of-works/status-of-works.component';
+import { MandatoryDocumentUploadService } from 'src/app/service/MandatoryDocumentUpload/mandatory-document-upload.service';
+
 /*import { PdfGenerationService } from 'src/app/service/PDFGeneration/pdf-generation.service';*/
 
 import 'jspdf-autotable';
 import html2canvas from 'html2canvas';
+import { ReviewerforcommentService } from '../../service/ReviewerForComment/reviewerforcomment.service';
+import { Subscription } from 'rxjs';
 
+//Audit Trail Kyle
+import { AuditTrailService } from '../../service/AuditTrail/audit-trail.service';
+//Audit Trail Kyle
 
+import { DepartmentsService } from '../../service/Departments/departments.service'; //zxNumberUpdate Sindiswa 01 March 2024
+import { ZXNumberService } from '../../service/ZXNumber/zxnumber.service';
 export interface RolesList {
   RoleID: number;
   RoleName: string;
@@ -52,6 +61,7 @@ export interface MFTList {
   DateCreated: Date;
   ApplicationNumber: number;
   FullName: string;
+  DocURL: any;
 }
 
 export interface SubDepartmentListFORAPPROVAL {
@@ -161,10 +171,16 @@ export interface CommentsList {
   CommentStatus: string;
   SubDepartmentForCommentID: number;
   SubDepartmentName?: string;
-  isClarifyCommentID?: number; 
+  isClarifyCommentID?: number;
   isApplicantReplay?: string; 
   UserName: string;
+   //Comments Kyle 01/02/24
+  ZoneName: string;
+   //Comments Kyle 01/02/24
+   //Clarifications Alert
+  CanReplyUserID: string;
   DateCreated: any;
+  HasReply: boolean;
 }
 
 export interface ApplicationList {
@@ -202,6 +218,9 @@ export interface ApplicationList {
   wbsrequired: boolean;
   Coordinates: string;
   UserID: any;
+  clientAlternativeEmail: string; // chekingNotifications Sindiswa 13 February 2024
+  //reapplyCount: number, // reapply Sindiswa 25 January 2024
+  ContractorAccountDetails: string; //zxNumberUpdate Sindiswa 01 March 2024
 }
 
 
@@ -225,7 +244,7 @@ export interface ContactDetailsList {
   ContactDetailID: number;
   FullName: string;
   CellNo: string;
-  Email: Date;
+  Email: string;
   SubDepID: number;
   SubDepName: string;
   ZoneID: number;
@@ -240,8 +259,8 @@ export interface DepositRequired {
   Desciption: string;
   SubDepartmentID: number;
   SubDepartmentForCommentID: number;
-  Rate: number;
-  Quantity: number;
+  Rate: any;
+  Quantity: any;
   ServiceItemCodeserviceItemCode?: string | null;
   SubDepartmentName?: string | null;
   WBS?: string;
@@ -260,9 +279,31 @@ export interface AllSubDepartmentList {
   GLCode: string | null;
   ProfitCenter: string | null;
 }
+   //Project size Kyle 27-02-24
+export interface MandatoryDocumentUploadList {
+  mandatoryDocumentID: number;
+  mandatoryDocumentName: string;
+  stageID: number;
+  dateCreated: any;
+  mandatoryDocumentCategory: string;
+  hasFile: boolean;
+}
 
+//#region zxNumberUpdate Sindiswa 01 March 2024
+export interface DepartmentList {
+  departmentID: number;
+  departmentName: string;
+  dateUpdated: any;
+  dateCreated: any;
+  hasSubDepartment: boolean;
+  needsZXNumber: boolean;
+  canInputZXNumber?: boolean; //Is the logged-in user permitted to input ZX number?
+  zxNumber?: string; //Each department that requires a ZX number should be able to input it well.
+}
+
+//#endregion
 var img = new Image();
-img.src = 'assets/cctlogoblack.png';
+img.src = 'assets/cctlogoblackk.png';
 
 interface jsPDFWithPlugin extends jsPDF {
   autotable: (options: UserOptions) => jsPDF;
@@ -291,6 +332,7 @@ export class ViewProjectInfoComponent implements OnInit {
   ARCGISAPIData = {} as ARCGISAPIData;
   auditTrail: boolean = false;
   public isInternalUser: boolean = false;
+  public EMB: boolean = false;
   canReapply = false;
   public projectNo = "";
   createdByID: any | undefined;
@@ -301,6 +343,10 @@ export class ViewProjectInfoComponent implements OnInit {
   rejected: boolean = false;
   approved: boolean = false;
 
+   //  Financial POP Kyle 15/01/24
+  uploadingPOP: boolean = false;
+  uploadedPOP: boolean = false;
+   //  Financial POP Kyle 15/01/24
   canClarify: boolean;
   /*type of applicant*/
   isInternal = true;
@@ -316,6 +362,9 @@ export class ViewProjectInfoComponent implements OnInit {
   extApplicantEmail = '';
   extApplicantPhyscialAddress = '';
   extApplicantIDNumber = '';
+  extApplicantICASALicense = ''; //icasaDetailsDisplay Sindiswa 16 Janauary 2024
+  isTelecomms: boolean = false; //icasaDetailsDisplay Sindiswa 16 Janauary 2024
+  isExtApplicantViewer: boolean = false; //icasaDetailsDisplay Sindiswa 16 Janauary 2024
 
   /*internal*/
   internalApplicantName = '';
@@ -366,10 +415,12 @@ export class ViewProjectInfoComponent implements OnInit {
   ServiceItemList: ServiceItemList[] = [];
   AllSubDepartmentList: AllSubDepartmentList[] = [];
   SubDepartmentListFORAPPROVAL: SubDepartmentListFORAPPROVAL[] = [];
-  
+  MandatoryDocumentUploadList: MandatoryDocumentUploadList[] = [];
+
   @ViewChild('pdfTable', { static: false }) pdfTable: ElementRef;
 
   ApplicationID: number | undefined;
+  ReApplyCount: number | undefined; //reapply Sindiswa 25 January 2024
  
   CurrentUser: any;
   //Convert the local storage JSON data to an array object
@@ -411,8 +462,10 @@ export class ViewProjectInfoComponent implements OnInit {
   startDate: string;
   selectPaidDate: Date;
 
+  showFormerApps: boolean;
+  fromReApplyArchive: boolean;
 
-  fileAttrs = "Upload File:";
+  fileAttrs = "Upload File:" ;
   fileAttrsName = "Doc";
 
   ApForUpload: string;
@@ -429,8 +482,29 @@ export class ViewProjectInfoComponent implements OnInit {
   Paid: string;
   canReviewerClarify: boolean;
     previousReviewer: any;
-    referComment: boolean;
- 
+  referComment: boolean;
+  PacksTab: boolean = false;
+  public InternalExternalUser: boolean=false;
+    isExternalApplicant: boolean;
+  SuccessfulUploads: number = 0;
+ //Audit Trail Kyle
+  stringifiedDataRoles: any;
+  AllCurrentUserRoles: any;
+  //Audit Trail Kyle
+
+  //Final Approver && Senior Approver Kyle 01/02/24
+  reviewerToReply: boolean = false;
+  progressBar: number = 0;
+  reply: string = "";
+ commentEdit: string = "";
+  //Final Approver && Senior Approver Kyle 01/02/24
+  canCreateNote: boolean = false;
+  showPreInvoice: boolean = false //zxNum-and-contractorAccount Sindiswa 28 February 2024
+  waterZXEnabled: boolean = false;
+  rimZXEnabled: boolean = false;
+  contractorInfEnabled: boolean = false;
+  showEMBInput: boolean = false;
+  totalZXDepartments: number;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -458,7 +532,12 @@ export class ViewProjectInfoComponent implements OnInit {
   openDocUpload(newSub: any) {
     this.modalService.open(newSub, { backdrop: 'static', centered: true, size: 'lg' });
   }
-
+  //  Financial POP Kyle 15/01/24
+  OnPOPUpload() {
+    this.uploadingPOP = true;
+    
+  }
+   //  Financial POP Kyle 15/01/24
   isFinancial = true;
 
   public editMyComment = this.formBuilder.group({
@@ -471,7 +550,7 @@ export class ViewProjectInfoComponent implements OnInit {
     reply: ['', Validators.required],
   })
 
-
+  
 
 
   @ViewChild(MatTable) FinancialListTable: MatTable<DocumentsList> | undefined;
@@ -486,6 +565,8 @@ export class ViewProjectInfoComponent implements OnInit {
   fileCount = 0;
   ApprovalDoqnload = true;
   generateApprovalbtn = false;
+
+ 
 
   constructor(private modalService: NgbModal,
     private sharedService: SharedService,
@@ -515,9 +596,19 @@ export class ViewProjectInfoComponent implements OnInit {
     private notificationsService: NotificationsService,
     private dialog: MatDialog,
     private sanitizer: DomSanitizer,
-    private approvalPack: ApprovalPackComponent
+    private approvalPack: ApprovalPackComponent,
+    private reviwerforCommentService: ReviewerforcommentService,
+   
+    //Audit Trail Kyle
+    private auditTrailService: AuditTrailService,
+    private statusOfWorksComponent: StatusOfWorksComponent,
+    private mandatroyDocumentUploadService: MandatoryDocumentUploadService,
+    //Audit Trail Kyle
+    /*zxNumberUpdate Sindiswa 01 March 2024*/private departmentService: DepartmentsService,
+    /*zxNumberUpdate Sindiswa 01 March 2024*/private zxNumberService: ZXNumberService,
   ) { }
 
+  routerSubscription: Subscription; //reapply Sindiswa 26 January 2024
 
 
   ngOnInit(): void {
@@ -539,19 +630,41 @@ export class ViewProjectInfoComponent implements OnInit {
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
-    
+    this.getRolesLinkedToUser();
     this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
     
-
+   
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
     console.log("000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", this.applicationDataForView[0]);
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
     this.loggedInUsersSubDepartmentID = this.CurrentUserProfile[0].subDepartmentID;
     
+    // #region icasaDetailsDisplay Sindiswa 16 January 2024, when the logged in user is external the "Applicant" details show funny | USERID??
+    console.log("This is the current user's details --- 280200224", this.CurrentUserProfile);
 
 
+    // #endregion icasaDetailsDisplay Sindiswa 16 January 2024
+    //Audit Trail Kyle
+    this.stringifiedDataRoles = JSON.parse(JSON.stringify(localStorage.getItem('AllCurrentUserRoles')));
+    this.AllCurrentUserRoles = JSON.parse(this.stringifiedDataRoles);
+    console.log("This is the current user's roles --- 280200224", this.AllCurrentUserRoles);
+    this.onCheckAllCurrentUserRole();
+  
+    // Audit Trail Kyle
+
+    //#region zxNum-and-contractorAccount Sindiswa 28 February 2024
+    if (this.CurrentUserProfile[0].departmentID == 28 /*EMB*/ || (this.AllCurrentUserRoles.some(role => role.roleName === "Department Admin") && (this.CurrentUserProfile[0].departmentID == 24 /*Water*/ || this.CurrentUserProfile[0].departmentID == 25/*RIM*/))) {
+      this.showPreInvoice = true;
+      if (this.AllCurrentUserRoles.some(role => role.roleName === "Department Admin") && (this.CurrentUserProfile[0].departmentID == 24 /*Water*/ )) {
+        this.waterZXEnabled = true;
+      }
+      if (this.AllCurrentUserRoles.some(role => role.roleName === "Department Admin") && (this.CurrentUserProfile[0].departmentID == 25/*RIM*/)) {
+        this.rimZXEnabled = true;
+      }
+    }
+    //#endregion
     const today = new Date();
     const twoWeeksFromNow = new Date();
     twoWeeksFromNow.setDate(today.getDate() + 14); // Add 14 days to the current date
@@ -559,14 +672,21 @@ export class ViewProjectInfoComponent implements OnInit {
     this.minDate = twoWeeksFromNow.toISOString().split('T')[0];
 
 
+    //#region reapply Sindiswa 26 January 2024
+    debugger;
+/*JJS Commit 29-02-24(removed full-screen mode for maps and sorted approval pack btn and former wayleave tab)*/
+    if (this.sharedService.getShowFormerApps.length > 0) {
+      this.showFormerApps = true
+    }
+    else {
+      this.showFormerApps = false;
+    }
 
-
-
-
-    
-
+    this.fromReApplyArchive = this.sharedService.getFromReApplyArchive();
+    this.routerSubscription = this.sharedService.getRoutingToOldAapp();
+    // #endregion
     const setValues = this.applicationDataForView[0];
-
+ 
     if (setValues != null || setValues != undefined) {
 
       this.ApplicationID = setValues.applicationID;
@@ -576,33 +696,39 @@ export class ViewProjectInfoComponent implements OnInit {
       this.router.navigate(["/home"]);
     }
     
-
-    if (setValues.CurrentStageName == "PTW" || setValues.CurrentStageNumber >= 4) {
+    //Permit Tab Kyle 22/01/24
+    
+    if (setValues.CurrentStageName == "PTW") {
       this.showPermitTab = true;
+      this.PacksTab = true;
     } else {
       this.showPermitTab = false;
+      this.PacksTab = false;
     }
     
     if (setValues.CurrentStageName == "Monitoring") {
       this.showStatusOfWorksTab = true;
       this.showPermitTab = true;
+      this.PacksTab = true;
     } else {
       this.showStatusOfWorksTab = false;
     }
-    
+    //Permit Tab Kyle 22/01/24
     if (setValues.CurrentStageName == "Approval Pack Generation") {
       this.generateApproval = true;
-      this.showPermitTab = true;
+      this.showPermitTab = false;
+
     } else {
       this.generateApproval = false;
     }
-    
+    //Permit Tab Kyle 22/01/24
     if (setValues.CurrentStageName == "Approval Pack Generation" && this.CurrentUser.appUserId == this.applicationDataForView[0].CreatedById) {
       this.generateApprovalbtn = true;
-      this.showPermitTab = true;
+      this.showPermitTab = false;
+      this.PacksTab = true;
     } else {
       this.generateApprovalbtn = false;
-      
+ 
     }
     if (this.CurrentUser.appUserId == this.applicationDataForView[0].CreatedById) {
       this.referComment = true;
@@ -638,7 +764,7 @@ export class ViewProjectInfoComponent implements OnInit {
     
 
     this.checkIfWbsRequired();
-    /*    this.getAllSubDepForReject();*/
+        this.getAllSubDepForReject();
     /*    this.getAllSubDepForReject();*/
     this.canReapply = this.sharedService.getCanReapply();
     console.log("canReapplyVen: ", this.canReapply);
@@ -649,24 +775,35 @@ export class ViewProjectInfoComponent implements OnInit {
     this.checkIfCanReviwerReply();
     this.checkIfPermitExsist();
     this.getFinancial();
-    this.getMFTForApplication();
+    
     this.getEMBUsers();
-    this.getServiceItem("001");
-    this.getServiceItem("002");
-    this.getServiceItem("003");
+
     this.getAllSubDepartments();
     this.getLinkedDepartmentsFORAPPROVAL();
-    this.CheckForApprovalPackDownload(); 
-    
+    this.CheckForApprovalPackDownload();
+    //Progress bar Kyle 07-02-24
+    this.CalCulateApprovalProgess();
+    this.getZXNumberDetails();//zxNum-and-contractorAccount Sindiswa 28 February 2024
+    this.countTotalZXDepartments(); //zxNumberUpdate Sindiswa 04 March 2024
+    //#region zxNumberUpdate Sindiswa 01 March 2024
+    this.shouldShowPreInvoice();
+    this.getZXDepartments();
+    //#endregion
   }
-
-
-
+  // #region reapply Sindiswa 26 January 2024
+  ngOnDestroy() {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+    //this.sharedService.setShowFormerApps(true);
+    //this.sharedService.setFromReApplyArchive(false);
+  }
+  // #endregion
   openEditCommentModal(commentEditorModal: any, index: any) {
 
-    debugger;
+    
     this.currentIndex = index;
-    this.editMyComment.controls["commentEdit"].setValue(this.CommentsList[index].Comment);
+    this.commentEdit = this.CommentsList[index].Comment;
     //this.commentEdit = this.CommentsList[index].Comment;
     console.log("This is what you're trying to edit", this.CommentsList[index].Comment);
 
@@ -692,7 +829,7 @@ export class ViewProjectInfoComponent implements OnInit {
     }
     else if (this.receivedata == "Rejected") {
       this.rejected = true;
-      this.onCrreateRejectionPack();
+
     }
     else {
 
@@ -725,10 +862,11 @@ export class ViewProjectInfoComponent implements OnInit {
 
           const tempSubDepartmentLinkedList = {} as AllSubDepartmentList;
           const current = data.dateSet[i];
-
+/*JJS Commit 20-02-24*/
           tempSubDepartmentLinkedList.subDepartmentID = current.subDepartmentID;
           tempSubDepartmentLinkedList.UserAssaignedToComment = current.userAssaignedToComment;
-          tempSubDepartmentLinkedList.subDepartmentName = current.subDepartmentName;
+          
+          tempSubDepartmentLinkedList.subDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempSubDepartmentLinkedList.departmentID = current.departmentID;
           tempSubDepartmentLinkedList.dateUpdated = current.dateUpdated;
           tempSubDepartmentLinkedList.dateCreated = current.dateCreated;
@@ -772,7 +910,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.serviceItemService.getServiceItemByServiceItemCode(serviceItemCode).subscribe((data: any) => {
       if (data.responseCode == 1) {
 
-
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempServiceItemList = {} as ServiceItemList;
           const current = data.dateSet[i];
@@ -1087,6 +1225,7 @@ export class ViewProjectInfoComponent implements OnInit {
     else {
       this.canClarify = false;
     }
+    console.log("CanReply", this.canClarify);
   }
 
   checkIfCanReviwerReply() {
@@ -1159,6 +1298,14 @@ export class ViewProjectInfoComponent implements OnInit {
     this.fileCount = this.fileCount - 1;
 
   }
+
+  onFileDelete2(event: any, index: number) {
+    this.MandatoryDocumentUploadList[index].hasFile = false
+    this.fileAttrsName = "Doc";
+
+    //this.getAllDocsForApplication();
+    this.fileCount = this.fileCount - 1;
+  }
   changeHasFile() {
     if (this.hasFile) {
       this.hasFile = false;
@@ -1167,10 +1314,13 @@ export class ViewProjectInfoComponent implements OnInit {
     }
   }
   onFileUpload(event: any) {
+   
 
-
+    
   }
-
+  onFileUpload2(event: any, index: any) {
+    this.MandatoryDocumentUploadList[index].hasFile = true;
+  }
 
   onAutoLinkForPermit() {
 
@@ -1197,6 +1347,9 @@ export class ViewProjectInfoComponent implements OnInit {
             console.log("Error: ", error);
           })
         }
+        //Audit Trail Kyle
+        this.onSaveToAuditTrail("User has applied for permit");
+         //Audit Trail Kyle
       }
       else {
 
@@ -1256,23 +1409,84 @@ export class ViewProjectInfoComponent implements OnInit {
           tempCommentList.ApplicationID = current.applicationID;
           tempCommentList.Comment = current.comment;
           tempCommentList.CommentID = current.commentID;
+          //Final Approver && Senior Approver Kyle 01/02/24
+          if (this.CurrentUserProfile[0].isInternal == true) {
+            if (current.commentStatus == "Approved") {
+              tempCommentList.CommentStatus = "Provisionally Approved";
+            }
+            else if (current.commentStatus == "Rejected") {
+              tempCommentList.CommentStatus = "Provisionally Rejected";
+            }
+            else if (current.commentStatus == "FinalReject") {
+              tempCommentList.CommentStatus = "Final Rejected";
+            }
+           
+            else {
+              tempCommentList.CommentStatus = current.commentStatus;
+            }
+            
+            tempCommentList.SubDepartmentForCommentID = current.subDepartmentForCommentID;
+            /*tempCommentList.SubDepartmentName = current.subDepartmentName;*/
+            tempCommentList.SubDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
+            tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
+            tempCommentList.isApplicantReplay = current.isApplicantReplay;
 
-          debugger;
-          if (current.commentStatus == "Approved") {
-            tempCommentList.CommentStatus = "Provisionally Approved";
+            tempCommentList.UserName = current.userName;
+            //Comments Kyle 01/02/24
+            tempCommentList.ZoneName = current.zoneName;
+            //Comments Kyle 01/02/24
+            //Clarifications Alerts Kyle
+            tempCommentList.CanReplyUserID = current.canReplyUserID;
+            tempCommentList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+            debugger;
+            if (tempCommentList.CommentStatus == "Clarified" || tempCommentList.CommentStatus == " Reviewer Clarified" || tempCommentList.CommentStatus == " Applicant Clarified") {
+              tempCommentList.HasReply = true;
+            }
+
+            this.CommentsList.push(tempCommentList);
+            console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", current);
+            console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", tempCommentList);
           }
+
           else {
-            tempCommentList.CommentStatus = current.commentStatus;
-          }
+            if (current.commentStatus != "Reviewer Clarify") {
+              if (current.commentStatus == "Approved") {
+                tempCommentList.CommentStatus = "Provisionally Approved";
+              }
+              else if (current.commentStatus == "Rejected") {
+                tempCommentList.CommentStatus = "Provisionally Rejected";
+              }
+              else if (current.commentStatus == "FinalReject") {
+                tempCommentList.CommentStatus = "Final Rejected";
+              }
+              else {
+                tempCommentList.CommentStatus = current.commentStatus;
+              }
 
-          tempCommentList.SubDepartmentForCommentID = current.subDepartmentForCommentID;
-          tempCommentList.SubDepartmentName = current.subDepartmentName;
-          tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
-          tempCommentList.isApplicantReplay = current.isApplicantReplay;
-          tempCommentList.UserName = current.userName;
-          tempCommentList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
-          this.CommentsList.push(tempCommentList);
-          console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", current);
+              tempCommentList.SubDepartmentForCommentID = current.subDepartmentForCommentID;
+              tempCommentList.SubDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
+              tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
+              tempCommentList.isApplicantReplay = current.isApplicantReplay;
+              tempCommentList.UserName = current.userName;
+              //Comments Kyle 01/02/24
+              tempCommentList.ZoneName = current.zoneName;
+              //Comments Kyle 01/02/24
+              tempCommentList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+              debugger;
+              if (tempCommentList.CommentStatus == "Clarified" || tempCommentList.CommentStatus == " Reviewer Clarified" || tempCommentList.CommentStatus == "Applicant Clarified") {
+                tempCommentList.HasReply = true;
+              }
+              else {
+                tempCommentList.HasReply = false;
+              }
+
+              this.CommentsList.push(tempCommentList);
+              console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", current);
+              console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLISTKyle", tempCommentList);
+            }
+           
+          }  
+          
 
         }
 
@@ -1288,15 +1502,36 @@ export class ViewProjectInfoComponent implements OnInit {
     })
   }
 
+  // #region comments Sindiswa 19 January 2024
+  getAppCollaborators() {
+    //mhmm, played myself - won't have the appropriate subdepartmentID and zoneID here
+    this.reviwerforCommentService.getAssignementDetails(this.ApplicationID, null, null).subscribe((data: any) => {
+      if (data.resposneCode == 1) {
+
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+  // #endregion
+
   modalTitle: string = "";
-  openReplyModal(replyModal: any, index: any, action: string) {
+  clarityType: string = ""; //comments Sindiswa 18 January 2024 - making the clarity more dynamic
+
+  openReplyModal(replyModal: any, index: any, action: string, commentStatus:string) {
     this.modalService.open(replyModal, { centered: true, size: 'lg' })
     this.currentIndex = index;
     if (this.CommentsList[index].isApplicantReplay != null) {
-      //this.reply = this.CommentsList[index].isApplicantReplay;
-      this.myNewReply.controls["reply"].setValue(this.CommentsList[index].isApplicantReplay);
+      this.reply = this.CommentsList[index].isApplicantReplay;
+     
     } else {
-      this.myNewReply.controls["reply"].setValue("");
+      this.reply = "";
     }
 
     this.subDepartmentForComment = this.CommentsList[index].SubDepartmentForCommentID;
@@ -1307,7 +1542,18 @@ export class ViewProjectInfoComponent implements OnInit {
       this.modalTitle = 'Update Reply to Comment';
     }
 
+    //* comments Sindiswa 18 January 2024 - making the clarity more dynamic */
+    if (commentStatus === "Reviewer Clarity" || commentStatus === "Reviewer Clarify" ) {
+      this.clarityType = "Reviewer Clarified";
+    }
+    else if (commentStatus == "Applicant Clarify") {
+      this.clarityType = "Applicant Clarified";
+    }
+    else if (commentStatus === "Clarify" ) {
+      this.clarityType = "Clarified";
+    }
   }
+
 
 
   //async getSelectedDepartment(subDepID:number) {
@@ -1341,7 +1587,7 @@ export class ViewProjectInfoComponent implements OnInit {
   // TODO: make sure that comments update
 
   updateComment() {
-    let CurrentComment = this.editMyComment.controls["commentEdit"].value;
+    let CurrentComment =this.commentEdit;
     console.log("This is the updated comment", CurrentComment);
     //let CurrentComment = this.commentEdit;
 
@@ -1386,7 +1632,7 @@ export class ViewProjectInfoComponent implements OnInit {
     //    if (data.responseCode == 1) {
     //      this.getAllComments();
 
-    //      
+    //
     //      this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, null, false, null, null, null).subscribe((data: any) => {
 
     //        if (data.responseCode == 1) {
@@ -1430,14 +1676,15 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   }
+  
 
   createReply() {
     //let Currentreply = this.reply;
-    let Currentreply = this.myNewReply.controls["reply"].value;
-
+    let Currentreply = this.reply;
+    
     //this.ApplicantReply = Currentreply;
     // this.replyCreated = true;
-
+    debugger;
     const currentComment = this.CommentsList[this.currentIndex];
     let numberOfComments = 0;
     for (var i = 0; i < this.CommentsList.length; i++) {
@@ -1445,18 +1692,31 @@ export class ViewProjectInfoComponent implements OnInit {
         numberOfComments++;
       }
     }
+     //Final Approver && Senior Approver Kyle 01/02/24
+    let commentStatus = "";
+    let updateStatus = currentComment.CommentStatus;
 
+    debugger;
+    if (this.clarityType == "Reviewer Clarified" || this.clarityType == "Applicant Clarified") {
+      commentStatus = "Approved";
+    }
+    else {
+      commentStatus = null;
+    }
+    //Final Approver && Senior Approver Kyle 01/02/24
     if (currentComment.isClarifyCommentID == null) {
       if (confirm("Are you sure you want to add this reply?")) {
-        this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, null, "Clarified", null, numberOfComments, Currentreply).subscribe((data: any) => {
+
+        this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, null,/*comments Sindiswa 18 January 2024 - making the clarity more dynamic*/ this.clarityType, null, numberOfComments, Currentreply).subscribe((data: any) => {
 
           if (data.responseCode == 1) {
             this.getAllComments();
-            this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, null, false, null, null, null).subscribe((data: any) => {
+            this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, commentStatus, false, null, null, null).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
-
-             
+                //Final Approver && Senior Approver Kyle 01/02/24
+                this.modalService.dismissAll();
+                this.router.navigate(["/home"]);
 
 
               }
@@ -1486,19 +1746,24 @@ export class ViewProjectInfoComponent implements OnInit {
         })
       }
     }
-    else if (currentComment.isClarifyCommentID != null && currentComment.isClarifyCommentID == numberOfComments) {
+    else  if (currentComment.isClarifyCommentID != null && currentComment.isClarifyCommentID == numberOfComments) {
       if (confirm("Are you sure you want to update this replay? You will not be able to update the reply again.")) {
-        this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, null, "Clarified", null, 1, Currentreply).subscribe((data: any) => {
 
+        if (updateStatus == "Applicant Clarified" || updateStatus == "Reviewer Clarified") {
+          commentStatus = "Approved";
+        }
+        this.commentsService.addUpdateComment(currentComment.CommentID, null, null, null, null, null, this.clarityType, null, 1, Currentreply).subscribe((data: any) => {
+          
           if (data.responseCode == 1) {
             this.getAllComments();
 
 
-            this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, null, false, null, null, null).subscribe((data: any) => {
+            this.subDepartmentForCommentService.updateCommentStatus(this.subDepartmentForComment, commentStatus, false, null, null, null).subscribe((data: any) => {
 
               if (data.responseCode == 1) {
 
-
+                this.modalService.dismissAll();
+                this.router.navigate(["/home"]);
 
 
               }
@@ -1643,10 +1908,11 @@ export class ViewProjectInfoComponent implements OnInit {
           tempDepositRequired.DepositRequiredID = current.depositRequiredID;
           tempDepositRequired.Desciption = current.desciption;
           tempDepositRequired.Quantity = current.quantity;
+          debugger;
           tempDepositRequired.Rate = current.rate;
           tempDepositRequired.SubDepartmentForCommentID = current.subDepartmentForCommentID;
           tempDepositRequired.SubDepartmentID = current.subDepartmentID;
-          tempDepositRequired.SubDepartmentName = current.subDepartmentName;
+          tempDepositRequired.SubDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempDepositRequired.WBS = current.wbs;
 
 
@@ -1696,7 +1962,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     // Logo
     const img = new Image();
-    img.src = 'assets/cctlogoblack.png';
+    img.src = 'assets/cctlogoblackk.png';
 
     // Add logo to PDF document
     doc.addImage(img, 'png', 10, 10, 60, 20);
@@ -1851,52 +2117,73 @@ export class ViewProjectInfoComponent implements OnInit {
   extProxyApplicantTellNo = '';
   extProxyApplicantEmail = '';
   extProxyApplicantPhyscialAddress = '';
+  extProxyApplicantCompanyType = ''; //icasaDetailsDisplay Sindiswa 16 Janauary 2024
+  extProxyApplicantICASALicense = ''; //icasaDetailsDisplay Sindiswa 16 Janauary 2024
+
 
   checkIfProxyApplication() {
-    if (this.CurrentApplicationBeingViewed[0].CreatedById != this.CurrentApplicationBeingViewed[0].UserID) {
-      this.theirProxy = true;
+    this.userPofileService.getUserProfileById(this.CurrentApplicationBeingViewed[0].CreatedById).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+        //Gonna go ahead and assume that only internal people can apply for people
+        console.log("data", data.dateSet);
+
+        const currentUserProfile = data.dateSet[0];
+        const fullname = currentUserProfile.fullName;
+        if (currentUserProfile.isInternal == true) {
+          this.isExternalApplicant = false
+          this.toa = 'Internal User';
+          this.internalApplicantName = fullname.substring(0, fullname.indexOf(' '));
+          this.internalApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
+          this.internalApplicantDirectorate = currentUserProfile.directorate;
+          this.internalApplicantDepartment = currentUserProfile.departmentName;
+          this.internalApplicantTellNo = currentUserProfile.phoneNumber;
+          this.internalApplicantBranch = currentUserProfile.branch;
+          this.internalApplicantCostCenterNo = currentUserProfile.costCenterNumber;
+          this.internalApplicantCostCenterOwner = currentUserProfile.costCenterOwner;
 
 
-      this.userPofileService.getUserProfileById(this.CurrentApplicationBeingViewed[0].CreatedById).subscribe((data: any) => {
-        if (data.responseCode == 1) {
-
-          //Gonna go ahead and assume that only internal people can apply for people
-          console.log("data", data.dateSet);
-
-          const currentUserProfile = data.dateSet[0];
-          const fullname = currentUserProfile.fullName;
-
-            this.toa = 'Internal User';
-            this.internalApplicantName = fullname.substring(0, fullname.indexOf(' '));
-            this.internalApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
-            this.internalApplicantDirectorate = currentUserProfile.directorate;
-            this.internalApplicantDepartment = currentUserProfile.departmentName;
-            this.internalApplicantTellNo = currentUserProfile.phoneNumber;
-            this.internalApplicantBranch = currentUserProfile.branch;
-            this.internalApplicantCostCenterNo = currentUserProfile.costCenterNumber;
-            this.internalApplicantCostCenterOwner = currentUserProfile.costCenterOwner;
 
         }
 
         else {
+          this.isExternalApplicant = true;
+          this.toa = 'External User';
+          this.extApplicantBpNoApplicant = currentUserProfile.bP_Number;
+          this.extApplicantCompanyName = currentUserProfile.companyName;
+          this.extApplicantCompanyRegNo = currentUserProfile.companyRegNo;
+          //this.extApplicantCompanyType = '';
+          this.extApplicantName = fullname.substring(0, fullname.indexOf(' '));
+          this.extApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
+          this.extApplicantTellNo = currentUserProfile.phoneNumber;
+          this.extApplicantEmail = currentUserProfile.email;
+          this.extApplicantPhyscialAddress = currentUserProfile.physcialAddress;
+          // this.extApplicantIDNumber = ''; todo chage the dto to include the id number
 
-          alert(data.responseMessage);
+
         }
-        console.log("reponse", data);
 
-      }, error => {
-        console.log("Error: ", error);
+      }
 
-      })
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+    }, error => {
+      console.log("Error: ", error);
+
+    })
 
 
-      this.userPofileService.getUserProfileById(this.CurrentApplicationBeingViewed[0].UserID).subscribe((data: any) => {
-        if (data.responseCode == 1) {
+    this.userPofileService.getUserProfileById(this.CurrentApplicationBeingViewed[0].UserID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
 
-          console.log("This is my originator's information, hopefully. Finger's crossed: ", data.dateSet);
-          const currentUserProfile = data.dateSet[0];
-          const fullname = currentUserProfile.fullName;
-          if (currentUserProfile.isInternal == true) {
+        console.log("This is my originator's information, hopefully. Finger's crossed: ", data.dateSet);
+        const currentUserProfile = data.dateSet[0];
+        const fullname = currentUserProfile.fullName;
+        if (currentUserProfile.isInternal == true) {
 
             this.toa = 'Internal User';
             this.internalProxyApplicantName = fullname.substring(0, fullname.indexOf(' '));
@@ -1921,21 +2208,38 @@ export class ViewProjectInfoComponent implements OnInit {
             this.extProxyApplicantPhyscialAddress = currentUserProfile.physcialAddress;
             // this.extApplicantIDNumber = ''; todo chage the dto to include the id number
             this.internalProxyApplicant = false;
+
+            // #region icasaDetailsDisplay Sindiswa 16 Janauary 2024
+            this.extProxyApplicantCompanyType = currentUserProfile.companyType;
+            if (currentUserProfile.icasaLicense) {
+
+              this.isTelecomms = true;
+            }
+            else {
+              this.isTelecomms = false;
+            }
+            this.extProxyApplicantICASALicense = currentUserProfile.icasaLicense;
+            // #endregion icasaDetailsDisplay Sindiswa 16 Janauary 2024
           }
 
 
 
 
-        }
-        else {
+      }
+      else {
 
-          alert(data.responseMessage);
-        }
-        console.log("reponse", data);
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
 
-      }, error => {
-        console.log("Error: ", error);
-      })
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+
+    if (this.CurrentApplicationBeingViewed[0].CreatedById != this.CurrentApplicationBeingViewed[0].UserID) {
+      this.theirProxy = true;
     }
     else {
       this.getUserProfileByUserID();
@@ -1943,19 +2247,19 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getUserProfileByUserID() {
-
+    
     this.userPofileService.getUserProfileById(this.createdByID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-
+        
 
         console.log("data", data.dateSet);
 
         const currentUserProfile = data.dateSet[0];
         const fullname = currentUserProfile.fullName;
-
+        
         if (currentUserProfile.isInternal == true) {
-
+          this.isExternalApplicant = false
           this.toa = 'Internal User';
           this.internalApplicantName = fullname.substring(0, fullname.indexOf(' '));
           this.internalApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
@@ -1969,12 +2273,27 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
         }
+      
         else {
+          this.isExternalApplicant = true;
           this.toa = 'External User';
           this.extApplicantBpNoApplicant = currentUserProfile.bP_Number;
           this.extApplicantCompanyName = currentUserProfile.companyName;
           this.extApplicantCompanyRegNo = currentUserProfile.companyRegNo;
           //this.extApplicantCompanyType = '';
+
+          // #region icasaDetailsDisplay Sindiswa 16 Janauary 2024 - why was the above commented out initially vele?
+          this.extApplicantCompanyType = currentUserProfile.companyType;
+          if (currentUserProfile.icasaLicense) {
+           
+            this.isTelecomms = true;
+          }
+          else {
+            this.isTelecomms = false;
+          }
+          this.extApplicantICASALicense = currentUserProfile.icasaLicense;
+          // #endregion icasaDetailsDisplay Sindiswa 16 Janauary 2024
+
           this.extApplicantName = fullname.substring(0, fullname.indexOf(' '));
           this.extApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
           this.extApplicantTellNo = currentUserProfile.phoneNumber;
@@ -1982,6 +2301,7 @@ export class ViewProjectInfoComponent implements OnInit {
           this.extApplicantPhyscialAddress = currentUserProfile.physcialAddress;
           // this.extApplicantIDNumber = ''; todo chage the dto to include the id number
           this.isInternal = false;
+          this.isExtApplicantViewer = true;
 
         }
 
@@ -2087,7 +2407,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   ChangeApplicationStatusToPaid() {
-
+    
     if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Unpaid") {
 
       this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
@@ -2098,14 +2418,57 @@ export class ViewProjectInfoComponent implements OnInit {
           this.configMonthYear = current.utilitySlot2;
           this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
             if (data.responseCode == 1) {
-
-              this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, null, null, "Distributed", null, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, false,null,this.selectPaidDate).subscribe((data: any) => {
-
+               //Service Information Kyle 31/01/24                                                                                                                                                                                                                                                                                                                                                                         //Service Information Kyle
+              this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, null, null, "Distributed", null, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, this.CurrentApplicationBeingViewed[0].isPlanning, null, this.selectPaidDate).subscribe((data: any) => {
+               //Service Information Kyle 31/01/24
                 if (data.responseCode == 1) {
 
                   alert(data.responseMessage);
-                  this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application payment", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>Your application (" +"WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application payment", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>You have moved application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave to paid. <br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  if (this.CurrentUserProfile[0].alternativeEmail) {
+                    this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application payment", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>You have moved application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave to paid. <br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  }
 
+                  this.notificationsService.sendEmail(this.CurrentApplicationBeingViewed[0].clientEmail, "Wayleave application payment", "check html", "Dear " + this.CurrentApplicationBeingViewed[0].clientName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  if (this.CurrentApplicationBeingViewed[0].clientAlternativeEmail) { 
+                    this.notificationsService.sendEmail(this.CurrentApplicationBeingViewed[0].clientAlternativeEmail, "Wayleave application payment", "check html", "Dear " + this.CurrentApplicationBeingViewed[0].clientName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                  }
+                  // #region checkingNotifications Sindiswa 15 February 2024
+                  this.notificationsService.addUpdateNotification(0, "Wayleave applicant payment ", "Wayleave applicant payment ", false, this.CurrentApplicationBeingViewed[0].UserID, this.ApplicationID, this.CurrentUser.appUserId, "Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process."  ).subscribe((data: any) => {
+
+                    if (data.responseCode == 1) {
+
+
+                    }
+                    else {
+                      alert(data.responseMessage);
+                    }
+
+                    console.log("response", data);
+                  }, error => {
+                    console.log("Error", error);
+                  });
+
+                  this.notificationsService.addUpdateNotification(0, "Wayleave applicant payment ", "Wayleave applicant payment ", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserId, "You have moved application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid.").subscribe((data: any) => {
+
+                    if (data.responseCode == 1) {
+
+
+                    }
+                    else {
+                      alert(data.responseMessage);
+                    }
+
+                    console.log("response", data);
+                  }, error => {
+                    console.log("Error", error);
+                  });
+                  // #endregion
+
+                  //Audit Trail Kyle
+                  this.onSaveToAuditTrail("Application moved to Paid");
+                  this.onSaveToAuditTrail("Application distributed to Departments");
+                  //Audit Trail Kyle
 
                 }
                 else {
@@ -2147,9 +2510,10 @@ export class ViewProjectInfoComponent implements OnInit {
     }
 
   }
+  
 
   checkIfPermitExsist() {
-
+    debugger;
     if (this.applicationDataForView[0].CreatedById == this.CurrentUser.appUserId) {
       this.permitBtn = true;
       this.permitTextBox = false;
@@ -2159,17 +2523,18 @@ export class ViewProjectInfoComponent implements OnInit {
       this.permitTextBox = true;
       this.startDate = this.applicationDataForView[0].permitStartDate.toString();
       this.permitDate = "Permit has been applied, with a start date of: " + this.startDate.substring(0, this.startDate.indexOf('T'));
-
+     
     }
-
+    
 
   }
 
   updateStartDateForPermit() {
-    this.applicationsService.addUpdateApplication(this.CurrentApplicationBeingViewed[0].applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.permitStartDate).subscribe((data: any) => {
+    this.applicationsService.addUpdateApplication(this.CurrentApplicationBeingViewed[0].applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.permitStartDate).subscribe((data: any) => {
       if (data.responseCode == 1) {
+        debugger;
         this.onAutoLinkForPermit();
-
+        this.router.navigate(["/home"]);/*Permit Kyle 13-02-24*/
       }
       else {
         alert(data.responseMessage);
@@ -2227,6 +2592,47 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
   }
+  // #region reapply Sindiswa 22 January 2024
+  moveToClosed() {
+
+    const isConfirmed = confirm("Are you sure you want to close this application?");
+
+    if (isConfirmed) {
+      this.applicationsService.updateApplicationStage(this.CurrentApplicationBeingViewed[0].applicationID, this.CurrentApplicationBeingViewed[0].CurrentStageName, this.CurrentApplicationBeingViewed[0].CurrentStageNumber, "Closed", 6, null, null, "Closed").subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          alert("Application Moved to Closed");
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("response closing application", data);
+      }, error => {
+        console.log("Error closing application", error);
+      })
+    }
+  }
+
+  deleteApplication() {
+   
+    const isConfirmed = confirm("Are you sure you want to delete this application?");
+  
+    if (isConfirmed) {
+      this.applicationsService.deleteApplication(this.CurrentApplicationBeingViewed[0].applicationID).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          alert("This application has been deleted.");
+        } else {
+          alert(data.responseMessage);
+        }
+        console.log("response deleting application: ", data);
+      }, error => {
+        console.log("Error deleting application", error);
+      });
+    }
+  }
+  // #endregion
+
   setInterface() {
 
 
@@ -2237,7 +2643,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
         console.log("data", data.dateSet);
-
+        
         const currentUserProfile = data.dateSet[0];
         this.depID = currentUserProfile.departmentID;
         this.getUserDep();
@@ -2275,12 +2681,12 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
         if (data.responseCode == 1) {
-
+          
           for (var i = 0; i < data.dateSet.length; i++) {
             const tempSubDepartmentList = {} as SubDepartmentList;
-
+            
             const current = data.dateSet[i];
-            this.subDepNameForClarify = current.subDepartmentName;
+            this.subDepNameForClarify = current.subDepartmentName.replace(/\r?\n|\r/g, '');
             tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
 
 
@@ -2319,19 +2725,33 @@ export class ViewProjectInfoComponent implements OnInit {
           const tempSubDepCommentStatusList = {} as SubDepCommentsForSpecialConditions;
 
           const current = data.dateSet[i];
-          tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
+/*JJS Commit 20-02-24*/
+          if (current.comment != null) {
 
 
+            tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
 
-          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName + " : "+current.zoneName;
-          tempSubDepCommentStatusList.ApplicationID = current.applicationID;
-          tempSubDepCommentStatusList.Comment = current.comment;
-          tempSubDepCommentStatusList.DateCreated = current.dateCreated;
-         
-          
-          tempSubDepCommentStatusList.UserName = current.userName;
-          this.SubDepCommentsForSpecialConditions.push(tempSubDepCommentStatusList);
 
+            
+            let SubName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
+            tempSubDepCommentStatusList.SubDepName = SubName + " : " + current.zoneName;
+            tempSubDepCommentStatusList.ApplicationID = current.applicationID;
+            if (current.commentStatus == 'Approved' || current.commentStatus == 'Provisionally Approved') {
+              tempSubDepCommentStatusList.Comment = "Reviewer Comment : \n" + current.comment;
+            }
+            if (current.commentStatus == 'Final Approved') {
+              tempSubDepCommentStatusList.Comment = "Final Approver Comment : \n" + current.comment;
+            }
+
+            tempSubDepCommentStatusList.DateCreated = current.dateCreated;
+
+
+            tempSubDepCommentStatusList.UserName = current.userName;
+            this.SubDepCommentsForSpecialConditions.push(tempSubDepCommentStatusList);
+          }
+          else {
+
+          }
 
         }
         this.onCreateApprovalPack();
@@ -2363,7 +2783,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
           const current = data.dateSet[i];
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
-          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
+          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempSubDepCommentStatusList.ApplicationID = current.applicationID;
           tempSubDepCommentStatusList.Comment = current.comment;
           tempSubDepCommentStatusList.DateCreated = current.dateCreated;
@@ -2409,7 +2829,7 @@ export class ViewProjectInfoComponent implements OnInit {
           tempContactDetailsList.CellNo = current.cellNo;
           tempContactDetailsList.Email = current.email;
           tempContactDetailsList.ZoneID = current.zoneID;
-          tempContactDetailsList.SubDepName = current.subDepartmentName;
+          tempContactDetailsList.SubDepName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempContactDetailsList.ZoneName = current.zoneName
           this.ContactDetailsList.push(tempContactDetailsList);
 
@@ -2445,7 +2865,7 @@ export class ViewProjectInfoComponent implements OnInit {
           const current = data.dateSet[i];
           console.log("FINAL APPROVED THE APPLICATION ", current);
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
-          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
+          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempSubDepCommentStatusList.ApplicationID = current.applicationID;
           tempSubDepCommentStatusList.Comment = current.comment;
           tempSubDepCommentStatusList.DateCreated = current.dateCreated;
@@ -2477,18 +2897,19 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getAllSubDepForReject() {
-
+ 
     this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
-
-
+ 
+      
       if (data.responseCode == 1) {
-
+        
         for (var i = 0; i < data.dateSet.length; i++) {
           const tempSubDepCommentStatusList = {} as SubDepSubDepRejectList;
-
+          
           const current = data.dateSet[i];
+          
           tempSubDepCommentStatusList.SubDepID = current.subDepartmentID;
-          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName;
+          tempSubDepCommentStatusList.SubDepName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempSubDepCommentStatusList.ApplicationID = current.applicationID;
           tempSubDepCommentStatusList.Comment = current.comment;
           tempSubDepCommentStatusList.DateCreated = current.dateCreated;
@@ -2545,14 +2966,19 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
 
+    //JJS Approval Pack and rejection pack 25Jan2024
+
 
 
 
   onCreateApprovalPack() {
 
-    
+
+
+
+
     /*    this.getAllSubDepFroConditionalApprove();*/
-    const subDepCommentsMap = new Map();
+
 
     const doc = new jsPDF({
       orientation: 'portrait',
@@ -2597,7 +3023,7 @@ export class ViewProjectInfoComponent implements OnInit {
     const page7 = new Image();
     const page8 = new Image();
     const page9 = new Image();
-    const page10 = new Image();
+/*    const page10 = new Image();
     const page11 = new Image();
     const page12 = new Image();
     const page13 = new Image();
@@ -2632,86 +3058,74 @@ export class ViewProjectInfoComponent implements OnInit {
     const page42 = new Image();
     const page43 = new Image();
     const page44 = new Image();
-    const page45 = new Image();
+    const page45 = new Image();*/
 
-    img.src = 'assets/cctlogoblack.png';
-    footer2.src = 'assets/Packs/footer2.PNG';
+    img.src = 'assets/cctlogoblackk.png';
+    footer2.src = 'assets/Packs/footer2.png';
     footer.src = 'assets/Packs/base.jpg';
-    page1.src = 'assets/Packs/Updated/19October2023Update/1.jpg';
-    page2.src = 'assets/Packs/Updated/19October2023Update/2.jpg';
-    page3.src = 'assets/Packs/Updated/19October2023Update/3.jpg';
-    page4.src = 'assets/Packs/Updated/19October2023Update/4.jpg';
-    page5.src = 'assets/Packs/Updated/19October2023Update/5.jpg';
-    page6.src = 'assets/Packs/Updated/19October2023Update/6.jpg';
-    page7.src = 'assets/Packs/Updated/19October2023Update/7.jpg';
-    page8.src = 'assets/Packs/Updated/19October2023Update/8.jpg';
-    page9.src = 'assets/Packs/Updated/19October2023Update/9.jpg';
-    page10.src = 'assets/Packs/Updated/19October2023Update/10.jpg';
+    page1.src = 'assets/Packs/Updated/24Jan2024/1.png';
+    page2.src = 'assets/Packs/Updated/24Jan2024/2.png';
+    page3.src = 'assets/Packs/Updated/24Jan2024/3.png';
+    page4.src = 'assets/Packs/Updated/24Jan2024/4.png';
+    page5.src = 'assets/Packs/Updated/24Jan2024/5.png';
+    page6.src = 'assets/Packs/Updated/24Jan2024/6.png';
+    page7.src = 'assets/Packs/Updated/24Jan2024/7.png';
+    page8.src = 'assets/Packs/Updated/24Jan2024/8.png';
+    page9.src = 'assets/Packs/Updated/24Jan2024/9.png';
+/*    page10.src = 'assets/Packs/Updated/19October2023Update/10.jpg';
     page11.src = 'assets/Packs/Updated/19October2023Update/11.jpg';
-/*    page12.src = 'assets/Packs/Updated/12.PNG';
-    page13.src = 'assets/Packs/Updated/13.PNG';
-    page14.src = 'assets/Packs/Updated/14.PNG';
-    page15.src = 'assets/Packs/Updated/15.PNG';
-    page16.src = 'assets/Packs/Updated/16.PNG';
-    page17.src = 'assets/Packs/Updated/17.PNG';
-    page18.src = 'assets/Packs/Updated/18.PNG';
-    page19.src = 'assets/Packs/Updated/19.PNG';
-    page20.src = 'assets/Packs/Updated/20.PNG';
-    page21.src = 'assets/Packs/Updated/21.PNG';
-    page22.src = 'assets/Packs/Updated/22.PNG';
-    page23.src = 'assets/Packs/Updated/23.PNG';
-    page24.src = 'assets/Packs/Updated/24.PNG';
-    page25.src = 'assets/Packs/Updated/25.PNG';
-    page26.src = 'assets/Packs/Updated/26.PNG';
-    page27.src = 'assets/Packs/Updated/27.PNG';
-    page28.src = 'assets/Packs/Updated/28.PNG';
-    page29.src = 'assets/Packs/Updated/29.PNG';*/
-    /*  page30.src = 'assets/Packs/page30.PNG';
-        page31.src = 'assets/Packs/page31.PNG';
-        page32.src = 'assets/Packs/page32.PNG';
-        page33.src = 'assets/Packs/page33.PNG';
-        page34.src = 'assets/Packs/page34.PNG';
-        page35.src = 'assets/Packs/page35.PNG';
-        page36.src = 'assets/Packs/page36.PNG';
-        page37.src = 'assets/Packs/page37.PNG';
-        page38.src = 'assets/Packs/page38.PNG';
-        page39.src = 'assets/Packs/page39.PNG';
-        page40.src = 'assets/Packs/page40.PNG';
-        page41.src = 'assets/Packs/page41.PNG';
-        page42.src = 'assets/Packs/page42.PNG';
-        page43.src = 'assets/Packs/page43.PNG';
-        page44.src = 'assets/Packs/page44.PNG';
-        page45.src = 'assets/Packs/page45.PNG';*/
+      page12.src = 'assets/Packs/Updated/12.PNG';*/
+
 
     doc.addFont('assets/century-gothic/CenturyGothic.ttf', 'CustomFont', 'normal');
     doc.addFont('assets/century-gothic/GOTHICB0.TTF', 'CustomFontBold', '', 'bold');
     doc.setFont('CustomFont', 'normal');
 
-    doc.addImage(footer, 'jpg', 0, 0, 210, 297);
+
 
     // Add logo to PDF document
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    doc.addImage(img, 'png', 6, 10, 50, 16);
 
     // Set font for specific text
     doc.setFontSize(10); // Increase font size for specific text
 
     // Add text with various formatting
-    doc.setFont('CustomFontBold','bold'); // Use your custom font
-    doc.text('CITY OF CAPE TOWN', 200, 15, { align: 'right'});
+    /*  doc.setFont('CustomFontBold','bold');*/ // Use your custom font
     doc.setFont('CustomFont', 'normal');
-    doc.text('Civic Centre, 12 Hertzog Boulevard', 200, 24, { align: 'right' });
+    doc.text('Cape Town Civic Centre', 200, 17, { align: 'right' });
 
-    doc.text('CAPE TOWN 8000', 200, 29, { align: 'right' });
+    doc.text('12 Hertzog Boulevard', 200, 22, { align: 'right' });
+
+    doc.text('CAPE TOWN 8000', 200, 27, { align: 'right' });
 
     // Set font back to regular
 
     doc.setFontSize(10); // Return to the regular font size
     doc.setFont('CustomFontBold', 'bold'); // Use your custom font
-    doc.text('Website:', 200, 35, { align: 'right' });
-    doc.setFont('CustomFont', 'normal');
-    doc.text('https://www.capetown.gov.za', 200, 40, { align: 'right' });
+    doc.text('Website:', 147, 35, { align: 'right' });
+
     doc.setFont('CustomFontBold', 'bold'); // Use your custom font
-    doc.text('Project Number: '+ this.ProjectNum, 200, 45, { align: 'right' });
+    doc.setTextColor(0, 88, 112); // Set text color to #005870
+
+    // Use the 'decoration' property to add an underline
+
+
+    doc.textWithLink('https://www.capetown.gov.za', 200, 35, { align: 'right', lineHeightFactor: 1.5 });
+
+    doc.setTextColor(0, 0, 0); // Set text color to #005870
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
+    doc.text('Portal:', 138, 40, { align: 'right' });
+
+
+    doc.setTextColor(0, 88, 112); // Set text color to #005870
+
+    // Use the 'decoration' property to add an underline
+
+    doc.textWithLink('https://wayleave.capetown.gov.za/', 200, 40, { align: 'right' });
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
+    doc.setTextColor(0, 0, 0); // Set text color to #005870
+
+    doc.text('Reference Number: ' + this.ProjectNum, 200, 50, { align: 'right' });
     doc.setFont('CustomFont', 'normal');
     // Add extra space
     doc.text('', 10, 55); // Add an empty line for spacing
@@ -2723,16 +3137,17 @@ export class ViewProjectInfoComponent implements OnInit {
 
     doc.text('WAYLEAVE APPLICATION: ' + this.DescriptionOfProject, 10, 70, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
 
-    doc.text('Dear ' + this.clientName, 10, 80, { align: 'left' });
+    doc.text('Dear ' + this.clientName, 10, 84, { align: 'left' });
 
 
     //this is for the project details
 
     //paragraph 
 
-    doc.text('A summary of the outcome of this wayleave application is provided below. Department specific wayleave approval or rejection letters are further attached.In the case of a wayleave rejection, please make contact with the relevant Line Department as soon as possible.', 10, 90, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.text('A summary of the outcome of this wayleave application is provided below. Department specific wayleave approval or rejection letters are attached. In the case of a wayleave rejection, please make contact with the relevant line department as soon as possible', 10, 95, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
     doc.text('Status Summary:', 10, 115, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
-
+    doc.setFont('CustomFont', 'normal');
 
     this.SubDepFinalApproveList.forEach((deposit) => {
       const row = [
@@ -2748,46 +3163,45 @@ export class ViewProjectInfoComponent implements OnInit {
 
     doc.text("Based on the summary above, the wayleave application is approved. Kindly proceed to apply for a permit to work before commencement of any work on site.", 10, 190, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });//
     doc.setFontSize(12);
-    
-
-
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
+    doc.text('CITY OF CAPE TOWN', 10, 240, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFont', 'italic');
+    doc.text('Future Planning and Resilience Directorate', 10, 245, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
 
     autoTable(doc, {
       head: headers,
-
+      headStyles: { fillColor: '#005870' },
       startY: 120,
       body: data,
       styles: {
         overflow: 'visible',
-        halign: 'justify',
+        halign: 'left',
         fontSize: 8,
         valign: 'middle',
-
-
+        // Use the correct color notation here
       },
-
       columnStyles: {
-        0: { cellWidth: 70, fontStyle: 'bold' },
-        1: { cellWidth: 50 },
-        2: { cellWidth: 60 },
-
-
+        0: { cellWidth: 90,  },
+        1: { cellWidth: 30 },
+        2: { cellWidth: 50 },
       }
-
-
     });
-
     //Special conditions page
     doc.addPage();
+    
     doc.addFont('assets/century-gothic/CenturyGothic.ttf', 'CustomFont', 'normal');
     doc.addFont('assets/century-gothic/GOTHICB0.TTF', 'CustomFontBold', '', 'bold');
     doc.setFont('CustomFontBold', 'bold');
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+   
     doc.setFontSize(16);
-    doc.text('Special Conditions', 10, 45, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify', });
-
-    
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
+    doc.setTextColor(0, 88, 112); // Set text color to #005870
+    doc.text('SPECIAL CONDITIONS', 10, 18, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify', });
+    doc.setTextColor(0, 0, 0); // Set text color to #005870
     console.log(this.SubDepCommentsForSpecialConditions);
+
+    // Process comments and organize by sub-department
+    const subDepCommentsMap = new Map();
     this.SubDepCommentsForSpecialConditions.forEach((deposit) => {
       if (subDepCommentsMap.has(deposit.SubDepName)) {
         console.log(`Adding comment to existing sub-department: ${deposit.SubDepName}`);
@@ -2799,12 +3213,13 @@ export class ViewProjectInfoComponent implements OnInit {
     });
 
     console.log(subDepCommentsMap);
-    let yOffset = 60; // Starting Y-coordinate for the list
-    let currentPage = 1;
-    let maxPageHeight = doc.internal.pageSize.height - 50; // Adjust as needed
 
-    const headerHeight = 60; // Height of the header (image and project number)
-    const footerHeight = 45; // Height of the footer
+    let yOffset = 40; // Starting Y-coordinate for the list
+    let currentPage = 2;
+    let maxPageHeight = doc.internal.pageSize.height - 4; // Adjust as needed
+
+    const headerHeight = 30; // Height of the header (image and project number)
+    const footerHeight = 25; // Height of the footer
 
     // Initialize variables to track available space and Y-coordinate
     let remainingPageSpace = maxPageHeight - yOffset - footerHeight;
@@ -2820,9 +3235,6 @@ export class ViewProjectInfoComponent implements OnInit {
         currentPage++;
         yOffset = headerHeight; // Reset the Y-coordinate for the new page, leaving space for the header
         remainingPageSpace = maxPageHeight - yOffset - footerHeight;
-        doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-
-
       }
 
       doc.text(subDepName, 10, yOffset, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
@@ -2832,7 +3244,7 @@ export class ViewProjectInfoComponent implements OnInit {
       doc.setFont('CustomFont', 'normal');
 
       // Combine and join the comments for the same sub-department name
-      const combinedComments = comments.join('. ');
+      const combinedComments = comments.join('\n');
 
       // Check if there's enough space for comments on the current page
       const commentDimensions = doc.getTextDimensions(combinedComments);
@@ -2842,15 +3254,18 @@ export class ViewProjectInfoComponent implements OnInit {
         yOffset = headerHeight; // Reset the Y-coordinate for the new page, leaving space for the header
         remainingPageSpace = maxPageHeight - yOffset - footerHeight;
       }
+
       const originalFontSize = doc.getFontSize(); // Store the original font size
       doc.setFontSize(8); // Set a smaller font size for comments
+
       // Handle text wrapping for comments
       const lineHeight = 1.2; // Adjust the line height as needed
-      const lineHeightFactor = doc.getLineHeightFactor() ;
+      const lineHeightFactor = doc.getLineHeightFactor();
       doc.setLineHeightFactor(lineHeightFactor);
 
       // Handle text wrapping for comments with reduced line spacing
       let commentLines = doc.splitTextToSize(combinedComments, 190);
+
       for (const line of commentLines) {
         if (yOffset + doc.getTextDimensions(line).h > maxPageHeight - footerHeight) {
           doc.addPage();
@@ -2858,9 +3273,34 @@ export class ViewProjectInfoComponent implements OnInit {
           yOffset = headerHeight; // Reset the Y-coordinate for the new page, leaving space for the header
           remainingPageSpace = maxPageHeight - yOffset - footerHeight;
         }
+        
+        // Check if the sub-department commentStatus is Approved or Provisionally Approved
+        if (comments.length > 0 && comments[0].commentStatus === 'Approved' || comments[0].commentStatus === 'Provisionally Approved' || comments[0].commentStatus === 'Approved(Conditional)') {
+          // Display Approver Comment heading
+          doc.setFont('CustomFontBold', 'bold');
+          doc.text('Reviewer Comment:', 10, yOffset, { maxWidth: 190, align: 'left' });
+          yOffset += doc.getTextDimensions('Reviewer Comment:').h + 2;
 
-        doc.text(line, 10, yOffset, { maxWidth: 190, align: 'left' });
-        yOffset += doc.getTextDimensions(line).h + 5; // Adjust the line spacing here
+          // Display the comment
+          doc.setFont('CustomFont', 'normal');
+          doc.text(line, 10, yOffset, { maxWidth: 190, align: 'left' });
+          yOffset += doc.getTextDimensions(line).h + 5; // Adjust the line spacing here
+
+          // Display Final Approver heading
+          doc.setFont('CustomFontBold', 'bold');
+          doc.text('Final Approver:', 10, yOffset, { maxWidth: 190, align: 'left' });
+          yOffset += doc.getTextDimensions('Final Approver:').h + 2;
+
+          // Display the final approver comment
+          doc.setFont('CustomFont', 'normal');
+          doc.text(comments[0].finalApproverComment, 10, yOffset, { maxWidth: 190, align: 'left' });
+          yOffset += doc.getTextDimensions(comments[0].finalApproverComment).h + 5; // Adjust the line spacing here
+        } else {
+          // If not Approved or Provisionally Approved, display regular comments
+          doc.text(line, 10, yOffset, { maxWidth: 190, align: 'left' });
+          yOffset += doc.getTextDimensions(line).h + 5; // Adjust the line spacing here
+        }
+
         remainingPageSpace -= doc.getTextDimensions(line).h + 5;
       }
 
@@ -2875,22 +3315,13 @@ export class ViewProjectInfoComponent implements OnInit {
       doc.line(10, yOffset, 200, yOffset);
       yOffset += 20;
     });
-
     // Optionally, you can add a page count in the footer
-    for (let i = 1; i <= currentPage; i++) {
-      doc.setPage(i);
-      doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    
 
-
-
-    }
-
-    // Reset the page to the last page
-    doc.setPage(currentPage);
 
     //Contact information Page
     /*    doc.addPage();
-        doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+          
         doc.setFontSize(10);
         doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
         doc.setFontSize(16);
@@ -2945,115 +3376,115 @@ export class ViewProjectInfoComponent implements OnInit {
     */
     //PAGE 1
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
-   
 
 
-    doc.addImage(page1, 'jpg', 0, 0, 210, 297); // Full A4 size
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-/*    doc.addImage(footer, 'png', 7, 255, 205, 45);*/
+
+    doc.addImage(page1, 'png', 0, 0, 210, 297); // Full A4 size
+
+    /*    doc.addImage(footer, 'png', 7, 255, 205, 45);*/
 
     //PAGE 2
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
 
 
-    doc.addImage(page2, 'jpg', 0, 0, 210, 297);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+    doc.addImage(page2, 'png', 0, 0, 210, 297);
+
 
 
 
     //PAGE 3
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
 
 
 
-    doc.addImage(page3, 'jpg', 0, 0, 210, 297);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+    doc.addImage(page3, 'png', 0, 0, 210, 297);
+
 
 
     //PAGE 4
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
 
 
 
-    doc.addImage(page4, 'jpg', 0, 0, 210, 297);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+    doc.addImage(page4, 'png', 0, 0, 210, 297);
+
 
 
     //PAGE 5
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
 
 
 
-    doc.addImage(page5, 'jpg', 0, 0, 210, 297);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+    doc.addImage(page5, 'png', 0, 0, 210, 297);
+
 
 
     //PAGE 6
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
 
 
 
-    doc.addImage(page6, 'jpg', 0, 0, 210, 297);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+    doc.addImage(page6, 'png', 0, 0, 210, 297);
+
 
 
     //PAGE 7
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
 
 
 
-    doc.addImage(page7, 'jpg', 0, 0, 210, 297);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+    doc.addImage(page7, 'png', 0, 0, 210, 297);
+ 
 
 
     //PAGE 8
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
 
 
-    doc.addImage(page8, 'jpg', 0, 0, 210, 297);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+    doc.addImage(page8, 'png', 0, 0, 210, 297);
+ 
 
 
     //PAGE 9
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
 
 
 
-    doc.addImage(page9, 'jpg', 0, 0, 210, 297);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+    doc.addImage(page9, 'png', 0, -2, 210, 297);
 
 
-    //PAGE 10
+
+/*    //PAGE 10
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
 
 
@@ -3064,392 +3495,29 @@ export class ViewProjectInfoComponent implements OnInit {
 
     //PAGE 11
     doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+    currentPage++;
+      
     doc.setFontSize(10);
 
 
 
     doc.addImage(page11, 'jpg', 0, 0, 210, 297);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
+    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });*/
 
 
-  /*  //PAGE 12
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page12, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 13
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page13, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 14
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page14, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 15
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page15, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 16
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page16, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 17
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page17, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 18
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page18, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 19
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page19, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 20
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page20, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 21
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page21, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 22
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page22, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 23
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page23, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 24
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page24, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 25
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page25, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-
-    //PAGE 26
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page26, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 27
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page27, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 28
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page28, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);
-
-    //PAGE 29
-    doc.addPage();
-
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-    doc.setFontSize(10);
-    doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
-
-
-    doc.addImage(page29, 'png', 10, 40, 190, 215);
-    doc.addImage(footer, 'png', 7, 255, 205, 45);*/
-
-    //PAGE 30
-    /* doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page30, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 31
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page31, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 32
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page32, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 33
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page33, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 34
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page34, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 35
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page35, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 36
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page36, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 37
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page37, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 38
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page38, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 39
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page39, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 40
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page40, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 41
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page41, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 42
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page42, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 43
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page43, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 44
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page44, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);
- 
-     //PAGE 45
-     doc.addPage();
- 
-     doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
-     doc.setFontSize(10);
-     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
- 
- 
-     doc.addImage(page45, 'png', 10, 40, 190, 215);
-     doc.addImage(footer, 'png', 7, 255, 205, 45);*/
+  
 
     // Save PDF document
+    for (let i = 0; i <= currentPage; i++) {
+      doc.setPage(i);
+
+      doc.setFontSize(10);
+   
+      doc.addImage(footer2, 'png', 0, 0, 210, 297);
+      doc.text("Page " + i + " of " + currentPage, 100, 285, { align: 'center' });
+    }
+
+    // Reset the page to the last page
 
     const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
     const file = new File([pdfData], 'approval_pack.pdf', { type: 'application/pdf' });
@@ -3459,6 +3527,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     this.sharedService.pushFileForTempFileUpload(file, "Approval Pack" + ".pdf");
     this.save();
+
   }
 
 
@@ -3515,10 +3584,17 @@ export class ViewProjectInfoComponent implements OnInit {
           if (data.responseCode == 1) {
 
             this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.projectNo, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+            if (this.applicationData.clientAlternativeEmail) { //checkingNotifications Sindiswa 15 February 2024
+              this.notificationsService.sendEmail(this.applicationData.clientAlternativeEmail, "Wayleave Application #" + this.projectNo, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+            }
             this.modalService.dismissAll();
+            //Audit Trail Kyle
+            this.onSaveToAuditTrail("Approval Pack Downloaded");
+            this.onSaveToAuditTrail("Application moved to PTW Stage");
+            //Audit Trail Kyle
             alert("Application moved to PTW. You may now apply for permit.");
             this.router.navigate(["/home"]);
-
+            
           }
           else {
             alert(data.responseMessage);
@@ -3547,8 +3623,249 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
 
-
   onCrreateRejectionPack() {
+
+
+
+    this.getAllSubDepForReject();
+
+    /*    this.getAllSubDepFroConditionalApprove();*/
+
+
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    /*    const doc = new jsPDF('portrait', 'px', 'a4') as jsPDFWithPlugin;*/
+
+    // Set up table
+    const startY = 50; // set the starting Y position for the table
+    const headers = [
+      [
+        'Department',
+        'Status',
+      ]
+    ];
+
+
+   
+
+    const data: any[] = [];
+
+    const img = new Image();
+    const footer = new Image();
+    const footer2 = new Image();
+
+
+    img.src = 'assets/cctlogoblackk.png';
+    footer2.src = 'assets/Packs/footer2.png';
+    footer.src = 'assets/Packs/base.jpg';
+
+
+
+    doc.addFont('assets/century-gothic/CenturyGothic.ttf', 'CustomFont', 'normal');
+    doc.addFont('assets/century-gothic/GOTHICB0.TTF', 'CustomFontBold', '', 'bold');
+    doc.setFont('CustomFont', 'normal');
+
+
+
+    // Add logo to PDF document
+    doc.addImage(img, 'png', 6, 10, 50, 16);
+
+    // Set font for specific text
+    doc.setFontSize(10); // Increase font size for specific text
+
+    // Add text with various formatting
+    /*  doc.setFont('CustomFontBold','bold');*/ // Use your custom font
+    doc.setFont('CustomFont', 'normal');
+    doc.text('Cape Town Civic Centre', 200, 17, { align: 'right' });
+
+    doc.text('12 Hertzog Boulevard', 200, 22, { align: 'right' });
+
+    doc.text('CAPE TOWN 8000', 200, 27, { align: 'right' });
+
+    // Set font back to regular
+
+    doc.setFontSize(10); // Return to the regular font size
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
+    doc.text('Website:', 147, 35, { align: 'right' });
+
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
+    doc.setTextColor(0, 88, 112); // Set text color to #005870
+
+    // Use the 'decoration' property to add an underline
+
+
+    doc.textWithLink('https://www.capetown.gov.za', 200, 35, { align: 'right', lineHeightFactor: 1.5 });
+
+    doc.setTextColor(0, 0, 0); // Set text color to #005870
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
+    doc.text('Portal:', 138, 40, { align: 'right' });
+
+
+    doc.setTextColor(0, 88, 112); // Set text color to #005870
+
+    // Use the 'decoration' property to add an underline
+
+    doc.textWithLink('https://wayleave.capetown.gov.za/', 200, 40, { align: 'right' });
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
+    doc.setTextColor(0, 0, 0); // Set text color to #005870
+
+    doc.text('Reference Number: ' + this.ProjectNum, 200, 50, { align: 'right' });
+    doc.setFont('CustomFont', 'normal');
+    // Add extra space
+    doc.text('', 10, 55); // Add an empty line for spacing
+
+    doc.setFontSize(10); // Restore the regular font size
+
+    // Adding information underneath the logo
+    doc.text('DATE : ' + this.formattedDate, 10, 60, { align: 'left' });
+
+    doc.text('WAYLEAVE APPLICATION: ' + this.DescriptionOfProject, 10, 70, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
+
+    doc.text('Dear ' + this.clientName, 10, 80, { align: 'left' });
+
+
+    //this is for the project details
+
+    //paragraph 
+
+    doc.text('A summary of the outcome of this wayleave application is provided below. Department specific wayleave approval or rejection letters are attached.In the case of a wayleave rejection, please make contact with the relevant line department as soon as possible', 10, 90, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
+    doc.text('Status Summary:', 10, 115, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFont', 'normal');
+    
+    this.SubDepSubDepRejectList.forEach((deposit) => {
+      const row = [
+        deposit.SubDepName,
+        deposit.CommentStatus,
+
+      ];
+      data.push(row);
+    });
+    doc.setLineHeightFactor(60);
+    doc.setFontSize(10); // add this line to set the font size
+
+    doc.text("Based on the summary above, the wayleave application is rejected. Please contact the relevant department for guidance on the way forward.", 10, 190, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });//
+    doc.setFontSize(12);
+    doc.setFont('CustomFontBold', 'bold'); // Use your custom font
+    doc.text('CITY OF CAPE TOWN', 10, 240, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFont', 'italic');
+    doc.text('Future Planning and Resilience Directorate', 10, 245, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+
+    autoTable(doc, {
+      head: headers,
+      headStyles: { fillColor: '#005870' },
+      startY: 120,
+      body: data,
+      styles: {
+        overflow: 'visible',
+        halign: 'justify',
+        fontSize: 8,
+        valign: 'middle',
+        // Use the correct color notation here
+      },
+      columnStyles: {
+        0: { cellWidth: 70, fontStyle: 'bold' },
+        1: { cellWidth: 70 },
+
+      }
+    });
+    //Special conditions page
+  
+
+    // Save PDF document
+   
+
+    // Reset the page to the last page
+
+    const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
+    const file = new File([pdfData], 'rejection_pack.pdf', { type: 'application/pdf' });
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.sharedService.pushFileForTempFileUpload(file, "Rejection Pack" + ".pdf");
+    this.saveRejection();
+
+  }
+
+
+
+  saveRejection() {
+
+    const filesForUpload = this.sharedService.pullFilesForUpload();
+    for (let i = 0; i < filesForUpload.length; i++) {
+      const formData = new FormData();
+      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "_appID" + this.ApplicationID;
+      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+        .subscribe({
+          next: (event) => {
+            if (event.type === HttpEventType.UploadProgress && event.total) {
+              this.progress = Math.round(100 * event.loaded / event.total);
+            } else if (event.type === HttpEventType.Response) {
+              this.message = 'Upload success.';
+              this.uploadFinishedRejection(event.body);
+            }
+          },
+          error: (err: HttpErrorResponse) => console.log(err)
+        });
+    }
+
+  }
+
+
+
+
+
+  uploadFinishedRejection = (event: any) => {
+    this.response = event;
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
+
+
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
+
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, "System Generated Pack", "System Generated Pack").subscribe((data: any) => {
+      /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
+      if (data.responseCode == 1) {
+
+        console.log(this.StagesList);
+
+       
+
+         
+
+         
+            this.modalService.dismissAll();
+            this.router.navigate(["/home"]);
+
+        
+
+      }
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+  }
+
+
+
+
+
+  /*onCrreateRejectionPack() {
+
+
+
+
 
     this.getAllSubDepForReject();
     const doc = new jsPDF({
@@ -3579,7 +3896,7 @@ export class ViewProjectInfoComponent implements OnInit {
     // Add logo to PDF document
 
     // Add logo to PDF document
-    doc.addImage(img, 'png', 6, 10, 62, img.height * 60 / img.width);
+      
     doc.setFontSize(10);
     doc.text('Project Number : ' + this.ProjectNum, 200, 19, { align: 'right' });
     //adding information underneath the logo
@@ -3643,19 +3960,65 @@ export class ViewProjectInfoComponent implements OnInit {
     // Save PDF document
     doc.save('Rejection Pack:' + this.CurrentUser.userProfileID);
 
-  }
+  }*/
 
-
+  // #region reapply Sindiswa 22 January 2024
   goToNewWayleave(applicationType: boolean) { //application type refers to whether it is a brand new application or if it is a reapply.
-    this.sharedService.setReapply(applicationType);
-    this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId, false,false);
-    //console.log("Test: " + this.sharedService.getApplicationID())
-    /*        this.router.navigate(["/new-wayleave"]);*/
-    this.viewContainerRef.clear();
+    
 
+    this.applicationsService.getApplicationsByApplicationID(this.ApplicationID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        this.ReApplyCount = data.dateSet[0].reApplyCount !== null ? data.dateSet[0].reApplyCount : 0; //wait, did I just reinvent the wheel?
+
+          console.log(`This is the reapply count: ${this.ReApplyCount}`);
+       
+        if (this.ReApplyCount < 4) {
+
+          if (this.ReApplyCount != 0) {
+            alert(`You have already re-applied ${this.ReApplyCount -1} time(s).`);
+          }
+          const confirm = window.confirm('Are you sure you want to reapply and edit the details of this application?');
+
+          if (confirm) {
+            this.sharedService.setApplicationID(this.ApplicationID); //reapply Sindiswa 22 January 2024
+            this.sharedService.setOldApplicationID(this.ApplicationID); //reapply Sindiswa 24 January 2024
+            this.sharedService.setReapply(applicationType);
+            this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId, false, false);
+            //console.log("Test: " + this.sharedService.getApplicationID())
+            /*        this.router.navigate(["/new-wayleave"]);*/
+            this.viewContainerRef.clear();
+          }
+        }
+        else {
+          alert("You have depleted all your reapplication attempts and can no longer reapply");
+        }
+      }
+      else {
+
+        alert(data.responseMessage);
+      }
+      console.log("reponse while trying to reapply", data);
+
+    }, error => {
+      console.log("Error while trying to reapply: ", error);
+    })
+
+    /*const confirm = window.confirm('Are you sure you want to reapply and edit the details of this application?');
+
+    if (confirm) {
+      this.sharedService.setApplicationID(this.ApplicationID); //reapply Sindiswa 22 January 2024
+      this.sharedService.setOldApplicationID(this.ApplicationID); //reapply Sindiswa 24 January 2024
+      this.sharedService.setReapply(applicationType);
+      this.NewWayleaveComponent.onWayleaveCreate(this.CurrentUser.appUserId, false, false);
+      //console.log("Test: " + this.sharedService.getApplicationID())
+      //        this.router.navigate(["/new-wayleave"]);
+      this.viewContainerRef.clear();
+    }*/
   }
 
-
+  // #endregion
 
 
 
@@ -3670,7 +4033,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
     let WBS = this.addWBSNumber.controls["wbsnumber"].value;
 
-    this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, WBS, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+    this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, WBS, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
         alert("Updated Applications WBS");
@@ -3723,7 +4086,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
           const tempSubDepartmentList = {} as SubDepartmentList;
           tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
-          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempSubDepartmentList.departmentID = current.departmentID;
           tempSubDepartmentList.dateUpdated = current.dateUpdated;
           tempSubDepartmentList.dateCreated = current.dateCreated;
@@ -3738,7 +4101,12 @@ export class ViewProjectInfoComponent implements OnInit {
           if (tempSubDepartmentList.commentStatus == "Rejected") {
             this.countReject++;
           }
+          //Permit Kyle 13-02 - 24
+          if (tempSubDepartmentList.subDepartmentName == this.CurrentUserProfile[0].subDepartmentName && current.zoneName == this.CurrentUserProfile[0].zoneName) {
+            this.canCreateNote = true;
+          }
 
+          
           this.SubDepartmentList.push(tempSubDepartmentList);
         }
 
@@ -3778,6 +4146,8 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
+  //JJS - TODO :Bug anyone can move external application to paid, Added the if for the EMB users so that only they can move the applicant to paid
+
   getRolesLinkedToUser() {
 
     this.RolesList.splice(0, this.RolesList.length);
@@ -3796,6 +4166,14 @@ export class ViewProjectInfoComponent implements OnInit {
           tempRolesList.RoleName = current.roleName;
 
           this.RolesList.push(tempRolesList);
+          if (tempRolesList.RoleName == "Applicant") {
+            this.InternalExternalUser = true;
+          }
+
+          if (tempRolesList.RoleName == "EMB" || this.CurrentUserProfile[0].departmentName == "EMB") {
+           
+            this.EMB = true;
+          }
           this.lockViewAccordingToRoles();
 
 
@@ -3924,8 +4302,9 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
-  viewDocument(index: any) {
+  /*viewDocument(index: any) {
 
+    
     // Make an HTTP GET request to fetch the document
     fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.FinancialDocumentsList[index].FinancialDocumentName}`)
       .then(response => {
@@ -3950,7 +4329,62 @@ export class ViewProjectInfoComponent implements OnInit {
         // Handle the error appropriately
       });
 
+  }*/
+
+  // altered slightly to ensure that a png is downloaded instead of doing iframe tings
+  viewDocument(index: any) {
+    
+    const filename = this.FinancialDocumentsList[index].FinancialDocumentName;
+    const extension = filename.split('.').pop().toLowerCase();
+
+    if (extension === 'png') {
+      // If the document is a PNG image, initiate download
+      fetch(this.apiUrl + `documentUpload/GetDocument?filename=${filename}`)
+        .then(response => {
+          if (response.ok) {
+            return response.blob();
+          } else {
+            throw new Error('Error fetching the document');
+          }
+        })
+        .then(blob => {
+          // Create a temporary link element to trigger the download
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', filename);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        })
+        .catch(error => {
+          console.log(error);
+          // Handle the error appropriately
+        });
+    } else {
+      // For other document types, such as PDF, continue to use an iframe
+      fetch(this.apiUrl + `documentUpload/GetDocument?filename=${filename}`)
+        .then(response => {
+          if (response.ok) {
+            return response.blob();
+          } else {
+            throw new Error('Error fetching the document');
+          }
+        })
+        .then(blob => {
+          const documentURL = URL.createObjectURL(blob);
+          const iframe = document.createElement('iframe');
+          iframe.src = documentURL;
+          document.body.appendChild(iframe);
+        })
+        .catch(error => {
+          console.log(error);
+          // Handle the error appropriately
+        });
+    }
   }
+
+
 
   getFinancial() {
     this.FinancialDocumentsList.splice(0, this.FinancialDocumentsList.length);
@@ -3970,11 +4404,13 @@ export class ViewProjectInfoComponent implements OnInit {
           tempDocList.FinancialType = current.financialType;
 
 
-
-
+           //  Financial POP Kyle 15/01/24
+          if (tempDocList.FinancialDocumentName.startsWith("Proof Of Payment")) {
+            this.uploadedPOP = true;
+          }
           this.FinancialDocumentsList.push(tempDocList);
 
-
+           //  Financial POP Kyle 15/01/24
         }
 
 
@@ -4005,128 +4441,32 @@ export class ViewProjectInfoComponent implements OnInit {
     this.fileCount = this.fileCount + 1;
   }
 
-
-
-  getMFTForApplication() {
-    const imageDiv = document.getElementById('imageDiv'); // Get the existing <div> element by ID
-    this.MFTList.splice(0, this.MFTList.length);
-    this.MFTService.getMFTByApplicationID(this.ApplicationID).subscribe((data: any) => {
-
-      if (data.responseCode == 1) {
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempMFTList = {} as MFTList;
-          const current = data.dateSet[i];
-          tempMFTList.MFTID = current.mftid;
-          tempMFTList.MFTNote = current.mftNote;
-          tempMFTList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));;
-          tempMFTList.DocumentName = current.documentName;
-          tempMFTList.DocumentLocalPath = current.documentLocalPath;
-          tempMFTList.ApplicationNumber = current.applicationID;
-          tempMFTList.FullName = current.fullName;
-
-          console.log("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT", current);
-          console.log("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT", this.MFTList);
-          this.MFTList.push(tempMFTList);
-
-          /* fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.MFTList[i].DocumentName}`)
-             .then(response => {
-               if (response.ok) {
-                 // The response status is in the 200 range
+  @ViewChild('imageDiv') imageDiv: ElementRef;
  
-                 return response.blob(); // Extract the response body as a Blob
- 
-               } else {
-                 throw new Error('Error fetching the document');
-               }
-             })
-             .then(blob => {
-               const imageURL = URL.createObjectURL(blob);
- 
-               // Display the image using an <img> element
-               const imgElement = document.createElement('img');
-               imgElement.src = imageURL;
- 
-               // Get a reference to the div with the ID 'myDiv'
-               const myDiv = document.getElementById('card_image');
- 
-               // Append the <img> element to the 'myDiv' div
-               myDiv.appendChild(imgElement);
- 
-               
-             })
-             .catch(error => {
-               console.log(error);
-               // Handle the error appropriately
-             });*/
 
-
-        }
-
-
-        // console.log("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT", this.DocumentsList[0]);
-
-      }
-      else {
-        alert(data.responseMessage);
-
-      }
-      console.log("reponseGetAllDocsForApplication", data);
-
-    }, error => {
-      console.log("ErrorGetAllDocsForApplication: ", error);
-    })
-  }
 
   saveNote() {
+    const mftId = this.fileUploadComponent.MFTID;
+    if (this.hasFile || mftId != 0) {
+      this.statusOfWorksComponent.getMFTForApplication();
+      this.modalService.dismissAll();
+      this.mftNote = '';
+    }
 
-
-    const filesForUpload = this.sharedService.pullFilesForUpload();
-
-
-    if (filesForUpload.length === 0) {
-
-      this.MFTService.addUpdateMFT(0, this.mftNote, this.ApplicationID, null, null, this.CurrentUser.appUserId, this.CurrentUser.fullName).subscribe((data: any) => {
-        /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
+    else {
+      this.MFTService.addUpdateMFT(0, this.mftNote, this.ApplicationID, null, null, this.CurrentUser.appUserId, this.CurrentUser.fullname).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          alert(data.responseMessage);
-          this.getMFTForApplication();
+          this.statusOfWorksComponent.getMFTForApplication();
+          this.mftNote = '';
+          this.fileUploadComponent.MFTID = 0;
+          this.modalService.dismissAll();
+
         }
-
-      }, error => {
-        console.log("Error: ", error);
       })
-
     }
-    else{
-      for (var i = 0; i < filesForUpload.length; i++) {
-        const formData = new FormData();
-        let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
-        let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + null;
-        formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
-
-
-
-
-        this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
-          .subscribe({
-            next: (event) => {
-
-
-              if (event.type === HttpEventType.UploadProgress && event.total)
-                this.progress = Math.round(100 * event.loaded / event.total);
-              else if (event.type === HttpEventType.Response) {
-                this.message = 'Upload success.';
-                this.uploadFinishedNotes(event.body);
-
-              }
-            },
-            error: (err: HttpErrorResponse) => console.log(err)
-          });
-      }
-    }
-
   }
   mftNote = '';
+   
 
   uploadFinishedNotes(event) {
 
@@ -4142,7 +4482,7 @@ export class ViewProjectInfoComponent implements OnInit {
       /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
       if (data.responseCode == 1) {
         alert(data.responseMessage);
-        this.getMFTForApplication();
+        this.statusOfWorksComponent.getMFTForApplication();
       }
 
     }, error => {
@@ -4203,7 +4543,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
           const tempSubDepartmentList = {} as SubDepartmentListFORAPPROVAL;
           tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
-          tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
+          tempSubDepartmentList.subDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
           tempSubDepartmentList.departmentID = current.departmentID;
           tempSubDepartmentList.dateUpdated = current.dateUpdated;
           tempSubDepartmentList.dateCreated = current.dateCreated;
@@ -4252,10 +4592,17 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
 
+  public isLoading: boolean = false;
+  OpenLoadingModal() {
+    if (confirm("Are You Sure You Want To Download Your Approval Pack ?")) {
+      this.isLoading = true;
+       this.getContactDetails();
+    }
+   
+    else {
 
-  OpenLoadingModal(approvalPackLoading) {
-    this.modalService.open(approvalPackLoading, { centered: true, size: 'xl' })
-    this.getContactDetails();
+    }
+
 
   }
 
@@ -4269,6 +4616,9 @@ export class ViewProjectInfoComponent implements OnInit {
       if (data.responseCode == 1) {
 
         this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.projectNo, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+        if (this.applicationData.clientAlternativeEmail) { //checkingNotifications Sindiswa 15 February 2024
+          this.notificationsService.sendEmail(this.applicationData.clientAlternativeEmail, "Wayleave Application #" + this.projectNo, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>Please apply for a permit to work.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+        }
         this.modalService.dismissAll();
         alert("Application moved to PTW");
         this.router.navigate(["/home"]);
@@ -4312,4 +4662,636 @@ export class ViewProjectInfoComponent implements OnInit {
     }
   }
 
+  //Audit Trail Kyle
+  onSaveToAuditTrail(description: string) {
+    this.auditTrailService.addUpdateAuditTrailItem(0, this.applicationData.applicationID, description, this.CurrentUserProfile[0].isInternal, this.CurrentUserProfile[0].subDepartmentName, this.CurrentUserProfile[0].zoneName, this.CurrentUser.appUserId).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+       /* alert(data.responseMessage);*/
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+    })
+
+   
+  }
+
+  onCheckAllCurrentUserRole() {
+    for (let i = 0; i < this.AllCurrentUserRoles.length; i++) {
+      const roleName = this.AllCurrentUserRoles[i].roleName;
+
+      if (roleName == "Audit Trail") {
+
+        this.auditTrail = true;
+        this.sharedService.isViewReport = true;
+      }
+    }
+  }
+  /*Progess bar Kyle 07-02-24*/
+  progressColor: string;
+  startColor: string = '#09DFD7';
+  endColor: string = '#098CDF';
+  CalCulateApprovalProgess() {
+    this.subDepartmentForCommentService.getSubDepartmentForComment(this.applicationDataForView[0].applicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+
+          if (current.commentStatus == null && current.userAssignedToComment != null) {
+            this.progressBar = this.progressBar + 33.34;
+          }
+
+          if (current.commentStatus == "Clarify") {
+            this.progressBar = this.progressBar + 50;
+          }
+
+          if (current.commentStatus == "Approved" || current.commentStatus == "Approved(Conditionally)") {
+            this.progressBar = this.progressBar + 67.67;
+          }
+
+          if (current.commentStatus == "Final Approved" || current.commentStatus == "Completed") {
+            this.progressBar = this.progressBar + 100;
+          }
+        }
+        let progress = (this.progressBar / data.dateSet.length).toFixed(2);
+        this.progressBar = parseFloat(progress);
+/*        this.getProgressBarColor(this.progressBar);*/
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+    })
+  }
+
+
+  getProgressBarColor(percentage: number): string {
+    // Calculate the middle color dynamically based on the percentage
+    const middleColor = this.calculateColor(percentage, this.startColor, this.endColor);
+
+    // Construct the gradient color using the start, middle, and end colors
+    return `linear-gradient(to right, ${this.startColor}, ${middleColor} ${percentage}%, ${this.endColor})`;
+  }
+
+  calculateColor(percentage: number, startColor: string, endColor: string): string {
+    // Interpolate the color between start and end colors based on the percentage
+    const startRgb = this.hexToRgb(startColor);
+    const endRgb = this.hexToRgb(endColor);
+    const interpolatedRgb = {
+      r: Math.round(startRgb.r + (endRgb.r - startRgb.r) * (percentage / 100)),
+      g: Math.round(startRgb.g + (endRgb.g - startRgb.g) * (percentage / 100)),
+      b: Math.round(startRgb.b + (endRgb.b - startRgb.b) * (percentage / 100))
+    };
+    return `rgb(${interpolatedRgb.r}, ${interpolatedRgb.g}, ${interpolatedRgb.b})`;
+  }
+
+  hexToRgb(hex: string): { r: number, g: number, b: number } {
+    // Convert a hex color to RGB format
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null;
+  }
+
+  //Status of works Kyle 16-02-24
+  showUpload: boolean = false;
+  onCheckMFTNote(event:Event):void {
+    
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    if (filterValue == '') {
+      this.showUpload = false
+    }
+    else {
+      this.showUpload = true;
+      
+    }
+  }
+  /*Progess bar Kyle 07-02-24*/
+     //Project size Kyle 27-02-24
+  getAllManDocForPTWStage(permitModal: any) {
+    const excavations = this.ExcavationType.split(",");
+    var hasDrilling = false;
+   
+    for (let i = 0; i < excavations.length; i++) {
+      if (excavations[i].trim() == "Drilling") {
+        hasDrilling = true;
+      }
+
+    }
+    debugger;
+    if (this.applicationDataForView[0].permitStartDate == null && this.applicationDataForView[0].CurrentStageName == "PTW") {
+      this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);
+      this.mandatroyDocumentUploadService.getAllMandatoryDocumentsLinkedToStage(this.applicationDataForView[0].CurrentStageName).subscribe((data: any) => {
+        debugger;
+        if (data.responseCode == 1) {
+          for (let i = 0; i < data.dateSet.length; i++) {
+
+            const tempMandatoryDocList = {} as MandatoryDocumentUploadList;
+            const current = data.dateSet[i];
+            const applicationSize = this.applicationDataForView[0].TypeOfApplication;
+            debugger;
+            if (hasDrilling == true) {
+              debugger;
+              if (applicationSize == "Large") {
+                tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
+                tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
+                tempMandatoryDocList.stageID = current.stageID;
+                tempMandatoryDocList.dateCreated = current.dateCreated;
+                tempMandatoryDocList.hasFile = false;
+                this.MandatoryDocumentUploadList.push(tempMandatoryDocList);
+              }
+
+              else if (applicationSize != "Large" && current.mandatoryDocumentName != "Construction Program or Phasing Program") {
+                tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
+                tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
+                tempMandatoryDocList.stageID = current.stageID;
+                tempMandatoryDocList.dateCreated = current.dateCreated;
+                tempMandatoryDocList.hasFile = false;
+                this.MandatoryDocumentUploadList.push(tempMandatoryDocList);
+              }
+            }
+            else {
+              debugger;
+              if (applicationSize == "Large" && current.mandatoryDocumentName != "Drill plan") {
+                tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
+                tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
+                tempMandatoryDocList.stageID = current.stageID;
+                tempMandatoryDocList.dateCreated = current.dateCreated;
+                tempMandatoryDocList.hasFile = false;
+                this.MandatoryDocumentUploadList.push(tempMandatoryDocList);
+              }
+              else if (applicationSize != "Large" && current.mandatoryDocumentName != "Construction Program or Phasing Program" && current.mandatoryDocumentName != "Drill plan") {
+                tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
+                tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
+                tempMandatoryDocList.stageID = current.stageID;
+                tempMandatoryDocList.dateCreated = current.dateCreated;
+                tempMandatoryDocList.hasFile = false;
+                this.MandatoryDocumentUploadList.push(tempMandatoryDocList);
+              }
+            }
+          }
+
+          
+
+          console.log("apply for permit document upload list",this.MandatoryDocumentUploadList)
+          this.openPermitModal(permitModal);
+          
+        }
+        
+        else {
+          alert(data.responseMessage);
+        }
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+
+  }
+
+  ClosePermitStartDateModal() {
+    debugger;
+    if (this.fileCount == 0) {
+      this.modalService.dismissAll();
+    }
+    else {
+      alert("Please delete documents uploaded if you wish to close without saving");
+    }
+  }
+
+  //#region zxNum-and-contractorAccount Sindiswa 28 February 2024
+  wdmZXNumber: string;
+  rimZXNumber: string;
+  contractorAccountDetails: string;
+  saveWaterZXNumber() {
+    this.applicationsService.addUpdateZXNumbers(this.ApplicationID, this.wdmZXNumber, null).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        //this.getZXNumberDetails();
+        this.getZXNumberDetailsAfterZXEntry();
+        alert("Save Successful");
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+    })
+  }
+
+  saveRIMZXNumber() {
+    debugger;
+    this.applicationsService.addUpdateZXNumbers(this.ApplicationID, null, this.rimZXNumber).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        //this.getZXNumberDetails();
+        this.getZXNumberDetailsAfterZXEntry();
+        alert("Save Successful");
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+    })
+  }
+
+  getZXNumberDetailsAfterZXEntry() {
+    this.applicationsService.getZXDetails(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        console.log("This is what I found while looking for ZX details", data);
+        this.wdmZXNumber = data.dateSet[0].waterZXNumber;
+        this.rimZXNumber = data.dateSet[0].rimzxNumber;
+        if (data.dateSet[0].waterZXNumber.trim() !== "") {
+          this.waterZXEnabled = false;
+        }
+        if (data.dateSet[0].rimzxNumber.trim() !== "") {
+          this.rimZXEnabled = false;
+        }
+        if (data.dateSet[0].waterZXNumber.trim() !== "" && data.dateSet[0].rimzxNumber.trim() !== "") {
+          this.showEMBInput = true;
+
+          this.notifyEMBtoAddContractorDetails();
+
+          if (this.CurrentUserProfile[0].departmentID == 28) {
+            this.contractorInfEnabled = true;
+          }
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+    })
+
+  }
+
+  getZXNumberDetails() {
+    this.applicationsService.getZXDetails(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        console.log("This is what I found while looking for ZX details", data);
+        this.wdmZXNumber = data.dateSet[0].waterZXNumber;
+        this.rimZXNumber = data.dateSet[0].rimzxNumber;
+        if (data.dateSet[0].waterZXNumber.trim() !== "") {
+          this.waterZXEnabled = false;
+        }
+        if (data.dateSet[0].rimzxNumber.trim() !== "") {
+          this.rimZXEnabled = false;
+        }
+        if (data.dateSet[0].waterZXNumber.trim() !== "" && data.dateSet[0].rimzxNumber.trim() !== "") {
+          this.showEMBInput = true;
+
+          if (this.CurrentUserProfile[0].departmentID == 28) { 
+            this.contractorInfEnabled = true;
+          }
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error", error);
+    })
+   
+  }
+
+  notifyEMBtoAddContractorDetails() {
+    this.userPofileService.getUsersBySubDepartmentName("EMB").subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        //data.forEach((obj) => { // checkingNotifications Sindiswa 15 February 2024 - removed this, it wasn't tapping into the user's information
+        data.dateSet.forEach((obj) => {
+          this.notificationsService.sendEmail(obj.email, "New wayleave application submission needs contractor account details", "check html", "Dear EMB User" + "<br><br>An application with ID " + this.ApplicationID + " for wayleave now has the required ZX numbers, enter the contractor's contact details so that an invoice can be generated.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+          if (obj.alternativeEmail) {
+            this.notificationsService.sendEmail(obj.alternativeEmail, "New wayleave application submission needs contractor account details", "check html", "Dear EMB User" + "<br><br>An application with ID " + this.ApplicationID + " for wayleave now has the required ZX numbers, enter the contractor's contact details so that an invoice can be generated.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+
+          }
+          //this.notificationsService.addUpdateNotification(0, "Wayleave Created", "New wayleave application submission", false, this.CurrentUser.appUserId, this.applicationID, obj.userID,  "An application with ID " + this.applicationID + " for wayleave has just been captured.").subscribe((data: any) => {
+          this.notificationsService.addUpdateNotification(0, "Wayleave Created", "New wayleave application submission needs contractor account details", false, obj.userID, this.ApplicationID, this.CurrentUser.appUserId, "An application with ID " + this.ApplicationID + " for wayleave now has the required ZX numbers, enter the contractor's contact details so that an invoice can be generated.").subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+              console.log(data.responseMessage);
+
+            }
+            else {
+              alert(data.responseMessage);
+            }
+
+            console.log("response", data);
+          }, error => {
+            console.log("Error", error);
+          })
+
+        })
+
+
+
+        alert(data.responseMessage);
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+      console.log("response", data);
+    }, error => {
+      console.log("Error", error);
+    });
+
+  }
+
+  saveContractorDetails() {
+    //1. is this how one saves in local storage?
+    localStorage.setItem('contractorAccountDetails', this.contractorAccountDetails);
+    //2. create the invoice now?!
+    this.NewWayleaveComponent.getServiceItem("001");
+    this.NewWayleaveComponent.getServiceItem("002");
+    this.NewWayleaveComponent.getServiceItem("003");
+   
+    this.genInvoice();
+   
+  }
+  genInvoice() {
+    this.NewWayleaveComponent.getCurrentInvoiceNumberForGen("Turtle Speed", this.ApplicationID);
+  }
+
+
+
+  //#endregion
+
+  //#region zxNumberUpdate Sindiswa 01 March 2024 and 04 March 2024
+
+  DepartmentList: DepartmentList[] = [];
+  departmentZXNumber: string;
+  isDepartmentZXInputter: boolean = false;
+  shouldShowPreInvoiceInformation: boolean = false;
+  DepartmentsForZXEntry: DepartmentList[] = [];
+
+  getZXDepartments() {
+    debugger;
+    this.DepartmentList.splice(0, this.DepartmentList.length);
+    this.DepartmentsForZXEntry.splice(0, this.DepartmentsForZXEntry.length);
+    let zxDepartmentEntryCount = 0;
+
+    this.departmentService.getDepartmentsList().subscribe(async (data: any) => {
+
+      if (data.responseCode == 1) {
+        debugger;
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempDepartmentList = {} as DepartmentList;
+          const current = data.dateSet[i];
+          tempDepartmentList.departmentID = current.departmentID;
+          tempDepartmentList.departmentName = current.departmentName;
+          tempDepartmentList.dateUpdated = current.dateUpdated;
+          tempDepartmentList.dateCreated = current.dateCreated;
+          tempDepartmentList.hasSubDepartment = current.hasSubDepartment;
+          tempDepartmentList.needsZXNumber = current.needsZXNumber;
+
+          if (current.needsZXNumber == true) {
+
+            tempDepartmentList.canInputZXNumber = this.isUserZXInputer(current.departmentID);
+            //tempDepartmentList.zxNumber = ''; // Initialize zxNumber property
+            tempDepartmentList.zxNumber = await this.getZXNumber(current.departmentID);
+
+            if (tempDepartmentList.zxNumber !== null && tempDepartmentList.zxNumber !== '') {
+              tempDepartmentList.canInputZXNumber = false;
+              zxDepartmentEntryCount += 1;
+            }
+
+            this.DepartmentsForZXEntry.push(tempDepartmentList);
+
+            //this.isUserZXInputer(current.departmentID);
+          }
+          this.DepartmentList.push(tempDepartmentList);
+
+        }
+        console.log("Found All Departments", this.DepartmentList);
+        //EMB things
+        if (zxDepartmentEntryCount === this.DepartmentsForZXEntry.length) {
+          this.showEMBInput = true;
+        }
+        if (this.CurrentUserProfile[0].departmentID == 28) {
+          this.contractorInfEnabled = true;
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("ZX Departments full response", data);
+
+    }, error => {
+      console.log("ZX Departments Error: ", error);
+    })
+  }
+
+  getZXDepartmentsAfterZXEntry() {
+    debugger;
+    this.DepartmentList.splice(0, this.DepartmentList.length);
+    this.DepartmentsForZXEntry.splice(0, this.DepartmentsForZXEntry.length);
+    let zxDepartmentEntryCount = 0;
+
+    this.departmentService.getDepartmentsList().subscribe(async (data: any) => {
+
+      if (data.responseCode == 1) {
+        debugger;
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempDepartmentList = {} as DepartmentList;
+          const current = data.dateSet[i];
+          tempDepartmentList.departmentID = current.departmentID;
+          tempDepartmentList.departmentName = current.departmentName;
+          tempDepartmentList.dateUpdated = current.dateUpdated;
+          tempDepartmentList.dateCreated = current.dateCreated;
+          tempDepartmentList.hasSubDepartment = current.hasSubDepartment;
+          tempDepartmentList.needsZXNumber = current.needsZXNumber;
+
+          if (current.needsZXNumber == true) {
+
+            tempDepartmentList.canInputZXNumber = this.isUserZXInputer(current.departmentID);
+            //tempDepartmentList.zxNumber = ''; // Initialize zxNumber property
+            tempDepartmentList.zxNumber = await this.getZXNumber(current.departmentID);
+
+            if (tempDepartmentList.zxNumber !== null && tempDepartmentList.zxNumber !== '') {
+              tempDepartmentList.canInputZXNumber = false;
+              zxDepartmentEntryCount += 1;
+            }
+
+            this.DepartmentsForZXEntry.push(tempDepartmentList);
+          }
+          this.DepartmentList.push(tempDepartmentList);
+
+        }
+        console.log("I have looped over all my departments", this.DepartmentList);
+
+        if (zxDepartmentEntryCount === this.DepartmentsForZXEntry.length) {
+          this.notifyEMBtoAddContractorDetails(); 
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("ZX Departments full response", data);
+
+    }, error => {
+      console.log("ZX Departments Error: ", error);
+    })
+  }
+  /*isUserZXInputer(departmentID: any) {
+    if(this.AllCurrentUserRoles.some(role => role.roleName === "ZX Number Inputter") && (this.CurrentUserProfile[0].departmentID == departmentID)) {
+      this.isDepartmentZXInputter = true;
+    }
+  }*/
+
+  isUserZXInputer(departmentID: any): boolean {
+    return this.AllCurrentUserRoles.some(role => role.roleName === "ZX Number Inputter") &&
+      (this.CurrentUserProfile[0].departmentID == departmentID);
+  }
+
+
+  shouldShowPreInvoice() {
+    if (
+      (
+        this.AllCurrentUserRoles.some(role => role.roleName === "ZX Number Inputter") ||
+        this.CurrentUserProfile[0].departmentID == 28 /*EMB*/
+      ) &&
+      (
+        !this.applicationDataForView[0].ContractorAccountDetails ||  // Check if null or undefined
+        this.applicationDataForView[0].ContractorAccountDetails.trim() == ""
+      ) &&
+      this.applicationDataForView[0].ApplicationStatus == "Unpaid"
+    ) {
+    //if (this.AllCurrentUserRoles.some(role => role.roleName === "ZX Number Inputter") || this.CurrentUserProfile[0].departmentID == 28 /*EMB*/) {
+      this.shouldShowPreInvoiceInformation = true;
+    }
+  }
+
+  saveZXNumber(department: any) {
+    let confirmation = confirm("Are you sure you want to save this ZX number value? Please note that you won't be able to change this value after saving.")
+
+    if (confirmation) {
+      debugger;
+      //this.zxNumberService.addUpdateZXNumber(0, this.ApplicationID, department.departmentID, department.departmentName, this.departmentZXNumber, this.CurrentUser.appUserId).subscribe((data: any) => {
+      this.zxNumberService.addUpdateZXNumber(0, this.ApplicationID, department.departmentID, department.departmentName, department.zxNumber, this.CurrentUser.appUserId).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          //When value has been added, disable the textbox - REFRESH
+          //this.getZXDepartments();
+          this.getZXDepartmentsAfterZXEntry()
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+  }
+
+  getZXNumber(departmentID: number): Promise<string | null> {
+    debugger;
+    return new Promise<string | null>((resolve, reject) => {
+      this.zxNumberService.getZXNumberByDepartmentID(this.ApplicationID, departmentID).subscribe((data: any) => {
+        if (data.responseCode == 1 && data.dateSet.length > 0) {
+          debugger;
+          console.log("Hebana, what's the ZX number kanti?", data);
+          resolve(data.dateSet[0].zxNumber);
+        } else {
+          console.log("No entry found for departmentID:", departmentID);
+          resolve(null); // Set ZX number to null when no entry is found
+        }
+        console.log("ZX Departments full response", data);
+      }, error => {
+        reject("There was an error");
+        console.log("ZX Departments Error: ", error);
+      });
+    });
+  }
+
+  countTotalZXDepartments() {
+    debugger;
+    this.departmentService.countDepartmentsThatNeedZXNumber().subscribe((data: any) => {
+      console.log("Inside subscribe callback", data);
+      if (data.responseCode === 1) {
+        debugger;
+        console.log("I tried to get the number of departments that require a ZX number", data)
+        this.totalZXDepartments = data.dateSet;
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("Number of ZX departments", data);
+
+    }, error => {
+      console.log("Number of ZX Departments Error: ", error);
+    })
+  }
+  //Generating the invoice
+  saveContractorDetails2(contractorAccountDetails: string) {
+
+    if (contractorAccountDetails === null) {
+      alert("Value can't be null. Please provide a valid value.");
+      return; 
+    }
+
+    const userConfirmed = confirm("Are you sure you want to save the contractor account details? Please note that you won't be able to change this value after saving.");
+    if (!userConfirmed) {
+      return; 
+    }
+
+   //Save the value in DB
+    this.applicationsService.addUpdateContractorAccountDetails(this.ApplicationID, contractorAccountDetails).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        // Creating the invoice now?
+        localStorage.setItem('contractorAccountDetails', this.contractorAccountDetails); //NB
+        this.NewWayleaveComponent.getServiceItem("001");
+        this.NewWayleaveComponent.getServiceItem("002");
+        this.NewWayleaveComponent.getServiceItem("003");
+
+        this.genInvoice2();
+        //This will hopefuly hide the "Pre-Invoice" tab
+        this.shouldShowPreInvoiceInformation = false;
+      } else {
+        alert(data.responseMessage);
+      }
+      console.log("EMB saving contractor details", data);
+    }, error => {
+      console.log("Saving Contractor Account Details Error: ", error);
+    });
+  }
+
+  genInvoice2() {
+    this.NewWayleaveComponent.getCurrentInvoiceNumberForGen(this.applicationDataForView[0].clientName, this.ApplicationID);
+    this.notifyExternalApplicantPayASAP();
+  }
+  //Sending Notification to external applicant to remind them to download invoice and pay ASAP
+  notifyExternalApplicantPayASAP() {
+ 
+    this.notificationsService.sendEmail(this.applicationDataForView[0].clientEmail, "An invoice has been generated, please proceed with payment for the wayleave", "check html", "Dear " + this.applicationDataForView[0].clientName + "," + "<br><br>An invoice for application with ID " + this.ApplicationID + " for wayleave has been created. Kindly upload proof of payment of the required non-refundable application fee by *21 days from application date*. Failure to make this payment will result in cancellation of the ticket.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+    if (this.applicationDataForView[0].clientAlternativeEmail) {
+      this.notificationsService.sendEmail(this.applicationDataForView[0].clientAlternativeEmail, "An invoice has been generated, please proceed with payment for the wayleave", "check html", "Dear " + this.applicationDataForView[0].clientName + "," + "<br><br>An invoice for application with ID " + this.ApplicationID + " for wayleave has been created. Kindly upload proof of payment of the required non-refundable application fee by *21 days from application date*. Failure to make this payment will result in cancellation of the ticket<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+    }
+          //this.notificationsService.addUpdateNotification(0, "Wayleave Created", "New wayleave application submission", false, this.CurrentUser.appUserId, this.applicationID, obj.userID,  "An application with ID " + this.applicationID + " for wayleave has just been captured.").subscribe((data: any) => {
+    this.notificationsService.addUpdateNotification(0, "Wayleave Created", "An invoice has been generated, please proceed with payment for the wayleave", false, this.applicationDataForView[0].UserID, this.ApplicationID, this.CurrentUser.appUserId, "An invoice for application with ID " + this.ApplicationID + " for wayleave has been created. Kindly upload proof of payment of the required non-refundable application fee by *21 days from application date*. Failure to make this payment will result in cancellation of the ticket.").subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+            console.log(data.responseMessage);
+
+          }
+          else {
+            alert(data.responseMessage);
+          }
+
+          console.log("response", data);
+        }, error => {
+          console.log("Error", error);
+        })
+    }
+  //#endregion
 }

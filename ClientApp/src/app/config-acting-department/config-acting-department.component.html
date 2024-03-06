@@ -34,6 +34,7 @@
                 <h2>{{item.FullName}} </h2>
                 <p>Belongs to: {{item.subDepartmentName}}</p>
                 <p>For: {{item.zoneName}}</p>
+                   
               </div>
               <div class="col-6">
                 <button mat-button color="activate" (click)="activateProfile(item)" *ngIf="item.isDefault != true" tabindex="-1">Activate</button>

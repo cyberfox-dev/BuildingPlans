@@ -150,9 +150,25 @@
 
 .mat-projectSize {
   background-color: #005870;
-  margin-top:10px;
-  margin-bottom:10px;
-  color:white;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: white;
+  width: 298px;
+  height: 46px;
+  font-size: 16px;
+}
+.container-fluid23 {
+  display: flex;
+  justify-content: space-evenly;
+}
+.alert-info {
+  text-align: center;
+  font-style: italic;
+  font-size: 15px;
+  opacity: 80%;
+  width: 14%;
+  margin: 0 auto;
+  margin-top: 10px;
 }
 /*.mat-form-field
 {
@@ -181,7 +197,6 @@ form {
     padding-top:35px;
 
 }*/
-
 /*used to make mat-slide-toggle label appear on the top*/
 /*.text-invisible {
     opacity: 0;
@@ -193,9 +208,8 @@ form {
     border-radius: 8px;
   }*/
 .mat-form-field {
-/*  margin: 10px 0;*/
+  /*  margin: 10px 0;*/
   width: 100%;
-
 }
 .mat-input {
   border: none;
@@ -758,4 +772,8 @@ mat-button-toggle {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.projectSizeSelection{
+    width:100%;
 }

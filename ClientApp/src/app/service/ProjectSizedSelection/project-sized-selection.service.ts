@@ -17,7 +17,7 @@ export class ProjectSizedSelectionService {
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
   public AddUpdateProjectSizeSelection(SelectionID: number | null, ApplicationID: number | null, UserFullName: string | null, SelectedProject: string | null, ProjectDescription: string | null, CreatedByID: string| null) {
-    debugger;
+    
     const body = {
 
       SelectionID: SelectionID,
@@ -43,7 +43,7 @@ export class ProjectSizedSelectionService {
   }
 
   public getProjectSizedSelectionForApplication(applicationID: number) {
-    debugger;
+    
     const body = {
       ApplicationID:applicationID
     }

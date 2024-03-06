@@ -56,6 +56,8 @@ builder.Services.AddScoped<IGLCodeService, GLCodeService>();
 builder.Services.AddScoped<IConfigService, ConfigService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IMapService, MapService>();
+builder.Services.AddScoped<IZXNumberService, ZXNumberService>(); //zxNumberUpdate Sindiswa 01 March 2024
+
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {

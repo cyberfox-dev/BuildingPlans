@@ -53,6 +53,10 @@ import { MapService } from 'src/app/service/Map/map.service';
 import * as watchUtils from '@arcgis/core/core/watchUtils';
 import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 
+//Physical address of project Kyle 16/01/24
+import { NewWayleaveComponent } from "src/app/create-new-wayleave/new-wayleave/new-wayleave.component";
+//Physical address of project Kyle 16/01/24
+
 //import * as FeatureLayerView from 'esri/views/layers/FeatureLayerView';
 
 /*import { Editor, EditorViewModel, FeatureFormViewModel } from "@arcgis/core/widgets/Editor";*/
@@ -168,6 +172,10 @@ export class ProjectDetailsMapComponent implements OnInit {
     private zoneForCommentService: ZoneForCommentService,
     private notificationsService: NotificationsService,
     private mapService: MapService
+
+    //Physical address of project Kyle 16/01/24
+    private newWayleaveComponent : NewWayleaveComponent,
+     //Physical address of project Kyle 16/01/24
 
     /*    private query: Query,*/
     /*        @Inject(ARCGIS_CONFIG) private config: ArcgisConfig,*/
@@ -2111,6 +2119,11 @@ export class ProjectDetailsMapComponent implements OnInit {
 
           // Do something with the address (e.g., display it on the UI)
           this.sharedService.setAddressData(address);
+
+         //Physical address of project Kyle 16/01/24
+          this.newWayleaveComponent.addressSaved = true;
+         //Physical address of project Kyle 16/01/24
+
         })
         .catch((error) => {
           console.error("Reverse Geocoding Error:", error);

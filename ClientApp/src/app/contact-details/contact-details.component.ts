@@ -77,7 +77,7 @@ export class ContactDetailsComponent implements OnInit {
     this.getAllContactDetails();
   }
   ngAfterViewInit() {
-    debugger;
+    
 
     this.dataSource.data = this.ContactDetailsList;
     this.length = this.ContactDetailsList.length;

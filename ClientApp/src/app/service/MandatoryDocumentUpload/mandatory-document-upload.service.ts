@@ -53,7 +53,13 @@ export class MandatoryDocumentUploadService {
 
   }
 
+  public getAllMandatoryDocumentsLinkedToStage(stageName: string | null) {
 
+    const body = {
+      StageName :stageName
+    }
+    return this.httpClient.post(this.baseURL + "GetAllMandatoryDocumentsLinkedToStage", body);
+  }
 
 
 

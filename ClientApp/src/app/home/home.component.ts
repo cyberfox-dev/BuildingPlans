@@ -1,43 +1,40 @@
 import { Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
-import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
-import { ApplicationsService } from '../service/Applications/applications.service';
 import { MatTable } from '@angular/material/table';
-import { CommentList } from '../nav-menu/nav-menu.component';
+import { Router } from "@angular/router";
+import { ApplicationsService } from '../service/Applications/applications.service';
 //import { ApplicationList } from '../shared/shared.service';
-import { SharedService } from "src/app/shared/shared.service"
-import { StagesService } from '../service/Stages/stages.service';
-import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component';
-import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
-import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
-import { ConfigService } from 'src/app/service/Config/config.service';
-import { Subscription, tap } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { SelectEngineerTableComponent } from 'src/app/select-engineer-table/select-engineer-table.component';
-import { SelectContractorTableComponent } from 'src/app/select-contractor-table/select-contractor-table.component';
-import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
-import { LoginComponent } from 'src/app/login/login.component';
-import { MatStepper } from '@angular/material/stepper';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { ChangeDetectorRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSelect } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatStepper } from '@angular/material/stepper';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Subscription } from 'rxjs';
+import { ConfigActingDepartmentComponent } from 'src/app/config-acting-department/config-acting-department.component';
+import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component';
+import { LoginComponent } from 'src/app/login/login.component';
+import { SelectContractorTableComponent } from 'src/app/select-contractor-table/select-contractor-table.component';
+import { SelectEngineerTableComponent } from 'src/app/select-engineer-table/select-engineer-table.component';
+import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
+import { ConfigService } from 'src/app/service/Config/config.service';
+import { ProfessionalService } from 'src/app/service/Professionals/professional.service';
+import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentForComment/sub-department-for-comment.service';
+import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
+import { SharedService } from "src/app/shared/shared.service";
+import { ContractorList } from '../edit-contractor/edit-contractor.component';
+import { NewProfileComponent } from '../new-user/new-profile/new-profile.component';
+import { NotificationCenterComponent } from '../notification-center/notification-center.component';
+import { BusinessPartnerService } from '../service/BusinessPartner/business-partner.service';
+import { DraftApplicationsService } from '../service/DraftApplications/draft-applications.service';
+import { NotificationsService } from '../service/Notifications/notifications.service';
+import { StagesService } from '../service/Stages/stages.service';
+import { SubDepartmentsService } from '../service/SubDepartments/sub-departments.service';
+import { UserService } from '../service/User/user.service';
 import { ZoneForCommentService } from '../service/ZoneForComment/zone-for-comment.service';
 import { ZoneLinkService } from '../service/ZoneLink/zone-link.service';
-import { SubDepartmentsService } from '../service/SubDepartments/sub-departments.service';
-import { trigger, state, style, animate, transition } from '@angular/animations';
-import { ChangeDetectorRef } from '@angular/core';
-import { MatSelect } from '@angular/material/select';
-import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
-import { UserService } from '../service/User/user.service';
-import { NewProfileComponent } from '../new-user/new-profile/new-profile.component';
-import { BusinessPartnerService } from '../service/BusinessPartner/business-partner.service';
-import { ContractorList } from '../edit-contractor/edit-contractor.component';
-import { MatDialog } from '@angular/material/dialog';
-import { ConfigActingDepartmentComponent } from 'src/app/config-acting-department/config-acting-department.component';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackBarAlertsComponent } from '../snack-bar-alerts/snack-bar-alerts.component';
-import { DraftApplicationsService } from '../service/DraftApplications/draft-applications.service';
-import { DraftsComponent } from 'src/app/drafts/drafts.component';
-import { SubDepartmentForCommentService } from 'src/app/service/SubDepartmentForComment/sub-department-for-comment.service';
 
 export interface EngineerList {
   professinalID: number;
@@ -83,6 +80,9 @@ export interface ApplicationsList {
   CurrentStage: string,
   ApplicationStatus: string,
   ProjectNumber: string;
+  isEscalated: boolean; //escalation Sindiswa 29 January 2024
+  EscalationDate: any; //escalation Sindiswa 31 January 2024
+  EMBActionDate: any; //escalation Sindiswa 31 January 2024
 }
 
 
@@ -123,6 +123,9 @@ export interface ApplicationList {
   userID:string,
   //Coordinates: string
   UserID: any;
+  clientAlternativeEmail: string; // chekingNotifications Sindiswa 13 February 2024
+  NetworkLicensees: string;
+  ContractorAccountDetails: string; //zxNumberUpdate Sindiswa 01 March 2024
 }
 
 
@@ -224,7 +227,6 @@ export interface AllInternalUserProfileList {
 }
 
 
-
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -282,6 +284,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   CurrentUser: any;
   stringifiedData: any;
   stringifiedDataUserProfile: any;
+
   CurrentUserProfile: any;
   public canReapply: boolean = false;
 
@@ -295,6 +298,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   appAge: number;
   escalateBtn: boolean = false;
 
+  //Banner Kyle 26/01/24
+  showBanner: boolean = false;
+  //Banner kYLE 26/01/24
 
   /*Client details*/
   clientUserID = '';
@@ -359,9 +365,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   selectedDep = 0;
   SelectActingDep = '';
   selectedZone = 0;
-  SelectActingDZone = '';
+  SelectActingDZone = ''; S
   gotDrafts: boolean;
   externalUser: boolean = false;
+  ActingAsInternal: boolean = false;
+  public EMB: boolean = false;
+  disableButtons: boolean = false;
 
   constructor(
     private router: Router,
@@ -390,6 +399,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private subDepartmentForCommentService: SubDepartmentForCommentService,
     private _snackBar: MatSnackBar, private renderer: Renderer2, private el: ElementRef,
     private draftApplicationService: DraftApplicationsService,
+    private notificationsService: NotificationsService, // notifications Sindiswa 01 Februart 2024
+    private notificationsComponent: NotificationCenterComponent, // notifications Sindiswa 09 February 2024
   ) {
     this.currentDate = new Date();
     this.previousMonth = this.currentDate.getMonth();
@@ -406,6 +417,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['ProjectNumber', 'FullName', 'Stage', 'Status', 'TypeOfApplication', 'AplicationAge', 'StageAge', 'DateCreated', 'actions'];
   dataSource = this.Applications;
 
+  routerSubscription: Subscription; //reapply Sindiswa 26 January 2024
 
   openSnackBar(message: string) {
     this._snackBar.openFromComponent(SnackBarAlertsComponent, {
@@ -429,7 +441,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
       ;
     } else {
-
+      // Filters Kyle 16/01/24
       const sanitizedFilterValue = filterValue.replace(/[^\w\s]/g, '');
       const regex = new RegExp(sanitizedFilterValue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
       // Render the rows after applying the filter
@@ -438,14 +450,31 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.dataSource = this.Applications.filter(user => {
 
         const sanitizedProjectNumber = (user.ProjectNumber || '').replace(/[^\w\s]/g, '');
-        return regex.test(sanitizedProjectNumber.toUpperCase());
+        const sanitizedFullName = (user.FullName || '').replace(/[^\w\s]/g, '');
+        const sanitizedStage = (user.CurrentStage || '').replace(/[^\w\s]/g, '');
+        const sanitizedStatus = (user.ApplicationStatus || '').replace(/[^\w\s]/g, '');
+        const sanitizedType = (user.TypeOfApplication || '').replace(/[^\w\s]/g, '');
+        const sanitizedApplicationAge = (user.TestApplicationAge || '').toString();
+        const sanitizedStageAge = (user.TestApplicationStageAge || '').toString();
+        const sanitizedDateCreated = (user.DateCreated || '').replace(/[^\w\s]/g, '');
+
+        return regex.test(sanitizedProjectNumber.toUpperCase()) ||
+          regex.test(sanitizedFullName.toUpperCase()) ||
+          regex.test(sanitizedStage.toUpperCase()) ||
+          regex.test(sanitizedStatus.toUpperCase()) ||
+          regex.test(sanitizedType.toUpperCase()) ||
+          regex.test(sanitizedApplicationAge.toUpperCase()) ||
+          regex.test(sanitizedStageAge.toUpperCase()) ||
+          regex.test(sanitizedDateCreated.toUpperCase());
       });
 
       this.applicationsTable?.renderRows();
       this.newList = [...this.dataSource];
       console.log(this.newList);
-      // Extract and return the filtered project numbers
-      return this.newList.map(user => user.ProjectNumber || "");
+      // Extract and return newList
+      return this.newList;
+
+      // Filters Kyle 16/01/24
     }
   }
 
@@ -461,7 +490,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   //I lost the Client list table
 
   applyExistingClientFilter(event: Event): void {
-    
+
     //this.ClientUserList.splice(0, this.ClientUserList.length);
 
     const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
@@ -472,7 +501,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.dataSourceLinkUsers = [...this.ClientUserList];
       this.newList = [];
     } else {
-      debugger;
+
       // Apply the filter to the dataSource based on columns 'idNumber' and 'fullName'
       this.dataSourceLinkUsers = this.ClientUserList.filter((user: any) => {
         return (
@@ -489,7 +518,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   applyInternalClientFilter(event: Event): void {
-    
+
     //this.ClientUserList.splice(0, this.ClientUserList.length);
 
     const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
@@ -516,13 +545,21 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
   //Filtered list is duplicated sometimes??
 
-
   ngOnInit(): void {
 
+    
 
 
     setTimeout(() => {
-      
+
+      // #region reapply Sindiswa 26 January 2024
+      /*this.routerSubscription = this.sharedService.getRoutingToOldAapp();
+      if (this.routerSubscription) {
+        this.routerSubscription.unsubscribe();
+      }*/
+      this.sharedService.setShowFormerApps(true);
+      this.sharedService.setFromReApplyArchive(false);
+      // #endregion
       this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
       this.CurrentUser = JSON.parse(this.stringifiedData);
       this.getAllStages();
@@ -530,11 +567,35 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
 
 
-      this.UpdateProjectNumberConfig();
-      this.getAllApplicationsByUserID();
-      /* this.select = "option3";*/
+  
+      // #region escalation Sindiswa 29 January 2024 - just debugging
+      console.log("These are the current user's details - I want to find out if they are EMB or nah", this.CurrentUserProfile);
+      console.log("Is this the directorate?", this.CurrentUserProfile[0].directorate);
+      // #endregion
+
+
+      // #region escalation Sindiswa 30 January 2024 - EMB "department" neh?
+
+      if (this.CurrentUserProfile[0].directorate == 'EMB' || this.CurrentUserProfile[0].departmentName == 'EMB' || this.CurrentUserProfile[0].subDepartmentName == 'EMB'
+        || this.CurrentUserProfile[0].departmentID == 28 || this.CurrentUserProfile[0].subDepartmentID == 1021) {
+
+        this.sharedService.setIsEMBUser(true);
+      }
+      else {
+        this.sharedService.setIsEMBUser(false);
+      }
+      // #endregion
+      //Audit Trail Kyle
+      this.sharedService.isViewReport = false;
+      this.sharedService.isReports = false;
+      //Audit Trail Kyle 
 
       this.getRolesLinkedToUser();
+      this.UpdateProjectNumberConfig();
+
+      /* this.select = "option3";*/
+
+
       this.onCheckIfUserHasAccess();
 
 
@@ -548,6 +609,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       //this.ServerType = this.sharedService.getServerType();
       this.isBannerVisible();
 
+     
       /*      this.initializeApp();*/
       //this.function();
     }, 100);
@@ -566,17 +628,67 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   //builder's break banner
+  //Banner Kyle 26/01/24
+  alertMessage: string;
+  startDate: string;
+  endDate: string;
+  isBannerVisible() {
 
-  isBannerVisible(): boolean {
-    const currentDate = new Date();
-    const startDate = new Date(2023, 11, 1); // 1 Dec 2023
-    const endDate = new Date(2024, 0, 5);   // 5 Jan 2024
-    //const endDate = new Date(2023, 11, 5);   // 5 December 2023 - used to test
+    this.configService.getConfigsByConfigName("Alert").subscribe((data: any) => {
 
-    return currentDate >= startDate && currentDate <= endDate;
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+
+          const current = data.dateSet[i];
+
+          const startEnd = current.utilitySlot1;
+          const currentDate = new Date();
+
+          let start = startEnd.substring(0, startEnd.indexOf(" "));
+          let end = startEnd.substring(startEnd.indexOf(" ") + 1);
+
+          let startDate = this.parseDate(start);
+          let endDate = this.parseDate(end);
+          //Banner Kyle 06-03-24
+          if (current.utilitySlot2 == "0") {
+            this.disableButtons = false;
+          }
+          else if (current.utilitySlot2 == "1") {
+            this.disableButtons = true;
+          }
+          console.log("Testing alerts", current, this.disableButtons);
+          
+          if (currentDate >= startDate && currentDate < endDate) {
+            
+            this.showBanner = true;
+            this.alertMessage = current.utilitySlot3.toUpperCase();
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            this.startDate = `${startDate.getDate()} ${months[startDate.getMonth()]} ${startDate.getFullYear()}`;
+
+            this.endDate = `${endDate.getDate()} ${months[endDate.getMonth()]} ${endDate.getFullYear()}`;
+            break;
+          }
+          else {
+            this.showBanner = false;
+
+          }
+        }
+      } else {
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
+
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
+  private parseDate(dateString: any): Date {
 
-
+    return new Date(dateString);
+  }
+  //Banner Kyle 26/01/24
   Reviews: any;
 
 
@@ -629,7 +741,15 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   sendOption() {
     //  this.optionEvent.emit(this.option);
+    debugger;
     if (this.option == "internal") {
+      /* this.optionEvent.emit(this.option);*/
+
+      this.createWayleave(this.applicationType, this.isPlanning);
+      //this.NewWayleaveComponent.reciveOption(this.option);
+
+    }
+    else if (this.option == "external") {
       /* this.optionEvent.emit(this.option);*/
 
       this.createWayleave(this.applicationType, this.isPlanning);
@@ -724,13 +844,20 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   openXl(Prof: any) {
-    this.modalService.open(Prof, {
-      centered: true,
-      size: 'xl',
-      backdrop: 'static', // Prevent clicking outside the modal to close it
-      keyboard: false // Prevent pressing the ESC key to close the modal
-    });
-
+    //Service Conditions Kyle
+    if (this.isPlanning == false) {
+      this.modalService.open(Prof, {
+        centered: true,
+        size: 'xl',
+        backdrop: 'static', // Prevent clicking outside the modal to close it
+        keyboard: false // Prevent pressing the ESC key to close the modal
+      });
+    }
+    else {
+      //Service Information Kyle 31/01/24
+      this.populateClientInfo();
+    }
+    //Service Information Kyle 31/01/24
   }
 
   openNewClient(newClient: any) {
@@ -757,7 +884,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   onAddNewClient() {
 
-    
+
     this.loginComponent.onRegister(this.clientName + " " + this.clientSurname, this.clientEmail, this.clientCellNo, this.clientBpNumber, this.clientCompanyName, this.clientCompanyRegNo, this.clientPhysicalAddress, null, this.clientIDNumber);
     this.nextBtn = true;
   }
@@ -929,7 +1056,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.UserList.splice(0, this.UserList.length);
     this.ClientUserList.splice(0, this.ClientUserList.length);
-    
+
 
     this.userPofileService.getExternalUsers().subscribe((data: any) => {
       console.log("I entered the service");
@@ -954,7 +1081,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       console.log("reponse", data);
 
     }, error => {
-      
+
       console.log("Error: ", error);
     })
     //console.log("Did I skip the service?");
@@ -981,7 +1108,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   getInternalUserID(index: any) {
 
-    
+
     /*AllInternalUserProfileList will get messed up when there is filtering
     this.userID = this.AllInternalUserProfileList[index].userId;
     this.selectedUserName = this.AllInternalUserProfileList[index].fullName;*/
@@ -1000,11 +1127,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   populateClientInfo() {
-    if (confirm("Are you sure you are done?")) {
-      
+    //Service Information Kyle 31/01/24
+    if (this.isPlanning == false) {
+      if (confirm("Are you sure you are done?")) {
+
+        this.createWayleave(this.applicationType, this.isPlanning);
+      }
+    }
+    else {
       this.createWayleave(this.applicationType, this.isPlanning);
     }
-
+    //Service Information Kyle 31/01/24
 
 
   }
@@ -1016,7 +1149,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     
           this.getAllApplicationsByUserID();
         }*/
-    
+
     let currentMonth = this.currentDate.getMonth() + 1;
     let changeUtility = ("/" + this.currentDate.getFullYear() % 100).toString();
     //return currentMonth !== this.previousMonth;
@@ -1032,7 +1165,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           } else {
             this.previousMonth = dbMonth;
           }
-          
+
           if (currentMonth !== Number(this.previousMonth)) {  //this.previousMonth  currentMonth
             if (currentMonth < 10) {
               this.configService.addUpdateConfig(current.configID, null, null, "0", "0" + currentMonth + changeUtility, null, this.CurrentUser.appUserId).subscribe((data: any) => {
@@ -1162,13 +1295,182 @@ export class HomeComponent implements OnInit, OnDestroy {
           tempRolesList.RoleName = current.roleName;
 
           this.RolesList.push(tempRolesList);
-
+          /*jjs commit 23JAN24 - typoFix for Email for Sign off, Applicant filter dashbaord table fix*/
           if (tempRolesList.RoleName == "Applicant") {
+
             this.InternalExternalUser = true;
             this.FilterBtn = false;
-            this.onFilterApplicationsFprMyApplications();
-            alert("Applicant");
+            
+            this.applicationService.getApplicationsList(this.CurrentUser.appUserId, false).subscribe((data: any) => {
+              
+
+              if (data.responseCode == 1) {
+
+                
+                for (let i = 0; i < data.dateSet.length; i++) {
+                  const tempApplicationList = {} as ApplicationsList;
+                  const tempApplicationListShared = {} as ApplicationList;
+                  const current = data.dateSet[i];
+                  
+
+
+
+
+                  console.log("current", current)
+                  tempApplicationList.ApplicationID = current.applicationID;
+                  tempApplicationList.FullName = current.fullName;
+                  tempApplicationList.TypeOfApplication = current.typeOfApplication;
+                  tempApplicationList.CurrentStage = current.currentStageName;
+                  tempApplicationList.ApplicationStatus = current.applicationStatus;
+                  tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
+
+                  tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+                  tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
+
+                  /*cal application age*/
+
+                  const currentDate = new Date();
+                  const dateCreated = new Date(tempApplicationList.DateCreated);
+                  const timeDiff = currentDate.getTime() - dateCreated.getTime();
+                  const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+                  tempApplicationList.TestApplicationAge = daysDiff;
+
+                  /*cal stage age*/
+                  const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
+                  const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+                  const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+                  tempApplicationList.TestApplicationStageAge = stageDateDiff;
+                  console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
+
+
+
+                  if (current.projectNumber != null) {
+                    tempApplicationList.ProjectNumber = current.projectNumber;
+                  } else {
+                    tempApplicationList.ProjectNumber = (current.applicationID).toString();
+                  }
+
+
+                  /*            do {
+                                tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
+                              } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
+                  //save here to send to the shared
+
+                  //tempApplicationListShared.applicationID = current. ;
+                  tempApplicationListShared.applicationID = current.applicationID;
+                  tempApplicationListShared.clientName = current.fullName;
+                  tempApplicationListShared.clientEmail = current.email;
+                  tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
+                  tempApplicationListShared.clientAddress = current.physicalAddress;
+                  tempApplicationListShared.clientRefNo = current.referenceNumber;
+                  tempApplicationListShared.CompanyRegNo = current.companyRegNo;
+                  tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
+                  tempApplicationListShared.NotificationNumber = current.notificationNumber;
+                  tempApplicationListShared.WBSNumber = current.wbsNumber;
+                  tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
+                  tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
+                  tempApplicationListShared.NatureOfWork = current.natureOfWork;
+                  tempApplicationListShared.ExcavationType = current.excavationType;
+                  tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
+                  tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
+                  tempApplicationListShared.Location = current.location;
+                  tempApplicationListShared.clientCellNo = current.phoneNumber;
+                  tempApplicationListShared.CreatedById = current.createdById;
+                  tempApplicationListShared.UserID = current.userID;//
+                  tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+                  tempApplicationListShared.CurrentStageName = current.currentStageName;
+                  tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+
+                  tempApplicationListShared.NextStageName = current.nextStageName;
+                  tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+                  tempApplicationListShared.PreviousStageName = current.previousStageName;
+                  tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+                  tempApplicationListShared.DatePaid = current.datePaid;
+                  tempApplicationListShared.wbsrequired = current.wbsRequired;
+                  tempApplicationListShared.Coordinates = current.coordinates;
+                  if (current.projectNumber != null) {
+                    tempApplicationListShared.ProjectNumber = current.projectNumber;
+                  } else {
+                    tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+                  }
+
+                  tempApplicationListShared.isPlanning = current.isPlanning;
+                  tempApplicationListShared.permitStartDate = current.permitStartDate;
+
+                  tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
+
+                  //#region escalation Sindiswa 31 January 2024
+                  tempApplicationList.isEscalated = current.isEscalated;
+                  tempApplicationList.EscalationDate = current.escalationDate;
+                  tempApplicationList.EMBActionDate = current.embActionDate;
+                  //#endregion
+
+                  //Project size Kyle 27-02-24
+                  debugger;
+                  if (current.networkLicenses == true) {
+                    tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+                  }
+                  else {
+                    tempApplicationListShared.NetworkLicensees = "Not working";
+                  }
+                  this.applicationDataForView.push(tempApplicationListShared);
+                  console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+                  this.Applications.push(tempApplicationList);
+                  /*Cehcing the escaltion date*/
+                  this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
+
+                    if (data.responseCode == 1) {
+
+                      const current = data.dateSet[0];
+                      console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
+                      this.viewEscalateDate = current.configDescription;
+                      if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
+                        this.escalateBtn = true;
+                      }
+
+                    }
+                    else {
+                      alert("Error");
+                    }
+
+                    console.log("response", data);
+                  }, error => {
+                    console.log("Error", error);
+                  })
+                }
+
+                this.applicationsTable?.renderRows();
+                //for card filters
+                /* this.select = "option3";*/
+                this.recentUnpaidCount();
+                this.recentDistributedCount();
+                this.recentApprovedCount();
+                this.recentejectedCount();
+                this.recentWIPCount();
+                this.isTableLoading = false;
+                console.log("Got all applications", data.dateSet);
+              }
+              else {
+                alert(data.responseMessage);
+              }
+
+            })
+
           }
+
+          if (tempRolesList.RoleName == "Acting As Internal") {
+            this.ActingAsInternal = true;
+          }
+          /*   if (tempRolesList.RoleID == 1008) {
+               if (this.EMB == false) {
+                 this.EMB = true;
+                 this.onFilterApplicationsForEMB();
+               }
+               else {
+   
+               }
+   
+             }*/
 
 
           if (tempRolesList.RoleName == "Department Admin") {
@@ -1176,8 +1478,18 @@ export class HomeComponent implements OnInit, OnDestroy {
           }
         }
         this.sharedService.setCurrentUserRole(this.RolesList);
+
+        if (this.InternalExternalUser == false && this.EMB == false) {
+
+          this.getAllApplicationsByUserID();
+        }
+
+
         // this.rolesTable?.renderRows();
-        console.log("getAllLinkedRolesReponse", data.dateSet);
+        console.log("getAllLinkedRolesReponseForUser", data.dateSet);
+
+
+
       }
       else {
         //alert("Invalid Email or Password");
@@ -1236,22 +1548,22 @@ const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
 tempApplicationList.TestApplicationAge = daysDiff;
 
 *//*cal stage age*//*
-      const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
-      const stageDate = currentDate.getTime() - stageDateCreated.getTime();
-      const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
-      tempApplicationList.TestApplicationStageAge = stageDateDiff;
-      console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
-
-
-
-      if (current.projectNumber != null) {
-        tempApplicationList.ProjectNumber = current.projectNumber;
-      } else {
-        tempApplicationList.ProjectNumber = (current.applicationID).toString();
-      }
-
-
-      *//*            do {
+            const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
+            const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+            const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationStageAge = stageDateDiff;
+            console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
+      
+      
+      
+            if (current.projectNumber != null) {
+              tempApplicationList.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationList.ProjectNumber = (current.applicationID).toString();
+            }
+      
+      
+            *//*            do {
                     tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
                   } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*//*
 //save here to send to the shared
@@ -1300,44 +1612,44 @@ this.applicationDataForView.push(tempApplicationListShared);
 console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
 this.Applications.push(tempApplicationList);
 *//*Cehcing the escaltion date*//*
-            this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
-      
-              if (data.responseCode == 1) {
-      
-                const current = data.dateSet[0];
-                console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
-                this.viewEscalateDate = current.configDescription;
-                if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
-                  this.escalateBtn = true;
+                  this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
+            
+                    if (data.responseCode == 1) {
+            
+                      const current = data.dateSet[0];
+                      console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
+                      this.viewEscalateDate = current.configDescription;
+                      if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
+                        this.escalateBtn = true;
+                      }
+            
+                    }
+                    else {
+                      alert("Error");
+                    }
+            
+                    console.log("response", data);
+                  }, error => {
+                    console.log("Error", error);
+                  })
                 }
-      
-              }
-              else {
-                alert("Error");
-              }
-      
-              console.log("response", data);
-            }, error => {
-              console.log("Error", error);
-            })
-          }
-      
-          this.applicationsTable?.renderRows();
-          //for card filters
-         *//* this.select = "option3";*//*
-          this.recentUnpaidCount();
-          this.recentDistributedCount();
-          this.recentApprovedCount();
-          this.recentejectedCount();
-          this.recentWIPCount();
-   
-          console.log("Got all applications", data.dateSet);
-        }
-        else {
-          alert(data.responseMessage);
-        }
-   
-      })*/
+            
+                this.applicationsTable?.renderRows();
+                //for card filters
+               *//* this.select = "option3";*//*
+       this.recentUnpaidCount();
+       this.recentDistributedCount();
+       this.recentApprovedCount();
+       this.recentejectedCount();
+       this.recentWIPCount();
+ 
+       console.log("Got all applications", data.dateSet);
+     }
+     else {
+       alert(data.responseMessage);
+     }
+ 
+   })*/
 
 
       this.FilterBtn = true;
@@ -1361,6 +1673,7 @@ this.Applications.push(tempApplicationList);
             const tempApplicationListShared = {} as ApplicationList;
             const current = data.dateSet[i];
             console.log("current", current)
+            tempApplicationListShared.UserID = current.userID; // icasaDetailsDisplay Sindiswa 16 January 2024, it seems like this fixed the undefined UserID issue for external users checking on their applications
             tempApplicationList.ApplicationID = current.applicationID;
             tempApplicationList.FullName = current.fullName;
             tempApplicationList.TypeOfApplication = current.typeOfApplication;
@@ -1368,6 +1681,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.ApplicationStatus = current.applicationStatus;
             this.date = current.dateCreated;
             tempApplicationList.DateCreated = this.date.substring(0, current.dateCreated.indexOf('T'));;;
+            tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
             if (current.projectNumber != null) {
               tempApplicationList.ProjectNumber = current.projectNumber;
@@ -1395,6 +1709,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.applicationID = current.applicationID;
             tempApplicationListShared.clientName = current.fullName;
             tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
             tempApplicationListShared.clientAddress = current.physicalAddress;
             tempApplicationListShared.clientRefNo = current.referenceNumber;
             tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -1426,13 +1741,25 @@ this.Applications.push(tempApplicationList);
             } else {
               tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
             }
-
+            debugger;
             tempApplicationListShared.isPlanning = current.isPlanning;
+            if (current.networkLicenses == true) {
+              tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+            }
+            else {
+              tempApplicationListShared.NetworkLicensees = " ";
+            }
 
-
+            tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
+            //#region escalation Sindiswa 31 January 2024
+            tempApplicationList.isEscalated = current.isEscalated;
+            tempApplicationList.EscalationDate = current.escalationDate;
+            tempApplicationList.EMBActionDate = current.embActionDate;
+            //#endregion
 
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+            /*console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.tempApplicationList);*/
 
             this.Applications.push(tempApplicationList);
 
@@ -1529,18 +1856,20 @@ this.Applications.push(tempApplicationList);
 
 
   viewProject(index: any) {
-    debugger;
+    
+    this.sharedService.getShowFormerApps(); //reapply Sindiswa 26 January 2024
     console.log("FIND", this.applicationDataForView[index]);
     if (this.newList.length > 0) {
-      debugger;
+
       for (var i = 0; i < this.newList.length; i++) {
         // Assuming this.applicationDataForView and newList are your arrays
 
         const desiredApplicationID = this.newList[index].ApplicationID; // Replace [0] with the specific index you want to match
-
+        
         const foundRow = this.applicationDataForView.find(item => item.applicationID === desiredApplicationID);
 
         if (foundRow) {
+          
           this.applicationDataForViewToShared.push(foundRow);
           break;
           // Do something with the found row
@@ -1550,14 +1879,14 @@ this.Applications.push(tempApplicationList);
         }
 
       }
-      
+
 
 
     } else {
-      debugger;
+
       this.applicationDataForViewToShared.push(this.applicationDataForView[index]);
     }
-
+    
 
     console.log("this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]", this.applicationDataForView[index]);
     this.sharedService.setViewApplicationIndex(this.applicationDataForViewToShared);
@@ -1567,35 +1896,42 @@ this.Applications.push(tempApplicationList);
     this.router.navigate(["/view-project-info"]);
 
   }
-
   goToNewWayleave(applicationType: boolean, isPlanning: boolean) { //application type refers to whether it is a brand new application or if it is a reapply.
-    
+
     this.getAllExternalUsers();
     this.applicationType = applicationType;
     this.isPlanning = isPlanning;
-    if (this.CurrentUserProfile[0].isInternal === true) {
+
+
+
+    if (this.CurrentUserProfile[0].isInternal === true || this.ActingAsInternal == true) {
       this.openSm(this.content);
     } else {
+
       if (this.gotDrafts == true) {
         this.openExternal(this.external);
       }
       else {
         this.createWayleave(this.applicationType, this.isPlanning);
       }
+
     }
 
-
   }
+
+  //JJS-15-02-2024 Fixing the delete drafts (wasn't deleting)
+
   openNewWayleave() {
     this.createWayleave(this.applicationType, this.isPlanning);
+    this.modalService.dismissAll();
   }
 
   createWayleave(applicationType: boolean, isPlanning: boolean) {
     //application type refers to whether it is a brand new application or if it is a reapply.
     console.log("THIS IS THE APPLICATION TYPE", applicationType);
     this.sharedService.setReapply(applicationType);
-    
 
+    debugger;
     if (this.option == "client" || this.option == 'proxy') {
 
       this.NewWayleaveComponent.onWayleaveCreate(this.userID, isPlanning, false);
@@ -1637,7 +1973,7 @@ this.Applications.push(tempApplicationList);
   
       for (var i = 0; i < this.applicationDataForView.length; i++) {
         const current = this.applicationDataForView[i];
-        if (current.ApplicationStatus == "PTW Pending" || current.ApplicationStatus == "Approval Pack Generation" || current.ApplicationStatus == "Monitoring") {
+        if (current.ApplicationStatus == "PTW Pending" || current.ApplicationStatus == "APG" || current.ApplicationStatus == "Monitoring") {
           this.approveCount++;
   
         }
@@ -1704,7 +2040,7 @@ this.Applications.push(tempApplicationList);
 
 
   filterByUnpaid() {
-    
+
     if (this.filter == false) {
       this.dataSource = this.Applications.filter(df => df.ApplicationStatus == "Unpaid");
       this.filter = true;
@@ -1728,9 +2064,9 @@ this.Applications.push(tempApplicationList);
   }
 
   filterByApproved() {
-    
+
     if (this.filter == false) {
-      this.dataSource = this.Applications.filter(df => df.ApplicationStatus == "Approval Pack Generation" || df.ApplicationStatus == "Final Approval" || df.ApplicationStatus == "PTW Pending");
+      this.dataSource = this.Applications.filter(df => df.ApplicationStatus == "APG" || df.ApplicationStatus == "Final Approval" || df.ApplicationStatus == "PTW Pending");
       this.filter = true;
     }
     else {
@@ -1824,15 +2160,52 @@ this.Applications.push(tempApplicationList);
     this.relatedApplications.splice(0, this.relatedApplications.length);
 
     //this.sharedService.getProjectNumber() i removed this
+    // #region checkingNotifications Sindiswa 15 February 2024
+    if (element.ProjectNumber === null || element.ProjectNumber === undefined || !element.ProjectNumber.startsWith("WL:")) { 
+      this.canReapply = false;
+      this.sharedService.setCanReapply(false);
+      console.log("You cannot reapply.");
 
-    debugger;
-    if (this.newList.length <= 0) {
-      debugger;
       this.sharedService.setProjectNumber(element.ProjectNumber);
 
       await this.applicationService.getApplicationsByProjectNumber(element.ProjectNumber).subscribe((data: any) => {
         if (data.responseCode == 1) {
+          console.log("This should be the unpaid external's project", data);
 
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempRelatedApplications = {} as ApplicationList;
+            const current = data.dateSet[i];
+            tempRelatedApplications.ProjectNumber = current.projectNumber;
+
+            this.relatedApplications.push(tempRelatedApplications);
+         
+          }
+
+        }
+        else {
+         
+          alert(data.responseMessage);
+        }
+        console.log("Reponse while viewing unpaid external project:", data);
+
+        this.viewProject(index);
+
+      }, error => {
+        console.log("Error while viewing unpaid external project: ", error);
+      })
+
+
+    }
+    // #endregion
+
+    //if (this.newList.length <= 0) { //checkingNotifications Sindiswa 15 February 2024 - 
+    else if (this.newList.length <= 0) {
+
+      this.sharedService.setProjectNumber(element.ProjectNumber);
+
+      await this.applicationService.getApplicationsByProjectNumber(element.ProjectNumber).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          console.log("These are my projects by project number", data);
 
           for (let i = 0; i < data.dateSet.length; i++) {
             const tempRelatedApplications = {} as ApplicationList;
@@ -1845,7 +2218,7 @@ this.Applications.push(tempApplicationList);
 
 
 
-          if (data.dateSet.length < 3) {
+          if (data.dateSet.length < 3) { //make it such that only the applicant and originator can re-apply || shnap, external people don't get project number until they have paid
 
             this.canReapply = true;
             this.sharedService.setCanReapply(true);
@@ -1867,7 +2240,7 @@ this.Applications.push(tempApplicationList);
       })
     }
     else {
-      debugger;
+
       this.sharedService.setProjectNumber(this.newList[index].ProjectNumber);
 
       await this.applicationService.getApplicationsByProjectNumber(this.newList[index].ProjectNumber).subscribe((data: any) => {
@@ -1971,7 +2344,7 @@ this.Applications.push(tempApplicationList);
   myApplicaitonsApprovedCount() {
     // Filter the dataSource based on the "Status" column
     const approvedApplications = this.Applications.filter((element) => {
-      return element.ApplicationStatus === 'PTW Pending' && element.FullName == this.CurrentUser.fullName ;
+      return element.ApplicationStatus === 'PTW Pending' && element.FullName == this.CurrentUser.fullName;
     });
 
     // Update the unpaidcount variable with the count of "Unpaid" applications
@@ -2018,11 +2391,11 @@ this.Applications.push(tempApplicationList);
 
     // Update the unpaidcount variable with the count of "Unpaid" applications
     this.distributioncount = distributedApplications.length;
-  } 
+  }
   recentApprovedCount() {
     // Filter the dataSource based on the "Status" column
     const approvedApplications = this.Applications.filter((element) => {
-      return element.ApplicationStatus === 'PTW Pending' || element.ApplicationStatus === 'Approval Pack Generation';
+      return element.ApplicationStatus === 'PTW Pending' || element.ApplicationStatus === 'APG';
     });
 
     // Update the unpaidcount variable with the count of "Unpaid" applications
@@ -2076,12 +2449,12 @@ this.Applications.push(tempApplicationList);
     if (this.CurrentUserProfile[0].isZoneAdmin == true) {
 
     }
-    
+
     this.applicationService.getApplicationsForDepartment(this.CurrentUserProfile[0].zoneID, this.CurrentUserProfile[0].subDepartmentID).subscribe((data: any) => {
 
-      
+
       if (data.responseCode == 1) {
-        
+
 
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempApplicationList = {} as ApplicationsList;
@@ -2089,7 +2462,7 @@ this.Applications.push(tempApplicationList);
           const current = data.dateSet[i];
 
 
-          
+
 
 
           console.log("current", current)
@@ -2098,6 +2471,7 @@ this.Applications.push(tempApplicationList);
           tempApplicationList.TypeOfApplication = current.typeOfApplication;
           tempApplicationList.CurrentStage = current.currentStageName;
           tempApplicationList.ApplicationStatus = current.applicationStatus;
+          tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
           tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
           tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
@@ -2125,7 +2499,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.ProjectNumber = (current.applicationID).toString();
           }
 
-          
+
           /*            do {
                         tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
                       } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
@@ -2135,6 +2509,7 @@ this.Applications.push(tempApplicationList);
           tempApplicationListShared.applicationID = current.applicationID;
           tempApplicationListShared.clientName = current.fullName;
           tempApplicationListShared.clientEmail = current.email;
+          tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
           tempApplicationListShared.clientAddress = current.physicalAddress;
           tempApplicationListShared.clientRefNo = current.referenceNumber;
           tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -2172,6 +2547,13 @@ this.Applications.push(tempApplicationList);
           tempApplicationListShared.isPlanning = current.isPlanning;
           tempApplicationListShared.permitStartDate = current.permitStartDate;
 
+          tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
+
+          //#region escalation Sindiswa 31 January 2024
+          tempApplicationList.isEscalated = current.isEscalated;
+          tempApplicationList.EscalationDate = current.escalationDate;
+          tempApplicationList.EMBActionDate = current.embActionDate;
+          //#endregion
 
           this.applicationDataForView.push(tempApplicationListShared);
           console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -2221,10 +2603,11 @@ this.Applications.push(tempApplicationList);
   getCurrentUserZoneID() {
 
   }
-
+  ActingAs: boolean = false;
   onFilterApplicationForMyReviews() {
-    debugger;
+
     this.isTableLoading = true;
+    this.ActingAs = true;
     this.onFilterButtonClick();
     this.notNyProjects = true;
     this.pastAndCurrentReviews = true;
@@ -2235,20 +2618,22 @@ this.Applications.push(tempApplicationList);
     this.applicationDataForView = [];
     this.Applications = [];
     let number = 21;
-    
-    if (this.CurrentUserProfile[0].isZoneAdmin == true) {
-      debugger;
-      this.applicationService.getApplicationsForDepAdmin(this.CurrentUserProfile[0].zoneID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
+
+    // #region escalation Sindiswa 29 January 2024
+    
+    if (this.CurrentUserProfile[0].directorate == 'EMB' || this.CurrentUserProfile[0].departmentName == 'EMB' || this.CurrentUserProfile[0].subDepartmentName == 'EMB'
+      || this.CurrentUserProfile[0].departmentID == 28 || this.CurrentUserProfile[0].subDepartmentID == 1021) {
+      this.applicationService.getApplicationsForEMB(this.CurrentUser.appUserId).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 
-
+          console.log("This is the data - here are the escalated applications:", data.dateSet)
           for (let i = 0; i < data.dateSet.length; i++) {
             const tempApplicationList = {} as ApplicationsList;
             const tempApplicationListShared = {} as ApplicationList;
             const current = data.dateSet[i];
-
+            
 
 
 
@@ -2259,6 +2644,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.TypeOfApplication = current.typeOfApplication;
             tempApplicationList.CurrentStage = current.currentStageName;
             tempApplicationList.ApplicationStatus = current.applicationStatus;
+            tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
             tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
             tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
@@ -2286,7 +2672,7 @@ this.Applications.push(tempApplicationList);
               tempApplicationList.ProjectNumber = (current.applicationID).toString();
             }
 
-            
+
             /*            do {
                           tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
                         } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
@@ -2296,6 +2682,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.applicationID = current.applicationID;
             tempApplicationListShared.clientName = current.fullName;
             tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
             tempApplicationListShared.clientAddress = current.physicalAddress;
             tempApplicationListShared.clientRefNo = current.referenceNumber;
             tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -2332,6 +2719,158 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.isPlanning = current.isPlanning;
             tempApplicationListShared.permitStartDate = current.permitStartDate;
 
+            tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
+
+            //#region escalation Sindiswa 31 January 2024
+            tempApplicationList.isEscalated = current.isEscalated;
+            tempApplicationList.EscalationDate = current.escalationDate;
+            tempApplicationList.EMBActionDate = current.embActionDate;
+            //#endregion
+
+            this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(current.applicationID, this.CurrentUserProfile.subDepartmentID)
+              .subscribe((data: any) => {
+                if (data.responseCode == 1) {
+
+                  this.processApplication(data.dateSet, current.applicationID);
+                } else {
+                  alert(data.responseMessage);
+                }
+
+
+              }, error => {
+                console.log("Error: ", error);
+              });
+            this.applicationDataForView.push(tempApplicationListShared);
+            console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+            this.Applications.push(tempApplicationList);
+            /*Cehcing the escaltion date*/
+            this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+
+                const current = data.dateSet[0];
+                console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
+                this.viewEscalateDate = current.configDescription;
+                if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
+                  this.escalateBtn = true;
+                }
+
+              }
+              else {
+                alert("Error");
+              }
+
+              console.log("response", data);
+            }, error => {
+              console.log("Error", error);
+            })
+          }
+          this.dataSource = this.Applications.filter(df => df.DateCreated);
+          console.log("WEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEWEEEEEEEWEWEWEWEWEWEWEWEWEWEWE", this.applicationsForUsersZoneList);
+
+          console.log("Got all applications", data.dateSet);
+        }
+        else {
+          alert(data.responseMessage);
+        }
+
+      })
+    }
+
+    // #endregion
+
+
+
+    if (this.CurrentUserProfile[0].isZoneAdmin == true) {
+
+      this.applicationService.getApplicationsForDepAdmin(this.CurrentUserProfile[0].zoneID, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+
+        if (data.responseCode == 1) {
+
+
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempApplicationList = {} as ApplicationsList;
+            const tempApplicationListShared = {} as ApplicationList;
+            const current = data.dateSet[i];
+
+            console.log("current", current)
+            tempApplicationList.ApplicationID = current.applicationID;
+            tempApplicationList.FullName = current.fullName;
+            tempApplicationList.TypeOfApplication = current.typeOfApplication;
+            tempApplicationList.CurrentStage = current.currentStageName;
+            tempApplicationList.ApplicationStatus = current.applicationStatus;
+            tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
+
+            tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+            tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
+
+            /*cal application age*/
+
+            const currentDate = new Date();
+            const dateCreated = new Date(tempApplicationList.DateCreated);
+            const timeDiff = currentDate.getTime() - dateCreated.getTime();
+            const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationAge = daysDiff;
+            /*cal stage age*/
+            const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
+            const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+            const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationStageAge = stageDateDiff;
+            console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
+
+            if (current.projectNumber != null) {
+              tempApplicationList.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationList.ProjectNumber = (current.applicationID).toString();
+            }
+            /*            do {
+                          tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
+                        } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
+            //save here to send to the shared
+
+            //tempApplicationListShared.applicationID = current. ;
+            tempApplicationListShared.applicationID = current.applicationID;
+            tempApplicationListShared.clientName = current.fullName;
+            tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
+            tempApplicationListShared.clientAddress = current.physicalAddress;
+            tempApplicationListShared.clientRefNo = current.referenceNumber;
+            tempApplicationListShared.CompanyRegNo = current.companyRegNo;
+            tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
+            tempApplicationListShared.NotificationNumber = current.notificationNumber;
+            tempApplicationListShared.WBSNumber = current.wbsNumber;
+            tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
+            tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
+            tempApplicationListShared.NatureOfWork = current.natureOfWork;
+            tempApplicationListShared.ExcavationType = current.excavationType;
+            tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
+            tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
+            tempApplicationListShared.Location = current.location;
+            tempApplicationListShared.clientCellNo = current.phoneNumber;
+            tempApplicationListShared.CreatedById = current.createdById;
+            tempApplicationListShared.UserID = current.userID;//
+            tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+            tempApplicationListShared.CurrentStageName = current.currentStageName;
+            tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+
+            tempApplicationListShared.NextStageName = current.nextStageName;
+            tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+            tempApplicationListShared.PreviousStageName = current.previousStageName;
+            tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+            tempApplicationListShared.DatePaid = current.datePaid;
+            tempApplicationListShared.wbsrequired = current.wbsRequired;
+            tempApplicationListShared.Coordinates = current.coordinates;
+            if (current.projectNumber != null) {
+              tempApplicationListShared.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+            }
+
+            tempApplicationListShared.isPlanning = current.isPlanning;
+            tempApplicationListShared.permitStartDate = current.permitStartDate;
+
+            tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
 
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -2378,181 +2917,38 @@ this.Applications.push(tempApplicationList);
       })
 
     }
-  
-    debugger;
-      this.RolesList.splice(0, this.RolesList.length);
-
-      this.accessGroupsService.getAllRolesForUser(this.CurrentUser.appUserId).subscribe((data: any) => {
-        debugger;
-        if (data.responseCode == 1) {
-
-          debugger;
-          for (let i = 0; i < data.dateSet.length; i++) {
-            const tempRolesList = {} as RolesList;
-            const current = data.dateSet[i];
-            tempRolesList.AccessGroupName = current.accessGroupName;
-            tempRolesList.AccessGroupID = current.accessGroupID;
-            tempRolesList.RoleID = current.roleID;
-            tempRolesList.RoleName = current.roleName;
-
-            this.RolesList.push(tempRolesList);
-
-             if (tempRolesList.RoleName == "Applicant") {
-               this.InternalExternalUser = true;
-               this.FilterBtn = false;
-               this.onFilterApplicationsFprMyApplications();
-               alert("Applicant");
-             }
-   
-          }
-
-          for (var i = 0; i < this.RolesList.length; i++) {
-            if (this.RolesList[i].RoleName == "Final Approver") {
-              this.applicationService.getApplicationsForFinalReview(this.CurrentUserProfile[0].zoneID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
 
-                if (data.responseCode == 1) {
-                  debugger;
+    this.RolesList.splice(0, this.RolesList.length);
 
-                  for (let i = 0; i < data.dateSet.length; i++) {
-                    const tempApplicationList = {} as ApplicationsList;
-                    const tempApplicationListShared = {} as ApplicationList;
-                    const current = data.dateSet[i];
+    this.accessGroupsService.getAllRolesForUser(this.CurrentUser.appUserId).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
 
 
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempRolesList = {} as RolesList;
+          const current = data.dateSet[i];
+          tempRolesList.AccessGroupName = current.accessGroupName;
+          tempRolesList.AccessGroupID = current.accessGroupID;
+          tempRolesList.RoleID = current.roleID;
+          tempRolesList.RoleName = current.roleName;
 
+          this.RolesList.push(tempRolesList);
 
+          /* if (tempRolesList.RoleName == "Applicant") {
+             this.InternalExternalUser = true;
+             this.FilterBtn = false;
+             this.onFilterApplicationsFprMyApplications();
+             alert("Applicant");
+           }*/
 
-                    console.log("current", current)
-                    tempApplicationList.ApplicationID = current.applicationID;
-                    tempApplicationList.FullName = current.fullName;
-                    tempApplicationList.TypeOfApplication = current.typeOfApplication;
-                    tempApplicationList.CurrentStage = current.currentStageName;
-                    tempApplicationList.ApplicationStatus = current.applicationStatus;
+        }
 
-                    tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
-                    tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
+        for (var i = 0; i < this.RolesList.length; i++) {
 
-                    /*cal application age*/
-
-                    const currentDate = new Date();
-                    const dateCreated = new Date(tempApplicationList.DateCreated);
-                    const timeDiff = currentDate.getTime() - dateCreated.getTime();
-                    const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
-                    tempApplicationList.TestApplicationAge = daysDiff;
-
-                    /*cal stage age*/
-                    const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
-                    const stageDate = currentDate.getTime() - stageDateCreated.getTime();
-                    const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
-                    tempApplicationList.TestApplicationStageAge = stageDateDiff;
-                    console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
-
-
-
-                    if (current.projectNumber != null) {
-                      tempApplicationList.ProjectNumber = current.projectNumber;
-                    } else {
-                      tempApplicationList.ProjectNumber = (current.applicationID).toString();
-                    }
-
-
-                    /*            do {
-                                  tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
-                                } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
-                    //save here to send to the shared
-
-                    //tempApplicationListShared.applicationID = current. ;
-                    tempApplicationListShared.applicationID = current.applicationID;
-                    tempApplicationListShared.clientName = current.fullName;
-                    tempApplicationListShared.clientEmail = current.email;
-                    tempApplicationListShared.clientAddress = current.physicalAddress;
-                    tempApplicationListShared.clientRefNo = current.referenceNumber;
-                    tempApplicationListShared.CompanyRegNo = current.companyRegNo;
-                    tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
-                    tempApplicationListShared.NotificationNumber = current.notificationNumber;
-                    tempApplicationListShared.WBSNumber = current.wbsNumber;
-                    tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
-                    tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
-                    tempApplicationListShared.NatureOfWork = current.natureOfWork;
-                    tempApplicationListShared.ExcavationType = current.excavationType;
-                    tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
-                    tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
-                    tempApplicationListShared.Location = current.location;
-                    tempApplicationListShared.clientCellNo = current.phoneNumber;
-                    tempApplicationListShared.CreatedById = current.createdById;
-                    tempApplicationListShared.UserID = current.userID;//
-                    tempApplicationListShared.ApplicationStatus = current.applicationStatus;
-                    tempApplicationListShared.CurrentStageName = current.currentStageName;
-                    tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
-
-                    tempApplicationListShared.NextStageName = current.nextStageName;
-                    tempApplicationListShared.NextStageNumber = current.nextStageNumber;
-                    tempApplicationListShared.PreviousStageName = current.previousStageName;
-                    tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
-                    tempApplicationListShared.DatePaid = current.datePaid;
-                    tempApplicationListShared.wbsrequired = current.wbsRequired;
-                    tempApplicationListShared.Coordinates = current.coordinates;
-                    if (current.projectNumber != null) {
-                      tempApplicationListShared.ProjectNumber = current.projectNumber;
-                    } else {
-                      tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
-                    }
-
-                    tempApplicationListShared.isPlanning = current.isPlanning;
-                    tempApplicationListShared.permitStartDate = current.permitStartDate;
-
-
-                    this.applicationDataForView.push(tempApplicationListShared);
-                    console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
-                    this.Applications.push(tempApplicationList);
-                    /*Cehcing the escaltion date*/
-                    this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
-
-                      if (data.responseCode == 1) {
-
-                        const current = data.dateSet[0];
-                        console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
-                        this.viewEscalateDate = current.configDescription;
-                        if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
-                          this.escalateBtn = true;
-                        }
-
-                      }
-                      else {
-                        alert("Error");
-                      }
-
-                      console.log("response", data);
-                    }, error => {
-                      console.log("Error", error);
-                    })
-                  }
-                  this.changeDetectorRef.detectChanges();
-                  this.dataSource = this.Applications.filter(df => df.DateCreated);
-                  this.applicationsTable?.renderRows();
-                  //for card filters
-
-                  this.recentUnpaidCount();
-                  this.recentDistributedCount();
-                  this.recentApprovedCount();
-                  this.recentejectedCount();
-                  this.recentWIPCount();
-                  this.isTableLoading = false;
-                  console.log("Got all applications", data.dateSet);
-                }
-                else {
-                  alert(data.responseMessage);
-                }
-
-              })
-              break;
-            }
-           
-          }
-
-
-            this.applicationService.getApplicationsForReviewer(this.CurrentUserProfile[0].zoneID, this.CurrentUser.appUserId).subscribe((data: any) => {
+          if (this.RolesList[i].RoleName == "Final Approver") {
+            this.applicationService.getApplicationsForFinalReview(this.CurrentUserProfile[0].zoneID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
 
               if (data.responseCode == 1) {
@@ -2562,9 +2958,11 @@ this.Applications.push(tempApplicationList);
                   const tempApplicationList = {} as ApplicationsList;
                   const tempApplicationListShared = {} as ApplicationList;
                   const current = data.dateSet[i];
+                   //JJS-15-02-2024 Fixing the delete drafts (wasn't deleting)-->
+                  const isDuplicate = this.Applications.some(app => app.ApplicationID === current.applicationID);
 
 
-
+                  if (!isDuplicate) {
 
 
                   console.log("current", current)
@@ -2573,6 +2971,7 @@ this.Applications.push(tempApplicationList);
                   tempApplicationList.TypeOfApplication = current.typeOfApplication;
                   tempApplicationList.CurrentStage = current.currentStageName;
                   tempApplicationList.ApplicationStatus = current.applicationStatus;
+                  tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
                   tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
                   tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
@@ -2610,6 +3009,7 @@ this.Applications.push(tempApplicationList);
                   tempApplicationListShared.applicationID = current.applicationID;
                   tempApplicationListShared.clientName = current.fullName;
                   tempApplicationListShared.clientEmail = current.email;
+                  tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
                   tempApplicationListShared.clientAddress = current.physicalAddress;
                   tempApplicationListShared.clientRefNo = current.referenceNumber;
                   tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -2646,10 +3046,12 @@ this.Applications.push(tempApplicationList);
                   tempApplicationListShared.isPlanning = current.isPlanning;
                   tempApplicationListShared.permitStartDate = current.permitStartDate;
 
+                    tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
 
                   this.applicationDataForView.push(tempApplicationListShared);
                   console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
                   this.Applications.push(tempApplicationList);
+                }
                   /*Cehcing the escaltion date*/
                   this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
 
@@ -2690,20 +3092,181 @@ this.Applications.push(tempApplicationList);
               }
 
             })
-          
-          
-        }
-        else {
-          //alert("Invalid Email or Password");
-          alert(data.responseMessage);
-        }
-        console.log("getAllLinkedRolesReponse", data);
+            if (this.dataSource.length > 1) {
+              break;
+            }
 
-      }, error => {
-        console.log("getAllLinkedRolesReponseError: ", error);
-      })
+          }
+
+        }
+
+
+        this.applicationService.getApplicationsForReviewer(this.CurrentUserProfile[0].zoneID, this.CurrentUser.appUserId).subscribe((data: any) => {
+
+
+          if (data.responseCode == 1) {
+
+
+            for (let i = 0; i < data.dateSet.length; i++) {
+              const tempApplicationList = {} as ApplicationsList;
+              const tempApplicationListShared = {} as ApplicationList;
+              const current = data.dateSet[i];
+              
+             //JJS-15-02-2024 Fixing the delete drafts (wasn't deleting)-->
+              const isDuplicate = this.Applications.some(app => app.ApplicationID === current.applicationID);
+
+
+              if (!isDuplicate) {
+
+                console.log("current", current)
+                tempApplicationList.ApplicationID = current.applicationID;
+                tempApplicationList.FullName = current.fullName;
+                tempApplicationList.TypeOfApplication = current.typeOfApplication;
+                tempApplicationList.CurrentStage = current.currentStageName;
+                tempApplicationList.ApplicationStatus = current.applicationStatus;
+                tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
+
+                tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+                tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
+
+                /*cal application age*/
+
+                const currentDate = new Date();
+                const dateCreated = new Date(tempApplicationList.DateCreated);
+                const timeDiff = currentDate.getTime() - dateCreated.getTime();
+                const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+                tempApplicationList.TestApplicationAge = daysDiff;
+
+                /*cal stage age*/
+                const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
+                const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+                const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+                tempApplicationList.TestApplicationStageAge = stageDateDiff;
+                console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
+
+
+
+                if (current.projectNumber != null) {
+                  tempApplicationList.ProjectNumber = current.projectNumber;
+                } else {
+                  tempApplicationList.ProjectNumber = (current.applicationID).toString();
+                }
+
+
+                /*            do {
+                              tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
+                            } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
+                //save here to send to the shared
+
+              //tempApplicationListShared.applicationID = current. ;
+              tempApplicationListShared.applicationID = current.applicationID;
+              tempApplicationListShared.clientName = current.fullName;
+              tempApplicationListShared.clientEmail = current.email;
+              tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
+              tempApplicationListShared.clientAddress = current.physicalAddress;
+              tempApplicationListShared.clientRefNo = current.referenceNumber;
+              tempApplicationListShared.CompanyRegNo = current.companyRegNo;
+              tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
+              tempApplicationListShared.NotificationNumber = current.notificationNumber;
+              tempApplicationListShared.WBSNumber = current.wbsNumber;
+              tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
+              tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
+              tempApplicationListShared.NatureOfWork = current.natureOfWork;
+              tempApplicationListShared.ExcavationType = current.excavationType;
+              tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
+              tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
+              tempApplicationListShared.Location = current.location;
+              tempApplicationListShared.clientCellNo = current.phoneNumber;
+              tempApplicationListShared.CreatedById = current.createdById;
+              tempApplicationListShared.UserID = current.userID;//
+              tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+              tempApplicationListShared.CurrentStageName = current.currentStageName;
+              tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+
+                tempApplicationListShared.NextStageName = current.nextStageName;
+                tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+                tempApplicationListShared.PreviousStageName = current.previousStageName;
+                tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+                tempApplicationListShared.DatePaid = current.datePaid;
+                tempApplicationListShared.wbsrequired = current.wbsRequired;
+                tempApplicationListShared.Coordinates = current.coordinates;
+                if (current.projectNumber != null) {
+                  tempApplicationListShared.ProjectNumber = current.projectNumber;
+                } else {
+                  tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+                }
+
+                tempApplicationListShared.isPlanning = current.isPlanning;
+                tempApplicationListShared.permitStartDate = current.permitStartDate;
+
+                tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
+
+                //#region escalation Sindiswa 31 January 2024
+                tempApplicationList.isEscalated = current.isEscalated;
+                tempApplicationList.EscalationDate = current.escalationDate;
+                tempApplicationList.EMBActionDate = current.embActionDate;
+                //#endregion
+
+
+                this.applicationDataForView.push(tempApplicationListShared);
+                console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+                this.Applications.push(tempApplicationList);
+                /*Cehcing the escaltion date*/
+              }
+              this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
+
+                if (data.responseCode == 1) {
+
+                  const current = data.dateSet[0];
+                  console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
+                  this.viewEscalateDate = current.configDescription;
+                  if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
+                    this.escalateBtn = true;
+                  }
+
+                }
+                else {
+                  alert("Error");
+                }
+
+                console.log("response", data);
+              }, error => {
+                console.log("Error", error);
+              })
+            }
+            this.changeDetectorRef.detectChanges();
+            this.dataSource = this.Applications.filter(df => df.DateCreated);
+            this.applicationsTable?.renderRows();
+            //for card filters
+
+            this.recentUnpaidCount();
+            this.recentDistributedCount();
+            this.recentApprovedCount();
+            this.recentejectedCount();
+            this.recentWIPCount();
+            this.isTableLoading = false;
+            console.log("Got all applications", data.dateSet);
+          }
+          else {
+            alert(data.responseMessage);
+          }
+
+        })
+
+
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("getAllLinkedRolesReponse", data);
+
+    }, error => {
+      console.log("getAllLinkedRolesReponseError: ", error);
+    })
 
   }
+
 
   onFilterApplicationsFprMyApplications() {
     this.isTableLoading = true;
@@ -2719,7 +3282,7 @@ this.Applications.push(tempApplicationList);
     this.Applications = [];
     /*    this.getAllApplicationsByUserID();*/
 
-    this.applicationService.getApplicationsList(this.CurrentUser.appUserId, true).subscribe((data: any) => {
+    this.applicationService.getApplicationsList(this.CurrentUser.appUserId, false).subscribe((data: any) => {
 
 
       if (data.responseCode == 1) {
@@ -2740,6 +3303,7 @@ this.Applications.push(tempApplicationList);
           tempApplicationList.TypeOfApplication = current.typeOfApplication;
           tempApplicationList.CurrentStage = current.currentStageName;
           tempApplicationList.ApplicationStatus = current.applicationStatus;
+          tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
           tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
           tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
@@ -2777,6 +3341,7 @@ this.Applications.push(tempApplicationList);
           tempApplicationListShared.applicationID = current.applicationID;
           tempApplicationListShared.clientName = current.fullName;
           tempApplicationListShared.clientEmail = current.email;
+          tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
           tempApplicationListShared.clientAddress = current.physicalAddress;
           tempApplicationListShared.clientRefNo = current.referenceNumber;
           tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -2797,6 +3362,7 @@ this.Applications.push(tempApplicationList);
           tempApplicationListShared.CurrentStageName = current.currentStageName;
           tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
 
+          tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
           tempApplicationListShared.NextStageName = current.nextStageName;
           tempApplicationListShared.NextStageNumber = current.nextStageNumber;
           tempApplicationListShared.PreviousStageName = current.previousStageName;
@@ -2814,6 +3380,18 @@ this.Applications.push(tempApplicationList);
           tempApplicationListShared.permitStartDate = current.permitStartDate;
 
 
+          //#region escalation Sindiswa 31 January 2024
+          tempApplicationList.isEscalated = current.isEscalated;
+          tempApplicationList.EscalationDate = current.escalationDate;
+          tempApplicationList.EMBActionDate = current.embActionDate;
+          //#endregion
+
+          if (current.networkLicenses == true) {
+            tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+          }
+          else {
+            tempApplicationListShared.NetworkLicensees = " ";
+          }
           this.applicationDataForView.push(tempApplicationListShared);
           console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
           this.Applications.push(tempApplicationList);
@@ -2858,7 +3436,175 @@ this.Applications.push(tempApplicationList);
     })
   }
 
+  onFilterApplicationsForEMB() {
 
+    this.isTableLoading = true;
+    this.ActingAs = true;
+    this.onFilterButtonClick();
+    this.notNyProjects = true;
+    this.pastAndCurrentReviews = true;
+    this.MyProjects = false;
+    this.FiterValue = "";
+    this.FiterValue = "Your Reviews";
+    this.cardFilters = false;
+    this.applicationDataForView = [];
+    this.Applications = [];
+    this.applicationDataForView = [];
+    this.Applications = [];
+    this.applicationService.getApplicationsForEMB(this.CurrentUser.appUserId).subscribe((data: any) => {
+
+
+      if (data.responseCode == 1) {
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempApplicationList = {} as ApplicationsList;
+          const tempApplicationListShared = {} as ApplicationList;
+          const current = data.dateSet[i];
+
+
+
+
+
+          console.log("current", current)
+          tempApplicationList.ApplicationID = current.applicationID;
+          tempApplicationList.FullName = current.fullName;
+          tempApplicationList.TypeOfApplication = current.typeOfApplication;
+          tempApplicationList.CurrentStage = current.currentStageName;
+          tempApplicationList.ApplicationStatus = current.applicationStatus;
+          tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
+
+          tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+          tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
+
+          /*cal application age*/
+
+          const currentDate = new Date();
+          const dateCreated = new Date(tempApplicationList.DateCreated);
+          const timeDiff = currentDate.getTime() - dateCreated.getTime();
+          const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+          tempApplicationList.TestApplicationAge = daysDiff;
+
+          /*cal stage age*/
+          const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
+          const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+          const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+          tempApplicationList.TestApplicationStageAge = stageDateDiff;
+          console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
+
+
+
+          if (current.projectNumber != null) {
+            tempApplicationList.ProjectNumber = current.projectNumber;
+          } else {
+            tempApplicationList.ProjectNumber = (current.applicationID).toString();
+          }
+
+
+          /*            do {
+                        tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
+                      } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
+          //save here to send to the shared
+
+          //tempApplicationListShared.applicationID = current. ;
+          tempApplicationListShared.applicationID = current.applicationID;
+          tempApplicationListShared.clientName = current.fullName;
+          tempApplicationListShared.clientEmail = current.email;
+          tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
+          tempApplicationListShared.clientAddress = current.physicalAddress;
+          tempApplicationListShared.clientRefNo = current.referenceNumber;
+          tempApplicationListShared.CompanyRegNo = current.companyRegNo;
+          tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
+          tempApplicationListShared.NotificationNumber = current.notificationNumber;
+          tempApplicationListShared.WBSNumber = current.wbsNumber;
+          tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
+          tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
+          tempApplicationListShared.NatureOfWork = current.natureOfWork;
+          tempApplicationListShared.ExcavationType = current.excavationType;
+          tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
+          tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
+          tempApplicationListShared.Location = current.location;
+          tempApplicationListShared.clientCellNo = current.phoneNumber;
+          tempApplicationListShared.CreatedById = current.createdById;
+          tempApplicationListShared.UserID = current.userID;//
+          tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+          tempApplicationListShared.CurrentStageName = current.currentStageName;
+          tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+
+          tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
+          tempApplicationListShared.NextStageName = current.nextStageName;
+          tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+          tempApplicationListShared.PreviousStageName = current.previousStageName;
+          tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+          tempApplicationListShared.DatePaid = current.datePaid;
+          tempApplicationListShared.wbsrequired = current.wbsRequired;
+          tempApplicationListShared.Coordinates = current.coordinates;
+          if (current.projectNumber != null) {
+            tempApplicationListShared.ProjectNumber = current.projectNumber;
+          } else {
+            tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+          }
+
+          tempApplicationListShared.isPlanning = current.isPlanning;
+          tempApplicationListShared.permitStartDate = current.permitStartDate;
+
+
+          //#region escalation Sindiswa 31 January 2024
+          tempApplicationList.isEscalated = current.isEscalated;
+          tempApplicationList.EscalationDate = current.escalationDate;
+          tempApplicationList.EMBActionDate = current.embActionDate;
+          //#endregion
+          if (current.networkLicenses == true) {
+            tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+          }
+          else {
+            tempApplicationListShared.NetworkLicensees = " ";
+          }
+
+          this.applicationDataForView.push(tempApplicationListShared);
+          console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+          this.Applications.push(tempApplicationList);
+          /*Cehcing the escaltion date*/
+          this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+
+              const current = data.dateSet[0];
+              console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
+              this.viewEscalateDate = current.configDescription;
+              if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
+                this.escalateBtn = true;
+              }
+
+            }
+            else {
+              alert("Error");
+            }
+
+            console.log("response", data);
+          }, error => {
+            console.log("Error", error);
+          })
+        }
+
+        this.dataSource = this.Applications.filter(df => df.DateCreated);
+        this.applicationsTable?.renderRows();
+        //for card filters
+
+        this.recentUnpaidCount();
+        this.recentDistributedCount();
+        this.recentApprovedCount();
+        this.recentejectedCount();
+        this.recentWIPCount();
+        this.isTableLoading = false;
+        console.log("Got all applications", data.dateSet);
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+    })
+  }
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   onFilterAPplicationsForRecentApplications() {
@@ -2899,6 +3645,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.TypeOfApplication = current.typeOfApplication;
             tempApplicationList.CurrentStage = current.currentStageName;
             tempApplicationList.ApplicationStatus = current.applicationStatus;
+            tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
             tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
             tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
@@ -2936,6 +3683,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.applicationID = current.applicationID;
             tempApplicationListShared.clientName = current.fullName;
             tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
             tempApplicationListShared.clientAddress = current.physicalAddress;
             tempApplicationListShared.clientRefNo = current.referenceNumber;
             tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -2956,6 +3704,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.CurrentStageName = current.currentStageName;
             tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
 
+            tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
             tempApplicationListShared.NextStageName = current.nextStageName;
             tempApplicationListShared.NextStageNumber = current.nextStageNumber;
             tempApplicationListShared.PreviousStageName = current.previousStageName;
@@ -2972,6 +3721,18 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.isPlanning = current.isPlanning;
             tempApplicationListShared.permitStartDate = current.permitStartDate;
 
+
+            //#region escalation Sindiswa 31 January 2024
+            tempApplicationList.isEscalated = current.isEscalated;
+            tempApplicationList.EscalationDate = current.escalationDate;
+            tempApplicationList.EMBActionDate = current.embActionDate;
+            //#endregion
+            if (current.networkLicenses == true) {
+              tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+            }
+            else {
+              tempApplicationListShared.NetworkLicensees = " ";
+            }
 
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -3036,6 +3797,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.TypeOfApplication = current.typeOfApplication;
             tempApplicationList.CurrentStage = current.currentStageName;
             tempApplicationList.ApplicationStatus = current.applicationStatus;
+            tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
             this.date = current.dateCreated;
             tempApplicationList.DateCreated = this.date.substring(0, current.dateCreated.indexOf('T'));;;
 
@@ -3065,6 +3827,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.applicationID = current.applicationID;
             tempApplicationListShared.clientName = current.fullName;
             tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
             tempApplicationListShared.clientAddress = current.physicalAddress;
             tempApplicationListShared.clientRefNo = current.referenceNumber;
             tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -3100,7 +3863,20 @@ this.Applications.push(tempApplicationList);
 
             tempApplicationListShared.isPlanning = current.isPlanning;
 
+            tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
 
+            //#region escalation Sindiswa 31 January 2024
+            tempApplicationList.isEscalated = current.isEscalated;
+            tempApplicationList.EscalationDate = current.escalationDate;
+            tempApplicationList.EMBActionDate = current.embActionDate;
+            //#endregion
+
+            if (current.networkLicenses == true) {
+              tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+            }
+            else {
+              tempApplicationListShared.NetworkLicensees = " ";
+            }
 
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -3176,6 +3952,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.TypeOfApplication = current.typeOfApplication;
             tempApplicationList.CurrentStage = current.currentStageName;
             tempApplicationList.ApplicationStatus = current.applicationStatus;
+            tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
             tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
             tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
@@ -3213,6 +3990,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.applicationID = current.applicationID;
             tempApplicationListShared.clientName = current.fullName;
             tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
             tempApplicationListShared.clientAddress = current.physicalAddress;
             tempApplicationListShared.clientRefNo = current.referenceNumber;
             tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -3249,6 +4027,19 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.isPlanning = current.isPlanning;
             tempApplicationListShared.permitStartDate = current.permitStartDate;
 
+            tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
+
+            //#region escalation Sindiswa 31 January 2024
+            tempApplicationList.isEscalated = current.isEscalated;
+            tempApplicationList.EscalationDate = current.escalationDate;
+            tempApplicationList.EMBActionDate = current.embActionDate;
+            //#endregion
+            if (current.networkLicenses == true) {
+              tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+            }
+            else {
+              tempApplicationListShared.NetworkLicensees = " ";
+            }
 
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -3321,6 +4112,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationList.TypeOfApplication = current.typeOfApplication;
             tempApplicationList.CurrentStage = current.currentStageName;
             tempApplicationList.ApplicationStatus = current.applicationStatus;
+            tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
             tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
             tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
@@ -3358,6 +4150,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.applicationID = current.applicationID;
             tempApplicationListShared.clientName = current.fullName;
             tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
             tempApplicationListShared.clientAddress = current.physicalAddress;
             tempApplicationListShared.clientRefNo = current.referenceNumber;
             tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -3378,6 +4171,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.CurrentStageName = current.currentStageName;
             tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
 
+            tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
             tempApplicationListShared.NextStageName = current.nextStageName;
             tempApplicationListShared.NextStageNumber = current.nextStageNumber;
             tempApplicationListShared.PreviousStageName = current.previousStageName;
@@ -3395,6 +4189,18 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.permitStartDate = current.permitStartDate;
 
 
+            //#region escalation Sindiswa 31 January 2024
+            tempApplicationList.isEscalated = current.isEscalated;
+            tempApplicationList.EscalationDate = current.escalationDate;
+            tempApplicationList.EMBActionDate = current.embActionDate;
+            //#endregion
+
+            if (current.networkLicenses == true) {
+              tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+            }
+            else {
+              tempApplicationListShared.NetworkLicensees = " ";
+            }
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
             this.Applications.push(tempApplicationList);
@@ -3471,6 +4277,7 @@ this.Applications.push(tempApplicationList);
               tempApplicationList.TypeOfApplication = current.typeOfApplication;
               tempApplicationList.CurrentStage = current.currentStageName;
               tempApplicationList.ApplicationStatus = current.applicationStatus;
+              tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
               tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
               tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
@@ -3508,6 +4315,7 @@ this.Applications.push(tempApplicationList);
               tempApplicationListShared.applicationID = current.applicationID;
               tempApplicationListShared.clientName = current.fullName;
               tempApplicationListShared.clientEmail = current.email;
+              tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
               tempApplicationListShared.clientAddress = current.physicalAddress;
               tempApplicationListShared.clientRefNo = current.referenceNumber;
               tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -3528,6 +4336,7 @@ this.Applications.push(tempApplicationList);
               tempApplicationListShared.CurrentStageName = current.currentStageName;
               tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
 
+              tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
               tempApplicationListShared.NextStageName = current.nextStageName;
               tempApplicationListShared.NextStageNumber = current.nextStageNumber;
               tempApplicationListShared.PreviousStageName = current.previousStageName;
@@ -3544,6 +4353,18 @@ this.Applications.push(tempApplicationList);
               tempApplicationListShared.isPlanning = current.isPlanning;
               tempApplicationListShared.permitStartDate = current.permitStartDate;
 
+
+              //#region escalation Sindiswa 31 January 2024
+              tempApplicationList.isEscalated = current.isEscalated;
+              tempApplicationList.EscalationDate = current.escalationDate;
+              tempApplicationList.EMBActionDate = current.embActionDate;
+              //#endregion
+              if (current.networkLicenses == true) {
+                tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+              }
+              else {
+                tempApplicationListShared.NetworkLicensees = " ";
+              }
 
               this.applicationDataForView.push(tempApplicationListShared);
               console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -3605,6 +4426,7 @@ this.Applications.push(tempApplicationList);
               tempApplicationList.TypeOfApplication = current.typeOfApplication;
               tempApplicationList.CurrentStage = current.currentStageName;
               tempApplicationList.ApplicationStatus = current.applicationStatus;
+              tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
               this.date = current.dateCreated;
               tempApplicationList.DateCreated = this.date.substring(0, current.dateCreated.indexOf('T'));;;
 
@@ -3634,6 +4456,7 @@ this.Applications.push(tempApplicationList);
               tempApplicationListShared.applicationID = current.applicationID;
               tempApplicationListShared.clientName = current.fullName;
               tempApplicationListShared.clientEmail = current.email;
+              tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
               tempApplicationListShared.clientAddress = current.physicalAddress;
               tempApplicationListShared.clientRefNo = current.referenceNumber;
               tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -3669,8 +4492,19 @@ this.Applications.push(tempApplicationList);
 
               tempApplicationListShared.isPlanning = current.isPlanning;
 
+              tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
 
-
+              //#region escalation Sindiswa 31 January 2024
+              tempApplicationList.isEscalated = current.isEscalated;
+              tempApplicationList.EscalationDate = current.escalationDate;
+              tempApplicationList.EMBActionDate = current.embActionDate;
+              //#endregion
+              if (current.networkLicenses == true) {
+                tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+              }
+              else {
+                tempApplicationListShared.NetworkLicensees = " ";
+              }
               this.applicationDataForView.push(tempApplicationListShared);
               console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
 
@@ -3854,28 +4688,28 @@ this.Applications.push(tempApplicationList);
   getAllProfessionalsListByProfessionalType(professionalType: string) {
     this.EngineersList.splice(0, this.EngineersList.length);
     this.ContractorsList.splice(0, this.ContractorsList.length);
-    
+
     this.professionalService.getProfessionalsListByProfessionalType(this.userID, professionalType).subscribe((data: any) => {
       if (data.responseCode == 1) {
         console.log("data.dateSet get", data.dateSet);
-        
+
         for (let i = 0; i < data.dateSet.length; i++) {
           //Check if Engineer or Contractor
           if (professionalType == "Engineer") {
             const tempProfessionalList = {} as ProfListEU;
             const current = data.dateSet[i];
-            
+
             tempProfessionalList.name = current.fullName.split(' ')[0], // Split full name into first name and last name
               tempProfessionalList.surname = current.fullName.split(' ')[1], // Assuming space separates first and last names
               //tempProfessionalList.fullName = current.fullName;
               tempProfessionalList.email = current.email;
             tempProfessionalList.idNumber = current.idNumber;
             tempProfessionalList.phoneNumber = current.phoneNumber;
-            
+
             this.EngineersList.push(tempProfessionalList);
             //this.EngineerTable?.renderRows();
 
-            
+
           } else {
             const tempProfessionalList = {} as ProfListEU;
             const current = data.dateSet[i];
@@ -3892,7 +4726,7 @@ this.Applications.push(tempApplicationList);
           }
           //this.EngineerTable?.renderRows();
           //this.ContractorTable?.renderRows();
-          
+
         }
         //this.ContractorTable?.renderRows();
 
@@ -3901,7 +4735,7 @@ this.Applications.push(tempApplicationList);
 
         this.contractorTable?.renderRows();
         this.engineerTable?.renderRows();
-        
+
       }
 
       else {
@@ -4196,14 +5030,14 @@ this.Applications.push(tempApplicationList);
 
   //[Next] button
   saveAllEngineers() {
-    
+
     // Use forEach to loop through TempEngList and call onPermaSaveTheirEngineer for each engineer
     this.TempEngList.forEach(engineer => {
       this.onPermaSaveTheirEngineer(engineer);
     });
   }
   saveAllContractors() {
-    
+
     this.TempConList.forEach(contractor => {
       this.onPermaSaveTheirContractor(contractor);
     });
@@ -4218,11 +5052,11 @@ this.Applications.push(tempApplicationList);
       !contractor.cellular ||
       !contractor.email
     ) {
-      
+
       alert('Please fill in all required fields for the contractor.');
       return; // Exit the function if any required field is empty for the current engineer
     }
-    
+
     // Use properties of the engineer parameter to populate the database request
     this.professionalService.addUpdateProfessional(
       0, // Action identifier (e.g., 0 for adding)
@@ -4244,13 +5078,13 @@ this.Applications.push(tempApplicationList);
         this.contractorTable?.renderRows();
       } else {
         alert(data.responseMessage);
-        
+
       }
       console.log("response", data);
-      
+
     }, error => {
       console.log("Error: ", error);
-      
+
     });
   }
 
@@ -4383,7 +5217,7 @@ this.Applications.push(tempApplicationList);
   }
   undoEdit() {
 
-    
+
     this.clearCreateEngComponent();
     this.clearCreateComponent();
 
@@ -4431,13 +5265,13 @@ this.Applications.push(tempApplicationList);
     this.NewTempEngList.push(newEngineer);
     this.cdr.detectChanges(); // Trigger change detection
     console.log("These are the engineers you have adeded: " + JSON.stringify(this.NewTempEngList, null, 2));
-    
+
     this.NewTempEngineersTable?.renderRows(); // Explicitly trigger rendering
     this.clearCreateEngComponent();
 
   }
   onPermaSaveNewEngineer(engineer: EngineerList) {
-    
+
     // Use properties of the engineer parameter to populate the database request
     this.professionalService.addUpdateProfessional(
       0, // Action identifier (e.g., 0 for adding)
@@ -4502,7 +5336,7 @@ this.Applications.push(tempApplicationList);
     this.NewTempConList.push(newContractor);
     this.cdr.detectChanges(); // Trigger change detection
     console.log("These are the contractors you have added: " + JSON.stringify(this.NewTempConList, null, 2));
-    
+
     this.NewTempContractorsTable?.renderRows(); // Explicitly trigger rendering
     this.clearCreateComponent();
   }
@@ -4646,7 +5480,7 @@ this.Applications.push(tempApplicationList);
       // Check if the index is valid
       this.editing = true;
       this.selectedNewIndex = index;
-      
+
       this.selectedNewContractor = this.NewTempConList[index];
 
       // Populate the input fields with the selectedContractor data
@@ -4890,7 +5724,7 @@ this.Applications.push(tempApplicationList);
 
       this.userService.register(this.clientFullName, this.clientEmail, "Password@" + this.clientFullName).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          
+
           this.newProfileComponent.onNewProfileCreate(
             data.dateSet.appUserId,
             this.clientFullName,
@@ -4905,7 +5739,7 @@ this.Applications.push(tempApplicationList);
             this.clientRefNo,
             this.clientCompanyType,
           )
-          
+
           console.log("Before assignment - this.sharedService.clientUserID: " + this.sharedService.clientUserID);
           this.sharedService.clientUserID = data.dateSet.appUserId; //This assignment is sus THIS IS THE NEW PERSON
           console.log("IS this " + this.clientName + "'s USERID: " + this.sharedService.clientUserID);
@@ -4954,29 +5788,51 @@ this.Applications.push(tempApplicationList);
   }
 
   openInternalUserClient(internalUser: any) {
-    this.modalService.open(internalUser, { backdrop: 'static', centered: true, size: 'xl' });
-  }
+   
+      this.modalService.open(internalUser, { backdrop: 'static', centered: true, size: 'xl' });
+      
 
+    }
+  
+/*  <!--JJS 02Feb changed the external user acting as internal text for the modal and made them go straight to choose an exsisting internal client-->*/
   openChoice(choiceEC: any) {
+    
     this.modalService.open(choiceEC, { backdrop: 'static', centered: true, size: 'xl' });
   }
+  openChoiceExternalActingAsInternal(internalUser: any){
+    if (this.ActingAsInternal == true) {
 
-
-  handleChoice(internalUser: any, user: any) {
-    if (this.isInternalUser) {
       this.internalUserSelected.emit();
       this.sharedService.option = 'proxy';
-      if (this.isInternalUser == true) {
-
-      }
-      else {
-
-      }
       this.openInternalUserClient(internalUser);
-    } else {
-      this.externalClientSelected.emit();
-      this.openExternalClient(user);
+      this.modalService.dismissAll();
+      this.modalService.open(internalUser, { backdrop: 'static', centered: true, size: 'xl' });
     }
+  }
+
+  handleChoice(internalUser: any, user: any) {
+    if (this.ActingAsInternal == false) {
+      if (this.isInternalUser) {
+        this.internalUserSelected.emit();
+        this.sharedService.option = 'proxy';
+        if (this.isInternalUser == true) {
+
+        }
+        else {
+
+        }
+        this.openInternalUserClient(internalUser);
+      } else {
+        this.externalClientSelected.emit();
+        this.openExternalClient(user);
+      }
+    }
+    else {
+      this.internalUserSelected.emit();
+      this.sharedService.option = 'proxy';
+      this.openInternalUserClient(internalUser);
+    }
+   
   }
   openSpin(spin) {
     this.modalService.open(spin, { backdrop: 'static', centered: true, size: 'xl' });
@@ -5001,7 +5857,7 @@ this.Applications.push(tempApplicationList);
 
 
   async getAllInternalUsers() {
-    
+
 
     this.AllInternalUserProfileList.splice(0, this.AllInternalUserProfileList.length);
 
@@ -5017,7 +5873,7 @@ this.Applications.push(tempApplicationList);
 
           internalDepartment: (current.directorate !== null && current.directorate !== '') ? current.directorate : current.departmentName,
           //What happens if both are empty?
-          
+
         };
         this.sharedService.clientUserID = current.userID;
         this.AllInternalUserProfileList.push(tempAllInternalUserProfileList);
@@ -5041,14 +5897,14 @@ this.Applications.push(tempApplicationList);
     });
   }
   getDraftsList() {
-    
+
     if (this.CurrentUserProfile[0].isInternal == true) {
       this.draftApplicationService.getDraftedApplicationsList(this.CurrentUser.appUserId).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          
+
           if (data.dateSet.length != 0) {
             this.gotDrafts = true;
-            
+
           }
 
         }
@@ -5063,11 +5919,11 @@ this.Applications.push(tempApplicationList);
     else {
       this.draftApplicationService.getDraftedApplicationsListForExternal(this.CurrentUser.appUserId).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          
+
           if (data.dateSet.length != 0) {
             this.gotDrafts = true;
             this.externalUser = true;
-            
+
           }
 
         }
@@ -5083,6 +5939,7 @@ this.Applications.push(tempApplicationList);
 
 
   filterForCurrentReviews() {
+    
     this.applicationDataForView = [];
     this.Applications = [];
     this.applicationsForUsersZoneList.splice(0, this.applicationsForUsersZoneList.length);
@@ -5107,6 +5964,7 @@ this.Applications.push(tempApplicationList);
           tempApplicationList.TypeOfApplication = current.typeOfApplication;
           tempApplicationList.CurrentStage = current.currentStageName;
           tempApplicationList.ApplicationStatus = current.applicationStatus;
+          tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
           tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
           tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
@@ -5144,6 +6002,7 @@ this.Applications.push(tempApplicationList);
           tempApplicationListShared.applicationID = current.applicationID;
           tempApplicationListShared.clientName = current.fullName;
           tempApplicationListShared.clientEmail = current.email;
+          tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
           tempApplicationListShared.clientAddress = current.physicalAddress;
           tempApplicationListShared.clientRefNo = current.referenceNumber;
           tempApplicationListShared.CompanyRegNo = current.companyRegNo;
@@ -5179,11 +6038,24 @@ this.Applications.push(tempApplicationList);
 
           tempApplicationListShared.isPlanning = current.isPlanning;
           tempApplicationListShared.permitStartDate = current.permitStartDate;
-          
+
+          tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
+
+          //#region escalation Sindiswa 31 January 2024
+          tempApplicationList.isEscalated = current.isEscalated;
+          tempApplicationList.EscalationDate = current.escalationDate;
+          tempApplicationList.EMBActionDate = current.embActionDate;
+          //#endregion
+          if (current.networkLicenses == true) {
+            tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+          }
+          else {
+            tempApplicationListShared.NetworkLicensees = " ";
+          }
           this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(current.applicationID, this.CurrentUserProfile.subDepartmentID)
             .subscribe((data: any) => {
               if (data.responseCode == 1) {
-                
+
                 this.processApplication(data.dateSet, current.applicationID);
               } else {
                 alert(data.responseMessage);
@@ -5228,13 +6100,15 @@ this.Applications.push(tempApplicationList);
       }
 
     })
+
+
   }
 
   getZonesForApplication(applicationID: number) {
     this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(applicationID, this.CurrentUserProfile.subDepartmentID)
       .subscribe((data: any) => {
         if (data.responseCode == 1) {
-          
+
           for (let i = 0; i < data.dateSet.length; i++) {
             const tempZoneList = {} as ZoneList;
             const current = data.dateSet[i];
@@ -5250,7 +6124,7 @@ this.Applications.push(tempApplicationList);
           alert(data.responseMessage);
         }
 
-       
+
       }, error => {
         console.log("Error: ", error);
       });
@@ -5275,4 +6149,155 @@ this.Applications.push(tempApplicationList);
     // After processing all applications, filter the dataSource based on DateCreated
 
   }
+
+  appID: number;
+  projNum: string;
+  // #region escalation Sindiswa 29 January 2024
+  escalateApplication(element: any) {
+    
+
+    this.appID = element.ApplicationID;
+    this.projNum = element.ProjectNumber;
+    const confirm = window.confirm("Are you sure you want to escalate this application?");
+
+    if (confirm) {
+      this.applicationService.escalateApplication(element.ApplicationID).subscribe(async (data: any) => {
+
+        if (data.responseCode == 1) {
+          
+          console.log(`An application with the following project number ${element.ProjectNumber} has been escalated.`);
+
+          //Hebana, do they want an email AND a notification
+          // #region notifications Sindiswa 01 February 2024
+
+          const embUsers = await this.getUniqueEmbUsers();
+
+          if (embUsers !== null) {
+            this.sendEmailToEmb(embUsers);
+          }
+          else {
+            console.error("Error while fetching EMB users:", embUsers.responseMessage);
+          }
+
+          // #endregion
+
+          this.router.navigate(["/home"]); //will this refresh?
+          location.reload();
+        }
+      })
+
+    }
+  }
+  async getUniqueEmbUsers(): Promise<any> {
+    
+    try {
+      const embUserData: any = await this.userPofileService.getUsersBySubDepartmentName("EMB").toPromise();
+      //const embUserData: any = await this.accessGroupsService.getUserBasedOnRoleName("EMB", 1021).toPromise();
+
+      if (embUserData.responseCode === 1) {
+        let embUsers = embUserData.dateSet;
+
+        const tempList = embUsers;
+
+        const seenCombinations = {};
+
+        embUsers = tempList.filter(item => {
+          const key = `${item.subDepartmentID}-${item.zoneID}-${item.email}`;
+
+          if (!seenCombinations[key]) {
+            seenCombinations[key] = true;
+            return true;
+          }
+
+          return false;
+        });
+        console.log("Unique EMB users identified:", embUsers);
+        return embUsers;
+      } else {
+        console.error("Error while fetching EMB users:", embUserData.responseMessage);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching EMB users:", error);
+      return null;
+    }
+  }
+  sendEmailToEmb(embUsers: any[]): void {
+    
+    try {
+      for (const obj of embUsers) {
+        const emailContent2 = `
+    <html>
+      <head>
+        <style>
+          /* Define your font and styles here */
+          body {
+           font-family: 'Century Gothic';
+          }
+          .email-content {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+          }
+          .footer {
+            margin-top: 20px;
+            color: #777;
+          }
+          .footer-logo {
+            display: inline-block;
+            vertical-align: middle;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="email-content">
+          <p>Dear ${obj.fullName},</p>
+          <p>A Wayleave application with Wayleave No. ${this.projNum} was escalated by the applicant/client. As an EMB user, please follow up with the relevant departments currently handling this application.</p>
+          <p>Should you have any queries, please contact <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+              <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                        <p>
+            <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+          </p>
+           <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+        </div>
+
+      </body>
+    </html>
+  `;
+
+
+        // Send email to EMB user
+        this.notificationsService.sendEmail(obj.email, "Escalated wayleave application", emailContent2, emailContent2);
+        if (obj.alternativeEmail) {
+          this.notificationsService.sendEmail(obj.alternativeEmail, "Escalated wayleave application", emailContent2, emailContent2);
+        }
+        
+        // Add update notification
+        
+        this.notificationsService.addUpdateNotification(
+          0,
+          "Application Needs Immediate Attention",
+          "Escalated wayleave application",
+          false,
+          obj.userID,
+          /*checkingNotifications Sindiswa 12 February 2024*/ this.appID,
+          this.CurrentUser?.appUserId ?? null,
+          `The Wayleave application with Wayleave No. ${this.projNum} was escalated by the applicant/client. As an EMB user, please follow up with the relevant departments currently handling this application.`
+        ).subscribe((data: any) => {
+          if (data.responseCode === 1) {
+            console.log(data.responseMessage);
+          } else {
+            alert(data.responseMessage);
+          }
+        });
+      }
+
+      console.log("All EMB emails sent successfully!?");
+    } catch (error) {
+      console.error("Error sending EMB escalation notices", error);
+    }
+  }
+  // #endregion
+
+
 }

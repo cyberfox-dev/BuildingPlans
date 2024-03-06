@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 export interface FileDocument {
   fileName: string;
@@ -65,7 +66,10 @@ export interface ApplicationList {
   Coordinates: string,
   userID: string
   //Coordinates: string
-  UserID: any;
+    UserID: any;
+  clientAlternativeEmail: string; // checkingNotifications Sindiswa 15 February 2024
+    NetworkLicensees: string; //Project size Kyle 27-02-24
+  ContractorAccountDetails: string; //zxNumberUpdate Sindiswa 01 March 2024
 }
 
 
@@ -99,7 +103,7 @@ export interface DistributionList {
   userID: string;
   zoneID: number;
   zoneName: string;
-
+  alternativeEmail: string; // chekingNotifications Sindiswa 13 February 2024
 }
 
 export interface ConfigList {
@@ -132,6 +136,13 @@ export class SharedService {
   errorForRegister?: boolean;
   clientEmailAdress?: string | null;
 
+  //#region reapply Sindisiswa 26 January 2024
+  oldApplicationID: number; //used when reapplying
+  showFormerApps: boolean = true;
+  fromReApplyArchive: boolean = false;
+  routerSubscription: Subscription;
+  //#endregion
+
   userProfileData: any;
   FileDocument: FileDocument[] = [];
   contactorData: ProfessionalList[] = [];
@@ -157,7 +168,53 @@ export class SharedService {
   RepFileUploadCat?: any | null;
     userIDForWalkIn: any;
   isDraft: boolean;
-   
+
+  isEscalated: boolean;
+  EMBLoggedIn: boolean = false;
+  //Audit Trail Kyle
+  isReports: boolean = false;
+  isViewReport: boolean = false;
+  auditTrail: boolean = false;
+  //Audit Trail Kyle
+
+
+  // #region reapply Sindisiswa 26 January 2024
+  setShowFormerApps(data: any) {
+    this.showFormerApps = data;
+  }
+  getShowFormerApps() {
+    return this.showFormerApps;
+  }
+  setFromReApplyArchive(data: any) {
+    this.fromReApplyArchive = data;
+  }
+  getFromReApplyArchive() {
+    return this.fromReApplyArchive;
+  }
+  setRoutingToOldAapp(data:any) {
+    this.routerSubscription = data;
+  }
+  getRoutingToOldAapp() {
+    return this.routerSubscription;
+  }
+  // #endregion
+  // #region escalation Sindiswa 29 January 2024
+  setIsEscalated(data: any) {
+    this.isEscalated = data;
+  }
+  getIsEscalatedDeets() {
+    return this.isEscalated;
+  }
+  // #endregion
+  // #region escalation Sindiswa 30 January 2024
+  setIsEMBUser(data: any) {
+    this.EMBLoggedIn = data;
+  }
+  getIsEMBUser() {
+    return this.EMBLoggedIn;
+  }
+  // #endregion
+
   setCheckEmail(data: any) {
     this.checkEmail = data;
     console.log("Set method" + this.checkEmail);
@@ -280,12 +337,12 @@ export class SharedService {
   }
 
   setViewApplicationIndex(ApplicationList: ApplicationList[]) {
-    debugger;
+    
     this.applicationDataForView = ApplicationList;
     console.log("THIS IS THE LIST", this.applicationDataForView);
   }
   getViewApplicationIndex() {
-    debugger;
+    
     return this.applicationDataForView[0];
   }
 
@@ -310,6 +367,14 @@ export class SharedService {
   getCoordinateData() {
     return this.coordinates;
   }
+  // #region reapply Sindiswa 24 January 2024
+  setOldApplicationID(data: any) {
+    this.oldApplicationID = data;
+  }
+  getOldApplicationID() {
+   return this.oldApplicationID;
+  }
+  // #endregion
 
   //Using NotificationNumber for now, until the ApplicationID is created
   setApplicationID(data: any) {
@@ -400,7 +465,8 @@ export class SharedService {
     return this.canReapply;
   }
 
-  setReapply(data: any) {
+    setReapply(data: any) {
+      
     this.reapply = data; //application type refers to whether it is a brand new application or if it is a reapply.
   }
 
@@ -416,4 +482,39 @@ export class SharedService {
     this.userRoles = data;
   }
 
+  // #region selectedProfessionals and notifications Sindiswa 12 February 2024
+  isSelectedEngineer: boolean;
+  isSelectedContractor: boolean;
+
+  setCanGoNextAfterEngineerSelection(data) {
+    this.isSelectedEngineer = data;
+  }
+
+  setCanGoNextAfterContractorSelection(data) {
+    this.isSelectedContractor = data;
+  }
+
+  getCanGoNextE() {
+    return this.isSelectedEngineer;
+  }
+
+  getCanGoNextC() {
+    return this.isSelectedContractor;
+  }
+
+  hasNotifications: boolean;
+  notificationsQuantity: number;
+  sethasNotifications(data) {
+    this.hasNotifications = data;
+  }
+  getHasNotifications() {
+    return this.hasNotifications;
+  }
+  setNotificationsQuantity(data) {
+    this.notificationsQuantity = data;
+  }
+  getNotificationsQuantity() {
+    return this.notificationsQuantity
+  }
+  // #endregion
 }

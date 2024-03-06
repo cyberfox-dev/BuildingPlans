@@ -4,6 +4,8 @@
   <span *ngIf="!isEMBAdmin">  <button mat-raised-button color="create" (click)="addNewDepartmentUser();openNewUserModal(newUser)">Create a new {{this.loggedInUserDepartmentName}} profile</button></span>
   <span *ngIf="isEMBAdmin"> <button mat-raised-button color="create" (click)="addNewDepartmentUser();openNewUserModal(newUser)">Create a new internal user profile</button></span>
   &nbsp;
+  <span *ngIf="isEMBAdmin"> <button mat-raised-button color="create" (click)="  openCreateActingAsInternalUser(newActingUser)">Create a new acting as internal user profile</button></span>
+  &nbsp;
   <button mat-raised-button color="create" (click)="openAllUsersModal(allUsers)">Show linked profiles</button>
 
   <ng-container *ngIf="dataSourceLinkUsers.length > 0; else noUsersMessage">
@@ -48,6 +50,162 @@
 
 </div>
 
+<ng-template #newActingUser let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Adding a new acting as internal user</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body" style="z-index: 1000;">
+
+    <form #externalInternalForm="ngForm" (ngSubmit)="addNewActingUser()">
+      <div class="external">
+
+        <div class="custom-row">
+          <div class="custom-col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extIntApplicantName" placeholder="Enter First Name" id="applicantName" [ngModelOptions]="{ updateOn: 'blur' }" required [pattern]="nameRegex.source" [ngModelOptions]="{standalone: true}">
+              <label for="applicantName">Name *</label>
+              <div *ngIf="externalInternalForm.controls.applicantName?.invalid && (externalInternalForm.controls.applicantName?.dirty || externalInternalForm.controls.applicantName?.touched)" class="text-danger">
+                <div *ngIf="externalInternalForm.controls.applicantName?.errors?.required">Name is required.</div>
+                <div *ngIf="externalInternalForm.controls.applicantName?.errors?.pattern">Invalid name format.</div>
+              </div>
+            </div>
+          </div>
+          <div class="custom-col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extIntApplicantSurname" placeholder="Enter Surname" name="applicantSurname" [ngModelOptions]="{ updateOn: 'blur' }" required [pattern]="nameRegex.source">
+              <label for="applicantSurname">Surname *</label>
+              <div *ngIf="externalInternalForm.controls.applicantSurname?.invalid && (externalInternalForm.controls.applicantSurname?.dirty || externalInternalForm.controls.applicantSurname?.touched)" class="text-danger">
+                <div *ngIf="externalInternalForm.controls.applicantSurname?.errors?.required">Surname is required.</div>
+                <div *ngIf="externalInternalForm.controls.applicantSurname?.errors?.pattern">Invalid surname format.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="custom-row">
+          <div class="custom-col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="tel" class="form-control" [(ngModel)]="extIntApplicantTellNo" placeholder="Enter Cell/Tell No." name="applicantTellNo" required pattern="[0-9]{10}">
+              <label for="applicantTellNo">Cell/Tell No. *</label>
+              <!-- Display validation message -->
+              <div *ngIf="externalInternalForm.controls.applicantTellNo?.invalid && (externalInternalForm.controls.applicantTellNo?.dirty || externalInternalForm.controls.applicantTellNo?.touched)" class="text-danger">
+                <div *ngIf="externalInternalForm.controls.applicantTellNo?.errors?.required">Cell No. is required.</div>
+                <div *ngIf="externalInternalForm.controls.applicantTellNo?.errors?.pattern">Invalid Cell No. Format.</div>
+              </div>
+            </div>
+          </div>
+          <div class="custom-col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extIntApplicantBpNoApplicant" placeholder="Enter BP Number" [ngModelOptions]="{standalone: true}" id="bpNoApplicant" [ngModelOptions]="{standalone: true}">
+              <label for="bpNoApplicant">BP Number</label>
+            </div>
+          </div>
+        </div>
+        <div class="custom-row">
+          <div class="custom-col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="email" class="form-control" [(ngModel)]="extIntApplicantEmail" placeholder="Enter Email" id="applicantEmail" required [ngModelOptions]="{ updateOn: 'blur' }" [pattern]="emailRegex.source" [ngModelOptions]="{standalone: true}">
+              <label for="applicantEmail">Email *</label>
+              <!-- Display validation message -->
+              <div *ngIf="externalInternalForm.controls.applicantEmail?.invalid && (externalInternalForm.controls.applicantEmail?.dirty || externalInternalForm.controls.applicantEmail?.touched)" class="text-danger">
+                <div *ngIf="externalInternalForm.controls.applicantEmail?.errors?.required">Email is required.</div>
+                <div *ngIf="externalInternalForm.controls.applicantEmail?.hasError('pattern')">Invalid email format.</div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="custom-row">
+          <div class="custom-col">
+            <div class="form-floating mb-3 mt-3">
+              <!---->
+              <input type="text"  ngx-google-places-autocomplete class="form-control" [options]='googlePlacesOptions' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" [(ngModel)]="extIntApplicantPhyscialAddress" id="extIntApplicantPhyscialAddress" [ngModelOptions]="{standalone: true}"/>
+              <label for="extIntApplicantPhyscialAddress">Physical Address *</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="custom-row">
+
+          <div class="custom-col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extIntApplicantCompanyName" placeholder="Enter Company Name" [ngModelOptions]="{standalone: true}">
+              <label for="extIntApplicantCompanyName">Company Name</label>
+            </div>
+          </div>
+          <div class="custom-col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extIntApplicantCompanyRegNo" placeholder="Enter Company Reg No" [ngModelOptions]="{standalone: true}">
+              <label for="extIntApplicantCompanyRegNo">Company Reg No.</label>
+            </div>
+          </div>
+
+
+        </div>
+
+        <div class="custom-row">
+
+          <div class="custom-col">
+
+            <mat-form-field class="custom-form-field">
+              <mat-label>Company Type</mat-label>
+              <mat-select [(ngModel)]="extIntApplicantCompanyType" [ngModelOptions]="{standalone: true}">
+                <mat-option value="Company Limited by Shares">Company Limited by Shares</mat-option>
+                <mat-option value="Company Limited by Guarantee">Company Limited by Guarantee</mat-option>
+                <mat-option value="Unlimited Company">Unlimited Company</mat-option>
+                <mat-option value="One Person Company (OPC)">One Person Company (OPC)</mat-option>
+                <mat-option value="Private Company">Private Company</mat-option>
+                <mat-option value="Public Company">Public Company</mat-option>
+                <mat-option value="Holding and Subsidiary Company">Holding and Subsidiary Company</mat-option>
+                <mat-option value="Associate Company">Associate Company</mat-option>
+                <mat-option value="Company in terms of Access to Capital">Company in terms of Access to Capital</mat-option>
+                <mat-option value="Government Company">Government Company</mat-option>
+                <mat-option value="Foreign Company">Foreign Company</mat-option>
+                <mat-option value="Charitable Company">Charitable Company</mat-option>
+                <mat-option value="Dormant Company">Dormant Company</mat-option>
+                <mat-option value="Nidhi Company">Nidhi Company</mat-option>
+                <mat-option value="Public Financial Institutions">Public Financial Institutions</mat-option>
+                <mat-option value="Close Corporation(CC)">Close Corporation(CC)</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+          </div>
+          <div class="custom-col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extIntApplicantVatNumber" placeholder="Enter Vat Number" [ngModelOptions]="{standalone: true}">
+              <label for="extApplicantIDNumber">Vat Number </label>
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="custom-row">
+          <div class="custom-col" *ngIf="showTelecommsPrompt">
+            <mat-checkbox [(ngModel)]="isRepresentingTelecommsCompany" [ngModelOptions]="{standalone: true}">&nbsp;Check this box ONLY IF their company offers telecommunications services </mat-checkbox>
+          </div>
+        </div>
+        <div class="custom-row" *ngIf="!showTelecommsPrompt || isRepresentingTelecommsCompany">
+          <div class="custom-col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extIntApplicantICASANumber" placeholder="Enter ICASA Number" name="extIntApplicantICASANumber" #icasaNumberInput="ngModel" [required]="isRepresentingTelecommsCompany" title="This field is mandatory for all electronic communications service providers." [ngModelOptions]="{standalone: true}">
+              <label for="extIntApplicantICASANumber">ICASA Number *</label>
+            </div>
+          </div>
+
+
+        </div>
+
+
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="addNewActingUser();modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
 <!--Assign the user to an access group-->
 <!--IS NOT PRETTY BUT FUNCTIONAL-->
 <ng-template #content let-modal>
@@ -477,7 +635,7 @@
 <ng-template #moreFilter let-modal>
   <div class="modal-header">
     <h3 class="modal-title" id="modal-basic-title">Filter the internal user list</h3>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click');onFilterButtonClick();"></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click');onFilterButtonClick();clearFormFields();"></button> <!-- departmentManager Sindiswa 22 January 2024-->
   </div>
   <div class="modal-body">
     <div class="row">

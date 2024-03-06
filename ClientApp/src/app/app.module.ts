@@ -97,10 +97,13 @@ import { DocumentRepositoryConfigComponent } from './document-repository-config/
 import { DraftsComponent } from 'src/app/drafts/drafts.component';
 import { MatChipsModule } from '@angular/material/chips';
 import { QuillModule } from 'ngx-quill';
-import { ApprovalPackComponent } from 'src/app/Packs/approval-pack/approval-pack.component';
-import { RejectionPackComponent } from 'src/app/Packs/rejection-pack/rejection-pack.component';
-import { SystemAlertConfigComponent } from 'src/app/system-alert-config/system-alert-config.component'; 
-
+import { ApprovalPackComponent } from 'src/app/Packs/ApprovalPackComponent/approval-pack.component';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { SystemAlertConfigComponent } from 'src/app/system-alert-config/system-alert-config.component';
+import { OldApplicationVersionsComponent } from './old-application-versions/old-application-versions.component'; //reapply Sindiswa 26 January 2024
+import { ApplicationAlertsComponent } from 'src/app/application-alerts/application-alerts.component'; //Clarify Alerts Kyle
+import { SubdeptWayleaveExpirationComponent } from './subdept-wayleave-expiration/subdept-wayleave-expiration.component'; //wayleaveExpiry Sindiswa 08 February 2024
+import { StatusOfWorksComponent } from './status-of-works/status-of-works.component';
 //import { MatExpansionModule } from '@angular/material/expansion';
 
 //import { MapModule } from 'arcgis-js-api';
@@ -186,7 +189,12 @@ import { SystemAlertConfigComponent } from 'src/app/system-alert-config/system-a
 
     DraftsComponent,
       ApprovalPackComponent,
-      RejectionPackComponent,
+    OldApplicationVersionsComponent, //reapply Sindiswa 25 January 2024
+    ApplicationAlertsComponent,//Clarify Alerts Kyle 
+    SubdeptWayleaveExpirationComponent, //wayleaveExpiry Sindiswa 08 February 2024
+    StatusOfWorksComponent,
+
+
 
 
   ],
@@ -206,6 +214,7 @@ import { SystemAlertConfigComponent } from 'src/app/system-alert-config/system-a
     MatPaginatorModule,
     MatRadioModule,
     MatChipsModule,
+    MatBottomSheetModule,
     MatDividerModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
@@ -270,7 +279,14 @@ import { SystemAlertConfigComponent } from 'src/app/system-alert-config/system-a
     DocumentRepositoryConfigComponent,
     DraftsComponent,
     ApprovalPackComponent,
-    DocumentsComponentComponent
+    DocumentsComponentComponent,
+    //Audit Trail Kyle
+    AuditTrailComponent,
+    //Audit Trail Kyle
+    UserManagementComponent, //actingAsInternal Sindiswa 05 February 2024
+    ApplicationAlertsComponent,//Clarify Alerts Kyle
+    StatusOfWorksComponent,
+  
   ],
   bootstrap: [AppComponent]
 })

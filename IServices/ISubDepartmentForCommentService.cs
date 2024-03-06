@@ -24,6 +24,10 @@ namespace WayleaveManagementSystem.IServices
 
         Task<bool> UpdateCommentStatusToAwaitingClarity(int? subDepartmentForCommentID, string? commentStatus, bool? isAwaitingClarity);
 
+        public Task<List<SubDepartmentForCommentDTO>> GetAssignedReviewer(int? ApplicationID, int? SubDepartmentID, int? ZoneID); //actionCentreEdits Sindiswa 16 January 2024
+
+        Task<SubDepartmentForComment> AssignSeniorReviewerOrFinalApprover(int? subDepartmentForCommentID, string? userAssaignedToComment); //actionCentreEdits Sindiswa 16 January 2024
+
 
     }
 }

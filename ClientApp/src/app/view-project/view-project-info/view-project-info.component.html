@@ -11,17 +11,26 @@
 
       <mat-form-field class="example-full-width">
         <mat-label>Type A Note</mat-label>
-        <input matInput [(ngModel)]="mftNote" id="mftNote" name="mftNote">
+        <input matInput [(ngModel)]="mftNote" id="mftNote" name="mftNote" (keyup)="onCheckMFTNote($event)">
       </mat-form-field>
+      <p *ngIf="showUpload === false "><strong>* Note </strong> : <em>You must type a note in order to upload a file</em> </p>
       <mat-form-field>
         <div>
-          <mat-toolbar>
 
-            <input matInput [(ngModel)]="fileAttrs" readonly name="name" placeholder="Select An Image" />
+          <input matInput [(ngModel)]="fileAttrs" readonly name="name" placeholder="Select An Image" />
 
+          <mat-toolbar *ngIf="showUpload">
             <div class="row" style="margin-bottom:15px;">
               <div class="container-fluid">
-                <app-file-upload [UploadFor]="'CoverLetter'+0" (passFileName)="onPassFileName($event)"></app-file-upload>
+                <ng-container>
+                  <app-file-upload [ApplicationID]="ApplicationID"
+                                   [UploadFor]="fileAttrsName"
+                                   [isStatusOfWork]="true"
+                                   [MftNote]="mftNote"
+                                   (passFileName)="onPassFileName($event)"
+                                   (onUploadFinished)="onFileDelete($event, 0)"
+                                   (onUploadSuccess)="onFileUpload($event)"></app-file-upload>
+                </ng-container>
 
               </div>
             </div>
@@ -42,15 +51,18 @@
 <h1 *ngIf="CurrentApplicationBeingViewed[0].isPlanning === false" class="animationSlideUp">Application Information</h1>
 <h1 *ngIf="CurrentApplicationBeingViewed[0].isPlanning === true" class="animationSlideUp">Application Planning Information</h1>
 <h2 class="animationSlideUp">Project Number {{projectNo}}</h2>
-
-<div class="cont1">
-
-  <app-action-center [ApplicationID]="ApplicationID" (refreshParent)="ngOnInit()" *ngIf="isInternalUser" (optionEvent)="reciveOption($event)" class="animationSlideUp"></app-action-center>
+<div>
+  <h3 *ngIf="fromReApplyArchive == true" style="color:deeppink;">The applicant has reapplied, you're currently looking at an older version of their application</h3>
+</div>
+<div class="cont1" *ngIf="fromReApplyArchive == false">
+  <!--JJS Commit 29-02-24(removed full-screen mode for maps and sorted approval pack btn and former wayleave tab)-->
+  <app-action-center [ApplicationID]="ApplicationID" (refreshParent)="ngOnInit()" *ngIf="isInternalUser && InternalExternalUser == false && generateApprovalbtn == false" (optionEvent)="reciveOption($event)" class="animationSlideUp"></app-action-center>
   <button mat-button color="action" [matMenuTriggerFor]="actions" class="animationSlideUp"> <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ellipsis-vertical-solid.svg" class="icon"></button>
   <mat-menu #actions="matMenu">
-    <button mat-menu-item (click)="openPaidDate(paidDateModal)" *ngIf="isInternalUser"> Move to Paid</button>
+    <button mat-menu-item (click)="openPaidDate(paidDateModal)" *ngIf="EMB"> Move to Paid</button>
     <!--<button mat-menu-item (click)="MoveToNextStage()" *ngIf="isInternalUser">Move to Next Stage</button>-->
-    <button mat-menu-item (click)="MoveToNextStage()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon"> Cancel Application</button>
+    <!--<button mat-menu-item (click)="MoveToNextStage()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon"> Cancel Application</button>--><!--reapply Sindiswa 22 January 2023-->
+    <button mat-menu-item (click)=" moveToClosed()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon"> Cancel Application</button>
     <button mat-menu-item (click)="goToNewWayleave(true)" *ngIf="canReapply"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/arrow-rotate-right-solid.svg" class="icon"> Re-apply</button>
     <!--<button mat-menu-item (click)="validate()"><i class="fa fa-repeat" aria-hidden="true"></i> Test BP</button>-->
 
@@ -58,13 +70,28 @@
   </mat-menu>
 
 </div>
+
 <div class="cont7">
-  <button mat-raised-button color="generatePackBtn" (click)="OpenLoadingModal(approvalPackLoading)" *ngIf="generateApprovalbtn">Generate My Approval Pack</button>
+  <button mat-raised-button color="generatePackBtn" (click)="OpenLoadingModal()" *ngIf="generateApprovalbtn">Generate My Approval Pack</button>
 </div>
 
 
-<div class="container-fluid cont6 animationFadeIn">
 
+<div class="container-fluid cont6 animationFadeIn">
+  <!--  Progess bar Kyle 07-02-24-->
+  <div class="cont8">
+    <div class="progress-bar-container" *ngIf="CurrentApplicationBeingViewed[0].CurrentStageName == 'Department Distribution'">
+      <!---->
+      <div class="progress-text" [@countUp]="progressBar">Distribution Stage Progress {{progressBar}}%</div>
+      <div class="progress-bar" [style.--progressBar]="progressBar + '%'">
+      </div>
+    </div>
+
+    </div>
+
+
+
+  <!--  Progess bar Kyle 07-02-24-->
   <mat-tab-group>
 
     <!--------------------------------------------------------Project Information  *ngIf="generateApprovalbtn"--------------------------------------------------->
@@ -103,42 +130,51 @@
 
 
 
-<!--//JJS 8 Jan (Changed the approve to Prov.Approve)-->
+      <!--//JJS 8 Jan (Changed the approve to Prov.Approve)-->
       <div class="main-container">
         <section id="timeline" class="timeline-outer">
           <div class="container" id="content">
 
             <div class="row" *ngFor="let commentsList of CommentsList; let i = index" [style.margin-left.px]="(i % 2 === 0) ? 60 : 80" [style.margin-right.px]="(i % 2 === 0) ? 60 : 80">
               <div class="col s12 m12 l12" *ngIf="!(commentsList.CommentStatus === 'Referred' && referComment)">
-
-                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Provisionally Approved'||commentsList.CommentStatus === 'Approved(Conditional)'" [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved' " [class.Reject]="commentsList.CommentStatus === 'FinalReject'||commentsList.CommentStatus === 'Rejected'" [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'" [class.refer]="commentsList.CommentStatus === 'Referred'" [class.returned]="commentsList.CommentStatus === 'Returned'" [class.reviewerClarify]="commentsList.CommentStatus === 'Reviewer Clarity'">
+                <!---Change Wording Kyle 15/01/24-->
+                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Provisionally Approved'||commentsList.CommentStatus === 'Approved(Conditional)' " [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved'|| commentsList.CommentStatus === 'Complete' " [class.Reject]="commentsList.CommentStatus === 'FinalReject'||commentsList.CommentStatus === 'Rejected'||commentsList.CommentStatus === 'Provisionally Rejected'|| commentsList.CommentStatus === 'Final Rejected' " [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'|| commentsList.CommentStatus === 'Reviewer Clarify' || commentsList.CommentStatus == 'Applicant Clarify' || commentsList.CommentStatus ==='Applicant Clarified'" [class.reviewerClarify]="commentsList.CommentStatus === 'Reviewer Clarified' || commentsList.CommentStatus === 'Reviewer Clarity'" [class.refer]="commentsList.CommentStatus === 'Referred'" [class.returned]="commentsList.CommentStatus === 'Returned'">
 
                   <li class="event" data-date="">
 
+                    <!---Comments Kyle 01/02/24 -->
+                    <h3>{{commentsList.SubDepartmentName}}({{commentsList.ZoneName}}) - {{commentsList.CommentStatus}}</h3>
 
-                    <h3>{{commentsList.SubDepartmentName}} - {{commentsList.CommentStatus}}</h3>
-                    <h5 *ngIf="isInternalUser">{{commentsList.UserName}} : {{commentsList.DateCreated}}</h5>
+                    <h5 *ngIf="isInternalUser && InternalExternalUser == false">{{commentsList.UserName}}</h5>
+                    <br />
                     <div class="cont2">
-                      <button mat-raised-button color="white" *ngIf="commentsList.CommentStatus != 'FinalApproved'  &&   this.subDepNameForClarify === commentsList.SubDepartmentName" (click)="openEditCommentModal(commentEditorModal, i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/pencil-solid.svg" class="icon"></button>
+                      <div [innerHTML]="sanitizeHTML(commentsList.Comment)"></div>
+                      <button mat-raised-button color="blue" *ngIf="commentsList.CommentStatus != 'FinalApproved'  &&   CurrentUserProfile[0].subDepartmentName === commentsList.SubDepartmentName && commentsList.UserName === this.CurrentUser.fullName" (click)="openEditCommentModal(commentEditorModal, i)">Edit Comment</button>
+
                     </div>
+
                     <!--<p>
 
                       {{commentsList.Comment}}
                     </p>-->
-                    <div [innerHTML]="sanitizeHTML(commentsList.Comment)"></div>
+
                     <br />
+
+                    <br />
+
+                    <h6>{{commentsList.DateCreated}}</h6>
+                    <br />
+
                     <!--Applicant Clarity-->
-                    <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarify' && canClarify ||commentsList.CommentStatus === 'Reviewer Clarity' && canReviewerClarify" (click)="openReplyModal(replyModal,i,'Reply')">Reply</button>
-                    <button mat-raised-button color="clarify" *ngIf="commentsList.CommentStatus === 'Clarified'&& canClarify" (click)="openReplyModal(replyModal,i, 'Update')">Update Reply</button>
-                    <div class="row" *ngIf="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null">
-                      <label *ngIf="commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null"> <strong><em>Applicant's Reply:</em></strong></label>
-                      <div class="form-floating mb-3 mt-3" *ngIf="commentsList.CommentStatus === 'Clarified' && commentsList.isApplicantReplay !== null">
-                        <!--<input type="text" class="form-control" value="{{commentsList.isApplicantReplay}}" id="ApplicantReply" name="ApplicantReply" disabled>--> <!--[(ngModel)]="ApplicantReply"-->
+                    <button mat-raised-button color="clarify" *ngIf=" (commentsList.CommentStatus === 'Clarify' && canClarify) || (commentsList.CommentStatus === 'Reviewer Clarity' && canReviewerClarify )|| (commentsList.CommentStatus === 'Reviewer Clarify' || commentsList.CommentStatus === 'Applicant Clarify' && canClarify)" (click)="openReplyModal(replyModal,i,'Reply', commentsList.CommentStatus)">Reply</button>
+                    <button mat-raised-button color="clarify" *ngIf="(commentsList.CommentStatus === 'Clarified' && canClarify) || ( commentsList.CommentStatus === 'Reviewer Clarified' && canReviewerClarify) || (canClarify && commentsList. isApplicantReplay !== null)" (click)="openReplyModal(replyModal,i, 'Update', commentsList.CommentStatus)">Update Reply</button>
+                    <div class="row" *ngIf=" commentsList.HasReply === true && commentsList.isApplicantReplay != null">
+                      <label *ngIf="(commentsList.CommentStatus === 'Clarified' || commentsList.CommentStatus === 'Applicant Clarified') && commentsList.isApplicantReplay != null"> <strong><em>Applicant's Reply:</em></strong></label>
+                      <label *ngIf="commentsList.CommentStatus === 'Reviewer Clarified' && commentsList.isApplicantReplay != null"> <strong><em>Reviewer's Reply:</em></strong></label>
+                      <div class="form-floating mb-3 mt-3" *ngIf="commentsList.HasReply === true && commentsList.isApplicantReplay != null">
+                        <!--<input type="text" class="form-control" value="{{commentsList.isApplicantReplay}}" id="ApplicantReply" name="ApplicantReply" disabled> [(ngModel)]="ApplicantReply">-->
 
                         <div class="disabled-textbox" [innerHTML]="sanitizeHTML(commentsList.isApplicantReplay)" id="ApplicantReply"></div>
-
-
-
 
                       </div>
                     </div>
@@ -201,55 +237,11 @@
       <div class="modal-body">
         <form>
           <div class="row">
-            <!--<div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="reply" id="reply" name="reply" placeholder="Edit Comment">2
-              <label for="reply">Enter in a reply</label>
-            </div>-->
 
-            <form [formGroup]="myNewReply">
-              <quill-editor formControlName="reply" [readOnly]="false">
-                <div quill-editor-toolbar>
-                  <span class="ql-formats">
-                    <button class="ql-bold" [title]="'Bold'"></button>
-                    <select class="ql-color" [title]="'Text Color'">
-                      <option value="rgb(0, 0, 0)" selected></option>
-                      <option value="rgb(255, 0, 0)"></option>
-                      <option value="rgb(255, 153, 0)"></option>
-                      <option value="rgb(255, 255, 0)"></option>
-                      <option value="rgb(0, 255, 0)"></option>
-                      <option value="rgb(0, 255, 255)"></option>
-                      <option value="rgb(0, 0, 255)"></option>
-                      <!-- Add other color options as needed -->
-                    </select>
-                    <button class="ql-italic" [title]="'Italic'"></button>
-                    <button class="ql-underline" [title]="'Underline'"></button>
-                    <button class="ql-strike" [title]="'Strikethrough'"></button>
-                    <button class="ql-script" value="sub"></button>
-                    <button class="ql-script" value="super"></button>
-                    <button class="ql-list" [title]="'Bullet List'" [value]="'bullet'"></button>
-                    <button class="ql-list" [title]="'Numbered List'" [value]="'ordered'"></button>
-                    <!--<button class="ql-link" [title]="'Enter URL'"></button>-->
-                    <button class="ql-indent" [value]="'-1'"></button>
-                    <button class="ql-indent" [value]="'+1'"></button>
-                    <select class="ql-align" [title]="'Alignment'">
-                      <option selected></option>
-                      <option value="center"></option>
-                      <option value="right"></option>
-                      <option value="justify"></option>
-                    </select>
-                    <select class="ql-header">
-                      <option value="false" selected></option>
-                      <option value="1"></option>
-                      <option value="2"></option>
-                      <option value="3"></option>
-                      <option value="4"></option>
-                      <option value="5"></option>
-                      <option value="6"></option>
-                    </select>
-                  </span>
-                </div>
-              </quill-editor>
-            </form>
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="reply" id="reply" name="reply" placeholder="Edit Comment">
+              <label for="reply">Enter in a reply</label>
+            </div>
 
           </div>
         </form>
@@ -270,59 +262,16 @@
         <form>
 
 
-          <!--<div class="row">
+          <div class="row">
 
-            <div class="form-floating mb-3 mt-3">-->
-          <!--<input type="text" [(ngModel)]="commentEdit" name="commentEdit" class="form-control" id="commentEdit" placeholder="Update Comment">-->
-          <!--<quill-editor [(ngModel)]="commentEdit" [readOnly]="false">-->
-          <form [formGroup]="editMyComment">
-            <quill-editor formControlName="commentEdit" [ngModel]="editMyComment.controls['commentEdit'].value" [readOnly]="false">
-              <div quill-editor-toolbar>
-                <span class="ql-formats">
-                  <button class="ql-bold" [title]="'Bold'"></button>
-                  <select class="ql-color" [title]="'Text Color'">
-                    <option value="rgb(0, 0, 0)" selected></option>
-                    <option value="rgb(255, 0, 0)"></option>
-                    <option value="rgb(255, 153, 0)"></option>
-                    <option value="rgb(255, 255, 0)"></option>
-                    <option value="rgb(0, 255, 0)"></option>
-                    <option value="rgb(0, 255, 255)"></option>
-                    <option value="rgb(0, 0, 255)"></option>
-                    <!-- Add other color options as needed -->
-                  </select>
-                  <button class="ql-italic" [title]="'Italic'"></button>
-                  <button class="ql-underline" [title]="'Underline'"></button>
-                  <button class="ql-strike" [title]="'Strikethrough'"></button>
-                  <button class="ql-script" value="sub"></button>
-                  <button class="ql-script" value="super"></button>
-                  <button class="ql-list" [title]="'Bullet List'" [value]="'bullet'"></button>
-                  <button class="ql-list" [title]="'Numbered List'" [value]="'ordered'"></button>
-                  <!--<button class="ql-link" [title]="'Enter URL'"></button>-->
-                  <button class="ql-indent" [value]="'-1'"></button>
-                  <button class="ql-indent" [value]="'+1'"></button>
-                  <select class="ql-align" [title]="'Alignment'">
-                    <option selected></option>
-                    <option value="center"></option>
-                    <option value="right"></option>
-                    <option value="justify"></option>
-                  </select>
-                  <select class="ql-header">
-                    <option value="false" selected></option>
-                    <option value="1"></option>
-                    <option value="2"></option>
-                    <option value="3"></option>
-                    <option value="4"></option>
-                    <option value="5"></option>
-                    <option value="6"></option>
-                  </select>
-                </span>
-              </div>
-            </quill-editor>
-          </form>
-          <!--<label for="commentEdit">Update Comment</label>-->
-          <!--</div>
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" [(ngModel)]="commentEdit" name="commentEdit" class="form-control" id="commentEdit" placeholder="Update Comment">
 
-          </div>-->
+
+              <!--<label for="commentEdit">Update Comment</label>-->
+            </div>
+
+          </div>
 
 
         </form>
@@ -336,13 +285,85 @@
     <!--     <mat-tab label="Messaging">
 
     </mat-tab>-->
+    <!--------------------------------------------------------ZX NUMBER CONFIGURATION--------------------------------------------------->
+    <!--<mat-tab label="Pre-Invoice Information" *ngIf="showPreInvoice">-->
+    <mat-tab label="Pre-Invoice Information" *ngIf="shouldShowPreInvoiceInformation"><!--zxNumberUpdate Sindiswa 01 March 2024-->
+
+      <div class="container-fluid">
+
+        <!--<div class="row">
+      <div class="col-md-11">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" placeholder="ZX Number" [(ngModel)]="wdmZXNumber" [disabled]="!waterZXEnabled">
+          <label for="wdmZXNumber">Water & Waste ZX Number</label>
+        </div>
+      </div>
+      <div class="col-md-1 d-flex align-items-center">
+        <div class="mb-3 mt-3"><button mat-raised-button color="blue" (click)="saveWaterZXNumber()" [disabled]="!waterZXEnabled">Save</button></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-11">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" placeholder="ZX Number" [(ngModel)]="rimZXNumber" [disabled]="!rimZXEnabled">
+          <label for="rimZXNumber">Roads & Infrastructure Management ZX Number</label>
+        </div>
+      </div>
+      <div class="col-md-1 d-flex align-items-center">
+        <div class="mb-3 mt-3"><button mat-raised-button color="blue" (click)="saveRIMZXNumber()" [disabled]="!rimZXEnabled">Save</button></div>
+      </div>
+    </div>-->
+
+        <div *ngFor="let department of DepartmentsForZXEntry">
+          <div class="row">
+            <div class="col-md-11">
+              <div class="form-floating mb-3 mt-3">
+                <!--<input type="text" class="form-control" placeholder="ZX Number" [(ngModel)]="departmentZXNumber" [disabled]="!isDepartmentZXInputter">-->
+                <input type="text" class="form-control" placeholder="ZX Number" [(ngModel)]="department.zxNumber" [disabled]="!department.canInputZXNumber">
+                <label for="{{department.departmentID}}">{{department.departmentName}} ZX Number</label>
+              </div>
+            </div>
+            <div class="col-md-1 d-flex align-items-center">
+              <!--<div class="mb-3 mt-3"><button mat-raised-button color="blue" (click)="saveZXNumber(department)" [disabled]="!isDepartmentZXInputter">Save</button></div>-->
+              <div class="mb-3 mt-3"><button mat-raised-button color="blue" (click)="saveZXNumber(department)" [disabled]="!department.canInputZXNumber">Save</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" *ngIf="showEMBInput">
+          <div class="col-md-11">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" placeholder="Contract Account Details" [(ngModel)]="contractorAccountDetails" [disabled]="!contractorInfEnabled">
+              <label for="contractorAccountDetails">Contract Account Details (from EMB)</label>
+            </div>
+          </div>
+          <div class="col-md-1 d-flex align-items-center">
+            <!--<div class="mb-3 mt-3"><button mat-raised-button color="blue" (click)="saveContractorDetails()" [disabled]="!contractorInfEnabled">Save</button></div>-->
+            <div class="mb-3 mt-3"><button mat-raised-button color="blue" (click)="saveContractorDetails2(contractorAccountDetails)" [disabled]="!contractorInfEnabled">Save</button></div>
+          </div>
+        </div>
+
+
+      </div>
+    </mat-tab>
+
+
     <!--------------------------------------------------------Financial--------------------------------------------------->
 
     <mat-tab label="Financials">
       <div class="container-fluid">
-        <div class="container-fluid">
-          <button mat-raised-button color="permit" (click)="openDocUpload(newSub)">Upload document</button>
-        </div>
+          <div class="container-fluid">
+              <button mat-raised-button color="permit" (click)="openDocUpload(newSub)" [disabled]="fromReApplyArchive == true">Upload document</button>
+              <!---- Financial POP Kyle 15/01/24-->
+              <!--<button  (click)="genInvoice()" mat-raised-button color="permit" [disabled]="fromReApplyArchive == true">Generate Invoice</button>-->
+              <button *ngIf="applicationDataForView[0].ApplicationStatus == 'Unpaid' && uploadedPOP == false" (click)="openDocUpload(newSub);OnPOPUpload()" mat-raised-button color="permit" [disabled]="fromReApplyArchive == true">Upload Proof Of Payment</button>
+
+              <!----Financial POP Kyle 15/01/24-->
+
+          </div>
+
+
         <table mat-table [dataSource]="dataSourceDoc" class="mat-elevation-z8">
 
 
@@ -402,10 +423,21 @@
     </mat-tab>
 
 
+
+
+
+
+    <!------------------------------------------------------------Packs---------------------------------------------------------->
+    <!--JJS Commit 20-02-24-->
+    <!--    <mat-tab label="Packs" *ngIf="PacksTab">
+        <app-approval-pack [ApplicationID]="ApplicationID"
+                           [ServiceConditionActive]="false"></app-approval-pack>
+      </mat-tab>-->
     <!--------------------------------------------------------Applicant--------------------------------------------------->
 
     <mat-tab label="Applicant">
 
+      <!-- icasaDetailsDisplay Sindiswa 15 January 2024, an external applicant trying to look at their own application sees  the ORIGINATOR/APPLICANT thing for some reason!?? -->
       <!--External User information-->
       <div class="container-fluid" *ngIf="isInternal == false && theirProxy == false">
 
@@ -432,6 +464,14 @@
               <label for="address">Company Reg No.</label>
             </div>
           </div>
+          <!-- icasaDetailsDisplay Sindiswa 15 January 2024 -->
+          <div class="col" *ngIf="isTelecomms">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="extApplicantICASALicense" placeholder="Enter ICASA License Number" disabled>
+              <label for="address">ICASA License No.</label>
+            </div>
+          </div>
+          <!-- endof icasaDetailsDisplay Sindiswa 15 January 2024 -->
           <div class="col">
             <div class="form-floating mb-3 mt-3">
               <input type="email" class="form-control" [(ngModel)]="extApplicantCompanyType" placeholder="Select Company Type" disabled>
@@ -620,6 +660,14 @@
                 <label for="address">Company Reg No.</label>
               </div>
             </div>
+            <!-- icasaDetailsDisplay Sindiswa 15 January 2024 -->
+            <div class="col" *ngIf="isTelecomms">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="extProxyApplicantICASALicense" placeholder="Enter ICASA License Number" disabled>
+                <label for="address">ICASA License No.</label>
+              </div>
+            </div>
+            <!-- endof icasaDetailsDisplay Sindiswa 15 January 2024 -->
           </div>
 
 
@@ -673,48 +721,126 @@
           APPLICANT
           <div class="line right-line"></div>
         </div>
-
-        <div class="row">
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="internalApplicantName" placeholder="Enter First Name" disabled>
-              <label for="name">Name</label>
+        <div *ngIf="isExternalApplicant == false">
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="internalApplicantName" placeholder="Enter First Name" disabled>
+                <label for="name">Name</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="internalApplicantSurname" placeholder="Enter Surname" disabled>
+                <label for="surname">Surname</label>
+              </div>
             </div>
           </div>
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="internalApplicantSurname" placeholder="Enter Surname" disabled>
-              <label for="surname">Surname</label>
+
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="internalApplicantDirectorate" placeholder="Enter Surname" disabled>
+                <label for="surname">Department</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="internalApplicantBranch" placeholder="Enter Branch" disabled>
+                <label for="Branch">Branch</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="email" class="form-control" [(ngModel)]="internalApplicantCostCenterNo" placeholder="Enter Cost Center Number" disabled>
+                <label for="applicantEmail">Cost Center Number</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="internalApplicantCostCenterOwner" placeholder="Enter Cost Center Owner" disabled>
+                <label for="applicantTellNo">Cost Center Owner</label>
+              </div>
             </div>
           </div>
         </div>
+        <div *ngIf="isExternalApplicant">
+          <div class="row">
+            <div class="col">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="extApplicantBpNoApplicant" placeholder="Enter BP Number" disabled>
+                  <label for="bpNoApplicant">BP Number</label>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyName" placeholder="Enter Company Name" disabled>
+                <label for="address">Company Name</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyRegNo" placeholder="Enter Company Reg No" disabled>
+                <label for="address">Company Reg No.</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="email" class="form-control" [(ngModel)]="extApplicantCompanyType" placeholder="Select Company Type" disabled>
+                <label for="applicantEmail">Company Type</label>
+              </div>
+            </div>
+          </div>
 
-        <div class="row">
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="internalApplicantDirectorate" placeholder="Enter Surname" disabled>
-              <label for="surname">Department</label>
+
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="extApplicantName" placeholder="Enter First Name" disabled>
+                <label for="name">Name</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="extApplicantSurname" placeholder="Enter Surname" disabled>
+                <label for="surname">Surname</label>
+              </div>
             </div>
           </div>
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="internalApplicantBranch" placeholder="Enter Branch" disabled>
-              <label for="Branch">Branch</label>
+
+
+
+
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="extApplicantPhyscialAddress" placeholder="Enter Address" disabled>
+                <label for="applicantTellNo">Physcial Address</label>
+              </div>
             </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="tel" class="form-control" [(ngModel)]="extApplicantTellNo" placeholder="Enter Tell No." disabled>
+                <label for="applicantTellNo">Cell No.</label>
+              </div>
+
+            </div>
+
           </div>
-        </div>
-        <div class="row">
-          <div class="col">
+          <div class="row">
+
+
             <div class="form-floating mb-3 mt-3">
-              <input type="email" class="form-control" [(ngModel)]="internalApplicantCostCenterNo" placeholder="Enter Cost Center Number" disabled>
-              <label for="applicantEmail">Cost Center Number</label>
+              <input type="email" class="form-control" [(ngModel)]="extApplicantEmail" placeholder="Enter Email" disabled>
+              <label for="applicantEmail">Email</label>
             </div>
-          </div>
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="internalApplicantCostCenterOwner" placeholder="Enter Cost Center Owner" disabled>
-              <label for="applicantTellNo">Cost Center Owner</label>
-            </div>
+
           </div>
         </div>
       </div>
@@ -755,118 +881,109 @@
 
 
     <!--------------------------------------------------------Tracking--------------------------------------------------->
-
-
+    <!-----Status of works Kyle 16-02-24-->
     <mat-tab label="Status of Works" *ngIf="showStatusOfWorksTab">
-      <button mat-raised-button color="blue" (click)="openXl(MFTModal)">Create New Note</button>
 
-      <!--      <div class="row" *ngFor="let mftList of MFTList; let i = index">
-        <div class="col s12 m12 l12">
-
-          <ul class="timeline">
-
-            <li class="event" data-date="">
-
-
-              <h3>{{mftList.MFTNote}} - {{mftList.DateCreated}}</h3>
-              <p>
-
-                {{mftList.DocumentName}}
-              </p>
-
-            </li>
-
-          </ul>
-        </div>
-      </div>-->
-      <div class="cards" *ngFor="let mftList of MFTList; let i = index">
-      <li class="cards_item">
-        <div class="card">
-          <div class="card_content">
-            <p class="card_text">Note Created By : {{mftList.FullName}}</p>
-            <p class="card_text">{{mftList.MFTNote}}</p>
-            <div class="cont89">
-              <p class="card_text">{{mftList.DateCreated}}</p>
-              <button mat-raised-button color="blue" *ngIf="mftList.DocumentName !== null " (click)="viewImage(i)">View Image</button>
-            </div>
-          </div>
-        </div>
-      </li>
-</div>
-
-
-
+      <button mat-raised-button *ngIf="canCreateNote === true" color="permit" (click)="openXl(MFTModal)">Create New Note</button>
+      <app-status-of-works [ApplicationID]="ApplicationID"></app-status-of-works>
 
     </mat-tab>
 
 
 
-<!--------------------------------------------------------Audit Trail--------------------------------------------------->
+    <!--------------------------------------------------------Audit Trail--------------------------------------------------->
 
 
-<mat-tab label="Audit Trail" *ngIf="auditTrail">
+    <mat-tab label="Audit Trail" *ngIf="auditTrail">
 
-  <app-audit-trail></app-audit-trail>
+      <app-audit-trail></app-audit-trail>
 
-</mat-tab>
-
-
-
-<!--------------------------------------------------------Permits--------------------------------------------------->
-
-<mat-tab label="Permits" *ngIf="showPermitTab">
-
-
-  <button mat-raised-button color="permit" (click)="openPermitModal(permitModal)" *ngIf="permitBtn">Apply For Permit</button>
-  <br>
-  <br>
-  <input type="text" class="form-control" [(ngModel)]="permitDate" id="permitDate" *ngIf="permitTextBox" disabled>
-
-  <ng-template #permitModal let-modal>
-    <div class="modal-header">
-      <h4 class="modal-title" id="modal-basic-title">Please select a date for your permit</h4>
-      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-    </div>
-    <div class="modal-body">
+    </mat-tab>
 
 
 
-      <div class="row">
+    <!--------------------------------------------------------Permits--------------------------------------------------->
 
-        <div class="form-floating mb-3 mt-3">
-          <input type="date" class="form-control" [(ngModel)]="permitStartDate" id="permitStartDate" [min]="minDate" placeholder="Enter the start date for the permit">
-          <label for="permitStartDate">Select Start Date</label>
+    <mat-tab label="Permits" *ngIf="showPermitTab">
+
+
+      <button mat-raised-button color="permit" (click)=" getAllManDocForPTWStage(permitModal)" *ngIf="permitBtn" [disabled]="fromReApplyArchive == true">Apply For Permit</button>
+      <br>
+      <br>
+      <input type="text" class="form-control" [(ngModel)]="permitDate" id="permitDate" *ngIf="permitTextBox" disabled>
+
+      <ng-template #permitModal let-modal>
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">Please select a date for your permit</h4>
+          <button type="button" class="btn-close" aria-label="Close" (click)=" ClosePermitStartDateModal()"></button>
         </div>
-
-      </div>
-
-
-
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outline-success" (click)="updateStartDateForPermit();modal.close('Save click')">Save</button>
-    </div>
-  </ng-template>
-
-  <app-permit-component [ApplicationID]="ApplicationID"></app-permit-component>
-
-</mat-tab>
-
-<!--<mat-tab label="Process Flow" *ngIf="auditTrail">
+        <div class="modal-body">
 
 
 
-</mat-tab>-->
-<!--------------------------------------------------------Service Condtions---------------------------------------------->
-<mat-tab label="Service Conditions">
+          <div class="row">
 
-  <app-service-conditions [ApplicationID]="ApplicationID"
-                          [ServiceConditionActive]="true">
+            <div class="form-floating mb-3 mt-3">
+              <input type="date" class="form-control" [(ngModel)]="permitStartDate" id="permitStartDate" [min]="minDate" placeholder="Enter the start date for the permit">
+              <label for="permitStartDate">Select Start Date</label>
+            </div>
 
-  </app-service-conditions>
+          </div>
 
-</mat-tab>
+          <mat-list *ngFor="let manDoc of  MandatoryDocumentUploadList ; let i = index">
+            <mat-list-item> {{manDoc.mandatoryDocumentName}}</mat-list-item>
+            <mat-form-field class="manDoc" >
+              <div>
+                <mat-toolbar>
+                  <!-- Display files names -->
+                  <input matInput readonly name="name" class="textFuckingBox" /> <!--[(ngModel)]="fileAttrs[i]"-->
+                  <!-- app-file-upload Component -->
 
+                  <div class="container-fluid">
+                    <app-file-upload [ApplicationID]="CurrentApplicationBeingViewed[0].applicationID"
+                                     [UploadFor]="manDoc.mandatoryDocumentName"
+                                     (passFileName)="onPassFileName($event)"
+                                     (onUploadFinished)="onFileDelete2($event,i)"
+                                     (onUploadSuccess)="onFileUpload2($event,i)">
+                    </app-file-upload>
+                  </div>
+                  <button mat-raised-button color="blue2"  *ngIf="manDoc.hasFile === true" matTooltip="View Document"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid.svg" class="icon blue"></button>
+                </mat-toolbar>
+               
+              </div>
+            </mat-form-field>
+          </mat-list>
+
+
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-success" [disabled]="fileCount !== MandatoryDocumentUploadList.length || permitStartDate === null || permitStartDate === undefined " (click)="updateStartDateForPermit();modal.close('Save click')">Save</button>
+        </div>
+      </ng-template>
+      <!--Permit Kyle 13-02-24-->
+      <app-permit-component [ApplicationID]="ApplicationID" [ApplicantID]="CurrentApplicationBeingViewed[0].UserID" [OriginatorID]="CurrentApplicationBeingViewed[0].CreatedById" [ApplicationID]="ApplicationID" [PermitBtn]="permitBtn"></app-permit-component>
+
+    </mat-tab>
+
+    <!--<mat-tab label="Process Flow" *ngIf="auditTrail">
+
+
+
+    </mat-tab>-->
+    <!--------------------------------------------------------Service Condtions---------------------------------------------->
+    <mat-tab label="Service Conditions">
+
+      <app-service-conditions [ApplicationID]="ApplicationID"
+                              [ServiceConditionActive]="true">
+
+      </app-service-conditions>
+
+    </mat-tab>
+    <!--Old versions of wayleave application--------------------------------------------------------------------------------->
+    <mat-tab label="Former Wayleave Applications" *ngIf="showFormerApps == true">
+      <app-old-application-versions></app-old-application-versions>
+    </mat-tab>
   </mat-tab-group>
 
 
@@ -908,9 +1025,11 @@
         <!-- app-file-upload Component -->
         <div class="row" style="margin-bottom:15px;">
           <div class="container-fluid">
+            <!-- Financial POP Kyle 15/01/24-->
             <app-file-upload [ApplicationID]="ApplicationID"
                              [UploadFor]="fileAttrsName"
                              [isFinancial]="isFinancial"
+                             [uploadingPOP]="uploadingPOP"
                              (passFileName)="onPassFileName($event)"
                              (onUploadFinished)="onFileDelete($event, 0)"
                              (onUploadSuccess)="onFileUpload($event)">
@@ -952,19 +1071,17 @@
   </div>
 </ng-template>
 <!--FAQ-->
-
-
-
-<ng-template #approvalPackLoading let-modal>
-
-  <div class="loading-screen" id="loadingScreen">
+<!--  //JJS Approval Pack and rejection pack 25Jan2024-->
+<!--JJS - Changed the approval packing loading screen to match the other loading screens-->
+<!--  <div class="loading-screen" id="loadingScreen">
     <mat-spinner></mat-spinner>
-    <div class="text">Generating Approval Pack</div>
-    <div class="text2">This may take several minutes</div>
-  </div>
 
-</ng-template>
+  </div>-->
+<div class="loading-screen" *ngIf="isLoading" id="loadingScreen">
+  <img src="assets/Loading.png" alt="" class="logo2">
+  <div class="text">Generating Approval Pack</div>
+  <div class="text2">This may take several minutes</div>
+</div>
+
 
 <!-- Example template -->
-
-

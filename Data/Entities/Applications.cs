@@ -9,6 +9,7 @@ namespace WayleaveManagementSystem.Data.Entities
         public string? UserID { get; set; }
         public string? FullName { get; set; }
         public string? Email { get; set; }
+        public string? AlternativeEmail { get; set; } // chekingNotifications Sindiswa 15 February 2024
         public string? PhoneNumber { get; set; }
         public string? PhyscialAddress { get; set; }
         public string? ReferenceNumber { get; set; }
@@ -61,5 +62,18 @@ namespace WayleaveManagementSystem.Data.Entities
         Distributed 
          */
 
+        public int? ReApplyCount { get; set; } //reapply Sindiswa 22 January 2024
+        public bool? isEscalated { get; set; } //escalation Sindiswa 29 January 2024
+        public DateTime? EscalationDate { get; set; } //escalation Sindiswa 31 January 2024
+
+        public DateTime? EMBActionDate { get; set; } //escalation Sindiswa 31 January 2024
+
+        public bool? NetworkLicenses { get; set; } //Project size Kyle 27-02-24
+
+        #region zxNum-and-contractorAccount Sindiswa 28 February 2024
+        public string? WaterZXNumber { get; set; }
+        public string? RIMZXNumber { get; set; }
+        #endregion
+        public string? ContractorAccountDetails { get; set; } //zxNumberUpdate Sindiswa 01 March 2024
     }
 }

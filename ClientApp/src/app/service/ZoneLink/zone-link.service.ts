@@ -40,7 +40,7 @@ export class ZoneLinkService {
   }
 
   //public getBySubAndUserID(subDepartmentID: number | null, assignedUserID: string | null) {
-  //  debugger;
+  //  
   //  const body = {
 
   //    SubDepartmentID: subDepartmentID,
@@ -50,7 +50,7 @@ export class ZoneLinkService {
 
   //}
   public getBySubAndUserID(subDepartmentID: number | null, assignedUserID: string | null) {
-    debugger;
+    
     const body = {
       subDepartmentID: subDepartmentID,
       assignedUserID: assignedUserID

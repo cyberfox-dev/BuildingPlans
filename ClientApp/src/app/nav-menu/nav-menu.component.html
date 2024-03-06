@@ -6,11 +6,17 @@
     </div>
   </div>
   <div class="nav-btn">
-    <button mat-button matTooltip="Menu" (click)="openEnd(content)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bars-solid.svg" class="icon"></button>
+    <!--notifications Sindiswa 12 February 2024-->
+    <button mat-button matTooltip="Menu" (click)="openEnd(content)" *ngIf="!this.hasNotifications"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bars-solid.svg" class="icon"></button>
+    <button mat-button matTooltip="Menu" (click)="openEnd(content)" *ngIf="this.hasNotifications"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bars-solid_notification.svg" class="icon"></button>
+    <!--notifications Sindiswa 12 February 2024-->
   </div>
 
   <div class="nav-links" *ngIf="Icons">
-    <button mat-button matTooltip="Menu" (click)="openEnd(content)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bars-solid.svg" class="icon"></button>
+    <!--notifications Sindiswa 12 February 2024-->
+    <button mat-button matTooltip="Menu" (click)="openEnd(content)" *ngIf="!this.hasNotifications"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bars-solid.svg" class="icon"></button>
+    <button mat-button matTooltip="Menu" (click)="openEnd(content)" *ngIf="this.hasNotifications"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bars-solid_notification.svg" class="icon"></button>
+    <!--notifications Sindiswa 12 February 2024-->
   </div>
 
 </div>
@@ -23,159 +29,43 @@
     <h4 class="modal-title" id="modal-basic-title">{{CurrentUser.fullName}}'s Comment Builder</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
-  <!--<div class="modal-body">
+  <div class="modal-body">
     <div class="cont3">
       <form [formGroup]="addComment">
         <mat-form-field class="example-full-width">
           <mat-label>Type new comment</mat-label>
-          <div *ngIf="!addComment.get('newCommentName').value" class="placeholder">
-            Eg. This is good...
-          </div>
           <textarea matInput placeholder="Eg. This is good" formControlName="newCommentName"></textarea>
-          <quill-editor  formControlName="newCommentName" [readOnly]="false">
-            <div quill-editor-toolbar>
-              <span class="ql-formats">
-                <button class="ql-bold" [title]="'Bold'"></button>
-                <select class="ql-color" [title]="'Text Color'">
-                  <option value="rgb(0, 0, 0)" selected></option>
-                  <option value="rgb(255, 0, 0)"></option>
-                  <option value="rgb(255, 153, 0)"></option>
-                  <option value="rgb(255, 255, 0)"></option>
-                  <option value="rgb(0, 255, 0)"></option>
-                  <option value="rgb(0, 255, 255)"></option>
-                  <option value="rgb(0, 0, 255)"></option>-->
-  <!--<option value="rgb(153, 0, 255)"></option>
-  <option value="rgb(255, 0, 255)"></option>-->
-  <!--</select>
-        <button class="ql-italic" [title]="'Italic'"></button>
-        <button class="ql-underline" [title]="'Underline'"></button>
-        <button class="ql-strike" [title]="'Strikethrough'"></button>
-        <button class="ql-script" value="sub"></button>
-        <button class="ql-script" value="super"></button>
-        <button class="ql-list" [title]="'Bullet List'" [value]="'bullet'"></button>
-        <button class="ql-list" [title]="'Numbered List'" [value]="'ordered'"></button>
-        <button class="ql-link" [title]="'Enter URL'"></button>
-        <button class="ql-indent" [value]="'+1'"></button>
-        <button class="ql-indent" [value]="'-1'"></button>
-      </span>
-      <span class="ql-formats">
-        <select class="ql-align" [title]="'Aligment'">
-          <option selected></option>
-          <option value="center"></option>
-          <option value="right"></option>
-          <option value="justify"></option>
-        </select>
-      </span>
-      <span class="ql-formats">
-        <select class="ql-size">
-          <option value="small"></option>
-           Note a missing, thus falsy value, is used to reset to default
-          <option selected></option>
-          <option value="large"></option>
-          <option value="huge"></option>
-        </select>
-      </span>
-    </div>
-    <div class="ql-blank" data-gramm="false" formControlName="newCommentName" contenteditable="true" data-placeholder="Eg. This is good."><p><br></p></div>
-  </quill-editor>-->
-  <!-- You may display errors or other Angular Material features here -->
-  <!--<mat-error *ngIf="addComment.get('newCommentName').hasError('required')">
-      Comment is required!
-    </mat-error>
-  </mat-form-field>-->
-  <!--<mat-checkbox class="example-margin">Set as default</mat-checkbox>-->
-  <!--<button mat-raised-button color="green" (click)="modal.dismiss('Cross click');onCommentCreate(commentBuilder)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/floppy-disk-regular.svg" class="icon"></button>
-
-    </form>
-  </div>-->
-
-  <div class="modal-body">
-    <div class="cont3">
-      <form [formGroup]="addComment">
-        <div class="example-full-width">
-          <quill-editor formControlName="newCommentName" [readOnly]="false">
-            <div quill-editor-toolbar>
-              <span class="ql-formats">
-                <button class="ql-bold" [title]="'Bold'"></button>
-                <select class="ql-color" [title]="'Text Color'">
-                  <option value="rgb(0, 0, 0)" selected></option>
-                  <option value="rgb(255, 0, 0)"></option>
-                  <option value="rgb(255, 153, 0)"></option>
-                  <option value="rgb(255, 255, 0)"></option>
-                  <option value="rgb(0, 255, 0)"></option>
-                  <option value="rgb(0, 255, 255)"></option>
-                  <option value="rgb(0, 0, 255)"></option>
-                  <!-- Add other color options as needed -->
-                </select>
-                <button class="ql-italic" [title]="'Italic'"></button>
-                <button class="ql-underline" [title]="'Underline'"></button>
-                <button class="ql-strike" [title]="'Strikethrough'"></button>
-                <button class="ql-script" value="sub"></button>
-                <button class="ql-script" value="super"></button>
-                <button class="ql-list" [title]="'Bullet List'" [value]="'bullet'"></button>
-                <button class="ql-list" [title]="'Numbered List'" [value]="'ordered'"></button>
-                <!--<button class="ql-link" [title]="'Enter URL'"></button>-->
-                <button class="ql-indent" [value]="'-1'"></button>
-                <button class="ql-indent" [value]="'+1'"></button>
-                <select class="ql-align" [title]="'Alignment'">
-                  <option selected></option>
-                  <option value="center"></option>
-                  <option value="right"></option>
-                  <option value="justify"></option>
-                </select>
-                <select class="ql-header">
-                  <option value="false" selected></option>
-                  <option value="1"></option>
-                  <option value="2"></option>
-                  <option value="3"></option>
-                  <option value="4"></option>
-                  <option value="5"></option>
-                  <option value="6"></option>
-                </select>
-              </span>
-            </div>
-            <!--<div class="ql-blank" data-gramm="false" formControlName="newCommentName" contenteditable="true" data-placeholder="Eg. This is good."><p><br></p></div>-->
-            <div class="ql-editor" [innerHTML]="editorContent" (blur)="onEditorBlur($event)"></div>
-          </quill-editor>
-
-        </div>
+        </mat-form-field>
 
         <!--<mat-checkbox class="example-margin">Set as default</mat-checkbox>-->
         <button mat-raised-button color="green" (click)="modal.dismiss('Cross click');onCommentCreate(commentBuilder)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/floppy-disk-regular.svg" class="icon"></button>
+
       </form>
+      <table mat-table [dataSource]="dataSourceComment" class="mat-elevation-z8">
+
+
+        <ng-container matColumnDef="Comment">
+          <th mat-header-cell *matHeaderCellDef>Comment</th>
+          <td mat-cell *matCellDef="let element"> {{element.Comment}} </td>
+        </ng-container>
+
+
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let i = index">
+
+            <button mat-raised-button color="blue" matTooltip="Edit comment" (click)="viewEditComment(editComment,i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid.svg" class="icon"></button>
+            <button mat-raised-button color="warn" matTooltip="Delete comment" (click)="onCommentDelete(i,commentBuilder);modal.dismiss('Cross click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid.svg" class="icon red"></button>
+
+          </td>
+          <td mat-cell *matCellDef="let element">  </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsComment"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsComment;"></tr>
+      </table>
     </div>
-  <!--</div>-->
-  <br />
-
-
-  <table mat-table [dataSource]="dataSourceComment" class="mat-elevation-z8">
-
-
-    <ng-container matColumnDef="Comment">
-      <th mat-header-cell *matHeaderCellDef>Comment</th>
-      <!--<td mat-cell *matCellDef="let element"> {{element.Comment}} </td>-->
-      <!--<td mat-cell *matCellDef="let element" [innerHTML]="element.Comment"></td>-->
-      <td mat-cell *matCellDef="let element" [innerHTML]="sanitizeHTML(element.Comment)"></td>
-    </ng-container>
-
-
-
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef></th>
-      <td mat-cell *matCellDef="let i = index">
-
-        <button mat-raised-button color="blue" matTooltip="Edit comment" (click)="viewEditComment(editComment,i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid.svg" class="icon"></button>
-        <button mat-raised-button color="warn" matTooltip="Delete comment" (click)="onCommentDelete(i,commentBuilder);modal.dismiss('Cross click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid.svg" class="icon red"></button>
-
-      </td>
-      <td mat-cell *matCellDef="let element">  </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumnsComment"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumnsComment;"></tr>
-  </table>
-
-
   </div>
 </ng-template>
 
@@ -406,12 +296,17 @@
 </ng-template>
 
 
+<!----------------Audit Trail Kyle------------------->
+<ng-template #reports let-modal>
+  <app-audit-trail></app-audit-trail>
 
+
+</ng-template>
 
 
 <!--Side Nav-->
 
-<ng-template #content let-offcanvas>
+<ng-template #content let-offcanvas style="z-index: 9999999;">
   <div class="offcanvas-header animationFadeInRightToLeft">
     <h5 class="offcanvas-title animationFadeInRightToLeft" id="offcanvas-basic-title"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bars-staggered-solid.svg" class="icon"> Menu</h5>
     <button type="button" class="btn-close animationFadeInRightToLeft" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
@@ -419,12 +314,18 @@
   <div class="offcanvas-body">
     <div class="sideNav animationFadeInRightToLeft" *ngIf="Icons">
       <button mat-button class="sideNavIcons" (click)="openFAQModal(FAQModal)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/question-solid.svg" class="icon">   Frequently Asked Questions</button>
-      <button mat-button class="sideNavIcons" (click)="openUserActingDepModal()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/right-from-bracket-solid.svg" class="icon">   Change Acting User Role</button>
-      <button mat-button class="sideNavIcons" (click)="goToCyberfoxCofig();offcanvas.dismiss('Cross click')" *ngIf="cyberfoxConfigs"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/lemon-regular.svg" class="icon">   Cyberfox Configs</button>
+      <button mat-button class="sideNavIcons" (click)="openUserActingDepModal()" *ngIf="isInternalUser && InternalExternalUser == false"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/right-from-bracket-solid.svg" class="icon">   Change Acting User Role</button>
+      <button mat-button class="sideNavIcons" (click)="goToCyberfoxCofig();offcanvas.dismiss('Cross click')" *ngIf="cyberfoxConfigs"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/lemon-regular.svg" class="icon">   Dev Configs</button>
       <button mat-button class="sideNavIcons" (click)="openRepositoryModal(repositoryModal)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/box-archive-solid.svg" class="icon">   Document Repository</button>
       <button mat-button class="sideNavIcons" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid-black.svg" class="icon">  Comment Builder</button>
       <button mat-button class="sideNavIcons" (click)="goToConfig();offcanvas.dismiss('Cross click')" *ngIf="Configurations"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/gear-solid.svg" class="icon">    Configurations</button>
-      <button mat-button class="sideNavIcons" (click)="openNotificationsModal()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bell-solid.svg" class="icon">   Notifications</button>
+      <!--notifications Sindiswa 12 February 2024-->
+      <button mat-button class="sideNavIcons" (click)="openNotificationsModal();offcanvas.dismiss('Cross click')" *ngIf="this.hasNotifications"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bell-solid-notification.svg" class="icon">   Notifications <span *ngIf="notificationsQuantity >= 1">({{ notificationsQuantity }})</span></button><!--routingToProject Sindiswa 05 February 2024-->
+      <button mat-button class="sideNavIcons" (click)="openNotificationsModal();offcanvas.dismiss('Cross click')" *ngIf="!this.hasNotifications"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bell-solid.svg" class="icon">   Notifications</button><!--routingToProject Sindiswa 05 February 2024-->
+      <!--notifications Sindiswa 12 February 2024-->
+      <!----Audit Trail Kyle---->
+      <button mat-button class="sideNavIcons" (click)="openReports(reports)" *ngIf="Reports"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/book-journal-whills.svg" class="icon"> Reports</button>
+      <!----Audit Trail Kyle---->
       <button mat-button class="sideNavIcons" (click)="goToSettings();offcanvas.dismiss('Cross click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/circle-user-regular.svg" class="icon">   User Settings</button>
       <button mat-button class="sideNavIcons" (click)="LogoutUser();offcanvas.dismiss('Cross click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/right-from-bracket-solid.svg" class="icon">   Log Out</button>
 

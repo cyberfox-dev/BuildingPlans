@@ -78,6 +78,30 @@
             </div>
           </div>
 
+          <!--icasadetails Sindiswa 10 January 2024-->
+
+
+          <div class="row" *ngIf="showTelecommsPrompt">
+            <mat-checkbox [(ngModel)]="isRepresentingTelecommsCompany"> Check this box ONLY IF your company offers telecommunications services </mat-checkbox>
+          </div>
+          <div class="row" *ngIf="!showTelecommsPrompt || isRepresentingTelecommsCompany">
+<!-- icasaDetailsDisplay Sindiswa 16 January 2024 -->
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="extApplicantICASANumber" placeholder="Enter ICASA Number" name="extApplicantICASANumber" #icasaNumberInput="ngModel" [required]="isRepresentingTelecommsCompany" title="This field is mandatory for all electronic communications service providers.">
+                <label for="extApplicantICASANumber">ICASA Number *</label>
+              </div>
+            </div>
+
+           <!--<div class="col-1 d-flex align-items-center">
+              <mat-icon aria-hidden="false" aria-label="Info icon" fontIcon="info" matTooltip="This field is mandatory for all electronic communications service providers."></mat-icon>
+            </div>-->
+<!-- endof icasaDetailsDisplay Sindiswa 15 January 2024 -->
+          </div>
+          <!--<div *ngIf="isRepresentingTelecommsCompany && !extApplicantICASANumber">
+            <div class="alert alert-danger">An ICASA License Number is required for telecomms companies /This field is mandatory for all electronic communications service providers.</div>
+          </div>-->
+         <!--end of icasadetails Sindiswa 10 January 2024-->
           <!--  <div class="form-floating mb-3 mt-3">
     <select class="form-select" aria-label="Default select example" formControlName="newZoneSubDemartment">
       <option selected value="0">Select a SubDepartment</option>
@@ -191,6 +215,7 @@
           </div>
           <div class="row">
             <div class="col"> <!--Why is the PhoneNumberHidden?-->
+              <!--Why is the PhoneNumberHidden?-->
               <div class="form-floating mb-3 mt-3">
                 <input type="tel" class="form-control" [(ngModel)]="internalApplicantTellNo" placeholder="Enter Tell No." hidden>
                 <label for="applicantTellNo" hidden>Tell No *</label>
@@ -205,7 +230,9 @@
         <button mat-raised-button color="primary" matStepperPrevious disabled>Back</button>
         <div class="cont5">
           <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/circle-info-solid.svg" class="icon" matTooltip="Please fill out all of the fields. Please enter N/A to fields that are not applicable">
-          <button mat-raised-button color="primary" *ngIf="showExternal" matStepperNext [disabled]="!extApplicantBpNoApplicant ||   !extApplicantTellNo ||   !extApplicantTellNo  || !extApplicantPhyscialAddress ">Next</button>
+          <!-- icasadetails Sindiswa 10 January 2024 - the button enable/disable conditions were added to account for the telecomms company thing-->
+          <button mat-raised-button color="primary" *ngIf="showExternal" matStepperNext [disabled]="!extApplicantBpNoApplicant ||   !extApplicantTellNo ||   !extApplicantTellNo  || !extApplicantPhyscialAddress ||
+          (isRepresentingTelecommsCompany && !extApplicantICASANumber)"> Next </button>
           <button mat-raised-button color="primary" *ngIf="showInternal" matStepperNext [disabled]="!internalApplicantDepartment || !selectedZone || !internalApplicantCostCenterOwner || !internalApplicantBranch || !internalApplicantCostCenterNo">Next</button>
 
         </div>

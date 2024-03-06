@@ -113,7 +113,7 @@ expandedElement = this.DocumentsList;
   
 
   ngOnInit(): void {
-    debugger;
+    
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.getAllDocsForRepository();
@@ -159,7 +159,7 @@ expandedElement = this.DocumentsList;
           tempDocList.DateCreated = current.dateCreated;
           tempDocList.GroupName = current.groupName;
           tempDocList.Description = current.description;
-          debugger;
+          
           if (current.groupName == "GeneralNonDep") {
             tempDocList.GroupName = "Document Repository General Document";
           }
@@ -176,7 +176,7 @@ expandedElement = this.DocumentsList;
         }
 
         // Update the length and data source
-        debugger;
+        
         this.length = this.DocumentsList.length;
         this.dataSource.data = this.DocumentsList;
         const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
@@ -210,7 +210,7 @@ expandedElement = this.DocumentsList;
   lockViewAccordingToRoles() {
 
 
-    debugger;
+    
     for (var i = 0; i < this.RolesList.length; i++) {
 
       if ( this.RolesList[i].RoleName == "EMB" || this.RolesList[i].RoleName == "Developer Config") {
@@ -283,11 +283,11 @@ expandedElement = this.DocumentsList;
   isRep = "isRep";
   fileAttrsName = "Doc";
   onPassFileName(event: { uploadFor: string; fileName: string }) {
-    debugger;
+    
     const { uploadFor, fileName } = event;
     const index = parseInt(uploadFor.substring('CoverLetter'.length));
     this.fileAttrsName = "Doc";
-    debugger;
+    
 
     this.shared.RepFileUploadCat = this.selected;
 
@@ -395,7 +395,7 @@ expandedElement = this.DocumentsList;
   response: { dbPath: ''; } | undefined
 
   uploadFinished = (event: any, repositoryModal) => {
-    debugger;
+    
     this.response = event;
     console.log("this.response", this.response);
     console.log(this.descriptionForDocRepo);
@@ -482,13 +482,13 @@ expandedElement = this.DocumentsList;
   isDepartmentSelected: boolean = false;
   SelectedDepForRepUpload = '';
   filterDepartment() {
-    debugger;
+    
     let string = this.select.toString();
     console.log('Selected department:', this.select);
     console.log('Data:', this.DocumentsList);
 
     if (this.selectDepFilterName === "All") {
-      debugger;
+      
       this.DocumentsList.splice(0, this.DocumentsList.length);
       this.documentUploadService.getAllDocumentsForRepository().subscribe((data: any) => {
 
@@ -512,7 +512,7 @@ expandedElement = this.DocumentsList;
           }
 
           // Update the length and data source
-          debugger;
+          
           this.length = this.DocumentsList.length;
           this.dataSource.data = this.DocumentsList;
           const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
@@ -569,7 +569,7 @@ expandedElement = this.DocumentsList;
           }
 
           // Update the length and data source
-          debugger;
+          
           this.length = this.DocumentsList.length;
           this.dataSource.data = this.DocumentsList;
           const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
@@ -602,7 +602,7 @@ expandedElement = this.DocumentsList;
       })
     
 /*      let filteredData = this.DocumentsList.filter(df => df.GroupName === "GeneralNonDep");*/
-      debugger;
+      
 /*      this.dataSource.data = filteredData;
       console.log(filteredData);*/
 
@@ -649,7 +649,7 @@ expandedElement = this.DocumentsList;
   }
 
   filerGroupName() {
-    debugger;
+    
         if (this.selectedOptionText == "All" || this.selectedOptionText == "All Departments") {
           this.dataSource.data = this.DocumentsList.filter(df => df.DateCreated && df.SubDepartmentID == this.select);
         }
@@ -663,7 +663,7 @@ expandedElement = this.DocumentsList;
 
     toggleExpandRow(element: any) {
     // Check if the selected element is the same as the currently expanded element
-      debugger;
+      
     if (this.expandedElement === element) {
       this.expandedElement = null; // Collapse the row
       this.selectedDocumentIndex = null; // Reset the selected document index
@@ -677,7 +677,7 @@ expandedElement = this.DocumentsList;
 
   viewDocument(element: any) {
 
-    debugger;
+    
     // Make an HTTP GET request to fetch the document
     fetch(this.apiUrl + `documentUpload/GetDocument?filename=${element.DocumentName}`)
       .then(response => {
@@ -712,12 +712,12 @@ expandedElement = this.DocumentsList;
   fileInput!: ElementRef;
 
   getDocumentFilterList(departmentID: number) {
-    debugger;
+    
     this.FilterList.splice(0, this.FilterList.length);
     this.documentRepositoryConfigService.GetDocumentCategoryByDepartmentID(departmentID).subscribe((data: any) => {
       if (data.responseCode === 1)
       {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempFilterList = {} as FilterList;
           const current = data.dateSet[i];
@@ -725,7 +725,7 @@ expandedElement = this.DocumentsList;
           tempFilterList.CategoryName = current.documentsCategory;
 
           this.FilterList.push(tempFilterList);
-          debugger;
+          
         }
 
       }

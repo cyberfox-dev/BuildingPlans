@@ -28,28 +28,26 @@
 
   <h1 class="animationSlideUp">Hi, {{CurrentUserProfile[0].fullName}}</h1>
   <h2 class="animationSlideUp">Welcome to your Dashboard</h2>
-  <h3 class="animationSlideUp" *ngIf="CurrentUserProfile[0].subDepartmentName != null  && InternalExternalUser == false">You are acting as {{CurrentUserProfile[0].subDepartmentName}}, for {{CurrentUserProfile[0].zoneName}}</h3>
+  <h3 class="animationSlideUp" *ngIf="ActingAs">You are acting as {{CurrentUserProfile[0].subDepartmentName}}, for {{CurrentUserProfile[0].zoneName}}</h3>
   <!--  <div style="background: red; text-align: center; font-size: xx-large; color: white; padding: 10px; line-height: 0.8;" *ngIf="ServerType === 'QA'">
       Please note, you've accessed the test server, nothing captured to this server will be processed. Please go to wayleave.capetown.gov.za to access the live site.
     </div>-->
   <!--  <button class="btn" (click)="openSnackBar()"><a><i class="fa fa-plus"></i> Create New Wayleave</a></button>-->
-
-  <div style="background: red; text-align: center; font-size: xx-large; color: white; padding: 10px; line-height: 0.8;"  *ngIf="isBannerVisible() && (BaseUrl === 'QA' || BaseUrl === 'Production')">
-    SYSTEM ALERT<br /> 8 Dec 2023 - 5 Jan 2024: Application freeze.
+  <!--Banner Kyle 26/01/24-->
+  <div style="background: red; text-align: center; font-size: xx-large; color: white; padding: 10px; line-height: 0.8;" *ngIf="showBanner">
+    {{alertMessage}}<br />From {{startDate}} To {{endDate}}
   </div>
 
   <div class="cont3 ">
     <!--<img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon4"> -->
-    <button mat-raised-button color="createWayleave" *ngIf="!isBannerVisible() || BaseUrl === 'Development'" class="animationSlideDown" (click)="goToNewWayleave(false,false)">Create New Wayleave</button>
-    <button mat-raised-button color="createWayleave2" *ngIf="isBannerVisible() && (BaseUrl === 'QA' || BaseUrl === 'Production')" disabled matTooltip="Creating new applications is currently not allowed." class="animationSlideDown">Create New Wayleave</button>
-    <button mat-raised-button color="createWayleave2" class="animationSlideDown"  matTooltip="Future Enhancement" disabled>Request for Services Information (Disabled)</button>
+    <button mat-raised-button color="createWayleave" *ngIf="disableButtons ===false " class="animationSlideDown" (click)="goToNewWayleave(false,false)">Create New Wayleave</button>
+    <button mat-raised-button color="createWayleave2" *ngIf="disableButtons === true " disabled matTooltip="Creating new applications is currently not allowed." class="animationSlideDown">Create New Wayleave</button>
+    <!-- Service Information Kyle 31/01/24-->
+    <button mat-raised-button color="createWayleave" class="animationSlideDown" [disabled]="disableButtons === true"(click)="goToNewWayleave(false,true)">Request for Services Information </button>
+    <!-- Service Information Kyle 31/01/24-->
   </div>
 
-
-
-
-
-
+  <!--Banner Kyle 26/01/24-->
   <!--Tabs-->
 
   <div class="main-container animationFadeIn">
@@ -167,8 +165,9 @@
         <mat-form-field appearance="outline">
           <mat-label>Search</mat-label>
           <div class="cont6">
-
-            <input matInput placeholder="Search By Project Number Or Application Number" (keyup)="applyFilter($event)" #input>
+            <!---Filters Kyle 16/01/24-->
+            <input matInput placeholder="Search" (keyup)="applyFilter($event)" #input>
+            <!---Filters Kyle 16/01/24-->
             <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/magnifying-glass-solid.svg" class="icon3">
           </div>
 
@@ -247,8 +246,8 @@
               <button mat-raised-button color="blue" matTooltip="View Application" (click)="CheckIfCanReapply(element,i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid.svg" class="icon"></button>
 
 
-
-              <button mat-raised-button color="warn" matTooltip="Escalate" *ngIf="applications.TestApplicationAge >= this.viewEscalateDate"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/stairs-solid.svg" class="icon red"></button>
+              <!--escalation Sindiswa 29 January 2024-->
+              <button mat-raised-button color="warn" matTooltip="Escalate" (click)="escalateApplication(element)" *ngIf="applications.TestApplicationAge >= this.viewEscalateDate && (applications.isEscalated == null || applications.isEscalated == true)" [disabled]="element.isEscalated"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/stairs-solid.svg" class="icon red"></button>
             </div>
             <div class="menu">
               <button mat-button color="action" [matMenuTriggerFor]="actions"> <i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
@@ -277,10 +276,11 @@
     </div>
 
   </div>
-
+  <!--JJS 02Feb changed the external user acting as internal text for the modal and made them go straight to choose an exsisting internal client-->
   <ng-template #internalOpt let-modal>
     <div class="modal-header">
-      <h6 class="modal-title" id="modal-basic-title">As an internal applicant are you applying for :</h6>
+      <h6 class="modal-title" id="modal-basic-title" *ngIf="ActingAsInternal == false">As an internal applicant are you applying for :</h6>
+      <h6 class="modal-title" id="modal-basic-title" *ngIf="ActingAsInternal">As an external applicant are you applying for :</h6>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
@@ -289,16 +289,18 @@
 
 
           <div class="cont2">
-            <button mat-raised-button color="client" [class.matactive]="option ==='internal'" (click)="cardchange('internal')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon"> Yourself</button>
+            <button mat-raised-button color="client" [class.matactive]="option ==='internal'" (click)="cardchange('internal')" *ngIf="ActingAsInternal == false"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon"> Yourself</button>
+            <button mat-raised-button color="client" [class.matactive]="option ==='external'" (click)="cardchange('external')" *ngIf="ActingAsInternal"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon"> Yourself External</button>
             <button mat-raised-button color="client" [class.matactive]="option ==='client'" (click)="cardchange('client')"> <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon"> Client</button>
-
           </div>
         </div>
 
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-success " *ngIf="gotDrafts == true " (click)="openDrafts(drafts)">View Draft Wayleaves</button>
+      <!-- Service Information Kyle 31/01/24-->
+      <button type="button" class="btn btn-outline-success " *ngIf="gotDrafts == true && isPlanning == false " (click)="openDrafts(drafts)">View Draft Wayleaves</button>
+      <!-- Service Information Kyle 31/01/24-->
       <button type="button" class="btn btn-outline-success" (click)="sendOption();modal.dismiss('Cross click')">Continue</button>
 
     </div>
@@ -321,7 +323,8 @@
           <div class="cont2">
             <button mat-raised-button color="client" [class.cardactive]="option ==='client'" (click)="cardchange('client');modal.dismiss('Cross click'); openNewClient(newClient)"> <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon">  New Client</button>
             <!--<button mat-raised-button color="internal" (click)="openUser(user);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'"><i class="fa fa-user" aria-hidden="true"></i> Existing Client</button>-->
-            <button mat-raised-button color="internal" (click)="openChoice(choiceEC);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon">  Existing Client</button>
+            <button mat-raised-button color="internal" (click)="openChoice(choiceEC);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'" *ngIf="ActingAsInternal == false"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon">  Existing Client</button>
+            <button mat-raised-button color="internal" (click)="openChoiceExternalActingAsInternal(internalUser);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'" *ngIf="ActingAsInternal"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon">  Existing Client</button>
           </div>
         </div>
 
@@ -333,6 +336,9 @@
     </div>
 
   </ng-template>
+
+
+<!--  //JJS-15-02-2024 Fixing the delete drafts (wasn't deleting)-->
   <ng-template #externalOpt let-modal>
     <div class="modal-header">
       <h6 class="modal-title" id="modal-basic-title">As an external applicant are you applying for :</h6>
@@ -344,8 +350,8 @@
 
 
           <div class="cont2">
-            <button mat-raised-button color="client"><i class="fa fa-user-plus" aria-hidden="true" (click)="openNewWayleave()"></i> New Application</button>
-            <button mat-raised-button color="client" (click)="openDrafts(drafts)"><i class="fa fa-eye" aria-hidden="true"></i> Select From Drafts</button>
+            <button mat-raised-button color="client" (click)="openNewWayleave()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon"> New Application</button>
+            <button mat-raised-button color="client" (click)="openDrafts(drafts)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon"> Select From Drafts</button>
 
           </div>
         </div>
@@ -448,6 +454,7 @@
             <th mat-header-cell *matHeaderCellDef> ID Number </th>
             <td mat-cell *matCellDef="let element"> {{element.idNumber}} </td>
           </ng-container>-->
+         
 
           <ng-container matColumnDef="internalDepartment">
             <th mat-header-cell *matHeaderCellDef> Department </th>
@@ -1460,4 +1467,8 @@
 
   </ng-template>
 
+  <!----Clarifications Alerts Kyle-->
 
+  <app-application-alerts></app-application-alerts>
+
+  <!----Clarifications Alerts Kyle-->

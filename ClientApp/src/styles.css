@@ -300,19 +300,19 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 .green-snackbar {
-    text-align: center !important;
-    border-radius: 91px !important;
-    /* box-sizing: initial !important; */
-    margin-top: -2px !important;
-    /* max-width: 33vw; */
-    min-width: 240px !important;
-    /* padding: 0; */
-    min-height: 3px !important;
-    position: absolute;
-    background: #cee2cc00;
-    color: #137000;
-    box-shadow: none;
-    right: 0;
+  text-align: center !important;
+  border-radius: 91px !important;
+  /* box-sizing: initial !important; */
+  margin-top: -5px !important;
+  /* max-width: 33vw; */
+  min-width: 240px !important;
+  /* padding: 0; */
+  min-height: 3px !important;
+  position: absolute;
+  background: #cee2cc00;
+  color: #137000;
+  box-shadow: none;
+  right: 31px;
 }
 
 .red-snackbar {
@@ -346,4 +346,7 @@ quill-editor {
   width: 90%;
   min-height: 500px;
   overflow-y: auto;
+}
+.pac-container {
+  z-index: 1000000 !important;
 }
