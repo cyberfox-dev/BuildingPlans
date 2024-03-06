@@ -124,7 +124,8 @@ export interface ApplicationList {
   //Coordinates: string
   UserID: any;
   clientAlternativeEmail: string; // chekingNotifications Sindiswa 13 February 2024
-  NetworkLicensees:string;
+  NetworkLicensees: string;
+  ContractorAccountDetails: string; //zxNumberUpdate Sindiswa 01 March 2024
 }
 
 
@@ -1389,12 +1390,13 @@ export class HomeComponent implements OnInit, OnDestroy {
                   tempApplicationListShared.isPlanning = current.isPlanning;
                   tempApplicationListShared.permitStartDate = current.permitStartDate;
 
+                  tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
+
                   //#region escalation Sindiswa 31 January 2024
                   tempApplicationList.isEscalated = current.isEscalated;
                   tempApplicationList.EscalationDate = current.escalationDate;
                   tempApplicationList.EMBActionDate = current.embActionDate;
                   //#endregion
-
 
                   //Project size Kyle 27-02-24
                   debugger;
@@ -1741,6 +1743,7 @@ this.Applications.push(tempApplicationList);
               tempApplicationListShared.NetworkLicensees = " ";
             }
 
+            tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
             //#region escalation Sindiswa 31 January 2024
             tempApplicationList.isEscalated = current.isEscalated;
             tempApplicationList.EscalationDate = current.escalationDate;
@@ -2537,6 +2540,7 @@ this.Applications.push(tempApplicationList);
           tempApplicationListShared.isPlanning = current.isPlanning;
           tempApplicationListShared.permitStartDate = current.permitStartDate;
 
+          tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
 
           //#region escalation Sindiswa 31 January 2024
           tempApplicationList.isEscalated = current.isEscalated;
@@ -2708,6 +2712,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.isPlanning = current.isPlanning;
             tempApplicationListShared.permitStartDate = current.permitStartDate;
 
+            tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
 
             //#region escalation Sindiswa 31 January 2024
             tempApplicationList.isEscalated = current.isEscalated;
@@ -2858,6 +2863,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.isPlanning = current.isPlanning;
             tempApplicationListShared.permitStartDate = current.permitStartDate;
 
+            tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
 
             this.applicationDataForView.push(tempApplicationListShared);
             console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -3033,6 +3039,7 @@ this.Applications.push(tempApplicationList);
                   tempApplicationListShared.isPlanning = current.isPlanning;
                   tempApplicationListShared.permitStartDate = current.permitStartDate;
 
+                    tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
 
                   this.applicationDataForView.push(tempApplicationListShared);
                   console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
@@ -3185,6 +3192,7 @@ this.Applications.push(tempApplicationList);
                 tempApplicationListShared.isPlanning = current.isPlanning;
                 tempApplicationListShared.permitStartDate = current.permitStartDate;
 
+                tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
 
                 //#region escalation Sindiswa 31 January 2024
                 tempApplicationList.isEscalated = current.isEscalated;
@@ -3347,6 +3355,7 @@ this.Applications.push(tempApplicationList);
           tempApplicationListShared.CurrentStageName = current.currentStageName;
           tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
 
+          tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
           tempApplicationListShared.NextStageName = current.nextStageName;
           tempApplicationListShared.NextStageNumber = current.nextStageNumber;
           tempApplicationListShared.PreviousStageName = current.previousStageName;
@@ -3515,6 +3524,7 @@ this.Applications.push(tempApplicationList);
           tempApplicationListShared.CurrentStageName = current.currentStageName;
           tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
 
+          tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
           tempApplicationListShared.NextStageName = current.nextStageName;
           tempApplicationListShared.NextStageNumber = current.nextStageNumber;
           tempApplicationListShared.PreviousStageName = current.previousStageName;
@@ -3687,6 +3697,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.CurrentStageName = current.currentStageName;
             tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
 
+            tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
             tempApplicationListShared.NextStageName = current.nextStageName;
             tempApplicationListShared.NextStageNumber = current.nextStageNumber;
             tempApplicationListShared.PreviousStageName = current.previousStageName;
@@ -3845,6 +3856,7 @@ this.Applications.push(tempApplicationList);
 
             tempApplicationListShared.isPlanning = current.isPlanning;
 
+            tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
 
             //#region escalation Sindiswa 31 January 2024
             tempApplicationList.isEscalated = current.isEscalated;
@@ -4008,6 +4020,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.isPlanning = current.isPlanning;
             tempApplicationListShared.permitStartDate = current.permitStartDate;
 
+            tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
 
             //#region escalation Sindiswa 31 January 2024
             tempApplicationList.isEscalated = current.isEscalated;
@@ -4151,6 +4164,7 @@ this.Applications.push(tempApplicationList);
             tempApplicationListShared.CurrentStageName = current.currentStageName;
             tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
 
+            tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
             tempApplicationListShared.NextStageName = current.nextStageName;
             tempApplicationListShared.NextStageNumber = current.nextStageNumber;
             tempApplicationListShared.PreviousStageName = current.previousStageName;
@@ -4315,6 +4329,7 @@ this.Applications.push(tempApplicationList);
               tempApplicationListShared.CurrentStageName = current.currentStageName;
               tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
 
+              tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
               tempApplicationListShared.NextStageName = current.nextStageName;
               tempApplicationListShared.NextStageNumber = current.nextStageNumber;
               tempApplicationListShared.PreviousStageName = current.previousStageName;
@@ -4470,6 +4485,7 @@ this.Applications.push(tempApplicationList);
 
               tempApplicationListShared.isPlanning = current.isPlanning;
 
+              tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
 
               //#region escalation Sindiswa 31 January 2024
               tempApplicationList.isEscalated = current.isEscalated;
@@ -6016,6 +6032,7 @@ this.Applications.push(tempApplicationList);
           tempApplicationListShared.isPlanning = current.isPlanning;
           tempApplicationListShared.permitStartDate = current.permitStartDate;
 
+          tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
 
           //#region escalation Sindiswa 31 January 2024
           tempApplicationList.isEscalated = current.isEscalated;

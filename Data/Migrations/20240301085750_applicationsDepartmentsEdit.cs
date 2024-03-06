@@ -4,30 +4,24 @@
 
 namespace WayleaveManagementSystem.Data.Migrations
 {
-    public partial class ZXNumberColumns : Migration
+    public partial class applicationsDepartmentsEdit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            /*migrationBuilder.AddColumn<string>(
-                name: "RIMZXNumber",
+            migrationBuilder.AddColumn<bool>(
+                name: "needsZXNumber",
+                table: "DepartmentsTable",
+                type: "bit",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "ContractorAccountDetails",
                 table: "ApplicationListDTO",
                 type: "nvarchar(max)",
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "WaterZXNumber",
-                table: "ApplicationListDTO",
-                type: "nvarchar(max)",
-                nullable: true);*/
-
-            migrationBuilder.AddColumn<string>(
-                name: "RIMZXNumber",
-                table: "Application",
-                type: "nvarchar(max)",
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "WaterZXNumber",
+                name: "ContractorAccountDetails",
                 table: "Application",
                 type: "nvarchar(max)",
                 nullable: true);
@@ -35,20 +29,16 @@ namespace WayleaveManagementSystem.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-/*            migrationBuilder.DropColumn(
-                name: "RIMZXNumber",
+            migrationBuilder.DropColumn(
+                name: "needsZXNumber",
+                table: "DepartmentsTable");
+
+            migrationBuilder.DropColumn(
+                name: "ContractorAccountDetails",
                 table: "ApplicationListDTO");
 
             migrationBuilder.DropColumn(
-                name: "WaterZXNumber",
-                table: "ApplicationListDTO");*/
-
-            migrationBuilder.DropColumn(
-                name: "RIMZXNumber",
-                table: "Application");
-
-            migrationBuilder.DropColumn(
-                name: "WaterZXNumber",
+                name: "ContractorAccountDetails",
                 table: "Application");
         }
     }

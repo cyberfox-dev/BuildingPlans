@@ -17,11 +17,11 @@ namespace WayleaveManagementSystem.Data.Migrations
                 oldType: "float",
                 oldNullable: true);
 
-            migrationBuilder.AddColumn<bool>(
+           /* migrationBuilder.AddColumn<bool>(
                 name: "NetworkLicenses",
                 table: "ApplicationListDTO",
                 type: "bit",
-                nullable: true);
+                nullable: true);*/
 
             migrationBuilder.AddColumn<bool>(
                 name: "NetworkLicenses",
@@ -32,9 +32,9 @@ namespace WayleaveManagementSystem.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+/*            migrationBuilder.DropColumn(
                 name: "NetworkLicenses",
-                table: "ApplicationListDTO");
+                table: "ApplicationListDTO");*/
 
             migrationBuilder.DropColumn(
                 name: "NetworkLicenses",

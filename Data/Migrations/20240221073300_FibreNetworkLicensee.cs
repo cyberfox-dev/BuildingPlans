@@ -8,11 +8,11 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
+           /* migrationBuilder.AddColumn<bool>(
                 name: "isFNLConfirmation",
                 table: "ApplicationListDTO",
                 type: "bit",
-                nullable: true);
+                nullable: true);*/
 
             migrationBuilder.AddColumn<bool>(
                 name: "isFNLConfirmation",
@@ -23,9 +23,9 @@ namespace WayleaveManagementSystem.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+          /*  migrationBuilder.DropColumn(
                 name: "isFNLConfirmation",
-                table: "ApplicationListDTO");
+                table: "ApplicationListDTO");*/
 
             migrationBuilder.DropColumn(
                 name: "isFNLConfirmation",

@@ -73,6 +73,7 @@ export interface ApplicationList {
   UserID: any;
   clientAlternativeEmail: string; // chekingNotifications Sindiswa 13 February 2024
   NetworkLicensees: any;
+  ContractorAccountDetails: string; //zxNumberUpdate Sindiswa 01 March 2024
 }
 
 export interface ApplicationsList {
@@ -671,7 +672,7 @@ export class NotificationCenterComponent implements OnInit {
 
           tempApplicationListShared.isPlanning = current.isPlanning;
           tempApplicationListShared.permitStartDate = current.permitStartDate;
-
+          tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
 
           //#region escalation Sindiswa 31 January 2024
           tempApplicationList.isEscalated = current.isEscalated;
