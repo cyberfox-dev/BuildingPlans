@@ -11,7 +11,7 @@ import autoTable, { UserOptions } from 'jspdf-autotable';
 import { DatePipe } from '@angular/common';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
 import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component';
-import { ConfigService } from 'src/app/service/Config/config.service';
+import { ConfigService } from 'src/app/service/Config/config.service'; 
 import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-upload.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatTable } from '@angular/material/table';

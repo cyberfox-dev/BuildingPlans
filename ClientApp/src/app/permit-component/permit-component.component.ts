@@ -713,6 +713,7 @@ export class PermitComponentComponent implements OnInit {
   }
 
  
+ 
    //Request for delete Kyle 22-02-24
  
 }

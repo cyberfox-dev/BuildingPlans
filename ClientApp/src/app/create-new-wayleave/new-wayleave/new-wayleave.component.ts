@@ -5497,8 +5497,16 @@ export class NewWayleaveComponent implements OnInit {
           if (matchedItem) {
             // Use the SelectionModel to select the item
             this.selectionProjectSizeCheck.select(matchedItem);
+            
           }
+
+         
         }
+
+        if (data.dateSet.length > 0) {
+          this.fibreNetworkLicenses = true;
+        }
+      
         this.cdr.detectChanges();
         this.CheckToPopulateManDoc();
 
