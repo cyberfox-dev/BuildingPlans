@@ -55,7 +55,7 @@ builder.Services.AddScoped<IMandatoryDocumentUploadsService, MandatoryDocumentUp
 builder.Services.AddScoped<IGLCodeService, GLCodeService>();
 builder.Services.AddScoped<IConfigService, ConfigService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
-
+builder.Services.AddScoped<IMapService, MapService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {

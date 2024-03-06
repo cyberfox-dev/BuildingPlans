@@ -25,7 +25,7 @@ import FormTemplate from "@arcgis/core/form/FormTemplate";
 import * as esri from 'esri-leaflet';
 import Layer from "@arcgis/core/layers/Layer"
 import Draw from '@arcgis/core/views/draw/Draw';
-import { Extent, Point, Polygon } from '@arcgis/core/geometry';
+import { Extent, Point, Polygon, Polyline } from '@arcgis/core/geometry';
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import * as Geometry from '@arcgis/core/geometry/Geometry';
 import FeatureForm from '@arcgis/core/widgets/FeatureForm';
@@ -49,6 +49,9 @@ import Popup from '@arcgis/core/widgets/Popup';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import { locationToAddress } from '@arcgis/core/rest/locator';
 import Task from '@arcgis/core/tasks/Task';
+import { MapService } from 'src/app/service/Map/map.service';
+import * as watchUtils from '@arcgis/core/core/watchUtils';
+import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 
 //import * as FeatureLayerView from 'esri/views/layers/FeatureLayerView';
 
@@ -164,6 +167,7 @@ export class ProjectDetailsMapComponent implements OnInit {
     private subDepartmentForCommentService: SubDepartmentForCommentService,
     private zoneForCommentService: ZoneForCommentService,
     private notificationsService: NotificationsService,
+    private mapService: MapService
 
     /*    private query: Query,*/
     /*        @Inject(ARCGIS_CONFIG) private config: ArcgisConfig,*/
@@ -333,7 +337,6 @@ export class ProjectDetailsMapComponent implements OnInit {
 
     });
 
-
     //const map = new WebMap({
     //  portalItem: {
     //    id: "459a495fc16d4d4caa35e92e895694c8"
@@ -397,10 +400,14 @@ export class ProjectDetailsMapComponent implements OnInit {
     //});
 
     // Create a GraphicsLayer to add the search result point
+    const sketchGraphicsLayer = new GraphicsLayer();
+    sketchGraphicsLayer.title = "Sketch"
+
+    map.add(sketchGraphicsLayer);
+
+    // Create a GraphicsLayer to add the search result point
     const graphicsLayer = new GraphicsLayer();
     graphicsLayer.title = "Co-ordinate result"
-
-
 
     // Create a Popup Instance
     const customPopup = new Popup({
@@ -664,14 +671,50 @@ export class ProjectDetailsMapComponent implements OnInit {
 
 
     return this.view.when(() => {
-      //const sketch = new Sketch({
-      //  layer: graphicsLayer,
-      //  view: view,
-      //  // graphic will be selected as soon as it is created
-      //  creationMode: "update"
-      //});
 
-      /*      view.ui.add(sketch, "top-right");*/
+      //Symbol for drawn polygons and polylines
+      const mainSymbol = {
+        type: "simple-fill",
+        color: [255, 255, 0, 0.5], // Red with 50% transparency
+        outline: {
+          color: [255, 255, 0, 1], // Solid red outline
+          width: 1
+        },
+        style: "backward-diagonal", // Hatch lines style
+        // You can adjust the space between hatch lines if needed
+        // For example, space: 5 will create a gap of 5 pixels between lines
+      };
+
+      const sketch = new Sketch({
+        layer: sketchGraphicsLayer,
+        view: view,
+        // graphic will be selected as soon as it is created
+        creationMode: "update",
+        availableCreateTools: ["polygon", "polyline"], // Specify the allowed geometries (in this case, only polygons)
+        viewModel: new SketchViewModel({
+          view: view,
+          layer: sketchGraphicsLayer,
+          polygonSymbol: {
+            type: 'simple-fill',
+            style: "solid",
+            color: [0, 0, 0, 0], //transparent
+            outline: {
+              width: 1,
+              style: "solid",
+              color: [255, 0, 0, 1] //red
+            }
+          },
+          polylineSymbol: {
+            style: "solid",
+            color: [255, 0, 0, 1], //red
+            width: 1,
+            type: "simple-line"
+          }
+        }),
+        
+      });
+
+      view.ui.add(sketch, "top-right");
 
       //Add a test layer
       //var testlayer = new MapImageLayer({
@@ -726,11 +769,12 @@ export class ProjectDetailsMapComponent implements OnInit {
 
       map.add(featureLayerLine);
 
-      const fullscreen = new Fullscreen({
-        view: view
-      });
+      //Commented out fullscreen mode because it has a bug that causes the map to disappear.
+      //const fullscreen = new Fullscreen({
+      //  view: view
+      //});
 
-      view.ui.add(fullscreen, 'bottom-left');
+      //view.ui.add(fullscreen, 'bottom-left');
 
       // Create a polygon feature in the layer
       //featureLayer.applyEdits({
@@ -878,47 +922,47 @@ export class ProjectDetailsMapComponent implements OnInit {
       ///*       Add the editor widget*/
 
 
-      // At the very minimum, set the Editor's view
-      const editor = new Editor({
-        layerInfos: [{
-          layer: featureLayer,
+      // At the very minimum, set the Editor's view - Editor Commented Out
+      //const editor = new Editor({
+      //  layerInfos: [{
+      //    layer: featureLayer,
 
-          /*          maxAllowableArea: 1000000*/
-        },
-        {
-          layer: featureLayerLine,
+      //    /*          maxAllowableArea: 1000000*/
+      //  },
+      //  {
+      //    layer: featureLayerLine,
 
-          /*          maxAllowableArea: 1000000*/
-        }
-        ],
-        view: view as MapView,
+      //    /*          maxAllowableArea: 1000000*/
+      //  }
+      //  ],
+      //  view: view as MapView,
 
-        /*        allowedWorkflows: "update",*/
-      });
-      view.ui.add(editor, "top-right");
+      //  /*        allowedWorkflows: "update",*/
+      //});
+      //view.ui.add(editor, "top-right");
 
 
-      // Listen to the create event of the Editor widget.
-      editor.on('submit', (event) => {
-        // Get a reference to the feature that was just created.
-        //const graphic = event.graphic;
-        //// Set the values of the attributes for the new feature.
-        //graphic.attributes = {
-        //  LU_ACTV_STS: "9999",
-        //  /*          cREATED_bYid: "99",*/
-        //  // other attribute values
-        //};
+      // Listen to the create event of the Editor widget. - Editor Commented Out
+      //editor.on('submit', (event) => {
+      //  // Get a reference to the feature that was just created.
+      //  //const graphic = event.graphic;
+      //  //// Set the values of the attributes for the new feature.
+      //  //graphic.attributes = {
+      //  //  LU_ACTV_STS: "9999",
+      //  //  /*          cREATED_bYid: "99",*/
+      //  //  // other attribute values
+      //  //};
 
-        console.log('submitted form')
-        // Save the new feature.
-        //const featureFormViewModel = editor.viewModel.featureFormViewModel;
-        //featureFormViewModel.submit();
-      });
+      //  console.log('submitted form')
+      //  // Save the new feature.
+      //  //const featureFormViewModel = editor.viewModel.featureFormViewModel;
+      //  //featureFormViewModel.submit();
+      //});
 
-      /*      This code is hit when certain actions take place on the view area, regarding the editor. Actions such as deleting polygons. Draw actions aren't hit though :('.*/
-      editor.viewModel.watch("state", (event) => {
-        console.log(event);
-      });
+      /*      This code is hit when certain actions take place on the view area, regarding the editor. Actions such as deleting polygons. Draw actions aren't hit though :('. - Editor Commented Out*/
+      //editor.viewModel.watch("state", (event) => {
+      //  console.log(event);
+      //});
 
       //view.whenLayerView(zones).then((layerView) => {
       //  layerView.on('layerview-create', (event) => {
@@ -927,9 +971,163 @@ export class ProjectDetailsMapComponent implements OnInit {
       //  });
       //});
 
-      //This handles drawings to the polygon layer
+      // Listen to sketch widget's create event.
+      sketch.on("create", (event) => {
+
+
+        // check if the create event's state has changed to complete indicating
+        // the graphic create operation is completed.
+        if (event.state === "complete") {
+          this.toggleLoadingIndicator(true, "Processing drawing"); // Show loading indicator
+
+          // use the graphic.geometry to determine if it's a polyline or polygon
+          const drawnGeometry = event.graphic.geometry;
+          var firstPoint;
+
+          if (drawnGeometry.type === "polygon") {
+            // Handle the drawn polygon
+            const drawnPolygon = drawnGeometry as Polygon;
+
+            // Access the first point of the first ring
+            firstPoint = drawnPolygon.rings[0][0];
+            // The rest of your code for processing polygons...
+
+          } else if (drawnGeometry.type === "polyline") {
+            // Handle the drawn polyline
+            const drawnPolyline = drawnGeometry as Polyline;
+
+            // Access the first point of the first ring            
+            firstPoint = drawnPolyline.paths[0][0];
+
+            // The rest of your code for processing polylines...
+
+          }
+
+            // Buffer the drawn polygon by 20 meters
+            const bufferedGeometry = geometryEngine.geodesicBuffer(drawnGeometry, 20, 'meters') as Polygon;
+          // remove the graphic from the layer. Sketch adds
+          // the completed graphic to the layer by default.
+          /*graphicsLayer.remove(event.graphic);*/
+
+          // use the graphic.geometry to query features that intersect it
+          /*          selectFeatures(event.graphic.geometry);*/
+
+          // Convert the projected coordinates to a Point object
+          var pointObject = new Point({
+            x: firstPoint[0],
+            y: firstPoint[1],
+            spatialReference: this.view.spatialReference
+          });
+
+          this.sharedService.setCoordinateData(pointObject.longitude + "," + pointObject.latitude);
+
+          //Retrive the address for the co-ordinates above
+          // Perform reverse geocoding
+          // Create a Point object
+          const reverseGeocodeParams: __esri.locatorLocationToAddressParams = {
+            location: pointObject,
+            /*        distance: 500, // Adjust the search distance as needed*/
+            /*        outFields: ["*"] // Retrieve all fields*/
+          };
+
+          // Define the URL of the geocoding service
+          var geocodingServiceUrl = "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer";
+
+          var requestOptions = {
+            maxLocations: 1, // Limit the number of results to 1
+            minScore: 75, // Set a minimum match score
+            // Other options as needed
+          };
+
+          locationToAddress(geocodingServiceUrl, reverseGeocodeParams, requestOptions)
+            .then((response) => {
+              // Display the result
+              var address = response.address;
+              console.log("Reverse Geocoded Address:", address);
+
+              // Do something with the address (e.g., display it on the UI)
+              this.sharedService.setAddressData(address);
+            })
+            .catch((error) => {
+              console.error("Reverse Geocoding Error:", error);
+            });
+
+          let applicationIDAsString: string = this.data.applicationID.toString();
+
+          //Convert IsInternal to a string
+          var IsInternal = this.CurrentUserProfile[0].isInternal ? "Internal" : "External";
+
+          // Use the MapService to send the geometry to the backend
+          this.mapService.processGeometry(drawnGeometry, this.data.createdByID, applicationIDAsString, bufferedGeometry, IsInternal).subscribe(
+            (data: any) => {
+              this.toggleLoadingIndicator(false, ""); // Show loading indicator
+              console.log('Success:', data);
+              this.sharedService.distributionList = data.dateSet;
+
+              console.log("Distribution list:",this.sharedService.distributionList);
+              // Handle the success response from the backend as needed
+
+              //Draw buffer
+              // Create a symbol for the buffered graphic (you can customize the symbol as needed)
+              const bufferSymbol = {
+                type: "simple-fill",
+                color: [255, 255, 0, 0.5], // Red with 50% transparency
+                outline: {
+                  color: [255, 255, 0, 1], // Solid red outline
+                  width: 1
+                },
+                style: "backward-diagonal", // Hatch lines style
+                // You can adjust the space between hatch lines if needed
+                // For example, space: 5 will create a gap of 5 pixels between lines
+              };
+
+              // Create a new graphic with the buffered geometry
+              const bufferedGraphic = new Graphic({
+                // @ts-ignore
+                geometry: bufferedGeometry,
+                symbol: bufferSymbol,
+              });
+
+              // Add the buffered graphic to the array
+              /*      this.bufferedGraphics.push(bufferedGraphic);*/
+
+              // Add the buffered graphic to the map
+              this.view.graphics.add(bufferedGraphic);
+
+            },
+            (error) => {
+              console.error('Error:', error);
+              // Handle errors appropriately
+            }
+          );
+
+
+          console.log(drawnGeometry);
+        }
+      });
+
+      //This handles drawings to the polygon layer - Editor Commented Out*/
       featureLayer.on("edits", (event) => {
-        this.editFeatureServer(event)
+        //Test to send polygon to backend
+
+        // Now, get the drawn polygon's geometry
+        // @ts-ignore
+        //const drawnPolygon = event.edits.addFeatures[0].geometry;
+        //let applicationIDAsString: string = this.data.applicationID.toString();
+
+        //// Use the MapService to send the polygon to the backend
+        //this.mapService.processGeometry(drawnPolygon, this.data.createdByID, applicationIDAsString).subscribe(
+        //  (response) => {
+        //    console.log('Success:', response);
+        //    // Handle the success response from the backend as needed
+        //  },
+        //  (error) => {
+        //    console.error('Error:', error);
+        //    // Handle errors appropriately
+        //  }
+        //);
+
+                this.editFeatureServer(event)
       });
 
       //This handles drawings to the line layer
@@ -937,38 +1135,38 @@ export class ProjectDetailsMapComponent implements OnInit {
         this.editFeatureServer(event)
       });
 
-      // Listen to the 'before-apply-edits' event of the Editor widget
-      editor.on('create', (event) => {
-        if (event.addedFeatures.length > 0) {
-          const addedPolygon = event.addedFeatures[0].geometry;
+      // Listen to the 'before-apply-edits' event of the Editor widget - Editor Commented Out
+      //editor.on('create', (event) => {
+      //  if (event.addedFeatures.length > 0) {
+      //    const addedPolygon = event.addedFeatures[0].geometry;
 
-          // Create a query to check if the drawn polygon intersects any features in the target layer
-          const mapServerLayer = new FeatureLayer({
-            url: 'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/134'
-          });
+      //    // Create a query to check if the drawn polygon intersects any features in the target layer
+      //    const mapServerLayer = new FeatureLayer({
+      //      url: 'https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleave_Infrastructure/MapServer/134'
+      //    });
 
-          const query2 = new Query();
+      //    const query2 = new Query();
 
-          query2.spatialRelationship = "intersects";
+      //    query2.spatialRelationship = "intersects";
 
-          // @ts-ignore
-          query.geometry = event.edits.addFeatures[0].geometry;
-          //Add objectID to the fields returned as it isn't returned by default
-          query2.outFields = ['OBJECTID'];
+      //    // @ts-ignore
+      //    query.geometry = event.edits.addFeatures[0].geometry;
+      //    //Add objectID to the fields returned as it isn't returned by default
+      //    query2.outFields = ['OBJECTID'];
 
-          mapServerLayer.queryFeatures(query2).then((result) => {
+      //    mapServerLayer.queryFeatures(query2).then((result) => {
 
-            const features = result.features;
+      //      const features = result.features;
 
-            if (result.features.length > 0) {
-              // Prevent applying the edits
-              event.preventDefault();
-              console.log('Intersects with features in the layer. Edits not applied.');
-            }
-          });
+      //      if (result.features.length > 0) {
+      //        // Prevent applying the edits
+      //        event.preventDefault();
+      //        console.log('Intersects with features in the layer. Edits not applied.');
+      //      }
+      //    });
 
-        }
-      });
+      //  }
+      //});
 
 
 
@@ -1068,34 +1266,34 @@ export class ProjectDetailsMapComponent implements OnInit {
       //});
 
 
-      // Subscribe to the draw-complete event of the Editor widget
-      editor.viewModel.featureFormViewModel.on("submit", (event) => {
-        console.log(event);
-        // Get the drawn polygon's geometry
-        //  const drawnPolygon = event.graphic.geometry;
+      // Subscribe to the draw-complete event of the Editor widget - Editor Commented Out
+      //editor.viewModel.featureFormViewModel.on("submit", (event) => {
+      //  console.log(event);
+      //  // Get the drawn polygon's geometry
+      //  //  const drawnPolygon = event.graphic.geometry;
 
-        //  // Create a new Query object
-        //  const query = new Query();
+      //  //  // Create a new Query object
+      //  //  const query = new Query();
 
-        //  // Set the spatial relationship to "intersects" or "contains" based on your requirement
-        //  query.spatialRelationship = "intersects";
+      //  //  // Set the spatial relationship to "intersects" or "contains" based on your requirement
+      //  //  query.spatialRelationship = "intersects";
 
-        //  // Set the geometry of the query to the drawn polygon
-        //  query.geometry = drawnPolygon;
+      //  //  // Set the geometry of the query to the drawn polygon
+      //  //  query.geometry = drawnPolygon;
 
-        //  // Set up the layer in the MapServer to query against
-        //  const mapServerLayerUrl = "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves_Regions/MapServer/0"; //this checks just the electricity layer.
-        //  const mapServerLayer = new FeatureLayer({
-        //    url: mapServerLayerUrl
-        //  });
+      //  //  // Set up the layer in the MapServer to query against
+      //  //  const mapServerLayerUrl = "https://esapqa.capetown.gov.za/agsext/rest/services/Theme_Based/Wayleaves_Regions/MapServer/0"; //this checks just the electricity layer.
+      //  //  const mapServerLayer = new FeatureLayer({
+      //  //    url: mapServerLayerUrl
+      //  //  });
 
-        //  // Perform the spatial query
-        //  mapServerLayer.queryFeatures(query).then((result) => {
-        //    // Handle the resulting features that intersect or are within the drawn polygon
-        //    const features = result.features;
-        //    // Do something with the features
-        //  });
-      });
+      //  //  // Perform the spatial query
+      //  //  mapServerLayer.queryFeatures(query).then((result) => {
+      //  //    // Handle the resulting features that intersect or are within the drawn polygon
+      //  //    const features = result.features;
+      //  //    // Do something with the features
+      //  //  });
+      //});
 
       ///*       create a new instance of draw*/
       //      let draw = new Draw({
@@ -1838,7 +2036,7 @@ export class ProjectDetailsMapComponent implements OnInit {
       query.geometry = event.edits.addFeatures[0].geometry;
 
       // Add the original polygon graphic to the array so its buffer can be managed if deleted or edited on the map
-/*      this.addedFeatures.push(event.edits.addFeatures[0]);*/
+      /*      this.addedFeatures.push(event.edits.addFeatures[0]);*/
 
       // Buffer the drawn polygon by 20 meters
       const bufferedGeometry = geometryEngine.geodesicBuffer(query.geometry, 20, 'meters');
@@ -1867,7 +2065,7 @@ export class ProjectDetailsMapComponent implements OnInit {
       });
 
       // Add the buffered graphic to the array
-/*      this.bufferedGraphics.push(bufferedGraphic);*/
+      /*      this.bufferedGraphics.push(bufferedGraphic);*/
 
       // Add the buffered graphic to the map
       this.view.graphics.add(bufferedGraphic);
@@ -2127,5 +2325,7 @@ export class ProjectDetailsMapComponent implements OnInit {
       this.takingTooLong = "";
     }
   }
+
+  // Function to buffer a given geometry by a specified distance
 
 }
