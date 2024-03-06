@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SharedService } from 'src/app/shared/shared.service';
+import { borderBottomLeftRadius } from 'html2canvas/dist/types/css/property-descriptors/border-radius';
 
 @Injectable({
   providedIn: 'root'
@@ -214,6 +215,19 @@ export class ApplicationsService {
   public getZXDetails(applicationID: number) {
 
     return this.httpClient.post(this.baseURL + "GetZXDetails", applicationID);
+
+  }
+  //#endregion
+
+  //#region
+  public addUpdateContractorAccountDetails(applicationID: number, contractorAccountDetails:string) {
+
+    const body = {
+      ApplicationID: applicationID,
+      ContractorAccountDetails: contractorAccountDetails,
+    }
+
+    return this.httpClient.post(this.baseURL + "AddUpdateContractorAccountDetails", body);
 
   }
   //#endregion

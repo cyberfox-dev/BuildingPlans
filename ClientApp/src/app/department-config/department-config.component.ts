@@ -23,6 +23,7 @@ export interface DepartmentList {
   dateUpdated: any;
   dateCreated: any;
   hasSubDepartment: boolean;
+  needsZXNumber: boolean; //zxNumberUpdate Sindiswa 01 March 2024
 }
 
 
@@ -551,11 +552,12 @@ export class DepartmentConfigComponent implements OnInit {
   }
 
   getAllDepartments() {
+    debugger;
     this.DepartmentList.splice(0, this.DepartmentList.length);
     this.departmentService.getDepartmentsList().subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-
+        debugger;
 
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDepartmentList = {} as DepartmentList;
@@ -565,6 +567,7 @@ export class DepartmentConfigComponent implements OnInit {
           tempDepartmentList.dateUpdated = current.dateUpdated;
           tempDepartmentList.dateCreated = current.dateCreated;
           tempDepartmentList.hasSubDepartment = current.hasSubDepartment;
+          tempDepartmentList.needsZXNumber = current.needsZXNumber;//zxNumberUpdate Sindiswa 01 March 2024
           this.DepartmentList.push(tempDepartmentList);
 
         }
@@ -1545,6 +1548,48 @@ export class DepartmentConfigComponent implements OnInit {
     }
   }
   // #endregion
+
+
+  //#region zxNumberUpdate Sindiswa 01 March 2024
+  selectedZXDepartmentID: number;
+  selectedHasSubdepartment: boolean;
+
+  onViewSetZXNumber2(index: number, zxNumberDptModal: any) {
+    debugger;
+    this.selectedDepartmentName = this.DepartmentList[index].departmentName;
+    this.selectedZXneedsZXNumber = this.DepartmentList[index].needsZXNumber;
+    this.selectedZXDepartmentID = this.DepartmentList[index].departmentID;
+    this.selectedHasSubdepartment = this.DepartmentList[index].hasSubDepartment;
+    this.modalService.open(zxNumberDptModal, { backdrop: 'static', centered: true, size: 'lg' });
+
+  }
+
+  onSaveZXNumberBool2() {
+    debugger;
+    const confirm = window.confirm("Are you sure you want to change this setting?");
+
+    if (confirm) {
+      this.departmentService.addUpdateDepartment(this.selectedZXDepartmentID, this.selectedDepartmentName, this.selectedHasSubdepartment, null, this.selectedZXneedsZXNumber).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          alert("Configuration has been changed accordingly.");
+          this.getAllDepartments();
+
+          this.selectedZXDepartmentID = null;
+          this.selectedDepartmentName = null;
+          this.selectedZXneedsZXNumber = null;
+          this.selectedHasSubdepartment = null;
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("Saving ZX Number things", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+  }
+  //#endregion
 
   //#region
   SubdepartmentExpiryList: SubDepartmentDropdown[] = [];

@@ -51,6 +51,7 @@ export interface ApplicationList {
   UserID: any;
   clientAlternativeEmail: string; //checkingNotifications Sindiswa 15 February 2024
   NetworkLicensees: string;
+  ContractorAccountDetails: string; //zxNumberUpdate Sindiswa 01 March 2024
 }
 
 @Component({
@@ -187,6 +188,7 @@ export class ApplicationAlertsComponent implements OnInit {
           tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
           tempApplicationListShared.DatePaid = current.datePaid;
           tempApplicationListShared.wbsrequired = current.wbsRequired;
+          tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
           
           tempApplicationListShared.Coordinates = current.coordinates;
           if (current.projectNumber != null) {

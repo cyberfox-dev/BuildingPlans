@@ -61,6 +61,7 @@ namespace WayleaveManagementSystem.Data
         //Audit Trail Kyle 
         public DbSet<AuditTrail> AuditTrail { get; set; }
         public DbSet<DocumentsRepository> DocumentsRepository { get; set; }
+        public DbSet<ZXNumberLog> ZXNumberLog { get; set; } //zxNumberUpdate Sindiswa 01 March 2024
         // Virtual Db Sets for SPs go here
         public virtual DbSet<UserSpDTO> UserSpDTOs { get; set; }
 
