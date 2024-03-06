@@ -370,6 +370,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   externalUser: boolean = false;
   ActingAsInternal: boolean = false;
   public EMB: boolean = false;
+  disableButtons: boolean = false;
 
   constructor(
     private router: Router,
@@ -648,8 +649,14 @@ export class HomeComponent implements OnInit, OnDestroy {
 
           let startDate = this.parseDate(start);
           let endDate = this.parseDate(end);
-
-
+          //Banner Kyle 06-03-24
+          if (current.utilitySlot2 == "0") {
+            this.disableButtons = false;
+          }
+          else if (current.utilitySlot2 == "1") {
+            this.disableButtons = true;
+          }
+          console.log("Testing alerts", current, this.disableButtons);
           
           if (currentDate >= startDate && currentDate < endDate) {
             

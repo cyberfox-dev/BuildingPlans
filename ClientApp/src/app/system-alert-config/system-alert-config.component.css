@@ -74,8 +74,24 @@ mat-column-StartDate, mat-column-EndtDate, mat-column-DateCreated {
   hyphens: auto;
   text-align: center;
 }
+
 .button-group {
   display: flex;
   justify-content: space-around;
   margin: 5px; /* Adjust as needed */
+  margin: 5px; /* Adjust as needed */
+}
+.mat-column-isDisabled{
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 15% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  text-align: center
 }
