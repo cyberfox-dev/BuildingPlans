@@ -30,16 +30,18 @@ export class SubDepartmentForCommentService {
     return this.httpClient.post(this.baseURL + "AddUpdateDepartmentForComment", body);
 
   }
-
-  public departmentForCommentUserAssaignedToComment(subDepartmentForCommentID: number | null, userAssaignedToComment: string | null) {
+          //JJS GISReviewer 04-03-24
+  public departmentForCommentUserAssaignedToComment(subDepartmentForCommentID: number | null, userAssaignedToComment: string | null, isGISReviewing: boolean|null,GISReviewerUserID:string|null) {
 
     const body = {
       SubDepartmentForCommentID: subDepartmentForCommentID,
       UserAssaignedToComment: userAssaignedToComment,
-
+      isGISReviewing: isGISReviewing,
+      GISReviewerUserID: GISReviewerUserID
     }
     return this.httpClient.post(this.baseURL + "DepartmentForCommentUserAssaignedToComment", body);
   }
+
 
   public departmentForCommentFinalAppovalUserToComment(subDepartmentForCommentID: number | null, userAssaignedToComment: string | null) {
 

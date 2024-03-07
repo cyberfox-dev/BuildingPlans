@@ -8,7 +8,9 @@ namespace WayleaveManagementSystem.IServices
     public interface ISubDepartmentForCommentService
     {
         Task<SubDepartmentForComment> AddUpdateDepartmentForComment(int? subDepartmentForCommentID, int? applicationID , int? subDepartmentID, string subDepartmentName, string? userAssaignedToComment, string? commentStatus, string? creadtedByID, int? zoneID, string zoneName);
-        Task<bool> DepartmentForCommentUserAssaignedToComment(int? subDepartmentForCommentID, string? userAssaignedToComment);
+
+        //JJS GISReviewer 04-03-24
+        Task<bool> DepartmentForCommentUserAssaignedToComment(int? subDepartmentForCommentID, string? userAssaignedToComment,bool? isGISReviewing,string? GISReviewwerUserID);
 
         Task<bool> DepartmentForCommentFinalAppovalUserToComment(int? subDepartmentForCommentID, string? userAssaignedToComment);
 

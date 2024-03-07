@@ -24,6 +24,8 @@ export interface SubDepartmentList {
   zoneID: number;
   zoneName: string;
   zoneUser: string;
+  isGISReviewing: boolean;
+  GISReviewerUserID: string;
 }
 const ELEMENT_DATA: PeriodicElement[] = [
   { dep: 'Water & Sanitation', indication:'green' },
@@ -105,10 +107,10 @@ export class DepartmentCirculationComponent implements OnInit {
 
       if (data.responseCode == 1) {
 
-
+/*JJS 07-03-24 GIS Reviewer*/
         for (var i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
-          
+          debugger;
           const tempSubDepartmentList = {} as SubDepartmentList;
           tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
           tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
@@ -119,13 +121,17 @@ export class DepartmentCirculationComponent implements OnInit {
           tempSubDepartmentList.IsRefered = current.isRefered;
           tempSubDepartmentList.commentStatus = current.commentStatus;
           tempSubDepartmentList.zoneID = current.zoneID;
+          tempSubDepartmentList.isGISReviewing = current.isGISReviewing;
+          tempSubDepartmentList.GISReviewerUserID = current.gisReviewerUserID;
+
           if (tempSubDepartmentList.subDepartmentName == "IS&T" || tempSubDepartmentList.subDepartmentName == "Bulk Water") {
             tempSubDepartmentList.zoneName = "CCT";
           } else {
             tempSubDepartmentList.zoneName = current.zoneName;
           }
-          tempSubDepartmentList.UserAssaignedToComment = current.userAssaignedToComment; //projectTracker Sindiswa 12 January 2024
 
+          tempSubDepartmentList.UserAssaignedToComment = current.userAssaignedToComment; //projectTracker Sindiswa 12 January 2024
+          debugger;
           //#region projectTracker Sindiswa 15 January 2024
           if (tempSubDepartmentList.UserAssaignedToComment === "EndOfCommentProcess") {
             tempSubDepartmentList.zoneUser = "End Of Comment Process";
@@ -133,13 +139,17 @@ export class DepartmentCirculationComponent implements OnInit {
           else {
             tempSubDepartmentList.zoneUser = current.userAssaignedToComment;
           }
-         
-          if (tempSubDepartmentList.UserAssaignedToComment === null) {
+
+          if (tempSubDepartmentList.UserAssaignedToComment === null && tempSubDepartmentList.isGISReviewing != true) {
             tempSubDepartmentList.zoneUser = "Not Yet Assigned to Reviewer";
           } //edited on the 17th by Sindiswa, 10:10, 12:20
-          else if (tempSubDepartmentList.UserAssaignedToComment !== "EndOfCommentProcess" && tempSubDepartmentList.UserAssaignedToComment !== "All users in Subdepartment FA" && tempSubDepartmentList.UserAssaignedToComment !== "Senior Reviewer to comment") {
+          else if (tempSubDepartmentList.UserAssaignedToComment !== "EndOfCommentProcess" && tempSubDepartmentList.UserAssaignedToComment !== "All users in Subdepartment FA" && tempSubDepartmentList.UserAssaignedToComment !== "Senior Reviewer to comment" && tempSubDepartmentList.isGISReviewing != true) {
             tempSubDepartmentList.zoneUser = await this.getUserName(current.userAssaignedToComment);
           }
+          else if (tempSubDepartmentList.isGISReviewing == true && tempSubDepartmentList.GISReviewerUserID != null) {
+            tempSubDepartmentList.zoneUser = await this.getUserName(tempSubDepartmentList.GISReviewerUserID);
+          }
+          
           //#endregion
 
           this.SubDepartmentList.push(tempSubDepartmentList);
@@ -167,6 +177,7 @@ export class DepartmentCirculationComponent implements OnInit {
 
   async getUserName(userID: any): Promise<string> {
     try {
+      debugger;
       const data: any = await this.userProfileService.getUserProfileById(userID).toPromise();
       
       if (data.responseCode === 1) {

@@ -14,11 +14,11 @@ namespace WayleaveManagementSystem.Data.Migrations
                 type: "bit",
                 nullable: true);
 
-            migrationBuilder.AddColumn<string>(
-                name: "ContractorAccountDetails",
-                table: "ApplicationListDTO",
-                type: "nvarchar(max)",
-                nullable: true);
+            //migrationBuilder.AddColumn<string>(
+            //    name: "ContractorAccountDetails",
+            //    table: "ApplicationListDTO",
+            //    type: "nvarchar(max)",
+            //    nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "ContractorAccountDetails",
@@ -33,9 +33,9 @@ namespace WayleaveManagementSystem.Data.Migrations
                 name: "needsZXNumber",
                 table: "DepartmentsTable");
 
-            migrationBuilder.DropColumn(
-                name: "ContractorAccountDetails",
-                table: "ApplicationListDTO");
+            //migrationBuilder.DropColumn(
+            //    name: "ContractorAccountDetails",
+            //    table: "ApplicationListDTO");
 
             migrationBuilder.DropColumn(
                 name: "ContractorAccountDetails",

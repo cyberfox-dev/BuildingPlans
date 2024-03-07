@@ -138,7 +138,8 @@
             <div class="row" *ngFor="let commentsList of CommentsList; let i = index" [style.margin-left.px]="(i % 2 === 0) ? 60 : 80" [style.margin-right.px]="(i % 2 === 0) ? 60 : 80">
               <div class="col s12 m12 l12" *ngIf="!(commentsList.CommentStatus === 'Referred' && referComment)">
                 <!---Change Wording Kyle 15/01/24-->
-                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Provisionally Approved'||commentsList.CommentStatus === 'Approved(Conditional)' " [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved'|| commentsList.CommentStatus === 'Complete' " [class.Reject]="commentsList.CommentStatus === 'FinalReject'||commentsList.CommentStatus === 'Rejected'||commentsList.CommentStatus === 'Provisionally Rejected'|| commentsList.CommentStatus === 'Final Rejected' " [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'|| commentsList.CommentStatus === 'Reviewer Clarify' || commentsList.CommentStatus == 'Applicant Clarify' || commentsList.CommentStatus ==='Applicant Clarified'" [class.reviewerClarify]="commentsList.CommentStatus === 'Reviewer Clarified' || commentsList.CommentStatus === 'Reviewer Clarity'" [class.refer]="commentsList.CommentStatus === 'Referred'" [class.returned]="commentsList.CommentStatus === 'Returned'">
+                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Provisionally Approved'||commentsList.CommentStatus === 'Approved(Conditional)' " [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved'|| commentsList.CommentStatus === 'Complete' " [class.Reject]="commentsList.CommentStatus === 'FinalReject'||commentsList.CommentStatus === 'Rejected'||commentsList.CommentStatus === 'Provisionally Rejected'|| commentsList.CommentStatus === 'Final Rejected' " [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'|| commentsList.CommentStatus === 'Reviewer Clarify' || commentsList.CommentStatus == 'Applicant Clarify' || commentsList.CommentStatus ==='Applicant Clarified'" [class.reviewerClarify]="commentsList.CommentStatus === 'Reviewer Clarified' || commentsList.CommentStatus === 'Reviewer Clarity'" [class.refer]="commentsList.CommentStatus === 'Referred'" [class.returned]="commentsList.CommentStatus === 'Returned'" [class.GISReviewed]="commentsList.CommentStatus ==='GIS Reviewed'">
+                  <!--JJS 07-03-24 GIS Reviewer-->
 
                   <li class="event" data-date="">
 
@@ -155,8 +156,8 @@
 
                     <!--<p>
 
-                      {{commentsList.Comment}}
-                    </p>-->
+      {{commentsList.Comment}}
+    </p>-->
 
                     <br />
 

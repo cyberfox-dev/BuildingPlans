@@ -19,13 +19,13 @@ import { ApplicationsService} from '../service/Applications/applications.service
 import { UserProfileService } from '../service/UserProfile/user-profile.service';
 import { SharedService } from 'src/app/shared/shared.service';
 import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
-import { CommentsList, ViewProjectInfoComponent } from 'src/app/view-project/view-project-info/view-project-info.component';
+import { CommentsList, MandatoryDocumentUploadList, ViewProjectInfoComponent } from 'src/app/view-project/view-project-info/view-project-info.component';
 import { PermitComponentComponent } from 'src/app/permit-component/permit-component.component';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 import { RefreshService } from 'src/app/shared/refresh.service';
 import { PermitService } from 'src/app/service/Permit/permit.service';
 import { StagesService } from 'src/app/service/Stages/stages.service';
-import { catchError, map, Observable, of } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { DatePipe } from '@angular/common';
@@ -50,12 +50,21 @@ import { ReviewerforcommentService } from '../service/ReviewerForComment/reviewe
 import { AuditTrailService } from '../service/AuditTrail/audit-trail.service';
 import { FinancialService } from '../service/Financial/financial.service';
 import { ConfigService } from '../service/Config/config.service';
+import { MandatoryDocumentStageLinkService } from '../service/MandatoryDocumentStageLink/mandatory-document-stage-link.service';
  //Audit Trail Kyle
 declare var tinymce: any;
 
+/*JJS 07-03-24 GIS Reviewer*/
 
-
-
+export interface MandatoryDocumentsLinkedStagesList {
+  mandatoryDocumentStageLinkID: number;
+  mandatoryDocumentID: number;
+  mandatoryDocumentName: string;
+  stageID: number;
+  stageName: string;
+  dateCreated: any;
+  uploads: Array<{ filename: string; /*... other properties*/ }>;
+}
 export interface SubDepartmentList {
   zoneID: any;
   subDepartmentID: number;
@@ -149,6 +158,14 @@ export interface ZoneList {
   subDepartmentID: number;
   zoneForCommentID: number | null;
 }
+export interface DocumentsList {
+  DocumentID: number;
+  DocumentName: string;
+  DocumentLocalPath: string;
+  ApplicationID: number;
+  AssignedUserID: string;
+  DocumentGroupName: string;
+}
 
 export interface CommentList {
   CommentID: number;
@@ -218,21 +235,30 @@ export interface ServiceInfoDocumentsList {
 })
 export class ActionCenterComponent implements OnInit {
 
+  dummyData = [
+    { mandatoryDocumentName: 'Document 1' },
+    { mandatoryDocumentName: 'Document 2' },
+    // Add more dummy data as needed
+  ];
 
-
+  // Convert the array to an Observable
+  Files: Observable<any[]> = of(this.dummyData);
+  DocumentsList: DocumentsList[] = [];
   fileAttr = 'Choose File';
   @Input() ApplicationID: any;
   @Input() CurrentApplicant: any;
   roles: string;
   CurrentApplication: any;
-  fileAttrs: any;
+  /* fileAttrs: string = '';*/
   departmentAdminUsers: any;
   seniorReviewerUsers: any;
   finalApproverUsers: any;
   reviewerUsers: any;
+  GISreviewerUsers: any;
   EMBUsers: any;
   developerUsers: any;
   canCommentSeniorReviewer: boolean;
+  isGISReviewing: boolean;
   countApprove = 0;
   countReject = 0;
   SubDepartmentListForCheck: SubDepartmentList[] = [];
@@ -241,8 +267,8 @@ export class ActionCenterComponent implements OnInit {
   canApprovePermit: boolean;
   showPermitTab: boolean;
   applicationData: ApplicationList;
-
-
+  MandatoryDocumentUploadList: MandatoryDocumentUploadList[] = [];
+  MandatoryDocumentsLinkedStagesList = new BehaviorSubject<MandatoryDocumentsLinkedStagesList[]>([]);
 
   currentDate = new Date();
   datePipe = new DatePipe('en-ZA');
@@ -331,6 +357,7 @@ export class ActionCenterComponent implements OnInit {
   LinkedUserToSub: UserZoneList[] = [];
   ReviewerUserList: UserZoneList[] = [];
   PermitIssuerList: UserZoneList[] = [];
+  GISReviewerUserList: UserZoneList[] = [];
   PTCList: PTCList[] = [];
   PTCListForCheck: PTCList[] = [];
 
@@ -352,6 +379,12 @@ export class ActionCenterComponent implements OnInit {
 
   displayedColumnsViewUsersForLink: string[] = ['fullName', 'actions'];
   dataSourceViewUsersForLink = this.ReviewerUserList;
+
+  displayedColumnsViewUsersForLinkForGISReview: string[] = ['fullName', 'actions'];
+  dataSourceViewUsersForLinkForGISReview = this.GISReviewerUserList;
+
+  displayedColumnsViewlinkedUserForCommentForGISReview: string[] = ['fullName'];
+  dataSourceViewUserForCommentForGISReview = this.GISReviewerUserList;
 
   displayedColumnsViewlinkedUserForComment: string[] = ['fullName'];
   dataSourceViewUserForComment = this.LinkedUserToSub;
@@ -415,6 +448,7 @@ export class ActionCenterComponent implements OnInit {
     private commentsService: CommentsService,
     private applicationsService: ApplicationsService,
     public sharedService: SharedService,
+    private mandatoryDocumentStageLink: MandatoryDocumentStageLinkService,
     private accessGroupsService: AccessGroupsService,
     private viewProjectInfoComponent: ViewProjectInfoComponent,
     private router: Router,
@@ -466,6 +500,7 @@ export class ActionCenterComponent implements OnInit {
   selectSI = 0;
 
   leaveAComment = "";
+  leaveACommentGIS = "";
 
   EMBLoggedIn: boolean; ///escalation Sindiswa 30 January 2024
 
@@ -564,6 +599,7 @@ export class ActionCenterComponent implements OnInit {
     this.getServicesByDepID();
     this.getUsersByRoleName("Senior Reviewer");
     this.getUsersByRoleName("Final Approver");
+    this.getUsersByRoleName("GIS Reviewer");
     this.getZoneForCurrentUser();
     this.getPreviousReviewerUserID();
     this.checkIfWbsRequired();
@@ -627,7 +663,176 @@ export class ActionCenterComponent implements OnInit {
 
 
   }
-    //PTW flow Kyle 06-03-24
+/*JJS 07-03-24 GIS Reviewer*/
+  @Input() ServiceConditionActive: boolean | null;
+
+  // Assuming fileAttrs is a string, you may adjust the type accordingly
+
+  fileUploads: string[] = ['']; // Array to store file upload fields
+  fileAttrs: string[] = [''];
+  // Method to handle adding another upload field
+  addAnotherUploadField() {
+    // Push an empty string to the fileUploads array
+    this.fileUploads.push('');
+  }
+
+  hasFile: boolean;
+  lastUploadEvent: any;
+  ConfirmUpload() {
+    if (!window.confirm("Are you sure you want to upload these files? Please make sure you upload all documents, NOTE: the application will be moved on once you click upload documents!")) {
+      // Use the stored event data
+      this.onFileDelete(this.lastUploadEvent, 0);
+      this.router.navigate(["/home"]);
+      this.openSnackBar("Application Actioned");
+    } else {
+      this.permitComponentComponent.getAllPermitForComment();
+    }
+    // Rest of the logic...
+  }
+  changeHasFile() {
+    if (this.hasFile) {
+      this.hasFile = false;
+    } else {
+      this.hasFile = true;
+
+    }
+  }
+  removeDocument(index: number) {
+    this.fileAttrs.splice(index, 1); // Remove the document's name from the array
+    this.fileUploads.splice(index, 1); // Remove the upload field
+  }
+  getAllDocsForApplication() {
+
+    this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempDocList = {} as DocumentsList;
+
+          const current = data.dateSet[i];
+          const nameCheck = current.documentName.substring(0, 13);
+
+          if (current.documentName != "Service Condition" && nameCheck != "Approval Pack") {
+            tempDocList.DocumentID = current.documentID;
+            tempDocList.DocumentName = current.documentName;
+            tempDocList.DocumentLocalPath = current.documentLocalPath;
+            tempDocList.ApplicationID = current.applicationID;
+            tempDocList.AssignedUserID = current.assignedUserID;
+
+            this.DocumentsList.push(tempDocList);
+          }
+
+        }
+
+
+        console.log("GOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCSGOTALLDOCS", this.DocumentsList[0]);
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponseGetAllDocsForApplication", data);
+
+    }, error => {
+      console.log("ErrorGetAllDocsForApplication: ", error);
+    })
+
+  }
+  onCloseFile() {
+    if (this.hasFile) {
+      if (confirm("The file will be uploaded if you proceed. Click 'OK' to upload or 'Cancel' to delete the file before proceeding.")) {
+        this.modalService.dismissAll();
+      }
+      else {
+
+      }
+
+    } else {
+      this.modalService.dismissAll();
+    }
+
+
+  }
+  totalDocs: number;
+  totalDocs2: string;
+  updateMandatoryDocumentsLinkedStagesList(list: any[]) {
+
+    const newList = list.map(current => {
+      const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
+      if (current.mandatoryDocumentName != "Construction Program or Phasing Program" && current.mandatoryDocumentName != "Traffic Management Plan" && current.mandatoryDocumentName != "Drill plan")   //Project size Kyle 27-02-24
+        tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+      tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
+      tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+      tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+      tempMandatoryDocumentsLinkedStagesList.stageName = null;
+      tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+      return tempMandatoryDocumentsLinkedStagesList;
+    });
+
+    this.MandatoryDocumentsLinkedStagesList.next(newList);
+    // set totalDocs to the length of the list
+    this.totalDocs = newList.length;
+    this.totalDocs2 = Number(this.totalDocs).toString();
+  }
+  trackByFn(index, item) {
+    return item.mandatoryDocumentID; // or any unique id from the object
+  }
+
+  deleteUploader(index: number) {
+
+    let currentList2 = this.MandatoryDocumentsLinkedStagesList.getValue();
+    let current = currentList2[index];
+    //Delete Uploader Kyle 29-01-24
+    let hasDoc: Boolean = false;
+
+    this.documentUploadService.getAllDocumentsForApplication(this.sharedService.applicationID).subscribe(async (data: any) => {
+
+      if (data.responseCode == 1) {
+        //Check if there's an uploaded file for the current document
+        for (let i = 0; i < data.dateSet.length; i++) {
+
+          const doc = data.dateSet[i].documentName;
+          const docName = doc.substring(0, doc.indexOf("_"));
+
+          if (docName == current.mandatoryDocumentName) {
+            hasDoc = true;
+          }
+        }
+
+        if (hasDoc == true) {
+          // If a file has been uploaded for this document, show an alert to inform the user
+          alert('A file has been uploaded for this document. Please remove the file first before removing.');
+
+        }
+        else {
+          if (confirm("Are you sure you want to remove this document upload?")) {
+            let currentList = this.MandatoryDocumentsLinkedStagesList.getValue();
+
+            // Remove the item at the given index
+            currentList.splice(index, 1);
+
+            // Update the BehaviorSubject with the modified list
+            this.MandatoryDocumentsLinkedStagesList.next(currentList);
+
+            // If you're updating some UI or state based on the list change, call the appropriate function
+            this.updateMandatoryDocumentsLinkedStagesList(currentList);
+          }
+        }
+
+      }
+      else {
+
+        alert(data.responseMessage);
+      }
+
+
+    }, error => {
+      console.log("Error: ", error);
+
+    })
+    //Delete Uploader Kyle 29-01-24
+  }
   canApprovePTW() {
     this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
       if (data.responseCode == 1) {
@@ -734,6 +939,7 @@ export class ActionCenterComponent implements OnInit {
           // this.sharedService.setStageData(this.StagesList);
         }
         this.CanComment();
+        this.checkForGISReviewing();
         console.log("this.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesListthis.StagesList ", this.StagesList);
       }
       else {
@@ -1460,6 +1666,29 @@ export class ActionCenterComponent implements OnInit {
       this.ReviewerUserList.push(tempreviewer);
     }
   }
+/*JJS 07-03-24 GIS Reviewer*/
+  getGISReviewerForLink() {
+
+    this.GISReviewerUserList.splice(0, this.GISReviewerUserList.length);
+
+
+    for (var i = 0; i < this.GISreviewerUsers.length; i++) {
+
+      var reviewer = this.GISreviewerUsers[i];
+
+      const tempreviewer = {} as UserZoneList;
+
+
+      tempreviewer.Email = reviewer.email;
+      tempreviewer.fullName = reviewer.fullName;
+      tempreviewer.id = reviewer.userID;
+      tempreviewer.zoneLinkID = reviewer.subDepartmentID;
+
+
+      this.GISReviewerUserList.push(tempreviewer);
+    }
+  }
+
 
   setRoles() {
 
@@ -1501,6 +1730,7 @@ export class ActionCenterComponent implements OnInit {
               this.AssignUserForComment = true;
               this.getUsersByRoleName("Reviewer");
             }
+
           }
 
 
@@ -1717,8 +1947,37 @@ export class ActionCenterComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
+/*JJS 07-03-24 GIS Reviewer*/
+  checkForGISReviewing() {
 
+    this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
+      if (data.responseCode == 1) {
+
+        for (var i = 0; i < data.dateSet.length; i++) {
+
+          let current = data.dateSet[i];
+          if (current.isGISReviewing == true && current.gisReviewerUserID == this.CurrentUser.appUserId) {
+            this.isGISReviewing = true;
+            return;
+          }
+          else {
+
+          }
+        }
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponse", data);
+      this.getUsersByRoleName("Senior Reviewer");
+
+      // this.CanCommentFinalApprover();
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
 
   getPreviousReviewerUserID() {
 
@@ -2227,7 +2486,102 @@ export class ActionCenterComponent implements OnInit {
 
 
     if (confirm("Are you sure you what to assign this project to " + this.UserSelectionForManualLink.selected[0].fullName + "?")) {
-      this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.forManuallyAssignSubForCommentID, this.UserSelectionForManualLink.selected[0].id).subscribe((data: any) => {
+      this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.forManuallyAssignSubForCommentID, this.UserSelectionForManualLink.selected[0].id, false, "").subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+
+          this.getLinkedZones();
+          this.updateApplicationStatus();
+          this.MoveApplicationToAllocated();
+          this.viewProjectInfoComponent.getAllComments();
+          this.refreshParent.emit();
+
+          const emailContent = `
+      <html>
+        <head>
+          <style>
+            /* Define your font and styles here */
+            body {
+             font-family: 'Century Gothic';
+            }
+            .email-content {
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+            }
+            .footer {
+              margin-top: 20px;
+              color: #777;
+            }
+            .footer-logo {
+              display: inline-block;
+              vertical-align: middle;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-content">
+            <p>Dear ${this.UserSelectionForManualLink.selected[0].fullName},</p>
+            <p>You have been assigned as reviewer for application ${this.projectNo}. Please login to the Wayleave Management System and proceed accordingly.</p>
+                <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                          <p>
+              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+            </p>
+             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+          </div>
+
+        </body>
+      </html>
+    `;
+
+
+          this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "Review Wayleave Application", emailContent, emailContent);
+          if (this.UserSelectionForManualLink.selected[0].alternativeEmail) { //checkingNotifications 15 February 2024
+            this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].alternativeEmail, "Review Wayleave Application", emailContent, emailContent);
+          }
+/*          this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "New Wayleave Application", "check html", "Dear " + this.UserSelectionForManualLink.selected[0].fullName + ",<br><br>You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+*/          this.notificationsService.addUpdateNotification(0, "Review Wayleave Application", "Application Assigned", false, this.UserSelectionForManualLink.selected[0].id, this.ApplicationID, this.CurrentUser.appUserId, "You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.").subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+
+              console.log("This is what happens when a reviewer is assigned:");
+              console.log("These are the selected human's details?", this.UserSelectionForManualLink.selected[0]);
+              console.log("This should be the reviewer's UserID", this.UserSelectionForManualLink.selected[0].id);
+              console.log("This should be the logged in admin's UserID - original assignment", this.CurrentUser.appUserID);
+              console.log("This should be the logged in admin's UserID", this.CurrentUser.appUserId);
+            }
+            else {
+              alert(data.responseMessage);
+            }
+
+            console.log("response", data);
+          }, error => {
+            console.log("Error", error);
+          });
+        }
+        else {
+          alert(data.responseMessage);
+
+        }
+        console.log("reponse", data);
+        this.modalService.dismissAll();
+        this.openSnackBar("User Assigned Successfully");
+        this.router.navigate(["/home"]);
+
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+
+    }
+  }
+/*JJS 07-03-24 GIS Reviewer*/
+  onManuallyAssignGISReviewer() {
+
+
+    if (confirm("Are you sure you what to assign this project to " + this.UserSelectionForManualLink.selected[0].fullName + "?")) {
+      this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.forManuallyAssignSubForCommentID, null, true, this.UserSelectionForManualLink.selected[0].id).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
 
@@ -2318,8 +2672,6 @@ export class ActionCenterComponent implements OnInit {
     }
   }
 
-
-
   getUsersByRoleName(roleName?: string | null) {
 
     if (roleName == "Department Admin") {
@@ -2328,7 +2680,8 @@ export class ActionCenterComponent implements OnInit {
         if (data.responseCode == 1) {
 
           this.departmentAdminUsers = data.dateSet;
-
+          this.GISreviewerUsers = data.dateSet;
+          this.getGISReviewerForLink();
           console.log("this.departmentAdminUsersgetAllLinkedRolesReponsethis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsersthis.departmentAdminUsers", this.departmentAdminUsers);
         }
         else {
@@ -2379,6 +2732,24 @@ export class ActionCenterComponent implements OnInit {
 
           this.reviewerUsers = data.dateSet;
           this.getReviewerForLink();
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("getAllLinkedRolesReponse", data);
+
+      }, error => {
+        console.log("getAllLinkedRolesReponseError: ", error);
+      })
+    }
+    else if (roleName == "GIS Reviewer") {
+      debugger
+      this.accessGroupsService.getUsersBasedOnRoleName(roleName, this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+
+          this.GISreviewerUsers = data.dateSet;
+          this.getGISReviewerForLink();
         }
         else {
           alert(data.responseMessage);
@@ -2512,7 +2883,7 @@ export class ActionCenterComponent implements OnInit {
 
         if (confirm("Are you sure you what to assign this project to you?")) {
 
-          this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.SubForCommentIDForHopper, this.CurrentUser.appUserId).subscribe((data: any) => {
+          this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.SubForCommentIDForHopper, this.CurrentUser.appUserId, false, null).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
 
@@ -4365,6 +4736,9 @@ export class ActionCenterComponent implements OnInit {
   openAssignToUser(assignProjectToUser: any) {
     this.modalService.open(assignProjectToUser, { backdrop: 'static', size: 'xl' });
   }
+  openAssignToUserGISReviewer(assignProjectToUserGISReviewer: any) {
+    this.modalService.open(assignProjectToUserGISReviewer, { backdrop: 'static', size: 'xl' });
+  }
   openAssignDepartment(assign: any) {
     this.modalService.open(assign, { backdrop: 'static', size: 'xl' });
   }
@@ -5776,14 +6150,14 @@ export class ActionCenterComponent implements OnInit {
   asWhat: string;
 
   actionCentreView(content: any) {
-    debugger;
+
     this.subDepartmentForCommentService.getAssignedReviewer(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe(async (data: any) => {
       if (data.responseCode == 1) {
 
         console.log("User assignment information:", data.dateSet);
-        debugger;
+
         let current = data.dateSet[0];
-        debugger;
+
         this.subDPTforComment = await current.subDepartmentForCommentID;
         this.userAssignedText = await current.userAssaignedToComment;
         this.commentState = await current.commentStatus;
@@ -5853,7 +6227,7 @@ export class ActionCenterComponent implements OnInit {
     }
   }
   openActionCenter(content: any) {
-    debugger;
+
     if (this.commentState == null) {
       //This is so the Admin can assign
       this.openXl(content);
@@ -6295,7 +6669,7 @@ export class ActionCenterComponent implements OnInit {
   //Service Information Kyle 31/01/24
   AdminAssigningIsPlanningToSelf() {
     if (confirm("Are you sure you what to assign this project to yourself ?")) {
-      this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.forManuallyAssignSubForCommentID, this.CurrentUser.appUserId).subscribe((data: any) => {
+      this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.forManuallyAssignSubForCommentID, this.CurrentUser.appUserId, false, null).subscribe((data: any) => {
         if (data.responseCode == 1) {
           this.getLinkedZones();
           this.updateApplicationStatus();
@@ -7360,8 +7734,67 @@ export class ActionCenterComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
+
+
+  GISCommentUpdate() {
+
+    let SubDepartmentName = "";
+    for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
+      if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
+        SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
+      }
+    }
+
+    this.subDepartmentForCommentService.departmentForCommentUserAssaignedToComment(this.forManuallyAssignSubForCommentID, null, false, "").subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+
+        this.getLinkedZones();
+        this.updateApplicationStatus();
+        this.MoveApplicationToAllocated();
+        this.viewProjectInfoComponent.getAllComments();
+        this.refreshParent.emit();
+        this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveACommentGIS, "GIS Reviewed", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, null).subscribe((data: any) => {
+          if (data.responseCode == 1) {
+
+
+            this.viewProjectInfoComponent.getAllComments();
+          }
+          else {
+            alert(data.responseMessage);
+
+          }
+          console.log("reponse", data);
+
+        }, error => {
+          console.log("Error: ", error);
+        })
+
+
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("reponse", data);
+      this.modalService.dismissAll();
+      this.router.navigate(["/home"]);
+
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+    /*  this.moveToFinalApprovalForDepartment();*/
+    this.modalService.dismissAll();
+    this.openSnackBar("Application Actioned");
+    this.router.navigate(["/home"]);
+
+
+
+  }
 }
- 
 
 
 
