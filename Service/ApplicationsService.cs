@@ -1230,5 +1230,53 @@ namespace WayleaveManagementSystem.Service
             return tempApplicationTable;
 
         }
+        //Audit Trail Kyle 06-03-24
+        public async Task<List<ApplicationsDTO>> GetApplicationsWithinDateRange(DateTime? startDate ,DateTime? endDate)
+        {
+            return await (
+                  from Applications in _context.Application
+                  where Applications.isActive == true && Applications.isDrafted == false && Applications.DateCreated <= startDate && Applications.DateCreated <= endDate
+                  select new ApplicationsDTO()
+                  {
+                      ApplicationID = Applications.ApplicationID,
+                      UserID = Applications.UserID,
+                      FullName = Applications.FullName,
+                      Email = Applications.Email,
+                      AlternativeEmail = Applications.AlternativeEmail, 
+                      PhoneNumber = Applications.PhoneNumber,
+                      PhysicalAddress = Applications.PhyscialAddress,
+                      ReferenceNumber = Applications.ReferenceNumber,
+                      CompanyRegNo = Applications.CompanyRegNo,
+                      TypeOfApplication = Applications.TypeOfApplication,
+                      NotificationNumber = Applications.NotificationNumber,
+                      WBSNumber = Applications.WBSNumber,
+                      PhysicalAddressOfProject = Applications.PhysicalAddressOfProject,
+                      DescriptionOfProject = Applications.DescriptionOfProject,
+                      NatureOfWork = Applications.NatureOfWork,
+                      ExcavationType = Applications.ExcavationType,
+                      ExpectedStartDate = Applications.ExpectedStartDate,
+                      ExpectedEndDate = Applications.ExpectedEndDate,
+                      Location = Applications.Location,
+                      DateCreated = Applications.DateCreated,
+                      DateUpdated = Applications.DateUpdated,
+                      CreatedById = Applications.CreatedById,
+                      isActive = Applications.isActive,
+                      PreviousStageName = Applications.PreviousStageName,
+                      ApplicationStatus = Applications.ApplicationStatus,
+                      CurrentStageName = Applications.CurrentStageName,
+                      CurrentStageNumber = Applications.CurrentStageNumber,
+                      CurrentStageStartDate = Applications.CurrentStageStartDate,
+                      NextStageName = Applications.NextStageName,
+                      NextStageNumber = Applications.NextStageNumber,
+                      PreviousStageNumber = Applications.PreviousStageNumber,
+                      isPlanning = Applications.isPlanning,
+                      permitStartDate = Applications.PermitStartDate,
+
+
+                  }
+                  ).ToListAsync();
+        }
     }
+
+
 }

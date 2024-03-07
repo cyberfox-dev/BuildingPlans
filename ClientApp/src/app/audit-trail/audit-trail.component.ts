@@ -8,7 +8,9 @@ import { SubDepartmentsService } from '../service/SubDepartments/sub-departments
 import { ZonesService } from '../service/Zones/zones.service';
 import { UserProfileService } from '../service/UserProfile/user-profile.service';
 import { ReviewerforcommentService } from '../service/ReviewerForComment/reviewerforcomment.service';
-import { MatTable,MatTableDataSource } from '@angular/material/table';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { ApplicationsService } from '../service/Applications/applications.service';
+
  //Audit Trail Kyle 
 export interface ApplicationList {
   applicationID: number,
@@ -121,10 +123,10 @@ export class AuditTrailComponent implements OnInit {
   showSubDate: boolean = false;
   showInternalUsers: boolean = false;
   endDateEnabled: boolean = false;
-
+  canSave: boolean = false;
   showButton: boolean = false;
   getReport: boolean = false;
-
+  isLoading: boolean = false;
 
   @ViewChild(MatTable) AuditTrailTable: MatTable<AuditTrailList> | undefined;
   dataSource: MatTableDataSource<AuditTrailList> = new MatTableDataSource < AuditTrailList> ();
@@ -137,10 +139,14 @@ export class AuditTrailComponent implements OnInit {
   @ViewChild("downloadReports", { static: true }) downloadReports!: ElementRef;
 
 
-  constructor(private modalService: NgbModal, private sharedService: SharedService, private auditTrailService: AuditTrailService, private subDepartmentService: SubDepartmentsService, private zoneService: ZonesService, private userProfileService: UserProfileService, private reviewerForCommentService: ReviewerforcommentService) { }
+  constructor(private modalService: NgbModal, private sharedService: SharedService, private auditTrailService: AuditTrailService, private subDepartmentService: SubDepartmentsService, private zoneService: ZonesService, private userProfileService: UserProfileService, private reviewerForCommentService: ReviewerforcommentService ,private applicationsService:ApplicationsService) { }
 
 
   ngOnInit(): void {
+
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 30000); // 1 minute = 60,000 milliseconds
 
 
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
@@ -292,24 +298,25 @@ export class AuditTrailComponent implements OnInit {
    
   
   }
-  sortDataRange() {
+  async sortDataRange() {
     
     debugger;
-    let sortedArrayID = [...this.AuditTrailList].sort((a, b) => {
-      return a.ApplicationID - b.ApplicationID;
+    let sortedArrayID = await [...this.AuditTrailList].sort((a, b) => {
+      if (a.ApplicationID == b.ApplicationID) {
+        return a.DateCreated - b.DateCreated;
+      }
+      else {
+        return a.ApplicationID - b.ApplicationID;
+      }
 
     });
-    let sortedArray = [...sortedArrayID].sort((a, b) => {
-      const dateA = this.parseDate(a.DateCreated);
-      const dateB = this.parseDate(b.DateCreated);
 
-      return dateA.getTime() - dateB.getTime();
-    });
-    console.log("Sorted Array", sortedArray);
    
-    if (sortedArray.length !== 0) {
+    console.log("Sorted Array", sortedArrayID);
+   
+    if (sortedArrayID.length !== 0) {
       
-      this.generateExcelFile(sortedArray, this.fileName);
+      this.generateExcelFile(sortedArrayID, this.fileName);
     }
   }
 
@@ -320,49 +327,28 @@ export class AuditTrailComponent implements OnInit {
 
 
   getAuditTrailDataByDateRange() {
+    this.isLoading = true;
     debugger;
     this.fileName = "Audit Trail From " + this.expectedStartDate + " To " + this.expectedEndType;
     this.AuditTrailList.splice(0, this.AuditTrailList.length);
     const startDate = this.expectedStartDate;
     const endDate = this.expectedEndType;
-    this.auditTrailService.getAllAuditTrailItems().subscribe(async (data: any) => {
+    var applications = 0;
+
+    this.applicationsService.getApplicationsWithinDateRange(startDate, endDate).subscribe(async (data: any) => {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
-          debugger;
-          const tempAuditTrail = {} as AuditTrailList;
           const current = data.dateSet[i];
+           await this.getAuditTrailItemsForApplications(current.applicationID);
+          applications++;
 
-          const dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
-          
-          if (dateCreated <= endDate && dateCreated >= startDate) {
-            this.expectedStartDateSub;
-            debugger;
-            tempAuditTrail.ApplicationID = current.applicationID;
-            tempAuditTrail.AssignedTo = "Null";
-            tempAuditTrail.Comment = "Null";
-            tempAuditTrail.Description = current.description;
-            tempAuditTrail.isInternal = current.isInternal;
-            tempAuditTrail.SubDepartmentName = current.subDepartmentName;
-            tempAuditTrail.ZoneName = current.zoneName;
-            tempAuditTrail.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
-            tempAuditTrail.DateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf('T'));
-
-            const userName: string = await this.getUserNameById(current.createdById);
-            tempAuditTrail.CreatedBy = userName;
-
-            if (tempAuditTrail.isInternal == false) {
-
-              tempAuditTrail.SubDepartmentName = "Null";
-              tempAuditTrail.ZoneName = "Null";
-            }
-
-            this.AuditTrailList.push(tempAuditTrail);
+          if (applications == data.dateSet.length) {
+            this.canSave = true;
+           
           }
-          
         }
-        debugger;
-        console.log("Audit trail selected report", this.AuditTrailList);
-
+       
+        alert("Got All Items");
       }
       else {
         alert(data.responseMessage);
@@ -370,49 +356,8 @@ export class AuditTrailComponent implements OnInit {
 
 
     }, error => {
-      console.log("getAllAuditTrailItems: ", error);
+      console.log("Error: ", error);
     })
-
-    this.reviewerForCommentService.getAllReviewerForCommentItems().subscribe(async (data: any) => {
-      if (data.responseCode == 1) {
-
-        
-        
-        for (let i = 0; i < data.dateSet.length; i++) {
-
-          const tempAuditTrail = {} as AuditTrailList;
-          const current = data.dateSet[i];
-
-          const dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
-
-          if (dateCreated <= this.expectedEndType && dateCreated >= this.expectedStartDate) {
-
-            tempAuditTrail.ApplicationID = current.applicationID;
-            tempAuditTrail.AssignedTo = await this.getUserNameById(current.reviewerAssignedToComment);
-            tempAuditTrail.Comment = current.comment;
-            tempAuditTrail.Description = current.commentStatus;
-            tempAuditTrail.isInternal = true;
-            tempAuditTrail.SubDepartmentName = current.subDepartmentName;
-            tempAuditTrail.ZoneName = current.zoneName;
-            tempAuditTrail.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
-            tempAuditTrail.DateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf('T'));
-            tempAuditTrail.CreatedBy = await this.getUserNameById(current.createdById);
-
-            this.AuditTrailList.push(tempAuditTrail)
-          }
-        }
-      }
-      else {
-        alert(data.responseMessage);
-      }
-
-
-    }, error => {
-      console.log("getAllAuditTrailItems: ", error);
-
-    })
-    
-  
   }
   generateExcelFile = (data: AuditTrailList[], fileName: string): void => {
     
@@ -629,6 +574,7 @@ export class AuditTrailComponent implements OnInit {
   }
 
   getAuditTrailForDepartmentAndZone() {
+    this.isLoading = true;
     this.fileName = "Audit Trail For Zone " + this.zoneName + " in Sub Department " + this.selectedSubDepartment.SubDepartmentName; 
     this.AuditTrailList.splice(0, this.AuditTrailList.length);
 
@@ -661,6 +607,7 @@ export class AuditTrailComponent implements OnInit {
         
 
           this.AuditTrailList.push(tempAuditTrail);
+         
         }
 
 
@@ -696,7 +643,11 @@ export class AuditTrailComponent implements OnInit {
           tempAuditTrail.DateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf('T'));
           tempAuditTrail.CreatedBy = await this.getUserNameById(current.createdById);
 
-          this.AuditTrailList.push(tempAuditTrail)
+          this.AuditTrailList.push(tempAuditTrail);
+          if (i == (data.dateSet.length - 1)) {
+            this.canSave = true;
+            
+          }
         }
 
       }
@@ -713,7 +664,7 @@ export class AuditTrailComponent implements OnInit {
   }
 
   getAuditTrailForDepartmentAndZoneWithinRange() {
-   
+    this.isLoading = true;
     this.fileName = "Audit Trail For Zone " + this.zoneName + " in Sub Department " + this.selectedSubDepartment.SubDepartmentName + " From " + this.expectedStartDateSub + " To " + this.expectedEndTypeSub;
     this.AuditTrailList.splice(0, this.AuditTrailList.length);
 
@@ -788,7 +739,11 @@ export class AuditTrailComponent implements OnInit {
             tempAuditTrail.DateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf('T'));
             tempAuditTrail.CreatedBy = await this.getUserNameById(current.createdById);
 
-            this.AuditTrailList.push(tempAuditTrail)
+            this.AuditTrailList.push(tempAuditTrail);
+            if (i == (data.dateSet.length - 1)) {
+              this.canSave = true;
+             
+            }
           }
         }
       }
@@ -840,7 +795,7 @@ export class AuditTrailComponent implements OnInit {
   }
 
   getAllAuditTrailItemsForInternalUser(index: any) {
-    
+    this.isLoading = true;
     const User = this.InternalUserList[index];
     this.selectedRowIndex = 0;
     this.fileName = "Reports For " + User.fullName; 
@@ -910,7 +865,11 @@ export class AuditTrailComponent implements OnInit {
           tempAuditTrail.DateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf('T'));
           tempAuditTrail.CreatedBy = await this.getUserNameById(current.createdById);
 
-          this.AuditTrailList.push(tempAuditTrail)
+          this.AuditTrailList.push(tempAuditTrail);
+          if (i == (data.dateSet.length - 1)) {
+            this.canSave = true;
+           
+          }
         }
 
       }
@@ -952,6 +911,100 @@ export class AuditTrailComponent implements OnInit {
     console.log('Filtered Data:', this.newInternalList);
     // Render the rows after applying the filter
     this.UserTable?.renderRows();
+  }
+
+  getAuditTrailItemsForApplications(applicationID: number) {
+    this.auditTrailService.getAllAuditTrailItemsForApplication(applicationID).subscribe(async (data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          debugger;
+          const tempAuditTrail = {} as AuditTrailList;
+          const current = data.dateSet[i];
+
+         
+
+          
+            this.expectedStartDateSub;
+            debugger;
+            tempAuditTrail.ApplicationID = current.applicationID;
+            tempAuditTrail.AssignedTo = "Null";
+            tempAuditTrail.Comment = "Null";
+            tempAuditTrail.Description = current.description;
+            tempAuditTrail.isInternal = current.isInternal;
+            tempAuditTrail.SubDepartmentName = current.subDepartmentName;
+            tempAuditTrail.ZoneName = current.zoneName;
+            tempAuditTrail.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+            tempAuditTrail.DateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf('T'));
+
+            const userName: string = await this.getUserNameById(current.createdById);
+            tempAuditTrail.CreatedBy = userName;
+
+            if (tempAuditTrail.isInternal == false) {
+
+              tempAuditTrail.SubDepartmentName = "Null";
+              tempAuditTrail.ZoneName = "Null";
+            }
+
+          this.AuditTrailList.push(tempAuditTrail);
+      
+          }
+
+        
+        debugger;
+        console.log("Audit trail selected report", this.AuditTrailList);
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+
+    }, error => {
+      console.log("getAllAuditTrailItems: ", error);
+    })
+
+    this.reviewerForCommentService.getAllReviewerForCommentForApplication(applicationID).subscribe(async (data: any) => {
+      if (data.responseCode == 1) {
+
+
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+
+          const tempAuditTrail = {} as AuditTrailList;
+          const current = data.dateSet[i];
+
+          const dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+
+          if (dateCreated <= this.expectedEndType && dateCreated >= this.expectedStartDate) {
+
+            tempAuditTrail.ApplicationID = current.applicationID;
+            tempAuditTrail.AssignedTo = await this.getUserNameById(current.reviewerAssignedToComment);
+            tempAuditTrail.Comment = current.comment;
+            tempAuditTrail.Description = current.commentStatus;
+            tempAuditTrail.isInternal = true;
+            tempAuditTrail.SubDepartmentName = current.subDepartmentName;
+            tempAuditTrail.ZoneName = current.zoneName;
+            tempAuditTrail.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+            tempAuditTrail.DateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf('T'));
+            tempAuditTrail.CreatedBy = await this.getUserNameById(current.createdById);
+
+            this.AuditTrailList.push(tempAuditTrail);
+
+            
+          }
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+
+    }, error => {
+      console.log("getAllAuditTrailItems: ", error);
+
+    })
+
+
   }
   
 }

@@ -44,5 +44,7 @@ namespace WayleaveManagementSystem.IServices
         Task<List<ApplicationsDTO>> GetZXDetails(int applicationID);//zxNum-and-contractorAccount Sindiswa 28 February 2024
 
         Task<Applications> AddUpdateContractorAccountDetails(int? ApplicationID, string? ContractorAccountDetails); //zxNumberUpdate Sindiswa 01 March 2024
+
+        Task<List<ApplicationsDTO>> GetApplicationsWithinDateRange(DateTime? startDate, DateTime? endDate);//Audit Trail Kyle 06-03-24
     }
 }
