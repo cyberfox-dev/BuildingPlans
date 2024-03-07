@@ -653,7 +653,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
     //#region reapply Sindiswa 26 January 2024
-    debugger;
+    
 /*JJS Commit 29-02-24(removed full-screen mode for maps and sorted approval pack btn and former wayleave tab)*/
     if (this.sharedService.getShowFormerApps.length > 0) {
       this.showFormerApps = true
@@ -1415,8 +1415,9 @@ export class ViewProjectInfoComponent implements OnInit {
             //Comments Kyle 01/02/24
             //Clarifications Alerts Kyle
             tempCommentList.CanReplyUserID = current.canReplyUserID;
+
             tempCommentList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
-            debugger;
+            
             if (tempCommentList.CommentStatus == "Clarified" || tempCommentList.CommentStatus == " Reviewer Clarified" || tempCommentList.CommentStatus == " Applicant Clarified") {
               tempCommentList.HasReply = true;
             }
@@ -1450,7 +1451,7 @@ export class ViewProjectInfoComponent implements OnInit {
               tempCommentList.ZoneName = current.zoneName;
               //Comments Kyle 01/02/24
               tempCommentList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
-              debugger;
+              
               if (tempCommentList.CommentStatus == "Clarified" || tempCommentList.CommentStatus == " Reviewer Clarified" || tempCommentList.CommentStatus == "Applicant Clarified") {
                 tempCommentList.HasReply = true;
               }
@@ -1467,7 +1468,9 @@ export class ViewProjectInfoComponent implements OnInit {
           
 
         }
-
+        this.CommentsList.sort((a, b) => {
+          return new Date(b.DateCreated).getTime() - new Date(a.DateCreated).getTime();
+        });
       }
       else {
         alert(data.responseMessage);
@@ -1662,7 +1665,7 @@ export class ViewProjectInfoComponent implements OnInit {
     
     //this.ApplicantReply = Currentreply;
     // this.replyCreated = true;
-    debugger;
+    
     const currentComment = this.CommentsList[this.currentIndex];
     let numberOfComments = 0;
     for (var i = 0; i < this.CommentsList.length; i++) {
@@ -1674,7 +1677,7 @@ export class ViewProjectInfoComponent implements OnInit {
     let commentStatus = "";
     let updateStatus = currentComment.CommentStatus;
 
-    debugger;
+    
     if (this.clarityType == "Reviewer Clarified" || this.clarityType == "Applicant Clarified") {
       commentStatus = "Approved";
     }
@@ -1886,7 +1889,7 @@ export class ViewProjectInfoComponent implements OnInit {
           tempDepositRequired.DepositRequiredID = current.depositRequiredID;
           tempDepositRequired.Desciption = current.desciption;
           tempDepositRequired.Quantity = current.quantity;
-          debugger;
+          
           tempDepositRequired.Rate = current.rate;
           tempDepositRequired.SubDepartmentForCommentID = current.subDepartmentForCommentID;
           tempDepositRequired.SubDepartmentID = current.subDepartmentID;
@@ -2491,7 +2494,7 @@ export class ViewProjectInfoComponent implements OnInit {
   
 
   checkIfPermitExsist() {
-    debugger;
+    
     if (this.applicationDataForView[0].CreatedById == this.CurrentUser.appUserId) {
       this.permitBtn = true;
       this.permitTextBox = false;
@@ -2510,7 +2513,7 @@ export class ViewProjectInfoComponent implements OnInit {
   updateStartDateForPermit() {
     this.applicationsService.addUpdateApplication(this.CurrentApplicationBeingViewed[0].applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.permitStartDate).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         this.onAutoLinkForPermit();
         this.router.navigate(["/home"]);/*Permit Kyle 13-02-24*/
       }
@@ -4762,20 +4765,20 @@ export class ViewProjectInfoComponent implements OnInit {
       }
 
     }
-    debugger;
+    
     if (this.applicationDataForView[0].permitStartDate == null && this.applicationDataForView[0].CurrentStageName == "PTW") {
       this.MandatoryDocumentUploadList.splice(0, this.MandatoryDocumentUploadList.length);
       this.mandatroyDocumentUploadService.getAllMandatoryDocumentsLinkedToStage(this.applicationDataForView[0].CurrentStageName).subscribe((data: any) => {
-        debugger;
+        
         if (data.responseCode == 1) {
           for (let i = 0; i < data.dateSet.length; i++) {
 
             const tempMandatoryDocList = {} as MandatoryDocumentUploadList;
             const current = data.dateSet[i];
             const applicationSize = this.applicationDataForView[0].TypeOfApplication;
-            debugger;
+            
             if (hasDrilling == true) {
-              debugger;
+              
               if (applicationSize == "Large") {
                 tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
                 tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
@@ -4795,7 +4798,7 @@ export class ViewProjectInfoComponent implements OnInit {
               }
             }
             else {
-              debugger;
+              
               if (applicationSize == "Large" && current.mandatoryDocumentName != "Drill plan") {
                 tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
                 tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
@@ -4833,7 +4836,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   ClosePermitStartDateModal() {
-    debugger;
+    
     if (this.fileCount == 0) {
       this.modalService.dismissAll();
     }
@@ -4862,7 +4865,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   saveRIMZXNumber() {
-    debugger;
+    
     this.applicationsService.addUpdateZXNumbers(this.ApplicationID, null, this.rimZXNumber).subscribe((data: any) => {
       if (data.responseCode == 1) {
         //this.getZXNumberDetails();

@@ -33,7 +33,10 @@ namespace WayleaveManagementSystem.DTO
 
         public string? ZoneName { get; set; }
 
+        //JJS GISReviewer 04-03-24
+        public bool? isGISReviewing { get; set; }
 
+        public string? GISReviewerUserID { get; set; }
 
 
     }

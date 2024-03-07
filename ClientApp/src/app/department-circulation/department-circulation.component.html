@@ -22,9 +22,9 @@
         <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid-blue.svg" class="icon2" *ngIf="element.commentStatus === ApprovedConditional || element.commentStatus === Approved">
         <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid-red.svg" class="icon2" *ngIf="element.commentStatus === Rejected">
         <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid-red.svg" class="icon2" *ngIf="element.commentStatus === FinalReject">
-
+        <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/location-dot-solid.svg" class="icon2" *ngIf="element.isGISReviewing === true"><!--JJS 07-03-24 GIS Reviewer-->
         <!--<img src="assets/fontawesome-free-6.4.2-web/svgs/regular/clock-regular.svg" class="icon2" *ngIf="element.commentStatus !== FinalApproved && element.commentStatus !== ApprovedConditional && element.commentStatus !== Approved && element.isAwaitingClarity === false && element.IsRefered === false && element.commentStatus !== Rejected || element.commentStatus === Null">-->
-        <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/clock-regular.svg" class="icon2" *ngIf="element?.UserAssaignedToComment === null"> <!-- projectTracker Sindiswa 15 January 2024 -->
+        <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/clock-regular.svg" class="icon2" *ngIf="element?.UserAssaignedToComment === null && element?.isGISReviewing != true "> <!-- projectTracker Sindiswa 15 January 2024 -->
 
         <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid-orange.svg" class="icon2" *ngIf="element.isAwaitingClarity">
         <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/retweet-solid-purple.svg" class="icon2" *ngIf="element.IsRefered">
@@ -32,7 +32,6 @@
         <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/check-double.svg" class="icon2" *ngIf="element.commentStatus ==='Completed'">
         <p *ngIf="element.commentStatus === 'Completed'">Complete</p>
         <!---- Service Information Kyle 31/01/24-->
-
         <!--        <i class="fa fa-thumbs-up blueThumbsUp" aria-hidden="true" *ngIf="element.commentStatus === ApprovedConditional ||element.commentStatus === Approved"></i>-->
         <!--  <i class="fa fa-thumbs-down redThumbsDown" aria-hidden="true" *ngIf="element.commentStatus === Rejected"></i>-->
         <!--        <i class="fa fa-clock-o yellowTimer" aria-hidden="true" *ngIf="element.commentStatus !== FinalApproved && element.commentStatus !== ApprovedConditional && element.commentStatus !== Approved && element.isAwaitingClarity === false && element.IsRefered === false && element.commentStatus !== Rejected || element.commentStatus === Null"></i>-->
@@ -44,10 +43,11 @@
         <p class="redThumbsDownText" *ngIf="element.commentStatus === FinalReject">Final Rejected</p>
 
         <!--<p class="yellowTimerText" *ngIf="element.commentStatus !== FinalApproved && element.commentStatus !== ApprovedConditional && element.commentStatus !== Approved && element.isAwaitingClarity === false && element.IsRefered === false && element.commentStatus !== Rejected || element.commentStatus === Null">Waiting</p>-->
-        <p class="yellowTimerText" *ngIf="element?.UserAssaignedToComment === null">Waiting</p> <!-- projectTracker Sindiswa 15 January 2024 -->
+        <p class="yellowTimerText" *ngIf="element?.UserAssaignedToComment === null && element?.isGISReviewing != true ">Waiting</p> <!-- projectTracker Sindiswa 15 January 2024 -->
 
         <p class="orangeSpeechText" *ngIf="element.isAwaitingClarity">Awaiting Clarity</p>
         <p class="blueReferText" *ngIf="element.IsRefered">Referred</p>
+        <p class="blueThumbsUpText" *ngIf="element.isGISReviewing === true">GIS Reviewing</p>
 
         <!-- projectTracker Sindiswa 12 January 2024 -->
         <img class="icon2" src="assets/fontawesome-free-6.4.2-web/svgs/regular/pen-to-square.svg" *ngIf="element?.UserAssaignedToComment !== null && element?.UserAssaignedToComment !== 'EndOfCommentProcess' && element?.UserAssaignedToComment !== 'All users in Subdepartment FA' && element?.UserAssaignedToComment !== 'Senior Reviewer to comment' && element?.commentStatus === null" />

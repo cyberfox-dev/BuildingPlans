@@ -103,9 +103,9 @@ namespace WayleaveManagementSystem.Service
         }
 
 
+        //JJS GISReviewer 04-03-24
 
-
-        public async Task<bool> DepartmentForCommentUserAssaignedToComment(int? subDepartmentForCommentID,  string? userAssaignedToComment)
+        public async Task<bool> DepartmentForCommentUserAssaignedToComment(int? subDepartmentForCommentID, string? userAssaignedToComment, bool? isGISReviewing, string? GISReviewwerUserID)
         {
 
   
@@ -116,6 +116,18 @@ namespace WayleaveManagementSystem.Service
               
                 tempSubDepForCommentTable.UserAssaignedToComment = userAssaignedToComment;
                 tempSubDepForCommentTable.DateUpdated = DateTime.Now;
+                if(GISReviewwerUserID != null && GISReviewwerUserID != "")
+                {
+                    tempSubDepForCommentTable.GISReviewerUserID = GISReviewwerUserID;
+                }
+                else if (GISReviewwerUserID == "")
+                {
+                    tempSubDepForCommentTable.GISReviewerUserID = null;
+                }
+                if(isGISReviewing != null)
+                {
+                    tempSubDepForCommentTable.isGISReviewing = isGISReviewing;
+                }
 
                 _context.Update(tempSubDepForCommentTable);
                 await _context.SaveChangesAsync();
@@ -193,7 +205,8 @@ namespace WayleaveManagementSystem.Service
                     CreatedById = subDepartmentForComment.CreatedById,
                     ZoneID = subDepartmentForComment.ZoneID,
                     ZoneName = subDepartmentForComment.ZoneName,
-
+                    isGISReviewing = subDepartmentForComment.isGISReviewing,
+                    GISReviewerUserID = subDepartmentForComment.GISReviewerUserID,
                 }
                 ).ToListAsync();
         }
@@ -231,6 +244,8 @@ namespace WayleaveManagementSystem.Service
                                         CreatedById = s.CreatedById,
                                         ZoneID = s.ZoneID,
                                         ZoneName = s.ZoneName,
+                                        isGISReviewing = s.isGISReviewing,
+                                        GISReviewerUserID = s.GISReviewerUserID
                                     })
                                     .ToListAsync();
             }
