@@ -7734,7 +7734,7 @@ export class ActionCenterComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
-}
+
 
   GISCommentUpdate() {
 
