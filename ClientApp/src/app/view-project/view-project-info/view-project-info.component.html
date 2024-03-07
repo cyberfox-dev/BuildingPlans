@@ -287,31 +287,48 @@
 
     </mat-tab>-->
     <!--------------------------------------------------------ZX NUMBER CONFIGURATION--------------------------------------------------->
-    <mat-tab label="Pre-Invoice Information" *ngIf="showPreInvoice">
+    <!--<mat-tab label="Pre-Invoice Information" *ngIf="showPreInvoice">-->
+    <mat-tab label="Pre-Invoice Information" *ngIf="shouldShowPreInvoiceInformation"><!--zxNumberUpdate Sindiswa 01 March 2024-->
 
       <div class="container-fluid">
 
-        <div class="row">
-          <div class="col-md-11">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" placeholder="ZX Number" [(ngModel)]="wdmZXNumber" [disabled]="!waterZXEnabled">
-              <label for="wdmZXNumber">Water & Waste ZX Number</label>
-            </div>
-          </div>
-          <div class="col-md-1 d-flex align-items-center">
-            <div class="mb-3 mt-3"><button mat-raised-button color="blue" (click)="saveWaterZXNumber()" [disabled]="!waterZXEnabled">Save</button></div>
-          </div>
+        <!--<div class="row">
+      <div class="col-md-11">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" placeholder="ZX Number" [(ngModel)]="wdmZXNumber" [disabled]="!waterZXEnabled">
+          <label for="wdmZXNumber">Water & Waste ZX Number</label>
         </div>
+      </div>
+      <div class="col-md-1 d-flex align-items-center">
+        <div class="mb-3 mt-3"><button mat-raised-button color="blue" (click)="saveWaterZXNumber()" [disabled]="!waterZXEnabled">Save</button></div>
+      </div>
+    </div>
 
-        <div class="row">
-          <div class="col-md-11">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" placeholder="ZX Number" [(ngModel)]="rimZXNumber" [disabled]="!rimZXEnabled">
-              <label for="rimZXNumber">Roads & Infrastructure Management ZX Number</label>
+    <div class="row">
+      <div class="col-md-11">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" placeholder="ZX Number" [(ngModel)]="rimZXNumber" [disabled]="!rimZXEnabled">
+          <label for="rimZXNumber">Roads & Infrastructure Management ZX Number</label>
+        </div>
+      </div>
+      <div class="col-md-1 d-flex align-items-center">
+        <div class="mb-3 mt-3"><button mat-raised-button color="blue" (click)="saveRIMZXNumber()" [disabled]="!rimZXEnabled">Save</button></div>
+      </div>
+    </div>-->
+
+        <div *ngFor="let department of DepartmentsForZXEntry">
+          <div class="row">
+            <div class="col-md-11">
+              <div class="form-floating mb-3 mt-3">
+                <!--<input type="text" class="form-control" placeholder="ZX Number" [(ngModel)]="departmentZXNumber" [disabled]="!isDepartmentZXInputter">-->
+                <input type="text" class="form-control" placeholder="ZX Number" [(ngModel)]="department.zxNumber" [disabled]="!department.canInputZXNumber">
+                <label for="{{department.departmentID}}">{{department.departmentName}} ZX Number</label>
+              </div>
             </div>
-          </div>
-          <div class="col-md-1 d-flex align-items-center">
-            <div class="mb-3 mt-3"><button mat-raised-button color="blue" (click)="saveRIMZXNumber()" [disabled]="!rimZXEnabled">Save</button></div>
+            <div class="col-md-1 d-flex align-items-center">
+              <!--<div class="mb-3 mt-3"><button mat-raised-button color="blue" (click)="saveZXNumber(department)" [disabled]="!isDepartmentZXInputter">Save</button></div>-->
+              <div class="mb-3 mt-3"><button mat-raised-button color="blue" (click)="saveZXNumber(department)" [disabled]="!department.canInputZXNumber">Save</button></div>
+            </div>
           </div>
         </div>
 
@@ -323,7 +340,8 @@
             </div>
           </div>
           <div class="col-md-1 d-flex align-items-center">
-            <div class="mb-3 mt-3"><button mat-raised-button color="blue" (click)="saveContractorDetails()" [disabled]="!contractorInfEnabled">Save</button></div>
+            <!--<div class="mb-3 mt-3"><button mat-raised-button color="blue" (click)="saveContractorDetails()" [disabled]="!contractorInfEnabled">Save</button></div>-->
+            <div class="mb-3 mt-3"><button mat-raised-button color="blue" (click)="saveContractorDetails2(contractorAccountDetails)" [disabled]="!contractorInfEnabled">Save</button></div>
           </div>
         </div>
 

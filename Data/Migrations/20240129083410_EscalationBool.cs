@@ -8,17 +8,17 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "ReApplyCount",
-                table: "ApplicationListDTO",
-                type: "int",
-                nullable: true);
+            //migrationBuilder.AddColumn<int>(
+            //    name: "ReApplyCount",
+            //    table: "ApplicationListDTO",
+            //    type: "int",
+            //    nullable: true);
 
-            migrationBuilder.AddColumn<bool>(
-                name: "isEscalated",
-                table: "ApplicationListDTO",
-                type: "bit",
-                nullable: true);
+            //migrationBuilder.AddColumn<bool>(
+            //    name: "isEscalated",
+            //    table: "ApplicationListDTO",
+            //    type: "bit",
+            //    nullable: true);
 
             migrationBuilder.AddColumn<bool>(
                 name: "isEscalated",
@@ -29,13 +29,13 @@ namespace WayleaveManagementSystem.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "ReApplyCount",
-                table: "ApplicationListDTO");
+            //migrationBuilder.DropColumn(
+            //    name: "ReApplyCount",
+            //    table: "ApplicationListDTO");
 
-            migrationBuilder.DropColumn(
-                name: "isEscalated",
-                table: "ApplicationListDTO");
+            //migrationBuilder.DropColumn(
+            //    name: "isEscalated",
+            //    table: "ApplicationListDTO");
 
             migrationBuilder.DropColumn(
                 name: "isEscalated",

@@ -33,6 +33,10 @@
       <th mat-header-cell *matHeaderCellDef> Date Created </th>
       <td mat-cell *matCellDef="let element"> {{element.dateCreated  | date:'yyyy-MM-dd' }} </td>
     </ng-container>
+    <ng-container matColumnDef="isDisabled">
+      <th mat-header-cell *matHeaderCellDef> Create Buttons Disabled  </th>
+      <td mat-cell *matCellDef="let element"> {{element.disabledCreate}} </td>
+    </ng-container>
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef> actions </th>
       <td mat-cell *matCellDef="let i = index;let element">
@@ -81,6 +85,11 @@
         </div>
       </div>
     </div>
+    <div class="row">
+      <div class="col">
+        <mat-checkbox  (change)="onDisableCreate()" [checked]="disableCreate"> Disable Create Wayleave And Request For Service Information</mat-checkbox>
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
     <button type="submit" class="btn btn-outline-success" (click)="createNewAlert()">Save</button>
@@ -117,6 +126,11 @@
           <input type="date" class="form-control" [(ngModel)]="editEndDate" id="endDate" name="endDate" [min]="editStartDate">
           <label for="name">Completion Date</label>
         </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <mat-checkbox (change)="onDisableCreate()" [checked]="disableCreate"> Disable Create Wayleave And Request For Service Information</mat-checkbox>
       </div>
     </div>
   </div>

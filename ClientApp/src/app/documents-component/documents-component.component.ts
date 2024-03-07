@@ -38,7 +38,7 @@ export class DocumentsComponentComponent implements OnInit{
   dataSourceDoc = this.DocumentsList;
     currentApplication: any;
     applicationDataForView: any;
-    hasFile: boolean;
+  hasFile: boolean;
   fileCount = 0;
 
   stringifiedDataUserProfile: any;
@@ -118,6 +118,7 @@ export class DocumentsComponentComponent implements OnInit{
       }
 
     } else {
+      this.permitComponentComponent.getAllPermitForComment();
       this.modalService.dismissAll();
     }
 
@@ -137,7 +138,7 @@ export class DocumentsComponentComponent implements OnInit{
     const { uploadFor, fileName } = event;
     const index = parseInt(uploadFor.substring('CoverLetter'.length));
     this.fileAttrsName = "Doc";
-    this.hasFile = true;
+   /* this.hasFile = true;*/
     this.fileCount = this.fileCount + 1;
   }
   onFileDelete(event: any, index: number) {
@@ -150,7 +151,7 @@ export class DocumentsComponentComponent implements OnInit{
 
   onFileUpload(event: any) {
     if (this.isCalledInsidePermit) {
-        this.permitComponentComponent.getAllPermitForComment();
+        /*this.permitComponentComponent.getAllPermitForComment();*/
     }
    
   }

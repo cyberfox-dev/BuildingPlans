@@ -105,7 +105,7 @@ export class AuditTrailComponent implements OnInit {
   selectionType: string = '';
   zoneName: string;
   createdByName: string;
-  fileName: string = "Testing";
+  fileName: string = "";
 
   expectedStartDate: any;
   expectedEndType: any;
@@ -294,14 +294,19 @@ export class AuditTrailComponent implements OnInit {
   }
   sortDataRange() {
     
+    debugger;
+    let sortedArrayID = [...this.AuditTrailList].sort((a, b) => {
+      return a.ApplicationID - b.ApplicationID;
 
-    let sortedArray = [...this.AuditTrailList].sort((a, b) => {
+    });
+    let sortedArray = [...sortedArrayID].sort((a, b) => {
       const dateA = this.parseDate(a.DateCreated);
       const dateB = this.parseDate(b.DateCreated);
 
       return dateA.getTime() - dateB.getTime();
     });
-
+    console.log("Sorted Array", sortedArray);
+   
     if (sortedArray.length !== 0) {
       
       this.generateExcelFile(sortedArray, this.fileName);
@@ -315,20 +320,23 @@ export class AuditTrailComponent implements OnInit {
 
 
   getAuditTrailDataByDateRange() {
+    debugger;
     this.fileName = "Audit Trail From " + this.expectedStartDate + " To " + this.expectedEndType;
     this.AuditTrailList.splice(0, this.AuditTrailList.length);
+    const startDate = this.expectedStartDate;
+    const endDate = this.expectedEndType;
     this.auditTrailService.getAllAuditTrailItems().subscribe(async (data: any) => {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
-
+          debugger;
           const tempAuditTrail = {} as AuditTrailList;
           const current = data.dateSet[i];
 
           const dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
-
-          if (dateCreated <= this.expectedEndType && dateCreated >= this.expectedStartDate) {
-
-            
+          
+          if (dateCreated <= endDate && dateCreated >= startDate) {
+            this.expectedStartDateSub;
+            debugger;
             tempAuditTrail.ApplicationID = current.applicationID;
             tempAuditTrail.AssignedTo = "Null";
             tempAuditTrail.Comment = "Null";
@@ -350,10 +358,10 @@ export class AuditTrailComponent implements OnInit {
 
             this.AuditTrailList.push(tempAuditTrail);
           }
-
+          
         }
-
-        
+        debugger;
+        console.log("Audit trail selected report", this.AuditTrailList);
 
       }
       else {
@@ -705,6 +713,7 @@ export class AuditTrailComponent implements OnInit {
   }
 
   getAuditTrailForDepartmentAndZoneWithinRange() {
+   
     this.fileName = "Audit Trail For Zone " + this.zoneName + " in Sub Department " + this.selectedSubDepartment.SubDepartmentName + " From " + this.expectedStartDateSub + " To " + this.expectedEndTypeSub;
     this.AuditTrailList.splice(0, this.AuditTrailList.length);
 

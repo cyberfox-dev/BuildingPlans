@@ -12,7 +12,7 @@ export interface AlertList {
   endDate: string;
   message: string;
   status: string;
-  baseUrl: string;
+  disabledCreate: boolean;
   dateCreated: string;
   createdById: string;
 }
@@ -48,16 +48,17 @@ export class SystemAlertConfigComponent implements OnInit {
   stringifiedData: any;
 
   @ViewChild(MatTable) alertsTable: MatTable<AlertList> | undefined;
-  displayedColumns: string[] = ['Message', 'Status','StartDate', 'EndDate', 'DateCreated', 'actions'];
+  displayedColumns: string[] = ['Message', 'Status','StartDate', 'EndDate', 'DateCreated', 'isDisabled','actions'];
   dataSource = this.Alerts;
-
+  disableCreate: boolean = false;
+  createValue: number = 0;
   constructor(private modalService: NgbModal, private sharedService: SharedService, private config: ConfigService) { }
 
   ngOnInit(): void {
 
     setTimeout(() => {
       this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
-      this.CurrentUser = JSON.parse(this.stringifiedData);
+      this.CurrentUser = JSON.parse(this.stringifiedData); 
       this.findLiveAlert();
 
     }, 100);
@@ -87,7 +88,7 @@ export class SystemAlertConfigComponent implements OnInit {
 
     }
     else {
-      this.config.addUpdateConfig(0, "Alert", "A user has created a banner alert via config", this.startDate + " " + this.endDate, this.alertBaseUrl, this.bannerMessage, this.CurrentUser.appUserId).subscribe((data: any) => {
+      this.config.addUpdateConfig(0, "Alert", "A user has created a banner alert via config", this.startDate + " " + this.endDate, this.createValue.toString(), this.bannerMessage, this.CurrentUser.appUserId).subscribe((data: any) => {
         if (data.responseCode == 1) {
           alert(data.responseMessage);
           this.findLiveAlert();
@@ -131,7 +132,12 @@ export class SystemAlertConfigComponent implements OnInit {
           tempAlertList.startDate = dateValues[0];
           tempAlertList.endDate = dateValues[1];
 
-          tempAlertList.baseUrl = current.utilitySlot2;
+          if (current.utilitySlot2 == "0") {
+            tempAlertList.disabledCreate = false;
+          }
+          else if (current.utilitySlot2 == "1") {
+            tempAlertList.disabledCreate = true;
+          }
           tempAlertList.message = current.utilitySlot3;
           
           //Banner Kyle 26-01-24
@@ -185,7 +191,7 @@ export class SystemAlertConfigComponent implements OnInit {
     this.editBannerMessage = current.message;
     this.editStartDate = current.startDate;
     this.editEndDate = current.endDate;
-
+    this.disableCreate = current.disabledCreate;
     this.openEditAlert(editAlert);
   }
 
@@ -200,7 +206,7 @@ export class SystemAlertConfigComponent implements OnInit {
 
     }
     else {
-      this.config.addUpdateConfig(this.configId, "Alert", "A user has created a banner alert via config", this.editStartDate + " " + this.editEndDate, this.alertBaseUrl, this.editBannerMessage, this.CurrentUser.appUserId).subscribe((data: any) => {
+      this.config.addUpdateConfig(this.configId, "Alert", "A user has created a banner alert via config", this.editStartDate + " " + this.editEndDate, this.createValue.toString(), this.editBannerMessage, this.CurrentUser.appUserId).subscribe((data: any) => {
         if (data.responseCode == 1) {
           alert(data.responseMessage);
           this.findLiveAlert();
@@ -220,4 +226,22 @@ export class SystemAlertConfigComponent implements OnInit {
    
      //Banner Kyle 26-01-24
   }
+  onDisableCreate() {
+    if (this.disableCreate == false) {
+      this.disableCreate = true
+    }
+    else {
+      this.disableCreate = false;
+    }
+
+
+    if (this.disableCreate == true) {
+      this.createValue = 1
+    }
+    else if(this.disableCreate == false) {
+      this.createValue = 0;
+    }
+    
+  }
+
 }

@@ -63,5 +63,6 @@
         public string? WaterZXNumber { get; set; }
         public string? RIMZXNumber { get; set; }
         #endregion
+        public string? ContractorAccountDetails { get; set; } //zxNumberUpdate Sindiswa 01 March 2024
     }
 }

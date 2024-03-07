@@ -11,7 +11,7 @@ import autoTable, { UserOptions } from 'jspdf-autotable';
 import { DatePipe } from '@angular/common';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
 import { NewWayleaveComponent } from 'src/app/create-new-wayleave/new-wayleave/new-wayleave.component';
-import { ConfigService } from 'src/app/service/Config/config.service';
+import { ConfigService } from 'src/app/service/Config/config.service'; 
 import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-upload.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
@@ -43,7 +43,10 @@ import { Subscription } from 'rxjs';
 
 //Audit Trail Kyle
 import { AuditTrailService } from '../../service/AuditTrail/audit-trail.service';
-//Audit Trail Kyle 
+//Audit Trail Kyle
+
+import { DepartmentsService } from '../../service/Departments/departments.service'; //zxNumberUpdate Sindiswa 01 March 2024
+import { ZXNumberService } from '../../service/ZXNumber/zxnumber.service';
 export interface RolesList {
   RoleID: number;
   RoleName: string;
@@ -217,6 +220,7 @@ export interface ApplicationList {
   UserID: any;
   clientAlternativeEmail: string; // chekingNotifications Sindiswa 13 February 2024
   //reapplyCount: number, // reapply Sindiswa 25 January 2024
+  ContractorAccountDetails: string; //zxNumberUpdate Sindiswa 01 March 2024
 }
 
 
@@ -285,6 +289,19 @@ export interface MandatoryDocumentUploadList {
   hasFile: boolean;
 }
 
+//#region zxNumberUpdate Sindiswa 01 March 2024
+export interface DepartmentList {
+  departmentID: number;
+  departmentName: string;
+  dateUpdated: any;
+  dateCreated: any;
+  hasSubDepartment: boolean;
+  needsZXNumber: boolean;
+  canInputZXNumber?: boolean; //Is the logged-in user permitted to input ZX number?
+  zxNumber?: string; //Each department that requires a ZX number should be able to input it well.
+}
+
+//#endregion
 var img = new Image();
 img.src = 'assets/cctlogoblackk.png';
 
@@ -487,6 +504,7 @@ export class ViewProjectInfoComponent implements OnInit {
   rimZXEnabled: boolean = false;
   contractorInfEnabled: boolean = false;
   showEMBInput: boolean = false;
+  totalZXDepartments: number;
   uploadFileEvt(imgFile: any) {
     if (imgFile.target.files && imgFile.target.files[0]) {
       this.fileAttr = '';
@@ -586,6 +604,8 @@ export class ViewProjectInfoComponent implements OnInit {
     private statusOfWorksComponent: StatusOfWorksComponent,
     private mandatroyDocumentUploadService: MandatoryDocumentUploadService,
     //Audit Trail Kyle
+    /*zxNumberUpdate Sindiswa 01 March 2024*/private departmentService: DepartmentsService,
+    /*zxNumberUpdate Sindiswa 01 March 2024*/private zxNumberService: ZXNumberService,
   ) { }
 
   routerSubscription: Subscription; //reapply Sindiswa 26 January 2024
@@ -763,10 +783,12 @@ export class ViewProjectInfoComponent implements OnInit {
     this.CheckForApprovalPackDownload();
     //Progress bar Kyle 07-02-24
     this.CalCulateApprovalProgess();
-    this.getZXNumberDetails();//
-    
-
-    
+    this.getZXNumberDetails();//zxNum-and-contractorAccount Sindiswa 28 February 2024
+    this.countTotalZXDepartments(); //zxNumberUpdate Sindiswa 04 March 2024
+    //#region zxNumberUpdate Sindiswa 01 March 2024
+    this.shouldShowPreInvoice();
+    this.getZXDepartments();
+    //#endregion
   }
   // #region reapply Sindiswa 26 January 2024
   ngOnDestroy() {
@@ -5003,5 +5025,276 @@ export class ViewProjectInfoComponent implements OnInit {
 
 
 
+  //#endregion
+
+  //#region zxNumberUpdate Sindiswa 01 March 2024 and 04 March 2024
+
+  DepartmentList: DepartmentList[] = [];
+  departmentZXNumber: string;
+  isDepartmentZXInputter: boolean = false;
+  shouldShowPreInvoiceInformation: boolean = false;
+  DepartmentsForZXEntry: DepartmentList[] = [];
+
+  getZXDepartments() {
+    debugger;
+    this.DepartmentList.splice(0, this.DepartmentList.length);
+    this.DepartmentsForZXEntry.splice(0, this.DepartmentsForZXEntry.length);
+    let zxDepartmentEntryCount = 0;
+
+    this.departmentService.getDepartmentsList().subscribe(async (data: any) => {
+
+      if (data.responseCode == 1) {
+        debugger;
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempDepartmentList = {} as DepartmentList;
+          const current = data.dateSet[i];
+          tempDepartmentList.departmentID = current.departmentID;
+          tempDepartmentList.departmentName = current.departmentName;
+          tempDepartmentList.dateUpdated = current.dateUpdated;
+          tempDepartmentList.dateCreated = current.dateCreated;
+          tempDepartmentList.hasSubDepartment = current.hasSubDepartment;
+          tempDepartmentList.needsZXNumber = current.needsZXNumber;
+
+          if (current.needsZXNumber == true) {
+
+            tempDepartmentList.canInputZXNumber = this.isUserZXInputer(current.departmentID);
+            //tempDepartmentList.zxNumber = ''; // Initialize zxNumber property
+            tempDepartmentList.zxNumber = await this.getZXNumber(current.departmentID);
+
+            if (tempDepartmentList.zxNumber !== null && tempDepartmentList.zxNumber !== '') {
+              tempDepartmentList.canInputZXNumber = false;
+              zxDepartmentEntryCount += 1;
+            }
+
+            this.DepartmentsForZXEntry.push(tempDepartmentList);
+
+            //this.isUserZXInputer(current.departmentID);
+          }
+          this.DepartmentList.push(tempDepartmentList);
+
+        }
+        console.log("Found All Departments", this.DepartmentList);
+        //EMB things
+        if (zxDepartmentEntryCount === this.DepartmentsForZXEntry.length) {
+          this.showEMBInput = true;
+        }
+        if (this.CurrentUserProfile[0].departmentID == 28) {
+          this.contractorInfEnabled = true;
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("ZX Departments full response", data);
+
+    }, error => {
+      console.log("ZX Departments Error: ", error);
+    })
+  }
+
+  getZXDepartmentsAfterZXEntry() {
+    debugger;
+    this.DepartmentList.splice(0, this.DepartmentList.length);
+    this.DepartmentsForZXEntry.splice(0, this.DepartmentsForZXEntry.length);
+    let zxDepartmentEntryCount = 0;
+
+    this.departmentService.getDepartmentsList().subscribe(async (data: any) => {
+
+      if (data.responseCode == 1) {
+        debugger;
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempDepartmentList = {} as DepartmentList;
+          const current = data.dateSet[i];
+          tempDepartmentList.departmentID = current.departmentID;
+          tempDepartmentList.departmentName = current.departmentName;
+          tempDepartmentList.dateUpdated = current.dateUpdated;
+          tempDepartmentList.dateCreated = current.dateCreated;
+          tempDepartmentList.hasSubDepartment = current.hasSubDepartment;
+          tempDepartmentList.needsZXNumber = current.needsZXNumber;
+
+          if (current.needsZXNumber == true) {
+
+            tempDepartmentList.canInputZXNumber = this.isUserZXInputer(current.departmentID);
+            //tempDepartmentList.zxNumber = ''; // Initialize zxNumber property
+            tempDepartmentList.zxNumber = await this.getZXNumber(current.departmentID);
+
+            if (tempDepartmentList.zxNumber !== null && tempDepartmentList.zxNumber !== '') {
+              tempDepartmentList.canInputZXNumber = false;
+              zxDepartmentEntryCount += 1;
+            }
+
+            this.DepartmentsForZXEntry.push(tempDepartmentList);
+          }
+          this.DepartmentList.push(tempDepartmentList);
+
+        }
+        console.log("I have looped over all my departments", this.DepartmentList);
+
+        if (zxDepartmentEntryCount === this.DepartmentsForZXEntry.length) {
+          this.notifyEMBtoAddContractorDetails(); 
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("ZX Departments full response", data);
+
+    }, error => {
+      console.log("ZX Departments Error: ", error);
+    })
+  }
+  /*isUserZXInputer(departmentID: any) {
+    if(this.AllCurrentUserRoles.some(role => role.roleName === "ZX Number Inputter") && (this.CurrentUserProfile[0].departmentID == departmentID)) {
+      this.isDepartmentZXInputter = true;
+    }
+  }*/
+
+  isUserZXInputer(departmentID: any): boolean {
+    return this.AllCurrentUserRoles.some(role => role.roleName === "ZX Number Inputter") &&
+      (this.CurrentUserProfile[0].departmentID == departmentID);
+  }
+
+
+  shouldShowPreInvoice() {
+    if (
+      (
+        this.AllCurrentUserRoles.some(role => role.roleName === "ZX Number Inputter") ||
+        this.CurrentUserProfile[0].departmentID == 28 /*EMB*/
+      ) &&
+      (
+        !this.applicationDataForView[0].ContractorAccountDetails ||  // Check if null or undefined
+        this.applicationDataForView[0].ContractorAccountDetails.trim() == ""
+      ) &&
+      this.applicationDataForView[0].ApplicationStatus == "Unpaid"
+    ) {
+    //if (this.AllCurrentUserRoles.some(role => role.roleName === "ZX Number Inputter") || this.CurrentUserProfile[0].departmentID == 28 /*EMB*/) {
+      this.shouldShowPreInvoiceInformation = true;
+    }
+  }
+
+  saveZXNumber(department: any) {
+    let confirmation = confirm("Are you sure you want to save this ZX number value? Please note that you won't be able to change this value after saving.")
+
+    if (confirmation) {
+      debugger;
+      //this.zxNumberService.addUpdateZXNumber(0, this.ApplicationID, department.departmentID, department.departmentName, this.departmentZXNumber, this.CurrentUser.appUserId).subscribe((data: any) => {
+      this.zxNumberService.addUpdateZXNumber(0, this.ApplicationID, department.departmentID, department.departmentName, department.zxNumber, this.CurrentUser.appUserId).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          //When value has been added, disable the textbox - REFRESH
+          //this.getZXDepartments();
+          this.getZXDepartmentsAfterZXEntry()
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+  }
+
+  getZXNumber(departmentID: number): Promise<string | null> {
+    debugger;
+    return new Promise<string | null>((resolve, reject) => {
+      this.zxNumberService.getZXNumberByDepartmentID(this.ApplicationID, departmentID).subscribe((data: any) => {
+        if (data.responseCode == 1 && data.dateSet.length > 0) {
+          debugger;
+          console.log("Hebana, what's the ZX number kanti?", data);
+          resolve(data.dateSet[0].zxNumber);
+        } else {
+          console.log("No entry found for departmentID:", departmentID);
+          resolve(null); // Set ZX number to null when no entry is found
+        }
+        console.log("ZX Departments full response", data);
+      }, error => {
+        reject("There was an error");
+        console.log("ZX Departments Error: ", error);
+      });
+    });
+  }
+
+  countTotalZXDepartments() {
+    debugger;
+    this.departmentService.countDepartmentsThatNeedZXNumber().subscribe((data: any) => {
+      console.log("Inside subscribe callback", data);
+      if (data.responseCode === 1) {
+        debugger;
+        console.log("I tried to get the number of departments that require a ZX number", data)
+        this.totalZXDepartments = data.dateSet;
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("Number of ZX departments", data);
+
+    }, error => {
+      console.log("Number of ZX Departments Error: ", error);
+    })
+  }
+  //Generating the invoice
+  saveContractorDetails2(contractorAccountDetails: string) {
+
+    if (contractorAccountDetails === null) {
+      alert("Value can't be null. Please provide a valid value.");
+      return; 
+    }
+
+    const userConfirmed = confirm("Are you sure you want to save the contractor account details? Please note that you won't be able to change this value after saving.");
+    if (!userConfirmed) {
+      return; 
+    }
+
+   //Save the value in DB
+    this.applicationsService.addUpdateContractorAccountDetails(this.ApplicationID, contractorAccountDetails).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        // Creating the invoice now?
+        localStorage.setItem('contractorAccountDetails', this.contractorAccountDetails); //NB
+        this.NewWayleaveComponent.getServiceItem("001");
+        this.NewWayleaveComponent.getServiceItem("002");
+        this.NewWayleaveComponent.getServiceItem("003");
+
+        this.genInvoice2();
+        //This will hopefuly hide the "Pre-Invoice" tab
+        this.shouldShowPreInvoiceInformation = false;
+      } else {
+        alert(data.responseMessage);
+      }
+      console.log("EMB saving contractor details", data);
+    }, error => {
+      console.log("Saving Contractor Account Details Error: ", error);
+    });
+  }
+
+  genInvoice2() {
+    this.NewWayleaveComponent.getCurrentInvoiceNumberForGen(this.applicationDataForView[0].clientName, this.ApplicationID);
+    this.notifyExternalApplicantPayASAP();
+  }
+  //Sending Notification to external applicant to remind them to download invoice and pay ASAP
+  notifyExternalApplicantPayASAP() {
+ 
+    this.notificationsService.sendEmail(this.applicationDataForView[0].clientEmail, "An invoice has been generated, please proceed with payment for the wayleave", "check html", "Dear " + this.applicationDataForView[0].clientName + "," + "<br><br>An invoice for application with ID " + this.ApplicationID + " for wayleave has been created. Kindly upload proof of payment of the required non-refundable application fee by *21 days from application date*. Failure to make this payment will result in cancellation of the ticket.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+    if (this.applicationDataForView[0].clientAlternativeEmail) {
+      this.notificationsService.sendEmail(this.applicationDataForView[0].clientAlternativeEmail, "An invoice has been generated, please proceed with payment for the wayleave", "check html", "Dear " + this.applicationDataForView[0].clientName + "," + "<br><br>An invoice for application with ID " + this.ApplicationID + " for wayleave has been created. Kindly upload proof of payment of the required non-refundable application fee by *21 days from application date*. Failure to make this payment will result in cancellation of the ticket<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+    }
+          //this.notificationsService.addUpdateNotification(0, "Wayleave Created", "New wayleave application submission", false, this.CurrentUser.appUserId, this.applicationID, obj.userID,  "An application with ID " + this.applicationID + " for wayleave has just been captured.").subscribe((data: any) => {
+    this.notificationsService.addUpdateNotification(0, "Wayleave Created", "An invoice has been generated, please proceed with payment for the wayleave", false, this.applicationDataForView[0].UserID, this.ApplicationID, this.CurrentUser.appUserId, "An invoice for application with ID " + this.ApplicationID + " for wayleave has been created. Kindly upload proof of payment of the required non-refundable application fee by *21 days from application date*. Failure to make this payment will result in cancellation of the ticket.").subscribe((data: any) => {
+
+          if (data.responseCode == 1) {
+            console.log(data.responseMessage);
+
+          }
+          else {
+            alert(data.responseMessage);
+          }
+
+          console.log("response", data);
+        }, error => {
+          console.log("Error", error);
+        })
+    }
   //#endregion
 }

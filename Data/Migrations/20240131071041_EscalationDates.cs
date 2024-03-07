@@ -9,17 +9,17 @@ namespace WayleaveManagementSystem.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<DateTime>(
-                name: "EMBActionDate",
-                table: "ApplicationListDTO",
-                type: "datetime2",
-                nullable: true);
+            //migrationBuilder.AddColumn<DateTime>(
+            //    name: "EMBActionDate",
+            //    table: "ApplicationListDTO",
+            //    type: "datetime2",
+            //    nullable: true);
 
-            migrationBuilder.AddColumn<DateTime>(
-                name: "EscalationDate",
-                table: "ApplicationListDTO",
-                type: "datetime2",
-                nullable: true);
+            //migrationBuilder.AddColumn<DateTime>(
+            //    name: "EscalationDate",
+            //    table: "ApplicationListDTO",
+            //    type: "datetime2",
+            //    nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "EMBActionDate",
@@ -36,13 +36,13 @@ namespace WayleaveManagementSystem.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "EMBActionDate",
-                table: "ApplicationListDTO");
+            //migrationBuilder.DropColumn(
+            //    name: "EMBActionDate",
+            //    table: "ApplicationListDTO");
 
-            migrationBuilder.DropColumn(
-                name: "EscalationDate",
-                table: "ApplicationListDTO");
+            //migrationBuilder.DropColumn(
+            //    name: "EscalationDate",
+            //    table: "ApplicationListDTO");
 
             migrationBuilder.DropColumn(
                 name: "EMBActionDate",

@@ -48,6 +48,8 @@ import { trim } from 'jquery';
 import { SnackBarAlertsComponent } from '../../snack-bar-alerts/snack-bar-alerts.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { DepartmentsService } from '../../service/Departments/departments.service'; //zxNumberUpdate Sindiswa 04 March 2024
+import { AccessGroupUserLinkServiceService } from '../../service/AccessGroupUserLink/access-group-user-link-service.service'; //zxNumberUpdate Sindiswa 04 March 2024
 
 
 
@@ -88,6 +90,17 @@ export interface NotificationsList {
   UserID: number;
   DateCreated: string;
 }
+
+//#region zxNumberUpdate Sindiswa 04 March 2024
+export interface DepartmentList {
+  departmentID: number;
+  departmentName: string;
+  dateUpdated: any;
+  dateCreated: any;
+  hasSubDepartment: boolean;
+  needsZXNumber: boolean;
+}
+//#endregion
 
 export interface ProjectSizeCheckList {
   projectSizeCheckListActivityType: any;
@@ -579,7 +592,8 @@ export class NewWayleaveComponent implements OnInit {
     private draftApplicationsService: DraftApplicationsService,
     private cdr: ChangeDetectorRef,
    
-
+       /*zxNumberUpdate Sindiswa 04 March 2024*/private departmentService: DepartmentsService,
+       /*zxNumberUpdate Sindiswa 04 March 2024*/private accessGrouperUserLinkService: AccessGroupUserLinkServiceService,
   ) { }
 
   ngOnInit(): void {
@@ -2332,11 +2346,11 @@ export class NewWayleaveComponent implements OnInit {
           }
 
           this.sendEmailToDepartment("EMB"); //checkingNotifications Sindiswa 15 February 2024
-          //#region zxNum-and-contractorAccount Sindiswa 28 February 2024
-          this.sendEmailToZXDepartment("Roads & Infrastructure Management");
-          this.sendEmailToZXDepartment("Water & Waste");
+          //#region zxNum-and-contractorAccount Sindiswa 28 February 2024 - needed to comment this out to make more dynamic
+          /*this.sendEmailToZXDepartment("Roads & Infrastructure Management");
+          this.sendEmailToZXDepartment("Water & Waste");*/
           //#endregion
-          
+          this.sendNotificationToZXInputter(); //zxUpdate Sindiswa 04 March 2024
 
           //
          
@@ -2356,7 +2370,135 @@ export class NewWayleaveComponent implements OnInit {
          
       
     }
-   
+
+  //#region zxNumberUpdate Sindiswa 04 March 2024
+
+  DepartmentList: DepartmentList[] = [];
+  DepartmentsForZXEntry: DepartmentList[] = [];
+  sendNotificationToZXInputter() {
+    debugger;
+    this.DepartmentList.splice(0, this.DepartmentList.length);
+    this.DepartmentsForZXEntry.splice(0, this.DepartmentsForZXEntry.length);
+
+    this.departmentService.getDepartmentsList().subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+        debugger;
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempDepartmentList = {} as DepartmentList;
+          const current = data.dateSet[i];
+          tempDepartmentList.departmentID = current.departmentID;
+          tempDepartmentList.departmentName = current.departmentName;
+          tempDepartmentList.dateUpdated = current.dateUpdated;
+          tempDepartmentList.dateCreated = current.dateCreated;
+          tempDepartmentList.hasSubDepartment = current.hasSubDepartment;
+          tempDepartmentList.needsZXNumber = current.needsZXNumber;
+
+          if (current.needsZXNumber == true) {
+            debugger;
+            this.DepartmentsForZXEntry.push(tempDepartmentList); //Am I even going to need this list here?
+            //For each zxDepartment get users with roles = ZX Number Inputter
+            //Problem - The access group user link table doesn't keep subdepartments
+            this.subDepartmentsService.getSubDepartmentsByDepartmentID(current.departmentID).subscribe((sudepartmentData: any) => {
+              console.log("Received data from getSubDepartmentsByDepartmentID(DEPARTMENTID):", sudepartmentData);
+
+              debugger;
+              if (sudepartmentData.responseCode == 1) {
+                console.log("Sending to ZX humans - SUBDEPARTMENTS", sudepartmentData)
+                sudepartmentData.dateSet.forEach((sudepartmentDataObj) => {
+                  //1. Find all subdepartments, and do a foreach thing
+                  this.accessGrouperUserLinkService.getPeopleByAccessGroupAndSubDept(4009, sudepartmentDataObj.subDepartmentID).subscribe((accessGroupData: any) => {
+                    console.log("Received data from getPeopleByAccessGroupAndSubDept(ACCESSGROUPID, DEPARTMENTID):", accessGroupData);
+                    if (accessGroupData.responseCode == 1) {
+                      //2. Get the people you need to send an email to
+                      console.log("Sending to ZX humans - people with ZX Inputter role?", accessGroupData)
+                      accessGroupData.dateSet.forEach((accessGroupObj) => {
+                        //this.userPofileService.getUsersBySubDepartmentName(subDepartmentName).subscribe((data: any) => {
+                        this.userPofileService.getUserProfileById(accessGroupObj.userID).subscribe((userData: any) => {
+                          debugger;
+                          console.log("Received data from getUserProfileById(USERID):",userData);
+                          if (userData.responseCode == 1) {
+                            console.log("Sending to ZX humans - Specific Person", userData)
+                            //3. Send email and notification to the right person
+                            const user = userData.dateSet[0];
+                            this.notificationsService.sendEmail(user.email, "New wayleave application submission needs ZX number", "check html", "Dear " + user.fullName + "<br><br>An application with ID " + this.applicationID + " for wayleave has just been captured. Log in and enter the ZX number for said application.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                            if (user.alternativeEmail) {
+                              this.notificationsService.sendEmail(user.alternativeEmail, "New wayleave application submission needs ZX number", "check html", "Dear " + user.fullName + "<br><br>An application with ID " + this.applicationID + " for wayleave has just been captured. Log in and enter the ZX number for said application.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+
+                            }
+                            this.notificationsService.addUpdateNotification(0, "Wayleave Created", "New wayleave application submission needs ZX number", false, user.userID, this.applicationID, this.CurrentUser.appUserId, "An application with ID " + this.applicationID + " for wayleave has just been captured. Log in and fill in the ZX number.").subscribe((notifData: any) => {
+
+                              if (notifData.responseCode == 1) {
+                                debugger;
+                                console.log("ZX Notification success?",notifData.responseMessage);
+
+                              }
+                              else {
+                                alert(notifData.responseMessage);
+                              }
+
+                              console.log("Sending notice to ZX inputter response", notifData);
+                            }, notifError => {
+                              console.log("Error while sending notice to ZX inputter", notifError);
+                            })
+
+
+                            alert(data.responseMessage);
+
+                          }
+                          else {
+                            alert(data.responseMessage);
+                          }
+
+                          console.log("response", data);
+                        }, error => {
+                          console.log("Error", error);
+                        })
+
+                      })
+
+                    }
+                    else {
+                      alert(accessGroupData.responseMessage);
+                    }
+                    console.log("Getting ZX people by access group full response", accessGroupData);
+
+                  }, AccessGroupsError => {
+                    console.log("Getting ZX people by access group Error: ", AccessGroupsError);
+                  })
+
+                })
+              }
+              else {
+                alert(sudepartmentData.responseMessage);
+              }
+              console.log("ZX Subepartments full response", sudepartmentData);
+
+            }, subdepartmentsError => {
+              console.log("ZX subdepartments Error: ", subdepartmentsError);
+            })
+     
+
+          }
+          this.DepartmentList.push(tempDepartmentList);
+
+        }
+        console.log("Found All Departments", this.DepartmentList);
+  
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("ZX Departments full response", data);
+
+    }, error => {
+      console.log("ZX Departments Error: ", error);
+    })
+  }
+
+  
+  //#endregion
 
   AddProfessinal(contractorData: any, engineerData: any): void {
     if (contractorData.length > 0) {
@@ -5497,8 +5639,16 @@ export class NewWayleaveComponent implements OnInit {
           if (matchedItem) {
             // Use the SelectionModel to select the item
             this.selectionProjectSizeCheck.select(matchedItem);
+            
           }
+
+         
         }
+
+        if (data.dateSet.length > 0) {
+          this.fibreNetworkLicenses = true;
+        }
+      
         this.cdr.detectChanges();
         this.CheckToPopulateManDoc();
 

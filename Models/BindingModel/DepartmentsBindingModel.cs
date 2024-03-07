@@ -9,5 +9,6 @@
         public bool isActive { get; set; }
         
         public bool hasSubDepartment { get; set; }
+        public bool? needsZXNumber { get; set; } //zxNumberUpdate Sindiswa 01 March 2024
     }
 }

@@ -364,7 +364,8 @@ namespace WayleaveManagementSystem.Service
                    EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
                    EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
                    ProjectNumber = Applications.ProjectNumber,// Clarifications Alerts Kyle
-                   NetworkLicenses = Applications.NetworkLicenses
+                   NetworkLicenses = Applications.NetworkLicenses,
+                   ContractorAccountDetails = Applications.ContractorAccountDetails, //zxNumberUpdate Sindiswa 01 March 2024
                }
                ).ToListAsync();
 
@@ -478,6 +479,7 @@ namespace WayleaveManagementSystem.Service
                        EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
                        EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
                        NetworkLicenses  = Applications.NetworkLicenses,
+                       ContractorAccountDetails = Applications.ContractorAccountDetails, //zxNumberUpdate Sindiswa 01 March 2024
                    }
                    ).ToListAsync();
             }
@@ -686,6 +688,7 @@ namespace WayleaveManagementSystem.Service
                    EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
                    EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
                    NetworkLicenses = Applications.NetworkLicenses,//Project size Kyle 27-02-24
+                   ContractorAccountDetails = Applications.ContractorAccountDetails, //zxNumberUpdate Sindiswa 01 March 2024
                }
                ).ToListAsync();
         }
@@ -741,6 +744,7 @@ namespace WayleaveManagementSystem.Service
                     EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
                     EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
                         NetworkLicenses = Applications.NetworkLicenses,//Project size Kyle 27-02-24
+                    ContractorAccountDetails = Applications.ContractorAccountDetails, //zxNumberUpdate Sindiswa 01 March 2024
                     }
            ).ToListAsync();
         }
@@ -798,6 +802,7 @@ namespace WayleaveManagementSystem.Service
                         EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
                         EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
                         NetworkLicenses = Applications.NetworkLicenses,//Project size Kyle 27-02-24
+                        ContractorAccountDetails = Applications.ContractorAccountDetails, //zxNumberUpdate Sindiswa 01 March 2024
                     }
            ).ToListAsync();
         }
@@ -854,6 +859,7 @@ namespace WayleaveManagementSystem.Service
                         EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
                         EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
                         NetworkLicenses = Applications.NetworkLicenses,//Project size Kyle 27-02-24
+                        ContractorAccountDetails = Applications.ContractorAccountDetails, //zxNumberUpdate Sindiswa 01 March 2024
                     }
            ).ToListAsync();
         }
@@ -910,6 +916,7 @@ namespace WayleaveManagementSystem.Service
                         EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
                         EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
                         NetworkLicenses = Applications.NetworkLicenses,//Project size Kyle 27-02-24
+                        ContractorAccountDetails = Applications.ContractorAccountDetails, //zxNumberUpdate Sindiswa 01 March 2024
                     }
            ).Distinct().ToListAsync();
         }
@@ -968,6 +975,7 @@ namespace WayleaveManagementSystem.Service
                         EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
                         EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
                         NetworkLicenses = Applications.NetworkLicenses,//Project size Kyle 27-02-24
+                        ContractorAccountDetails = Applications.ContractorAccountDetails, //zxNumberUpdate Sindiswa 01 March 2024
                     }
            ).ToListAsync();
         }
@@ -1107,6 +1115,7 @@ namespace WayleaveManagementSystem.Service
                    isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
                    EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
                    EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
+                   ContractorAccountDetails = Applications.ContractorAccountDetails, //zxNumberUpdate Sindiswa 01 March 2024
                }
                ).Skip(1) // Skip the latest application
                 .ToListAsync();
@@ -1198,5 +1207,28 @@ namespace WayleaveManagementSystem.Service
         }
 
         #endregion
+
+        public async Task<Applications> AddUpdateContractorAccountDetails(int? ApplicationID, string? ContractorAccountDetails)
+        {
+            if (ApplicationID == 0)
+            {
+                ApplicationID = null;
+            }
+
+
+            //this checks is the record exists in the db
+            var tempApplicationTable = _context.Application.FirstOrDefault(x => x.ApplicationID == ApplicationID);
+
+
+            if (ContractorAccountDetails != null)
+            {
+                tempApplicationTable.ContractorAccountDetails = ContractorAccountDetails;
+            }
+
+            _context.Update(tempApplicationTable);
+            await _context.SaveChangesAsync();
+            return tempApplicationTable;
+
+        }
     }
 }

@@ -13,13 +13,14 @@ export class DepartmentsService {
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
-  public addUpdateDepartment(departmentID: number | null, departmentName: string | null,hasSubDepartment :boolean ,createdById?:string  ) {
-   
+  public addUpdateDepartment(departmentID: number | null, departmentName: string | null, hasSubDepartment?: boolean | null, createdById?: string | null, /*zxNumberUpdate Sindiswa 01 March 2024*/ needsZXNumber?: boolean | null  ) {
+    debugger;
     const body = {
       DepartmentID: departmentID,
       DepartmentName: departmentName,
       hasSubDepartment: hasSubDepartment,
       CreatedById: createdById,
+      needsZXNumber: needsZXNumber, //zxNumberUpdate Sindiswa 01 March 2024
     }
     return this.httpClient.post(this.baseURL + "AddUpdateDepartments", body);
 
@@ -42,4 +43,13 @@ export class DepartmentsService {
     return this.httpClient.get(this.baseURL + "GetDepartmentsList");
 
   }
+
+  //#region zxNumberUpdate Sindiswa 04 March 2024
+  public countDepartmentsThatNeedZXNumber() {
+    debugger;
+    
+    return this.httpClient.get(this.baseURL + "CountDepartmentsThatNeedZXNumber");
+
+  }
+  //#endregion
 }

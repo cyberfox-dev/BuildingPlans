@@ -356,6 +356,7 @@ export class ActionCenterComponent implements OnInit {
   UserZoneList: UserZoneList[] = [];
   LinkedUserToSub: UserZoneList[] = [];
   ReviewerUserList: UserZoneList[] = [];
+  PermitIssuerList: UserZoneList[] = [];
   GISReviewerUserList: UserZoneList[] = [];
   PTCList: PTCList[] = [];
   PTCListForCheck: PTCList[] = [];
@@ -363,7 +364,7 @@ export class ActionCenterComponent implements OnInit {
   selection = new SelectionModel<SubDepartmentList>(true, []);
   zoneSelection = new SelectionModel<ZoneList>(true, []);
   UserSelectionForManualLink = new SelectionModel<UserZoneList>(true, []);
-
+  PermitIssuerForManualLink = new SelectionModel<UserZoneList>(true, []);
   displayedColumnsSubDepartment: string[] = ['subDepartmentName', 'actions'];
   dataSourceSubDepartment = this.SubDepartmentList;
 
@@ -388,9 +389,13 @@ export class ActionCenterComponent implements OnInit {
   displayedColumnsViewlinkedUserForComment: string[] = ['fullName'];
   dataSourceViewUserForComment = this.LinkedUserToSub;
 
+  displayedColumnsPermitIssuers: string[] = ['fullName', 'actions'];
+  dataSourcePermitIssuers = this.PermitIssuerList;
+
   @ViewChild(MatTable) SubDepartmentListTable: MatTable<SubDepartmentList> | undefined;
   @ViewChild(MatTable) SubDepartmentLinkedListTable: MatTable<SubDepartmentList> | undefined;
   @ViewChild(MatTable) ZoneListTable: MatTable<ZoneList> | undefined;
+  @ViewChild(MatTable) PermitIssuerTable: MatTable<UserZoneList> | undefined;
 
   //#region escalation Sindiswa 30 January 2024
 
@@ -465,6 +470,9 @@ export class ActionCenterComponent implements OnInit {
     private configService: ConfigService,
     //Audit Trail Kyle
 
+
+
+
   ) { }
   openEnd(content: TemplateRef<any>) {
     this.offcanvasService.open(content, { position: 'end' });
@@ -472,6 +480,13 @@ export class ActionCenterComponent implements OnInit {
 
   stringifiedData: any;
   CurrentUser: any;
+
+  //Permit work flow Kyle
+  stringifiedDataUserRoles: any;
+  CurrentUserRoles: any;
+
+
+  CanAssignPermitIssuer: boolean;
 
 
   ReticulationID = 1025;
@@ -509,7 +524,9 @@ export class ActionCenterComponent implements OnInit {
     this.getAllSubDepartments();
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
-
+      //PTW flow Kyle 06-03-24
+    this.stringifiedDataUserRoles = JSON.parse(JSON.stringify(localStorage.getItem('AllCurrentUserRoles')));
+    this.CurrentUserRoles = JSON.parse(this.stringifiedDataUserRoles);
     if (this.CurrentUser == null) {
       console.log("Not");
     }
@@ -563,7 +580,7 @@ export class ActionCenterComponent implements OnInit {
     this.getAllUsersLinkedToZone(this.loggedInUsersSubDepartmentID);
 
     if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
-      this.getUsersByRoleName("Permit Issuer");
+     
 
       this.showPermitTab = true;
 
@@ -817,57 +834,37 @@ export class ActionCenterComponent implements OnInit {
     //Delete Uploader Kyle 29-01-24
   }
   canApprovePTW() {
-
-    this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
-
+    this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
       if (data.responseCode == 1) {
 
-        for (var i = 0; i < data.dateSet.length; i++) {
-
-          let foundMatch = false;
-          let current = data.dateSet[i];
-          if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
-
-            for (var i = 0; i < this.permitIssuer.length; i++) {
-
-
-
-              if (this.permitIssuer[i].userID == this.CurrentUser.appUserId) {
-
-
-
-                if (current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
-
-
-
-                  foundMatch = true;
-                  break;
-                }
-
-              }
-
-
-              if (foundMatch) {
-
-
-                // A match was found, no need to continue checking
-                break;
-              }
+        const current = data.dateSet[0];
+        this.PermitIssue
+        debugger;
+        if (current.userAssaignedToComment == null) {
+          debugger;
+          const canAssign = this.CurrentUserRoles.map(x => x.roleName == "Permit Coordinator");
+          debugger;
+          for (let i = 0; i < canAssign.length; i++) {
+            if (canAssign[i] == true) {
+              this.CanAssignPermitIssuer = true;
             }
           }
-
+        }
+        else if (current.userAssaignedToComment != null) {
+          debugger;
+          if (current.userAssaignedToComment == this.CurrentUser.appUserId && current.permitComment == null) {
+            this.canApprovePermit = true;
+          }
           else {
-
             this.canApprovePermit = false;
           }
-
-
-          this.canApprovePermit = foundMatch;
         }
+        console.log("Permit Issuer", this.canApprovePermit, this.CanAssignPermitIssuer);
+
       }
       else {
-        alert(data.responseMessage);
 
+        alert(data.responseMessage);
       }
       console.log("reponse", data);
 
@@ -880,55 +877,7 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-    //this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
-    //  if (data.responseCode == 1) {
-    //    let foundMatch = false;
-    //    let current = data.dateSet[0];// Flag to track if a match is found
 
-    //    if (this.CurrentApplication.permitStartDate != null || this.CurrentApplication.permitStartDate != undefined) {
-
-    //      for (var i = 0; i < this.permitIssuer.length; i++) {
-
-
-
-    //        if (this.permitIssuer[i].userID == this.CurrentUser.appUserId) {
-
-
-
-    //          if (current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
-
-
-
-    //            foundMatch = true;
-    //            break;
-    //          }
-
-    //        }
-
-
-    //        if (foundMatch) {
-
-
-    //          // A match was found, no need to continue checking
-    //          break;
-    //        }
-    //      }
-    //    }
-
-    //    else {
-    //      this.canApprovePermit = false;
-    //    }
-
-
-    //    this.canApprovePermit = foundMatch;
-    //  } else {
-    //    alert(data.responseMessage);
-    //  }
-
-    //  console.log("response", data);
-    //}, error => {
-    //  console.log("Error: ", error);
-    //})
 
 
   }
@@ -955,6 +904,7 @@ export class ActionCenterComponent implements OnInit {
 
         }
 
+        this.canApprovePTW();
 
 
       }
@@ -1331,32 +1281,14 @@ export class ActionCenterComponent implements OnInit {
           case "Approve": {
             if (confirm("Are you sure you want to approve permit this application?")) {
               //Request For Delete Kyle 22-02-24
-              if (this.supervisionFeeChecked) {
-                this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Approved", this.CurrentUser.appUserId, null, null, null, null, false, false, true).subscribe((data: any) => {
-                  if (data.responseCode == 1) {
-
-                    this.getCurrentInvoiceNumberForGen(this.CurrentApplicant);
-                    alert("Permit Approved");
-                    this.CheckAllLinkedDepartmentsApproved();
-
-
-                  }
-                  else {
-                    alert(data.responseMessage);
-
-                  }
-                  console.log("reponse", data);
-
-                }, error => {
-                  console.log("Error: ", error);
-                })
-              }
-              else {
+            
+            
                 this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Approved", this.CurrentUser.appUserId, null, null, null, null, false, false, false).subscribe((data: any) => {
                   if (data.responseCode == 1) {
 
                     alert("Permit Approved");
                     this.CheckAllLinkedDepartmentsApproved();
+                    this.onSaveToAuditTrail2("A permit issuer has aprroved the permit application");
                     this.router.navigate(["/home"]);
 
 
@@ -1371,43 +1303,23 @@ export class ActionCenterComponent implements OnInit {
                   console.log("Error: ", error);
                 })
               }
+
+
               this.modalService.dismissAll();
-              if (this.supervisionFeeChecked) {
+             
 
-                this.getCurrentInvoiceNumberForGen(this.CurrentApplicant);
-              }
-
-            }
+            
             break;
           }
 
           case "MeetOnSite": {
             if (confirm("Are you sure you want to meet applicant On site?")) {
-              if (this.supervisionFeeChecked) {
-                if (confirm("Are you sure you want to meet applicant On site?")) {
-                  this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "MeetOnSite", this.CurrentUser.appUserId, null, null, null, null, false, false, true).subscribe((data: any) => {
-                    if (data.responseCode == 1) {
-                      this.getCurrentInvoiceNumberForGen(this.CurrentApplicant);
-                      alert("Meet Applicant On Site");
-                      this.router.navigate(["/home"]);
-
-                    }
-                    else {
-                      alert(data.responseMessage);
-
-                    }
-                    console.log("reponse", data);
-
-                  }, error => {
-                    console.log("Error: ", error);
-                  })
-                  this.modalService.dismissAll();
-                }
-              }
-              else {
+            
+              
                 this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "MeetOnSite", this.CurrentUser.appUserId, null, null, null, null, false, false, false).subscribe((data: any) => {
                   if (data.responseCode == 1) {
                     alert("Meet Applicant On Site");
+                    this.onSaveToAuditTrail2("A permit issuer has requested to meet on site");
                     this.router.navigate(["/home"]);
 
                   }
@@ -1422,7 +1334,7 @@ export class ActionCenterComponent implements OnInit {
                 })
               }
               this.modalService.dismissAll();
-            }
+          
             break;
           }
 
@@ -1431,6 +1343,7 @@ export class ActionCenterComponent implements OnInit {
               this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Rejected", this.CurrentUser.appUserId).subscribe((data: any) => {
                 if (data.responseCode == 1) {
                   alert("Permit Rejected");
+                  this.onSaveToAuditTrail2("A permit issuer has reject the permit application");
                   this.router.navigate(["/home"]);
 
                 }
@@ -1465,7 +1378,7 @@ export class ActionCenterComponent implements OnInit {
       console.log("Error: ", error);
     })
 
-
+    
 
 
   }
@@ -2884,7 +2797,7 @@ export class ActionCenterComponent implements OnInit {
         if (data.responseCode == 1) {
 
           this.permitIssuer = data.dateSet;
-          this.canApprovePTW();
+
           console.log("YEAHHHHHHHHHHHHHH", this.permitIssuer);
         }
         else {
@@ -6325,9 +6238,9 @@ export class ActionCenterComponent implements OnInit {
     else if (this.userAssignedText === "EndOfCommentProcess") {
 
       // actionCentre Sindiswa 22 January 2024 - the permit issuer can't open their action centre view
-      console.log("Can this user approvePermit?? PermitStage:" + this.permit + " CanApprove: " + this.canApprovePermit);
 
-      if (this.permit && this.canApprovePermit/* && this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[4]*/) {
+
+      if (this.showPermitTab && (this.CanAssignPermitIssuer == true || this.canApprovePermit == true)) {
         this.openXl(content);
       }
       else {
@@ -7721,6 +7634,107 @@ export class ActionCenterComponent implements OnInit {
   updateCharacterCount() {
     return this.text.length;
   }
+  //PTW flow Kyle 06-03-24
+  openPermitIssuers(permitIssuers: any) {
+    this.modalService.open(permitIssuers, { centered: true, size: 'xl' });
+  }
+
+
+  getAllPermitIssuersForSubDepartment(permitIssuers: any) {
+    debugger;
+    this.PermitIssuerList.splice(0, this.PermitIssuerList.length);
+    this.accessGroupsService.getUsersBasedOnRoleName("Permit Issuer", this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe((data: any) => {
+      debugger;
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+
+          const tempPermitIssuer = {} as UserZoneList;
+          const current = data.dateSet[i];
+
+          tempPermitIssuer.fullName = current.fullName;
+          tempPermitIssuer.id = current.userID;
+          tempPermitIssuer.Email = current.email;
+
+          this.PermitIssuerList.push(tempPermitIssuer);
+
+        }
+        this.modalService.dismissAll();
+        this.dataSourcePermitIssuers = this.PermitIssuerList;
+        this.PermitIssuerTable?.renderRows();
+
+        this.openPermitIssuers(permitIssuers);
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("getConfigsByConfigNameReponse", data);
+
+    }, error => {
+      console.log("getConfigsByConfigNameError: ", error);
+    })
+
+  }
+
+  PermitIssuerSelectedForManualLink(user: any) {
+    debugger;
+    this.PermitIssuerForManualLink.clear();
+    this.PermitIssuerForManualLink.toggle(user);
+
+  }
+
+  onManuallyAssignPermitIssuer() {
+    this.permitService.getPermitForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        const current = data.dateSet[0];
+
+        if (confirm("Are you sure you want to assign" + this.PermitIssuerForManualLink.selected[0].fullName + "as the permit issuer for this application ?")) {
+
+
+          this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, this.ApplicationID, null, null, this.PermitIssuerForManualLink.selected[0].id, null, null, null).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+
+              this.modalService.dismissAll();
+              alert("Permit Issuer successfully assigned to application");
+
+              
+            }
+            else {
+              //alert("Invalid Email or Password");
+              alert(data.responseMessage);
+            }
+            console.log("getConfigsByConfigNameReponse", data);
+          })
+        }
+
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("getConfigsByConfigNameReponse", data);
+
+    }, error => {
+      console.log("getConfigsByConfigNameError: ", error);
+    })
+
+    this.reviwerforCommentService.addUpdateReviewerForComment(0, this.ApplicationID, this.PermitIssuerForManualLink.selected[0].id, "Permit Issuer Assigned", "This has been done with no notes.", this.CurrentUser.appUserId, this.loggedInUsersSubDepartmentID, this.loggedInUsersSubDepartmentName, this.CurrentUserProfile[0].zoneID, this.CurrentUserProfile[0].zoneName).subscribe((data: any) => {
+
+      if (data.responseCode == 1) {
+
+        this.router.navigate(["/home"]);
+      }
+      else {
+        alert(data.responseMessage);
+
+      }
+      console.log("Assigned a reviewer to this zone", data);
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+}
 
   GISCommentUpdate() {
 
