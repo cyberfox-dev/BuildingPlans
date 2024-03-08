@@ -1401,16 +1401,19 @@ export class ViewProjectInfoComponent implements OnInit {
 
 /*  JJS 8 Jan(Changed the approve to Prov.Approve)*/
   getAllComments() {
+    debugger;
     this.CommentsList.splice(0, this.CommentsList.length);
     this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
+      debugger;
       if (data.responseCode == 1) {
+        debugger;
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempCommentList = {} as CommentsList;
           const current = data.dateSet[i];
           tempCommentList.ApplicationID = current.applicationID;
           tempCommentList.Comment = current.comment;
           tempCommentList.CommentID = current.commentID;
-
+          //Final Approver && Senior Approver Kyle 01/02/24
           if (this.CurrentUserProfile[0].isInternal == true) {
             if (current.commentStatus == "Approved") {
               tempCommentList.CommentStatus = "Provisionally Approved";
@@ -1421,16 +1424,24 @@ export class ViewProjectInfoComponent implements OnInit {
             else if (current.commentStatus == "FinalReject") {
               tempCommentList.CommentStatus = "Final Rejected";
             }
+
             else {
               tempCommentList.CommentStatus = current.commentStatus;
             }
 
             tempCommentList.SubDepartmentForCommentID = current.subDepartmentForCommentID;
+            /*tempCommentList.SubDepartmentName = current.subDepartmentName;*/
             tempCommentList.SubDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
             tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
             tempCommentList.isApplicantReplay = current.isApplicantReplay;
+
             tempCommentList.UserName = current.userName;
+            //Comments Kyle 01/02/24
             tempCommentList.ZoneName = current.zoneName;
+            //Comments Kyle 01/02/24
+            //Clarifications Alerts Kyle
+            tempCommentList.CanReplyUserID = current.canReplyUserID;
+
             tempCommentList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
             tempCommentList.Time = current.dateCreated.substring(current.dateCreated.indexOf('T') + 1, current.dateCreated.indexOf('.'));
 
@@ -1439,12 +1450,53 @@ export class ViewProjectInfoComponent implements OnInit {
             }
 
             this.CommentsList.push(tempCommentList);
-          } else {
-            // Handling comment statuses for external users
-            // code omitted for brevity
+            console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", current);
+            console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", tempCommentList);
           }
-        }
 
+          else {
+            if (current.commentStatus != "Reviewer Clarify") {
+              if (current.commentStatus == "Approved") {
+                tempCommentList.CommentStatus = "Provisionally Approved";
+              }
+              else if (current.commentStatus == "Rejected") {
+                tempCommentList.CommentStatus = "Provisionally Rejected";
+              }
+              else if (current.commentStatus == "FinalReject") {
+                tempCommentList.CommentStatus = "Final Rejected";
+              }
+              else {
+                tempCommentList.CommentStatus = current.commentStatus;
+              }
+
+              tempCommentList.SubDepartmentForCommentID = current.subDepartmentForCommentID;
+              tempCommentList.SubDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
+              tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
+              tempCommentList.isApplicantReplay = current.isApplicantReplay;
+              tempCommentList.UserName = current.userName;
+              //Comments Kyle 01/02/24
+              tempCommentList.ZoneName = current.zoneName;
+              //Comments Kyle 01/02/24
+              tempCommentList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+              tempCommentList.Time = current.dateCreated.substring(current.dateCreated.indexOf('T') + 1, current.dateCreated.indexOf('.'));
+
+              if (tempCommentList.CommentStatus == "Clarified" || tempCommentList.CommentStatus == " Reviewer Clarified" || tempCommentList.CommentStatus == "Applicant Clarified") {
+                tempCommentList.HasReply = true;
+              }
+              else {
+                tempCommentList.HasReply = false;
+              }
+
+              this.CommentsList.push(tempCommentList);
+              console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", current);
+              console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLISTKyle", tempCommentList);
+            }
+
+          }
+
+
+        }
+        console.log("COMMENTSCOMMENTSCOMMENTSCOMMENTSCOMMENTSCOMMENTSCOMMENTSCOMMENTSCOMMENTSCOMMENTSCOMMENTSCOMMENTS: ", this.CommentsList);
         // Sorting the comments by date and time
         this.CommentsList.sort((a, b) => {
           // First, compare dates
