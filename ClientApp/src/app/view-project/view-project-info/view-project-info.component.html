@@ -936,9 +936,9 @@
             <mat-form-field class="manDoc" >
               <div>
                 <mat-toolbar>
-                  <!-- Display files names -->
-                  <input matInput readonly name="name" class="textFuckingBox" /> <!--[(ngModel)]="fileAttrs[i]"-->
-                  <!-- app-file-upload Component -->
+                   Display files names 
+                  <input matInput readonly name="name" class="textFuckingBox" /> [(ngModel)]="fileAttrs[i]"
+                   app-file-upload Component 
 
                   <div class="container-fluid">
                     <app-file-upload [ApplicationID]="CurrentApplicationBeingViewed[0].applicationID"
@@ -962,7 +962,7 @@
           <button type="button" class="btn btn-outline-success" [disabled]="fileCount !== MandatoryDocumentUploadList.length || permitStartDate === null || permitStartDate === undefined " (click)="updateStartDateForPermit();modal.close('Save click')">Save</button>
         </div>
       </ng-template>
-      <!--Permit Kyle 13-02-24-->
+      Permit Kyle 13-02-24
       <app-permit-component [ApplicationID]="ApplicationID" [ApplicantID]="CurrentApplicationBeingViewed[0].UserID" [OriginatorID]="CurrentApplicationBeingViewed[0].CreatedById" [ApplicationID]="ApplicationID" [PermitBtn]="permitBtn"></app-permit-component>
 
     </mat-tab>

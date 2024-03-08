@@ -15,7 +15,8 @@ import { UserProfileService } from '../service/UserProfile/user-profile.service'
 import { NotificationsService } from '../service/Notifications/notifications.service';
 import { DocumentUploadService } from '../service/DocumentUpload/document-upload.service';
 import { HttpClient, HttpErrorResponse, HttpEventType } from '@angular/common/http';
-
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackBarAlertsComponent } from '../snack-bar-alerts/snack-bar-alerts.component';
 //Permit Kyle 13-02-24
 
 //PTC = Permit To Comment
@@ -87,7 +88,7 @@ export class PermitComponentComponent implements OnInit {
   projectNumber: string;
   currentStageName: string;
 
-  constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private permitService: PermitService, private shared: SharedService, private applicationsService: ApplicationsService, private stagesService: StagesService, private auditTrailService: AuditTrailService, private router: Router, private financialService: FinancialService, private userProfileService: UserProfileService, private notificationsService: NotificationsService, private documentUploadService: DocumentUploadService, private http: HttpClient,) { }
+  constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private permitService: PermitService, private shared: SharedService, private applicationsService: ApplicationsService, private stagesService: StagesService, private auditTrailService: AuditTrailService, private router: Router, private financialService: FinancialService, private userProfileService: UserProfileService, private notificationsService: NotificationsService, private documentUploadService: DocumentUploadService, private http: HttpClient, private _snackBar: MatSnackBar,) { }
 
   ngOnInit(): void {
     this.getAllPermitForComment();
@@ -453,7 +454,7 @@ export class PermitComponentComponent implements OnInit {
         this.onSaveToAuditTrail2("Permit to Work Generated");
         this.onSaveToAuditTrail2("Application Moved To Monitoring Stage");
         //Audit Traik Kyle 
-        alert("Application Moved To Monitoring");
+        this.openSnackBar("Application moved to monitoring");
         this.modalService.dismissAll();
         this.router.navigate(["/home"]);
 
@@ -712,8 +713,14 @@ export class PermitComponentComponent implements OnInit {
     })
   }
 
- 
- 
+  openSnackBar(message: string) {
+    this._snackBar.openFromComponent(SnackBarAlertsComponent, {
+      data: { message }, // Pass the message as data to the component
+      duration: 4 * 1000,
+      panelClass: ['green-snackbar'],
+      verticalPosition: 'top',
+    });
+  }
    //Request for delete Kyle 22-02-24
  
 }

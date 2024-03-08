@@ -244,12 +244,12 @@ export class ApplicationAlertsComponent implements OnInit {
           }
 
           if (current.createdById == this.CurrentUser.appUserId && current.currentStageName == "PTW") {
-
+            debugger;
             const hasDocs = await this.checkIfHasDocs(current.applicationID);
             
-
+            debugger;
             if (hasDocs.length > 0 && (hasDocs.includes(false) == false)) {
-              
+              debugger;
               tempApplicationAlert.ApplicationID = current.applicationID;
               tempApplicationAlert.Description = "Consolidate Permit To Work";
               tempApplicationAlert.ProjectNumber = current.projectNumber;
@@ -290,7 +290,7 @@ export class ApplicationAlertsComponent implements OnInit {
         for (let i = 0; i < data.dateSet.length; i++) {
 
           const current = data.dateSet[i];
-          if (current.hasSuperVisionFee == false) {
+          if (current.hasSuperVisionFee == false || current.hasSuperVisionFee == null) {
             const dataDoc: any = await this.permitService.hasPermitSubForCommentDocuments(current.permitSubForCommentID).toPromise();
             if (dataDoc.responseCode == 1) {
 

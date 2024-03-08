@@ -883,6 +883,7 @@ export class ViewProjectInfoComponent implements OnInit {
       }
       else {
         //alert("Invalid Email or Password");
+
         alert(data.responseMessage);
 
 
