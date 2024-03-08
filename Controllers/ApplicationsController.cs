@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
 using System;
 using Microsoft.Extensions.Localization;
+using WayleaveManagementSystem.Models.DTO;
 
 namespace WayleaveManagementSystem.Controllers
 {
@@ -543,5 +544,30 @@ namespace WayleaveManagementSystem.Controllers
 
         }
 
+        //Audit Trail Kyle 06-03-24
+        [HttpPost("GetApplicationsWithinDateRange")]
+        public async Task<object> GetApplicationsWithinDateRange([FromBody] ApplicationsDTO model)
+        {
+            try
+            {
+                if(model.ExpectedStartDate == null || model.ExpectedEndDate == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.GetApplicationsWithinDateRange(model.ExpectedStartDate,model.ExpectedEndDate);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Applications within time range", result));
+                }
+            }
+           
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
     }
 }

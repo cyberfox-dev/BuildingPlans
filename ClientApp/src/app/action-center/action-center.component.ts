@@ -1283,7 +1283,7 @@ export class ActionCenterComponent implements OnInit {
               //Request For Delete Kyle 22-02-24
             
             
-                this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Approved", this.CurrentUser.appUserId, null, null, null, null, false, false, false).subscribe((data: any) => {
+                this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "Approved", this.CurrentUser.appUserId, null, null, null, null, false, false).subscribe((data: any) => {
                   if (data.responseCode == 1) {
 
                     alert("Permit Approved");
@@ -1316,7 +1316,7 @@ export class ActionCenterComponent implements OnInit {
             if (confirm("Are you sure you want to meet applicant On site?")) {
             
               
-                this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "MeetOnSite", this.CurrentUser.appUserId, null, null, null, null, false, false, false).subscribe((data: any) => {
+                this.permitService.addUpdatePermitSubForComment(current.permitSubForCommentID, null, null, null, this.CurrentUser.appUserId, this.leaveACommentPermit, "MeetOnSite", this.CurrentUser.appUserId, null, null, null, null, false, false).subscribe((data: any) => {
                   if (data.responseCode == 1) {
                     alert("Meet Applicant On Site");
                     this.onSaveToAuditTrail2("A permit issuer has requested to meet on site");
@@ -6227,7 +6227,7 @@ export class ActionCenterComponent implements OnInit {
     }
   }
   openActionCenter(content: any) {
-
+    debugger;
     if (this.commentState == null) {
       //This is so the Admin can assign
       this.openXl(content);
@@ -7695,7 +7695,7 @@ export class ActionCenterComponent implements OnInit {
             if (data.responseCode == 1) {
 
               this.modalService.dismissAll();
-              alert("Permit Issuer successfully assigned to application");
+             /* alert("Permit Issuer successfully assigned to application");*/
 
               
             }

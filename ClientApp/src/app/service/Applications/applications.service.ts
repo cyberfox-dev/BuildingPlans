@@ -231,4 +231,12 @@ export class ApplicationsService {
 
   }
   //#endregion
+
+  public getApplicationsWithinDateRange(startDate: any | null, endDate: any | null) {
+    const body = {
+      ExpectedStartDate: startDate,
+      ExpectedEndDate :endDate
+    }
+    return this.httpClient.post(this.baseURL + "GetApplicationsWithinDateRange", body);
+  } 
 }

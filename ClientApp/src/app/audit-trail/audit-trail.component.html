@@ -85,14 +85,20 @@
       </div>
     </div>
 
-   
+
 
   </div>
   <div class="modal-footer">
 
-    <button type="submit" class="btn btn-outline-success" *ngIf="showInternalUsers === false" (click)=" sortDataRange();clearAll()" [disabled]="selectionType == ''">Save</button>
+    <button type="submit" class="btn btn-outline-success" *ngIf="showInternalUsers === false" (click)=" sortDataRange();clearAll()" [disabled]="selectionType == '' || canSave == false">Save</button>
     <button type="submit" class="btn btn-outline-success" *ngIf="showInternalUsers === true" (click)="  openInternalUser(internalUsers)" [disabled]="selectionType == ''">Select</button>
   </div>
+
+  <div class="loading-screen" id="loadingScreen" *ngIf="isLoading">
+    <img src="assets/Loading.png" alt="" class="logo2">
+  </div>
+
+  <!-- -->
 
 </ng-template>
 <button mat-raised-button color="blue" *ngIf="getReport" (click)=" sortDataRange()">Download Report</button>
@@ -145,7 +151,7 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
 
-<ng-template #internalUsers let-modal >
+<ng-template #internalUsers let-modal>
 
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Please select range of report you wish to download</h4>
@@ -160,7 +166,7 @@
       <input matInput (keyup)="applyInternalClientFilter($event)" placeholder="Ex. ium" #input>
     </mat-form-field>
 
-    <table mat-table class="mat-elevation-z8" [dataSource]="dataSourceUsers" >
+    <table mat-table class="mat-elevation-z8" [dataSource]="dataSourceUsers">
 
 
       <ng-container matColumnDef="fullName">
@@ -190,3 +196,5 @@
   </div>
 
 </ng-template>
+
+
