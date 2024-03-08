@@ -509,7 +509,7 @@ export class FileUploadComponent implements OnInit {
       this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, null, applicationData.appUserId, this.CurrentUser.appUserId, this.shared.RepFileUploadCat, this.shared.RepFileUploadSubID, this.shared.RepFileUploadSubName, null, true, this.descriptionForDocRepoS).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
-          
+         
           // Emit the onUploadSuccess event after a successful upload
           this.onUploadSuccess.emit(event.body);
           this.shared.RepFileUploadCat = null;
@@ -548,7 +548,7 @@ export class FileUploadComponent implements OnInit {
         this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, applicationID, applicationData.appUserId, this.CurrentUser.appUserId).subscribe((data: any) => {
           
           if (data.responseCode == 1) {
-            
+          
             // Emit the onUploadSuccess event after a successful upload
             this.onUploadSuccess.emit(event.body);
           }

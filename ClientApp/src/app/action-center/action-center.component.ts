@@ -1107,14 +1107,14 @@ export class ActionCenterComponent implements OnInit {
 
     /*doc.save("Permit.pdf");*/
     const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
-    const file = new File([pdfData], 'Permit', { type: 'application/pdf' });
+    const file = new File([pdfData], 'Permit Cover', { type: 'application/pdf' });
 
 
     // Prepare the form data
     const formData = new FormData();
     formData.append('file', file);
 
-    this.sharedService.pushFileForTempFileUpload(file, "Permit" + ".pdf");
+    this.sharedService.pushFileForTempFileUpload(file, "Permit Cover" + ".pdf");
     this.save();
     // window.open(pdfUrl, '_blank')
 
@@ -1169,7 +1169,7 @@ export class ActionCenterComponent implements OnInit {
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
     console.log("documentName", documentName);
 
-    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, this.CurrentUser.appUserId).subscribe((data: any) => {
+    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, this.CurrentUser.appUserId,"PTW").subscribe((data: any) => {
       /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
       if (data.responseCode == 1) {
 

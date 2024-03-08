@@ -109,13 +109,15 @@ export class PermitComponentComponent implements OnInit {
     for (var i = 0; i < this.AllCurrentUserRoles.length; i++) {
       if (this.AllCurrentUserRoles[i].roleName == "Issue Permit") {
         this.CanIssuePermit = true;
+        break;
       }
       else {
         this.CanIssuePermit = false;
       }
-      this.isCalledInsidePermit = true;
+     
       
     }
+    this.isCalledInsidePermit = true;
     
     this.getAllStages();//Permit Kyle 13-02-24
     if (this.CurrentUserProfile[0].subDepartmentName == "EMB") {
@@ -279,8 +281,7 @@ export class PermitComponentComponent implements OnInit {
 
   private readonly apiUrl: string = this.shared.getApiUrl() + '/api/';
   async CombinePTW() {
-    
-
+  
     for (var i = 0; i < this.PTCList.length; i++) {
 
       const currentDocName = this.PTCList[i].PermitDocName;
