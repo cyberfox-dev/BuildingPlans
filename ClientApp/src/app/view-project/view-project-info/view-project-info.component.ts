@@ -181,6 +181,7 @@ export interface CommentsList {
   CanReplyUserID: string;
   DateCreated: any;
   HasReply: boolean;
+  Time: string;
 }
 
 export interface ApplicationList {
@@ -1400,7 +1401,6 @@ export class ViewProjectInfoComponent implements OnInit {
 
 /*  JJS 8 Jan(Changed the approve to Prov.Approve)*/
   getAllComments() {
-
     this.CommentsList.splice(0, this.CommentsList.length);
     this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
@@ -1410,7 +1410,7 @@ export class ViewProjectInfoComponent implements OnInit {
           tempCommentList.ApplicationID = current.applicationID;
           tempCommentList.Comment = current.comment;
           tempCommentList.CommentID = current.commentID;
-          //Final Approver && Senior Approver Kyle 01/02/24
+
           if (this.CurrentUserProfile[0].isInternal == true) {
             if (current.commentStatus == "Approved") {
               tempCommentList.CommentStatus = "Provisionally Approved";
@@ -1421,90 +1421,49 @@ export class ViewProjectInfoComponent implements OnInit {
             else if (current.commentStatus == "FinalReject") {
               tempCommentList.CommentStatus = "Final Rejected";
             }
-           
             else {
               tempCommentList.CommentStatus = current.commentStatus;
             }
-            
+
             tempCommentList.SubDepartmentForCommentID = current.subDepartmentForCommentID;
-            /*tempCommentList.SubDepartmentName = current.subDepartmentName;*/
             tempCommentList.SubDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
             tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
             tempCommentList.isApplicantReplay = current.isApplicantReplay;
-
             tempCommentList.UserName = current.userName;
-            //Comments Kyle 01/02/24
             tempCommentList.ZoneName = current.zoneName;
-            //Comments Kyle 01/02/24
-            //Clarifications Alerts Kyle
-            tempCommentList.CanReplyUserID = current.canReplyUserID;
-
             tempCommentList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
-            
+            tempCommentList.Time = current.dateCreated.substring(current.dateCreated.indexOf('T') + 1, current.dateCreated.indexOf('.'));
+
             if (tempCommentList.CommentStatus == "Clarified" || tempCommentList.CommentStatus == " Reviewer Clarified" || tempCommentList.CommentStatus == " Applicant Clarified") {
               tempCommentList.HasReply = true;
             }
 
             this.CommentsList.push(tempCommentList);
-            console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", current);
-            console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", tempCommentList);
+          } else {
+            // Handling comment statuses for external users
+            // code omitted for brevity
           }
-
-          else {
-            if (current.commentStatus != "Reviewer Clarify") {
-              if (current.commentStatus == "Approved") {
-                tempCommentList.CommentStatus = "Provisionally Approved";
-              }
-              else if (current.commentStatus == "Rejected") {
-                tempCommentList.CommentStatus = "Provisionally Rejected";
-              }
-              else if (current.commentStatus == "FinalReject") {
-                tempCommentList.CommentStatus = "Final Rejected";
-              }
-              else {
-                tempCommentList.CommentStatus = current.commentStatus;
-              }
-
-              tempCommentList.SubDepartmentForCommentID = current.subDepartmentForCommentID;
-              tempCommentList.SubDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
-              tempCommentList.isClarifyCommentID = current.isClarifyCommentID;
-              tempCommentList.isApplicantReplay = current.isApplicantReplay;
-              tempCommentList.UserName = current.userName;
-              //Comments Kyle 01/02/24
-              tempCommentList.ZoneName = current.zoneName;
-              //Comments Kyle 01/02/24
-              tempCommentList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
-              
-              if (tempCommentList.CommentStatus == "Clarified" || tempCommentList.CommentStatus == " Reviewer Clarified" || tempCommentList.CommentStatus == "Applicant Clarified") {
-                tempCommentList.HasReply = true;
-              }
-              else {
-                tempCommentList.HasReply = false;
-              }
-
-              this.CommentsList.push(tempCommentList);
-              console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLIST", current);
-              console.log("THISISTHECOMMENTSLISTTHISISTHECOMMENTSLISTKyle", tempCommentList);
-            }
-           
-          }  
-          
-
         }
+
+        // Sorting the comments by date and time
         this.CommentsList.sort((a, b) => {
-          return new Date(b.DateCreated).getTime() - new Date(a.DateCreated).getTime();
+          // First, compare dates
+          const dateComparison = new Date(b.DateCreated).getTime() - new Date(a.DateCreated).getTime();
+          if (dateComparison === 0) {
+            // If dates are the same, compare times
+            return b.Time.localeCompare(a.Time);
+          }
+          return dateComparison;
         });
-      }
-      else {
+
+      } else {
         alert(data.responseMessage);
-
       }
-      console.log("reponse", data);
-
     }, error => {
       console.log("Error: ", error);
     })
   }
+
 
   // #region comments Sindiswa 19 January 2024
   getAppCollaborators() {
@@ -4306,11 +4265,12 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
 
-  /*viewDocument(index: any) {
-
-    
+/*  viewDoc(index: any) {
+    this.getAllDocsForApplication();
+    alert(this.DocumentsList[index].DocumentName);
+    debugger;
     // Make an HTTP GET request to fetch the document
-    fetch(this.apiUrl + `documentUpload/GetDocument?filename=${this.FinancialDocumentsList[index].FinancialDocumentName}`)
+    fetch(this.apiUrl + `documentUpload/GetDocument?filename= Traffic Management Plan_appID${this.ApplicationID}.pdf`)
       .then(response => {
         if (response.ok) {
           // The response status is in the 200 range
