@@ -936,9 +936,9 @@
             <mat-form-field class="manDoc" >
               <div>
                 <mat-toolbar>
-                   Display files names 
-                  <input matInput readonly name="name" class="textFuckingBox" /> [(ngModel)]="fileAttrs[i]"
-                   app-file-upload Component 
+                   <!--Display files names--> 
+                  <input matInput readonly name="name" class="textFuckingBox" /> <!--[(ngModel)]="fileAttrs[i]"-->
+                   <!--app-file-upload Component--> 
 
                   <div class="container-fluid">
                     <app-file-upload [ApplicationID]="CurrentApplicationBeingViewed[0].applicationID"
@@ -948,7 +948,7 @@
                                      (onUploadSuccess)="onFileUpload2($event,i)">
                     </app-file-upload>
                   </div>
-                  <button mat-raised-button color="blue2"  *ngIf="manDoc.hasFile === true" matTooltip="View Document"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid.svg" class="icon blue"></button>
+                  <button mat-raised-button color="blue2"  *ngIf="manDoc.hasFile === true" matTooltip="View Document" (click)="viewDocument2(i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid.svg" class="icon blue"></button>
                 </mat-toolbar>
                
               </div>
@@ -962,7 +962,7 @@
           <button type="button" class="btn btn-outline-success" [disabled]="fileCount !== MandatoryDocumentUploadList.length || permitStartDate === null || permitStartDate === undefined " (click)="updateStartDateForPermit();modal.close('Save click')">Save</button>
         </div>
       </ng-template>
-      Permit Kyle 13-02-24
+      <!--Permit Kyle 13-02-24-->
       <app-permit-component [ApplicationID]="ApplicationID" [ApplicantID]="CurrentApplicationBeingViewed[0].UserID" [OriginatorID]="CurrentApplicationBeingViewed[0].CreatedById" [ApplicationID]="ApplicationID" [PermitBtn]="permitBtn"></app-permit-component>
 
     </mat-tab>

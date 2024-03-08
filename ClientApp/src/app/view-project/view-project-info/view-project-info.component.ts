@@ -2518,11 +2518,11 @@ export class ViewProjectInfoComponent implements OnInit {
 
   checkIfPermitExsist() {
     
-    if (this.applicationDataForView[0].CreatedById == this.CurrentUser.appUserId) {
+    if (this.applicationDataForView[0].CreatedById == this.CurrentUser.appUserId && this.applicationDataForView[0].CurrentStageName == "PTW") {
       this.permitBtn = true;
       this.permitTextBox = false;
     }
-    if (this.applicationDataForView[0].permitStartDate != null) {
+    if (this.applicationDataForView[0].permitStartDate != null ) {
       this.permitBtn = false;
       this.permitTextBox = true;
       this.startDate = this.applicationDataForView[0].permitStartDate.toString();
@@ -4388,7 +4388,39 @@ export class ViewProjectInfoComponent implements OnInit {
     }
   }
 
+  viewDocument2(index: any) {
+    debugger;
+    const filename = this.MandatoryDocumentUploadList[index].mandatoryDocumentName +"_appID"+this.ApplicationID + ".pdf";
+    // Make an HTTP GET request to fetch the document
+    fetch(this.apiUrl + `documentUpload/GetDocument?filename=${filename}`)
+      .then(response => {
+        if (response.ok) {
+          // The response status is in the 200 range
 
+          return response.blob(); // Extract the response body as a Blob
+
+        } else {
+          throw new Error('Error fetching the document');
+        }
+      })
+      .then(blob => {
+        // Create a URL for the Blob object
+        const documentURL = URL.createObjectURL(blob);
+
+        window.open(documentURL, '_blank');
+
+        // Download the document
+        const link = document.createElement('a');
+        link.href = documentURL;
+        link.download = this.DocumentsList[index].DocumentName; // Set the downloaded file name
+        link.click();
+      })
+      .catch(error => {
+        console.log(error);
+        // Handle the error appropriately
+      });
+    }
+  
 
   getFinancial() {
     this.FinancialDocumentsList.splice(0, this.FinancialDocumentsList.length);
