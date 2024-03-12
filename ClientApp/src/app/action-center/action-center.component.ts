@@ -4483,7 +4483,7 @@ export class ActionCenterComponent implements OnInit {
       case "Clarify": {
         // this.getDepartmentManagerUserID("Senior Reviewer");
         if (confirm("Are you sure you want to get clarity from applicant for this application?")) {
-          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", false, null, this.CurrentApplicant, null).subscribe((data: any) => {
+          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
 
             if (data.responseCode == 1) {
               const emailContent = `
