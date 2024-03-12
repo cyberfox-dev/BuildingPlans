@@ -632,6 +632,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   alertMessage: string;
   startDate: string;
   endDate: string;
+  showDates: string;
+  tagLength: number;
   isBannerVisible() {
 
     this.configService.getConfigsByConfigName("Alert").subscribe((data: any) => {
@@ -643,12 +645,13 @@ export class HomeComponent implements OnInit, OnDestroy {
 
           const startEnd = current.utilitySlot1;
           const currentDate = new Date();
-
+          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
           let start = startEnd.substring(0, startEnd.indexOf(" "));
           let end = startEnd.substring(startEnd.indexOf(" ") + 1);
 
           let startDate = this.parseDate(start);
           let endDate = this.parseDate(end);
+
           //Banner Kyle 06-03-24
           if (current.utilitySlot2 == "0") {
             this.disableButtons = false;
@@ -656,16 +659,26 @@ export class HomeComponent implements OnInit, OnDestroy {
           else if (current.utilitySlot2 == "1") {
             this.disableButtons = true;
           }
+          debugger;
+         
           console.log("Testing alerts", current, this.disableButtons);
-          
-          if (currentDate >= startDate && currentDate < endDate) {
+         
+          if (currentDate.toISOString().split('T')[0] >= startDate.toISOString().split('T')[0] && currentDate.toISOString().split('T')[0] <= endDate.toISOString().split('T')[0] ) {
+            const checking = currentDate.toISOString().split('T')[0];
             
             this.showBanner = true;
-            this.alertMessage = current.utilitySlot3.toUpperCase();
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            this.alertMessage = current.configDescription.toUpperCase();
+          
             this.startDate = `${startDate.getDate()} ${months[startDate.getMonth()]} ${startDate.getFullYear()}`;
 
             this.endDate = `${endDate.getDate()} ${months[endDate.getMonth()]} ${endDate.getFullYear()}`;
+            if (current.utilitySlot3 == "0") {
+              this.showDates = "";
+            }
+            else if (current.utilitySlot3 == "1") {
+              this.showDates = " FROM " + this.startDate + " TO "+ this.endDate;
+            }
+            this.tagLength = this.alertMessage.length + this.showDates.length;
             break;
           }
           else {
@@ -685,7 +698,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
   private parseDate(dateString: any): Date {
-
+ 
+  
     return new Date(dateString);
   }
   //Banner Kyle 26/01/24

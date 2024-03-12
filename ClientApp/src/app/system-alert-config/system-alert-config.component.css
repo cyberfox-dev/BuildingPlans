@@ -38,7 +38,7 @@ table {
   word-wrap: break-word !important;
   white-space: unset !important;
   flex: 0 0 8% !important;
-  width: 40% !important;
+  width: 30% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
@@ -49,7 +49,7 @@ table {
 }
 
 mat-column-StartDate, mat-column-EndtDate, mat-column-DateCreated {
-  width: 15% !important;
+  width: 20% !important;
 }
 
 /*.mat-column-Actions {
@@ -73,6 +73,7 @@ mat-column-StartDate, mat-column-EndtDate, mat-column-DateCreated {
   -webkit-hyphens: auto;
   hyphens: auto;
   text-align: center;
+  padding-right:50px;
 }
 
 .button-group {
@@ -85,7 +86,7 @@ mat-column-StartDate, mat-column-EndtDate, mat-column-DateCreated {
   word-wrap: break-word !important;
   white-space: unset !important;
   flex: 0 0 8% !important;
-  width: 15% !important;
+  width: 10% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
@@ -94,4 +95,35 @@ mat-column-StartDate, mat-column-EndtDate, mat-column-DateCreated {
   -webkit-hyphens: auto;
   hyphens: auto;
   text-align: center
+}
+.mat-column-showDates {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 10% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  text-align: center
+}
+.mat-column-Status {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 10% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  text-align: center
+}
+.cont56{
+  padding-top: 20px;
 }

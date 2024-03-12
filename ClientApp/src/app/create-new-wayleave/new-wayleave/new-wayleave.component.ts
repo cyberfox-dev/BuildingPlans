@@ -4713,7 +4713,7 @@ export class NewWayleaveComponent implements OnInit {
   selectedProjectSizeCheckList(ProjectSizeCheckList: any) {
 
     this.selectionProjectSizeCheck.toggle(ProjectSizeCheckList);
-    this.StoreSelectionProjectCheckListItems();
+   
 
   }
 
@@ -4748,52 +4748,42 @@ export class NewWayleaveComponent implements OnInit {
 
           const tempMandatoryDocList = {} as MandatoryDocumentUploadList;
           const current = data.dateSet[i];
-          tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
-          tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
-          tempMandatoryDocList.stageID = current.stageID;
-          tempMandatoryDocList.mandatoryDocumentCategory = current.mandatoryDocumentCategory;
-          tempMandatoryDocList.dateCreated = current.dateCreated;
-          switch (tempMandatoryDocList.mandatoryDocumentCategory) {
-            case "Small": {
+          if (current.mandatoryDocumentName != "Construction Program or Phasing Program" && current.mandatoryDocumentName != "Traffic Management Plan" && current.mandatoryDocumentName != "Drill plan") {
+            tempMandatoryDocList.mandatoryDocumentID = current.mandatoryDocumentID;
+            tempMandatoryDocList.mandatoryDocumentName = current.mandatoryDocumentName;
+            tempMandatoryDocList.stageID = current.stageID;
+            tempMandatoryDocList.mandatoryDocumentCategory = current.mandatoryDocumentCategory;
+            tempMandatoryDocList.dateCreated = current.dateCreated;
+            switch (tempMandatoryDocList.mandatoryDocumentCategory) {
+              case "Small": {
 
-              this.MandatoryDocumentUploadListSmall.push(tempMandatoryDocList);
-              this.MandatoryDocumentUploadListSmallTable?.renderRows();
-              break;
-            }
-            case "Medium": {
+                this.MandatoryDocumentUploadListSmall.push(tempMandatoryDocList);
+                this.MandatoryDocumentUploadListSmallTable?.renderRows();
+                break;
+              }
+              case "Medium": {
 
-              this.MandatoryDocumentUploadListMedium.push(tempMandatoryDocList);
-              this.MandatoryDocumentUploadListMediumTable?.renderRows();
-              break;
-            }
-            case "Large": {
+                this.MandatoryDocumentUploadListMedium.push(tempMandatoryDocList);
+                this.MandatoryDocumentUploadListMediumTable?.renderRows();
+                break;
+              }
+              case "Large": {
 
-              this.MandatoryDocumentUploadListLarge.push(tempMandatoryDocList);
-              this.MandatoryDocumentUploadListLargeTable?.renderRows();
-              break;
-            }
-            case "Emergency": {
+                this.MandatoryDocumentUploadListLarge.push(tempMandatoryDocList);
+                this.MandatoryDocumentUploadListLargeTable?.renderRows();
+                break;
+              }
 
-              this.MandatoryDocumentUploadListEmergency.push(tempMandatoryDocList);
-              this.MandatoryDocumentUploadListEmergencyTable?.renderRows();
-              break;
-            }
-            case "Drilling": {
+              case "LUM": {
 
-              this.MandatoryDocumentUploadListDrilling.push(tempMandatoryDocList);
-              this.MandatoryDocumentUploadListDrillingTable?.renderRows();
-              break;
+                this.MandatoryDocumentUploadListLUM.push(tempMandatoryDocList);
+                this.MandatoryDocumentUploadListLUMTable?.renderRows();
+                break;
+              }
+              default:
             }
-            case "LUM": {
 
-              this.MandatoryDocumentUploadListLUM.push(tempMandatoryDocList);
-              this.MandatoryDocumentUploadListLUMTable?.renderRows();
-              break;
-            }
-            default:
           }
-
-
 
         }
 
@@ -5031,7 +5021,7 @@ export class NewWayleaveComponent implements OnInit {
   //  this.updateMandatoryDocumentsLinkedStagesList(currentList);
   //}
 
-
+  
 
 
 
@@ -5039,14 +5029,18 @@ export class NewWayleaveComponent implements OnInit {
 
     const newList = list.map(current => {
       const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
-      if (current.mandatoryDocumentName != "Construction Program or Phasing Program" && current.mandatoryDocumentName != "Traffic Management Plan" && current.mandatoryDocumentName != "Drill plan")   //Project size Kyle 27-02-24
-      tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
-      tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
-      tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
-      tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
-      tempMandatoryDocumentsLinkedStagesList.stageName = null;
-      tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
-      return tempMandatoryDocumentsLinkedStagesList;
+      if (current.mandatoryDocumentName != "Construction Program or Phasing Program" && current.mandatoryDocumentName != "Traffic Management Plan" && current.mandatoryDocumentName != "Drill plan") {   //Project size Kyle 27-02-24
+        tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
+        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+        tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+        tempMandatoryDocumentsLinkedStagesList.stageName = null;
+        tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+        return tempMandatoryDocumentsLinkedStagesList;
+      }
+      else {
+        return null
+      }
     });
 
     this.MandatoryDocumentsLinkedStagesList.next(newList);
