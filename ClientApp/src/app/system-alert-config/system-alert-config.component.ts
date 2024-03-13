@@ -13,6 +13,7 @@ export interface AlertList {
   message: string;
   status: string;
   disabledCreate: boolean;
+  showDates: boolean;
   dateCreated: string;
   createdById: string;
 }
@@ -48,10 +49,12 @@ export class SystemAlertConfigComponent implements OnInit {
   stringifiedData: any;
 
   @ViewChild(MatTable) alertsTable: MatTable<AlertList> | undefined;
-  displayedColumns: string[] = ['Message', 'Status','StartDate', 'EndDate', 'DateCreated', 'isDisabled','actions'];
+  displayedColumns: string[] = ['Message', 'Status', 'StartDate', 'EndDate', 'isDisabled', 'showDates',  'DateCreated','actions'];
   dataSource = this.Alerts;
   disableCreate: boolean = false;
   createValue: number = 0;
+  showDates: boolean = false;
+  showDatesValue: number = 0;
   constructor(private modalService: NgbModal, private sharedService: SharedService, private config: ConfigService) { }
 
   ngOnInit(): void {
@@ -88,7 +91,7 @@ export class SystemAlertConfigComponent implements OnInit {
 
     }
     else {
-      this.config.addUpdateConfig(0, "Alert", "A user has created a banner alert via config", this.startDate + " " + this.endDate, this.createValue.toString(), this.bannerMessage, this.CurrentUser.appUserId).subscribe((data: any) => {
+      this.config.addUpdateConfig(0, "Alert", this.bannerMessage, this.startDate + " " + this.endDate, this.createValue.toString(), this.showDatesValue.toString(), this.CurrentUser.appUserId).subscribe((data: any) => {
         if (data.responseCode == 1) {
           alert(data.responseMessage);
           this.findLiveAlert();
@@ -138,8 +141,13 @@ export class SystemAlertConfigComponent implements OnInit {
           else if (current.utilitySlot2 == "1") {
             tempAlertList.disabledCreate = true;
           }
-          tempAlertList.message = current.utilitySlot3;
-          
+          tempAlertList.message = current.configDescription;
+          if (current.utilitySlot3 == "0") {
+            tempAlertList.showDates = false;
+          }
+          else if (current.utilitySlot3 == "1") {
+            tempAlertList.showDates = true;
+          }
           //Banner Kyle 26-01-24
           this.currentDate = this.getCurrentDate();
           if (this.currentDate >= dateValues[0] && this.currentDate <= dateValues[1]) {
@@ -172,11 +180,13 @@ export class SystemAlertConfigComponent implements OnInit {
     })
   }
    //Banner Kyle 26-01-24
-  deleteAlert(index: number, element: AlertList ){
-    const configId = element.configAlertId;
-    this.config.deleteConfig(configId).subscribe((data: any) => {
-      this.findLiveAlert();
-    })
+  deleteAlert(index: number, element: AlertList) {
+    if (confirm("Are you sure you want to delete this alert?")) {
+      const configId = element.configAlertId;
+      this.config.deleteConfig(configId).subscribe((data: any) => {
+        this.findLiveAlert();
+      })
+    }
   }
 
   openEditAlert(editAlert:any) {
@@ -192,6 +202,7 @@ export class SystemAlertConfigComponent implements OnInit {
     this.editStartDate = current.startDate;
     this.editEndDate = current.endDate;
     this.disableCreate = current.disabledCreate;
+    this.showDates = current.showDates;
     this.openEditAlert(editAlert);
   }
 
@@ -206,7 +217,7 @@ export class SystemAlertConfigComponent implements OnInit {
 
     }
     else {
-      this.config.addUpdateConfig(this.configId, "Alert", "A user has created a banner alert via config", this.editStartDate + " " + this.editEndDate, this.createValue.toString(), this.editBannerMessage, this.CurrentUser.appUserId).subscribe((data: any) => {
+      this.config.addUpdateConfig(this.configId, "Alert", this.editBannerMessage, this.editStartDate + " " + this.editEndDate, this.createValue.toString(), this.showDatesValue.toString(), this.CurrentUser.appUserId).subscribe((data: any) => {
         if (data.responseCode == 1) {
           alert(data.responseMessage);
           this.findLiveAlert();
@@ -244,4 +255,19 @@ export class SystemAlertConfigComponent implements OnInit {
     
   }
 
+  onShowDatesChange() {
+    if (this.showDates == false) {
+      this.showDates = true;
+    }
+    else {
+      this.showDates = false;
+    }
+
+    if (this.showDates == false) {
+      this.showDatesValue = 0;
+    }
+    else if (this.showDates == true) {
+      this.showDatesValue = 1;
+    }
+  }
 }
