@@ -2576,6 +2576,7 @@ export class ActionCenterComponent implements OnInit {
 
     }
   }
+/*JJS 13-03-24*/
 /*JJS 07-03-24 GIS Reviewer*/
   onManuallyAssignGISReviewer() {
 
@@ -2618,7 +2619,7 @@ export class ActionCenterComponent implements OnInit {
         <body>
           <div class="email-content">
             <p>Dear ${this.UserSelectionForManualLink.selected[0].fullName},</p>
-            <p>You have been assigned as reviewer for application ${this.projectNo}. Please login to the Wayleave Management System and proceed accordingly.</p>
+            <p>You have been assigned as a GIS Reviewer for application ${this.projectNo}. Please login to the Wayleave Management System and proceed accordingly.</p>
                 <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
                           <p>
               <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
@@ -2631,12 +2632,12 @@ export class ActionCenterComponent implements OnInit {
     `;
 
 
-          this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "Review Wayleave Application", emailContent, emailContent);
+          this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "GIS Review Wayleave Application", emailContent, emailContent);
           if (this.UserSelectionForManualLink.selected[0].alternativeEmail) { //checkingNotifications 15 February 2024
-            this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].alternativeEmail, "Review Wayleave Application", emailContent, emailContent);
+            this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].alternativeEmail, "GIS Review Wayleave Application", emailContent, emailContent);
           }
 /*          this.notificationsService.sendEmail(this.UserSelectionForManualLink.selected[0].Email, "New Wayleave Application", "check html", "Dear " + this.UserSelectionForManualLink.selected[0].fullName + ",<br><br>You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/          this.notificationsService.addUpdateNotification(0, "Review Wayleave Application", "Application Assigned", false, this.UserSelectionForManualLink.selected[0].id, this.ApplicationID, this.CurrentUser.appUserId, "You have been assigned to application " + this.projectNo + " please approve or disapprove this application after reviewing it.").subscribe((data: any) => {
+*/          this.notificationsService.addUpdateNotification(0, "GIS Review Wayleave Application", "Application Assigned", false, this.UserSelectionForManualLink.selected[0].id, this.ApplicationID, this.CurrentUser.appUserId, "ou have been assigned as a GIS Reviewer for application" + this.projectNo + " Please login to the Wayleave Management System and proceed accordingly.").subscribe((data: any) => {
 
             if (data.responseCode == 1) {
 
@@ -4134,7 +4135,7 @@ export class ActionCenterComponent implements OnInit {
         else {
           if (confirm("Have you uploaded all revelevant documents?")) {
             if (confirm("Are you sure you want to approve this application?")) {
-
+              debugger;
               this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved", false, false, "All users in Subdepartment FA", false).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {
@@ -4864,13 +4865,13 @@ export class ActionCenterComponent implements OnInit {
 
     }
   }
-
+/*JJS 13-03-24*/
   populateComment(commentName: any) {
-    //let currnetComment = this.leaveAComment;
-    //console.log("commentName", commentName);
-    //this.leaveAComment = currnetComment + " " + commentName;
+    let currnetComment = this.leaveAComment;
+    console.log("commentName", commentName);
+    this.leaveAComment = currnetComment + " " + commentName;
 
-    this.leaveAComment = commentName;
+
   }
 
   populateCommentPermit(commentName: any) {
@@ -7735,7 +7736,7 @@ export class ActionCenterComponent implements OnInit {
     })
   }
 
-
+/*JJS 13-03-24*/
   GISCommentUpdate() {
 
     let SubDepartmentName = "";
@@ -7755,9 +7756,84 @@ export class ActionCenterComponent implements OnInit {
         this.MoveApplicationToAllocated();
         this.viewProjectInfoComponent.getAllComments();
         this.refreshParent.emit();
-        this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveACommentGIS, "GIS Reviewed", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, null).subscribe((data: any) => {
+        this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveACommentGIS, "GIS Reviewed", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, null).subscribe(async (data: any) => {
           if (data.responseCode == 1) {
+            for (let i = 0; i < this.subDepartmentIDsNotDone.length; i++) {
+              const subDepartmentID = this.subDepartmentIDsNotDone[i];
+              const zoneID = this.zoneIDsNotDone[i];
+              const departmentAdminUsers = await this.getUserListForSubDepartment(subDepartmentID, zoneID);
 
+              if (departmentAdminUsers !== null) {
+                console.log("Department Admin Users for Subdepartment ID", subDepartmentID, ":", departmentAdminUsers);
+
+                for (const obj of departmentAdminUsers) {
+                  const emailContent2 = `
+    <html>
+      <head>
+        <style>
+          /* Define your font and styles here */
+          body {
+           font-family: 'Century Gothic';
+          }
+          .email-content {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+          }
+          .footer {
+            margin-top: 20px;
+            color: #777;
+          }
+          .footer-logo {
+            display: inline-block;
+            vertical-align: middle;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="email-content">
+          <p>Dear ${obj.fullName},</p>
+          <p>A Wayleave application with Wayleave No. ${this.projectNo} has been reviewed by a GIS Reviewer. As the zone admin of ${obj.zoneName} in ${obj.subDepartmentName}, please assign a reviewer to the application.</p>
+           ${this.embMessage ? `<p>Additional Notes: ${this.embMessage}</p>` : ''}
+          <p>Should you have any queries, please contact <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+              <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+                        <p>
+            <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+          </p>
+           <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+        </div>
+
+      </body>
+    </html>
+  `;
+
+
+                  this.notificationsService.sendEmail(obj.email, "GIS Reviewed wayleave application", emailContent2, emailContent2);
+                  if (obj.alternativeEmail) {
+                    this.notificationsService.sendEmail(obj.alternativeEmail, "GIS Reviewed wayleave application", emailContent2, emailContent2);
+                  }
+                  this.notificationsService.addUpdateNotification(0, "Application Needs Immediate Attention", "GIS Reviewed wayleave application", false, obj.userID, this.ApplicationID, this.CurrentUser.appUserId /*This is null for some reason?? well, this.CurrentUser.appUserID was wrong*/, `The Wayleave application with Wayleave No. ${this.projectNo} has been reviewed by a GIS Reviewer. As the zone admin of ` + obj.zoneName + " in " + obj.subDepartmentName + `, please assign a reviewer to the application. ${this.embMessage ? `\n\nAdditional Notes: ${this.embMessage}` : ''}`).subscribe((data: any) => {
+
+                    if (data.responseCode == 1) {
+                      console.log(data.responseMessage);
+
+                    }
+                    else {
+                      alert(data.responseMessage);
+                    }
+
+                    console.log("response", data);
+                  }, error => {
+                    console.log("Error", error);
+                  });
+
+                }
+
+              }
+              else {
+                console.error("Error while getting Department Admin users for Subdepartment ID", subDepartmentID);
+              }
+            }
 
             this.viewProjectInfoComponent.getAllComments();
           }

@@ -179,11 +179,31 @@
         <p *ngIf="notNyProjects">You Are Currently Viewing {{FiterValue}}</p>
         <p *ngIf="MyProjects">You Are Currently Viewing Your Applications</p>
       </div>
+
+      <!--JJS 13-03-24-->
       <div class="internalFilterBtns" *ngIf="pastAndCurrentReviews">
-        <mat-button-toggle-group name="fontStyle" aria-label="Font Style" [(ngModel)]="Reviews">
-          <mat-button-toggle value="Current" (click)="onFilterApplicationForMyReviews()">Current Reviews</mat-button-toggle>
-          <mat-button-toggle value="Past" matTooltip="Future Enhancement" disabled>Past Reviews (Disabled)</mat-button-toggle>
+        <!--        <mat-button-toggle-group name="fontStyle" aria-label="Font Style" [(ngModel)]="Reviews">
+      <mat-button-toggle value="Current" (click)="onFilterApplicationForMyReviews()">Current Reviews</mat-button-toggle>
+      <mat-button-toggle value="Past" matTooltip="Future Enhancement" disabled>Past Reviews (Disabled)</mat-button-toggle>
+    </mat-button-toggle-group>-->
+        <mat-form-field>
+          <mat-select [(ngModel)]="Reviews">
+            <mat-option value="option1">Current Reviews</mat-option>
+            <mat-option value="option2" disabled>Past Reviews (Disabled)</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <br>
+        <mat-button-toggle-group name="fontStyle" #group="matButtonToggleGroup" aria-label="Font Style" [value]="selectedVal" (change)="onToggleChange($event.value)">
+          <ng-container *ngFor="let roleName of roleOrder">
+            <mat-button-toggle *ngIf="roleStates[roleName]" [value]="getToggleValue(roleName)">
+              {{ roleName }}
+            </mat-button-toggle>
+          </ng-container>
         </mat-button-toggle-group>
+
+
+
+
 
       </div>
       <div class="container003">

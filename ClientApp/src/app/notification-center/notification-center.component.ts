@@ -594,6 +594,7 @@ export class NotificationCenterComponent implements OnInit {
     const now: any = new Date();
     const createdDate: any = new Date(dateCreated);
 
+
     // Check if it's a future date
     if (isNaN(createdDate.getTime()) || createdDate > now) {
       return 'In the future';

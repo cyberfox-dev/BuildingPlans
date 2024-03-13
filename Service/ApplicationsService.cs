@@ -755,9 +755,7 @@ namespace WayleaveManagementSystem.Service
                     from Applications in _context.Application
                     join SubDepartmentComment in _context.SubDepartmentForComment
                     on Applications.ApplicationID equals SubDepartmentComment.ApplicationID
-                    where Applications.isActive == true &&
-                          ((SubDepartmentComment.ZoneID == zoneId && SubDepartmentComment.UserAssaignedToComment == userId) ||
-                           (SubDepartmentComment.ZoneID == zoneId && SubDepartmentComment.UserAssaignedToComment == null)) 
+                    where Applications.isActive == true && SubDepartmentComment.ZoneID == zoneId && SubDepartmentComment.UserAssaignedToComment == null 
                     orderby Applications.DateCreated descending
                     select new ApplicationsDTO()
                     {
@@ -863,7 +861,118 @@ namespace WayleaveManagementSystem.Service
                     }
            ).ToListAsync();
         }
-     
+
+        public async Task<List<ApplicationsDTO>> GetApplicationsForPermitCoordinator(int? zoneId, string? userId)
+        {
+            return await (
+                    from Applications in _context.Application
+                    join PermitSubForComment in _context.PermitSubForComment
+                    on Applications.ApplicationID equals PermitSubForComment.ApplicationID
+                    where Applications.isActive == true && Applications.CurrentStageName == "PTW" && Applications.PermitStartDate != null && PermitSubForComment.UserAssaignedToComment == null && PermitSubForComment.ZoneID == zoneId
+                    orderby Applications.DateCreated descending
+                    select new ApplicationsDTO()
+                    {
+                        ApplicationID = Applications.ApplicationID,
+                        UserID = Applications.UserID,
+                        FullName = Applications.FullName,
+                        Email = Applications.Email,
+                        AlternativeEmail = Applications.AlternativeEmail, // checkingNotifications Sindiswa 15 February 2024
+                        PhoneNumber = Applications.PhoneNumber,
+                        PhysicalAddress = Applications.PhyscialAddress,
+                        ReferenceNumber = Applications.ReferenceNumber,
+                        CompanyRegNo = Applications.CompanyRegNo,
+                        TypeOfApplication = Applications.TypeOfApplication,
+                        NotificationNumber = Applications.NotificationNumber,
+                        WBSNumber = Applications.WBSNumber,
+                        PhysicalAddressOfProject = Applications.PhysicalAddressOfProject,
+                        DescriptionOfProject = Applications.DescriptionOfProject,
+                        NatureOfWork = Applications.NatureOfWork,
+                        ExcavationType = Applications.ExcavationType,
+                        ExpectedStartDate = Applications.ExpectedStartDate,
+                        ExpectedEndDate = Applications.ExpectedEndDate,
+                        Location = Applications.Location,
+                        DateCreated = Applications.DateCreated,
+                        DateUpdated = Applications.DateUpdated,
+                        CreatedById = Applications.CreatedById,
+                        isActive = Applications.isActive,
+                        PreviousStageName = Applications.PreviousStageName,
+                        ApplicationStatus = Applications.ApplicationStatus,
+                        CurrentStageName = Applications.CurrentStageName,
+                        CurrentStageNumber = Applications.CurrentStageNumber,
+                        CurrentStageStartDate = Applications.CurrentStageStartDate,
+                        NextStageName = Applications.NextStageName,
+                        NextStageNumber = Applications.NextStageNumber,
+                        PreviousStageNumber = Applications.PreviousStageNumber,
+                        ProjectNumber = Applications.ProjectNumber,
+                        isPlanning = Applications.isPlanning,
+                        permitStartDate = Applications.PermitStartDate,
+                        WBSRequired = Applications.WBSRequired,
+                        Coordinates = Applications.Coordinates,
+                        ReApplyCount = Applications.ReApplyCount, //reapply Sindiswa 26 January 2024
+                        isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
+                        EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
+                        EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
+                        NetworkLicenses = Applications.NetworkLicenses,//Project size Kyle 27-02-24
+                        ContractorAccountDetails = Applications.ContractorAccountDetails, //zxNumberUpdate Sindiswa 01 March 2024
+                    }
+           ).ToListAsync();
+        }
+        public async Task<List<ApplicationsDTO>> GetApplicationsForPermitIssuer(int? zoneId, string userId)
+        {
+            return await (
+                    from Applications in _context.Application
+                    join PermitSubForComment in _context.PermitSubForComment
+                    on Applications.ApplicationID equals PermitSubForComment.ApplicationID
+                    where Applications.isActive == true && Applications.CurrentStageName == "PTW" && Applications.PermitStartDate != null && PermitSubForComment.UserAssaignedToComment == userId && PermitSubForComment.ZoneID == zoneId
+                    orderby Applications.DateCreated descending
+                    select new ApplicationsDTO()
+                    {
+                        ApplicationID = Applications.ApplicationID,
+                        UserID = Applications.UserID,
+                        FullName = Applications.FullName,
+                        Email = Applications.Email,
+                        AlternativeEmail = Applications.AlternativeEmail, // checkingNotifications Sindiswa 15 February 2024
+                        PhoneNumber = Applications.PhoneNumber,
+                        PhysicalAddress = Applications.PhyscialAddress,
+                        ReferenceNumber = Applications.ReferenceNumber,
+                        CompanyRegNo = Applications.CompanyRegNo,
+                        TypeOfApplication = Applications.TypeOfApplication,
+                        NotificationNumber = Applications.NotificationNumber,
+                        WBSNumber = Applications.WBSNumber,
+                        PhysicalAddressOfProject = Applications.PhysicalAddressOfProject,
+                        DescriptionOfProject = Applications.DescriptionOfProject,
+                        NatureOfWork = Applications.NatureOfWork,
+                        ExcavationType = Applications.ExcavationType,
+                        ExpectedStartDate = Applications.ExpectedStartDate,
+                        ExpectedEndDate = Applications.ExpectedEndDate,
+                        Location = Applications.Location,
+                        DateCreated = Applications.DateCreated,
+                        DateUpdated = Applications.DateUpdated,
+                        CreatedById = Applications.CreatedById,
+                        isActive = Applications.isActive,
+                        PreviousStageName = Applications.PreviousStageName,
+                        ApplicationStatus = Applications.ApplicationStatus,
+                        CurrentStageName = Applications.CurrentStageName,
+                        CurrentStageNumber = Applications.CurrentStageNumber,
+                        CurrentStageStartDate = Applications.CurrentStageStartDate,
+                        NextStageName = Applications.NextStageName,
+                        NextStageNumber = Applications.NextStageNumber,
+                        PreviousStageNumber = Applications.PreviousStageNumber,
+                        ProjectNumber = Applications.ProjectNumber,
+                        isPlanning = Applications.isPlanning,
+                        permitStartDate = Applications.PermitStartDate,
+                        WBSRequired = Applications.WBSRequired,
+                        Coordinates = Applications.Coordinates,
+                        ReApplyCount = Applications.ReApplyCount, //reapply Sindiswa 26 January 2024
+                        isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
+                        EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
+                        EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
+                        NetworkLicenses = Applications.NetworkLicenses,//Project size Kyle 27-02-24
+                        ContractorAccountDetails = Applications.ContractorAccountDetails, //zxNumberUpdate Sindiswa 01 March 2024
+                    }
+           ).ToListAsync();
+        }
+
         public async Task<List<ApplicationsDTO>> GetApplicationsForEMB(string userId)
         {
             return await (
@@ -920,8 +1029,118 @@ namespace WayleaveManagementSystem.Service
                     }
            ).Distinct().ToListAsync();
         }
-        
 
+        public async Task<List<ApplicationsDTO>> GetApplicationsForSeniorReviewer(int? zoneId, string? userId)
+        {
+            return await (
+                    from Applications in _context.Application
+                    join SubDepartmentComment in _context.SubDepartmentForComment
+                    on Applications.ApplicationID equals SubDepartmentComment.ApplicationID
+                    where Applications.isActive == true && SubDepartmentComment.IsRefered == true && (SubDepartmentComment.ZoneID == zoneId && (SubDepartmentComment.UserAssaignedToComment == "Senior Reviewer to comment" || SubDepartmentComment.UserAssaignedToComment == "Referred"))
+                    orderby Applications.DateCreated descending
+                    select new ApplicationsDTO()
+                    {
+                        ApplicationID = Applications.ApplicationID,
+                        UserID = Applications.UserID,
+                        FullName = Applications.FullName,
+                        Email = Applications.Email,
+                        AlternativeEmail = Applications.AlternativeEmail, // checkingNotifications Sindiswa 15 February 2024
+                        PhoneNumber = Applications.PhoneNumber,
+                        PhysicalAddress = Applications.PhyscialAddress,
+                        ReferenceNumber = Applications.ReferenceNumber,
+                        CompanyRegNo = Applications.CompanyRegNo,
+                        TypeOfApplication = Applications.TypeOfApplication,
+                        NotificationNumber = Applications.NotificationNumber,
+                        WBSNumber = Applications.WBSNumber,
+                        PhysicalAddressOfProject = Applications.PhysicalAddressOfProject,
+                        DescriptionOfProject = Applications.DescriptionOfProject,
+                        NatureOfWork = Applications.NatureOfWork,
+                        ExcavationType = Applications.ExcavationType,
+                        ExpectedStartDate = Applications.ExpectedStartDate,
+                        ExpectedEndDate = Applications.ExpectedEndDate,
+                        Location = Applications.Location,
+                        DateCreated = Applications.DateCreated,
+                        DateUpdated = Applications.DateUpdated,
+                        CreatedById = Applications.CreatedById,
+                        isActive = Applications.isActive,
+                        PreviousStageName = Applications.PreviousStageName,
+                        ApplicationStatus = Applications.ApplicationStatus,
+                        CurrentStageName = Applications.CurrentStageName,
+                        CurrentStageNumber = Applications.CurrentStageNumber,
+                        CurrentStageStartDate = Applications.CurrentStageStartDate,
+                        NextStageName = Applications.NextStageName,
+                        NextStageNumber = Applications.NextStageNumber,
+                        PreviousStageNumber = Applications.PreviousStageNumber,
+                        ProjectNumber = Applications.ProjectNumber,
+                        isPlanning = Applications.isPlanning,
+                        permitStartDate = Applications.PermitStartDate,
+                        WBSRequired = Applications.WBSRequired,
+                        Coordinates = Applications.Coordinates,
+                        ReApplyCount = Applications.ReApplyCount, //reapply Sindiswa 26 January 2024
+                        isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
+                        EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
+                        EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
+                        NetworkLicenses = Applications.NetworkLicenses,//Project size Kyle 27-02-24
+                        ContractorAccountDetails = Applications.ContractorAccountDetails, //zxNumberUpdate Sindiswa 01 March 2024
+                    }
+           ).ToListAsync();
+        }
+
+        public async Task<List<ApplicationsDTO>> GetApplicationsForGISReviewer(int? zoneId, string? userId)
+        {
+            return await (
+                    from Applications in _context.Application
+                    join SubDepartmentComment in _context.SubDepartmentForComment
+                    on Applications.ApplicationID equals SubDepartmentComment.ApplicationID
+                    where Applications.isActive == true && SubDepartmentComment.ZoneID == zoneId && SubDepartmentComment.UserAssaignedToComment == userId && SubDepartmentComment.isGISReviewing == true
+                    orderby Applications.DateCreated descending
+                    select new ApplicationsDTO()
+                    {
+                        ApplicationID = Applications.ApplicationID,
+                        UserID = Applications.UserID,
+                        FullName = Applications.FullName,
+                        Email = Applications.Email,
+                        AlternativeEmail = Applications.AlternativeEmail, // checkingNotifications Sindiswa 15 February 2024
+                        PhoneNumber = Applications.PhoneNumber,
+                        PhysicalAddress = Applications.PhyscialAddress,
+                        ReferenceNumber = Applications.ReferenceNumber,
+                        CompanyRegNo = Applications.CompanyRegNo,
+                        TypeOfApplication = Applications.TypeOfApplication,
+                        NotificationNumber = Applications.NotificationNumber,
+                        WBSNumber = Applications.WBSNumber,
+                        PhysicalAddressOfProject = Applications.PhysicalAddressOfProject,
+                        DescriptionOfProject = Applications.DescriptionOfProject,
+                        NatureOfWork = Applications.NatureOfWork,
+                        ExcavationType = Applications.ExcavationType,
+                        ExpectedStartDate = Applications.ExpectedStartDate,
+                        ExpectedEndDate = Applications.ExpectedEndDate,
+                        Location = Applications.Location,
+                        DateCreated = Applications.DateCreated,
+                        DateUpdated = Applications.DateUpdated,
+                        CreatedById = Applications.CreatedById,
+                        isActive = Applications.isActive,
+                        PreviousStageName = Applications.PreviousStageName,
+                        ApplicationStatus = Applications.ApplicationStatus,
+                        CurrentStageName = Applications.CurrentStageName,
+                        CurrentStageNumber = Applications.CurrentStageNumber,
+                        CurrentStageStartDate = Applications.CurrentStageStartDate,
+                        NextStageName = Applications.NextStageName,
+                        NextStageNumber = Applications.NextStageNumber,
+                        PreviousStageNumber = Applications.PreviousStageNumber,
+                        ProjectNumber = Applications.ProjectNumber,
+                        isPlanning = Applications.isPlanning,
+                        permitStartDate = Applications.PermitStartDate,
+                        WBSRequired = Applications.WBSRequired,
+                        Coordinates = Applications.Coordinates,
+                        ReApplyCount = Applications.ReApplyCount, //reapply Sindiswa 26 January 2024
+                        isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
+                        EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
+                        EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
+                        NetworkLicenses = Applications.NetworkLicenses,//Project size Kyle 27-02-24
+                        ContractorAccountDetails = Applications.ContractorAccountDetails, //zxNumberUpdate Sindiswa 01 March 2024
+                    }
+           ).ToListAsync();
+        }
 
         public async Task<List<ApplicationsDTO>> GetApplicationsForDepartment(int? zoneId, int? subDepartmentID)
         {

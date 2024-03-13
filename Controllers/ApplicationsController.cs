@@ -287,6 +287,86 @@ namespace WayleaveManagementSystem.Controllers
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
+        [HttpPost("GetApplicationsForGISReviewer")]
+        public async Task<object> GetApplicationsForGISReviewer([FromBody] ApplicationsBindingModel model)
+        {
+            try
+            {
+                if (model.ZoneID <= 0)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "ZoneID is invalid", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.GetApplicationsForGISReviewer(model.ZoneID, model.UserID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Applications retrieved successfully", result));
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+        [HttpPost("GetApplicationsForSeniorReviewer")]
+        public async Task<object> GetApplicationsForSeniorReviewer([FromBody] ApplicationsBindingModel model)
+        {
+            try
+            {
+                if (model.ZoneID <= 0)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "ZoneID is invalid", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.GetApplicationsForSeniorReviewer(model.ZoneID, model.UserID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Applications retrieved successfully", result));
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+        [HttpPost("GetApplicationsForPermitIssuer")]
+        public async Task<object> GetApplicationsForPermitIssuer([FromBody] ApplicationsBindingModel model)
+        {
+            try
+            {
+                if (model.ZoneID <= 0)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "ZoneID is invalid", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.GetApplicationsForPermitIssuer(model.ZoneID, model.UserID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Applications retrieved successfully", result));
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+        [HttpPost("GetApplicationsForPermitCoordinator")]
+        public async Task<object> GetApplicationsForPermitCoordinator([FromBody] ApplicationsBindingModel model)
+        {
+            try
+            {
+                if (model.ZoneID <= 0)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "ZoneID is invalid", null));
+                }
+                else
+                {
+                    var result = await _applicationsService.GetApplicationsForPermitCoordinator(model.ZoneID, model.UserID);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Applications retrieved successfully", result));
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
 
         //JJS TODO: getting all applications for EMB so that the projects appear for them in my reviews
 

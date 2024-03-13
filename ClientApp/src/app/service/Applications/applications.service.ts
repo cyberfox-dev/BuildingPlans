@@ -141,6 +141,37 @@ export class ApplicationsService {
     return this.httpClient.post(this.baseURL + "GetApplicationsForFinalReview", body);
   }
 
+  public getApplicationsForGISReviewer(ZoneID: number, UserID: string) {
+    const body = {
+      ZoneID: ZoneID,
+      UserID: UserID
+    };
+    return this.httpClient.post(this.baseURL + "GetApplicationsForGISReviewer", body);
+  }
+
+  public getApplicationsForSeniorReviewer(ZoneID: number, UserID: string) {
+    const body = {
+      ZoneID: ZoneID,
+      UserID: UserID
+    };
+    return this.httpClient.post(this.baseURL + "GetApplicationsForSeniorReviewer", body);
+  }
+  public getApplicationsForPermitIssuer(ZoneID: number, UserID: string) {
+    const body = {
+      ZoneID: ZoneID,
+      UserID: UserID
+    };
+    return this.httpClient.post(this.baseURL + "GetApplicationsForPermitIssuer", body);
+  }
+
+  public getApplicationsForPermitCoordinator(ZoneID: number, UserID: string) {
+    const body = {
+      ZoneID: ZoneID,
+      UserID: UserID
+    };
+    return this.httpClient.post(this.baseURL + "GetApplicationsForPermitCoordinator", body);
+  }
+
   //JJS TODO: getting all applications for EMB so that the projects appear for them in my reviews
 
   public getApplicationsForEMB(UserID: string) {

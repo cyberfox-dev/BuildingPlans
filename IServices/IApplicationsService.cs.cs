@@ -27,6 +27,10 @@ namespace WayleaveManagementSystem.IServices
         Task<List<ApplicationsDTO>> GetApplicationsForReviewer(int? ZoneID, string UserID);
         Task<List<ApplicationsDTO>> GetApplicationsForDepAdmin(int? ZoneID, string UserID);
         Task<List<ApplicationsDTO>> GetApplicationsForFinalReview(int? ZoneID, string UserID);
+        Task<List<ApplicationsDTO>> GetApplicationsForPermitCoordinator(int? ZoneID, string? UserID);
+        Task<List<ApplicationsDTO>> GetApplicationsForPermitIssuer(int? ZoneID, string UserID);
+        Task<List<ApplicationsDTO>> GetApplicationsForSeniorReviewer(int? ZoneID, string? UserID);
+        Task<List<ApplicationsDTO>> GetApplicationsForGISReviewer(int? ZoneID, string? UserID);
         Task<List<ApplicationsDTO>> GetApplicationsForEMB(string UserID);
         Task<List<ApplicationsDTO>> GetApplicationsForDepartment(int? ZoneID, int? subDepartmentID);
 

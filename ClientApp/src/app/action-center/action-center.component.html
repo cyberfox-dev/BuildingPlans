@@ -45,13 +45,14 @@
         <button mat-raised-button color="assign" (click)=" takeOnthisApplication()">Take Application As A Senior Reviewer </button> <!--Final Approver && Senior Approver Kyle 01/02/24-->
         <!--<button mat-raised-button color="assign" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false" (click)="openAssignToUserGISReviewer(assignProjectToUserGISReviewer)">Assign User</button>-->
       </div>
-      <div class="containerCard" *ngIf="showPermitTab === true && CanAssignPermitIssuer === true" >
+      <div class="containerCard" *ngIf="showPermitTab === true && CanAssignPermitIssuer === true">
+        <!--JJS 13-03-24-->
         <p class="cardHeader">Assign Permit Issuer</p>
         <p class="cardDescription">Assign a Permit Issuer to application</p>
         <button mat-raised-button color="assign" (click)="getAllPermitIssuersForSubDepartment(permitIssuers)">Assign Permit Issuer To Application</button><!--Final Approver && Senior Approver Kyle 01/02/24-->
         <!--<button mat-raised-button color="assign" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false" (click)="openAssignToUserGISReviewer(assignProjectToUserGISReviewer)">Assign User</button>-->
       </div>
-     
+
 
       <!-- endof actionCentreEdits Sindiswa 16 January 2024 -->
       <!-- <button mat-raised-button color="blue" *ngIf="hopperButton == true" (click)="onHopperClick()">Hopper</button>-->
@@ -63,11 +64,11 @@
     <br *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && showPermitTab === false">
     <mat-divider *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && showPermitTab === false"></mat-divider>
     <!--    <mat-form-field>
-      <mat-label>Select A Comment From Your Comment Builder</mat-label>
-      <mat-select [(value)]="select" (selectionChange)="filterDepartment()" [(ngModel)]="selectDepFilterName">
-        <mat-option *ngFor="let comment of CommentList" value="{{comment.commentID}}">{{comment.commentName}}</mat-option>
-      </mat-select>
-    </mat-form-field>-->
+    <mat-label>Select A Comment From Your Comment Builder</mat-label>
+    <mat-select [(value)]="select" (selectionChange)="filterDepartment()" [(ngModel)]="selectDepFilterName">
+      <mat-option *ngFor="let comment of CommentList" value="{{comment.commentID}}">{{comment.commentName}}</mat-option>
+    </mat-select>
+  </mat-form-field>-->
     <!--JJS Commit 20-02-24-->
     <br *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && showPermitTab === false">
     <mat-form-field class="example-full-width" *ngIf="(canComment || canCommentFinalApprover || canCommentSeniorReviewer) && userAssignedText == CurrentUser.appUserId">
@@ -81,7 +82,7 @@
 
       <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true">Select A Comment From Your Comment Builder</button>
       <!--     <button mat-raised-button color="purple" (click)="openBottomSheet()">Select A Comment From Your Comment Builder</button>
-      -->
+    -->
       <!--<mat-menu #menu="matMenu" xPosition="before">-->
       <!-- actionCentreEdits Sindiswa 15 January 2024 - a blank box will NO LONGER SHOW if comment list length is less than 1-->
       <mat-menu #menu="matMenu" yPosition="above" width="100%">
@@ -217,8 +218,8 @@
 
 
       <!--  WBSCheck: boolean = false;
-      checked: boolean = false;
-      DepositCheck: boolean = false;-->
+    checked: boolean = false;
+    DepositCheck: boolean = false;-->
       <!--this is for the deposit required  (click)="saveDeposit(deposit)"-->
       <div class="row" *ngIf="DepositCHeckBox">
         <div class="col">
@@ -234,20 +235,32 @@
     <mat-spinner [diameter]="20" *ngIf="loading"></mat-spinner>
     <button mat-raised-button color="saveDoc" (click)="saveDocument()" *ngIf="CurrentApplication.isPlanning === true && saveBtn">Save</button>
     <div class="cont4" *ngIf="permit && canApprovePermit">
-      <mat-form-field class="example-full-width">
-        <!--|| canCommentFinalApprover == true-->
-        <mat-label>Type new comment</mat-label>
-        <textarea matInput [(ngModel)]="leaveACommentPermit" placeholder="Eg. This is good"></textarea>
-
+      <!--JJS 13-03-24-->
+      <mat-form-field class="example-full-width" *ngIf="permit && canApprovePermit">
+        <mat-label>Type new Comment/Special Condition. Please also make reference to the Services Conditions tab, if documents have been uploaded.</mat-label>
+        <textarea matInput [(ngModel)]="leaveACommentPermit" placeholder="Eg. This is good" maxlength="250" (input)="updateCharacterCount()"></textarea>
+        <div>{{ leaveAComment.length }}/250</div>
       </mat-form-field>
-      <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"></button>
-      <mat-menu #menu="matMenu" xPosition="before">
-        <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateCommentPermit(comment.commentName)">{{comment.commentName}} </button>
+
+
+      <!--Final Approver && Senior Approver Kyle 01/02/24-->
+
+      <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()">Select A Comment From Your Comment Builder</button>
+      <!--     <button mat-raised-button color="purple" (click)="openBottomSheet()">Select A Comment From Your Comment Builder</button>
+  -->
+      <!--<mat-menu #menu="matMenu" xPosition="before">-->
+      <!-- actionCentreEdits Sindiswa 15 January 2024 - a blank box will NO LONGER SHOW if comment list length is less than 1-->
+      <mat-menu #menu="matMenu" yPosition="above" width="100%">
+        <ng-container *ngIf="CommentDropDown.length > 0; else noComments"> <button mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateCommentPermit(comment.commentName)">{{comment.commentName}} </button></ng-container>
+        <ng-template #noComments>
+          <p style="padding: 10px; color: red; font-style: italic;">There are no comments in your comment collection.</p>
+        </ng-template><!--  <button type="button" mat-menu-item *ngFor="let comment of CommentDropDown" value="{{comment.commentID}}" (click)="populateComment(comment.commentName)"> <span [innerHTML]="sanitizeHTML(comment.commentName)"></span></button>-->
 
       </mat-menu>
 
 
     </div>
+
     <div class="cont6" *ngIf="permit && canApprovePermit">
       <button mat-raised-button color="approvePermit" *ngIf="canApprovePermit" (click)="PermitIssue('Approve')">Approve Permit</button>
       <button mat-raised-button color="meetOnSite" *ngIf="canApprovePermit" (click)="PermitIssue('MeetOnSite')">Meet On Site</button>
