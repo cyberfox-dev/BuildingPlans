@@ -4135,7 +4135,7 @@ export class ActionCenterComponent implements OnInit {
         else {
           if (confirm("Have you uploaded all revelevant documents?")) {
             if (confirm("Are you sure you want to approve this application?")) {
-              debugger;
+             
               this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Approved", false, false, "All users in Subdepartment FA", false).subscribe((data: any) => {
 
                 if (data.responseCode == 1) {

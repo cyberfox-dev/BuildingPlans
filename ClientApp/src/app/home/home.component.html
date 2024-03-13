@@ -225,6 +225,7 @@
       <div class="container003">
         <img src="assets/Loading.png" *ngIf="isTableLoading" class="logo2">
       </div>
+
       <table mat-table [dataSource]="dataSource" *ngIf="isTableLoading == false" class="mat-elevation-z8 animationFadeIn">
 
 
@@ -301,7 +302,7 @@
       <!--     <tr *ngFor="let item of items | slice: (page-1) * pageSize : page * pageSize"></tr>-->
       <!-- Row shown when there is no matching data. -->
       <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+        <td class="mat-cell" colspan="4">You currently have no applications to take action on for this role.</td>
       </tr>
 
     </table>

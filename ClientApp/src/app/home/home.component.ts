@@ -5456,6 +5456,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         else {
           this.FilterBtn = true;
           // Set role state in the map
+          this.FiterValue = "My Reviews"
           this.roleStates[roleName] = true;
 
           // Set selected value for the first toggle button
