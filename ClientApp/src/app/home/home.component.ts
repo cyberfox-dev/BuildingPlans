@@ -5435,7 +5435,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         debugger;
         const roleName = this.AllCurrentUserRoles[i].roleName;
         debugger;
-        if (roleName == 'Action Centre' || roleName == 'Create Wayleave' || roleName == 'Developer Config' || roleName == 'Configuration' || roleName == 'Audit Trail' || roleName == 'Generate Approval Pack and Rejection Pack' || roleName == 'Verify Payment' || roleName == 'Tracking') {
+        if (roleName == 'Action Centre' || roleName == 'Create Wayleave' || roleName == 'Developer Config' || roleName == 'Configuration' || roleName == 'Audit Trail' || roleName == 'Generate Approval Pack and Rejection Pack' || roleName == 'Verify Payment' || roleName == 'Tracking' || roleName == 'Zone Admin') {
 
         }
         else if (roleName == 'Applicant' || roleName == 'ActingAsInternal') {
@@ -5443,10 +5443,13 @@ export class HomeComponent implements OnInit, OnDestroy {
           break;
         }
         else if (this.CurrentUserProfile[0].departmentName == "EMB") {
+          this.notNyProjects = false;
+          this.FilterBtn = true;
           this.getApplicationsForEMB();
           break;
         }
         else if (roleName == 'EMB') {
+
           this.getApplicationsForEMB();
           break;
         }
@@ -5466,7 +5469,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
   selectedVal = '';
-  roleOrder = ["Reviewer", "Senior Reviewer", "Final Approver", "Department Admin","Permit Coordinator", "Issue Permit", "Zone Admin", "EMB", "GIS Reviewer"];
+  roleOrder = ["Reviewer", "Senior Reviewer", "Final Approver", "Department Admin","Permit Coordinator", "Issue Permit", "EMB", "GIS Reviewer"];
 
   setSelectedVal(): void {
     for (const roleName of this.roleOrder) {

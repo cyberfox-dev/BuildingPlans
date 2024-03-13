@@ -755,7 +755,7 @@ namespace WayleaveManagementSystem.Service
                     from Applications in _context.Application
                     join SubDepartmentComment in _context.SubDepartmentForComment
                     on Applications.ApplicationID equals SubDepartmentComment.ApplicationID
-                    where Applications.isActive == true && SubDepartmentComment.ZoneID == zoneId && SubDepartmentComment.UserAssaignedToComment == null 
+                    where Applications.isActive == true && SubDepartmentComment.ZoneID == zoneId && SubDepartmentComment.UserAssaignedToComment == null && Applications.ApplicationStatus == "Distributed" 
                     orderby Applications.DateCreated descending
                     select new ApplicationsDTO()
                     {
