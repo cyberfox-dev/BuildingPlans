@@ -1,16 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.Data.Migrations;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models.DTO;
+﻿using BuildingPlans.Data.Entities;
+using BuildingPlans.Models.DTO;
 
-namespace WayleaveManagementSystem.IServices
+namespace BuildingPlans.IServices
 {
     public interface IUserProfileService
     {
         //Task<UserProfile> - This is the return type so its going to ruturn it in the fromt of the users model
-        Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string userID, string fullName, string email, string? phoneNumber, bool? isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string createdById, string? IdNumber,int?zoneID,string? vatNumber, string? refNumber, string? companyType, string? SubDepartmentName, bool? isDepartmentAdmin, bool? isZoneAdmin, string? alternateEmail, string? alternateNumber,
+        Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string userID, string fullName, string email, string? phoneNumber, bool? isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string createdById, string? IdNumber, int? zoneID, string? vatNumber, string? refNumber, string? companyType, string? SubDepartmentName, bool? isDepartmentAdmin, bool? isZoneAdmin, string? alternateEmail, string? alternateNumber,
              string? name, string? surname, string? departmentName, string? zoneName, bool? isDefault, string? icasaLicense, bool? depConfirmation);
         //this will return T/F 
         public Task<bool> DeleteUserProfile(int userProfileID);
@@ -32,6 +28,6 @@ namespace WayleaveManagementSystem.IServices
         Task<object> GetUserByEmail(string email);
         Task<UserProfile> AdminConfig(int? userProfileID, bool? isDepartmentAdmin, bool? isZoneAdmin, string? createdById);
 
-       
+
     }
 }

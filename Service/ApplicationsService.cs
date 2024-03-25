@@ -1,18 +1,10 @@
-﻿using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.IServices;
-using System.Linq;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.IServices;
+using BuildingPlans.Models.DTO;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Models.BindingModel;
-using System.Net.NetworkInformation;
-using WayleaveManagementSystem.Models.DTO;
-using System.Xml.Serialization;
-using System;
-using WayleaveManagementSystem.Data.Migrations;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace WayleaveManagementSystem.Service
+namespace BuildingPlans.Service
 {
     public class ApplicationsService : IApplicationsService
     {
@@ -23,7 +15,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string? userID, string? fullName, string? email, string? alternativeEmail, string? phoneNumber, string? physicalAddress, string? referenceNumber, string? companyRegNo, string? typeOfApplication, string? notificationNumber, string? wBSNumber, string? physicalAddressOfProject, string? descriptionOfProject, string? natureOfWork, string? excavationType, DateTime? expectedStartDate, DateTime? expectedEndDate, string? location, string? createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus, bool? isDrafted, string? projectNumber, bool? isPlanning, DateTime? PermitStartDate, DateTime? DatePaid, bool? WBSRequired, string? Coordinates ,bool? NetworkLicenses)
+        public async Task<Applications> AddUpdateApplication(int? ApplicationID, string? userID, string? fullName, string? email, string? alternativeEmail, string? phoneNumber, string? physicalAddress, string? referenceNumber, string? companyRegNo, string? typeOfApplication, string? notificationNumber, string? wBSNumber, string? physicalAddressOfProject, string? descriptionOfProject, string? natureOfWork, string? excavationType, DateTime? expectedStartDate, DateTime? expectedEndDate, string? location, string? createdById, string? PreviousStageName, int? PreviousStageNumber, string? CurrentStageName, int? CurrentStageNumber, string? NextStageName, int? NextStageNumber, string? ApplicationStatus, bool? isDrafted, string? projectNumber, bool? isPlanning, DateTime? PermitStartDate, DateTime? DatePaid, bool? WBSRequired, string? Coordinates, bool? NetworkLicenses)
         {
 
             if (ApplicationID == 0)
@@ -77,7 +69,7 @@ namespace WayleaveManagementSystem.Service
                     isPlanning = isPlanning,
                     PermitStartDate = PermitStartDate,
                     Coordinates = Coordinates,
-                    NetworkLicenses =NetworkLicenses,
+                    NetworkLicenses = NetworkLicenses,
                 };
 
                 //After the inizlization add to the db
@@ -247,7 +239,7 @@ namespace WayleaveManagementSystem.Service
                 {
                     tempApplicationTable.Coordinates = Coordinates;
                 }
-                if(NetworkLicenses != null )
+                if (NetworkLicenses != null)
                 {
                     tempApplicationTable.NetworkLicenses = NetworkLicenses;
                 }
@@ -433,7 +425,7 @@ namespace WayleaveManagementSystem.Service
             {
                 return await (
                    from Applications in _context.Application
-                   where Applications.isActive == true && Applications.FullName != "" && Applications.FullName != null 
+                   where Applications.isActive == true && Applications.FullName != "" && Applications.FullName != null
                    orderby Applications.DateCreated descending
                    select new ApplicationsDTO()
                    {
@@ -478,7 +470,7 @@ namespace WayleaveManagementSystem.Service
                        isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
                        EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
                        EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
-                       NetworkLicenses  = Applications.NetworkLicenses,
+                       NetworkLicenses = Applications.NetworkLicenses,
                        ContractorAccountDetails = Applications.ContractorAccountDetails, //zxNumberUpdate Sindiswa 01 March 2024
                    }
                    ).ToListAsync();
@@ -703,48 +695,48 @@ namespace WayleaveManagementSystem.Service
                     orderby Applications.DateCreated descending
                     select new ApplicationsDTO()
                     {
-                    ApplicationID = Applications.ApplicationID,
-                    UserID = Applications.UserID,
-                    FullName = Applications.FullName,
-                    Email = Applications.Email,
-                    AlternativeEmail = Applications.AlternativeEmail, // checkingNotifications Sindiswa 15 February 2024
-                    PhoneNumber = Applications.PhoneNumber,
-                    PhysicalAddress = Applications.PhyscialAddress,
-                    ReferenceNumber = Applications.ReferenceNumber,
-                    CompanyRegNo = Applications.CompanyRegNo,
-                    TypeOfApplication = Applications.TypeOfApplication,
-                    NotificationNumber = Applications.NotificationNumber,
-                    WBSNumber = Applications.WBSNumber,
-                    PhysicalAddressOfProject = Applications.PhysicalAddressOfProject,
-                    DescriptionOfProject = Applications.DescriptionOfProject,
-                    NatureOfWork = Applications.NatureOfWork,
-                    ExcavationType = Applications.ExcavationType,
-                    ExpectedStartDate = Applications.ExpectedStartDate,
-                    ExpectedEndDate = Applications.ExpectedEndDate,
-                    Location = Applications.Location,
-                    DateCreated = Applications.DateCreated,
-                    DateUpdated = Applications.DateUpdated,
-                    CreatedById = Applications.CreatedById,
-                    isActive = Applications.isActive,
-                    PreviousStageName = Applications.PreviousStageName,
-                    ApplicationStatus = Applications.ApplicationStatus,
-                    CurrentStageName = Applications.CurrentStageName,
-                    CurrentStageNumber = Applications.CurrentStageNumber,
-                    CurrentStageStartDate = Applications.CurrentStageStartDate,
-                    NextStageName = Applications.NextStageName,
-                    NextStageNumber = Applications.NextStageNumber,
-                    PreviousStageNumber = Applications.PreviousStageNumber,
-                    ProjectNumber = Applications.ProjectNumber,
-                    isPlanning = Applications.isPlanning,
-                    permitStartDate = Applications.PermitStartDate,
-                    WBSRequired = Applications.WBSRequired,
-                    Coordinates = Applications.Coordinates,
-                    ReApplyCount = Applications.ReApplyCount, //reapply Sindiswa 26 January 2024
-                    isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
-                    EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
-                    EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
+                        ApplicationID = Applications.ApplicationID,
+                        UserID = Applications.UserID,
+                        FullName = Applications.FullName,
+                        Email = Applications.Email,
+                        AlternativeEmail = Applications.AlternativeEmail, // checkingNotifications Sindiswa 15 February 2024
+                        PhoneNumber = Applications.PhoneNumber,
+                        PhysicalAddress = Applications.PhyscialAddress,
+                        ReferenceNumber = Applications.ReferenceNumber,
+                        CompanyRegNo = Applications.CompanyRegNo,
+                        TypeOfApplication = Applications.TypeOfApplication,
+                        NotificationNumber = Applications.NotificationNumber,
+                        WBSNumber = Applications.WBSNumber,
+                        PhysicalAddressOfProject = Applications.PhysicalAddressOfProject,
+                        DescriptionOfProject = Applications.DescriptionOfProject,
+                        NatureOfWork = Applications.NatureOfWork,
+                        ExcavationType = Applications.ExcavationType,
+                        ExpectedStartDate = Applications.ExpectedStartDate,
+                        ExpectedEndDate = Applications.ExpectedEndDate,
+                        Location = Applications.Location,
+                        DateCreated = Applications.DateCreated,
+                        DateUpdated = Applications.DateUpdated,
+                        CreatedById = Applications.CreatedById,
+                        isActive = Applications.isActive,
+                        PreviousStageName = Applications.PreviousStageName,
+                        ApplicationStatus = Applications.ApplicationStatus,
+                        CurrentStageName = Applications.CurrentStageName,
+                        CurrentStageNumber = Applications.CurrentStageNumber,
+                        CurrentStageStartDate = Applications.CurrentStageStartDate,
+                        NextStageName = Applications.NextStageName,
+                        NextStageNumber = Applications.NextStageNumber,
+                        PreviousStageNumber = Applications.PreviousStageNumber,
+                        ProjectNumber = Applications.ProjectNumber,
+                        isPlanning = Applications.isPlanning,
+                        permitStartDate = Applications.PermitStartDate,
+                        WBSRequired = Applications.WBSRequired,
+                        Coordinates = Applications.Coordinates,
+                        ReApplyCount = Applications.ReApplyCount, //reapply Sindiswa 26 January 2024
+                        isEscalated = Applications.isEscalated, //escalation Sindiswa 29 January 2024
+                        EscalationDate = Applications.EscalationDate,//escalation Sindiswa 31 January 2024
+                        EMBActionDate = Applications.EMBActionDate,//escalation Sindiswa 31 January 2024
                         NetworkLicenses = Applications.NetworkLicenses,//Project size Kyle 27-02-24
-                    ContractorAccountDetails = Applications.ContractorAccountDetails, //zxNumberUpdate Sindiswa 01 March 2024
+                        ContractorAccountDetails = Applications.ContractorAccountDetails, //zxNumberUpdate Sindiswa 01 March 2024
                     }
            ).ToListAsync();
         }
@@ -755,7 +747,7 @@ namespace WayleaveManagementSystem.Service
                     from Applications in _context.Application
                     join SubDepartmentComment in _context.SubDepartmentForComment
                     on Applications.ApplicationID equals SubDepartmentComment.ApplicationID
-                    where Applications.isActive == true && SubDepartmentComment.ZoneID == zoneId && SubDepartmentComment.UserAssaignedToComment == null && Applications.ApplicationStatus == "Distributed" 
+                    where Applications.isActive == true && SubDepartmentComment.ZoneID == zoneId && SubDepartmentComment.UserAssaignedToComment == null && Applications.ApplicationStatus == "Distributed"
                     orderby Applications.DateCreated descending
                     select new ApplicationsDTO()
                     {
@@ -979,7 +971,7 @@ namespace WayleaveManagementSystem.Service
                     from Applications in _context.Application
                     join SubDepartmentComment in _context.SubDepartmentForComment
                     on Applications.ApplicationID equals SubDepartmentComment.ApplicationID
-                    where Applications.isActive == true &&  Applications.isEscalated == true // Applications.ApplicationStatus == "Unpaid" -- escalation Sindiswa 29 January 2024, well there's already a filter by Unpaid method moss
+                    where Applications.isActive == true && Applications.isEscalated == true // Applications.ApplicationStatus == "Unpaid" -- escalation Sindiswa 29 January 2024, well there's already a filter by Unpaid method moss
 
                     orderby Applications.DateCreated descending
                     select new ApplicationsDTO()
@@ -1290,7 +1282,7 @@ namespace WayleaveManagementSystem.Service
         {
             return await (
                from Applications in _context.Application
-               where  Applications.ProjectNumber == projectNumber //&& Applications.isActive == true
+               where Applications.ProjectNumber == projectNumber //&& Applications.isActive == true
                orderby Applications.DateCreated descending
                select new ApplicationsDTO()
                {
@@ -1409,19 +1401,19 @@ namespace WayleaveManagementSystem.Service
             _context.Update(tempApplicationTable);
             await _context.SaveChangesAsync();
             return tempApplicationTable;
-            
+
         }
         public async Task<List<ApplicationsDTO>> GetZXDetails(int applicationID)
         {
             return await (
               from Applications in _context.Application
-              where Applications.ApplicationID == applicationID && Applications.isActive == true 
+              where Applications.ApplicationID == applicationID && Applications.isActive == true
               select new ApplicationsDTO()
-    
-                    {
-                      WaterZXNumber = Applications.WaterZXNumber, 
-                      RIMZXNumber = Applications.RIMZXNumber,
-                    }
+
+              {
+                  WaterZXNumber = Applications.WaterZXNumber,
+                  RIMZXNumber = Applications.RIMZXNumber,
+              }
            ).ToListAsync();
         }
 
@@ -1450,7 +1442,7 @@ namespace WayleaveManagementSystem.Service
 
         }
         //Audit Trail Kyle 06-03-24
-        public async Task<List<ApplicationsDTO>> GetApplicationsWithinDateRange(DateTime? startDate ,DateTime? endDate)
+        public async Task<List<ApplicationsDTO>> GetApplicationsWithinDateRange(DateTime? startDate, DateTime? endDate)
         {
             return await (
                   from Applications in _context.Application
@@ -1461,7 +1453,7 @@ namespace WayleaveManagementSystem.Service
                       UserID = Applications.UserID,
                       FullName = Applications.FullName,
                       Email = Applications.Email,
-                      AlternativeEmail = Applications.AlternativeEmail, 
+                      AlternativeEmail = Applications.AlternativeEmail,
                       PhoneNumber = Applications.PhoneNumber,
                       PhysicalAddress = Applications.PhyscialAddress,
                       ReferenceNumber = Applications.ReferenceNumber,

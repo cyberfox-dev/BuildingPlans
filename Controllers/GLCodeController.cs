@@ -1,25 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BuildingPlans.IServices;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
 using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Service;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.DTO;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using WayleaveManagementSystem.BindingModel;
-using WayleaveManagementSystem.Data.Entities;
-using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
 
     [Route("api/[controller]")]
@@ -27,13 +11,13 @@ namespace WayleaveManagementSystem.Controllers
     public class GLCodeController : ControllerBase
     {
         private readonly IGLCodeService _glCodeService;
-    
+
 
 
         public GLCodeController(IGLCodeService glCodeService)
         {
             _glCodeService = glCodeService;
-        
+
         }
 
         [HttpPost("AddUpdateGLCode")]
@@ -110,7 +94,7 @@ namespace WayleaveManagementSystem.Controllers
 
 
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
-                 
+
             }
         }
 
@@ -147,7 +131,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _glCodeService.SetLinkDepartmentToGLCode(model.GLCodeID, model.DepartmentID,model.DepartmentName);
+                    var result = await _glCodeService.SetLinkDepartmentToGLCode(model.GLCodeID, model.DepartmentID, model.DepartmentName);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Department linked Successfully", result));
                 }
 

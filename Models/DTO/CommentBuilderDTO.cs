@@ -1,6 +1,4 @@
-﻿using WayleaveManagementSystem.Data.Entities;
-
-namespace WayleaveManagementSystem.DTO
+﻿namespace BuildingPlans.DTO
 {
     // DTO - Data Trasfer Object
     public class CommentBuilderDTO

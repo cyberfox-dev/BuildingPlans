@@ -1,16 +1,10 @@
-﻿using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.DTO;
-
-using System.Linq;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.IServices;
+using BuildingPlans.Models.DTO;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Models.BindingModel;
-using System;
-using WayleaveManagementSystem.Data.Migrations;
-using System.Diagnostics;
 
-namespace WayleaveManagementSystem.Service
+namespace BuildingPlans.Service
 {
     public class SubDepartmentsService : ISubDepartmentService
     {
@@ -19,18 +13,18 @@ namespace WayleaveManagementSystem.Service
         public SubDepartmentsService(AppDBContext context)
         {
             _context = context;
-        }  
+        }
 
-        public async Task<SubDepartments> AddUpdateSubDepartments(int? subDepartmentID, string? subDepartmentName, int? DepartmentID, string? createdByID, string? profitCenter, string? GlCode , int? PermitExpiration, int? WayleaveExpiration, bool? needsZXNumber)  
+        public async Task<SubDepartments> AddUpdateSubDepartments(int? subDepartmentID, string? subDepartmentName, int? DepartmentID, string? createdByID, string? profitCenter, string? GlCode, int? PermitExpiration, int? WayleaveExpiration, bool? needsZXNumber)
         {
-            if(subDepartmentID == 0) 
-            { 
-                subDepartmentID = null; 
+            if (subDepartmentID == 0)
+            {
+                subDepartmentID = null;
             }
 
             var tempSubDepartmentsTable = _context.SubDepartmentsTable.FirstOrDefault(x => x.SubDepartmentID == subDepartmentID);
-            
-            if(tempSubDepartmentsTable == null) 
+
+            if (tempSubDepartmentsTable == null)
             {
                 tempSubDepartmentsTable = new SubDepartments()
                 {
@@ -38,12 +32,12 @@ namespace WayleaveManagementSystem.Service
                     DepartmentID = DepartmentID,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
-                    CreatedById = createdByID, 
+                    CreatedById = createdByID,
                     ProfitCenter = profitCenter,
                     GLCode = GlCode,
                     PermitExpiration = PermitExpiration,
                     WayleaveExpiration = WayleaveExpiration,
-                    isActive = true, 
+                    isActive = true,
                     needsZXNumber = needsZXNumber
 
                 };
@@ -56,28 +50,28 @@ namespace WayleaveManagementSystem.Service
             }
             else
             {
-                
+
                 if (subDepartmentName != null)
                 {
                     tempSubDepartmentsTable.SubDepartmentName = subDepartmentName;
                 }
-                if(DepartmentID != null)
+                if (DepartmentID != null)
                 {
                     tempSubDepartmentsTable.DepartmentID = DepartmentID;
                 }
-                if(GlCode != null)
+                if (GlCode != null)
                 {
                     tempSubDepartmentsTable.GLCode = GlCode;
                 }
-                if(profitCenter != null)
+                if (profitCenter != null)
                 {
                     tempSubDepartmentsTable.ProfitCenter = profitCenter;
                 }
-                if(PermitExpiration != null)
+                if (PermitExpiration != null)
                 {
                     tempSubDepartmentsTable.PermitExpiration = PermitExpiration;
                 }
-                if(WayleaveExpiration != null)
+                if (WayleaveExpiration != null)
                 {
                     tempSubDepartmentsTable.WayleaveExpiration = WayleaveExpiration;
                 }
@@ -88,9 +82,9 @@ namespace WayleaveManagementSystem.Service
                 }
                 #endregion
                 tempSubDepartmentsTable.DateUpdated = DateTime.Now;
-                
-               
-               
+
+
+
 
                 _context.Update(tempSubDepartmentsTable);
                 await _context.SaveChangesAsync();
@@ -103,20 +97,20 @@ namespace WayleaveManagementSystem.Service
 
         public async Task<SubDepartments> AddSubDepartmentAdmin(int? subDepartmentID, string? departmentAdminUserID)
         {
- 
+
 
             var tempSubDepartmentsTable = _context.SubDepartmentsTable.FirstOrDefault(x => x.SubDepartmentID == subDepartmentID);
 
-          
-      
-                tempSubDepartmentsTable.SubDepartmentAdminUserID = departmentAdminUserID;
-                tempSubDepartmentsTable.DateUpdated = DateTime.Now;
 
-                _context.Update(tempSubDepartmentsTable);
-                await _context.SaveChangesAsync();
-                return tempSubDepartmentsTable;
 
-            
+            tempSubDepartmentsTable.SubDepartmentAdminUserID = departmentAdminUserID;
+            tempSubDepartmentsTable.DateUpdated = DateTime.Now;
+
+            _context.Update(tempSubDepartmentsTable);
+            await _context.SaveChangesAsync();
+            return tempSubDepartmentsTable;
+
+
 
         }
 
@@ -143,7 +137,7 @@ namespace WayleaveManagementSystem.Service
         public async Task<List<SubDepartmentsDTO>> GetAllSubDepartments()
         {
             return await (
-                from SubDepartments in _context.SubDepartmentsTable 
+                from SubDepartments in _context.SubDepartmentsTable
                 where SubDepartments.isActive == true
                 select new SubDepartmentsDTO()
                 {
@@ -231,7 +225,7 @@ namespace WayleaveManagementSystem.Service
 
         public async Task<List<SubDepartmentsDTO>> GetAllSubDepartmentsBydepartmentID(int departmentID)
         {
-            return await(
+            return await (
                 from SubDepartments in _context.SubDepartmentsTable
                 where departmentID == SubDepartments.DepartmentID && SubDepartments.isActive == true
                 select new SubDepartmentsDTO()

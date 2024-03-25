@@ -1,4 +1,4 @@
-﻿namespace WayleaveManagementSystem.Models.BindingModel
+﻿namespace BuildingPlans.Models.BindingModel
 {
     public class ApplicationsBindingModel
     {
@@ -49,7 +49,7 @@
 
         public bool? WBSRequired { get; set; }
 
-        public int? ZoneID { get; set; } 
+        public int? ZoneID { get; set; }
         public int? SubDepartmentID { get; set; }
 
         public int? ReApplyCount { get; set; } //reapply Sindiswa 22 January 2024

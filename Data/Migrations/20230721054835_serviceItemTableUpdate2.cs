@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace WayleaveManagementSystem.Data.Migrations
+namespace BuildingPlans.Data.Migrations
 {
     public partial class serviceItemTableUpdate2 : Migration
     {
@@ -17,9 +17,9 @@ namespace WayleaveManagementSystem.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-           /* migrationBuilder.DropColumn(
-                name: "Remarks",
-                table: "ServiceItem");*/
+            /* migrationBuilder.DropColumn(
+                 name: "Remarks",
+                 table: "ServiceItem");*/
         }
     }
 }

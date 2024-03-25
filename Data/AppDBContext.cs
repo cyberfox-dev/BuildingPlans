@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using BuildingPlans.Data.Entities;
+using BuildingPlans.DTO;
+using BuildingPlans.Models.DTO;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.Models.DTO;
 
-namespace WayleaveManagementSystem.Data
+namespace BuildingPlans.Data
 {
-    public class AppDBContext:IdentityDbContext<AppUser,IdentityRole,string>
+    public class AppDBContext : IdentityDbContext<AppUser, IdentityRole, string>
     {
         public AppDBContext(DbContextOptions options) : base(options)
         {

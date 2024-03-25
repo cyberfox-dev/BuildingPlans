@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace WayleaveManagementSystem.Data.Migrations
+namespace BuildingPlans.Data.Migrations
 {
     public partial class CompanyTypeAndReferenceNum : Migration
     {
@@ -23,13 +23,13 @@ namespace WayleaveManagementSystem.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-    //        migrationBuilder.DropColumn(
-    //         name: "companyType",
-    //table: "UserProfilesTable");
+            //        migrationBuilder.DropColumn(
+            //         name: "companyType",
+            //table: "UserProfilesTable");
 
-    //        migrationBuilder.DropColumn(
-    //            name: "refNumber",
-    //            table: "UserProfilesTable");
+            //        migrationBuilder.DropColumn(
+            //            name: "refNumber",
+            //            table: "UserProfilesTable");
         }
     }
 }

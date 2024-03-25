@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WayleaveManagementSystem.Data.Entities
+namespace BuildingPlans.Data.Entities
 {
-    public class DraftedProjects:BaseEntity
+    public class DraftedProjects : BaseEntity
     {
         [Key]
         public int? DraftID { get; set; }
@@ -27,7 +27,7 @@ namespace WayleaveManagementSystem.Data.Entities
         public string? ProjectNumber { get; set; }
         public int? RejectCount { get; set; }
 
-        public string? Engineer {  get; set; }
-        public string? Contractor {  get; set; }
+        public string? Engineer { get; set; }
+        public string? Contractor { get; set; }
     }
 }

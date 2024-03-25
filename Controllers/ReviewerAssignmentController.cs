@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.DTO;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models.DTO;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -135,7 +135,7 @@ namespace WayleaveManagementSystem.Controllers
                 var result = await (
                     from details in _context.ReviewerForComment
                     where details.isActive == true
-                    orderby details.DateCreated 
+                    orderby details.DateCreated
                     ascending
                     select new ReviewerAssignementDTO()
                     {
@@ -149,7 +149,7 @@ namespace WayleaveManagementSystem.Controllers
                         ZoneID = details.ZoneID,
                         ZoneName = details.ZoneName,
                         CreatedById = details.CreatedById,
-                        DateCreated =details.DateCreated,
+                        DateCreated = details.DateCreated,
                         DateUpdated = details.DateUpdated
 
                     }).ToListAsync();

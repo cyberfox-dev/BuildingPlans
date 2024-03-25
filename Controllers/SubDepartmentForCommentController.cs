@@ -1,25 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BuildingPlans.IServices;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.BindingModel.ForGetByIDModels;
 using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Service;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.DTO;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using WayleaveManagementSystem.BindingModel;
-using WayleaveManagementSystem.Data.Entities;
-using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
 
     [Route("api/[controller]")]
@@ -27,13 +12,13 @@ namespace WayleaveManagementSystem.Controllers
     public class SubDepartmentForCommentController : ControllerBase
     {
         private readonly ISubDepartmentForCommentService _subDepartmentForCommentService;
-    
+
 
 
         public SubDepartmentForCommentController(ISubDepartmentForCommentService subDepartmentForCommentService)
         {
             _subDepartmentForCommentService = subDepartmentForCommentService;
-        
+
         }
 
         [HttpPost("AddUpdateDepartmentForComment")]
@@ -48,7 +33,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _subDepartmentForCommentService.AddUpdateDepartmentForComment(model.SubDepartmentForCommentID, model.ApplicationID, model.SubDepartmentID, model.SubDepartmentName, model.UserAssaignedToComment,model.CommentStatus ,model.CreatedById,model.ZoneID,model.ZoneName);
+                    var result = await _subDepartmentForCommentService.AddUpdateDepartmentForComment(model.SubDepartmentForCommentID, model.ApplicationID, model.SubDepartmentID, model.SubDepartmentName, model.UserAssaignedToComment, model.CommentStatus, model.CreatedById, model.ZoneID, model.ZoneName);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.SubDepartmentForCommentID > 0 ? "Department For Comment Updated Successfully" : "Department For Comment Added Successfully"), result));
                 }
 
@@ -74,7 +59,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _subDepartmentForCommentService.DepartmentForCommentUserAssaignedToComment(model.SubDepartmentForCommentID,model.UserAssaignedToComment,model.isGISReviewing,model.GISReviewerUserID);
+                    var result = await _subDepartmentForCommentService.DepartmentForCommentUserAssaignedToComment(model.SubDepartmentForCommentID, model.UserAssaignedToComment, model.isGISReviewing, model.GISReviewerUserID);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "User Assigned Successfully", result));
                 }
 
@@ -100,7 +85,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _subDepartmentForCommentService.DepartmentForCommentUserAssaignedToComment(model.SubDepartmentForCommentID, model.UserAssaignedToComment,model.isGISReviewing,model.GISReviewerUserID);
+                    var result = await _subDepartmentForCommentService.DepartmentForCommentUserAssaignedToComment(model.SubDepartmentForCommentID, model.UserAssaignedToComment, model.isGISReviewing, model.GISReviewerUserID);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "User Assaigned Successfully", result));
                 }
 
@@ -182,7 +167,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _subDepartmentForCommentService.GetSubDepartmentForCommentBySubID((int)model.ApplicationID,model.SubDepartmentID, model.UserAssaignedToComment);
+                    var result = await _subDepartmentForCommentService.GetSubDepartmentForCommentBySubID((int)model.ApplicationID, model.SubDepartmentID, model.UserAssaignedToComment);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Department For Comment List Created", result));
                 }
 
@@ -209,7 +194,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _subDepartmentForCommentService.UpdateCommentStatus(model.SubDepartmentForCommentID, model.CommentStatus, model.isAwaitingClarity, model.IsRefered, model.UserAssaignedToComment,model.FinalApproval);
+                    var result = await _subDepartmentForCommentService.UpdateCommentStatus(model.SubDepartmentForCommentID, model.CommentStatus, model.isAwaitingClarity, model.IsRefered, model.UserAssaignedToComment, model.FinalApproval);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Updated Comment Status", result));
 
                 }

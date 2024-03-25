@@ -1,9 +1,9 @@
-﻿namespace WayleaveManagementSystem.Models.BindingModel
+﻿namespace BuildingPlans.Models.BindingModel
 {
     public class SubDepartmentForCommentBindingModel
     {
         public int? SubDepartmentForCommentID { get; set; }
-        
+
         public int? ApplicationID { get; set; }
 
         public int? SubDepartmentID { get; set; }

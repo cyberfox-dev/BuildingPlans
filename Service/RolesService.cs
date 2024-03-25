@@ -1,12 +1,10 @@
-﻿using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.IServices;
-using System.Linq;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.DTO;
+using BuildingPlans.IServices;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Models.BindingModel;
 
-namespace WayleaveManagementSystem.Service
+namespace BuildingPlans.Service
 {
     public class RolesService : IRolesService
     {
@@ -74,7 +72,7 @@ namespace WayleaveManagementSystem.Service
             if (tempRoleTable == null)
             {
                 return await Task.FromResult(false);
-                
+
             }
             else
             {
@@ -92,8 +90,9 @@ namespace WayleaveManagementSystem.Service
 
         public async Task<List<RolesDTO>> GetRoleByRoleID(int roleID)
         {
-            return await(
-                from role in _context.Role where role.RoleID == roleID && role.isActive == true
+            return await (
+                from role in _context.Role
+                where role.RoleID == roleID && role.isActive == true
                 select new RolesDTO()
                 {
                     RoleID = role.RoleID,
@@ -111,7 +110,9 @@ namespace WayleaveManagementSystem.Service
         public async Task<List<RolesDTO>> GetAllRoles()
         {
             return await (
-                from role in _context.Role where role.isActive == true select new RolesDTO()
+                from role in _context.Role
+                where role.isActive == true
+                select new RolesDTO()
                 {
                     RoleID = role.RoleID,
                     RoleName = role.RoleName,

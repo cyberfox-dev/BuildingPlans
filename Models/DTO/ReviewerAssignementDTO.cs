@@ -1,6 +1,6 @@
-﻿using WayleaveManagementSystem.Data.Entities;
+﻿using BuildingPlans.Data.Entities;
 
-namespace WayleaveManagementSystem.Models.DTO
+namespace BuildingPlans.Models.DTO
 {
     public class ReviewerAssignementDTO : BaseEntity
     {

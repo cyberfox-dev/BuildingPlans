@@ -1,28 +1,14 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.IServices;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using System.Data;
-using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http.Headers;
-using System.Net.NetworkInformation;
-using System.Text;
-using WayleaveManagementSystem.BindingModel;
-using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.Data.Migrations;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.Service;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -288,8 +274,8 @@ namespace WayleaveManagementSystem.Controllers
                             tempUserProfile.isZoneAdmin = model.isZoneAdmin;
                         }
 
-                        
-                       
+
+
                         tempUserProfile.DateUpdated = DateTime.Now;
 
                         if (model.CreatedById != null)
@@ -297,7 +283,7 @@ namespace WayleaveManagementSystem.Controllers
                             tempUserProfile.CreatedById = model.CreatedById;
                         }
 
-                      
+
                         _context.Update(tempUserProfile);
                         await _context.SaveChangesAsync();
                         result = tempUserProfile;
@@ -406,10 +392,10 @@ namespace WayleaveManagementSystem.Controllers
                 {
                     var result = await _userProfileService.GetUserByUserID(model.UserID);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "UserProfile List fetched", result));
-                    }
-
-
                 }
+
+
+            }
             catch (Exception ex)
             {
 
@@ -428,9 +414,9 @@ namespace WayleaveManagementSystem.Controllers
             {
 
 
-                    var result = await _userProfileService.GetExternalUsers();
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "UserProfile List fetched", result));
-                
+                var result = await _userProfileService.GetExternalUsers();
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "UserProfile List fetched", result));
+
 
 
             }
@@ -726,9 +712,9 @@ namespace WayleaveManagementSystem.Controllers
 
             }
         }
-        
 
-       [HttpPost("GetAllUsersToLinkToDep")]
+
+        [HttpPost("GetAllUsersToLinkToDep")]
         public async Task<object> GetAllUsersToLinkToDep([FromBody] int depID)
         {
             try

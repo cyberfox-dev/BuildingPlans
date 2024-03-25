@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Data.Entities;
 
-namespace WayleaveManagementSystem.Models.DTO
+namespace BuildingPlans.Models.DTO
 {
     [Keyless]
     public class MapDTO

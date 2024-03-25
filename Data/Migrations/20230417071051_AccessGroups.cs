@@ -1,9 +1,8 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace WayleaveManagementSystem.Data.Migrations
+namespace BuildingPlans.Data.Migrations
 {
     public partial class AccessGroups : Migration
     {
@@ -67,14 +66,14 @@ namespace WayleaveManagementSystem.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-           /* migrationBuilder.DropTable(
-                name: "AccessGroupRoleLink");
+            /* migrationBuilder.DropTable(
+                 name: "AccessGroupRoleLink");
 
-            migrationBuilder.DropTable(
-                name: "AccessGroups");
+             migrationBuilder.DropTable(
+                 name: "AccessGroups");
 
-            migrationBuilder.DropTable(
-                name: "AccessGroupUserLink");*/
+             migrationBuilder.DropTable(
+                 name: "AccessGroupUserLink");*/
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace WayleaveManagementSystem.Data.Entities
+﻿namespace BuildingPlans.Data.Entities
 {
     public class BaseEntity
     {

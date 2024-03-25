@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.DTO;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.DTO;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models.DTO;
 
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -16,7 +16,7 @@ namespace WayleaveManagementSystem.Controllers
     {
 
         private readonly AppDBContext _context;
-       
+
         public FinancialController(AppDBContext context)
         {
             _context = context;
@@ -66,7 +66,8 @@ namespace WayleaveManagementSystem.Controllers
                     }
                     else
                     {
-                        if (model.FinancialName != null) {
+                        if (model.FinancialName != null)
+                        {
                             tempFinancial.FinancialName = model.FinancialName;
                         }
                         if (model.FinancialType != null)
@@ -81,7 +82,7 @@ namespace WayleaveManagementSystem.Controllers
                         {
                             tempFinancial.DocumentLocalPath = model.FinancialDocumentLocalPath;
                         }
-      
+
 
                         _context.Update(tempFinancial);
                         await _context.SaveChangesAsync();

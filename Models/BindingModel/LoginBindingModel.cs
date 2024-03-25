@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WayleaveManagementSystem.BindingModel
+namespace BuildingPlans.BindingModel
 {
     public class LoginBindingModel
     {

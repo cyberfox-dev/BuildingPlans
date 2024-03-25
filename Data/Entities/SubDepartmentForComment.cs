@@ -1,15 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WayleaveManagementSystem.Data.Entities
+namespace BuildingPlans.Data.Entities
 {
-    public class SubDepartmentForComment:BaseEntity
+    public class SubDepartmentForComment : BaseEntity
     {
 
         [Key]
         public int? SubDepartmentForCommentID { get; set; }
 
         public int? ApplicationID { get; set; }
-        
+
         public int? SubDepartmentID { get; set; }
 
         public string? SubDepartmentName { get; set; }

@@ -1,13 +1,11 @@
 ﻿// Add the necessary using statement
+using BuildingPlans.Data;
+using BuildingPlans.IServices;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
 using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.Service;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

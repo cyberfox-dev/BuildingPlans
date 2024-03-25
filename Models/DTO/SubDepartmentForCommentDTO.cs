@@ -1,6 +1,4 @@
-﻿using WayleaveManagementSystem.Data.Entities;
-
-namespace WayleaveManagementSystem.DTO
+﻿namespace BuildingPlans.DTO
 {
     // DTO - Data Trasfer Object
     public class SubDepartmentForCommentDTO
@@ -10,7 +8,7 @@ namespace WayleaveManagementSystem.DTO
         public int? ApplicationID { get; set; }
 
         public int? SubDepartmentID { get; set; }
-        
+
         public string? SubDepartmentName { get; set; }
 
         public string? UserAssaignedToComment { get; set; }

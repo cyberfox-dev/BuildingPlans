@@ -1,16 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.DTO;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Policy;
-using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.Service;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -48,14 +44,14 @@ namespace WayleaveManagementSystem.Controllers
                     {
                         tempMFT = new MFT()
                         {
-                            MFTID = model.MFTID, 
+                            MFTID = model.MFTID,
                             MFTNote = model.MFTNote,
                             ApplicationID = model.ApplicationID,
-                            CreatedById = model.CreatedById,  
+                            CreatedById = model.CreatedById,
                             DateCreated = DateTime.Now,
-                            DateUpdated = DateTime.Now, 
-                            DocumentLocalPath = model.DocumentLocalPath,    
-                            DocumentName = model.DocumentName,  
+                            DateUpdated = DateTime.Now,
+                            DocumentLocalPath = model.DocumentLocalPath,
+                            DocumentName = model.DocumentName,
                             FullName = model.FullName,
                             isActive = true
                         };
@@ -139,16 +135,16 @@ namespace WayleaveManagementSystem.Controllers
                select new MFTDTO()
                {
 
-                MFTID = mft.MFTID,
-                MFTNote = mft.MFTNote,
-                DocumentName = mft.DocumentName,
-                isActive = mft.isActive,
-                DocumentLocalPath = mft.DocumentLocalPath,
-                ApplicationID = mft.ApplicationID,
-                CreatedById = mft.CreatedById,  
-                DateCreated = mft.DateCreated,
-                DateUpdated = mft.DateUpdated,
-                FullName = mft.FullName,
+                   MFTID = mft.MFTID,
+                   MFTNote = mft.MFTNote,
+                   DocumentName = mft.DocumentName,
+                   isActive = mft.isActive,
+                   DocumentLocalPath = mft.DocumentLocalPath,
+                   ApplicationID = mft.ApplicationID,
+                   CreatedById = mft.CreatedById,
+                   DateCreated = mft.DateCreated,
+                   DateUpdated = mft.DateUpdated,
+                   FullName = mft.FullName,
                }
                ).ToListAsync();
 
@@ -171,7 +167,7 @@ namespace WayleaveManagementSystem.Controllers
             {
                 var tempMFT = _context.MFT.FirstOrDefault(x => x.ApplicationID == model.ApplicationID && x.DocumentName == model.DocumentName);
 
-                if(tempMFT == null)
+                if (tempMFT == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
@@ -203,5 +199,5 @@ namespace WayleaveManagementSystem.Controllers
 
     }
 
- 
+
 }

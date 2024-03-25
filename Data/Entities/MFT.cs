@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WayleaveManagementSystem.Data.Entities
+namespace BuildingPlans.Data.Entities
 {
     public class MFT : BaseEntity
     {

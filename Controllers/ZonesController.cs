@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Service;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
+﻿using BuildingPlans.Data;
+using BuildingPlans.IServices;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.BindingModel.ForGetByIDModels;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Data;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -34,7 +32,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _zonesServices.AddUpdateZones(model.ZoneID, model.ZoneName, model.DepartmentID, model.SubDepartmentID,model.CreatedById);
+                    var result = await _zonesServices.AddUpdateZones(model.ZoneID, model.ZoneName, model.DepartmentID, model.SubDepartmentID, model.CreatedById);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ZoneID > 0 ? "Zone Updated Successfully" : "Zone Added Successfully"), result));
                 }
 
@@ -82,7 +80,7 @@ namespace WayleaveManagementSystem.Controllers
                 var result = await _zonesServices.GetAllZones();
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Zones List Created", result));
 
-               
+
 
             }
             catch (Exception ex)
@@ -152,7 +150,7 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
                 //var result = await _zonesLinkingServices.GetUsersNotLinkedByUserID();
-                if (zoneID <1)
+                if (zoneID < 1)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
@@ -162,7 +160,7 @@ namespace WayleaveManagementSystem.Controllers
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Linked Users", result));
                 }
 
-               
+
 
             }
             catch (Exception ex)
@@ -181,13 +179,13 @@ namespace WayleaveManagementSystem.Controllers
             {
                 //var result = await _zonesLinkingServices.GetUsersNotLinkedByUserID();
                 if (model == null || model.SubDepartmentID < -1)
-                    //if (mapObjectID < 1)
+                //if (mapObjectID < 1)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
-                    var result = await _zonesServices.GetZoneByMapObjectID(model.SubDepartmentID,model.MapObjectID);
+                    var result = await _zonesServices.GetZoneByMapObjectID(model.SubDepartmentID, model.MapObjectID);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got assigned map object", result));
                 }
             }

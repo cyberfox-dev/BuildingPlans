@@ -1,8 +1,7 @@
-﻿using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.Models.DTO;
+﻿using BuildingPlans.Data.Entities;
+using BuildingPlans.Models.DTO;
 
-namespace WayleaveManagementSystem.IServices
+namespace BuildingPlans.IServices
 {
     public interface IProfessionalsLinksService
     {

@@ -1,15 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BuildingPlans.IServices;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
 using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Service;
-using System.Security.Policy;
-using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using System.Net.Http.Headers;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
 
     [Route("api/[controller]")]
@@ -38,7 +32,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _mandatoryDocumentUploadsService.AddUpdateMandatoryDocument(model.MandatoryDocumentID, model.MandatoryDocumentName, model.CreatedById,model.MandatoryDocumentCategory);
+                    var result = await _mandatoryDocumentUploadsService.AddUpdateMandatoryDocument(model.MandatoryDocumentID, model.MandatoryDocumentName, model.CreatedById, model.MandatoryDocumentCategory);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.MandatoryDocumentID > 0 ? "Mandatory Document Updated Successfully" : "Mandatory Document Added Successfully"), result));
                 }
 
@@ -130,7 +124,7 @@ namespace WayleaveManagementSystem.Controllers
         {
             try
             {
-             
+
                 if (model.MandatoryDocumentCategory == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
@@ -152,11 +146,11 @@ namespace WayleaveManagementSystem.Controllers
         }
 
         [HttpPost("GetAllMandatoryDocumentsLinkedToStage")]
-        public async Task<object>GetAllMandatoryDocumentsLinkedToStage([FromBody] MandatoryDocumentStageLinkBindingModel model)
+        public async Task<object> GetAllMandatoryDocumentsLinkedToStage([FromBody] MandatoryDocumentStageLinkBindingModel model)
         {
             try
             {
-                if(model.StageName == null)
+                if (model.StageName == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }

@@ -1,7 +1,7 @@
-﻿using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.Models.DTO;
+﻿using BuildingPlans.Data.Entities;
+using BuildingPlans.Models.DTO;
 
-namespace WayleaveManagementSystem.IServices
+namespace BuildingPlans.IServices
 {
     public interface IStageServices
     {
@@ -10,6 +10,6 @@ namespace WayleaveManagementSystem.IServices
         //this will return T/F 
         public Task<bool> DeleteStage(int StageID);
 
-         Task<List<StageDTO>> GetAllStages();
+        Task<List<StageDTO>> GetAllStages();
     }
 }

@@ -1,8 +1,8 @@
-﻿namespace WayleaveManagementSystem.Models.DTO
+﻿namespace BuildingPlans.Models.DTO
 {
     public class DepositRequiredDTO
     {
-     
+
 
         public int? DepositRequiredID { get; set; }
         public int? ApplicationID { get; set; }

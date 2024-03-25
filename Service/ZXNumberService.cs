@@ -1,11 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.DTO;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.IServices;
+using BuildingPlans.Models.DTO;
+using Microsoft.EntityFrameworkCore;
 
-namespace WayleaveManagementSystem.Service
+namespace BuildingPlans.Service
 {
     public class ZXNumberService : IZXNumberService
     {
@@ -17,13 +16,13 @@ namespace WayleaveManagementSystem.Service
 
         public async Task<ZXNumberLog> AddUpdateZXNumber(int? zxNumberID, int? applicationID, int? departmentID, string? departmentName, string? zxNumber, string? creadtedByID)
         {
-            if(zxNumberID == 0)
+            if (zxNumberID == 0)
             {
                 zxNumberID = null;
             }
 
-            var tempZXNumberTable = _context.ZXNumberLog.FirstOrDefault(x=>x.ZXNumberID==zxNumberID);
-            if(tempZXNumberTable == null)
+            var tempZXNumberTable = _context.ZXNumberLog.FirstOrDefault(x => x.ZXNumberID == zxNumberID);
+            if (tempZXNumberTable == null)
             {
                 tempZXNumberTable = new ZXNumberLog()
                 {
@@ -45,7 +44,7 @@ namespace WayleaveManagementSystem.Service
             else
             {
 
-                if(zxNumber != null)
+                if (zxNumber != null)
                 {
                     tempZXNumberTable.ZXNumber = zxNumber;
                 }

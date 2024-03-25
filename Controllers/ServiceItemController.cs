@@ -1,17 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.DTO;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.InteropServices;
-using System.Security.Policy;
-using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.Service;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -58,7 +53,7 @@ namespace WayleaveManagementSystem.Controllers
                             isActive = true,
                             Category = model.Category,
                             DepartmentID = model.DepartmentID,
-                            VatApplicable = model.VatApplicable, 
+                            VatApplicable = model.VatApplicable,
                             Remarks = model.Remarks,
                         };
 
@@ -99,19 +94,19 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
 
-                    var tempServiceItemTable = _context.ServiceItem.FirstOrDefault(x => x.ServiceItemID == serviceItemID);
+                var tempServiceItemTable = _context.ServiceItem.FirstOrDefault(x => x.ServiceItemID == serviceItemID);
 
-                    if (tempServiceItemTable == null)
-                    {
-                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", false));
+                if (tempServiceItemTable == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", false));
 
-                    }
-                    else
-                    {
-                        tempServiceItemTable.DateUpdated = DateTime.Now;
-                        tempServiceItemTable.isActive = false;
-                        _context.Update(tempServiceItemTable);
-                        await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    tempServiceItemTable.DateUpdated = DateTime.Now;
+                    tempServiceItemTable.isActive = false;
+                    _context.Update(tempServiceItemTable);
+                    await _context.SaveChangesAsync();
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Zone Link Deleted Successfully", true));
                 }
 
@@ -133,7 +128,7 @@ namespace WayleaveManagementSystem.Controllers
             {
                 var result = await (
                 from serviceItem in _context.ServiceItem
-                   where serviceItem.isActive == true
+                where serviceItem.isActive == true
                 select new ServiceItemDTO()
                 {
                     ServiceItemID = serviceItem.ServiceItemID,
@@ -200,9 +195,9 @@ namespace WayleaveManagementSystem.Controllers
 
             }
 
-        } 
-        
-        
+        }
+
+
         [HttpPost("GetServiceItemByServiceItemCode")]
         public async Task<object> GetServiceItemByServiceItemCode([FromBody] ServiceItemBindingModel model)
         {

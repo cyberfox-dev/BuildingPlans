@@ -1,4 +1,4 @@
-﻿namespace WayleaveManagementSystem.Models
+﻿namespace BuildingPlans.Models
 {
     public class JWTConfig
     {

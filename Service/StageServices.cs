@@ -1,11 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Security.Policy;
-using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.DTO;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.IServices;
+using BuildingPlans.Models.DTO;
+using Microsoft.EntityFrameworkCore;
 
-namespace WayleaveManagementSystem.Service
+namespace BuildingPlans.Service
 {
     public class StageServices : IStageServices
     {
@@ -79,8 +78,9 @@ namespace WayleaveManagementSystem.Service
 
         public async Task<List<StageDTO>> GetAllStages()
         {
-            return await(
-                from Stages in _context.StageTable where Stages.isActive == true
+            return await (
+                from Stages in _context.StageTable
+                where Stages.isActive == true
                 select new StageDTO()
                 {
                     StageID = Stages.StageID,
@@ -90,7 +90,7 @@ namespace WayleaveManagementSystem.Service
                     DateUpdated = DateTime.Now,
 
                 }
-                ).OrderBy(x=>x.StageOrderNumber).ToListAsync();
+                ).OrderBy(x => x.StageOrderNumber).ToListAsync();
         }
     }
 }

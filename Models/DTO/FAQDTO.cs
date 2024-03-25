@@ -1,4 +1,4 @@
-﻿namespace WayleaveManagementSystem.Models.DTO
+﻿namespace BuildingPlans.Models.DTO
 {
     public class FAQDTO
     {

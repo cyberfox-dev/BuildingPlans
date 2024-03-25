@@ -1,4 +1,4 @@
-﻿namespace WayleaveManagementSystem.Models.BindingModel
+﻿namespace BuildingPlans.Models.BindingModel
 {
     public class AuditTrailBindingModel
     {
@@ -10,6 +10,6 @@
         public string? SubDepartmentName { get; set; }
         public string? ZoneName { get; set; }
         public string? CreatedById { get; set; }
-        
+
     }
 }

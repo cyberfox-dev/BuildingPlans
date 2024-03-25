@@ -1,13 +1,12 @@
-﻿using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.Models.DTO;
+﻿using BuildingPlans.Data.Entities;
+using BuildingPlans.DTO;
 
-namespace WayleaveManagementSystem.IServices
+namespace BuildingPlans.IServices
 {
     public interface ICommentService
     {
-        Task<Comments> AddUpdateComment(int? commentID,int? applicationID,int? subDepartmentForCommentID, int? subDepartmentID, string? subDepartmentName, string commentName, string? commentStatus, string? creadtedByID, int? isClarifyCommentID, string? isApplicantReplay,string? UserName, string? zoneName,string? clarifyUserID);
-      
+        Task<Comments> AddUpdateComment(int? commentID, int? applicationID, int? subDepartmentForCommentID, int? subDepartmentID, string? subDepartmentName, string commentName, string? commentStatus, string? creadtedByID, int? isClarifyCommentID, string? isApplicantReplay, string? UserName, string? zoneName, string? clarifyUserID);
+
         public Task<bool> DeleteComment(int commentID);
 
         Task<List<CommentDTO>> GetCommentByApplicationID(int? applicationID);

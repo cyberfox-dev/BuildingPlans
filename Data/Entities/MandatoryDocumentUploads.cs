@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WayleaveManagementSystem.Data.Entities
+namespace BuildingPlans.Data.Entities
 {
     public class MandatoryDocumentUpload : BaseEntity
     {
@@ -10,7 +10,7 @@ namespace WayleaveManagementSystem.Data.Entities
         public string? MandatoryDocumentCategory { get; set; }
 
 
-     /*   public int? StageID { get; set; }*/
+        /*   public int? StageID { get; set; }*/
 
     }
 }

@@ -1,8 +1,8 @@
-﻿using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.Models.DTO;
+﻿using BuildingPlans.Data.Entities;
+using BuildingPlans.DTO;
+using BuildingPlans.Models.DTO;
 
-namespace WayleaveManagementSystem.IServices
+namespace BuildingPlans.IServices
 {
     public interface IZoneLinkServices
     {
@@ -14,14 +14,14 @@ namespace WayleaveManagementSystem.IServices
         public Task<List<ZoneLinkDTO>> GetAllZoneLinks();
         public Task<List<ZoneLinkDTO>> GetBySubAndUserID(int subDepartmentID, string userID);
         public Task<List<ZoneLinkDTO>> GetAllUserLinks(string userID);
-    
+
 
         Task<List<UserZoneLinkDTO>> GetUsersNotLinkedByUserID();
 
         public Task<List<ZoneLinkDTO>> GetAllRecordsByUserIdIfDeleted(string userID);
 
 
-        
+
 
     }
 }

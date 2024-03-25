@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace WayleaveManagementSystem.DTO
+namespace BuildingPlans.DTO
 {
     // DTO - Data Trasfer Object
     [Keyless]
     public class UserZoneLinkDTO
     {
-        
+
         public string FullName { get; set; }
         public string Email { get; set; }
         public string UserId { get; set; }

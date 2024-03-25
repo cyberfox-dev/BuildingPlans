@@ -1,12 +1,10 @@
-﻿using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.IServices;
-using System.Linq;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.DTO;
+using BuildingPlans.IServices;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Models.BindingModel;
 
-namespace WayleaveManagementSystem.Service
+namespace BuildingPlans.Service
 {
     public class CommentBuilderService : ICommentBuilderService
     {
@@ -71,7 +69,7 @@ namespace WayleaveManagementSystem.Service
             if (tempCommentBuilderTable == null)
             {
                 return await Task.FromResult(false);
-                
+
             }
             else
             {
@@ -89,8 +87,9 @@ namespace WayleaveManagementSystem.Service
         //this method gets all the professionals linked to a partcular user 
         public async Task<List<CommentBuilderDTO>> GetCommentByUserID(string userID)
         {
-            return await(
-                from commentBuilder in _context.CommentBuilder where commentBuilder.CreatedById == userID && commentBuilder.isActive == true
+            return await (
+                from commentBuilder in _context.CommentBuilder
+                where commentBuilder.CreatedById == userID && commentBuilder.isActive == true
                 select new CommentBuilderDTO()
                 {
                     CommentID = commentBuilder.CommentID,

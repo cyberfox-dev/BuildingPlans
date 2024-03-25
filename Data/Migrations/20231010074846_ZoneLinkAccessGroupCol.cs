@@ -1,15 +1,14 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace WayleaveManagementSystem.Data.Migrations
+namespace BuildingPlans.Data.Migrations
 {
     public partial class ZoneLinkAccessGroupCol : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-           
+
 
             migrationBuilder.AddColumn<string>(
                 name: "AccessGroupName",

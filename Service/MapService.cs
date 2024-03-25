@@ -1,26 +1,9 @@
-﻿using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.IServices;
-using System.Linq;
+﻿using BuildingPlans.Data;
+using BuildingPlans.IServices;
+using BuildingPlans.Models.DTO;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Models.BindingModel;
-using System.Net.NetworkInformation;
-using WayleaveManagementSystem.Models.DTO;
-using System.Xml.Serialization;
-using static iText.IO.Image.Jpeg2000ImageData;
-using System.Numerics;
 using Newtonsoft.Json;
-using System.Net.Http.Headers;
-using System.Text;
 using Newtonsoft.Json.Linq;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Reflection;
-using WayleaveManagementSystem.Models;
-using System.Net.Http;
-using System.Security.Policy;
-using System;
 
 public class AddResult
 {
@@ -82,7 +65,7 @@ public class Geometry
     // Add other properties as needed
 }
 
-namespace WayleaveManagementSystem.Service
+namespace BuildingPlans.Service
 {
     public class MapService : IMapService
     {
@@ -454,7 +437,7 @@ namespace WayleaveManagementSystem.Service
             async Task CheckInterceptionsAsync(int index)
             {
 
-            //If the number of interceptions is 1 or more, it stops processing any more layers
+                //If the number of interceptions is 1 or more, it stops processing any more layers
                 if (index >= layerURLs.Count || numOfInterceptions >= 1)
                 {
                     // All layers have been checked or an interception has already been found, resolve with the final exclusionsList

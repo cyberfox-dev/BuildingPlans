@@ -1,13 +1,10 @@
-﻿using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.DTO;
-using System.Linq;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.IServices;
+using BuildingPlans.Models.DTO;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Models.BindingModel;
 
-namespace WayleaveManagementSystem.Service
+namespace BuildingPlans.Service
 {
     public class DepartmentsService : IDepartmentsService
     {
@@ -20,14 +17,14 @@ namespace WayleaveManagementSystem.Service
 
         public async Task<Departments> AddUpdateDepartments(int? departmentID, string departmentName, bool hasSubDepartment, string? createdById, /*zxNumberUpdate Sindiswa 01 March 2024*/bool? needsZXNumber)
         {
-            if (departmentID == 0) 
+            if (departmentID == 0)
             {
                 departmentID = null;
             }
 
             var tempDepartmentsTable = _context.DepartmentsTable.FirstOrDefault(x => x.DepartmentID == departmentID);
 
-            if(tempDepartmentsTable == null) 
+            if (tempDepartmentsTable == null)
             {
                 tempDepartmentsTable = new Departments()
                 {
@@ -44,9 +41,9 @@ namespace WayleaveManagementSystem.Service
                 await _context.SaveChangesAsync();
 
                 return tempDepartmentsTable;
-            
+
             }
-            else 
+            else
             {
 
                 #region zxNumberUpdate Sindiswa 01 March 2024
@@ -54,7 +51,7 @@ namespace WayleaveManagementSystem.Service
                 {
                     tempDepartmentsTable.DepartmentName = departmentName;
                 }
-                if (hasSubDepartment !=null)
+                if (hasSubDepartment != null)
                 {
                     tempDepartmentsTable.hasSubDepartment = hasSubDepartment;
                 }
@@ -63,7 +60,7 @@ namespace WayleaveManagementSystem.Service
                     tempDepartmentsTable.needsZXNumber = needsZXNumber;
                 }
                 #endregion
-               
+
                 tempDepartmentsTable.DateUpdated = DateTime.Now;
                 tempDepartmentsTable.isActive = true;
 
@@ -97,7 +94,7 @@ namespace WayleaveManagementSystem.Service
         {
             return await (
                 from Departments in _context.DepartmentsTable
-               where Departments.isActive == true
+                where Departments.isActive == true
                 select new DepartmentsDTO()
                 {
                     DepartmentID = Departments.DepartmentID,

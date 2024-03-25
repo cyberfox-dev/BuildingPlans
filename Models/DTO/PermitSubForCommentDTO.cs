@@ -1,4 +1,4 @@
-﻿namespace WayleaveManagementSystem.Models.DTO
+﻿namespace BuildingPlans.Models.DTO
 {
     public class PermitSubForCommentDTO
     {
@@ -18,7 +18,7 @@
 
         public string? ZoneName { get; set; }
 
-        
+
 
         public bool? isPaid { get; set; }
         public bool? RequestForDelete { get; set; }

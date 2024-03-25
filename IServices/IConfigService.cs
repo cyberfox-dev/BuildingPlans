@@ -1,13 +1,12 @@
-﻿using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.Models.DTO;
+﻿using BuildingPlans.Data.Entities;
+using BuildingPlans.DTO;
 
-namespace WayleaveManagementSystem.IServices
+namespace BuildingPlans.IServices
 {
     public interface IConfigService
     {
-        Task<Config> AddUpdateConfig(int? configID, string configName, string configDescription,string? utilitySlot1,string? utilitySlot2, string? utilitySlot3, string? creadtedByID);
-      
+        Task<Config> AddUpdateConfig(int? configID, string configName, string configDescription, string? utilitySlot1, string? utilitySlot2, string? utilitySlot3, string? creadtedByID);
+
         public Task<bool> DeleteConfig(int configID);
 
         Task<List<ConfigDTO>> GetConfigsByConfigID(int? configID);

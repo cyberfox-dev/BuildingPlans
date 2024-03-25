@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WayleaveManagementSystem.Data.Entities
+namespace BuildingPlans.Data.Entities
 {
     public class Comments : BaseEntity
     {
@@ -29,9 +29,9 @@ namespace WayleaveManagementSystem.Data.Entities
         public string? ZoneName { get; set; }
 
         //Clarify Alerts Kyle 
-        public string? CanReplyUserID{ get; set; }
+        public string? CanReplyUserID { get; set; }
         //Clarify Alert Kyle 
-        
+
 
         //The CreatedBy is the user who created the comment
         // public string? UserCommentedID { get; set; }

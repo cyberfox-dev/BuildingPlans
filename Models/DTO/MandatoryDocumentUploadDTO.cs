@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using WayleaveManagementSystem.Data.Entities;
-
-namespace WayleaveManagementSystem.DTO
+﻿namespace BuildingPlans.DTO
 {
     public class MandatoryDocumentUploadDTO
     {

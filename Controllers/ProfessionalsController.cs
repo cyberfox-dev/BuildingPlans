@@ -1,17 +1,10 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using BuildingPlans.IServices;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.BindingModel.ForGetByIDModels;
 using Microsoft.AspNetCore.Mvc;
 
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
-
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -39,7 +32,7 @@ namespace WayleaveManagementSystem.Controllers
                 else
                 {
                     var result = await _professionalsService.AddUpdateProfessional(model.ProfessinalID, model.ProfessinalType, model.FullName, model.BP_Number, model.BpVerified, model.Email, model.PhoneNumber, model.ProfessionalRegNo, model.AppUserID, model.IdNumber, model.CreatedById, model.CIBRating);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ProfessinalID > 0 ? "Professional Updated Successfully": "Professional Added Successfully"), result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ProfessinalID > 0 ? "Professional Updated Successfully" : "Professional Added Successfully"), result));
                 }
 
             }
@@ -138,7 +131,7 @@ namespace WayleaveManagementSystem.Controllers
 
                 if (model.ApplicationID < 1)
                 {
-                   
+
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else

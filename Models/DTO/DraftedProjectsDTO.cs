@@ -1,4 +1,4 @@
-﻿namespace WayleaveManagementSystem.Models.DTO
+﻿namespace BuildingPlans.Models.DTO
 {
     public class DraftedProjectsDTO
     {
@@ -22,9 +22,9 @@
         public DateTime? ExpectedEndDate { get; set; }
         public string? Location { get; set; }
         public string? ProjectNumber { get; set; }
-        public string? Engineer {  get; set; }
-        public string? Contractor {  get; set; }
-        
+        public string? Engineer { get; set; }
+        public string? Contractor { get; set; }
+
         public string? CreatedById { get; set; }
         public DateTime? DateCreated { get; set; }
         public DateTime? DateUpdated { get; set; }

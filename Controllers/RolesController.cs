@@ -1,24 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Service;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.DTO;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+﻿using BuildingPlans.DTO;
+using BuildingPlans.IServices;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using WayleaveManagementSystem.BindingModel;
-using WayleaveManagementSystem.Data.Entities;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

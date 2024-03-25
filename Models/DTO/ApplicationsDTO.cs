@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Data.Entities;
 
-namespace WayleaveManagementSystem.Models.DTO
+namespace BuildingPlans.Models.DTO
 {
     [Keyless]
     public class ApplicationsDTO
@@ -55,7 +54,7 @@ namespace WayleaveManagementSystem.Models.DTO
         public bool? WBSRequired { get; set; }
 
 
-   
+
 
         public int? ZoneID { get; set; }
 

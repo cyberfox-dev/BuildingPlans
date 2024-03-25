@@ -1,15 +1,11 @@
-﻿using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.IServices;
-using System.Linq;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.Data.Migrations;
+using BuildingPlans.IServices;
+using BuildingPlans.Models.DTO;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Models.BindingModel;
-using System.Net.NetworkInformation;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.Data.Migrations;
 
-namespace WayleaveManagementSystem.Service
+namespace BuildingPlans.Service
 {
     public class ProfessionalsLinksService : IProfessionalsLinksService
     {
@@ -109,6 +105,6 @@ namespace WayleaveManagementSystem.Service
         }
 
 
-        
+
     }
 }

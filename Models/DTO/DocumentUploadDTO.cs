@@ -1,14 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-using WayleaveManagementSystem.Data.Entities;
+﻿using BuildingPlans.Data.Entities;
 
-namespace WayleaveManagementSystem.DTO
+namespace BuildingPlans.DTO
 {
-    public class DocumentUploadDTO:BaseEntity
+    public class DocumentUploadDTO : BaseEntity
     {
 
         public int DocumentID { get; set; }
         public string? DocumentName { get; set; }
-        
+
         public string? DocumentLocalPath { get; set; }
 
         public int? ApplicationID { get; set; }
@@ -23,5 +22,5 @@ namespace WayleaveManagementSystem.DTO
 
     }
 }
-   
+
 

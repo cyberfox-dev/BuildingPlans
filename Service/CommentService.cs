@@ -1,15 +1,10 @@
-﻿using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.IServices;
-using System.Linq;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.DTO;
+using BuildingPlans.IServices;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Models.BindingModel;
-using System;
-using WayleaveManagementSystem.Data.Migrations;
-using iText.StyledXmlParser.Jsoup.Nodes;
 
-namespace WayleaveManagementSystem.Service
+namespace BuildingPlans.Service
 {
     public class CommentService : ICommentService
     {
@@ -20,7 +15,7 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Comments> AddUpdateComment(int? commentID, int? applicationID, int? subDepartmentForCommentID, int? subDepartmentID, string? subDepartmentName, string commentName, string? commentStatus, string? creadtedByID, int? isClarifyCommentID, string? isApplicantReplay, string? UserName, string? zoneName, string?canReplyUserID)
+        public async Task<Comments> AddUpdateComment(int? commentID, int? applicationID, int? subDepartmentForCommentID, int? subDepartmentID, string? subDepartmentName, string commentName, string? commentStatus, string? creadtedByID, int? isClarifyCommentID, string? isApplicantReplay, string? UserName, string? zoneName, string? canReplyUserID)
         {
 
             if (commentID == 0)
@@ -101,7 +96,7 @@ namespace WayleaveManagementSystem.Service
             if (tempCommentTable == null)
             {
                 return await Task.FromResult(false);
-                
+
             }
             else
             {
@@ -119,8 +114,9 @@ namespace WayleaveManagementSystem.Service
         //this method gets all the professionals linked to a partcular user 
         public async Task<List<CommentDTO>> GetCommentByApplicationID(int? applicationID)
         {
-            return await(
-                from comment in _context.Comments where comment.ApplicationID == applicationID && comment.isActive == true
+            return await (
+                from comment in _context.Comments
+                where comment.ApplicationID == applicationID && comment.isActive == true
                 select new CommentDTO()
                 {
                     CommentID = comment.CommentID,
@@ -172,24 +168,24 @@ namespace WayleaveManagementSystem.Service
         {
             return await (
             from comment in _context.Comments
-                where comment.ApplicationID == applicationID && comment.CommentStatus == "Approved" || comment.ApplicationID == applicationID && comment.CommentStatus == "Final Approved" || comment.ApplicationID == applicationID && comment.CommentStatus == "Provisionally Approved"
+            where comment.ApplicationID == applicationID && comment.CommentStatus == "Approved" || comment.ApplicationID == applicationID && comment.CommentStatus == "Final Approved" || comment.ApplicationID == applicationID && comment.CommentStatus == "Provisionally Approved"
             select new CommentDTO()
-                {
-                    CommentID = comment.CommentID,
+            {
+                CommentID = comment.CommentID,
 
-                    Comment = comment.Comment,
-                    ApplicationID = comment.ApplicationID,
-                    SubDepartmentForCommentID = comment.SubDepartmentForCommentID,
-                    CommentStatus = comment.CommentStatus,
-                    DateCreated = comment.DateCreated,
-                    DateUpdated = comment.DateUpdated,
-                    CreatedById = comment.CreatedById,
-                    SubDepartmentID = comment.SubDepartmentID,
-                    SubDepartmentName = comment.SubDepartmentName,
-                    isClarifyCommentID = comment.isClarifyCommentID,
-                    isApplicantReplay = comment.isApplicantReplay,
-                    UserName = comment.UserName,
-                    ZoneName = comment.ZoneName,
+                Comment = comment.Comment,
+                ApplicationID = comment.ApplicationID,
+                SubDepartmentForCommentID = comment.SubDepartmentForCommentID,
+                CommentStatus = comment.CommentStatus,
+                DateCreated = comment.DateCreated,
+                DateUpdated = comment.DateUpdated,
+                CreatedById = comment.CreatedById,
+                SubDepartmentID = comment.SubDepartmentID,
+                SubDepartmentName = comment.SubDepartmentName,
+                isClarifyCommentID = comment.isClarifyCommentID,
+                isApplicantReplay = comment.isApplicantReplay,
+                UserName = comment.UserName,
+                ZoneName = comment.ZoneName,
                 CanReplyUserID = comment.CanReplyUserID,//Clarifications Alerts Kyle 
             }
                 ).ToListAsync();

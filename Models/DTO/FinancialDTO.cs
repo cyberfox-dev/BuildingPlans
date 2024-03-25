@@ -1,7 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using WayleaveManagementSystem.Data.Entities;
+﻿using BuildingPlans.Data.Entities;
 
-namespace WayleaveManagementSystem.DTO
+namespace BuildingPlans.DTO
 {
     public class FinancialDTO : BaseEntity
     {
@@ -17,5 +16,5 @@ namespace WayleaveManagementSystem.DTO
 
     }
 }
-   
+
 

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WayleaveManagementSystem.Data.Entities
+namespace BuildingPlans.Data.Entities
 {
     public class AccessGroupRoleLink : BaseEntity
     {
@@ -10,7 +10,7 @@ namespace WayleaveManagementSystem.Data.Entities
         public int? RoleID { get; set; }
         public string? RoleName { get; set; }
 
-         
+
 
     }
 }

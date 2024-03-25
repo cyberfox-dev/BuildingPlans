@@ -1,16 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.DTO;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.Data.Migrations;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.Service;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -19,9 +15,9 @@ namespace WayleaveManagementSystem.Controllers
 
         private readonly AppDBContext _context;
 
-        public MandatoryDocumentStageLinkController( AppDBContext context)
+        public MandatoryDocumentStageLinkController(AppDBContext context)
         {
-      
+
             _context = context;
         }
         [HttpPost("AddUpdateMandatoryDocumentStageLink")]
@@ -121,38 +117,38 @@ namespace WayleaveManagementSystem.Controllers
         [HttpGet("GetAllMandatoryDocumentStageLink")]
         public async Task<object> GetAllMandatoryDocumentStageLink()
         {
-             try
-             {
+            try
+            {
 
-               var result = await (from MandatoryDocumentStageLink in _context.MandatoryDocumentStageLink
-                              where MandatoryDocumentStageLink.isActive == true
-                              select new MandatoryDocumentStageLinkDTO()
-                              {
-                                  MandatoryDocumentStageLinkID = MandatoryDocumentStageLink.MandatoryDocumentStageLinkID,
-                                  MandatoryDocumentID = MandatoryDocumentStageLink.MandatoryDocumentID,
-                                  StageID = MandatoryDocumentStageLink.StageID,
-                                  StageName = MandatoryDocumentStageLink.StageName,
-                                  CreatedById = MandatoryDocumentStageLink.CreatedById,
-                                  DateCreated = DateTime.Now,
-                                  DateUpdated = DateTime.Now,
-                                  isActive = MandatoryDocumentStageLink.isActive,
-
-
-
-                              }).ToListAsync();
-
-                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Mandatory Document Links ", result));
-                 
+                var result = await (from MandatoryDocumentStageLink in _context.MandatoryDocumentStageLink
+                                    where MandatoryDocumentStageLink.isActive == true
+                                    select new MandatoryDocumentStageLinkDTO()
+                                    {
+                                        MandatoryDocumentStageLinkID = MandatoryDocumentStageLink.MandatoryDocumentStageLinkID,
+                                        MandatoryDocumentID = MandatoryDocumentStageLink.MandatoryDocumentID,
+                                        StageID = MandatoryDocumentStageLink.StageID,
+                                        StageName = MandatoryDocumentStageLink.StageName,
+                                        CreatedById = MandatoryDocumentStageLink.CreatedById,
+                                        DateCreated = DateTime.Now,
+                                        DateUpdated = DateTime.Now,
+                                        isActive = MandatoryDocumentStageLink.isActive,
 
 
-             }
-             catch (Exception ex)
-             {
+
+                                    }).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Mandatory Document Links ", result));
 
 
-                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
 
-             }
+            }
+            catch (Exception ex)
+            {
+
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
 
 
         }
@@ -167,7 +163,7 @@ namespace WayleaveManagementSystem.Controllers
             {
 
                 var result = await (from MandatoryDocumentStageLink in _context.MandatoryDocumentStageLink
-                                    where MandatoryDocumentStageLink.MandatoryDocumentID == mandatoryDocumentID && MandatoryDocumentStageLink.isActive == true 
+                                    where MandatoryDocumentStageLink.MandatoryDocumentID == mandatoryDocumentID && MandatoryDocumentStageLink.isActive == true
                                     select new MandatoryDocumentStageLinkDTO()
                                     {
                                         MandatoryDocumentStageLinkID = MandatoryDocumentStageLink.MandatoryDocumentStageLinkID,

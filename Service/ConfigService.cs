@@ -1,13 +1,10 @@
-﻿using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.IServices;
-using System.Linq;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.DTO;
+using BuildingPlans.IServices;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models.DTO;
 
-namespace WayleaveManagementSystem.Service
+namespace BuildingPlans.Service
 {
     public class ConfigService : IConfigService
     {
@@ -141,7 +138,7 @@ namespace WayleaveManagementSystem.Service
                 from config in _context.Config
                 where config.ConfigName == configName && config.isActive == true
                 //Banner Kyle
-                orderby config.DateCreated 
+                orderby config.DateCreated
                 ascending
                 select new ConfigDTO()
                 {

@@ -1,16 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BuildingPlans.Data;
+using BuildingPlans.IServices;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.BindingModel.ForGetByIDModels;
+using BuildingPlans.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Data;
-using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
-using System;
-using Microsoft.Extensions.Localization;
-using WayleaveManagementSystem.Models.DTO;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -543,7 +539,8 @@ namespace WayleaveManagementSystem.Controllers
         }
         #region zxNum-and-contractorAccount Sindiswa 28 February 2024
         [HttpPost("AddUpdateZXNumbers")]
-        public async Task<object> AddUpdateZXNumbers([FromBody] ApplicationsBindingModel model){
+        public async Task<object> AddUpdateZXNumbers([FromBody] ApplicationsBindingModel model)
+        {
 
             try
             {
@@ -630,17 +627,17 @@ namespace WayleaveManagementSystem.Controllers
         {
             try
             {
-                if(model.ExpectedStartDate == null || model.ExpectedEndDate == null)
+                if (model.ExpectedStartDate == null || model.ExpectedEndDate == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
-                    var result = await _applicationsService.GetApplicationsWithinDateRange(model.ExpectedStartDate,model.ExpectedEndDate);
+                    var result = await _applicationsService.GetApplicationsWithinDateRange(model.ExpectedStartDate, model.ExpectedEndDate);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Applications within time range", result));
                 }
             }
-           
+
             catch (Exception ex)
             {
 

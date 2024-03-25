@@ -1,17 +1,16 @@
-﻿using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.Models.DTO;
+﻿using BuildingPlans.Data.Entities;
+using BuildingPlans.Models.DTO;
 
-namespace WayleaveManagementSystem.IServices
+namespace BuildingPlans.IServices
 {
     public interface IZonesServices
     {
         //Task<Zones> - This is the return type so its going to ruturn it in the fromt of the Zones model
-         public Task<Zones> AddUpdateZones(int? ZoneID, string ZoneName, int DepartmentID, int SubDepartmentID,string? createdById);
+        public Task<Zones> AddUpdateZones(int? ZoneID, string ZoneName, int DepartmentID, int SubDepartmentID, string? createdById);
         //this will return T/F 
-         public Task<bool> DeleteZone(int ZoneID);
+        public Task<bool> DeleteZone(int ZoneID);
 
-         public Task<List<ZonesDTO>> GetAllZones();
+        public Task<List<ZonesDTO>> GetAllZones();
 
         Task<List<ZonesDTO>> GetZoneBySubDepartmentID(int subDepartmentID);
         Task<List<ZonesDTO>> GetZoneByZoneID(int zoneID);

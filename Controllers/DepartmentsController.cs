@@ -1,16 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Service;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.Models.DTO;
+﻿using BuildingPlans.IServices;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.DTO;
+using Microsoft.AspNetCore.Mvc;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DepartmentsController: ControllerBase
+    public class DepartmentsController : ControllerBase
     {
 
         private readonly IDepartmentsService _departmentsService;
@@ -33,7 +31,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _departmentsService.AddUpdateDepartments(model.DepartmentID, model.DepartmentName,model.hasSubDepartment ,model.CreatedById, /*zxNumberUpdate Sindiswa 01 March 2024*/model.needsZXNumber);
+                    var result = await _departmentsService.AddUpdateDepartments(model.DepartmentID, model.DepartmentName, model.hasSubDepartment, model.CreatedById, /*zxNumberUpdate Sindiswa 01 March 2024*/model.needsZXNumber);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.DepartmentID > 0 ? "Department Updated Successfully" : "Department Added Successfully"), result));
                 }
 
@@ -124,11 +122,11 @@ namespace WayleaveManagementSystem.Controllers
         {
             try
             {
-                  // Assuming you have a service method to count departments with true needsZXNumber
-                    var count = await _departmentsService.CountDepartmentsThatNeedZXNumber();
+                // Assuming you have a service method to count departments with true needsZXNumber
+                var count = await _departmentsService.CountDepartmentsThatNeedZXNumber();
 
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got the number of Departments that need ZX Number", count));
-                
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got the number of Departments that need ZX Number", count));
+
             }
             catch (Exception ex)
             {

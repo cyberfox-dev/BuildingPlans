@@ -1,29 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
 using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Service;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.DTO;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using WayleaveManagementSystem.BindingModel;
-using WayleaveManagementSystem.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Data;
-using System.Threading.Tasks;
-using System;
-using System.Linq;
 using System.Data;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -78,16 +61,16 @@ namespace WayleaveManagementSystem.Controllers
                     }
                     else
                     {
-                        if(model.TypeOfExcavationName != null)
+                        if (model.TypeOfExcavationName != null)
                         {
                             tempTypesOfExcavation.TypeOfExcavationName = model.TypeOfExcavationName;
                         }
-                        if(model.TypeOfExcavationDescription != null)
+                        if (model.TypeOfExcavationDescription != null)
                         {
                             tempTypesOfExcavation.TypeOfExcavationDescription = model.TypeOfExcavationDescription;
                         }
-                       
-                      
+
+
                         tempTypesOfExcavation.DateUpdated = DateTime.Now;
 
                         _context.Update(tempTypesOfExcavation);

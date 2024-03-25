@@ -1,18 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.DTO;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Security.Policy;
-using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.Service;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -76,7 +70,7 @@ namespace WayleaveManagementSystem.Controllers
                         tempZoneForCommentTable.ZoneID = model.ZoneID;
                         tempZoneForCommentTable.DateUpdated = DateTime.Now;
                         tempZoneForCommentTable.isActive = true;
-                        
+
 
                         _context.Update(tempZoneForCommentTable);
                         await _context.SaveChangesAsync();
@@ -104,16 +98,16 @@ namespace WayleaveManagementSystem.Controllers
                 var tempZoneForCommentTable = _context.ZoneForComment.FirstOrDefault(x => x.ZoneForCommentID == zoneForCommentID);
 
                 if (tempZoneForCommentTable == null)
-                    {
-                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", false));
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", false));
 
-                    }
-                    else
-                    {
+                }
+                else
+                {
                     tempZoneForCommentTable.DateUpdated = DateTime.Now;
                     tempZoneForCommentTable.isActive = false;
-                        _context.Update(tempZoneForCommentTable);
-                        await _context.SaveChangesAsync();
+                    _context.Update(tempZoneForCommentTable);
+                    await _context.SaveChangesAsync();
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Zone Link Deleted Successfully", true));
                 }
 
@@ -170,7 +164,7 @@ namespace WayleaveManagementSystem.Controllers
                 ZoneForCommentID = zoneForComment.ZoneForCommentID,
                 ApplicationID = zoneForComment.ApplicationID,
                 SubDepartmentID = zoneForComment.SubDepartmentID,
-                SubDepartmentName = subDepartment.SubDepartmentName, 
+                SubDepartmentName = subDepartment.SubDepartmentName,
                 ZoneID = zoneForComment.ZoneID,
                 ZoneName = zoneForComment.ZoneName,
                 CreatedById = zoneForComment.CreatedById,
@@ -184,7 +178,7 @@ namespace WayleaveManagementSystem.Controllers
 
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Linked Zones", result));
                 }
-               
+
 
 
 
@@ -198,7 +192,7 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-        
+
 
     }
 }

@@ -592,7 +592,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="WayleaveManagementSystem.sln" />
+    <None Include="BuildingPlans.sln" />
   </ItemGroup>
 
   <ItemGroup>

@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using WayleaveManagementSystem.Data;
+using BuildingPlans.Data;
 
 #nullable disable
 
-namespace WayleaveManagementSystem.Data.Migrations
+namespace BuildingPlans.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
     [Migration("20221207064405_ProfessionalsLinks")]
@@ -157,7 +157,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Applications", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.Applications", b =>
                 {
                     b.Property<int?>("ApplicationID")
                         .ValueGeneratedOnAdd()
@@ -236,7 +236,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("Application");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.AppUser", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.AppUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -311,7 +311,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Departments", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.Departments", b =>
                 {
                     b.Property<int>("DepartmentID")
                         .ValueGeneratedOnAdd()
@@ -340,7 +340,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("DepartmentsTable");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Professionals", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.Professionals", b =>
                 {
                     b.Property<int>("ProfessinalID")
                         .ValueGeneratedOnAdd()
@@ -404,7 +404,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("ProfessionalsTable");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.ProfessionalsLinks", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.ProfessionalsLinks", b =>
                 {
                     b.Property<int?>("ProfessionalsLinkID")
                         .ValueGeneratedOnAdd()
@@ -435,7 +435,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("ProfessionalsLink");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Roles", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.Roles", b =>
                 {
                     b.Property<int>("RoleID")
                         .ValueGeneratedOnAdd()
@@ -469,7 +469,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("Role");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Stages", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.Stages", b =>
                 {
                     b.Property<int?>("StageID")
                         .ValueGeneratedOnAdd()
@@ -500,7 +500,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("StageTable");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.SubDepartments", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.SubDepartments", b =>
                 {
                     b.Property<int?>("SubDepartmentID")
                         .ValueGeneratedOnAdd()
@@ -531,7 +531,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("SubDepartmentsTable");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.UserProfile", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.UserProfile", b =>
                 {
                     b.Property<int?>("UserProfileID")
                         .ValueGeneratedOnAdd()
@@ -610,7 +610,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("UserProfilesTable");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.ZoneLink", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.ZoneLink", b =>
                 {
                     b.Property<int?>("ZoneLinkID")
                         .ValueGeneratedOnAdd()
@@ -650,7 +650,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("ZoneLinkTable");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Zones", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.Zones", b =>
                 {
                     b.Property<int?>("ZoneID")
                         .ValueGeneratedOnAdd()
@@ -725,7 +725,7 @@ namespace WayleaveManagementSystem.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("WayleaveManagementSystem.Data.Entities.AppUser", null)
+                    b.HasOne("BuildingPlans.Data.Entities.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -734,7 +734,7 @@ namespace WayleaveManagementSystem.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("WayleaveManagementSystem.Data.Entities.AppUser", null)
+                    b.HasOne("BuildingPlans.Data.Entities.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -749,7 +749,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WayleaveManagementSystem.Data.Entities.AppUser", null)
+                    b.HasOne("BuildingPlans.Data.Entities.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -758,16 +758,16 @@ namespace WayleaveManagementSystem.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("WayleaveManagementSystem.Data.Entities.AppUser", null)
+                    b.HasOne("BuildingPlans.Data.Entities.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Professionals", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.Professionals", b =>
                 {
-                    b.HasOne("WayleaveManagementSystem.Data.Entities.AppUser", "AppUser")
+                    b.HasOne("BuildingPlans.Data.Entities.AppUser", "AppUser")
                         .WithMany("Professionals")
                         .HasForeignKey("AppUserID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -776,7 +776,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.Navigation("AppUser");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.AppUser", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.AppUser", b =>
                 {
                     b.Navigation("Professionals");
                 });

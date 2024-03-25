@@ -1,4 +1,4 @@
-﻿namespace WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels
+﻿namespace BuildingPlans.Models.BindingModel.ForGetByIDModels
 {
     public class GetApplicationsSP
     {

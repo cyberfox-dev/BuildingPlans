@@ -1,11 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Security.Policy;
-using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.DTO;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.IServices;
+using BuildingPlans.Models.DTO;
+using Microsoft.EntityFrameworkCore;
 
-namespace WayleaveManagementSystem.Service
+namespace BuildingPlans.Service
 {
     public class ZonesServices : IZonesServices
     {
@@ -31,14 +30,14 @@ namespace WayleaveManagementSystem.Service
                 {
                     ZoneID = ZoneID,
                     ZoneName = ZoneName,
-                    DepartmentID = DepartmentID,    
-                    SubDepartmentID = SubDepartmentID,  
+                    DepartmentID = DepartmentID,
+                    SubDepartmentID = SubDepartmentID,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     CreatedById = createdById,
                     isActive = true
                 };
-                
+
                 await _context.ZonesTable.AddAsync(tempZonesTable);
                 await _context.SaveChangesAsync();
 
@@ -81,7 +80,7 @@ namespace WayleaveManagementSystem.Service
         {
             return await (
                 from Zones in _context.ZonesTable
-                //where Zones.ZoneID == ZoneID && Zones.isActive == true
+                    //where Zones.ZoneID == ZoneID && Zones.isActive == true
                 select new ZonesDTO()
                 {
                     ZoneID = Zones.ZoneID,

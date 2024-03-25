@@ -1,15 +1,10 @@
-﻿using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.IServices;
-using System.Linq;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.DTO;
+using BuildingPlans.IServices;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Models.BindingModel;
-using System;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.Data.Migrations;
 
-namespace WayleaveManagementSystem.Service
+namespace BuildingPlans.Service
 {
     public class MandatoryDocumentUploadsService : IMandatoryDocumentUploadsService
     {
@@ -57,15 +52,15 @@ namespace WayleaveManagementSystem.Service
                 if (mandatoryDocumentName != null)
                 {
                     tempMandatoryDocumentTable.MandatoryDocumentName = mandatoryDocumentName;
-                }  
+                }
                 if (mandatoryDocumentCategory != null)
                 {
                     tempMandatoryDocumentTable.MandatoryDocumentCategory = mandatoryDocumentCategory;
-                }  
-             
-                    tempMandatoryDocumentTable.DateUpdated = DateTime.Now;
-    
-  
+                }
+
+                tempMandatoryDocumentTable.DateUpdated = DateTime.Now;
+
+
                 _context.Update(tempMandatoryDocumentTable);
                 await _context.SaveChangesAsync();
                 return tempMandatoryDocumentTable;
@@ -121,7 +116,7 @@ namespace WayleaveManagementSystem.Service
                 }
                 ).ToListAsync();
         }
-      
+
         public async Task<List<MandatoryDocumentUploadDTO>> GetAllByMandatoryDocumentCategory(string? mandatoryDocumentCategory)
         {
             return await (
@@ -167,7 +162,7 @@ namespace WayleaveManagementSystem.Service
                  ).ToListAsync();
         }
 
-        public async Task<List<MandatoryDocumentUploadDTO>>GetAllMandatoryDocumentsLinkedToStage(string? stageName)
+        public async Task<List<MandatoryDocumentUploadDTO>> GetAllMandatoryDocumentsLinkedToStage(string? stageName)
         {
             var doc = await (
                 from document in _context.MandatoryDocumentStageLink
@@ -193,6 +188,6 @@ namespace WayleaveManagementSystem.Service
 
             return result;
         }
-                
+
     }
 }

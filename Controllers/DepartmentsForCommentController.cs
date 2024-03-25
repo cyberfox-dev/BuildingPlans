@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Service;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.Models.DTO;
+﻿using BuildingPlans.IServices;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.DTO;
+using Microsoft.AspNetCore.Mvc;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -33,7 +31,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _departmentsService.AddUpdateDepartments(model.DepartmentID, model.DepartmentName,model.hasSubDepartment ,model.CreatedById,/*zxNumberUpdate Sindiswa 01 March 2024 - didn't realise this existed*/ model.needsZXNumber);
+                    var result = await _departmentsService.AddUpdateDepartments(model.DepartmentID, model.DepartmentName, model.hasSubDepartment, model.CreatedById,/*zxNumberUpdate Sindiswa 01 March 2024 - didn't realise this existed*/ model.needsZXNumber);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.DepartmentID > 0 ? "Department Updated Successfully" : "Department Added Successfully"), result));
                 }
 

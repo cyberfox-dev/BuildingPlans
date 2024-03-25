@@ -1,30 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BuildingPlans.Data;
+using BuildingPlans.IServices;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.BindingModel.ForGetByIDModels;
 using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Service;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.DTO;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using WayleaveManagementSystem.BindingModel;
-using WayleaveManagementSystem.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Data;
-using System.Threading.Tasks;
-using System;
-using System.Linq;
 using System.Data;
-using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -50,7 +33,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _zonesLinkingServices.AddUpdateZoneLink(model.ZoneLinkID,model.ZoneID , model.ZoneName , model.DepartmentID, model.SubDepartmentID, model.SubDepartmentName , model.AssignedUserID, model.UserType,model.CreatedById, model.isDepartmentAdmin, model.isZoneAdmin, model.AccessGroupUserLinkID, model.AccessGroupName);
+                    var result = await _zonesLinkingServices.AddUpdateZoneLink(model.ZoneLinkID, model.ZoneID, model.ZoneName, model.DepartmentID, model.SubDepartmentID, model.SubDepartmentName, model.AssignedUserID, model.UserType, model.CreatedById, model.isDepartmentAdmin, model.isZoneAdmin, model.AccessGroupUserLinkID, model.AccessGroupName);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.ZoneLinkID > 0 ? "Zone Link Updated Successfully" : "User Linked Successfully"), result));
                 }
             }
@@ -107,8 +90,8 @@ namespace WayleaveManagementSystem.Controllers
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
 
             }
-        }   
-        
+        }
+
         [HttpPost("GetAllUserLinks")]
         public async Task<object> GetAllUserLinks([FromBody] ZoneLinkBindingModel model)
         {
@@ -127,8 +110,8 @@ namespace WayleaveManagementSystem.Controllers
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
 
             }
-        }  
-        
+        }
+
         [HttpPost("GetBySubAndUserID")]
         public async Task<object> GetBySubAndUserID([FromBody] ZoneLinkBindingModel model)
         {
@@ -143,7 +126,7 @@ namespace WayleaveManagementSystem.Controllers
                     var result = await _zonesLinkingServices.GetBySubAndUserID((int)model.SubDepartmentID, model.AssignedUserID);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Zone Link List Created", result));
                 }
-                
+
 
 
 

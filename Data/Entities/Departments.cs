@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WayleaveManagementSystem.Data.Entities
+namespace BuildingPlans.Data.Entities
 {
-    public class Departments:BaseEntity
+    public class Departments : BaseEntity
     {
         [Key]
         public int DepartmentID { get; set; }

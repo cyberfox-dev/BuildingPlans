@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WayleaveManagementSystem.Data.Entities
+namespace BuildingPlans.Data.Entities
 {
-    public class Zones:BaseEntity
+    public class Zones : BaseEntity
     {
         [Key]
         public int? ZoneID { get; set; }

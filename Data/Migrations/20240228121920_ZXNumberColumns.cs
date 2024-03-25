@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace WayleaveManagementSystem.Data.Migrations
+namespace BuildingPlans.Data.Migrations
 {
     public partial class ZXNumberColumns : Migration
     {
@@ -35,13 +35,13 @@ namespace WayleaveManagementSystem.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-/*            migrationBuilder.DropColumn(
-                name: "RIMZXNumber",
-                table: "ApplicationListDTO");
+            /*            migrationBuilder.DropColumn(
+                            name: "RIMZXNumber",
+                            table: "ApplicationListDTO");
 
-            migrationBuilder.DropColumn(
-                name: "WaterZXNumber",
-                table: "ApplicationListDTO");*/
+                        migrationBuilder.DropColumn(
+                            name: "WaterZXNumber",
+                            table: "ApplicationListDTO");*/
 
             migrationBuilder.DropColumn(
                 name: "RIMZXNumber",

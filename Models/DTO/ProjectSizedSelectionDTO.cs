@@ -1,4 +1,4 @@
-﻿namespace WayleaveManagementSystem.Models.DTO
+﻿namespace BuildingPlans.Models.DTO
 {
     public class ProjectSizedSelectionDTO
     {
@@ -8,6 +8,6 @@
         public string? SelectedProject { get; set; }
         public string? ProjectDescription { get; set; }
         public DateTime? DateCreated { get; set; }
-        public string? CreatedById {  get; set; }
+        public string? CreatedById { get; set; }
     }
 }

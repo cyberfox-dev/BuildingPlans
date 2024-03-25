@@ -1,14 +1,10 @@
-﻿using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.IServices;
-using System.Linq;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.DTO;
+using BuildingPlans.IServices;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Models.BindingModel;
-using System;
-using WayleaveManagementSystem.Models.DTO;
 
-namespace WayleaveManagementSystem.Service
+namespace BuildingPlans.Service
 {
     public class GLCodeService : IGLCodeService
     {
@@ -26,7 +22,7 @@ namespace WayleaveManagementSystem.Service
             {
                 glCodeID = null;
             }
-  
+
             var tempGLCodeTable = _context.GLCode.FirstOrDefault(x => x.GLCodeID == glCodeID);
 
 
@@ -43,14 +39,14 @@ namespace WayleaveManagementSystem.Service
                     isActive = true
                 };
 
-     
+
                 await _context.GLCode.AddAsync(tempGLCodeTable);
                 await _context.SaveChangesAsync();
 
                 return tempGLCodeTable;
 
             }
-            else 
+            else
             {
                 tempGLCodeTable.GLCodeName = glCodeName;
                 tempGLCodeTable.ProfitCenter = profitCenter;
@@ -69,7 +65,7 @@ namespace WayleaveManagementSystem.Service
 
         public async Task<bool> DeleteGLCode(int glCodeID)
         {
-   
+
             var tempGLCodeTable = _context.GLCode.FirstOrDefault(x => x.GLCodeID == glCodeID);
 
             if (tempGLCodeTable == null)

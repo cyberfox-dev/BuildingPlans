@@ -1,29 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.DTO;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Service;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.DTO;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using WayleaveManagementSystem.BindingModel;
-using WayleaveManagementSystem.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Data;
-using System.Threading.Tasks;
-using System;
-using System.Linq;
 using System.Data;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -186,7 +171,7 @@ namespace WayleaveManagementSystem.Controllers
                         {
                             AccessGroupID = model.AccessGroupID,
                             RoleID = model.RoleID,
-                             RoleName = model.RoleName,
+                            RoleName = model.RoleName,
                             CreatedById = model.CreatedById,
                             DateCreated = DateTime.Now,
                             DateUpdated = DateTime.Now,
@@ -390,7 +375,7 @@ namespace WayleaveManagementSystem.Controllers
         }
 
         [HttpGet("GetAllAccessGroupRoles")]
-        public async Task<object> GetAllAccessGroupRoles()                                                       
+        public async Task<object> GetAllAccessGroupRoles()
         {
             try
             {
@@ -413,7 +398,7 @@ namespace WayleaveManagementSystem.Controllers
                 ).ToListAsync();
 
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Service Items", result));
-          }
+            }
             catch (Exception ex)
             {
 
@@ -483,7 +468,7 @@ namespace WayleaveManagementSystem.Controllers
                             RoleName = r.RoleName,
                             // Add additional properties as required
                             // ...
-                            
+
                         })
                         .FirstOrDefaultAsync();
 
@@ -675,7 +660,7 @@ namespace WayleaveManagementSystem.Controllers
 
                 var result = await (
                     from role in _context.Role
-                    where role.isActive == true  && !RoleIDs.Contains(role.RoleID)
+                    where role.isActive == true && !RoleIDs.Contains(role.RoleID)
                     select new RolesDTO()
                     {
                         RoleID = role.RoleID,
@@ -717,17 +702,17 @@ namespace WayleaveManagementSystem.Controllers
                 var result = await (
                     from role in _context.Role
                     where role.isActive == true && RoleIDs.Contains(role.RoleID)
-                  
-                  select new RolesDTO()
-                  {
-                      RoleID = role.RoleID,
-                      RoleName = role.RoleName,
-                      RoleType = role.RoleType,
-                      RoleDescription = role.RoleDescription,
-                      DateCreated = role.DateCreated,
-                      DateUpdated = role.DateUpdated,
-                      CreatedById = role.CreatedById,
-                  }
+
+                    select new RolesDTO()
+                    {
+                        RoleID = role.RoleID,
+                        RoleName = role.RoleName,
+                        RoleType = role.RoleType,
+                        RoleDescription = role.RoleDescription,
+                        DateCreated = role.DateCreated,
+                        DateUpdated = role.DateUpdated,
+                        CreatedById = role.CreatedById,
+                    }
                 ).ToListAsync();
 
 
@@ -826,10 +811,10 @@ namespace WayleaveManagementSystem.Controllers
       where accessGroups.AccessGroupName == model.AccessGroupName
       select accessGroups.AccessGroupID).ToListAsync();
 
-          //      var RoleIDs = await (
-          //from accessGroupUserLink in _context.AccessGroupRoleLink
-          //where accessGroupUserLink.AccessGroupID == AgID[0]
-          //select accessGroupUserLink.RoleID).ToListAsync();
+                //      var RoleIDs = await (
+                //from accessGroupUserLink in _context.AccessGroupRoleLink
+                //where accessGroupUserLink.AccessGroupID == AgID[0]
+                //select accessGroupUserLink.RoleID).ToListAsync();
 
                 var UserID = await (
       from accessGroupUserLink in _context.AccessGroupUserLink
@@ -844,8 +829,8 @@ namespace WayleaveManagementSystem.Controllers
                     select new UserProfileDTO()
                     {
                         UserID = userProfile.UserID,
-                       // SubDepartmentID = userProfile.SubDepartmentID,
-                        
+                        // SubDepartmentID = userProfile.SubDepartmentID,
+
                     }
                 ).ToListAsync();
 
@@ -878,7 +863,7 @@ namespace WayleaveManagementSystem.Controllers
                     from sdtItem in sdt.DefaultIfEmpty()
                     where accessGroups.AccessGroupName == model.AccessGroupName && sdtItem.SubDepartmentID == model.SubDepartmentID
                     select new UserProfileDTO()
-                                        {
+                    {
                         UserID = upItem.UserID,
                         FullName = upItem.FullName,
                         Email = upItem.Email,

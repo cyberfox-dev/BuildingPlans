@@ -1,9 +1,9 @@
-﻿namespace WayleaveManagementSystem.DTO
+﻿namespace BuildingPlans.DTO
 {
     // DTO - Data Trasfer Object
     public class UserDTO
     {
-        public UserDTO(string? fullName, string email, string userName, DateTime dateCreated , string appUserId)
+        public UserDTO(string? fullName, string email, string userName, DateTime dateCreated, string appUserId)
         {
             FullName = fullName;
             Email = email;

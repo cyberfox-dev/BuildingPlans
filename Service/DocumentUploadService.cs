@@ -1,13 +1,10 @@
-﻿using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.IServices;
-using System.Linq;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.DTO;
+using BuildingPlans.IServices;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Data.Migrations;
 
-namespace WayleaveManagementSystem.Service
+namespace BuildingPlans.Service
 {
     public class DocumentUploadService : IDocumentUploadService
     {
@@ -243,7 +240,7 @@ namespace WayleaveManagementSystem.Service
             return documentUploadDTO;
         }
 
-       
+
     }
 
 }

@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "WayleaveManagementSystem": {
+    "BuildingPlans": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -73,10 +73,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "WayleaveManagementSystem:build:production"
+              "browserTarget": "BuildingPlans:build:production"
             },
             "development": {
-              "browserTarget": "WayleaveManagementSystem:build:development",
+              "browserTarget": "BuildingPlans:build:development",
               "proxyConfig": "proxy.conf.js"
             }
           },
@@ -85,7 +85,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "WayleaveManagementSystem:build"
+            "browserTarget": "BuildingPlans:build"
           }
         },
         "test": {
@@ -108,18 +108,10 @@
           "builder": "@angular-devkit/build-angular:server",
           "options": {
             "outputPath": "dist-server",
-            "main": "src/main.ts",
+            "main": "src/main.server.ts",
             "tsConfig": "tsconfig.server.json"
           },
           "configurations": {
-            "dev": {
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": true
-            },
             "production": {
               "optimization": true,
               "outputHashing": "all",
@@ -127,6 +119,14 @@
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false
+            },
+            "development": {
+              "optimization": false,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "namedChunks": true,
+              "extractLicenses": false,
+              "vendorChunk": true
             }
           }
         }

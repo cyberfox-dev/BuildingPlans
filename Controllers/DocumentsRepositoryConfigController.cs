@@ -1,29 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Service;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.DTO;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using WayleaveManagementSystem.BindingModel;
-using WayleaveManagementSystem.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Data;
-using System.Threading.Tasks;
-using System;
-using System.Linq;
 using System.Data;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -108,7 +92,7 @@ namespace WayleaveManagementSystem.Controllers
                     DateCreated = documentsRepository.DateCreated,
                     DateUpdated = documentsRepository.DateUpdated,
                     isActive = documentsRepository.isActive,
-                   
+
                 }
                 ).ToListAsync();
 
@@ -161,7 +145,7 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
         [HttpPost("GetDocumentCategoryByDepartmentID")]
-        public async Task<object> GetDocumentCategoryByDepartmentID([FromBody]  int departmentID)
+        public async Task<object> GetDocumentCategoryByDepartmentID([FromBody] int departmentID)
         {
             try
             {
@@ -173,7 +157,7 @@ namespace WayleaveManagementSystem.Controllers
                                         DocumentsCategory = documentRepository.DocumentsCategory,
                                         DepartmentID = documentRepository.DepartmentID,
                                         DocumentsRepositoryID = documentRepository.DocumentsRepositoryID,
-                                        DateCreated = documentRepository.DateCreated, 
+                                        DateCreated = documentRepository.DateCreated,
                                         DateUpdated = documentRepository.DateUpdated,
                                         isActive = documentRepository.isActive,
                                     }).ToListAsync();

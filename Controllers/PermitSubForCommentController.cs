@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.DTO;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models.DTO;
 
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -60,7 +59,7 @@ namespace WayleaveManagementSystem.Controllers
                             ZoneName = model.ZoneName,
 
                             #region permitupload Sindiswa 08 January 2024 - for the purpose of uploading documents under the "Permits" tab
-                            DocumentLocalPath =  model.DocumentLocalPath,
+                            DocumentLocalPath = model.DocumentLocalPath,
                             PermitDocName = model.PermitDocName,
                             #endregion
 
@@ -126,20 +125,20 @@ namespace WayleaveManagementSystem.Controllers
                             tempPermitSubForComment.PermitDocName = model.PermitDocName;
                         }
 
-                        if(model.RequestForDelete != null)
+                        if (model.RequestForDelete != null)
                         {
                             tempPermitSubForComment.RequestForDelete = model.RequestForDelete;
                         }
 
-                        if(model.isPaid != null)
+                        if (model.isPaid != null)
                         {
                             tempPermitSubForComment.isPaid = model.isPaid;
                         }
-                        if(model.hasSuperVisionFee != null)
+                        if (model.hasSuperVisionFee != null)
                         {
                             tempPermitSubForComment.hasSuperVisionFee = model.hasSuperVisionFee;
                         }
-                        if(model.MoveToPaidDate != null)
+                        if (model.MoveToPaidDate != null)
                         {
                             tempPermitSubForComment.MoveToPaidDate = model.MoveToPaidDate;
                         }
@@ -329,7 +328,8 @@ namespace WayleaveManagementSystem.Controllers
 
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All PermitSubForComment By ID", result));
                 }
-                else { 
+                else
+                {
                     var result = await (
                 from permitSubForComment in _context.PermitSubForComment
                 where permitSubForComment.ApplicationID == model.ApplicationID && permitSubForComment.isActive == true && permitSubForComment.SubDepartmentID == model.SubDepartmentID
@@ -354,7 +354,7 @@ namespace WayleaveManagementSystem.Controllers
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All PermitSubForComment By ID", result));
                 }
 
-               
+
 
             }
             catch (Exception ex)
@@ -393,7 +393,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
@@ -406,7 +406,7 @@ namespace WayleaveManagementSystem.Controllers
         {
             try
             {
-                var tempPermitSubForComment = _context.PermitSubForComment.FirstOrDefault(x => x.PermitSubForCommentID == model.PermitSubForCommentID && x.ApplicationID == model.ApplicationID );
+                var tempPermitSubForComment = _context.PermitSubForComment.FirstOrDefault(x => x.PermitSubForCommentID == model.PermitSubForCommentID && x.ApplicationID == model.ApplicationID);
 
                 if (tempPermitSubForComment == null)
                 {
@@ -419,7 +419,8 @@ namespace WayleaveManagementSystem.Controllers
                     var dbPath = tempPermitSubForComment.DocumentLocalPath;
 
                     var fullPath = Path.Combine(Directory.GetCurrentDirectory(), dbPath);
-                    if (System.IO.File.Exists(fullPath)) {
+                    if (System.IO.File.Exists(fullPath))
+                    {
                         System.IO.File.Delete(fullPath);
                     }
 
@@ -440,7 +441,7 @@ namespace WayleaveManagementSystem.Controllers
             }
 
         }
-     
+
         [HttpGet("GetAllRequestsForDelete")]
         public async Task<object> GetAllRequestsForDelete()
         {

@@ -1,16 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.DTO;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Policy;
-using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.Service;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -51,9 +47,9 @@ namespace WayleaveManagementSystem.Controllers
                             FAQID = model.FAQID,
                             Question = model.Question,
                             Answer = model.Answer,
-                            CreatedById = model.CreatedByID,  
+                            CreatedById = model.CreatedByID,
                             DateCreated = DateTime.Now,
-                            DateUpdated = DateTime.Now, 
+                            DateUpdated = DateTime.Now,
                             isActive = true
                         };
 
@@ -132,13 +128,13 @@ namespace WayleaveManagementSystem.Controllers
                where faq.isActive == true
                select new FAQDTO()
                {
-                FAQID = faq.FAQID,
-                Question = faq.Question,
-                Answer = faq.Answer,
-                isActive = faq.isActive,
-                CreatedById = faq.CreatedById,  
-                DateCreated = faq.DateCreated,
-                DateUpdated = faq.DateUpdated,
+                   FAQID = faq.FAQID,
+                   Question = faq.Question,
+                   Answer = faq.Answer,
+                   isActive = faq.isActive,
+                   CreatedById = faq.CreatedById,
+                   DateCreated = faq.DateCreated,
+                   DateUpdated = faq.DateUpdated,
 
                }
                ).ToListAsync();
@@ -158,5 +154,5 @@ namespace WayleaveManagementSystem.Controllers
 
     }
 
- 
+
 }

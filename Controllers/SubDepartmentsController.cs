@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Service;
+﻿using BuildingPlans.IServices;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.BindingModel.ForGetByIDModels;
+using Microsoft.AspNetCore.Mvc;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -31,7 +30,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _subDepartmentService.AddUpdateSubDepartments(model.SubDepartmentID, model.SubDepartmentName, model.DepartmentID, model.CreatedById, model.ProfitCenter,  model.GlCode , model.PermitExpiration,model.WayleaveExpiration, model.needsZXNumber);
+                    var result = await _subDepartmentService.AddUpdateSubDepartments(model.SubDepartmentID, model.SubDepartmentName, model.DepartmentID, model.CreatedById, model.ProfitCenter, model.GlCode, model.PermitExpiration, model.WayleaveExpiration, model.needsZXNumber);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.DepartmentID > 0 ? "Sub Department Updated Successfully" : "Sub Department Added Successfully"), result));
                 }
 
@@ -107,7 +106,7 @@ namespace WayleaveManagementSystem.Controllers
                 var result = await _subDepartmentService.GetAllSubDepartments();
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Sub Departments List Created", result));
 
-                
+
 
             }
             catch (Exception ex)
@@ -160,7 +159,7 @@ namespace WayleaveManagementSystem.Controllers
         }
 
         [HttpPost("GetSubDepartmentByDepartmentID")]
-        public async Task<object> GetSubDepartmentByDepartmentID([FromBody]  SubDepartmentsByDepartmentIdBindingModel model)
+        public async Task<object> GetSubDepartmentByDepartmentID([FromBody] SubDepartmentsByDepartmentIdBindingModel model)
         {
             try
             {
@@ -175,7 +174,7 @@ namespace WayleaveManagementSystem.Controllers
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got all Sub Departments for given department", result));
                 }
 
-               
+
 
 
 
@@ -225,9 +224,9 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
 
-              
-                    var result = await _subDepartmentService.GetAllSubDepartmentsForAutoDistribution();
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got all Sub Departments for Automatic Distribution", result));
+
+                var result = await _subDepartmentService.GetAllSubDepartmentsForAutoDistribution();
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got all Sub Departments for Automatic Distribution", result));
 
             }
             catch (Exception ex)
@@ -239,7 +238,7 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-       
+
 
     }
 }

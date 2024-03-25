@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace WayleaveManagementSystem.Data.Migrations
+namespace BuildingPlans.Data.Migrations
 {
     public partial class ApplicationTableUpdate : Migration
     {
@@ -29,23 +29,23 @@ namespace WayleaveManagementSystem.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-           /* migrationBuilder.AlterColumn<string>(
-                name: "PreviousStageNumber",
-                table: "Application",
-                type: "nvarchar(max)",
-                nullable: true,
-                oldClrType: typeof(int),
-                oldType: "int",
-                oldNullable: true);
+            /* migrationBuilder.AlterColumn<string>(
+                 name: "PreviousStageNumber",
+                 table: "Application",
+                 type: "nvarchar(max)",
+                 nullable: true,
+                 oldClrType: typeof(int),
+                 oldType: "int",
+                 oldNullable: true);
 
-            migrationBuilder.AlterColumn<string>(
-                name: "NextStageNumber",
-                table: "Application",
-                type: "nvarchar(max)",
-                nullable: true,
-                oldClrType: typeof(int),
-                oldType: "int",
-                oldNullable: true);*/
+             migrationBuilder.AlterColumn<string>(
+                 name: "NextStageNumber",
+                 table: "Application",
+                 type: "nvarchar(max)",
+                 nullable: true,
+                 oldClrType: typeof(int),
+                 oldType: "int",
+                 oldNullable: true);*/
         }
     }
 }

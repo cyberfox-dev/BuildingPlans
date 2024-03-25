@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using BuildingPlans.BindingModel;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.DTO;
+using BuildingPlans.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -7,12 +10,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using WayleaveManagementSystem.BindingModel;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.Models;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -54,33 +53,34 @@ namespace WayleaveManagementSystem.Controllers
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Email already exists", null));
                 }
-                else { 
-                var user = new AppUser()
-                {
-                    UserName = model.Email,
-                    FullName = model.FullName,
-                    Email = model.Email,
-                    DateCreated = DateTime.Now,
-                    DateModified = DateTime.Now
-                };
-
-
-                //to register a user i and going to use userManager
-                var result = await _userManager.CreateAsync(user, model.Password);
-                var appUser = await _userManager.FindByEmailAsync(model.Email);
-                var userInfo = new UserDTO(appUser.FullName, appUser.Email, appUser.UserName, appUser.DateCreated, appUser.Id);
-                
-                if (result.Succeeded)
-                {
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "You have been Registered!", userInfo));
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-                }
                 else
                 {
-                    //covert errors to an array then return it by Description
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "", result.Errors.Select(x => x.Description).ToArray()));
-                }
+                    var user = new AppUser()
+                    {
+                        UserName = model.Email,
+                        FullName = model.FullName,
+                        Email = model.Email,
+                        DateCreated = DateTime.Now,
+                        DateModified = DateTime.Now
+                    };
+
+
+                    //to register a user i and going to use userManager
+                    var result = await _userManager.CreateAsync(user, model.Password);
+                    var appUser = await _userManager.FindByEmailAsync(model.Email);
+                    var userInfo = new UserDTO(appUser.FullName, appUser.Email, appUser.UserName, appUser.DateCreated, appUser.Id);
+
+                    if (result.Succeeded)
+                    {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "You have been Registered!", userInfo));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+                    }
+                    else
+                    {
+                        //covert errors to an array then return it by Description
+                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "", result.Errors.Select(x => x.Description).ToArray()));
+                    }
                 }
 
             }
@@ -124,7 +124,7 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
                 List<UserDTO> allUserDTO = new List<UserDTO>();
-                var users = _userManager.Users.Select(x => new UserDTO(x.FullName, x.Email, x.UserName, x.DateCreated,x.Id));
+                var users = _userManager.Users.Select(x => new UserDTO(x.FullName, x.Email, x.UserName, x.DateCreated, x.Id));
 
                 return await Task.FromResult(users);
 
@@ -141,7 +141,7 @@ namespace WayleaveManagementSystem.Controllers
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-                
+
             }
         }
 
@@ -182,14 +182,14 @@ namespace WayleaveManagementSystem.Controllers
                     if (result.Succeeded)
                     {
                         var appUser = await _userManager.FindByEmailAsync(model.Email);
-                        var user = new UserDTO(appUser.FullName, appUser.Email, appUser.UserName, appUser.DateCreated,appUser.Id);
+                        var user = new UserDTO(appUser.FullName, appUser.Email, appUser.UserName, appUser.DateCreated, appUser.Id);
                         user.Token = GenerateToken(appUser);
-    
+
                         return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "", user));
                     }
                     else
                     {
-                       
+
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
                         return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Login Failed, Invalid Email or Password", null));
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.

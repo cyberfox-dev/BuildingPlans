@@ -1,26 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BuildingPlans.IServices;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
 using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Service;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.DTO;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using WayleaveManagementSystem.BindingModel;
-using WayleaveManagementSystem.Data.Entities;
-using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
-using System;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
 
     [Route("api/[controller]")]
@@ -28,13 +11,13 @@ namespace WayleaveManagementSystem.Controllers
     public class CommentController : ControllerBase
     {
         private readonly ICommentService _commentService;
-    
+
 
 
         public CommentController(ICommentService commentService)
         {
             _commentService = commentService;
-        
+
         }
 
         [HttpPost("AddUpdateComment")]
@@ -43,13 +26,13 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
 
-                if (model == null )
+                if (model == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
-                {                                                                                                                                                                                                                         
-                    var result = await _commentService.AddUpdateComment(model.CommentID,model.ApplicationID, model.SubDepartmentForCommentID,model.SubDepartmentID ,model.SubDepartmentName ,model.Comment, model.CommentStatus ,model.CreatedById, model.isClarifyCommentID,model.isApplicantReplay,model.UserName,model.ZoneName,model.CanReplyUserID); //Clarify Alert Kyle
+                {
+                    var result = await _commentService.AddUpdateComment(model.CommentID, model.ApplicationID, model.SubDepartmentForCommentID, model.SubDepartmentID, model.SubDepartmentName, model.Comment, model.CommentStatus, model.CreatedById, model.isClarifyCommentID, model.isApplicantReplay, model.UserName, model.ZoneName, model.CanReplyUserID); //Clarify Alert Kyle
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.CommentID > 0 ? "Comment Updated Successfully" : "Comment Added Successfully"), result));
                 }
 
@@ -169,7 +152,7 @@ namespace WayleaveManagementSystem.Controllers
         [HttpPost("GetAllCommentsAwaitingClarity")]
         public async Task<object> GetAllCommentsAwaitingClarity([FromBody] CommentBindingModel model)
         {
-            if (model.CanReplyUserID== null)
+            if (model.CanReplyUserID == null)
             {
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
             }

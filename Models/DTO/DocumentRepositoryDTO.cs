@@ -1,10 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using WayleaveManagementSystem.Data.Entities;
-using Microsoft.EntityFrameworkCore;
-
-
-
-namespace WayleaveManagementSystem.Models.DTO
+﻿namespace BuildingPlans.Models.DTO
 {
     public class DocumentRepositoryDTO
     {

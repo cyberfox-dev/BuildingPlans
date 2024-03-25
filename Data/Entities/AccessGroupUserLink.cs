@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WayleaveManagementSystem.Data.Entities
+namespace BuildingPlans.Data.Entities
 {
-    public class  AccessGroupUserLink: BaseEntity
+    public class AccessGroupUserLink : BaseEntity
     {
         [Key]
         public int AccessGroupUserLinkID { get; set; }

@@ -1,6 +1,4 @@
-﻿using WayleaveManagementSystem.Data.Entities;
-
-namespace WayleaveManagementSystem.DTO
+﻿namespace BuildingPlans.DTO
 {
     // DTO - Data Trasfer Object
     public class GLCodeDTO
@@ -16,8 +14,8 @@ namespace WayleaveManagementSystem.DTO
         public string? CreatedById { get; set; }
         public string? ProfitCenter { get; set; }
         public int? DepartmentID { get; set; }
-        public string? DepartmentName{ get; set; }
-      
+        public string? DepartmentName { get; set; }
+
 
         public bool isActive { get; set; }
 

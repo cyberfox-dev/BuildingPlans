@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WayleaveManagementSystem.Data.Entities
+namespace BuildingPlans.Data.Entities
 {
-    public class ProfessionalsLinks: BaseEntity
+    public class ProfessionalsLinks : BaseEntity
     {
         [Key]
         public int? ProfessionalsLinkID { get; set; }

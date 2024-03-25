@@ -1,16 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.DTO;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Policy;
-using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.Service;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -50,15 +46,15 @@ namespace WayleaveManagementSystem.Controllers
                         {
                             ContactDetailID = model.ContactDetailID,
                             FullName = model.FullName,
-                            CellNo = model.CellNo, 
-                            Email = model.Email, 
+                            CellNo = model.CellNo,
+                            Email = model.Email,
                             DateCreated = DateTime.Now,
-                            DateUpdated = DateTime.Now, 
+                            DateUpdated = DateTime.Now,
                             SubDepartmentID = model.SubDepartmentID,
                             SubDepartmentName = model.SubDepartmentName,
                             ZoneID = model.ZoneID,
                             ZoneName = model.ZoneName,
-                            CreatedById = model.CreatedByID, 
+                            CreatedById = model.CreatedByID,
                             isActive = true
                         };
 
@@ -141,18 +137,18 @@ namespace WayleaveManagementSystem.Controllers
                where contactDetials.isActive == true
                select new ContactDetailsDTO()
                {
-                ContactDetailID = contactDetials.ContactDetailID,
-                FullName = contactDetials.FullName,
-                CellNo = contactDetials.CellNo,
-                Email = contactDetials.Email,
-                isActive = contactDetials.isActive,
-                CreatedById = contactDetials.CreatedById,  
-                DateCreated = contactDetials.DateCreated,
-                DateUpdated = contactDetials.DateUpdated,
-                SubDepartmentID = contactDetials.SubDepartmentID,
-                SubDepartmentName = contactDetials.SubDepartmentName,
-                ZoneID = contactDetials.ZoneID,
-                ZoneName = contactDetials.ZoneName,
+                   ContactDetailID = contactDetials.ContactDetailID,
+                   FullName = contactDetials.FullName,
+                   CellNo = contactDetials.CellNo,
+                   Email = contactDetials.Email,
+                   isActive = contactDetials.isActive,
+                   CreatedById = contactDetials.CreatedById,
+                   DateCreated = contactDetials.DateCreated,
+                   DateUpdated = contactDetials.DateUpdated,
+                   SubDepartmentID = contactDetials.SubDepartmentID,
+                   SubDepartmentName = contactDetials.SubDepartmentName,
+                   ZoneID = contactDetials.ZoneID,
+                   ZoneName = contactDetials.ZoneName,
 
                }
                ).ToListAsync();
@@ -171,5 +167,5 @@ namespace WayleaveManagementSystem.Controllers
 
     }
 
- 
+
 }

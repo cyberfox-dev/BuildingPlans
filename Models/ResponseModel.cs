@@ -1,6 +1,6 @@
-﻿using WayleaveManagementSystem.Enums;
+﻿using BuildingPlans.Enums;
 
-namespace WayleaveManagementSystem.Models
+namespace BuildingPlans.Models
 {
     public class ResponseModel
     {

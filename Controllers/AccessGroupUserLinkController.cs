@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.Models.DTO;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.DTO;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Data.Entities;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -116,7 +114,7 @@ namespace WayleaveManagementSystem.Controllers
                 // Return a BadRequest response with the error message
                 return BadRequest(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
-        } 
+        }
         [HttpPost("GetAccessGroupsByUserProfileID")]
         public async Task<IActionResult> GetAccessGroupsByUserProfileID([FromBody] AccessGroupUserLinkBindingModel model)
         {
@@ -180,7 +178,7 @@ namespace WayleaveManagementSystem.Controllers
                 return BadRequest(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
-        
+
         [HttpPost("GetPeopleByAccessGroupAndSubDept")]
         public async Task<IActionResult> GetPeopleByAccessGroupAndSubDept([FromBody] AccessGroupUserLinkBindingModel model)
         {
@@ -212,7 +210,7 @@ namespace WayleaveManagementSystem.Controllers
                 return BadRequest(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
-        
+
         [HttpPost("GetPeopleByZone")]
         public async Task<IActionResult> GetPeopleByZone([FromBody] AccessGroupUserLinkBindingModel model)
         {

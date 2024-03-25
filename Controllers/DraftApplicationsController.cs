@@ -1,30 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Service;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.DTO;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using WayleaveManagementSystem.BindingModel;
-using WayleaveManagementSystem.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Data;
-using System.Threading.Tasks;
-using System;
-using System.Linq;
 using System.Data;
 
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -45,13 +29,13 @@ namespace WayleaveManagementSystem.Controllers
             {
                 var result = new object();
 
-                if (model == null )
+                if (model == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
-                    if (model.DraftID== 0)
+                    if (model.DraftID == 0)
                     {
                         model.DraftID = null;
                     }
@@ -108,7 +92,7 @@ namespace WayleaveManagementSystem.Controllers
                     else //if it is not null then user is doing an update 
                     {
                         tempDraftApplicationTable.DraftID = model.DraftID;
-                        if ( model.ApplicationID != null)
+                        if (model.ApplicationID != null)
                         {
                             tempDraftApplicationTable.ApplicationID = model.ApplicationID;
                         }
@@ -207,7 +191,7 @@ namespace WayleaveManagementSystem.Controllers
                         {
                             tempDraftApplicationTable.CreatedById = model.CreatedById;
                         }
-                        if( model.Engineer != null)
+                        if (model.Engineer != null)
                         {
                             tempDraftApplicationTable.Engineer = model.Engineer;
                         }
@@ -322,13 +306,13 @@ namespace WayleaveManagementSystem.Controllers
                             Contractor = DraftedProjects.Contractor,
                             ProjectNumber = DraftedProjects.ProjectNumber,
                         }).ToListAsync();
- 
+
 
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Draft Applications", result));
                 }
                 else
                 {
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "User cannot View all Drafts",null));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "User cannot View all Drafts", null));
                 }
             }
             catch (Exception ex)
@@ -369,7 +353,7 @@ namespace WayleaveManagementSystem.Controllers
 
             try
             {
-                if(model.DraftID == 0)
+                if (model.DraftID == 0)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }

@@ -1,10 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace WayleaveManagementSystem.Models.BindingModel
+﻿namespace BuildingPlans.Models.BindingModel
 {
     public class ReviewerAssignmentBindingModel
     {
-       
+
         public int? ReviewerForCommentID { get; set; }
         public int? ApplicationID { get; set; }
         public string? ReviewerAssignedToComment { get; set; }

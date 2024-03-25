@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using WayleaveManagementSystem.Data.Entities;
-
-namespace WayleaveManagementSystem.Models.BindingModel
+﻿namespace BuildingPlans.Models.BindingModel
 {
     public class DraftedProjectsBindingModel
     {
@@ -27,8 +24,8 @@ namespace WayleaveManagementSystem.Models.BindingModel
         public string? ProjectNumber { get; set; }
         public int? RejectCount { get; set; }
         public string? CreatedById { get; set; }
-        public string? Engineer {  get; set; }
-        public string? Contractor {  get; set; }
+        public string? Engineer { get; set; }
+        public string? Contractor { get; set; }
     }
 
 }

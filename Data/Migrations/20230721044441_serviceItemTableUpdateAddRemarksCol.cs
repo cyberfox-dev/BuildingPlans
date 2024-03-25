@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace WayleaveManagementSystem.Data.Migrations
+namespace BuildingPlans.Data.Migrations
 {
     public partial class serviceItemTableUpdateAddRemarksCol : Migration
     {
@@ -25,21 +25,21 @@ namespace WayleaveManagementSystem.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-           /* migrationBuilder.DropColumn(
-                name: "Remarks",
-                table: "ServiceItem");
+            /* migrationBuilder.DropColumn(
+                 name: "Remarks",
+                 table: "ServiceItem");
 
-            migrationBuilder.AddColumn<string>(
-                name: "GLCode",
-                table: "SubDepartmentsTable",
-                type: "nvarchar(max)",
-                nullable: true);
+             migrationBuilder.AddColumn<string>(
+                 name: "GLCode",
+                 table: "SubDepartmentsTable",
+                 type: "nvarchar(max)",
+                 nullable: true);
 
-            migrationBuilder.AddColumn<string>(
-                name: "ProfitCentre",
-                table: "SubDepartmentsTable",
-                type: "nvarchar(max)",
-                nullable: true);*/
+             migrationBuilder.AddColumn<string>(
+                 name: "ProfitCentre",
+                 table: "SubDepartmentsTable",
+                 type: "nvarchar(max)",
+                 nullable: true);*/
         }
     }
 }

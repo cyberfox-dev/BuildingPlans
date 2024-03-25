@@ -1,8 +1,8 @@
-﻿namespace WayleaveManagementSystem.Enums
+﻿namespace BuildingPlans.Enums
 {
     public enum ResponseCode
     {
-        OK=1,
-      Error=2
+        OK = 1,
+        Error = 2
     }
 }

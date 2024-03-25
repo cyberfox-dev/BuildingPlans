@@ -2,32 +2,32 @@
 
 #nullable disable
 
-namespace WayleaveManagementSystem.Data.Migrations
+namespace BuildingPlans.Data.Migrations
 {
     public partial class subDepartmentLinkToComment2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-           /* migrationBuilder.AlterColumn<int>(
-                name: "SubDepartmentID",
-                table: "SubDepartmentForComment",
-                type: "int",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(max)",
-                oldNullable: true);*/
+            /* migrationBuilder.AlterColumn<int>(
+                 name: "SubDepartmentID",
+                 table: "SubDepartmentForComment",
+                 type: "int",
+                 nullable: true,
+                 oldClrType: typeof(string),
+                 oldType: "nvarchar(max)",
+                 oldNullable: true);*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-          /*  migrationBuilder.AlterColumn<string>(
-                name: "SubDepartmentID",
-                table: "SubDepartmentForComment",
-                type: "nvarchar(max)",
-                nullable: true,
-                oldClrType: typeof(int),
-                oldType: "int",
-                oldNullable: true);*/
+            /*  migrationBuilder.AlterColumn<string>(
+                  name: "SubDepartmentID",
+                  table: "SubDepartmentForComment",
+                  type: "nvarchar(max)",
+                  nullable: true,
+                  oldClrType: typeof(int),
+                  oldType: "int",
+                  oldNullable: true);*/
         }
     }
 }

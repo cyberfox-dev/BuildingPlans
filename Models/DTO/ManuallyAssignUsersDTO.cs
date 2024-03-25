@@ -1,4 +1,4 @@
-﻿namespace WayleaveManagementSystem.Models.DTO
+﻿namespace BuildingPlans.Models.DTO
 {
     public class ManuallyAssignUsersDTO
     {
@@ -8,7 +8,7 @@
         public string? AssignedToUserId { get; set; }
         public string? Description { get; set; }
         public string? CreatedById { get; set; }
-        public DateTime? DateCreated {  get; set; }
+        public DateTime? DateCreated { get; set; }
         public DateTime? DateUpdated { get; set; }
     }
 }

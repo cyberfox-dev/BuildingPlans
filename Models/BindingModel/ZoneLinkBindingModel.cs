@@ -1,4 +1,4 @@
-﻿namespace WayleaveManagementSystem.Models.BindingModel
+﻿namespace BuildingPlans.Models.BindingModel
 {
     public class ZoneLinkBindingModel
     {
@@ -28,10 +28,10 @@
         public bool? isDefault { get; set; }
 
         public string? AccessGroupName { get; set; }
-       // public string? AccessGroupUserLinkID { get; set; }
+        // public string? AccessGroupUserLinkID { get; set; }
 
 
-        public  int? AccessGroupUserLinkID { get; set; }
-      //  public  string? AccessGroupName { get; set; }
+        public int? AccessGroupUserLinkID { get; set; }
+        //  public  string? AccessGroupName { get; set; }
     }
 }

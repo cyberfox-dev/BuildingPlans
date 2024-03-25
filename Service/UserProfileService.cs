@@ -1,19 +1,14 @@
-﻿using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.IServices;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.Data;
-using System.Net.NetworkInformation;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.IServices;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models;
-using Microsoft.AspNetCore.Server.IISIntegration;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
-using WayleaveManagementSystem.Data.Migrations;
 
-namespace WayleaveManagementSystem.Service
+namespace BuildingPlans.Service
 {
     public class UserProfileService : IUserProfileService
     {
@@ -24,11 +19,11 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string? userID, string? fullName, string? email, 
-            string? phoneNumber, bool? isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, 
-            int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string? createdById, string? IdNumber, 
-            int? zoneID, string? vatNumber, string? refNumber, string? companyType, string? subDepartmentName, bool? isDepartmentAdmin, bool? isZoneAdmin, string? alternateEmail, 
-            string? alternateNumber, string?name, string? surname, string? departmentName, string? zoneName,bool? isDefault, string? icasaLicense, bool?depConfirmation)
+        public async Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string? userID, string? fullName, string? email,
+            string? phoneNumber, bool? isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate,
+            int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string? createdById, string? IdNumber,
+            int? zoneID, string? vatNumber, string? refNumber, string? companyType, string? subDepartmentName, bool? isDepartmentAdmin, bool? isZoneAdmin, string? alternateEmail,
+            string? alternateNumber, string? name, string? surname, string? departmentName, string? zoneName, bool? isDefault, string? icasaLicense, bool? depConfirmation)
         {
             if (userProfileID == 0)
             {
@@ -80,7 +75,7 @@ namespace WayleaveManagementSystem.Service
                     isDefault = isDefault,
                     ICASALicense = icasaLicense
 
-                    
+
 
                 };
 
@@ -197,11 +192,11 @@ namespace WayleaveManagementSystem.Service
                 if (alternateEmail != null)
                 {
                     tempUserProfile.AlternativeEmail = alternateEmail;
-                }  
+                }
                 if (alternateNumber != null)
                 {
                     tempUserProfile.AlternativePhoneNumber = alternateNumber;
-                }           
+                }
                 if (name != null)
                 {
                     tempUserProfile.Name = name;
@@ -209,11 +204,11 @@ namespace WayleaveManagementSystem.Service
                 if (surname != null)
                 {
                     tempUserProfile.Surname = surname;
-                }  
+                }
                 if (departmentName != null)
                 {
                     tempUserProfile.DepartmentName = departmentName;
-                }           
+                }
                 if (zoneName != null)
                 {
                     tempUserProfile.zoneName = zoneName;
@@ -221,7 +216,7 @@ namespace WayleaveManagementSystem.Service
                 if (isDefault != null)
                 {
                     tempUserProfile.isDefault = isDefault;
-                }  
+                }
                 if (icasaLicense != null)
                 {
                     tempUserProfile.ICASALicense = icasaLicense;
@@ -755,7 +750,7 @@ namespace WayleaveManagementSystem.Service
             }
         }
 
-       
+
     }
 
 }

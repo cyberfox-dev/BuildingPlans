@@ -1,4 +1,4 @@
-﻿namespace WayleaveManagementSystem.BindingModel
+﻿namespace BuildingPlans.BindingModel
 {
     public class AddUpdateRegisterUserBindingModel
     {

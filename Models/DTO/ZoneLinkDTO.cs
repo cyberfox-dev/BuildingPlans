@@ -1,4 +1,4 @@
-﻿namespace WayleaveManagementSystem.Models.DTO
+﻿namespace BuildingPlans.Models.DTO
 {
     public class ZoneLinkDTO
     {
@@ -30,7 +30,7 @@
         public bool? isDefault { get; set; }
 
         public string? AccessGroupName { get; set; }
-       // public string? AccessGroupUserLinkID { get; set; }
+        // public string? AccessGroupUserLinkID { get; set; }
 
     }
 }

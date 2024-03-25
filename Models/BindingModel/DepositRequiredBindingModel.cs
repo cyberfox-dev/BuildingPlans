@@ -1,4 +1,4 @@
-﻿namespace WayleaveManagementSystem.Models.BindingModel
+﻿namespace BuildingPlans.Models.BindingModel
 {
     public class DepositRequiredBindingModel
     {
@@ -10,7 +10,7 @@
 
         public int? SubDepartmentID { get; set; }
         public string? SubDepartmentName { get; set; }
-     
+
 
         public double? Rate { get; set; }
 

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WayleaveManagementSystem.Data.Entities
+namespace BuildingPlans.Data.Entities
 {
-    public class UserProfile: BaseEntity
+    public class UserProfile : BaseEntity
     {
         [Key]
         public int? UserProfileID { get; set; }
@@ -12,7 +12,7 @@ namespace WayleaveManagementSystem.Data.Entities
         public string? Surname { get; set; }
 
         public string? FullName { get; set; }
-        public string? Email { get; set;}
+        public string? Email { get; set; }
         public string? AlternativeEmail { get; set; }
 
 
@@ -26,7 +26,7 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public string? BP_Number { get; set; }
 
-         public string? CompanyName { get; set; }
+        public string? CompanyName { get; set; }
 
         public string? CompanyRegNo { get; set; }
 

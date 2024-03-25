@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace WayleaveManagementSystem.Models.DTO
+namespace BuildingPlans.Models.DTO
 {
     [Keyless]
     public class AccessGroupsDTO
@@ -31,8 +31,8 @@ namespace WayleaveManagementSystem.Models.DTO
 
         public int? SubDepartmentID { get; set; }
         public int? ZoneID { get; set; }
-        
+
         //Zone Link Tings
-        public int? UserProfileID { get; set;}
+        public int? UserProfileID { get; set; }
     }
 }

@@ -1,8 +1,6 @@
-﻿using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Models.DTO;
+﻿using BuildingPlans.Models.DTO;
 
-namespace WayleaveManagementSystem.IServices
+namespace BuildingPlans.IServices
 {
     public interface IMapService
     {

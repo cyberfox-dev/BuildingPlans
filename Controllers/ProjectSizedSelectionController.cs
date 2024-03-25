@@ -1,31 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Service;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.DTO;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using WayleaveManagementSystem.BindingModel;
-using WayleaveManagementSystem.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Data;
-using System.Threading.Tasks;
-using System;
-using System.Linq;
 using System.Data;
 
 
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -101,7 +85,7 @@ namespace WayleaveManagementSystem.Controllers
 
 
         [HttpPost("GetProjectSizedSelectionForApplication")]
-        public async Task<object> GetProjectSizedSelectionForApplication([FromBody]ProjectSizedSelectionDTO model) 
+        public async Task<object> GetProjectSizedSelectionForApplication([FromBody] ProjectSizedSelectionDTO model)
         {
             try
             {
@@ -111,10 +95,10 @@ namespace WayleaveManagementSystem.Controllers
                    where ProjectSizedSelections.isActive == true && ProjectSizedSelections.ApplicationID == model.ApplicationID
                    select new ProjectSizedSelectionDTO()
                    {
-                      ApplicationID = ProjectSizedSelections.ApplicationID,
-                      SelectedProject = ProjectSizedSelections.SelectedProject,
-                      ProjectDescription = ProjectSizedSelections.ProjectDescription,
-                      
+                       ApplicationID = ProjectSizedSelections.ApplicationID,
+                       SelectedProject = ProjectSizedSelections.SelectedProject,
+                       ProjectDescription = ProjectSizedSelections.ProjectDescription,
+
                    }
                ).ToListAsync();
 

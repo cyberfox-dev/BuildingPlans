@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace WayleaveManagementSystem.Data.Migrations
+namespace BuildingPlans.Data.Migrations
 {
     public partial class FibreNetworkLicensees : Migration
     {
@@ -17,11 +17,11 @@ namespace WayleaveManagementSystem.Data.Migrations
                 oldType: "float",
                 oldNullable: true);
 
-           /* migrationBuilder.AddColumn<bool>(
-                name: "NetworkLicenses",
-                table: "ApplicationListDTO",
-                type: "bit",
-                nullable: true);*/
+            /* migrationBuilder.AddColumn<bool>(
+                 name: "NetworkLicenses",
+                 table: "ApplicationListDTO",
+                 type: "bit",
+                 nullable: true);*/
 
             migrationBuilder.AddColumn<bool>(
                 name: "NetworkLicenses",
@@ -32,9 +32,9 @@ namespace WayleaveManagementSystem.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-/*            migrationBuilder.DropColumn(
-                name: "NetworkLicenses",
-                table: "ApplicationListDTO");*/
+            /*            migrationBuilder.DropColumn(
+                            name: "NetworkLicenses",
+                            table: "ApplicationListDTO");*/
 
             migrationBuilder.DropColumn(
                 name: "NetworkLicenses",

@@ -1,16 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.DTO;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Policy;
-using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models.BindingModel.ForGetByIDModels;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.Service;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -153,7 +149,7 @@ namespace WayleaveManagementSystem.Controllers
                     SubDepartmentName = depositRequired.SubDepartmentName,
                     ServiceItemCode = depositRequired.ServiceItemCode,
                     TotalAmount = depositRequired.TotalAmount,
-                    ServiceItemCodeID = depositRequired.ServiceItemCodeID,  
+                    ServiceItemCodeID = depositRequired.ServiceItemCodeID,
                     Remarks = depositRequired.Remarks,
                     WBS = depositRequired.WBS
 
@@ -225,5 +221,5 @@ namespace WayleaveManagementSystem.Controllers
 
     }
 
- 
+
 }

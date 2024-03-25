@@ -1,13 +1,10 @@
-﻿using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.IServices;
-using System.Linq;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.DTO;
+using BuildingPlans.IServices;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models.DTO;
 
-namespace WayleaveManagementSystem.Service
+namespace BuildingPlans.Service
 {
     public class ProfessionalsService : IProfessionalsService
     {
@@ -20,7 +17,7 @@ namespace WayleaveManagementSystem.Service
 
         public async Task<Professionals> AddUpdateProfessional(int? professinalID, string professinalType, string fullName, string bp_Number, bool? bpVerified, string email, string phoneNumber, string professionalRegNo, string appUserID, string? idNumber, string createdById, string? cibRating)
         {
-            
+
             if (professinalID == 0)
             {
                 professinalID = null;
@@ -82,7 +79,7 @@ namespace WayleaveManagementSystem.Service
             if (tempProfessenalTable == null)
             {
                 return await Task.FromResult(false);
-                
+
             }
             else
             {
@@ -100,8 +97,9 @@ namespace WayleaveManagementSystem.Service
         //this method gets all the professionals linked to a partcular user 
         public async Task<List<ProfessionalsDTO>> GetAllProfessionals(string userId)
         {
-            return await(
-                from professional in _context.ProfessionalsTable where professional.AppUserID == userId && professional.isActive == true
+            return await (
+                from professional in _context.ProfessionalsTable
+                where professional.AppUserID == userId && professional.isActive == true
                 select new ProfessionalsDTO()
                 {
                     ProfessinalID = professional.ProfessinalID,
@@ -111,7 +109,7 @@ namespace WayleaveManagementSystem.Service
                     BpVerified = professional.BpVerified,
                     Email = professional.Email,
                     ProfessionalRegNo = professional.ProfessionalRegNo,
-                    AppUserID = professional.AppUserID, 
+                    AppUserID = professional.AppUserID,
                     IdNumber = professional.IdNumber,
                     CIBRating = professional.CIBRating,
                     DateCreated = professional.DateCreated,
@@ -125,7 +123,7 @@ namespace WayleaveManagementSystem.Service
 
 
 
-        public async Task<List<ProfessionalsDTO>> GetProfessionalsListByProfessionalType(string userId,string professinalType)
+        public async Task<List<ProfessionalsDTO>> GetProfessionalsListByProfessionalType(string userId, string professinalType)
         {
             return await (
                 from professional in _context.ProfessionalsTable
@@ -154,7 +152,7 @@ namespace WayleaveManagementSystem.Service
 
         /*THIS IS FOR GETTING THE ENGINEERS AND CONTRACTORS BY APPLICATION ID*/
 
-        public async Task<List<ProfessionalsDTO>> GetAllProfessionalsLinkByApplicationID(int? applicationID,string? professinalType)
+        public async Task<List<ProfessionalsDTO>> GetAllProfessionalsLinkByApplicationID(int? applicationID, string? professinalType)
         {
             return await (
                 from professional in _context.ProfessionalsTable

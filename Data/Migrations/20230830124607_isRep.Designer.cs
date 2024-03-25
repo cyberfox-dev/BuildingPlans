@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using WayleaveManagementSystem.Data;
+using BuildingPlans.Data;
 
 #nullable disable
 
-namespace WayleaveManagementSystem.Data.Migrations
+namespace BuildingPlans.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
     [Migration("20230830124607_isRep")]
@@ -157,7 +157,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.AccessGroupRoleLink", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.AccessGroupRoleLink", b =>
                 {
                     b.Property<int>("AccessGroupRoleLinkID")
                         .ValueGeneratedOnAdd()
@@ -191,7 +191,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("AccessGroupRoleLink");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.AccessGroups", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.AccessGroups", b =>
                 {
                     b.Property<int>("AccessGroupID")
                         .ValueGeneratedOnAdd()
@@ -222,7 +222,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("AccessGroups");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.AccessGroupUserLink", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.AccessGroupUserLink", b =>
                 {
                     b.Property<int>("AccessGroupUserLinkID")
                         .ValueGeneratedOnAdd()
@@ -253,7 +253,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("AccessGroupUserLink");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Applications", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.Applications", b =>
                 {
                     b.Property<int?>("ApplicationID")
                         .ValueGeneratedOnAdd()
@@ -374,7 +374,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("Application");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.AppUser", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.AppUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -449,7 +449,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.CommentBuilder", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.CommentBuilder", b =>
                 {
                     b.Property<int>("CommentID")
                         .ValueGeneratedOnAdd()
@@ -477,7 +477,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("CommentBuilder");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Comments", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.Comments", b =>
                 {
                     b.Property<int>("CommentID")
                         .ValueGeneratedOnAdd()
@@ -532,7 +532,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Config", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.Config", b =>
                 {
                     b.Property<int>("ConfigID")
                         .ValueGeneratedOnAdd()
@@ -572,7 +572,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("Config");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.ContactDetails", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.ContactDetails", b =>
                 {
                     b.Property<int>("ContactDetailID")
                         .ValueGeneratedOnAdd()
@@ -618,7 +618,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("ContactDetails");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Departments", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.Departments", b =>
                 {
                     b.Property<int>("DepartmentID")
                         .ValueGeneratedOnAdd()
@@ -650,7 +650,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("DepartmentsTable");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.DepositRequired", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.DepositRequired", b =>
                 {
                     b.Property<int>("DepositRequiredID")
                         .ValueGeneratedOnAdd()
@@ -711,7 +711,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("DepositRequired");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.DocumentUpload", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.DocumentUpload", b =>
                 {
                     b.Property<int>("DocumentID")
                         .ValueGeneratedOnAdd()
@@ -763,7 +763,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("DocumentUpload");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.FAQ", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.FAQ", b =>
                 {
                     b.Property<int>("FAQID")
                         .ValueGeneratedOnAdd()
@@ -794,7 +794,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("FAQ");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Financial", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.Financial", b =>
                 {
                     b.Property<int>("FinancialID")
                         .ValueGeneratedOnAdd()
@@ -834,7 +834,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("Financial");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.GLCode", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.GLCode", b =>
                 {
                     b.Property<int>("GLCodeID")
                         .ValueGeneratedOnAdd()
@@ -871,7 +871,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("GLCode");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.MandatoryDocumentStageLink", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.MandatoryDocumentStageLink", b =>
                 {
                     b.Property<int?>("MandatoryDocumentStageLinkID")
                         .ValueGeneratedOnAdd()
@@ -905,7 +905,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("MandatoryDocumentStageLink");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.MandatoryDocumentUpload", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.MandatoryDocumentUpload", b =>
                 {
                     b.Property<int?>("MandatoryDocumentID")
                         .ValueGeneratedOnAdd()
@@ -936,7 +936,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("MandatoryDocumentUploads");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.MFT", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.MFT", b =>
                 {
                     b.Property<int>("MFTID")
                         .ValueGeneratedOnAdd()
@@ -976,7 +976,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("MFT");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Notification", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.Notification", b =>
                 {
                     b.Property<int?>("NotificationID")
                         .ValueGeneratedOnAdd()
@@ -1016,7 +1016,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("Notification");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.PermitSubForComment", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.PermitSubForComment", b =>
                 {
                     b.Property<int?>("PermitSubForCommentID")
                         .ValueGeneratedOnAdd()
@@ -1065,7 +1065,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("PermitSubForComment");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Professionals", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.Professionals", b =>
                 {
                     b.Property<int>("ProfessinalID")
                         .ValueGeneratedOnAdd()
@@ -1122,7 +1122,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("ProfessionalsTable");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.ProfessionalsLinks", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.ProfessionalsLinks", b =>
                 {
                     b.Property<int?>("ProfessionalsLinkID")
                         .ValueGeneratedOnAdd()
@@ -1153,7 +1153,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("ProfessionalsLink");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.ProjectSizeCheckList", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.ProjectSizeCheckList", b =>
                 {
                     b.Property<int?>("ProjectSizeCheckListID")
                         .ValueGeneratedOnAdd()
@@ -1187,7 +1187,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("ProjectSizeCheckList");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Roles", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.Roles", b =>
                 {
                     b.Property<int>("RoleID")
                         .ValueGeneratedOnAdd()
@@ -1221,7 +1221,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("Role");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.ServiceItems", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.ServiceItems", b =>
                 {
                     b.Property<int?>("ServiceItemID")
                         .ValueGeneratedOnAdd()
@@ -1270,7 +1270,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("ServiceItem");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Stages", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.Stages", b =>
                 {
                     b.Property<int?>("StageID")
                         .ValueGeneratedOnAdd()
@@ -1301,7 +1301,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("StageTable");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.SubDepartmentForComment", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.SubDepartmentForComment", b =>
                 {
                     b.Property<int?>("SubDepartmentForCommentID")
                         .ValueGeneratedOnAdd()
@@ -1359,7 +1359,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("SubDepartmentForComment");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.SubDepartments", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.SubDepartments", b =>
                 {
                     b.Property<int?>("SubDepartmentID")
                         .ValueGeneratedOnAdd()
@@ -1405,7 +1405,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("SubDepartmentsTable");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.TypeOfExcavation", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.TypeOfExcavation", b =>
                 {
                     b.Property<int>("TypeOfExcavationID")
                         .ValueGeneratedOnAdd()
@@ -1436,7 +1436,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("TypesOfExcavation");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.UserProfile", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.UserProfile", b =>
                 {
                     b.Property<int?>("UserProfileID")
                         .ValueGeneratedOnAdd()
@@ -1527,7 +1527,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("UserProfilesTable");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.ZoneForComment", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.ZoneForComment", b =>
                 {
                     b.Property<int?>("ZoneForCommentID")
                         .ValueGeneratedOnAdd()
@@ -1564,7 +1564,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("ZoneForComment");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.ZoneLink", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.ZoneLink", b =>
                 {
                     b.Property<int?>("ZoneLinkID")
                         .ValueGeneratedOnAdd()
@@ -1604,7 +1604,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("ZoneLinkTable");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Zones", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.Zones", b =>
                 {
                     b.Property<int?>("ZoneID")
                         .ValueGeneratedOnAdd()
@@ -1802,7 +1802,7 @@ namespace WayleaveManagementSystem.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("WayleaveManagementSystem.Data.Entities.AppUser", null)
+                    b.HasOne("BuildingPlans.Data.Entities.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1811,7 +1811,7 @@ namespace WayleaveManagementSystem.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("WayleaveManagementSystem.Data.Entities.AppUser", null)
+                    b.HasOne("BuildingPlans.Data.Entities.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1826,7 +1826,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WayleaveManagementSystem.Data.Entities.AppUser", null)
+                    b.HasOne("BuildingPlans.Data.Entities.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1835,23 +1835,23 @@ namespace WayleaveManagementSystem.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("WayleaveManagementSystem.Data.Entities.AppUser", null)
+                    b.HasOne("BuildingPlans.Data.Entities.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.Professionals", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.Professionals", b =>
                 {
-                    b.HasOne("WayleaveManagementSystem.Data.Entities.AppUser", "AppUser")
+                    b.HasOne("BuildingPlans.Data.Entities.AppUser", "AppUser")
                         .WithMany("Professionals")
                         .HasForeignKey("AppUserID");
 
                     b.Navigation("AppUser");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.AppUser", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.AppUser", b =>
                 {
                     b.Navigation("Professionals");
                 });

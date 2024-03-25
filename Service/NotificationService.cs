@@ -1,15 +1,10 @@
-﻿using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.IServices;
-using System.Linq;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.DTO;
+using BuildingPlans.IServices;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Models.BindingModel;
-using System;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.Data.Migrations;
 
-namespace WayleaveManagementSystem.Service
+namespace BuildingPlans.Service
 {
     public class NotificationService : INotificationService
     {
@@ -20,14 +15,14 @@ namespace WayleaveManagementSystem.Service
             _context = context;
         }
 
-        public async Task<Notification> AddUpdateNotification(int? notificationID, string? notificationName, string? notificationDescription, bool? isRead, string? userID, int? applicationID, string? createdByID ,string? message)
+        public async Task<Notification> AddUpdateNotification(int? notificationID, string? notificationName, string? notificationDescription, bool? isRead, string? userID, int? applicationID, string? createdByID, string? message)
         {
 
             if (notificationID == 0)
             {
                 notificationID = null;
             }
-  
+
             var tempNotificationTable = _context.Notification.FirstOrDefault(x => x.NotificationID == notificationID);
 
 
@@ -48,14 +43,14 @@ namespace WayleaveManagementSystem.Service
                     Message = message
                 };
 
-     
+
                 await _context.Notification.AddAsync(tempNotificationTable);
                 await _context.SaveChangesAsync();
 
                 return tempNotificationTable;
 
             }
-            else 
+            else
             {
 
                 tempNotificationTable.NotificationName = notificationName;
@@ -77,7 +72,7 @@ namespace WayleaveManagementSystem.Service
         {
             return await (
                 from Notification in _context.Notification
-                where  Notification.isActive == true && Notification.ApplicationID == appliactionID
+                where Notification.isActive == true && Notification.ApplicationID == appliactionID
                 select new NotificationDTO()
                 {
                     NotificationID = Notification.NotificationID,
@@ -162,7 +157,7 @@ namespace WayleaveManagementSystem.Service
         //notifications Sindiswa 31 January 2024
         public async Task<int> GetUnreadNotificationsCount(string? userID)
         {
-            return await(
+            return await (
                 from Notification in _context.Notification
                 where Notification.isActive == true && Notification.UserID == userID && Notification.IsRead == false
                 select Notification

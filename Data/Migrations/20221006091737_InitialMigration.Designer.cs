@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using WayleaveManagementSystem.Data;
+using BuildingPlans.Data;
 
 #nullable disable
 
-namespace WayleaveManagementSystem.Data.Migrations
+namespace  BuildingPlans.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
     [Migration("20221006091737_InitialMigration")]
@@ -157,7 +157,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Data.Entities.AppUser", b =>
+            modelBuilder.Entity("BuildingPlans.Data.Entities.AppUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -243,7 +243,7 @@ namespace WayleaveManagementSystem.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("WayleaveManagementSystem.Data.Entities.AppUser", null)
+                    b.HasOne("BuildingPlans.Data.Entities.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -252,7 +252,7 @@ namespace WayleaveManagementSystem.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("WayleaveManagementSystem.Data.Entities.AppUser", null)
+                    b.HasOne("BuildingPlans.Data.Entities.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -267,7 +267,7 @@ namespace WayleaveManagementSystem.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WayleaveManagementSystem.Data.Entities.AppUser", null)
+                    b.HasOne("BuildingPlans.Data.Entities.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -276,7 +276,7 @@ namespace WayleaveManagementSystem.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("WayleaveManagementSystem.Data.Entities.AppUser", null)
+                    b.HasOne("BuildingPlans.Data.Entities.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

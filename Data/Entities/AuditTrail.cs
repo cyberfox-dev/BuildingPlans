@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WayleaveManagementSystem.Data.Entities
+namespace BuildingPlans.Data.Entities
 {
-    public class AuditTrail:BaseEntity
+    public class AuditTrail : BaseEntity
     {
         //Audit Trail Kyle 
         [Key]
-        public int? AuditTrailID { get; set; } 
+        public int? AuditTrailID { get; set; }
         public int? ApplicationID { get; set; }
         public string? Description { get; set; }
         public bool? IsInternal { get; set; }

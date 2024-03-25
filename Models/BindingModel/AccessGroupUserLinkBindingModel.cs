@@ -1,6 +1,6 @@
-﻿namespace WayleaveManagementSystem.Models.BindingModel
+﻿namespace BuildingPlans.Models.BindingModel
 {
-    public class AccessGroupUserLinkBindingModel 
+    public class AccessGroupUserLinkBindingModel
     {
         public int AccessGroupUserLinkID { get; set; }
         public int? AccessGroupID { get; set; }

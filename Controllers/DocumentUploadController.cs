@@ -1,33 +1,25 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.IServices;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
 using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Service;
-using System.Security.Policy;
-using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using System.Net.Http.Headers;
-using System;
-using System.IO;
-using System.Diagnostics;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Formats.Jpeg;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
+using SixLabors.ImageSharp.Formats.Jpeg;
 using System.Diagnostics;
+using System.Net.Http.Headers;
 
 
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class DocumentUploadController : ControllerBase
     {
         private readonly string ApplicationDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-         private static List<DocumentUpload> fileForDb = new List<DocumentUpload>();
+        private static List<DocumentUpload> fileForDb = new List<DocumentUpload>();
 
         private readonly AppDBContext _context;
         private readonly ILogger<DocumentUploadController> _logger;
@@ -42,7 +34,7 @@ namespace WayleaveManagementSystem.Controllers
             _logger = logger;
         }
 
-        [HttpPost("UploadDocument"),DisableRequestSizeLimit]
+        [HttpPost("UploadDocument"), DisableRequestSizeLimit]
         public async Task<object> UploadDocument()
         {
             try
@@ -155,69 +147,69 @@ namespace WayleaveManagementSystem.Controllers
 
 
         public void CompressPdf(string filePath)
-    {
-        // Open an existing document. Providing an unencrypted PDF file as input.
-        PdfDocument inputDocument = PdfReader.Open(filePath, PdfDocumentOpenMode.Import);
-
-        // Create new PDF document
-        PdfDocument outputDocument = new PdfDocument();
-
-        // Iterate pages of the input document
-        foreach (PdfPage page in inputDocument.Pages)
         {
-            // Add a page to the output document
-            outputDocument.AddPage(page);
+            // Open an existing document. Providing an unencrypted PDF file as input.
+            PdfDocument inputDocument = PdfReader.Open(filePath, PdfDocumentOpenMode.Import);
+
+            // Create new PDF document
+            PdfDocument outputDocument = new PdfDocument();
+
+            // Iterate pages of the input document
+            foreach (PdfPage page in inputDocument.Pages)
+            {
+                // Add a page to the output document
+                outputDocument.AddPage(page);
+            }
+
+            // Save the document back to the same path, effectively overwriting the original
+            outputDocument.Save(filePath);
         }
 
-        // Save the document back to the same path, effectively overwriting the original
-        outputDocument.Save(filePath);
-    }
+
+        //public async Task<object> UploadDocument()
+        //{
+        //    try
+        //    {
 
 
-    //public async Task<object> UploadDocument()
-    //{
-    //    try
-    //    {
+        //        var file = Request.Form.Files[0];
 
+        //        var folderName = Path.Combine("Resources", "DocumentUpload");
+        //        var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
 
-    //        var file = Request.Form.Files[0];
+        //        if (file.Length > 0)
+        //        {
+        //            var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+        //            var fullPath = Path.Combine(pathToSave,fileName);
+        //            var dbPath = Path.Combine(folderName,fileName);
 
-    //        var folderName = Path.Combine("Resources", "DocumentUpload");
-    //        var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+        //            using (var stream = new FileStream(fullPath, FileMode.Create))
+        //            {
+        //                file.CopyTo(stream);
+        //            }
 
-    //        if (file.Length > 0)
-    //        {
-    //            var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-    //            var fullPath = Path.Combine(pathToSave,fileName);
-    //            var dbPath = Path.Combine(folderName,fileName);
-
-    //            using (var stream = new FileStream(fullPath, FileMode.Create))
-    //            {
-    //                file.CopyTo(stream);
-    //            }
-
-    //            return  Ok(new { dbPath });
-    //        }
-    //        else{
-    //            return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
-    //        }
+        //            return  Ok(new { dbPath });
+        //        }
+        //        else{
+        //            return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+        //        }
 
 
 
 
 
-    //    }
-    //    catch (Exception ex)
-    //    {
+        //    }
+        //    catch (Exception ex)
+        //    {
 
 
-    //        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+        //        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
 
-    //    }
-    //}
+        //    }
+        //}
 
 
-    [HttpPost("AddUpdateDocument"), DisableRequestSizeLimit]
+        [HttpPost("AddUpdateDocument"), DisableRequestSizeLimit]
         public async Task<object> AddUpdateDocument([FromBody] DocumentUploadBindingModel model)
         {
             try
@@ -230,7 +222,7 @@ namespace WayleaveManagementSystem.Controllers
                 }
                 else
                 {
-                    var result = await _documentUploadService.AddUpdateDocument(model.DocumentID, model.DocumentName, model.DocumentLocalPath, model.ApplicationID, model.AssignedUserID, model.CreatedById,model.DocumentGroupName,model.SubDepartmentID, model.SubDepartmentName,model.isPlanning,model.isRepository,model.Description);
+                    var result = await _documentUploadService.AddUpdateDocument(model.DocumentID, model.DocumentName, model.DocumentLocalPath, model.ApplicationID, model.AssignedUserID, model.CreatedById, model.DocumentGroupName, model.SubDepartmentID, model.SubDepartmentName, model.isPlanning, model.isRepository, model.Description);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.DocumentID > 0 ? "Professional Updated Successfully" : "Professional Added Successfully"), result));
                 }
 
@@ -276,14 +268,14 @@ namespace WayleaveManagementSystem.Controllers
             try
             {
 
-                    var result = await _documentUploadService.GetAllDocuments();
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Professionals List Created", result));
+                var result = await _documentUploadService.GetAllDocuments();
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Professionals List Created", result));
 
 
             }
             catch (Exception ex)
             {
-                
+
 
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
 
@@ -375,10 +367,10 @@ namespace WayleaveManagementSystem.Controllers
         {
             try
             {
-               
-                    var result = await _documentUploadService.GetAllDocumentsForRepository();
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Repository Documents", result));
-               
+
+                var result = await _documentUploadService.GetAllDocumentsForRepository();
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Repository Documents", result));
+
 
             }
             catch (Exception ex)
@@ -436,6 +428,6 @@ namespace WayleaveManagementSystem.Controllers
             }
         }
 
-     
+
     }
 }

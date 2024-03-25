@@ -1,15 +1,10 @@
-﻿using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.DTO;
-using WayleaveManagementSystem.IServices;
-using System.Linq;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.DTO;
+using BuildingPlans.IServices;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Models.BindingModel;
-using System.Security.Policy;
-using WayleaveManagementSystem.Models.DTO;
-using System;
 
-namespace WayleaveManagementSystem.Service
+namespace BuildingPlans.Service
 {
     public class SubDepartmentForCommentService : ISubDepartmentForCommentService
     {
@@ -108,15 +103,16 @@ namespace WayleaveManagementSystem.Service
         public async Task<bool> DepartmentForCommentUserAssaignedToComment(int? subDepartmentForCommentID, string? userAssaignedToComment, bool? isGISReviewing, string? GISReviewwerUserID)
         {
 
-  
+
             var tempSubDepForCommentTable = _context.SubDepartmentForComment.FirstOrDefault(x => x.SubDepartmentForCommentID == subDepartmentForCommentID);
 
-            if (tempSubDepForCommentTable != null) { 
-         
-              
+            if (tempSubDepForCommentTable != null)
+            {
+
+
                 tempSubDepForCommentTable.UserAssaignedToComment = userAssaignedToComment;
                 tempSubDepForCommentTable.DateUpdated = DateTime.Now;
-                if(GISReviewwerUserID != null && GISReviewwerUserID != "")
+                if (GISReviewwerUserID != null && GISReviewwerUserID != "")
                 {
                     tempSubDepForCommentTable.GISReviewerUserID = GISReviewwerUserID;
                 }
@@ -124,7 +120,7 @@ namespace WayleaveManagementSystem.Service
                 {
                     tempSubDepForCommentTable.GISReviewerUserID = null;
                 }
-                if(isGISReviewing != null)
+                if (isGISReviewing != null)
                 {
                     tempSubDepForCommentTable.isGISReviewing = isGISReviewing;
                 }
@@ -272,8 +268,8 @@ namespace WayleaveManagementSystem.Service
            }
            ).ToListAsync();
             }
-           
-           
+
+
 
         }
 
@@ -297,26 +293,26 @@ namespace WayleaveManagementSystem.Service
                     IsRefered = subDepartmentForComment.IsRefered,
                     ReferedToUserID = subDepartmentForComment.ReferedToUserID,
                     CreatedById = subDepartmentForComment.CreatedById,
-                      ZoneID = subDepartmentForComment.ZoneID,
+                    ZoneID = subDepartmentForComment.ZoneID,
                     ZoneName = subDepartmentForComment.ZoneName,
 
                 }
                 ).ToListAsync();
         }
 
-        public async Task<bool> UpdateCommentStatus(int? subDepartmentForCommentID, string? commentStatus,bool? isAwaitingClarity,bool? isRefered, string? userAssaignedToComment, bool? finalApproval)
+        public async Task<bool> UpdateCommentStatus(int? subDepartmentForCommentID, string? commentStatus, bool? isAwaitingClarity, bool? isRefered, string? userAssaignedToComment, bool? finalApproval)
         {
             //this checks is the record exists in the db
             var tempSubDepForCommentTable = _context.SubDepartmentForComment.FirstOrDefault(x => x.SubDepartmentForCommentID == subDepartmentForCommentID);
 
-            if (tempSubDepForCommentTable == null) 
+            if (tempSubDepForCommentTable == null)
             {
                 return await Task.FromResult(false);
 
             }
             else
             {
-                    
+
                 if (isAwaitingClarity != null)
                 {
                     tempSubDepForCommentTable.isAwaitingClarity = isAwaitingClarity;
@@ -360,12 +356,12 @@ namespace WayleaveManagementSystem.Service
                 tempSubDepForCommentTable.CommentStatus = commentStatus;
                 tempSubDepForCommentTable.IsRefered = isRefered;
                 tempSubDepForCommentTable.ReferedToUserID = referedToUserID;
-               tempSubDepForCommentTable.DateUpdated = DateTime.Now;
+                tempSubDepForCommentTable.DateUpdated = DateTime.Now;
                 _context.Update(tempSubDepForCommentTable);
                 await _context.SaveChangesAsync();
                 return true;
             }
-           
+
 
 
         }
@@ -419,7 +415,7 @@ namespace WayleaveManagementSystem.Service
                ).ToListAsync();
         }
 
-        public async Task<SubDepartmentForComment> AssignSeniorReviewerOrFinalApprover(int? subDepartmentForCommentID,string? userAssaignedToComment)
+        public async Task<SubDepartmentForComment> AssignSeniorReviewerOrFinalApprover(int? subDepartmentForCommentID, string? userAssaignedToComment)
         {
 
             if (subDepartmentForCommentID == 0)

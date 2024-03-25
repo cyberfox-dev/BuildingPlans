@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WayleaveManagementSystem.Data.Entities
+namespace BuildingPlans.Data.Entities
 {
     public class Applications : BaseEntity
     {
@@ -46,10 +46,10 @@ namespace WayleaveManagementSystem.Data.Entities
 
         public DateTime? PermitStartDate { get; set; }
 
-        public DateTime? StageStartDate{get;set;}
+        public DateTime? StageStartDate { get; set; }
         public DateTime? DatePaid { get; set; }
 
-        public string? Coordinates { get; set; }    
+        public string? Coordinates { get; set; }
 
         public bool? WBSRequired { get; set; }
 

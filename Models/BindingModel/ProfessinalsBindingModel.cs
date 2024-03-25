@@ -1,4 +1,4 @@
-﻿namespace WayleaveManagementSystem.Models.BindingModel
+﻿namespace BuildingPlans.Models.BindingModel
 {
     public class ProfessinalsBindingModel
     {
@@ -25,6 +25,6 @@
 
         public string? CIBRating { get; set; }
 
-        
+
     }
 }

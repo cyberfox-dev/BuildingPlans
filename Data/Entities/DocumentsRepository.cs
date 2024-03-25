@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 
-namespace WayleaveManagementSystem.Data.Entities
+namespace BuildingPlans.Data.Entities
 {
-    public class DocumentsRepository: BaseEntity
+    public class DocumentsRepository : BaseEntity
     {
         [Key]
         public int? DocumentsRepositoryID { get; set; }

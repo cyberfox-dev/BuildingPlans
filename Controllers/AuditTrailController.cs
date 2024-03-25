@@ -1,20 +1,19 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.Models;
+using BuildingPlans.Models.BindingModel;
+using BuildingPlans.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
-using WayleaveManagementSystem.Models.BindingModel;
-using WayleaveManagementSystem.Models.DTO;
-using WayleaveManagementSystem.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using WayleaveManagementSystem.Data;
 using System.Data;
-using WayleaveManagementSystem.Models;
 
-namespace WayleaveManagementSystem.Controllers
+namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class AuditTrailController : ControllerBase
     {
-         //Audit Trail Kyle 
+        //Audit Trail Kyle 
         private readonly AppDBContext _context;
 
         public AuditTrailController(AppDBContext context)
@@ -29,20 +28,20 @@ namespace WayleaveManagementSystem.Controllers
             {
                 var result = new object();
 
-                if(model == null)
+                if (model == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
-                    if(model.AuditTrailID == 0)
+                    if (model.AuditTrailID == 0)
                     {
                         model.AuditTrailID = null;
                     }
 
                     var tempAuditTrailItem = _context.AuditTrail.FirstOrDefault(x => x.AuditTrailID == model.AuditTrailID);
 
-                    if(tempAuditTrailItem == null)
+                    if (tempAuditTrailItem == null)
                     {
                         tempAuditTrailItem = new AuditTrail()
                         {
@@ -64,20 +63,20 @@ namespace WayleaveManagementSystem.Controllers
                     }
                     else
                     {
-                        if(model.Description != null)
+                        if (model.Description != null)
                         {
                             tempAuditTrailItem.Description = model.Description;
                         }
 
-                        if(model.IsInternal != null)
+                        if (model.IsInternal != null)
                         {
                             tempAuditTrailItem.IsInternal = model.IsInternal;
                         }
-                        if(model.SubDepartmentName != null)
+                        if (model.SubDepartmentName != null)
                         {
                             tempAuditTrailItem.SubDepartmentName = model.SubDepartmentName;
                         }
-                        if(model.ZoneName != null)
+                        if (model.ZoneName != null)
                         {
                             tempAuditTrailItem.ZoneName = model.ZoneName;
                         }
@@ -87,23 +86,23 @@ namespace WayleaveManagementSystem.Controllers
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, (model.AuditTrailID > 0 ? "Audit trail item updated successfully " : "Audit trial item created successfully"), result));
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
 
-           
+
         }
 
         [HttpPost("GetAllAuditTrailItemsForApplication")]
         public async Task<object> GetAllAuditTrailItemsForApplication([FromBody] AuditTrailBindingModel model)
         {
-            try 
+            try
             {
                 var result = await (
                     from AuditTrail in _context.AuditTrail
-                    where AuditTrail.ApplicationID == model.ApplicationID && AuditTrail.isActive == true 
-                    orderby AuditTrail.DateCreated 
+                    where AuditTrail.ApplicationID == model.ApplicationID && AuditTrail.isActive == true
+                    orderby AuditTrail.DateCreated
                     ascending
                     select new AuditTrialDTO()
                     {
@@ -129,11 +128,11 @@ namespace WayleaveManagementSystem.Controllers
         }
 
         [HttpPost("DeleteAuditTrialItemByAuditTrailID")]
-        public async Task<object> DeleteAuditTrailItemByAuditTrailID([FromBody]AuditTrailBindingModel model)
+        public async Task<object> DeleteAuditTrailItemByAuditTrailID([FromBody] AuditTrailBindingModel model)
         {
             try
             {
-                if(model.AuditTrailID < 1)
+                if (model.AuditTrailID < 1)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
@@ -141,7 +140,7 @@ namespace WayleaveManagementSystem.Controllers
                 {
                     var tempAuditTrailItem = _context.AuditTrail.FirstOrDefault(x => x.AuditTrailID == model.AuditTrailID);
 
-                    if(tempAuditTrailItem == null)
+                    if (tempAuditTrailItem == null)
                     {
                         return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Item does not exist on database", false));
                     }

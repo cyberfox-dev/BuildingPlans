@@ -1,3 +1,8 @@
+using BuildingPlans.Data;
+using BuildingPlans.Data.Entities;
+using BuildingPlans.IServices;
+using BuildingPlans.Models;
+using BuildingPlans.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
@@ -5,12 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using WayleaveManagementSystem.Data;
-using WayleaveManagementSystem.Data.Entities;
-using WayleaveManagementSystem.IServices;
-using WayleaveManagementSystem.Models;
-using WayleaveManagementSystem.Service;
-using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -89,7 +88,7 @@ builder.Services.AddCors(options =>
         builder =>
         {
             builder
-                 //.WithOrigins("https://wayleaveqa.capetown.gov.za")
+                //.WithOrigins("https://wayleaveqa.capetown.gov.za")
                 .WithOrigins("https://wayleave.capetown.gov.za")
                 .AllowAnyHeader()
                 .AllowAnyMethod()

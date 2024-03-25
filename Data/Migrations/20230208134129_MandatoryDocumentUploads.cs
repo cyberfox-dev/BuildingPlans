@@ -1,9 +1,8 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace WayleaveManagementSystem.Data.Migrations
+namespace BuildingPlans.Data.Migrations
 {
     public partial class MandatoryDocumentUploads : Migration
     {
@@ -30,8 +29,8 @@ namespace WayleaveManagementSystem.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-           /* migrationBuilder.DropTable(
-                name: "MandatoryDocumentUploads");*/
+            /* migrationBuilder.DropTable(
+                 name: "MandatoryDocumentUploads");*/
         }
     }
 }

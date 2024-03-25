@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace WayleaveManagementSystem.Data.Migrations
+namespace BuildingPlans.Data.Migrations
 {
     public partial class ProfitCenterFixb : Migration
     {
@@ -31,21 +31,21 @@ namespace WayleaveManagementSystem.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-           /* migrationBuilder.AlterColumn<string>(
-                name: "ProfitCenter",
-                table: "SubDepartmentsTable",
-                type: "nvarchar(max)",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(max)");
+            /* migrationBuilder.AlterColumn<string>(
+                 name: "ProfitCenter",
+                 table: "SubDepartmentsTable",
+                 type: "nvarchar(max)",
+                 nullable: true,
+                 oldClrType: typeof(string),
+                 oldType: "nvarchar(max)");
 
-            migrationBuilder.AlterColumn<string>(
-                name: "GlCode",
-                table: "SubDepartmentsTable",
-                type: "nvarchar(max)",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(max)");*/
+             migrationBuilder.AlterColumn<string>(
+                 name: "GlCode",
+                 table: "SubDepartmentsTable",
+                 type: "nvarchar(max)",
+                 nullable: true,
+                 oldClrType: typeof(string),
+                 oldType: "nvarchar(max)");*/
         }
     }
 }
