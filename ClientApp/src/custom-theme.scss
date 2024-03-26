@@ -12,24 +12,24 @@
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$WayleaveManagementSystem-primary: mat.define-palette(mat.$blue-grey-palette);
-$WayleaveManagementSystem-accent: mat.define-palette(mat.$deep-orange-palette, A200, A100, A400);
+$BuildingPlans-primary: mat.define-palette(mat.$blue-grey-palette);
+$BuildingPlans-accent: mat.define-palette(mat.$deep-orange-palette, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
-$WayleaveManagementSystem-warn: mat.define-palette(mat.$red-palette);
+$BuildingPlans-warn: mat.define-palette(mat.$red-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$WayleaveManagementSystem-theme: mat.define-light-theme((
+$BuildingPlans-theme: mat.define-light-theme((
   color: (
-    primary: $WayleaveManagementSystem-primary,
-    accent: $WayleaveManagementSystem-accent,
-    warn: $WayleaveManagementSystem-warn,
+    primary: $BuildingPlans-primary,
+    accent: $BuildingPlans-accent,
+    warn: $BuildingPlans-warn,
   )
 ));
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include mat.all-component-themes($WayleaveManagementSystem-theme);
+@include mat.all-component-themes($BuildingPlans-theme);
 

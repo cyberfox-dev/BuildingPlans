@@ -161,7 +161,7 @@ export class NavMenuComponent implements OnInit {
     editCommentName: ['', Validators.required],
   })
   applica: any;
-  UserRoles: import("C:/CyberfoxProjects/WayleaveManagementSystem/ClientApp/src/app/shared/shared.service").RolesList[];
+  UserRoles: import("C:/CyberfoxProjects/BuildingPlans/ClientApp/src/app/shared/shared.service").RolesList[];
   selectedOptionText: string;
   lastUploadEvent: any;
     public InternalExternalUser: boolean = false;

@@ -713,7 +713,7 @@ namespace BuildingPlans.Data.Migrations
                     b.ToTable("ZonesTable");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.DTO.LinkedUserSpDTO", b =>
+            modelBuilder.Entity("BuildingPlans.DTO.LinkedUserSpDTO", b =>
                 {
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -729,7 +729,7 @@ namespace BuildingPlans.Data.Migrations
                     b.ToTable("LinkedUserSpDTOs");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.DTO.UserSpDTO", b =>
+            modelBuilder.Entity("BuildingPlans.DTO.UserSpDTO", b =>
                 {
                     b.Property<string>("FullName")
                         .IsRequired()

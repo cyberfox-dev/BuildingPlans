@@ -1474,7 +1474,7 @@ namespace BuildingPlans.Data.Migrations
                     b.ToTable("ZonesTable");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.DTO.LinkedUserSpDTO", b =>
+            modelBuilder.Entity("BuildingPlans.DTO.LinkedUserSpDTO", b =>
                 {
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -1490,7 +1490,7 @@ namespace BuildingPlans.Data.Migrations
                     b.ToTable("LinkedUserSpDTOs");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.DTO.UserSpDTO", b =>
+            modelBuilder.Entity("BuildingPlans.DTO.UserSpDTO", b =>
                 {
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -1503,7 +1503,7 @@ namespace BuildingPlans.Data.Migrations
                     b.ToTable("UserSpDTOs");
                 });
 
-            modelBuilder.Entity("WayleaveManagementSystem.Models.DTO.ApplicationsDTO", b =>
+            modelBuilder.Entity("BuildingPlans.Models.DTO.ApplicationsDTO", b =>
                 {
                     b.Property<int?>("ApplicationID")
                         .HasColumnType("int");
