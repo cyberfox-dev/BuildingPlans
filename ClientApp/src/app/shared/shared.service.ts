@@ -268,7 +268,7 @@ export class SharedService {
   getApiUrl() {
     let baseUrl = window.location.origin; // Get the base URL of the server
 
-    if (baseUrl == 'https://localhost:44440') { //Dev environment fix. If these ports ever change, change here too.
+    if (baseUrl == 'https://localhost:4200') { //Dev environment fix. If these ports ever change, change here too.
       baseUrl = 'https://localhost:7123'
     } else {
       //Do nothing

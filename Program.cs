@@ -82,19 +82,19 @@ builder.Services.Configure<FormOptions>(options =>
     options.MultipartHeadersLengthLimit = int.MaxValue;
 });
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowWayleaveOrigin",
-        builder =>
-        {
-            builder
-                //.WithOrigins("https://wayleaveqa.capetown.gov.za")
-                .WithOrigins("https://wayleave.capetown.gov.za")
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials();
-        });
-});
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowWayleaveOrigin",
+//        builder =>
+//        {
+//            builder
+//                //.WithOrigins("https://wayleaveqa.capetown.gov.za")
+//                .WithOrigins("https://wayleave.capetown.gov.za")
+//                .AllowAnyHeader()
+//                .AllowAnyMethod()
+//                .AllowCredentials();
+//        });
+//});
 
 
 builder.Services.AddCors(options =>
