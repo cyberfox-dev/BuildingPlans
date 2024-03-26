@@ -281,7 +281,7 @@ export class SharedService {
     let baseUrl = window.location.origin; // Get the base URL of the server
 
     if (baseUrl == 'https://localhost:4200') { //Dev environment fix. If these ports ever change, change here too.
-      baseUrl = 'https://localhost:7123'
+      baseUrl = 'https://localhost:7001'
     } else {
       //Do nothing
     };
@@ -289,12 +289,12 @@ export class SharedService {
     this.APIURL = baseUrl;
 
     return this.APIURL;
-/*      return "https://localhost:7123";*/
+/*      return "https://localhost:7001";*/
     /*    return "http://172.29.166.10/api/";*/
 /*        return "https://wayleaveqa.capetown.gov.za"; */
 /*        return "https://wayleave.capetown.gov.za"; */
     //this is the original ip address for venolin :)
-    /*  return "https://197.242.150.226:7123/api/";*/
+    /*  return "https://197.242.150.226:7001/api/";*/
   }
 
   setServerType(data: any) {
