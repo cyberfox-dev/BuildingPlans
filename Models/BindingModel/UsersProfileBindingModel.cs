@@ -65,7 +65,7 @@
         public string? CreatedById { get; set; }
 
 
-
+        public bool? isArchitect { get; set; }
 
     }
 }

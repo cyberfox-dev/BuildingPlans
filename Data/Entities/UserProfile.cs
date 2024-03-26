@@ -63,5 +63,7 @@ namespace BuildingPlans.Data.Entities
         //To Remove
         public bool? isZoneAdmin { get; set; }
 
+
+        public bool? isArchitect { get; set; }
     }
 }

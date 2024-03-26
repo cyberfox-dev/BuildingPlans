@@ -1,0 +1,458 @@
+
+ 
+<!--<div class="container-fluid">
+  <button mat-raised-button color="action">Add Mandatory Stage Document</button>
+  <button mat-raised-button color="action">Add Stage Checklist</button>
+  <button mat-raised-button color="action">Add Mandatory Department Document</button>
+  <button mat-raised-button color="action">Add Department Checklist</button>
+</div>-->
+
+<table mat-table [dataSource]="dataSourceFA" class="mat-elevation-z8">
+
+  <ng-container matColumnDef="FAName">
+    <th mat-header-cell *matHeaderCellDef>Functional Area</th>
+    <td mat-cell *matCellDef="let element">{{element.FAName}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="DateCreated">
+    <th mat-header-cell *matHeaderCellDef>Date Created</th>
+    <td mat-cell *matCellDef="let element">{{element.DateCreated}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="DateUpdated">
+    <th mat-header-cell *matHeaderCellDef>Date Updated</th>
+    <td mat-cell *matCellDef="let element">{{element.DateUpdated}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="Actions">
+    <th mat-header-cell *matHeaderCellDef> </th>
+    <td mat-cell *matCellDef="let i = index">
+      <button mat-raised-button color="blue" (click)="getAllStagesForFunctionalArea(i);openStages(Stages) ; getAllDocumentCategoriesForFA()" matTooltip="View Stages for Functional Area"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/chart-bar.svg" class="icon4"></button>
+      <button mat-raised-button color="orange" (click)=" GetAllDepartmentsForFunctionalArea(i,Departments) ; getAllDocumentCategoriesForFA()" matTooltip="View Departments for Functional Area"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/building.svg" class="icon4"></button>
+    </td>
+    <td mat-cell *matCellDef="let element"></td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumnsFA"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumnsFA;"></tr>
+
+
+</table>
+
+<ng-template #Stages let-modal>
+  <div class="modal-header">
+    <h6 class="modal-title">Stages for {{this.functionalArea}}</h6>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+    <table mat-table class="mat-elevation-z8"  [dataSource]="StagesDataSource">
+
+      <ng-container matColumnDef="StageName">
+        <th mat-header-cell *matHeaderCellDef>Stage Name</th>
+        <td mat-cell *matCellDef="let element">{{element.StageName}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="StageOrder">
+        <th mat-header-cell *matHeaderCellDef>Stage Order</th>
+        <td mat-cell *matCellDef="let element">{{element.StageOrder}}</td>
+      </ng-container>
+
+     
+
+      <ng-container matColumnDef="Actions">
+        <th mat-header-cell *matHeaderCellDef>actions</th>
+        <td mat-cell *matCellDef="let i = index">
+          <button mat-raised-button color="orange" (click)="GetAllChecklistItemsForStage(i,StageCheck);modal.dismiss('Cross click')" matTooltip="Checklists For Stage"> Checklists</button>
+          <button mat-raised-button color="warn" (click)=" GetAllMandatoryStageDocuments(i,StageManDoc);modal.dismiss('Cross click')" matTooltip="View Mandatory Documents List For Stage">Mandatory Documents</button>
+        </td>
+        <td mat-cell *matCellDef="let element"></td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedStageColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedStageColumns;"></tr>
+    </table>
+  </div>
+
+</ng-template>
+
+
+<ng-template #StageCheck let-modal>
+
+  <div class="modal-header">
+    <h6 class="modal-title">Checklist Items for {{this.stageName}}</h6>
+    <button type="button" class="btn-close" aria-label="Close" (click)="openStages(Stages);modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+    <div>
+      <button mat-raised-button (click)="openAddStageCheckItem(AddStageCheck);modal.dismiss('Cross click')" color="action">Add Stage Checklist Item</button>
+    </div>
+    <table mat-table [dataSource]="dataSourceCheck" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="ChecklistItem">
+        <th mat-header-cell *matHeaderCellDef>Checklist Item</th>
+        <td mat-cell *matCellDef="let element">{{element.ChecklistItem}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="DateCreated">
+        <th mat-header-cell *matHeaderCellDef>Date Created</th>
+        <td mat-cell *matCellDef="let element">{{element.DateCreated}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="DateUpdated">
+        <th mat-header-cell *matHeaderCellDef>Date Updated</th>
+        <td mat-cell *matCellDef="let element">{{element.DateUpdated}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Actions">
+        <th mat-header-cell *matHeaderCellDef>actions</th>
+        <td mat-cell *matCellDef="let i = index">
+          <button mat-raised-button color="warn" (click)="DeleteStageChecklistItem(i,StageCheck)" matTooltip="Delete Checklist Item"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4"></button>
+
+        </td>
+        <td mat-cell *matCellDef="let element"></td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedStageCheckColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedStageCheckColumns;"></tr>
+
+    </table>
+  </div>
+
+</ng-template>
+
+<ng-template #Departments let-modal>
+
+  <div class="modal-header">
+    <h6 class="modal-title">Departments for {{this.functionalArea}}</h6>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <table mat-table [dataSource]="departmentDataSource" *ngIf="departmentDataSource.data.length > 0" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="DepartmentName">
+      <th mat-header-cell *matHeaderCellDef>Department Name</th>
+      <td mat-cell *matCellDef="let element">{{element.DepartmentName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Actions">
+      <th mat-header-cell *matHeaderCellDef>actions</th>
+      <td mat-cell *matCellDef="let i = index">
+        <button mat-raised-button color="blue" (click)="GetAllChecklistItemsForDepartment(i,DepartmentChecklist);modal.dismiss('Cross click')" matTooltip="View Checklist for Department">Checklists</button>
+        <button mat-raised-button color="warn" (click)=" GetAllMandatoryDepartmentDocs(i,DepartmentManDoc);modal.dismiss('Cross click')" matTooltip="View Mandatory Documents for Department">Mandatory Documents</button>
+
+      </td>
+      <td mat-cell *matCellDef="let element"></td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedDepartmentColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedDepartmentColumns;"></tr>
+
+  </table>
+
+  <p *ngIf="departmentDataSource.data.length == 0 "> This Functional Area Has No Departments</p>
+</ng-template>
+  
+<ng-template #StageManDoc let-modal>
+  <div class="modal-header">
+    <h6 class="modal-title">Mandatory Documents for {{this.stageName}}</h6>
+    <button type="button" class="btn-close" aria-label="Close" (click)="openStages(Stages);modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div>
+      <button mat-raised-button (click)="openAddStageDocument(AddStageDoc);modal.dismiss('Cross click')" color="action">Add Mandatory Stage Document</button>
+    </div>
+
+    <table mat-table [dataSource]="StageManDocDataSource" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="DocumentName">
+        <th mat-header-cell *matHeaderCellDef>Document Name</th>
+        <td mat-cell *matCellDef="let element">{{element.DocumentName}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="DateCreated">
+        <th mat-header-cell *matHeaderCellDef>Date Created</th>
+        <td mat-cell *matCellDef="let element">{{element.DateCreated}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Actions">
+        <th mat-header-cell *matHeaderCellDef>actions</th>
+        <td mat-cell *matCellDef="let i = index">
+          
+          <button mat-raised-button color="warn" (click)="DeleteMandatoryStageDcoument(i,StageManDoc);" matTooltip="Delete Mandatory Document From Stage"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4"></button>
+
+        </td>
+        <td mat-cell *matCellDef="let element"></td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedStageDocColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedStageDocColumns;"></tr>
+
+    </table>
+
+
+  </div>
+</ng-template>
+
+<ng-template #DepartmentManDoc let-modal>
+  <div class="modal-header">
+    <h6 class="modal-title">Mandatory Documents for {{this.departmentName}}</h6>
+    <button type="button" class="btn-close" aria-label="Close" (click)=" openDepartments(Departments);modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div>
+      <button mat-raised-button (click)="openAddDepartmentDocument(AddDepartmentDoc);modal.dismiss('Cross click')" color="action">Add Mandatory Department Document</button>
+    </div>
+
+    <table mat-table [dataSource]="DepartmentManDocDataSource" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="DocumentName">
+        <th mat-header-cell *matHeaderCellDef>Document Name</th>
+        <td mat-cell *matCellDef="let element">{{element.DocumentName}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="DateCreated">
+        <th mat-header-cell *matHeaderCellDef>Date Created</th>
+        <td mat-cell *matCellDef="let element">{{element.DateCreated}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Actions">
+        <th mat-header-cell *matHeaderCellDef>actions</th>
+        <td mat-cell *matCellDef="let i = index">
+          <button mat-raised-button (click)="DeleteDepartmentMandatoryDocument(i,DepartmentManDoc)" color="warn" matTooltip="Delete Mandatory Department Document"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4"></button>
+
+        </td>
+        <td mat-cell *matCellDef="let element"></td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedDepartmentDocColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedDepartmentDocColumns;"></tr>
+
+    </table>
+
+
+  </div>
+</ng-template>
+
+<ng-template #DepartmentChecklist let-modal>
+  <div class="modal-header">
+    <h6 class="modal-title">Checklist Items for {{this.departmentName}}</h6>
+    <button type="button" class="btn-close" aria-label="Close" (click)=" openDepartments(Departments);modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div>
+      <button mat-raised-button (click)="openAddDeparmentCheckItem(AddDepartmentCheck)" color="action">Add Department Checklist Item</button>
+    </div>
+
+    <table mat-table [dataSource]="departmentCheckDataSource" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="ChecklistItem">
+        <th mat-header-cell *matHeaderCellDef>Checklist Item</th>
+        <td mat-cell *matCellDef="let element">{{element.ChecklistItem}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="DateCreated">
+        <th mat-header-cell *matHeaderCellDef>Date Created</th>
+        <td mat-cell *matCellDef="let element">{{element.DateCreated}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="DateUpdated">
+        <th mat-header-cell *matHeaderCellDef>Date Uppdated</th>
+        <td mat-cell *matCellDef="let element">{{element.DateUpdated}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Actions">
+        <th mat-header-cell *matHeaderCellDef>actions</th>
+        <td mat-cell *matCellDef="let i = index">
+          
+          <button mat-raised-button color="warn" (click)="DeleteDepartmentChecklistItem(i,DepartmentChecklist)" matTooltip="Delete Department Checklist Item"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4"></button>
+
+        </td>
+        <td mat-cell *matCellDef="let element"></td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedStageCheckColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedStageCheckColumns;"></tr>
+
+    </table>
+
+
+  </div>
+</ng-template>
+
+<ng-template #AddStageDoc let-modal>
+  <div class="modal-header">
+    <h6 class="modal-title">Add a Mandatory Document</h6>
+    <button type="button" class="btn-close" aria-label="Close" (click)="openStageDocuments(StageManDoc);modal.dismiss('Cross click')"></button>
+  </div>
+
+
+  <div *ngIf="documentCategoryList.length != 0">
+    <div class="modal-body">
+
+      <div class="row">
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="functionalArea" name="functionalArea" disabled>
+            <label for="functionalArea">Functional Area </label>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="stageName" name="stageName" disabled>
+            <label for="stageName">Stage Name </label>
+          </div>
+        </div>
+
+        <div class="row">
+          <mat-form-field>
+            <mat-label>Type Of Mandatory Document </mat-label>
+            <mat-select [(ngModel)]="stageManDoc" name="stageManDoc">
+              <mat-option *ngFor="let documents of documentCategoryList" value="{{documents.CategoryName}}">{{documents.CategoryName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+      </div>
+    </div>
+
+    <div *ngIf="documentCategoryList.length == 0">
+      <p>There are currently no Documents you can add for this stage</p>
+    </div>
+
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-outline-success" (click)="AddMandatoryDocumentToStage(StageManDoc);modal.close('Close click')">SAVE</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #AddStageCheck let-modal>
+  <div class="modal-header">
+    <h6 class="modal-title">Add a Checklist Item</h6>
+    <button type="button" class="btn-close" aria-label="Close" (click)="openCheckList(StageCheck);modal.dismiss('Cross click')"></button>
+  </div>
+
+
+  <div>
+    <div class="modal-body">
+
+      <div class="row">
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="functionalArea" name="functionalArea" disabled>
+            <label for="functionalArea">Functional Area </label>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="stageName" name="stageName" disabled>
+            <label for="stageName">Stage Name </label>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="stageChecklistItem" name="stageChecklistItem" placeholder="Add new Stage Checklist tem">
+              <label for="stageChecklistItem">Checklist Item</label>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-outline-success" (click)="AddstagechecklistItem(StageCheck)">SAVE</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #AddDepartmentDoc let-modal>
+  <div class="modal-header">
+    <h6 class="modal-title">Add a Mandatory Document</h6>
+    <button type="button" class="btn-close" aria-label="Close" (click)="openDepartmentDocuments(DepartmentManDoc);modal.dismiss('Cross click')"></button>
+  </div>
+
+
+  <div *ngIf="documentCategoryList.length != 0">
+    <div class="modal-body">
+
+      <div class="row">
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="functionalArea" name="functionalArea" disabled>
+            <label for="functionalArea">Functional Area </label>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="stageName" name="stageName" disabled>
+            <label for="stageName">Stage Name </label>
+          </div>
+        </div>
+
+        <div class="row">
+          <mat-form-field>
+            <mat-label>Type Of Mandatory Document </mat-label>
+            <mat-select [(ngModel)]="departmentManDoc" name="departmentManDoc">
+              <mat-option *ngFor="let documents of documentCategoryList" value="{{documents.CategoryName}}">{{documents.CategoryName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+      </div>
+    </div>
+
+    <div *ngIf="documentCategoryList.length == 0">
+      <p>There are currently no Documents you can add for this stage</p>
+    </div>
+
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-outline-success" (click)="AddDepartmentMandatoryDocument(DepartmentManDoc)">SAVE</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #AddDepartmentCheck let-modal>
+  <div class="modal-header">
+    <h6 class="modal-title">Add a Checklist Item</h6>
+    <button type="button" class="btn-close" aria-label="Close" (click)="openDepartmentChecklist(DepartmentChecklist);modal.dismiss('Cross click')"></button>
+  </div>
+
+
+  <div>
+    <div class="modal-body">
+
+      <div class="row">
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="functionalArea" name="functionalArea" disabled>
+            <label for="functionalArea">Functional Area </label>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="stageName" name="stageName" disabled>
+            <label for="stageName">Stage Name </label>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="departmentChecklistItem" name="departmentChecklistItem" placeholder="Add new Department Checklist Item">
+              <label for="departmentChecklistItem">Checklist Item</label>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="submit" (click)="AddDepartmentChecklistItem(DepartmentChecklist)" class="btn btn-outline-success" >SAVE</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

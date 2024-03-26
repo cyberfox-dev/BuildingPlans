@@ -1,0 +1,89 @@
+<button mat-raised-button color="create" (click)="openXl(content)">Add New Department</button>
+
+<!--table displaying the departments-->
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+  <ng-container matColumnDef="departmentName">
+    <th mat-header-cell *matHeaderCellDef> Department Name </th>
+    <td mat-cell *matCellDef="let element"> {{element.departmentName}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="functionalArea">
+    <th mat-header-cell *matHeaderCellDef> Functional Area </th>
+    <td mat-cell *matCellDef="let element"> {{element.functionalArea}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef> </th>
+    <td mat-cell *matCellDef="let i = index">
+      <button mat-raised-button color="create" matTooltip="View Department Details" (click)="setCurrentDepartmentID(i); onUpdateDepartment(i, editDepartment) "><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/pencil.svg" class="icon4"></button>
+      <button mat-raised-button color="warn" matTooltip="Delete Department" (click)="setCurrentDepartmentID(i);onDeleteDepartment(i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4"></button>
+      <button mat-raised-button color="orange" matTooltip="View All Users For Department" ><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/eye.svg" class="icon4"></button>
+    </td>
+    <td mat-cell *matCellDef="let element">  </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<!--==CREATING A NEW DEPARTMENT==CREATING A NEW DEPARTMENT==CREATING A NEW DEPARTMENT==CREATING A NEW DEPARTMENT==CREATING A NEW DEPARTMENT==CREATING A NEW DEPARTMENT==CREATING A NEW DEPARTMENT==CREATING A NEW DEPARTMENT==-->
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Creating a new department</h4>
+    <!--<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click');resetHasDep()"></button>-->
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+
+    <div class="row">
+      <mat-form-field>
+        <mat-label>FunctionalArea </mat-label>
+        <mat-select [(ngModel)]="selectedFunctionalArea" name="selectedFunctionalArea">
+          <mat-option *ngFor="let functions of FunctionalAreasList" value="{{functions.FAName}}">{{functions.FAName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <form [formGroup]="addDepartment" (ngSubmit)="onDepartmentCreate()">
+
+      <div class="form-group row">
+        <label for="newDeptName" class="col-sm-3 col-form-label">Department Name: </label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="newDeptName" formControlName="newDeptName" name="newDeptName" placeholder="">
+        </div>
+      </div>
+
+    </form>
+
+
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click');onDepartmentCreate()">Save</button>
+  </div>
+</ng-template>
+
+<!--==EDITING DEPARTMENT==EDITING DEPARTMENT==EDITING DEPARTMENT==EDITING DEPARTMENT==EDITING DEPARTMENT==EDITING DEPARTMENT==EDITING DEPARTMENT==EDITING DEPARTMENT==EDITING DEPARTMENT==EDITING DEPARTMENT==EDITING DEPARTMENT==-->
+<ng-template #editDepartment let-modal class="mat-elevation-z8">
+
+  <div class="modal-header">
+    <h4 class="modal-title">Editing a department</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+    <!--When the department is selected to edit-->
+    <div class="col">
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" id="professionalRegNo" [(ngModel)]="selectedDepartmentName" placeholder="Enter updated department name" name="selectedDepartmentName">
+        <label for="selectedDepartmentName">New Department Name: </label>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="  updateDepartment();modal.close('Close click');">Update</button>
+  </div>
+
+</ng-template>
+
+

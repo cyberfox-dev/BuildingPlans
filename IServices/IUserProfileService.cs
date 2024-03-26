@@ -7,7 +7,7 @@ namespace BuildingPlans.IServices
     {
         //Task<UserProfile> - This is the return type so its going to ruturn it in the fromt of the users model
         Task<UserProfile> AddUpdateUserProfiles(int? userProfileID, string userID, string fullName, string email, string? phoneNumber, bool? isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate, int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string createdById, string? IdNumber, int? zoneID, string? vatNumber, string? refNumber, string? companyType, string? SubDepartmentName, bool? isDepartmentAdmin, bool? isZoneAdmin, string? alternateEmail, string? alternateNumber,
-             string? name, string? surname, string? departmentName, string? zoneName, bool? isDefault, string? icasaLicense, bool? depConfirmation);
+             string? name, string? surname, string? departmentName, string? zoneName, bool? isDefault, string? icasaLicense, bool? depConfirmation,bool?isArchitect);
         //this will return T/F 
         public Task<bool> DeleteUserProfile(int userProfileID);
         public Task<bool> UserGainsApproval(int userProfileID);
@@ -28,6 +28,7 @@ namespace BuildingPlans.IServices
         Task<object> GetUserByEmail(string email);
         Task<UserProfile> AdminConfig(int? userProfileID, bool? isDepartmentAdmin, bool? isZoneAdmin, string? createdById);
 
-
+        Task<List<UserProfileDTO>> GetAllArchitects();
+        Task<List<UserProfileDTO>> CheckForExistingUser(string fullName, string email);
     }
 }

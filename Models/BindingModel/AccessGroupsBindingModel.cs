@@ -29,5 +29,9 @@
 
         public string? SubDepartmentName { get; set; }
         public int? ZoneID { get; set; }
+
+        public string?ZoneName { get; set; }
+        public string? FunctionalArea { get; set; }
+        public string? DepartmentName { get; set; }
     }
 }

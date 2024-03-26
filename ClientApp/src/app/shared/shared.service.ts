@@ -176,8 +176,20 @@ export class SharedService {
   isViewReport: boolean = false;
   auditTrail: boolean = false;
   //Audit Trail Kyle
+  External: boolean;
+  architectUserID: string;
 
+  latitude: any;
+  longitude: any;
+  mapAddress: string;
+  isArchitect: boolean;
 
+  setArchitectID(UserID: string) {
+    this.architectUserID = UserID;
+  }
+  getIsArchitect() {
+    return this.isArchitect;
+  }
   // #region reapply Sindisiswa 26 January 2024
   setShowFormerApps(data: any) {
     this.showFormerApps = data;

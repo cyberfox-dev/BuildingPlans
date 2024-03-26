@@ -66,5 +66,6 @@
 
         public string? CreatedById { get; set; }
         public int? MapObjectID { get; internal set; }
+        public bool? isArchitect { get; set; }
     }
 }

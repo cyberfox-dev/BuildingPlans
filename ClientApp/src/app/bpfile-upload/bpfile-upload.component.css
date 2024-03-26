@@ -1,0 +1,118 @@
+.upload {
+  font-weight: bold;
+  color: #28a745;
+  margin-left: 15px;
+  /* line-height: 36px;*/
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: baseline;
+}
+
+.mat-btn {
+  background-color: #005870;
+  color: white;
+  /* top: -2px; */
+  height: 63px;
+  margin-left: 13px;
+}
+
+.droppable-container {
+  width: 100%;
+  height: 100%;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  transition: border-color 0.3s ease-in-out;
+}
+
+.droppable-container-active {
+  border-color: #00bfff;
+  background-color: rgba(0,191,255, 0.1);
+}
+
+.drop-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  cursor: pointer;
+  margin-top: 25px;
+  margin-bottom: 10px;
+  height: 65px;
+}
+
+.drag-over {
+  border-color: #00bfff;
+  background-color: rgba(0,191,255, 0.1);
+}
+
+.icon-area {
+  font-size: 48px;
+  color: #00bfff;
+  margin-bottom: 15px;
+}
+
+
+
+mat-icon {
+  color: #ff1e1e;
+}
+
+.drop-section.ng-hide {
+  display: none;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.file-name {
+  margin-bottom: 10px;
+}
+
+.upload-section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.drag-drop-area {
+  flex: 1;
+  border: 2px dashed grey;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+  .drag-drop-area.active {
+    border: 2px dashed green;
+    background-color: rgba(0, 255, 0, 0.1);
+  }
+
+.upload-button {
+  flex: 1;
+  padding: 20px;
+  border: 1px solid grey;
+  background-color: lightgrey;
+  text-align: center;
+  cursor: pointer;
+}
+
+.delete-button {
+  margin-top: 10px;
+}
+
+.fileName {
+  margin-top: 20px;
+  font-size: 14px;
+}

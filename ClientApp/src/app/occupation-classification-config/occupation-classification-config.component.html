@@ -1,0 +1,166 @@
+<div class="container-fluid">
+  <button mat-raised-button color="action" (click)="OpenNewClass()">Add A New Occupation Classification</button>
+</div>
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <ng-container matColumnDef="OccupationName">
+    <th mat-header-cell *matHeaderCellDef>Occupation Name</th>
+    <td mat-cell *matCellDef="let element">{{element.OccupationName}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="OccupationCode">
+    <th mat-header-cell *matHeaderCellDef>Occupation Code</th>
+    <td mat-cell *matCellDef="let element">{{element.OccupationCode}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="Occupancy">
+    <th mat-header-cell *matHeaderCellDef>Occupancy </th>
+    <td mat-cell *matCellDef="let element">{{element.Occupancy}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="OccupancyDescription">
+    <th mat-header-cell *matHeaderCellDef>Occupancy Desription </th>
+    <td mat-cell *matCellDef="let element">{{element.OccupancyDescription}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="DateCreated">
+    <th mat-header-cell *matHeaderCellDef>Date Created </th>
+    <td mat-cell *matCellDef="let element">{{element.DateCreated}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="DateUpdated">
+    <th mat-header-cell *matHeaderCellDef>Date Updated </th>
+    <td mat-cell *matCellDef="let element">{{element.DateUpdated}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>actions</th>
+    <td mat-cell *matCellDef="let i = index">
+      <button mat-raised-button color="blue" matTooltip="Edit Occupation Classification" (click)=" EditClassfication(i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/pencil.svg" class="icon4"></button>
+      <button mat-raised-button color="warn" matTooltip="Add Occupation Classification" (click)="onDeleteClassification(i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4"></button>
+    </td>
+    <td mat-cell *matCellDef="let element">  </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<ng-template #newClass let-modal>
+
+  <div class="modal-header">
+    <h6 class="modal-title">Add a new Occupation classification</h6>
+    <button type="button" class="btn-close" aria-label="Close" (click)="CLearData();modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+    <div class="container-fluid">
+
+      <div class="row">
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="occupationName" name="occupationName" placeholder="Enter the new Occupation Name">
+            <label for="occupationName">Occupation Name * </label>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="occupationCode" name="occupationCode" placeholder="Enter the new Occupation Code">
+            <label for="occupationCode">Occupation Code * </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="itemTypeID" name="itemTypeID" placeholder="Enter the new Item Type ID">
+            <label for="itemTypeID">Item Type ID * </label>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="occupancy" name="occupancy" placeholder="Enter the new Occupancy">
+            <label for="occupancy">Occupancy</label>
+          </div>
+        </div>
+      </div>
+
+      <p>NB* : If the text does not fix you can extent the size of the box</p>
+
+      <div class="row">
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <textarea class="form-control occupancyDesc" [(ngModel)]="occupancyDescription" name="occupancyDescription" placeholder="Enter Occupancy Description"></textarea>
+            <label for="occupancyDescription">Occupancy Description </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button mat-raised-button (click)="ValidateInfo()" color="green">Save</button>
+
+  </div>
+
+
+</ng-template>
+
+<ng-template #editClass let-modal>
+  <div class="modal-header">
+    <h6 class="modal-title">Edit Occupation Classification</h6>
+    <button type="button" class="btn-close" aria-label="Close" (click)=" CLearData();modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+    <div class="container-fluid">
+
+      <div class="row">
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="occupationName" name="occupationName" placeholder="Enter Occupation Name">
+            <label for="occupationName">Occupation Name</label>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="occupationCode" name="occupationCode" placeholder="Enter Occupation Code">
+            <label for="occupationCode">Occupation Code</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="itemTypeID" name="itemTypeID" placeholder="Enter the new Item Type ID">
+            <label for="itemTypeID">Item Type ID * </label>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="occupancy" name="occupancy" placeholder="Enter Occupancy">
+            <label for="occupancy">Occupancy</label>
+          </div>
+        </div>
+      </div>
+
+      <p>NB* : If the text does not fix you can extent the size of the box</p>
+
+      <div class="row">
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <textarea class="form-control occupancyDesc" [(ngModel)]="occupancyDescription" name="occupancyDescription" placeholder="Enter Occupancy Description"></textarea>
+            <label for="occupancyDescription">Occupancy Description </label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button mat-raised-button (click)="ValidateInfo()" color="green">Save</button>
+
+  </div>
+</ng-template>

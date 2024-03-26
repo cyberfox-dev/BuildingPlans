@@ -1,0 +1,138 @@
+::ng-deep .mat-horizontal-stepper-header {
+  pointer-events: none !important;
+}
+.mat-stepper {
+  animation-duration: 0s;
+}
+h2 {
+  color: #343a40;
+  margin-top: 211px;
+  margin-bottom: 186px;
+  text-align: center;
+  font-family: 'Nunito';
+  font-size: 55px;
+}
+.example-h2 {
+  margin: 10px;
+}
+h3 span {
+  background-color: #ccdee2;
+  padding: 0 10px;
+  color: #343a40;
+  font-size: 23px;
+}
+.card {
+  box-shadow: 0 4px 8px 0 rgb(0 0 0 / 13%), 0 6px 20px 0 rgb(0 0 0 / 0%);
+  margin: 20px;
+  border-color: #f1f1f1;
+  background-color: #ccdee2;
+  margin-bottom: 50px;
+  margin-top: 50px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mat-horizontal-stepper-header {
+  pointer-events: none !important;
+}
+.detials {
+  position: relative;
+}
+.card p {
+  font-size: 17px;
+  color: #4C5656;
+  margin-top: 30px;
+  z-index: 1000;
+  transition: color 0.3s ease-out;
+}
+.example-card {
+  margin-bottom: 10px;
+}
+.applicantDetials {
+  text-align: center;
+  background-color: rgb(120, 210, 235);
+  border-radius: 12px;
+  font-size: 18px;
+  margin-bottom: 10px;
+  opacity: 60%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+h3 {
+  width: 30em;
+  border-color: #00cdff;
+  text-align: center;
+  font-family: 'Nunito', sans-serif;
+  border-bottom: 1px solid #0487a7;
+  line-height: 0.1em;
+  margin: 0 auto;
+  padding-top: 50px;
+  margin-bottom: 50px;
+  justify-content: space-around;
+}
+.mat-form-field {
+  /*  margin: 10px 0;*/
+  width: 100%;
+  height:auto;
+}
+.cont {
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+.textFuckingBox {
+  display: none;
+}
+.container04 {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+.cont {
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+.mat-addNewUploadButtonColor {
+  width: 51px;
+  height: 40px;
+  border: none;
+  font-size: 16px;
+  background-color: #8bb6c2;
+  color: white;
+}
+.mat-list {
+  margin-left: 40px;
+}
+
+.mat-toolbar-single-row {
+  height: auto !important;
+  background: transparent;
+  font-size: 16px;
+  border: none;
+}
+  .mat-toolbar-single-row button {
+    width: 120px;
+    height: 40px;
+    border: none;
+    font-size: 16px;
+  }
+:host ::ng-deep .mat-tab-label-active {
+  background-color: #ccdee2;
+  color: #005870;
+  user-select: none;
+}
+.mat-green {
+  background-color: green;
+  color: white;
+}
+.mat-action {
+  color: white;
+  background-color: #005870;
+  margin: 10px;
+}
+

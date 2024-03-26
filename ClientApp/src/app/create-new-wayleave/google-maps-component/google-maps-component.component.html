@@ -1,0 +1,43 @@
+<div class="map-container">
+  <div class="container-fluid">
+    <div class="form-floating mb-3 mt-3">
+      <input ngx-google-places-autocomplete class="form-control" [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" [(ngModel)]="enteredAddress" />
+      <label for="applicantAddress">Physical Address *</label>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" id="latitude" name="latitude" [(ngModel)]="latitude" placeholder="latitude">
+          <label for="latitude">Latitude</label>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" id="longitude" name="longitude" [(ngModel)]="longitude" placeholder="longitude">
+          <label for="longitude">Longitude</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="coordinateInput" style="position: sticky; display: grid; grid-template-columns: 2fr 1fr auto 1fr 1fr; align-items: center;">
+   <!-- <span>Co-ordinates as per address entry:</span>-->
+    <input class="coordinateText" id="coordinateTextX" #coordinateTextX type="text" placeholder="x" hidden><span hidden>,</span>
+    <input class="coordinateText" id="coordinateTextY" #coordinateTextY type="text" placeholder="y" hidden>
+    <button id="coordinateSearchBtn" #coordinateSearchBtn hidden>Go to</button>
+  </div>
+  <div #searchDiv></div>
+  <!--<div #mapDiv"></div>-->
+  <google-map height="550px"
+              width="100%"
+              [center]="center"
+              [options]="mapOptions"
+              (mapDblclick)="markerAdded ? null : addMarkerOnDblClick($event)"
+              (mapMousemove)="move($event)">
+    <map-marker *ngFor="let marker of markers"
+                [position]="marker.position"
+                [title]="marker.title"
+                (mapClick)="removeMarker(marker)">
+    </map-marker>
+  </google-map>
+</div>
