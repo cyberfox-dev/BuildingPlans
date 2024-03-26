@@ -12,7 +12,7 @@ export class InitializationService {
 
 //  initializeApp(): Promise<any> {
 //    /*    return this.configService.getBaseUrl().pipe(*/
-//    return this.httpClient.get<string>('https://localhost:7123/api/config/GetBaseUrl') // Adjust the URL to match your API endpoint
+//    return this.httpClient.get<string>('https://localhost:7001/api/config/GetBaseUrl') // Adjust the URL to match your API endpoint
 //      .pipe(
 //      tap((baseUrl: string) => {
 //        // Store the base URL in a variable or service accessible to all components
