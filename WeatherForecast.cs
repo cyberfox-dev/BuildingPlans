@@ -1,4 +1,4 @@
-namespace WayleaveManagementSystem
+namespace BuildingPlans
 {
     public class WeatherForecast
     {
