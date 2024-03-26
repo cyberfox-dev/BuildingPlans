@@ -23,7 +23,7 @@ namespace BuildingPlans.Service
             string? phoneNumber, bool? isInternal, string? bp_Number, string? companyName, string? companyRegNo, string? physcialAddress, string? directorate,
             int? departmentID, int? subDepartmentID, string? branch, string? costCenterNumber, string? costCenterOwner, string? copyOfID, string? createdById, string? IdNumber,
             int? zoneID, string? vatNumber, string? refNumber, string? companyType, string? subDepartmentName, bool? isDepartmentAdmin, bool? isZoneAdmin, string? alternateEmail,
-            string? alternateNumber, string? name, string? surname, string? departmentName, string? zoneName, bool? isDefault, string? icasaLicense, bool? depConfirmation)
+            string? alternateNumber, string? name, string? surname, string? departmentName, string? zoneName, bool? isDefault, string? icasaLicense, bool? depConfirmation,bool?isArchitect)
         {
             if (userProfileID == 0)
             {
@@ -73,8 +73,9 @@ namespace BuildingPlans.Service
                     DepartmentName = departmentName,
                     zoneName = zoneName,
                     isDefault = isDefault,
-                    ICASALicense = icasaLicense
-
+                    ICASALicense = icasaLicense,
+                    isArchitect = isArchitect
+                    
 
 
                 };
@@ -749,8 +750,37 @@ namespace BuildingPlans.Service
                 return true;
             }
         }
+        public async Task<List<UserProfileDTO>> GetAllArchitects()
+        {
+            return await (
+                from Users in _context.UserProfilesTable
+                where Users.isArchitect == true && Users.isActive == true && Users.isInternal == false
+                select new UserProfileDTO()
+                {
+                    UserID = Users.UserID,
+                    FullName = Users.FullName,
+                    Email = Users.Email,
+                    PhoneNumber = Users.PhoneNumber,
 
 
+                }).ToListAsync();
+        }
+        public async Task<List<UserProfileDTO>> CheckForExistingUser(string fullName, string email)
+        {
+            return await (
+                from Users in _context.UserProfilesTable
+                where Users.FullName == fullName && Users.Email == email && Users.isActive == true
+                select new UserProfileDTO()
+                {
+                    UserID = Users.UserID,
+                    FullName = Users.FullName,
+                    Email = Users.Email,
+                    PhyscialAddress = Users.PhyscialAddress
+                }).ToListAsync();
+
+        }
     }
 
 }
+
+

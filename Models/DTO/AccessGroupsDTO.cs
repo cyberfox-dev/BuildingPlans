@@ -34,5 +34,10 @@ namespace BuildingPlans.Models.DTO
 
         //Zone Link Tings
         public int? UserProfileID { get; set; }
+
+        public string? SubDepartmentName { get; set; }
+        public string? ZoneName { get; set; }
+        public string? DepartmentName { get; set;}
+        public string? FunctionalArea { get; set; }
     }
 }

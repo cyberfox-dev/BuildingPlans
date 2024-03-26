@@ -1,0 +1,406 @@
+
+
+<div class="content-body">
+  <h2>Create New Application</h2>
+  
+  <mat-horizontal-stepper linear #stepper>
+
+    <mat-step>
+      <form>
+        <ng-template matStepLabel>Owner Details</ng-template>
+        <div class="detials">
+          <div class="card">
+            <h3><span>Property Owner details</span></h3>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="clientName" name="name" placeholder="Owner First Name">
+              <label for="name">Owner First Name *</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="clientSurname" name="surname" placeholder="Owner Surname">
+              <label for="surname">Owner Surname *</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="clientEmail" name="emailAddress" placeholder="Enter Email Address">
+              <label for="emailAddress">Email Address * </label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="clientCell" name="cellNumber" placeholder="Enter Cell Number">
+              <label for="cellNumber">Cell Number *</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="clientAltEmail" name="altEmail" placeholder="Enter alternate email address">
+              <label for="=altEmail"> Alternate Email Address  </label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="clientAltCell" name="clientAltCell" placeholder="Enter alternate Cell Number">
+              <label for="altCellNo"> Alternate Cell Number </label>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="clientIDNo" name="iDNumber" placeholder="Enter ID Number">
+            <label for="=iDNumber"> ID Number *  </label>
+          </div>
+        </div>
+
+
+
+
+      </form>
+      <div class="cont">
+
+        
+        <button type="submit" class="btn btn-outline-success" (click)="CheckOwnerInfo()">Save</button>
+        <button mat-raised-button color="primary" matStepperNext>Next</button> <!-- to be disabled using validClientInfo-->
+      </div>
+
+    </mat-step>
+    <!---------------------------------------------------------------Property Details--------------------------------------------------------->
+    <mat-step label="Property Details">
+      <div class="card">
+        <h3><span>Property Details Of Development</span></h3>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="propertyDescription" name="propertyDescription" placeholder="Enter property description ">
+            <label for="propertyDescription">Property Description *</label>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="premisesName" name="premisesName" placeholder="Enter premises name">
+            <label for="premisesName">Premises Name *</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <mat-form-field>
+          <mat-label>Address Type*</mat-label>
+          <mat-select [(ngModel)]="addressType" name="addressType" (selectionChange)="onCheckAddressType()">
+            <mat-option *ngFor="let address of addressTypesList" value="{{address.TypeName}}">{{address.TypeName}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="erfNo" name="erfNo" placeholder="Enter Erf Number">
+            <label for="erfNo">Erf Number *</label>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="portionNo" name="portionNo" placeholder="Enter Portion Number">
+            <label for="portionNo">Portion Number *</label>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="NoOfUnits" name="NoOfUnits" placeholder="Enter number of units">
+            <label for="NoOfUnits">Number of Units *</label>
+          </div>
+        </div>
+        <div class="col" *ngIf="isInputDisabled == false && addressType && addressType != 'Household'">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="unitNo" name="UnitNo" placeholder="Enter unit number">
+            <label for="UnitNo">{{addressType}} Number *</label>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3><span>Address Details Of Development</span></h3>
+      </div>
+      <div #address>
+        <div class="row">
+
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="streetAddress" name="streetAddress" placeholder="Street Address" [disabled]="isInputDisabled">
+              <label for="streetAddress">Street Address</label>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="suburb" name="suburb" placeholder="Suburb" [disabled]="isInputDisabled">
+              <label for="suburb">Suburb</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="city" name="city" placeholder="City" [disabled]="isInputDisabled">
+              <label for="city">City</label>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="postalCode" name="postalCode" placeholder="Postal Code" [disabled]="isInputDisabled">
+              <label for="postalCode">Postal Code</label>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="sGCode" name="sGCode" placeholder="SG Code">
+            <label for="sGCode">SG Code</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" *ngIf="map">
+        <h3><span>Location</span></h3>
+        <span>Double click on map to pin location or use select address in address box</span>
+      </div>
+
+      <!--<div *ngIf="map"> <app-project-details-map [data]="ARCGISAPIData"></app-project-details-map></div>-->
+      <app-google-maps-component></app-google-maps-component>
+      <div class="cont">
+
+        <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+       
+        <button mat-raised-button color="primary" matStepperNext >Next</button>
+      </div>
+    </mat-step>
+    <!----------------------------------------------Architect Details ------------------------------------------------->
+    <mat-step label="Architect Details">
+
+      <div class="row">
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]=" architectName" name=" architectName" placeholder=" Architect Name">
+            <label for=" architectName"> Architect Name</label>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="architectEmail" name="architectEmail" placeholder="Architect Email">
+            <label for="architectEmail">Architect Email Address</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="architectCell" name=" architectCell" placeholder=" Architect Cell">
+            <label for=" architectCell"> Architect Cellphone Number</label>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="architectID" name="architectID" placeholder="Architect ID">
+            <label for="architectID">Architect ID Number</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="regNo" name=" regNo" placeholder="Reg Number">
+            <label for="regNo"> Architect Registration Number</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="cont">
+        <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+        <button mat-raised-button color="primary" matStepperNext>Next</button>
+      </div>
+    </mat-step>
+<!-------------------------------------------------------------------Plan Details--------------------------------------------->
+    <mat-step label="Plan Details">
+
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="buildingPlansFor" name="plansFor" placeholder="Postal Code">
+          <label for="planFor">Bulding Plans For *</label>
+        </div>
+      </div>
+
+      <div class="row">
+        <mat-form-field>
+          <mat-label>Type Of Development *</mat-label>
+          <mat-select [(ngModel)]="typeOfDevelopment" name="typeOfDevelopment">
+            <mat-option value="Domestic">Domestic</mat-option>
+            <mat-option value="Commercial">Commercial</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+
+      <div class="row">
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="totalArea" name="totalArea" placeholder="Total Area">
+            <label for="totalArea">Total Area(meters squared)</label>
+          </div>
+        </div>
+      </div>
+
+      <button mat-raised-button (click)="openClassification()" color="action">Select Occupation Classification</button>
+
+      <div class="row" *ngIf="Classification">
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="Classification" name="occupationClassification" placeholder="Occupation Classification">
+            <label for="occupationClassification">Occupation Classification</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col" *ngIf="isInternal">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="planFees" name="Fees" placeholder="Plan Fees">
+            <label for="Fees">Plan Fees(R)</label>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="propertyValue" name="propertyValue" placeholder="Property Value">
+            <label for="propertyValue">Property Value(R)</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="cont">
+        <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+        <button mat-raised-button color="primary" matStepperNext>Next</button>
+      </div>
+
+    </mat-step>
+<!---------------------------------------------------------------uploading docs----------------------------------------------------------->
+
+<mat-step>
+  <form>
+    <ng-template matStepLabel>Document Uploads</ng-template>
+  </form>
+  <!--<mat-list *ngFor="let manDoc of MandatoryDocumentsLinkedStagesList | async; let i=index; trackBy: trackByFn" [attr.data-index]="i">-->
+  <mat-list *ngFor="let manDoc of BPMandatoryDocumentList | async; let i=index; trackBy: trackByFn" [attr.data-index]="i">
+    <mat-list-item> {{manDoc.mandatoryDocumentName}}</mat-list-item>
+    <mat-form-field>
+      <div>
+        <mat-toolbar>
+          <!-- Display files names -->
+          <input matInput readonly name="name" class="textFuckingBox" />
+          <!-- app-file-upload Component -->
+
+          <div class="container-fluid">
+            <app-bpfile-upload [ApplicationID]="applicationID"
+                             [UploadFor]="manDoc.mandatoryDocumentName"
+                             (passFileName)="onPassFileName($event,i)"
+                             (onUploadFinished)="onFileDelete($event, i)"
+                             (onUploadSuccess)="onFileUpload($event)">
+            </app-bpfile-upload>
+          </div>
+
+          
+          <!--<button *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)">Add Another Upload</button>-->
+          <!--<button mat-raised-button color="addNewUploadButtonColor" *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)" matTooltip="Add New Upload"><i class="fa fa-plus" aria-hidden="true"></i></button>
+          <button mat-raised-button color="warn" *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)" matTooltip="Delete"><i class="fa fa-trash" aria-hidden="true"></i></button>-->
+          <!--  <button *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)">Delete</button>-->
+        </mat-toolbar>
+      </div>
+    </mat-form-field>
+  </mat-list>
+
+  <div class="container04">
+    <mat-progress-bar mode="indeterminate" *ngIf="successfulUploads >0 && successfulUploads < totalDocs"></mat-progress-bar>
+
+
+
+
+    <button mat-raised-button color="green" *ngIf="successfulUploads == totalDocs" (click)=" buildProjectNumber()">
+      Create Application
+
+    </button>
+    
+    <!--  <img src="assets/Loading.png" *ngIf="successfulUploads >0 && successfulUploads < totalDocs" class="logo2">-->
+    <p *ngIf="successfulUploads >0 && successfulUploads < totalDocs">Uploading Documents. You may continue to upload remaining documents if needed.</p>
+
+
+  </div>
+  <div class="container04">
+    <button mat-raised-button color="green"  (click)=" buildProjectNumber()">
+      Create Application
+
+    </button>
+  </div>
+
+  <div class="cont">
+    <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+  </div>
+</mat-step>
+
+  </mat-horizontal-stepper>
+</div>
+
+<ng-template #selectClassification let-modal>
+  <div class="modal-header">
+    <h1>Select an Occupation Classification</h1>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="OccupationName">
+        <th mat-header-cell *matHeaderCellDef>Occupation Name</th>
+        <td mat-cell *matCellDef="let element"> {{element.ClassificationName}}:{{element.Occupancy}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Desription">
+        <th mat-header-cell *matHeaderCellDef>Description</th>
+        <td mat-cell *matCellDef="let element"> {{element.OccupancyDescription}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Select</th>
+        <td mat-cell *matCellDef="let i = index">
+          <mat-radio-button class="example-margin" (click)="SetOccupationClassification(i)"></mat-radio-button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef=" displayedColumn"></tr>
+      <tr mat-row *matRowDef="let row; columns:  displayedColumn;"></tr>
+
+    </table>
+    </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="modal.dismiss('Save Click')" >Save</button>
+  </div>
+   
+</ng-template>

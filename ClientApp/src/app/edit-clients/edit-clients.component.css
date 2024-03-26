@@ -1,0 +1,25 @@
+.createNewCon {
+  border-radius: 20px;
+  width: 20%;
+  margin: 0 auto;
+  height: 50px;
+  border: none;
+  color: white;
+  background-color: #005870;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+table {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.mat-warn {
+  background-color: #C00000;
+}
+
+.mat-green {
+  background-color: green;
+  color: white;
+}

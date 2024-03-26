@@ -69,5 +69,28 @@ namespace BuildingPlans.Data
         public virtual DbSet<ApplicationsDTO> ApplicationListDTO { get; set; }
 
         public virtual DbSet<DraftedProjects> DraftedProjectsTable { get; set; }
+
+        //Building plans updates
+        public DbSet<BPDocumentUploads> BPDocumentUploads { get; set; }
+        public DbSet<BPFunctionalAreas> BPFunctionalAreas { get; set; }
+
+        public DbSet<BPStagesCheckLists> bpStagesCheckLists { get; set; }
+        public DbSet<BPMandatoryStageDocuments> BPMandatoryStageDocuments { get; set; }
+        public DbSet<BPMandatoryDepartmentDocuments> BPMandatoryDepartmentDocuments { get; set; }
+        public DbSet<BPDepartmentChecklists> BPDepartmentChecklists { get; set; }
+        public DbSet<BPAccessGroups> BPAccessGroups { get; set; }
+        public DbSet<BPAccessGroupRoleLink> BPAccessGroupRoleLink { get; set; }
+        public DbSet<BPAccessGroupsUserLink> BPAccessGroupsUserLinks { get; set; }
+        public DbSet<BPAddressType> BPAddressTypes { get; set; }
+        public DbSet<BPNotifications> BPNotifications { get; set; }
+        public DbSet<BPDepartmentLinkTable> BPDepartmentLinkTable { get; set; }
+        public DbSet<BPFinancial> BPFinancial { get; set; }
+        public DbSet<UserLinkToArchitect> UserLinkToArchitects { get; set; }
+        public DbSet<BPMandatoryDocumentUploads> BPMandatoryDocumentUploads { get; set; }
+        public DbSet<BPDepartments> BPDepartments { get; set; }
+        public virtual DbSet<OccupationClassificationTable> OccupationClassificationTable { get; set; }
+        public virtual DbSet<BPDocumentCategoryTable> BPDocumentCategoryTable { get; set; }
+        public virtual DbSet<BuildingApplication> BuildingApplications { get; set; }
+        public DbSet<StagesTableBP> StagesTableBP { get; set; }
     }
 }

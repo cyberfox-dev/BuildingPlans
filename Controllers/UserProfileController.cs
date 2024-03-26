@@ -87,7 +87,7 @@ namespace BuildingPlans.Controllers
                             SubDepartmentName = model.SubDepartmentName,
                             isDepartmentAdmin = model.isDepartmentAdmin,
                             isZoneAdmin = model.isZoneAdmin,
-
+                            isArchitect = model.isArchitect,
 
                             DateCreated = DateTime.Now,
                             DateUpdated = DateTime.Now,
@@ -282,7 +282,10 @@ namespace BuildingPlans.Controllers
                         {
                             tempUserProfile.CreatedById = model.CreatedById;
                         }
-
+                        if(model.isArchitect != null)
+                        {
+                            tempUserProfile.isArchitect = model.isArchitect;
+                        }
 
                         _context.Update(tempUserProfile);
                         await _context.SaveChangesAsync();
@@ -797,6 +800,40 @@ namespace BuildingPlans.Controllers
             }
         }
 
+        [HttpGet("GetAllArchitects")]
+        public async Task<object> GetAllArchitects()
+        {
+            try
+            {
+                var result = await _userProfileService.GetAllArchitects();
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got all Architects", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
 
+            }
+        }
+        [HttpPost("CheckForExistingUser")]
+        public async Task<object> CheckForExistingUser([FromBody] UserProfileDTO model)
+        {
+            try
+            {
+                if (model.FullName == null || model.Email == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _userProfileService.CheckForExistingUser(model.FullName, model.Email);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "UserProfile List fetched", result));
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
     }
 }

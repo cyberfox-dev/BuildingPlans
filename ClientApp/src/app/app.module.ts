@@ -104,6 +104,18 @@ import { OldApplicationVersionsComponent } from './old-application-versions/old-
 import { ApplicationAlertsComponent } from 'src/app/application-alerts/application-alerts.component'; //Clarify Alerts Kyle
 import { SubdeptWayleaveExpirationComponent } from './subdept-wayleave-expiration/subdept-wayleave-expiration.component'; //wayleaveExpiry Sindiswa 08 February 2024
 import { StatusOfWorksComponent } from './status-of-works/status-of-works.component';
+import { BuildingApplicationComponent } from 'src/app/building-application/building-application.component';
+import { GoogleMapsComponentComponent } from './create-new-wayleave/google-maps-component/google-maps-component.component';
+import { GoogleMapsModule } from '@angular/google-maps'
+import { OccupationClassificationConfigComponent } from 'src/app/occupation-classification-config/occupation-classification-config.component';
+import { BPDepartmentConfigComponent } from './bpdepartment-config/bpdepartment-config.component';
+import { ChecklistConfigComponent } from 'src/app/checklist-config/checklist-config.component';
+import { BPAccessGroupsConfigComponent } from './bpaccess-groups-config/bpaccess-groups-config.component';
+import { BPViewProjectInfoComponent } from './bpview-project-info/bpview-project-info.component';
+import { EditClientsComponent } from './edit-clients/edit-clients.component';
+import { EditArchitectsComponent } from './edit-architects/edit-architects.component';
+import { BPFileUploadComponent } from './bpfile-upload/bpfile-upload.component';
+import { BPViewStageChecklistComponent } from './bpview-stage-checklist/bpview-stage-checklist.component';
 
 //import { MatExpansionModule } from '@angular/material/expansion';
 
@@ -194,6 +206,17 @@ import { StatusOfWorksComponent } from './status-of-works/status-of-works.compon
     ApplicationAlertsComponent,//Clarify Alerts Kyle 
     SubdeptWayleaveExpirationComponent, //wayleaveExpiry Sindiswa 08 February 2024
     StatusOfWorksComponent,
+    BuildingApplicationComponent,
+    GoogleMapsComponentComponent,
+    OccupationClassificationConfigComponent,
+    BPDepartmentConfigComponent,
+    ChecklistConfigComponent,
+    BPAccessGroupsConfigComponent,
+    BPViewProjectInfoComponent,
+    EditClientsComponent,
+    EditArchitectsComponent,
+    BPFileUploadComponent,
+    BPViewStageChecklistComponent,
 
 
 
@@ -241,6 +264,7 @@ import { StatusOfWorksComponent } from './status-of-works/status-of-works.compon
     MatIconModule,
     NgbModule,
     GooglePlaceModule,
+    GoogleMapsModule,
     DragDropModule,
     QuillModule.forRoot(),
     RouterModule.forRoot([
@@ -254,6 +278,8 @@ import { StatusOfWorksComponent } from './status-of-works/status-of-works.compon
       { path: 'cyberfox-config', component: CyberfoxConfigComponent },
       { path: 'invoice', component: InvoiceComponent },
       { path: 'internal-user-unassigned-department', component: InternalUserUnassignedDepartmentComponent },
+      { path: 'building-application', component: BuildingApplicationComponent },
+      { path: 'bpview-project-info', component: BPViewProjectInfoComponent }
     ])
   ],
   providers: [
@@ -287,6 +313,13 @@ import { StatusOfWorksComponent } from './status-of-works/status-of-works.compon
     UserManagementComponent, //actingAsInternal Sindiswa 05 February 2024
     ApplicationAlertsComponent,//Clarify Alerts Kyle
     StatusOfWorksComponent,
+    GoogleMapsComponentComponent,
+    BuildingApplicationComponent,
+    OccupationClassificationConfigComponent,
+    ChecklistConfigComponent,
+    BPAccessGroupsConfigComponent,
+    BPFileUploadComponent,
+    BPViewStageChecklistComponent,
   
   ],
   bootstrap: [AppComponent]

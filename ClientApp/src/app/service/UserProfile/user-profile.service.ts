@@ -27,7 +27,7 @@ export class UserProfileService {
     costCenterNumber?: string | null, costCenterOwner?: string | null, copyOfID?: any | null, createdById?: string | null, idNumber?: string | null,
     zoneID?: number | null, vatNumber?: string | null, refNumber?: string | null, companyType?: string | null, isDepartmentAdmin?: boolean | null,
     isZoneAdmin?: boolean | null, subDepartmentName?: string | null, alternateEmail?: string | null, alternateNumber?: string | null,
-    name?: string | null, surname?: string | null, departmentName?: string | null, zoneName?: string | null, isDefault?: boolean | null, icasaLicense?: string | null, depConfirmation?:boolean|null) {
+    name?: string | null, surname?: string | null, departmentName?: string | null, zoneName?: string | null, isDefault?: boolean | null, icasaLicense?: string | null, depConfirmation?:boolean|null,isArchitect?:boolean|null) {
 
     const isCreatingNewUser = userProfileID === null || userProfileID === undefined; // Check if a new user is being created
 
@@ -75,6 +75,7 @@ export class UserProfileService {
       DepartmentName: departmentName,
       isDefault: isDefault,
       ICASALicense: icasaLicense,
+      isArchitect: isArchitect,
     }
     return this.httpClient.post(this.baseURL + "AddUpdateUserProfiles", body);
 
@@ -184,6 +185,14 @@ export class UserProfileService {
     return this.httpClient.post(this.baseURL + "UpdateActingDepartment", userProfileID);
 
   }
-
-
+  public getAllArchitects() {
+    return this.httpClient.get(this.baseURL + "GetAllArchitects");
+  }
+  public checkForExistingUser(userFullName: string | null, userEmail: string | null) {
+    const body = {
+      FullName: userFullName,
+      Email: userEmail
+    }
+    return this.httpClient.post(this.baseURL + "CheckForExistingUser", body);
+  }
 }

@@ -36,7 +36,10 @@ import { ZoneForCommentService } from '../service/ZoneForComment/zone-for-commen
 import { ZoneLinkService } from '../service/ZoneLink/zone-link.service';
 import { SnackBarAlertsComponent } from '../snack-bar-alerts/snack-bar-alerts.component';
 import { MatButtonToggleGroup } from '@angular/material/button-toggle';
-
+import { BuildingApplicationsService } from 'src/app/service/BuildingApplications/building-applications.service'
+import { BuildingApplicationComponent } from 'src/app/building-application/building-application.component';
+import { UserLinkToArchitectService } from '../service/UserLinkToArchitect/user-link-to-architect.service';
+import { BPNotificationsService } from '../service/BPNotifications/bpnotifications.service';
 export interface EngineerList {
   professinalID: number;
   ProfessinalType: string;
@@ -226,7 +229,39 @@ export interface AllInternalUserProfileList {
 
 
 }
+export interface ArchitectsList {
+  ArchitectUserId: string;
+  ArchitectName: string;
+  ClientFullName: string;
+  ClientAddress: string;
+  ClientUserID: string;
+  CreatedById: string;
+}
 
+export interface ApplicationsListBP {
+  applicationID: number;
+  lSNumber: string;
+  erfNumber: string;
+  stage: string;
+  stageAge: any;
+  planAge: any;
+  ownerName: string;
+  propertyAddress: string;
+  status: string;
+  dateCreated: any;
+  dateUpdated: any;
+
+}
+
+export interface ArchitectClients {
+  ArchitectUserId: string;
+  ArchitectName: string;
+  ClientFullName: string;
+  ClientAddress: string;
+  ClientUserID: string;
+  CreatedById: string;
+
+}
 
 @Component({
   selector: 'app-home',
@@ -264,6 +299,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   ZoneLinkedList: ZoneList[] = [];
   applicationsForUsersZoneList: ZoneList[] = [];
   AllConfig: ConfigList[] = [];
+  ArchitectsList: ArchitectsList[] = [];
+  ApplicationsBP: ApplicationsListBP[] = [];
+  ArchitectClients: ArchitectClients[] = [];
 
   ServerType: string;
   BaseUrl: string;
@@ -298,6 +336,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   previousYear: number;
   appAge: number;
   escalateBtn: boolean = false;
+
+  existingClientCheck: boolean = false;
+  linkedClient: boolean = false;
+  exisitingArchitect: boolean = false;
+  linkedArchitect: boolean = false;
+
+  architectFullName: string;
+  architectEmail: string;
+  architectUserId: string;
 
   //Banner Kyle 26/01/24
   showBanner: boolean = false;
@@ -347,10 +394,22 @@ export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild("clientOption", { static: true }) clientOption!: ElementRef;
   @ViewChild("user", { static: true }) user!: ElementRef;
   @ViewChild("Prof", { static: true }) Prof!: ElementRef;
+  @ViewChild("architects", { static: true }) architect!: ElementRef;
+
   @Output() optionEvent = new EventEmitter<string>();
 
+  @ViewChild(MatTable) architectTable: MatTable<ArchitectsList> | undefined;
+  dataSourceArchitects = this.ArchitectsList;
+  displayedColumnsArchitects: string[] = ['fullName', 'actions'];
 
-  isDarkTheme: boolean = true;
+
+
+  displayedColumnsBP: string[] = ['lSNumber', 'ERFNumber', 'stage', 'stageAge', 'planAge', 'ownerName', 'eventName', 'status', 'dateCreated', 'dateUpdated', 'actions'];
+  displayedColumnsSign: string[] = ['lSNumber', 'ERFNumber', 'stage', 'stageAge', 'planAge', 'ownerName', 'natureOfEvent', 'status', 'dateCreated', 'dateUpdated', 'actions'];
+  dataSourceBP = this.ApplicationsBP;
+
+  isArchitect: boolean = false;
+  bpApplicationId: number;
 
   private subscriptions: Subscription[] = [];
 
@@ -372,7 +431,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   ActingAsInternal: boolean = false;
   public EMB: boolean = false;
   disableButtons: boolean = false;
-    stringifiedDataRoles: any;
+  stringifiedDataRoles: any;
 
   constructor(
     private router: Router,
@@ -403,6 +462,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     private draftApplicationService: DraftApplicationsService,
     private notificationsService: NotificationsService, // notifications Sindiswa 01 Februart 2024
     private notificationsComponent: NotificationCenterComponent, // notifications Sindiswa 09 February 2024
+    private UserlinkToArchitectService: UserLinkToArchitectService,
+    private bpApplicationService: BuildingApplicationsService,
+    private bpNotificationService: BPNotificationsService,
   ) {
     this.currentDate = new Date();
     this.previousMonth = this.currentDate.getMonth();
@@ -420,6 +482,16 @@ export class HomeComponent implements OnInit, OnDestroy {
   dataSource = this.Applications;
   AllCurrentUserRoles: any;
   routerSubscription: Subscription; //reapply Sindiswa 26 January 2024
+
+
+  openAddArchitect(addArchitect: any) {
+    this.modalService.open(addArchitect, {
+      centered: true,
+      size: 'xl',
+      backdrop: 'static', // Prevent clicking outside the modal to close it
+      keyboard: false // Prevent pressing the ESC key to close the modal
+    });
+  }
 
   openSnackBar(message: string) {
     this._snackBar.openFromComponent(SnackBarAlertsComponent, {
@@ -549,7 +621,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    
+
 
 
     setTimeout(() => {
@@ -569,7 +641,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
 
 
-  
+
       // #region escalation Sindiswa 29 January 2024 - just debugging
       console.log("These are the current user's details - I want to find out if they are EMB or nah", this.CurrentUserProfile);
       console.log("Is this the directorate?", this.CurrentUserProfile[0].directorate);
@@ -614,7 +686,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.stringifiedDataRoles = JSON.parse(JSON.stringify(localStorage.getItem('AllCurrentUserRoles')));
       this.AllCurrentUserRoles = JSON.parse(this.stringifiedDataRoles);
       this.onCheckAllRolesForUser();
-
+      this.getAllClientsForArchitect();
       this.setSelectedVal();
       // Call the appropriate method based on the initially selected value
       this.onToggleChange(this.selectedVal);
@@ -627,12 +699,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngAfterViewInit() {
     // Check which tabs are currently visible and select the first one
-/*    const visibleTabs = ['Reviewer', 'SR', 'FR', 'PC', 'PI', 'ZA', 'EMB', 'GISR'].filter(tab => this[`${tab.toLowerCase()}Tab`]);
-    debugger;
-    if (visibleTabs.length > 0) {
-      debugger;
-      this.buttonToggleGroup.value = visibleTabs[0];
-    }*/
+    /*    const visibleTabs = ['Reviewer', 'SR', 'FR', 'PC', 'PI', 'ZA', 'EMB', 'GISR'].filter(tab => this[`${tab.toLowerCase()}Tab`]);
+        debugger;
+        if (visibleTabs.length > 0) {
+          debugger;
+          this.buttonToggleGroup.value = visibleTabs[0];
+        }*/
   }
 
 
@@ -669,15 +741,15 @@ export class HomeComponent implements OnInit, OnDestroy {
             this.disableButtons = true;
           }
           debugger;
-         
+
           console.log("Testing alerts", current, this.disableButtons);
-         
-          if (currentDate.toISOString().split('T')[0] >= startDate.toISOString().split('T')[0] && currentDate.toISOString().split('T')[0] <= endDate.toISOString().split('T')[0] ) {
+
+          if (currentDate.toISOString().split('T')[0] >= startDate.toISOString().split('T')[0] && currentDate.toISOString().split('T')[0] <= endDate.toISOString().split('T')[0]) {
             const checking = currentDate.toISOString().split('T')[0];
-            
+
             this.showBanner = true;
             this.alertMessage = current.configDescription.toUpperCase();
-          
+
             this.startDate = `${startDate.getDate()} ${months[startDate.getMonth()]} ${startDate.getFullYear()}`;
 
             this.endDate = `${endDate.getDate()} ${months[endDate.getMonth()]} ${endDate.getFullYear()}`;
@@ -685,7 +757,7 @@ export class HomeComponent implements OnInit, OnDestroy {
               this.showDates = "";
             }
             else if (current.utilitySlot3 == "1") {
-              this.showDates = " FROM " + this.startDate + " TO "+ this.endDate;
+              this.showDates = " FROM " + this.startDate + " TO " + this.endDate;
             }
             this.tagLength = this.alertMessage.length + this.showDates.length;
             break;
@@ -707,8 +779,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
   private parseDate(dateString: any): Date {
- 
-  
+
+
     return new Date(dateString);
   }
   //Banner Kyle 26/01/24
@@ -763,24 +835,18 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   sendOption() {
-    //  this.optionEvent.emit(this.option);
-    debugger;
     if (this.option == "internal") {
-      /* this.optionEvent.emit(this.option);*/
 
-      this.createWayleave(this.applicationType, this.isPlanning);
-      //this.NewWayleaveComponent.reciveOption(this.option);
+      debugger;
 
-    }
-    else if (this.option == "external") {
-      /* this.optionEvent.emit(this.option);*/
+      this.sharedService.clientUserID = this.CurrentUser.appUserId;
 
-      this.createWayleave(this.applicationType, this.isPlanning);
-      //this.NewWayleaveComponent.reciveOption(this.option);
-
+      /* this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: false } });*/
+      this.onCreateBuildingApplication();
     }
     else {
       this.openClientOption(this.clientOption);
+
     }
 
   }
@@ -831,36 +897,47 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   //The filter acts up sometimes - 
-  openUser(user: any) {
+  openUser(user: any, architectClient: any) {
 
-    if (this.isModalOpen) {
-      // Modal is already open, do nothing or handle it as needed
-      return;
-    }
+    //if (this.isModalOpen) {
+    //  // Modal is already open, do nothing or handle it as needed
+    //  return;
+    //}
 
     if (confirm("Are you sure you want to apply for an existing client?")) {
       this.isModalOpen = true;
+
       this.clearFilter();
+      if (this.CurrentUserProfile[0].isInternal) {
+        const modalRef = this.modalService.open(user, {
+          centered: true,
+          size: 'lg',
+          backdrop: 'static', // Prevent clicking outside the modal to close it
+          keyboard: false // Prevent pressing the ESC key to close the modal
+        });
 
-      const modalRef = this.modalService.open(user, {
-        centered: true,
-        size: 'lg',
-        backdrop: 'static', // Prevent clicking outside the modal to close it
-        keyboard: false // Prevent pressing the ESC key to close the modal
-      });
-
-      modalRef.result.then(
-        (result) => {
-          // Handle modal closure here
-          this.isModalOpen = false;
-          this.clearFilter();
-        },
-        (reason) => {
-          // Handle modal dismissal here if needed
-          this.isModalOpen = false;
-          this.clearFilter();
-        }
-      );
+        modalRef.result.then(
+          (result) => {
+            // Handle modal closure here
+            this.isModalOpen = false;
+            this.clearFilter();
+          },
+          (reason) => {
+            // Handle modal dismissal here if needed
+            this.isModalOpen = false;
+            this.clearFilter();
+          }
+        );
+      }
+      else {
+        this.getAllClientsForArchitect();
+        this.modalService.open(architectClient, {
+          centered: true,
+          size: 'lg',
+          backdrop: 'static', // Prevent clicking outside the modal to close it
+          keyboard: false // Prevent pressing the ESC key to close the modal
+        });
+      }
     } else {
       // Handle the case when the user cancels the confirmation
     }
@@ -1323,18 +1400,18 @@ export class HomeComponent implements OnInit, OnDestroy {
 
             this.InternalExternalUser = true;
             this.FilterBtn = false;
-            
+
             this.applicationService.getApplicationsList(this.CurrentUser.appUserId, false).subscribe((data: any) => {
-              
+
 
               if (data.responseCode == 1) {
 
-                
+
                 for (let i = 0; i < data.dateSet.length; i++) {
                   const tempApplicationList = {} as ApplicationsList;
                   const tempApplicationListShared = {} as ApplicationList;
                   const current = data.dateSet[i];
-                  
+
 
 
 
@@ -1530,161 +1607,161 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   @ViewChild('mySelect') mySelect: MatSelect;
   getAllApplicationsByUserID() {
-   /* this.pastAndCurrentReviews = false;
-
-
-    this.Applications.splice(0, this.Applications.length);
-
-    if (this.CurrentUserProfile[0].isInternal) {
-
-
-
-
-      this.FilterBtn = true;
-*//*      this.onFilterApplicationForMyReviews();*//*
-
-    }
-    else {
-
-
-
-      *//*this.select = "option3";*//*
-
-
-      this.applicationService.getApplicationsList(this.CurrentUser.appUserId, false).subscribe((data: any) => {
-
-
-        if (data.responseCode == 1) {
-
-          for (let i = 0; i < data.dateSet.length; i++) {
-            const tempApplicationList = {} as ApplicationsList;
-            const tempApplicationListShared = {} as ApplicationList;
-            const current = data.dateSet[i];
-            console.log("current", current)
-            tempApplicationListShared.UserID = current.userID; // icasaDetailsDisplay Sindiswa 16 January 2024, it seems like this fixed the undefined UserID issue for external users checking on their applications
-            tempApplicationList.ApplicationID = current.applicationID;
-            tempApplicationList.FullName = current.fullName;
-            tempApplicationList.TypeOfApplication = current.typeOfApplication;
-            tempApplicationList.CurrentStage = current.currentStageName;
-            tempApplicationList.ApplicationStatus = current.applicationStatus;
-            this.date = current.dateCreated;
-            tempApplicationList.DateCreated = this.date.substring(0, current.dateCreated.indexOf('T'));;;
-            tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
-
-            if (current.projectNumber != null) {
-              tempApplicationList.ProjectNumber = current.projectNumber;
-            } else {
-              tempApplicationList.ProjectNumber = (current.applicationID).toString();
-            }
-
-            tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
-            *//*cal application age*//*
-
-            const currentDate = new Date();
-            const dateCreated = new Date(tempApplicationList.DateCreated);
-            const timeDiff = currentDate.getTime() - dateCreated.getTime();
-            const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
-            tempApplicationList.TestApplicationAge = daysDiff;
-
-            *//*cal stage age*//*
-            const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
-            const stageDate = currentDate.getTime() - stageDateCreated.getTime();
-            const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
-            tempApplicationList.TestApplicationStageAge = stageDateDiff;
-            //save here to send to the shared
-
-            //tempApplicationListShared.applicationID = current. ;
-            tempApplicationListShared.applicationID = current.applicationID;
-            tempApplicationListShared.clientName = current.fullName;
-            tempApplicationListShared.clientEmail = current.email;
-            tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
-            tempApplicationListShared.clientAddress = current.physicalAddress;
-            tempApplicationListShared.clientRefNo = current.referenceNumber;
-            tempApplicationListShared.CompanyRegNo = current.companyRegNo;
-            tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
-            tempApplicationListShared.NotificationNumber = current.notificationNumber;
-            tempApplicationListShared.WBSNumber = current.wbsNumber;
-            tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
-            tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
-            tempApplicationListShared.NatureOfWork = current.natureOfWork;
-            tempApplicationListShared.ExcavationType = current.excavationType;
-            tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
-            tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
-            tempApplicationListShared.Location = current.location;
-            tempApplicationListShared.clientCellNo = current.phoneNumber;
-            tempApplicationListShared.CreatedById = current.createdById;
-            tempApplicationListShared.ApplicationStatus = current.applicationStatus;
-            tempApplicationListShared.CurrentStageName = current.currentStageName;
-            tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
-            tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate;
-            tempApplicationListShared.NextStageName = current.nextStageName;
-            tempApplicationListShared.NextStageNumber = current.nextStageNumber;
-            tempApplicationListShared.PreviousStageName = current.previousStageName;
-            tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
-            tempApplicationListShared.DatePaid = current.datePaid;
-            tempApplicationListShared.wbsrequired = current.wbsRequired;
-            tempApplicationListShared.Coordinates = current.coordinates;
-            if (current.projectNumber != null) {
-              tempApplicationListShared.ProjectNumber = current.projectNumber;
-            } else {
-              tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
-            }
-            debugger;
-            tempApplicationListShared.isPlanning = current.isPlanning;
-            if (current.networkLicenses == true) {
-              tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
-            }
-            else {
-              tempApplicationListShared.NetworkLicensees = " ";
-            }
-
-            tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
-            //#region escalation Sindiswa 31 January 2024
-            tempApplicationList.isEscalated = current.isEscalated;
-            tempApplicationList.EscalationDate = current.escalationDate;
-            tempApplicationList.EMBActionDate = current.embActionDate;
-            //#endregion
-
-            this.applicationDataForView.push(tempApplicationListShared);
-            console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
-            *//*console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.tempApplicationList);*//*
-
-            this.Applications.push(tempApplicationList);
-
-          }
-          *//* this.mySelect.disabled = true;*//*
-          this.applicationsTable?.renderRows();
-          this.cardFilters = false;
-
-          console.log("Got all applications", data.dateSet);
-
+    /* this.pastAndCurrentReviews = false;
+ 
+ 
+     this.Applications.splice(0, this.Applications.length);
+ 
+     if (this.CurrentUserProfile[0].isInternal) {
+ 
+ 
+ 
+ 
+       this.FilterBtn = true;
+ *//*      this.onFilterApplicationForMyReviews();*//*
+    
         }
         else {
-          alert(data.responseMessage);
-        }
+    
+    
+    
+          *//*this.select = "option3";*//*
 
-        //for card filters
-        *//* this.select = "option3";*//*
-        this.recentUnpaidCount();
-        this.recentDistributedCount();
-        this.recentApprovedCount();
-        this.recentejectedCount();
-        this.recentWIPCount();
-        this.isTableLoading = false;
 
-      })
+    this.applicationService.getApplicationsList(this.CurrentUser.appUserId, false).subscribe((data: any) => {
+
+
+      if (data.responseCode == 1) {
+
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempApplicationList = {} as ApplicationsList;
+          const tempApplicationListShared = {} as ApplicationList;
+          const current = data.dateSet[i];
+          console.log("current", current)
+          tempApplicationListShared.UserID = current.userID; // icasaDetailsDisplay Sindiswa 16 January 2024, it seems like this fixed the undefined UserID issue for external users checking on their applications
+          tempApplicationList.ApplicationID = current.applicationID;
+          tempApplicationList.FullName = current.fullName;
+          tempApplicationList.TypeOfApplication = current.typeOfApplication;
+          tempApplicationList.CurrentStage = current.currentStageName;
+          tempApplicationList.ApplicationStatus = current.applicationStatus;
+          this.date = current.dateCreated;
+          tempApplicationList.DateCreated = this.date.substring(0, current.dateCreated.indexOf('T'));;;
+          tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
+
+          if (current.projectNumber != null) {
+            tempApplicationList.ProjectNumber = current.projectNumber;
+          } else {
+            tempApplicationList.ProjectNumber = (current.applicationID).toString();
+          }
+
+          tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
+          *//*cal application age*//*
+
+    const currentDate = new Date();
+    const dateCreated = new Date(tempApplicationList.DateCreated);
+    const timeDiff = currentDate.getTime() - dateCreated.getTime();
+    const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+    tempApplicationList.TestApplicationAge = daysDiff;
+
+    *//*cal stage age*//*
+    const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
+    const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+    const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+    tempApplicationList.TestApplicationStageAge = stageDateDiff;
+    //save here to send to the shared
+
+    //tempApplicationListShared.applicationID = current. ;
+    tempApplicationListShared.applicationID = current.applicationID;
+    tempApplicationListShared.clientName = current.fullName;
+    tempApplicationListShared.clientEmail = current.email;
+    tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
+    tempApplicationListShared.clientAddress = current.physicalAddress;
+    tempApplicationListShared.clientRefNo = current.referenceNumber;
+    tempApplicationListShared.CompanyRegNo = current.companyRegNo;
+    tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
+    tempApplicationListShared.NotificationNumber = current.notificationNumber;
+    tempApplicationListShared.WBSNumber = current.wbsNumber;
+    tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
+    tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
+    tempApplicationListShared.NatureOfWork = current.natureOfWork;
+    tempApplicationListShared.ExcavationType = current.excavationType;
+    tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
+    tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
+    tempApplicationListShared.Location = current.location;
+    tempApplicationListShared.clientCellNo = current.phoneNumber;
+    tempApplicationListShared.CreatedById = current.createdById;
+    tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+    tempApplicationListShared.CurrentStageName = current.currentStageName;
+    tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+    tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate;
+    tempApplicationListShared.NextStageName = current.nextStageName;
+    tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+    tempApplicationListShared.PreviousStageName = current.previousStageName;
+    tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+    tempApplicationListShared.DatePaid = current.datePaid;
+    tempApplicationListShared.wbsrequired = current.wbsRequired;
+    tempApplicationListShared.Coordinates = current.coordinates;
+    if (current.projectNumber != null) {
+      tempApplicationListShared.ProjectNumber = current.projectNumber;
+    } else {
+      tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+    }
+    debugger;
+    tempApplicationListShared.isPlanning = current.isPlanning;
+    if (current.networkLicenses == true) {
+      tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+    }
+    else {
+      tempApplicationListShared.NetworkLicensees = " ";
     }
 
-    const userId = this.CurrentUser.appUserId;
-    const isInternal = this.CurrentUserProfile[0].isInternal;
+    tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
+    //#region escalation Sindiswa 31 January 2024
+    tempApplicationList.isEscalated = current.isEscalated;
+    tempApplicationList.EscalationDate = current.escalationDate;
+    tempApplicationList.EMBActionDate = current.embActionDate;
+    //#endregion
+
+    this.applicationDataForView.push(tempApplicationListShared);
+    console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+    *//*console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.tempApplicationList);*//*
+
+    this.Applications.push(tempApplicationList);
+
+  }
+  *//* this.mySelect.disabled = true;*//*
+    this.applicationsTable?.renderRows();
+    this.cardFilters = false;
+
+    console.log("Got all applications", data.dateSet);
+
+  }
+  else {
+    alert(data.responseMessage);
+  }
+
+  //for card filters
+  *//* this.select = "option3";*//*
+    this.recentUnpaidCount();
+    this.recentDistributedCount();
+    this.recentApprovedCount();
+    this.recentejectedCount();
+    this.recentWIPCount();
+    this.isTableLoading = false;
+
+  })
+}
+
+const userId = this.CurrentUser.appUserId;
+const isInternal = this.CurrentUserProfile[0].isInternal;
 
 
-    // Store the subscription in the subscriptions array
-    const subscription = this.applicationService.getApplicationsList(userId, isInternal)
-      .subscribe((data: any) => {
-        // Handle data
-      });
-    this.subscriptions.push(subscription);
+// Store the subscription in the subscriptions array
+const subscription = this.applicationService.getApplicationsList(userId, isInternal)
+  .subscribe((data: any) => {
+    // Handle data
+  });
+this.subscriptions.push(subscription);
 */
 
   }
@@ -1744,7 +1821,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   viewProject(index: any) {
-    
+
     this.sharedService.getShowFormerApps(); //reapply Sindiswa 26 January 2024
     console.log("FIND", this.applicationDataForView[index]);
     if (this.newList.length > 0) {
@@ -1753,11 +1830,11 @@ export class HomeComponent implements OnInit, OnDestroy {
         // Assuming this.applicationDataForView and newList are your arrays
 
         const desiredApplicationID = this.newList[index].ApplicationID; // Replace [0] with the specific index you want to match
-        
+
         const foundRow = this.applicationDataForView.find(item => item.applicationID === desiredApplicationID);
 
         if (foundRow) {
-          
+
           this.applicationDataForViewToShared.push(foundRow);
           break;
           // Do something with the found row
@@ -1774,7 +1851,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
       this.applicationDataForViewToShared.push(this.applicationDataForView[index]);
     }
-    
+
 
     console.log("this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]this.applicationDataForView[index]", this.applicationDataForView[index]);
     this.sharedService.setViewApplicationIndex(this.applicationDataForViewToShared);
@@ -2042,14 +2119,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   async CheckIfCanReapply(element: any, index: any) {
 
 
-    
+
 
 
     this.relatedApplications.splice(0, this.relatedApplications.length);
 
     //this.sharedService.getProjectNumber() i removed this
     // #region checkingNotifications Sindiswa 15 February 2024
-    if (element.ProjectNumber === null || element.ProjectNumber === undefined || !element.ProjectNumber.startsWith("WL:")) { 
+    if (element.ProjectNumber === null || element.ProjectNumber === undefined || !element.ProjectNumber.startsWith("WL:")) {
       this.canReapply = false;
       this.sharedService.setCanReapply(false);
       console.log("You cannot reapply.");
@@ -2066,12 +2143,12 @@ export class HomeComponent implements OnInit, OnDestroy {
             tempRelatedApplications.ProjectNumber = current.projectNumber;
 
             this.relatedApplications.push(tempRelatedApplications);
-         
+
           }
 
         }
         else {
-         
+
           alert(data.responseMessage);
         }
         console.log("Reponse while viewing unpaid external project:", data);
@@ -4848,18 +4925,18 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   openInternalUserClient(internalUser: any) {
-   
-      this.modalService.open(internalUser, { backdrop: 'static', centered: true, size: 'xl' });
-      
 
-    }
-  
-/*  <!--JJS 02Feb changed the external user acting as internal text for the modal and made them go straight to choose an exsisting internal client-->*/
+    this.modalService.open(internalUser, { backdrop: 'static', centered: true, size: 'xl' });
+
+
+  }
+
+  /*  <!--JJS 02Feb changed the external user acting as internal text for the modal and made them go straight to choose an exsisting internal client-->*/
   openChoice(choiceEC: any) {
-    
+
     this.modalService.open(choiceEC, { backdrop: 'static', centered: true, size: 'xl' });
   }
-  openChoiceExternalActingAsInternal(internalUser: any){
+  openChoiceExternalActingAsInternal(internalUser: any) {
     if (this.ActingAsInternal == true) {
 
       this.internalUserSelected.emit();
@@ -4892,7 +4969,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.sharedService.option = 'proxy';
       this.openInternalUserClient(internalUser);
     }
-   
+
   }
   openSpin(spin) {
     this.modalService.open(spin, { backdrop: 'static', centered: true, size: 'xl' });
@@ -4999,7 +5076,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   filterForCurrentReviews() {
-    
+
     this.applicationDataForView = [];
     this.Applications = [];
     this.applicationsForUsersZoneList.splice(0, this.applicationsForUsersZoneList.length);
@@ -5214,7 +5291,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   projNum: string;
   // #region escalation Sindiswa 29 January 2024
   escalateApplication(element: any) {
-    
+
 
     this.appID = element.ApplicationID;
     this.projNum = element.ProjectNumber;
@@ -5224,7 +5301,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.applicationService.escalateApplication(element.ApplicationID).subscribe(async (data: any) => {
 
         if (data.responseCode == 1) {
-          
+
           console.log(`An application with the following project number ${element.ProjectNumber} has been escalated.`);
 
           //Hebana, do they want an email AND a notification
@@ -5249,7 +5326,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
   async getUniqueEmbUsers(): Promise<any> {
-    
+
     try {
       const embUserData: any = await this.userPofileService.getUsersBySubDepartmentName("EMB").toPromise();
       //const embUserData: any = await this.accessGroupsService.getUserBasedOnRoleName("EMB", 1021).toPromise();
@@ -5283,7 +5360,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
   sendEmailToEmb(embUsers: any[]): void {
-    
+
     try {
       for (const obj of embUsers) {
         const emailContent2 = `
@@ -5331,9 +5408,9 @@ export class HomeComponent implements OnInit, OnDestroy {
         if (obj.alternativeEmail) {
           this.notificationsService.sendEmail(obj.alternativeEmail, "Escalated wayleave application", emailContent2, emailContent2);
         }
-        
+
         // Add update notification
-        
+
         this.notificationsService.addUpdateNotification(
           0,
           "Application Needs Immediate Attention",
@@ -5377,7 +5454,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   getToggleValue(roleName: string): string {
 
     return roleName === "Final Approver" ? "FR" : roleName;
-    
+
   }
   onToggleChange(selectedValue: string): void {
     // Fetch applications based on the selected role
@@ -5470,7 +5547,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
   selectedVal = '';
-  roleOrder = ["Reviewer", "Senior Reviewer", "Final Approver", "Department Admin","Permit Coordinator", "Issue Permit", "EMB", "GIS Reviewer"];
+  roleOrder = ["Reviewer", "Senior Reviewer", "Final Approver", "Department Admin", "Permit Coordinator", "Issue Permit", "EMB", "GIS Reviewer"];
 
   setSelectedVal(): void {
     for (const roleName of this.roleOrder) {
@@ -5481,7 +5558,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
   onFilterApplicationForMyReviews() {
-    
+
     this.notNyProjects = true;
     this.isTableLoading = true;
     this.MyProjects = false;
@@ -5494,153 +5571,153 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.applicationService.getApplicationsForReviewer(this.CurrentUserProfile[0].zoneID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
 
-          if (data.responseCode == 1) {
+      if (data.responseCode == 1) {
 
 
-            for (let i = 0; i < data.dateSet.length; i++) {
-              const tempApplicationList = {} as ApplicationsList;
-              const tempApplicationListShared = {} as ApplicationList;
-              const current = data.dateSet[i];
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempApplicationList = {} as ApplicationsList;
+          const tempApplicationListShared = {} as ApplicationList;
+          const current = data.dateSet[i];
 
-              //JJS-15-02-2024 Fixing the delete drafts (wasn't deleting)-->
-              const isDuplicate = this.Applications.some(app => app.ApplicationID === current.applicationID);
-
-
-              if (!isDuplicate) {
-
-                console.log("current", current)
-                tempApplicationList.ApplicationID = current.applicationID;
-                tempApplicationList.FullName = current.fullName;
-                tempApplicationList.TypeOfApplication = current.typeOfApplication;
-                tempApplicationList.CurrentStage = current.currentStageName;
-                tempApplicationList.ApplicationStatus = current.applicationStatus;
-                tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
-
-                tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
-                tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
-
-                /*cal application age*/
-
-                const currentDate = new Date();
-                const dateCreated = new Date(tempApplicationList.DateCreated);
-                const timeDiff = currentDate.getTime() - dateCreated.getTime();
-                const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
-                tempApplicationList.TestApplicationAge = daysDiff;
-
-                /*cal stage age*/
-                const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
-                const stageDate = currentDate.getTime() - stageDateCreated.getTime();
-                const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
-                tempApplicationList.TestApplicationStageAge = stageDateDiff;
-                console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
+          //JJS-15-02-2024 Fixing the delete drafts (wasn't deleting)-->
+          const isDuplicate = this.Applications.some(app => app.ApplicationID === current.applicationID);
 
 
+          if (!isDuplicate) {
 
-                if (current.projectNumber != null) {
-                  tempApplicationList.ProjectNumber = current.projectNumber;
-                } else {
-                  tempApplicationList.ProjectNumber = (current.applicationID).toString();
-                }
+            console.log("current", current)
+            tempApplicationList.ApplicationID = current.applicationID;
+            tempApplicationList.FullName = current.fullName;
+            tempApplicationList.TypeOfApplication = current.typeOfApplication;
+            tempApplicationList.CurrentStage = current.currentStageName;
+            tempApplicationList.ApplicationStatus = current.applicationStatus;
+            tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
+            tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+            tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
 
-                /*            do {
-                              tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
-                            } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
-                //save here to send to the shared
+            /*cal application age*/
 
-                //tempApplicationListShared.applicationID = current. ;
-                tempApplicationListShared.applicationID = current.applicationID;
-                tempApplicationListShared.clientName = current.fullName;
-                tempApplicationListShared.clientEmail = current.email;
-                tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
-                tempApplicationListShared.clientAddress = current.physicalAddress;
-                tempApplicationListShared.clientRefNo = current.referenceNumber;
-                tempApplicationListShared.CompanyRegNo = current.companyRegNo;
-                tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
-                tempApplicationListShared.NotificationNumber = current.notificationNumber;
-                tempApplicationListShared.WBSNumber = current.wbsNumber;
-                tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
-                tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
-                tempApplicationListShared.NatureOfWork = current.natureOfWork;
-                tempApplicationListShared.ExcavationType = current.excavationType;
-                tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
-                tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
-                tempApplicationListShared.Location = current.location;
-                tempApplicationListShared.clientCellNo = current.phoneNumber;
-                tempApplicationListShared.CreatedById = current.createdById;
-                tempApplicationListShared.UserID = current.userID;//
-                tempApplicationListShared.ApplicationStatus = current.applicationStatus;
-                tempApplicationListShared.CurrentStageName = current.currentStageName;
-                tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+            const currentDate = new Date();
+            const dateCreated = new Date(tempApplicationList.DateCreated);
+            const timeDiff = currentDate.getTime() - dateCreated.getTime();
+            const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationAge = daysDiff;
 
-                tempApplicationListShared.NextStageName = current.nextStageName;
-                tempApplicationListShared.NextStageNumber = current.nextStageNumber;
-                tempApplicationListShared.PreviousStageName = current.previousStageName;
-                tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
-                tempApplicationListShared.DatePaid = current.datePaid;
-                tempApplicationListShared.wbsrequired = current.wbsRequired;
-                tempApplicationListShared.Coordinates = current.coordinates;
-                if (current.projectNumber != null) {
-                  tempApplicationListShared.ProjectNumber = current.projectNumber;
-                } else {
-                  tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
-                }
-
-                tempApplicationListShared.isPlanning = current.isPlanning;
-                tempApplicationListShared.permitStartDate = current.permitStartDate;
-
-                tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
-
-                //#region escalation Sindiswa 31 January 2024
-                tempApplicationList.isEscalated = current.isEscalated;
-                tempApplicationList.EscalationDate = current.escalationDate;
-                tempApplicationList.EMBActionDate = current.embActionDate;
-                //#endregion
+            /*cal stage age*/
+            const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
+            const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+            const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationStageAge = stageDateDiff;
+            console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
 
 
-                this.applicationDataForView.push(tempApplicationListShared);
-                console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
-                this.Applications.push(tempApplicationList);
-                /*Cehcing the escaltion date*/
-              }
-              this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
 
-                if (data.responseCode == 1) {
-
-                  const current = data.dateSet[0];
-                  console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
-                  this.viewEscalateDate = current.configDescription;
-                  if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
-                    this.escalateBtn = true;
-                  }
-
-                }
-                else {
-                  alert("Error");
-                }
-
-                console.log("response", data);
-              }, error => {
-                console.log("Error", error);
-              })
+            if (current.projectNumber != null) {
+              tempApplicationList.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationList.ProjectNumber = (current.applicationID).toString();
             }
-            this.changeDetectorRef.detectChanges();
-            this.dataSource = this.Applications.filter(df => df.DateCreated);
-            this.applicationsTable?.renderRows();
-            //for card filters
 
-            this.recentUnpaidCount();
-            this.recentDistributedCount();
-            this.recentApprovedCount();
-            this.recentejectedCount();
-            this.recentWIPCount();
-            this.pastAndCurrentReviews = true;
-            this.isTableLoading = false;
-            console.log("Got all applications", data.dateSet);
+
+            /*            do {
+                          tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
+                        } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
+            //save here to send to the shared
+
+            //tempApplicationListShared.applicationID = current. ;
+            tempApplicationListShared.applicationID = current.applicationID;
+            tempApplicationListShared.clientName = current.fullName;
+            tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
+            tempApplicationListShared.clientAddress = current.physicalAddress;
+            tempApplicationListShared.clientRefNo = current.referenceNumber;
+            tempApplicationListShared.CompanyRegNo = current.companyRegNo;
+            tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
+            tempApplicationListShared.NotificationNumber = current.notificationNumber;
+            tempApplicationListShared.WBSNumber = current.wbsNumber;
+            tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
+            tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
+            tempApplicationListShared.NatureOfWork = current.natureOfWork;
+            tempApplicationListShared.ExcavationType = current.excavationType;
+            tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
+            tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
+            tempApplicationListShared.Location = current.location;
+            tempApplicationListShared.clientCellNo = current.phoneNumber;
+            tempApplicationListShared.CreatedById = current.createdById;
+            tempApplicationListShared.UserID = current.userID;//
+            tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+            tempApplicationListShared.CurrentStageName = current.currentStageName;
+            tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+
+            tempApplicationListShared.NextStageName = current.nextStageName;
+            tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+            tempApplicationListShared.PreviousStageName = current.previousStageName;
+            tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+            tempApplicationListShared.DatePaid = current.datePaid;
+            tempApplicationListShared.wbsrequired = current.wbsRequired;
+            tempApplicationListShared.Coordinates = current.coordinates;
+            if (current.projectNumber != null) {
+              tempApplicationListShared.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+            }
+
+            tempApplicationListShared.isPlanning = current.isPlanning;
+            tempApplicationListShared.permitStartDate = current.permitStartDate;
+
+            tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
+
+            //#region escalation Sindiswa 31 January 2024
+            tempApplicationList.isEscalated = current.isEscalated;
+            tempApplicationList.EscalationDate = current.escalationDate;
+            tempApplicationList.EMBActionDate = current.embActionDate;
+            //#endregion
+
+
+            this.applicationDataForView.push(tempApplicationListShared);
+            console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+            this.Applications.push(tempApplicationList);
+            /*Cehcing the escaltion date*/
           }
-          else {
-            alert(data.responseMessage);
-          }
+          this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+
+              const current = data.dateSet[0];
+              console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
+              this.viewEscalateDate = current.configDescription;
+              if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
+                this.escalateBtn = true;
+              }
+
+            }
+            else {
+              alert("Error");
+            }
+
+            console.log("response", data);
+          }, error => {
+            console.log("Error", error);
+          })
+        }
+        this.changeDetectorRef.detectChanges();
+        this.dataSource = this.Applications.filter(df => df.DateCreated);
+        this.applicationsTable?.renderRows();
+        //for card filters
+
+        this.recentUnpaidCount();
+        this.recentDistributedCount();
+        this.recentApprovedCount();
+        this.recentejectedCount();
+        this.recentWIPCount();
+        this.pastAndCurrentReviews = true;
+        this.isTableLoading = false;
+        console.log("Got all applications", data.dateSet);
+      }
+      else {
+        alert(data.responseMessage);
+      }
 
     })
     this.isTableLoading = false;
@@ -6854,6 +6931,393 @@ export class HomeComponent implements OnInit, OnDestroy {
         alert(data.responseMessage);
       }
 
+    })
+  }
+
+
+  GoToBuildingApplication() {
+    debugger;
+    if (this.isArchitect == true) {
+
+      this.openSm(this.content);
+    }
+
+    else if (this.CurrentUserProfile[0].isInternal == true) {
+      this.openClientOption(this.clientOption);
+    }
+    else {
+      this.getAllArchitectsForUser();
+
+      this.sharedService.External = true;
+    }
+
+
+  }
+
+  getAllArchitectsForUser() {
+    debugger;
+    this.ArchitectsList.splice(0, this.ArchitectsList.length);
+    this.UserlinkToArchitectService.getArchitectsForUser(this.CurrentUser.appUserId).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        debugger;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempArchitectList = {} as ArchitectsList;
+          const current = data.dateSet[i];
+
+          tempArchitectList.ArchitectName = current.architectName;
+          tempArchitectList.ArchitectUserId = current.architectUserID;
+
+          this.ArchitectsList.push(tempArchitectList);
+        }
+
+
+        this.architectTable.renderRows();
+        this.modalService.open(this.architect, {
+          centered: true,
+          size: 'xl',
+          backdrop: 'static', // Prevent clicking outside the modal to close it
+          keyboard: false // Prevent pressing the ESC key to close the modal
+        });
+      }
+      else {
+        alert(data.responseMessage)
+      }
+    }, error => {
+      console.log("Error: ", error)
+    })
+  }
+
+  onCreateBuildingApplication() {
+    debugger;
+    /* NEEDED FOR FILE UPLOAD TO WORK CORRECTLY*/
+    this.bpApplicationService.addUpdateBuildingApplication(0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.CurrentUser.appUserId, null, null, null).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        debugger;
+        const current = data.dateSet;
+        this.bpApplicationId = current.applicationID;
+        debugger;
+        this.sharedService.applicationID = this.bpApplicationId;
+        this.router.navigate(['/building-application']);
+      }
+      else {
+        alert(data.responseMessage)
+      }
+    }, error => {
+      console.log("BuildingApplicationError: ", error)
+    })
+
+  }
+  GetAllBuildingApplications() {
+    debugger;
+    this.ApplicationsBP.splice(0, this.ApplicationsBP.length);
+    this.bpApplicationService.getAllBuildingApplications().subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempApplication = {} as ApplicationsListBP;
+          const current = data.dateSet[i];
+          debugger;
+          if (current.physicalAddress == undefined) {
+            tempApplication.propertyAddress = current.physicalAddress;
+          }
+          else {
+            var address = current.physicalAddress.split(',');
+            tempApplication.propertyAddress = address[0] + " " + address[1];
+          }
+          tempApplication.applicationID = current.applicationID;
+          tempApplication.lSNumber = current.lsNumber;
+          tempApplication.erfNumber = current.erfNumber;
+          tempApplication.stage = current.stage;
+          tempApplication.ownerName = current.firstName + " " + current.surname;
+
+          tempApplication.status = current.status;
+          tempApplication.dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
+          tempApplication.dateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf("T"));
+
+          this.ApplicationsBP.push(tempApplication);
+
+
+
+
+        }
+        this.dataSourceBP = this.ApplicationsBP;
+        this.applicationsTable.renderRows();
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("response", data);
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  getAllClientsForArchitect() {
+
+    this.ArchitectClients.splice(0, this.ArchitectClients.length);
+    this.UserlinkToArchitectService.getAllClientsForArchitect(this.CurrentUser.appUserId).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempUserList = {} as ArchitectClients;
+          const current = data.dateSet[i];
+
+          tempUserList.ArchitectName = current.architectName;
+          tempUserList.ArchitectUserId = current.architectUserID;
+          tempUserList.ClientAddress = current.address;
+          tempUserList.ClientFullName = current.cLientFullName;
+          tempUserList.ClientUserID = current.clientUserId;
+
+          this.ArchitectClients.push(tempUserList);
+        }
+
+
+      }
+      else {
+        alert(data.responseMessage)
+      }
+    }, error => {
+      console.log("Error: ", error)
+    })
+  }
+  saveDisabled: boolean = true;
+  SelectArchitect(index: any) {
+    debugger;
+    const UserID = this.ArchitectsList[index].ArchitectUserId;
+    this.sharedService.setArchitectID(UserID);
+    this.sharedService.architectUserID;
+    this.saveDisabled = false;
+  }
+
+  GetAllApplicationsForExternalUser() {
+    this.bpApplicationService.getApplicationsByExternalUserID(this.CurrentUser.appUserId).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempApplication = {} as ApplicationsListBP;
+          const current = data.dateSet[i];
+
+          tempApplication.applicationID = current.applicationID;
+          tempApplication.lSNumber = current.lsNumber;
+          tempApplication.erfNumber = current.erfNumber;
+          tempApplication.stage = current.stage;
+          tempApplication.ownerName = current.ownerName;
+          tempApplication.propertyAddress = current.propertyAddress;
+          tempApplication.status = current.status;
+          tempApplication.dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
+          tempApplication.dateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf("T"));
+
+          this.ApplicationsBP.push(tempApplication);
+        }
+        this.applicationsTable.renderRows();
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("response", data);
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  CheckArchitectLink() {
+
+    if (this.exisitingArchitect) {
+    
+      for (let i = 0; i < this.ArchitectsList.length; i++) {
+        const current = this.ArchitectsList[i];
+       
+        if (this.architectFullName == current.ArchitectName && this.architectUserId == current.ArchitectUserId) {
+          this.linkedArchitect = true;
+          alert("This architect is already listed under your architects");
+          this.modalService.dismissAll();
+        }
+      }
+
+      if (this.linkedArchitect == false) {
+        debugger;
+        this.UserlinkToArchitectService.addUpdateLinkedUser(0, this.architectUserId, this.architectFullName, this.CurrentUser.appUserId, this.CurrentUser.fullName, this.CurrentUser.appUserId, this.CurrentUserProfile[0].physicalAddress).subscribe((data: any) => {
+          if (data.reponseCode == 1) {
+            debugger;
+            alert(data.responseMessage);
+            this.getAllArchitectsForUser();
+            this.modalService.dismissAll();
+          }
+          else {
+            alert(data.responseMessage);
+          }
+          console.log("response", data);
+        }, error => {
+          console.log("Error: ", error);
+        })
+      }
+    }
+  }
+  CheckForArchitectUser() {
+    debugger;
+    this.userPofileService.getAllArchitects().subscribe((data: any) => {
+      debugger;
+      if (data.responseCode == 1) {
+        debugger;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          debugger;
+          if (this.architectFullName == current.fullName && this.architectEmail == current.email) {
+            debugger;
+            this.exisitingArchitect = true;
+            this.architectUserId = current.userID;
+            this.CheckArchitectLink();
+          }
+
+        }
+      } else {
+        alert(data.responseMessage);
+      }
+      console.log("response", data);
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+  }
+  ValidateArchitectInfo() {
+    const nameRegex = /^[a-zA-Z]+$/;
+    const emailRegex: RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    let name = this.architectFullName;
+    let email = this.architectEmail;
+    debugger;
+    if (this.architectFullName == undefined || this.architectFullName.trim() == "" || this.architectEmail == undefined || this.architectEmail.trim() == "") {
+      alert("Please enter architects and full name ");
+    }
+    else {
+      debugger;
+      const name = this.architectFullName.substring(0, this.architectFullName.indexOf(" "));
+      const surname = this.architectFullName.substring(this.architectFullName.indexOf(" ") + 1);
+      if (name.trim() == "" || surname.trim() == "") {
+        alert("Please enter architects Name and surname");
+      }
+      else if (emailRegex.test(this.architectEmail) == false) {
+        alert("Please enter a valid email address");
+      }
+      else {
+        this.CheckForArchitectUser();
+      }
+    }
+
+  }
+
+  checkingClientLink() {
+    debugger;
+    for (let i = 0; i < this.ArchitectClients.length; i++) {
+      debugger;
+      const tempArchitectClient = this.ArchitectClients[i];
+      if (this.clientFullName == tempArchitectClient.ClientFullName && this.CurrentUser.fullName == tempArchitectClient.ArchitectName) {
+        debugger;
+        this.linkedClient = true;
+        alert("This User is already listed as one of your clients");
+        this.modalService.dismissAll();
+      }
+
+
+    }
+
+    if (this.linkedClient == false) {
+      debugger;
+      this.userPofileService.checkForExistingUser(this.clientFullName, this.clientEmail).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          debugger;
+          const current = data.dateSet[0];
+          this.UserlinkToArchitectService.addUpdateLinkedUser(0, this.CurrentUser.appUserId, this.CurrentUser.fullName, current.userID, this.clientFullName, this.CurrentUser.appUserId, current.physcialAddress).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              alert(data.responseMessage);
+              this.modalService.dismissAll();
+            }
+            else {
+              alert(data.responseMessage);
+            }
+            console.log("response", data);
+          }, error => {
+            console.log("Error: ", error);
+          })
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("response", data);
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+  }
+
+  searchInput: any;
+
+  SearchForApplication() {
+    debugger;
+    const query = this.searchInput.toLowerCase();
+
+    const results = this.ApplicationsBP.filter(item => item.ownerName.toLowerCase().startsWith(query));
+
+    this.dataSourceBP = results;
+
+
+  }
+  ViewProject(index) {
+    debugger;
+    let applicationId = this.ApplicationsBP[index].applicationID;
+    this.sharedService.setApplicationID(applicationId);
+    this.router.navigate(['bpview-project-info']);
+  }
+  DeleteBuildingApplication(index: any) {
+    if (confirm("Are you sure you want to delete this Application")) {
+      let applicationId = this.ApplicationsBP[index].applicationID;
+      this.bpApplicationService.deleteApplicationByApplicationID(applicationId).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          alert("Application deleted Successfully");
+          this.GetAllBuildingApplications();
+          this.GetAllNotificationsForApplication(applicationId);
+        }
+        else {
+          alert(data.responseMessage)
+        }
+      }, error => {
+        console.log("BuildingApplicationError: ", error)
+      })
+    }
+    else {
+      return;
+    }
+  }
+  GetAllNotificationsForApplication(applicationId: number) {
+    debugger;
+    this.bpNotificationService.getNotificationByApplicationID(applicationId).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const notificationID = data.dateSet[i].notificationID;
+          this.DeleteNotificationByNotificationID(notificationID);
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("response", data);
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+
+
+  }
+  DeleteNotificationByNotificationID(notificationID: number) {
+    this.bpNotificationService.deleteNotificationByNotificationID(notificationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        console.log(data.responseMessage);
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("response", data);
+    }, error => {
+      console.log("Error: ", error);
     })
   }
 }
