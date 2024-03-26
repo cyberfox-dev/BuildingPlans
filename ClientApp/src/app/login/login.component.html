@@ -14,8 +14,9 @@
 
   <div class="splash flex" id="splashlogo">
     <div class="container2">
-      <img src="assets/cctlogoblack.png" class="logo">
-      <h3>Welcome to CCT Wayleave Management System</h3>
+      <img src="assets/engage_dev_logo.png" class="logo">
+      <h3>Welcome to the Engage Development Services System</h3>
+
     </div>
   </div>
   <div class="cont2">
@@ -34,11 +35,17 @@
 
             <input class="input" type="password" formControlName="registerPassword" placeholder="Password *" required [readonly]="regFormReadOnly" />
             <input class="input" type="password" formControlName="reenterPassword" placeholder="Re-enter password *" required *ngIf="showDuplicatePassInput" />
+
+            <div class="col">
+              <input type="checkbox" id="myCheckbox" name="myCheckbox" (click)="onCheckboxClick()">
+              <label for="myCheckbox">I Am An Architect</label>
+            </div>
+
             <button class="button2 OTP" (click)="onSendiOTP()" *ngIf="showDuplicatePassInput sendOTPBtn">Send OTP</button>
             <input class="input" type="text" placeholder="Enter OTP" formControlName="OTPField" *ngIf="!showDuplicatePassInput" />
             <button type="submit" [disabled]="!registerForm.valid" [class.disabled]="!registerForm.valid" class="button2" (click)="onVerifyOTPRegister()" *ngIf="!showDuplicatePassInput">Verify & Register</button>
             <!--Be sure to remove this paragraph when the app is finalized!!-->
-          <p>{{otp}}</p>
+            <p>{{otp}}</p>
           </form>
         </div>
         <div class="form-container sign-in-container">

@@ -310,18 +310,21 @@ export class LoginComponent implements OnInit {
 
 
   onLogin(): void {
+    debugger;
     if (this.loginForm.invalid) {
       console.error("Form is invalid");
       return;
     }
 
     this.isLoading = true;
-
+    debugger;
     const email = this.loginForm.controls["email"].value;
     const password = this.loginForm.controls["password"].value;
 
     this.userService.login(email, password).pipe(
+
       switchMap((data: LoginResponse) => {
+        debugger;
         if (data.responseCode === 1) {
           this.setLocalStorage("LoggedInUserInfo", data.dateSet);
           return this.getUserProfile();
@@ -1527,6 +1530,19 @@ this.userService.login(email, password).pipe(
 
   }
 
+  isArchitect: boolean = false;
+  onCheckboxClick() {
+    debugger;
+    if (this.isArchitect == false) {
+      this.isArchitect = true;
+
+    }
+    else {
+      this.isArchitect = false;
+    }
+
+    this.sharedService.setIsArchitect(this.isArchitect);
+  }
 }
 
 

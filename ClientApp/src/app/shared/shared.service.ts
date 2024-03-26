@@ -190,6 +190,9 @@ export class SharedService {
   getIsArchitect() {
     return this.isArchitect;
   }
+  setIsArchitect(isArchitect: boolean) {
+    this.isArchitect = isArchitect;
+  }
   // #region reapply Sindisiswa 26 January 2024
   setShowFormerApps(data: any) {
     this.showFormerApps = data;
