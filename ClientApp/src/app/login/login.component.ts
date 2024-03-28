@@ -129,7 +129,6 @@ export class LoginComponent implements OnInit {
       registerPassword: ['', Validators.required],
       reenterPassword: ['', Validators.required],
       fullName: ['', Validators.required],
-      bpNumber: [''],
       OTPField: ['', Validators.required],
     });
 
@@ -628,7 +627,6 @@ this.userService.login(email, password).pipe(
   async onChecksRegistration() {
     let fullName = this.registerForm.controls["fullName"].value;
     let email = this.registerForm.controls["registerEmail"].value;
-    let bpNumber = this.registerForm.controls["bpNumber"].value;
     let password = this.registerForm.controls["registerPassword"].value;
     let passwordConfirm = this.registerForm.controls["reenterPassword"].value;
 
@@ -657,7 +655,7 @@ this.userService.login(email, password).pipe(
 
       if (email.endsWith("@capetown.gov.za")) {
         this.internalUserNoBP = true;
-        bpNumber = ''; // Leave it empty for internal folks -- OKAY, I CAN'T DO THAT! OR CAN I?
+        // Leave it empty for internal folks -- OKAY, I CAN'T DO THAT! OR CAN I?
         this.externalWValidBP = false; // Make sure this is false for internal users
 
       } else {
@@ -670,24 +668,7 @@ this.userService.login(email, password).pipe(
           } else {
             console.log("Testing BP Number");
             // Ensure bpNumber is not empty before validating it
-            if (bpNumber.trim() === '') {
-              alert("Please enter a valid BP Number");
-              this.internalUserNoBP = false;
-              this.externalWValidBP = false;
-            } else {
-              console.log("Testing BP number now...");
-              const isValidBP = await this.testBp2(bpNumber);
-              if (isValidBP) {
-                this.internalUserNoBP = false;
-                this.externalWValidBP = true;
-              } else {
-                // Handle invalid BP Number
-                alert("Please enter a valid BP Number");
-                console.log("ngathi this BP is not valid.");
-                this.internalUserNoBP = false;
-                this.externalWValidBP = false; // Set this to false in case of an invalid BP Number
-              }
-            }
+
           }
         } catch (error) {
           console.error("An error occurred: ", error);
@@ -724,7 +705,7 @@ this.userService.login(email, password).pipe(
 
       // icasadetails Sindiswa 10 January 2024 - I temporarily commmented some conditions out because I don't have a valid BP Number, for some reason this 1000110197 didn't work
       //if (this.validNameSurname && this.validEmail && this.matchingRegPasswords) {
-      if (this.validNameSurname && this.validEmail && this.matchingRegPasswords && ((this.internalUserNoBP && !this.externalWValidBP) || (this.externalWValidBP && !this.internalUserNoBP))) {
+      if (this.validNameSurname && this.validEmail && this.matchingRegPasswords ) {
         this.regFormReadOnly = true;
         this.showDuplicatePassInput = false;
         this.onSendOTP();
@@ -760,7 +741,7 @@ this.userService.login(email, password).pipe(
     clientFullName = this.registerForm.controls["fullName"].value;
     clientEmail = this.registerForm.controls["registerEmail"].value;
 
-    BpNo = this.registerForm.controls["bpNumber"].value;
+    
 
     if (this.otp != otpEntered) {
       alert("Invalid OTP");
@@ -883,7 +864,7 @@ this.userService.login(email, password).pipe(
       clientFullName = this.registerForm.controls["fullName"].value;
       clientEmail = this.registerForm.controls["registerEmail"].value;
       clientRegisterPassword = this.registerForm.controls["registerPassword"].value;
-      BpNo = this.registerForm.controls["bpNumber"].value;
+     
 
     } else {
       onLoginForm = false;

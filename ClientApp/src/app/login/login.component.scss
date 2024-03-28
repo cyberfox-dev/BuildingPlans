@@ -960,3 +960,43 @@ img {
     transform: translateX(0);
   }
 }
+.loader {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  background: linear-gradient(45deg, red, black, red, black, red);
+  //background: linear-gradient(45deg, red, red 50%, black 50%, black, black 50%, red 50%, red, red 50%, black 50%, black, black 50%, red 50%, red);
+  transform: rotateX(65deg) rotate(45deg);
+  // remove bellows command for perspective change
+  //transform: perspective(200px) rotateX(65deg) rotate(45deg);
+  color: linear-gradient(45deg, red, black, red, black, red);
+  animation: layers1 1s linear infinite alternate;
+}
+
+.loader:after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, red, black, red, black, red);
+  animation: layerTr 1s linear infinite alternate;
+}
+
+@keyframes layers1 {
+  0% {
+    box-shadow: 0px 0px 0 0px
+  }
+
+  90%, 100% {
+    box-shadow: 40px 40px 0 -8px;
+  }
+}
+
+@keyframes layerTr {
+  0% {
+    transform: translate(0, 0) scale(1)
+  }
+
+  100% {
+    transform: translate(-50px, -50px) scale(1)
+  }
+  }

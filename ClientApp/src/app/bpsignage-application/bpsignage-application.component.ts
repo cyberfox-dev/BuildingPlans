@@ -8,8 +8,18 @@ import { Component, OnInit } from '@angular/core';
 export class BPSignageApplicationComponent implements OnInit {
 
   constructor() { }
+  typeOfApplicant: string;
+  isSingleApplicant: boolean;
 
   ngOnInit(): void {
   }
 
+  onSelectApplicant() {
+    if (this.typeOfApplicant == "Single") {
+      this.isSingleApplicant = true;
+    }
+    else if (this.typeOfApplicant == "Organisation") {
+      this.isSingleApplicant = false;
+    }
+  }
 }

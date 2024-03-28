@@ -21,11 +21,227 @@
             </mat-select>
           </mat-form-field>
         </div>
-
+        <br />
+        <div class="row">
+          <mat-form-field>
+            <mat-label>Type Of Applicant</mat-label>
+            <mat-select [(ngModel)]="typeOfApplicant" name="typeOfDevelopment" (selectionChange)="onSelectApplicant()">
+              <mat-option value="Single">Single Application</mat-option>
+              <mat-option value="Organisation">Organisation</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
         <div class="detials">
           <div class="card">
             <h3><span>Applicant Details</span></h3>
           </div>
+        </div>
+
+
+        <div class="row"><!--if applicant is an organisation-->
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Name Of Organisation </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" ><!--if applicant is single applicant-->
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Name </label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Surname</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Cell Number </label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Telephone Number</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Email Address </label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Fax Number</label>
+            </div>
+          </div>
+        </div>
+        <div class="detials">
+          <div class="card">
+            <h3><span>Address Details</span></h3>
+          </div>
+        </div>
+        <div class="row">
+          <mat-form-field>
+            <mat-label>Address Type</mat-label>
+            <mat-select name="typeOfDevelopment">
+              <mat-option></mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Street Number </label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Street Number</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Suburb Name </label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">City</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Postal Code </label>
+            </div>
+          </div>
+        </div>
+        <div class="cont">
+          <!--<button mat-raised-button color="primary" matStepperPrevious>Back</button>-->
+          <button mat-raised-button color="primary" matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step>
+      <form>
+        <ng-template matStepLabel>Premises Details FRMAB</ng-template>
+        <div class="detials">
+          <div class="card">
+            <h3><span>Application Details</span></h3>
+          </div>
+        </div>
+        <div class="row">
+
+          <mat-form-field>
+            <mat-label>Nature Of Advertisement</mat-label>
+            <mat-select name="typeOfDevelopment">
+              <mat-option></mat-option>
+
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="row">
+
+          <mat-form-field>
+            <mat-label>Schedule Areas Of Control</mat-label>
+            <mat-select name="typeOfDevelopment">
+              <mat-option></mat-option>
+
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Height Of Sign</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Width Of Sign</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Number Of Faces</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="date" class="form-control" id="startDate" placeholder="Enter Start Date" name="expectedStartDate"> <!--[min]="getCurrentDate()"-->
+              <label for="name">Start Date</label>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="date" class="form-control" id="endDate" placeholder="" name="expectedEndType">
+              <label for="name">Completion Date</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Applcation Fee </label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Monthly Fee</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Enter Wattage/Voltage </label>
+            </div>
+          </div>
+         
+        </div>
+        <br />
+
+        <div class="row">
+          <div class="col">
+            <mat-checkbox>Application For Electricity Required</mat-checkbox>
+          </div>
+        </div>
+        <div class="cont">
+          <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+          <button mat-raised-button color="primary" matStepperNext>Next</button>
         </div>
       </form>
     </mat-step>

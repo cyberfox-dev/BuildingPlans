@@ -28,7 +28,7 @@
 
   <h1 class="animationSlideUp">Hi, {{CurrentUserProfile[0].fullName}}</h1>
   <h2 class="animationSlideUp">Welcome to your Dashboard</h2>
-  <h3 class="animationSlideUp" *ngIf="ActingAs">You are acting as {{CurrentUserProfile[0].subDepartmentName}}, for {{CurrentUserProfile[0].zoneName}}</h3>
+  <!--<h3 class="animationSlideUp" *ngIf="ActingAs">You are acting as {{CurrentUserProfile[0].subDepartmentName}}, for {{CurrentUserProfile[0].zoneName}}</h3>-->
   <!--  <div style="background: red; text-align: center; font-size: xx-large; color: white; padding: 10px; line-height: 0.8;" *ngIf="ServerType === 'QA'">
       Please note, you've accessed the test server, nothing captured to this server will be processed. Please go to wayleave.capetown.gov.za to access the live site.
     </div>-->
@@ -63,7 +63,7 @@
   <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="openComplaints(complaint)">New Complaint</button>
   <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToDemolition(false)">Create Demolition Application</button>
   <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToDemolition(true)">Create Demolition Archive Application</button>
-  <!--<button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToSignageApplication()">Create Signage Application</button>-->
+  <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToSignageApplication()">Create Signage Application</button>
   <!-- Service Information Kyle 31/01/24-->
 </div>
 

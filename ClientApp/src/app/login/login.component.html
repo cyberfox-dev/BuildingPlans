@@ -31,15 +31,15 @@
 
             <input class="input" type="text" name="somthing" formControlName="registerEmail" placeholder="Email *" required [readonly]="regFormReadOnly" />
             <!-- Conditionally display and thereafter validate BP Number input -->
-            <input class="input" type="text" formControlName="bpNumber" placeholder="Business Partner No. *" *ngIf="showBPNumber" [readonly]="regFormReadOnly" />
+            <!--<input class="input" type="text" formControlName="bpNumber" placeholder="Business Partner No. *" *ngIf="showBPNumber" [readonly]="regFormReadOnly" />-->
 
             <input class="input" type="password" formControlName="registerPassword" placeholder="Password *" required [readonly]="regFormReadOnly" />
             <input class="input" type="password" formControlName="reenterPassword" placeholder="Re-enter password *" required *ngIf="showDuplicatePassInput" />
 
-            <div class="col">
+            <!--<div class="col">
               <input type="checkbox" id="myCheckbox" name="myCheckbox" (click)="onCheckboxClick()">
               <label for="myCheckbox">I Am An Architect</label>
-            </div>
+            </div>-->
 
             <button class="button2 OTP" (click)="onSendiOTP()" *ngIf="showDuplicatePassInput sendOTPBtn">Send OTP</button>
             <input class="input" type="text" placeholder="Enter OTP" formControlName="OTPField" *ngIf="!showDuplicatePassInput" />
@@ -70,16 +70,16 @@
         <div class="overlay-container">
           <div class="overlay">
             <div class="overlay-panel overlay-left">
-              <h1>Already Have A Wayleave System Profile?</h1>
+              <h1>Already Have A  System Profile?</h1>
               <button (click)="remove()" class="button2 ghost" id="login">Back To Login</button>
             </div>
             <div class="overlay-panel overlay-right">
-              <h1>Don't Have A Wayleave System Profile?</h1>
+              <h1>Don't Have A System Profile?</h1>
               <button (click)="add()" class="button2 ghost" id="signUp">Sign Up</button>
-              <p class="bprequired">* Please note a Business Partner (BP) number is required to use this portal. Your BP number can be found on the top right hand side corner of your municipal account.</p>
+              <!--<p class="bprequired">* Please note a Business Partner (BP) number is required to use this portal. Your BP number can be found on the top right hand side corner of your municipal account.</p>-->
               <br>
-              <p class="bprequired"><a href="https://eservices.capetown.gov.za/irj/portal" target="_blank">Click here</a> to register with CCT eServices for a BP number.</p>
-              <p class="link"> </p>
+              <!--<p class="bprequired"><a href="https://eservices.capetown.gov.za/irj/portal" target="_blank">Click here</a> to register with CCT eServices for a BP number.</p>
+              <p class="link"> </p>-->
             </div>
           </div>
         </div>
@@ -157,10 +157,14 @@
   </div>
 </ng-template>
 
-<div class="loading-screen" *ngIf="isLoading" id="loadingScreen">
+<!--<div class="loading-screen" *ngIf="isLoading" id="loadingScreen">
   <img src="assets/Loading.png" alt="" class="logo2">
+</div>-->
+<div class="loading-screen" *ngIf="isLoading" id="loadingScreen">
+  <!--<img src="assets/Loading.png" alt="" class="logo2">
+  Need to have an BP relevant loading shandis-->
+  <span class="loader"></span>
 </div>
-
 
 <div class="loading2" id="maintenanceMode" *ngIf="isMaintenanceMode">
   <img src="assets/cctlogoblack.png" class="logo3">
