@@ -116,6 +116,8 @@ import { EditClientsComponent } from './edit-clients/edit-clients.component';
 import { EditArchitectsComponent } from './edit-architects/edit-architects.component';
 import { BPFileUploadComponent } from './bpfile-upload/bpfile-upload.component';
 import { BPViewStageChecklistComponent } from './bpview-stage-checklist/bpview-stage-checklist.component';
+import { BPDemolitionApplicationComponent } from './bpdemolition-application/bpdemolition-application.component';
+import { BPSignageApplicationComponent } from './bpsignage-application/bpsignage-application.component';
 
 //import { MatExpansionModule } from '@angular/material/expansion';
 
@@ -217,7 +219,8 @@ import { BPViewStageChecklistComponent } from './bpview-stage-checklist/bpview-s
     EditArchitectsComponent,
     BPFileUploadComponent,
     BPViewStageChecklistComponent,
-
+    BPDemolitionApplicationComponent,
+    BPSignageApplicationComponent,
 
 
 
@@ -279,7 +282,9 @@ import { BPViewStageChecklistComponent } from './bpview-stage-checklist/bpview-s
       { path: 'invoice', component: InvoiceComponent },
       { path: 'internal-user-unassigned-department', component: InternalUserUnassignedDepartmentComponent },
       { path: 'building-application', component: BuildingApplicationComponent },
-      { path: 'bpview-project-info', component: BPViewProjectInfoComponent }
+      { path: 'bpview-project-info', component: BPViewProjectInfoComponent },
+      { path: 'bpdemolition-application', component: BPDemolitionApplicationComponent },
+      { path: 'bpsignage-application', component: BPSignageApplicationComponent },
     ])
   ],
   providers: [

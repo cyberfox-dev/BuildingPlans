@@ -1,0 +1,287 @@
+<app-nav-menu></app-nav-menu>
+
+<div class="content-body">
+  <h2 *ngIf="isArchive == false">Create Demolition Application</h2>
+  <h2 *ngIf="isArchive == true">Create Demolition Archive Application</h2>
+  <mat-horizontal-stepper linear #stepper>
+    <mat-step>
+      <form>
+        <ng-template matStepLabel>Applicant Details</ng-template>
+
+        <div class="detials">
+          <div class="card">
+            <h3><span>Applicant Details</span></h3>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Main Municipality *</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="name" placeholder="Owner First Name">
+              <label for="name">First Name *</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Surname *</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">ID Number *</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="name" placeholder="Owner First Name">
+              <label for="name">Email Address *</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Contact Number *</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <mat-checkbox [checked]="isOwner" (change)="onCheckIsOwner()">Applicant is Property Owner</mat-checkbox>
+        </div>
+
+        <div *ngIf="isOwner == false">
+          <div class="detials">
+            <div class="card">
+              <h3><span>Owner Details</span></h3>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" name="name" placeholder="Owner First Name">
+                <label for="name">Owner ID Number *</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" name="name" placeholder="Owner First Name">
+                <label for="name">Owner First Name *</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+                <label for="surname">Owner Surname*</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" name="name" placeholder="Owner First Name">
+                <label for="name"> Owner Email Address *</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+                <label for="surname">Owner Contact Number *</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cont">
+          <button mat-raised-button color="primary" matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <mat-step>
+      <form>
+        <ng-template matStepLabel>Address Details</ng-template>
+
+        <div class="detials">
+          <div class="card">
+            <h3><span>Applicant Address Details</span></h3>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="name" placeholder="Owner First Name">
+              <label for="name"> Street Number *</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Street Name *</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="name" placeholder="Owner First Name">
+              <label for="name"> Suburb *</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">City *</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Postal Code *</label>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="detials">
+          <div class="card">
+            <h3><span>Demolition Site Address Details</span></h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="name" placeholder="Owner First Name">
+              <label for="name"> Street Number *</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname"> Street Name *</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="name" placeholder="Owner First Name">
+              <label for="name">  Suburb *</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname"> City *</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname"> Postal Code *</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">ERF Number *</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Cadastral Description *</label>
+            </div>
+          </div>
+        </div>
+
+      </form>
+      <div class="cont">
+        <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+
+        <button mat-raised-button color="primary" matStepperNext>Next</button>
+      </div>
+    </mat-step>
+
+    <mat-step>
+      <form>
+
+        <ng-template matStepLabel>Demolition Details</ng-template>
+
+        <div class="detials">
+          <div class="card">
+            <h3><span>Reason For Demolition</span></h3>
+          </div>
+        </div>
+        <mat-form-field class="example-full-width">
+          <mat-label>Reason For Demolition</mat-label>
+
+          <textarea style="min-height:200px" matInput></textarea>
+
+        </mat-form-field>
+
+        <div class="detials">
+          <div class="card">
+            <h3><span>Property's Existing User</span></h3>
+          </div>
+        </div>
+        <div class="row">
+          <mat-form-field>
+            <mat-label>Property's Existing User</mat-label>
+            <mat-select name="typeOfDevelopment">
+              <mat-option></mat-option>
+
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Demolition Fees (R) </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="container04">
+          <button mat-raised-button color="green" (click)="Create()">
+            Create Demolition Application
+
+          </button>
+        </div>
+      </form>
+
+    </mat-step>
+  </mat-horizontal-stepper>
+</div>

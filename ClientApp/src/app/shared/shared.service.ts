@@ -183,6 +183,8 @@ export class SharedService {
   longitude: any;
   mapAddress: string;
   isArchitect: boolean;
+  isPlanArchive: boolean;
+  isDemolitionArchive: boolean;
 
   setArchitectID(UserID: string) {
     this.architectUserID = UserID;

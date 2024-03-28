@@ -17,6 +17,7 @@ code {
   height: 744px;
   position: absolute;
   top: 166px;
+  opacity:0.5;
 }
 
 .btn-primary {

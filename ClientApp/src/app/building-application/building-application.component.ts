@@ -209,6 +209,7 @@ export class BuildingApplicationComponent implements OnInit {
   isExternal: boolean = false;
   isArchitect: boolean = false;
   isOwner: boolean = false;
+  isArchivePlan: boolean;
 
   @ViewChild("selectClassification", { static: true }) content!: ElementRef;
   @ViewChild(MatTable) classificationTable: MatTable<OccupationClassifications> | undefined;
@@ -237,7 +238,7 @@ export class BuildingApplicationComponent implements OnInit {
 
   ngOnInit(): void {
     this.refreshService.enableRefreshNavigation('/home');
-    
+    this.isArchivePlan = this.sharedService.isPlanArchive;
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
@@ -884,22 +885,27 @@ export class BuildingApplicationComponent implements OnInit {
         }, error => {
           console.log("ClientInfoError: ", error)
 
-        })
+        }) 
        
       }
     }
   }
 
   
-    AddUpdateBuildingApplication() {
-    if (this.applicationID == 0) {
-      alert("Something has gone wrong please reload page and try again");
+  AddUpdateBuildingApplication() {
+    this.mapAddress = this.sharedService.mapAddress;
+    this.latitude = this.sharedService.latitude;
+    this.longitude = this.sharedService.longitude;
+
+    if (this.isArchivePlan) {
+      this.router.navigate(["/home"]);
     }
 
     else {
      
       debugger;
       if (this.option == "client" || this.isInternal == true) {
+        debugger;
         this.applicationService.addUpdateBuildingApplication(this.applicationID, this.lSNumber, this.clientUserID, this.clientName, this.clientSurname, this.clientEmail, this.clientCell, this.clientAltEmail, this.clientAltCell, this.clientIDNo, this.propertyDescription, this.premisesName, this.addressType, this.erfNo, this.portionNo, this.NoOfUnits, this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName, this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue, this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, null, null, null).subscribe((data: any) => {
           if (data.responseCode == 1) {
             debugger;
@@ -916,6 +922,7 @@ export class BuildingApplicationComponent implements OnInit {
         })
       }
       else {
+        debugger;
         this.applicationService.addUpdateBuildingApplication(this.applicationID, this.lSNumber, this.clientUserID, this.clientName, this.clientSurname, this.clientEmail, this.clientCell, this.clientAltEmail, this.clientAltCell, this.clientIDNo, this.propertyDescription, this.premisesName, this.addressType, this.erfNo, this.portionNo, this.NoOfUnits, this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName, this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue, this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId,"Pending", "Land Survey", null).subscribe((data: any) => {
           if (data.responseCode == 1) {
             debugger;

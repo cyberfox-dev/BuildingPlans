@@ -1,0 +1,35 @@
+<app-nav-menu></app-nav-menu>
+
+<div class="content-body">
+  <h2>Signage Capture</h2>
+
+  <mat-horizontal-stepper linear #stepper >
+    <mat-step>
+      <form>
+        <ng-template matStepLabel>Applicant Details</ng-template>
+        <div class="detials">
+          <div class="card">
+            <h3><span>Type Of Signage Application</span></h3>
+          </div>
+        </div>
+        <div class="row">
+          <mat-form-field>
+            <mat-label>Select A Type Of Signage Application</mat-label>
+            <mat-select name="typeOfDevelopment">
+              <mat-option></mat-option>
+
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="detials">
+          <div class="card">
+            <h3><span>Applicant Details</span></h3>
+          </div>
+        </div>
+      </form>
+    </mat-step>
+    
+  </mat-horizontal-stepper>
+
+</div>

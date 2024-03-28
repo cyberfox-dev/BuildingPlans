@@ -1,8 +1,9 @@
-
+<app-nav-menu></app-nav-menu>
 
 <div class="content-body">
-  <h2>Create New Application</h2>
-  
+  <h2 *ngIf="!isArchivePlan">Create New Land Survey Application</h2>
+  <h2 *ngIf="isArchivePlan">Create New Plan Archive Application</h2>
+
   <mat-horizontal-stepper linear #stepper>
 
     <mat-step>
