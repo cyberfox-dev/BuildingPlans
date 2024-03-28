@@ -7363,4 +7363,8 @@ this.subscriptions.push(subscription);
   goToSignageApplication() {
     this.router.navigate(["/bpsignage-application"]);
   }
+
+  goToBannerApplication() {
+    this.router.navigate(["/bpbanner-application"]);
+  }
 }
