@@ -72,8 +72,8 @@ namespace BuildingPlans.Controllers
             }
         }
 
-        [HttpGet("GetDepartmentsList")]
-        public async Task<object> GetDepartmentsList()
+        [HttpGet("GetAllDepartments")]
+        public async Task<object> GetAllDepartments()
         {
             try
             {

@@ -1,7 +1,7 @@
 <app-nav-menu></app-nav-menu>
 <div class="content-body">
-  <h2>New Banner Or Poster Application</h2>
-
+  <h2 *ngIf="!isFlagApplication">New Banner Or Poster Application</h2>
+  <h2 *ngIf="isFlagApplication">New Flag/Pole/NewsHeadline Application</h2>
   <mat-horizontal-stepper linear #stepper>
     <mat-step>
       <form>
@@ -14,13 +14,13 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname" [(ngModel)]="ApplicantName">
               <label for="surname">Name </label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname" [(ngModel)]="ApplicantSurname">
               <label for="surname">Surname</label>
             </div>
           </div>
@@ -28,13 +28,13 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="ApplicantEmail">
               <label for="surname">Email Address</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="ApplicantFax">
               <label for="surname">Fax Number</label>
             </div>
           </div>
@@ -42,13 +42,13 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="ApplicantCell">
               <label for="surname">Cell Number</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname" [(ngModel)]="ApplicantTelephone">
               <label for="surname">Telephone Number</label>
             </div>
           </div>
@@ -61,27 +61,27 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname" [(ngModel)]="streetNumber">
               <label for="surname">Street Number </label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
-              <label for="surname">Street Number</label>
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname" [(ngModel)]="streetName">
+              <label for="surname">Street Name</label>
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="Suburb">
               <label for="surname">Suburb Name </label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname" [(ngModel)]="City">
               <label for="surname">City</label>
             </div>
           </div>
@@ -89,18 +89,18 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname" [(ngModel)]="postalCode">
               <label for="surname">Postal Code </label>
             </div>
           </div>
         </div>
-        <div class="cont">
+        <div class="cont"> 
           <!--<button mat-raised-button color="primary" matStepperPrevious>Back</button>-->
           <button mat-raised-button color="primary" matStepperNext>Next</button>
         </div>
       </form>
     </mat-step>
-    <mat-step>
+    <mat-step *ngIf="!isFlagApplication">
       <form>
         <ng-template matStepLabel>Application Details</ng-template>
         <div class="detials">
@@ -112,9 +112,9 @@
 
           <mat-form-field>
             <mat-label>Type Of Advertisement</mat-label>
-            <mat-select name="typeOfDevelopment">
-              <mat-option>Banner</mat-option>
-              <mat-option>Poster</mat-option>
+            <mat-select [(ngModel)]="TypeOfAdvert" name="typeOfDevelopment">
+              <mat-option value="Banner">Banner</mat-option>
+              <mat-option value="Poster">Poster</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
@@ -123,7 +123,7 @@
 
           <mat-form-field>
             <mat-label>Nature Of Event</mat-label>
-            <mat-select name="typeOfDevelopment">
+            <mat-select name="typeOfDevelopment" [(ngModel)]="NatureOfEvent">
               <mat-option></mat-option>
 
             </mat-select>
@@ -137,7 +137,7 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname" >
               <label for="surname">Description Of Advertisement </label>
             </div>
           </div>
@@ -178,7 +178,7 @@
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="date" class="form-control" id="endDate" placeholder="" name="expectedEndType">
+              <input type="text" class="form-control" id="endDate" placeholder="" name="expectedEndType">
               <label for="name">Number Of Posters</label>
             </div>
           </div>
@@ -186,7 +186,7 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="date" class="form-control" id="endDate" placeholder="" name="expectedEndType">
+              <input type="text" class="form-control" id="endDate" placeholder="" name="expectedEndType">
               <label for="name">Application Fee</label>
             </div>
           </div>
@@ -200,9 +200,179 @@
         </div>
       </form>
     </mat-step>
+    <mat-step *ngIf="isFlagApplication">
+      <form>
+        <ng-template matStepLabel>Flag Details</ng-template>
+        <div class="detials">
+          <div class="card">
+            <h3><span>Location Details</span></h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="flagStreetName">
+              <label for="surname">Street Name</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Pole Number </label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">From Street Pole Ad  </label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">End Location</label>
+            </div>
+          </div>
+        </div>
+        <div class="detials">
+          <div class="card">
+            <h3><span>Flag Details</span></h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Nature Of Event</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Subject Matter To Which It Relates</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Number Of Flags (max 50)</label>
+            </div>
+          </div>
+        </div>
+        <div class="detials">
+          <div class="card">
+            <h3><span>Real Estate Details</span></h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Number Of Agents</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Nature Of Advertisement</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Subject Matter</label>
+            </div>
+          </div>
+        </div>
+        <div class="detials">
+          <div class="card">
+            <h3><span>Newspaper Headline Details</span></h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Number Of Agents</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Nature Of Advertisement Boards</label>
+            </div>
+          </div>
+        </div>
+        <div class="cont">
+          <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+          <button mat-raised-button color="primary" matStepperNext>Next</button>
+
+        </div>
+      </form>
+    </mat-step>
+    <mat-step *ngIf="isFlagApplication">
+      <form>
+        <ng-template matStepLabel>Application Details</ng-template>
+
+        <div class="row">
+
+          <mat-form-field>
+            <mat-label>Nature Of Event</mat-label>
+            <mat-select name="typeOfDevelopment">
+              <mat-option></mat-option>
+
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="date" class="form-control" id="startDate" placeholder="Enter Start Date" name="expectedStartDate"> <!--[min]="getCurrentDate()"-->
+              <label for="name">Start Date</label>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="date" class="form-control" id="endDate" placeholder="" name="expectedEndType">
+              <label for="name">Completion Date</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Place Of Event</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <label for="surname">Application Fee</label>
+            </div>
+          </div>
+        </div>
+        <div class="cont">
+          <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+          </div>
+      </form>
+    </mat-step>
   </mat-horizontal-stepper>
 </div>
 
-<div class="content-body" *ngIf="isFlagApplication">
-    <h2>Flag Pole Application</h2>
-</div>
+

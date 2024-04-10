@@ -38,4 +38,24 @@ export class BPBannerApplicationService {
     }
     return this.httpClient.post(this.baseURL + "AddUpdateBannerApplication", body);
   }
+
+  public getAllBannerApplications() {
+    return this.httpClient.get(this.baseURL + "GetAllBannerApplications");
+  }
+
+  public getBannerApplicationByApplictionID(applicationID: number | null) {
+    const body = {
+      ApplicationID:applicationID
+    }
+
+    return this.httpClient.post(this.baseURL + "GetBannerApplicationByApplicationID", body);
+  }
+
+  public deleteBannerApplicationByApplicationID(applicationID: number | null) {
+    const body = {
+      ApplicationID :applicationID
+    }
+
+    return this.httpClient.post(this.baseURL + "DeleteBannerApplicationByApplicationID", body);
+  }
 }

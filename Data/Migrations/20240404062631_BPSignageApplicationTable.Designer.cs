@@ -4,6 +4,7 @@ using BuildingPlans.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BuildingPlans.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240404062631_BPSignageApplicationTable")]
+    partial class BPSignageApplicationTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -535,149 +537,6 @@ namespace BuildingPlans.Data.Migrations
                     b.ToTable("BPAddressTypes");
                 });
 
-            modelBuilder.Entity("BuildingPlans.Data.Entities.BPBannerApplication", b =>
-                {
-                    b.Property<int?>("ApplicationID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("ApplicationID"), 1L, 1);
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApplicantCell")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApplicantEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApplicantFax")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApplicantName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApplicantSurname")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApplicantTelephone")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApplicationFee")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CurrentStage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DescriptionOfAdvert")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("NameOfEvent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NatureOfEvent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NextStage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NumberOfPosters")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PreviousStage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SizeOfPoster")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("TypeOfAdvert")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserID")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("isActive")
-                        .HasColumnType("bit");
-
-                    b.HasKey("ApplicationID");
-
-                    b.ToTable("BPBannerApplication");
-                });
-
-            modelBuilder.Entity("BuildingPlans.Data.Entities.BPComplaints", b =>
-                {
-                    b.Property<int?>("ComplaintID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("ComplaintID"), 1L, 1);
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CadastralDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CellNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Details")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmailAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IDNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LotNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Portion")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TelephoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Township")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("isActive")
-                        .HasColumnType("bit");
-
-                    b.HasKey("ComplaintID");
-
-                    b.ToTable("BPComplaints");
-                });
-
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPDemolitionApplication", b =>
                 {
                     b.Property<int?>("DemolitionID")
@@ -1010,94 +869,6 @@ namespace BuildingPlans.Data.Migrations
                     b.HasKey("FinancialID");
 
                     b.ToTable("BPFinancial");
-                });
-
-            modelBuilder.Entity("BuildingPlans.Data.Entities.BPFlagApplication", b =>
-                {
-                    b.Property<int?>("ApplicationID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("ApplicationID"), 1L, 1);
-
-                    b.Property<string>("ApplicantAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApplicantCell")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApplicantEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApplicantFax")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApplicantName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApplicantSurname")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApplicantTelephone")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApplicationFee")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApplicationType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EndPole")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Location")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NatureOfAdvert")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NoOfAgents")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NoOfFlags")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PlaceOfEvent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PoleNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("StartPole")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SubjectMatter")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserID")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("isActive")
-                        .HasColumnType("bit");
-
-                    b.HasKey("ApplicationID");
-
-                    b.ToTable("BPFlagApplication");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPFunctionalAreas", b =>

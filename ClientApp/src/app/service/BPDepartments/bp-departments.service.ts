@@ -39,7 +39,7 @@ export class BpDepartmentsService {
 
   public getDepartmentsList() {
 
-    return this.httpClient.get(this.baseURL + "GetDepartmentsList");
+    return this.httpClient.get(this.baseURL + "GetAllDepartments");
 
   }
 

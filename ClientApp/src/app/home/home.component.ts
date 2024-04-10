@@ -40,6 +40,9 @@ import { BuildingApplicationsService } from 'src/app/service/BuildingApplication
 import { BuildingApplicationComponent } from 'src/app/building-application/building-application.component';
 import { UserLinkToArchitectService } from '../service/UserLinkToArchitect/user-link-to-architect.service';
 import { BPNotificationsService } from '../service/BPNotifications/bpnotifications.service';
+import { BPDemolitionApplicationComponent } from 'src/app/bpdemolition-application/bpdemolition-application.component';
+import { BPComplaintsService } from '../service/BPComplaints/bpcomplaints.service';
+
 export interface EngineerList {
   professinalID: number;
   ProfessinalType: string;
@@ -434,11 +437,25 @@ export class HomeComponent implements OnInit, OnDestroy {
   disableButtons: boolean = false;
   stringifiedDataRoles: any;
 
-  complainantID:number;
+  complainantID:string;
   complainantName: string;
   complainantEmail: string;
   complainantCell: string;
   complainantTel: string;
+
+  //complaint address details
+  complainantAddress: string;
+  cadastralDescription: string;
+  streetNumber: string;
+  streetName: string;
+  suburb: string;
+  city: string;
+  postalCode: string;
+  lotNumber: string;
+  portion: string;
+  township: string;
+
+  details: string;
 
   constructor(
     private router: Router,
@@ -472,6 +489,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private UserlinkToArchitectService: UserLinkToArchitectService,
     private bpApplicationService: BuildingApplicationsService,
     private bpNotificationService: BPNotificationsService,
+    private bpDemolitionComponent: BPDemolitionApplicationComponent,
+    private bpComplaintsService: BPComplaintsService,
   ) {
     this.currentDate = new Date();
     this.previousMonth = this.currentDate.getMonth();
@@ -7364,7 +7383,24 @@ this.subscriptions.push(subscription);
     this.router.navigate(["/bpsignage-application"]);
   }
 
-  goToBannerApplication() {
+  goToBannerApplication(isFlagApplication: boolean) {
+    this.sharedService.isFlagApplication = isFlagApplication;
     this.router.navigate(["/bpbanner-application"]);
+  }
+
+  addComplaint() {
+    this.complainantAddress = this.streetNumber + "," + this.streetNumber + "," + this.suburb + "," + this.city + "," + this.postalCode;
+    this.bpComplaintsService.addUpdateComplaint(0, this.complainantID, this.complainantName, this.complainantEmail, this.complainantCell, this.complainantTel, this.complainantAddress, this.cadastralDescription, this.lotNumber, this.portion, this.township, this.details, this.CurrentUser.appUserId).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        alert(data.responseMessage);
+        this.modalService.dismissAll();
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
 }

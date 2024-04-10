@@ -600,6 +600,11 @@
     <Folder Include="ClientApp\src\app\service\Departments\" />
     <Folder Include="ClientApp\src\app\service\DraftApplications\" />
     <Folder Include="ClientApp\src\app\service\AuditTrail\" />
+    <Folder Include="ClientApp\src\app\service\BPDemolitionApplication\" />
+    <Folder Include="ClientApp\src\app\service\BPSignageApplication\" />
+    <Folder Include="ClientApp\src\app\service\BPBannerApplication\" />
+    <Folder Include="ClientApp\src\app\service\BPFlagApplication\" />
+    <Folder Include="ClientApp\src\app\service\BPComplaints\" />
     <Folder Include="ClientApp\src\app\service\ZoneLink\" />
     <Folder Include="ClientApp\src\app\service\Zones\" />
     <Folder Include="ClientApp\src\app\service\SubDepartments\" />

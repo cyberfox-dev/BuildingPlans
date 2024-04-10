@@ -17,8 +17,8 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
-              <label for="surname">Main Municipality *</label>
+              <input type="text" class="form-control" name="mainMunicipality" placeholder="Owner Surname" [(ngModel)]="mainMunicipality">
+              <label for="mainMunicipality">Main Municipality *</label>
             </div>
           </div>
         </div>
@@ -26,45 +26,45 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="name" placeholder="Owner First Name">
-              <label for="name">First Name *</label>
+              <input type="text" class="form-control" name="applicantName" placeholder="Owner First Name" [(ngModel)]="applicantName">
+              <label for="applicantName">First Name *</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
-              <label for="surname">Surname *</label>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
-              <label for="surname">ID Number *</label>
+              <input type="text" class="form-control" name="applicantSurname" placeholder="Owner Surname" [(ngModel)]="applicantSurname">
+              <label for="applicantSurname">Surname *</label>
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="name" placeholder="Owner First Name">
-              <label for="name">Email Address *</label>
+              <input type="text" class="form-control" name="applicantID" placeholder="Owner Surname"[(ngModel)]="applicantIDNumber">
+              <label for="applicantID">ID Number *</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="applicantEmail" placeholder="Owner First Name"[(ngModel)]="applicantEmail">
+              <label for="applicantEmail">Email Address *</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
-              <label for="surname">Contact Number *</label>
+              <input type="text" class="form-control" name="applicantContact" placeholder="Owner Surname"[(ngModel)]="applicantContact">
+              <label for="applicantContact">Contact Number *</label>
             </div>
           </div>
         </div>
 
         <div class="row">
-          <mat-checkbox [checked]="isOwner" (change)="onCheckIsOwner()">Applicant is Property Owner</mat-checkbox>
+          <mat-checkbox [checked]="isOwner" (change)="onCheckIsOwner()">Applicant is Owner Of Property</mat-checkbox>
         </div>
 
-        <div *ngIf="isOwner == false">
+        <div>
           <div class="detials">
             <div class="card">
               <h3><span>Owner Details</span></h3>
@@ -74,22 +74,22 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" name="name" placeholder="Owner First Name">
-                <label for="name">Owner ID Number *</label>
+                <input type="text" class="form-control" name="OwnerID" placeholder="Owner First Name"[disabled]="isOwner" [(ngModel)]="ownerIDNumber">
+                <label for="OwnerID">Owner ID Number *</label>
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" name="name" placeholder="Owner First Name">
-                <label for="name">Owner First Name *</label>
+                <input type="text" class="form-control" name="OwnerName" placeholder="Owner First Name"[disabled]="isOwner"[(ngModel)]="ownerName">
+                <label for="OwnerName">Owner First Name *</label>
               </div>
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
-                <label for="surname">Owner Surname*</label>
+                <input type="text" class="form-control" name="OwnerSurname" placeholder="Owner Surname"[disabled]="isOwner"[(ngModel)]="ownerSurname">
+                <label for="OwnerSurname">Owner Surname*</label>
               </div>
             </div>
           </div>
@@ -97,14 +97,14 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" name="name" placeholder="Owner First Name">
-                <label for="name"> Owner Email Address *</label>
+                <input type="text" class="form-control" name="OwnerEmail" placeholder="Owner First Name"[disabled]="isOwner" [(ngModel)]="ownerEmail">
+                <label for="OwnerEmail"> Owner Email Address *</label>
               </div>
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
-                <label for="surname">Owner Contact Number *</label>
+                <input type="text" class="form-control" name="OwnerContact" placeholder="Owner Surname"[disabled]="isOwner" [(ngModel)]="ownerContact">
+                <label for="OwnerContact">Owner Contact Number *</label>
               </div>
             </div>
           </div>
@@ -129,13 +129,13 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="name" placeholder="Owner First Name">
+              <input type="text" class="form-control" name="name" placeholder="Owner First Name" [(ngModel)]="applicantStreetNumber">
               <label for="name"> Street Number *</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"  [(ngModel)]="applicantStreetName">
               <label for="surname">Street Name *</label>
             </div>
           </div>
@@ -144,13 +144,13 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="name" placeholder="Owner First Name">
+              <input type="text" class="form-control" name="name" placeholder="Owner First Name" [(ngModel)]="applicantSuburb">
               <label for="name"> Suburb *</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname" [(ngModel)]="applicantCity">
               <label for="surname">City *</label>
             </div>
           </div>
@@ -159,7 +159,7 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname" [(ngModel)]="applicantPostalCode">
               <label for="surname">Postal Code *</label>
             </div>
           </div>
@@ -174,13 +174,13 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="name" placeholder="Owner First Name">
+              <input type="text" class="form-control" name="name" placeholder="Owner First Name" [(ngModel)]="siteStreetNumber">
               <label for="name"> Street Number *</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"  [(ngModel)]="siteStreetName">
               <label for="surname"> Street Name *</label>
             </div>
           </div>
@@ -189,13 +189,13 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="name" placeholder="Owner First Name">
+              <input type="text" class="form-control" name="name" placeholder="Owner First Name" [(ngModel)]="siteSuburb">
               <label for="name">  Suburb *</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"  [(ngModel)]="siteCity">
               <label for="surname"> City *</label>
             </div>
           </div>
@@ -204,13 +204,13 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"  [(ngModel)]="sitePostalCode">
               <label for="surname"> Postal Code *</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname" [(ngModel)]="siteERFNumber">
               <label for="surname">ERF Number *</label>
             </div>
           </div>
@@ -219,7 +219,7 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname" [(ngModel)]="siteCadastralDescription">
               <label for="surname">Cadastral Description *</label>
             </div>
           </div>
@@ -243,23 +243,32 @@
             <h3><span>Reason For Demolition</span></h3>
           </div>
         </div>
-        <mat-form-field class="example-full-width">
-          <mat-label>Reason For Demolition</mat-label>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" name="reason" placeholder="Owner Surname" [(ngModel)]="reasonForDemolition">
+              <label for="reason">Reason For Demolition *</label>
+            </div>
+          </div>
+        </div>
+        <!--<mat-form-field class="example-full-width">
+    <mat-label>Reason For Demolition</mat-label>
 
-          <textarea style="min-height:200px" matInput></textarea>
+    <textarea matInput  placeholder="Eg. This is good" id="myTextarea" maxlength="250" style="min-height:200px"></textarea>
 
-        </mat-form-field>
+  </mat-form-field>-->
 
         <div class="detials">
           <div class="card">
-            <h3><span>Property's Existing User</span></h3>
+            <h3><span>Property's Existing Use</span></h3>
           </div>
         </div>
         <div class="row">
           <mat-form-field>
-            <mat-label>Property's Existing User</mat-label>
-            <mat-select name="typeOfDevelopment">
-              <mat-option></mat-option>
+            <mat-label>Property's Existing Use</mat-label>
+            <mat-select name="typeOfDevelopment" [(ngModel)]="propertyExistingUser">
+
+              <mat-option *ngFor="let occupation of OccupationsClassificationList " [value]="occupation.OccupationName + occupation.Occupancy">{{occupation.OccupationName}} : {{occupation.Occupancy}}</mat-option>
 
             </mat-select>
           </mat-form-field>
@@ -268,7 +277,7 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname" [(ngModel)]="DemolitionFees" />
               <label for="surname">Demolition Fees (R) </label>
             </div>
           </div>
@@ -279,6 +288,11 @@
             Create Demolition Application
 
           </button>
+        </div>
+        <div class="cont">
+          <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+
+          <!--<button mat-raised-button color="primary" matStepperNext>Next</button>-->
         </div>
       </form>
 

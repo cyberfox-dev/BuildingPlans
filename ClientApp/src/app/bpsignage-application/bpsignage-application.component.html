@@ -15,9 +15,11 @@
         <div class="row">
           <mat-form-field>
             <mat-label>Select A Type Of Signage Application</mat-label>
-            <mat-select name="typeOfDevelopment">
-              <mat-option></mat-option>
-
+            <mat-select name="typeOfDevelopment" [(ngModel)]="TypeOfApplication">
+              <mat-option>Temporal And Or Permanent Advertising Signs On Public Road Reserves and On Municipal Or Privately Owned Property</mat-option>
+              <mat-option>BillBoards</mat-option>
+              <mat-option>Transit Advertising</mat-option>
+              <mat-option>New Site And/Or Artwork</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
@@ -41,7 +43,7 @@
         <div class="row"><!--if applicant is an organisation-->
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname" [(ngModel)]="OrganisationName">
               <label for="surname">Name Of Organisation </label>
             </div>
           </div>
@@ -50,13 +52,13 @@
         <div class="row" ><!--if applicant is single applicant-->
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname" [(ngModel)]="ApplicantName">
               <label for="surname">Name </label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="ApplicantSurname">
               <label for="surname">Surname</label>
             </div>
           </div>
@@ -64,13 +66,13 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="ApplicantCell">
               <label for="surname">Cell Number </label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="ApplicantTelephone">
               <label for="surname">Telephone Number</label>
             </div>
           </div>
@@ -78,13 +80,13 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="ApplicantEmail">
               <label for="surname">Email Address </label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname" [(ngModel)]="ApplicantFax">
               <label for="surname">Fax Number</label>
             </div>
           </div>
@@ -106,27 +108,27 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="StreetNumber">
               <label for="surname">Street Number </label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
-              <label for="surname">Street Number</label>
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname" [(ngModel)]="StreetName">
+              <label for="surname">Street Name</label>
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="Suburb">
               <label for="surname">Suburb Name </label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="City">
               <label for="surname">City</label>
             </div>
           </div>
@@ -134,7 +136,7 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="PostalCode">
               <label for="surname">Postal Code </label>
             </div>
           </div>
@@ -157,7 +159,7 @@
 
           <mat-form-field>
             <mat-label>Nature Of Advertisement</mat-label>
-            <mat-select name="typeOfDevelopment">
+            <mat-select name="typeOfDevelopment" [(ngModel)]="NatureOfAdvertisement">
               <mat-option></mat-option>
 
             </mat-select>
@@ -167,7 +169,7 @@
 
           <mat-form-field>
             <mat-label>Schedule Areas Of Control</mat-label>
-            <mat-select name="typeOfDevelopment">
+            <mat-select name="typeOfDevelopment"[(ngModel)]="AreasOfControl">
               <mat-option></mat-option>
 
             </mat-select>
@@ -177,19 +179,19 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="Height">
               <label for="surname">Height Of Sign</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="Width">
               <label for="surname">Width Of Sign</label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="NoOfFaces">
               <label for="surname">Number Of Faces</label>
             </div>
           </div>
@@ -197,14 +199,14 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="date" class="form-control" id="startDate" placeholder="Enter Start Date" name="expectedStartDate"> <!--[min]="getCurrentDate()"-->
+              <input type="date" class="form-control" id="startDate" placeholder="Enter Start Date" name="expectedStartDate"[(ngModel)]="StartDate"> <!--[min]="getCurrentDate()"-->
               <label for="name">Start Date</label>
             </div>
           </div>
 
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="date" class="form-control" id="endDate" placeholder="" name="expectedEndType">
+              <input type="date" class="form-control" id="endDate" placeholder="" name="expectedEndType" [(ngModel)]="EndDate">
               <label for="name">Completion Date</label>
             </div>
           </div>
@@ -212,13 +214,13 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="ApplicationFee">
               <label for="surname">Applcation Fee </label>
             </div>
           </div>
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="MonthlyFee">
               <label for="surname">Monthly Fee</label>
             </div>
           </div>
@@ -226,7 +228,7 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+              <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="Voltage">
               <label for="surname">Enter Wattage/Voltage </label>
             </div>
           </div>
@@ -236,26 +238,26 @@
 
         <div class="row">
           <div class="col">
-            <mat-checkbox>Application For Electricity Required</mat-checkbox>
+            <mat-checkbox [checked]="ElectricityRequired" (change)="onCheckElectricity()">Application For Electricity Required</mat-checkbox>
           </div>
           <br/>
           <div class="col">
-            <mat-checkbox>Environmental Impact Assessment</mat-checkbox>
+            <mat-checkbox [checked]="EnvironmentalImpactAssessment" (change)="onCheckImpactAssessment()">Environmental Impact Assessment</mat-checkbox>
           </div>
         </div>
         <br/>
 
         <div class="row">
           <div class="col">
-            <mat-checkbox>Encroachment(s)</mat-checkbox>
+            <mat-checkbox [checked]="Encroachment" (change)="onEncroachmentCheck()">Encroachment(s)</mat-checkbox>
           </div>
           <br/>
           <div class="col">
-            <mat-checkbox>Agreement For Advertising Sign Rigth?</mat-checkbox>
+            <mat-checkbox [checked]="AdvertisingSignRight" (change)="onAgreementCheck()">Agreement For Advertising Sign Rigth?</mat-checkbox>
           </div>
         </div>
         <div class="container4">
-          <button mat-raised-button color="green">Submit Signage Application</button>
+          <button mat-raised-button color="green"(click)="CreateSignageApplication()">Submit Signage Application</button>
         </div>
         <div class="cont">
           <button mat-raised-button color="primary" matStepperPrevious>Back</button>

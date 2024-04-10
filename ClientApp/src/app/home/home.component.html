@@ -55,20 +55,20 @@
 <!--Sytem Alert Kyle 12-03-24-->
 
 <div class="cont3 ">
-    <!--<img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon4"> -->
-    <button mat-raised-button color="createWayleave" *ngIf="disableButtons ===false " class="animationSlideDown" (click)="GoToBuildingApplication(false)">Create Land Survey Application</button>
-    <!--<button mat-raised-button color="createWayleave2" *ngIf="disableButtons === true " disabled matTooltip="Creating new applications is currently not allowed." class="animationSlideDown">Create Land Survey Application</button>-->
-    <!-- Service Information Kyle 31/01/24-->
-    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="GoToBuildingApplication(true)">Create Plan Archive Application</button>
-    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="openComplaints(complaint)">New Complaint</button>
-    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToDemolition(false)">Create Demolition Application</button>
-    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToDemolition(true)">Create Demolition Archive Application</button>
-    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToSignageApplication()">Create Signage Application</button>
-    <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToBannerApplication()">Create Banner Poster Application</button>
-   
-    <!-- Service Information Kyle 31/01/24-->
+  <!--<img src="assets/fontawesome-free-6.4.2-web/svgs/regular/plus-solid.svg" class="icon4"> -->
+  <button mat-raised-button color="createWayleave" *ngIf="disableButtons ===false " class="animationSlideDown" (click)="GoToBuildingApplication(false)">Create Land Survey Application</button>
+  <!--<button mat-raised-button color="createWayleave2" *ngIf="disableButtons === true " disabled matTooltip="Creating new applications is currently not allowed." class="animationSlideDown">Create Land Survey Application</button>-->
+  <!-- Service Information Kyle 31/01/24-->
+  <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="GoToBuildingApplication(true)">Create Plan Archive Application</button>
+  <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="openComplaints(complaint)">New Complaint</button>
+  <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToDemolition(false)">Create Demolition Application</button>
+  <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToDemolition(true)">Create Demolition Archive Application</button>
+  <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToSignageApplication()">Create Signage Application</button>
+  <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToBannerApplication(false)">Create Banner Poster Application</button>
+  <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="goToBannerApplication(true)">Create flag/Pole/ Headline Application</button>
+  <!-- Service Information Kyle 31/01/24-->
 </div>
-
++-
 
 <!--Banner Kyle 26/01/24-->
 <!--Tabs-->
@@ -331,8 +331,8 @@
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef>Actions</th>
               <td mat-cell *matCellDef="let i = index">
-                <button mat-raised-button color="blue" (click)=" ViewProject(i)" matTooltip="View Application Details"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/eye.svg" class="icon4"></button>
-                <button mat-raised-button color="warn" (click)="DeleteBuildingApplication(i)" matTooltip="Delete Application"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4"></button>
+                <button mat-raised-button color="blue" (click)=" ViewProject(i)" matTooltip="View Application Details"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/eye.svg" class="icon4 blue"></button>
+                <button mat-raised-button color="warn" (click)="DeleteBuildingApplication(i)" matTooltip="Delete Application"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>
 
               </td>
               <td mat-cell *matCellDef="let element">  </td>
@@ -1997,7 +1997,7 @@
          <div class="row">
            <div class="col">
              <div class="form-floating mb-3 mt-3">
-               <input type="text" class="form-control" name="name" placeholder="Owner First Name">
+               <input type="text" class="form-control" name="name" placeholder="Owner First Name" [(ngModel)]="cadastralDescription">
                <label for="name">CadastralDescription *</label>
              </div>
            </div>
@@ -2006,13 +2006,13 @@
          <div class="row">
            <div class="col">
              <div class="form-floating mb-3 mt-3">
-               <input type="text" class="form-control" name="name" placeholder="Owner First Name">
+               <input type="text" class="form-control" name="name" placeholder="Owner First Name"[(ngModel)]="streetNumber">
                <label for="name">Street Number *</label>
              </div>
            </div>
            <div class="col">
              <div class="form-floating mb-3 mt-3">
-               <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+               <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="streetName">
                <label for="surname">Street Name *</label>
              </div>
            </div>
@@ -2021,13 +2021,13 @@
          <div class="row">
            <div class="col">
              <div class="form-floating mb-3 mt-3">
-               <input type="text" class="form-control" name="name" placeholder="Owner First Name">
+               <input type="text" class="form-control" name="name" placeholder="Owner First Name"[(ngModel)]="suburb">
                <label for="name">Suburb *</label>
              </div>
            </div>
            <div class="col">
              <div class="form-floating mb-3 mt-3">
-               <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+               <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="city">
                <label for="surname">City *</label>
              </div>
            </div>
@@ -2036,13 +2036,13 @@
          <div class="row">
            <div class="col">
              <div class="form-floating mb-3 mt-3">
-               <input type="text" class="form-control" name="name" placeholder="Owner First Name">
+               <input type="text" class="form-control" name="name" placeholder="Owner First Name"[(ngModel)]="postalCode">
                <label for="name">Postal Code *</label>
              </div>
            </div>
            <div class="col">
              <div class="form-floating mb-3 mt-3">
-               <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+               <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="lotNumber">
                <label for="surname">Lot Number (ERF No) *</label>
              </div>
            </div>
@@ -2051,13 +2051,13 @@
          <div class="row">
            <div class="col">
              <div class="form-floating mb-3 mt-3">
-               <input type="text" class="form-control" name="name" placeholder="Owner First Name">
+               <input type="text" class="form-control" name="name" placeholder="Owner First Name"[(ngModel)]="portion">
                <label for="name">Portion *</label>
              </div>
            </div>
            <div class="col">
              <div class="form-floating mb-3 mt-3">
-               <input type="text" class="form-control" name="surname" placeholder="Owner Surname">
+               <input type="text" class="form-control" name="surname" placeholder="Owner Surname"[(ngModel)]="township">
                <label for="surname">Township</label>
              </div>
            </div>
@@ -2076,13 +2076,13 @@
          <mat-form-field class="example-full-width">
            <mat-label>Details Of Complaint</mat-label>
 
-           <textarea matInput></textarea>
+           <textarea matInput [(ngModel)]="details"></textarea>
 
          </mat-form-field>
 
          <div class="stepButtons">
            <button mat-raised-button color="primary" matStepperPrevious>Back</button>
-           <button type="submit" class="btn btn-outline-success">Submit</button>
+           <button type="submit" class="btn btn-outline-success" (click)=" addComplaint()">Submit</button>
          </div>
         
        </mat-step>

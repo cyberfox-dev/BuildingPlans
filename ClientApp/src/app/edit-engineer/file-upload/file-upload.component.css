@@ -3,14 +3,13 @@
   color: #28a745;
   margin-left: 15px;
   /* line-height: 36px;*/
+ 
 }
-
 .main {
   display: grid;
   grid-template-columns: 1fr auto auto;
   align-items: baseline;
 }
-
 .mat-btn {
   background-color: #005870;
   color: white;
@@ -112,7 +111,7 @@ mat-icon {
   margin-top: 10px;
 }
 
-.fileName {
-  margin-top: 20px;
-  font-size: 14px;
+.fileName{
+    margin-top:20px;
+    font-size: 14px;
 }
