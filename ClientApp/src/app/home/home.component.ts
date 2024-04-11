@@ -42,6 +42,10 @@ import { UserLinkToArchitectService } from '../service/UserLinkToArchitect/user-
 import { BPNotificationsService } from '../service/BPNotifications/bpnotifications.service';
 import { BPDemolitionApplicationComponent } from 'src/app/bpdemolition-application/bpdemolition-application.component';
 import { BPComplaintsService } from '../service/BPComplaints/bpcomplaints.service';
+import { BPSignageApplicationService } from '../service/BPSignageApplication/bpsignage-application.service';
+import { BPBannerApplicationService } from '../service/BPBannerApplication/bpbanner-application.service';
+import { BPDemolitionApplicationService } from '../service/BPDemolitionApplication/bpdemolition-application.service';
+import { BPFlagApplicationService } from '../service/BPFlagApplication/bpflag-application.service';
 
 export interface EngineerList {
   professinalID: number;
@@ -243,7 +247,7 @@ export interface ArchitectsList {
 
 export interface ApplicationsListBP {
   applicationID: number;
-  lSNumber: string;
+  ProjectNumber: string;
   erfNumber: string;
   stage: string;
   stageAge: any;
@@ -304,6 +308,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   AllConfig: ConfigList[] = [];
   ArchitectsList: ArchitectsList[] = [];
   ApplicationsBP: ApplicationsListBP[] = [];
+  DemolitionsList: ApplicationsListBP[] = [];
+  SignageList: ApplicationsListBP[] = [];
+  BannerList: ApplicationsListBP[] = [];
+  FlagApplicationList: ApplicationsListBP[] = [];
+  ArchiveList: ApplicationsListBP[] = [];
   ArchitectClients: ArchitectClients[] = [];
 
   ServerType: string;
@@ -456,6 +465,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   township: string;
 
   details: string;
+  applicationTypeName: string;
+  selectedFunctionalArea: string;
 
   constructor(
     private router: Router,
@@ -491,6 +502,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     private bpNotificationService: BPNotificationsService,
     private bpDemolitionComponent: BPDemolitionApplicationComponent,
     private bpComplaintsService: BPComplaintsService,
+    private bpDemolitionService: BPDemolitionApplicationService,
+    private bpSignageService: BPSignageApplicationService,
+    private bpBannerService: BPBannerApplicationService,
+    private bpFlagService: BPFlagApplicationService,
+
   ) {
     this.currentDate = new Date();
     this.previousMonth = this.currentDate.getMonth();
@@ -710,6 +726,10 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.isBannerVisible();
       if (this.CurrentUserProfile[0].isInternal == true) {
         this.GetAllBuildingApplications();
+        this.getAllDemolitionApplications();
+        this.getAllSignageApplications();
+        this.getAllBannerApplications();
+        this.getAllFlagApplications();
       }
       else if (this.CurrentUserProfile[0].isInternal == false) {
         this.GetAllApplicationsForExternalUser();
@@ -7023,10 +7043,10 @@ this.subscriptions.push(subscription);
     })
   }
 
-  onCreateBuildingApplication() {
+    onCreateBuildingApplication() {
     debugger;
     /* NEEDED FOR FILE UPLOAD TO WORK CORRECTLY*/
-    this.bpApplicationService.addUpdateBuildingApplication(0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.CurrentUser.appUserId, null, null, null).subscribe((data: any) => {
+    this.bpApplicationService.addUpdateBuildingApplication(0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.CurrentUser.appUserId, null, null, null,null).subscribe((data: any) => {
       if (data.responseCode == 1) {
         debugger;
         const current = data.dateSet;
@@ -7049,7 +7069,7 @@ this.subscriptions.push(subscription);
     this.ApplicationsBP.splice(0, this.ApplicationsBP.length);
     this.bpApplicationService.getAllBuildingApplications().subscribe((data: any) => {
       if (data.responseCode == 1) {
-        for (let i = 0; i < data.dateSet.length; i++) {
+        for (let i = 0; i < 30; i++) {
           const tempApplication = {} as ApplicationsListBP;
           const current = data.dateSet[i];
           debugger;
@@ -7062,7 +7082,7 @@ this.subscriptions.push(subscription);
               tempApplication.propertyAddress = address[0] + " " + address[1];
             }
             tempApplication.applicationID = current.applicationID;
-            tempApplication.lSNumber = current.lsNumber;
+            tempApplication.ProjectNumber = current.lsNumber;
             tempApplication.erfNumber = current.erfNumber;
             tempApplication.stage = current.stage;
             tempApplication.ownerName = current.firstName + " " + current.surname;
@@ -7075,7 +7095,7 @@ this.subscriptions.push(subscription);
           }
 
 
-
+          this.applicationTypeName = "Build Plan"
 
         }
         this.dataSourceBP = this.ApplicationsBP;
@@ -7129,12 +7149,12 @@ this.subscriptions.push(subscription);
   GetAllApplicationsForExternalUser() {
     this.bpApplicationService.getApplicationsByExternalUserID(this.CurrentUser.appUserId).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        for (let i = 0; i < data.dateSet.length; i++) {
+        for (let i = 0; i < 30; i++) {
           const tempApplication = {} as ApplicationsListBP;
           const current = data.dateSet[i];
           if (current.lsNumber != null) {
             tempApplication.applicationID = current.applicationID;
-            tempApplication.lSNumber = current.lsNumber;
+            tempApplication.ProjectNumber = current.lsNumber;
             tempApplication.erfNumber = current.erfNumber;
             tempApplication.stage = current.stage;
             tempApplication.ownerName = current.ownerName;
@@ -7370,7 +7390,7 @@ this.subscriptions.push(subscription);
     }
   }
 
-  openComplaints(complaint) {
+  openComplaints(complaint:any) {
     this.modalService.open(complaint, { centered: true, size: 'xl' });
   }
 
@@ -7400,6 +7420,137 @@ this.subscriptions.push(subscription);
       }
       
     }, error => {
+      console.log("Error: ", error);
+    })
+  }
+  onFilterBPApplications(applicationType: string) {
+    if (applicationType == "Building Plan") {
+      this.dataSourceBP = this.ApplicationsBP;
+      this.applicationTypeName = "Building Plan";
+    }
+
+    if (applicationType == "Demolition") {
+      this.dataSourceBP = this.DemolitionsList;
+      this.applicationTypeName = "Demolition";
+    }
+
+    if (applicationType == "Signage") {
+      this.dataSourceBP = this.SignageList;
+      this.applicationTypeName = "Signage";
+    }
+
+    if (applicationType == "Banner") {
+      this.dataSourceBP = this.BannerList;
+      this.applicationTypeName = "Banner";
+    }
+
+    if (applicationType == "Flag") {
+      this.dataSourceBP = this.FlagApplicationList;
+      this.applicationTypeName = "Flag";
+    }
+  }
+
+  getAllDemolitionApplications() {
+    this.bpDemolitionService.getAllDemolitionApplications().subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < 30; i++) {
+          const current = data.dateSet[i];
+          const tempApplication = {} as ApplicationsListBP;
+
+          tempApplication.applicationID = current.demolitionID;
+          tempApplication.erfNumber = current.siteERFNumber;
+          tempApplication.stage = current.currentStage;
+          tempApplication.ownerName = current.ownerName + " " + current.ownerSurname;
+          tempApplication.propertyAddress = current.siteAddress;
+          tempApplication.dateCreated = current.dateCreated.substring(0,current.dateCreated.indexOf("T"));
+          tempApplication.dateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf("T"));
+
+          this.DemolitionsList.push(tempApplication);
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  getAllSignageApplications() {
+    this.bpSignageService.getAllSignageApplications().subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < 30; i++) {
+          const current = data.dateSet[i];
+          const tempApplication = {} as ApplicationsListBP;
+
+          tempApplication.applicationID = current.applicationID;
+          tempApplication.stage = current.currentStage;
+          tempApplication.ownerName = current.applicantName + " " + current.applicantSurname;
+          tempApplication.propertyAddress = current.address;
+          tempApplication.dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
+          tempApplication.dateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf("T"));
+
+          this.SignageList.push(tempApplication);
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  getAllBannerApplications() {
+    this.bpBannerService.getAllBannerApplications().subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < 3 ; i++) {
+          const current = data.dateSet[i];
+          const tempApplication = {} as ApplicationsListBP;
+
+          tempApplication.applicationID = current.applicationID;
+          tempApplication.stage = current.currentStage;
+          tempApplication.ownerName = current.applicantName + " " + current.applicantSurname;
+          tempApplication.propertyAddress = current.address;
+          tempApplication.dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
+          tempApplication.dateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf("T"));
+
+          this.BannerList.push(tempApplication);
+          
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  getAllFlagApplications() {
+    this.bpFlagService.getAllFlagApplications().subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < 30; i++) {
+          const current = data.dateSet[i];
+          const tempApplication = {} as ApplicationsListBP;
+
+          tempApplication.applicationID = current.applicationID;
+          tempApplication.stage = current.currentStage;
+          tempApplication.ownerName = current.applicantName + " " + current.applicantSurname;
+          tempApplication.propertyAddress = current.address;
+          tempApplication.dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
+          tempApplication.dateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf("T"));
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+    }, error => {
+      console.log("Error: ", error);
       console.log("Error: ", error);
     })
   }

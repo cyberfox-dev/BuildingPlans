@@ -282,6 +282,12 @@
       </div>
 
       <div class="row">
+        <div class="col">
+          <mat-checkbox (change)="onServitudeCheck()" [checked]="servitudeBox">Omnibus Servitude In Title Deed</mat-checkbox>
+        </div>
+      </div>
+
+      <div class="row">
         <div class="col" *ngIf="isInternal">
           <div class="form-floating mb-3 mt-3">
             <input type="text" class="form-control" [(ngModel)]="planFees" name="Fees" placeholder="Plan Fees">

@@ -47,4 +47,9 @@ export class BPSignageApplicationService {
     }
     return this.httpClient.post(this.baseURL + "AddUpdateSignageApplication", body);
   }
+
+  public getAllSignageApplications() {
+
+    return this.httpClient.get(this.baseURL + "GetAllSignageApplications");
+  }
 }

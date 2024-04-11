@@ -39,5 +39,7 @@
         public string? Status { get; set; }
         public string? Stage { get; set; }
         public int? StageNumber { get; set; }
+        public bool? OmnibusServitude { get; set; }
+
     }
 }
