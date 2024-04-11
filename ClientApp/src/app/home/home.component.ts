@@ -46,6 +46,8 @@ import { BPSignageApplicationService } from '../service/BPSignageApplication/bps
 import { BPBannerApplicationService } from '../service/BPBannerApplication/bpbanner-application.service';
 import { BPDemolitionApplicationService } from '../service/BPDemolitionApplication/bpdemolition-application.service';
 import { BPFlagApplicationService } from '../service/BPFlagApplication/bpflag-application.service';
+import { BPFunctionalAreasService } from '../service/BPFunctionalAreas/bpfunctional-areas.service';
+import { FunctionalAreasList } from '../bpdepartment-config/bpdepartment-config.component';
 
 export interface EngineerList {
   professinalID: number;
@@ -270,6 +272,15 @@ export interface ArchitectClients {
 
 }
 
+export interface BPFunctionalAreas {
+  FunctionalAreaId: number;
+  FAName: string;
+  FAItemCode: string;
+  DateCreated: any;
+  DateUpdated: any;
+
+}
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -314,6 +325,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   FlagApplicationList: ApplicationsListBP[] = [];
   ArchiveList: ApplicationsListBP[] = [];
   ArchitectClients: ArchitectClients[] = [];
+  FunctionalAreasList: FunctionalAreasList[] = [];
 
   ServerType: string;
   BaseUrl: string;
@@ -506,7 +518,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private bpSignageService: BPSignageApplicationService,
     private bpBannerService: BPBannerApplicationService,
     private bpFlagService: BPFlagApplicationService,
-
+    private bpFunctionalAreasService: BPFunctionalAreasService,
   ) {
     this.currentDate = new Date();
     this.previousMonth = this.currentDate.getMonth();
@@ -7551,6 +7563,30 @@ this.subscriptions.push(subscription);
 
     }, error => {
       console.log("Error: ", error);
+     
+    })
+  }
+
+  getAllFunctionalAreas(complaint:any) {
+    this.bpFunctionalAreasService.getAllFunctionalAreas().subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+         const tempFunctionArea = {} as BPFunctionalAreas;
+
+          tempFunctionArea.FunctionalAreaId = current.functionalAreaID;
+          tempFunctionArea.FAName = current.faName;
+
+          this.FunctionalAreasList.push(tempFunctionArea);
+          
+        }
+        this.openComplaints(complaint);
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+    }, error => {
       console.log("Error: ", error);
     })
   }

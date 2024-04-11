@@ -68,7 +68,7 @@
    <button mat-menu-item>Flag/Pole/Headline Application</button>
    <button mat-menu-item>Archive</button>
  </mat-menu>
-  <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="openComplaints(complaint)">Create New Complaint</button>
+  <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="getAllFunctionalAreas(complaint)">Create New Complaint</button>
   <!-- Service Information Kyle 31/01/24-->
 </div>
 
@@ -1596,9 +1596,8 @@
 
       <mat-step label="Complaint Details">
         <mat-form-field>
-          <mat-select [(ngModel)]="Reviews">
-            <mat-option value="option1">Current Reviews</mat-option>
-            <mat-option value="option2" disabled>Past Reviews (Disabled)</mat-option>
+          <mat-select [(ngModel)]="selectedFunctionalArea">
+            <mat-option *ngFor="let area of FunctionalAreasList">{{area.FAName}}</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field class="example-full-width">
