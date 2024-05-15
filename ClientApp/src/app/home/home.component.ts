@@ -48,6 +48,8 @@ import { BPDemolitionApplicationService } from '../service/BPDemolitionApplicati
 import { BPFlagApplicationService } from '../service/BPFlagApplication/bpflag-application.service';
 import { BPFunctionalAreasService } from '../service/BPFunctionalAreas/bpfunctional-areas.service';
 import { FunctionalAreasList } from '../bpdepartment-config/bpdepartment-config.component';
+import { GooglePlaceDirective } from 'ngx-google-places-autocomplete';
+import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
 
 export interface EngineerList {
   professinalID: number;
@@ -388,7 +390,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   clientCompanyRegNo = '';
   clientCompanyType = '';
   clientIDNumber = ''; //This was made ready, but was ultimately not pushed into function... 
-  clientPhysicalAddress = '';
+  clientPhysicalAddress :any;
   clientBpNumber = '';
 
   /*New Engineer information*/
@@ -420,7 +422,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild("user", { static: true }) user!: ElementRef;
   @ViewChild("Prof", { static: true }) Prof!: ElementRef;
   @ViewChild("architects", { static: true }) architect!: ElementRef;
-
+  @ViewChild("archiveOption", { static: true }) archiveOption!: ElementRef;
   @Output() optionEvent = new EventEmitter<string>();
 
   @ViewChild(MatTable) architectTable: MatTable<ArchitectsList> | undefined;
@@ -537,6 +539,21 @@ export class HomeComponent implements OnInit, OnDestroy {
   AllCurrentUserRoles: any;
   routerSubscription: Subscription; //reapply Sindiswa 26 January 2024
 
+  @ViewChild("placesRef") placesRef: GooglePlaceDirective | undefined;
+  readonly southwest = { lat: -29.730694, lng: 30.169144 };
+  readonly southeast = { lat: -29.730694, lng: 30.602760 };
+  readonly northeast = { lat: -29.469492, lng: 30.602760 };
+  readonly northwest = { lat: -29.469492, lng: 30.169144 };
+
+  readonly bounds: google.maps.LatLngBounds = new google.maps.LatLngBounds(this.southwest, this.northeast); // Create a LatLngBounds object
+  options = {
+    types: [],
+    componentRestrictions: {
+      country: 'ZA',
+    },
+    disableDoubleClickZoom: true,
+    bounds: this.bounds, // Set the bounds property - doesn't seem to be working
+  } as unknown as Options;
 
   openAddArchitect(addArchitect: any) {
     this.modalService.open(addArchitect, {
@@ -694,7 +711,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
       this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
 
-
+      this.isArchitect = this.CurrentUserProfile[0].isArchitect;
 
       // #region escalation Sindiswa 29 January 2024 - just debugging
       console.log("These are the current user's details - I want to find out if they are EMB or nah", this.CurrentUserProfile);
@@ -912,6 +929,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.onCreateBuildingApplication();
     }
     else {
+      this.getAllExternalUsers()
       this.openClientOption(this.clientOption);
 
     }
@@ -4826,7 +4844,7 @@ this.subscriptions.push(subscription);
     let companyName = this.clientCompanyName;
     let companyRegNo = this.clientCompanyRegNo;
     let clientCompanyType = this.clientCompanyType;
-    let physicalAddress = this.clientPhysicalAddress;
+    let physicalAddress = this.clientPhysicalAddress.toString();
 
     let clientIDNumber = this.clientIDNumber; //hide
 
@@ -4872,21 +4890,21 @@ this.subscriptions.push(subscription);
         } else {
           console.log("Testing BP Number");
           // Ensure bpNumber is not empty before validating it
-          if (BpNo.trim() === '') {
-            alert("Please enter a valid BP Number");
-            this.externalWValidBP = false;
-          } else {
-            console.log("Testing BP number now...");
-            const isValidBP = await this.testBp2(BpNo);
-            if (isValidBP) {
-              this.externalWValidBP = true;
-            } else {
-              // Handle invalid BP Number
-              alert("Please enter a valid BP Number");
-              console.log("ngathi this BP is not valid.");
-              this.externalWValidBP = false; // Set this to false in case of an invalid BP Number
-            }
-          }
+          //if (BpNo.trim() === '') {
+          //  alert("Please enter a valid BP Number");
+          //  this.externalWValidBP = false;
+          //} else {
+          //  console.log("Testing BP number now...");
+          //  const isValidBP = await this.testBp2(BpNo);
+          //  if (isValidBP) {
+          //    this.externalWValidBP = true;
+          //  } else {
+          //    // Handle invalid BP Number
+          //    alert("Please enter a valid BP Number");
+          //    console.log("ngathi this BP is not valid.");
+          //    this.externalWValidBP = false; // Set this to false in case of an invalid BP Number
+          // }
+          
         }
       } catch (error) {
         console.error("An error occurred: ", error);
@@ -4897,14 +4915,14 @@ this.subscriptions.push(subscription);
 
     console.log("Email is okay?" + this.validEmail);
     console.log("User has a valid BP Num " + this.externalWValidBP);
-
+    debugger;
     //What other validation must be done here? | || clientIDNumber === undefined || clientIDNumber.trim() === ''
     if (
       phoneNumber === undefined || phoneNumber.trim() === '' ||
-      clientRefNo === undefined || clientRefNo.trim() === '' ||
-      companyName === undefined || companyName.trim() === '' ||
-      companyRegNo === undefined || companyRegNo.trim() === '' ||
-      clientCompanyType === undefined || clientCompanyType.trim() === '' ||
+     /* clientRefNo === undefined || clientRefNo.trim() === '' ||*/
+    /*  companyName === undefined || companyName.trim() === '' ||*/
+      //companyRegNo === undefined || companyRegNo.trim() === '' ||
+      //clientCompanyType === undefined || clientCompanyType.trim() === '' ||
       physicalAddress === undefined || physicalAddress.trim() === ''
     ) {
       this.noEmptyFields = false;
@@ -4913,7 +4931,7 @@ this.subscriptions.push(subscription);
       this.noEmptyFields = true;
     }
     //&& this.validID == true
-    if (this.noEmptyFields == true && this.validFullName == true && this.validEmail == true && this.externalWValidBP == true) {
+    if (this.noEmptyFields == true && this.validFullName == true && this.validEmail == true ) {
       //if (this.noEmptyFields == true && this.validFullName == true && this.validEmail == true && this.validID == true) {
       this.sharedService.errorForRegister = false;
       this.createNewClient();
@@ -4925,10 +4943,10 @@ this.subscriptions.push(subscription);
 
   createNewClient() {
     try {
-
+      debugger;
       this.userService.register(this.clientFullName, this.clientEmail, "Password@" + this.clientFullName).subscribe((data: any) => {
         if (data.responseCode == 1) {
-
+          debugger;
           this.newProfileComponent.onNewProfileCreate(
             data.dateSet.appUserId,
             this.clientFullName,
@@ -4939,7 +4957,7 @@ this.subscriptions.push(subscription);
             this.clientCompanyRegNo,
             this.clientPhysicalAddress,
             null,
-            /*this.clientIDNumber*/ null,
+            this.clientIDNumber ,
             this.clientRefNo,
             this.clientCompanyType,
           )
@@ -4952,7 +4970,7 @@ this.subscriptions.push(subscription);
           alert(this.clientFullName + " has been added as an external client.\nYou can now link their professionals and create a wayleave on their behalf.");
           console.log("Who is logged in?" + JSON.stringify(this.CurrentUser));
          
-
+          
           //I NEED TO STAY INSIDE THIS MAT-STEPPER
           //this.router.navigate(["/new-profile"]);
         }
@@ -7081,7 +7099,7 @@ this.subscriptions.push(subscription);
     this.ApplicationsBP.splice(0, this.ApplicationsBP.length);
     this.bpApplicationService.getAllBuildingApplications().subscribe((data: any) => {
       if (data.responseCode == 1) {
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < data.dateSet.length; i++) {
           const tempApplication = {} as ApplicationsListBP;
           const current = data.dateSet[i];
           debugger;
@@ -7107,16 +7125,17 @@ this.subscriptions.push(subscription);
           }
 
 
-          this.applicationTypeName = "Build Plan"
+         
 
         }
         this.dataSourceBP = this.ApplicationsBP;
-        this.applicationsTable.renderRows();
+        this.applicationsTable?.renderRows();
+        this.applicationTypeName = "Build Plan"
       }
       else {
         alert(data.responseMessage);
       }
-      console.log("response", data);
+      console.log("Building Applications", data);
     }, error => {
       console.log("Error: ", error);
     })
@@ -7409,6 +7428,7 @@ this.subscriptions.push(subscription);
   goToDemolition(isDemoArchive: boolean) {
     this.sharedService.isDemolitionArchive = isDemoArchive;
     this.router.navigate(["/bpdemolition-application"]);
+
   }
 
   goToSignageApplication() {
@@ -7590,4 +7610,16 @@ this.subscriptions.push(subscription);
       console.log("Error: ", error);
     })
   }
+
+  onAddressSelect(address: any) {
+    debugger;
+    this.clientPhysicalAddress = address.formatted_address;
+   
+  }
+ 
+  openArchiveOption() {
+    this.modalService.open(this.archiveOption, { centered: true, size: 'xl' });
+  }
+
+  
 }

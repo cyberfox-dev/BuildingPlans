@@ -398,7 +398,7 @@ namespace BuildingPlans.Service
                    DateCreated = DateTime.Now,
                    DateUpdated = DateTime.Now,
                    CreatedById = UserProfile.CreatedById,
-
+                   isArchitect = UserProfile.isArchitect,
 
                }
 
@@ -449,6 +449,7 @@ namespace BuildingPlans.Service
                    DateCreated = DateTime.Now,
                    DateUpdated = DateTime.Now,
                    CreatedById = UserProfile.CreatedById,
+                   isArchitect = UserProfile.isArchitect,
                }
 
                ).ToListAsync();
@@ -712,6 +713,7 @@ namespace BuildingPlans.Service
 
                    AlternativeEmail = UserProfile.AlternativeEmail,
                    AlternativePhoneNumber = UserProfile.AlternativePhoneNumber,
+                   isArchitect = UserProfile.isArchitect,
                }
 
                ).ToListAsync();

@@ -62,11 +62,11 @@
  <button mat-raised-button color="createWayleave" class="animationSlideDown" [matMenuTriggerFor]="menu2">Create New Application</button>
  <mat-menu #menu2="matMenu" xPosition="after">
    <button mat-menu-item (click)="GoToBuildingApplication(false)">Building Plan Application</button>
-   <button mat-menu-item>Demolition Application</button>
-   <button mat-menu-item>Signage Application</button>
-   <button mat-menu-item>Banner/Poster Application</button>
-   <button mat-menu-item>Flag/Pole/Headline Application</button>
-   <button mat-menu-item>Archive</button>
+   <button mat-menu-item (click)="goToDemolition(false)">Demolition Application</button>
+   <button mat-menu-item (click)="goToSignageApplication()">Signage Application</button>
+   <button mat-menu-item (click)="goToBannerApplication(false)">Banner/Poster Application</button>
+   <button mat-menu-item (click)="goToBannerApplication(true)">Flag/Pole/Headline Application</button>
+   <button mat-menu-item (click)="openArchiveOption()">Archive</button>
  </mat-menu>
   <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="getAllFunctionalAreas(complaint)">Create New Complaint</button>
   <!-- Service Information Kyle 31/01/24-->
@@ -473,7 +473,7 @@
         <div class="cont2">
           <button mat-raised-button color="client" [class.cardactive]="option ==='client'" (click)="cardchange('client');modal.dismiss('Cross click'); openNewClient(newClient)"> <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon">  New Client</button>
           <!--<button mat-raised-button color="internal" (click)="openUser(user,architectClient);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'"><i class="fa fa-user" aria-hidden="true"></i> Existing Client</button>-->
-          <button mat-raised-button color="internal" (click)="openChoice(choiceEC);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'" *ngIf="ActingAsInternal == false"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon">  Existing Client</button>
+          <button mat-raised-button color="internal" (click)="openExternalClient(user);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'" *ngIf="ActingAsInternal == false"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon">  Existing Client</button>
           <button mat-raised-button color="internal" (click)="openChoiceExternalActingAsInternal(internalUser);modal.dismiss('Cross click')" [class.cardactive]="option ==='internal'" *ngIf="ActingAsInternal"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon">  Existing Client</button>
         </div>
       </div>
@@ -754,7 +754,7 @@
 
             <div class="row">
               <div class="col">
-                <div class="form-floating mb-3 mt-3">
+                <div class="form-floating mb-3 mt-3"> 
                   <input type="text" class="form-control" id="Name" [(ngModel)]="Name" placeholder="Enter First Name" name="name">
                   <label for="name">Name</label>
                 </div>
@@ -841,6 +841,14 @@
         <div class="row">
           <div class="col">
             <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" [(ngModel)]="clientIDNumber" name="clientIDNumber" placeholder="Enter Email">
+              <label for="clientIDNumber">ID Number</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
               <input type="text" class="form-control" [(ngModel)]="clientEmail" name="clientEmail" placeholder="Enter Email">
               <label for="clientEmail">Email</label>
             </div>
@@ -855,7 +863,7 @@
         </div>
         <div class="row">
           <div class="form-floating mb-3 mt-3">
-            <input type="email" class="form-control" [(ngModel)]="clientPhysicalAddress" name="clientPhysicalAddress" placeholder="Select Address" [disabled]="existingClientCheck">
+            <input type="email" class="form-control"  ngx-google-places-autocomplete  [options]='options' #placesRef="ngx-places" (onAddressChange)="onAddressSelect($event)"  [(ngModel)]="clientPhysicalAddress" [disabled]="existingClientCheck">
             <label for="applicantEmail">Address</label>
           </div>
           <div *ngIf="isArchitect">
@@ -1621,3 +1629,25 @@
          <app-application-alerts></app-application-alerts>
 
          <!----Clarifications Alerts Kyle-->
+<ng-template #archiveOption let-modal>
+  <div class="modal-header">
+    <h6>Select Type Of Archive Application</h6>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+    <form>
+      <div class="container-fluid">
+        <div class="cont2">
+          <button mat-raised-button color="client" (click)="GoToBuildingApplication(true);modal.dismiss('Cross click')" > Building Plan Archive Application</button>
+          <button mat-raised-button color="client" (click)="goToDemolition(true);modal.dismiss('Cross click')" > Demolition Archive Application</button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+  <div class="modal-footer">
+
+  </div>
+</ng-template>
+

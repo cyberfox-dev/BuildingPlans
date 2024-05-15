@@ -257,7 +257,7 @@ namespace BuildingPlans.Controllers
             {
                 var result = await (
                     from buildingApplication in _context.BuildingApplications
-                    where buildingApplication.isActive == true
+                    where buildingApplication.isActive == true && buildingApplication.LSNumber != null
                     select new BuildingApplicationDTO()
                     {
                       ApplicationID = buildingApplication.ApplicationID,

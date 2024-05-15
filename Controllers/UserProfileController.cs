@@ -480,6 +480,7 @@ namespace BuildingPlans.Controllers
               DateCreated = DateTime.Now,
               DateUpdated = DateTime.Now,
               CreatedById = UserProfile.CreatedById,
+              isArchitect = UserProfile.isArchitect,
 
 
           }
@@ -610,6 +611,7 @@ namespace BuildingPlans.Controllers
               DateCreated = DateTime.Now,
               DateUpdated = DateTime.Now,
               CreatedById = UserProfile.CreatedById,
+              isArchitect = UserProfile.isArchitect,
           }
 
           ).ToListAsync();

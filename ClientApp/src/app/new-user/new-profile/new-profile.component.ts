@@ -291,7 +291,7 @@ export class NewProfileComponent implements OnInit {
   }
 
   onNewProfileCreate(userID?: string | null, fullName?: string | null, email?: string | null, phoneNumber?: string | null, BpNo?: string | null, CompanyName?: string | null, CompanyRegNo?: string | null, PhyscialAddress?: string | null, ApplicantIDUpload?: string | null, ApplicantIDNumber?: string | null, refNumber?:string | null, companyType?: string | null) {
-    
+    debugger;
     if (this.showInternal) {
       ///// 
 
@@ -414,7 +414,7 @@ export class NewProfileComponent implements OnInit {
           if (data.responseCode == 1) {
 
             alert(data.responseMessage);
-
+            this.modalService.dismissAll();
             
             const linkedContractors = this.shared.getContactorData();
             const linkedEngineers = this.shared.getEngineerData();
@@ -493,6 +493,7 @@ export class NewProfileComponent implements OnInit {
         if (data.responseCode == 1) {
 
           alert(data.responseMessage);
+          this.modalService.dismissAll();
         }
         else {
           alert(data.responseMessage);
@@ -516,7 +517,7 @@ export class NewProfileComponent implements OnInit {
         if (data.responseCode == 1) {
 
           alert(data.responseMessage);
-
+          this.modalService.dismissAll();
           
           const linkedContractors = this.shared.getContactorData();
           const linkedEngineers = this.shared.getEngineerData();
@@ -933,6 +934,5 @@ export class NewProfileComponent implements OnInit {
       console.log("Error: ", error);
     })
   }
-
-
+ 
 }

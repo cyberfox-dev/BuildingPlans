@@ -329,6 +329,7 @@ import { BPBannerApplicationComponent } from './bpbanner-application/bpbanner-ap
     BPFileUploadComponent,
     BPViewStageChecklistComponent,
     BPDemolitionApplicationComponent,
+    BPViewProjectInfoComponent,
   
   ],
   bootstrap: [AppComponent]

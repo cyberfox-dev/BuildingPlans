@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SharedService } from '../shared/shared.service';
 import { BPBannerApplicationService } from '../service/BPBannerApplication/bpbanner-application.service';
 import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
+import { BPFlagApplicationService } from '../service/BPFlagApplication/bpflag-application.service';
 
 @Component({
   selector: 'app-bpbanner-application',
@@ -10,7 +11,7 @@ import { Router, ActivatedRoute, Route, Routes } from "@angular/router";
 })
 export class BPBannerApplicationComponent implements OnInit {
 
-  constructor(private shared: SharedService, private bpBannerService: BPBannerApplicationService ,private router :Router) { }
+  constructor(private shared: SharedService, private bpBannerService: BPBannerApplicationService, private router: Router, private bpFlagService: BPFlagApplicationService) { }
 
   isFlagApplication: boolean;
 
@@ -48,6 +49,10 @@ export class BPBannerApplicationComponent implements OnInit {
   startPole: string;
   endPole: string;
 
+  isFlag: boolean = false;
+  IsPole: boolean = false;
+  isHeadline: boolean  = false;
+
   natureOfEvent: string;
   subjectMatter: string;
   noOfFlags: string;
@@ -56,6 +61,8 @@ export class BPBannerApplicationComponent implements OnInit {
   NoOfAgents: string;
   natureOfAdvertisement: string;
   poleSubjectMatter: string;
+  placeOfEvent: string;
+  applicationFee: string;
 
   //Headline Details
   
@@ -68,20 +75,46 @@ export class BPBannerApplicationComponent implements OnInit {
   }
 
   createBannerApplication() {
-    this.bpBannerService.addUpdateBannerApplication(0, this.UserID, this.ApplicantName, this.ApplicantSurname, this.ApplicantEmail, this.ApplicantFax, this.ApplicantCell, this.ApplicantTelephone, this.Address, this.TypeOfAdvert, this.NameOfEvent, this.Description, this.NameOfEvent, this.StartDate, this.EndDate, this.SizeOfPoster, this.NumberOfPosters, this.ApplicationFee, null, "Capture", null, this.CurrentUser.appUserId).subscribe((data: any) => {
-      if (data.responseCode == 1) {
+    if (this.isFlagApplication == false) {
+      this.bpBannerService.addUpdateBannerApplication(0, this.UserID, this.ApplicantName, this.ApplicantSurname, this.ApplicantEmail, this.ApplicantFax, this.ApplicantCell, this.ApplicantTelephone, this.Address, this.TypeOfAdvert, this.NameOfEvent, this.Description, this.NameOfEvent, this.StartDate, this.EndDate, this.SizeOfPoster, this.NumberOfPosters, this.ApplicationFee, null, "Capture", null, this.CurrentUser.appUserId).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          this.router.navigate(["/home"]);
+        }
+        else {
+          alert(data.responseMessage);
+        }
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
+    else {
+      this.createFlagApplication();
+    }
+  }
+
+  createFlagApplication() {
+    this.bpFlagService.addUpdateFlagApplication(0, this.UserID, this.ApplicantName, this.ApplicantSurname, this.ApplicantEmail, this.ApplicantFax, this.ApplicantCell, this.ApplicantTelephone, this.Address, this.applicationType, this.flagStreetName, this.poleNumber, this.startPole, this.endPole, this.subjectMatter, this.noOfFlags, this.NoOfAgents, this.natureOfAdvertisement, this.StartDate, this.EndDate, this.placeOfEvent, this.applicationFee, this.CurrentUser.appUserId).subscribe((data: any) => {
+      if (data.responseCode) {
         this.router.navigate(["/home"]);
       }
       else {
         alert(data.responseMessage);
       }
-
     }, error => {
       console.log("Error: ", error);
     })
   }
 
-  createFlagApplication() {
-
+  onChangeTypeOfApplication() {
+    if (this.applicationType == "Flag") {
+      this.isFlag = true;
+    }
+    if (this.applicationType == "Pole") {
+      this.IsPole = true;
+    }
+    if (this.applicationType == "Headline") {
+      this.isHeadline = true;
+    }
   }
 }

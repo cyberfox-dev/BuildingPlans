@@ -97,9 +97,9 @@ export class BPViewProjectInfoComponent implements OnInit {
     this.getApplicationInfo();
     this.getAllDocumentForApplication();
   }
-  getApplicationInfo() {
+  async getApplicationInfo() {
     debugger;
-    this.bpService.getBuildingApplicationByApplicationID(this.applicationId).subscribe((data: any) => {
+    await this.bpService.getBuildingApplicationByApplicationID(this.applicationId).subscribe((data: any) => {
       if (data.responseCode == 1) {
         const current = data.dateSet[0];
         debugger;
