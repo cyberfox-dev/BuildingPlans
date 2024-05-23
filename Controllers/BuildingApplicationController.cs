@@ -94,7 +94,8 @@ namespace BuildingPlans.Controllers
                             DateCreated = DateTime.Now,
                             DateUpdated = DateTime.Now,
                             isActive = true,
-                            CreatedById = model.CreatedById
+                            CreatedById = model.CreatedById,
+                           OmnibusServitude = model.OmnibusServitude
                            
                         };
                         await _context.BuildingApplications.AddAsync(tempBuildingApplication);
@@ -229,7 +230,10 @@ namespace BuildingPlans.Controllers
                         {
                             tempBuildingApplication.SGCode = model.SGCode;
                         }
-                       
+                        if (model.OmnibusServitude != null)
+                        {
+                            tempBuildingApplication.OmnibusServitude = model.OmnibusServitude;
+                        }
                         tempBuildingApplication.DateUpdated = DateTime.Now;
                      
                         _context.Update(tempBuildingApplication);
@@ -253,7 +257,7 @@ namespace BuildingPlans.Controllers
             {
                 var result = await (
                     from buildingApplication in _context.BuildingApplications
-                    where buildingApplication.isActive == true
+                    where buildingApplication.isActive == true && buildingApplication.LSNumber != null
                     select new BuildingApplicationDTO()
                     {
                       ApplicationID = buildingApplication.ApplicationID,
@@ -290,6 +294,7 @@ namespace BuildingPlans.Controllers
                       SGCode = buildingApplication.SGCode,
                       DateCreated = buildingApplication.DateCreated,
                       DateUpdated = buildingApplication.DateUpdated,
+                      OmnibusServitude = buildingApplication.OmnibusServitude
 
                     }
                     ).ToListAsync();
@@ -346,6 +351,7 @@ namespace BuildingPlans.Controllers
                         SGCode = buildingApplication.SGCode,
                         DateCreated = buildingApplication.DateCreated,
                         DateUpdated = buildingApplication.DateUpdated,
+                        OmnibusServitude = buildingApplication.OmnibusServitude
 
                     }).ToListAsync();
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Application By ApplicationID", result));
@@ -400,6 +406,8 @@ namespace BuildingPlans.Controllers
                                         SGCode = buildingApplication.SGCode,
                                         DateCreated = buildingApplication.DateCreated,
                                         DateUpdated = buildingApplication.DateUpdated,
+                                        OmnibusServitude = buildingApplication.OmnibusServitude
+
 
 
                                     }).ToListAsync();
@@ -454,6 +462,8 @@ namespace BuildingPlans.Controllers
                                         SGCode = buildingApplication.SGCode,
                                         DateCreated = buildingApplication.DateCreated,
                                         DateUpdated = buildingApplication.DateUpdated,
+                                        OmnibusServitude = buildingApplication.OmnibusServitude
+
 
                                     }).ToListAsync();
 

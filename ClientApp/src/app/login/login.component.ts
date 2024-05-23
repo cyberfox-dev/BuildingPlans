@@ -788,7 +788,6 @@ this.userService.login(email, password).pipe(
     /*    this.notification.sendEmail("jahdiel@cyberfox.co.za", "Test", "testing 1, 2, 3...");*/
 
     let fullName = this.registerForm.controls["fullName"].value;
-    let bpNumber = this.registerForm.controls["bpNumber"].value;
     let email = this.registerForm.controls["registerEmail"].value;
     let password = this.registerForm.controls["registerPassword"].value;
     let passwordConfirm = this.registerForm.controls["reenterPassword"].value;
@@ -870,7 +869,7 @@ this.userService.login(email, password).pipe(
       onLoginForm = false;
     }
     
-    this.VerifyBP(BpNo);
+   /* this.VerifyBP(BpNo);*/
 
     this.testBp(BpNo).subscribe(isBpValid => {
       if (!isBpValid) {

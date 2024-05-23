@@ -185,6 +185,7 @@ export class SharedService {
   isArchitect: boolean;
   isPlanArchive: boolean;
   isDemolitionArchive: boolean;
+  isFlagApplication: boolean;
 
   setArchitectID(UserID: string) {
     this.architectUserID = UserID;

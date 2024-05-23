@@ -4,6 +4,7 @@ using BuildingPlans.Models.DTO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace BuildingPlans.Data
 {
@@ -92,5 +93,10 @@ namespace BuildingPlans.Data
         public virtual DbSet<BPDocumentCategoryTable> BPDocumentCategoryTable { get; set; }
         public virtual DbSet<BuildingApplication> BuildingApplications { get; set; }
         public DbSet<StagesTableBP> StagesTableBP { get; set; }
+        public DbSet<BPDemolitionApplication> BPDemolitionApplication { get; set; }
+        public DbSet<BPSignageApplication> BPSignageApplication { get; set; }
+        public DbSet<BPBannerApplication> BPBannerApplication { get; set; }
+        public DbSet<BPFlagApplication> BPFlagApplication { get; set; }
+        public DbSet<BPComplaints> BPComplaints { get; set; }
     }
 }

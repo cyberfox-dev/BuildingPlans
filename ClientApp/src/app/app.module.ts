@@ -118,7 +118,9 @@ import { BPFileUploadComponent } from './bpfile-upload/bpfile-upload.component';
 import { BPViewStageChecklistComponent } from './bpview-stage-checklist/bpview-stage-checklist.component';
 import { BPDemolitionApplicationComponent } from './bpdemolition-application/bpdemolition-application.component';
 import { BPSignageApplicationComponent } from './bpsignage-application/bpsignage-application.component';
+import { BPBannerApplicationComponent } from './bpbanner-application/bpbanner-application.component';
 import {  BpConfigurationsComponent} from 'src/app/bp-configurations/bp-configurations.component';
+
 
 //import { MatExpansionModule } from '@angular/material/expansion';
 
@@ -222,6 +224,7 @@ import {  BpConfigurationsComponent} from 'src/app/bp-configurations/bp-configur
     BPViewStageChecklistComponent,
     BPDemolitionApplicationComponent,
     BPSignageApplicationComponent,
+    BPBannerApplicationComponent,
     BpConfigurationsComponent,
 
 
@@ -288,6 +291,7 @@ import {  BpConfigurationsComponent} from 'src/app/bp-configurations/bp-configur
       { path: 'bpview-project-info', component: BPViewProjectInfoComponent },
       { path: 'bpdemolition-application', component: BPDemolitionApplicationComponent },
       { path: 'bpsignage-application', component: BPSignageApplicationComponent },
+      { path: 'bpbanner-application', component: BPBannerApplicationComponent },
     ])
   ],
   providers: [
@@ -328,6 +332,8 @@ import {  BpConfigurationsComponent} from 'src/app/bp-configurations/bp-configur
     BPAccessGroupsConfigComponent,
     BPFileUploadComponent,
     BPViewStageChecklistComponent,
+    BPDemolitionApplicationComponent,
+    BPViewProjectInfoComponent,
     BpConfigurationsComponent,
   
   ],

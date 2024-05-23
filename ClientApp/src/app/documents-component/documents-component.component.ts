@@ -55,15 +55,15 @@ export class DocumentsComponentComponent implements OnInit{
   constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService, private permitService: PermitService, private permitComponentComponent: PermitComponentComponent) { }
 
   ngOnInit(): void {
-    this.currentApplication = this.shared.getViewApplicationIndex();
-    this.ApplicationID = this.currentApplication.applicationID;
+    //this.currentApplication = this.shared.getViewApplicationIndex();
+    this.ApplicationID = this.shared.applicationID;
     //Permit Kyle 13-02-24
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
     //Permit Kyle 13-02-24
     this.getAllDocsForApplication();
-    this.hasPermitSubForCommentDocument();
-    this.fromReApplyArchive = this.shared.getFromReApplyArchive(); //reapply Sindiswa 26 January 2024
+    //this.hasPermitSubForCommentDocument();
+    //this.fromReApplyArchive = this.shared.getFromReApplyArchive(); //reapply Sindiswa 26 January 2024
    
 
   }
@@ -308,4 +308,5 @@ export class DocumentsComponentComponent implements OnInit{
     
   }
   //Permit Kyle 13-02-24
+  
 }
