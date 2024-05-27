@@ -294,7 +294,8 @@ namespace BuildingPlans.Controllers
                       SGCode = buildingApplication.SGCode,
                       DateCreated = buildingApplication.DateCreated,
                       DateUpdated = buildingApplication.DateUpdated,
-                      OmnibusServitude = buildingApplication.OmnibusServitude
+                      OmnibusServitude = buildingApplication.OmnibusServitude,
+                      Stage = buildingApplication.Stage,
 
                     }
                     ).ToListAsync();
@@ -462,7 +463,8 @@ namespace BuildingPlans.Controllers
                                         SGCode = buildingApplication.SGCode,
                                         DateCreated = buildingApplication.DateCreated,
                                         DateUpdated = buildingApplication.DateUpdated,
-                                        OmnibusServitude = buildingApplication.OmnibusServitude
+                                        OmnibusServitude = buildingApplication.OmnibusServitude,
+                                        Stage = buildingApplication.Stage
 
 
                                     }).ToListAsync();
@@ -524,6 +526,63 @@ namespace BuildingPlans.Controllers
                         return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Application Removed", true));
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+        [HttpPost("GetBuildingApplicationByStageName")]
+        public async Task<object> GetBuildingApplicationByStageName([FromBody] BuildingApplicationBindingModel model)
+        {
+            try
+            {
+                var result = await (from buildingApplication in _context.BuildingApplications
+                                    where buildingApplication.Stage == model.Stage && buildingApplication.isActive == true
+                                    select new BuildingApplicationDTO()
+                                    {
+                                        ApplicationID = buildingApplication.ApplicationID,
+                                        LSNumber = buildingApplication.LSNumber,
+                                        UserID = buildingApplication.UserID,
+                                        FirstName = buildingApplication.FirstName,
+                                        Surname = buildingApplication.Surname,
+                                        EmailAddress = buildingApplication.EmailAddress,
+                                        CellNumber = buildingApplication.CellNumber,
+                                        AltEmail = buildingApplication.AltEmail,
+                                        AltCellNumber = buildingApplication.AltCellNumber,
+                                        IDNumber = buildingApplication.IDNumber,
+                                        PropertyDescription = buildingApplication.PropertyDescription,
+                                        PremisesName = buildingApplication.PremisesName,
+                                        AddressType = buildingApplication.AddressType,
+                                        ErfNumber = buildingApplication.ErfNumber,
+                                        PortionNumber = buildingApplication.PortionNumber,
+                                        NoOfUnits = buildingApplication.NoOfUnits,
+                                        UnitNumber = buildingApplication.UnitNumber,
+                                        PhysicalAddress = buildingApplication.PhysicalAddress,
+                                        Latitude = buildingApplication.Latitude,
+                                        Longitude = buildingApplication.Longitude,
+                                        ArchitectName = buildingApplication.ArchitectName,
+                                        BuildingPlanFor = buildingApplication.BuildingPlanFor,
+                                        TypeOfDevelopment = buildingApplication.TypeOfDevelopment,
+                                        TotalArea = buildingApplication.TotalArea,
+                                        OccupationClassification = buildingApplication.OccupationClassification,
+                                        PlanFees = buildingApplication.PlanFees,
+                                        PropertyValue = buildingApplication.PropertyValue,
+                                        StreetAddress = buildingApplication.StreetAddress,
+                                        Suburb = buildingApplication.Suburb,
+                                        City = buildingApplication.City,
+                                        PostalCode = buildingApplication.PostalCode,
+                                        SGCode = buildingApplication.SGCode,
+                                        DateCreated = buildingApplication.DateCreated,
+                                        DateUpdated = buildingApplication.DateUpdated,
+                                        OmnibusServitude = buildingApplication.OmnibusServitude,
+                                        Stage = buildingApplication.Stage
+
+
+                                    }).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Applications By Stage", result));
             }
             catch (Exception ex)
             {

@@ -96,4 +96,11 @@ export class BuildingApplicationsService {
     }
     return this.httpClient.post(this.baseURL + "RemoveBuildingApplication", body);
   }
+
+  public getBuildingApplicationByStageName(stageName: string | null) {
+    const body = {
+      Stage :stageName
+    }
+    return this.httpClient.post(this.baseURL + "GetBuildingApplicationByStageName", body);
+  }
 }

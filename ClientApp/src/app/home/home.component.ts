@@ -50,6 +50,7 @@ import { BPFunctionalAreasService } from '../service/BPFunctionalAreas/bpfunctio
 import { FunctionalAreasList } from '../bpdepartment-config/bpdepartment-config.component';
 import { GooglePlaceDirective } from 'ngx-google-places-autocomplete';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 export interface EngineerList {
   professinalID: number;
@@ -431,10 +432,11 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   displayedColumns: string[] = ['lSNumber', 'ERFNumber', 'stage', 'stageAge', 'planAge', 'ownerName', 'propertyAddress', 'status', 'dateCreated', 'dateUpdated', 'actions'];
-  displayedColumnsBP: string[] = ['lSNumber', 'ERFNumber', 'stage', 'stageAge', 'planAge', 'ownerName', 'eventName', 'status', 'dateCreated', 'dateUpdated', 'actions'];
-  displayedColumnsSign: string[] = ['lSNumber', 'ERFNumber', 'stage', 'stageAge', 'planAge', 'ownerName', 'natureOfEvent', 'status', 'dateCreated', 'dateUpdated', 'actions'];
+  displayedColumnsBP: string[] = ['lSNumber', 'ERFNumber', 'stage', 'stageAge', 'planAge', 'ownerName', 'propertyAddress', 'status', 'dateCreated', 'dateUpdated', 'actions'];
+  displayedColumnsSA: string[] = ['lSNumber', 'ERFNumber', 'stage', 'stageAge', 'planAge', 'ownerName', 'propertyAddress', 'status', 'dateCreated', 'dateUpdated', 'actions'];
   dataSourceBP = this.ApplicationsBP;
-
+  scrutinyApplications: ApplicationsListBP[] = [];
+  dataSourceSA = this.scrutinyApplications;
   isArchitect: boolean = false;
   bpApplicationId: number;
 
@@ -533,7 +535,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   newInternalList = [];
   currentDate: Date;
   previousMonth: number;
-  @ViewChild(MatTable) applicationsTable: MatTable<ApplicationsList> | undefined;
+  @ViewChild(MatTable) applicationsTable: MatTable<ApplicationsListBP> | undefined;
+ 
   //displayedColumns: string[] = ['ProjectNumber', 'FullName', 'Stage', 'Status', 'TypeOfApplication', 'AplicationAge', 'StageAge', 'DateCreated', 'actions'];
   dataSource = this.Applications;
   AllCurrentUserRoles: any;
@@ -731,7 +734,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
       // #endregion
       //Audit Trail Kyle
-      this.sharedService.isViewReport = false;
+      this.sharedService.isViewReport = false; 
       this.sharedService.isReports = false;
       //Audit Trail Kyle 
 
@@ -743,7 +746,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
       this.onCheckIfUserHasAccess();
 
-
+    
       this.getAllSubDepartments();
       this.getAllUserLinks();
       this.getConfig();
@@ -755,10 +758,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.isBannerVisible();
       if (this.CurrentUserProfile[0].isInternal == true) {
         this.GetAllBuildingApplications();
-        this.getAllDemolitionApplications();
-        this.getAllSignageApplications();
-        this.getAllBannerApplications();
-        this.getAllFlagApplications();
+        this.GetAllPreInvoiceScurtinyApplications();
       }
       else if (this.CurrentUserProfile[0].isInternal == false) {
         this.GetAllApplicationsForExternalUser();
@@ -7097,8 +7097,9 @@ this.subscriptions.push(subscription);
   GetAllBuildingApplications() {
     debugger;
     this.ApplicationsBP.splice(0, this.ApplicationsBP.length);
-    this.bpApplicationService.getAllBuildingApplications().subscribe((data: any) => {
+    this.bpApplicationService.getBuildingApplicationByStageName("Building Application").subscribe((data: any) => {
       if (data.responseCode == 1) {
+        debugger;
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempApplication = {} as ApplicationsListBP;
           const current = data.dateSet[i];
@@ -7129,12 +7130,13 @@ this.subscriptions.push(subscription);
 
         }
         this.dataSourceBP = this.ApplicationsBP;
-        this.applicationsTable?.renderRows();
+        
         this.applicationTypeName = "Build Plan"
       }
       else {
         alert(data.responseMessage);
       }
+      console.log("Building Applications", this.dataSourceBP);
       console.log("Building Applications", data);
     }, error => {
       console.log("Error: ", error);
@@ -7488,7 +7490,7 @@ this.subscriptions.push(subscription);
         for (let i = 0; i < 30; i++) {
           const current = data.dateSet[i];
           const tempApplication = {} as ApplicationsListBP;
-
+        
           tempApplication.applicationID = current.demolitionID;
           tempApplication.erfNumber = current.siteERFNumber;
           tempApplication.stage = current.currentStage;
@@ -7620,6 +7622,59 @@ this.subscriptions.push(subscription);
   openArchiveOption() {
     this.modalService.open(this.archiveOption, { centered: true, size: 'xl' });
   }
+  //Home Tabs Kyle 27-05 - 24
+  onChangeDataSource(event: MatTabChangeEvent) {
+    debugger;
+    switch (event.index) {
+      case 0:
+        this.dataSourceSA = this.scrutinyApplications;
+        break;
 
+      case 1:
+        break;
+
+      case 2:
+        break;
+
+      case 3:
+        this.dataSourceSA = this.ApplicationsBP;
+    }
+  }
+ 
+  GetAllPreInvoiceScurtinyApplications() {
+    this.bpApplicationService.getAllBuildingApplications().subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          debugger;
+          const current = data.dateSet[i];
+          const tempApplication = {} as ApplicationsListBP;
+          if (current.stage == "Land Survey" || current.stage == "Town Planning") {
+            tempApplication.applicationID = current.applicationID;
+            tempApplication.ProjectNumber = current.lsNumber;
+            tempApplication.erfNumber = current.erfNumber;
+            tempApplication.stage = current.stage;
+            tempApplication.ownerName = current.ownerName;
+            tempApplication.propertyAddress = current.propertyAddress;
+            tempApplication.status = current.status;
+            tempApplication.dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
+            tempApplication.dateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf("T"));
+
+            this.scrutinyApplications.push(tempApplication);
+          }
+         
+        }
+        console.log("Scrutiny Application", this.scrutinyApplications);
+        this.dataSourceSA = this.scrutinyApplications;
+        this.applicationsTable?.renderRows();
+          }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log("Error",error);
+   
+    })
+  }
+  //Home Tabs Kyle 27-05 - 24
   
 }
