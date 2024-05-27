@@ -119,6 +119,7 @@ import { BPViewStageChecklistComponent } from './bpview-stage-checklist/bpview-s
 import { BPDemolitionApplicationComponent } from './bpdemolition-application/bpdemolition-application.component';
 import { BPSignageApplicationComponent } from './bpsignage-application/bpsignage-application.component';
 import { BPBannerApplicationComponent } from './bpbanner-application/bpbanner-application.component';
+import {  BpConfigurationsComponent} from 'src/app/bp-configurations/bp-configurations.component';
 
 
 //import { MatExpansionModule } from '@angular/material/expansion';
@@ -224,6 +225,8 @@ import { BPBannerApplicationComponent } from './bpbanner-application/bpbanner-ap
     BPDemolitionApplicationComponent,
     BPSignageApplicationComponent,
     BPBannerApplicationComponent,
+    BpConfigurationsComponent,
+
 
 
   ],
@@ -279,6 +282,7 @@ import { BPBannerApplicationComponent } from './bpbanner-application/bpbanner-ap
       { path: 'new-wayleave', component: NewWayleaveComponent },
       { path: 'view-project-info', component: ViewProjectInfoComponent },
       { path: 'configuration', component: ConfigurationComponent },
+      { path: 'bp-configuration', component: BpConfigurationsComponent },
       { path: 'user-settings', component: UserSettingsComponent },
       { path: 'cyberfox-config', component: CyberfoxConfigComponent },
       { path: 'invoice', component: InvoiceComponent },
@@ -330,6 +334,7 @@ import { BPBannerApplicationComponent } from './bpbanner-application/bpbanner-ap
     BPViewStageChecklistComponent,
     BPDemolitionApplicationComponent,
     BPViewProjectInfoComponent,
+    BpConfigurationsComponent,
   
   ],
   bootstrap: [AppComponent]

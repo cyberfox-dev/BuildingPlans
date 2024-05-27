@@ -623,6 +623,10 @@ export class NavMenuComponent implements OnInit {
     /*    this.router.navigate(["/configuration"]);*/
     this.deleteWayleaveWhenGoConfig();
   }
+  goToBPConfig() {
+
+    this.router.navigate(["/bp-configuration"]);
+  }
 
   goToSettings() {
     /*this.router.navigate(["/user-settings"]);*/
