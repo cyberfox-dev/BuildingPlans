@@ -552,7 +552,7 @@ export class ActionCenterComponent implements OnInit {
       this.planningWayleave = true;
     }
 
-    //// this giving some shit
+    //// this giving some shit 
     // this.applicationDataForView.push(this.sharedService.getViewApplicationIndex())
     // this.CurrentApplicationBeingViewed.push(this.applicationDataForView[0]);
 

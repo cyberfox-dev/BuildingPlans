@@ -3,7 +3,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { BPAccessGroupsService } from '../service/BPAccessGroups/bpaccess-groups.service';
-
+import { BPRolesService } from '../service/BPRoles/bproles.service';
+import { BPAccessGroupRoleLinkService } from '../service/BPAcessGroupRoleLink/bpaccess-group-role-link.service';
 
 export interface AccessGroupList {
   AccessGroupID: number;
@@ -13,6 +14,15 @@ export interface AccessGroupList {
   DateCreated: any;
   DateUpdated: any;
 }
+export interface RolesList {
+  RoleID: number;
+  RoleName: string;
+  RoleType: string;
+  RoleDescription: string;
+  isLinked: boolean;
+  AccessGroupRoleLinkID: number;
+  isActive: boolean;
+}
 @Component({
   selector: 'app-bpaccess-groups-config',
   templateUrl: './bpaccess-groups-config.component.html',
@@ -20,9 +30,10 @@ export interface AccessGroupList {
 })
 export class BPAccessGroupsConfigComponent implements OnInit {
 
-  constructor(private bpAccessGroupsService: BPAccessGroupsService, private modalService: NgbModal) { }
+  constructor(private bpAccessGroupsService: BPAccessGroupsService, private modalService: NgbModal, private bpRoleService: BPRolesService, private bpAccessGroupRoleLinkService: BPAccessGroupRoleLinkService) { }
 
   AccessGroupsList: AccessGroupList[] = [];
+  RolesList: RolesList[] = [];
 
   @ViewChild(MatTable) AccessGroupsTable: MatTable<AccessGroupList> | undefined;
   accessDataSource: MatTableDataSource<AccessGroupList> = new MatTableDataSource<AccessGroupList>();
@@ -178,5 +189,93 @@ export class BPAccessGroupsConfigComponent implements OnInit {
     this.accessGroupDescription="";
     this.oldAccessGroupName = "";
     this.oldAccessGroupDescription = "";
+  }
+  selectedAccessGroup: string;
+  selectedAccessGroupID: number;
+
+  getAllBPRoles(linkrole: any) {
+   
+
+    this.RolesList.splice(0, this.RolesList.length);
+
+    this.bpRoleService.getAllRolesAndAccessGroupLinks(this.selectedAccessGroup).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          const tempRole = {} as RolesList;
+          debugger;
+          tempRole.RoleID = current.roleID;
+          tempRole.RoleName = current.roleName;
+          tempRole.RoleDescription = current.roleDescription;
+          tempRole.AccessGroupRoleLinkID = current.accessGroupRoleLinkID;
+          tempRole.isActive = current.isActive;
+
+          if (current.accessGroupRoleLinkID != null && current.isActive == true) {
+            tempRole.isLinked = true;
+          }
+          else {
+            tempRole.isLinked = false;
+          }
+          this.RolesList.push(tempRole);
+        }
+        this.modalService.open(linkrole, { centered: true, size: 'xl' });
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log(error);
+    
+    })
+  }
+ 
+  onLinkRoleToAccessGroup(index: any,linkrole:any) {
+    let roleLink = this.RolesList[index];
+
+    if (roleLink.AccessGroupRoleLinkID == null) {
+      roleLink.AccessGroupRoleLinkID = 0;
+    }
+
+    this.bpAccessGroupRoleLinkService.addUpdateAccessGroupRoleLink(roleLink.AccessGroupRoleLinkID, this.selectedAccessGroup, roleLink.RoleName, this.CurrentUser.appUserId, this.selectedAccessGroupID, roleLink.RoleID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        this.modalService.dismissAll();
+        alert(data.responseMessage);
+        this.getAllBPRoles(linkrole);
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log(error);
+    
+    })
+  }
+
+  onSelectAccessGroup(index: any,linkrole:any) {
+    this.selectedAccessGroup = this.AccessGroupsList[index].AccessGroupName;
+    this.selectedAccessGroupID = this.AccessGroupsList[index].AccessGroupID;
+
+    this.getAllBPRoles(linkrole);
+  }
+
+  onUnlinkRoleFromAccessGroup(index: any, linkrole: any) {
+    let roleLink = this.RolesList[index];
+
+    this.bpAccessGroupRoleLinkService.deleteAccessGroupRoleLinkByID(roleLink.AccessGroupRoleLinkID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        this.modalService.dismissAll();
+        alert(data.responseMessage);
+        this.getAllBPRoles(linkrole);
+
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log(error);
+    
+    })
+
   }
 }

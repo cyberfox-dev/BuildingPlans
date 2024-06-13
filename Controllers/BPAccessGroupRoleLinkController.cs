@@ -36,8 +36,8 @@ namespace BuildingPlans.Controllers
             _context = context;
         }
 
-        [HttpPost("AddUpdateAccessGroupRole")]
-        public async Task<object> AddUpdateAccessGroupRole([FromBody] AccessGroupsBindingModel model)
+        [HttpPost("AddUpdateAccessGroupRoleLink")]
+        public async Task<object> AddUpdateAccessGroupRoleLink([FromBody] AccessGroupsBindingModel model)
         {
             try
             {
@@ -61,6 +61,8 @@ namespace BuildingPlans.Controllers
                         {
                             AccessGroupName = model.AccessGroupName,
                             RoleName = model.RoleName,
+                            AccessGroupID = model.AccessGroupID,
+                            RoleID = model.RoleID,
                             CreatedById = model.CreatedById,
                             DateCreated = DateTime.Now,
                             DateUpdated = DateTime.Now,
@@ -84,7 +86,7 @@ namespace BuildingPlans.Controllers
                             tempAccessGroupRole.RoleName = model.RoleName;
                         }
                         tempAccessGroupRole.DateUpdated = DateTime.Now;
-
+                        tempAccessGroupRole.isActive = true;
                         _context.Update(tempAccessGroupRole);
                         await _context.SaveChangesAsync();
 
@@ -106,12 +108,14 @@ namespace BuildingPlans.Controllers
             try
             {
                 var result = await (from AccessGroupRoles in _context.BPAccessGroupRoleLink
-                                    where AccessGroupRoles.AccessGroupName == model.AccessGroupName && AccessGroupRoles.isActive == true
+                                    where AccessGroupRoles.AccessGroupName == model.AccessGroupName 
                                     select new AccessGroupsDTO()
                                     {
                                         AccessGroupRoleLinkID = AccessGroupRoles.AccessGroupRoleLinkID,
                                         AccessGroupName = AccessGroupRoles.AccessGroupName,
                                         RoleName = AccessGroupRoles.RoleName,
+                                        AccessGroupID = AccessGroupRoles.AccessGroupID,
+                                        RoleID = AccessGroupRoles.RoleID,
                                         CreatedById = AccessGroupRoles.CreatedById,
                                         DateCreated = AccessGroupRoles.DateCreated,
                                         DateUpdated = AccessGroupRoles.DateUpdated,
@@ -145,6 +149,8 @@ namespace BuildingPlans.Controllers
                                             AccessGroupRoleLinkID = AccessGroupRoles.AccessGroupRoleLinkID,
                                             AccessGroupName = AccessGroupRoles.AccessGroupName,
                                             RoleName = AccessGroupRoles.RoleName,
+                                            AccessGroupID = AccessGroupRoles.AccessGroupID,
+                                            RoleID = AccessGroupRoles.RoleID,
                                             CreatedById = AccessGroupRoles.CreatedById,
                                             DateCreated = AccessGroupRoles.DateCreated,
                                             DateUpdated = AccessGroupRoles.DateUpdated,
@@ -187,5 +193,7 @@ namespace BuildingPlans.Controllers
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
+
+        
     }
 }

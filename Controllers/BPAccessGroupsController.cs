@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System;
 using System.Linq;
 using System.Data;
+using BuildingPlans.Data.Migrations;
 
 namespace BuildingPlans.Controllers
 {
@@ -164,5 +165,36 @@ namespace BuildingPlans.Controllers
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Access Group Deleted Successfully", true));
             }
         }
-    }
+
+        [HttpPost("GetAllAccessGroupsAndUserLink")]
+        public async Task<object> GetAllAccessGroupsAndUserLinks([FromBody] AccessGroupsBindingModel model)
+        {
+            try
+            {
+                var result = await (from ac in _context.BPAccessGroups
+                                    join aul in _context.BPAccessGroupsUserLinks on ac.AccessGroupID equals aul.AccessGroupID into acAulJoin
+                                    from aul in acAulJoin.DefaultIfEmpty()
+                                    where ac.isActive == true
+                                    
+                                    select new AccessGroupsDTO()
+                                    {
+                                        AccessGroupID = ac.AccessGroupID,
+                                        AccessGroupName = ac.AccessGroupName,
+                                        AccessGroupDescription = ac.AccessGroupDescription,
+                                        DateCreated = ac.DateCreated,
+                                        DateUpdated = ac.DateUpdated,
+                                        isActive = aul.isActive,
+                                        AccessGroupUserLinkID = (aul.UserProfileID == model.UserProfileID && aul.FunctionalArea == model.FunctionalArea)? aul.AccessGroupUserLinkID:(int?)null,
+
+                                    })
+                                    
+                                    .ToListAsync();
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Access Groups And User Links", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+            }
+        }
 }

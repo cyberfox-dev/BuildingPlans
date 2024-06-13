@@ -119,8 +119,10 @@ import { BPViewStageChecklistComponent } from './bpview-stage-checklist/bpview-s
 import { BPDemolitionApplicationComponent } from './bpdemolition-application/bpdemolition-application.component';
 import { BPSignageApplicationComponent } from './bpsignage-application/bpsignage-application.component';
 import { BPBannerApplicationComponent } from './bpbanner-application/bpbanner-application.component';
-import {  BpConfigurationsComponent} from 'src/app/bp-configurations/bp-configurations.component';
-
+import { BpConfigurationsComponent } from 'src/app/bp-configurations/bp-configurations.component';
+import { BPStagesComponent } from 'src/app/bpstages/bpstages.component';
+import { BPRolesConfigComponent } from 'src/app/bproles-config/bproles-config.component';
+import { BPDepartmentManagerComponent } from 'src/app/bpdepartment-manager/bpdepartment-manager.component';
 
 //import { MatExpansionModule } from '@angular/material/expansion';
 
@@ -226,9 +228,9 @@ import {  BpConfigurationsComponent} from 'src/app/bp-configurations/bp-configur
     BPSignageApplicationComponent,
     BPBannerApplicationComponent,
     BpConfigurationsComponent,
-
-
-
+    BPStagesComponent, //BP Stages Kyle
+    BPRolesConfigComponent, 
+    BPDepartmentManagerComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -335,6 +337,9 @@ import {  BpConfigurationsComponent} from 'src/app/bp-configurations/bp-configur
     BPDemolitionApplicationComponent,
     BPViewProjectInfoComponent,
     BpConfigurationsComponent,
+    BPStagesComponent, // BP Stages Kyle
+    BPRolesConfigComponent,
+    BPDepartmentManagerComponent,
   
   ],
   bootstrap: [AppComponent]

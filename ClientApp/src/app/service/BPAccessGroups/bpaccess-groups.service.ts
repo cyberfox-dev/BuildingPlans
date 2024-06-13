@@ -42,4 +42,12 @@ export class BPAccessGroupsService {
 
     return this.httpClient.post(this.baseURL + "GetAccessGroupByAccessGroupID", body);
   }
+  public getAllAccessGroupsAndUserLinks(userProfileID: number | null, functionalArea: string | null) {
+    const body = {
+      UserProfileID: userProfileID,
+      FunctionalArea: functionalArea
+    }
+
+    return this.httpClient.post(this.baseURL + "GetAllAccessGroupsAndUserLink", body);
+  }
 }

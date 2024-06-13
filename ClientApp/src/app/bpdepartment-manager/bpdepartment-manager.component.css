@@ -1,0 +1,22 @@
+.mat-create {
+  background-color: #005870;
+  color: #fff;
+  margin-top: 10px !important;
+}
+.button {
+  margin-bottom: 5px !important;
+ 
+}
+table {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+.mat-blue {
+  background-color: #20c997;
+  color: #fff;
+}
+.mat-orange {
+  background-color: #ff9900;
+  color: #fff;
+}

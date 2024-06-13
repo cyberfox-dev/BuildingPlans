@@ -17,6 +17,8 @@ import { ConfigService } from 'src/app/service/Config/config.service';
 import { ZoneLinkService } from 'src/app/service/ZoneLink/zone-link.service';
 import { AccessGroupsService } from 'src/app/service/AccessGroups/access-groups.service';
 import { delay } from 'rxjs/operators';
+import { BPAccessGroupUserLinkService } from '../service/BPAccessGroupsUserLink/bpaccess-group-user-link.service';
+
 export interface ConfigList {
   configID: number,
   configName: string,
@@ -116,7 +118,8 @@ export class LoginComponent implements OnInit {
     private configService: ConfigService,
     private zoneLinkService: ZoneLinkService,
     private accessGroupsService: AccessGroupsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private bpAccessGroupUserLinkService: BPAccessGroupUserLinkService,
   ) {     //Run this before anything else because weaccess the apiURL from it.
     this.getConfig();
   }
@@ -295,9 +298,12 @@ export class LoginComponent implements OnInit {
 
 
   getAllRolesForUserForAllAG(userId: number): void {
-    this.accessGroupsService.getAllRolesForUserForAllAG(userId).subscribe(
+    debugger;
+    this.bpAccessGroupUserLinkService.getAllRolesForUserForAllAG(userId).subscribe(
       (data: any) => {
+        debugger;
         if (data?.responseCode === 1 && data?.dateSet) {
+          debugger;
           this.setLocalStorage("AllCurrentUserRoles", data.dateSet);
         } else {
           console.error("Invalid data structure received: ", data);
@@ -334,6 +340,7 @@ export class LoginComponent implements OnInit {
         
         const userId = profileData.dateSet[0].userProfileID;
         this.setLocalStorage("userProfile", profileData.dateSet);
+        debugger;
         this.getAllRolesForUserForAllAG(userId);
       }),
       catchError(error => {

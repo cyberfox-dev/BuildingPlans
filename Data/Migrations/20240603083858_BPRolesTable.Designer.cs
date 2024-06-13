@@ -4,6 +4,7 @@ using BuildingPlans.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BuildingPlans.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240603083858_BPRolesTable")]
+    partial class BPRolesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -498,9 +500,6 @@ namespace BuildingPlans.Data.Migrations
 
                     b.Property<string>("UserID")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UserProfileID")
-                        .HasColumnType("int");
 
                     b.Property<int?>("ZoneID")
                         .HasColumnType("int");

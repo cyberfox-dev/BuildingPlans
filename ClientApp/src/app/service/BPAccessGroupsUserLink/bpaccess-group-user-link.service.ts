@@ -12,7 +12,7 @@ export class BPAccessGroupUserLinkService {
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
-  public addUpdateAccessGroupUserLink(accessGroupUserLinkId: number | null, accessGroupID: number | null, accessGroupName: string | null, zoneId: number | null, zoneName: string | null, subdepartmentName: string | null, userID: string | null, createdById: string | null, functionalArea: string | null, departmentName: string | null) {
+  public addUpdateAccessGroupUserLink(accessGroupUserLinkId: number | null, accessGroupID: number | null, accessGroupName: string | null, zoneId: number | null, zoneName: string | null, subdepartmentName: string | null, userID: string | null, createdById: string | null, functionalArea: string | null, departmentName: string | null,userProfileID) {
     const body = {
       AccessGroupUserLinkID: accessGroupUserLinkId,
       AccessGroupID: accessGroupID,
@@ -23,7 +23,8 @@ export class BPAccessGroupUserLinkService {
       UserID: userID,
       CreatedById: createdById,
       FunctionalArea: functionalArea,
-      DepartmentName: departmentName
+      DepartmentName: departmentName,
+      UserProfileID: userProfileID
     }
 
     return this.httpClient.post(this.baseURL + "AddUpdateAccessGroupUserLink", body);
@@ -62,5 +63,14 @@ export class BPAccessGroupUserLinkService {
     }
 
     return this.httpClient.post(this.baseURL + "GetAllAccessGroupLinksForUserInDepartment", body);
+  }
+
+  public getAllRolesForUserForAllAG(UserProfileID: number) {
+
+    const body = {
+      UserProfileID: UserProfileID,
+    }
+    return this.httpClient.post(this.baseURL + "GetAllRolesForUserForAG", body);
+
   }
 }

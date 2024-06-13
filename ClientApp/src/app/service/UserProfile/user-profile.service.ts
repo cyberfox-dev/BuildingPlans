@@ -195,4 +195,14 @@ export class UserProfileService {
     }
     return this.httpClient.post(this.baseURL + "CheckForExistingUser", body);
   }
+
+
+  public getUsersForDepartmentAndSubDepartment(departmentName: string | null, subDepartmentName: string | null) {
+    const body = {
+      DepartmentName: departmentName,
+      SubDepartmentName: subDepartmentName
+    }
+
+    return this.httpClient.post(this.baseURL + "GetUsersForDepartmentAndSubDepartment", body);
+  }
 }

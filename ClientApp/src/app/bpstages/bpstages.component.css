@@ -1,0 +1,34 @@
+.mat-form-field {
+    margin: 10px 0;
+  width: 100%;
+}
+
+
+
+table {
+  width: 100%;
+  margin: 0 auto;
+  margin-bottom: 30px;
+}
+
+.mat-blue {
+  background-color: #268df7;
+  color: #fff;
+  margin-bottom: 10px;
+}
+.mat-green {
+  background-color: green;
+  color: white;
+}
+
+.mat-column-actions {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 10% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}

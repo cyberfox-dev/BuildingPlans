@@ -1,0 +1,118 @@
+<mat-form-field>
+  <mat-label>Select A Functional Area</mat-label>
+  <mat-select [(ngModel)]="functionalArea" (selectionChange)="getAllBPStages()">
+ 
+    <mat-option *ngFor="let Area of functionalAreaList" value="{{Area.FAName}}">{{Area.FAName}}</mat-option>
+  </mat-select>
+</mat-form-field>
+
+<button mat-raised-button color="blue" (click)="openNewStage(newStage)">Created New Stage For {{functionalArea}}</button>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+  <ng-container matColumnDef="StageName">
+    <th mat-header-cell *matHeaderCellDef>Stage Name </th>
+    <td mat-cell *matCellDef="let element">{{element.StageName}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="StageOrderNumber">
+    <th mat-header-cell *matHeaderCellDef>Stage Order Number  </th>
+    <td mat-cell *matCellDef="let element">{{element.StageOrderNumber}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="DateCreated">
+    <th mat-header-cell *matHeaderCellDef>Date Created </th>
+    <td mat-cell *matCellDef="let element">{{element.DateCreated}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="DateUpdated">
+    <th mat-header-cell *matHeaderCellDef>DateUpdated </th>
+    <td mat-cell *matCellDef="let element">{{element.DateUpdated}} </td>
+  </ng-container>
+
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>Actions</th>
+    <td mat-cell *matCellDef="let i = index">
+    <button mat-raised-button color="blue" (click)=" onPopulateStage(i,editStage)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid.svg" class="icon"></button>
+      <button mat-raised-button color="warn" (click)="deleteStage(i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid.svg" class="icon red"></button>
+    </td>
+    <td mat-cell *matCellDef="let element">  </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<ng-template let-modal #newStage>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Add New Stage For {{functionalArea}}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" id="functionalArea" [(ngModel)]="functionalArea" placeholder="Enter First Name" name="name" disabled >
+          <label for="functionalArea">Functional Area</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" id="stageName" [(ngModel)]="stageName" placeholder="Enter First Name" name="name">
+          <label for="stageName">Stage Name</label>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" id="orderNumber" [(ngModel)]="orderNumber" placeholder="Enter Surname" name="surname">
+          <label for="orderNumber">Stage Order Number</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button mat-raised-button color="green" (click)=" addUpdateStage()">Save</button>
+  </div>
+</ng-template>
+
+<ng-template let-modal #editStage>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Add New Stage For {{functionalArea}}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" id="functionalArea" [(ngModel)]="functionalArea" placeholder="Enter First Name" name="name" disabled>
+          <label for="functionalArea">Functional Area</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" id="stageName" [(ngModel)]="stageName" placeholder="Enter First Name" name="name">
+          <label for="stageName">Stage Name</label>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" id="orderNumber" [(ngModel)]="orderNumber" placeholder="Enter Surname" name="surname">
+          <label for="orderNumber">Stage Order Number</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button mat-raised-button color="green" (click)=" addUpdateStage();modal.close('Save click')">Save</button>
+  </div>
+</ng-template>

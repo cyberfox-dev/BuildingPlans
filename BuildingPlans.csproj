@@ -605,6 +605,7 @@
     <Folder Include="ClientApp\src\app\service\BPBannerApplication\" />
     <Folder Include="ClientApp\src\app\service\BPFlagApplication\" />
     <Folder Include="ClientApp\src\app\service\BPComplaints\" />
+    <Folder Include="ClientApp\src\app\service\BPRoles\" />
     <Folder Include="ClientApp\src\app\service\ZoneLink\" />
     <Folder Include="ClientApp\src\app\service\Zones\" />
     <Folder Include="ClientApp\src\app\service\SubDepartments\" />

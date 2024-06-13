@@ -72,6 +72,7 @@ namespace BuildingPlans.Controllers
                             UserID = model.UserID,
                             FunctionalArea = model.FunctionalArea,
                             DepartmentName = model.DepartmentName,
+                            UserProfileID = model.UserProfileID,
                             CreatedById = model.CreatedById,
                             DateCreated = DateTime.Now,
                             DateUpdated = DateTime.Now,
@@ -125,7 +126,12 @@ namespace BuildingPlans.Controllers
                         {
                             tempAccessGroupUserLink.DepartmentName = model.DepartmentName;
                         }
+                        if(model.UserProfileID != null)
+                        {
+                            tempAccessGroupUserLink.UserProfileID = model.UserProfileID;
+                        }
                         tempAccessGroupUserLink.DateUpdated = DateTime.Now;
+                        tempAccessGroupUserLink.isActive = true;
 
                          _context.Update(tempAccessGroupUserLink);
                         await _context.SaveChangesAsync();
@@ -160,7 +166,7 @@ namespace BuildingPlans.Controllers
                                         FunctionalArea = users.FunctionalArea,
                                         DepartmentName = users.DepartmentName,
                                         UserID = users.UserID,
-                                        
+                                        UserProfileID = users.UserProfileID
                                     }).ToListAsync();
 
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Users For AccessGroup Area", result));
@@ -252,6 +258,50 @@ namespace BuildingPlans.Controllers
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
+
+        [HttpPost("GetAllRolesForUserForAG")]
+        public async Task<object> GetAllRolesForUserForAG([FromBody] AccessGroupsBindingModel model)
+        {
+            try
+            {
+                var accessGroupIDs = await _context.BPAccessGroupsUserLinks
+                    .Where(ag => ag.UserProfileID == model.UserProfileID && ag.isActive)
+                    .Select(ag => ag.AccessGroupID)
+                    .ToListAsync();
+                
+                var distinctRoleIds = await _context.BPAccessGroupRoleLink
+                    .Where(agrl => agrl.isActive && accessGroupIDs.Contains(agrl.AccessGroupID))
+                    .Select(agrl => agrl.RoleID)
+                    .Distinct()
+                    .ToListAsync();
+
+                var roles = new List<AccessGroupsDTO>();
+                foreach (var roleId in distinctRoleIds)
+                {
+                    var role = await _context.BPRoles
+                        .Where(r => r.RoleID == roleId)
+                        .Select(r => new AccessGroupsDTO
+                        {
+                            RoleID = r.RoleID,
+                            RoleName = r.RoleName,
+                            // Add additional properties as required
+                            // ...
+
+                        })
+                        .FirstOrDefaultAsync();
+
+                    if (role != null) roles.Add(role);
+                }
+
+                return Ok(new ResponseModel(Enums.ResponseCode.OK, "Got All Roles", roles));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+       
     }
 }
 

@@ -12,11 +12,12 @@ export class BPStagesService {
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
-  public addUpdateStage(stageID:number|null, stageName: string|null , stageOrder:string| null , createdByID: string | null) {
+  public addUpdateStage(stageID:number|null, stageName: string|null , stageOrder:string| null , functionalArea:string | null,createdByID: string | null) {
     const body = {
       StageID: stageID,
       StageName: stageName,
       StageOrder: stageOrder,
+      FunctionalArea :functionalArea,
       CreatedById: createdByID
     }
     return this.httpClient.post(this.baseURL + "AddUpdateStage", body);

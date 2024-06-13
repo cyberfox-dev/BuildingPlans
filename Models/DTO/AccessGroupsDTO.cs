@@ -16,8 +16,8 @@ namespace BuildingPlans.Models.DTO
         public int? AccessGroupRoleLinkID { get; set; }
         public int? RoleID { get; set; }
         public string? RoleName { get; set; }
-
-
+        public string? RoleType { get; set; }
+        public string? RoleDescription { get; set; } 
         //Userlink
         public int? AccessGroupUserLinkID { get; set; }
 

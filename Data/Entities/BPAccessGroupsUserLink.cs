@@ -15,6 +15,8 @@ namespace BuildingPlans.Data.Entities
         public string? UserID { get; set; }
         public string? FunctionalArea { get; set; }
         public string? DepartmentName { get; set; }
+
+        public int? UserProfileID { get; set; }
         
     }
 }

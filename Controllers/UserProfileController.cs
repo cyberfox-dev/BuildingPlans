@@ -837,5 +837,20 @@ namespace BuildingPlans.Controllers
 
             }
         }
+
+        [HttpPost("GetUsersForDepartmentAndSubDepartment")]
+        public async Task<object> GetUsersForDepartmentAndSubDepartment([FromBody] UserProfileDTO model)
+        {
+            try
+            {
+                var result = await _userProfileService.GetUsersForDepartmentAndSubDepartment(model.DepartmentName, model.SubDepartmentName);
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "UserList For Department and SubDepartment fetched", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
     }
 }

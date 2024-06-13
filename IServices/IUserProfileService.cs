@@ -30,5 +30,7 @@ namespace BuildingPlans.IServices
 
         Task<List<UserProfileDTO>> GetAllArchitects();
         Task<List<UserProfileDTO>> CheckForExistingUser(string fullName, string email);
+
+        Task<List<UserProfileDTO>> GetUsersForDepartmentAndSubDepartment(string departmentName, string subDepartmentName);
     }
 }

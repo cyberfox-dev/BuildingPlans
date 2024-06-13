@@ -11,15 +11,17 @@ export class BPAccessGroupRoleLinkService {
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
-  public addUpdateAccessGroupRoleLink(accessGroupRoleLinkID:number|null, accessGroupName:string|null, roleName:string|null , createdById:string|null) {
+  public addUpdateAccessGroupRoleLink(accessGroupRoleLinkID:number|null, accessGroupName:string|null, roleName:string|null , createdById:string|null, accessGroupID:number|null,roleID:number|null) {
     const body = {
       AccessGroupRoleLinkID: accessGroupRoleLinkID,
       AccessGroupName: accessGroupName,
       RoleName: roleName,
-      CreatedById: createdById
+      CreatedById: createdById,
+      AccessGroupID: accessGroupID,
+      RoleID:roleID
     }
 
-    return this.httpClient.post(this.baseURL + "AddUpdateAccessGroupRole", body);
+    return this.httpClient.post(this.baseURL + "AddUpdateAccessGroupRoleLink", body);
   }
 
   public getAllRoleForAccessGroup(accessGroupName) {

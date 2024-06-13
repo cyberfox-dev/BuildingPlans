@@ -98,5 +98,6 @@ namespace BuildingPlans.Data
         public DbSet<BPBannerApplication> BPBannerApplication { get; set; }
         public DbSet<BPFlagApplication> BPFlagApplication { get; set; }
         public DbSet<BPComplaints> BPComplaints { get; set; }
+        public DbSet<BPRoles> BPRoles { get; set; }
     }
 }
