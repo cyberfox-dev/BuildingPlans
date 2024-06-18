@@ -939,3 +939,46 @@ quill-editor {
   min-height: 500px;
   overflow-y:auto;
 }
+
+.shape {
+  position: absolute;
+  background-color: #fff;
+}
+
+.shape1 {
+  width: 0;
+  height: 0;
+  border-left: 100px solid transparent;
+  border-right: 100px solid transparent;
+  border-bottom: 100px solid #fff;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.shape2 {
+  width: 200px;
+  height: 50px;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.shape3 {
+  width: 0;
+  height: 0;
+  border-left: 100px solid transparent;
+  border-right: 100px solid transparent;
+  border-top: 100px solid #fff;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.shape4 {
+  width: 100px;
+  height: 100px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
