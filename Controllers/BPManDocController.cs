@@ -2,6 +2,8 @@
 using BuildingPlans.Models;
 using BuildingPlans.Service;
 using Microsoft.AspNetCore.Mvc;
+using BuildingPlans.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace BuildingPlans.Controllers
 {
