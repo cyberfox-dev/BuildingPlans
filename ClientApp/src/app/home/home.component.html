@@ -28,17 +28,6 @@
 
   <h1 class="animationSlideUp">Hi, {{CurrentUserProfile[0].fullName}}</h1>
   <h2 class="animationSlideUp">Welcome to your Dashboard</h2>
-  <!--<h3 class="animationSlideUp" *ngIf="ActingAs">You are acting as {{CurrentUserProfile[0].subDepartmentName}}, for {{CurrentUserProfile[0].zoneName}}</h3>-->
-  <!--  <div style="background: red; text-align: center; font-size: xx-large; color: white; padding: 10px; line-height: 0.8;" *ngIf="ServerType === 'QA'">
-      Please note, you've accessed the test server, nothing captured to this server will be processed. Please go to wayleave.capetown.gov.za to access the live site.
-    </div>-->
-  <!--  <button class="btn" (click)="openSnackBar()"><a><i class="fa fa-plus"></i> Create New Wayleave</a></button>-->
-  <!--Banner Kyle 26/01/24-->
-  <!--<div>
-    {{alertMessage}}<br /><span *ngIf="showDates">From {{startDate}} To {{endDate}}</span>
-
-  </div>-->
-  <!--Sytem Alert Kyle 12-03-24-->
 </div>
 
 <div class="tag-list" *ngIf="showBanner">
@@ -73,167 +62,14 @@
 </div>
 
 
-<!--Banner Kyle 26/01/24-->
-<!--Tabs-->
-
-<!--<div class="main-container animationFadeIn">
-
-  <div class="cards" *ngIf="cardFilters">
-    <div class="card card-5" (click)="filterByUnpaid()">
-      <h4>Unpaid</h4>
-      <h1 class="num">{{unpaidcount}}</h1>
-      <p class="card__apply">
-        <a class="card__link">View</a>
-      </p>
-    </div>
-    <div class="card card-2" (click)="filterByDistribution()">
-      <h4>Distribution</h4>
-      <h1 class="num">{{distributioncount}}</h1>
-      <p class="card__apply">
-        <a class="card__link">View</a>
-      </p>
-    </div>
-
-    <div class="card card-1" (click)="filterByApproved()">
-      <h4>Approved</h4>
-      <h1 class="num">{{approveCount}}</h1>
-      <p class="card__apply">
-        <a class="card__link">View</a>
-      </p>
-    </div>
-
-    <div class="card card-4" (click)="filterByRejected()">
-      <h5>Rejected</h5>
-      <h1 class="numReject">{{rejectCount}}</h1>
-      <p class="card__apply">
-        <a class="card__link">View</a>
-      </p>
-    </div>
-    <div class="card card-3" (click)="filterByWIP()">
-      <h4>WIP</h4>
-      <h1 class="num">{{EMBcount}}</h1>
-      <p class="card__apply">
-        <a class="card__link">View</a>
-      </p>
-    </div>
-
-  </div>
-</div>-->
-<!--END OF TABS-->
 
 <div class="table container-fluid animationFadeIn">
-  <!--  <table class="table table-hover table-xl border_bottom">
-  <thead>
-    <tr class="tableheader">
-      <th scope="col" class="border-top-0">Status</th>
-      <th scope="col" class="border-top-0">Project#</th>
-      <th scope="col" class="border-top-0">Item Location</th>
-      <th scope="col" class="border-top-0">Item Name</th>
-      <th scope="col" class="border-top-0">Application Type</th>
-      <th scope="col" class="border-top-0">Current Stage</th>
-      <th scope="col" class="border-top-0">Date Created</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td class="text-truncate row_padding">
-        <i class="la la-dot-circle-o  font-medium-1 mr-1"></i>
-        Test
-      </td>
-      <td class="text-truncate row_padding">
-        <a href="javascript:void(0);" (click)="viewProject()">TEST</a>
-      </td>
 
-      <td class="text-truncate row_padding">
-        <span>TEST</span>
-      </td>
-
-      <td class="text-truncate row_padding">
-        <span>TEST</span>
-      </td>
-      <td class="text-truncate row_padding">
-        <span>
-          TEST
-        </span>
-      </td>
-      <td class="text-truncate row_padding">
-        <span>TEST</span>
-      </td>
-      <td class="text-truncate row_padding">TEST</td>
-    </tr>
-  </tbody>-->
-  <!--ProjectNumber-->
-  <!--</table>-->
-  <!--    <mat-form-field>
-    <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
-  </mat-form-field>-->
   <div class="">
-    <!--<div class="container02">
-      <button mat-button [matMenuTriggerFor]="menu" matTooltip="Filter Applications" color="filter" aria-label="Example icon-button with a menu" (click)="onFilterButtonClick()" *ngIf="FilterBtn">
-        <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/filter-solid.svg" class="icon">
-      </button>
 
-      <mat-menu #menu="matMenu" yPosition="below">
-        <button mat-menu-item (click)="onFilterApplicationForMyReviews()">
-          <span>My Reviews</span>
-        </button>
-        <button mat-menu-item (click)="filterForMyDep()">
-          <span>Applications For My Zone</span>
-        </button>-->
-        <!--<button mat-menu-item (click)="onFilterAPplicationsForRecentApplications()">
-          <span>All Projects</span>
-        </button>-->
-        <!--<button mat-menu-item (click)="onFilterApplicationsFprMyApplications()">
-          <span>My Applications</span>
-        </button>-->
-      <!--</mat-menu>-->
-      <!--<mat-form-field appearance="outline">
-        <mat-label>Search</mat-label>
-        <div class="cont6">-->
-      <!---Filters Kyle 16/01/24-->
-      <!--<input matInput placeholder="Search" (keyup)="applyFilter($event)" #input>-->
-      <!---Filters Kyle 16/01/24-->
-      <!--<img src="assets/fontawesome-free-6.4.2-web/svgs/regular/magnifying-glass-solid.svg" class="icon3">
-        </div>
-
-      </mat-form-field>-->
-
-
-    <!--</div>-->
-    <!--<div class="filterValue">
-      <p *ngIf="notNyProjects">You Are Currently Viewing {{FiterValue}}</p>
-      <p *ngIf="MyProjects">You Are Currently Viewing Your Applications</p>
-    </div>-->
-    <!--JJS 13-03-24-->
     <div class="internalFilterBtns" *ngIf="pastAndCurrentReviews">
-      <!--        <mat-button-toggle-group name="fontStyle" aria-label="Font Style" [(ngModel)]="Reviews">
-        <mat-button-toggle value="Current" (click)="onFilterApplicationForMyReviews()">Current Reviews</mat-button-toggle>
-        <mat-button-toggle value="Past" matTooltip="Future Enhancement" disabled>Past Reviews (Disabled)</mat-button-toggle>
-      </mat-button-toggle-group>-->
-      <!--<mat-form-field>
-        <mat-select [(ngModel)]="Reviews">
-          <mat-option value="option1">Current Reviews</mat-option>
-          <mat-option value="option2" disabled>Past Reviews (Disabled)</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <br>-->
-      <!--<mat-button-toggle-group name="fontStyle" #group="matButtonToggleGroup" aria-label="Font Style" [value]="selectedVal" (change)="onToggleChange($event.value)">
-        <ng-container *ngFor="let roleName of roleOrder">
-          <mat-button-toggle *ngIf="roleStates[roleName]" [value]="getToggleValue(roleName)">
-            {{ roleName }}
-          </mat-button-toggle>
-        </ng-container>
-      </mat-button-toggle-group>-->
-
-
-
-
 
     </div>
-    <!--<div class="container003">
-      <img src="assets/Loading.png" *ngIf="isTableLoading" class="logo2">
-    </div>-->
 
     
     <div class="table container-fluid animationFadeIn">
@@ -265,7 +101,7 @@
             <mat-label>Search</mat-label>
             <div class="cont6">
 
-              <input matInput placeholder="Search By Project Number Or Application Number" [(ngModel)]="searchInput" (input)=" SearchForApplication()" #input>
+              <input matInput  [(ngModel)]="searchInput" (input)=" SearchForApplication()" #input>
               <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/magnifying-glass.svg" class="icon3">
             </div>
 
@@ -273,13 +109,7 @@
 
 
         </div>
-        <!--<div class="filterValue">
-      <p *ngIf="notNyProjects">You Are Currently Viewing {{FiterValue}}</p>
-      <p *ngIf="MyProjects">You Are Currently Viewing Your Applications</p>
-    </div>-->
-        <!--<div class="container003">
-      <img src="assets/Loading.png" *ngIf="isTableLoading" class="logo2">
-    </div>-->
+
       </div>
       <!---Home Tabs Kyle 27-05-24 ------>
       <mat-tab-group (selectedTabChange)="onChangeDataSource($event)">
@@ -340,7 +170,7 @@
               <th mat-header-cell *matHeaderCellDef>Actions</th>
               <td mat-cell *matCellDef="let i = index">
                 <button mat-raised-button color="blue" (click)=" ViewProject(i)" matTooltip="View Application Details"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/eye.svg" class="icon4 blue"></button>
-                <button mat-raised-button color="warn" (click)="DeleteBuildingApplication(i)" matTooltip="Delete Application" disabled><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>
+                <button mat-raised-button color="warn"  matTooltip="Delete Application" ><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>
 
               </td>
               <td mat-cell *matCellDef="let element">  </td>
@@ -545,7 +375,7 @@
               <th mat-header-cell *matHeaderCellDef>Actions</th>
               <td mat-cell *matCellDef="let i = index">
                 <button mat-raised-button color="blue" (click)=" ViewProject(i)" matTooltip="View Application Details"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/eye.svg" class="icon4 blue"></button>
-                <button mat-raised-button color="warn" (click)="DeleteBuildingApplication(i)" matTooltip="Delete Application" disabled><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>
+                <button mat-raised-button color="warn"  matTooltip="Delete Application" ><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>
 
               </td>
               <td mat-cell *matCellDef="let element">  </td>
@@ -620,7 +450,7 @@
         <th mat-header-cell *matHeaderCellDef>Actions</th>
         <td mat-cell *matCellDef="let i = index">
           <button mat-raised-button color="blue" (click)=" ViewProject(i)" matTooltip="View Application Details"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/eye.svg" class="icon4"></button>
-          <button mat-raised-button color="warn" (click)="DeleteBuildingApplication(i)" matTooltip="Delete Application"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4"></button>
+          <button mat-raised-button color="warn"  matTooltip="Delete Application"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4"></button>
 
         </td>
         <td mat-cell *matCellDef="let element">  </td>

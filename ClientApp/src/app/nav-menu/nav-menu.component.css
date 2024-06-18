@@ -1,5 +1,6 @@
 * {
   box-sizing: border-box;
+  background: #2f3a49;
 }
 
 
@@ -46,7 +47,7 @@ body {
 .nav {
   height: 68px;
   width: 100%;
-  background-color: #ffffff;
+  background-color: #2f3a49;
   position: fixed;
   margin-bottom: -59px;
   display: flex;
@@ -54,7 +55,6 @@ body {
   top: 0;
   z-index: 2;
   box-shadow: 0 2px 20px 0 rgb(0 0 0 / 27%);
-
 }
 
 .mat-form-field {
@@ -652,9 +652,9 @@ h5 {
   font-weight: 700;
 }
 
-  .sideNavIcons:hover {
-    background-color: #ccdee2;
-  }
+.sideNavIcons:hover {
+  background-color: #151a21;
+}
 
 /*NOTIFICATIONS SECTION*/
 body {
@@ -938,4 +938,47 @@ quill-editor {
   width: 90%;
   min-height: 500px;
   overflow-y:auto;
+}
+
+.shape {
+  position: absolute;
+  background-color: #fff;
+}
+
+.shape1 {
+  width: 0;
+  height: 0;
+  border-left: 100px solid transparent;
+  border-right: 100px solid transparent;
+  border-bottom: 100px solid #fff;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.shape2 {
+  width: 200px;
+  height: 50px;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.shape3 {
+  width: 0;
+  height: 0;
+  border-left: 100px solid transparent;
+  border-right: 100px solid transparent;
+  border-top: 100px solid #fff;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.shape4 {
+  width: 100px;
+  height: 100px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
 }

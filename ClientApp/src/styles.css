@@ -251,8 +251,15 @@ code {
   }
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+  height: 100%;
+  background: #323e5300;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background: #323e4e;
+}
 .mat-tab-labels {
   display: flex;
   justify-content: space-between;
@@ -329,7 +336,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   background: #e2cccc;
   color: #700000;
 }
-
+* {
+  background: #323e4e00;
+  color: white !important;
+}
 .yellow-snackbar {
   text-align: center !important;
   border-radius: 91px !important;
@@ -350,4 +360,33 @@ quill-editor {
 }
 .pac-container {
   z-index: 1000000 !important;
+}
+.offcanvas-menu {
+  background-color: #323e53 !important;
+}
+
+
+table {
+  border-spacing: 0;
+  background: #425166 !important;
+  color: white !important;
+}
+input {
+  background: #425166 !important;
+  color: white !important;
+  border-color: #1b222b8c !important;
+}
+.mat-input {
+  font: inherit;
+  background: rgba(0,0,0,0) !important;
+  color: currentColor;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+  vertical-align: bottom;
+  text-align: inherit;
+  box-sizing: content-box;
 }
