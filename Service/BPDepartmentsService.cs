@@ -144,6 +144,21 @@ namespace BuildingPlans.Service
         }
 
 
-
+        public async Task<List<DepartmentsDTO>> GetDepartmentByDepartmentName(string departmentName)
+        {
+            return await (
+                from Departments in _context.BPDepartments
+                where Departments.DepartmentName == departmentName && Departments.isActive == true
+                select new DepartmentsDTO()
+                {
+                    DepartmentID = Departments.DepartmentID,
+                    DepartmentName = Departments.DepartmentName,
+                    DateCreated = Departments.DateCreated,
+                    DateUpdated = Departments.DateUpdated,
+                    isActive = true,
+                    hasSubDepartment = Departments.hasSubDepartment ?? false, // Provide a default value if hasSubDepartment is null
+                    FunctionalArea = Departments.FunctionalArea
+                }).ToListAsync();
+        }
     }
 }

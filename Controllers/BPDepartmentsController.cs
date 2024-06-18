@@ -137,5 +137,26 @@ namespace BuildingPlans.Controllers
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
+
+        [HttpPost("GetDepartmentByDepartmentName")]
+        public async Task<object> GetDepartmentByDepartmentName([FromBody] DepartmentsBindingModel model)
+        {
+            try
+            {
+              if(model.DepartmentName == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await _bpDepartmentsService.GetDepartmentByDepartmentName(model.DepartmentName);
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Departments For Functional Area", result));
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
     }
 }

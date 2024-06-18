@@ -22,4 +22,11 @@ export class BPFunctionalAreasService {
   public getFunctionalAreaByFunctionalAreaID(functionalAreaId: number | null) {
     return this.httpClient.post(this.baseURL + "GetFunctionalAreaByFunctionalAreaID", functionalAreaId)
   }
+
+  public getFunctionalAreaByFunctionalAreaName(functionalAreaName: string | null) {
+    const body = {
+      FAName:functionalAreaName
+    }
+    return this.httpClient.post(this.baseURL + "GetFunctionalAreaByFunctionalAreaName", body);
+  }
 }
