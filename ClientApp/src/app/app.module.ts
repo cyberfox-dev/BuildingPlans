@@ -123,6 +123,7 @@ import { BpConfigurationsComponent } from 'src/app/bp-configurations/bp-configur
 import { BPStagesComponent } from 'src/app/bpstages/bpstages.component';
 import { BPRolesConfigComponent } from 'src/app/bproles-config/bproles-config.component';
 import { BPDepartmentManagerComponent } from 'src/app/bpdepartment-manager/bpdepartment-manager.component';
+import { BpActionCenterComponent } from './bp-action-center/bp-action-center.component';
 
 //import { MatExpansionModule } from '@angular/material/expansion';
 
@@ -230,7 +231,7 @@ import { BPDepartmentManagerComponent } from 'src/app/bpdepartment-manager/bpdep
     BpConfigurationsComponent,
     BPStagesComponent, //BP Stages Kyle
     BPRolesConfigComponent, 
-    BPDepartmentManagerComponent,
+    BPDepartmentManagerComponent, BpActionCenterComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -271,7 +272,6 @@ import { BPDepartmentManagerComponent } from 'src/app/bpdepartment-manager/bpdep
     MatButtonModule,
     MatTabsModule,
     MatExpansionModule,
-    MatIconModule,
     NgbModule,
     GooglePlaceModule,
     GoogleMapsModule,

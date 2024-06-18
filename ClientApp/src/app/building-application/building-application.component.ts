@@ -908,7 +908,11 @@ export class BuildingApplicationComponent implements OnInit {
       debugger;
       if (this.option == "client" || this.isInternal == true) {
         debugger;
-        this.applicationService.addUpdateBuildingApplication(this.applicationID, this.lSNumber, this.clientUserID, this.clientName, this.clientSurname, this.clientEmail, this.clientCell, this.clientAltEmail, this.clientAltCell, this.clientIDNo, this.propertyDescription, this.premisesName, this.addressType, this.erfNo, this.portionNo, this.NoOfUnits, this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName, this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue, this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, null, null, null, this.servitudeBox).subscribe((data: any) => {
+        this.applicationService.addUpdateBuildingApplication(this.applicationID, this.lSNumber, this.clientUserID, this.clientName, this.clientSurname,
+          this.clientEmail, this.clientCell, this.clientAltEmail, this.clientAltCell, this.clientIDNo, this.propertyDescription, this.premisesName,
+          this.addressType, this.erfNo, this.portionNo, this.NoOfUnits, this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
+          this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
+          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Submission Plan","LS Review",1, this.servitudeBox).subscribe((data: any) => {
           if (data.responseCode == 1) {
             debugger;
             this.CreateNotification(this.CurrentUser.appUserId);
@@ -925,7 +929,11 @@ export class BuildingApplicationComponent implements OnInit {
       }
       else {
         debugger;
-        this.applicationService.addUpdateBuildingApplication(this.applicationID, this.lSNumber, this.clientUserID, this.clientName, this.clientSurname, this.clientEmail, this.clientCell, this.clientAltEmail, this.clientAltCell, this.clientIDNo, this.propertyDescription, this.premisesName, this.addressType, this.erfNo, this.portionNo, this.NoOfUnits, this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName, this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue, this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Pending", "Land Survey", null, this.servitudeBox).subscribe((data: any) => {
+        this.applicationService.addUpdateBuildingApplication(this.applicationID, this.lSNumber, this.clientUserID, this.clientName, this.clientSurname,
+          this.clientEmail, this.clientCell, this.clientAltEmail, this.clientAltCell, this.clientIDNo, this.propertyDescription, this.premisesName,
+          this.addressType, this.erfNo, this.portionNo, this.NoOfUnits, this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
+          this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
+          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Submission Plan", "LS Review", 1, this.servitudeBox).subscribe((data: any) => {
           if (data.responseCode == 1) {
             debugger;
             this.CreateNotification(this.CurrentUser.appUserId);

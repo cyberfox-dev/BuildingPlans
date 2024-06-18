@@ -95,6 +95,9 @@ namespace BuildingPlans.Controllers
                             DateUpdated = DateTime.Now,
                             isActive = true,
                             CreatedById = model.CreatedById,
+                            Stage = model.Stage,
+                            StageNumber = model.StageNumber,
+                            Status = model.Status,
                            OmnibusServitude = model.OmnibusServitude
                            
                         };
@@ -230,6 +233,18 @@ namespace BuildingPlans.Controllers
                         {
                             tempBuildingApplication.SGCode = model.SGCode;
                         }
+                        if (model.Status != null)
+                        {
+                            tempBuildingApplication.Status = model.Status;
+                        }
+                        if (model.Stage != null)
+                        {
+                            tempBuildingApplication.Stage = model.Stage;
+                        }
+                        if (model.StageNumber != null)
+                        {
+                            tempBuildingApplication.StageNumber = model.StageNumber;
+                        }
                         if (model.OmnibusServitude != null)
                         {
                             tempBuildingApplication.OmnibusServitude = model.OmnibusServitude;
@@ -296,6 +311,9 @@ namespace BuildingPlans.Controllers
                       DateUpdated = buildingApplication.DateUpdated,
                       OmnibusServitude = buildingApplication.OmnibusServitude,
                       Stage = buildingApplication.Stage,
+                      Status = buildingApplication.Status,
+                      StageNumber = buildingApplication.StageNumber,
+                      CreatedById = buildingApplication.CreatedById,
 
                     }
                     ).ToListAsync();
@@ -352,7 +370,11 @@ namespace BuildingPlans.Controllers
                         SGCode = buildingApplication.SGCode,
                         DateCreated = buildingApplication.DateCreated,
                         DateUpdated = buildingApplication.DateUpdated,
-                        OmnibusServitude = buildingApplication.OmnibusServitude
+                        OmnibusServitude = buildingApplication.OmnibusServitude,
+                        Stage = buildingApplication.Stage,
+                        Status = buildingApplication.Status,
+                        StageNumber = buildingApplication.StageNumber,
+                        CreatedById = buildingApplication.CreatedById,
 
                     }).ToListAsync();
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Application By ApplicationID", result));

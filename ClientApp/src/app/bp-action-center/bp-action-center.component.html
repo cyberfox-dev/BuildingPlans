@@ -1,0 +1,186 @@
+<div class="cont5">
+  <!--<button mat-raised-button color="createWayleave" (click)="openXl(content)">Action Center</button>-->
+  <button mat-raised-button color="createWayleave" (click)="actionCentreView(content)" >Action Center</button>
+ 
+</div>
+
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h1 class="modal-title">Action Center</h1>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+
+    <!--    <div class="contCards">
+
+        <div class="containerCard">
+          <p class="cardHeader">Assign Reviewer</p>
+          <p class="cardDescription">This will assign a user to this project to allow them to review the applicaton</p>
+          <button mat-raised-button color="assign" (click)="openAssignToUser(assignProjectToUser)">Assign User</button>
+        </div>
+      </div>-->
+
+    <p class="cardDescription"></p>
+
+
+    <br *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && showPermitTab === false">
+    <mat-divider *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && showPermitTab === false"></mat-divider>
+
+    <br>
+<!--    <mat-form-field class="example-full-width">
+      <mat-label>Type new Comment/Special Condition. Please also make reference to the Services Conditions tab, if documents have been uploaded.</mat-label>
+      <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea" maxlength="250" (input)="updateCharacterCount()"></textarea>
+      <div>{{ leaveAComment.length }}/250</div>
+    </mat-form-field>-->
+
+
+
+    <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'LS Review'">
+      <p>LS Reviewer</p>
+      <button mat-raised-button color="approveBTN" (click)="onComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon"> Prov. Approved</button>
+      <button mat-raised-button color="rejectBTN" (click)="onComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">   Prov. Not Approved</button>
+    </div>
+    <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'TP Review'">
+      <p>TP Reviewer</p>
+      <button mat-raised-button color="approveBTN" (click)="onComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon"> Prov. Approved</button>
+      <button mat-raised-button color="rejectBTN" (click)="onComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">   Prov. Not Approved</button>
+    </div>
+
+  </div>
+
+</ng-template>
+<ng-template #assignProjectToUser let-modal>
+  <div class="modal-header">
+    <h1 class="modal-title" *ngIf="hasReviewerAssignment == false">Assign User For Comment</h1>
+    <h1 class="modal-title" *ngIf="hasReviewerAssignment == true">Assign Another User For Comment</h1>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <mat-tab-group>
+      <mat-tab label="Select User(s)">
+
+        <p class="centered-paragraph" *ngIf="hasReviewerAssignment == true">This application has already been assigned to {{assignedReviewerName}}</p>
+        <p class="centered-paragraph" *ngIf="hasReviewerAssignment == false">{{specialText}}</p>
+        <table mat-table [dataSource]="dataSourceViewUsersForLink" class="mat-elevation-z8">
+
+
+          <ng-container matColumnDef="fullName">
+            <th mat-header-cell *matHeaderCellDef> User Name  </th>
+            <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let i = index;let element">
+              <mat-radio-button class="example-margin" (change)="userSelectedForManualLink(element)" [checked]="UserSelectionForManualLink.isSelected(element)" [disabled]="element.fullName === assignedReviewerName">
+              </mat-radio-button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsViewUsersForLink"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumnsViewUsersForLink;"></tr>
+        </table>
+      </mat-tab>
+
+      <!-- endof actionCenterReassignReviewer Sindiswa 16 January 2024-->
+      <mat-tab label="View Selected User(s) ">
+
+        <!--<div class="form-floating mb-3 mt-3" *ngIf="showZone">
+          <select class="form-select" aria-label="Default select example" formControlName="viewSelectedZone" (change)="onSelectToPopulateZoneUsers($event,newUserLinkedToZone)">
+            <option selected value="0">select a zone</option>
+            <option *ngFor="let zone of ZoneDropdown" value="{{zone.zoneID}}">{{zone.zoneName}}</option>
+          </select>
+
+        </div>-->
+
+        <table mat-table [dataSource]="dataSourceViewUserForComment" class="mat-elevation-z8">
+
+
+
+
+
+
+
+          <ng-container matColumnDef="fullName">
+            <th mat-header-cell *matHeaderCellDef> User Name </th>
+            <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
+          </ng-container>
+
+
+          <!--<ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let i = index;let element">-->
+          <!-- <button mat-raised-button color="warn" (click)="deleteLinkedZoneForComment(i);modal.dismiss('Cross click')"><i class="fa fa-trash" aria-hidden="true"></i></button>-->
+          <!--</td>
+          </ng-container>-->
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsViewlinkedUserForComment"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumnsViewlinkedUserForComment;"></tr>
+        </table>
+
+        <!-- ADD A CLARIFY!! NB: 17 January 2024-->
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click');textWithReviewerAssign();onManuallyAssignUser();" *ngIf="hasReviewerAssignment == false">Save</button>
+    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click');openAssignToNewUser(adminNotes)" *ngIf="hasReviewerAssignment == true">Save</button>
+  </div>
+
+</ng-template>
+<ng-template #adminNotes let-modal>
+  <div class="modal-header">
+    <h1 class="modal-title">Add a Note for Selected Reviewer</h1>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <p class="centered-paragraph" *ngIf="hasReviewerAssignment == true">You're about to assign this application to {{newlySelectedReviewerName}}</p>
+    <mat-form-field class="example-full-width">
+      <mat-label>State why you're assigning this application to this new Reviewer. </mat-label>
+      <textarea matInput [(ngModel)]="adminNote" placeholder="Eg. Application is being handed over because..." id="myTextarea"></textarea>
+    </mat-form-field>
+  </div>
+  <div class="modal-footer">
+    <button mat-raised-button color="clarifyBTN" (click)="textWithReviewerAssign();onManuallyAssignUser();modal.close('Save click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon"> Assign </button>
+  </div>
+</ng-template>
+<ng-template #LScontent let-modal>
+  <div class="modal-header">
+    <h1 class="modal-title">Land Survey Action Center</h1>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+
+    <div class="contCards">
+
+      <div class="containerCard">
+        <p class="cardHeader">Assign Reviewer</p>
+        <p class="cardDescription">This will assign a user to this project to allow them to review the applicaton</p>
+        <button mat-raised-button color="assign" (click)="openAssignToUser(assignProjectToUser)">Assign User</button>
+      </div>
+    </div>
+
+    <p class="cardDescription"></p>
+
+
+    <br *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && showPermitTab === false">
+    <mat-divider *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && showPermitTab === false"></mat-divider>
+
+    <br *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && showPermitTab === false">
+    <mat-form-field class="example-full-width" *ngIf="(canComment || canCommentFinalApprover || canCommentSeniorReviewer) && userAssignedText == CurrentUser.appUserId">
+      <mat-label>Type new Comment/Special Condition. Please also make reference to the Services Conditions tab, if documents have been uploaded.</mat-label>
+      <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea" maxlength="250" (input)="updateCharacterCount()"></textarea>
+      <div>{{ leaveAComment.length }}/250</div>
+    </mat-form-field>
+
+
+
+    <div class="cont2" *ngIf="canComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false">
+      <button mat-raised-button color="approveBTN" (click)="onComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon"> Prov. Approved</button>
+    </div>
+
+
+  </div>
+
+</ng-template>

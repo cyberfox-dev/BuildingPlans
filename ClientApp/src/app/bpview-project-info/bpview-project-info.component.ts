@@ -6,6 +6,9 @@ import { Router } from "@angular/router";
 import { DocumentUploadService } from '../service/DocumentUpload/document-upload.service';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { BPDocumentsUploadsService } from '../service/BPDocumentsUploads/bpdocuments-uploads.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { BehaviorSubject } from 'rxjs';
+import { BPManDocService } from 'src/app/service/BPManDoc/bpman-doc.service'
 
 export interface DocumentsList {
   DocumentID: number;
@@ -18,7 +21,15 @@ export interface DocumentsList {
 
 
 
-
+export interface LSMandatoryDocumentsList {
+  mandatoryDocumentStageLinkID: number;
+  mandatoryDocumentID: number;
+  mandatoryDocumentName: string;
+  stageID: number;
+  stageName: string;
+  dateCreated: any;
+  uploads: Array<{ filename: string; /*... other properties*/ }>;
+}
 
 @Component({
   selector: 'app-bpview-project-info',
@@ -28,13 +39,14 @@ export interface DocumentsList {
 
 export class BPViewProjectInfoComponent implements OnInit {
 
-  constructor(private bpService: BuildingApplicationsService, private sharedService: SharedService, private refreshService: RefreshService, private router: Router, private documentUploadService: DocumentUploadService, private bpDocumentUploadService: BPDocumentsUploadsService,) { }
-
+  constructor(private bpService: BuildingApplicationsService, private sharedService: SharedService, private refreshService: RefreshService, private router: Router, private documentUploadService: DocumentUploadService, private bpDocumentUploadService: BPDocumentsUploadsService, private modalService: NgbModal, private BPManDocService: BPManDocService) { }
+ /* LSMandatoryDocuments = new BehaviorSubject<LSMandatoryDocumentsList[]>([]);*/
   DocumentList: DocumentsList[] = [];
+  LSMandatoryDocumentsList: LSMandatoryDocumentsList[] = [];
   displayedColumns: string[] = ['DocumentName', 'actions'];
   @ViewChild(MatTable) DocumentsTable: MatTable<DocumentsList> | undefined;
   documentsDataSource: MatTableDataSource<DocumentsList> = new MatTableDataSource<DocumentsList>();
-
+  @ViewChild(MatTable) MandatoryDocumentUploadListSmallTable: MatTable<LSMandatoryDocumentsList> | undefined;
   stringifiedData: any;
   CurrentUser: any;
 
@@ -85,8 +97,8 @@ export class BPViewProjectInfoComponent implements OnInit {
   private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
   
   ngOnInit(): void {
-    this.refreshService.enableRefreshNavigation('/home');
 
+    this.refreshService.enableRefreshNavigation('/home');
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
@@ -96,6 +108,7 @@ export class BPViewProjectInfoComponent implements OnInit {
     this.applicationId = this.sharedService.getApplicationID();
     this.getApplicationInfo();
     this.getAllDocumentForApplication();
+    this.getAllManDocsByStageID();
   }
   async getApplicationInfo() {
     debugger;
@@ -205,7 +218,69 @@ export class BPViewProjectInfoComponent implements OnInit {
 
   }
 
- 
+  openActionCenter(content:any) {
+    this.modalService.open(content, { size: 'xl' });
+  }
 
+  @ViewChild(MatTable) LSMandatoryDocumentsTable: MatTable<LSMandatoryDocumentsList> | undefined;
+
+    getAllManDocsByStageID() {
+      debugger;
+/*      const newList = LSMandatoryDocumentsList.map(current => {
+        const tempMandatoryDocumentsLinkedStagesList = {} as LSMandatoryDocumentsList;
+         //Project size Kyle 27-02-24
+          tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
+          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+          tempMandatoryDocumentsLinkedStagesList.stageName = null;
+          tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+          return tempMandatoryDocumentsLinkedStagesList;
+
+      });
+
+      this.LSMandatoryDocuments.next(newList);
+      // set totalDocs to the length of the list
+*//*      this.totalDocs = newList.length;
+      this.totalDocs2 = Number(this.totalDocs).toString();*/
+      debugger;
+      this.LSMandatoryDocumentsList.splice(0, this.LSMandatoryDocumentsList.length);
+
+      this.BPManDocService.getAllMandatoryDocuments().subscribe((data: any) => {
+        if (data.responseCode == 1) {
+
+          debugger;
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempMandatoryDocumentsLinkedStagesList = {} as LSMandatoryDocumentsList;
+            const current = data.dateSet[i];
+            tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+            tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
+            tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+            tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+
+            tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+
+            this.LSMandatoryDocumentsList.push(tempMandatoryDocumentsLinkedStagesList);
+            // this.sharedService.setStageData(this.StagesList);
+          }
+          //this.getAllManDocsByStageID();
+          this.LSMandatoryDocumentsTable ?. renderRows();
+        }
+        else {
+          //alert("Invalid Email or Password");
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+
+      }, error => {
+        console.log("Error: ", error);
+      })
+  }
+  displayedColumnsLSManDoc: string[] = ['mandatoryDocumentName', 'actions'];
+  dataSourceLSManDoc = this.LSMandatoryDocumentsList;
+
+  trackByFn(index, item) {
+    return item.mandatoryDocumentID; // or any unique id from the object
+  }
   }
 

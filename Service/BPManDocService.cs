@@ -29,7 +29,7 @@ namespace BuildingPlans.Service
                      DateUpdated = mandatoryDocumentUpload.DateUpdated,
                      MandatoryDocumentCategory = mandatoryDocumentUpload.MandatoryDocumentCategory,
                      CreatedById = mandatoryDocumentUpload.CreatedById,
-                     isActive = true
+                     isActive = true,
 
 
                  }

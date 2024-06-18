@@ -51,6 +51,14 @@ import { FunctionalAreasList } from '../bpdepartment-config/bpdepartment-config.
 import { GooglePlaceDirective } from 'ngx-google-places-autocomplete';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import {
+  MatBottomSheet,
+  MatBottomSheetModule,
+  MatBottomSheetRef,
+} from '@angular/material/bottom-sheet';
+import { MatListModule } from '@angular/material/list';
+import { MatButtonModule } from '@angular/material/button';
+import { CreateNewApplicationComponent } from 'src/app/create-new-application/create-new-application.component';
 
 export interface EngineerList {
   professinalID: number;
@@ -523,6 +531,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private bpBannerService: BPBannerApplicationService,
     private bpFlagService: BPFlagApplicationService,
     private bpFunctionalAreasService: BPFunctionalAreasService,
+    private _bottomSheet: MatBottomSheet,
   ) {
     this.currentDate = new Date();
     this.previousMonth = this.currentDate.getMonth();
@@ -7097,7 +7106,7 @@ this.subscriptions.push(subscription);
   GetAllBuildingApplications() {
     debugger;
     this.ApplicationsBP.splice(0, this.ApplicationsBP.length);
-    this.bpApplicationService.getBuildingApplicationByStageName("Building Application").subscribe((data: any) => {
+    this.bpApplicationService.getAllBuildingApplications().subscribe((data: any) => {
       if (data.responseCode == 1) {
         debugger;
         for (let i = 0; i < data.dateSet.length; i++) {
@@ -7676,5 +7685,7 @@ this.subscriptions.push(subscription);
     })
   }
   //Home Tabs Kyle 27-05 - 24
-  
+  openCreateNewApplicationBar() {
+    this._bottomSheet.open(CreateNewApplicationComponent);
+  }
 }
