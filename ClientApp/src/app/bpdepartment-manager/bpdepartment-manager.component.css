@@ -20,3 +20,7 @@ table {
   background-color: #ff9900;
   color: #fff;
 }
+.mat-form-field {
+  /*  margin: 10px 0;*/
+  width: 100%;
+}

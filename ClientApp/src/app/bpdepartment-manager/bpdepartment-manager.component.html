@@ -1,4 +1,4 @@
-<button mat-raised-button color="create">Create New User </button>
+<button mat-raised-button color="create" (click)=" getAllFunctionalAreas(newUser)">Create New Internal User </button>
  &nbsp;
 <button mat-raised-button color="create" (click)=" getAllUsersForFunctionalArea(linkedUsers)">Show Linked Users</button>
 
@@ -8,7 +8,7 @@
 
 <ng-template #linkedUsers let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Adding a new acting as internal user</h4>
+    <h4 class="modal-title" id="modal-basic-title">View All Users for {{functionalArea}} in {{subDepartmentName}}</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
@@ -42,7 +42,7 @@
 
 <ng-template #accessGroups let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Adding a new acting as internal user</h4>
+    <h4 class="modal-title" id="modal-basic-title">Linking User to Access Groups</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
@@ -74,3 +74,68 @@
     </table>
   </div>
 </ng-template>
+
+<ng-template #newUser let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Creating a new user for {{functionalArea}} in {{subDepartmentName}}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+    <div class="container-fluid">
+      <mat-form-field>
+        <mat-label>Functional Areas</mat-label>
+        <mat-select [(ngModel)]="newDepartmentName"  (selectionChange)=" getAllDepartmentsForFunctionalArea()">
+
+          <mat-option *ngFor="let areas of functionalAreasList">
+            {{areas.FAName}}
+          </mat-option>
+        </mat-select>
+
+      </mat-form-field>
+    </div>
+    <div class="container-fluid" *ngIf="departmentsList.length > 0">
+      <mat-form-field>
+        <mat-label>Functional Areas</mat-label>
+        <mat-select [(ngModel)]="newSubDepartmentName">
+
+          <mat-option *ngFor="let department of departmentsList">
+            {{department.DepartmentName}}
+          </mat-option>
+        </mat-select>
+
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="firstName" name="name" placeholder="Owner First Name">
+          <label for="name">First Name *</label>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="surname" name="name" placeholder="Owner First Name">
+          <label for="name">Surname*</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="emailAddress" name="name" placeholder="Owner First Name">
+          <label for="name">Email Address *</label>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="phoneNumber" name="name" placeholder="Owner First Name">
+          <label for="name">Phone Number*</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success">Save</button>
+  </div>
+ </ng-template>

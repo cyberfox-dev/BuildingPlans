@@ -172,24 +172,39 @@ namespace BuildingPlans.Controllers
             try
             {
                 var result = await (from ac in _context.BPAccessGroups
-                                    join aul in _context.BPAccessGroupsUserLinks on ac.AccessGroupID equals aul.AccessGroupID into acAulJoin
+                                    join aul in _context.BPAccessGroupsUserLinks
+                                        on ac.AccessGroupID equals aul.AccessGroupID into acAulJoin
                                     from aul in acAulJoin.DefaultIfEmpty()
-                                    where ac.isActive == true
-                                    
-                                    select new AccessGroupsDTO()
+                                    where ac.isActive
+                                    select new
                                     {
-                                        AccessGroupID = ac.AccessGroupID,
-                                        AccessGroupName = ac.AccessGroupName,
-                                        AccessGroupDescription = ac.AccessGroupDescription,
-                                        DateCreated = ac.DateCreated,
-                                        DateUpdated = ac.DateUpdated,
-                                        isActive = aul.isActive,
-                                        AccessGroupUserLinkID = (aul.UserProfileID == model.UserProfileID && aul.FunctionalArea == model.FunctionalArea)? aul.AccessGroupUserLinkID:(int?)null,
-
+                                        AccessGroup = ac,
+                                        UserLink = aul
                                     })
-                                    
-                                    .ToListAsync();
-                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Access Groups And User Links", result));
+                              .GroupBy(x => new
+                              {
+                                  x.AccessGroup.AccessGroupID,
+                                  x.AccessGroup.AccessGroupName,
+                                  x.AccessGroup.AccessGroupDescription,
+                                  x.AccessGroup.DateCreated,
+                                  x.AccessGroup.DateUpdated,
+                                  x.AccessGroup.isActive
+                              })
+                              .Select(g => new AccessGroupsDTO
+                              {
+                                  AccessGroupID = g.Key.AccessGroupID,
+                                  AccessGroupName = g.Key.AccessGroupName,
+                                  AccessGroupDescription = g.Key.AccessGroupDescription,
+                                  DateCreated = g.Key.DateCreated,
+                                  DateUpdated = g.Key.DateUpdated,
+                                  isActive = g.Any(y => y.UserLink.isActive),
+                                  AccessGroupUserLinkID = g.Where(y => y.UserLink != null && y.UserLink.UserProfileID == model.UserProfileID && y.UserLink.FunctionalArea == model.FunctionalArea)
+                                                            .Select(y => (int?)y.UserLink.AccessGroupUserLinkID)
+                                                            .FirstOrDefault()
+                              })
+                              .ToListAsync();
+
+                return Ok(new ResponseModel(Enums.ResponseCode.OK, "Got All Access Groups And User Links", result));
             }
             catch (Exception ex)
             {

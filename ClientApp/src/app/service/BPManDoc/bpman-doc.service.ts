@@ -8,11 +8,11 @@ import { SharedService } from 'src/app/shared/shared.service';
 export class BPManDocService {
 
   private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
-  private readonly baseURL: string = this.apiUrl + "bpManDoc/";
+  private readonly baseURL: string = this.apiUrl + "bPManDoc/";
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
   public getAllMandatoryDocuments() {
-
+    debugger;
     return this.httpClient.get(this.baseURL + "GetAllMandatoryDocuments");
 
   }

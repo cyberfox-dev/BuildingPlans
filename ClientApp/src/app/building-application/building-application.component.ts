@@ -236,6 +236,7 @@ export class BuildingApplicationComponent implements OnInit {
     this.BPMandatoryDocumentList = this.getBPDocumentsList();
 
     this.BPMandatoryDocumentList.subscribe(data => console.log(data));
+    console.log("BPMandatory Documents", this, this.BPMandatoryDocumentList);
 }
 
   ngOnInit(): void {
@@ -555,6 +556,7 @@ export class BuildingApplicationComponent implements OnInit {
               tempList.push(tempRequiredDocuments);
               this.totalDocs = tempList.length;
             }
+           
             return tempList;
           } else {
             // Handle the error case here if needed
