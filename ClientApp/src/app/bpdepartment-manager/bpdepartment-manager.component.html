@@ -82,29 +82,18 @@
   </div>
 
   <div class="modal-body">
-    <div class="container-fluid">
-      <mat-form-field>
-        <mat-label>Functional Areas</mat-label>
-        <mat-select [(ngModel)]="newDepartmentName"  (selectionChange)=" getAllDepartmentsForFunctionalArea()">
 
-          <mat-option *ngFor="let areas of functionalAreasList">
-            {{areas.FAName}}
-          </mat-option>
-        </mat-select>
-
-      </mat-form-field>
+    <div class="row">
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" [(ngModel)]="functionalArea" name="FunctionalArea" placeholder="Owner First Name" disabled>
+        <label for="FunctionalArea">Functional Area</label>
+      </div>
     </div>
-    <div class="container-fluid" *ngIf="departmentsList.length > 0">
-      <mat-form-field>
-        <mat-label>Functional Areas</mat-label>
-        <mat-select [(ngModel)]="newSubDepartmentName">
-
-          <mat-option *ngFor="let department of departmentsList">
-            {{department.DepartmentName}}
-          </mat-option>
-        </mat-select>
-
-      </mat-form-field>
+    <div class="row">
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" [(ngModel)]=" subDepartmentName" name="Department" placeholder="Owner First Name" disabled>
+        <label for="Department">Department </label>
+      </div>
     </div>
     <div class="row">
       <div class="col">
@@ -136,6 +125,6 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-success">Save</button>
+    <button type="button" class="btn btn-outline-success" (click)="validateNewUserInfo(accessGroups)">Save</button>
   </div>
  </ng-template>

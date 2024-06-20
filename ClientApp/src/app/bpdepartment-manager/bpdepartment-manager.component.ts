@@ -69,8 +69,7 @@ export class BPDepartmentManagerComponent implements OnInit {
   surname: string = "";
   emailAddress: string = "";
   phoneNumber: string = "";
-  newDepartmentName: string ;
-  newSubDepartmentName: string ;
+
 
   ngOnInit(): void {
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
@@ -257,48 +256,22 @@ export class BPDepartmentManagerComponent implements OnInit {
     })
   }
 
-  getAllDepartmentsForFunctionalArea() {
-   
-
-    this.bpDepartmentsService.getAllDepartmentsForFunctionalArea(this.newDepartmentName).subscribe((data: any) => {
-      if (data.responseCode == 1) {
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const current = data.dateSet[i];
-          const tempDepartment = {} as DepartmentsList;
-
-          tempDepartment.DepartmentID = current.departmentID;
-          tempDepartment.DepartmentName = current.departmentName;
-          tempDepartment.hasSubDepartment = current.hasSubDepartment;
-
-          this.departmentsList.push(tempDepartment);
-        }
-      }
-      else {
-        alert(data.responseMessage);
-      }
-    }, error => {
-      console.log(error);
-    
-    })
-  }
+ 
   validEmail: boolean = false;
   fullName: string;
-  async validateNewUserInfo() {
+  async validateNewUserInfo(accessGroups:any) {
     let name = this.firstName;
     let surname = this.surname;
     let email = this.emailAddress;
     let phoneNumber = this.phoneNumber;
-    let functionalArea = this.newDepartmentName;
-    let department = this.newSubDepartmentName;
+    let functionalArea = this.functionalArea;
+    let department = this.subDepartmentName;
 
     const emailRegex: RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const nameRegex = /^[A-Za-z]+$/;
     const numberRegex = /^[0-9]+$/;
 
-    if (functionalArea == null && department == null) {
-      alert("Please select a Functional Area and Department for which the new user will fall into");
-    }
-    else {
+  
       let nameLength = name.split(' ');
       let surnameLength = surname.split(' ');
 
@@ -315,6 +288,12 @@ export class BPDepartmentManagerComponent implements OnInit {
               if (email != null && email != "" && emailRegex.test(email)) {
                 const emailExist = await this.userService.emailExists(email).toPromise();
 
+                if (emailExist) {
+                  alert("This email address is already exists");
+                }
+                else {
+                  this.RegisterUser(this.fullName, email, accessGroups);
+                }
                 
               }
               else {
@@ -337,7 +316,7 @@ export class BPDepartmentManagerComponent implements OnInit {
       else {
         alert("Enter a Name and Surname");
       }
-    }
+    
   }
   isSouthAfricanPhoneNumber(phoneNumber: string): boolean {
     const mobilePattern = /^(?:\+27|0)[678][0-9]{8}$/;
@@ -352,10 +331,11 @@ export class BPDepartmentManagerComponent implements OnInit {
     }
   }
 
-  RegisterUser(fullName:string , email:string) {
+  RegisterUser(fullName:string , email:string,accessGroups:any) {
     this.userService.register(fullName, email, "12345").subscribe((data: any) => {
       if (data.responseCode == 1) {
-
+        const userID = data.dateSet.appUserId;
+        this.addUserProfile(userID,accessGroups)
       }
       else {
         alert(data.responseMessage);
@@ -366,7 +346,105 @@ export class BPDepartmentManagerComponent implements OnInit {
     })
   }
 
-  
-  
+  async getDepartmentID(): Promise<number> {
+    try {
+      const data:any = await this.bpDepartmentsService.getDepartmentByDepartmentName(this.subDepartmentName).toPromise();
+      if (data.responseCode == 1) {
+        const current = data.dateSet[0];
+        return current.departmentID;
+      }
+      else {
+        throw new Error(data.responseMessage);
+      }
+    }
+    catch (error: any) {
+      console.log("Error:", error);
+      throw error;
+    }
+  }
+
+  async getFunctionalAreaID(functionalArea:any):Promise<number> {
+    try {
+      debugger;
+      const data: any = await this.bpFunctionalAreaService.getFunctionalAreaByFunctionalAreaName(functionalArea).toPromise();
+      debugger;
+      if (data.responseCode == 1) {
+        const current = data.dateSet[0];
+        return current.functionalAreaID;
+      }
+      else {
+        throw new Error(data.responseMessage);
+      }
+    }
+    catch (error: any) {
+      console.log("Error:", error);
+      throw error;
+    }
+  }
+  async addUserProfile(userID:any,accessGroups:any) {
+
+    const functionalAreaId :number = await this.getFunctionalAreaID(this.functionalArea);
+    const departmentID :number = await this.getDepartmentID();
+
+    this.userProfileService.addUpdateUserProfiles(0, userID, this.fullName, this.emailAddress, this.phoneNumber, true, null, null, null, null, this.functionalArea, functionalAreaId, departmentID, null,
+      null, null, null, this.CurrentUser.appUserId, null, null, null, null, null, false, false, this.subDepartmentName, null, null, this.firstName, this.surname, this.functionalArea, null, true, null, true, false).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+         
+          const UserProfileID = data.dateSet.userProfileID;
+          const current = data.dateSet;
+          const tempUser = {} as UserProfileList;
+          debugger;
+          tempUser.UserProfileID = current.userProfileID;
+          tempUser.UserID = current.userID;
+          tempUser.Email = current.email;
+          tempUser.FullName = current.fullName;
+
+          this.selectedUser = tempUser;
+
+          this.modalService.dismissAll();
+          this.openAccessGroupsLinksForNewUser(accessGroups,UserProfileID);
+        }
+        else {
+          alert(data.responseMessage);
+        }
+      }, error => {
+        console.log(error);
+      })
+  }
+ openAccessGroupsLinksForNewUser(accessGroups: any,userID:any) {
+    debugger;
+    this.accessGroupList.splice(0, this.accessGroupList.length);
+    this.bpAccessGroupService.getAllAccessGroupsAndUserLinks(userID, this.functionalArea).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          const tempAccessGroup = {} as AccessGroupsList;
+
+          tempAccessGroup.AccessGroupID = current.accessGroupID;
+          tempAccessGroup.AccessGroupName = current.accessGroupName;
+          tempAccessGroup.AccessGroupDescription = current.accessGroupDescription;
+          tempAccessGroup.AccessGroupUserLinkID = current.accessGroupUserLinkID;
+
+          if (current.accessGroupUserLinkID == null || current.isActive == false) {
+            tempAccessGroup.isLinked = false;
+          }
+          else {
+            tempAccessGroup.isLinked = true;
+          }
+          this.accessGroupList.push(tempAccessGroup);
+
+        }
+
+        this.modalService.open(accessGroups, { centered: true, size: 'xl' });
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log(error);
+
+    })
+ }
+ 
 }
 
