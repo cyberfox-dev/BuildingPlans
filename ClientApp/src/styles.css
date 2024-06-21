@@ -378,7 +378,7 @@ input {
 }
 .mat-input {
   font: inherit;
-  background: rgba(0,0,0,0) !important;
+  background: rgb(50 62 78) !important;
   color: currentColor;
   border: none;
   outline: none;
@@ -389,4 +389,30 @@ input {
   vertical-align: bottom;
   text-align: inherit;
   box-sizing: content-box;
+  caret-color: rgb(50 62 78) !important;
+}
+.mat-menu-panel {
+  background: #323e4e !important
+}
+.modal-content {
+  background: #323e4e !important
+}
+.mat-horizontal-stepper-wrapper.ng-tns-c133-22.ng-star-inserted {
+  background: #323e4e !important;
+}
+
+.offcanvas {
+  background: #323e4e !important
+}
+mat-dialog-container#mat-dialog-0 {
+  background: #323e4e !important
+}
+.button:hover {
+  background: #3e4c5f !important
+}
+tr:hover {
+  background: #3e4c5f !important
+}
+.mat-select-panel {
+  background: #576b86;
 }

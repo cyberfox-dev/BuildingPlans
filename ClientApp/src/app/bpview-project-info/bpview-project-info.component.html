@@ -21,6 +21,8 @@
 
     <mat-tab label="Application Details">
       <div class="cont2">
+
+
         <form>
 
           <div class="row">
@@ -107,35 +109,47 @@
               </div>
             </div>
           </div>
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="sGCode" name="sgCode" placeholder="SG Code" disabled>
-              <label for="sgCode">SG Code</label>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="physicalAddress" name="physicalAddress" placeholder="Physical Address" disabled>
-              <label for="physicalAddress">Physical Address Of Project</label>
-            </div>
-          </div>
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="latitude" name="latitude" placeholder="Latitude" disabled>
-                <label for="Latitude">Latitude</label>
+                <input type="text" class="form-control" [(ngModel)]="sGCode" name="sgCode" placeholder="SG Code" disabled>
+                <label for="sgCode">SG Code</label>
               </div>
             </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="longitude" name="longitude" placeholder="Longitude" disabled>
-                <label for="longitude">Longitude</label>
-              </div>
             </div>
-          </div>
-          <!---------------------Map and pinned location ------------------->
-        </form>
+
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3 mt-3">
+                  <input type="text" class="form-control" [(ngModel)]="physicalAddress" name="physicalAddress" placeholder="Physical Address" disabled>
+                  <label for="physicalAddress">Physical Address Of Project</label>
+                </div>
+              </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="latitude" name="latitude" placeholder="Latitude" disabled>
+                    <label for="Latitude">Latitude</label>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="longitude" name="longitude" placeholder="Longitude" disabled>
+                    <label for="longitude">Longitude</label>
+                  </div>
+                </div>
+              </div>
+              <!---------------------Map and pinned location ------------------->
+</form>
+
+        <div class="alert alert-info" role="alert" *ngIf="OmnibusServitude">
+          Applicant states that OmnibusServitude is in the title deed
+        </div>
+        <div class="alert alert-other" role="alert" *ngIf="!OmnibusServitude">
+          Applicant states that <strong>THERE IS NO</strong> OmnibusServitude in the title deed
+        </div>
+
       </div>
     </mat-tab>
 
@@ -287,7 +301,7 @@
 
     </mat-tab>
 
-    <mat-tab label="Land Survey Upload Checklist">
+  <!--  <mat-tab label="Land Survey Upload Checklist" *ngIf="currentStage == 'LS Relaxation - Unpaid'">
       <table mat-table [dataSource]="dataSourceLSManDoc" class="mat-elevation-z8">
 
         <ng-container matColumnDef="mandatoryDocumentName">
@@ -309,7 +323,7 @@
         <tr mat-row *matRowDef="let row; columns:displayedColumnsLSManDoc;"></tr>
 
       </table>
-    </mat-tab>
+    </mat-tab>-->
 
 
   </mat-tab-group>

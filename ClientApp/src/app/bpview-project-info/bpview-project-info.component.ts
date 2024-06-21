@@ -72,7 +72,7 @@ export class BPViewProjectInfoComponent implements OnInit {
   latitude: string;
   longitude: string;
   sGCode: string;
-
+  OmnibusServitude: boolean = false;
   functionalArea: string;
   currentStage: string;
 
@@ -134,7 +134,7 @@ export class BPViewProjectInfoComponent implements OnInit {
         this.physicalAddress = current.physicalAddress;
         this.functionalArea = "Building Plan";
         this.currentStage = current.stage;
-
+        this.OmnibusServitude = current.omnibusServitude;
         //owner details
         this.firstName = current.firstName;
         this.surname = current.surname;

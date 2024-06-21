@@ -52,6 +52,7 @@ import { FinancialService } from '../service/Financial/financial.service';
 import { ConfigService } from '../service/Config/config.service';
 import { MandatoryDocumentStageLinkService } from '../service/MandatoryDocumentStageLink/mandatory-document-stage-link.service';
 import { BuildingApplicationsService } from '../service/BuildingApplications/building-applications.service';
+import { BPFinancialService } from '../service/BPfinancial/bpfinancial.service';
 //Audit Trail Kyle
 declare var tinymce: any;
 
@@ -474,7 +475,7 @@ export class BpActionCenterComponent implements OnInit {
 
 
     //Audit Trail Kyle
-    private financialService: FinancialService,
+    private financialService: BPFinancialService,
     private auditTrailService: AuditTrailService,
     private configService: ConfigService,
     //Audit Trail Kyle
@@ -3157,8 +3158,9 @@ export class BpActionCenterComponent implements OnInit {
             this.CreateNotification(this.clientUserID);*/
             /*  this.moveToFinalApprovalForDepartment();*/
             this.modalService.dismissAll();
+
             this.openSnackBar("Application Actioned");
-            this.router.navigate(["/home"]);
+            
           }
           else {
             alert(data.responseMessage)
@@ -3180,7 +3182,7 @@ export class BpActionCenterComponent implements OnInit {
           null, null, null, null, null, null, null,
           null, null, null, null, null, null, null, null, null,
           null, null, null, null, null, null, null,
-          null, null, null, null, null, null, "Relaxation", "LS Relaxation", 2, null).subscribe((data: any) => {
+          null, null, null, null, null, null, "Relaxation", "LS Relaxation - Unpaid", 2, null).subscribe((data: any) => {
             if (data.responseCode == 1) {
               debugger;
               /*            this.CreateNotification(this.CurrentUser.appUserId);
@@ -3188,7 +3190,7 @@ export class BpActionCenterComponent implements OnInit {
               /*  this.moveToFinalApprovalForDepartment();*/
               this.modalService.dismissAll();
               this.openSnackBar("Application Actioned");
-              this.router.navigate(["/home"]);
+              this.generateBPLSRelaxationInvoice(this.firstName + " " + this.surname);
             }
             else {
               alert(data.responseMessage)
@@ -7406,5 +7408,185 @@ export class BpActionCenterComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
+  }
+
+
+  moveToPaidBPApplication() {
+    this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+      null, null, null, null, null, null, null,
+      null, null, null, null, null, null, null, null, null,
+      null, null, null, null, null, null, null,
+      null, null, null, null, null, null, "Relaxation", "LS Relaxation - Paid", 2, null).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          debugger;
+          /*            this.CreateNotification(this.CurrentUser.appUserId);
+                      this.CreateNotification(this.clientUserID);*/
+          /*  this.moveToFinalApprovalForDepartment();*/
+          this.modalService.dismissAll();
+          this.openSnackBar("Application Actioned");
+          this.router.navigate(["/home"]);
+        }
+        else {
+          alert(data.responseMessage)
+        }
+      }, error => {
+        console.log("BuildingApplicationError: ", error)
+      })
+  }
+
+  generateBPLSRelaxationInvoice(ClientName: string) {
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    const img = new Image();
+    img.src = 'assets/cctlogoblackk.png';
+
+    doc.addFont('assets/century-gothic/CenturyGothic.ttf', 'CustomFont', 'normal');
+    doc.addFont('assets/century-gothic/GOTHICB0.TTF', 'CustomFontBold', 'bold');
+    doc.setFont('CustomFont', 'normal');
+    let currentPage = 1;
+    // Add logo
+    doc.addImage(img, 'png', 6, 10, 50, 16);
+
+    // Set font for header
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.text('Cape Town Civic Centre', 200, 17, { align: 'right' });
+    doc.text('12 Hertzog Boulevard', 200, 22, { align: 'right' });
+    doc.text('CAPE TOWN 8000', 200, 27, { align: 'right' });
+
+    // Website and Portal links
+    doc.setFont('CustomFontBold', 'bold');
+    doc.text('Website:', 147, 35, { align: 'right' });
+    doc.setTextColor(0, 88, 112);
+    doc.textWithLink('https://www.capetown.gov.za', 200, 35, { align: 'right' });
+    doc.setTextColor(0, 0, 0);
+    doc.text('Portal:', 138, 40, { align: 'right' });
+    doc.setTextColor(0, 88, 112);
+    doc.textWithLink('https://wayleave.capetown.gov.za/', 200, 40, { align: 'right' });
+
+    // Reference number
+    doc.setTextColor(0, 0, 0);
+    doc.text('Reference Number: ' + ClientName, 200, 50, { align: 'right' });
+
+    // Date and project description
+    doc.setFontSize(10);
+    doc.setFont('CustomFont', 'normal');
+    doc.text('DATE : ' + this.formattedDate, 10, 60, { align: 'left' });
+    doc.text('BUILDING PLANS APPLICATION: ' , 10, 70, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
+
+    // Greeting
+    doc.text('Dear ' + ClientName, 10, 80, { align: 'left' });
+
+    // Application summary
+    doc.text('Your application for a Permit to Work has been approved. Department specific permits are attached.', 10, 90, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+
+    // Status summary title
+    doc.setFont('CustomFontBold', 'bold');
+    doc.text('Status Summary:', 10, 110, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFont', 'normal');
+
+
+    // Rejection summary
+    doc.setFontSize(10);
+    doc.setFont('CustomFont', 'italic');
+    doc.text("Disclaimer:\n This Permit Pack and all associated attachments are intended for the named recipient / s only, and are not transferrable to a third party.The City reserves the right to revoke this permit in the event of infringements, change in scope, methodology or site - specific conditions and / or discovery of new or additional information.Expiry of the Permit validity for one or more departments will render the entire Pack invalid.It is the responsibility of the named recipient to apply timeously for renewals as applicable. Note that it is the recipient’s sole responsibility to ascertain the exact location and depth of existing services infrastructure.The City will not be held liable for consequences resulting from decisions based on any information provided in good faith.", 10, 190, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFont', 'normal');
+    // Signature
+    doc.setFontSize(12);
+    doc.setFont('CustomFontBold', 'bold');
+    doc.text('CITY OF CAPE TOWN', 10, 260, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFont', 'italic');
+    doc.text('Future Planning and Resilience Directorate', 10, 265, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+
+    // Save PDF document
+
+    const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
+    const file = new File([pdfData], 'Building Plans Land Survey Relaxation Invoice', { type: 'application/pdf' });
+
+
+    // Prepare the form data
+    const formData = new FormData();
+    formData.append('file', file);
+    this.sharedService.pushFileForTempFileUpload(file, "Building Plans Land Survey Relaxation Invoice" + ".pdf");
+    this.saveBP();
+ 
+    // window.open(pdfUrl, '_blank')
+
+    // this.router.navigate(["/home"]);
+
+  }
+
+
+
+  saveBP() {
+
+
+
+
+    const filesForUpload = this.sharedService.pullFilesForUpload();
+    for (var i = 0; i < filesForUpload.length; i++) {
+      const formData = new FormData();
+      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.ApplicationID;
+      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+
+
+
+      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+        .subscribe({
+          next: (event) => {
+
+
+            if (event.type === HttpEventType.UploadProgress && event.total)
+              this.progress = Math.round(100 * event.loaded / event.total);
+            else if (event.type === HttpEventType.Response) {
+              this.message = 'Upload success.';
+              this.uploadFinishedBP(event.body);
+
+            }
+          },
+          error: (err: HttpErrorResponse) => console.log(err)
+        });
+    }
+
+  }
+
+  uploadFinishedBP = (event: any) => {
+    const currentApplication = this.sharedService.getViewApplicationIndex();
+
+    this.response = event;
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
+
+
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
+    //JJS Commit Permit Cover 30 May 24
+/*    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, this.CurrentUser.appUserId,"PTW").subscribe((data: any) => {*/
+    this.financialService.addUpdateFinancial(0, "Building Plans Land Survey Relaxation Invoice", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {
+    if (data.responseCode == 1) {
+      this.router.navigate(["/home"]);
+    }
+
+  }, error => {
+    console.log("Error: ", error);
+  })
+   /* this.permitService.addUpdatePermitSubForComment(0, this.ApplicationID, null, null, null, null, null, "System Generated", null, null, this.response?.dbPath, documentName).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+
+
+      }*/
+/*
+    }, error => {
+      console.log("Error: ", error);
+    })*/
+
+
   }
 }
