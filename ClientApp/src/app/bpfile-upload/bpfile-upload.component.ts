@@ -238,7 +238,7 @@ export class BPFileUploadComponent implements OnInit {
           else if (event.type === HttpEventType.Response) {
             this.message = 'Upload success.';
             if (this.isFinancial) {
-              //this.financialuploadFinished(event.body,this.ApplicationID,this.CurrentUser);
+              this.financialuploadFinished(event.body,this.ApplicationID,this.CurrentUser);
             }
             else {
               debugger;
@@ -332,7 +332,7 @@ export class BPFileUploadComponent implements OnInit {
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
     console.log("documentName", documentName);
 
-    this.bpFinancialService.addUpdateFinancial(0, documentName, "Financial", documentName, this.response?.dbPath, applicationID, "System Generated Invoice").subscribe((data: any) => {
+    this.bpFinancialService.addUpdateFinancial(0, documentName, "Financial", documentName, this.response?.dbPath, applicationID,applicationData.appUserId).subscribe((data: any) => {
 
 
       if (data.responseCode == 1) {

@@ -242,9 +242,13 @@
     <mat-tab label="Comments">
       <p>All comments relevant to the current Application will be displayed here</p>
     </mat-tab>
+
+    <!-----BP Financials Kyle------>
     <mat-tab label="Financials">
-      <p>All financial Documents link to current application will be accessible here.</p>
+      <app-bpfinancials></app-bpfinancials>
     </mat-tab>
+
+    <!-----BP Financials Kyle------>
     <!-------------------------------------------------Document Uploads ----------------------------------------->
     <mat-tab label="Documents Upload">
       <app-documents-component></app-documents-component>
@@ -299,7 +303,7 @@
           <th mat-header-cell *matHeaderCellDef>Actions</th>
           <td mat-cell *matCellDef="let i = index">
             <button mat-raised-button color="blue" matTooltip="View Application Details"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/eye.svg" class="icon4 blue"></button>
-          
+
 
           </td>
           <td mat-cell *matCellDef="let element">  </td>
@@ -315,3 +319,18 @@
   </mat-tab-group>
 </div>
 
+<ng-template #UploadProof let-modal>
+
+  <div class="modal-header">
+    <h4 class="modal-title">Upload Proof of Payment For Relaxation Invoice</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+  </div>
+</ng-template>

@@ -1,0 +1,18 @@
+.mat-create {
+ 
+  color: white;
+  background-color: #005870;
+  margin: 10px;
+}
+
+.modal-title {
+  color: black !important;
+}
+table {
+  width: 100%;
+  margin-bottom:20px;
+}
+.mat-form-field {
+  /*  margin: 40px 0;*/
+  width: 100%;
+}

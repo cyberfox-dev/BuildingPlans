@@ -1,0 +1,67 @@
+<button mat-raised-button color="create" (click)="openUpload(UploadProof)">Upload POP</button>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+  <ng-container matColumnDef="FinancialName">
+  <th mat-header-cell *matHeaderCellDef> Name </th>
+  <td mat-cell *matCellDef="let element"> {{element.FinancialType}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="FinancialDocumentName">
+    <th mat-header-cell *matHeaderCellDef> Document Name </th>
+    <td mat-cell *matCellDef="let element"> {{element.FinancialDocumentName}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>actions</th>
+    <td mat-cell *matCellDef="let i = index">
+      <button mat-raised-button color="blue" matTooltip="View"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid-white.svg" class="icon"></button>
+
+
+
+    </td>
+    <td mat-cell *matCellDef="let element">  </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<ng-template #UploadProof let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Upload Proof Of Payment For Relaxation Invoice</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+    <form>
+      <mat-form-field>
+        <div>
+
+          <input matInput [(ngModel)]="fileAttrs" readonly name="name"  />
+
+          <mat-toolbar >
+            <div class="row" style="margin-bottom:15px;">
+              <div class="container-fluid">
+                <ng-container>
+                 <app-bpfile-upload [ApplicationID]="ApplicationID"
+                                    [UploadFor]="fileAttrs"
+                                    [isFinancial]="isFinancial"
+                                     (passFileName)="onPassFileName($event)"
+                                    (onUploadFinished)="onFileDelete($event, 0)"
+                                    (onUploadSuccess)="onFileUpload($event)">
+
+                 </app-bpfile-upload>
+                </ng-container>
+
+              </div>
+            </div>
+          </mat-toolbar>
+        </div>
+      </mat-form-field>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="getAllFinancialDocuments() ;modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
