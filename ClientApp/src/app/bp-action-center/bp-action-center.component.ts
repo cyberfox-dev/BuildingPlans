@@ -7433,6 +7433,50 @@ export class BpActionCenterComponent implements OnInit {
         console.log("BuildingApplicationError: ", error)
       })
   }
+/*  getAllServiceItemsForRelaxation() {
+    this.serviceItemService.getAllServiceItemsByCategory()
+  }*/
+
+/*  getAllServiceItemsForPermit(supervisionFee: any) {
+
+
+    if (this.supervisionFeeChecked == false) {
+      this.supervisionFeeChecked = true;
+    }
+    else {
+      this.supervisionFeeChecked = false;
+    }
+
+    if (this.supervisionFeeChecked) {
+      this.PermitIssuerSuperVisionFeeList.splice(0, this.PermitIssuerSuperVisionFeeList.length);
+      this.serviceItemService.getAllServiceItemsByCategory("Permit").subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempServiceItem = {} as ServiceItemList;
+            const current = data.dateSet[i];
+
+            tempServiceItem.serviceItemID = current.serviceItemID;
+            tempServiceItem.serviceItemCode = current.serviceItemCode;
+            tempServiceItem.Rate = current.rate;
+            tempServiceItem.Description = current.description;
+            tempServiceItem.totalVat = current.totalVat;
+            tempServiceItem.vatApplicable = current.vatApplicable;
+            tempServiceItem.dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
+            tempServiceItem.isChecked = false;
+
+            this.PermitIssuerSuperVisionFeeList.push(tempServiceItem);
+          }
+          this.modalService.open(supervisionFee, { centered: true, size: 'l' });
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("response", data);
+      }, error => {
+        console.log("Error", error);
+      })
+    }
+  }*/
 
   generateBPLSRelaxationInvoice(ClientName: string) {
     const doc = new jsPDF({
