@@ -51,4 +51,12 @@ export class BpDepartmentsService {
     }
     return this.httpClient.post(this.baseURL + "GetAllDepartmentsForFunctionalArea", body);
   }
+
+  public getDepartmentByDepartmentName(departmentName: string | null) {
+    const body = {
+      DepartmentName: departmentName
+    }
+
+    return this.httpClient.post(this.baseURL + "GetDepartmentByDepartmentName", body);
+  }
 }

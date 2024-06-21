@@ -80,6 +80,31 @@ namespace BuildingPlans.Controllers
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
-        
+
+        [HttpPost("GetFunctionalAreaByFunctionalAreaName")]
+        public async Task<object> GetFunctionalAreaByFunctionalAreaName([FromBody] BPFunctionalAreaBindingModel model)
+        {
+            try
+            {
+                var result = await (from FunctionalAreas in _context.BPFunctionalAreas
+                                    where FunctionalAreas.FAName == model.FAName && FunctionalAreas.isActive == true
+                                    select new BPFunctionalAreasDTO()
+                                    {
+                                        FunctionalAreaID = FunctionalAreas.FunctionalAreaID,
+                                        FAName = FunctionalAreas.FAName,
+                                        FAItemCode = FunctionalAreas.FAItemCode,
+                                        DateCreated = FunctionalAreas.DateCreated,
+                                        DateUpdated = FunctionalAreas.DateUpdated,
+                                        CreatedById = FunctionalAreas.CreatedById,
+
+                                    }).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Functional Area By Functional Area Name", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
     }
 }
