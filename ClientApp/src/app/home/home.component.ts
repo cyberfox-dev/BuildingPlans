@@ -7127,10 +7127,20 @@ this.subscriptions.push(subscription);
             tempApplication.stage = current.stage;
             tempApplication.ownerName = current.firstName + " " + current.surname;
 
-            tempApplication.status = current.status;
             tempApplication.dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
             tempApplication.dateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf("T"));
+            const currentDate = new Date();
+            const dateCreated = new Date(tempApplication.dateCreated);
+            const timeDiff = currentDate.getTime() - dateCreated.getTime();
+            const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+            tempApplication.planAge = daysDiff;
 
+            /*cal stage age*/
+            const stageDateCreated = new Date(tempApplication.dateCreated);
+            const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+            const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+            tempApplication.stageAge = stageDateDiff;
+            tempApplication.status = current.status;
             this.ApplicationsBP.push(tempApplication);
           }
 
@@ -7668,6 +7678,7 @@ this.subscriptions.push(subscription);
             tempApplication.dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
             tempApplication.dateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf("T"));
 
+           
             this.scrutinyApplications.push(tempApplication);
           }
          

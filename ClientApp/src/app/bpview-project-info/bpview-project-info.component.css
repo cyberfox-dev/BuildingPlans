@@ -190,3 +190,18 @@ table {
 :host ::ng-deep.mat-ink-bar {
   background-color: rgb(240 240 240 / 0%) !important;
 }
+
+.alert-info {
+  background: #00807061 !important;
+  border: none !important;
+  box-shadow: 2px 3px 7px 0px #23bdad66 !important;
+  color: #26e9d0 !important;
+  text-align: center !important;
+}
+.alert-other {
+  background: #6e008061 !important;
+  border: none !important;
+  box-shadow: 2px 3px 7px 0px #a020b561 !important;
+  color: #ef8bff !important;
+  text-align: center !important;
+}
