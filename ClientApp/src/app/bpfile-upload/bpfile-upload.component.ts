@@ -280,24 +280,42 @@ export class BPFileUploadComponent implements OnInit {
     }
 
     const handleResponse = (data: any) => {
-
+      debugger;
       if (data?.responseCode == 1) {
         const matchedDocument = data.dateSet.find(doc => doc.documentName === this.fileUploadName + this.fileExtention);
-
+        debugger;
         if (matchedDocument) {
-          this.bpDocumentUploadService.deleteDocument(matchedDocument.documentID).subscribe(response => {
-            if (response) {
-              this.fileName = '';
-              this.onUploadFinisheded.emit();
-            }
-            else {
-              alert('Failed to delete file from the server');
-            }
-          }, error => {
-            console.log("Erorr: ", error);
-            alert('An error occurred while deleting the file.');
+          if (this.isFinancial) {
+            this.bpFinancialService.deleteFinancial(matchedDocument.financialID).subscribe(response => {
+              if (response) {
+                this.fileName = '';
+                this.onUploadFinisheded.emit();
+              }
+              else {
+                alert('Failed to delete file from the server');
+              }
+            }, error => {
+              console.log("Erorr: ", error);
+              alert('An error occurred while deleting the file.');
+            });
+          }
+          else {
 
-          });
+
+            this.bpDocumentUploadService.deleteDocument(matchedDocument.documentID).subscribe(response => {
+              if (response) {
+                this.fileName = '';
+                this.onUploadFinisheded.emit();
+              }
+              else {
+                alert('Failed to delete file from the server');
+              }
+            }, error => {
+              console.log("Erorr: ", error);
+              alert('An error occurred while deleting the file.');
+
+            });
+          }
         }
         else {
           alert('No matching file founde in the server database.');
@@ -315,7 +333,7 @@ export class BPFileUploadComponent implements OnInit {
 
     const serviceCall = (this.isFinancial || this.isFinancial === null)
 
-      ? () => this.bpDocumentUploadService.getAllDocumentsForApplication(this.ApplicationID)
+      ? () => this.bpFinancialService.getFinancialByApplicationID(this.ApplicationID)
       : () => this.bpDocumentUploadService.getAllDocumentsForApplication(this.ApplicationID);
 
     serviceCall().subscribe(handleResponse, handleError);
@@ -340,7 +358,9 @@ export class BPFileUploadComponent implements OnInit {
         // Emit the onUploadSuccess event after a successful upload
         this.onUploadSuccess.emit(event.body);
       }
-
+      else {
+        alert("An Error occured while trying to upload Financial Document");  
+      }
 
 
 

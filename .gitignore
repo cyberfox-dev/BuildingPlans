@@ -247,3 +247,4 @@ _Pvt_Extensions
 /Controllers/WayleavePermitExpirationController.cs
 /Data/Entities/WayleavePermitExpiration.cs
 /Models/BindingModel/WayleavePermitExpirationBindingModel.cs
+/ClientApp/.angular/cache/14.2.13
