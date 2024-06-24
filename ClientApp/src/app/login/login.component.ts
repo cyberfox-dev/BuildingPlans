@@ -141,7 +141,7 @@ export class LoginComponent implements OnInit {
 
     // Subscribe to changes in the email field to toggle the BP number field
     this.registerForm.get('registerEmail').valueChanges.subscribe((email) => {
-      if (email.toLowerCase().endsWith('@capetown.gov.za')) {
+      if (email.toLowerCase().endsWith('@msunduzi.gov.za')) { //BPRegister Sindiswa 20062024
         this.showBPNumber = false; // Email is empty, so hide BP number textbox || The user is internal, so hide BP number textbox
       }
       else {
@@ -225,13 +225,13 @@ export class LoginComponent implements OnInit {
         <body>
           <div class="email-content">
             <p>Dear Applicant,</p>
-            <p>Please enter the following one time pin to create your account on the City of Cape Town Wayleave Management System: <strong>${otp}</strong>. This code will be valid for the next 15 minutes.</p>
-            <p>Should you have any queries, please contact <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
-                <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
+            <p>Please enter the following one time pin to create your account on the Engage Development Services System System: <strong>${otp}</strong>. This code will be valid for the next 15 minutes.</p>
+            <p>Should you have any queries, please contact <a href="#">cyberfxo@placeholderemail.com</a></p>
+                <p >Regards,<br><a href="#">Engage Development Services System</a></p>
                           <p>
-              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
+              <a href="http://www.msunduzi.gov.za//">Msunduzi Web</a> | <a href="http://www.msunduzi.gov.za/site/contactus/index.html">Contacts</a> | <a href="#">Media</a> | <a href="#">Report a fault</a> | <a href="mailto:accounts@placeholder.gov.za?subject=Account query">Accounts</a>              
             </p>
-             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
+             <img class="footer-logo" src='src/assets/engage_dev_logo.png'' alt="Engage Development Services Logo" width="100">
           </div>
 
         </body>
@@ -660,7 +660,7 @@ this.userService.login(email, password).pipe(
     } else {
       this.validEmail = true;
 
-      if (email.endsWith("@capetown.gov.za")) {
+      if (email.endsWith("@msunduzi.gov.za")) { ////BPRegister Sindiswa 20062024
         this.internalUserNoBP = true;
         // Leave it empty for internal folks -- OKAY, I CAN'T DO THAT! OR CAN I?
         this.externalWValidBP = false; // Make sure this is false for internal users
@@ -1382,14 +1382,14 @@ this.userService.login(email, password).pipe(
           <div class="email-content">
             <p>Dear User,</p>
             <p>You are trying to reset your password. Your OTP code is : <strong>${this.otpPassword}</strong>. This code will be valid for the next 15 minutes.</p>
-            <p>Should you have any queries, please contact us at <a href="mailto:wayleaves@capetown.gov.za">wayleaves@capetown.gov.za</a></p>
+            <p>Should you have any queries, please contact us at <a href="#">cyberfox@placeholdermail.com</a></p>
           </div>
           <div class="footer">
 
-            <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
-            <p>Regards,<br>Wayleave Management System</p>
+            <img class="footer-logo" src='src/assets/engage_dev_logo.png' alt="Engage Development Services Logo" width="100">
+            <p>Regards,<br>Engage Development Services</p>
             <p>
-              <a href="#">CCT Web</a> | <a href="#">Contacts</a> | <a href="#">Media</a> | <a href="#">Report a fault</a> | <a href="#">Accounts</a>
+              <a href="#">Msunduzi Web</a> | <a href="#">Contacts</a> | <a href="#">Media</a> | <a href="#">Report a fault</a> | <a href="#">Accounts</a>
             </p>
           </div>
         </body>

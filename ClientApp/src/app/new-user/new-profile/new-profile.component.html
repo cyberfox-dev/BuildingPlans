@@ -31,12 +31,13 @@
         <div class="external" *ngIf="showExternal">
           <h5>Please enter your details as an External Applicant</h5>
           <div class="row">
-            <div class="col">
+            <!--/BPRegister Sindiswa 20062024 removed BP number-->
+            <!--<div class="col">
               <div class="form-floating mb-3 mt-3">
                 <input type="text" class="form-control" [(ngModel)]="extApplicantBpNoApplicant" placeholder="Enter BP Number" disabled>
                 <label for="bpNoApplicant">BP Number</label>
               </div>
-            </div>
+            </div>-->
             <div class="col">
               <div class="form-floating mb-3 mt-3">
                 <input type="text" class="form-control" [(ngModel)]="extApplicantCompanyName" placeholder="Enter Company Name">
@@ -85,7 +86,7 @@
             <mat-checkbox [(ngModel)]="isRepresentingTelecommsCompany"> Check this box ONLY IF your company offers telecommunications services </mat-checkbox>
           </div>
           <div class="row" *ngIf="!showTelecommsPrompt || isRepresentingTelecommsCompany">
-<!-- icasaDetailsDisplay Sindiswa 16 January 2024 -->
+            <!-- icasaDetailsDisplay Sindiswa 16 January 2024 -->
             <div class="col">
               <div class="form-floating mb-3 mt-3">
                 <input type="text" class="form-control" [(ngModel)]="extApplicantICASANumber" placeholder="Enter ICASA Number" name="extApplicantICASANumber" #icasaNumberInput="ngModel" [required]="isRepresentingTelecommsCompany" title="This field is mandatory for all electronic communications service providers.">
@@ -93,21 +94,21 @@
               </div>
             </div>
 
-           <!--<div class="col-1 d-flex align-items-center">
-              <mat-icon aria-hidden="false" aria-label="Info icon" fontIcon="info" matTooltip="This field is mandatory for all electronic communications service providers."></mat-icon>
-            </div>-->
-<!-- endof icasaDetailsDisplay Sindiswa 15 January 2024 -->
+            <!--<div class="col-1 d-flex align-items-center">
+               <mat-icon aria-hidden="false" aria-label="Info icon" fontIcon="info" matTooltip="This field is mandatory for all electronic communications service providers."></mat-icon>
+             </div>-->
+            <!-- endof icasaDetailsDisplay Sindiswa 15 January 2024 -->
           </div>
           <!--<div *ngIf="isRepresentingTelecommsCompany && !extApplicantICASANumber">
             <div class="alert alert-danger">An ICASA License Number is required for telecomms companies /This field is mandatory for all electronic communications service providers.</div>
           </div>-->
-         <!--end of icasadetails Sindiswa 10 January 2024-->
+          <!--end of icasadetails Sindiswa 10 January 2024-->
           <!--  <div class="form-floating mb-3 mt-3">
-    <select class="form-select" aria-label="Default select example" formControlName="newZoneSubDemartment">
-      <option selected value="0">Select a SubDepartment</option>
-      <option *ngFor="let subDemartment of SubDepartmentDropdown" value="{{subDemartment.subDepartmentID}}">{{subDemartment.subDepartmentName}}</option>
-    </select>
-  </div>-->
+            <select class="form-select" aria-label="Default select example" formControlName="newZoneSubDemartment">
+              <option selected value="0">Select a SubDepartment</option>
+              <option *ngFor="let subDemartment of SubDepartmentDropdown" value="{{subDemartment.subDepartmentID}}">{{subDemartment.subDepartmentName}}</option>
+            </select>
+          </div>-->
 
 
           <div class="row">
@@ -175,8 +176,58 @@
               </div>
             </div>
           </div>
+          <!--start of: BPRegister Sindiswa 20062024 added more textboxes-->
           <div class="row">
             <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="email" class="form-control" [(ngModel)]="internalApplicantEmail" placeholder="Enter Email" disabled>
+                <label for="applicantEmail">Email *</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="email" class="form-control" [(ngModel)]="internalApplicantAlternativeEmail" name="internalApplicantAlternativeEmail" placeholder="Enter Email" #altEmail="ngModel" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+                <label for="applicantEmail">Alternative Email *</label>
+                <div *ngIf="altEmail.invalid && (altEmail.dirty || altEmail.touched)" class="text-danger">
+                  <div *ngIf="altEmail.errors?.pattern">
+                    Please enter a valid email address.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="tel" class="form-control" [(ngModel)]="internalApplicantTellNo" placeholder="Enter Tell No." pattern="^\d{10}$" #telNo="ngModel">
+                <label for="applicantTellNo">Tell No *</label>
+                <div *ngIf="telNo.invalid && (telNo.dirty || telNo.touched)" class="text-danger">
+                  <div *ngIf="telNo.errors?.pattern">
+                    Tell No must be exactly 10 digits.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--end of: BPRegister Sindiswa 20062024 added more textboxes-->
+          <div class="row">
+            <!--start of: BPRegister Sindiswa 202062024 change zone/subdepartment implementation to a zone and functional area one-->
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <select class="form-select" aria-label="Default select example" [(ngModel)]="selectedZone" (change)="onSelectToPopulateDepartment($event)">
+                  <option selected value="0">Select a functional area *</option>
+                  <option *ngFor="let fa of FunctionalAreaDropdown" value="{{fa}}">{{fa}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <select class="form-select" aria-label="Default select example" [(ngModel)]="internalApplicantDepartment">
+                  <option selected value="0">Select a department *</option>
+                  <option *ngFor="let department of DepartmentsDropdown" value="{{department.zoneID}}">{{department.zoneName}}</option>
+                </select>
+              </div>
+            </div>
+            <!--end of: BPRegister Sindiswa 202062024 change zone/subdepartment implementation to a zone and functional area one-->
+            <!--<div class="col">
               <div class="form-floating mb-3 mt-3">
                 <select class="form-select" aria-label="Default select example" [(ngModel)]="internalApplicantDepartment" (change)="onSelectToPopulateZone($event)">
                   <option selected value="0">Select a subdepartment *</option>
@@ -191,13 +242,7 @@
                   <option *ngFor="let zone of ZoneDropdown" value="{{zone.zoneID}}">{{zone.zoneName}}</option>
                 </select>
               </div>
-            </div>
-            <div class="col">
-              <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="internalApplicantCostCenterOwner" placeholder="Enter Cost Center Owner">
-                <label for="applicantTellNo">Cost Center Owner *</label>
-              </div>
-            </div>
+            </div>-->
           </div>
           <div class="row">
             <div class="col">
@@ -208,13 +253,21 @@
             </div>
             <div class="col">
               <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="internalApplicantCostCenterOwner" placeholder="Enter Cost Center Owner">
+                <label for="applicantTellNo">Cost Center Owner *</label>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
                 <input type="text" class="form-control" [(ngModel)]="internalApplicantCostCenterNo" placeholder="Enter Cost Center Number">
                 <label for="CostCenterNumber">Cost Center Number *</label>
               </div>
             </div>
           </div>
           <div class="row">
-            <div class="col"> <!--Why is the PhoneNumberHidden?-->
+            <div class="col">
+              <!--Why is the PhoneNumberHidden?-->
               <!--Why is the PhoneNumberHidden?-->
               <div class="form-floating mb-3 mt-3">
                 <input type="tel" class="form-control" [(ngModel)]="internalApplicantTellNo" placeholder="Enter Tell No." hidden>
@@ -231,8 +284,10 @@
         <div class="cont5">
           <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/circle-info-solid.svg" class="icon" matTooltip="Please fill out all of the fields. Please enter N/A to fields that are not applicable">
           <!-- icasadetails Sindiswa 10 January 2024 - the button enable/disable conditions were added to account for the telecomms company thing-->
-          <button mat-raised-button color="primary" *ngIf="showExternal" matStepperNext [disabled]="!extApplicantBpNoApplicant ||   !extApplicantTellNo ||   !extApplicantTellNo  || !extApplicantPhyscialAddress ||
-          (isRepresentingTelecommsCompany && !extApplicantICASANumber)"> Next </button>
+          <button mat-raised-button color="primary" *ngIf="showExternal" matStepperNext [disabled]="!extApplicantTellNo  || !extApplicantPhyscialAddress ||
+          (isRepresentingTelecommsCompany && !extApplicantICASANumber)">
+            Next
+          </button>
           <button mat-raised-button color="primary" *ngIf="showInternal" matStepperNext [disabled]="!internalApplicantDepartment || !selectedZone || !internalApplicantCostCenterOwner || !internalApplicantBranch || !internalApplicantCostCenterNo">Next</button>
 
         </div>
@@ -242,13 +297,12 @@
 
       <div class="container-fluid div">
         <app-new-egineer></app-new-egineer>-->
-
-        <!--  <app-view-engineers-table></app-view-engineers-table>-->
-        <!--     <div class="alert alert-success alert-dismissible fade show" role="alert">
-          <strong>You have added</strong> "name of engineer"
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>-->
-      <!--</div>
+    <!--  <app-view-engineers-table></app-view-engineers-table>-->
+    <!--     <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong>You have added</strong> "name of engineer"
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>-->
+    <!--</div>
       <div class="cont2">
         <button mat-raised-button color="primary" matStepperPrevious>Back</button>
         <button mat-raised-button color="primary" matStepperNext>Next</button>
@@ -259,9 +313,8 @@
       <div class="container-fluid div">
 
         <app-new-contractor></app-new-contractor>-->
-
-        <!-- <app-view-contractors-table></app-view-contractors-table>-->
-      <!--</div>
+    <!-- <app-view-contractors-table></app-view-contractors-table>-->
+    <!--</div>
       <div class="cont2">
         <button mat-raised-button color="primary" matStepperPrevious>Back</button>
         <button mat-raised-button color="primary" matStepperNext>Next</button>

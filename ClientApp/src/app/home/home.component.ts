@@ -445,6 +445,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   dataSourceBP = this.ApplicationsBP;
   scrutinyApplications: ApplicationsListBP[] = [];
   dataSourceSA = this.scrutinyApplications;
+  originalDataSourceSA: ApplicationsListBP[] = []; //BPRegister Sindiswa 20062024 to enable the filtering of the list that's selected
   isArchitect: boolean = false;
   bpApplicationId: number;
 
@@ -7362,16 +7363,26 @@ this.subscriptions.push(subscription);
 
   searchInput: any;
 
+  // #region BPRegister Sindiswa 20 June 2024
   SearchForApplication() {
     debugger;
     const query = this.searchInput.toLowerCase();
 
-    const results = this.ApplicationsBP.filter(item => item.ownerName.toLowerCase().startsWith(query));
-
+    //const results = this.ApplicationsBP.filter(item => item.ownerName.toLowerCase().startsWith(query));
+    const results = this.ApplicationsBP.filter(item => item.ProjectNumber?.toLowerCase().includes(query) || item.applicationID.toString().includes(query) || item.ownerName?.toLowerCase().includes(query) || item.status?.toLowerCase().startsWith(query)); //The goal is to search By Project Number Or Application Number
     this.dataSourceBP = results;
+
+    if (query) {
+      const results2 = this.originalDataSourceSA.filter(item => item.ProjectNumber?.toLowerCase().includes(query) || item.applicationID.toString().includes(query) || item.ownerName?.toLowerCase().includes(query) || item.status?.toLowerCase().startsWith(query)); //The goal is to search By Project Number Or Application Number
+      this.dataSourceSA = results2;
+    }
+    else {
+      this.dataSourceSA = [...this.originalDataSourceSA];
+    }
 
 
   }
+  // #endregion BPRegister Sindiswa 20 June 2024
   ViewProject(index) {
     debugger;
     let applicationId = this.ApplicationsBP[index].applicationID;
@@ -7647,6 +7658,7 @@ this.subscriptions.push(subscription);
     switch (event.index) {
       case 0:
         this.dataSourceSA = this.scrutinyApplications;
+        this.originalDataSourceSA = [...this.scrutinyApplications]; //BPRegister Sindiswa 20062024
         break;
 
       case 1:
@@ -7657,6 +7669,7 @@ this.subscriptions.push(subscription);
 
       case 3:
         this.dataSourceSA = this.ApplicationsBP;
+        this.originalDataSourceSA = [...this.ApplicationsBP]; //BPRegister Sindiswa 20062024
     }
   }
  
