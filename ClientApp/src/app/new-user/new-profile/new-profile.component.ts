@@ -16,6 +16,7 @@ import { ZonesService } from '../../service/Zones/zones.service';
 import { SubDepartmentsService } from 'src/app/service/SubDepartments/sub-departments.service';
 import { BusinessPartnerService } from '../../service/BusinessPartner/business-partner.service';
 import { Observable } from 'rxjs';
+import { BpDepartmentsService } from '../../service/BPDepartments/bp-departments.service';
 
 export interface DepartmentList {
   departmentID: number;
@@ -111,6 +112,9 @@ export class NewProfileComponent implements OnInit {
   } as unknown as Options
 
   ZoneDropdown: ZoneDropdown[] = [];
+  DepartmentsDropdown: ZoneDropdown[] = []; //BPRegister Sindiswa 20062024
+  FunctionalAreaDropdown: string[] = ["Building Plan", "Signage", "Banner & Poster", "Flags & Poles"] //BPRegister Sindiswa 20062024
+  selectedFA = '' //BPRegister Sindiswa 20062024
   DepartmentAdminList: DepartmentAdminList[] = [];
   SubDepartmentList: SubDepartmentList[] = [];
 
@@ -146,6 +150,8 @@ export class NewProfileComponent implements OnInit {
   internalApplicantDirectorate = '';
   internalApplicantDepartment = '';
   internalApplicantTellNo = '';
+  internalApplicantEmail = ''; //BPRegister Sindiswa 20062024
+  internalApplicantAlternativeEmail = ''; //BPRegister Sindiswa 20062024
   internalApplicantBranch = '';
   internalApplicantCostCenterNo = '';
   internalApplicantCostCenterOwner = '';
@@ -173,6 +179,7 @@ export class NewProfileComponent implements OnInit {
     private zoneLinkService: ZoneLinkService,
     private subDepartmentsService: SubDepartmentsService,
     private businessPartnerService: BusinessPartnerService,
+    private bpDepartmentsService: BpDepartmentsService
 
   ) { }
   open(content: any) {
@@ -219,10 +226,11 @@ export class NewProfileComponent implements OnInit {
     this.extApplicantName = fullname.substring(0, fullname.indexOf(' '));
     this.extApplicantSurname = fullname.substring(fullname.indexOf(' ') + 1);
     this.extApplicantEmail = this.CurrentUser.email;
+    this.internalApplicantEmail = this.CurrentUser.email; //BPRegister Sindiswa 20062024
     this.checke = this.extApplicantEmail.toString();
     this.checkEmail = this.checke.substring(this.checke.indexOf('@'));
     console.log(this.checkEmail);
-    if (this.checkEmail === "@capetown.gov.za") {
+    if (this.checkEmail === "@msunduzi.gov.za") { //BPRegister Sindiswa 20062024
       this.showInternal = true; 
     }
     else {
@@ -295,19 +303,22 @@ export class NewProfileComponent implements OnInit {
     if (this.showInternal) {
       ///// 
 
-      this.subDepartmentsService.getSubDepartmentBySubDepartmentID(Number(this.internalApplicantDepartment)).subscribe((data: any) => {
-
+      //this.subDepartmentsService.getSubDepartmentBySubDepartmentID(Number(this.internalApplicantDepartment)).subscribe((data: any) => {
+      this.bpDepartmentsService.getDepartmentByDepartmentID(Number(this.internalApplicantDepartment)).subscribe((data: any) => { //BPRegister Sindiswa 20062024
         if (data.responseCode == 1) {
 
           const current = data.dateSet[0];
           
           this.subDepartmentID = current.subDepartmentID;
           this.departmentID = current.departmentID;
+          this.internalApplicantDirectorate = current.departmentName; //BPRegister Sindiswa 20062024
           console.log("reponse this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID this.subDepartmentID", this.subDepartmentID, this.departmentID);
           this.userPofileService.addUpdateUserProfiles(null, this.CurrentUser.appUserId, this.internalApplicantName + " " + this.internalApplicantSurname, this.CurrentUser.email,
             this.internalApplicantTellNo, this.showInternal, null, null, null, null,/*THE DIRECTORATE IS NOW SENDING THROUGH THE DEPSRTMENT NAME*/ this.internalApplicantDirectorate,
             this.departmentID, this.subDepartmentID, this.internalApplicantBranch, this.internalApplicantCostCenterNo, this.internalApplicantCostCenterOwner, null, this.CurrentUser.appUserId,
-            null, Number(this.selectedZone)).subscribe((data: any) => {
+            //null, Number(this.selectedZone)).subscribe((data: any) => { //BPRegister Sindiswa 20062024 - swapped for below
+            null, /*Number(this.selectedZone)*/ null, null, null, null, null, null, null, this.internalApplicantAlternativeEmail, null, this.internalApplicantName, this.internalApplicantSurname, this.internalApplicantDirectorate, null, true, null, false, false).subscribe((data: any) => {
+
 
               if (data.responseCode == 1) {
 
@@ -826,6 +837,36 @@ export class NewProfileComponent implements OnInit {
     }
 
   }
+
+  // #region //BPRegister Sindiswa 20062024
+
+  onSelectToPopulateDepartment(event: any) {
+    debugger;
+    if (event.target.value != 0) {
+      this.DepartmentsDropdown.splice(0, this.DepartmentsDropdown.length);
+      console.log("This is the selected fuctional area", event.target.value)
+      this.bpDepartmentsService.getAllDepartmentsForFunctionalArea(event.target.value).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          debugger;
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempDeptList = {} as ZoneDropdown;
+            const current = data.dateSet[i];
+            tempDeptList.zoneID = current.departmentID;
+            tempDeptList.zoneName = current.departmentName;
+            this.DepartmentsDropdown.push(tempDeptList);
+          }
+        }
+        else {
+          console.log("Unexpected response code: ", data.responseCode);
+        }
+        console.log("Response while trying to fetch departments by functional area", data)
+      }, error => {
+        console.log("Error while trying to fetch departments by functional area: ", error);
+      })
+    }
+  }
+
+  // #endregion
 
   //onZoneUserLink() {
   //  ;
