@@ -16,16 +16,16 @@ h2 {
   margin: 10px;
 }
 h3 span {
-  background-color: #ccdee2;
+  background-color: #b87700;
   padding: 0 10px;
   color: #343a40;
   font-size: 23px;
 }
 .card {
-  box-shadow: 0 4px 8px 0 rgb(0 0 0 / 13%), 0 6px 20px 0 rgb(0 0 0 / 0%);
+  box-shadow: 0 4px 8px 0 #262626, 0 6px 20px 0 #71717100;
   margin: 20px;
-  border-color: #f1f1f1;
-  background-color: #ccdee2;
+  border-color: #b87700;
+  background-color: #b87700;
   margin-bottom: 50px;
   margin-top: 50px;
   overflow: hidden;
@@ -60,10 +60,10 @@ h3 span {
 }
 h3 {
   width: 30em;
-  border-color: #00cdff;
+  border-color: #ffffff;
   text-align: center;
   font-family: 'Nunito', sans-serif;
-  border-bottom: 1px solid #0487a7;
+  border-bottom: 1px solid #ffffff;
   line-height: 0.1em;
   margin: 0 auto;
   padding-top: 50px;
