@@ -400,6 +400,9 @@ input {
 .mat-horizontal-stepper-wrapper.ng-tns-c133-22.ng-star-inserted {
   background: #323e4e !important;
 }
+:host ::ng-deep.mat-horizontal-stepper.ng-tns-c133-20.mat-stepper-horizontal.mat-stepper-label-position-end.ng-star-inserted {
+  background: #323e4e !important;
+}
 
 .offcanvas {
   background: #323e4e !important
@@ -415,4 +418,7 @@ tr:hover {
 }
 .mat-select-panel {
   background: #576b86;
+}
+.mat-toolbar {
+  background: #323e4e !important;
 }
