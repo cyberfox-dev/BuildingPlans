@@ -416,3 +416,6 @@ tr:hover {
 .mat-select-panel {
   background: #576b86;
 }
+.mat-toolbar {
+  background: #323e4e !important;
+}
