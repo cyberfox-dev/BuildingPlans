@@ -135,4 +135,9 @@ h3 {
   background-color: #005870;
   margin: 10px;
 }
-
+:host ::ng-deep.mat-horizontal-stepper.ng-tns-c133-20.mat-stepper-horizontal.mat-stepper-label-position-end.ng-star-inserted {
+  background: #323e4e !important;
+}
+.mat-stepper-horizontal, .mat-stepper-vertical {
+  background: #323e4e !important;
+}
