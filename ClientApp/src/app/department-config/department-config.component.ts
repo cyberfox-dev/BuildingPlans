@@ -15,6 +15,8 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UserProfileService } from 'src/app/service/UserProfile/user-profile.service';
 import { SharedService } from "src/app/shared/shared.service"
+import { BpConfirmModalComponent } from '../bp-confirm-modal/bp-confirm-modal.component'; //BPDialogBoxes Sindiswa 24062024
+import { BpAlertModalComponent } from '../bp-alert-modal/bp-alert-modal.component'; //BPDialogBoxes Sindiswa 24062024
 
 
 export interface DepartmentList {
@@ -207,7 +209,11 @@ export class DepartmentConfigComponent implements OnInit {
 
 
     if (this.DepartmentList[index].hasSubDepartment == false) {
-      alert("This department cannot add sub departments");
+      //alert("This department cannot add sub departments");
+      const dialogRef = this.dialog.open(BpAlertModalComponent, {
+        data: { message: 'This department cannot add sub departments' }
+      });
+      return;
     }
     else {
 
@@ -621,8 +627,13 @@ export class DepartmentConfigComponent implements OnInit {
 
         if (data.responseCode == 1) {
 
-          alert(data.responseMessage);
+          //alert(data.responseMessage);
+
+          const dialogRef = this.dialog.open(BpAlertModalComponent, {
+            data: { message: data.responseMessage }
+          });
           this.getAllDepartments();
+          return;
 
         }
         else {
@@ -731,8 +742,14 @@ export class DepartmentConfigComponent implements OnInit {
 
 
   onDeleteDepartment(index: any) {
-    if (confirm("Are you sure to delete " + this.DepartmentList[index].departmentName + "?")) {
 
+
+    const dialogRef = this.dialog.open(BpConfirmModalComponent, {
+      data: { message: "Are you sure to delete " + this.DepartmentList[index].departmentName + "?" }
+    });
+    //if (confirm("Are you sure to delete " + this.DepartmentList[index].departmentName + "?")) {
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) { 
       this.departmentService.deleteDepartment(this.DepartmentList[index].departmentID).subscribe((data: any) => {
 
         if (data.responseCode == 1) {
@@ -749,8 +766,10 @@ export class DepartmentConfigComponent implements OnInit {
         console.log("Error: ", error);
       })
 
+      }
+    })
 
-    }
+    
   }
 
   onDeleteSubDepartment(index: any, viewSub: any) {
@@ -1658,9 +1677,14 @@ export class DepartmentConfigComponent implements OnInit {
     }
     else { 
 
-    const confirm = window.confirm("Are you sure you want to update the expiration day settings?");
+      //const confirm = window.confirm("Are you sure you want to update the expiration day settings?");
+      const dialogRef = this.matdialog.open(BpConfirmModalComponent, {
+        data: { message: "Are you sure you want to update the expiration day settings?" }
+      });
 
-      if (confirm) {
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+      //if (confirm) {
         this.subDepartment.addUpdateSubDepartment(this.selectedExpirySubdepartmentID, this.selectedExpirySubdepartmentName, null, null, null, null, this.selectedPermitExpiration, this.selectedWayleaveExpiration, null).subscribe((data: any) => {
           if (data.responseCode == 1) {
             alert("Expiration configurations has been changed accordingly.");
@@ -1679,7 +1703,8 @@ export class DepartmentConfigComponent implements OnInit {
         }, error => {
           console.log("Error: ", error);
         })
-      }
+        }
+      });
     }
   }
   //#endregion

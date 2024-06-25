@@ -99,6 +99,16 @@ export interface ServiceItemList {
   vatApplicable: boolean;
   isChecked: boolean;
 }
+export interface ServiceItemListBPRelaxationLS {
+  serviceItemID: number;
+  serviceItemCode: string;
+  Description: string;
+  Rate: any;
+  totalVat: number;
+  dateCreated: any;
+  vatApplicable: boolean;
+  isChecked: boolean;
+}
 
 export interface StagesList {
   StageID: number;
@@ -237,7 +247,7 @@ export interface CurrentApplicationBeingViewed {
   portionNumber: string;
   premisesName: string;
   currentStage: string;
-
+  fullName: string;
 }
   //Service Information Kyle 31/01/24
 
@@ -349,6 +359,7 @@ export class BpActionCenterComponent implements OnInit {
   ServiceItemCodeDropdown: ServiceItemCodeDropdown[] = [];
   ServiceItemList: ServiceItemList[] = [];
   PermitIssuerSuperVisionFeeList: ServiceItemList[] = [];
+  ServiceItemListBPRelaxationLS: ServiceItemListBPRelaxationLS[] = [];
   SupervisionFeesList: ServiceItemList[] = [];
   StagesList: StagesList[] = [];
   CommentsList: CommentsList[] = [];
@@ -3190,7 +3201,7 @@ export class BpActionCenterComponent implements OnInit {
               /*  this.moveToFinalApprovalForDepartment();*/
               this.modalService.dismissAll();
               this.openSnackBar("Application Actioned");
-              this.generateBPLSRelaxationInvoice(this.firstName + " " + this.surname);
+              this.getAllServiceItemsForRelaxation();
             }
             else {
               alert(data.responseMessage)
@@ -7399,6 +7410,7 @@ export class BpActionCenterComponent implements OnInit {
         tempApplication.portionNumber = current.portionNumber;
         tempApplication.premisesName = current.premisesName;
         tempApplication.currentStage = current.stage;
+        tempApplication.fullName = current.firstName + " " + current.surname;
         this.CurrentApplicationBeingViewed.push(tempApplication);
       }
       else {
@@ -7433,9 +7445,36 @@ export class BpActionCenterComponent implements OnInit {
         console.log("BuildingApplicationError: ", error)
       })
   }
-/*  getAllServiceItemsForRelaxation() {
-    this.serviceItemService.getAllServiceItemsByCategory()
-  }*/
+  getAllServiceItemsForRelaxation() {
+    this.serviceItemService.getAllServiceItemsByCategory("Relaxation").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempServiceItem = {} as ServiceItemListBPRelaxationLS;
+          const current = data.dateSet[i];
+
+          tempServiceItem.serviceItemID = current.serviceItemID;
+          tempServiceItem.serviceItemCode = current.serviceItemCode;
+          tempServiceItem.Rate = current.rate;
+          tempServiceItem.Description = current.description;
+          tempServiceItem.totalVat = current.totalVat;
+          tempServiceItem.vatApplicable = current.vatApplicable;
+          tempServiceItem.dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
+ 
+
+          this.ServiceItemListBPRelaxationLS.push(tempServiceItem);
+        }
+        console.log("ServiceItemListBPRelaxationLSServiceItemListBPRelaxationLSServiceItemListBPRelaxationLSServiceItemListBPRelaxationLS", data);
+        debugger;
+        this.generateBPLSRelaxationInvoice() 
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("response", data);
+    }, error => {
+      console.log("Error", error);
+    })
+  }
 
 /*  getAllServiceItemsForPermit(supervisionFee: any) {
 
@@ -7478,7 +7517,7 @@ export class BpActionCenterComponent implements OnInit {
     }
   }*/
 
-  generateBPLSRelaxationInvoice(ClientName: string) {
+  generateBPLSRelaxationInvoice() {
     const doc = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
@@ -7486,35 +7525,31 @@ export class BpActionCenterComponent implements OnInit {
     });
 
     const img = new Image();
-    img.src = 'assets/cctlogoblackk.png';
+    img.src = 'assets/Msunduzi_CoA.png';
 
     doc.addFont('assets/century-gothic/CenturyGothic.ttf', 'CustomFont', 'normal');
     doc.addFont('assets/century-gothic/GOTHICB0.TTF', 'CustomFontBold', 'bold');
     doc.setFont('CustomFont', 'normal');
     let currentPage = 1;
     // Add logo
-    doc.addImage(img, 'png', 6, 10, 50, 16);
+    doc.addImage(img, 'png', 6, 10, 50, 40);
 
     // Set font for header
     doc.setFontSize(10);
     doc.setTextColor(0, 0, 0);
-    doc.text('Cape Town Civic Centre', 200, 17, { align: 'right' });
-    doc.text('12 Hertzog Boulevard', 200, 22, { align: 'right' });
-    doc.text('CAPE TOWN 8000', 200, 27, { align: 'right' });
+    doc.text('Msunduzi Municipality', 200, 17, { align: 'right' });
+    doc.text('341 Church Street', 200, 22, { align: 'right' });
+    doc.text('Pietermaritzburg 3201', 200, 27, { align: 'right' });
 
     // Website and Portal links
     doc.setFont('CustomFontBold', 'bold');
-    doc.text('Website:', 147, 35, { align: 'right' });
+
     doc.setTextColor(0, 88, 112);
-    doc.textWithLink('https://www.capetown.gov.za', 200, 35, { align: 'right' });
-    doc.setTextColor(0, 0, 0);
-    doc.text('Portal:', 138, 40, { align: 'right' });
-    doc.setTextColor(0, 88, 112);
-    doc.textWithLink('https://wayleave.capetown.gov.za/', 200, 40, { align: 'right' });
+    doc.textWithLink('http://www.msunduzi.gov.za/site/home/index.html', 200, 35, { align: 'right' });
 
     // Reference number
     doc.setTextColor(0, 0, 0);
-    doc.text('Reference Number: ' + ClientName, 200, 50, { align: 'right' });
+    doc.text('Reference Number: ' + this.CurrentApplicationBeingViewed[0].lsNumber, 200, 50, { align: 'right' });
 
     // Date and project description
     doc.setFontSize(10);
@@ -7523,28 +7558,44 @@ export class BpActionCenterComponent implements OnInit {
     doc.text('BUILDING PLANS APPLICATION: ' , 10, 70, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
 
     // Greeting
-    doc.text('Dear ' + ClientName, 10, 80, { align: 'left' });
+    doc.text('Dear ' + this.CurrentApplicationBeingViewed[0].fullName, 10, 80, { align: 'left' });
 
     // Application summary
-    doc.text('Your application for a Permit to Work has been approved. Department specific permits are attached.', 10, 90, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.text('Please find below service items', 10, 90, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
 
     // Status summary title
     doc.setFont('CustomFontBold', 'bold');
     doc.text('Status Summary:', 10, 110, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
     doc.setFont('CustomFont', 'normal');
-
-
+    debugger;
+    const data = this.ServiceItemListBPRelaxationLS.map(deposit => [deposit.serviceItemCode, deposit.Description, deposit.totalVat]);
+    // Render the table in the PDF document
+    autoTable(doc, {
+      head: [['Service Item', 'Description','Total']], // Define table headers
+      body: data, // Populate table body with data
+      startY: 120, // Start position of the table on the Y axis
+      headStyles: { fillColor: '#005870' }, // Header styles
+      styles: {
+        fontSize: 8, // Font size for table content
+        halign: 'left', // Horizontal alignment for table content
+        valign: 'middle', // Vertical alignment for table content
+      },
+      columnStyles: {
+        0: { cellWidth: 50, fontStyle: 'bold' }, // Style for the first column
+        1: { cellWidth: 50 }, // Style for the second column
+        2: { cellWidth: 30 }, // Style for the second column
+      },
+    });
     // Rejection summary
     doc.setFontSize(10);
     doc.setFont('CustomFont', 'italic');
-    doc.text("Disclaimer:\n This Permit Pack and all associated attachments are intended for the named recipient / s only, and are not transferrable to a third party.The City reserves the right to revoke this permit in the event of infringements, change in scope, methodology or site - specific conditions and / or discovery of new or additional information.Expiry of the Permit validity for one or more departments will render the entire Pack invalid.It is the responsibility of the named recipient to apply timeously for renewals as applicable. Note that it is the recipient’s sole responsibility to ascertain the exact location and depth of existing services infrastructure.The City will not be held liable for consequences resulting from decisions based on any information provided in good faith.", 10, 190, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.text("Disclaimer:\n This Pack and all associated attachments are intended for the named recipient / s only, and are not transferrable to a third party.The City reserves the right to revoke this permit in the event of infringements, change in scope, methodology or site - specific conditions and / or discovery of new or additional information.Expiry of the Permit validity for one or more departments will render the entire Pack invalid.It is the responsibility of the named recipient to apply timeously for renewals as applicable. Note that it is the recipient’s sole responsibility to ascertain the exact location and depth of existing services infrastructure.The City will not be held liable for consequences resulting from decisions based on any information provided in good faith.", 10, 190, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
     doc.setFont('CustomFont', 'normal');
     // Signature
     doc.setFontSize(12);
     doc.setFont('CustomFontBold', 'bold');
-    doc.text('CITY OF CAPE TOWN', 10, 260, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.text('CITY OF PIETERMARITZBURG', 10, 260, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
     doc.setFont('CustomFont', 'italic');
-    doc.text('Future Planning and Resilience Directorate', 10, 265, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
 
     // Save PDF document
 

@@ -7,6 +7,9 @@ import { BpDepartmentsService } from '../service/BPDepartments/bp-departments.se
 import { MatTable } from '@angular/material/table';
 import { BPFunctionalAreasService } from '../service/BPFunctionalAreas/bpfunctional-areas.service';
 import { MatSelectModule } from '@angular/material/select';
+import { BpConfirmModalComponent } from '../bp-confirm-modal/bp-confirm-modal.component'; //BPDialogBoxes Sindiswa 24062024
+import { BpAlertModalComponent } from '../bp-alert-modal/bp-alert-modal.component'; //BPDialogBoxes Sindiswa 24062024
+import { MatDialog } from '@angular/material/dialog';
 
 export interface DepartmentList {
   departmentID: number;
@@ -50,7 +53,7 @@ export class BPDepartmentConfigComponent implements OnInit {
   displayedColumns: string[] = ['departmentName', 'functionalArea','actions'];
   dataSource = this.DepartmentList;
   originalSelectedDepartmentName: any;
-  constructor(private formBuilder: FormBuilder, private modalService: NgbModal, private bpDepartService: BpDepartmentsService, private bpFunctionalAreasService: BPFunctionalAreasService ) { }
+  constructor(private formBuilder: FormBuilder, private modalService: NgbModal, private bpDepartService: BpDepartmentsService, private bpFunctionalAreasService: BPFunctionalAreasService, private dialog: MatDialog ) { }
 
   ngOnInit(): void {
     this.GetAllFunctionalAreas() ;
@@ -83,7 +86,12 @@ export class BPDepartmentConfigComponent implements OnInit {
         console.log("This is the Building Plans department list: ", this.DepartmentList);
       }
       else {
-        alert(data.responseMessage);
+        //alert(data.responseMessage);
+        const dialogRef = this.dialog.open(BpAlertModalComponent, {
+          data: {
+            message: data.responseMessage
+          }
+        });
       }
       console.log("reponse", data);
 
@@ -103,14 +111,24 @@ export class BPDepartmentConfigComponent implements OnInit {
 
       if (data.responseCode == 1) {
 
-        alert(data.responseMessage);
+        //alert(data.responseMessage);
+        const dialogRef = this.dialog.open(BpAlertModalComponent, {
+          data: {
+            message: data.responseMessage
+          }
+        });
         console.log("This shpuld pop up if you were able to successfully add a department", data.responseMessage);
         this.getAllBPDepartments();
         this.addDepartment.get('newDeptName').setValue('');
       }
       else {
 
-        alert(data.responseMessage);
+        //alert(data.responseMessage);
+        const dialogRef = this.dialog.open(BpAlertModalComponent, {
+          data: {
+            message: data.responseMessage
+          }
+        });
       }
       console.log("reponse", data);
     }, error => {
@@ -122,24 +140,38 @@ export class BPDepartmentConfigComponent implements OnInit {
   
   }
   onDeleteDepartment(index: any) {
-    if (confirm("Are you sure to delete '" + this.DepartmentList[index].departmentName + "' ?")) {
+    debugger;
+    const dialogRef = this.dialog.open(BpConfirmModalComponent, {
+      data: {
+        message: "Are you sure to delete '" + this.DepartmentList[index].departmentName + "' ?" }
+    });
 
-      this.bpDepartService.deleteDepartment(this.DepartmentList[index].departmentID).subscribe((data: any) => {
+    //if (confirm("Are you sure to delete '" + this.DepartmentList[index].departmentName + "' ?")) {
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.bpDepartService.deleteDepartment(this.DepartmentList[index].departmentID).subscribe((data: any) => {
 
-        if (data.responseCode == 1) {
+          if (data.responseCode == 1) {
 
-          alert(data.responseMessage);
-          this.getAllBPDepartments();
-        }
-        else {
-          alert(data.responseMessage);
-        }
-        console.log("reponse", data);
+            //alert(data.responseMessage);
 
-      }, error => {
-        console.log("Error: ", error);
-      })
-    }
+            const dialogRef = this.dialog.open(BpAlertModalComponent, {
+              data: {
+                message: data.responseMessage
+              }
+            });
+            this.getAllBPDepartments();
+          }
+          else {
+            alert(data.responseMessage);
+          }
+          console.log("reponse", data);
+
+        }, error => {
+          console.log("Error: ", error);
+        })
+      }
+    });
   }
   onUpdateDepartment(index: any, editDepartment: any) {
 
@@ -148,7 +180,12 @@ export class BPDepartmentConfigComponent implements OnInit {
     this.bpDepartService.getDepartmentByDepartmentID(selectedDepartID).subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        alert(data.responseMessage);
+        //alert(data.responseMessage);
+        const dialogRef = this.dialog.open(BpAlertModalComponent, {
+          data: {
+            message: data.responseMessage
+          }
+        });
         debugger;
 
         this.selectedDepartmentID = data.dateSet[0].departmentID;
@@ -158,7 +195,12 @@ export class BPDepartmentConfigComponent implements OnInit {
       }
       else {
 
-        alert(data.responseMessage);
+        //alert(data.responseMessage);
+        const dialogRef = this.dialog.open(BpAlertModalComponent, {
+          data: {
+            message: data.responseMessage
+          }
+        });
       }
       console.log("reponse", data);
 
@@ -170,14 +212,24 @@ export class BPDepartmentConfigComponent implements OnInit {
   updateDepartment() {
 
     if (this.originalSelectedDepartmentName == this.selectedDepartmentName) {
-      alert('The name is the same as original, no need to update.')
+      //alert('The name is the same as original, no need to update.')
+      const dialogRef = this.dialog.open(BpAlertModalComponent, {
+        data: {
+          message: 'The name is the same as original, no need to update.'
+        }
+      });
     }
     else { 
     this.bpDepartService.addUpdateDepartment(this.selectedDepartmentID, this.selectedDepartmentName, false, "Testing Update").subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
-        alert(data.responseMessage);
+        //alert(data.responseMessage);
+        const dialogRef = this.dialog.open(BpAlertModalComponent, {
+          data: {
+            message: data.responseMessage
+          }
+        });
         console.log("This shpuld pop up if you were able to successfully update a department", data.responseMessage);
         this.getAllBPDepartments();
         this.selectedDepartmentName = '';
@@ -185,7 +237,12 @@ export class BPDepartmentConfigComponent implements OnInit {
       }
       else {
 
-        alert(data.responseMessage);
+        //alert(data.responseMessage);
+        const dialogRef = this.dialog.open(BpAlertModalComponent, {
+          data: {
+            message: data.responseMessage
+          }
+        });
       }
       console.log("reponse", data);
     }, error => {
@@ -214,7 +271,12 @@ export class BPDepartmentConfigComponent implements OnInit {
       }
       else {
 
-        alert(data.responseMessage);
+        //alert(data.responseMessage);
+        const dialogRef = this.dialog.open(BpAlertModalComponent, {
+          data: {
+            message: data.responseMessage
+          }
+        });
       }
       console.log("reponse", data);
     }, error => {
