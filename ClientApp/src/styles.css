@@ -419,3 +419,6 @@ tr:hover {
 .mat-toolbar {
   background: #323e4e !important;
 }
+.mat-checkbox-checked {
+  background-color: #323e4e00 !important;
+}

@@ -125,6 +125,7 @@ import { BPRolesConfigComponent } from 'src/app/bproles-config/bproles-config.co
 import { BPDepartmentManagerComponent } from 'src/app/bpdepartment-manager/bpdepartment-manager.component';
 import { BpActionCenterComponent } from './bp-action-center/bp-action-center.component';
 import { BPFinancialsComponent } from './bpfinancials/bpfinancials.component';
+import { BPServiceItemsComponent } from './bpservice-items/bpservice-items.component';
 
 //import { MatExpansionModule } from '@angular/material/expansion';
 
@@ -235,6 +236,7 @@ import { BPFinancialsComponent } from './bpfinancials/bpfinancials.component';
     BPDepartmentManagerComponent,
     BpActionCenterComponent,
     BPFinancialsComponent,
+    BPServiceItemsComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -344,6 +346,7 @@ import { BPFinancialsComponent } from './bpfinancials/bpfinancials.component';
     BPRolesConfigComponent,
     BPDepartmentManagerComponent,
     BPFinancialsComponent,
+    BPServiceItemsComponent,
   
   ],
   bootstrap: [AppComponent]
