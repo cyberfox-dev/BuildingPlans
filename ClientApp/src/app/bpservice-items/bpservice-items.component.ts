@@ -4,7 +4,8 @@ import { BPServiceItemsService } from '../service/BPServiceItems/bpservice-items
 import { ConfigService } from '../service/Config/config.service';
 import { BPFunctionalAreasService } from '../service/BPFunctionalAreas/bpfunctional-areas.service';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-
+import { BpAlertModalComponent } from '../bp-alert-modal/bp-alert-modal.component'; //BPDialogBoxes Sindiswa 24062024
+import { MatDialog } from '@angular/material/dialog';
 export interface ServiceItemsList {
   ServiceItemID: number;
   ServiceItemCode: string;
@@ -29,13 +30,13 @@ export interface FunctionalAreaList {
 })
 export class BPServiceItemsComponent implements OnInit {
 
-  constructor(private bpServiceItemService: BPServiceItemsService, private configService: ConfigService, private functionalAreaService: BPFunctionalAreasService, private modalService: NgbModal) { }
+  constructor(private bpServiceItemService: BPServiceItemsService, private configService: ConfigService, private functionalAreaService: BPFunctionalAreasService, private modalService: NgbModal, private dialog: MatDialog) { }
 
   serviceItemsList: ServiceItemsList[] = [];
   functionalAreaList: FunctionalAreaList[] = [];
 
   @ViewChild(MatTable) serviceItemsTable: MatTable<ServiceItemsList> | null;
-  displayedColumns: string[] = ['ServiceItemCode','Rate','VatApplicable','actions'];
+  displayedColumns: string[] = ['ServiceItemCode', 'Rate', 'VatApplicable', 'actions'];
   dataSource = this.serviceItemsList;
 
   serviceItemID: number = 0;
@@ -54,6 +55,8 @@ export class BPServiceItemsComponent implements OnInit {
   yearMonth = '06/25';
 
   selectedServiceItem: any;
+
+  isEdit: boolean = false;
   ngOnInit(): void {
     this.getAllServiceItems();
     this.getAllFunctionalAreas();
@@ -63,6 +66,7 @@ export class BPServiceItemsComponent implements OnInit {
     this.modalService.open(addService, { centered: true, size: 'xl' });
   }
   getAllServiceItems() {
+    this.serviceItemsList.splice(0, this.serviceItemsList.length);
     this.bpServiceItemService.getAllServiceItems().subscribe((data: any) => {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
@@ -90,7 +94,7 @@ export class BPServiceItemsComponent implements OnInit {
       }
     }, error => {
       console.log(error);
-    
+
     })
   }
 
@@ -115,19 +119,19 @@ export class BPServiceItemsComponent implements OnInit {
     })
   }
 
-  onGetServiceItemCode(addService:any) {
+  onGetServiceItemCode(addService: any) {
     this.configService.getConfigsByConfigName("ServiceItemCodeBP").subscribe((data: any) => {
       if (data.responseCode == 1) {
 
         const current = data.dateSet[0];
         this.oldConfigSINumber = current.utilitySlot1;
-        this.newConfigSINumber = this.oldConfigSINumber + 1;
+        this.newConfigSINumber = Number(this.oldConfigSINumber)+ 1;
         this.serviceItemCode = "SI : " + this.newConfigSINumber;
         this.configID = current.configID;
         this.openAddServiceItem(addService);
       }
       else {
-        
+
       }
     }, error => {
       console.log(error);
@@ -135,14 +139,91 @@ export class BPServiceItemsComponent implements OnInit {
   }
 
   onAddUpdateServiceItem() {
-    if (this.total == 0) {
-      this.total = this.rate;
+    debugger;
+    if (this.functionalArea == undefined || this.rate == 0) {
+      alert("Please fill in all requured areas");
     }
-    this.bpServiceItemService.addUpdateServiceItem(this.serviceItemID, this.serviceItemCode, this.description, this.rate, this.total, this.category, this.functionalArea, "New DB", this.hasVat).subscribe((data: any) => {
+    else {
+      if (this.total == 0) {
+        this.total = this.rate;
+      }
+      debugger;
+      this.bpServiceItemService.addUpdateServiceItem(this.serviceItemID, this.serviceItemCode, this.description, this.rate, this.total, this.category, this.functionalArea, "New DB", this.hasVat,this.remarks).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          if (this.isEdit == true) {
+            this.modalService.dismissAll();
+            alert(data.responseMessage);
+          }
+          else {
+            this.onUpdateConfig();
+          }
+        }
+        else {
+          const dialogRef = this.dialog.open(BpAlertModalComponent, {
+            data: {
+              message: data.responseMessage
+            }
+          });
+        }
+      }, error => {
+        console.log(error);
+      })
+    }
+
+  }
+
+  onHasVatChange() {
+    debugger;
+    if (this.hasVat == false) {
+      this.hasVat = true;
+
+     
+    }
+    else {
+      this.hasVat = false;
+      
+    }
+  }
+
+  onUpdateConfig() {
+    this.configService.addUpdateConfig(this.configID, null, null, this.newConfigSINumber.toString(), null, null, null).subscribe((data: any) => {
       if (data.responseCode == 1) {
+        this.modalService.dismissAll();
+        this.getAllServiceItems();
+        alert("Service Item added successfully");
 
       }
       else {
+        alert(data.responseMessage);
+      }
+
+    }, error => {
+      console.log(error);
+    })
+  }
+
+  onEditServiceItem(index: any,addService:any) {
+    const serviceItemID = this.serviceItemsList[index].ServiceItemID;
+    this.isEdit = true;
+
+
+    this.bpServiceItemService.getServiceItemByServiceItemID(serviceItemID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        const current = data.dateSet[0];
+        debugger;
+        this.serviceItemID = current.serviceItemID;
+        this.serviceItemCode = current.serviceItemCode;
+        this.description = current.description;
+        this.rate = current.rate;
+        this.total = current.totalVat;
+        this.category = current.category;
+        this.functionalArea = current.functionalArea;
+        this.hasVat = current.vatApplicable;
+
+        this.openAddServiceItem(addService);
+      }
+      else {
+        alert(data.responseCode);
 
       }
     }, error => {
@@ -150,17 +231,35 @@ export class BPServiceItemsComponent implements OnInit {
     })
   }
 
-  onHasVatChange() {
-    debugger;
-    if (this.hasVat == false) {
-      this.hasVat = true;
-      
-      this.total = this.rate & 1.15;
-      debugger;
+  onRateChange(event: Event) {
+    this.total = this.rate * 1.15;
+  }
+
+  DeleteServiceItem(index: any) {
+    const serviceItemID = this.serviceItemsList[index].ServiceItemID;
+    if (confirm("Are you sure you want to delete this service item?")) {
+      this.bpServiceItemService.deleteServiceItemByServiceItemID(serviceItemID).subscribe((data: any) => {
+        if (data.responsCode == 1) {
+          const dialogRef = this.dialog.open(BpAlertModalComponent, {
+            data: {
+              message: data.responseMessage
+            }
+          });
+          this.getAllServiceItems();
+        }
+        else {
+          const dialogRef = this.dialog.open(BpAlertModalComponent, {
+            data: {
+              message: data.responseMessage
+            }
+          });
+        }
+      }, error => {
+        console.log(error);
+      })
     }
     else {
-      this.hasVat = false;
-      this.total = this.rate;
+      return;
     }
   }
 }

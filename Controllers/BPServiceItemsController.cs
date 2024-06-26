@@ -86,6 +86,14 @@ namespace BuildingPlans.Controllers
                         {
                             tempServiceItem.Remarks = model.Remarks;
                         }
+                        if(model.TotalVat != null)
+                        {
+                            tempServiceItem.TotalVat = model.TotalVat;
+                        }
+                        if(model.VatApplicable != null)
+                        {
+                            tempServiceItem.VAtApplicable = model.VatApplicable;
+                        }
                         tempServiceItem.DateUpdated = DateTime.Now;
                         _context.Update(tempServiceItem);
                         await _context.SaveChangesAsync();
@@ -186,6 +194,42 @@ namespace BuildingPlans.Controllers
                                     }).ToListAsync();
 
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Service Item By ServiceItemID", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+        [HttpPost("DeleteServiceItemByServiceItemID")]
+        public async Task<object> DeleteServiceItemByServiceItemID([FromBody] ServiceItemBindingModel model)
+        {
+            try
+            {
+                if(model.ServiceItemID == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var tempServiceItem = _context.BPServiceItems.FirstOrDefault(x => x.ServiceItemID == model.ServiceItemID);
+
+                    if(tempServiceItem == null)
+                    {
+                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Could not find service item in database", false));
+                    }
+                    else
+                    {
+                        tempServiceItem.isActive = false;
+                        tempServiceItem.DateUpdated = DateTime.Now;
+                        _context.Update(tempServiceItem);
+                        await _context.SaveChangesAsync();
+
+                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Service Item Deleted Successfully", true)); 
+                    }
+                }
+               
+                
             }
             catch (Exception ex)
             {

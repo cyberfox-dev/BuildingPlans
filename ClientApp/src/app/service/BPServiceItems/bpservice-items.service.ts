@@ -13,7 +13,7 @@ export class BPServiceItemsService {
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
-  public addUpdateServiceItem(serviceItemID: number | null, serviceItemCode: string | null, description: string | null, rate: number | null, totalVat: number | null, category: string | null, functionalArea: string | null, createdById: string | null, vatApplicable: boolean | null) {
+  public addUpdateServiceItem(serviceItemID: number | null, serviceItemCode: string | null, description: string | null, rate: number | null, totalVat: number | null, category: string | null, functionalArea: string | null, createdById: string | null, vatApplicable: boolean | null ,remarks :string|null) {
     const body = {
       ServiceItemID: serviceItemID,
       ServiceItemCode: serviceItemCode,
@@ -23,7 +23,8 @@ export class BPServiceItemsService {
       Category: category,
       FunctionalArea: functionalArea,
       VatApplicable: vatApplicable,
-      CreatedById: createdById
+      CreatedById: createdById,
+      Remarks:remarks
     }
 
     return this.httpClient.post(this.baseURL + "AddUpdateServiceItem", body);
@@ -47,5 +48,13 @@ export class BPServiceItemsService {
     }
 
     return this.httpClient.post(this.baseURL + "GetServiceItemByServiceItemID", body);
+  }
+
+  public deleteServiceItemByServiceItemID(serviceItemID: number | null) {
+    const body = {
+      ServiceItemID:serviceItemID
+    }
+
+    return this.httpClient.post(this.baseURL + "DeleteServiceItemByServiceItemID", body);
   }
 }
