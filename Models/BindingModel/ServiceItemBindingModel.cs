@@ -17,5 +17,7 @@
         public bool? VatApplicable { get; set; }
 
         public string? Remarks { get; set; }
+
+        public string? FunctionalArea { get; set; }
     }
 }

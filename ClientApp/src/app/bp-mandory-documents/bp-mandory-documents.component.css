@@ -1,0 +1,136 @@
+.cont6 {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+  align-items: center;
+}
+
+.mat-action {
+  color: white;
+  background-color: #005870;
+  margin: 10px;
+}
+
+table {
+  width: 100%;
+  margin: 0 auto;
+  margin-bottom: 30px;
+  overflow-x: scroll;
+}
+
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+  padding: 0;
+}
+
+.mat-blue {
+  margin: 5px;
+  background-color: #005870;
+  color: #ccdee2;
+  width: 20px;
+}
+
+.mat-warn {
+  margin: 5px;
+  background-color: #5e1420;
+  color: #ccdee2;
+  width: 20px;
+}
+
+h6 {
+  color: black;
+  font-size: 20px;
+}
+
+.mat-green {
+  background-color: green;
+  color: white;
+}
+
+.mat-column-DateCreated {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 10% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  text-align: center;
+}
+
+
+
+.mat-column-DateUpdated {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 10% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  text-align: center;
+}
+
+.mat-column-CategoryName {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 14% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  text-align: left;
+}
+
+.mat-column-FunctionalArea {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 12% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  text-align: center;
+}
+
+.mat-column-actions {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+  width: 10% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  text-align: center;
+}
+
+::ng-deep .mat-option {
+  max-width: 50% !important;
+  box-sizing: border-box;
+}
+
+::ng-deep .mat-select-panel {
+  max-width: 100% !important;
+}
