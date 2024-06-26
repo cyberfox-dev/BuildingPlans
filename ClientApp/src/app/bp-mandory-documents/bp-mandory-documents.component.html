@@ -1,0 +1,112 @@
+<div class="container-fluid">
+  <button mat-raised-button color="action" (click)="openAddCategory()">Add New Document Category</button>
+  <mat-form-field appearance="outline">
+    <mat-label>Search</mat-label>
+    <div class="cont6">
+
+      <input matInput placeholder="Search Document Category" (keyup)="searchByName($event)" #input>
+      <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/magnifying-glass.svg" class="icon3">
+    </div>
+
+  </mat-form-field>
+</div>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+  <ng-container matColumnDef="CategoryName">
+    <th mat-header-cell *matHeaderCellDef>Category Name</th>
+    <td mat-cell *matCellDef="let element">{{element.CategoryName}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="FunctionalArea">
+    <th mat-header-cell *matHeaderCellDef>Functional Area</th>
+    <td mat-cell *matCellDef="let element">{{element.FunctionalArea}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="DateCreated">
+    <th mat-header-cell *matHeaderCellDef>Date Created</th>
+    <td mat-cell *matCellDef="let element">{{element.DateCreated}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="DateUpdated">
+    <th mat-header-cell *matHeaderCellDef>Date Updated</th>
+    <td mat-cell *matCellDef="let element">{{element.DateUpdated}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>actions</th>
+    <td mat-cell *matCellDef="let i = index">
+      <button mat-raised-button color="blue" (click)="openEditCategory(i)" matTooltip="Edit Document Category"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/pencil.svg" class="icon4"></button>
+      <button mat-raised-button color="warn" (click)="DeleteDocumentCategory(i)" matTooltip="Add Document Category"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4"></button>
+    </td>
+    <td mat-cell *matCellDef="let element"></td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+</table>
+
+<ng-template #addNewCategory let-modal>
+
+  <div class="modal-header">
+    <h6 class="modal-title">Add a new Document Category</h6>
+    <button type="button" class="btn-close" aria-label="Close" (click)="ClearData();modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+
+    <div class="row">
+      <mat-form-field>
+        <mat-label>Type Of Mandatory Document </mat-label>
+        <mat-select [(ngModel)]="functionalArea" name="functionalArea">
+          <mat-option *ngFor="let area of FunctionalAreaList" value="{{area.FunctionalAreaName}}">{{area.FunctionalAreaName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="categoryName" name="categoryName" placeholder="Enter the new Category Name">
+          <label for="categoryName">Category Name</label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <button mat-raised-button (click)="AddUpdateDocumentCategory()" color="green">Save</button>
+  </div>
+
+</ng-template>
+
+<ng-template #editCategory let-modal>
+
+  <div class="modal-header">
+    <h6 class="modal-title">Edit Document Category</h6>
+    <button type="button" class="btn-close" aria-label="Close" (click)="ClearData();modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="categoryName" name="categoryName" placeholder="Enter the new Category Name">
+          <label for="categoryName">Category Name</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="functionalArea" name="functionalArea" placeholder="Enter the new Functional Area">
+          <label for="functionalArea">Functional Area</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button mat-raised-button (click)="AddUpdateDocumentCategory()" color="green">Save</button>
+  </div>
+</ng-template>

@@ -128,6 +128,8 @@ import { BPFinancialsComponent } from './bpfinancials/bpfinancials.component';
 import { BpAlertModalComponent } from './bp-alert-modal/bp-alert-modal.component'; //BPDialogBoxes Sindiswa 24062024
 import { BpConfirmModalComponent } from './bp-confirm-modal/bp-confirm-modal.component'; //BPDialogBoxes Sindiswa 24062024
 import { BPServiceItemsComponent } from './bpservice-items/bpservice-items.component';
+import { BpMandoryDocumentsComponent } from './bp-mandory-documents/bp-mandory-documents.component';
+
 
 //import { MatExpansionModule } from '@angular/material/expansion';
 
@@ -241,6 +243,7 @@ import { BPServiceItemsComponent } from './bpservice-items/bpservice-items.compo
     BpAlertModalComponent, //BPDialogBoxes Sindiswa 24062024
     BpConfirmModalComponent, //BPDialogBoxes Sindiswa 24062024
     BPServiceItemsComponent,
+    BpMandoryDocumentsComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -351,6 +354,7 @@ import { BPServiceItemsComponent } from './bpservice-items/bpservice-items.compo
     BPDepartmentManagerComponent,
     BPFinancialsComponent,
     BPServiceItemsComponent,
+    BpMandoryDocumentsComponent,
   
   ],
   bootstrap: [AppComponent]

@@ -101,5 +101,6 @@ namespace BuildingPlans.Data
         public DbSet<BPRoles> BPRoles { get; set; }
 
         public DbSet<BPServiceItems> BPServiceItems { get; set; }
+        public DbSet<BPComments> BPComments { get; set; }
     }
 }
