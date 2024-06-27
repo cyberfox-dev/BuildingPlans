@@ -154,11 +154,11 @@ export class BPRolesConfigComponent implements OnInit {
 
       this.bproleService.deleteRoleByRoleID(this.RolesList[index].RoleID).subscribe((data: any) => {
         this.RolesList.splice(0, this.RolesList.length);
-        debugger;
+        
         if (data.responseCode == 1) {
 
           alert(data.responseMessage);
-          debugger;
+          
           this.getAllRoles();
         }
         else {

@@ -7,8 +7,10 @@ import { DocumentUploadService } from '../service/DocumentUpload/document-upload
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { BPDocumentsUploadsService } from '../service/BPDocumentsUploads/bpdocuments-uploads.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { BehaviorSubject } from 'rxjs';
-import { BPManDocService } from 'src/app/service/BPManDoc/bpman-doc.service'
+import { BehaviorSubject, map, Observable, switchMap } from 'rxjs';
+import { BPManDocService } from 'src/app/service/BPManDoc/bpman-doc.service';
+import { BPMandatoryStageDocumentService } from 'src/app/service/BPMandatoryStageDocuments/bpmandatory-stage-document.service';
+import {DocumentsComponentComponent } from'src/app/documents-component/documents-component.component'
 
 export interface DocumentsList {
   DocumentID: number;
@@ -39,14 +41,31 @@ export interface LSMandatoryDocumentsList {
 
 export class BPViewProjectInfoComponent implements OnInit {
 
-  constructor(private bpService: BuildingApplicationsService, private sharedService: SharedService, private refreshService: RefreshService, private router: Router, private documentUploadService: DocumentUploadService, private bpDocumentUploadService: BPDocumentsUploadsService, private modalService: NgbModal, private BPManDocService: BPManDocService) { }
- /* LSMandatoryDocuments = new BehaviorSubject<LSMandatoryDocumentsList[]>([]);*/
+  constructor(
+    private bpService: BuildingApplicationsService,
+    private sharedService: SharedService,
+    private refreshService: RefreshService,
+    private router: Router,
+    private documentUploadService: DocumentUploadService,
+    private bpDocumentUploadService: BPDocumentsUploadsService,
+    private modalService: NgbModal,
+    private BPManDocService: BPManDocService,
+    private BPMandatoryStageDocumentService: BPMandatoryStageDocumentService,
+    private DocumentsComponentComponent: DocumentsComponentComponent,
+  ) { }
+
+  // Properties
+  LSMandatoryDocuments = new BehaviorSubject<LSMandatoryDocumentsList[]>([]);
   DocumentList: DocumentsList[] = [];
-  LSMandatoryDocumentsList: LSMandatoryDocumentsList[] = [];
+
+  LSMandatoryDocumentsList: Observable<LSMandatoryDocumentsList[]>;
   displayedColumns: string[] = ['DocumentName', 'actions'];
+
+  // ViewChild decorators to get references to the MatTable elements
   @ViewChild(MatTable) DocumentsTable: MatTable<DocumentsList> | undefined;
   documentsDataSource: MatTableDataSource<DocumentsList> = new MatTableDataSource<DocumentsList>();
-  @ViewChild(MatTable) MandatoryDocumentUploadListSmallTable: MatTable<LSMandatoryDocumentsList> | undefined;
+
+
   stringifiedData: any;
   CurrentUser: any;
 
@@ -103,19 +122,29 @@ export class BPViewProjectInfoComponent implements OnInit {
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
-    debugger;
-
     this.applicationId = this.sharedService.getApplicationID();
     this.getApplicationInfo();
-    this.getAllDocumentForApplication();
-    this.getAllManDocsByStageID();
+    
+
+
+
+
+
+
+
   }
-  async getApplicationInfo() {
-    debugger;
-    await this.bpService.getBuildingApplicationByApplicationID(this.applicationId).subscribe((data: any) => {
+
+  initializeCurrentStage(): void {
+
+
+
+  }
+   getApplicationInfo() {
+    
+     this.bpService.getBuildingApplicationByApplicationID(this.applicationId).subscribe((data: any) => {
       if (data.responseCode == 1) {
         const current = data.dateSet[0];
-        debugger;
+        
         this.lsNumber = current.lsNumber;
         this.typeOfDev = current.typeOfDevelopment;
         this.typeOfAddress = current.addressType;
@@ -146,13 +175,14 @@ export class BPViewProjectInfoComponent implements OnInit {
       }
       else {
         alert(data.responseMessage);
-      }
+       }
+       this.getAllDocumentForApplication();
       console.log("response", data);
     }, error => {
       console.log("Error: ", error);
     })
   }
-  getAllDocumentForApplication() {
+getAllDocumentForApplication() {
     debugger;
     this.bpDocumentUploadService.getAllDocumentsForApplication(this.applicationId).subscribe((data: any) => {
       debugger;
@@ -171,25 +201,27 @@ export class BPViewProjectInfoComponent implements OnInit {
           this.DocumentList.push(tempDocList);
         }
         this.documentsDataSource.data = this.DocumentList;
-        
+        this.DocumentsTable?.renderRows();
       }
       else {
         alert(data.responseMessage);
       }
       console.log("response", data);
+      this.loadBPDocumentsList();
     }, error => {
       console.log("Error: ", error);
     })
    
   }
+
   viewDocument(index: any) {
 
     // Make an HTTP GET request to fetch the document
-    debugger;
+    
     fetch(this.apiUrl + `bPDocumentUploads/GetDocument?filename=${this.DocumentList[index].DocumentName}`)
     
       .then(response => {
-        debugger;
+        
         if (response.ok) {
           // The response status is in the 200 range
 
@@ -222,65 +254,113 @@ export class BPViewProjectInfoComponent implements OnInit {
     this.modalService.open(content, { size: 'xl' });
   }
 
-  @ViewChild(MatTable) LSMandatoryDocumentsTable: MatTable<LSMandatoryDocumentsList> | undefined;
 
-    getAllManDocsByStageID() {
-      debugger;
-/*      const newList = LSMandatoryDocumentsList.map(current => {
-        const tempMandatoryDocumentsLinkedStagesList = {} as LSMandatoryDocumentsList;
-         //Project size Kyle 27-02-24
-          tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
-          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
-          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
-          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
-          tempMandatoryDocumentsLinkedStagesList.stageName = null;
-          tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
-          return tempMandatoryDocumentsLinkedStagesList;
 
-      });
-
-      this.LSMandatoryDocuments.next(newList);
-      // set totalDocs to the length of the list
-*//*      this.totalDocs = newList.length;
-      this.totalDocs2 = Number(this.totalDocs).toString();*/
-      debugger;
-      this.LSMandatoryDocumentsList.splice(0, this.LSMandatoryDocumentsList.length);
-
-      this.BPManDocService.getAllMandatoryDocuments().subscribe((data: any) => {
-        if (data.responseCode == 1) {
-
-          debugger;
-          for (let i = 0; i < data.dateSet.length; i++) {
-            const tempMandatoryDocumentsLinkedStagesList = {} as LSMandatoryDocumentsList;
-            const current = data.dateSet[i];
-            tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
-            tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
-            tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
-            tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
-
-            tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
-
-            this.LSMandatoryDocumentsList.push(tempMandatoryDocumentsLinkedStagesList);
-            // this.sharedService.setStageData(this.StagesList);
-          }
-          //this.getAllManDocsByStageID();
-          this.LSMandatoryDocumentsTable ?. renderRows();
-        }
-        else {
-          //alert("Invalid Email or Password");
-          alert(data.responseMessage);
-        }
-        console.log("reponse", data);
-
-      }, error => {
-        console.log("Error: ", error);
-      })
+  
+  loadBPDocumentsList() {
+    debugger;
+    this.getBPDocumentsList().subscribe(
+      data => {
+        console.log('Received data:', data);
+        debugger;
+        this.LSMandatoryDocuments.next(data);
+      },
+      error => {
+        console.error('Error occurred:', error);
+      }
+    );
   }
+  getBPDocumentsList(): Observable<LSMandatoryDocumentsList[]> {
+    let stageType: string;
+
+    if (this.currentStage === 'LS Relaxation - Unpaid') {
+      stageType = 'Land Survey';
+    } else if (this.currentStage === 'TP Relaxation - Unpaid') {
+      stageType = 'Town Planning';
+    } else {
+      throw new Error('Unknown stage type');
+    }
+
+/*    const existingDocument = this.LSMandatoryDocumentsList.find(doc =>
+      this.DocumentsList.some(existingDoc => existingDoc.documentName === doc.mandatoryDocumentName)
+    );*/
+
+
+    return this.BPMandatoryStageDocumentService.getAllDocumentsForStage("Relaxation", stageType)
+      .pipe(
+        map((data: any) => {
+          if (data.responseCode === 1) {
+            const tempList: LSMandatoryDocumentsList[] = [];
+            for (let i = 0; i < data.dateSet.length; i++) {
+              const current = data.dateSet[i];
+
+              // Get the document name to be checked after substring operation
+              const currentDocumentName = current.documentName;
+
+              // Check if currentDocumentName exists in this.DocumentsList after substring operation
+              const documentExists = this.DocumentList.some(doc => {
+                const subDocumentName = doc.DocumentName.substring(0, doc.DocumentName.indexOf('_'));
+                return subDocumentName === currentDocumentName;
+              });
+
+              if (!documentExists) {
+                const tempRequiredDocuments = {
+                  mandatoryDocumentID: current.documentID,
+                  mandatoryDocumentName: current.documentName,
+                  stageID: null,
+                  dateCreated: current.dateCreated,
+                  mandatoryDocumentStageLinkID: 0,
+                  stageName: '',
+                  uploads: []
+                };
+                tempList.push(tempRequiredDocuments);
+              }
+            }
+            console.log("THIS IS THE LIST OF DOCS FROM", stageType, tempList, this.LSMandatoryDocumentsList);
+            return tempList;
+          } else {
+            throw new Error(data.responseMessage);
+          }
+        })
+      );
+  }
+
   displayedColumnsLSManDoc: string[] = ['mandatoryDocumentName', 'actions'];
-  dataSourceLSManDoc = this.LSMandatoryDocumentsList;
+  dataSourceLSManDoc = this.LSMandatoryDocuments;
+
 
   trackByFn(index, item) {
     return item.mandatoryDocumentID; // or any unique id from the object
+  }
+  totalDocs: number;
+  totalDocs2: string;
+  isLoading = false;
+  public successfulUploads = 0;
+  public successfulUploads2 = '';
+  fileAttrs: string[] = [];
+  onPassFileName(event: { uploadFor: string; fileName: string }, index: any) {
+    
+    const { uploadFor, fileName } = event;
+    // const index = parseInt(uploadFor.substring('CoverLetter'.length));
+    
+
+    this.fileAttrs[index] = this.LSMandatoryDocumentsList[index].mandatoryDocumentName;
+
+  }
+  onFileDelete(event: any, index: number) {
+    this.successfulUploads--;
+    this.successfulUploads2 = Number(this.successfulUploads).toString();
+    this.fileAttrs[index] = this.LSMandatoryDocumentsList[index].mandatoryDocumentName;
+
+
+  }
+  onFileUpload(event: any) {
+
+    this.successfulUploads++;
+    this.successfulUploads2 = Number(this.successfulUploads).toString();
+    console.log("this.successfulUploads;this.successfulUploads", this.successfulUploads);
+    this.getAllDocumentForApplication();
+    this.DocumentsComponentComponent.getAllDocsForApplication();
   }
   }
 

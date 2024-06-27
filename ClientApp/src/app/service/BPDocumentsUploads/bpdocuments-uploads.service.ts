@@ -14,7 +14,7 @@ export class BPDocumentsUploadsService {
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
   public addUpdateDocument(documentId?: number | null, documentName?: string | null, documentLocalPath?: string | null, applicationId?: number | null, assignedUserId?: string | null,createdById?:string|null,documentGroupName?:string|null,subdepartmentID?:number|null,subdepartmentName?:string|null,isPlanning?:boolean|null,isRepository?:boolean|null) {
-    debugger;
+    
     const body = {
       
       DocumentID: documentId,
@@ -52,7 +52,7 @@ export class BPDocumentsUploadsService {
   }
 
   public getAllDocumentsForRepository() {
-    debugger;
+    
     return this.httpClient.get(this.baseURL + "GetAllBPDocumentsForRepository");
 
   }

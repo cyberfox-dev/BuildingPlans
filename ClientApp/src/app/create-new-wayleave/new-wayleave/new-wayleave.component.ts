@@ -2376,14 +2376,14 @@ export class NewWayleaveComponent implements OnInit {
   DepartmentList: DepartmentList[] = [];
   DepartmentsForZXEntry: DepartmentList[] = [];
   sendNotificationToZXInputter() {
-    debugger;
+    
     this.DepartmentList.splice(0, this.DepartmentList.length);
     this.DepartmentsForZXEntry.splice(0, this.DepartmentsForZXEntry.length);
 
     this.departmentService.getDepartmentsList().subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        debugger;
+        
 
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDepartmentList = {} as DepartmentList;
@@ -2396,14 +2396,14 @@ export class NewWayleaveComponent implements OnInit {
           tempDepartmentList.needsZXNumber = current.needsZXNumber;
 
           if (current.needsZXNumber == true) {
-            debugger;
+            
             this.DepartmentsForZXEntry.push(tempDepartmentList); //Am I even going to need this list here?
             //For each zxDepartment get users with roles = ZX Number Inputter
             //Problem - The access group user link table doesn't keep subdepartments
             this.subDepartmentsService.getSubDepartmentsByDepartmentID(current.departmentID).subscribe((sudepartmentData: any) => {
               console.log("Received data from getSubDepartmentsByDepartmentID(DEPARTMENTID):", sudepartmentData);
 
-              debugger;
+              
               if (sudepartmentData.responseCode == 1) {
                 console.log("Sending to ZX humans - SUBDEPARTMENTS", sudepartmentData)
                 sudepartmentData.dateSet.forEach((sudepartmentDataObj) => {
@@ -2416,7 +2416,7 @@ export class NewWayleaveComponent implements OnInit {
                       accessGroupData.dateSet.forEach((accessGroupObj) => {
                         //this.userPofileService.getUsersBySubDepartmentName(subDepartmentName).subscribe((data: any) => {
                         this.userPofileService.getUserProfileById(accessGroupObj.userID).subscribe((userData: any) => {
-                          debugger;
+                          
                           console.log("Received data from getUserProfileById(USERID):",userData);
                           if (userData.responseCode == 1) {
                             console.log("Sending to ZX humans - Specific Person", userData)
@@ -2430,7 +2430,7 @@ export class NewWayleaveComponent implements OnInit {
                             this.notificationsService.addUpdateNotification(0, "Wayleave Created", "New wayleave application submission needs ZX number", false, user.userID, this.applicationID, this.CurrentUser.appUserId, "An application with ID " + this.applicationID + " for wayleave has just been captured. Log in and fill in the ZX number.").subscribe((notifData: any) => {
 
                               if (notifData.responseCode == 1) {
-                                debugger;
+                                
                                 console.log("ZX Notification success?",notifData.responseMessage);
 
                               }
@@ -2587,7 +2587,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
   onWayleaveCreate(appUserId, isPlanning: boolean, isDraft: boolean) {
-    debugger;
+    
     console.log("Turtle Turtle, where are you? " + appUserId);
 
     //get ApplicationID form Shared to check if must update
@@ -2598,7 +2598,7 @@ export class NewWayleaveComponent implements OnInit {
     this.reapply = this.shared.getReapply();
     // #region Sindiswa 24 January 2024
     if (this.reapply == true && this.oldApplicationID === this.applicationID) {
-      debugger;
+      
       this.shared.clearContractorData();
       this.shared.clearEngineerData();
 
@@ -2618,7 +2618,7 @@ export class NewWayleaveComponent implements OnInit {
           this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: isPlanning } });
         }
         else {
-          debugger;
+          
           alert("GIS Error");
         }
 
@@ -3448,7 +3448,7 @@ export class NewWayleaveComponent implements OnInit {
     this.generatedInvoiceNumber = this.accountNumber.toString() + cdv.toString();
 
     this.generateInvoice(ClientName); //zxNum-and-contractorAccount Sindiswa 28 February 2024 - commented out because invoice not created at this stage
-    debugger;
+    
 
   }
 
@@ -3508,7 +3508,7 @@ export class NewWayleaveComponent implements OnInit {
 
 
   generateInvoice(ClientName: string) {
-    debugger;
+    
     if (!this.internal) {
       // Create a new PDF
       const doc = new jsPDF();
@@ -3577,7 +3577,7 @@ export class NewWayleaveComponent implements OnInit {
       // this.generateInvoiceSplit(ClientName, payableByDate,);
 
       // Navigate to home page
-      debugger;
+      
       this.router.navigate(["/home"]);
      //alert("Your invoice has been created. You may find the invoice in the 'Financial' tab within your application");
       alert("Applicant invoice has been created. They will be notified the invoice in the 'Financial' tab within this application");
@@ -3594,7 +3594,7 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   addClientDetails(doc, ClientName) {
-    debugger;
+    
     this.stringifiedDataCAD = JSON.parse(JSON.stringify(localStorage.getItem('contractorAccountDetails')));
     this.CAD = JSON.parse(this.stringifiedDataCAD);
     autoTable(doc, {
@@ -3723,23 +3723,23 @@ export class NewWayleaveComponent implements OnInit {
   }
 
   saveAndUploadPDF(doc) {
-    debugger;
+    
     const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
     const file = new File([pdfData], 'Wayleave Application Fee Invoice.pdf', { type: 'application/pdf' });
 
     // Prepare the form data
     const formData = new FormData();
     formData.append('file', file);
-    debugger;
+    
     this.shared.pushFileForTempFileUpload(file, "Wayleave Application Fee Invoice" + ".pdf");
-    debugger;
+    
     this.save();
-    debugger;
+    
   }
 
 
   save() {
-    debugger;
+    
     
     const filesForUpload = this.shared.pullFilesForUpload();
     for (let i = 0; i < filesForUpload.length; i++) {
@@ -3747,7 +3747,7 @@ export class NewWayleaveComponent implements OnInit {
       let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
       let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "_appID" + this.applicationID;
       formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
-      debugger;
+      
       this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
         .subscribe({
           next: (event) => {
@@ -3755,7 +3755,7 @@ export class NewWayleaveComponent implements OnInit {
               this.progress = Math.round(100 * event.loaded / event.total);
             } else if (event.type === HttpEventType.Response) {
               this.message = 'Upload success.';
-              debugger;
+              
               this.uploadFinishedF(event.body);
             }
           },
@@ -5957,13 +5957,13 @@ export class NewWayleaveComponent implements OnInit {
   }
      //Project size Kyle 27-02-24
   onFibreNetworkLicense(event: any) {
-    debugger;
+    
     if (this.fibreNetworkLicenses == false) {
-      debugger;
+      
       this.fibreNetworkLicenses = true;
     }
     else {
-      debugger;
+      
       this.fibreNetworkLicenses = false;
     }
     

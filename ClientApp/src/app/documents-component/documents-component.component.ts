@@ -3,6 +3,7 @@ import { MatTable } from '@angular/material/table';
 
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { DocumentUploadService } from '../service/DocumentUpload/document-upload.service';
+import { BPDocumentsUploadsService } from '../service/BPDocumentsUploads/bpdocuments-uploads.service';
 import { PermitComponentComponent } from 'src/app/permit-component/permit-component.component';
 import { SharedService } from "../shared/shared.service";
 import { PermitService } from '../service/Permit/permit.service';
@@ -52,7 +53,7 @@ export class DocumentsComponentComponent implements OnInit{
 
   hasDocument: boolean = false;
   fromReApplyArchive: boolean; //reapply Sindiswa 26 January 2024
-  constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService, private permitService: PermitService, private permitComponentComponent: PermitComponentComponent) { }
+  constructor(private documentUploadService: DocumentUploadService, private modalService: NgbModal, private shared: SharedService, private permitService: PermitService, private permitComponentComponent: PermitComponentComponent, private BPDocumentsUploadsService: BPDocumentsUploadsService) { }
 
   ngOnInit(): void {
     //this.currentApplication = this.shared.getViewApplicationIndex();
@@ -227,18 +228,20 @@ export class DocumentsComponentComponent implements OnInit{
 
   getAllDocsForApplication() {
     this.DocumentsList.splice(0, this.DocumentsList.length);
-    this.documentUploadService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
-
+    
+    this.BPDocumentsUploadsService.getAllDocumentsForApplication(this.ApplicationID).subscribe((data: any) => {
+      
       if (data.responseCode == 1) {
         
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDocList = {} as DocumentsList;
-
+          
           const current = data.dateSet[i];
           const nameCheck = current.documentName.substring(0, 13);
 
           if (current.documentName != "Service Condition" && nameCheck != "Approval Pack") {
             tempDocList.DocumentID = current.documentID;
+            
             tempDocList.DocumentName = current.documentName;
             tempDocList.DocumentLocalPath = current.documentLocalPath;
             tempDocList.ApplicationID = current.applicationID;

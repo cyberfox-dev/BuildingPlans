@@ -69,11 +69,11 @@ export class BPAccessGroupsConfigComponent implements OnInit {
     this.modalService.open(editAccessGroup, { centered: true, size: 'xl' });
   }
   GetAllAccessGroups() {
-    debugger;
+    
     this.AccessGroupsList.splice(0, this.AccessGroupsList.length);
     this.bpAccessGroupsService.getAllAccessgroups().subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempAccessGroup = {} as AccessGroupList;
           const current = data.dateSet[i];
@@ -103,7 +103,7 @@ export class BPAccessGroupsConfigComponent implements OnInit {
   }
 
   AddAccessGroup() {
-    debugger;
+    
     let accessGroupName = this.newAccessGroup;
     let accessGroupDes = this.newAccessGroupDes
     if (accessGroupName == undefined || accessGroupName.trim() == "" || accessGroupDes == undefined || accessGroupDes.trim() == "") {
@@ -112,7 +112,7 @@ export class BPAccessGroupsConfigComponent implements OnInit {
     else {
       this.bpAccessGroupsService.addUpdateAccessGroup(0, accessGroupName, accessGroupDes, this.CurrentUser.appUserId).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          debugger;
+          
           this.modalService.dismissAll();
           alert(data.responseMessage);
           this.GetAllAccessGroups();
@@ -156,13 +156,13 @@ export class BPAccessGroupsConfigComponent implements OnInit {
   }
 
   SaveEdittedAccessGroup() {
-    debugger;
+    
     if (this.oldAccessGroupName == this.accessGroupName && this.oldAccessGroupDescription == this.accessGroupDescription) {
       alert("No changes were made to access group information")
     }
 
     else {
-      debugger;
+      
       this.bpAccessGroupsService.addUpdateAccessGroup(this.accessGroupId, this.accessGroupName, this.accessGroupDescription, this.CurrentUser.appUserId).subscribe((data: any) => {
         if (data.responseCode == 1) {
           alert(data.responseMessage);
@@ -203,7 +203,7 @@ export class BPAccessGroupsConfigComponent implements OnInit {
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
           const tempRole = {} as RolesList;
-          debugger;
+          
           tempRole.RoleID = current.roleID;
           tempRole.RoleName = current.roleName;
           tempRole.RoleDescription = current.roleDescription;

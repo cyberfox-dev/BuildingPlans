@@ -299,7 +299,7 @@ export class NewProfileComponent implements OnInit {
   }
 
   onNewProfileCreate(userID?: string | null, fullName?: string | null, email?: string | null, phoneNumber?: string | null, BpNo?: string | null, CompanyName?: string | null, CompanyRegNo?: string | null, PhyscialAddress?: string | null, ApplicantIDUpload?: string | null, ApplicantIDNumber?: string | null, refNumber?:string | null, companyType?: string | null) {
-    debugger;
+    
     if (this.showInternal) {
       ///// 
 
@@ -841,13 +841,13 @@ export class NewProfileComponent implements OnInit {
   // #region //BPRegister Sindiswa 20062024
 
   onSelectToPopulateDepartment(event: any) {
-    debugger;
+    
     if (event.target.value != 0) {
       this.DepartmentsDropdown.splice(0, this.DepartmentsDropdown.length);
       console.log("This is the selected fuctional area", event.target.value)
       this.bpDepartmentsService.getAllDepartmentsForFunctionalArea(event.target.value).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          debugger;
+          
           for (let i = 0; i < data.dateSet.length; i++) {
             const tempDeptList = {} as ZoneDropdown;
             const current = data.dateSet[i];

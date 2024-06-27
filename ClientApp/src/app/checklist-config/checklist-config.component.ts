@@ -206,11 +206,11 @@ export class ChecklistConfigComponent implements OnInit {
   getAllStagesForFunctionalArea(index: any) {
     this.functionalArea = this.functionalAreasList[index].FAName;
 
-    debugger;
+    
     this.stageList.splice(0, this.stageList.length);
     this.bpStageService.getAllStagesForFunctionalArea(this.functionalArea).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempStageList = {} as StagesList;
           const current = data.dateSet[i];
@@ -225,7 +225,7 @@ export class ChecklistConfigComponent implements OnInit {
 
           this.stageList.push(tempStageList);
         }
-        debugger;
+        
 
 
 
@@ -246,12 +246,12 @@ export class ChecklistConfigComponent implements OnInit {
 
     this.functionalAreasList.splice(0, this.functionalAreasList.length);
     this.bpFunctionslAreasService.getAllFunctionalAreas().subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempFAList = {} as FunctionalAreasList;
           const current = data.dateSet[i];
-          debugger;
+          
           tempFAList.FunctionalAreaID = current.functionalAreaID;
           tempFAList.FAName = current.faName;
           tempFAList.FAItemCode = current.faItemCode;
@@ -279,14 +279,14 @@ export class ChecklistConfigComponent implements OnInit {
 
     this.stageName = this.stageList[index].StageName;
     this.functionalArea = this.stageList[index].FunctionalArea
-    debugger;
+    
     this.ShowChecklistItemsForStage(StageCheck);
   }
 
   ShowChecklistItemsForStage(StageCheck: any) {
     this.stageChecklist.splice(0, this.stageChecklist.length);
     this.bpStageChecklistService.getAllChecklistItemsForStage(this.stageName, this.functionalArea).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempChecklist = {} as StageChecklistItems;
@@ -318,12 +318,12 @@ export class ChecklistConfigComponent implements OnInit {
   }
 
   GetAllDepartmentsForFunctionalArea(index: any, Departments: any) {
-    debugger;
+    
     this.functionalArea = this.functionalAreasList[index].FAName;
-    debugger;
+    
     this.departmentsList.splice(0, this.departmentsList.length);
     this.bpDepartmentsService.getAllDepartmentsForFunctionalArea(this.functionalArea).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDepartmentList = {} as DepartmentsList;
@@ -357,7 +357,7 @@ export class ChecklistConfigComponent implements OnInit {
   GetAllMandatoryStageDocuments(index: any, StageManDoc: any) {
     this.stageName = this.stageList[index].StageName;
     this.functionalArea = this.stageList[index].FunctionalArea;
-    debugger;
+    
 
     this.ShowAllDocumentsForStage(StageManDoc);
 
@@ -367,16 +367,16 @@ export class ChecklistConfigComponent implements OnInit {
   GetAllMandatoryDepartmentDocs(index: any, DepartmentManDoc: any) {
     this.departmentName = this.departmentsList[index].DepartmentName;
     this.functionalArea = this.departmentsList[index].FunctionalArea;
-    debugger;
+    
     this.ShowAllDocumentsForDepartment(DepartmentManDoc);
   }
 
   ShowAllDocumentsForDepartment(DepartmentManDoc: any) {
     this.departmentManDocList.splice(0, this.departmentManDocList.length);
     this.bpDepartmentManDocService.getAllDocumentsForDepartment(this.departmentName, this.functionalArea).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDocList = {} as DepartmentManDocList;
           const current = data.dateSet[i];
@@ -414,10 +414,10 @@ export class ChecklistConfigComponent implements OnInit {
 
   ShowAllChecklistItemsForDepartment(DepartmentChecklist: any) {
     this.departmentChecklist.splice(0, this.departmentChecklist.length);
-    debugger;
+    
     this.bpDepartmentChecklistService.getAllChecklistItemsForDepartment(this.departmentName, this.functionalArea).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDepChecklist = {} as DepartmentChecklist;
           const current = data.dateSet[i];
@@ -449,15 +449,16 @@ export class ChecklistConfigComponent implements OnInit {
     })
   }
 
-  getAllDocumentCategoriesForFA() {
-    debugger;
-    this.documentCategoryService.getDocumentCategoryByFunctionalArea(this.functionalArea).subscribe((data: any) => {
+  getAllDocumentCategoriesForFA(index:any) {
+    
+    this.departmentChecklist.splice(0, this.departmentChecklist.length);
+    this.documentCategoryService.getDocumentCategoryByFunctionalArea(this.functionalAreasList[index].FAName).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDocCategoryList = {} as DocumentCategoryList;
           const current = data.dateSet[i];
-
+          
           tempDocCategoryList.CategoryId = current.categoryId;
           tempDocCategoryList.CategoryName = current.categoryName;
           tempDocCategoryList.FunctionalArea = current.functionalArea;
@@ -479,7 +480,7 @@ export class ChecklistConfigComponent implements OnInit {
   }
 
   AddMandatoryDocumentToStage(StageManDoc: any) {
-    debugger;
+    
     this.bpStageManDocService.addUpdateMandatoryStageDocument(0, this.stageManDoc, this.stageName, this.functionalArea, this.CurrentUser.appUserId).subscribe((data: any) => {
       if (data.responseCode == 1) {
         alert(data.responseMessage);
@@ -501,7 +502,7 @@ export class ChecklistConfigComponent implements OnInit {
 
   DeleteMandatoryStageDcoument(index: any, StageManDoc) {
     const documentId = this.stageManDocList[index].DocumentID;
-    debugger;
+    
     this.bpStageManDocService.deleteMandatoryStageDocByDocumentID(documentId).subscribe((data: any) => {
       if (data.responseCode == 1) {
         alert(data.responseMessage);
@@ -524,7 +525,7 @@ export class ChecklistConfigComponent implements OnInit {
     this.stageManDocList.splice(0, this.stageManDocList.length);
     this.bpStageManDocService.getAllDocumentsForStage(this.stageName, this.functionalArea).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDocList = {} as StageManDocList;
           const current = data.dateSet[i];
@@ -554,7 +555,7 @@ export class ChecklistConfigComponent implements OnInit {
   }
 
   AddstagechecklistItem(StageCheck: any) {
-    debugger;
+    
     this.bpStageChecklistService.AddUpdateChecklistItem(0, this.stageChecklistItem, this.stageName, this.functionalArea, this.CurrentUser.appUserId).subscribe((data: any) => {
       if (data.responseCode == 1) {
         alert(data.responseMessage);
@@ -572,7 +573,7 @@ export class ChecklistConfigComponent implements OnInit {
   }
 
   DeleteStageChecklistItem(index: any, StageCheck: any) {
-    debugger;
+    
     const checklistitemId = this.stageChecklist[index].ChecklistItemId;
     this.bpStageChecklistService.deleteChecklistItemByChecklistItemId(checklistitemId).subscribe((data: any) => {
       if (data.responseCode == 1) {
@@ -645,7 +646,7 @@ export class ChecklistConfigComponent implements OnInit {
 
   DeleteDepartmentChecklistItem(index: any, DepartmentChecklist: any) {
     const checklistItemId = this.departmentChecklist[index].ChecklistItemId;
-    debugger;
+    
     this.bpDepartmentChecklistService.deleteDepartmentChecklistItemByChecklistItemId(checklistItemId).subscribe((data: any) => {
       if (data.responseCode == 1) {
         alert(data.responseMessage);

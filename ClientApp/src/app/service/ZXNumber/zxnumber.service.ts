@@ -11,7 +11,7 @@ export class ZXNumberService {
   private readonly baseURL: string = this.apiUrl + "zxNumber/";
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
   public addUpdateZXNumber(zxNumberID: number, applicationID: number, departmentID: number, departmentName:string, zxNumber:string, createdByID:string) {
-    debugger;
+    
     const body = {
       ZXNumberID: zxNumberID,
       ApplicationID: applicationID,
@@ -29,7 +29,7 @@ export class ZXNumberService {
   }
 
   public getZXNumberByDepartmentID(applicationID:number, departmentID:number) {
-    debugger;
+    
     const body = {
       ApplicationID: applicationID,
       DepartmentID: departmentID,

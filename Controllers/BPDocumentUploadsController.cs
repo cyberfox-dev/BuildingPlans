@@ -24,9 +24,9 @@ namespace BuildingPlans.Controllers
         private readonly AppDBContext _context;
         private readonly ILogger<BPDocumentUploadsController> _logger;
 
-        private readonly IDocumentUploadService _documentUploadService;
+        private readonly IBPDocumentUploadService _documentUploadService;
 
-        public BPDocumentUploadsController(IDocumentUploadService documentUploadService, AppDBContext context, ILogger<BPDocumentUploadsController> logger)
+        public BPDocumentUploadsController(IBPDocumentUploadService documentUploadService, AppDBContext context, ILogger<BPDocumentUploadsController> logger)
         {
 
             _documentUploadService = documentUploadService;
@@ -186,7 +186,7 @@ namespace BuildingPlans.Controllers
                 else
                 {
                     var result = await _documentUploadService.GetAllBPDocumentsForApplication(applicationID);
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Department For Comment Deleted Successfully", result));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Documents For This Application", result));
                 }
 
             }

@@ -839,11 +839,11 @@ export class ActionCenterComponent implements OnInit {
 
         const current = data.dateSet[0];
         this.PermitIssue
-        debugger;
+        
         if (current.userAssaignedToComment == null) {
-          debugger;
+          
           const canAssign = this.CurrentUserRoles.map(x => x.roleName == "Permit Coordinator");
-          debugger;
+          
           for (let i = 0; i < canAssign.length; i++) {
             if (canAssign[i] == true) {
               this.CanAssignPermitIssuer = true;
@@ -851,7 +851,7 @@ export class ActionCenterComponent implements OnInit {
           }
         }
         else if (current.userAssaignedToComment != null) {
-          debugger;
+          
           if (current.userAssaignedToComment == this.CurrentUser.appUserId && current.permitComment == null) {
             this.canApprovePermit = true;
           }
@@ -6228,7 +6228,7 @@ export class ActionCenterComponent implements OnInit {
     }
   }
   openActionCenter(content: any) {
-    debugger;
+    
     if (this.commentState == null) {
       //This is so the Admin can assign
       this.openXl(content);
@@ -7642,10 +7642,10 @@ export class ActionCenterComponent implements OnInit {
 
 
   getAllPermitIssuersForSubDepartment(permitIssuers: any) {
-    debugger;
+    
     this.PermitIssuerList.splice(0, this.PermitIssuerList.length);
     this.accessGroupsService.getUsersBasedOnRoleName("Permit Issuer", this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
 
@@ -7678,7 +7678,7 @@ export class ActionCenterComponent implements OnInit {
   }
 
   PermitIssuerSelectedForManualLink(user: any) {
-    debugger;
+    
     this.PermitIssuerForManualLink.clear();
     this.PermitIssuerForManualLink.toggle(user);
 

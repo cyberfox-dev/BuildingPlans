@@ -24,11 +24,11 @@ export class BPViewStageChecklistComponent implements OnInit {
 
   GetStageChecklistForApplication() {
     this.bpStageChecklistService.getAllChecklistItemsForStage(this.stageName, this.functionalArea).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
-          debugger;
+          
 
           const tempChecklistItem = {} as StageChecklist;
           const current = data.dateSet[i];

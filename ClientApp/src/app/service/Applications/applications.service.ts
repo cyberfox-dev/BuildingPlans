@@ -78,7 +78,7 @@ export class ApplicationsService {
 
 
   public deleteApplication(applicationID: number) {
-    debugger;
+    
     return this.httpClient.post(this.baseURL + "DeleteApplication", applicationID);
 
   }
@@ -232,7 +232,7 @@ export class ApplicationsService {
   }
   //#region zxNum-and-contractorAccount Sindiswa 28 February 2024
   public addUpdateZXNumbers(applicationID?: number | null, WaterZXNumber?: string | null, RIMZXNumber?: string | null) {
-    debugger;
+    
     const body = {
 
       ApplicationID: applicationID,

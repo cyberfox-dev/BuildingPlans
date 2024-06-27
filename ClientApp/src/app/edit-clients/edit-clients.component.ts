@@ -66,7 +66,7 @@ export class EditClientsComponent implements OnInit {
     this.ClientsList.splice(0, this.ClientsList.length);
     this.UserLinkToArchitectService.getAllClientsForArchitect(this.UserID).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempClient = {} as ClientsList;
           const current = data.dateSet[i];
@@ -129,7 +129,7 @@ export class EditClientsComponent implements OnInit {
     let physicalAddress = this.clientPhysicalAddress;
 
 
-    debugger;
+    
     const nameRegex = /^[a-zA-Z]+$/;
     if (this.existingUser == false) {
       // Check if clientName is valid
@@ -203,7 +203,7 @@ export class EditClientsComponent implements OnInit {
 
     }
     else {
-      debugger;
+      
       if (this.clientName == "" || this.clientEmail == "" || this.clientSurname == "") {
         alert("Please ensure that you enter the existing client's name ,surname and email");
       }
@@ -219,10 +219,10 @@ export class EditClientsComponent implements OnInit {
 
   createNewClient() {
     try {
-      debugger;
+      
       this.userService.register(this.clientFullName, this.clientEmail, "Password@" + this.clientFullName).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          debugger;
+          
           this.newProfileComponent.onNewProfileCreate(
             data.dateSet.appUserId,
             this.clientFullName,
@@ -237,7 +237,7 @@ export class EditClientsComponent implements OnInit {
            null,
            null,
           )
-          debugger;
+          
         
           
           alert(this.clientFullName + " has been added as an external client.");
@@ -271,12 +271,12 @@ export class EditClientsComponent implements OnInit {
   }
 
   checkingClientLink() {
-    debugger;
+    
     for (let i = 0; i < this.ClientsList.length; i++) {
-      debugger;
+      
       const tempArchitectClient = this.ClientsList[i];
       if (this.clientFullName == tempArchitectClient.ClientName && this.CurrentUser.fullName == tempArchitectClient.ArchitectName) {
-        debugger;
+        
         this.linkedClient = true;
         alert("This User is already listed as one of your clients");
         this.modalService.dismissAll();
@@ -286,10 +286,10 @@ export class EditClientsComponent implements OnInit {
     }
 
     if (this.linkedClient == false) {
-      debugger;
+      
       this.userProfileService.checkForExistingUser(this.clientFullName, this.clientEmail).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          debugger;
+          
           const current = data.dateSet[0];
           this.UserLinkToArchitectService.addUpdateLinkedUser(0, this.CurrentUser.appUserId, this.CurrentUser.fullName, current.userID, this.clientFullName, this.CurrentUser.appUserId, current.physcialAddress).subscribe((data: any) => {
             if (data.responseCode == 1) {

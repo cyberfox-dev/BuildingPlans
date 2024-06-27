@@ -12,7 +12,7 @@ export class BPManDocService {
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
   public getAllMandatoryDocuments() {
-    debugger;
+    
     return this.httpClient.get(this.baseURL + "GetAllMandatoryDocuments");
 
   }

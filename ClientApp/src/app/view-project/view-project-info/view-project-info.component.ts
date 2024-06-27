@@ -1401,12 +1401,12 @@ export class ViewProjectInfoComponent implements OnInit {
 
 /*  JJS 8 Jan(Changed the approve to Prov.Approve)*/
   getAllComments() {
-    debugger;
+    
     this.CommentsList.splice(0, this.CommentsList.length);
     this.commentsService.getCommentByApplicationID(this.ApplicationID).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempCommentList = {} as CommentsList;
           const current = data.dateSet[i];
@@ -4320,7 +4320,7 @@ export class ViewProjectInfoComponent implements OnInit {
 /*  viewDoc(index: any) {
     this.getAllDocsForApplication();
     alert(this.DocumentsList[index].DocumentName);
-    debugger;
+    
     // Make an HTTP GET request to fetch the document
     fetch(this.apiUrl + `documentUpload/GetDocument?filename= Traffic Management Plan_appID${this.ApplicationID}.pdf`)
       .then(response => {
@@ -4401,7 +4401,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   viewDocument2(index: any) {
-    debugger;
+    
     const filename = this.MandatoryDocumentUploadList[index].mandatoryDocumentName +"_appID"+this.ApplicationID + ".pdf";
     // Make an HTTP GET request to fetch the document
     fetch(this.apiUrl + `documentUpload/GetDocument?filename=${filename}`)
@@ -5081,7 +5081,7 @@ export class ViewProjectInfoComponent implements OnInit {
   DepartmentsForZXEntry: DepartmentList[] = [];
 
   getZXDepartments() {
-    debugger;
+    
     this.DepartmentList.splice(0, this.DepartmentList.length);
     this.DepartmentsForZXEntry.splice(0, this.DepartmentsForZXEntry.length);
     let zxDepartmentEntryCount = 0;
@@ -5089,7 +5089,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.departmentService.getDepartmentsList().subscribe(async (data: any) => {
 
       if (data.responseCode == 1) {
-        debugger;
+        
 
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDepartmentList = {} as DepartmentList;
@@ -5139,7 +5139,7 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getZXDepartmentsAfterZXEntry() {
-    debugger;
+    
     this.DepartmentList.splice(0, this.DepartmentList.length);
     this.DepartmentsForZXEntry.splice(0, this.DepartmentsForZXEntry.length);
     let zxDepartmentEntryCount = 0;
@@ -5147,7 +5147,7 @@ export class ViewProjectInfoComponent implements OnInit {
     this.departmentService.getDepartmentsList().subscribe(async (data: any) => {
 
       if (data.responseCode == 1) {
-        debugger;
+        
 
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDepartmentList = {} as DepartmentList;
@@ -5223,7 +5223,7 @@ export class ViewProjectInfoComponent implements OnInit {
     let confirmation = confirm("Are you sure you want to save this ZX number value? Please note that you won't be able to change this value after saving.")
 
     if (confirmation) {
-      debugger;
+      
       //this.zxNumberService.addUpdateZXNumber(0, this.ApplicationID, department.departmentID, department.departmentName, this.departmentZXNumber, this.CurrentUser.appUserId).subscribe((data: any) => {
       this.zxNumberService.addUpdateZXNumber(0, this.ApplicationID, department.departmentID, department.departmentName, department.zxNumber, this.CurrentUser.appUserId).subscribe((data: any) => {
         if (data.responseCode == 1) {
@@ -5243,11 +5243,11 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   getZXNumber(departmentID: number): Promise<string | null> {
-    debugger;
+    
     return new Promise<string | null>((resolve, reject) => {
       this.zxNumberService.getZXNumberByDepartmentID(this.ApplicationID, departmentID).subscribe((data: any) => {
         if (data.responseCode == 1 && data.dateSet.length > 0) {
-          debugger;
+          
           console.log("Hebana, what's the ZX number kanti?", data);
           resolve(data.dateSet[0].zxNumber);
         } else {
@@ -5263,11 +5263,11 @@ export class ViewProjectInfoComponent implements OnInit {
   }
 
   countTotalZXDepartments() {
-    debugger;
+    
     this.departmentService.countDepartmentsThatNeedZXNumber().subscribe((data: any) => {
       console.log("Inside subscribe callback", data);
       if (data.responseCode === 1) {
-        debugger;
+        
         console.log("I tried to get the number of departments that require a ZX number", data)
         this.totalZXDepartments = data.dateSet;
       }

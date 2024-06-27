@@ -63,7 +63,7 @@ export class BPSignageApplicationComponent implements OnInit {
   }
   CreateSignageApplication() {
     this.Address = this.StreetNumber + " " + this.StreetName + " " + this.Suburb + " " + this.City + " " + this.PostalCode;
-    debugger;
+    
     this.bpSignageService.addUpdateSignageApplication(0, this.TypeOfApplication, this.typeOfApplicant, this.OrganisationName, this.CurrentUser.appUserId, this.ApplicantName, this.ApplicantSurname, this.ApplicantCell, this.ApplicantTelephone, this.ApplicantFax, this.ApplicantEmail, this.AddressType, this.Address, this.NatureOfAdvertisement, this.AreasOfControl, this.Height, this.Width, this.NoOfFaces, this.StartDate, this.EndDate, this.ApplicationFee, this.MonthlyFee, this.Voltage, this.ElectricityRequired, this.EnvironmentalImpactAssessment, this.AdvertisingSignRight, this.Encroachment, null, "Capture", null).subscribe((data: any) => {
       if (data.responseCode == 1) {
         this.router.navigate(["/home"]);

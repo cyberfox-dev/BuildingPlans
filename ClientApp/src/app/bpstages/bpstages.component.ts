@@ -82,11 +82,11 @@ export class BPStagesComponent implements OnInit {
     )
   }
   getAllBPStages() {
-    debugger;
+    
     this.stagesList.splice(0, this.stagesList.length);
     this.bpStagesService.getAllStagesForFunctionalArea(this.functionalArea).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
           const tempStage = {} as BPStagesList;
@@ -100,7 +100,7 @@ export class BPStagesComponent implements OnInit {
 
           this.stagesList.push(tempStage);
         }
-        debugger;
+        
         this.dataSource = this.stagesList;
         this.stageTable?.renderRows();
       }
@@ -115,11 +115,11 @@ export class BPStagesComponent implements OnInit {
 
 
   addUpdateStage() {
-    debugger;
+    
     this.bpStagesService.addUpdateStage(this.stageID, this.stageName, this.orderNumber, this.functionalArea, this.CurrentUser.appUserId).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         this.stageID = 0;
         this.stageName = "";
         this.orderNumber = "";

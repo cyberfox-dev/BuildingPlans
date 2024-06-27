@@ -790,9 +790,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngAfterViewInit() {
     // Check which tabs are currently visible and select the first one
     /*    const visibleTabs = ['Reviewer', 'SR', 'FR', 'PC', 'PI', 'ZA', 'EMB', 'GISR'].filter(tab => this[`${tab.toLowerCase()}Tab`]);
-        debugger;
+        
         if (visibleTabs.length > 0) {
-          debugger;
+          
           this.buttonToggleGroup.value = visibleTabs[0];
         }*/
   }
@@ -832,7 +832,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           else if (current.utilitySlot2 == "1") {
             this.disableButtons = true;
           }
-          debugger;
+          
 
           console.log("Testing alerts", current, this.disableButtons);
 
@@ -931,7 +931,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   sendOption() {
     if (this.option == "internal") {
 
-      debugger;
+      
 
       this.sharedService.clientUserID = this.CurrentUser.appUserId;
 
@@ -1601,7 +1601,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   //                //#endregion
 
   //                //Project size Kyle 27-02-24
-  //                debugger;
+  //                
   //                if (current.networkLicenses == true) {
   //                  tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
   //                }
@@ -1801,7 +1801,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     } else {
       tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
     }
-    debugger;
+    
     tempApplicationListShared.isPlanning = current.isPlanning;
     if (current.networkLicenses == true) {
       tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
@@ -1991,7 +1991,7 @@ this.subscriptions.push(subscription);
     console.log("THIS IS THE APPLICATION TYPE", applicationType);
     this.sharedService.setReapply(applicationType);
 
-    debugger;
+    
     if (this.option == "client" || this.option == 'proxy') {
 
       this.NewWayleaveComponent.onWayleaveCreate(this.userID, isPlanning, false);
@@ -4925,7 +4925,7 @@ this.subscriptions.push(subscription);
 
     console.log("Email is okay?" + this.validEmail);
     console.log("User has a valid BP Num " + this.externalWValidBP);
-    debugger;
+    
     //What other validation must be done here? | || clientIDNumber === undefined || clientIDNumber.trim() === ''
     if (
       phoneNumber === undefined || phoneNumber.trim() === '' ||
@@ -4953,10 +4953,10 @@ this.subscriptions.push(subscription);
 
   createNewClient() {
     try {
-      debugger;
+      
       this.userService.register(this.clientFullName, this.clientEmail, "Password@" + this.clientFullName).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          debugger;
+          
           this.newProfileComponent.onNewProfileCreate(
             data.dateSet.appUserId,
             this.clientFullName,
@@ -5554,7 +5554,7 @@ this.subscriptions.push(subscription);
   onToggleChange(selectedValue: string): void {
     // Fetch applications based on the selected role
     // Call the appropriate method here based on the selected value
-    debugger;
+    
     switch (selectedValue) {
       case "Reviewer":
         this.onFilterApplicationForMyReviews();
@@ -5597,16 +5597,16 @@ this.subscriptions.push(subscription);
 
     // Define a variable to keep track of the first toggle button
     let firstToggleSelected = false;
-    debugger;
+    
     if (this.AllCurrentUserRoles.length < 1) {
       this.pastAndCurrentReviews = false;
       /*this.onFilterApplicationsFprMyApplications()*/;
     }
     else {
       for (let i = 0; i < this.AllCurrentUserRoles.length; i++) {
-        debugger;
+        
         const roleName = this.AllCurrentUserRoles[i].roleName;
-        debugger;
+        
         if (roleName == 'Action Centre' || roleName == 'Create Wayleave' || roleName == 'Developer Config' || roleName == 'Configuration' || roleName == 'Audit Trail' || roleName == 'Generate Approval Pack and Rejection Pack' || roleName == 'Verify Payment' || roleName == 'Tracking' || roleName == 'Zone Admin') {
 
         }
@@ -6110,7 +6110,7 @@ this.subscriptions.push(subscription);
     this.applicationDataForView = [];
     this.Applications = [];
     this.isTableLoading = true;
-    debugger;
+    
     this.Applications.splice(0, this.Applications.length);
     this.applicationService.getApplicationsForFinalReview(this.CurrentUserProfile[0].zoneID, this.CurrentUser.appUserId).subscribe((data: any) => {
 
@@ -7031,7 +7031,7 @@ this.subscriptions.push(subscription);
 
 
   GoToBuildingApplication(isPlanArchive) {
-    debugger;
+    
     this.isArchivePlan = isPlanArchive;
     if (this.isArchitect == true) {
 
@@ -7051,11 +7051,11 @@ this.subscriptions.push(subscription);
   }
 
   getAllArchitectsForUser() {
-    debugger;
+    
     this.ArchitectsList.splice(0, this.ArchitectsList.length);
     this.UserlinkToArchitectService.getArchitectsForUser(this.CurrentUser.appUserId).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempArchitectList = {} as ArchitectsList;
           const current = data.dateSet[i];
@@ -7084,14 +7084,14 @@ this.subscriptions.push(subscription);
   }
 
     onCreateBuildingApplication() {
-    debugger;
+    
     /* NEEDED FOR FILE UPLOAD TO WORK CORRECTLY*/
     this.bpApplicationService.addUpdateBuildingApplication(0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.CurrentUser.appUserId, null, null, null,null).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         const current = data.dateSet;
         this.bpApplicationId = current.applicationID;
-        debugger;
+        
         this.sharedService.applicationID = this.bpApplicationId;
         this.sharedService.isPlanArchive = this.isArchivePlan;
         this.router.navigate(['/building-application']);
@@ -7105,15 +7105,15 @@ this.subscriptions.push(subscription);
 
   }
   GetAllBuildingApplications() {
-    debugger;
+    
     this.ApplicationsBP.splice(0, this.ApplicationsBP.length);
     this.bpApplicationService.getAllBuildingApplications().subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempApplication = {} as ApplicationsListBP;
           const current = data.dateSet[i];
-          debugger;
+          
           if (current.lsNumber != null) {
             if (current.physicalAddress == undefined) {
               tempApplication.propertyAddress = current.physicalAddress;
@@ -7192,7 +7192,7 @@ this.subscriptions.push(subscription);
   }
   saveDisabled: boolean = true;
   SelectArchitect(index: any) {
-    debugger;
+    
     const UserID = this.ArchitectsList[index].ArchitectUserId;
     this.sharedService.setArchitectID(UserID);
     this.sharedService.architectUserID;
@@ -7245,10 +7245,10 @@ this.subscriptions.push(subscription);
       }
 
       if (this.linkedArchitect == false) {
-        debugger;
+        
         this.UserlinkToArchitectService.addUpdateLinkedUser(0, this.architectUserId, this.architectFullName, this.CurrentUser.appUserId, this.CurrentUser.fullName, this.CurrentUser.appUserId, this.CurrentUserProfile[0].physicalAddress).subscribe((data: any) => {
           if (data.reponseCode == 1) {
-            debugger;
+            
             alert(data.responseMessage);
             this.getAllArchitectsForUser();
             this.modalService.dismissAll();
@@ -7264,16 +7264,16 @@ this.subscriptions.push(subscription);
     }
   }
   CheckForArchitectUser() {
-    debugger;
+    
     this.userPofileService.getAllArchitects().subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
-          debugger;
+          
           if (this.architectFullName == current.fullName && this.architectEmail == current.email) {
-            debugger;
+            
             this.exisitingArchitect = true;
             this.architectUserId = current.userID;
             this.CheckArchitectLink();
@@ -7296,12 +7296,12 @@ this.subscriptions.push(subscription);
 
     let name = this.architectFullName;
     let email = this.architectEmail;
-    debugger;
+    
     if (this.architectFullName == undefined || this.architectFullName.trim() == "" || this.architectEmail == undefined || this.architectEmail.trim() == "") {
       alert("Please enter architects and full name ");
     }
     else {
-      debugger;
+      
       const name = this.architectFullName.substring(0, this.architectFullName.indexOf(" "));
       const surname = this.architectFullName.substring(this.architectFullName.indexOf(" ") + 1);
       if (name.trim() == "" || surname.trim() == "") {
@@ -7318,12 +7318,12 @@ this.subscriptions.push(subscription);
   }
 
   checkingClientLink() {
-    debugger;
+    
     for (let i = 0; i < this.ArchitectClients.length; i++) {
-      debugger;
+      
       const tempArchitectClient = this.ArchitectClients[i];
       if (this.clientFullName == tempArchitectClient.ClientFullName && this.CurrentUser.fullName == tempArchitectClient.ArchitectName) {
-        debugger;
+        
         this.linkedClient = true;
         alert("This User is already listed as one of your clients");
         this.modalService.dismissAll();
@@ -7333,10 +7333,10 @@ this.subscriptions.push(subscription);
     }
 
     if (this.linkedClient == false) {
-      debugger;
+      
       this.userPofileService.checkForExistingUser(this.clientFullName, this.clientEmail).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          debugger;
+          
           const current = data.dateSet[0];
           this.UserlinkToArchitectService.addUpdateLinkedUser(0, this.CurrentUser.appUserId, this.CurrentUser.fullName, current.userID, this.clientFullName, this.CurrentUser.appUserId, current.physcialAddress).subscribe((data: any) => {
             if (data.responseCode == 1) {
@@ -7365,7 +7365,7 @@ this.subscriptions.push(subscription);
 
   // #region BPRegister Sindiswa 20 June 2024
   SearchForApplication() {
-    debugger;
+    
     const query = this.searchInput.toLowerCase();
 
     //const results = this.ApplicationsBP.filter(item => item.ownerName.toLowerCase().startsWith(query));
@@ -7384,7 +7384,7 @@ this.subscriptions.push(subscription);
   }
   // #endregion BPRegister Sindiswa 20 June 2024
   ViewProject(index) {
-    debugger;
+    
     let applicationId = this.ApplicationsBP[index].applicationID;
     this.sharedService.setApplicationID(applicationId);
     this.router.navigate(['bpview-project-info']);
@@ -7410,7 +7410,7 @@ this.subscriptions.push(subscription);
     }
   }
   GetAllNotificationsForApplication(applicationId: number) {
-    debugger;
+    
     this.bpNotificationService.getNotificationByApplicationID(applicationId).subscribe((data: any) => {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
@@ -7644,7 +7644,7 @@ this.subscriptions.push(subscription);
   }
 
   onAddressSelect(address: any) {
-    debugger;
+    
     this.clientPhysicalAddress = address.formatted_address;
    
   }
@@ -7654,7 +7654,7 @@ this.subscriptions.push(subscription);
   }
   //Home Tabs Kyle 27-05 - 24
   onChangeDataSource(event: MatTabChangeEvent) {
-    debugger;
+    
     switch (event.index) {
       case 0:
         this.dataSourceSA = this.scrutinyApplications;
@@ -7677,7 +7677,7 @@ this.subscriptions.push(subscription);
     this.bpApplicationService.getAllBuildingApplications().subscribe((data: any) => {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
-          debugger;
+          
           const current = data.dateSet[i];
           const tempApplication = {} as ApplicationsListBP;
           if (current.stage == "Land Survey" || current.stage == "Town Planning") {

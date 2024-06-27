@@ -353,7 +353,7 @@ export class AccessGroupsConfigComponent implements OnInit {
 
 
   async getAllUsers(index: any, addUserToAccessGroup: any) {
-    debugger;
+    
     this.currentAGID = this.AccessGroupList[index].AccessGroupID;
     this.currentAGName = this.AccessGroupList[index].AccessGroupName;
 
@@ -444,7 +444,7 @@ export class AccessGroupsConfigComponent implements OnInit {
 
   // Get all linked users 
   async getAllUsersLinkedUsers() {
-    debugger;
+    
     this.LinkedUsersList.splice(0, this.LinkedUsersList.length);
 
     await this.accessGroupsService.getAllLinkedUsers(this.currentAGID).subscribe((data: any) => {
@@ -483,7 +483,7 @@ export class AccessGroupsConfigComponent implements OnInit {
 
 
   onLinkUser() {
-    debugger;
+    
     //When a user is linked - the the LinkUserAcessGroupTable must be updated
     for (let i = 0; i < this.selection.selected.length; i++) {
       const current = this.selection.selected[i];
@@ -619,7 +619,7 @@ export class AccessGroupsConfigComponent implements OnInit {
 
 
   userSelectedForLink(user: any) {
-    debugger;
+    
     this.selection.toggle(user);
 
   }
@@ -633,9 +633,9 @@ export class AccessGroupsConfigComponent implements OnInit {
   //should I only be able to link people into my department?
   getSubdepartments() {
     this.subDepartmentService.getSubDepartmentsByDepartmentID(this.loggedInUsersDepartmentID).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempSubDepartmentList = {} as SubDepartmentList;
           const current = data.dateSet[i];
@@ -661,9 +661,9 @@ export class AccessGroupsConfigComponent implements OnInit {
  //or should I be able to link people to ANY subdepartement?
   getAllSubdepartments() {
     this.subDepartmentService.getSubDepartmentsList().subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempSubDepartmentList = {} as SubDepartmentList;
           const current = data.dateSet[i];
@@ -687,7 +687,7 @@ export class AccessGroupsConfigComponent implements OnInit {
   }
 
  /* getZones(subDeptID: any) {
-    debugger;
+    
     console.log('subDeptID:', subDeptID);
     this.ZonesList = [];
     this.zonesService.getZonesBySubDepartmentsID(subDeptID).subscribe((data: any) => {
@@ -716,7 +716,7 @@ export class AccessGroupsConfigComponent implements OnInit {
     })
   }*/
   getZones(subDeptID: any): Observable<any> { // Change the return type to Observable<any>
-    debugger;
+    
     console.log('subDeptID:', subDeptID);
     this.ZonesList = [];
     return this.zonesService.getZonesBySubDepartmentsID(subDeptID) // Return the observable here
@@ -809,7 +809,7 @@ export class AccessGroupsConfigComponent implements OnInit {
 
       if (index !== -1) {
         // Remove the access group from AccessGroupList
-        debugger;
+        
         this.accessGroupsService.deleteAccessGroupByID(this.currentAGID).subscribe((data: any) => {
 
           this.getAllAccessGroup();

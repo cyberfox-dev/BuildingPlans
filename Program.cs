@@ -48,6 +48,7 @@ builder.Services.AddScoped<IApplicationsService, ApplicationsService>();
 builder.Services.AddScoped<IProfessionalsLinksService, ProfessionalsLinksService>();
 builder.Services.AddScoped<ICommentBuilderService, CommentBuilderService>();
 builder.Services.AddScoped<IDocumentUploadService, DocumentUploadService>();
+builder.Services.AddScoped<IBPDocumentUploadService, BPDocumentUploadService>();
 builder.Services.AddScoped<ISubDepartmentForCommentService, SubDepartmentForCommentService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IMandatoryDocumentUploadsService, MandatoryDocumentUploadsService>();

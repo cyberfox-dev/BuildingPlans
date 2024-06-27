@@ -173,7 +173,7 @@ export class PermitComponentComponent implements OnInit {
           if (tempPTCList.isPaid == null) {
             tempPTCList.isPaid = false;
           }
-          debugger;
+          
           tempPTCList.hasSuperVisionFee = current.hasSuperVisionFee; //Request For Delete Kyle 22-02-24
           this.PTCList.push(tempPTCList);
 
@@ -198,7 +198,7 @@ export class PermitComponentComponent implements OnInit {
     let x = 0;
     
     for (var i = 0; i < this.PTCList.length; i++) {
-      debugger;
+      
       //Request for delete Kyle 22-02-24
       if (this.PTCList[i].hasSuperVisionFee == true) {
         if (this.PTCList[i].PermitDocName != null && this.PTCList[i].isPaid == true) {
@@ -319,7 +319,7 @@ export class PermitComponentComponent implements OnInit {
         //link.href = URL.createObjectURL(combinedPdfBlob);
         //link.download = 'combined.pdf';
         //link.click();
-        debugger;
+        
         const file = new File([combinedPdfBlob], 'permits.pdf', { type: 'application/pdf' });
 
         const formData = new FormData();
@@ -343,7 +343,7 @@ export class PermitComponentComponent implements OnInit {
   message = '';
 
   save() {
-    debugger;
+    
     const filesForUpload = this.shared.pullFilesForUpload();
     for (let i = 0; i < filesForUpload.length; i++) {
       const formData = new FormData();
@@ -369,7 +369,7 @@ export class PermitComponentComponent implements OnInit {
 
 
   uploadFinished = (event: any) => {
-    debugger;
+    
     this.response = event;
     console.log("this.response", this.response);
     console.log("this.response?.dbPath", this.response?.dbPath);
@@ -380,7 +380,7 @@ export class PermitComponentComponent implements OnInit {
 
     this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, "System Generated Pack", "System Generated Pack","Permits").subscribe((data: any) => {
       /*this.financial.addUpdateFinancial(0, "Approval Pack", "Generated Pack", documentName,this.response?.dbPath, this.ApplicationID,"System Generated Pack").subscribe((data: any) => {*/
-      debugger;
+      
       if (data.responseCode == 1) {
         this.moveToClosedStage();
       }
@@ -674,9 +674,9 @@ export class PermitComponentComponent implements OnInit {
 
   getAllEMBUsers() {
     this.userProfileService.getUsersBySubDepartmentName("EMB").subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempUser = {} as EMBUsersList;
           const current = data.dateSet[i];

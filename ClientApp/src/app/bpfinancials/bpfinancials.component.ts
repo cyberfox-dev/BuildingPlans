@@ -72,9 +72,9 @@ export class BPFinancialsComponent implements OnInit {
     this.modalService.open(UploadProof, { centered: true, size: 'xl' });
   }
   getAllFinancialDocuments() {
-    debugger;
+    
     this.financialService.getFinancialByApplicationID(this.ApplicationID).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];

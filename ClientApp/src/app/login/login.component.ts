@@ -298,12 +298,12 @@ export class LoginComponent implements OnInit {
 
 
   getAllRolesForUserForAllAG(userId: number): void {
-    debugger;
+    
     this.bpAccessGroupUserLinkService.getAllRolesForUserForAllAG(userId).subscribe(
       (data: any) => {
-        debugger;
+        
         if (data?.responseCode === 1 && data?.dateSet) {
-          debugger;
+          
           this.setLocalStorage("AllCurrentUserRoles", data.dateSet);
         } else {
           console.error("Invalid data structure received: ", data);
@@ -315,21 +315,21 @@ export class LoginComponent implements OnInit {
 
 
   onLogin(): void {
-    debugger;
+    
     if (this.loginForm.invalid) {
       console.error("Form is invalid");
       return;
     }
 
     this.isLoading = true;
-    debugger;
+    
     const email = this.loginForm.controls["email"].value;
     const password = this.loginForm.controls["password"].value;
 
     this.userService.login(email, password).pipe(
 
       switchMap((data: LoginResponse) => {
-        debugger;
+        
         if (data.responseCode === 1) {
           this.setLocalStorage("LoggedInUserInfo", data.dateSet);
           return this.getUserProfile();
@@ -340,7 +340,7 @@ export class LoginComponent implements OnInit {
         
         const userId = profileData.dateSet[0].userProfileID;
         this.setLocalStorage("userProfile", profileData.dateSet);
-        debugger;
+        
         this.getAllRolesForUserForAllAG(userId);
       }),
       catchError(error => {
@@ -1519,7 +1519,7 @@ this.userService.login(email, password).pipe(
 
   isArchitect: boolean = false;
   onCheckboxClick() {
-    debugger;
+    
     if (this.isArchitect == false) {
       this.isArchitect = true;
 

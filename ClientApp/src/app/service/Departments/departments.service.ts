@@ -14,7 +14,7 @@ export class DepartmentsService {
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
   public addUpdateDepartment(departmentID: number | null, departmentName: string | null, hasSubDepartment?: boolean | null, createdById?: string | null, /*zxNumberUpdate Sindiswa 01 March 2024*/ needsZXNumber?: boolean | null  ) {
-    debugger;
+    
     const body = {
       DepartmentID: departmentID,
       DepartmentName: departmentName,
@@ -46,7 +46,7 @@ export class DepartmentsService {
 
   //#region zxNumberUpdate Sindiswa 04 March 2024
   public countDepartmentsThatNeedZXNumber() {
-    debugger;
+    
     
     return this.httpClient.get(this.baseURL + "CountDepartmentsThatNeedZXNumber");
 
