@@ -126,8 +126,12 @@ import { BPDepartmentManagerComponent } from 'src/app/bpdepartment-manager/bpdep
 import { BpActionCenterComponent } from './bp-action-center/bp-action-center.component';
 import { BPFinancialsComponent } from './bpfinancials/bpfinancials.component';
 import { BpAlertModalComponent } from './bp-alert-modal/bp-alert-modal.component'; //BPDialogBoxes Sindiswa 24062024
+import { BpConfirmModalComponent } from './bp-confirm-modal/bp-confirm-modal.component'; //BPDialogBoxes Sindiswa 24062024
+import { BPServiceItemsComponent } from './bpservice-items/bpservice-items.component';
+import { BpMandoryDocumentsComponent } from './bp-mandory-documents/bp-mandory-documents.component';
 import { BpConfirmModalComponent } from './bp-confirm-modal/bp-confirm-modal.component';
 import { BPDepartmentDocRequiredUploadsComponent } from './bpdepartment-doc-required-uploads/bpdepartment-doc-required-uploads.component'; //BPDialogBoxes Sindiswa 24062024
+
 
 //import { MatExpansionModule } from '@angular/material/expansion';
 
@@ -239,6 +243,9 @@ import { BPDepartmentDocRequiredUploadsComponent } from './bpdepartment-doc-requ
     BpActionCenterComponent,
     BPFinancialsComponent,
     BpAlertModalComponent, //BPDialogBoxes Sindiswa 24062024
+    BpConfirmModalComponent, //BPDialogBoxes Sindiswa 24062024
+    BPServiceItemsComponent,
+    BpMandoryDocumentsComponent,
     BpConfirmModalComponent, BPDepartmentDocRequiredUploadsComponent, //BPDialogBoxes Sindiswa 24062024
   ],
   imports: [
@@ -349,6 +356,8 @@ import { BPDepartmentDocRequiredUploadsComponent } from './bpdepartment-doc-requ
     BPRolesConfigComponent,
     BPDepartmentManagerComponent,
     BPFinancialsComponent,
+    BPServiceItemsComponent,
+    BpMandoryDocumentsComponent,
   
   ],
   bootstrap: [AppComponent]

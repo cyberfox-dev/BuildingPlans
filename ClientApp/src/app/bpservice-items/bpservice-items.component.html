@@ -1,0 +1,116 @@
+<button mat-raised-button color="create" (click)=" onGetServiceItemCode(addService)">Add Service Item</button>
+
+<table mat-table class="mat-elevation-z8" [dataSource]="dataSource">
+
+  <ng-container matColumnDef="ServiceItemCode">
+    <th mat-header-cell *matHeaderCellDef>Service Item Code </th>
+    <td mat-cell *matCellDef="let element"> {{element.ServiceItemCode}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Rate">
+    <th mat-header-cell *matHeaderCellDef>Rate </th>
+    <td mat-cell *matCellDef="let element"> {{element.Rate}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="VatApplicable">
+    <th mat-header-cell *matHeaderCellDef>Has Vat </th>
+    <td mat-cell *matCellDef="let element"> {{element.VatApplicable}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let i = index">
+
+      <button mat-raised-button color="blue" (click)="onEditServiceItem(i,addService)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid-white.svg" class="icon"></button>
+      <button mat-raised-button color="warn" (click)="DeleteServiceItem(i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid-white.svg" class="icon"> </button>
+
+    </td>
+    <td mat-cell *matCellDef="let element">  </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<ng-template #addService let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" *ngIf="isEdit != true">Add New Service Item</h4>
+    <h4 class="modal-title" *ngIf=" isEdit == true">Edit Service Item</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+    <form>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="serviceItemCodeName" name="serviceItemCodeName" [(ngModel)]="serviceItemCode" placeholder="Enter Service Item Code" disabled>
+                <label for="serviceItemCodeName">Service Item Code</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <mat-form-field>
+            <mat-label>Select A FunctionalArea</mat-label>
+            <mat-select [(value)]="functionalArea">
+              <mat-option *ngFor="let area of functionalAreaList" value="{{area.FAName}}">{{area.FAName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field class="example-full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput id="description" name="description" [(ngModel)]="description"></textarea>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field class="example-full-width">
+            <mat-label>Remarks</mat-label>
+            <textarea matInput id="remarks" name="remarks" [(ngModel)]="remarks"></textarea>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="col">
+              <div class="form-floating mb-3 mt-3">
+                <input type="number" class="form-control" id="rate" name="rate" [(ngModel)]="rate" placeholder="Enter Rate" (keyup)=" onRateChange($event)">
+                <label for="rate">Rate</label>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="text" class="form-control" id="category" name="category" [(ngModel)]="category" placeholder="Enter category">
+              <label for="category">Category</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+        <mat-checkbox (change)=" onHasVatChange()" [checked]="hasVat">Omnibus Servitude In Title Deed</mat-checkbox>
+        </div>
+
+        <div class="row" *ngIf="hasVat">
+          <div class="col">
+            <div class="form-floating mb-3 mt-3">
+              <input type="number" class="form-control" id="total" name="total" [(ngModel)]="total" placeholder="Enter Total" disabled>
+              <label for="total">Total incl. Vat</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)=" onAddUpdateServiceItem()">Save</button>
+  </div>
+</ng-template>
