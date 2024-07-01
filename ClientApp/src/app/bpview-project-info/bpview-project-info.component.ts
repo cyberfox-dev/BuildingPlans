@@ -11,8 +11,6 @@ import { BehaviorSubject, map, Observable, switchMap } from 'rxjs';
 import { BPManDocService } from 'src/app/service/BPManDoc/bpman-doc.service';
 import { BPMandatoryStageDocumentService } from 'src/app/service/BPMandatoryStageDocuments/bpmandatory-stage-document.service';
 import {DocumentsComponentComponent } from'src/app/documents-component/documents-component.component'
-import { BehaviorSubject } from 'rxjs';
-import { BPManDocService } from 'src/app/service/BPManDoc/bpman-doc.service'
 import { BPCommentsService } from '../service/BPComments/bpcomments.service';
 import { DomSanitizer, SafeHtml, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 
@@ -69,18 +67,19 @@ export class BPViewProjectInfoComponent implements OnInit {
     private modalService: NgbModal,
     private BPManDocService: BPManDocService,
     private BPMandatoryStageDocumentService: BPMandatoryStageDocumentService,
-    private DocumentsComponentComponent: DocumentsComponentComponent,
+    private DocumentsComponentComponent: DocumentsComponentComponent, private bpCommentsService: BPCommentsService,
+    private sanitizer: DomSanitizer
   ) { }
 
   // Properties
   LSMandatoryDocuments = new BehaviorSubject<LSMandatoryDocumentsList[]>([]);
-  constructor(private bpService: BuildingApplicationsService, private sharedService: SharedService, private refreshService: RefreshService, private router: Router, private documentUploadService: DocumentUploadService, private bpDocumentUploadService: BPDocumentsUploadsService, private modalService: NgbModal, private BPManDocService: BPManDocService, private bpCommentsService: BPCommentsService, private sanitizer: DomSanitizer,) { }
+
   /* LSMandatoryDocuments = new BehaviorSubject<LSMandatoryDocumentsList[]>([]);*/
 
   DocumentList: DocumentsList[] = [];
 
   LSMandatoryDocumentsList: Observable<LSMandatoryDocumentsList[]>;
-  LSMandatoryDocumentsList: LSMandatoryDocumentsList[] = [];
+
   CommentsList: CommentsList[] = [];
 
   displayedColumns: string[] = ['DocumentName', 'actions'];
@@ -148,7 +147,7 @@ export class BPViewProjectInfoComponent implements OnInit {
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
     this.applicationId = this.sharedService.getApplicationID();
     this.getApplicationInfo();
-    
+
 
 
 
@@ -163,18 +162,16 @@ export class BPViewProjectInfoComponent implements OnInit {
 
 
   }
-   getApplicationInfo() {
-    
-     this.bpService.getBuildingApplicationByApplicationID(this.applicationId).subscribe((data: any) => {
   sanitizeHTML(comment: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(comment);
   }
+
   async getApplicationInfo() {
     debugger;
     await this.bpService.getBuildingApplicationByApplicationID(this.applicationId).subscribe((data: any) => {
       if (data.responseCode == 1) {
         const current = data.dateSet[0];
-        
+
         this.lsNumber = current.lsNumber;
         this.typeOfDev = current.typeOfDevelopment;
         this.typeOfAddress = current.addressType;
@@ -205,14 +202,14 @@ export class BPViewProjectInfoComponent implements OnInit {
       }
       else {
         alert(data.responseMessage);
-       }
-       this.getAllDocumentForApplication();
+      }
+      this.getAllDocumentForApplication();
       console.log("response", data);
     }, error => {
       console.log("Error: ", error);
     })
   }
-getAllDocumentForApplication() {
+  getAllDocumentForApplication() {
     debugger;
     this.bpDocumentUploadService.getAllDocumentsForApplication(this.applicationId).subscribe((data: any) => {
       debugger;
@@ -248,11 +245,11 @@ getAllDocumentForApplication() {
   viewDocument(index: any) {
 
     // Make an HTTP GET request to fetch the document
-    
+
     fetch(this.apiUrl + `bPDocumentUploads/GetDocument?filename=${this.DocumentList[index].DocumentName}`)
 
       .then(response => {
-        
+
         if (response.ok) {
           // The response status is in the 200 range
 
@@ -287,7 +284,7 @@ getAllDocumentForApplication() {
 
 
 
-  
+
   loadBPDocumentsList() {
     debugger;
     this.getBPDocumentsList().subscribe(
@@ -312,33 +309,10 @@ getAllDocumentForApplication() {
       throw new Error('Unknown stage type');
     }
 
-/*    const existingDocument = this.LSMandatoryDocumentsList.find(doc =>
-      this.DocumentsList.some(existingDoc => existingDoc.documentName === doc.mandatoryDocumentName)
-    );*/
-  getAllManDocsByStageID() {
-    debugger;
-    /*      const newList = LSMandatoryDocumentsList.map(current => {
-            const tempMandatoryDocumentsLinkedStagesList = {} as LSMandatoryDocumentsList;
-             //Project size Kyle 27-02-24
-              tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
-              tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
-              tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
-              tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
-              tempMandatoryDocumentsLinkedStagesList.stageName = null;
-              tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
-              return tempMandatoryDocumentsLinkedStagesList;
-    
-          });
-    
-          this.LSMandatoryDocuments.next(newList);
-          // set totalDocs to the length of the list
-    *//*      this.totalDocs = newList.length;
-          this.totalDocs2 = Number(this.totalDocs).toString();*/
-    debugger;
-    this.LSMandatoryDocumentsList.splice(0, this.LSMandatoryDocumentsList.length);
+    /*    const existingDocument = this.LSMandatoryDocumentsList.find(doc =>
+          this.DocumentsList.some(existingDoc => existingDoc.documentName === doc.mandatoryDocumentName)
+        );*/
 
-    this.BPManDocService.getAllMandatoryDocuments().subscribe((data: any) => {
-      if (data.responseCode == 1) {
 
     return this.BPMandatoryStageDocumentService.getAllDocumentsForStage("Relaxation", stageType)
       .pipe(
@@ -350,21 +324,12 @@ getAllDocumentForApplication() {
 
               // Get the document name to be checked after substring operation
               const currentDocumentName = current.documentName;
-        debugger;
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempMandatoryDocumentsLinkedStagesList = {} as LSMandatoryDocumentsList;
-          const current = data.dateSet[i];
-          tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
-          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
-          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
-          tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
 
               // Check if currentDocumentName exists in this.DocumentsList after substring operation
               const documentExists = this.DocumentList.some(doc => {
                 const subDocumentName = doc.DocumentName.substring(0, doc.DocumentName.indexOf('_'));
                 return subDocumentName === currentDocumentName;
               });
-          tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
 
               if (!documentExists) {
                 const tempRequiredDocuments = {
@@ -386,21 +351,6 @@ getAllDocumentForApplication() {
           }
         })
       );
-          this.LSMandatoryDocumentsList.push(tempMandatoryDocumentsLinkedStagesList);
-          // this.sharedService.setStageData(this.StagesList);
-        }
-        //this.getAllManDocsByStageID();
-        this.LSMandatoryDocumentsTable?.renderRows();
-      }
-      else {
-        //alert("Invalid Email or Password");
-        alert(data.responseMessage);
-      }
-      console.log("reponse", data);
-
-    }, error => {
-      console.log("Error: ", error);
-    })
   }
 
   displayedColumnsLSManDoc: string[] = ['mandatoryDocumentName', 'actions'];
@@ -417,10 +367,10 @@ getAllDocumentForApplication() {
   public successfulUploads2 = '';
   fileAttrs: string[] = [];
   onPassFileName(event: { uploadFor: string; fileName: string }, index: any) {
-    
+
     const { uploadFor, fileName } = event;
     // const index = parseInt(uploadFor.substring('CoverLetter'.length));
-    
+
 
     this.fileAttrs[index] = this.LSMandatoryDocumentsList[index].mandatoryDocumentName;
 
@@ -440,7 +390,7 @@ getAllDocumentForApplication() {
     this.getAllDocumentForApplication();
     this.DocumentsComponentComponent.getAllDocsForApplication();
   }
-  }
+
 
   GetAllCommentsForApplication() {
     this.bpCommentsService.getAllCommentsForApplication(this.applicationId).subscribe((data: any) => {
@@ -467,11 +417,11 @@ getAllDocumentForApplication() {
       else {
 
       }
-      
+
     }, error => {
       console.log(error);
     })
   }
-  canClarify:boolean
+
 }
 
