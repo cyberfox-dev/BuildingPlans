@@ -121,7 +121,7 @@ export class BPDemolitionApplicationComponent implements OnInit {
   Create() {
     this.applicantAddress = this.applicantStreetNumber + " " + this.applicantStreetName + " " + this.applicantSuburb + " " + this.applicantCity + " " + this.applicantPostalCode;
     this.siteAddress = this.siteStreetNumber + " " + this.siteStreetName + " " + this.siteSuburb + " " + this.siteCity + " " + this.sitePostalCode;
-    debugger;
+    
     this.bpDemolitionService.addUpdateDemolitionApplication(0, this.mainMunicipality, this.applicantName, this.applicantSurname, this.applicantIDNumber, this.applicantEmail, this.applicantContact, this.isOwner, this.ownerIDNumber, this.ownerName, this.ownerSurname, this.ownerEmail, this.ownerContact, this.applicantAddress, this.siteAddress, this.siteERFNumber, this.siteCadastralDescription, this.reasonForDemolition, this.propertyExistingUser, this.DemolitionFees, this.isArchive, this.CurrentUser.appUserId,null,null,null).subscribe((data: any) => {
       if (data.responseCode == 1) {
         this.router.navigate(["/home"]);

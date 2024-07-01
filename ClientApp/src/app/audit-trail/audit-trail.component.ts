@@ -300,7 +300,7 @@ export class AuditTrailComponent implements OnInit {
   }
   async sortDataRange() {
     
-    debugger;
+    
     let sortedArrayID = await [...this.AuditTrailList].sort((a, b) => {
       if (a.ApplicationID == b.ApplicationID) {
         return a.DateCreated - b.DateCreated;
@@ -328,7 +328,7 @@ export class AuditTrailComponent implements OnInit {
 
   getAuditTrailDataByDateRange() {
     this.isLoading = true;
-    debugger;
+    
     this.fileName = "Audit Trail From " + this.expectedStartDate + " To " + this.expectedEndType;
     this.AuditTrailList.splice(0, this.AuditTrailList.length);
     const startDate = this.expectedStartDate;
@@ -917,7 +917,7 @@ export class AuditTrailComponent implements OnInit {
     this.auditTrailService.getAllAuditTrailItemsForApplication(applicationID).subscribe(async (data: any) => {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
-          debugger;
+          
           const tempAuditTrail = {} as AuditTrailList;
           const current = data.dateSet[i];
 
@@ -925,7 +925,7 @@ export class AuditTrailComponent implements OnInit {
 
           
             this.expectedStartDateSub;
-            debugger;
+            
             tempAuditTrail.ApplicationID = current.applicationID;
             tempAuditTrail.AssignedTo = "Null";
             tempAuditTrail.Comment = "Null";
@@ -950,7 +950,7 @@ export class AuditTrailComponent implements OnInit {
           }
 
         
-        debugger;
+        
         console.log("Audit trail selected report", this.AuditTrailList);
 
       }

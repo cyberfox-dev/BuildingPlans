@@ -244,12 +244,12 @@ export class ApplicationAlertsComponent implements OnInit {
           }
 
           if (current.createdById == this.CurrentUser.appUserId && current.currentStageName == "PTW") {
-            debugger;
+            
             const hasDocs = await this.checkIfHasDocs(current.applicationID);
             
-            debugger;
+            
             if (hasDocs.length > 0 && (hasDocs.includes(false) == false)) {
-              debugger;
+              
               tempApplicationAlert.ApplicationID = current.applicationID;
               tempApplicationAlert.Description = "Consolidate Permit To Work";
               tempApplicationAlert.ProjectNumber = current.projectNumber;

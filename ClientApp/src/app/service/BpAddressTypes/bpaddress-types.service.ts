@@ -14,7 +14,7 @@ export class BPAddressTypesService {
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
   public getAllAddressTypes() {
-    debugger;
+    
     console.log(this.apiUrl)
     return this.httpClient.get(this.baseURL +"GetAllAddressTypes")
   }
@@ -25,7 +25,7 @@ export class BPAddressTypesService {
       TypeName: Type,
       CreatedByID: createdById
     }
-    debugger;
+    
     
     return this.httpClient.post(this.baseURL + "AddUpdateAddressType", body);
   }

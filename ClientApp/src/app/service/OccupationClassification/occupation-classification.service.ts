@@ -13,7 +13,7 @@ export class OccupationClassificationService {
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
   public addUpdateOccupationClassfication(occupationID: number | null, occupationName: string | null, occupationCode: string | null, occupancy: string | null, occupancyDescription: string | null, itemTypeID: number | null, createdByID: string | null) {
-    debugger;
+    
     const body = {
       OccupationID: occupationID,
       OccupationName: occupationName,
@@ -31,7 +31,7 @@ export class OccupationClassificationService {
   }
 
   public deleteOccupationClassificationByOccupationID(occupationID: number | null) {
-    debugger;
+    
     return this.httpClient.post(this.baseURL + "DeleteOccupationClassificationByOccupationID", occupationID);
   }
   public getAllClassificationForFunctionalArea(functionalArea: string | null) {

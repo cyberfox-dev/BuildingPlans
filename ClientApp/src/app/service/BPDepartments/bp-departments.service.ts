@@ -13,7 +13,7 @@ export class BpDepartmentsService {
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
   public addUpdateDepartment(departmentID: number | null, departmentName: string | null, hasSubDepartment?: boolean, createdById?: string, functionalArea?: string ) {
-    debugger;
+    
     const body = {
       DepartmentID: departmentID,
       DepartmentName: departmentName,
@@ -44,7 +44,7 @@ export class BpDepartmentsService {
   }
 
   public getAllDepartmentsForFunctionalArea(functionalArea) {
-    debugger;
+    
     const body = {
       FunctionalArea: functionalArea,
       hasSubDepartment:false

@@ -876,11 +876,11 @@ export class BpActionCenterComponent implements OnInit {
 
         const current = data.dateSet[0];
         this.PermitIssue
-        debugger;
+        
         if (current.userAssaignedToComment == null) {
-          debugger;
+          
           const canAssign = this.CurrentUserRoles.map(x => x.roleName == "Permit Coordinator");
-          debugger;
+          
           for (let i = 0; i < canAssign.length; i++) {
             if (canAssign[i] == true) {
               this.CanAssignPermitIssuer = true;
@@ -888,7 +888,7 @@ export class BpActionCenterComponent implements OnInit {
           }
         }
         else if (current.userAssaignedToComment != null) {
-          debugger;
+          
           if (current.userAssaignedToComment == this.CurrentUser.appUserId && current.permitComment == null) {
             this.canApprovePermit = true;
           }
@@ -3144,6 +3144,99 @@ export class BpActionCenterComponent implements OnInit {
 
   }
 
+  moveToPaidBPApplicationTP() {
+    this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+      null, null, null, null, null, null, null,
+      null, null, null, null, null, null, null, null, null,
+      null, null, null, null, null, null, null,
+      null, null, null, null, null, null, "Relaxation", "TP Relaxation - Paid", 2, null).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          
+          /*            this.CreateNotification(this.CurrentUser.appUserId);
+                      this.CreateNotification(this.clientUserID);*/
+          /*  this.moveToFinalApprovalForDepartment();*/
+          this.modalService.dismissAll();
+          this.openSnackBar("Application Actioned");
+          this.router.navigate(["/home"]);
+        }
+        else {
+          alert(data.responseMessage)
+        }
+      }, error => {
+        console.log("BuildingApplicationError: ", error)
+      })
+  }
+
+  onCommentTP(interact: any) {
+    switch (interact) {
+
+      case "Approve": {
+
+        this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+          null, null, null, null, null, null, null,
+          null, null, null, null, null, null, null, null, null,
+          null, null, null, null, null, null, null,
+          null, null, null, null, null, null, "Submission Plan", "CLosed", 1, null).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              
+              /*            this.CreateNotification(this.CurrentUser.appUserId);
+                          this.CreateNotification(this.clientUserID);*/
+              /*  this.moveToFinalApprovalForDepartment();*/
+              this.modalService.dismissAll();
+
+              this.openSnackBar("Application Actioned");
+
+            }
+            else {
+              alert(data.responseMessage)
+            }
+          }, error => {
+            console.log("BuildingApplicationError: ", error)
+          })
+
+
+
+
+
+        break;
+      }
+
+      case "Reject": {
+
+        this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+          null, null, null, null, null, null, null,
+          null, null, null, null, null, null, null, null, null,
+          null, null, null, null, null, null, null,
+          null, null, null, null, null, null, "Relaxation", "TP Relaxation - Unpaid", 2, null).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              
+              /*            this.CreateNotification(this.CurrentUser.appUserId);
+                          this.CreateNotification(this.clientUserID);*/
+              /*  this.moveToFinalApprovalForDepartment();*/
+              this.modalService.dismissAll();
+              this.openSnackBar("Application Actioned");
+              this.getAllServiceItemsForRelaxation();
+            }
+            else {
+              alert(data.responseMessage)
+            }
+          }, error => {
+            console.log("BuildingApplicationError: ", error)
+          })
+
+
+
+        break;
+      }
+
+     
+      default: {
+
+        break;
+      }
+    }
+  }
+
   onComment(interact: any) {
 
     let SubDepartmentName = "";
@@ -3164,7 +3257,7 @@ export class BpActionCenterComponent implements OnInit {
           null, null, null, null, null, null, null,
           null, null, null, null, null, null, "Submission Plan", "TP Review", 1, null).subscribe((data: any) => {
           if (data.responseCode == 1) {
-            debugger;
+            
 /*            this.CreateNotification(this.CurrentUser.appUserId);
             this.CreateNotification(this.clientUserID);*/
             /*  this.moveToFinalApprovalForDepartment();*/
@@ -3195,7 +3288,7 @@ export class BpActionCenterComponent implements OnInit {
           null, null, null, null, null, null, null,
           null, null, null, null, null, null, "Relaxation", "LS Relaxation - Unpaid", 2, null).subscribe((data: any) => {
             if (data.responseCode == 1) {
-              debugger;
+              
               /*            this.CreateNotification(this.CurrentUser.appUserId);
                           this.CreateNotification(this.clientUserID);*/
               /*  this.moveToFinalApprovalForDepartment();*/
@@ -5471,7 +5564,7 @@ export class BpActionCenterComponent implements OnInit {
   CurrentUserZoneName = '';
 
   getZoneForCurrentUser() {
-    debugger;
+    
   
 
 
@@ -5716,7 +5809,7 @@ export class BpActionCenterComponent implements OnInit {
   asWhat: string;
 
   actionCentreView(content: any) {
-    debugger;
+    
     this.subDepartmentForCommentService.getAssignedReviewer(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe(async (data: any) => {
       if (data.responseCode == 1) {
 
@@ -7164,10 +7257,10 @@ export class BpActionCenterComponent implements OnInit {
 
 
   getAllPermitIssuersForSubDepartment(permitIssuers: any) {
-    debugger;
+    
     this.PermitIssuerList.splice(0, this.PermitIssuerList.length);
     this.accessGroupsService.getUsersBasedOnRoleName("Permit Issuer", this.loggedInUsersSubDepartmentID, this.CurrentUserProfile[0].zoneID).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
 
@@ -7200,7 +7293,7 @@ export class BpActionCenterComponent implements OnInit {
   }
 
   PermitIssuerSelectedForManualLink(user: any) {
-    debugger;
+    
     this.PermitIssuerForManualLink.clear();
     this.PermitIssuerForManualLink.toggle(user);
 
@@ -7391,7 +7484,7 @@ export class BpActionCenterComponent implements OnInit {
 
   }
    getApplicationInfo() {
-    debugger;
+    
      this.bpService.getBuildingApplicationByApplicationID(this.bpApplicationId).subscribe((data: any) => {
       if (data.responseCode == 1) {
 
@@ -7399,7 +7492,7 @@ export class BpActionCenterComponent implements OnInit {
         const tempApplication = {} as CurrentApplicationBeingViewed;
 
         const current = data.dateSet[0];
-        debugger;
+        
         tempApplication.lsNumber = current.lsNumber;
         tempApplication.typeOfDev = current.typeOfDevelopment;
         tempApplication.typeOfAddress = current.addressType;
@@ -7430,7 +7523,7 @@ export class BpActionCenterComponent implements OnInit {
       null, null, null, null, null, null, null,
       null, null, null, null, null, null, "Relaxation", "LS Relaxation - Paid", 2, null).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          debugger;
+          
           /*            this.CreateNotification(this.CurrentUser.appUserId);
                       this.CreateNotification(this.clientUserID);*/
           /*  this.moveToFinalApprovalForDepartment();*/
@@ -7464,7 +7557,7 @@ export class BpActionCenterComponent implements OnInit {
           this.ServiceItemListBPRelaxationLS.push(tempServiceItem);
         }
         console.log("ServiceItemListBPRelaxationLSServiceItemListBPRelaxationLSServiceItemListBPRelaxationLSServiceItemListBPRelaxationLS", data);
-        debugger;
+        
         this.generateBPLSRelaxationInvoice() 
       }
       else {
@@ -7567,7 +7660,7 @@ export class BpActionCenterComponent implements OnInit {
     doc.setFont('CustomFontBold', 'bold');
     doc.text('Status Summary:', 10, 110, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
     doc.setFont('CustomFont', 'normal');
-    debugger;
+    
     const data = this.ServiceItemListBPRelaxationLS.map(deposit => [deposit.serviceItemCode, deposit.Description, deposit.totalVat]);
     // Render the table in the PDF document
     autoTable(doc, {

@@ -54,14 +54,14 @@ export class EditArchitectsComponent implements OnInit {
   }
 
   GetAllAchitectsForUser() {
-    debugger;
+    
     this.ArchitectsList.splice(0, this.ArchitectsList.length);
     this.UserLinkToArchitectService.getArchitectsForUser(this.UserID).subscribe((data: any) => {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempArchitect = {} as ArchitectsList;
           const current = data.dateSet[i];
-          debugger;
+          
           tempArchitect.UserLinkID = current.userLinkID;
           tempArchitect.ArchitectName = current.architectName;
           tempArchitect.ArchitectUserId = current.architectUserID;
@@ -143,7 +143,7 @@ export class EditArchitectsComponent implements OnInit {
 
           if (this.architectName == current.fullName && this.architectEmail == current.email ) {
             found = true;
-            debugger;
+            
             this.architectUserID = current.userID;
             break;
           }
@@ -174,7 +174,7 @@ export class EditArchitectsComponent implements OnInit {
     }
 
     if (existingLink == false) {
-      debugger;
+      
       this.UserLinkToArchitectService.addUpdateLinkedUser(0, this.architectUserID, this.architectName, this.CurrentUser.appUserId, this.CurrentUser.fullName,this.CurrentUser.appUserId, this.CurrentUserProfile[0].physcialAddress).subscribe((data: any) => {
         if (data.responseCode == 1) {
           alert(data.responseMessage);
@@ -195,7 +195,7 @@ export class EditArchitectsComponent implements OnInit {
     this.UserLinkToArchitectService.deleteUserLinkToArchitect(userLinkID).subscribe((data: any) => {
       if (data.responseCode == 1) {
         alert(data.responseMessage);
-        debugger;
+        
         this.GetAllAchitectsForUser();
       }
       else {

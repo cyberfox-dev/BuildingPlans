@@ -69,9 +69,9 @@ export class BPFileUploadComponent implements OnInit {
   }
 
   uploadFile(files: any) {
-    debugger;
+    
     if (this.ApplicationID == "isRep") {
-      debugger;
+      
       if (files && files.length === 0) {
         return;
       }
@@ -88,20 +88,20 @@ export class BPFileUploadComponent implements OnInit {
 
       const fileNameParts = fileToUpload.name.split('.');
       this.fileExtention = fileNameParts.length > 1 ? `.${fileNameParts[fileNameParts.length - 1].toLowerCase()}` : "";
-      debugger;
+      
       if (fileNameParts.length > 2 || this.fileExtention === ".webp") {
         if (this.fileExtention === ".webp") {
           alert("You cannot upload .webp files!");
-          debugger;
+          
         } else {
           alert("Invalid file name.");
-          debugger;
+          
         }
         return;
       }
 
       if (this.UploadFor == "Doc") {
-        debugger;
+        
         if (this.ApplicationID === undefined) {
           this.fileUploadName = fileNameParts[0];
         } else {
@@ -110,25 +110,25 @@ export class BPFileUploadComponent implements OnInit {
 
       }
       else {
-        debugger;
+        
         this.fileUploadName = this.UploadFor.substring(' ');
       }
 
       const handleResponse = (data: any) => {
-        debugger;
+        
         if (data?.responseCode == 1) {
-          debugger;
+          
           const matchedDocument = data.dateSet.find(doc => doc.documentName === this.fileUploadName + this.fileExtention);
 
           if (matchedDocument) {
-            debugger;
+            
             alert('Oops, you cannot upload files with the same name!');
           } else {
             this.fileName = fileToUpload.name;
             this.passFileName.emit({ uploadFor: this.UploadFor, fileName: fileToUpload.name });
-            debugger;
+            
             this.UploadDocuments(fileToUpload, this.fileUploadName + this.fileExtention);
-            debugger;
+            
           }
         } else {
           alert(data?.responseMessage);
@@ -147,7 +147,7 @@ export class BPFileUploadComponent implements OnInit {
 
       serviceCall().subscribe(handleResponse, handleError);
     } else {
-      debugger;
+      
       if (files && files.length === 0) {
         return;
       }
@@ -164,20 +164,20 @@ export class BPFileUploadComponent implements OnInit {
 
       const fileNameParts = fileToUpload.name.split('.');
       this.fileExtention = fileNameParts.length > 1 ? `.${fileNameParts[fileNameParts.length - 1].toLowerCase()}` : "";
-      debugger;
+      
       if (fileNameParts.length > 2 || this.fileExtention === ".webp") {
         if (this.fileExtention === ".webp") {
           alert("You cannot upload .webp files!");
-          debugger;
+          
         } else {
           alert("Invalid file name.");
-          debugger;
+          
         }
         return;
       }
 
       if (this.UploadFor == "Doc") {
-        debugger;
+        
         if (this.ApplicationID === undefined) {
           this.fileUploadName = fileNameParts[0] + "_appID";
         } else {
@@ -186,24 +186,24 @@ export class BPFileUploadComponent implements OnInit {
 
       }
       else {
-        debugger;
+        
         this.fileUploadName = this.UploadFor.substring(' ') + "_appID" + this.ApplicationID;
       }
 
       const handleResponse = (data: any) => {
-        debugger;
+        
         if (data?.responseCode == 1) {
-          debugger;
+          
           const matchedDocument = data.dateSet.find(doc => doc.documentName === this.fileUploadName + this.fileExtention);
 
           if (matchedDocument) {
-            debugger;
+            
             alert('Oops, you cannot upload files with the same name!');
           } else {
             this.fileName = fileToUpload.name;
             this.passFileName.emit({ uploadFor: this.UploadFor, fileName: fileToUpload.name });
             this.UploadDocuments(fileToUpload, this.fileUploadName + this.fileExtention);
-            debugger;
+            
           }
         } else {
           alert(data?.responseMessage);
@@ -227,11 +227,11 @@ export class BPFileUploadComponent implements OnInit {
   UploadDocuments(file: File, fileName: string): void {
     const formData = new FormData();
     formData.append('file', file, fileName);
-    debugger;
+    
     this.http.post(this.apiUrl + 'bPDocumentUploads/UploadDocument', formData, { reportProgress: true, observe: 'events' })
       .subscribe({
         next: (event) => {
-          debugger;
+          
           if (event.type === HttpEventType.UploadProgress && event.total) {
             this, this.progress = Math.round(100 * event.loaded / event.total);
           }
@@ -241,7 +241,7 @@ export class BPFileUploadComponent implements OnInit {
               this.financialuploadFinished(event.body,this.ApplicationID,this.CurrentUser);
             }
             else {
-              debugger;
+              
               this.uploadFinished(event.body, this.ApplicationID, this.CurrentUser);
             }
 
@@ -257,9 +257,9 @@ export class BPFileUploadComponent implements OnInit {
     this.response = event;
 
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
-    debugger;
+    
     this.bpDocumentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, applicationID, applicationData.appUserId, this.CurrentUser.appUserId, "Building Application", null, null, null, null).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
         this.onUploadSuccess.emit(event.body);
         alert(data.responseMessage);
@@ -280,10 +280,10 @@ export class BPFileUploadComponent implements OnInit {
     }
 
     const handleResponse = (data: any) => {
-      debugger;
+      
       if (data?.responseCode == 1) {
         const matchedDocument = data.dateSet.find(doc => doc.documentName === this.fileUploadName + this.fileExtention);
-        debugger;
+        
         if (matchedDocument) {
           if (this.isFinancial) {
             this.bpFinancialService.deleteFinancial(matchedDocument.financialID).subscribe(response => {
@@ -341,7 +341,7 @@ export class BPFileUploadComponent implements OnInit {
   }
 
   financialuploadFinished = (event: any, applicationID: any, applicationData: any) => {
-    debugger;
+    
     this.response = event;
     console.log("this.response", this.response);
     console.log("this.response?.dbPath", this.response?.dbPath);

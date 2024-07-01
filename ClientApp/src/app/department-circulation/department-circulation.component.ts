@@ -110,7 +110,7 @@ export class DepartmentCirculationComponent implements OnInit {
 /*JJS 07-03-24 GIS Reviewer*/
         for (var i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
-          debugger;
+          
           const tempSubDepartmentList = {} as SubDepartmentList;
           tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
           tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
@@ -131,7 +131,7 @@ export class DepartmentCirculationComponent implements OnInit {
           }
 
           tempSubDepartmentList.UserAssaignedToComment = current.userAssaignedToComment; //projectTracker Sindiswa 12 January 2024
-          debugger;
+          
           //#region projectTracker Sindiswa 15 January 2024
           if (tempSubDepartmentList.UserAssaignedToComment === "EndOfCommentProcess") {
             tempSubDepartmentList.zoneUser = "End Of Comment Process";
@@ -177,7 +177,7 @@ export class DepartmentCirculationComponent implements OnInit {
 
   async getUserName(userID: any): Promise<string> {
     try {
-      debugger;
+      
       const data: any = await this.userProfileService.getUserProfileById(userID).toPromise();
       
       if (data.responseCode === 1) {

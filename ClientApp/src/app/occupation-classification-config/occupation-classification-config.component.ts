@@ -66,7 +66,7 @@ export class OccupationClassificationConfigComponent implements OnInit {
     this.OccupationClassificationsList.splice(0, this.OccupationClassificationsList.length);
     this.occupationClassificationService.getAllOccupationClassifications().subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempClassificationList = {} as ClassificationsList;
           const current = data.dateSet[i];
@@ -99,7 +99,7 @@ export class OccupationClassificationConfigComponent implements OnInit {
     let occupationName = this.occupationName;
     let occupationCode = this.occupationCode;
     let itemTypeID = this.itemTypeID;
-    debugger;
+    
     if (occupationCode == undefined || occupationName == undefined || itemTypeID == undefined
       || occupationName.trim() == "" || occupationCode.trim() == "" ) {
 
@@ -111,11 +111,11 @@ export class OccupationClassificationConfigComponent implements OnInit {
   }
 
   AddUpdateClassification() {
-    debugger;
+    
     this.occupationClassificationService.addUpdateOccupationClassfication(this.occupationID, this.occupationName, this.occupationCode, this.occupancy, this.occupancyDescription, this.itemTypeID, this.CurrentUser.appUserId).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         alert(data.responseMessage);
         this.getAllOccupationClassifications();
         this.CLearData();
@@ -131,7 +131,7 @@ export class OccupationClassificationConfigComponent implements OnInit {
   }
 
   EditClassfication(index: any) {
-    debugger;
+    
     const current = this.OccupationClassificationsList[index];
     this.occupationID = current.OccupationID;
     this.occupationName = current.OccupationName;
@@ -152,12 +152,12 @@ export class OccupationClassificationConfigComponent implements OnInit {
   }
 
   onDeleteClassification(index: any) {
-    debugger;
+    
     let occupationID = this.OccupationClassificationsList[index].OccupationID;
 
     this.occupationClassificationService.deleteOccupationClassificationByOccupationID(occupationID).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         alert(data.responseMessage);
         this.getAllOccupationClassifications();
        

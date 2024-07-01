@@ -246,7 +246,7 @@ export class BuildingApplicationComponent implements OnInit {
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
-    debugger;
+    
    
     this.option = this.sharedService.option;
     this.clientUserID = this.sharedService.clientUserID;
@@ -272,10 +272,10 @@ export class BuildingApplicationComponent implements OnInit {
   }
 
   onPassFileName(event: { uploadFor: string; fileName: string }, index: any) {
-    debugger;
+    
     const { uploadFor, fileName } = event;
     // const index = parseInt(uploadFor.substring('CoverLetter'.length));
-    debugger;
+    
    
     this.fileAttrs[index] = this.BPMandatoryDocumentList[index].mandatoryDocumentName;
     
@@ -366,13 +366,13 @@ export class BuildingApplicationComponent implements OnInit {
   addUploader(index: any) {
     let currentList = this.MandatoryDocumentsLinkedStagesList.getValue();
     let current = currentList[index];
-    debugger;
+    
     // Extract base name without number at the end
     let baseName = current.mandatoryDocumentName.replace(/(\d+)$/, "");
 
     let currentNumber = 1; // Start with appending 1
     let newName = baseName + currentNumber;
-    debugger;
+    
     while (currentList.some(doc => doc.mandatoryDocumentName === newName)) {
       currentNumber++;
       newName = baseName + currentNumber;
@@ -478,12 +478,12 @@ export class BuildingApplicationComponent implements OnInit {
 
   
   buildProjectNumber() {
-    debugger;
+    
     
 
-    debugger;
+    
     if (this.lSNumber == "") {
-      debugger;
+      
       this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
         if (data.responseCode == 1) {
 
@@ -497,7 +497,7 @@ export class BuildingApplicationComponent implements OnInit {
           this.configService.addUpdateConfig(configId, "ProjectNumberTracker", null, (Number(this.configNumberOfProject) + 1).toString(), this.configMonthYear, null, null).subscribe((data: any) => {
             if (data.responseCode == 1) {
               this.lSNumber = "LS:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear;
-              debugger;
+              
               this.AddUpdateBuildingApplication();
             }
             else {
@@ -567,7 +567,7 @@ export class BuildingApplicationComponent implements OnInit {
   }
 
   updateMandatoryDocumentsLinkedStagesList(list: any[]) {
-    debugger;
+    
     const newList = list.map(current => {
       const tempMandatoryDocumentsLinkedStagesList = {} as MandatoryDocumentsLinkedStagesList;
       tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
@@ -581,13 +581,13 @@ export class BuildingApplicationComponent implements OnInit {
 
     this.MandatoryDocumentsLinkedStagesList.next(newList);
     // set totalDocs to the length of the list
-    debugger;
+    
     this.totalDocs = newList.length;
     this.totalDocs2 = Number(this.totalDocs).toString();
   }
 
   deleteUploader(index: number) {
-    debugger;
+    
     let currentList2 = this.MandatoryDocumentsLinkedStagesList.getValue();
     let current = currentList2[index];
 
@@ -614,12 +614,12 @@ export class BuildingApplicationComponent implements OnInit {
   }
 
   GetAllAddressTypes() {
-    debugger;
+    
     this.bpAddressTypesService.getAllAddressTypes().subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
-          debugger;
+          
           const tempAddressType = {} as AddressTypesList;
           const current = data.dateSet[i];
 
@@ -639,9 +639,9 @@ export class BuildingApplicationComponent implements OnInit {
     })
   }
   onCheckAddressType() {
-    debugger;
+    
     if (this.addressType == "GPS/Farm") {
-      debugger;
+      
       this.isInputDisabled = true;
     }
 
@@ -651,13 +651,13 @@ export class BuildingApplicationComponent implements OnInit {
   }
 
   GetAllOccupationClassificationsForBuildingPlan() {
-    debugger;
+    
     const functionalArea = "Building Plan";
 
     this.classificationService.getAllClassificationForFunctionalArea(functionalArea).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempClassification = {} as OccupationClassifications;
           const current = data.dateSet[i];
@@ -780,14 +780,14 @@ export class BuildingApplicationComponent implements OnInit {
   }
 
   GetClientInfo() {
-    debugger;
+    
     if (this.CurrentUserProfile[0].isInternal == true) {
-      debugger;
+      
       this.isInternal = true;
       this.clientUserID = this.sharedService.clientUserID;
       this.userService.getUserProfileById(this.clientUserID).subscribe((data: any) => {
         if (data.responseCode == 1) {
-          debugger;
+          
           const current = data.dateSet[0];
          
           if (current.isArchitect == true) {
@@ -815,14 +815,14 @@ export class BuildingApplicationComponent implements OnInit {
     }
     else {
       this.isExternal = true;
-      debugger;
+      
      
 
       if (this.isArchitect == true && this.option == "client") {
        
         this.userService.getUserProfileById(this.clientUserID).subscribe((data: any) => {
           if (data.responseCode == 1) {
-            debugger;
+            
             const current = data.dateSet[0];
             const currentUser = this.CurrentUserProfile[0];
 
@@ -850,7 +850,7 @@ export class BuildingApplicationComponent implements OnInit {
     
       else if (this.isArchitect == true && this.option != "client") {
         const current = this.CurrentUserProfile[0];
-        debugger;
+        
         this.clientName = current.fullName.substring(0, current.fullName.indexOf(" "));
         this.clientSurname = current.fullName.substring(current.fullName.indexOf(" "));
         this.clientEmail = current.email;
@@ -875,7 +875,7 @@ export class BuildingApplicationComponent implements OnInit {
             this.architectID = tempUser.idNumber;
 
             const current = this.CurrentUserProfile[0];
-            debugger;
+            
             this.clientName = current.fullName.substring(0, current.fullName.indexOf(" "));
             this.clientSurname = current.fullName.substring(current.fullName.indexOf(" "));
             this.clientEmail = current.email;
@@ -907,16 +907,16 @@ export class BuildingApplicationComponent implements OnInit {
 
     else {
      
-      debugger;
+      
       if (this.option == "client" || this.isInternal == true) {
-        debugger;
+        
         this.applicationService.addUpdateBuildingApplication(this.applicationID, this.lSNumber, this.clientUserID, this.clientName, this.clientSurname,
           this.clientEmail, this.clientCell, this.clientAltEmail, this.clientAltCell, this.clientIDNo, this.propertyDescription, this.premisesName,
           this.addressType, this.erfNo, this.portionNo, this.NoOfUnits, this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
           this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
           this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Submission Plan","LS Review",1, this.servitudeBox).subscribe((data: any) => {
           if (data.responseCode == 1) {
-            debugger;
+            
             this.CreateNotification(this.CurrentUser.appUserId);
             this.CreateNotification(this.clientUserID);
             alert("Application Created");
@@ -930,14 +930,14 @@ export class BuildingApplicationComponent implements OnInit {
         })
       }
       else {
-        debugger;
+        
         this.applicationService.addUpdateBuildingApplication(this.applicationID, this.lSNumber, this.clientUserID, this.clientName, this.clientSurname,
           this.clientEmail, this.clientCell, this.clientAltEmail, this.clientAltCell, this.clientIDNo, this.propertyDescription, this.premisesName,
           this.addressType, this.erfNo, this.portionNo, this.NoOfUnits, this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
           this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
           this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Submission Plan", "LS Review", 1, this.servitudeBox).subscribe((data: any) => {
           if (data.responseCode == 1) {
-            debugger;
+            
             this.CreateNotification(this.CurrentUser.appUserId);
             alert("Application Created");
             this.router.navigate(["/home"]);
@@ -953,10 +953,10 @@ export class BuildingApplicationComponent implements OnInit {
   }
 
   CreateNotification(UserId: string) {
-    debugger;
+    
     this.bpNotificationService.addUpdateNotification(0, this.applicationID, "Land Survey", "Application Created", false, UserId, this.CurrentUser.appUserId).subscribe((data: any) => {
       if (data.reponseCode == 1) {
-        debugger;
+        
         alert("Notification Created");
       }
       else {

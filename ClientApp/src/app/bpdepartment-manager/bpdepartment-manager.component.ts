@@ -115,7 +115,7 @@ export class BPDepartmentManagerComponent implements OnInit {
   }
 
   GetAllAccessGroupsAndUserLinks(accessGroups:any) {
-    debugger;
+    
     this.accessGroupList.splice(0, this.accessGroupList.length);
     this.bpAccessGroupService.getAllAccessGroupsAndUserLinks(this.selectedUser.UserProfileID, this.functionalArea).subscribe((data: any) => {
       if (data.responseCode == 1) {
@@ -153,13 +153,13 @@ export class BPDepartmentManagerComponent implements OnInit {
 
     this.internalUserList.splice(0, this.internalUserList.length);
     this.userProfileService.getUsersForDepartmentAndSubDepartment(this.functionalArea, this.subDepartmentName).subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
           const tempUser = {} as UserProfileList;
-          debugger;
+          
           tempUser.UserProfileID = current.userProfileID;
           tempUser.UserID = current.userID;
           tempUser.Email = current.email;
@@ -168,7 +168,7 @@ export class BPDepartmentManagerComponent implements OnInit {
 
           this.internalUserList.push(tempUser);
         }
-        debugger;
+        
         this.dataSource = this.internalUserList;
         this.linkedUsersTable?.renderRows();
         this.modalService.open(linkedUsers, { centered: true, size: 'xl' });
@@ -184,18 +184,18 @@ export class BPDepartmentManagerComponent implements OnInit {
   }
 
   linkUserToAccessgroup(index: any, accessGroups: any) {
-    debugger;
+    
     const accessGroup = this.accessGroupList[index];
 
     if (accessGroup.AccessGroupUserLinkID == null) {
-      debugger;
+      
       this.accessGroupUserLinkID = 0;
     }
     else {
-      debugger;
+      
       this.accessGroupUserLinkID = accessGroup.AccessGroupUserLinkID;
     }
-    debugger;
+    
     this.bpaccessGroupUserLinkService.addUpdateAccessGroupUserLink(this.accessGroupUserLinkID, accessGroup.AccessGroupID, accessGroup.AccessGroupName, null, null, this.subDepartmentName, this.selectedUser.UserID, this.CurrentUser.appUserId, this.functionalArea, this.subDepartmentName, this.selectedUser.UserProfileID).subscribe((data: any) => {
       if (data.responseCode == 1) {
         this.modalService.dismissAll();
@@ -232,9 +232,9 @@ export class BPDepartmentManagerComponent implements OnInit {
 
   getAllFunctionalAreas(newUser:any) {
     this.bpFunctionalAreaService.getAllFunctionalAreas().subscribe((data: any) => {
-      debugger;
+      
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
           const tempFunctionalArea = {} as BPFunctionalAreaList;
@@ -365,9 +365,9 @@ export class BPDepartmentManagerComponent implements OnInit {
 
   async getFunctionalAreaID(functionalArea:any):Promise<number> {
     try {
-      debugger;
+      
       const data: any = await this.bpFunctionalAreaService.getFunctionalAreaByFunctionalAreaName(functionalArea).toPromise();
-      debugger;
+      
       if (data.responseCode == 1) {
         const current = data.dateSet[0];
         return current.functionalAreaID;
@@ -393,7 +393,7 @@ export class BPDepartmentManagerComponent implements OnInit {
           const UserProfileID = data.dateSet.userProfileID;
           const current = data.dateSet;
           const tempUser = {} as UserProfileList;
-          debugger;
+          
           tempUser.UserProfileID = current.userProfileID;
           tempUser.UserID = current.userID;
           tempUser.Email = current.email;
@@ -412,7 +412,7 @@ export class BPDepartmentManagerComponent implements OnInit {
       })
   }
  openAccessGroupsLinksForNewUser(accessGroups: any,userID:any) {
-    debugger;
+    
     this.accessGroupList.splice(0, this.accessGroupList.length);
     this.bpAccessGroupService.getAllAccessGroupsAndUserLinks(userID, this.functionalArea).subscribe((data: any) => {
       if (data.responseCode == 1) {

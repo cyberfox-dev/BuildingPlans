@@ -15,7 +15,7 @@ export class UserLinkToArchitectService {
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
   public addUpdateLinkedUser(userLinkId:number|null , architectUserId:string|null,architectName:string | null,clientUserId:string|null , clientFullName:string|null,createdById:string|null , address:string|null) {
-    debugger;
+    
     const body = {
       UserLinkID: userLinkId,
       ArchitectUserID: architectUserId,

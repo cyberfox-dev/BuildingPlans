@@ -14,7 +14,7 @@ export class BPNotificationsService {
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
   public addUpdateNotification(notificationId: number | null, applicationId: number | null, notificationName: string | null, notificationDescription: string | null, isRead: boolean | null, userId: string | null, createdById: string | null) {
-    debugger;
+    
     const body = {
       NotificationID: notificationId,
       ApplicationID: applicationId,

@@ -558,12 +558,12 @@ export class DepartmentConfigComponent implements OnInit {
   }
 
   getAllDepartments() {
-    debugger;
+    
     this.DepartmentList.splice(0, this.DepartmentList.length);
     this.departmentService.getDepartmentsList().subscribe((data: any) => {
 
       if (data.responseCode == 1) {
-        debugger;
+        
 
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempDepartmentList = {} as DepartmentList;
@@ -1574,7 +1574,7 @@ export class DepartmentConfigComponent implements OnInit {
   selectedHasSubdepartment: boolean;
 
   onViewSetZXNumber2(index: number, zxNumberDptModal: any) {
-    debugger;
+    
     this.selectedDepartmentName = this.DepartmentList[index].departmentName;
     this.selectedZXneedsZXNumber = this.DepartmentList[index].needsZXNumber;
     this.selectedZXDepartmentID = this.DepartmentList[index].departmentID;
@@ -1584,7 +1584,7 @@ export class DepartmentConfigComponent implements OnInit {
   }
 
   onSaveZXNumberBool2() {
-    debugger;
+    
     const confirm = window.confirm("Are you sure you want to change this setting?");
 
     if (confirm) {

@@ -129,6 +129,8 @@ import { BpAlertModalComponent } from './bp-alert-modal/bp-alert-modal.component
 import { BpConfirmModalComponent } from './bp-confirm-modal/bp-confirm-modal.component'; //BPDialogBoxes Sindiswa 24062024
 import { BPServiceItemsComponent } from './bpservice-items/bpservice-items.component';
 import { BpMandoryDocumentsComponent } from './bp-mandory-documents/bp-mandory-documents.component';
+import { BpConfirmModalComponent } from './bp-confirm-modal/bp-confirm-modal.component';
+import { BPDepartmentDocRequiredUploadsComponent } from './bpdepartment-doc-required-uploads/bpdepartment-doc-required-uploads.component'; //BPDialogBoxes Sindiswa 24062024
 
 
 //import { MatExpansionModule } from '@angular/material/expansion';
@@ -244,6 +246,7 @@ import { BpMandoryDocumentsComponent } from './bp-mandory-documents/bp-mandory-d
     BpConfirmModalComponent, //BPDialogBoxes Sindiswa 24062024
     BPServiceItemsComponent,
     BpMandoryDocumentsComponent,
+    BpConfirmModalComponent, BPDepartmentDocRequiredUploadsComponent, //BPDialogBoxes Sindiswa 24062024
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

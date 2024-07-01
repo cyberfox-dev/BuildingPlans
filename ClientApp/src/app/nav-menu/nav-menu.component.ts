@@ -723,7 +723,7 @@ export class NavMenuComponent implements OnInit {
 
 
   goHome() {
-    debugger;
+    
     this.deleteWayleaveWhenGoHome();
 
   }
@@ -745,7 +745,7 @@ export class NavMenuComponent implements OnInit {
 
   /*For something to to not something*/
   deleteWayleaveWhenGoHome() {
-    debugger;
+    
     let appID = this.shared.getApplicationID();
     if (appID != 0) {
       this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
@@ -772,7 +772,7 @@ export class NavMenuComponent implements OnInit {
 
     let appID = this.shared.getApplicationID();
     if (appID != 0) {
-      debugger;
+      
       this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
         if (data.responseCode == 1) {
 
@@ -794,10 +794,10 @@ export class NavMenuComponent implements OnInit {
   }
 
   deleteWayleaveWhenOnLogout() {
-    debugger;
+    
     let appID = this.shared.getApplicationID();
     if (appID != 0) {
-      debugger;
+      
       this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
         if (data.responseCode == 1) {
 
@@ -826,7 +826,7 @@ export class NavMenuComponent implements OnInit {
 
     let appID = this.shared.getApplicationID();
     if (appID != 0) {
-      debugger;
+      
       this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
         if (data.responseCode == 1) {
 
@@ -851,7 +851,7 @@ export class NavMenuComponent implements OnInit {
 
     let appID = this.shared.getApplicationID();
     if (appID != 0) {
-      debugger;
+      
       this.applicationsService.deleteApplication(appID).subscribe((data: any) => {
         if (data.responseCode == 1) {
 

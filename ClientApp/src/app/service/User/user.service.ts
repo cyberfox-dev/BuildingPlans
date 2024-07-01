@@ -30,7 +30,7 @@ export class UserService {
 
 
   public login(email: string | null, password: string | null) {
-    debugger;
+    
     const body = {
       Email: email,
       Password: password
