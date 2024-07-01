@@ -9,6 +9,8 @@ import { BPDocumentsUploadsService } from '../service/BPDocumentsUploads/bpdocum
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject } from 'rxjs';
 import { BPManDocService } from 'src/app/service/BPManDoc/bpman-doc.service'
+import { BPCommentsService } from '../service/BPComments/bpcomments.service';
+import { DomSanitizer, SafeHtml, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 
 export interface DocumentsList {
   DocumentID: number;
@@ -31,6 +33,20 @@ export interface LSMandatoryDocumentsList {
   uploads: Array<{ filename: string; /*... other properties*/ }>;
 }
 
+export interface CommentsList {
+  CommentID: number;
+  ApplicationID: number;
+  FunctionalArea: string;
+  Comment: string;
+  CommentStatus: string;
+  SubDepartmentForCommentID: number;
+  isApplicantReply: string;
+  SecondReply: string;
+  UserName: string;
+  CanReplyUserID: string;
+  CreatedById: string;
+  DateCreated: any;
+}
 @Component({
   selector: 'app-bpview-project-info',
   templateUrl: './bpview-project-info.component.html',
@@ -39,10 +55,13 @@ export interface LSMandatoryDocumentsList {
 
 export class BPViewProjectInfoComponent implements OnInit {
 
-  constructor(private bpService: BuildingApplicationsService, private sharedService: SharedService, private refreshService: RefreshService, private router: Router, private documentUploadService: DocumentUploadService, private bpDocumentUploadService: BPDocumentsUploadsService, private modalService: NgbModal, private BPManDocService: BPManDocService) { }
- /* LSMandatoryDocuments = new BehaviorSubject<LSMandatoryDocumentsList[]>([]);*/
+  constructor(private bpService: BuildingApplicationsService, private sharedService: SharedService, private refreshService: RefreshService, private router: Router, private documentUploadService: DocumentUploadService, private bpDocumentUploadService: BPDocumentsUploadsService, private modalService: NgbModal, private BPManDocService: BPManDocService, private bpCommentsService: BPCommentsService, private sanitizer: DomSanitizer,) { }
+  /* LSMandatoryDocuments = new BehaviorSubject<LSMandatoryDocumentsList[]>([]);*/
+
   DocumentList: DocumentsList[] = [];
   LSMandatoryDocumentsList: LSMandatoryDocumentsList[] = [];
+  CommentsList: CommentsList[] = [];
+
   displayedColumns: string[] = ['DocumentName', 'actions'];
   @ViewChild(MatTable) DocumentsTable: MatTable<DocumentsList> | undefined;
   documentsDataSource: MatTableDataSource<DocumentsList> = new MatTableDataSource<DocumentsList>();
@@ -57,7 +76,7 @@ export class BPViewProjectInfoComponent implements OnInit {
   applicationId: any;
   lsNumber: string;
   typeOfDev: string;
-  
+
   typeOfAddress: string;
   noOfUnits: string;
   unitNumber: string;
@@ -95,7 +114,7 @@ export class BPViewProjectInfoComponent implements OnInit {
   architectCell: string;
 
   private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
-  
+
   ngOnInit(): void {
 
     this.refreshService.enableRefreshNavigation('/home');
@@ -109,6 +128,9 @@ export class BPViewProjectInfoComponent implements OnInit {
     this.getApplicationInfo();
     this.getAllDocumentForApplication();
     this.getAllManDocsByStageID();
+  }
+  sanitizeHTML(comment: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(comment);
   }
   async getApplicationInfo() {
     debugger;
@@ -171,7 +193,7 @@ export class BPViewProjectInfoComponent implements OnInit {
           this.DocumentList.push(tempDocList);
         }
         this.documentsDataSource.data = this.DocumentList;
-        
+
       }
       else {
         alert(data.responseMessage);
@@ -180,14 +202,14 @@ export class BPViewProjectInfoComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
-   
+
   }
   viewDocument(index: any) {
 
     // Make an HTTP GET request to fetch the document
     debugger;
     fetch(this.apiUrl + `bPDocumentUploads/GetDocument?filename=${this.DocumentList[index].DocumentName}`)
-    
+
       .then(response => {
         debugger;
         if (response.ok) {
@@ -218,63 +240,63 @@ export class BPViewProjectInfoComponent implements OnInit {
 
   }
 
-  openActionCenter(content:any) {
+  openActionCenter(content: any) {
     this.modalService.open(content, { size: 'xl' });
   }
 
   @ViewChild(MatTable) LSMandatoryDocumentsTable: MatTable<LSMandatoryDocumentsList> | undefined;
 
-    getAllManDocsByStageID() {
-      debugger;
-/*      const newList = LSMandatoryDocumentsList.map(current => {
-        const tempMandatoryDocumentsLinkedStagesList = {} as LSMandatoryDocumentsList;
-         //Project size Kyle 27-02-24
+  getAllManDocsByStageID() {
+    debugger;
+    /*      const newList = LSMandatoryDocumentsList.map(current => {
+            const tempMandatoryDocumentsLinkedStagesList = {} as LSMandatoryDocumentsList;
+             //Project size Kyle 27-02-24
+              tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
+              tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
+              tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
+              tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
+              tempMandatoryDocumentsLinkedStagesList.stageName = null;
+              tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
+              return tempMandatoryDocumentsLinkedStagesList;
+    
+          });
+    
+          this.LSMandatoryDocuments.next(newList);
+          // set totalDocs to the length of the list
+    *//*      this.totalDocs = newList.length;
+          this.totalDocs2 = Number(this.totalDocs).toString();*/
+    debugger;
+    this.LSMandatoryDocumentsList.splice(0, this.LSMandatoryDocumentsList.length);
+
+    this.BPManDocService.getAllMandatoryDocuments().subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+        debugger;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempMandatoryDocumentsLinkedStagesList = {} as LSMandatoryDocumentsList;
+          const current = data.dateSet[i];
           tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
           tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
           tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
           tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
-          tempMandatoryDocumentsLinkedStagesList.stageName = null;
+
           tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
-          return tempMandatoryDocumentsLinkedStagesList;
 
-      });
-
-      this.LSMandatoryDocuments.next(newList);
-      // set totalDocs to the length of the list
-*//*      this.totalDocs = newList.length;
-      this.totalDocs2 = Number(this.totalDocs).toString();*/
-      debugger;
-      this.LSMandatoryDocumentsList.splice(0, this.LSMandatoryDocumentsList.length);
-
-      this.BPManDocService.getAllMandatoryDocuments().subscribe((data: any) => {
-        if (data.responseCode == 1) {
-
-          debugger;
-          for (let i = 0; i < data.dateSet.length; i++) {
-            const tempMandatoryDocumentsLinkedStagesList = {} as LSMandatoryDocumentsList;
-            const current = data.dateSet[i];
-            tempMandatoryDocumentsLinkedStagesList.stageID = current.stageID;
-            tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentStageLinkID = null;
-            tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentID = current.mandatoryDocumentID;
-            tempMandatoryDocumentsLinkedStagesList.mandatoryDocumentName = current.mandatoryDocumentName;
-
-            tempMandatoryDocumentsLinkedStagesList.dateCreated = current.dateCreated;
-
-            this.LSMandatoryDocumentsList.push(tempMandatoryDocumentsLinkedStagesList);
-            // this.sharedService.setStageData(this.StagesList);
-          }
-          //this.getAllManDocsByStageID();
-          this.LSMandatoryDocumentsTable ?. renderRows();
+          this.LSMandatoryDocumentsList.push(tempMandatoryDocumentsLinkedStagesList);
+          // this.sharedService.setStageData(this.StagesList);
         }
-        else {
-          //alert("Invalid Email or Password");
-          alert(data.responseMessage);
-        }
-        console.log("reponse", data);
+        //this.getAllManDocsByStageID();
+        this.LSMandatoryDocumentsTable?.renderRows();
+      }
+      else {
+        //alert("Invalid Email or Password");
+        alert(data.responseMessage);
+      }
+      console.log("reponse", data);
 
-      }, error => {
-        console.log("Error: ", error);
-      })
+    }, error => {
+      console.log("Error: ", error);
+    })
   }
   displayedColumnsLSManDoc: string[] = ['mandatoryDocumentName', 'actions'];
   dataSourceLSManDoc = this.LSMandatoryDocumentsList;
@@ -282,5 +304,37 @@ export class BPViewProjectInfoComponent implements OnInit {
   trackByFn(index, item) {
     return item.mandatoryDocumentID; // or any unique id from the object
   }
+
+  GetAllCommentsForApplication() {
+    this.bpCommentsService.getAllCommentsForApplication(this.applicationId).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.responseCode.length; i++) {
+          const current = data.datSet.length;
+          const tempComment = {} as CommentsList;
+
+          tempComment.CommentID = current.commentID;
+          tempComment.ApplicationID = current.applicationID;
+          tempComment.FunctionalArea = current.functionalArea;
+          tempComment.Comment = current.comment;
+          tempComment.CommentStatus = current.commentStatus;
+          tempComment.SubDepartmentForCommentID = current.subDepartmentForCommentID;
+          tempComment.isApplicantReply = current.isApplicantReply;
+          tempComment.SecondReply = current.secondReply;
+          tempComment.UserName = current.userName;
+          tempComment.CanReplyUserID = current.canReplyUserID;
+          tempComment.CreatedById = current.createdById;
+          tempComment.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
+          this.CommentsList.push(tempComment);
+        }
+      }
+      else {
+
+      }
+      
+    }, error => {
+      console.log(error);
+    })
   }
+  canClarify:boolean
+}
 

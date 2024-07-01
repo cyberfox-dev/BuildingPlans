@@ -253,8 +253,70 @@
         </div>
       </div>
     </mat-tab>
+
+    <!---------------------------------------Comments ------------------------------------------->
     <mat-tab label="Comments">
-      <p>All comments relevant to the current Application will be displayed here</p>
+      <div class="main-container">
+        <section id="timeline" class="timeline-outer">
+          <div class="container" id="content">
+
+            <div class="row" *ngFor="let commentsList of CommentsList; let i = index" [style.margin-left.px]="(i % 2 === 0) ? 60 : 80" [style.margin-right.px]="(i % 2 === 0) ? 60 : 80">
+              <div class="col s12 m12 l12" *ngIf="!(commentsList.CommentStatus === 'Referred' )">
+                -Change Wording Kyle 15/01/24
+                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Provisionally Approved'||commentsList.CommentStatus === 'Approved(Conditional)' " [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved'|| commentsList.CommentStatus === 'Complete' " [class.Reject]="commentsList.CommentStatus === 'FinalReject'||commentsList.CommentStatus === 'Rejected'||commentsList.CommentStatus === 'Provisionally Rejected'|| commentsList.CommentStatus === 'Final Rejected' " [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'|| commentsList.CommentStatus === 'Reviewer Clarify' || commentsList.CommentStatus == 'Applicant Clarify' || commentsList.CommentStatus ==='Applicant Clarified'" [class.reviewerClarify]="commentsList.CommentStatus === 'Reviewer Clarified' || commentsList.CommentStatus === 'Reviewer Clarity'" [class.refer]="commentsList.CommentStatus === 'Referred'" [class.returned]="commentsList.CommentStatus === 'Returned'" [class.GISReviewed]="commentsList.CommentStatus ==='GIS Reviewed'">
+                  JJS 07-03-24 GIS Reviewer
+
+                  <li class="event" data-date="">
+
+                    -Comments Kyle 01/02/24 
+                    <h3>{{commentsList.FunctionalArea}} - {{commentsList.CommentStatus}}</h3>
+
+                    <h5 >{{commentsList.UserName}}</h5>
+                    <br />
+                    <div class="cont2">
+                      <div [innerHTML]="sanitizeHTML(commentsList.Comment)"></div>
+                      <button mat-raised-button color="blue" *ngIf="commentsList.CommentStatus != 'FinalApproved'  &&   CurrentUserProfile[0].subDepartmentName === commentsList.FunctionalArea && commentsList.UserName === this.CurrentUser.fullName" >Edit Comment</button>
+
+                    </div>
+
+                    <p>
+
+                  {{commentsList.Comment}}
+                </p>
+
+                    <br />
+
+                    <br />
+
+                    <h6>{{commentsList.DateCreated}}</h6>
+                     <!--<h6>{{commentsList.Time}}</h6>-->
+                    <br />
+
+                    <!--Applicant Clarity-->
+                    <button mat-raised-button color="clarify" >Reply</button>
+                    <button mat-raised-button color="clarify">Update Reply</button>
+                    <div class="row" >
+                      <label > <strong><em>Applicant's Reply:</em></strong></label>
+                      <label > <strong><em>Reviewer's Reply:</em></strong></label>
+                      <div class="form-floating mb-3 mt-3" >
+                        <input type="text" class="form-control" value="{{commentsList.isApplicantReply}}" id="ApplicantReply" name="ApplicantReply" disabled> [(ngModel)]="ApplicantReply">
+
+                        <div class="disabled-textbox" [innerHTML]="sanitizeHTML(commentsList.isApplicantReply)" id="ApplicantReply"></div>
+
+                      </div>
+                    </div>
+
+                  </li>
+
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <br />
+      </div>
     </mat-tab>
 
     <!-----BP Financials Kyle------>
