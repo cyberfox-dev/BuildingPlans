@@ -11,6 +11,8 @@ import { BehaviorSubject, map, Observable, switchMap } from 'rxjs';
 import { BPManDocService } from 'src/app/service/BPManDoc/bpman-doc.service';
 import { BPMandatoryStageDocumentService } from 'src/app/service/BPMandatoryStageDocuments/bpmandatory-stage-document.service';
 import {DocumentsComponentComponent } from'src/app/documents-component/documents-component.component'
+import { BPCommentsService } from '../service/BPComments/bpcomments.service';
+import { DomSanitizer, SafeHtml, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 
 export interface DocumentsList {
   DocumentID: number;
@@ -33,6 +35,20 @@ export interface LSMandatoryDocumentsList {
   uploads: Array<{ filename: string; /*... other properties*/ }>;
 }
 
+export interface CommentsList {
+  CommentID: number;
+  ApplicationID: number;
+  FunctionalArea: string;
+  Comment: string;
+  CommentStatus: string;
+  SubDepartmentForCommentID: number;
+  isApplicantReply: string;
+  SecondReply: string;
+  UserName: string;
+  CanReplyUserID: string;
+  CreatedById: string;
+  DateCreated: any;
+}
 @Component({
   selector: 'app-bpview-project-info',
   templateUrl: './bpview-project-info.component.html',
@@ -51,14 +67,21 @@ export class BPViewProjectInfoComponent implements OnInit {
     private modalService: NgbModal,
     private BPManDocService: BPManDocService,
     private BPMandatoryStageDocumentService: BPMandatoryStageDocumentService,
-    private DocumentsComponentComponent: DocumentsComponentComponent,
+    private DocumentsComponentComponent: DocumentsComponentComponent, private bpCommentsService: BPCommentsService,
+    private sanitizer: DomSanitizer
   ) { }
 
   // Properties
   LSMandatoryDocuments = new BehaviorSubject<LSMandatoryDocumentsList[]>([]);
+
+  /* LSMandatoryDocuments = new BehaviorSubject<LSMandatoryDocumentsList[]>([]);*/
+
   DocumentList: DocumentsList[] = [];
 
   LSMandatoryDocumentsList: Observable<LSMandatoryDocumentsList[]>;
+
+  CommentsList: CommentsList[] = [];
+
   displayedColumns: string[] = ['DocumentName', 'actions'];
 
   // ViewChild decorators to get references to the MatTable elements
@@ -76,7 +99,7 @@ export class BPViewProjectInfoComponent implements OnInit {
   applicationId: any;
   lsNumber: string;
   typeOfDev: string;
-  
+
   typeOfAddress: string;
   noOfUnits: string;
   unitNumber: string;
@@ -114,7 +137,7 @@ export class BPViewProjectInfoComponent implements OnInit {
   architectCell: string;
 
   private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
-  
+
   ngOnInit(): void {
 
     this.refreshService.enableRefreshNavigation('/home');
@@ -124,7 +147,7 @@ export class BPViewProjectInfoComponent implements OnInit {
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
     this.applicationId = this.sharedService.getApplicationID();
     this.getApplicationInfo();
-    
+
 
 
 
@@ -139,12 +162,16 @@ export class BPViewProjectInfoComponent implements OnInit {
 
 
   }
-   getApplicationInfo() {
-    
-     this.bpService.getBuildingApplicationByApplicationID(this.applicationId).subscribe((data: any) => {
+  sanitizeHTML(comment: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(comment);
+  }
+
+  async getApplicationInfo() {
+    debugger;
+    await this.bpService.getBuildingApplicationByApplicationID(this.applicationId).subscribe((data: any) => {
       if (data.responseCode == 1) {
         const current = data.dateSet[0];
-        
+
         this.lsNumber = current.lsNumber;
         this.typeOfDev = current.typeOfDevelopment;
         this.typeOfAddress = current.addressType;
@@ -175,14 +202,14 @@ export class BPViewProjectInfoComponent implements OnInit {
       }
       else {
         alert(data.responseMessage);
-       }
-       this.getAllDocumentForApplication();
+      }
+      this.getAllDocumentForApplication();
       console.log("response", data);
     }, error => {
       console.log("Error: ", error);
     })
   }
-getAllDocumentForApplication() {
+  getAllDocumentForApplication() {
     debugger;
     this.bpDocumentUploadService.getAllDocumentsForApplication(this.applicationId).subscribe((data: any) => {
       debugger;
@@ -202,6 +229,7 @@ getAllDocumentForApplication() {
         }
         this.documentsDataSource.data = this.DocumentList;
         this.DocumentsTable?.renderRows();
+
       }
       else {
         alert(data.responseMessage);
@@ -211,17 +239,17 @@ getAllDocumentForApplication() {
     }, error => {
       console.log("Error: ", error);
     })
-   
+
   }
 
   viewDocument(index: any) {
 
     // Make an HTTP GET request to fetch the document
-    
+
     fetch(this.apiUrl + `bPDocumentUploads/GetDocument?filename=${this.DocumentList[index].DocumentName}`)
-    
+
       .then(response => {
-        
+
         if (response.ok) {
           // The response status is in the 200 range
 
@@ -250,13 +278,13 @@ getAllDocumentForApplication() {
 
   }
 
-  openActionCenter(content:any) {
+  openActionCenter(content: any) {
     this.modalService.open(content, { size: 'xl' });
   }
 
 
 
-  
+
   loadBPDocumentsList() {
     debugger;
     this.getBPDocumentsList().subscribe(
@@ -281,9 +309,9 @@ getAllDocumentForApplication() {
       throw new Error('Unknown stage type');
     }
 
-/*    const existingDocument = this.LSMandatoryDocumentsList.find(doc =>
-      this.DocumentsList.some(existingDoc => existingDoc.documentName === doc.mandatoryDocumentName)
-    );*/
+    /*    const existingDocument = this.LSMandatoryDocumentsList.find(doc =>
+          this.DocumentsList.some(existingDoc => existingDoc.documentName === doc.mandatoryDocumentName)
+        );*/
 
 
     return this.BPMandatoryStageDocumentService.getAllDocumentsForStage("Relaxation", stageType)
@@ -339,10 +367,10 @@ getAllDocumentForApplication() {
   public successfulUploads2 = '';
   fileAttrs: string[] = [];
   onPassFileName(event: { uploadFor: string; fileName: string }, index: any) {
-    
+
     const { uploadFor, fileName } = event;
     // const index = parseInt(uploadFor.substring('CoverLetter'.length));
-    
+
 
     this.fileAttrs[index] = this.LSMandatoryDocumentsList[index].mandatoryDocumentName;
 
@@ -362,5 +390,38 @@ getAllDocumentForApplication() {
     this.getAllDocumentForApplication();
     this.DocumentsComponentComponent.getAllDocsForApplication();
   }
+
+
+  GetAllCommentsForApplication() {
+    this.bpCommentsService.getAllCommentsForApplication(this.applicationId).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.responseCode.length; i++) {
+          const current = data.datSet.length;
+          const tempComment = {} as CommentsList;
+
+          tempComment.CommentID = current.commentID;
+          tempComment.ApplicationID = current.applicationID;
+          tempComment.FunctionalArea = current.functionalArea;
+          tempComment.Comment = current.comment;
+          tempComment.CommentStatus = current.commentStatus;
+          tempComment.SubDepartmentForCommentID = current.subDepartmentForCommentID;
+          tempComment.isApplicantReply = current.isApplicantReply;
+          tempComment.SecondReply = current.secondReply;
+          tempComment.UserName = current.userName;
+          tempComment.CanReplyUserID = current.canReplyUserID;
+          tempComment.CreatedById = current.createdById;
+          tempComment.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
+          this.CommentsList.push(tempComment);
+        }
+      }
+      else {
+
+      }
+
+    }, error => {
+      console.log(error);
+    })
   }
+
+}
 

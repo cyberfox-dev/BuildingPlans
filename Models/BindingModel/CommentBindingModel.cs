@@ -16,5 +16,6 @@
         public string? ZoneName { get; set; }
         public string? CanReplyUserID { get; set; }
         public string? FunctionalArea { get; set; }
+        public string? SecondReply { get; set; }
     }
 }

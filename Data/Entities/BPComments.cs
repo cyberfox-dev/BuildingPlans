@@ -12,14 +12,13 @@ namespace BuildingPlans.Data.Entities
         public string? Comment { get; set; }
          
         public string? CommentStatus { get; set; }
+       
         public int? SubDepartmentForCommentID { get; set; }
        
         public string? isApplicantReply { get; set; }
 
         public string? SecondReply { get; set; }
         public string? UserName { get; set; }
-
-        public string? ZoneName { get; set; }
 
       
         public string? CanReplyUserID { get; set; }
