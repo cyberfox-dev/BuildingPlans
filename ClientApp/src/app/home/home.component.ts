@@ -352,6 +352,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   displayedColumnsViewLinkedZones: string[] = ['subDepartmentName', 'zoneName'];
   dataSourceViewLinkedZones = this.ZoneLinkedList;
+  selectedTabIndex: number = 0;
+
 
   filterValue = '';
 
@@ -439,9 +441,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   displayedColumnsArchitects: string[] = ['fullName', 'actions'];
 
 
-  displayedColumns: string[] = ['lSNumber', 'ERFNumber', 'stage', 'stageAge', 'planAge', 'ownerName', 'propertyAddress', 'status', 'dateCreated', 'dateUpdated', 'actions'];
-  displayedColumnsBP: string[] = ['lSNumber', 'ERFNumber', 'stage', 'stageAge', 'planAge', 'ownerName', 'propertyAddress', 'status', 'dateCreated', 'dateUpdated', 'actions'];
-  displayedColumnsSA: string[] = ['lSNumber', 'ERFNumber', 'stage', 'stageAge', 'planAge', 'ownerName', 'propertyAddress', 'status', 'dateCreated', 'dateUpdated', 'actions'];
+  displayedColumns: string[] = ['lSNumber', 'ownerName', 'propertyAddress', 'ERFNumber', 'stage', 'status', 'stageAge', 'planAge',   'dateCreated', 'actions'];
+  displayedColumnsBP: string[] = ['lSNumber', 'ownerName', 'propertyAddress', 'ERFNumber', 'stage', 'status', 'stageAge', 'planAge',  'dateCreated', 'actions'];
+  displayedColumnsSA: string[] = ['lSNumber', 'ownerName', 'propertyAddress', 'ERFNumber', 'stage', 'status', 'stageAge', 'planAge',  'dateCreated',  'actions'];
   dataSourceBP = this.ApplicationsBP;
   scrutinyApplications: ApplicationsListBP[] = [];
   dataSourceSA = this.scrutinyApplications;
@@ -7654,7 +7656,7 @@ this.subscriptions.push(subscription);
   }
   //Home Tabs Kyle 27-05 - 24
   onChangeDataSource(event: MatTabChangeEvent) {
-    
+    this.selectedTabIndex = event.index;
     switch (event.index) {
       case 0:
         this.dataSourceSA = this.scrutinyApplications;
@@ -7662,14 +7664,19 @@ this.subscriptions.push(subscription);
         break;
 
       case 1:
+        this.dataSourceSA = this.ApplicationsBP;
+        this.originalDataSourceSA = [...this.ApplicationsBP];
         break;
 
       case 2:
         break;
 
       case 3:
-        this.dataSourceSA = this.ApplicationsBP;
-        this.originalDataSourceSA = [...this.ApplicationsBP]; //BPRegister Sindiswa 20062024
+        break;
+      case 4:
+        break;
+      case 5:
+        break;
     }
   }
  
