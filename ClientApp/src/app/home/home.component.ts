@@ -1,12 +1,12 @@
 import { Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
-import { MatTable } from '@angular/material/table';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Router } from "@angular/router";
 import { ApplicationsService } from '../service/Applications/applications.service';
 //import { ApplicationList } from '../shared/shared.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSelect } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepper } from '@angular/material/stepper';
@@ -788,15 +788,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     //this.defaultPageSize = 10;
   }
-
+/*  dataSourceLinkUsers = new MatTableDataSource<ClientUserList>([]);*/
   ngAfterViewInit() {
-    // Check which tabs are currently visible and select the first one
-    /*    const visibleTabs = ['Reviewer', 'SR', 'FR', 'PC', 'PI', 'ZA', 'EMB', 'GISR'].filter(tab => this[`${tab.toLowerCase()}Tab`]);
-        
-        if (visibleTabs.length > 0) {
-          
-          this.buttonToggleGroup.value = visibleTabs[0];
-        }*/
+
   }
 
 
@@ -808,7 +802,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   showDates: string;
   tagLength: number;
 
-  dataSourceClients = this.ArchitectClients;
+/*  dataSourceClients.data = this.ArchitectClients;*/
   isBannerVisible() {
 
     this.configService.getConfigsByConfigName("Alert").subscribe((data: any) => {
@@ -1275,6 +1269,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       else {
         alert(data.responseMessage);
       }
+ 
+
+
       console.log("reponse", data);
 
     }, error => {
@@ -2350,6 +2347,9 @@ this.subscriptions.push(subscription);
 
 
   page = 4;
+  pageSize = 10;
+  pageSizeOptions: number[] = [10, 25, 50, 100];
+  length: any;
 
 
   onCheckIfUserHasAccess() {

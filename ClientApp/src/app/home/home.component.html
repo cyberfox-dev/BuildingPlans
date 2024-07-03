@@ -1726,10 +1726,10 @@
         <mat-form-field>
           <mat-label>Search By Name </mat-label>
           <!--<input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>-->
-          <input matInput *ngIf="dataSourceClients.length > 0" (keyup)="applyExistingClientFilter($event)" placeholder="Ex. ium" #input>
+          <input matInput *ngIf="dataSourceLinkUsers.length > 0" (keyup)="applyExistingClientFilter($event)" placeholder="Ex. ium" #input>
         </mat-form-field>
 
-        <table mat-table *ngIf="dataSourceClients.length > 0" [dataSource]="dataSourceClients" class="mat-elevation-z8">
+        <table mat-table *ngIf="dataSourceLinkUsers.length > 0" [dataSource]="dataSourceLinkUsers" class="mat-elevation-z8">
           <!--*ngIf="showZoneUserTable"-->
 
           <ng-container matColumnDef="fullName">
@@ -1754,7 +1754,7 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumnsLinkUsers"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumnsLinkUsers;"></tr>
         </table>
-        <div *ngIf="dataSourceClients.length == 0">
+        <div *ngIf="dataSourceLinkUsers.length == 0">
           <p>You Current have no clients saved</p>
         </div>
       </div>

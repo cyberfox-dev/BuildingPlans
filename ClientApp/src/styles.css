@@ -425,3 +425,6 @@ tr:hover {
 .mat-checkbox-checked {
   background-color: #323e4e00 !important;
 }
+.mat-paginator-container {
+  background: #323e4e !important;
+}
