@@ -140,14 +140,14 @@ export class BPViewProjectInfoComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.refreshService.enableRefreshNavigation('/home');
+   /* this.refreshService.enableRefreshNavigation('/home');*/
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
     this.applicationId = this.sharedService.getApplicationID();
     this.getApplicationInfo();
-
+    this.GetAllCommentsForApplication();
 
 
 
@@ -391,14 +391,17 @@ export class BPViewProjectInfoComponent implements OnInit {
     this.DocumentsComponentComponent.getAllDocsForApplication();
   }
 
-
+  ApplicantReply: any;
   GetAllCommentsForApplication() {
+    debugger;
     this.bpCommentsService.getAllCommentsForApplication(this.applicationId).subscribe((data: any) => {
+      debugger;
       if (data.responseCode == 1) {
-        for (let i = 0; i < data.responseCode.length; i++) {
-          const current = data.datSet.length;
+        debugger;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[0];
           const tempComment = {} as CommentsList;
-
+          debugger;
           tempComment.CommentID = current.commentID;
           tempComment.ApplicationID = current.applicationID;
           tempComment.FunctionalArea = current.functionalArea;
@@ -410,9 +413,11 @@ export class BPViewProjectInfoComponent implements OnInit {
           tempComment.UserName = current.userName;
           tempComment.CanReplyUserID = current.canReplyUserID;
           tempComment.CreatedById = current.createdById;
-          tempComment.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
+          tempComment.DateCreated = current.dateCreated.substring(0,current.dateCreated.indexOf("T"));
           this.CommentsList.push(tempComment);
         }
+
+        console.log("BPComments",this.CommentsList);
       }
       else {
 

@@ -18,6 +18,7 @@ export class BPCommentsService {
       ApplicationID: applicationID,
       FunctionalArea: functionalArea,
       Comment: comment,
+      CommentStatus:commentStatus,
       SubDepartmentForComment: subDepartmentForCommentID,
       isApplicantReply: isApplicantReply,
       SecondReply: secondReply,

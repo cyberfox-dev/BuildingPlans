@@ -254,8 +254,9 @@ export class BPFileUploadComponent implements OnInit {
   }
 
   uploadFinished = (event: any, applicationID: any, applicationData: any) => {
+    debugger;
     this.response = event;
-
+    debugger;
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
     
     this.bpDocumentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, applicationID, applicationData.appUserId, this.CurrentUser.appUserId, "Building Application", null, null, null, null).subscribe((data: any) => {

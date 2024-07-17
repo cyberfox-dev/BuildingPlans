@@ -256,66 +256,104 @@
 
     <!---------------------------------------Comments ------------------------------------------->
     <mat-tab label="Comments">
-      <div class="main-container">
-        <section id="timeline" class="timeline-outer">
-          <div class="container" id="content">
+      <!--<div class="cardApprove ">
 
-            <div class="row" *ngFor="let commentsList of CommentsList; let i = index" [style.margin-left.px]="(i % 2 === 0) ? 60 : 80" [style.margin-right.px]="(i % 2 === 0) ? 60 : 80">
-              <div class="col s12 m12 l12" *ngIf="!(commentsList.CommentStatus === 'Referred' )">
-                -Change Wording Kyle 15/01/24
-                <ul class="timeline" [class.approve]="commentsList.CommentStatus === 'Provisionally Approved'||commentsList.CommentStatus === 'Approved(Conditional)' " [class.finalApprove]="commentsList.CommentStatus === 'FinalApproved' || commentsList.CommentStatus === 'Final Approved'|| commentsList.CommentStatus === 'Complete' " [class.Reject]="commentsList.CommentStatus === 'FinalReject'||commentsList.CommentStatus === 'Rejected'||commentsList.CommentStatus === 'Provisionally Rejected'|| commentsList.CommentStatus === 'Final Rejected' " [class.clarify]="commentsList.CommentStatus === 'Clarify' || commentsList.CommentStatus === 'Clarified'|| commentsList.CommentStatus === 'Reviewer Clarify' || commentsList.CommentStatus == 'Applicant Clarify' || commentsList.CommentStatus ==='Applicant Clarified'" [class.reviewerClarify]="commentsList.CommentStatus === 'Reviewer Clarified' || commentsList.CommentStatus === 'Reviewer Clarity'" [class.refer]="commentsList.CommentStatus === 'Referred'" [class.returned]="commentsList.CommentStatus === 'Returned'" [class.GISReviewed]="commentsList.CommentStatus ==='GIS Reviewed'">
-                  JJS 07-03-24 GIS Reviewer
 
-                  <li class="event" data-date="">
+        <div class="icon-containerApprove ">
+          <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">
+        </div>
 
-                    -Comments Kyle 01/02/24 
-                    <h3>{{commentsList.FunctionalArea}} - {{commentsList.CommentStatus}}</h3>
+        <div class="commentbox ">
 
-                    <h5 >{{commentsList.UserName}}</h5>
-                    <br />
-                    <div class="cont2">
-                      <div [innerHTML]="sanitizeHTML(commentsList.Comment)"></div>
-                      <button mat-raised-button color="blue" *ngIf="commentsList.CommentStatus != 'FinalApproved'  &&   CurrentUserProfile[0].subDepartmentName === commentsList.FunctionalArea && commentsList.UserName === this.CurrentUser.fullName" >Edit Comment</button>
+          <div class="message-text-container ">
+            <h1 class="message-textApprove ">Success message</h1>
+            <h2 class="sub-text">Everything seems great</h2>
+          </div>
+        </div>
 
-                    </div>
+      </div>
+      <div class="cardReject">
 
-                    <p>
 
-                  {{commentsList.Comment}}
-                </p>
+        <div class="icon-containerReject ">
+          <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon">
+        </div>
 
-                    <br />
+        <div class="commentboxReject">
 
-                    <br />
+          <div class="message-text-container">
+            <h1 class="message-textReject ">Reject</h1>
+            <h2 class="sub-text">Application has been rejected</h2>
+          </div>
+        </div>
 
-                    <h6>{{commentsList.DateCreated}}</h6>
-                     <!--<h6>{{commentsList.Time}}</h6>-->
-                    <br />
+      </div>
+      <div class="cardClarify">
 
-                    <!--Applicant Clarity-->
-                    <button mat-raised-button color="clarify" >Reply</button>
-                    <button mat-raised-button color="clarify">Update Reply</button>
-                    <div class="row" >
-                      <label > <strong><em>Applicant's Reply:</em></strong></label>
-                      <label > <strong><em>Reviewer's Reply:</em></strong></label>
-                      <div class="form-floating mb-3 mt-3" >
-                        <input type="text" class="form-control" value="{{commentsList.isApplicantReply}}" id="ApplicantReply" name="ApplicantReply" disabled> [(ngModel)]="ApplicantReply">
 
-                        <div class="disabled-textbox" [innerHTML]="sanitizeHTML(commentsList.isApplicantReply)" id="ApplicantReply"></div>
+        <div class="icon-containerClarify ">
+          <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bookmark.svg" class="icon">
+        </div>
 
-                      </div>
-                    </div>
+        <div class="commentboxClarify">
 
-                  </li>
+          <div class="message-text-container">
+            <h1 class="message-textClarify ">Clarify</h1>
+            <h2 class="sub-text">a reviewer has requested clarification</h2>
+          </div>
+        </div>
 
-                </ul>
-              </div>
-            </div>
+      </div>
+
+      <div class="cardRelaxation">
+
+
+        <div class="icon-containerRelaxation ">
+          <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/arrow-rotate-right-solid.svg" class="icon">
+        </div>
+
+        <div class="commentbox">
+
+          <div class="message-text-containerRelaxation">
+            <h1 class="message-textRelaxation ">Relaxation</h1>
+            <h2 class="sub-text">Relaxation Requested</h2>
+          </div>
+        </div>
+
+      </div>-->
+
+      <div  *ngFor="let comment of CommentsList">
+        <div [class.cardApprove]="comment.CommentStatus === 'Approved'" [class.cardRelaxation]="comment.CommentStatus==='LS Relaxation'" [class.cardClarify]="comment.CommentStatus === 'Clarify'" [class.cardReject]="comment.CommentStatus === 'Rejected'">
+
+          <div class="icon-containerApprove " *ngIf="comment.CommentStatus === 'Approved'">
+            <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">
           </div>
 
-        </section>
+          <div class="icon-containerRelaxation" *ngIf="comment.CommentStatus === 'LS Relaxation'">
+            <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/arrow-rotate-right-solid.svg" class="icon">
+          </div>
 
-        <br />
+          <div class="icon-containerClarify " *ngIf="comment.CommentStatus === 'Clarify'">
+            <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bookmark.svg" class="icon">
+          </div>
+
+          <div class="icon-containerReject" *ngIf =" comment.CommentStatus === 'Rejected'">
+            <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon">
+          </div>
+          <div class="message-text-container">
+
+            <div class="messageHead">
+              <h1 [class.message-textApprove]="comment.CommentStatus === 'Approved'" [class.message-textRelaxation]="comment.CommentStatus === 'LS Relaxation'" [class.message-textClarify]="comment.CommentStatus === 'Clarify'" [class.message-textReject]="comment.CommentStatus === 'Rejected'">{{comment.CommentStatus}} by {{comment.UserName}}</h1>
+              <p>{{comment.DateCreated}}</p>
+            </div>
+
+            <div class="messageFoot">
+            <p class="sub-text">{{comment.Comment}}</p>
+              <button mat-raised-button color="clarify">Reply</button>
+              
+            </div>
+          </div>
+        </div>
       </div>
     </mat-tab>
 
@@ -350,7 +388,7 @@
 
               <!--<button *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)">Add Another Upload</button>-->
               <!--<button mat-raised-button color="addNewUploadButtonColor" *ngIf="manDoc.mandatoryDocumentName && isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="addUploader(i)" matTooltip="Add New Upload"><i class="fa fa-plus" aria-hidden="true"></i></button>
-          <button mat-raised-button color="warn" *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)" matTooltip="Delete"><i class="fa fa-trash" aria-hidden="true"></i></button>-->
+  <button mat-raised-button color="warn" *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)" matTooltip="Delete"><i class="fa fa-trash" aria-hidden="true"></i></button>-->
               <!--  <button *ngIf="manDoc.mandatoryDocumentName && !isLastCharacterNotNumber(manDoc.mandatoryDocumentName)" (click)="deleteUploader(i)">Delete</button>-->
             </mat-toolbar>
           </div>

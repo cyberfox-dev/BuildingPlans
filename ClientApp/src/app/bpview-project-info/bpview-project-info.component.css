@@ -205,3 +205,290 @@ table {
   color: #ef8bff !important;
   text-align: center !important;
 }
+
+.cardApprove {
+  height: 80px;
+  border-radius: 50px;
+  border: 2px solid;
+  border-color: #046b02;
+  box-sizing: border-box;
+  padding: 10px 15px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: start;
+  justify-content: flex-start;
+  align-content: center;
+  flex-direction: row;
+  margin-top: 10px;
+}
+
+
+
+.waveApprove {
+  position: absolute;
+  transform: rotate(90deg);
+  left: -31px;
+  top: 32px;
+  width: 80px;
+  fill: #04e4003a;
+}
+
+.icon-containerApprove {
+  width: 70px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #046b02;
+  border-radius: 100%;
+  margin-left: 0;
+}
+
+.iconApprove {
+  width: 100px;
+  color: #269b24;
+}
+
+.message-text-container  {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  flex-grow: 1;
+}
+
+.message-textApprove,
+.sub-textApprove {
+ 
+  margin: 0;
+  cursor: default;
+}
+
+.message-textApprove {
+  color: #269b24 !important;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.sub-text {
+ 
+  font-size: 14px;
+  color: #555;
+}
+
+.cross-icon {
+  width: 18px;
+  height: 18px;
+  color: #555;
+  cursor: pointer;
+}
+.commentbox {
+  width: 100%;
+  margin-left:10px;
+}
+
+.cardReject {
+  height: 80px;
+  border-radius: 50px;
+  border: 2px solid;
+  border-color: #730303;
+  padding: 10px 15px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: start;
+  justify-content: flex-start;
+  align-content: center;
+  flex-direction: row;
+  margin-top: 10px;
+}
+
+
+
+.waveReject {
+  position: absolute;
+  transform: rotate(90deg);
+  left: -31px;
+  top: 32px;
+  width: 80px;
+  fill: #04e4003a;
+}
+
+.icon-containerReject {
+  width: 70px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #730303;
+  border-radius: 100%;
+  margin-left: 0;
+}
+
+.iconReject {
+  width: 100px;
+  color: #269b24;
+}
+
+
+
+.message-textReject,
+.sub-textReject {
+  margin: 0;
+  cursor: default;
+}
+
+.message-textReject {
+  color: #730303 !important;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+
+
+
+
+.cardClarify {
+  height: 80px;
+  border-radius: 50px;
+  border-block-color: #046b02;
+  box-sizing: border-box;
+  padding: 10px 15px;
+  border: 2px solid;
+  border-color: #d57d38;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: start;
+  justify-content: flex-start;
+  align-content: center;
+  flex-direction: row;
+  margin-top: 10px;
+}
+
+
+
+.waveClarify {
+  position: absolute;
+  transform: rotate(90deg);
+  left: -31px;
+  top: 32px;
+  width: 80px;
+  fill: #04e4003a;
+}
+
+.icon-containerClarify {
+  width: 70px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #d57d38;
+  border-radius: 100%;
+  margin-left: 0;
+}
+
+.iconClarify {
+  width: 100px;
+  color: #269b24;
+}
+
+
+
+.message-textClarify,
+.sub-textClarify {
+  margin: 0;
+  cursor: default;
+}
+
+.message-textClarify {
+  color: #d57d38 !important;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+
+
+
+
+.cardRelaxation {
+  height: 80px;
+  border-radius: 50px;
+  box-sizing: border-box;
+  padding: 10px 15px;
+  border: 2px solid;
+  border-color: #0be7fd;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: start;
+  justify-content: flex-start;
+  align-content: center;
+  flex-direction: row;
+  margin-top: 10px;
+}
+
+
+
+.waveRelaxation {
+  position: absolute;
+  transform: rotate(90deg);
+  left: -31px;
+  top: 32px;
+  width: 80px;
+  fill: #04e4003a;
+}
+
+.icon-containerRelaxation {
+  width: 70px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #0be7fd;
+  border-radius: 100%;
+  margin-left: 0;
+}
+
+.iconRelaxation {
+  width: 100px;
+  color: #269b24;
+}
+
+
+
+.message-textRelaxation,
+.sub-text{
+  margin: 0;
+  cursor: default;
+  padding-left :10px;
+}
+
+.message-textRelaxation {
+  color: #0be7fd !important;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+
+.messageHead {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.mat-clarify {
+  background-color: #f48a36;
+  color: #fff;
+  margin-bottom: 17px;
+}
+.messageFoot {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  width: 100%;
+  padding-left: 20px;
+}

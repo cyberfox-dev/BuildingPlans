@@ -53,6 +53,9 @@ import { ConfigService } from '../service/Config/config.service';
 import { MandatoryDocumentStageLinkService } from '../service/MandatoryDocumentStageLink/mandatory-document-stage-link.service';
 import { BuildingApplicationsService } from '../service/BuildingApplications/building-applications.service';
 import { BPFinancialService } from '../service/BPfinancial/bpfinancial.service';
+import { BpAlertModalComponent } from '../bp-alert-modal/bp-alert-modal.component'; //BPDialogBoxes Sindiswa 24062024
+import { MatDialog } from '@angular/material/dialog';
+import { BPCommentsService } from '../service/BPComments/bpcomments.service';
 //Audit Trail Kyle
 declare var tinymce: any;
 
@@ -248,6 +251,7 @@ export interface CurrentApplicationBeingViewed {
   premisesName: string;
   currentStage: string;
   fullName: string;
+  userID: string;
 }
   //Service Information Kyle 31/01/24
 
@@ -489,6 +493,8 @@ export class BpActionCenterComponent implements OnInit {
     private financialService: BPFinancialService,
     private auditTrailService: AuditTrailService,
     private configService: ConfigService,
+    private dialog: MatDialog,
+    private bpCommentsService: BPCommentsService
     //Audit Trail Kyle
 
 ) { }
@@ -541,6 +547,8 @@ export class BpActionCenterComponent implements OnInit {
     this.loggedInUsersDepartmentID = this.CurrentUserProfile[0].departmentID;
     this.loggedInUsersEmail = this.CurrentUserProfile[0].email;
     this.loggedInUserName = this.CurrentUserProfile[0].fullName;
+    this.functionalArea = this.CurrentUserProfile[0].departmentName;
+
     this.getCurrentUserSubDepName();
     //this.newAssignORReassign(); //actionCentreEdits Sindiswa 16 January 2024
     this.checkUserAssignSituation(); //actionCentreEdits Sindiswa 18 January 2024
@@ -3168,71 +3176,82 @@ export class BpActionCenterComponent implements OnInit {
   }
 
   onCommentTP(interact: any) {
-    switch (interact) {
-
-      case "Approve": {
-
-        this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
-          null, null, null, null, null, null, null,
-          null, null, null, null, null, null, null, null, null,
-          null, null, null, null, null, null, null,
-          null, null, null, null, null, null, "Submission Plan", "CLosed", 1, null).subscribe((data: any) => {
-            if (data.responseCode == 1) {
-              
-              /*            this.CreateNotification(this.CurrentUser.appUserId);
-                          this.CreateNotification(this.clientUserID);*/
-              /*  this.moveToFinalApprovalForDepartment();*/
-              this.modalService.dismissAll();
-
-              this.openSnackBar("Application Actioned");
-
-            }
-            else {
-              alert(data.responseMessage)
-            }
-          }, error => {
-            console.log("BuildingApplicationError: ", error)
-          })
+    if (this.leaveAComment == "") {
+      const dialogRef = this.dialog.open(BpAlertModalComponent, {
+        data: {
+          message: "Please leave a comment in order to interact with the application"
+        }
+      });
+    }
+    else {
 
 
+      switch (interact) {
+
+        case "Approve": {
 
 
+          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, "Submission Plan", "CLosed", 1, null).subscribe((data: any) => {
+              if (data.responseCode == 1) {
 
-        break;
-      }
+                /*            this.CreateNotification(this.CurrentUser.appUserId);
+                            this.CreateNotification(this.clientUserID);*/
+                /*  this.moveToFinalApprovalForDepartment();*/
+                this.AddComment("TP Approved", null);
 
-      case "Reject": {
-
-        this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
-          null, null, null, null, null, null, null,
-          null, null, null, null, null, null, null, null, null,
-          null, null, null, null, null, null, null,
-          null, null, null, null, null, null, "Relaxation", "TP Relaxation - Unpaid", 2, null).subscribe((data: any) => {
-            if (data.responseCode == 1) {
-              
-              /*            this.CreateNotification(this.CurrentUser.appUserId);
-                          this.CreateNotification(this.clientUserID);*/
-              /*  this.moveToFinalApprovalForDepartment();*/
-              this.modalService.dismissAll();
-              this.openSnackBar("Application Actioned");
-              this.getAllServiceItemsForRelaxation();
-            }
-            else {
-              alert(data.responseMessage)
-            }
-          }, error => {
-            console.log("BuildingApplicationError: ", error)
-          })
+              }
+              else {
+                alert(data.responseMessage)
+              }
+            }, error => {
+              console.log("BuildingApplicationError: ", error)
+            })
 
 
 
-        break;
-      }
 
-     
-      default: {
 
-        break;
+
+
+          break;
+        }
+
+        case "Reject": {
+
+          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, "Relaxation", "TP Relaxation - Unpaid", 2, null).subscribe((data: any) => {
+              if (data.responseCode == 1) {
+
+                /*            this.CreateNotification(this.CurrentUser.appUserId);
+                            this.CreateNotification(this.clientUserID);*/
+                /*  this.moveToFinalApprovalForDepartment();*/
+                this.AddComment("TP Relaxation",null);
+                this.getAllServiceItemsForRelaxation();
+              }
+              else {
+                alert(data.responseMessage)
+              }
+            }, error => {
+              console.log("BuildingApplicationError: ", error)
+            })
+
+
+
+          break;
+        }
+
+
+        default: {
+
+          break;
+        }
       }
     }
   }
@@ -3246,76 +3265,84 @@ export class BpActionCenterComponent implements OnInit {
       }
     }
     //console.log("SubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentName", SubDepartmentName);
+    if (this.leaveAComment == "") {
+      const dialogRef = this.dialog.open(BpAlertModalComponent, {
+        data: {
+          message: "Please leave a comment in order to interact with the application"
+        }
+      });
+    }
+    else {
+      debugger;
+      switch (interact) {
+       
+        case "Approve": {
 
-    switch (interact) {
-
-      case "Approve": {
-
-        this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
-          null, null, null, null, null, null, null,
-          null, null, null, null, null, null, null, null, null,
-          null, null, null, null, null, null, null,
-          null, null, null, null, null, null, "Submission Plan", "TP Review", 1, null).subscribe((data: any) => {
-          if (data.responseCode == 1) {
-            
-/*            this.CreateNotification(this.CurrentUser.appUserId);
-            this.CreateNotification(this.clientUserID);*/
-            /*  this.moveToFinalApprovalForDepartment();*/
-            this.modalService.dismissAll();
-
-            this.openSnackBar("Application Actioned");
-            
-          }
-          else {
-            alert(data.responseMessage)
-          }
-        }, error => {
-          console.log("BuildingApplicationError: ", error)
-        })
-
-
-           
-
-
-        break;
-      }
-
-      case "Reject": {
-
-        this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
-          null, null, null, null, null, null, null,
-          null, null, null, null, null, null, null, null, null,
-          null, null, null, null, null, null, null,
-          null, null, null, null, null, null, "Relaxation", "LS Relaxation - Unpaid", 2, null).subscribe((data: any) => {
-            if (data.responseCode == 1) {
-              
-              /*            this.CreateNotification(this.CurrentUser.appUserId);
-                          this.CreateNotification(this.clientUserID);*/
-              /*  this.moveToFinalApprovalForDepartment();*/
-              this.modalService.dismissAll();
-              this.openSnackBar("Application Actioned");
-              this.getAllServiceItemsForRelaxation();
-            }
-            else {
-              alert(data.responseMessage)
-            }
-          }, error => {
-            console.log("BuildingApplicationError: ", error)
-          })
+          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, "Submission Plan", "TP Review", 1, null).subscribe((data: any) => {
+              debugger;
+              if (data.responseCode == 1) {
+                debugger;
+                /*            this.CreateNotification(this.CurrentUser.appUserId);
+                            this.CreateNotification(this.clientUserID);*/
+                /*  this.moveToFinalApprovalForDepartment();*/
+               
+                this.AddComment("LS Approved", null);
+              }
+              else {
+                alert(data.responseMessage)
+              }
+            }, error => {
+              console.log("BuildingApplicationError: ", error)
+            })
 
 
 
-        break;
-      }
 
-      case "Clarify": {
 
-        // this.getDepartmentManagerUserID("Senior Reviewer");
-        if (confirm("Are you sure you want to get clarity from applicant for this application?")) {
-          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
+          break;
+        }
 
-            if (data.responseCode == 1) {
-              const emailContent = `
+        case "Reject": {
+
+          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, "Relaxation", "LS Relaxation - Unpaid", 2, null).subscribe((data: any) => {
+              if (data.responseCode == 1) {
+
+                /*            this.CreateNotification(this.CurrentUser.appUserId);
+                            this.CreateNotification(this.clientUserID);*/
+                /*  this.moveToFinalApprovalForDepartment();*/
+                //this.modalService.dismissAll();
+                //this.openSnackBar("Application Actioned");
+                //this.getAllServiceItemsForRelaxation();
+                this.AddComment("LS Relaxation",null);
+              }
+              else {
+                alert(data.responseMessage)
+              }
+            }, error => {
+              console.log("BuildingApplicationError: ", error)
+            })
+
+
+
+          break;
+        }
+
+        case "Clarify": {
+
+          // this.getDepartmentManagerUserID("Senior Reviewer");
+          if (confirm("Are you sure you want to get clarity from applicant for this application?")) {
+            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
+
+              if (data.responseCode == 1) {
+                const emailContent = `
         <html>
         <head>
           <style>
@@ -3358,13 +3385,13 @@ export class BpActionCenterComponent implements OnInit {
 
 
 
-              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
-              if (this.CurrentUserProfile[0].alternativeEmail) { //checkingNotifications Sindiswa 15 February 2024
-                this.notificationsService.sendEmail(this.CurrentUserProfile[0].alternativeEmail, "Request for clarification", emailContent, emailContent);
-              }
-              /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-              */
-              const emailContentApp = `
+                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
+                if (this.CurrentUserProfile[0].alternativeEmail) { //checkingNotifications Sindiswa 15 February 2024
+                  this.notificationsService.sendEmail(this.CurrentUserProfile[0].alternativeEmail, "Request for clarification", emailContent, emailContent);
+                }
+                /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
+                */
+                const emailContentApp = `
         <html>
         <head>
           <style>
@@ -3408,86 +3435,86 @@ export class BpActionCenterComponent implements OnInit {
 
 
 
-              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
-              if (this.applicationData.clientAlternativeEmail) {
-                this.notificationsService.sendEmail(this.applicationData.clientAlternativeEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
-              }
+                this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
+                if (this.applicationData.clientAlternativeEmail) {
+                  this.notificationsService.sendEmail(this.applicationData.clientAlternativeEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
+                }
 /*              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
 */              this.notificationsService.addUpdateNotification(0, "Wayleave Application Clarification Request", "Request for clarification", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserId, "You have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
-                if (data.responseCode == 1) {
+                  if (data.responseCode == 1) {
 
 
-                }
-                else {
-                  alert(data.responseMessage);
-                }
+                  }
+                  else {
+                    alert(data.responseMessage);
+                  }
 
-                console.log("response", data);
-              }, error => {
-                console.log("Error", error);
-              });
-              this.notificationsService.addUpdateNotification(0, "Wayleave Application Clarification Request", "Request for clarificaion", false, this.applicationData.userID, this.ApplicationID, this.CurrentUser.appUserId, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
+                  console.log("response", data);
+                }, error => {
+                  console.log("Error", error);
+                });
+                this.notificationsService.addUpdateNotification(0, "Wayleave Application Clarification Request", "Request for clarificaion", false, this.applicationData.userID, this.ApplicationID, this.CurrentUser.appUserId, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
-                if (data.responseCode == 1) {
+                  if (data.responseCode == 1) {
 
 
-                }
-                else {
-                  alert(data.responseMessage);
-                }
+                  }
+                  else {
+                    alert(data.responseMessage);
+                  }
 
-                console.log("response", data);
-              }, error => {
-                console.log("Error", error);
-              });
+                  console.log("response", data);
+                }, error => {
+                  console.log("Error", error);
+                });
 
-              //commentsService
-              //Comments Kyle 01/02/24
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.CurrentApplication.UserID).subscribe((data: any) => {
+                //commentsService
                 //Comments Kyle 01/02/24
-                if (data.responseCode == 1) {
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.CurrentApplication.UserID).subscribe((data: any) => {
+                  //Comments Kyle 01/02/24
+                  if (data.responseCode == 1) {
 
 
-                  this.viewProjectInfoComponent.getAllComments();
-                }
-                else {
-                  alert(data.responseMessage);
+                    this.viewProjectInfoComponent.getAllComments();
+                  }
+                  else {
+                    alert(data.responseMessage);
 
-                }
-                console.log("reponse", data);
+                  }
+                  console.log("reponse", data);
 
-              }, error => {
-                console.log("Error: ", error);
-              })
-              this.refreshParent.emit();
-            }
-            else {
-              alert(data.responseMessage);
+                }, error => {
+                  console.log("Error: ", error);
+                })
+                this.refreshParent.emit();
+              }
+              else {
+                alert(data.responseMessage);
 
-            }
-            console.log("reponse", data);
+              }
+              console.log("reponse", data);
 
-          }, error => {
-            console.log("Error: ", error);
-          })
-          // alert("In progress");
-          this.modalService.dismissAll();
-          this.openSnackBar("Application Actioned");
-          this.router.navigate(["/home"]);
+            }, error => {
+              console.log("Error: ", error);
+            })
+            // alert("In progress");
+            this.modalService.dismissAll();
+            this.openSnackBar("Application Actioned");
+            this.router.navigate(["/home"]);
+          }
+          break;
         }
-        break;
-      }
-      case "Refer": {
+        case "Refer": {
 
 
 
-        if (confirm("Are you sure you want to refer this application to Senior Reviewers?")) {
+          if (confirm("Are you sure you want to refer this application to Senior Reviewers?")) {
 
-          this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Referred", false, true, "Senior Reviewer to comment", false).subscribe((data: any) => {
+            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Referred", false, true, "Senior Reviewer to comment", false).subscribe((data: any) => {
 
-            if (data.responseCode == 1) {
-              const emailContent = `
+              if (data.responseCode == 1) {
+                const emailContent = `
         <html>
         <head>
           <style>
@@ -3528,15 +3555,15 @@ export class BpActionCenterComponent implements OnInit {
            
     `;
 
-              this.accessGroupsService.GetUserAndZoneBasedOnRoleName("Senior Reviewer", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
-                if (data.responseCode === 1) {
-                  // Filter out duplicates based on a unique property (e.g., email)
-                  const uniqueFinalApprovers = this.getUniqueFinalApprovers(data.dateSet, 'email');
+                this.accessGroupsService.GetUserAndZoneBasedOnRoleName("Senior Reviewer", this.loggedInUsersSubDepartmentID).subscribe((data: any) => {
+                  if (data.responseCode === 1) {
+                    // Filter out duplicates based on a unique property (e.g., email)
+                    const uniqueFinalApprovers = this.getUniqueFinalApprovers(data.dateSet, 'email');
 
-                  // Filter out final approvers for the current zone
-                  const finalApproversForCurrentZone = uniqueFinalApprovers.filter(approver => approver.zoneID === this.CurrentUserProfile[0].zoneID);
-                  finalApproversForCurrentZone.forEach(approver => {
-                    const emailContent12 = `
+                    // Filter out final approvers for the current zone
+                    const finalApproversForCurrentZone = uniqueFinalApprovers.filter(approver => approver.zoneID === this.CurrentUserProfile[0].zoneID);
+                    finalApproversForCurrentZone.forEach(approver => {
+                      const emailContent12 = `
         <html>
         <head>
           <style>
@@ -3576,81 +3603,82 @@ export class BpActionCenterComponent implements OnInit {
      
            
     `;
-                    this.notificationsService.sendEmail(approver.email, "Request for Perusal", emailContent12, emailContent12);
-                  });
-                  console.log("Filtered Final Approvers:", finalApproversForCurrentZone);
-                } else {
-                  alert(data.responseMessage);
-                }
-              }, error => {
-                console.log("Error fetching final approvers:", error);
-              });
+                      this.notificationsService.sendEmail(approver.email, "Request for Perusal", emailContent12, emailContent12);
+                    });
+                    console.log("Filtered Final Approvers:", finalApproversForCurrentZone);
+                  } else {
+                    alert(data.responseMessage);
+                  }
+                }, error => {
+                  console.log("Error fetching final approvers:", error);
+                });
 
-              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application escalated", emailContent, emailContent);
+                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application escalated", emailContent, emailContent);
 /*                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Application escalated", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have escalated application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
 */                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Application escalated", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUserProfile[0].UserID, "You have escalated application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
 
-                if (data.responseCode == 1) {
-
-
-                }
-                else {
-                  alert(data.responseMessage);
-                }
-
-                console.log("response", data);
-              }, error => {
-                console.log("Error", error);
-              });
-
-              //commentsService
-              this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName,
-
-
-
-                //Comments Kyle 01/02/24
-                this.leaveAComment, "Referred", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
-                  //Comments Kyle 01/02/24
                   if (data.responseCode == 1) {
 
-                    alert(data.responseMessage);
-                    this.viewProjectInfoComponent.getAllComments();
+
                   }
                   else {
                     alert(data.responseMessage);
-
                   }
-                  console.log("reponse", data);
 
+                  console.log("response", data);
                 }, error => {
-                  console.log("Error: ", error);
-                })
-              this.refreshParent.emit();
-            }
-            else {
-              alert(data.responseMessage);
+                  console.log("Error", error);
+                });
 
-            }
-            console.log("reponse", data);
+                //commentsService
+                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName,
 
-          }, error => {
-            console.log("Error: ", error);
-          })
-          //alert("In progress");
-          this.modalService.dismissAll();
-          this.openSnackBar("Application Actioned");
-          this.router.navigate(["/home"]);
+
+
+                  //Comments Kyle 01/02/24
+                  this.leaveAComment, "Referred", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName).subscribe((data: any) => {
+                    //Comments Kyle 01/02/24
+                    if (data.responseCode == 1) {
+
+                      alert(data.responseMessage);
+                      this.viewProjectInfoComponent.getAllComments();
+                    }
+                    else {
+                      alert(data.responseMessage);
+
+                    }
+                    console.log("reponse", data);
+
+                  }, error => {
+                    console.log("Error: ", error);
+                  })
+                this.refreshParent.emit();
+              }
+              else {
+                alert(data.responseMessage);
+
+              }
+              console.log("reponse", data);
+
+            }, error => {
+              console.log("Error: ", error);
+            })
+            //alert("In progress");
+            this.modalService.dismissAll();
+            this.openSnackBar("Application Actioned");
+            this.router.navigate(["/home"]);
+          }
+
+
+
+          break;
         }
 
 
+        default: {
 
-        break;
-      }
-
-
-      default: {
-
-        break;
+          break;
+        }
       }
     }
   }
@@ -7504,6 +7532,7 @@ export class BpActionCenterComponent implements OnInit {
         tempApplication.premisesName = current.premisesName;
         tempApplication.currentStage = current.stage;
         tempApplication.fullName = current.firstName + " " + current.surname;
+        tempApplication.userID = current.userID;
         this.CurrentApplicationBeingViewed.push(tempApplication);
       }
       else {
@@ -7775,6 +7804,28 @@ export class BpActionCenterComponent implements OnInit {
       console.log("Error: ", error);
     })*/
 
+    
+  }
 
+  AddComment(commentStatus: any, subDepartmentForCommentID: any) {
+    debugger;
+    this.bpCommentsService.addUpdateComment(0, this.ApplicationID, this.functionalArea, this.leaveAComment, commentStatus, subDepartmentForCommentID, null, null, this.CurrentUser.fullName, this.CurrentApplicationBeingViewed[0].userID, this.CurrentUser.appUserId).subscribe((data: any) => {
+      debugger;
+      if (data.responseCode == 1) {
+        debugger;
+        this.modalService.dismissAll();
+
+        this.openSnackBar("Application Actioned");
+        this.router.navigate(["/home"]);
+      }
+      else {
+        const dialogRef = this.dialog.open(BpAlertModalComponent, {
+          data: {
+            message: "An Error has occured"
+          }
+        });
+      }
+    })
   }
 }
+
