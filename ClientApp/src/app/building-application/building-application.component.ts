@@ -192,6 +192,7 @@ export class BuildingApplicationComponent implements OnInit {
   validArchitectReg: boolean = false;
 
   BPMandatoryDocumentList: Observable<BPMandatoryDocumentUploadList[]>;
+
   MandatoryDocumentsLinkedStagesList = new BehaviorSubject<MandatoryDocumentsLinkedStagesList[]>([]);
   
   FileDocument: FileDocument[] = [];
@@ -236,7 +237,7 @@ export class BuildingApplicationComponent implements OnInit {
     this.BPMandatoryDocumentList = this.getBPDocumentsList();
 
     this.BPMandatoryDocumentList.subscribe(data => console.log(data));
-    console.log("BPMandatory Documents", this, this.BPMandatoryDocumentList);
+    console.log("BPMandatory Documents",  this.BPMandatoryDocumentList);
 }
 
   ngOnInit(): void {
@@ -272,7 +273,7 @@ export class BuildingApplicationComponent implements OnInit {
   }
 
   onPassFileName(event: { uploadFor: string; fileName: string }, index: any) {
-    
+    debugger;
     const { uploadFor, fileName } = event;
     // const index = parseInt(uploadFor.substring('CoverLetter'.length));
     
@@ -540,12 +541,16 @@ export class BuildingApplicationComponent implements OnInit {
 
     
   getBPDocumentsList(): Observable<BPMandatoryDocumentUploadList[]> {
+    debugger;
     return this.bpManDocService.getAllMandatoryDocuments()
       .pipe(
         map((data: any) => {
+          debugger;
           if (data.responseCode === 1) {
+            debugger;
             const tempList: BPMandatoryDocumentUploadList[] = [];
             for (let i = 0; i < data.dateSet.length; i++) {
+              debugger;
               const current = data.dateSet[i];
               const tempRequiredDocuments: BPMandatoryDocumentUploadList = {
                 mandatoryDocumentID: current.mandatoryDocumentID,
