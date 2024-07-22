@@ -131,7 +131,6 @@ import { BPServiceItemsComponent } from './bpservice-items/bpservice-items.compo
 import { BpMandoryDocumentsComponent } from './bp-mandory-documents/bp-mandory-documents.component';
 import { BPDepartmentDocRequiredUploadsComponent } from './bpdepartment-doc-required-uploads/bpdepartment-doc-required-uploads.component'; //BPDialogBoxes Sindiswa 24062024
 
-
 //import { MatExpansionModule } from '@angular/material/expansion';
 
 //import { MapModule } from 'arcgis-js-api';

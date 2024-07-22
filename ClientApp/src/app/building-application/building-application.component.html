@@ -329,7 +329,7 @@
             <app-bpfile-upload [ApplicationID]="applicationID"
                              [UploadFor]="manDoc.mandatoryDocumentName"
                              (passFileName)="onPassFileName($event,i)"
-                             (onUploadFinished)="onFileDelete($event, i)"
+                             (onUploadFinished)="onFileDelete($event,i)"
                              (onUploadSuccess)="onFileUpload($event)">
             </app-bpfile-upload>
           </div>

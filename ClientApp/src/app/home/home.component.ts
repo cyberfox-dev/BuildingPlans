@@ -1,12 +1,12 @@
 import { Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
-import { MatTable } from '@angular/material/table';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Router } from "@angular/router";
 import { ApplicationsService } from '../service/Applications/applications.service';
 //import { ApplicationList } from '../shared/shared.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSelect } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepper } from '@angular/material/stepper';
@@ -352,6 +352,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   displayedColumnsViewLinkedZones: string[] = ['subDepartmentName', 'zoneName'];
   dataSourceViewLinkedZones = this.ZoneLinkedList;
+  selectedTabIndex: number = 0;
+
 
   filterValue = '';
 
@@ -439,9 +441,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   displayedColumnsArchitects: string[] = ['fullName', 'actions'];
 
 
-  displayedColumns: string[] = ['lSNumber', 'ERFNumber', 'stage', 'stageAge', 'planAge', 'ownerName', 'propertyAddress', 'status', 'dateCreated', 'dateUpdated', 'actions'];
-  displayedColumnsBP: string[] = ['lSNumber', 'ERFNumber', 'stage', 'stageAge', 'planAge', 'ownerName', 'propertyAddress', 'status', 'dateCreated', 'dateUpdated', 'actions'];
-  displayedColumnsSA: string[] = ['lSNumber', 'ERFNumber', 'stage', 'stageAge', 'planAge', 'ownerName', 'propertyAddress', 'status', 'dateCreated', 'dateUpdated', 'actions'];
+  displayedColumns: string[] = ['lSNumber', 'ownerName', 'propertyAddress', 'ERFNumber', 'stage', 'status', 'stageAge', 'planAge',   'dateCreated', 'actions'];
+  displayedColumnsBP: string[] = ['lSNumber', 'ownerName', 'propertyAddress', 'ERFNumber', 'stage', 'status', 'stageAge', 'planAge',  'dateCreated', 'actions'];
+  displayedColumnsSA: string[] = ['lSNumber', 'ownerName', 'propertyAddress', 'ERFNumber', 'stage', 'status', 'stageAge', 'planAge',  'dateCreated',  'actions'];
   dataSourceBP = this.ApplicationsBP;
   scrutinyApplications: ApplicationsListBP[] = [];
   dataSourceSA = this.scrutinyApplications;
@@ -786,15 +788,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     //this.defaultPageSize = 10;
   }
-
+/*  dataSourceLinkUsers = new MatTableDataSource<ClientUserList>([]);*/
   ngAfterViewInit() {
-    // Check which tabs are currently visible and select the first one
-    /*    const visibleTabs = ['Reviewer', 'SR', 'FR', 'PC', 'PI', 'ZA', 'EMB', 'GISR'].filter(tab => this[`${tab.toLowerCase()}Tab`]);
-        
-        if (visibleTabs.length > 0) {
-          
-          this.buttonToggleGroup.value = visibleTabs[0];
-        }*/
+
   }
 
 
@@ -806,7 +802,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   showDates: string;
   tagLength: number;
 
-  dataSourceClients = this.ArchitectClients;
+/*  dataSourceClients.data = this.ArchitectClients;*/
   isBannerVisible() {
 
     this.configService.getConfigsByConfigName("Alert").subscribe((data: any) => {
@@ -1273,6 +1269,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       else {
         alert(data.responseMessage);
       }
+ 
+
+
       console.log("reponse", data);
 
     }, error => {
@@ -2348,6 +2347,9 @@ this.subscriptions.push(subscription);
 
 
   page = 4;
+  pageSize = 10;
+  pageSizeOptions: number[] = [10, 25, 50, 100];
+  length: any;
 
 
   onCheckIfUserHasAccess() {
@@ -7654,7 +7656,7 @@ this.subscriptions.push(subscription);
   }
   //Home Tabs Kyle 27-05 - 24
   onChangeDataSource(event: MatTabChangeEvent) {
-    
+    this.selectedTabIndex = event.index;
     switch (event.index) {
       case 0:
         this.dataSourceSA = this.scrutinyApplications;
@@ -7662,14 +7664,19 @@ this.subscriptions.push(subscription);
         break;
 
       case 1:
+        this.dataSourceSA = this.ApplicationsBP;
+        this.originalDataSourceSA = [...this.ApplicationsBP];
         break;
 
       case 2:
         break;
 
       case 3:
-        this.dataSourceSA = this.ApplicationsBP;
-        this.originalDataSourceSA = [...this.ApplicationsBP]; //BPRegister Sindiswa 20062024
+        break;
+      case 4:
+        break;
+      case 5:
+        break;
     }
   }
  
