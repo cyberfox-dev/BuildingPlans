@@ -322,7 +322,7 @@
 
       </div>-->
 
-      <div  *ngFor="let comment of CommentsList">
+      <div *ngFor="let comment of CommentsList ; let i = index">
         <div [class.cardApprove]="comment.CommentStatus === 'Approved'" [class.cardRelaxation]="comment.CommentStatus==='LS Relaxation'" [class.cardClarify]="comment.CommentStatus === 'Clarify'" [class.cardReject]="comment.CommentStatus === 'Rejected'">
 
           <div class="icon-containerApprove " *ngIf="comment.CommentStatus === 'Approved'">
@@ -337,7 +337,7 @@
             <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bookmark.svg" class="icon">
           </div>
 
-          <div class="icon-containerReject" *ngIf =" comment.CommentStatus === 'Rejected'">
+          <div class="icon-containerReject" *ngIf=" comment.CommentStatus === 'Rejected'">
             <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon">
           </div>
           <div class="message-text-container">
@@ -347,12 +347,20 @@
               <p>{{comment.DateCreated}}</p>
             </div>
 
+
             <div class="messageFoot">
-            <p class="sub-text">{{comment.Comment}}</p>
-              <button mat-raised-button color="clarify">Reply</button>
-              
+              <p class="sub-text">{{comment.Comment}}</p>
+              <button mat-raised-button color="clarify" (click)="openEditReply(i,replyModal)" *ngIf="comment.isApplicantReply == null && comment.CommentStatus == 'Clarify' && CurrentUser.appUserId == comment.CanReplyUserID">Reply</button>
+              <button mat-raised-button color="clarify" (click)="openViewReply(i)" *ngIf="comment.isApplicantReply != null && comment.CommentStatus == 'Clarify'">View Reply</button>
+
             </div>
           </div>
+        </div>
+        <div *ngIf="comment.ViewReply==true"  class="replyRow">
+          <textarea class="viewReply" disabled>
+         {{reply}}
+        </textarea>
+          <button mat-raised-button color="clarify2"(click)="openEditReply(i,replyModal)">Edit</button>
         </div>
       </div>
     </mat-tab>
@@ -444,5 +452,28 @@
 
   <div class="modal-footer">
     <button type="submit" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+
+
+<ng-template #replyModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Edit Reply</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="row">
+
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="reply" id="reply" name="reply" placeholder="Edit Comment">
+          <label for="reply">Enter in a reply</label>
+        </div>
+
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="SaveReply()">Save</button>
   </div>
 </ng-template>

@@ -29,7 +29,7 @@ namespace BuildingPlans.Controllers
             {
                 var result = new object();
 
-                if (model.FunctionalArea == null || model.Comment == null)
+                if (model == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are miss", null));
                 }
@@ -74,6 +74,14 @@ namespace BuildingPlans.Controllers
                          if(model.CommentStatus != null)
                         {
                             tempComment.CommentStatus = model.CommentStatus;
+                        }
+                         if(model.isApplicantReplay != null)
+                        {
+                            tempComment.isApplicantReply = model.isApplicantReplay;
+                        }
+                         if(model.SecondReply != null)
+                        {
+                            tempComment.SecondReply = model.SecondReply;
                         }
                          tempComment.DateUpdated = DateTime.Now;
                         _context.Update(tempComment);

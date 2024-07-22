@@ -1,4 +1,4 @@
-import { Component, OnInit,ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild} from '@angular/core';
 import { BuildingApplicationsService } from 'src/app/service/BuildingApplications/building-applications.service';
 import { SharedService } from 'src/app/shared/shared.service';
 import { RefreshService } from '../shared/refresh.service';
@@ -13,7 +13,8 @@ import { BPMandatoryStageDocumentService } from 'src/app/service/BPMandatoryStag
 import {DocumentsComponentComponent } from'src/app/documents-component/documents-component.component'
 import { BPCommentsService } from '../service/BPComments/bpcomments.service';
 import { DomSanitizer, SafeHtml, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
-
+import { MatDialog } from '@angular/material/dialog';
+import { BpAlertModalComponent } from '../bp-alert-modal/bp-alert-modal.component';
 export interface DocumentsList {
   DocumentID: number;
   DocumentName: string;
@@ -48,6 +49,7 @@ export interface CommentsList {
   CanReplyUserID: string;
   CreatedById: string;
   DateCreated: any;
+  ViewReply: boolean;
 }
 @Component({
   selector: 'app-bpview-project-info',
@@ -68,7 +70,8 @@ export class BPViewProjectInfoComponent implements OnInit {
     private BPManDocService: BPManDocService,
     private BPMandatoryStageDocumentService: BPMandatoryStageDocumentService,
     private DocumentsComponentComponent: DocumentsComponentComponent, private bpCommentsService: BPCommentsService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private dialog: MatDialog,
   ) { }
 
   // Properties
@@ -137,10 +140,10 @@ export class BPViewProjectInfoComponent implements OnInit {
   architectCell: string;
 
   private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
-
+  panelOpenState :boolean = false;
   ngOnInit(): void {
 
-   /* this.refreshService.enableRefreshNavigation('/home');*/
+    this.refreshService.enableRefreshNavigation('/home');
     this.stringifiedData = JSON.parse(JSON.stringify(localStorage.getItem('LoggedInUserInfo')));
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
@@ -157,6 +160,25 @@ export class BPViewProjectInfoComponent implements OnInit {
 
   }
 
+  openViewReply(index: any) {
+    let viewReply = this.CommentsList[index].ViewReply;
+    if (viewReply == false) {
+      this.CommentsList[index].ViewReply = true;
+    }
+    else {
+      this.CommentsList[index].ViewReply = false;
+    }
+    debugger;
+    if (this.CommentsList[index].isApplicantReply !== null && this.CommentsList[index].SecondReply == null) {
+      this.reply = this.CommentsList[index].isApplicantReply;
+      this.hasReply = false;
+    }
+    
+    else if (this.CommentsList[index].isApplicantReply != null && this.CommentsList[index].SecondReply != null) {
+      this.reply = this.CommentsList[index].SecondReply;
+      this.hasReply = true;
+    }
+  }
   initializeCurrentStage(): void {
 
 
@@ -391,15 +413,18 @@ export class BPViewProjectInfoComponent implements OnInit {
     this.DocumentsComponentComponent.getAllDocsForApplication();
   }
 
-  ApplicantReply: any;
+  reply: string;
+  hasReply: boolean;
+
   GetAllCommentsForApplication() {
     debugger;
+    this.CommentsList.splice(0, this.CommentsList.length);
     this.bpCommentsService.getAllCommentsForApplication(this.applicationId).subscribe((data: any) => {
       debugger;
       if (data.responseCode == 1) {
         debugger;
         for (let i = 0; i < data.dateSet.length; i++) {
-          const current = data.dateSet[0];
+          const current = data.dateSet[i];
           const tempComment = {} as CommentsList;
           debugger;
           tempComment.CommentID = current.commentID;
@@ -408,12 +433,15 @@ export class BPViewProjectInfoComponent implements OnInit {
           tempComment.Comment = current.comment;
           tempComment.CommentStatus = current.commentStatus;
           tempComment.SubDepartmentForCommentID = current.subDepartmentForCommentID;
-          tempComment.isApplicantReply = current.isApplicantReply;
+          tempComment.isApplicantReply = current.isApplicantReplay;
           tempComment.SecondReply = current.secondReply;
           tempComment.UserName = current.userName;
           tempComment.CanReplyUserID = current.canReplyUserID;
           tempComment.CreatedById = current.createdById;
-          tempComment.DateCreated = current.dateCreated.substring(0,current.dateCreated.indexOf("T"));
+          tempComment.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
+          tempComment.ViewReply = false;
+
+         
           this.CommentsList.push(tempComment);
         }
 
@@ -428,5 +456,61 @@ export class BPViewProjectInfoComponent implements OnInit {
     })
   }
 
+  selectedComment: any;
+  openEditReply(index: any, replyModal:any) {
+    this.selectedComment = this.CommentsList[index];
+    this.CommentsList[index].ViewReply = false;
+    this.modalService.open(replyModal, { centered: true, size: 'l' });
+    
+  }
+
+  SaveReply() {
+    debugger;
+    if (this.selectedComment.isApplicantReply == null) {
+      this.bpCommentsService.addUpdateComment(this.selectedComment.CommentID, null, null, null, null, null, this.reply, null, null, null, null).subscribe((data: any) => {
+        debugger;
+        if (data.responseCode == 1) {
+          const dialogRef = this.dialog.open(BpAlertModalComponent, {
+            data: {
+              message: "Reply successFully saved"
+            }
+          });
+          this.GetAllCommentsForApplication();
+          this.modalService.dismissAll();
+        }
+        else {
+          const dialogRef = this.dialog.open(BpAlertModalComponent, {
+            data: {
+              message: data.responseMessage
+            }
+          });
+        }
+      }, error => {
+        console.log(error);
+      })
+    }
+    else {
+      this.bpCommentsService.addUpdateComment(this.selectedComment.CommentID, null, null, null, null, null, null,this.reply,  null, null, null).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          const dialogRef = this.dialog.open(BpAlertModalComponent, {
+            data: {
+              message: "Reply Editted SuccessFully"
+            }
+          });
+          this.GetAllCommentsForApplication();
+          this.modalService.dismissAll();
+        }
+        else {
+          const dialogRef = this.dialog.open(BpAlertModalComponent, {
+            data: {
+              message: data.responseMessage
+            }
+          });
+        }
+      }, error => {
+        console.log(error);
+      })
+    }
+  }
 }
 
