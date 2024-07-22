@@ -3197,7 +3197,7 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "Submission Plan", "CLosed", 1, null).subscribe((data: any) => {
+            null, null, null, null, null, null, "Submission Plan", "CLosed", 1, null,null).subscribe((data: any) => {
               if (data.responseCode == 1) {
 
                 /*            this.CreateNotification(this.CurrentUser.appUserId);
@@ -3228,7 +3228,7 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "Relaxation", "TP Relaxation - Unpaid", 2, null).subscribe((data: any) => {
+            null, null, null, null, null, null, "Relaxation", "TP Relaxation - Unpaid", 2, null,null).subscribe((data: any) => {
               if (data.responseCode == 1) {
 
                 /*            this.CreateNotification(this.CurrentUser.appUserId);
@@ -3284,7 +3284,7 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "Submission Plan", "TP Review", 1, null).subscribe((data: any) => {
+            null, null, null, null, null, null, "Submission Plan", "TP Review", 1, null,null).subscribe((data: any) => {
               debugger;
               if (data.responseCode == 1) {
                 debugger;
@@ -3314,7 +3314,7 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "Relaxation", "LS Relaxation - Unpaid", 2, null).subscribe((data: any) => {
+            null, null, null, null, null, null, "Relaxation", "LS Relaxation - Unpaid", 2, null,null).subscribe((data: any) => {
               if (data.responseCode == 1) {
 
                 /*            this.CreateNotification(this.CurrentUser.appUserId);
@@ -7816,7 +7816,17 @@ export class BpActionCenterComponent implements OnInit {
       if (data.responseCode == 1) {
         debugger;
         this.modalService.dismissAll();
-
+        this.openSnackBar("Application Actioned");
+        this.router.navigate(["/home"]);
+      }
+      else {
+        const dialogRef = this.dialog.open(BpAlertModalComponent, {
+          data: {
+            message: "An Error has occured"
+          }
+        });
+      }
+    })
   }
 
   generateBPApplicationID() {
@@ -7870,17 +7880,7 @@ export class BpActionCenterComponent implements OnInit {
 
   MoveApplicationToDistribution() {
 
-        this.openSnackBar("Application Actioned");
-        this.router.navigate(["/home"]);
-      }
-      else {
-        const dialogRef = this.dialog.open(BpAlertModalComponent, {
-          data: {
-            message: "An Error has occured"
-          }
-        });
-      }
-    })
+     
   }
 }
 
