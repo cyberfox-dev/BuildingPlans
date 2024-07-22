@@ -866,6 +866,18 @@ export class BuildingApplicationComponent implements OnInit {
         
       }
       else {
+        debugger;
+        const current = this.CurrentUserProfile[0];
+
+        this.clientName = current.fullName.substring(0, current.fullName.indexOf(" "));
+        this.clientSurname = current.fullName.substring(current.fullName.indexOf(" "));
+        this.clientEmail = current.email;
+        this.clientAltEmail = current.alternateEmail;
+        this.clientCell = current.phoneNumber;
+        this.clientIDNo = current.idNumber;
+
+
+        /*THIS IS FOR THE ARCHITECT SELECTION*/
         this.userService.getUserProfileById(this.architectUserID).subscribe((data: any) => {
           if (data.responseCode == 1) {
             const tempUser = data.dateSet[0];
@@ -874,14 +886,6 @@ export class BuildingApplicationComponent implements OnInit {
             this.architectCell = tempUser.phoneNumber;
             this.architectID = tempUser.idNumber;
 
-            const current = this.CurrentUserProfile[0];
-            
-            this.clientName = current.fullName.substring(0, current.fullName.indexOf(" "));
-            this.clientSurname = current.fullName.substring(current.fullName.indexOf(" "));
-            this.clientEmail = current.email;
-            this.clientAltEmail = current.alternateEmail;
-            this.clientCell = current.phoneNumber;
-            this.clientIDNo = current.idNumber;
           }
           else {
             alert(data.responseMessage)
@@ -914,7 +918,7 @@ export class BuildingApplicationComponent implements OnInit {
           this.clientEmail, this.clientCell, this.clientAltEmail, this.clientAltCell, this.clientIDNo, this.propertyDescription, this.premisesName,
           this.addressType, this.erfNo, this.portionNo, this.NoOfUnits, this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
           this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
-          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Submission Plan","LS Review",1, this.servitudeBox).subscribe((data: any) => {
+          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Submission Plan","LS Review",1, this.servitudeBox,null).subscribe((data: any) => {
           if (data.responseCode == 1) {
             
             this.CreateNotification(this.CurrentUser.appUserId);
@@ -935,7 +939,7 @@ export class BuildingApplicationComponent implements OnInit {
           this.clientEmail, this.clientCell, this.clientAltEmail, this.clientAltCell, this.clientIDNo, this.propertyDescription, this.premisesName,
           this.addressType, this.erfNo, this.portionNo, this.NoOfUnits, this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
           this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
-          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Submission Plan", "LS Review", 1, this.servitudeBox).subscribe((data: any) => {
+          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Submission Plan", "LS Review", 1, this.servitudeBox,null).subscribe((data: any) => {
           if (data.responseCode == 1) {
             
             this.CreateNotification(this.CurrentUser.appUserId);

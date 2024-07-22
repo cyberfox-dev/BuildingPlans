@@ -44,5 +44,6 @@ namespace BuildingPlans.Data.Entities
         public string? Stage { get; set; }
         public int? StageNumber { get; set; }
         public bool? OmnibusServitude { get; set; }
+        public string? BPApplicationID { get; set; }
     }
 }

@@ -262,7 +262,7 @@ export class BPFileUploadComponent implements OnInit {
       
       if (data.responseCode == 1) {
         this.onUploadSuccess.emit(event.body);
-        alert(data.responseMessage);
+
       }
     }, error => {
       console.log("Error: ", error);

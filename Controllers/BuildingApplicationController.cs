@@ -98,8 +98,9 @@ namespace BuildingPlans.Controllers
                             Stage = model.Stage,
                             StageNumber = model.StageNumber,
                             Status = model.Status,
-                           OmnibusServitude = model.OmnibusServitude
-                           
+                           OmnibusServitude = model.OmnibusServitude,
+                            BPApplicationID = model.BPApplicationID
+
                         };
                         await _context.BuildingApplications.AddAsync(tempBuildingApplication);
                         await _context.SaveChangesAsync();
@@ -249,6 +250,10 @@ namespace BuildingPlans.Controllers
                         {
                             tempBuildingApplication.OmnibusServitude = model.OmnibusServitude;
                         }
+                        if (model.BPApplicationID != null)
+                        {
+                            tempBuildingApplication.BPApplicationID = model.BPApplicationID;
+                        }
                         tempBuildingApplication.DateUpdated = DateTime.Now;
                      
                         _context.Update(tempBuildingApplication);
@@ -314,7 +319,7 @@ namespace BuildingPlans.Controllers
                       Status = buildingApplication.Status,
                       StageNumber = buildingApplication.StageNumber,
                       CreatedById = buildingApplication.CreatedById,
-
+                        BPApplicationID = buildingApplication.BPApplicationID,
                     }
                     ).ToListAsync();
 
@@ -375,6 +380,7 @@ namespace BuildingPlans.Controllers
                         Status = buildingApplication.Status,
                         StageNumber = buildingApplication.StageNumber,
                         CreatedById = buildingApplication.CreatedById,
+                        BPApplicationID = buildingApplication.BPApplicationID,
 
                     }).ToListAsync();
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Application By ApplicationID", result));
@@ -429,8 +435,8 @@ namespace BuildingPlans.Controllers
                                         SGCode = buildingApplication.SGCode,
                                         DateCreated = buildingApplication.DateCreated,
                                         DateUpdated = buildingApplication.DateUpdated,
-                                        OmnibusServitude = buildingApplication.OmnibusServitude
-
+                                        OmnibusServitude = buildingApplication.OmnibusServitude,
+                                        BPApplicationID = buildingApplication.BPApplicationID,
 
 
                                     }).ToListAsync();
@@ -486,8 +492,9 @@ namespace BuildingPlans.Controllers
                                         DateCreated = buildingApplication.DateCreated,
                                         DateUpdated = buildingApplication.DateUpdated,
                                         OmnibusServitude = buildingApplication.OmnibusServitude,
-                                        Stage = buildingApplication.Stage
-
+                                        Stage = buildingApplication.Stage,
+                                        Status = buildingApplication.Status,
+                                        BPApplicationID = buildingApplication.BPApplicationID,
 
                                     }).ToListAsync();
 
@@ -599,8 +606,8 @@ namespace BuildingPlans.Controllers
                                         DateCreated = buildingApplication.DateCreated,
                                         DateUpdated = buildingApplication.DateUpdated,
                                         OmnibusServitude = buildingApplication.OmnibusServitude,
-                                        Stage = buildingApplication.Stage
-
+                                        Stage = buildingApplication.Stage,
+                                        BPApplicationID = buildingApplication.BPApplicationID,
 
                                     }).ToListAsync();
 
@@ -609,6 +616,129 @@ namespace BuildingPlans.Controllers
             catch (Exception ex)
             {
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+
+        [HttpGet("GetAllBuildingPlansApplications")]
+        public async Task<object> GetAllBuildingPlansApplications()
+        {
+            try
+            {
+                var result = await (
+                    from buildingApplication in _context.BuildingApplications
+                    where  buildingApplication.isActive == true && buildingApplication.BPApplicationID != null
+                    select new BuildingApplicationDTO()
+                    {
+                        ApplicationID = buildingApplication.ApplicationID,
+                        LSNumber = buildingApplication.LSNumber,
+                        UserID = buildingApplication.UserID,
+                        FirstName = buildingApplication.FirstName,
+                        Surname = buildingApplication.Surname,
+                        EmailAddress = buildingApplication.EmailAddress,
+                        CellNumber = buildingApplication.CellNumber,
+                        AltEmail = buildingApplication.AltEmail,
+                        AltCellNumber = buildingApplication.AltCellNumber,
+                        IDNumber = buildingApplication.IDNumber,
+                        PropertyDescription = buildingApplication.PropertyDescription,
+                        PremisesName = buildingApplication.PremisesName,
+                        AddressType = buildingApplication.AddressType,
+                        ErfNumber = buildingApplication.ErfNumber,
+                        PortionNumber = buildingApplication.PortionNumber,
+                        NoOfUnits = buildingApplication.NoOfUnits,
+                        UnitNumber = buildingApplication.UnitNumber,
+                        PhysicalAddress = buildingApplication.PhysicalAddress,
+                        Latitude = buildingApplication.Latitude,
+                        Longitude = buildingApplication.Longitude,
+                        ArchitectName = buildingApplication.ArchitectName,
+                        BuildingPlanFor = buildingApplication.BuildingPlanFor,
+                        TypeOfDevelopment = buildingApplication.TypeOfDevelopment,
+                        TotalArea = buildingApplication.TotalArea,
+                        OccupationClassification = buildingApplication.OccupationClassification,
+                        PlanFees = buildingApplication.PlanFees,
+                        PropertyValue = buildingApplication.PropertyValue,
+                        StreetAddress = buildingApplication.StreetAddress,
+                        Suburb = buildingApplication.Suburb,
+                        City = buildingApplication.City,
+                        PostalCode = buildingApplication.PostalCode,
+                        SGCode = buildingApplication.SGCode,
+                        DateCreated = buildingApplication.DateCreated,
+                        DateUpdated = buildingApplication.DateUpdated,
+                        OmnibusServitude = buildingApplication.OmnibusServitude,
+                        Stage = buildingApplication.Stage,
+                        Status = buildingApplication.Status,
+                        StageNumber = buildingApplication.StageNumber,
+                        CreatedById = buildingApplication.CreatedById,
+                        BPApplicationID = buildingApplication.BPApplicationID,
+
+                    }).ToListAsync();
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Application By ApplicationID", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
+        [HttpGet("GetAllPreInvoiceScrutinyApplications")]
+        public async Task<object> GetAllPreInvoiceScrutinyApplications()
+        {
+            try
+            {
+                var result = await (
+                    from buildingApplication in _context.BuildingApplications
+                    where buildingApplication.isActive == true && buildingApplication.BPApplicationID == null
+                    select new BuildingApplicationDTO()
+                    {
+                        ApplicationID = buildingApplication.ApplicationID,
+                        LSNumber = buildingApplication.LSNumber,
+                        UserID = buildingApplication.UserID,
+                        FirstName = buildingApplication.FirstName,
+                        Surname = buildingApplication.Surname,
+                        EmailAddress = buildingApplication.EmailAddress,
+                        CellNumber = buildingApplication.CellNumber,
+                        AltEmail = buildingApplication.AltEmail,
+                        AltCellNumber = buildingApplication.AltCellNumber,
+                        IDNumber = buildingApplication.IDNumber,
+                        PropertyDescription = buildingApplication.PropertyDescription,
+                        PremisesName = buildingApplication.PremisesName,
+                        AddressType = buildingApplication.AddressType,
+                        ErfNumber = buildingApplication.ErfNumber,
+                        PortionNumber = buildingApplication.PortionNumber,
+                        NoOfUnits = buildingApplication.NoOfUnits,
+                        UnitNumber = buildingApplication.UnitNumber,
+                        PhysicalAddress = buildingApplication.PhysicalAddress,
+                        Latitude = buildingApplication.Latitude,
+                        Longitude = buildingApplication.Longitude,
+                        ArchitectName = buildingApplication.ArchitectName,
+                        BuildingPlanFor = buildingApplication.BuildingPlanFor,
+                        TypeOfDevelopment = buildingApplication.TypeOfDevelopment,
+                        TotalArea = buildingApplication.TotalArea,
+                        OccupationClassification = buildingApplication.OccupationClassification,
+                        PlanFees = buildingApplication.PlanFees,
+                        PropertyValue = buildingApplication.PropertyValue,
+                        StreetAddress = buildingApplication.StreetAddress,
+                        Suburb = buildingApplication.Suburb,
+                        City = buildingApplication.City,
+                        PostalCode = buildingApplication.PostalCode,
+                        SGCode = buildingApplication.SGCode,
+                        DateCreated = buildingApplication.DateCreated,
+                        DateUpdated = buildingApplication.DateUpdated,
+                        OmnibusServitude = buildingApplication.OmnibusServitude,
+                        Stage = buildingApplication.Stage,
+                        Status = buildingApplication.Status,
+                        StageNumber = buildingApplication.StageNumber,
+                        CreatedById = buildingApplication.CreatedById,
+                        BPApplicationID = buildingApplication.BPApplicationID,
+
+                    }).ToListAsync();
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Application By ApplicationID", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
             }
         }
     }

@@ -12,10 +12,21 @@
 
 
   <div class="container-fluid main">
-    <div class="cont3 ">
+    <div class="cont3 " *ngIf="ActionCenter">
       <app-bp-action-center [ApplicationID]="applicationId" (refreshParent)="ngOnInit()" class="animationSlideUp"></app-bp-action-center>
 
     </div>
+    <button mat-button color="action" [matMenuTriggerFor]="actions" class="animationSlideUp" *ngIf="!ActionCenter"> <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ellipsis-vertical-solid.svg" class="icon"></button>
+    <mat-menu #actions="matMenu">
+      <button mat-menu-item> Move to Paid</button>
+      <!--<button mat-menu-item (click)="MoveToNextStage()" *ngIf="isInternalUser">Move to Next Stage</button>-->
+      <!--<button mat-menu-item (click)="MoveToNextStage()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon"> Cancel Application</button>--><!--reapply Sindiswa 22 January 2023-->
+      <button mat-menu-item><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon"> Cancel Application</button>
+
+      <!--<button mat-menu-item (click)="validate()"><i class="fa fa-repeat" aria-hidden="true"></i> Test BP</button>-->
+
+
+    </mat-menu>
   </div>
   <mat-tab-group>
 
@@ -28,8 +39,12 @@
           <div class="row">
             <div class="col">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" [(ngModel)]="lsNumber" name="lSNumber" placeholder="LS Number" disabled>
+                <input type="text" class="form-control" [(ngModel)]="lsNumber" name="lSNumber" placeholder="LS Number" disabled *ngIf="BPApplicationProjectNumber == null">
                 <label for="lSNumber">LS Number </label>
+              </div>
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" [(ngModel)]="BPApplicationProjectNumber" name="BPApplicationProjectNumber" placeholder="BPApplicationProjectNumber" disabled *ngIf="BPApplicationProjectNumber != null">
+                <label for="lSNumber">Project Number </label>
               </div>
             </div>
             <div class="col">

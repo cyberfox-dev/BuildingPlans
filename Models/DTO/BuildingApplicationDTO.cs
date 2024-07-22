@@ -1,4 +1,6 @@
-﻿namespace BuildingPlans.Models.DTO
+﻿using BuildingPlans.Data.Entities;
+
+namespace BuildingPlans.Models.DTO
 {
     public class BuildingApplicationDTO
     {
@@ -43,5 +45,6 @@
         public string? Stage { get; set; }
         public int? StageNumber { get; set; }
         public bool? OmnibusServitude { get; set; }
+        public string? BPApplicationID { get; set; }
     }
 }

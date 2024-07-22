@@ -98,6 +98,7 @@ export class BPViewProjectInfoComponent implements OnInit {
   //Application Details
   applicationId: any;
   lsNumber: string;
+  BPApplicationProjectNumber: string;
   typeOfDev: string;
 
   typeOfAddress: string;
@@ -117,6 +118,7 @@ export class BPViewProjectInfoComponent implements OnInit {
   OmnibusServitude: boolean = false;
   functionalArea: string;
   currentStage: string;
+  ActionCenter: boolean = false;
 
   //Owner Details
   firstName: string;
@@ -145,6 +147,10 @@ export class BPViewProjectInfoComponent implements OnInit {
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
+    debugger;
+    if (this.CurrentUserProfile[0].isInternal == true) {
+      this.ActionCenter = true;
+    }
     this.applicationId = this.sharedService.getApplicationID();
     this.getApplicationInfo();
 
@@ -171,7 +177,7 @@ export class BPViewProjectInfoComponent implements OnInit {
     await this.bpService.getBuildingApplicationByApplicationID(this.applicationId).subscribe((data: any) => {
       if (data.responseCode == 1) {
         const current = data.dateSet[0];
-
+        console.log("THIS IS APPLICATION DATATHIS IS APPLICATION DATATHIS IS APPLICATION DATATHIS IS APPLICATION DATATHIS IS APPLICATION DATA",data.dateSet[0]);
         this.lsNumber = current.lsNumber;
         this.typeOfDev = current.typeOfDevelopment;
         this.typeOfAddress = current.addressType;
@@ -199,6 +205,7 @@ export class BPViewProjectInfoComponent implements OnInit {
         this.email = current.emailAddress;
         this.altEmail = current.altEmail;
         this.idNumber = current.idNumber;
+        this.BPApplicationProjectNumber = current.bpApplicationID;
       }
       else {
         alert(data.responseMessage);

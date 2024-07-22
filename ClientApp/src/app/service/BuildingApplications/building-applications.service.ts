@@ -14,7 +14,7 @@ export class BuildingApplicationsService {
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
-  public addUpdateBuildingApplication(ApplicationID: number | null, LSNumber: string | null, UserID: string | null, FirstName: string | null, Surname: string | null, EmailAddress: string | null, CellNumber: string | null, AltEmail: string | null, AltCellNumber: string | null, IDNumber: string | null, PropertyDescription: string | null, PremisesName: string | null, AddressType: string | null, ErfNumber: string | null, PortionNumber: string | null, NoOfUnits: string | null, UnitNumber: string | null, PhysicalAddress: string | null, Latitude: string | null, Longitude: string | null, ArchitectName: string | null, ArchitectUserID: string | null, BuildingPlanFor: string | null, TypeOfDevelopment: string | null, TotalArea: string | null, OccupationClassification:string|null,PlanFees:string|null,PropertyValue:string|null,StreetAddress:string|null,Suburb:string|null,City:string|null,PostalCode:string|null, SGCode:string|null,CreatedByID:string|null ,Status:string|null,Stage:string|null,StageNumber:number|null,OmnibusServitude:boolean|null){
+  public addUpdateBuildingApplication(ApplicationID: number | null, LSNumber: string | null, UserID: string | null, FirstName: string | null, Surname: string | null, EmailAddress: string | null, CellNumber: string | null, AltEmail: string | null, AltCellNumber: string | null, IDNumber: string | null, PropertyDescription: string | null, PremisesName: string | null, AddressType: string | null, ErfNumber: string | null, PortionNumber: string | null, NoOfUnits: string | null, UnitNumber: string | null, PhysicalAddress: string | null, Latitude: string | null, Longitude: string | null, ArchitectName: string | null, ArchitectUserID: string | null, BuildingPlanFor: string | null, TypeOfDevelopment: string | null, TotalArea: string | null, OccupationClassification: string | null, PlanFees: string | null, PropertyValue: string | null, StreetAddress: string | null, Suburb: string | null, City: string | null, PostalCode: string | null, SGCode: string | null, CreatedByID: string | null, Status: string | null, Stage: string | null, StageNumber: number | null, OmnibusServitude: boolean | null, BPApplicationID:string|null){
     
     const body = {
       ApplicationID: ApplicationID,
@@ -54,8 +54,8 @@ export class BuildingApplicationsService {
       Status: Status,
       Stage: Stage,
       StageNumber: StageNumber,
-      OmnibusServitude: OmnibusServitude
-    
+      OmnibusServitude: OmnibusServitude,
+      BPApplicationID: BPApplicationID
     }
     return this.httpClient.post(this.baseURL + "AddUpdateBuildingApplication", body);
   }
@@ -103,4 +103,12 @@ export class BuildingApplicationsService {
     }
     return this.httpClient.post(this.baseURL + "GetBuildingApplicationByStageName", body);
   }
+
+  public getAllBuildingPlansApplications() {
+    return this.httpClient.get(this.baseURL + "GetAllBuildingPlansApplications");
+  }
+  public getAllPreInvoiceScrutinyApplications() {
+    return this.httpClient.get(this.baseURL + "GetAllPreInvoiceScrutinyApplications");
+  }
+
 }

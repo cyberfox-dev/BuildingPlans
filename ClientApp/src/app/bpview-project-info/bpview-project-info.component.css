@@ -2,7 +2,8 @@
   animation: fade-in-bottom 0.5s ease-out;
 }
 .main {
-
+  display: flex;
+  justify-content: center;
 }
 .cont3 {
   display: flex;
@@ -116,8 +117,10 @@ h3 {
 }
 .mat-action {
   color: white;
-  background-color: #005870;
+  background-color: #d57d38;
   margin: 10px;
+  margin-bottom: 153px;
+  margin-top: 50px;
 }
 
 .mat-blue {

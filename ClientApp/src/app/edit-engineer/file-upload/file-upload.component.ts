@@ -3,9 +3,9 @@ import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/ht
 import { SharedService } from 'src/app/shared/shared.service';
 import { DocumentUploadService } from 'src/app/service/DocumentUpload/document-upload.service';
 import { FinancialService } from 'src/app/service/Financial/financial.service';
-import { PermitService } from '../service/Permit/permit.service';
+
 import { PermitComponentComponent } from 'src/app/permit-component/permit-component.component';
-import { MobileFieldTrackingService } from '../service/MFT/mobile-field-tracking.service';
+
 
 
 
@@ -54,7 +54,7 @@ export class FileUploadComponent implements OnInit {
   @Input() isStatusOfWork: boolean | null;
   @Input() MftNote: string | null;
   //Service Information Kyle 31/01/24
-  constructor(private http: HttpClient, private shared: SharedService, private documentUploadService: DocumentUploadService, private financialService: FinancialService, private permitService: PermitService, private permitComponentComponent: PermitComponentComponent, private MFTService: MobileFieldTrackingService) { }
+  constructor(private http: HttpClient, private shared: SharedService, private documentUploadService: DocumentUploadService, private financialService: FinancialService,  private permitComponentComponent: PermitComponentComponent) { }
 
   ngOnInit(): void {
     this.CurrentUser = JSON.parse(localStorage.getItem('LoggedInUserInfo') || '{}');
@@ -349,7 +349,7 @@ export class FileUploadComponent implements OnInit {
 
     else if (this.isCalledInsidePermit) {
       
-      this.permitService.deleteDocumentFromPermitSubForComment(this.ApplicationID, this.permitSubForCommentID).subscribe((data: any) => {
+    /*  this.permitService.deleteDocumentFromPermitSubForComment(this.ApplicationID, this.permitSubForCommentID).subscribe((data: any) => {
         
         if (data.responseCode == 1) {
        
@@ -364,12 +364,12 @@ export class FileUploadComponent implements OnInit {
 
       }, error => {
         console.log("ErrorGetPermitDocForApplication: ", error);
-      })
+      })*/
       
     }
     //Status of works Kyle 16-02-24
     else if (this.isStatusOfWork) {
-      this.MFTService.deleteDocumentFromMFT(this.ApplicationID, this.fileUploadName + this.fileExtention).subscribe((data: any) => {
+     /* this.MFTService.deleteDocumentFromMFT(this.ApplicationID, this.fileUploadName + this.fileExtention).subscribe((data: any) => {
         if (data.responseCode == 1) {
           
           this.fileName = '';
@@ -384,7 +384,7 @@ export class FileUploadComponent implements OnInit {
 
       }, error => {
         console.log("ErrorGetPermitDocForApplication: ", error);
-      })
+      })*/
     }
     else {
       const handleResponse = (data: any) => {
@@ -603,7 +603,7 @@ export class FileUploadComponent implements OnInit {
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
     
     //
-    this.permitService.addUpdatePermitSubForComment(permitSubForCommentID, null, null, null, null, null, null, null, null, null, this.response?.dbPath, documentName).subscribe((data: any) => {
+   /* this.permitService.addUpdatePermitSubForComment(permitSubForCommentID, null, null, null, null, null, null, null, null, null, this.response?.dbPath, documentName).subscribe((data: any) => {
       if (data.responseCode == 1) {
         
         // Emit the onUploadSuccess event after a successful upload
@@ -614,7 +614,7 @@ export class FileUploadComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
-  }
+ */ }
   // #endregion
 
    //Service Information Kyle 31/01/24
@@ -645,7 +645,7 @@ export class FileUploadComponent implements OnInit {
     this.response = event;
     const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
     
-    this.MFTService.addUpdateMFT(this.MFTID,this.MftNote,applicationID,documentName,this.response?.dbPath,this.CurrentUser.appUserId,this.CurrentUser.fullName).subscribe((data: any) => {
+   /* this.MFTService.addUpdateMFT(this.MFTID,this.MftNote,applicationID,documentName,this.response?.dbPath,this.CurrentUser.appUserId,this.CurrentUser.fullName).subscribe((data: any) => {
       
       if (data.responseCode == 1) {
         
@@ -661,6 +661,6 @@ export class FileUploadComponent implements OnInit {
     }, error => {
       console.log("Error: ", error);
     })
-  }
+ */ }
    //Service Information Kyle 31/01/24
 }

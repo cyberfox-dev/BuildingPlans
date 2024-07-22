@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SignageApplicationComponent } from './signage-application.component';
 
 describe('SignageApplicationComponent', () => {
   let component: SignageApplicationComponent;

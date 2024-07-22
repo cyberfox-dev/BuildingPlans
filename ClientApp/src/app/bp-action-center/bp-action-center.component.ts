@@ -300,6 +300,8 @@ export class BpActionCenterComponent implements OnInit {
   WBSCHeckBox: boolean = true;
   previousReviewer: any;
     bpApplicationId: any;
+    configNumberOfProject: any;
+    configMonthYear: any;
   //  loggedInUserName: any;
   /*textfields*/
 
@@ -3149,7 +3151,7 @@ export class BpActionCenterComponent implements OnInit {
       null, null, null, null, null, null, null,
       null, null, null, null, null, null, null, null, null,
       null, null, null, null, null, null, null,
-      null, null, null, null, null, null, "Relaxation", "TP Relaxation - Paid", 2, null).subscribe((data: any) => {
+      null, null, null, null, null, null, "Relaxation", "TP Relaxation - Paid", 2, null,null).subscribe((data: any) => {
         if (data.responseCode == 1) {
           
           /*            this.CreateNotification(this.CurrentUser.appUserId);
@@ -3176,7 +3178,7 @@ export class BpActionCenterComponent implements OnInit {
           null, null, null, null, null, null, null,
           null, null, null, null, null, null, null, null, null,
           null, null, null, null, null, null, null,
-          null, null, null, null, null, null, "Submission Plan", "CLosed", 1, null).subscribe((data: any) => {
+          null, null, null, null, null, null, "Submission Plan", "CLosed", 1, null,null).subscribe((data: any) => {
             if (data.responseCode == 1) {
               
               /*            this.CreateNotification(this.CurrentUser.appUserId);
@@ -3207,7 +3209,7 @@ export class BpActionCenterComponent implements OnInit {
           null, null, null, null, null, null, null,
           null, null, null, null, null, null, null, null, null,
           null, null, null, null, null, null, null,
-          null, null, null, null, null, null, "Relaxation", "TP Relaxation - Unpaid", 2, null).subscribe((data: any) => {
+          null, null, null, null, null, null, "Relaxation", "TP Relaxation - Unpaid", 2, null,null).subscribe((data: any) => {
             if (data.responseCode == 1) {
               
               /*            this.CreateNotification(this.CurrentUser.appUserId);
@@ -3255,7 +3257,7 @@ export class BpActionCenterComponent implements OnInit {
           null, null, null, null, null, null, null,
           null, null, null, null, null, null, null, null, null,
           null, null, null, null, null, null, null,
-          null, null, null, null, null, null, "Submission Plan", "TP Review", 1, null).subscribe((data: any) => {
+          null, null, null, null, null, null, "Submission Plan", "TP Review", 1, null,null).subscribe((data: any) => {
           if (data.responseCode == 1) {
             
 /*            this.CreateNotification(this.CurrentUser.appUserId);
@@ -3286,7 +3288,7 @@ export class BpActionCenterComponent implements OnInit {
           null, null, null, null, null, null, null,
           null, null, null, null, null, null, null, null, null,
           null, null, null, null, null, null, null,
-          null, null, null, null, null, null, "Relaxation", "LS Relaxation - Unpaid", 2, null).subscribe((data: any) => {
+          null, null, null, null, null, null, "Relaxation", "LS Relaxation - Unpaid", 2, null,null).subscribe((data: any) => {
             if (data.responseCode == 1) {
               
               /*            this.CreateNotification(this.CurrentUser.appUserId);
@@ -7521,7 +7523,7 @@ export class BpActionCenterComponent implements OnInit {
       null, null, null, null, null, null, null,
       null, null, null, null, null, null, null, null, null,
       null, null, null, null, null, null, null,
-      null, null, null, null, null, null, "Relaxation", "LS Relaxation - Paid", 2, null).subscribe((data: any) => {
+      null, null, null, null, null, null, "Relaxation", "LS Relaxation - Paid", 2, null,null).subscribe((data: any) => {
         if (data.responseCode == 1) {
           
           /*            this.CreateNotification(this.CurrentUser.appUserId);
@@ -7775,6 +7777,59 @@ export class BpActionCenterComponent implements OnInit {
       console.log("Error: ", error);
     })*/
 
+
+  }
+
+  generateBPApplicationID() {
+
+    this.configService.getConfigsByConfigName("BPApplicationIDTracker").subscribe((data: any) => {
+        if (data.responseCode == 1) {
+
+          const current = data.dateSet[0];
+          this.configNumberOfProject = current.utilitySlot1;
+          this.configMonthYear = current.utilitySlot2;
+          this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+                null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null,
+                null, null, null, null, null, null, "Distribution", "BCO Distribution", 3, null, "BP:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear).subscribe((data: any) => {
+                  if (data.responseCode == 1) {
+                    this.modalService.dismissAll();
+                    this.openSnackBar("Application Actioned");
+                    this.router.navigate(["/home"]);
+                  }
+                  else {
+                    alert(data.responseMessage)
+                  }
+                }, error => {
+                  console.log("BuildingApplicationError: ", error)
+                })
+            }
+            else {
+
+              alert(data.responseMessage);
+            }
+            console.log("addUpdateConfigReponse", data);
+
+          }, error => {
+            console.log("addUpdateConfigError: ", error);
+          })
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("getConfigsByConfigNameReponse", data);
+
+      }, error => {
+        console.log("getConfigsByConfigNameError: ", error);
+      })
+    
+  }
+
+  MoveApplicationToDistribution() {
 
   }
 }
