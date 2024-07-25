@@ -8,7 +8,7 @@ import { SharedService } from 'src/app/shared/shared.service';
 export class BpDepartmentForCommentService {
 
   private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
-  private readonly baseURL: string = this.apiUrl + "BpDepartmentForCommentService/";
+  private readonly baseURL: string = this.apiUrl + "BPDepartmentForComment/";
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
   public addUpdateDepartmentForComment(BPDepartmentForCommentID: number | null, applicationID: number | null, DepartmentID: number | null, DepartmentName: string | null, userAssaignedToComment: string | null, commentStatus: string | null, createdByID: string | null) {
@@ -54,17 +54,29 @@ export class BpDepartmentForCommentService {
     return this.httpClient.post(this.baseURL + "GetDepartmentForComment", body);
 
   }
-  public getSubDepartmentForCommentBySubID(applicationID: number | null, DepartmentID: number | null, userID?: number | null) {
+  public getDepartmentForCommentByDepID(applicationID: number | null, DepartmentID: number | null, userID?: number | null) {
 
     const body = {
       ApplicationID: applicationID,
       DepartmentID: DepartmentID,
       UserAssaignedToComment: userID,
     }
-    return this.httpClient.post(this.baseURL + "GetDepartmentForCommentBySubID", body);
+    return this.httpClient.post(this.baseURL + "GetDepartmentForCommentByDepID", body);
 
   }
 
+  public updateCommentStatus(BPDepartmentForCommentID: number | null, commentStatus: string | null, isAwaitingClarity: boolean | null, userAssaignedToComment?: string | null, isFinalApproved?: boolean | null) {
 
+    const body = {
+
+      isAwaitingClarity: isAwaitingClarity,
+      BPDepartmentForCommentID: BPDepartmentForCommentID,
+      CommentStatus: commentStatus,
+      UserAssaignedToComment: userAssaignedToComment,
+      isFinalApproved: isFinalApproved,
+    }
+    return this.httpClient.post(this.baseURL + "UpdateCommentStatus", body);
+
+  }
 
 }

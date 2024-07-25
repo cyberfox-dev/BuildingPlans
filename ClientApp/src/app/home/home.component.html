@@ -50,6 +50,8 @@
   <!-- Service Information Kyle 31/01/24-->
   <button mat-raised-button color="createWayleave" class="animationSlideDown" [matMenuTriggerFor]="menu2">Create New Application</button>
   <mat-menu #menu2="matMenu" xPosition="after">
+    <button mat-menu-item (click)="GoToBuildingApplication(false)">Land Survey Application</button>
+    <button mat-menu-item (click)="GoToBuildingApplication(false)">Town Planning Application</button>
     <button mat-menu-item (click)="GoToBuildingApplication(false)">Building Plan Application</button>
     <button mat-menu-item (click)="goToDemolition(false)">Demolition Application</button>
     <button mat-menu-item (click)="goToSignageApplication()">Signage Application</button>
@@ -138,7 +140,7 @@
 
             <div class="loading-screen" *ngIf="isLoading" id="loadingScreen">
               <!--<img src="assets/Loading.png" alt="" class="logo2">
-              Need to have an BP relevant loading shandis-->
+    Need to have an BP relevant loading shandis-->
               <div class="shapes-5"></div>
 
             </div>
@@ -571,6 +573,77 @@
             <!--Archive Application-->
             <ng-container *ngIf="selectedTabIndex === 6">
               <table mat-table class="mat-elevation-z8 fade-in-bottom">
+
+                <ng-container matColumnDef="lSNumber">
+                  <th mat-header-cell *matHeaderCellDef> Application Number </th>
+                  <td mat-cell *matCellDef="let element"> {{element.ProjectNumber}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="ERFNumber">
+                  <th mat-header-cell *matHeaderCellDef> ERF Number </th>
+                  <td mat-cell *matCellDef="let element">{{element.erfNumber}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="stage">
+                  <th mat-header-cell *matHeaderCellDef> Stage</th>
+                  <td mat-cell *matCellDef="let element">{{element.stage}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="stageAge">
+                  <th mat-header-cell *matHeaderCellDef>Stage Age </th>
+                  <td mat-cell *matCellDef="let element">{{element.stageAge}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="planAge">
+                  <th mat-header-cell *matHeaderCellDef>Plan Age </th>
+                  <td mat-cell *matCellDef="let element">{{element.planName}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="ownerName">
+                  <th mat-header-cell *matHeaderCellDef>Owner Name</th>
+                  <td mat-cell *matCellDef="let element">{{element.ownerName}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="propertyAddress">
+                  <th mat-header-cell *matHeaderCellDef> Property Address </th>
+                  <td mat-cell *matCellDef="let element">{{element.propertyAddress}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef> Status </th>
+                  <td mat-cell *matCellDef="let element">{{element.status}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="dateCreated">
+                  <th mat-header-cell *matHeaderCellDef> Date Created </th>
+                  <td mat-cell *matCellDef="let element">{{element.dateCreated}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="dateUpdated">
+                  <th mat-header-cell *matHeaderCellDef>Date Updated </th>
+                  <td mat-cell *matCellDef="let element">{{element.dateUpdated}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>Actions</th>
+                  <td mat-cell *matCellDef="let i = index">
+                    <button mat-raised-button color="blue" (click)=" ViewProject(i)" matTooltip="View Application Details"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/eye.svg" class="icon4 blue"></button>
+                    <button mat-raised-button color="warn" (click)="DeleteBuildingApplication(i)" matTooltip="Delete Application" disabled><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/trash-can.svg" class="icon4 red"></button>
+
+                  </td>
+                  <td mat-cell *matCellDef="let element">  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+              </table>
+
+            </ng-container>
+
+            <!--All Application-->
+            <ng-container *ngIf="selectedTabIndex === 7">
+              <table mat-table [dataSource]="dataSourceSA" class="mat-elevation-z8 fade-in-bottom">
 
                 <ng-container matColumnDef="lSNumber">
                   <th mat-header-cell *matHeaderCellDef> Application Number </th>

@@ -24,6 +24,7 @@ using System.Linq;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using System.Runtime.CompilerServices;
+using iText.Commons.Actions.Contexts;
 
 namespace BuildingPlans.Controllers
 {
@@ -43,7 +44,7 @@ namespace BuildingPlans.Controllers
             try
             {
                 var result = new object();
-                if (model == null )
+                if (model == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
@@ -98,7 +99,7 @@ namespace BuildingPlans.Controllers
                             Stage = model.Stage,
                             StageNumber = model.StageNumber,
                             Status = model.Status,
-                           OmnibusServitude = model.OmnibusServitude,
+                            OmnibusServitude = model.OmnibusServitude,
                             BPApplicationID = model.BPApplicationID
 
                         };
@@ -109,44 +110,44 @@ namespace BuildingPlans.Controllers
                     }
                     else
                     {
-                        if(model.LSNumber != null)
+                        if (model.LSNumber != null)
                         {
                             tempBuildingApplication.LSNumber = model.LSNumber;
                         }
 
-                        if(model.UserID != null)
+                        if (model.UserID != null)
                         {
                             tempBuildingApplication.UserID = model.UserID;
                         }
-                      if(model.FirstName != null)
+                        if (model.FirstName != null)
                         {
                             tempBuildingApplication.FirstName = model.FirstName;
-                        } 
-                      if(model.Surname != null)
+                        }
+                        if (model.Surname != null)
                         {
                             tempBuildingApplication.Surname = model.Surname;
                         }
-                      if(model.EmailAddress != null)
+                        if (model.EmailAddress != null)
                         {
                             tempBuildingApplication.EmailAddress = model.EmailAddress;
                         }
-                      if(model.CellNumber != null)
+                        if (model.CellNumber != null)
                         {
                             tempBuildingApplication.CellNumber = model.CellNumber;
                         }
-                      if(model.AltEmail != null)
+                        if (model.AltEmail != null)
                         {
                             tempBuildingApplication.AltEmail = model.AltEmail;
                         }
-                      if(model.AltCellNumber != null)
+                        if (model.AltCellNumber != null)
                         {
                             tempBuildingApplication.AltCellNumber = model.AltCellNumber;
                         }
-                      if(model.IDNumber != null)
+                        if (model.IDNumber != null)
                         {
                             tempBuildingApplication.IDNumber = model.IDNumber;
                         }
-                      if(model.PropertyDescription != null)
+                        if (model.PropertyDescription != null)
                         {
                             tempBuildingApplication.PropertyDescription = model.PropertyDescription;
                         }
@@ -154,83 +155,83 @@ namespace BuildingPlans.Controllers
                         {
                             tempBuildingApplication.PremisesName = model.PremisesName;
                         }
-                        if(model.AddressType != null)
+                        if (model.AddressType != null)
                         {
                             tempBuildingApplication.AddressType = model.AddressType;
                         }
-                        if(model.ErfNumber != null)
+                        if (model.ErfNumber != null)
                         {
                             tempBuildingApplication.ErfNumber = model.ErfNumber;
                         }
-                        if(model.PortionNumber != null)
+                        if (model.PortionNumber != null)
                         {
                             tempBuildingApplication.PortionNumber = model.PortionNumber;
                         }
-                        if(model.NoOfUnits != null)
+                        if (model.NoOfUnits != null)
                         {
                             tempBuildingApplication.NoOfUnits = model.NoOfUnits;
                         }
-                        if(model.UnitNumber != null)
+                        if (model.UnitNumber != null)
                         {
                             tempBuildingApplication.UnitNumber = model.UnitNumber;
                         }
-                        if(model.PhysicalAddress != null)
+                        if (model.PhysicalAddress != null)
                         {
                             tempBuildingApplication.PhysicalAddress = model.PhysicalAddress;
                         }
-                        if(model.Latitude != null)
+                        if (model.Latitude != null)
                         {
                             tempBuildingApplication.Latitude = model.Latitude;
                         }
-                        if(model.Longitude != null)
+                        if (model.Longitude != null)
                         {
                             tempBuildingApplication.Longitude = model.Longitude;
                         }
-                        if(model.ArchitectName != null)
+                        if (model.ArchitectName != null)
                         {
                             tempBuildingApplication.ArchitectName = model.ArchitectName;
                         }
-                        if(model.BuildingPlanFor != null)
+                        if (model.BuildingPlanFor != null)
                         {
                             tempBuildingApplication.BuildingPlanFor = model.BuildingPlanFor;
                         }
-                        if(model.TypeOfDevelopment != null)
+                        if (model.TypeOfDevelopment != null)
                         {
                             tempBuildingApplication.TypeOfDevelopment = model.TypeOfDevelopment;
                         }
-                        if(model.TotalArea != null)
+                        if (model.TotalArea != null)
                         {
                             tempBuildingApplication.TotalArea = model.TotalArea;
                         }
-                        if(model.OccupationClassification != null)
+                        if (model.OccupationClassification != null)
                         {
                             tempBuildingApplication.OccupationClassification = model.OccupationClassification;
                         }
-                        if(model.PlanFees != null)
+                        if (model.PlanFees != null)
                         {
                             tempBuildingApplication.PlanFees = model.PlanFees;
                         }
-                        if(model.PropertyValue != null)
+                        if (model.PropertyValue != null)
                         {
                             tempBuildingApplication.PropertyValue = model.PropertyValue;
                         }
-                        if(model.StreetAddress != null)
+                        if (model.StreetAddress != null)
                         {
                             tempBuildingApplication.StreetAddress = model.StreetAddress;
                         }
-                        if(model.Suburb != null)
+                        if (model.Suburb != null)
                         {
                             tempBuildingApplication.Suburb = model.Suburb;
                         }
-                        if(model.City != null)
+                        if (model.City != null)
                         {
                             tempBuildingApplication.City = model.City;
                         }
-                        if(model.PostalCode != null)
+                        if (model.PostalCode != null)
                         {
                             tempBuildingApplication.PostalCode = model.PostalCode;
                         }
-                        if(model.SGCode != null)
+                        if (model.SGCode != null)
                         {
                             tempBuildingApplication.SGCode = model.SGCode;
                         }
@@ -255,7 +256,7 @@ namespace BuildingPlans.Controllers
                             tempBuildingApplication.BPApplicationID = model.BPApplicationID;
                         }
                         tempBuildingApplication.DateUpdated = DateTime.Now;
-                     
+
                         _context.Update(tempBuildingApplication);
                         await _context.SaveChangesAsync();
 
@@ -280,59 +281,59 @@ namespace BuildingPlans.Controllers
                     where buildingApplication.isActive == true && buildingApplication.LSNumber != null
                     select new BuildingApplicationDTO()
                     {
-                      ApplicationID = buildingApplication.ApplicationID,
-                      LSNumber = buildingApplication.LSNumber,
-                      UserID = buildingApplication.UserID,
-                      FirstName = buildingApplication.FirstName,
-                      Surname = buildingApplication.Surname,
-                      EmailAddress = buildingApplication.EmailAddress,
-                      CellNumber = buildingApplication.CellNumber,
-                      AltEmail = buildingApplication.AltEmail,
-                      AltCellNumber = buildingApplication.AltCellNumber,
-                      IDNumber = buildingApplication.IDNumber,
-                      PropertyDescription = buildingApplication.PropertyDescription,
-                      PremisesName = buildingApplication.PremisesName,
-                      AddressType = buildingApplication.AddressType,
-                      ErfNumber = buildingApplication.ErfNumber,
-                      PortionNumber = buildingApplication.PortionNumber,
-                      NoOfUnits = buildingApplication.NoOfUnits,
-                      UnitNumber = buildingApplication.UnitNumber,
-                      PhysicalAddress = buildingApplication.PhysicalAddress,
-                      Latitude = buildingApplication.Latitude,
-                      Longitude = buildingApplication.Longitude,
-                      ArchitectName = buildingApplication.ArchitectName,
-                      BuildingPlanFor = buildingApplication.BuildingPlanFor,
-                      TypeOfDevelopment = buildingApplication.TypeOfDevelopment,
-                      TotalArea = buildingApplication.TotalArea,
-                      OccupationClassification = buildingApplication.OccupationClassification,
-                      PlanFees = buildingApplication.PlanFees,
-                      PropertyValue = buildingApplication.PropertyValue,
-                      StreetAddress = buildingApplication.StreetAddress,
-                      Suburb = buildingApplication.Suburb,
-                      City = buildingApplication.City,
-                      PostalCode = buildingApplication.PostalCode,
-                      SGCode = buildingApplication.SGCode,
-                      DateCreated = buildingApplication.DateCreated,
-                      DateUpdated = buildingApplication.DateUpdated,
-                      OmnibusServitude = buildingApplication.OmnibusServitude,
-                      Stage = buildingApplication.Stage,
-                      Status = buildingApplication.Status,
-                      StageNumber = buildingApplication.StageNumber,
-                      CreatedById = buildingApplication.CreatedById,
+                        ApplicationID = buildingApplication.ApplicationID,
+                        LSNumber = buildingApplication.LSNumber,
+                        UserID = buildingApplication.UserID,
+                        FirstName = buildingApplication.FirstName,
+                        Surname = buildingApplication.Surname,
+                        EmailAddress = buildingApplication.EmailAddress,
+                        CellNumber = buildingApplication.CellNumber,
+                        AltEmail = buildingApplication.AltEmail,
+                        AltCellNumber = buildingApplication.AltCellNumber,
+                        IDNumber = buildingApplication.IDNumber,
+                        PropertyDescription = buildingApplication.PropertyDescription,
+                        PremisesName = buildingApplication.PremisesName,
+                        AddressType = buildingApplication.AddressType,
+                        ErfNumber = buildingApplication.ErfNumber,
+                        PortionNumber = buildingApplication.PortionNumber,
+                        NoOfUnits = buildingApplication.NoOfUnits,
+                        UnitNumber = buildingApplication.UnitNumber,
+                        PhysicalAddress = buildingApplication.PhysicalAddress,
+                        Latitude = buildingApplication.Latitude,
+                        Longitude = buildingApplication.Longitude,
+                        ArchitectName = buildingApplication.ArchitectName,
+                        BuildingPlanFor = buildingApplication.BuildingPlanFor,
+                        TypeOfDevelopment = buildingApplication.TypeOfDevelopment,
+                        TotalArea = buildingApplication.TotalArea,
+                        OccupationClassification = buildingApplication.OccupationClassification,
+                        PlanFees = buildingApplication.PlanFees,
+                        PropertyValue = buildingApplication.PropertyValue,
+                        StreetAddress = buildingApplication.StreetAddress,
+                        Suburb = buildingApplication.Suburb,
+                        City = buildingApplication.City,
+                        PostalCode = buildingApplication.PostalCode,
+                        SGCode = buildingApplication.SGCode,
+                        DateCreated = buildingApplication.DateCreated,
+                        DateUpdated = buildingApplication.DateUpdated,
+                        OmnibusServitude = buildingApplication.OmnibusServitude,
+                        Stage = buildingApplication.Stage,
+                        Status = buildingApplication.Status,
+                        StageNumber = buildingApplication.StageNumber,
+                        CreatedById = buildingApplication.CreatedById,
                         BPApplicationID = buildingApplication.BPApplicationID,
                     }
                     ).ToListAsync();
 
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Applications", result));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
 
         [HttpPost("GetBuildingApplicationByApplicationID")]
-        public async Task<object> GetBuildingApplicationByApplicationID([FromBody]BuildingApplicationBindingModel model) 
+        public async Task<object> GetBuildingApplicationByApplicationID([FromBody] BuildingApplicationBindingModel model)
         {
             try
             {
@@ -385,7 +386,7 @@ namespace BuildingPlans.Controllers
                     }).ToListAsync();
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Application By ApplicationID", result));
             }
-            catch (Exception ex )
+            catch (Exception ex)
             {
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
 
@@ -393,7 +394,7 @@ namespace BuildingPlans.Controllers
         }
 
         [HttpPost("GetApplicationsByInternalUserID")]
-        public async Task<object> GetApplicationsByInternalUserID([FromBody]BuildingApplicationBindingModel model)
+        public async Task<object> GetApplicationsByInternalUserID([FromBody] BuildingApplicationBindingModel model)
         {
             try
             {
@@ -442,14 +443,14 @@ namespace BuildingPlans.Controllers
                                     }).ToListAsync();
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Application By Internal UserID", result));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
         }
 
         [HttpPost("GetApplicationsByExternalUserID")]
-        public async Task<object> GetApplicationsByExternalUserID([FromBody]BuildingApplicationBindingModel model)
+        public async Task<object> GetApplicationsByExternalUserID([FromBody] BuildingApplicationBindingModel model)
         {
             try
             {
@@ -500,7 +501,7 @@ namespace BuildingPlans.Controllers
 
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Application By External UserID", result));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
@@ -512,9 +513,9 @@ namespace BuildingPlans.Controllers
             try
             {
                 var tempApplicationTable = await _context.BuildingApplications.FindAsync(model.ApplicationID);
-                if(tempApplicationTable == null)
+                if (tempApplicationTable == null)
                 {
-                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error,"Application does not exist on database", false));
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Application does not exist on database", false));
                 }
                 else
                 {
@@ -523,7 +524,7 @@ namespace BuildingPlans.Controllers
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Application Deleted successfully", true));
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
             }
@@ -534,7 +535,7 @@ namespace BuildingPlans.Controllers
         {
             try
             {
-                if(model.ApplicationID == null)
+                if (model.ApplicationID == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
@@ -543,9 +544,9 @@ namespace BuildingPlans.Controllers
                 {
                     var tempBuildingApplication = _context.BuildingApplications.FirstOrDefault(x => x.ApplicationID == model.ApplicationID);
 
-                    if(tempBuildingApplication == null)
+                    if (tempBuildingApplication == null)
                     {
-                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Could not find application in database ",false));
+                        return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Could not find application in database ", false));
                     }
                     else
                     {
@@ -620,67 +621,6 @@ namespace BuildingPlans.Controllers
         }
 
 
-        [HttpGet("GetAllBuildingPlansApplications")]
-        public async Task<object> GetAllBuildingPlansApplications()
-        {
-            try
-            {
-                var result = await (
-                    from buildingApplication in _context.BuildingApplications
-                    where  buildingApplication.isActive == true && buildingApplication.BPApplicationID != null
-                    select new BuildingApplicationDTO()
-                    {
-                        ApplicationID = buildingApplication.ApplicationID,
-                        LSNumber = buildingApplication.LSNumber,
-                        UserID = buildingApplication.UserID,
-                        FirstName = buildingApplication.FirstName,
-                        Surname = buildingApplication.Surname,
-                        EmailAddress = buildingApplication.EmailAddress,
-                        CellNumber = buildingApplication.CellNumber,
-                        AltEmail = buildingApplication.AltEmail,
-                        AltCellNumber = buildingApplication.AltCellNumber,
-                        IDNumber = buildingApplication.IDNumber,
-                        PropertyDescription = buildingApplication.PropertyDescription,
-                        PremisesName = buildingApplication.PremisesName,
-                        AddressType = buildingApplication.AddressType,
-                        ErfNumber = buildingApplication.ErfNumber,
-                        PortionNumber = buildingApplication.PortionNumber,
-                        NoOfUnits = buildingApplication.NoOfUnits,
-                        UnitNumber = buildingApplication.UnitNumber,
-                        PhysicalAddress = buildingApplication.PhysicalAddress,
-                        Latitude = buildingApplication.Latitude,
-                        Longitude = buildingApplication.Longitude,
-                        ArchitectName = buildingApplication.ArchitectName,
-                        BuildingPlanFor = buildingApplication.BuildingPlanFor,
-                        TypeOfDevelopment = buildingApplication.TypeOfDevelopment,
-                        TotalArea = buildingApplication.TotalArea,
-                        OccupationClassification = buildingApplication.OccupationClassification,
-                        PlanFees = buildingApplication.PlanFees,
-                        PropertyValue = buildingApplication.PropertyValue,
-                        StreetAddress = buildingApplication.StreetAddress,
-                        Suburb = buildingApplication.Suburb,
-                        City = buildingApplication.City,
-                        PostalCode = buildingApplication.PostalCode,
-                        SGCode = buildingApplication.SGCode,
-                        DateCreated = buildingApplication.DateCreated,
-                        DateUpdated = buildingApplication.DateUpdated,
-                        OmnibusServitude = buildingApplication.OmnibusServitude,
-                        Stage = buildingApplication.Stage,
-                        Status = buildingApplication.Status,
-                        StageNumber = buildingApplication.StageNumber,
-                        CreatedById = buildingApplication.CreatedById,
-                        BPApplicationID = buildingApplication.BPApplicationID,
-
-                    }).ToListAsync();
-                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Application By ApplicationID", result));
-            }
-            catch (Exception ex)
-            {
-                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
-
-            }
-        }
-
         [HttpGet("GetAllPreInvoiceScrutinyApplications")]
         public async Task<object> GetAllPreInvoiceScrutinyApplications()
         {
@@ -741,6 +681,251 @@ namespace BuildingPlans.Controllers
 
             }
         }
+
+
+        [HttpGet("GetAllLSApplications")]
+        public async Task<object> GetAllLSApplications()
+        {
+            try
+            {
+                var result = await (
+                    from buildingApplication in _context.BuildingApplications
+                    where buildingApplication.isActive == true && buildingApplication.LSNumber != null
+                    select new BuildingApplicationDTO()
+                    {
+                        ApplicationID = buildingApplication.ApplicationID,
+                        LSNumber = buildingApplication.LSNumber,
+                        UserID = buildingApplication.UserID,
+                        FirstName = buildingApplication.FirstName,
+                        Surname = buildingApplication.Surname,
+                        EmailAddress = buildingApplication.EmailAddress,
+                        CellNumber = buildingApplication.CellNumber,
+                        AltEmail = buildingApplication.AltEmail,
+                        AltCellNumber = buildingApplication.AltCellNumber,
+                        IDNumber = buildingApplication.IDNumber,
+                        PropertyDescription = buildingApplication.PropertyDescription,
+                        PremisesName = buildingApplication.PremisesName,
+                        AddressType = buildingApplication.AddressType,
+                        ErfNumber = buildingApplication.ErfNumber,
+                        PortionNumber = buildingApplication.PortionNumber,
+                        NoOfUnits = buildingApplication.NoOfUnits,
+                        UnitNumber = buildingApplication.UnitNumber,
+                        PhysicalAddress = buildingApplication.PhysicalAddress,
+                        Latitude = buildingApplication.Latitude,
+                        Longitude = buildingApplication.Longitude,
+                        ArchitectName = buildingApplication.ArchitectName,
+                        BuildingPlanFor = buildingApplication.BuildingPlanFor,
+                        TypeOfDevelopment = buildingApplication.TypeOfDevelopment,
+                        TotalArea = buildingApplication.TotalArea,
+                        OccupationClassification = buildingApplication.OccupationClassification,
+                        PlanFees = buildingApplication.PlanFees,
+                        PropertyValue = buildingApplication.PropertyValue,
+                        StreetAddress = buildingApplication.StreetAddress,
+                        Suburb = buildingApplication.Suburb,
+                        City = buildingApplication.City,
+                        PostalCode = buildingApplication.PostalCode,
+                        SGCode = buildingApplication.SGCode,
+                        DateCreated = buildingApplication.DateCreated,
+                        DateUpdated = buildingApplication.DateUpdated,
+                        OmnibusServitude = buildingApplication.OmnibusServitude,
+                        Stage = buildingApplication.Stage,
+                        Status = buildingApplication.Status,
+                        StageNumber = buildingApplication.StageNumber,
+                        CreatedById = buildingApplication.CreatedById,
+                        BPApplicationID = buildingApplication.BPApplicationID,
+                    }
+                    ).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Applications", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+        [HttpGet("GetAllTPApplications")]
+        public async Task<object> GetAllTPApplications()
+        {
+            try
+            {
+                var result = await (
+                    from buildingApplication in _context.BuildingApplications
+                    where buildingApplication.isActive == true && buildingApplication.LSNumber != null
+                    select new BuildingApplicationDTO()
+                    {
+                        ApplicationID = buildingApplication.ApplicationID,
+                        LSNumber = buildingApplication.LSNumber,
+                        UserID = buildingApplication.UserID,
+                        FirstName = buildingApplication.FirstName,
+                        Surname = buildingApplication.Surname,
+                        EmailAddress = buildingApplication.EmailAddress,
+                        CellNumber = buildingApplication.CellNumber,
+                        AltEmail = buildingApplication.AltEmail,
+                        AltCellNumber = buildingApplication.AltCellNumber,
+                        IDNumber = buildingApplication.IDNumber,
+                        PropertyDescription = buildingApplication.PropertyDescription,
+                        PremisesName = buildingApplication.PremisesName,
+                        AddressType = buildingApplication.AddressType,
+                        ErfNumber = buildingApplication.ErfNumber,
+                        PortionNumber = buildingApplication.PortionNumber,
+                        NoOfUnits = buildingApplication.NoOfUnits,
+                        UnitNumber = buildingApplication.UnitNumber,
+                        PhysicalAddress = buildingApplication.PhysicalAddress,
+                        Latitude = buildingApplication.Latitude,
+                        Longitude = buildingApplication.Longitude,
+                        ArchitectName = buildingApplication.ArchitectName,
+                        BuildingPlanFor = buildingApplication.BuildingPlanFor,
+                        TypeOfDevelopment = buildingApplication.TypeOfDevelopment,
+                        TotalArea = buildingApplication.TotalArea,
+                        OccupationClassification = buildingApplication.OccupationClassification,
+                        PlanFees = buildingApplication.PlanFees,
+                        PropertyValue = buildingApplication.PropertyValue,
+                        StreetAddress = buildingApplication.StreetAddress,
+                        Suburb = buildingApplication.Suburb,
+                        City = buildingApplication.City,
+                        PostalCode = buildingApplication.PostalCode,
+                        SGCode = buildingApplication.SGCode,
+                        DateCreated = buildingApplication.DateCreated,
+                        DateUpdated = buildingApplication.DateUpdated,
+                        OmnibusServitude = buildingApplication.OmnibusServitude,
+                        Stage = buildingApplication.Stage,
+                        Status = buildingApplication.Status,
+                        StageNumber = buildingApplication.StageNumber,
+                        CreatedById = buildingApplication.CreatedById,
+                        BPApplicationID = buildingApplication.BPApplicationID,
+                    }
+                    ).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Applications", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }   
+        
+        [HttpGet("GetAllBuildingPlansApplications")]
+        public async Task<object> GetAllBuildingPlansApplications()
+        {
+            try
+            {
+                var result = await (
+                    from buildingApplication in _context.BuildingApplications
+                    where buildingApplication.isActive == true && buildingApplication.BPApplicationID != null 
+                    select new BuildingApplicationDTO()
+                    {
+                        ApplicationID = buildingApplication.ApplicationID,
+                        LSNumber = buildingApplication.LSNumber,
+                        UserID = buildingApplication.UserID,
+                        FirstName = buildingApplication.FirstName,
+                        Surname = buildingApplication.Surname,
+                        EmailAddress = buildingApplication.EmailAddress,
+                        CellNumber = buildingApplication.CellNumber,
+                        AltEmail = buildingApplication.AltEmail,
+                        AltCellNumber = buildingApplication.AltCellNumber,
+                        IDNumber = buildingApplication.IDNumber,
+                        PropertyDescription = buildingApplication.PropertyDescription,
+                        PremisesName = buildingApplication.PremisesName,
+                        AddressType = buildingApplication.AddressType,
+                        ErfNumber = buildingApplication.ErfNumber,
+                        PortionNumber = buildingApplication.PortionNumber,
+                        NoOfUnits = buildingApplication.NoOfUnits,
+                        UnitNumber = buildingApplication.UnitNumber,
+                        PhysicalAddress = buildingApplication.PhysicalAddress,
+                        Latitude = buildingApplication.Latitude,
+                        Longitude = buildingApplication.Longitude,
+                        ArchitectName = buildingApplication.ArchitectName,
+                        BuildingPlanFor = buildingApplication.BuildingPlanFor,
+                        TypeOfDevelopment = buildingApplication.TypeOfDevelopment,
+                        TotalArea = buildingApplication.TotalArea,
+                        OccupationClassification = buildingApplication.OccupationClassification,
+                        PlanFees = buildingApplication.PlanFees,
+                        PropertyValue = buildingApplication.PropertyValue,
+                        StreetAddress = buildingApplication.StreetAddress,
+                        Suburb = buildingApplication.Suburb,
+                        City = buildingApplication.City,
+                        PostalCode = buildingApplication.PostalCode,
+                        SGCode = buildingApplication.SGCode,
+                        DateCreated = buildingApplication.DateCreated,
+                        DateUpdated = buildingApplication.DateUpdated,
+                        OmnibusServitude = buildingApplication.OmnibusServitude,
+                        Stage = buildingApplication.Stage,
+                        Status = buildingApplication.Status,
+                        StageNumber = buildingApplication.StageNumber,
+                        CreatedById = buildingApplication.CreatedById,
+                        BPApplicationID = buildingApplication.BPApplicationID,
+                    }
+                    ).ToListAsync();
+
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Applications", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+        [HttpGet("GetAllApplications")]
+        public async Task<object> GetAllApplications()
+        {
+            try
+            {
+                var result = await (
+                    from buildingApplication in _context.BuildingApplications
+                    where buildingApplication.isActive == true && buildingApplication.FirstName != null
+                    select new BuildingApplicationDTO()
+                    {
+                        ApplicationID = buildingApplication.ApplicationID,
+                        LSNumber = buildingApplication.LSNumber,
+                        UserID = buildingApplication.UserID,
+                        FirstName = buildingApplication.FirstName,
+                        Surname = buildingApplication.Surname,
+                        EmailAddress = buildingApplication.EmailAddress,
+                        CellNumber = buildingApplication.CellNumber,
+                        AltEmail = buildingApplication.AltEmail,
+                        AltCellNumber = buildingApplication.AltCellNumber,
+                        IDNumber = buildingApplication.IDNumber,
+                        PropertyDescription = buildingApplication.PropertyDescription,
+                        PremisesName = buildingApplication.PremisesName,
+                        AddressType = buildingApplication.AddressType,
+                        ErfNumber = buildingApplication.ErfNumber,
+                        PortionNumber = buildingApplication.PortionNumber,
+                        NoOfUnits = buildingApplication.NoOfUnits,
+                        UnitNumber = buildingApplication.UnitNumber,
+                        PhysicalAddress = buildingApplication.PhysicalAddress,
+                        Latitude = buildingApplication.Latitude,
+                        Longitude = buildingApplication.Longitude,
+                        ArchitectName = buildingApplication.ArchitectName,
+                        BuildingPlanFor = buildingApplication.BuildingPlanFor,
+                        TypeOfDevelopment = buildingApplication.TypeOfDevelopment,
+                        TotalArea = buildingApplication.TotalArea,
+                        OccupationClassification = buildingApplication.OccupationClassification,
+                        PlanFees = buildingApplication.PlanFees,
+                        PropertyValue = buildingApplication.PropertyValue,
+                        StreetAddress = buildingApplication.StreetAddress,
+                        Suburb = buildingApplication.Suburb,
+                        City = buildingApplication.City,
+                        PostalCode = buildingApplication.PostalCode,
+                        SGCode = buildingApplication.SGCode,
+                        DateCreated = buildingApplication.DateCreated,
+                        DateUpdated = buildingApplication.DateUpdated,
+                        OmnibusServitude = buildingApplication.OmnibusServitude,
+                        Stage = buildingApplication.Stage,
+                        Status = buildingApplication.Status,
+                        StageNumber = buildingApplication.StageNumber,
+                        CreatedById = buildingApplication.CreatedById,
+                        BPApplicationID = buildingApplication.BPApplicationID,
+
+                    }).ToListAsync();
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Application By ApplicationID", result));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
+
     }
-    
 }

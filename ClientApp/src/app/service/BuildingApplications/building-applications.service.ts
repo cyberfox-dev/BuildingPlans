@@ -107,8 +107,13 @@ export class BuildingApplicationsService {
   public getAllBuildingPlansApplications() {
     return this.httpClient.get(this.baseURL + "GetAllBuildingPlansApplications");
   }
+  public getAllApplications() {
+    return this.httpClient.get(this.baseURL + "GetAllApplications");
+  }
   public getAllPreInvoiceScrutinyApplications() {
     return this.httpClient.get(this.baseURL + "GetAllPreInvoiceScrutinyApplications");
   }
+
+
 
 }
