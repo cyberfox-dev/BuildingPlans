@@ -66,15 +66,15 @@ table {
   display: flex;
   justify-content: space-around;
 }
-  .mat-createWayleave {
-    margin-top: 34px;
-    margin-bottom: 80px;
-    background: #005870;
-    color: #ccdee2;
-    width: 188px;
-    height: 60px;
-    margin-left: 91px;
-  }
+.mat-createWayleave {
+  margin-top: 34px;
+  margin-bottom: 80px;
+  background: #d57d38;
+  color: #ccdee2;
+  width: 188px;
+  height: 60px;
+  margin-left: 91px;
+}
 
   .mat-createWayleave:hover {
     background-color: #212529;

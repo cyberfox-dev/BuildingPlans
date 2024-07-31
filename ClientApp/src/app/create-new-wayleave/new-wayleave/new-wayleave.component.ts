@@ -50,7 +50,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DepartmentsService } from '../../service/Departments/departments.service'; //zxNumberUpdate Sindiswa 04 March 2024
 import { AccessGroupUserLinkServiceService } from '../../service/AccessGroupUserLink/access-group-user-link-service.service'; //zxNumberUpdate Sindiswa 04 March 2024
-
+import { BpDepartmentsService } from '../../service/BPDepartments/bp-departments.service'
 
 
 
@@ -591,6 +591,7 @@ export class NewWayleaveComponent implements OnInit {
     private projectSizeSelectionService: ProjectSizedSelectionService,
     private draftApplicationsService: DraftApplicationsService,
     private cdr: ChangeDetectorRef,
+    private bpDepartmentService: BpDepartmentsService,
    
        /*zxNumberUpdate Sindiswa 04 March 2024*/private departmentService: DepartmentsService,
        /*zxNumberUpdate Sindiswa 04 March 2024*/private accessGrouperUserLinkService: AccessGroupUserLinkServiceService,
@@ -2597,6 +2598,7 @@ export class NewWayleaveComponent implements OnInit {
     console.log("What gaan an? " + this.shared.getApplicationID());
     this.reapply = this.shared.getReapply();
     // #region Sindiswa 24 January 2024
+    debugger;
     if (this.reapply == true && this.oldApplicationID === this.applicationID) {
       
       this.shared.clearContractorData();
@@ -2695,18 +2697,20 @@ export class NewWayleaveComponent implements OnInit {
 
 
 
-
+        debugger;
         if (this.shared.reapply === true && this.internal) {
+          
           this.internalWayleaveReApplyCreate(appUserId, isPlanning);
         }
         else if (this.internal && this.option != "proxy") {
-
+          //internal for themselves
           this.internalWayleaveCreate(appUserId, isPlanning);
           console.log('Co-ordinates:', this.coordinates);
 
         }
 
         else if (this.internalProxy) {
+          //internal for internal
           const appUserId = this.shared.clientUserID;
           this.internalProxyWayleaveCreate(appUserId, isPlanning);
         }
@@ -2714,11 +2718,13 @@ export class NewWayleaveComponent implements OnInit {
           //the issue is - an internal person can be a client
           //this.clientWayleaveCreate(appUserId, isPlanning);
           const appUserId = this.shared.clientUserID;
+          //internal for external
           this.clientWayleaveCreate(appUserId, isPlanning);
 
           console.log('Co-ordinates:', this.coordinates);
         }
         else { //External
+          
           this.externalWayleaveCreate(appUserId, isPlanning);
           console.log('Co-ordinates:', this.coordinates);
 
@@ -4297,7 +4303,8 @@ export class NewWayleaveComponent implements OnInit {
 
     const { uploadFor, fileName } = event;
     // const index = parseInt(uploadFor.substring('CoverLetter'.length));
-    this.fileAttrs[index] = this.MandatoryDocumentsLinkedStagesList[index].mandatoryDocumentName;
+    debugger;
+    this.fileAttrs[index] = this.MandatoryDocumentsLinkedStagesList.value[index].mandatoryDocumentName;
   }
 
   //onPassFileName = (CoverLetterFileName: any) => {
@@ -5524,16 +5531,7 @@ export class NewWayleaveComponent implements OnInit {
       );
     }
     //Project size Kyle 27-02-24
-    this.applicationsService.addUpdateApplication(this.applicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.fibreNetworkLicenses).subscribe((data: any) => {
-      if (data.responseCode == 1) {
-
-      } else {
-        alert(data.response);
-      }
-    }, error => {
-      console.log("Error", error);
-
-    })
+    
   }
   DraftOption() {
     this.isDraft = true;
@@ -5726,13 +5724,225 @@ export class NewWayleaveComponent implements OnInit {
     const isConfirmed = window.confirm('Are you sure you want to upload these files? Click "Cancel" to double-check your selections.');
     if (isConfirmed) {
           //Service Information Kyle 31/01/24
-      this.onWayleaveCreate(appUserId, this.isPlanning, false);
+      /* this.onWayleaveCreate(appUserId, this.isPlanning, false);*/
+      this.onNewWayleaveCreate(appUserId, this.isPlanning);
           //Service Information Kyle 31/01/24
     }
 
   }
 
+  newWayleaveDistrubution() {
+    this.bpDepartmentService.getAllDepartmentsForFunctionalArea("Wayleave").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          if (current.departmentName != "Land Survey") {
+            this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.applicationID, current.departmentID, current.departmentName, null, null, this.CurrentUser.appUserId, null, null).subscribe((data: any) => {
+              if (data.responseCode == 1) {
 
+              }
+              else {
+                alert(data.responseMessage);
+              }
+            }, error => {
+              console.log(error);
+            })
+          }
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log(error);
+    })
+  }
+
+  onNewWayleaveCreate(appUserId, isPlanning: boolean) {
+    if (this.TOENAMES.length <= 0) {
+      for (var i = 0; i < this.TOENAMES.length; i++) {
+        let current = this.TOENAMES[i].toString();
+        if (i > 0) {
+          this.TOE = this.TOE + ", " + current
+        } else {
+          this.TOE = current;
+        }
+
+      }
+    }
+    else {
+      for (var i = 0; i < this.TOENAMES.length; i++) {
+        let current = this.TOENAMES[i].toString();
+        if (i > 0) {
+          this.TOE = this.TOE + ", " + current
+        } else {
+          this.TOE = current;
+        }
+
+
+      }
+    }
+
+    this.generateProjectNumber(appUserId, isPlanning);
+    
+  }
+  configID: number;
+  generateProjectNumber(appUserId, isPlanning: boolean) {
+    this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        const current = data.dateSet[0];
+        this.configID = current.configID;
+        this.configNumberOfProject = current.utilitySlot1;
+        this.configMonthYear = current.utilitySlot2;
+
+        this.projectNumber = "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear;
+
+        this.UpdateConfig(appUserId, isPlanning);
+      }
+      else {
+        alert(data.responseCode);
+      }
+    }, error => {
+      console.log(error);
+    })
+
+  }
+
+  AddNewApplication(appUserId, isPlanning: boolean) {
+    this.applicationID = this.shared.getApplicationID();
+    this.physicalAddressOfProject = this.shared.getAddressData();
+    this.coordinates = this.shared.getCoordinateData();
+    const contractorData = this.shared.getContactorData();
+    const engineerData = this.shared.getEngineerData();
+
+    let previousStageName = "";
+    let CurrentStageName = "";
+    let NextStageName = "";
+
+    let previousStageNameIn = "";
+    let CurrentStageNameIn = "";
+    let NextStageNameIn = "";
+
+    for (var i = 0; i < this.StagesList.length; i++) {
+
+      if (this.StagesList[i].StageOrderNumber == 1) {
+        previousStageName = this.StagesList[i - 1].StageName
+        CurrentStageName = this.StagesList[i].StageName;
+        NextStageName = this.StagesList[i + 1].StageName
+      }
+      else if (this.StagesList[i].StageOrderNumber == 2) {
+        previousStageNameIn = this.StagesList[i - 2].StageName
+        CurrentStageNameIn = this.StagesList[i].StageName;
+        NextStageNameIn = this.StagesList[i + 1].StageName
+      }
+
+    }
+
+    if (this.internal == true && this.internalProxy != true) {
+      // Internal Creating For themselves
+
+      this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.internalName + ' ' + this.internalSurname, this.CurrentUser.email, this.CurrentUserProfile[0].alternativeEmail, null, null, null,
+        null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE,
+        this.expectedStartDate, this.expectedEndType, null, this.CurrentUser.appUserId, previousStageNameIn, 0, CurrentStageNameIn, 2, NextStageNameIn, 3,
+        "Distributed", this.isDraft, this.projectNumber, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
+          if (data.responseCode == 1) {
+            this.SavedProjectSizeSelections();
+
+
+            this.AddProfessinal(contractorData, engineerData);
+
+            // this.UploadDocuments(data.dateSet);
+            this.newWayleaveDistrubution();
+            this.shared.setApplicationID(0);
+            this.shared.clearContractorData();
+            this.shared.clearEngineerData();
+            this.router.navigate(["/home"]);
+            this.openSnackBar("Application Created");
+
+          }
+          else {
+            alert(data.responseMessage);
+          }
+        }, error => {
+          console.log(error);
+        })
+
+    }
+    //else if (this.internalProxy) {
+    //  //Internal Creating For Internal
+    //}
+
+    else if (this.client && this.option == "proxy") {
+      //internal creating for external
+      this.applicationsService.addUpdateApplication(this.applicationID, appUserId, this.clientName + ' ' + this.clientSurname, this.clientEmail, this.clientAlternativeEmail, this.clientCellNo, this.clientAddress, this.clientRefNo, '0', this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.physicalAddressOfProject, this.CurrentUser.appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Distributed", this.isDraft, this.projectNumber, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
+
+        if (data.responseCode == 1) {
+          this.SavedProjectSizeSelections();
+
+
+          this.AddProfessinal(contractorData, engineerData);
+
+          // this.UploadDocuments(data.dateSet);
+          this.newWayleaveDistrubution();
+          this.shared.setApplicationID(0);
+          this.shared.clearContractorData();
+          this.shared.clearEngineerData();
+          this.router.navigate(["/home"]);
+          this.openSnackBar("Application Created");
+
+
+
+
+          //this.getCurrentInvoiceNumberForGen(this.clientName + ' ' + this.clientSurname); Kyle Gounden
+
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+      }, error => {
+        console.log(error);
+      })
+    }
+    else {
+      //external applying for themselves
+      this.applicationsService.addUpdateApplication(this.applicationID, this.CurrentUser.appUserId, this.externalName + ' ' + this.externalSurname, this.externalEmail, this.CurrentUserProfile[0].alternativeEmail, "Phone", this.externalAddress, null, null, this.ProjectSizeMessage, this.notificationNumber, this.wbsNumber, this.physicalAddressOfProject, this.descriptionOfProject, this.natureOfWork, this.TOE, this.expectedStartDate, this.expectedEndType, this.externalAddress, appUserId, previousStageName, 0, CurrentStageName, 1, NextStageName, 2, "Distributed", this.isDraft, this.projectNumber, isPlanning, null, null, null, this.coordinates).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          this.SavedProjectSizeSelections();
+
+
+          this.AddProfessinal(contractorData, engineerData);
+
+          // this.UploadDocuments(data.dateSet);
+          this.newWayleaveDistrubution();
+          this.shared.setApplicationID(0);
+          this.shared.clearContractorData();
+          this.shared.clearEngineerData();
+          this.router.navigate(["/home"]);
+          this.openSnackBar("Application Created");
+        }
+        else {
+          alert(data.responseMessage);
+        }
+      }, error => {
+        console.log(error);
+      })
+    }
+
+  }
+
+  UpdateConfig(appUserId:any,isPlanning:boolean) {
+    this.configService.addUpdateConfig(this.configID, null, null, (Number(this.configNumberOfProject + 1)).toString(), null, null).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        this.AddNewApplication(appUserId, isPlanning);
+      }
+      else {
+
+      }
+    }, error => {
+      console.log(error);
+    })
+  }
   //CheckToPopulateManDoc() {
   //  if (this.selectionSmall.hasValue()) {
   //    if (this.selectionMedium.hasValue()) {

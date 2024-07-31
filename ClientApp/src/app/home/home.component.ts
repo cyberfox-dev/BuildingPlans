@@ -444,7 +444,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   displayedColumnsArchitects: string[] = ['fullName', 'actions'];
 
 
-  displayedColumns: string[] = ['lSNumber', 'ownerName', 'propertyAddress', 'ERFNumber', 'stage', 'status', 'stageAge', 'planAge',   'dateCreated', 'actions'];
+  displayedColumns: string[] = ['ProjectNumber', 'FullName', 'Stage', 'Status', 'TypeOfApplication', 'AplicationAge', 'StageAge', 'DateCreated', 'actions'];
   displayedColumnsBP: string[] = ['lSNumber', 'ownerName', 'propertyAddress', 'ERFNumber', 'stage', 'status', 'stageAge', 'planAge',  'dateCreated', 'actions'];
   displayedColumnsSA: string[] = ['lSNumber', 'ownerName', 'propertyAddress', 'ERFNumber', 'stage', 'status', 'stageAge', 'planAge',  'dateCreated',  'actions'];
   dataSourceBP = this.ApplicationsBP;
@@ -762,6 +762,20 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.Reviews = 'Current';
       //this.ServerType = this.sharedService.getServerType();onFilterButtonClick
       this.isBannerVisible();
+      if (this.CurrentUserProfile[0].isInternal == true) {
+        
+        this.GetAllPreInvoiceScrutinyApplications();
+        this.GetAllBuildingPlansApplications();
+        this.getAllPreInvoiceScurtinyApplications();
+        this.selectedTabIndex = 7;
+        this.dataSourceSA = this.ApplicationsBP;
+        this.originalDataSourceSA = [...this.ApplicationsBP];
+      }
+      else if (this.CurrentUserProfile[0].isInternal == false) {
+        this.GetAllApplicationsForExternalUser();
+      }
+      this.stringifiedDataRoles = JSON.parse(JSON.stringify(localStorage.getItem('AllCurrentUserRoles')));
+      this.AllCurrentUserRoles = JSON.parse(this.stringifiedDataRoles);
 
       this.GetAllApplications();
       this.onCheckAllRolesForUser();
@@ -917,9 +931,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       
 
       this.sharedService.clientUserID = this.CurrentUser.appUserId;
-
-      /* this.router.navigate(["/new-wayleave"], { queryParams: { isPlanningS: false } });*/
+      
       this.onCreateBuildingApplication();
+      
     }
     else {
       this.getAllExternalUsers()
@@ -936,6 +950,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       keyboard: false // Prevent pressing the ESC key to close the modal
     });
 
+   
   }
   openExternal(externalOpt: any) {
     this.modalService.open(externalOpt, {
@@ -2787,7 +2802,7 @@ this.subscriptions.push(subscription);
   }
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  //onFilterAPplicationsForRecentApplications() {
+  onFilterAPplicationsForRecentApplications() {
   //  this.isTableLoading = true;
   //  this.onFilterButtonClick();
   //  this.notNyProjects = true;
@@ -2804,162 +2819,164 @@ this.subscriptions.push(subscription);
   //  this.Applications.splice(0, this.Applications.length);
 
   //  if (this.CurrentUserProfile[0].isInternal) {
-  //    this.applicationService.getApplicationsList(this.CurrentUser.appUserId, true).subscribe((data: any) => {
+      this.applicationService.getApplicationsList(this.CurrentUser.appUserId, true).subscribe((data: any) => {
 
 
-  //      if (data.responseCode == 1) {
+        if (data.responseCode == 1) {
 
 
-  //        for (let i = 0; i < data.dateSet.length; i++) {
-  //          const tempApplicationList = {} as ApplicationsList;
-  //          const tempApplicationListShared = {} as ApplicationList;
-  //          const current = data.dateSet[i];
-
-
-
-
-
-  //          console.log("current", current)
-  //          tempApplicationList.ApplicationID = current.applicationID;
-  //          tempApplicationList.FullName = current.fullName;
-  //          tempApplicationList.TypeOfApplication = current.typeOfApplication;
-  //          tempApplicationList.CurrentStage = current.currentStageName;
-  //          tempApplicationList.ApplicationStatus = current.applicationStatus;
-  //          tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
-
-  //          tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
-  //          tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
-
-  //          /*cal application age*/
-
-  //          const currentDate = new Date();
-  //          const dateCreated = new Date(tempApplicationList.DateCreated);
-  //          const timeDiff = currentDate.getTime() - dateCreated.getTime();
-  //          const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
-  //          tempApplicationList.TestApplicationAge = daysDiff;
-
-  //          /*cal stage age*/
-  //          const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
-  //          const stageDate = currentDate.getTime() - stageDateCreated.getTime();
-  //          const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
-  //          tempApplicationList.TestApplicationStageAge = stageDateDiff;
-  //          console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
+          for (let i = 0; i < data.dateSet.length; i++) {
+            const tempApplicationList = {} as ApplicationsList;
+            const tempApplicationListShared = {} as ApplicationList;
+            const current = data.dateSet[i];
 
 
 
-  //          if (current.projectNumber != null) {
-  //            tempApplicationList.ProjectNumber = current.projectNumber;
-  //          } else {
-  //            tempApplicationList.ProjectNumber = (current.applicationID).toString();
-  //          }
 
 
-  //          /*            do {
-  //                        tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
-  //                      } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
-  //          //save here to send to the shared
+            console.log("current", current)
+            tempApplicationList.ApplicationID = current.applicationID;
+            tempApplicationList.FullName = current.fullName;
+            tempApplicationList.TypeOfApplication = current.typeOfApplication;
+            tempApplicationList.CurrentStage = current.currentStageName;
+            tempApplicationList.ApplicationStatus = current.applicationStatus;
+            tempApplicationList.isEscalated = current.isEscalated; //escalation Sindiswa 29 January 2024
 
-  //          //tempApplicationListShared.applicationID = current. ;
-  //          tempApplicationListShared.applicationID = current.applicationID;
-  //          tempApplicationListShared.clientName = current.fullName;
-  //          tempApplicationListShared.clientEmail = current.email;
-  //          tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
-  //          tempApplicationListShared.clientAddress = current.physicalAddress;
-  //          tempApplicationListShared.clientRefNo = current.referenceNumber;
-  //          tempApplicationListShared.CompanyRegNo = current.companyRegNo;
-  //          tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
-  //          tempApplicationListShared.NotificationNumber = current.notificationNumber;
-  //          tempApplicationListShared.WBSNumber = current.wbsNumber;
-  //          tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
-  //          tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
-  //          tempApplicationListShared.NatureOfWork = current.natureOfWork;
-  //          tempApplicationListShared.ExcavationType = current.excavationType;
-  //          tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
-  //          tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
-  //          tempApplicationListShared.Location = current.location;
-  //          tempApplicationListShared.clientCellNo = current.phoneNumber;
-  //          tempApplicationListShared.CreatedById = current.createdById;
-  //          tempApplicationListShared.UserID = current.userID;//
-  //          tempApplicationListShared.ApplicationStatus = current.applicationStatus;
-  //          tempApplicationListShared.CurrentStageName = current.currentStageName;
-  //          tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+            tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
+            tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
 
-  //          tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
-  //          tempApplicationListShared.NextStageName = current.nextStageName;
-  //          tempApplicationListShared.NextStageNumber = current.nextStageNumber;
-  //          tempApplicationListShared.PreviousStageName = current.previousStageName;
-  //          tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
-  //          tempApplicationListShared.DatePaid = current.datePaid;
-  //          tempApplicationListShared.wbsrequired = current.wbsRequired;
-  //          tempApplicationListShared.Coordinates = current.coordinates;
-  //          if (current.projectNumber != null) {
-  //            tempApplicationListShared.ProjectNumber = current.projectNumber;
-  //          } else {
-  //            tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
-  //          }
+            //          /*cal application age*/
 
-  //          tempApplicationListShared.isPlanning = current.isPlanning;
-  //          tempApplicationListShared.permitStartDate = current.permitStartDate;
+            const currentDate = new Date();
+            const dateCreated = new Date(tempApplicationList.DateCreated);
+            const timeDiff = currentDate.getTime() - dateCreated.getTime();
+            const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationAge = daysDiff;
+
+            //          /*cal stage age*/
+            const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
+            const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+            const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+            tempApplicationList.TestApplicationStageAge = stageDateDiff;
+            console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
 
 
-  //          //#region escalation Sindiswa 31 January 2024
-  //          tempApplicationList.isEscalated = current.isEscalated;
-  //          tempApplicationList.EscalationDate = current.escalationDate;
-  //          tempApplicationList.EMBActionDate = current.embActionDate;
-  //          //#endregion
-  //          if (current.networkLicenses == true) {
-  //            tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
-  //          }
-  //          else {
-  //            tempApplicationListShared.NetworkLicensees = " ";
-  //          }
 
-  //          this.applicationDataForView.push(tempApplicationListShared);
-  //          console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
-  //          this.Applications.push(tempApplicationList);
-  //          /*Cehcing the escaltion date*/
-  //          this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
-
-  //            if (data.responseCode == 1) {
-
-  //              const current = data.dateSet[0];
-  //              console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
-  //              this.viewEscalateDate = current.configDescription;
-  //              if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
-  //                this.escalateBtn = true;
-  //              }
-
-  //            }
-  //            else {
-  //              alert("Error");
-  //            }
-
-  //            console.log("response", data);
-  //          }, error => {
-  //            console.log("Error", error);
-  //          })
-  //        }
-  //        this.dataSource = this.Applications.filter(df => df.DateCreated);
+            if (current.projectNumber != null) {
+              tempApplicationList.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationList.ProjectNumber = (current.applicationID).toString();
+            }
 
 
-  //        this.applicationsTable?.renderRows();
-  //        //for card filters
-  //        /* this.select = "option3";*/
-  //        this.recentUnpaidCount();
-  //        this.recentDistributedCount();
-  //        this.recentApprovedCount();
-  //        this.recentejectedCount();
-  //        this.recentWIPCount();
-  //        this.isTableLoading = false;
-  //        this.cardFilters = true;
-  //        console.log("Got all applications", data.dateSet);
-  //      }
-  //      else {
-  //        alert(data.responseMessage);
-  //      }
+            do {
+              tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
+            } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);
+            //          //save here to send to the shared
 
-  //    })
-  //  }
+            //tempApplicationListShared.applicationID = current. ;
+            tempApplicationListShared.applicationID = current.applicationID;
+            tempApplicationListShared.clientName = current.fullName;
+            tempApplicationListShared.clientEmail = current.email;
+            tempApplicationListShared.clientAlternativeEmail = current.alternativeEmail; //checkingNotifications Sindiswa 15 February 2024
+            tempApplicationListShared.clientAddress = current.physicalAddress;
+            tempApplicationListShared.clientRefNo = current.referenceNumber;
+            tempApplicationListShared.CompanyRegNo = current.companyRegNo;
+            tempApplicationListShared.TypeOfApplication = current.typeOfApplication;
+            tempApplicationListShared.NotificationNumber = current.notificationNumber;
+            tempApplicationListShared.WBSNumber = current.wbsNumber;
+            tempApplicationListShared.PhysicalAddressOfProject = current.physicalAddressOfProject;
+            tempApplicationListShared.DescriptionOfProject = current.descriptionOfProject;
+            tempApplicationListShared.NatureOfWork = current.natureOfWork;
+            tempApplicationListShared.ExcavationType = current.excavationType;
+            tempApplicationListShared.ExpectedStartDate = current.expectedStartDate;
+            tempApplicationListShared.ExpectedEndDate = current.expectedEndDate;
+            tempApplicationListShared.Location = current.location;
+            tempApplicationListShared.clientCellNo = current.phoneNumber;
+            tempApplicationListShared.CreatedById = current.createdById;
+            tempApplicationListShared.UserID = current.userID;//
+            tempApplicationListShared.ApplicationStatus = current.applicationStatus;
+            tempApplicationListShared.CurrentStageName = current.currentStageName;
+            tempApplicationListShared.CurrentStageNumber = current.currentStageNumber;
+
+            tempApplicationListShared.ContractorAccountDetails = current.contractorAccountDetails; //zxNumberUpdate Sindiswa 01 March 2024
+            tempApplicationListShared.NextStageName = current.nextStageName;
+            tempApplicationListShared.NextStageNumber = current.nextStageNumber;
+            tempApplicationListShared.PreviousStageName = current.previousStageName;
+            tempApplicationListShared.PreviousStageNumber = current.previousStageNumber;
+            tempApplicationListShared.DatePaid = current.datePaid;
+            tempApplicationListShared.wbsrequired = current.wbsRequired;
+            tempApplicationListShared.Coordinates = current.coordinates;
+            if (current.projectNumber != null) {
+              tempApplicationListShared.ProjectNumber = current.projectNumber;
+            } else {
+              tempApplicationListShared.ProjectNumber = (current.applicationID).toString();
+            }
+
+            tempApplicationListShared.isPlanning = current.isPlanning;
+            tempApplicationListShared.permitStartDate = current.permitStartDate;
+
+
+            //          //#region escalation Sindiswa 31 January 2024
+            //          tempApplicationList.isEscalated = current.isEscalated;
+            //          tempApplicationList.EscalationDate = current.escalationDate;
+            //          tempApplicationList.EMBActionDate = current.embActionDate;
+            //          //#endregion
+            //          if (current.networkLicenses == true) {
+            //            tempApplicationListShared.NetworkLicensees = "Fibre Network Licensees have been contacted regarding trench sharing and existing services";
+            //          }
+            //          else {
+            //            tempApplicationListShared.NetworkLicensees = " ";
+            //          }
+
+            //          this.applicationDataForView.push(tempApplicationListShared);
+            //          console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
+            //          this.Applications.push(tempApplicationList);
+            //          /*Cehcing the escaltion date*/
+            //          this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
+
+            //            if (data.responseCode == 1) {
+
+            //              const current = data.dateSet[0];
+            //              console.log("currentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrentcurrent", current);
+            //              this.viewEscalateDate = current.configDescription;
+            //              if (this.Applications[i].TestApplicationAge >= Number(this.viewEscalateDate)) {
+            //                this.escalateBtn = true;
+            //              }
+
+            //            }
+            //            else {
+            //              alert("Error");
+            //            }
+
+            //            console.log("response", data);
+            //          }, error => {
+            //            console.log("Error", error);
+            //          })
+            //        }
+            
+            this.dataSource = this.Applications.filter(df => df.DateCreated);
+
+
+                    this.applicationsTable?.renderRows();
+            //        //for card filters
+            //        /* this.select = "option3";*/
+            //        this.recentUnpaidCount();
+            //        this.recentDistributedCount();
+            //        this.recentApprovedCount();
+            //        this.recentejectedCount();
+            //        this.recentWIPCount();
+            //        this.isTableLoading = false;
+            //        this.cardFilters = true;
+            //        console.log("Got all applications", data.dateSet);
+          }
+       }
+        else {
+          alert(data.responseMessage);
+        }
+
+      })
+    }
   //  else {
   //    this.applicationService.getApplicationsList(this.CurrentUser.appUserId, false).subscribe((data: any) => {
 
@@ -6995,7 +7012,7 @@ this.subscriptions.push(subscription);
     this.sharedService.setApplicationBeingCreatedType(this.ApplicationBeginCreatedType);
     this.isArchivePlan = isPlanArchive;
     if (this.isArchitect == false || this.isArchitect == null) {
-
+     
       this.openSm(this.content);
     }
 
@@ -7016,7 +7033,7 @@ this.subscriptions.push(subscription);
     this.ArchitectsList.splice(0, this.ArchitectsList.length);
     this.UserlinkToArchitectService.getArchitectsForUser(this.CurrentUser.appUserId).subscribe((data: any) => {
       if (data.responseCode == 1) {
-        
+
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempArchitectList = {} as ArchitectsList;
           const current = data.dateSet[i];

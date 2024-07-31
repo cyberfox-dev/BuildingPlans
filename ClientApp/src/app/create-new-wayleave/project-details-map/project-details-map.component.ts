@@ -355,10 +355,10 @@ export class ProjectDetailsMapComponent implements OnInit {
     //Use this tool to verify boundaries: http://bboxfinder.com ymin,xmin,ymax,xmax
     const theExtent = new Extent({
       /*      Cape Town*/
-      ymin: -34.358,
-      xmin: 18.2562,
-      ymax: -33.3992,
-      xmax: 18.855,
+      ymin: -29.708332,
+      xmin: 30.224762,
+      ymax: -29.510135,
+      xmax: 30.491180,
 
       //Western Cape
       //ymin: -34.867905,
@@ -372,7 +372,7 @@ export class ProjectDetailsMapComponent implements OnInit {
       map: map,
       extent: theExtent,
       zoom: 5,
-      center: [18.555908, -33.879537], // Cape Town, South Africa coordinates. This is the center of the boundary
+      center: [30.3928, -29.6168], // Pietermaritzburg, South Africa coordinates. This is the center of the boundary
       /*      center: this.position,*/
       //Hides the zoom buttons
       ui: {
@@ -522,6 +522,7 @@ export class ProjectDetailsMapComponent implements OnInit {
       resultGraphicEnabled: true,
       container: this.searchDivEl.nativeElement,
       sources: sources,
+     
       /*      activeSourceIndex: 1, //for some odd reasons, index 0 contains a source already.*/
       includeDefaultSources: false,
       allPlaceholder: "Find address or ERF"
@@ -738,20 +739,21 @@ export class ProjectDetailsMapComponent implements OnInit {
 
       //map.add(streetlights);
 
-      var zones = new MapImageLayer({
-        url: this.zonesURL,
+      //kyle 23/07/24
+      //var zones = new MapImageLayer({
+      //  url: this.zonesURL,
 
-      })
+      //})
 
-      map.add(zones);
+      //map.add(zones);
 
-      var infrustructure = new MapImageLayer({
-        url: this.infrustructureURL,
+      //var infrustructure = new MapImageLayer({
+      //  url: this.infrustructureURL,
 
-      })
+      //})
 
-      map.add(infrustructure);
-
+      //map.add(infrustructure);
+      //kyle 23/07/24
 
       /*      Add layerlist and legend*/
       var layerList = new LayerList({
@@ -1372,8 +1374,9 @@ export class ProjectDetailsMapComponent implements OnInit {
       //});
 
       //Zooms into Cape Town, or rather, shows the 'fullExtent of the layer'
-      zones.when(() => {
-        view.goTo(zones.fullExtent);
+      //kyle 23/07/24
+      view.when(() => {
+        view.goTo(view.center);
       });
 
       // Create the Form template and pass in elements
@@ -1425,6 +1428,7 @@ export class ProjectDetailsMapComponent implements OnInit {
         /*        valueExpression: "assignCreatedByID",*/
         valueExpression: "assignCreatedByID",
         /*                  visibilityExpression: "alwaysHidden",*/
+   
         editable: false,
 
       });
@@ -1434,6 +1438,7 @@ export class ProjectDetailsMapComponent implements OnInit {
         fieldName: "LU_ACTV_STS",
         label: "isActive",
         valueExpression: "assignIsActive",
+       
         editable: false,
         /*                        visibilityExpression: "alwaysHidden"*/
       });
@@ -1443,6 +1448,7 @@ export class ProjectDetailsMapComponent implements OnInit {
         fieldName: "WLMS_APLC_KEY",
         label: "applicationID",
         valueExpression: "assignApplicationID",
+       
         editable: false,
         /*                        visibilityExpression: "alwaysHidden"*/
       });
@@ -1894,19 +1900,22 @@ export class ProjectDetailsMapComponent implements OnInit {
             console.log(`Handling FeatureServer(Edit) for ConfigID ${config.configID}`);
             // Add your code here for this case
             break;
-          case 'Zones':
-            // Handle the case when UtilitySlot3 is 'Zones'
-            this.zonesURL = config.configDescription
-            console.log(`Handling Zones for ConfigID ${config.configID}`);
-            // Add your code here for this case
-            break;
-          case 'Infrustructure':
-            // Handle the case when UtilitySlot3 is 'Zones'
-            this.infrustructureURL = config.configDescription
+          //kyle 23/07/24
+          //case 'Zones':
+          //  // Handle the case when UtilitySlot3 is 'Zones'
+          //  this.zonesURL = config.configDescription
+          //  console.log(`Handling Zones for ConfigID ${config.configID}`);
+          //  // Add your code here for this case
+          //  break;
+          //case 'Infrustructure':
+          //  // Handle the case when UtilitySlot3 is 'Zones'
+          //  this.infrustructureURL = config.configDescription
 
-            console.log(`Handling Zones for ConfigID ${config.configID}`);
-            // Add your code here for this case
-            break;
+          //  console.log(`Handling Zones for ConfigID ${config.configID}`);
+          //  // Add your code here for this case
+          //  break;
+          //kyle 23/07/24
+
           case 'SearchERF':
             // Handle the case when UtilitySlot3 is 'Zones'
             this.searchERFURL = config.configDescription
@@ -1941,19 +1950,23 @@ export class ProjectDetailsMapComponent implements OnInit {
             console.log(`Handling FeatureServer(Edit) for ConfigID ${config.configID}`);
             // Add your code here for this case
             break;
-          case 'Zones':
-            // Handle the case when UtilitySlot3 is 'Zones'
-            this.zonesURL = config.configDescription
-            console.log(`Handling Zones for ConfigID ${config.configID}`);
-            // Add your code here for this case
-            break;
-          case 'Infrustructure':
-            // Handle the case when UtilitySlot3 is 'Zones'
-            this.infrustructureURL = config.configDescription
+          //kyle 23/07/24
 
-            console.log(`Handling Zones for ConfigID ${config.configID}`);
-            // Add your code here for this case
-            break;
+          //case 'Zones':
+          ////   Handle the case when UtilitySlot3 is 'Zones'
+          ////  this.zonesURL = config.configDescription
+          ////  console.log(`Handling Zones for ConfigID ${config.configID}`);
+          ////   Add your code here for this case
+          ////  break;
+          ////case 'Infrustructure':
+          ////   Handle the case when UtilitySlot3 is 'Zones'
+          ////  this.infrustructureURL = config.configDescription
+
+          ////  console.log(`Handling Zones for ConfigID ${config.configID}`);
+          ////   Add your code here for this case
+          //  break;
+          //kyle 23/07/24
+
           case 'SearchERF':
             // Handle the case when UtilitySlot3 is 'Zones'
             this.searchERFURL = config.configDescription

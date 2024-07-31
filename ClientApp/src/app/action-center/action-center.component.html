@@ -1,7 +1,7 @@
 <div class="cont5">
   <!--<button mat-raised-button color="createWayleave" (click)="openXl(content)">Action Center</button>-->
-  <button mat-raised-button color="createWayleave" (click)="actionCentreView(content)" *ngIf="!EMBLoggedIn">Action Center</button>
-  <button mat-raised-button color="createWayleave" (click)="onGoToEscalationActionCentre(escalatedToEMB)" *ngIf="EMBLoggedIn">Action Center</button>
+  <button mat-raised-button color="createWayleave" (click)="actionCentreView(content)" >Action Center</button>
+  <!--<button mat-raised-button color="createWayleave" (click)="onGoToEscalationActionCentre(escalatedToEMB)" *ngIf="EMBLoggedIn">Action Center</button>-->
 </div>
 
 <!--JJS 07-03-24 GIS Reviewer-->
@@ -12,12 +12,12 @@
   </div>
   <div class="modal-body" *ngIf="CurrentApplication.isPlanning != true">
 
-    <div class="contCards">
+    <!--<div class="contCards">-->
       <!--<button mat-raised-button color="blue" *ngIf="CanAssignDepartment == true && canCommentFinalApprover == false && showPermitTab === false" (click)="openAssignDepartment(assign)">Assign Department to Project</button>-->
       <!--<button mat-raised-button color="blue" *ngIf="AssignProjectToZone == true && canCommentFinalApprover == false && showPermitTab === false" (click)="openAssignToZone(assignProjectToZone)">Assign Project to Zone</button>-->
       <!-- actionCentreEdits Sindiswa 16 January 2024 -->
 
-      <div class="containerCard" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false">
+      <!--<div class="containerCard" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false">
         <p class="cardHeader">Assign Reviewer</p>
         <p class="cardDescription">This will assign a user to this project to allow them to review the applicaton</p>
         <button mat-raised-button color="assign" (click)="openAssignToUser(assignProjectToUser)">Assign User</button>
@@ -30,39 +30,39 @@
       <div class="containerCard" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == true">
         <p class="cardHeader">Assign New Reviewer</p>
         <p class="cardDescription">This will assign another user to review this application</p>
-        <button mat-raised-button color="assign" (click)="openAssignToUser(assignProjectToUser)">Assign Another User For Comment</button>
+        <button mat-raised-button color="assign" (click)="openAssignToUser(assignProjectToUser)">Assign Another User For Comment</button>-->
         <!-- <button mat-raised-button color="assign" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false" (click)="openAssignToUserGISReviewer(assignProjectToUserGISReviewer)">Assign User</button>-->
-      </div>
+      <!--</div>
       <div class="containerCard" *ngIf="canCommentFinalApprover == true && canCommentSeniorReviewer == false && userAssignedText !==CurrentUser.appUserId">
         <p class="cardHeader">Take this application</p>
         <p class="cardDescription">Take Application As A Final Approver</p>
-        <button mat-raised-button color="assign" (click)=" takeOnthisApplication()">Take Application As A Final Approver </button> <!--Final Approver && Senior Approver Kyle 01/02/24-->
+        <button mat-raised-button color="assign" (click)=" takeOnthisApplication()">Take Application As A Final Approver </button>--> <!--Final Approver && Senior Approver Kyle 01/02/24-->
         <!--<button mat-raised-button color="assign" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false" (click)="openAssignToUserGISReviewer(assignProjectToUserGISReviewer)">Assign User</button>-->
-      </div>
+      <!--</div>
       <div class="containerCard" *ngIf="canCommentSeniorReviewer == true && canCommentFinalApprover == false && userAssignedText !==CurrentUser.appUserId">
         <p class="cardHeader">Take this application</p>
         <p class="cardDescription">Take Application As A Senior Reviewer</p>
-        <button mat-raised-button color="assign" (click)=" takeOnthisApplication()">Take Application As A Senior Reviewer </button> <!--Final Approver && Senior Approver Kyle 01/02/24-->
+        <button mat-raised-button color="assign" (click)=" takeOnthisApplication()">Take Application As A Senior Reviewer </button>--> <!--Final Approver && Senior Approver Kyle 01/02/24-->
         <!--<button mat-raised-button color="assign" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false" (click)="openAssignToUserGISReviewer(assignProjectToUserGISReviewer)">Assign User</button>-->
-      </div>
-      <div class="containerCard" *ngIf="showPermitTab === true && CanAssignPermitIssuer === true">
+      <!--</div>
+      <div class="containerCard" *ngIf="showPermitTab === true && CanAssignPermitIssuer === true">-->
         <!--JJS 13-03-24-->
-        <p class="cardHeader">Assign Permit Issuer</p>
+        <!--<p class="cardHeader">Assign Permit Issuer</p>
         <p class="cardDescription">Assign a Permit Issuer to application</p>
-        <button mat-raised-button color="assign" (click)="getAllPermitIssuersForSubDepartment(permitIssuers)">Assign Permit Issuer To Application</button><!--Final Approver && Senior Approver Kyle 01/02/24-->
+        <button mat-raised-button color="assign" (click)="getAllPermitIssuersForSubDepartment(permitIssuers)">Assign Permit Issuer To Application</button>--><!--Final Approver && Senior Approver Kyle 01/02/24-->
         <!--<button mat-raised-button color="assign" *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false && showPermitTab === false && hasReviewerAssignment == false" (click)="openAssignToUserGISReviewer(assignProjectToUserGISReviewer)">Assign User</button>-->
-      </div>
+      <!--</div>-->
 
 
       <!-- endof actionCentreEdits Sindiswa 16 January 2024 -->
       <!-- <button mat-raised-button color="blue" *ngIf="hopperButton == true" (click)="onHopperClick()">Hopper</button>-->
-    </div>
+    <!--</div>-->
 
     <p class="cardDescription"></p>
 
 
-    <br *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && showPermitTab === false">
-    <mat-divider *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && showPermitTab === false"></mat-divider>
+    <br >
+    <mat-divider ></mat-divider>
     <!--    <mat-form-field>
     <mat-label>Select A Comment From Your Comment Builder</mat-label>
     <mat-select [(value)]="select" (selectionChange)="filterDepartment()" [(ngModel)]="selectDepFilterName">
@@ -70,14 +70,14 @@
     </mat-select>
   </mat-form-field>-->
     <!--JJS Commit 20-02-24-->
-    <br *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && showPermitTab === false">
-    <mat-form-field class="example-full-width" *ngIf="(canComment || canCommentFinalApprover || canCommentSeniorReviewer) && userAssignedText == CurrentUser.appUserId">
+    <br >
+    <mat-form-field class="example-full-width">
       <mat-label>Type new Comment/Special Condition. Please also make reference to the Services Conditions tab, if documents have been uploaded.</mat-label>
-      <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea" maxlength="250" (input)="updateCharacterCount()"></textarea>
+      <textarea matInput [(ngModel)]="leaveAComment" stlye="color:black !important" placeholder="Eg. This is good" id="myTextarea" maxlength="250" (input)="updateCharacterCount()"></textarea>
       <div>{{ leaveAComment.length }}/250</div>
     </mat-form-field>
 
-    <div class="cont2" *ngIf="userAssignedText == CurrentUser.appUserId">
+    <div class="cont2" >
       <!--Final Approver && Senior Approver Kyle 01/02/24-->
 
       <button mat-raised-button color="purple" [matMenuTriggerFor]="menu" (click)="getAllCommentsByUserID()" *ngIf="canComment == true || canCommentFinalApprover == true || canCommentSeniorReviewer == true">Select A Comment From Your Comment Builder</button>
@@ -95,11 +95,11 @@
     </div>
 
 
-    <div class="cont2" *ngIf="canComment == true && canCommentFinalApprover == false && canCommentSeniorReviewer == false">
+    <div class="cont2" >
       <button mat-raised-button color="approveBTN" (click)="onComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon"> Prov. Approved</button>
       <button mat-raised-button color="rejectBTN" (click)="onComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">   Prov. Not Approved</button>
       <button mat-raised-button color="clarifyBTN" (click)="onComment('Clarify');sendOption()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">  Clarify</button>
-      <button mat-raised-button color="referBTN" (click)="onComment('Refer')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/retweet-solid-white.svg" class="icon">  Refer</button>
+      <!--<button mat-raised-button color="referBTN" (click)="onComment('Refer')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/retweet-solid-white.svg" class="icon">  Refer</button>-->
 
     </div>
 

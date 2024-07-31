@@ -13,7 +13,9 @@ export interface UserProfileList {
   UserID: string;
   FullName: string;
   Email: string;
+  FunctionalArea: string;
   SubDepartmentName: string;
+  PhoneNumber: string;
  
 }
 
@@ -42,9 +44,10 @@ export interface DepartmentsList {
 })
 export class BPDepartmentManagerComponent implements OnInit {
 
-  constructor(private userProfileService: UserProfileService, private bpaccessGroupUserLinkService: BPAccessGroupUserLinkService, private bpAccessGroupService: BPAccessGroupsService, private modalService: NgbModal, private bpFunctionalAreaService: BPFunctionalAreasService, private bpDepartmentsService: BpDepartmentsService , private userService:UserService) { }
+  constructor(private userProfileService: UserProfileService, private bpaccessGroupUserLinkService: BPAccessGroupUserLinkService, private bpAccessGroupService: BPAccessGroupsService, private modalService: NgbModal, private bpFunctionalAreaService: BPFunctionalAreasService, private bpDepartmentsService: BpDepartmentsService, private userService: UserService) { }
 
   internalUserList: UserProfileList[] = [];
+  AllUsers: UserProfileList[] = [];
   accessGroupList: AccessGroupsList[] = [];
   functionalAreasList: BPFunctionalAreaList[] = [];
   departmentsList: DepartmentsList[] = [];
@@ -56,12 +59,18 @@ export class BPDepartmentManagerComponent implements OnInit {
   displayedColumns: string[] = ['userName', 'subDepartmentName', 'actions'];
   dataSource = this.internalUserList;
 
+  @ViewChild(MatTable) allUsersTable: MatTable<UserProfileList> | undefined;
+  displayedColumnsUser: string[] = ['userName', 'functionalArea', 'subDepartmentName', 'actions'];
+  dataSourceUser = this.internalUserList;
+
   stringifiedDataUserProfile: any;
   CurrentUserProfile: any;
 
   functionalArea: string;
   subDepartmentName: string;
 
+  selectedFunctionalArea: any;
+  selectedDepartment: any;
   selectedUser; any;
   accessGroupUserLinkID: number;
 
@@ -77,15 +86,18 @@ export class BPDepartmentManagerComponent implements OnInit {
 
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
-    
+
     this.functionalArea = this.CurrentUserProfile[0].departmentName;
     this.subDepartmentName = this.CurrentUserProfile[0].subDepartmentName;
+
+    this.getAllFunctionalAreas();
   }
 
   openNewUser(newUser: any) {
     this.modalService.open(newUser, { centered: true, size: 'xl' });
   }
-  GetAllInternalUsers() {
+  GetAllInternalUsers(allUsers: any) {
+    this.AllUsers.splice(0, this.AllUsers.length);
     this.userProfileService.getInternalUsers().subscribe((data: any) => {
       if (data.responseCode == 1) {
         for (let i = 0; i < data.dateSet.length; i++) {
@@ -96,17 +108,24 @@ export class BPDepartmentManagerComponent implements OnInit {
           tempUser.UserID = current.userID;
           tempUser.Email = current.email;
           tempUser.FullName = current.fullName;
+          tempUser.FunctionalArea = current.departmentName;
+          tempUser.SubDepartmentName = current.subDepartmentName;
+          tempUser.PhoneNumber = current.phoneNumber;
 
-          this.internalUserList.push(tempUser);
+          this.AllUsers.push(tempUser);
         }
 
+        this.dataSourceUser = this.AllUsers;
+        this.allUsersTable?.renderRows();
+
+        this.modalService.open(allUsers, { centered: true, size: 'xl' });
       }
       else {
         alert(data.responseMessage);
       }
     }, error => {
       console.log(error);
-    
+
     })
   }
   onselectUser(index: any, accessGroups: any) {
@@ -114,8 +133,8 @@ export class BPDepartmentManagerComponent implements OnInit {
     this.GetAllAccessGroupsAndUserLinks(accessGroups);
   }
 
-  GetAllAccessGroupsAndUserLinks(accessGroups:any) {
-    
+  GetAllAccessGroupsAndUserLinks(accessGroups: any) {
+
     this.accessGroupList.splice(0, this.accessGroupList.length);
     this.bpAccessGroupService.getAllAccessGroupsAndUserLinks(this.selectedUser.UserProfileID, this.functionalArea).subscribe((data: any) => {
       if (data.responseCode == 1) {
@@ -135,7 +154,7 @@ export class BPDepartmentManagerComponent implements OnInit {
             tempAccessGroup.isLinked = true;
           }
           this.accessGroupList.push(tempAccessGroup);
-        
+
         }
 
         this.modalService.open(accessGroups, { centered: true, size: 'xl' });
@@ -145,21 +164,21 @@ export class BPDepartmentManagerComponent implements OnInit {
       }
     }, error => {
       console.log(error);
-    
+
     })
   }
-  
+
   getAllUsersForFunctionalArea(linkedUsers: any) {
 
     this.internalUserList.splice(0, this.internalUserList.length);
     this.userProfileService.getUsersForDepartmentAndSubDepartment(this.functionalArea, this.subDepartmentName).subscribe((data: any) => {
-      
+
       if (data.responseCode == 1) {
-        
+
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
           const tempUser = {} as UserProfileList;
-          
+
           tempUser.UserProfileID = current.userProfileID;
           tempUser.UserID = current.userID;
           tempUser.Email = current.email;
@@ -168,7 +187,7 @@ export class BPDepartmentManagerComponent implements OnInit {
 
           this.internalUserList.push(tempUser);
         }
-        
+
         this.dataSource = this.internalUserList;
         this.linkedUsersTable?.renderRows();
         this.modalService.open(linkedUsers, { centered: true, size: 'xl' });
@@ -178,24 +197,34 @@ export class BPDepartmentManagerComponent implements OnInit {
       }
     }, error => {
       console.log(error);
-    
+
     })
-  
+
   }
 
   linkUserToAccessgroup(index: any, accessGroups: any) {
-    
+
     const accessGroup = this.accessGroupList[index];
 
     if (accessGroup.AccessGroupUserLinkID == null) {
-      
+
       this.accessGroupUserLinkID = 0;
     }
     else {
-      
+
       this.accessGroupUserLinkID = accessGroup.AccessGroupUserLinkID;
     }
-    
+
+    if (accessGroup.AccessGroupName == "Admin") {
+      this.userProfileService.updateAdminBool(this.selectedUser.UserProfileID, true, true, null).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+
+        }
+        else {
+          alert(data.responseMessage);
+        }
+      })
+    }
     this.bpaccessGroupUserLinkService.addUpdateAccessGroupUserLink(this.accessGroupUserLinkID, accessGroup.AccessGroupID, accessGroup.AccessGroupName, null, null, this.subDepartmentName, this.selectedUser.UserID, this.CurrentUser.appUserId, this.functionalArea, this.subDepartmentName, this.selectedUser.UserProfileID).subscribe((data: any) => {
       if (data.responseCode == 1) {
         this.modalService.dismissAll();
@@ -207,7 +236,7 @@ export class BPDepartmentManagerComponent implements OnInit {
       }
     }, error => {
       console.log(error);
-    
+
     })
   }
 
@@ -226,15 +255,15 @@ export class BPDepartmentManagerComponent implements OnInit {
       }
     }, error => {
       console.log(error);
-    
+
     })
   }
 
-  getAllFunctionalAreas(newUser:any) {
+  getAllFunctionalAreas() {
     this.bpFunctionalAreaService.getAllFunctionalAreas().subscribe((data: any) => {
-      
+
       if (data.responseCode == 1) {
-        
+
         for (let i = 0; i < data.dateSet.length; i++) {
           const current = data.dateSet[i];
           const tempFunctionalArea = {} as BPFunctionalAreaList;
@@ -245,21 +274,21 @@ export class BPDepartmentManagerComponent implements OnInit {
           this.functionalAreasList.push(tempFunctionalArea);
         }
 
-        this.modalService.open(newUser, { centered: true, size: 'xl' });
+      
       }
       else {
         alert(data.responseMessage);
       }
     }, error => {
       console.log(error);
-    
+
     })
   }
 
- 
+
   validEmail: boolean = false;
   fullName: string;
-  async validateNewUserInfo(accessGroups:any) {
+  async validateNewUserInfo(accessGroups: any) {
     let name = this.firstName;
     let surname = this.surname;
     let email = this.emailAddress;
@@ -271,52 +300,52 @@ export class BPDepartmentManagerComponent implements OnInit {
     const nameRegex = /^[A-Za-z]+$/;
     const numberRegex = /^[0-9]+$/;
 
-  
-      let nameLength = name.split(' ');
-      let surnameLength = surname.split(' ');
 
-      if (name != null && name != "" && nameRegex.test(name) && surname != null && surname != "" && nameRegex.test(surname)) {
-        if (nameLength.length > 1 || surnameLength.length > 1) {
-          alert("Enter a single Name and Surname");
-        }
-        else {
-          this.fullName = name + " " + surname;
-          if (phoneNumber != null && phoneNumber != "" && numberRegex.test(phoneNumber) && phoneNumber.length == 10) {
-            const SANumber = this.isSouthAfricanPhoneNumber(phoneNumber);
+    let nameLength = name.split(' ');
+    let surnameLength = surname.split(' ');
 
-            if (SANumber) {
-              if (email != null && email != "" && emailRegex.test(email)) {
-                const emailExist = await this.userService.emailExists(email).toPromise();
+    if (name != null && name != "" && nameRegex.test(name) && surname != null && surname != "" && nameRegex.test(surname)) {
+      if (nameLength.length > 1 || surnameLength.length > 1) {
+        alert("Enter a single Name and Surname");
+      }
+      else {
+        this.fullName = name + " " + surname;
+        if (phoneNumber != null && phoneNumber != "" && numberRegex.test(phoneNumber) && phoneNumber.length == 10) {
+          const SANumber = this.isSouthAfricanPhoneNumber(phoneNumber);
 
-                if (emailExist) {
-                  alert("This email address is already exists");
-                }
-                else {
-                  this.RegisterUser(this.fullName, email, accessGroups);
-                }
-                
+          if (SANumber) {
+            if (email != null && email != "" && emailRegex.test(email)) {
+              const emailExist = await this.userService.emailExists(email).toPromise();
+
+              if (emailExist) {
+                alert("This email address is already exists");
               }
               else {
-                alert("Enter a valid Email Address");
+                this.RegisterUser(this.fullName, email, accessGroups);
               }
+
             }
             else {
-              alert("Enter a valid South African Number");
+              alert("Enter a valid Email Address");
             }
           }
           else {
-            alert("Enter a 10 digit Phone Number");
+            alert("Enter a valid South African Number");
           }
-          
-
-          
-          
         }
+        else {
+          alert("Enter a 10 digit Phone Number");
+        }
+
+
+
+
       }
-      else {
-        alert("Enter a Name and Surname");
-      }
-    
+    }
+    else {
+      alert("Enter a Name and Surname");
+    }
+
   }
   isSouthAfricanPhoneNumber(phoneNumber: string): boolean {
     const mobilePattern = /^(?:\+27|0)[678][0-9]{8}$/;
@@ -331,24 +360,24 @@ export class BPDepartmentManagerComponent implements OnInit {
     }
   }
 
-  RegisterUser(fullName:string , email:string,accessGroups:any) {
+  RegisterUser(fullName: string, email: string, accessGroups: any) {
     this.userService.register(fullName, email, "12345").subscribe((data: any) => {
       if (data.responseCode == 1) {
         const userID = data.dateSet.appUserId;
-        this.addUserProfile(userID,accessGroups)
+        this.addUserProfile(userID, accessGroups)
       }
       else {
         alert(data.responseMessage);
       }
     }, error => {
       console.log(error);
-    
+
     })
   }
 
-  async getDepartmentID(): Promise<number> {
+  async getDepartmentID(subDepartmentName: string, functionalArea:string): Promise<number> {
     try {
-      const data:any = await this.bpDepartmentsService.getDepartmentByDepartmentName(this.subDepartmentName).toPromise();
+      const data: any = await this.bpDepartmentsService.getDepartmentByDepartmentName(subDepartmentName,functionalArea).toPromise();
       if (data.responseCode == 1) {
         const current = data.dateSet[0];
         return current.departmentID;
@@ -363,11 +392,11 @@ export class BPDepartmentManagerComponent implements OnInit {
     }
   }
 
-  async getFunctionalAreaID(functionalArea:any):Promise<number> {
+  async getFunctionalAreaID(functionalArea: any): Promise<number> {
     try {
-      
+
       const data: any = await this.bpFunctionalAreaService.getFunctionalAreaByFunctionalAreaName(functionalArea).toPromise();
-      
+
       if (data.responseCode == 1) {
         const current = data.dateSet[0];
         return current.functionalAreaID;
@@ -381,19 +410,19 @@ export class BPDepartmentManagerComponent implements OnInit {
       throw error;
     }
   }
-  async addUserProfile(userID:any,accessGroups:any) {
+  async addUserProfile(userID: any, accessGroups: any) {
 
-    const functionalAreaId :number = await this.getFunctionalAreaID(this.functionalArea);
-    const departmentID :number = await this.getDepartmentID();
+    const functionalAreaId: number = await this.getFunctionalAreaID(this.selectedFunctionalArea);
+    const departmentID: number = await this.getDepartmentID(this.selectedDepartment, this.selectedFunctionalArea);
 
     this.userProfileService.addUpdateUserProfiles(0, userID, this.fullName, this.emailAddress, this.phoneNumber, true, null, null, null, null, this.functionalArea, functionalAreaId, departmentID, null,
       null, null, null, this.CurrentUser.appUserId, null, null, null, null, null, false, false, this.subDepartmentName, null, null, this.firstName, this.surname, this.functionalArea, null, true, null, true, false).subscribe((data: any) => {
         if (data.responseCode == 1) {
-         
+
           const UserProfileID = data.dateSet.userProfileID;
           const current = data.dateSet;
           const tempUser = {} as UserProfileList;
-          
+
           tempUser.UserProfileID = current.userProfileID;
           tempUser.UserID = current.userID;
           tempUser.Email = current.email;
@@ -402,7 +431,7 @@ export class BPDepartmentManagerComponent implements OnInit {
           this.selectedUser = tempUser;
 
           this.modalService.dismissAll();
-          this.openAccessGroupsLinksForNewUser(accessGroups,UserProfileID);
+          this.openAccessGroupsLinksForNewUser(accessGroups, UserProfileID);
         }
         else {
           alert(data.responseMessage);
@@ -411,8 +440,8 @@ export class BPDepartmentManagerComponent implements OnInit {
         console.log(error);
       })
   }
- openAccessGroupsLinksForNewUser(accessGroups: any,userID:any) {
-    
+  openAccessGroupsLinksForNewUser(accessGroups: any, userID: any) {
+
     this.accessGroupList.splice(0, this.accessGroupList.length);
     this.bpAccessGroupService.getAllAccessGroupsAndUserLinks(userID, this.functionalArea).subscribe((data: any) => {
       if (data.responseCode == 1) {
@@ -444,7 +473,96 @@ export class BPDepartmentManagerComponent implements OnInit {
       console.log(error);
 
     })
- }
- 
-}
+  }
 
+  GetAllDepartmentsForFunctionalArea() {
+    debugger;
+    this.departmentsList.splice(0, this.departmentsList.length);
+    this.bpDepartmentsService.getAllDepartmentsForFunctionalArea(this.selectedFunctionalArea).subscribe((data: any) => {
+      debugger;
+      if (data.responseCode == 1) {
+        debugger;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          const tempDepartment = {} as DepartmentsList;
+
+          tempDepartment.DepartmentID = current.departmentID;
+          tempDepartment.DepartmentName = current.departmentName;
+
+          this.departmentsList.push(tempDepartment);
+        }
+      }
+      else {
+
+      }
+    }, error => {
+      console.log(error);
+    })
+  }
+  existingUser: boolean = false;
+ 
+  
+  onAddUserToNewDepartment(index:any,newUser:any)  {
+    this.existingUser = true;
+   this.selectedUser = this.AllUsers[index];
+
+    this.firstName = this.selectedUser.FullName.substring(0, this.selectedUser.FullName.indexOf(" "));
+    this.surname = this.selectedUser.FullName.substring(this.selectedUser.FullName.indexOf(" ") + 1);
+    this.emailAddress = this.selectedUser.Email;
+    this.phoneNumber = this.selectedUser.PhoneNumber;
+    this.fullName = this.selectedUser.FullName;
+    this.modalService.open(newUser, { centered: true, size: 'xl' });
+  }
+
+  async checkForExistingUserLink(accessGroups:any) {
+   
+    try {
+      debugger;
+      const data: any = await this.userProfileService.checkForExistingUserDepartmentLink(this.selectedUser.UserID, this.selectedFunctionalArea, this.selectedDepartment).toPromise();
+      debugger;
+      if (data.responseCode == 1) {
+        debugger;
+        if (data.dateSet.length > 0) {
+          alert("User is already link to this department")
+
+        }
+        else {
+          const functionalAreaId: number = await this.getFunctionalAreaID(this.selectedFunctionalArea);
+          const departmentID: number = await this.getDepartmentID(this.selectedDepartment, this.selectedFunctionalArea);
+          this.userProfileService.addUpdateUserProfiles(0, this.selectedUser.UserID, this.fullName, this.emailAddress, this.phoneNumber, true, null, null, null, null, this.selectedFunctionalArea, functionalAreaId, departmentID, null,
+            null, null, null, this.CurrentUser.appUserId, null, null, null, null, null, false, false, this.selectedDepartment, null, null, this.firstName, this.surname, this.selectedFunctionalArea, null, false, null, true, false).subscribe((data: any) => {
+              debugger;
+              if (data.responseCode == 1) {
+
+                const UserProfileID = data.dateSet.userProfileID;
+                const current = data.dateSet;
+                const tempUser = {} as UserProfileList;
+
+                tempUser.UserProfileID = current.userProfileID;
+                tempUser.UserID = current.userID;
+                tempUser.Email = current.email;
+                tempUser.FullName = current.fullName;
+
+                this.selectedUser = tempUser;
+
+                this.modalService.dismissAll();
+                this.openAccessGroupsLinksForNewUser(accessGroups, UserProfileID);
+              }
+              else {
+                alert(data.responseMessage);
+              }
+            }, error => {
+              console.log(error);
+            })
+        }
+      }
+
+    }
+    catch (error: any) {
+      console.log("Error:", error);
+      throw error;
+    }
+  }
+
+  
+}

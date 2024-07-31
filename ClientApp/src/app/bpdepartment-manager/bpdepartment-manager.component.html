@@ -1,6 +1,8 @@
-<button mat-raised-button color="create" (click)=" getAllFunctionalAreas(newUser)">Create New Internal User </button>
+<button mat-raised-button color="create" (click)="openNewUser(newUser)">Create New Internal User </button>
  &nbsp;
 <button mat-raised-button color="create" (click)=" getAllUsersForFunctionalArea(linkedUsers)">Show Linked Users</button>
+ &nbsp;
+<button mat-raised-button color="create" (click)=" GetAllInternalUsers(allUsers)">View All Internal Users</button>
 
 
 
@@ -28,7 +30,7 @@
         <th mat-header-cell *matHeaderCellDef> </th>
         <td mat-cell *matCellDef="let i = index">
           <button mat-raised-button color="orange" matTooltip="Edit User Access Groups" (click)="onselectUser(i,accessGroups);modal.dismiss('Cross click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/pencil.svg" class="icon4"></button>
-       
+
         </td>
         <td mat-cell *matCellDef="let element">  </td>
       </ng-container>
@@ -77,34 +79,36 @@
 
 <ng-template #newUser let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Creating a new user for {{functionalArea}} in {{subDepartmentName}}</h4>
+    <h4 class="modal-title" id="modal-basic-title">Creating a new user for Internal User</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
 
   <div class="modal-body">
 
     <div class="row">
-      <div class="form-floating mb-3 mt-3">
-        <input type="text" class="form-control" [(ngModel)]="functionalArea" name="FunctionalArea" placeholder="Owner First Name" disabled>
-        <label for="FunctionalArea">Functional Area</label>
-      </div>
+      <mat-form-field>
+        <mat-select [(ngModel)]="selectedFunctionalArea" (selectionChange)="GetAllDepartmentsForFunctionalArea()">
+          <mat-option *ngFor="let area of functionalAreasList" value="{{area.FAName}}">{{area.FAName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
     <div class="row">
-      <div class="form-floating mb-3 mt-3">
-        <input type="text" class="form-control" [(ngModel)]=" subDepartmentName" name="Department" placeholder="Owner First Name" disabled>
-        <label for="Department">Department </label>
-      </div>
+      <mat-form-field>
+        <mat-select [(ngModel)]="selectedDepartment">
+          <mat-option *ngFor="let area of departmentsList" value="{{area.DepartmentName}}">{{area.DepartmentName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
     <div class="row">
       <div class="col">
         <div class="form-floating mb-3 mt-3">
-          <input type="text" class="form-control" [(ngModel)]="firstName" name="name" placeholder="Owner First Name">
+          <input type="text" class="form-control" [(ngModel)]="firstName" name="name" placeholder="Owner First Name" [disabled]="existingUser">
           <label for="name">First Name *</label>
         </div>
       </div>
       <div class="col">
         <div class="form-floating mb-3 mt-3">
-          <input type="text" class="form-control" [(ngModel)]="surname" name="name" placeholder="Owner First Name">
+          <input type="text" class="form-control" [(ngModel)]="surname" name="name" placeholder="Owner First Name" [disabled]="existingUser">
           <label for="name">Surname*</label>
         </div>
       </div>
@@ -112,19 +116,58 @@
     <div class="row">
       <div class="col">
         <div class="form-floating mb-3 mt-3">
-          <input type="text" class="form-control" [(ngModel)]="emailAddress" name="name" placeholder="Owner First Name">
+          <input type="text" class="form-control" [(ngModel)]="emailAddress" name="name" placeholder="Owner First Name" [disabled]="existingUser">
           <label for="name">Email Address *</label>
         </div>
       </div>
       <div class="col">
         <div class="form-floating mb-3 mt-3">
-          <input type="text" class="form-control" [(ngModel)]="phoneNumber" name="name" placeholder="Owner First Name">
+          <input type="text" class="form-control" [(ngModel)]="phoneNumber" name="name" placeholder="Owner First Name" [disabled]="existingUser">
           <label for="name">Phone Number*</label>
         </div>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-success" (click)="validateNewUserInfo(accessGroups)">Save</button>
+    <button type="button" class="btn btn-outline-success" (click)="validateNewUserInfo(accessGroups)" *ngIf="existingUser == false">Save</button>
+    <button type="button" class="btn btn-outline-success" (click)="checkForExistingUserLink(accessGroups)" *ngIf="existingUser == true">Save Info</button>
   </div>
- </ng-template>
+</ng-template>
+
+<ng-template #allUsers let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">View Internal All Users f</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <table mat-table class="mat-elevation-z8" [dataSource]="dataSourceUser">
+
+      <ng-container matColumnDef="userName">
+        <th mat-header-cell *matHeaderCellDef> User Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.FullName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="functionalArea">
+        <th mat-header-cell *matHeaderCellDef> Functional Area</th>
+        <td mat-cell *matCellDef="let element"> {{element.FunctionalArea}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="subDepartmentName">
+        <th mat-header-cell *matHeaderCellDef> Sub Department Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.SubDepartmentName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> </th>
+        <td mat-cell *matCellDef="let i = index">
+          <button mat-raised-button color="orange" matTooltip="Link User to new Department" (click)="onAddUserToNewDepartment(i,newUser);modal.dismiss('Cross click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/solid/pencil.svg" class="icon4"></button>
+
+        </td>
+        <td mat-cell *matCellDef="let element">  </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsUser"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsUser;"></tr>
+    </table>
+  </div>
+</ng-template>

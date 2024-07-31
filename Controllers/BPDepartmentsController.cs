@@ -143,13 +143,13 @@ namespace BuildingPlans.Controllers
         {
             try
             {
-              if(model.DepartmentName == null)
+              if(model.DepartmentName == null || model.FunctionalArea == null)
                 {
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
                 }
                 else
                 {
-                    var result = await _bpDepartmentsService.GetDepartmentByDepartmentName(model.DepartmentName);
+                    var result = await _bpDepartmentsService.GetDepartmentByDepartmentName(model.DepartmentName,model.FunctionalArea);
                     return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Departments For Functional Area", result));
                 }
             }

@@ -168,171 +168,171 @@ namespace BuildingPlans.Service
             List<UserProfileDTO> distributionList = new List<UserProfileDTO>();
 
             //Code imported from typescript started here.
-            foreach (var subDepartment in subDepartmentList)
-            {
+            //foreach (var subDepartment in subDepartmentList)
+            //{
 
-                if (subDepartment.isSetForAutomaticDistribution ?? false || subDepartment.SubDepartmentName == "Bulk Water" || subDepartment.SubDepartmentName == "Waste Water and Treatment")
-                {
+            //    if (subDepartment.isSetForAutomaticDistribution ?? false || subDepartment.SubDepartmentName == "Bulk Water" || subDepartment.SubDepartmentName == "Waste Water and Treatment")
+            //    {
 
-                    var mapLayerID = subDepartment.MapLayerID;
-                    var subDepartmentID = subDepartment.SubDepartmentID;
-                    var subDepartmentName = subDepartment.SubDepartmentName;
-                    var AccessGroupName = "Department Admin";
+            //        var mapLayerID = subDepartment.MapLayerID;
+            //        var subDepartmentID = subDepartment.SubDepartmentID;
+            //        var subDepartmentName = subDepartment.SubDepartmentName;
+            //        var AccessGroupName = "Department Admin";
 
-                    Console.WriteLine(subDepartmentID);
+            //        Console.WriteLine(subDepartmentID);
 
-                    //Get ZoneAdminUsers for each SubdepartmentID
-                    var zoneAdminUsers = await (
-                        from accessGroups in _context.AccessGroups
-                        join accessGroupUserLink in _context.AccessGroupUserLink on accessGroups.AccessGroupID equals accessGroupUserLink.AccessGroupID into agul
-                        from agulItem in agul.DefaultIfEmpty()
-                        join userProfiles in _context.UserProfilesTable on agulItem.UserID equals userProfiles.UserID into up
-                        from upItem in up.DefaultIfEmpty()
-                        join zonesTable in _context.ZonesTable on upItem.zoneID equals zonesTable.ZoneID into zt
-                        from ztItem in zt.DefaultIfEmpty()
-                        join subDepartmentTable in _context.SubDepartmentsTable on ztItem.SubDepartmentID equals subDepartmentTable.SubDepartmentID into sdt
-                        from sdtItem in sdt.DefaultIfEmpty()
-                        where accessGroups.AccessGroupName == AccessGroupName && sdtItem.SubDepartmentID == subDepartmentID
-                        select new UserProfileDTO()
-                        {
-                            UserID = upItem.UserID,
-                            FullName = upItem.FullName,
-                            Email = upItem.Email,
-                            PhoneNumber = upItem.PhoneNumber,
-                            Directorate = upItem.Directorate,
-                            zoneName = ztItem.ZoneName,
-                            MapObjectID = ztItem.MapObjectID,
-                            SubDepartmentID = ztItem.SubDepartmentID,
-                            zoneID = ztItem.ZoneID,
-                            SubDepartmentName = sdtItem.SubDepartmentName,
-                            // SubDepartmentID = upItem.SubDepartmentID,
-                        }
-                    ).ToListAsync();
+            //        //Get ZoneAdminUsers for each SubdepartmentID
+            //        var zoneAdminUsers = await (
+            //            from accessGroups in _context.AccessGroups
+            //            join accessGroupUserLink in _context.AccessGroupUserLink on accessGroups.AccessGroupID equals accessGroupUserLink.AccessGroupID into agul
+            //            from agulItem in agul.DefaultIfEmpty()
+            //            join userProfiles in _context.UserProfilesTable on agulItem.UserID equals userProfiles.UserID into up
+            //            from upItem in up.DefaultIfEmpty()
+            //            join zonesTable in _context.ZonesTable on upItem.zoneID equals zonesTable.ZoneID into zt
+            //            from ztItem in zt.DefaultIfEmpty()
+            //            join subDepartmentTable in _context.SubDepartmentsTable on ztItem.SubDepartmentID equals subDepartmentTable.SubDepartmentID into sdt
+            //            from sdtItem in sdt.DefaultIfEmpty()
+            //            where accessGroups.AccessGroupName == AccessGroupName && sdtItem.SubDepartmentID == subDepartmentID
+            //            select new UserProfileDTO()
+            //            {
+            //                UserID = upItem.UserID,
+            //                FullName = upItem.FullName,
+            //                Email = upItem.Email,
+            //                PhoneNumber = upItem.PhoneNumber,
+            //                Directorate = upItem.Directorate,
+            //                zoneName = ztItem.ZoneName,
+            //                MapObjectID = ztItem.MapObjectID,
+            //                SubDepartmentID = ztItem.SubDepartmentID,
+            //                zoneID = ztItem.ZoneID,
+            //                SubDepartmentName = sdtItem.SubDepartmentName,
+            //                // SubDepartmentID = upItem.SubDepartmentID,
+            //            }
+            //        ).ToListAsync();
 
-                    // Assuming zoneAdminUsers is a List<UserProfileDTO>
-                    Dictionary<string, bool> seenCombinations = new Dictionary<string, bool>();
+            //        // Assuming zoneAdminUsers is a List<UserProfileDTO>
+            //        Dictionary<string, bool> seenCombinations = new Dictionary<string, bool>();
 
-                    //Removes duplicates
-                    List<UserProfileDTO> tempList = zoneAdminUsers;
-                    List<UserProfileDTO> filteredList = tempList
-                        .Where(item =>
-                        {
-                            string key = $"{item.SubDepartmentID}-{item.zoneID}-{item.Email}";
+            //        //Removes duplicates
+            //        List<UserProfileDTO> tempList = zoneAdminUsers;
+            //        List<UserProfileDTO> filteredList = tempList
+            //            .Where(item =>
+            //            {
+            //                string key = $"{item.SubDepartmentID}-{item.zoneID}-{item.Email}";
 
-                            if (!seenCombinations.ContainsKey(key))
-                            {
-                                seenCombinations[key] = true;
-                                return true;
-                            }
+            //                if (!seenCombinations.ContainsKey(key))
+            //                {
+            //                    seenCombinations[key] = true;
+            //                    return true;
+            //                }
 
-                            return false;
-                        })
-                        .ToList();
+            //                return false;
+            //            })
+            //            .ToList();
 
-                    zoneAdminUsers = filteredList;
+            //        zoneAdminUsers = filteredList;
 
-                    if (mapLayerID == null)
-                    {
-                        //do noting - subdepartments here should be configured with a mapLayerID.
-                    }
-                    else if (mapLayerID == -1) //// Run code if the department has only a single region, i.e., the entire city is the region. This section can be improved
-                    {
-                        //Here I've replaced query with BufferedGeometry
-                        // Bulk Water
-                        var bulkWaterExclusions = await InterceptInfrustructureChecker(subDepartmentName, "Bulk Water", query, 1022, infrustructureURL + "/", new List<int> { 70, 134, 68, 55, 56, 69, 75, 130, 54, 76, 77, 135, 71, 136, 58, 53, 60, 131, 138, 61, 73, 137, 51, 63, 50, 62, 132, 133, 78, 52, 57, 59 });
+            //        if (mapLayerID == null)
+            //        {
+            //            //do noting - subdepartments here should be configured with a mapLayerID.
+            //        }
+            //        else if (mapLayerID == -1) //// Run code if the department has only a single region, i.e., the entire city is the region. This section can be improved
+            //        {
+            //            //Here I've replaced query with BufferedGeometry
+            //            // Bulk Water
+            //            var bulkWaterExclusions = await InterceptInfrustructureChecker(subDepartmentName, "Bulk Water", query, 1022, infrustructureURL + "/", new List<int> { 70, 134, 68, 55, 56, 69, 75, 130, 54, 76, 77, 135, 71, 136, 58, 53, 60, 131, 138, 61, 73, 137, 51, 63, 50, 62, 132, 133, 78, 52, 57, 59 });
 
-                        // Join lists
-                        exclusionsList.AddRange(bulkWaterExclusions);
+            //            // Join lists
+            //            exclusionsList.AddRange(bulkWaterExclusions);
 
-                        // Effluent
-                        var effluentExclusions = await InterceptInfrustructureChecker(subDepartmentName, "Water Demand Management", query, 1023, infrustructureURL + "/", new List<int> { 100, 101, 102, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114 });
+            //            // Effluent
+            //            var effluentExclusions = await InterceptInfrustructureChecker(subDepartmentName, "Water Demand Management", query, 1023, infrustructureURL + "/", new List<int> { 100, 101, 102, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114 });
 
-                        // Join lists
-                        exclusionsList.AddRange(effluentExclusions);
+            //            // Join lists
+            //            exclusionsList.AddRange(effluentExclusions);
 
-                        // Send to ALL Admin users in this subdepartment unless excluded as per the lists above.
-                        distributionList.AddRange(zoneAdminUsers);
+            //            // Send to ALL Admin users in this subdepartment unless excluded as per the lists above.
+            //            distributionList.AddRange(zoneAdminUsers);
 
-                        // Removes all the excluded departments
-                        distributionList = distributionList.Where(item => !exclusionsList.Contains(item.SubDepartmentID ?? 999999999)).ToList(); //Fix this code. I added 999999999 as a patch to resolve the null situation.
-                    }
-                    else if (mapLayerID > -1)
-                    {
+            //            // Removes all the excluded departments
+            //            distributionList = distributionList.Where(item => !exclusionsList.Contains(item.SubDepartmentID ?? 999999999)).ToList(); //Fix this code. I added 999999999 as a patch to resolve the null situation.
+            //        }
+            //        else if (mapLayerID > -1)
+            //        {
 
-                        var queryZones = new Dictionary<string, string>();
+            //            var queryZones = new Dictionary<string, string>();
 
 
-                        //query.Add("where", "OBJECTID = 1"); //Used this for testing
-                        queryZones.Add("f", "json");
-                        queryZones.Add("geometry", queries); /* Your drawn polygon geometry in JSON format */
-                        queryZones.Add("geometryType", "esriGeometryPolygon");
-                        //queryZones.Add("inSR", "3857");
-                        queryZones.Add("spatialRel", "esriSpatialRelIntersects"); // This specifies that you want to check for intersections
-                        queryZones.Add("outFields", "*");// "*" means you want to retrieve all fields; you can specify specific fields if needed
-                        queryZones.Add("returnGeometry", "true");// Set to true if you want to get the actual geometries of the features
+            //            //query.Add("where", "OBJECTID = 1"); //Used this for testing
+            //            queryZones.Add("f", "json");
+            //            queryZones.Add("geometry", queries); /* Your drawn polygon geometry in JSON format */
+            //            queryZones.Add("geometryType", "esriGeometryPolygon");
+            //            //queryZones.Add("inSR", "3857");
+            //            queryZones.Add("spatialRel", "esriSpatialRelIntersects"); // This specifies that you want to check for intersections
+            //            queryZones.Add("outFields", "*");// "*" means you want to retrieve all fields; you can specify specific fields if needed
+            //            queryZones.Add("returnGeometry", "true");// Set to true if you want to get the actual geometries of the features
 
-                        HttpClient client2 = new HttpClient();
+            //            HttpClient client2 = new HttpClient();
 
-                        // Encode the payload for the POST request
-                        var encodedPayload = new FormUrlEncodedContent(queryZones); //Can use the same query because it's just being used on different layers (zone layers as opposed to infrustructure layers).
+            //            // Encode the payload for the POST request
+            //            var encodedPayload = new FormUrlEncodedContent(queryZones); //Can use the same query because it's just being used on different layers (zone layers as opposed to infrustructure layers).
 
-                        // Set up the layer in the MapServer to query against
-                        var mapServerLayerUrl = zonesURL + "/" + mapLayerID + "/query";
+            //            // Set up the layer in the MapServer to query against
+            //            var mapServerLayerUrl = zonesURL + "/" + mapLayerID + "/query";
 
-                        try
-                        {
-                            // Make the POST request
-                            var response = client2.PostAsync(mapServerLayerUrl, encodedPayload).Result;
-                            response.EnsureSuccessStatusCode();  // This will throw an exception for non-success status codes
+            //            try
+            //            {
+            //                // Make the POST request
+            //                var response = client2.PostAsync(mapServerLayerUrl, encodedPayload).Result;
+            //                response.EnsureSuccessStatusCode();  // This will throw an exception for non-success status codes
 
-                            var responseString2 = response.Content.ReadAsStringAsync().Result;
+            //                var responseString2 = response.Content.ReadAsStringAsync().Result;
 
-                            // Parse the response JSON
-                            var responseObject2 = JsonConvert.DeserializeObject<Root>(responseString2);
+            //                // Parse the response JSON
+            //                var responseObject2 = JsonConvert.DeserializeObject<Root>(responseString2);
 
-                            if (responseObject2.features != null && responseObject2.features.Any())
-                            {
+            //                if (responseObject2.features != null && responseObject2.features.Any())
+            //                {
 
-                                var features = responseObject2.features;
+            //                    var features = responseObject2.features;
 
-                                foreach (var feature in features)
-                                {
+            //                    foreach (var feature in features)
+            //                    {
 
-                                    var objectID = feature.attributes.OBJECTID;
+            //                        var objectID = feature.attributes.OBJECTID;
 
-                                    var filteredList2 = zoneAdminUsers.Where(obj => obj.MapObjectID == objectID && obj.SubDepartmentID == subDepartmentID).ToList();
+            //                        var filteredList2 = zoneAdminUsers.Where(obj => obj.MapObjectID == objectID && obj.SubDepartmentID == subDepartmentID).ToList();
 
-                                    distributionList.AddRange(filteredList2);
+            //                        distributionList.AddRange(filteredList2);
 
-                                    // Removes all the excluded departments
-                                    distributionList = distributionList.Where(item => !exclusionsList.Contains(item.SubDepartmentID ?? 999999999)).ToList();
-                                }
+            //                        // Removes all the excluded departments
+            //                        distributionList = distributionList.Where(item => !exclusionsList.Contains(item.SubDepartmentID ?? 999999999)).ToList();
+            //                    }
 
-                            }
-                            else
-                            {
+            //                }
+            //                else
+            //                {
 
-                            }
+            //                }
 
-                        }
-                        catch (HttpRequestException ex)
-                        {
-                            Console.WriteLine($"Request failed: {ex.Message}");
-                        }
+            //            }
+            //            catch (HttpRequestException ex)
+            //            {
+            //                Console.WriteLine($"Request failed: {ex.Message}");
+            //            }
 
-                    }
-                    else
-                    {
-                        // Handle unexpected cases
-                    }
+            //        }
+            //        else
+            //        {
+            //            // Handle unexpected cases
+            //        }
 
-                    Console.WriteLine(distributionList);
-                }
-                else
-                {
-                    // Do not distribute to this department
-                }
-            }
+            //        Console.WriteLine(distributionList);
+            //    }
+                //else
+                //{
+                //    // Do not distribute to this department
+                //}
+            //}
 
             // Continue with the rest of the code...
 
