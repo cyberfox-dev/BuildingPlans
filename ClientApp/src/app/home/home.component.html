@@ -50,8 +50,8 @@
   <!-- Service Information Kyle 31/01/24-->
   <button mat-raised-button color="createWayleave" class="animationSlideDown" [matMenuTriggerFor]="menu2">Create New Application</button>
   <mat-menu #menu2="matMenu" xPosition="after">
-    <button mat-menu-item (click)="GoToBuildingApplication(false)">Land Survey Application</button>
-    <button mat-menu-item (click)="GoToBuildingApplication(false)">Town Planning Application</button>
+    <button mat-menu-item (click)="GoToBuildingApplication(false,false)">Land Survey Application</button>
+    <button mat-menu-item (click)="GoToBuildingApplication(false,false)">Town Planning Application</button>
     <button mat-menu-item (click)="GoToBuildingApplication(false,false)">Building Plan Application</button>
     <button mat-menu-item (click)="goToDemolition(false)">Demolition Application</button>
     <button mat-menu-item (click)="goToSignageApplication()">Signage Application</button>
@@ -644,7 +644,7 @@
             </ng-container>
 
             <!--All Application-->
-            <ng-container *ngIf="selectedTabIndex === 7">
+            <ng-container *ngIf="selectedTabIndex === 8">
               <table mat-table [dataSource]="dataSourceSA" class="mat-elevation-z8 fade-in-bottom">
 
                 <ng-container matColumnDef="lSNumber">
@@ -715,7 +715,7 @@
             </ng-container>
 
 
-            <ng-container *ngIf="selectedTabIndex === 8">
+            <ng-container *ngIf="selectedTabIndex === 9">
              <app-create-new-application style="width:100%;"></app-create-new-application>
             </ng-container>
 

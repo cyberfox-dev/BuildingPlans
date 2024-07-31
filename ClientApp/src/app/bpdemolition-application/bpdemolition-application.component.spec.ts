@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DemolitionApplicationComponent } from './demolition-application.component';
+import { BPDemolitionApplicationComponent } from './bpdemolition-application.component';
 
 describe('DemolitionApplicationComponent', () => {
-  let component: DemolitionApplicationComponent;
-  let fixture: ComponentFixture<DemolitionApplicationComponent>;
+  let component: BPDemolitionApplicationComponent;
+  let fixture: ComponentFixture<BPDemolitionApplicationComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DemolitionApplicationComponent ]
+      declarations: [ BPDemolitionApplicationComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(DemolitionApplicationComponent);
+    fixture = TestBed.createComponent(BPDemolitionApplicationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
