@@ -50,14 +50,15 @@
   <!-- Service Information Kyle 31/01/24-->
   <button mat-raised-button color="createWayleave" class="animationSlideDown" [matMenuTriggerFor]="menu2">Create New Application</button>
   <mat-menu #menu2="matMenu" xPosition="after">
-    <button mat-menu-item (click)="GoToBuildingApplication(false)">Building Plan Application</button>
+    <button mat-menu-item (click)="GoToBuildingApplication(false,false)">Building Plan Application</button>
     <button mat-menu-item (click)="goToDemolition(false)">Demolition Application</button>
     <button mat-menu-item (click)="goToSignageApplication()">Signage Application</button>
     <button mat-menu-item (click)="goToBannerApplication(false)">Banner/Poster Application</button>
     <button mat-menu-item (click)="goToBannerApplication(true)">Flag/Pole/Headline Application</button>
     <button mat-menu-item (click)="openArchiveOption()">Archive</button>
   </mat-menu>
-  <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="getAllFunctionalAreas(complaint)">Create New Complaint</button>
+  <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="GoToBuildingApplication(false,true)">Create Wayleave Application</button>
+  
   <!-- Service Information Kyle 31/01/24-->
 </div>
 
@@ -84,22 +85,23 @@
           <button mat-button type="button" (click)="drawer.toggle()" matTooltip="Filter Applications" color="filter" aria-label="Example icon-button with a menu">
             <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/filter.svg" class="icon">
           </button>
-          <button mat-button [matMenuTriggerFor]="menu" matTooltip="Filter Applications" color="filter" aria-label="Example icon-button with a menu" (click)="onFilterButtonClick()" *ngIf="FilterBtn">
+          <!--<button mat-button [matMenuTriggerFor]="menu" matTooltip="Filter Applications" color="filter" aria-label="Example icon-button with a menu" (click)="onFilterButtonClick()" *ngIf="FilterBtn">
             <img src="assets/fontawesome-free-6.4.2-web/svgs/solid/filter.svg" class="icon">
-          </button>
+          </button>-->
           <mat-menu #menu="matMenu" yPosition="below">
             <button mat-menu-item (click)=" onFilterBPApplications('Building Plan')"><span>Building Plan Application</span></button>
             <button mat-menu-item (click)=" onFilterBPApplications('Demolition')">Demolition Application</button>
             <button mat-menu-item (click)=" onFilterBPApplications('Signage')">Signage Application</button>
             <button mat-menu-item (click)=" onFilterBPApplications('Banner')">Banner/Poster Application</button>
             <button mat-menu-item (click)=" onFilterBPApplications('Flag')">Flag/Pole/Headline Application</button>
+            <button mat-menu-item (click)=" onFilterBPApplications('Wayleave')">Wayleave</button>
             <button mat-menu-item>Archive</button>
             <!--<button mat-menu-item (click)="onFilterApplicationsFprMyApplications()">
-              <span>My Applications</span>
-            </button>-->
+    <span>My Applications</span>
+  </button>-->
             <!--<button mat-menu-item (click)="onFilterAPplicationsForRecentApplications()">
-              <span>All Projects</span>
-            </button>-->
+    <span>All Projects</span>
+  </button>-->
           </mat-menu>
           <mat-form-field appearance="outline">
             <mat-label>Search</mat-label>
@@ -130,7 +132,7 @@
               <mat-tab label="Flag/Pole/Headline Application"></mat-tab>
               <mat-tab label="Archive Application"></mat-tab>
               <mat-tab label="All Applications"></mat-tab>
-
+              <mat-tab label="Wayleave"></mat-tab>
             </mat-tab-group>
           </mat-drawer>
 
@@ -207,8 +209,8 @@
                   <td mat-cell *matCellDef="let element">  </td>
                 </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns:displayedColumns;"></tr>
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsBP"></tr>
+                <tr mat-row *matRowDef="let row; columns:displayedColumnsBP;"></tr>
 
               </table>
 
@@ -278,8 +280,8 @@
                   <td mat-cell *matCellDef="let element">  </td>
                 </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns:displayedColumns;"></tr>
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsBP"></tr>
+                <tr mat-row *matRowDef="let row; columns:displayedColumnsBP;"></tr>
 
               </table>
 
@@ -349,8 +351,8 @@
                   <td mat-cell *matCellDef="let element">  </td>
                 </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsBP"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsBP;"></tr>
 
               </table>
             </ng-container>
@@ -418,8 +420,8 @@
                   <td mat-cell *matCellDef="let element">  </td>
                 </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsBP"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsBP;"></tr>
 
               </table>
 
@@ -489,8 +491,8 @@
                   <td mat-cell *matCellDef="let element">  </td>
                 </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsBP"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsBP;"></tr>
 
               </table>
 
@@ -561,8 +563,8 @@
                   <td mat-cell *matCellDef="let element">  </td>
                 </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsBP"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsBP;"></tr>
 
               </table>
 
@@ -632,14 +634,16 @@
                   <td mat-cell *matCellDef="let element">  </td>
                 </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsBP"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsBP;"></tr>
 
               </table>
 
             </ng-container>
 
-
+            <ng-container *ngIf="selectedTabIndex === 8">
+             <app-create-new-application style="width:100%;"></app-create-new-application>
+            </ng-container>
 
 
           </div>
@@ -675,7 +679,7 @@
 
           <div class="cont2">
             <button mat-raised-button color="client" [class.matactive]="option ==='internal'" (click)="cardchange('internal')" *ngIf="ActingAsInternal == false"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon"> Yourself</button>
-            <button mat-raised-button color="client" [class.matactive]="option ==='external'" (click)="cardchange('external')" *ngIf="ActingAsInternal"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon"> Yourself External</button>
+            <!--<button mat-raised-button color="createWayleave" [class.matactive]="option ==='external'" (click)="cardchange('external')" *ngIf="ActingAsInternal"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon"> Yourself External</button>-->
             <button mat-raised-button color="client" [class.matactive]="option ==='client'" (click)="cardchange('client')"> <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/user-solid.svg" class="icon"> Client</button>
           </div>
         </div>
@@ -684,7 +688,7 @@
     </div>
     <div class="modal-footer">
       <!-- Service Information Kyle 31/01/24-->
-      <button type="button" class="btn btn-outline-success " *ngIf="gotDrafts == true && isPlanning == false " (click)="openDrafts(drafts)">View Draft Wayleaves</button>
+      <!--<button type="button" class="btn btn-outline-success " *ngIf="gotDrafts == true && isPlanning == false " (click)="openDrafts(drafts)">View Draft Wayleaves</button>-->
       <!-- Service Information Kyle 31/01/24-->
       <button type="button" class="btn btn-outline-success" (click)="sendOption();modal.dismiss('Cross click')">Continue</button>
 
@@ -1874,7 +1878,7 @@
       <form>
         <div class="container-fluid">
           <div class="cont2">
-            <button mat-raised-button color="client" (click)="GoToBuildingApplication(true);modal.dismiss('Cross click')"> Building Plan Archive Application</button>
+            <button mat-raised-button color="client" (click)="GoToBuildingApplication(true,false);modal.dismiss('Cross click')"> Building Plan Archive Application</button>
             <button mat-raised-button color="client" (click)="goToDemolition(true);modal.dismiss('Cross click')"> Demolition Archive Application</button>
           </div>
         </div>

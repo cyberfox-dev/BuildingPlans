@@ -852,5 +852,70 @@ namespace BuildingPlans.Controllers
 
             }
         }
+
+        [HttpPost("CheckForExistingUserDepartmentLink")]
+        public async Task<object> CheckForExistingUserDepartmentLink([FromBody] UserProfileDTO model)
+        {
+            try
+            {
+                if(model.UserID == null || model.DepartmentName == null || model.SubDepartmentName == null)
+                {
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, "Parameters are missing", null));
+                }
+                else
+                {
+                    var result = await (from users in _context.UserProfilesTable
+                                        where users.UserID == model.UserID && users.DepartmentName == model.DepartmentName && users.SubDepartmentName == model.SubDepartmentName
+                                        select new UserProfileDTO()
+                                        {
+                                            UserProfileID = users.UserProfileID,
+                                            UserID = users.UserID,
+                                            Name = users.Name,
+                                            FullName = users.FullName,
+                                            Surname = users.Surname,
+                                            Email = users.Email,
+                                            AlternativeEmail = users.AlternativeEmail,
+                                            isInternal = users.isInternal,
+                                            isDefault = users.isDefault,
+                                            PhoneNumber = users.PhoneNumber,
+                                            AlternativePhoneNumber = users.AlternativePhoneNumber,
+                                            BP_Number = users.BP_Number,
+                                            CompanyName = users.CompanyName,
+                                            CompanyRegNo = users.CompanyRegNo,
+                                            PhyscialAddress = users.PhyscialAddress,
+                                            CopyOfID = users.CopyOfID,
+                                            IdNumber = users.IdNumber,
+                                            VatNumber = users.VatNumber,
+                                            ICASALicense = users.ICASALicense,
+                                            Directorate = users.Directorate,
+                                            DepartmentID = users.DepartmentID,
+                                            DepartmentName = users.DepartmentName,
+                                            Branch = users.Branch,
+                                            CostCenterNumber = users.CostCenterNumber,
+                                            CostCenterOwner = users.CostCenterOwner,
+                                            depConfirmation = users.depConfirmation,
+                                            zoneID = users.zoneID,
+                                            zoneName = users.zoneName,
+                                            refNumber = users.refNumber,
+                                            companyType = users.companyType,
+                                            SubDepartmentID = users.SubDepartmentID,
+                                            SubDepartmentName = users.SubDepartmentName,
+                                            isDepartmentAdmin = users.isDepartmentAdmin,
+                                            isZoneAdmin = users.isZoneAdmin,
+                                            DateCreated = users.DateCreated,
+                                            DateUpdated = users.DateUpdated,
+                                            CreatedById = users.CreatedById,
+                                            isArchitect = users.isArchitect,
+                                        }).ToListAsync();
+
+                    return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got All Profiles For User in Department", result));
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new ResponseModel(Enums.ResponseCode.Error, ex.Message, null));
+
+            }
+        }
     }
 }

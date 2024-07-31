@@ -149,7 +149,7 @@
 
 
 .mat-projectSize {
-  background-color: #005870;
+  background-color: #b87700;
   margin-top: 10px;
   margin-bottom: 10px;
   color: white;
@@ -262,7 +262,7 @@ form {
   top: 0;
   z-index: 1000; /* Adjust the z-index as needed */
   /* Add any other styles you want for the sticky button */
-  background-color: #ffefcb;
+  background-color: #b87700;
   color: #d78900de;
   height: 51px;
   /* margin-top: -11px; */
@@ -483,14 +483,14 @@ table {
   --box-shadow-color: rgba(220, 233, 255, 0.48);
 }
 
-.card {
+/*.card {
   box-shadow: 0 4px 8px 0 rgb(0 0 0 / 13%), 0 6px 20px 0 rgb(0 0 0 / 0%);
   margin: 20px;
   border-color: #f1f1f1;
   background-color: #ccdee2;
   margin-bottom: 50px;
   margin-top: 50px;
-}
+}*/
 
 
 .active {
@@ -616,7 +616,7 @@ h3 {
   border-color: #00cdff;
   text-align: center;
   font-family: 'Nunito', sans-serif;
-  border-bottom: 1px solid #0487a7;
+  
   line-height: 0.1em;
   margin: 0 auto;
   padding-top: 50px;
@@ -625,7 +625,7 @@ h3 {
 }
 
   h3 span {
-    background-color: #ccdee2;
+    /*background-color: #ccdee2;*/
     padding: 0 10px;
     color: #343a40;
     font-size: 23px;
@@ -776,4 +776,25 @@ mat-button-toggle {
 
 .projectSizeSelection{
     width:100%;
+}
+:host ::ng-deep.mat-horizontal-stepper.ng-tns-c133-20.mat-stepper-horizontal.mat-stepper-label-position-end.ng-star-inserted {
+  background: #323e4e !important;
+}
+
+.mat-stepper-horizontal,.mat-stepper-vertical {
+  background: #323e4e !important;
+}
+.alert,.alert-warning{
+  background: #425166;
+  border-color: #425166;
+}
+
+ .mat-list-item  {
+   display:contents !important; 
+  /*flex-direction: row;
+  align-items: center;*/
+  box-sizing: border-box;
+  padding: 0 16px;
+  position: relative;
+  height: inherit;
 }

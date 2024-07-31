@@ -47,3 +47,12 @@ h3 {
   border-color: #f1f1f1;
   background-color: #c7f4ff;
 }
+.alert, .alert-warning {
+  background: #425166 !important;
+  border-color: #425166 !important;
+}
+
+.input{
+    background:white!important;
+}
+

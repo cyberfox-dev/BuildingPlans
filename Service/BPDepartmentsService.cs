@@ -144,11 +144,11 @@ namespace BuildingPlans.Service
         }
 
 
-        public async Task<List<DepartmentsDTO>> GetDepartmentByDepartmentName(string departmentName)
+        public async Task<List<DepartmentsDTO>> GetDepartmentByDepartmentName(string departmentName, string functionalArea)
         {
             return await (
                 from Departments in _context.BPDepartments
-                where Departments.DepartmentName == departmentName && Departments.isActive == true
+                where Departments.DepartmentName == departmentName && Departments.FunctionalArea == functionalArea &&  Departments.isActive == true
                 select new DepartmentsDTO()
                 {
                     DepartmentID = Departments.DepartmentID,

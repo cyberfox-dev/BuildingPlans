@@ -12,7 +12,7 @@ namespace BuildingPlans.IServices
         Task<List<DepartmentsDTO>>GetAllDepartments();
         Task<List<DepartmentsDTO>> GetAllDepartmentsForFunctionalArea(string functionalArea);
 
-        Task<List<DepartmentsDTO>> GetDepartmentByDepartmentName(string departmentName);
+        Task<List<DepartmentsDTO>> GetDepartmentByDepartmentName(string departmentName ,string functionalArea);
         //The Wayleave and BuildingPlans app have the same entity, so I DIDN'T create a new Departments binding model and DTO
     }
 }

@@ -1,17 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { BPSignageApplicationComponent } from './bpsignage-application.component';
 
 
 describe('SignageApplicationComponent', () => {
-  let component: SignageApplicationComponent;
-  let fixture: ComponentFixture<SignageApplicationComponent>;
+  let component: BPSignageApplicationComponent;
+  let fixture: ComponentFixture<BPSignageApplicationComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SignageApplicationComponent ]
+      declarations: [BPSignageApplicationComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SignageApplicationComponent);
+    fixture = TestBed.createComponent(BPSignageApplicationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

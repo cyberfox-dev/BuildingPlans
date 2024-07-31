@@ -205,4 +205,14 @@ export class UserProfileService {
 
     return this.httpClient.post(this.baseURL + "GetUsersForDepartmentAndSubDepartment", body);
   }
+
+  public checkForExistingUserDepartmentLink(userID: string | null, departmentName: string | null, subDepartmentName: string | null) {
+    const body = {
+      UserID: userID,
+      DepartmentName: departmentName,
+      SubDepartmentName: subDepartmentName
+    }
+
+    return this.httpClient.post(this.baseURL + "CheckForExistingUserDepartmentLink", body);
+  }
 }

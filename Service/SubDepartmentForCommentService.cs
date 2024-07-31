@@ -80,6 +80,10 @@ namespace BuildingPlans.Service
                 {
                     tempSubDepForCommentTable.ZoneName = zoneName;
                 }
+                if(commentStatus != null)
+                {
+                    tempSubDepForCommentTable.CommentStatus = commentStatus;
+                }
 
                 tempSubDepForCommentTable.isAwaitingClarity = false;
                 tempSubDepForCommentTable.IsRefered = false;
@@ -395,7 +399,7 @@ namespace BuildingPlans.Service
         {
             return await (
                from subDepartmentForComment in _context.SubDepartmentForComment
-               where subDepartmentForComment.ApplicationID == ApplicationID && subDepartmentForComment.SubDepartmentID == SubDepartmentID && subDepartmentForComment.ZoneID == ZoneID && subDepartmentForComment.isActive == true
+               where subDepartmentForComment.ApplicationID == ApplicationID && subDepartmentForComment.SubDepartmentID == SubDepartmentID && subDepartmentForComment.isActive == true
                select new SubDepartmentForCommentDTO()
                {
                    SubDepartmentForCommentID = subDepartmentForComment.SubDepartmentForCommentID,

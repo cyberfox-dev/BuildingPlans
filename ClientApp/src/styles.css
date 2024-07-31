@@ -428,3 +428,18 @@ tr:hover {
 .mat-paginator-container {
   background: #323e4e !important;
 }
+.card {
+  box-shadow: 0 4px 8px 0 #262626, 0 6px 20px 0 #71717100;
+  margin: 20px;
+  border-color: #0f8187;
+  background-color: #0f8187;
+  margin-bottom: 50px;
+  margin-top: 50px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mat-expansion-panel {
+
+  background: #425166;
+}
