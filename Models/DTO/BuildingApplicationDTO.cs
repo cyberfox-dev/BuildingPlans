@@ -46,5 +46,16 @@ namespace BuildingPlans.Models.DTO
         public int? StageNumber { get; set; }
         public bool? OmnibusServitude { get; set; }
         public string? BPApplicationID { get; set; }
+        public string? BPApplicationType { get; set; }
+        public string? ApplicationType { get; set; }
+        public bool? isCombinedApplication { get; set; }
+        public string? NameOfCompany { get; set; }
+        public string? RegNoOfCompany { get; set; }
+        public string? NameOfAgent { get; set; }
+        public string? AgentCellNo { get; set; }
+        public string? AgentEmail { get; set; }
+        public string? AgentPostalAddress { get; set; }
+        public string? DescriptionOfProject { get; set; }
+        public string? SupportingDocuments { get; set; }
     }
 }
