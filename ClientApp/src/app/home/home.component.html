@@ -50,16 +50,16 @@
   <!-- Service Information Kyle 31/01/24-->
   <button mat-raised-button color="createWayleave" class="animationSlideDown" [matMenuTriggerFor]="menu2">Create New Application</button>
   <mat-menu #menu2="matMenu" xPosition="after">
-    <button mat-menu-item (click)="GoToBuildingApplication(false,'ls')">Pre-Submission Application</button>
-    <button mat-menu-item (click)="GoToBuildingApplication(false,'tp')">Town Planning Application</button>
-    <button mat-menu-item (click)="GoToBuildingApplication(false,'bp')">Building Plan Application</button>
+    <button mat-menu-item (click)="GoToBuildingApplication(false,'ls',false)">Pre-Submission Application</button>
+    <button mat-menu-item (click)="GoToBuildingApplication(false,'tp',false)">Town Planning Application</button>
+    <button mat-menu-item (click)="GoToBuildingApplication(false,'bp',false)">Building Plan Application</button>
     <button mat-menu-item (click)="goToDemolition(false)">Demolition Application</button>
     <button mat-menu-item (click)="goToSignageApplication()">Signage Application</button>
     <button mat-menu-item (click)="goToBannerApplication(false)">Banner/Poster Application</button>
     <button mat-menu-item (click)="goToBannerApplication(true)">Flag/Pole/Headline Application</button>
     <button mat-menu-item (click)="openArchiveOption()">Archive</button>
   </mat-menu>
-  <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="GoToBuildingApplication(false,true)">Create Wayleave Application</button>
+  <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="GoToBuildingApplication(false,null,true)">Create Wayleave Application</button>
   
   <!-- Service Information Kyle 31/01/24-->
 </div>
@@ -2024,7 +2024,7 @@
       <form>
         <div class="container-fluid">
           <div class="cont2">
-            <button mat-raised-button color="client" (click)="GoToBuildingApplication(true,null);modal.dismiss('Cross click')"> Building Plan Archive Application</button>
+            <button mat-raised-button color="client" (click)="GoToBuildingApplication(true,null,false);modal.dismiss('Cross click')"> Building Plan Archive Application</button>
             <button mat-raised-button color="client" (click)="goToDemolition(true);modal.dismiss('Cross click')"> Demolition Archive Application</button>
           </div>
         </div>

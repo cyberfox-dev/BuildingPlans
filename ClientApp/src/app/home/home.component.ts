@@ -444,7 +444,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   displayedColumnsArchitects: string[] = ['fullName', 'actions'];
 
 
-  displayedColumns: string[] = ['ProjectNumber', 'FullName', 'Stage', 'Status', 'TypeOfApplication', 'AplicationAge', 'StageAge', 'DateCreated', 'actions'];
+  displayedColumns: string[] = ['lSNumber', 'ownerName', 'propertyAddress', 'ERFNumber', 'stage', 'status', 'stageAge', 'planAge', 'dateCreated', 'actions'];
   displayedColumnsBP: string[] = ['lSNumber', 'ownerName', 'propertyAddress', 'ERFNumber', 'stage', 'status', 'stageAge', 'planAge',  'dateCreated', 'actions'];
   displayedColumnsSA: string[] = ['lSNumber', 'ownerName', 'propertyAddress', 'ERFNumber', 'stage', 'status', 'stageAge', 'planAge',  'dateCreated',  'actions'];
   dataSourceBP = this.ApplicationsBP;
@@ -6995,7 +6995,7 @@ this.subscriptions.push(subscription);
   //}
 
   ApplicationBeginCreatedType: string;
-  GoToBuildingApplication(isPlanArchive, CreateApplicationType: any) {
+  GoToBuildingApplication(isPlanArchive, CreateApplicationType: any,isWayleave) {
     if (CreateApplicationType == "ls") {
       this.ApplicationBeginCreatedType = "Land Survey";
     }
@@ -7008,6 +7008,7 @@ this.subscriptions.push(subscription);
     else {
 
     }
+    this.isWayleave = isWayleave;
     debugger;
     this.sharedService.setApplicationBeingCreatedType(this.ApplicationBeginCreatedType);
     this.isArchivePlan = isPlanArchive;
@@ -7061,6 +7062,7 @@ this.subscriptions.push(subscription);
     })
   }
 
+  isWayleave: boolean;
     onCreateBuildingApplication() {
     
     /* NEEDED FOR FILE UPLOAD TO WORK CORRECTLY*/
