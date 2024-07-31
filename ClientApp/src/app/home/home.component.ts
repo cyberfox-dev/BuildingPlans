@@ -331,6 +331,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   ArchitectsList: ArchitectsList[] = [];
   ApplicationsBP: ApplicationsListBP[] = [];
   AllBPApplications: ApplicationsListBP[] = [];
+  AllApplications: ApplicationsListBP[] = [];
   DemolitionsList: ApplicationsListBP[] = [];
   SignageList: ApplicationsListBP[] = [];
   BannerList: ApplicationsListBP[] = [];
@@ -735,16 +736,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       // #endregion
 
 
-      // #region escalation Sindiswa 30 January 2024 - EMB "department" neh?
-
-      if (this.CurrentUserProfile[0].directorate == 'EMB' || this.CurrentUserProfile[0].departmentName == 'EMB' || this.CurrentUserProfile[0].subDepartmentName == 'EMB'
-        || this.CurrentUserProfile[0].departmentID == 28 || this.CurrentUserProfile[0].subDepartmentID == 1021) {
-
-        this.sharedService.setIsEMBUser(true);
-      }
-      else {
-        this.sharedService.setIsEMBUser(false);
-      }
+      // #region escalation Sindiswa 30 Janu
       // #endregion
       //Audit Trail Kyle
       this.sharedService.isViewReport = false; 
@@ -783,6 +775,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
       this.stringifiedDataRoles = JSON.parse(JSON.stringify(localStorage.getItem('AllCurrentUserRoles')));
       this.AllCurrentUserRoles = JSON.parse(this.stringifiedDataRoles);
+
+      this.GetAllApplications();
       this.onCheckAllRolesForUser();
       this.getAllClientsForArchitect();
       this.setSelectedVal();
@@ -1120,7 +1114,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           const current = data.dateSet[i];
           tempZoneList.zoneID = current.zoneID;
           tempZoneList.zoneName = current.zoneName;
-          tempZoneList.subDepartmentID = current.subDepartmentID;
+/*          tempZoneList.subDepartmentID = current.subDepartmentID;*/
           tempZoneList.departmentID = current.departmentID;
           tempZoneList.zoneForCommentID = current.zoneForCommentID;
           tempZoneList.subDepartmentName = current.subDepartmentName;
@@ -2461,7 +2455,7 @@ this.subscriptions.push(subscription);
   select = '';
   cardFilters: boolean = false;
 
-  filterForMyDep() {
+ /* filterForMyDep() {
     this.isTableLoading = true;
 
     this.onFilterButtonClick();
@@ -2504,7 +2498,7 @@ this.subscriptions.push(subscription);
           tempApplicationList.DateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf('T'));
           tempApplicationListShared.CurrentStageStartDate = current.currentStageStartDate.substring(0, current.dateCreated.indexOf('T'));
 
-          /*cal application age*/
+          *//*cal application age*//*
 
           const currentDate = new Date();
           const dateCreated = new Date(tempApplicationList.DateCreated);
@@ -2512,7 +2506,7 @@ this.subscriptions.push(subscription);
           const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
           tempApplicationList.TestApplicationAge = daysDiff;
 
-          /*cal stage age*/
+          *//*cal stage age*//*
           const stageDateCreated = new Date(tempApplicationListShared.CurrentStageStartDate);
           const stageDate = currentDate.getTime() - stageDateCreated.getTime();
           const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
@@ -2528,9 +2522,9 @@ this.subscriptions.push(subscription);
           }
 
 
-          /*            do {
+          *//*            do {
                         tempApplicationList.TestApplicationStageAge = Math.floor(Math.random() * 30) + 1;
-                      } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*/
+                      } while (tempApplicationList.TestApplicationStageAge > tempApplicationList.TestApplicationAge);*//*
           //save here to send to the shared
 
           //tempApplicationListShared.applicationID = current. ;
@@ -2586,7 +2580,7 @@ this.subscriptions.push(subscription);
           this.applicationDataForView.push(tempApplicationListShared);
           console.log("this.applicationDataForViewthis.applicationDataForViewthis.applicationDataForView", this.applicationDataForView);
           this.Applications.push(tempApplicationList);
-          /*Cehcing the escaltion date*/
+          *//*Cehcing the escaltion date*//*
           this.configService.getConfigsByConfigName("EscalationDate").subscribe((data: any) => {
 
             if (data.responseCode == 1) {
@@ -2610,7 +2604,7 @@ this.subscriptions.push(subscription);
         }
         this.changeDetectorRef.detectChanges();
         this.dataSource = this.Applications.filter(df => df.DateCreated);
-        /*this.applicationsTable?.renderRows();*/
+        *//*this.applicationsTable?.renderRows();*//*
         //for card filters
 
         this.recentUnpaidCount();
@@ -2626,7 +2620,7 @@ this.subscriptions.push(subscription);
       }
 
     })
-  }
+  }*/
 
   getCurrentUserZoneID() {
 
@@ -3760,7 +3754,7 @@ this.subscriptions.push(subscription);
 
 
   getAllSubDepartments() {
-    this.subDepartmentService.getSubDepartmentsList().subscribe((data: any) => {
+   /* this.subDepartmentService.getSubDepartmentsList().subscribe((data: any) => {
 
       if (data.responseCode == 1) {
 
@@ -3796,7 +3790,7 @@ this.subscriptions.push(subscription);
 
     }, error => {
       console.log("Error: ", error);
-    })
+    })*/
   }
 
   getConfig() {
@@ -5392,7 +5386,7 @@ this.subscriptions.push(subscription);
   }
   async getUniqueEmbUsers(): Promise<any> {
 
-    try {
+    /*try {
       const embUserData: any = await this.userPofileService.getUsersBySubDepartmentName("EMB").toPromise();
       //const embUserData: any = await this.accessGroupsService.getUserBasedOnRoleName("EMB", 1021).toPromise();
 
@@ -5422,7 +5416,7 @@ this.subscriptions.push(subscription);
     } catch (error) {
       console.error("Error fetching EMB users:", error);
       return null;
-    }
+    }*/
   }
   sendEmailToEmb(embUsers: any[]): void {
 
@@ -7083,25 +7077,25 @@ this.subscriptions.push(subscription);
       }
   }
   GetAllPreInvoiceScrutinyApplications() {
-    debugger;
-
+    
+    this.ApplicationsBP.splice(0, this.ApplicationsBP.length);
     this.bpApplicationService.getAllPreInvoiceScrutinyApplications().subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempApplication = {} as ApplicationsListBP;
           const current = data.dateSet[i];
-          debugger;
+          
           if (current.lsNumber != null) {
             if (current.physicalAddress == undefined) {
               tempApplication.propertyAddress = current.physicalAddress;
             }
             else {
-              debugger;
+              
               var address = current.physicalAddress.split(',');
               tempApplication.propertyAddress = address[0] + " " + address[1];
             }
-            debugger;
+            
             tempApplication.applicationID = current.applicationID;
             tempApplication.ProjectNumber = current.lsNumber;
             tempApplication.erfNumber = current.erfNumber;
@@ -7131,7 +7125,9 @@ this.subscriptions.push(subscription);
         }
         this.dataSourceBP = this.ApplicationsBP;
         
-        this.applicationTypeName = "Build Plan"
+        this.applicationTypeName = "Build Plan";
+        this.dataSourceSA = this.ApplicationsBP;
+        this.originalDataSourceSA = [...this.ApplicationsBP];
       }
       else {
         alert(data.responseMessage);
@@ -7146,25 +7142,25 @@ this.subscriptions.push(subscription);
 
 
   GetAllBuildingPlansApplications() {
-    debugger;
-
+    this.AllBPApplications.splice(0, this.AllBPApplications.length);
+    
     this.bpApplicationService.getAllBuildingPlansApplications().subscribe((data: any) => {
       if (data.responseCode == 1) {
-        debugger;
+        
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempApplication = {} as ApplicationsListBP;
           const current = data.dateSet[i];
-          debugger;
-          if (current.lsNumber != null) {
+          
+
             if (current.physicalAddress == undefined) {
               tempApplication.propertyAddress = current.physicalAddress;
             }
             else {
-              debugger;
+              
               var address = current.physicalAddress.split(',');
               tempApplication.propertyAddress = address[0] + " " + address[1];
             }
-            debugger;
+            
             tempApplication.applicationID = current.applicationID;
             tempApplication.ProjectNumber = current.lsNumber;
             tempApplication.erfNumber = current.erfNumber;
@@ -7192,10 +7188,82 @@ this.subscriptions.push(subscription);
 
 
 
-        }
+        
         this.dataSourceBP = this.AllBPApplications;
 
-        this.applicationTypeName = "Build Plan"
+        this.applicationTypeName = "Build Plan";
+        this.dataSourceSA = this.AllBPApplications;
+        this.originalDataSourceSA = [...this.AllBPApplications];
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("Building Applications", this.dataSourceBP);
+      console.log("Building Applications", data);
+    }, error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  GetAllApplications() {
+    this.AllApplications.splice(0, this.AllApplications.length);
+    debugger;
+    this.bpApplicationService.getAllApplications().subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        debugger;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const tempApplication = {} as ApplicationsListBP;
+          const current = data.dateSet[i];
+          debugger;
+
+            if (current.physicalAddress == undefined) {
+              tempApplication.propertyAddress = current.physicalAddress;
+            }
+            else {
+              debugger;
+              var address = current.physicalAddress.split(',');
+              tempApplication.propertyAddress = address[0] + " " + address[1];
+            }
+          if (current.bpApplicationID != null) {
+            tempApplication.ProjectNumber = current.bpApplicationID;
+          }
+          else{
+            tempApplication.ProjectNumber = current.lsNumber;
+          }
+            tempApplication.applicationID = current.applicationID;
+
+            tempApplication.erfNumber = current.erfNumber;
+            tempApplication.stage = current.stage;
+            tempApplication.ownerName = current.firstName + " " + current.surname;
+          debugger;
+            tempApplication.dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
+            tempApplication.dateUpdated = current.dateUpdated.substring(0, current.dateUpdated.indexOf("T"));
+            const currentDate = new Date();
+            const dateCreated = new Date(tempApplication.dateCreated);
+            const timeDiff = currentDate.getTime() - dateCreated.getTime();
+            const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+            tempApplication.planAge = daysDiff;
+
+            /*cal stage age*/
+            const stageDateCreated = new Date(tempApplication.dateCreated);
+            const stageDate = currentDate.getTime() - stageDateCreated.getTime();
+            const stageDateDiff = Math.floor(stageDate / (1000 * 3600 * 24));
+            tempApplication.stageAge = stageDateDiff;
+            tempApplication.status = current.status;
+            
+            this.AllApplications.push(tempApplication);
+          }
+
+
+
+
+        debugger;
+        this.dataSourceBP = this.AllApplications;
+        debugger;
+        this.applicationTypeName = "Build Plan";
+        this.selectedTabIndex = 7;
+        this.dataSourceSA = this.AllApplications;
+        this.originalDataSourceSA = [...this.AllApplications];
       }
       else {
         alert(data.responseMessage);
@@ -7244,23 +7312,23 @@ this.subscriptions.push(subscription);
   }
 
   GetAllApplicationsForExternalUser() {
-    debugger;
+    
     this.bpApplicationService.getApplicationsByExternalUserID(this.CurrentUser.appUserId).subscribe((data: any) => {
       if (data.responseCode == 1) {
         for (let i = 0; i < 30; i++) {
           const tempApplication = {} as ApplicationsListBP;
           const current = data.dateSet[i];
-          debugger;
+          
           if (current.lsNumber != null) {
             if (current.physicalAddress == undefined) {
               tempApplication.propertyAddress = current.physicalAddress;
             }
             else {
-              debugger;
+              
               var address = current.physicalAddress.split(',');
               tempApplication.propertyAddress = address[0] + " " + address[1];
             }
-            debugger;
+            
             tempApplication.applicationID = current.applicationID;
             tempApplication.ProjectNumber = current.lsNumber;
             tempApplication.erfNumber = current.erfNumber;
@@ -7274,7 +7342,7 @@ this.subscriptions.push(subscription);
             const timeDiff = currentDate.getTime() - dateCreated.getTime();
             const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
             tempApplication.planAge = daysDiff;
-            debugger;
+            
             /*cal stage age*/
             const stageDateCreated = new Date(tempApplication.dateCreated);
             const stageDate = currentDate.getTime() - stageDateCreated.getTime();
@@ -7473,6 +7541,13 @@ this.subscriptions.push(subscription);
       case 4:
         break;
       case 5:
+        break;
+      case 6:
+        break;
+      case 7:
+        applicationId = this.AllApplications[index].applicationID;
+        this.sharedService.setApplicationID(applicationId);
+        this.router.navigate(['bpview-project-info']);
         break;
     }
   }
@@ -7745,15 +7820,15 @@ this.subscriptions.push(subscription);
     switch (event.index) {
       case 0:
 /*        this.GetAllPreInvoiceScrutinyApplications();*/
-        debugger;
-        this.dataSourceSA = this.ApplicationsBP;
-        this.originalDataSourceSA = [...this.ApplicationsBP];
+        this.GetAllPreInvoiceScrutinyApplications();
+
+
         //BPRegister Sindiswa 20062024
         break;
       case 1:
-/*        this.GetAllBuildingPlansApplications();*/
-        this.dataSourceSA = this.AllBPApplications;
-        this.originalDataSourceSA = [...this.AllBPApplications];
+        this.GetAllBuildingPlansApplications();
+
+
         break;
       case 2:
         break;
@@ -7765,15 +7840,23 @@ this.subscriptions.push(subscription);
       case 5:
         break;
       case 6:
+
+
         break;
       case 7:
+        
+        this.dataSourceSA = this.AllApplications;
+        this.originalDataSourceSA = [...this.AllApplications];
+
         break;
-      case 8:
-        console.log("this Datasource", this.dataSource);
     }
   }
 
+  getAllApplications() {
 
+
+
+  }
  
   getAllPreInvoiceScurtinyApplications() {
 

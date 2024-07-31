@@ -15,6 +15,7 @@ import { BPCommentsService } from '../service/BPComments/bpcomments.service';
 import { DomSanitizer, SafeHtml, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
 import { BpAlertModalComponent } from '../bp-alert-modal/bp-alert-modal.component';
+import { BpDepartmentForCommentService } from '../service/BPDepartmentForComment/bp-department-for-comment.service';
 export interface DocumentsList {
   DocumentID: number;
   DocumentName: string;
@@ -24,6 +25,18 @@ export interface DocumentsList {
   DescriptionForRepoDoc: string;
 }
 
+
+export interface BPDepartmentsForCommentList {
+  DepartmendForCommentaID: any;
+  UserAssaignedToComment: any;
+  isAwaitingClarity: any;
+  DepartmentID: number;
+  DepartmentName: string;
+  ApplicationId: number;
+  DateCreated: any;
+  DateUpdated: any;
+  CommentStatus: string;
+}
 
 
 export interface LSMandatoryDocumentsList {
@@ -72,6 +85,8 @@ export class BPViewProjectInfoComponent implements OnInit {
     private DocumentsComponentComponent: DocumentsComponentComponent, private bpCommentsService: BPCommentsService,
     private sanitizer: DomSanitizer,
     private dialog: MatDialog,
+    private applicationService: BuildingApplicationsService,
+    private BpDepartmentForCommentService: BpDepartmentForCommentService,
   ) { }
 
   // Properties
@@ -80,12 +95,13 @@ export class BPViewProjectInfoComponent implements OnInit {
   /* LSMandatoryDocuments = new BehaviorSubject<LSMandatoryDocumentsList[]>([]);*/
 
   DocumentList: DocumentsList[] = [];
+  BPDepartmentsForCommentList: BPDepartmentsForCommentList[] = [];
 
   LSMandatoryDocumentsList: Observable<LSMandatoryDocumentsList[]>;
 
   CommentsList: CommentsList[] = [];
 
-  displayedColumns: string[] = ['DocumentName', 'actions'];
+
 
   // ViewChild decorators to get references to the MatTable elements
   @ViewChild(MatTable) DocumentsTable: MatTable<DocumentsList> | undefined;
@@ -158,7 +174,7 @@ export class BPViewProjectInfoComponent implements OnInit {
     this.getApplicationInfo();
     this.GetAllCommentsForApplication();
 
-
+    this.getAllDepartmentsForCommentForBPApplication();
 
 
 
@@ -264,7 +280,7 @@ export class BPViewProjectInfoComponent implements OnInit {
         alert(data.responseMessage);
       }
       console.log("response", data);
-      this.loadBPDocumentsList();
+/*      this.loadBPDocumentsList();*/
     }, error => {
       console.log("Error: ", error);
     })
@@ -439,7 +455,7 @@ export class BPViewProjectInfoComponent implements OnInit {
           tempComment.FunctionalArea = current.functionalArea;
           tempComment.Comment = current.comment;
           tempComment.CommentStatus = current.commentStatus;
-          tempComment.SubDepartmentForCommentID = current.subDepartmentForCommentID;
+          tempComment.SubDepartmentForCommentID = current.BPDepartmentForCommentID;
           tempComment.isApplicantReply = current.isApplicantReplay;
           tempComment.SecondReply = current.secondReply;
           tempComment.UserName = current.userName;
@@ -518,6 +534,40 @@ export class BPViewProjectInfoComponent implements OnInit {
         console.log(error);
       })
     }
+  }
+  displayedColumns: string[] = ['DepartmentName','indication']; 
+  dataSource = this.BPDepartmentsForCommentList;
+  @ViewChild(MatTable)BPDepartmentsForCommentListTable: MatTable<BPDepartmentsForCommentList> | undefined;
+  getAllDepartmentsForCommentForBPApplication() {
+    this.BpDepartmentForCommentService.getDepartmentForComment(this.applicationId).subscribe((data: any) => {
+      debugger;
+      if (data.responseCode == 1) {
+        debugger;
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          const tempDepForComment = {} as BPDepartmentsForCommentList;
+          debugger;
+          tempDepForComment.DepartmendForCommentaID = current.bpDepartmentForCommentID;
+          tempDepForComment.ApplicationId = current.applicationID;
+          tempDepForComment.DepartmentID = current.departmentID;
+          tempDepForComment.DepartmentName = current.departmentName;
+          tempDepForComment.CommentStatus = current.commentStatus;
+          tempDepForComment.DateCreated = current.dateCreated;
+          tempDepForComment.isAwaitingClarity = current.isAwaitingClarity;
+          tempDepForComment.UserAssaignedToComment = current.userAssaignedToComment;
+
+          this.BPDepartmentsForCommentList.push(tempDepForComment);
+        }
+
+        console.log("BPDepartmentsForCommentList", this.BPDepartmentsForCommentList);
+      }
+      else {
+
+      }
+
+    }, error => {
+      console.log(error);
+    })
   }
 }
 
