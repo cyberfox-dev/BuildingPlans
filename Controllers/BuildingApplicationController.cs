@@ -255,6 +255,54 @@ namespace BuildingPlans.Controllers
                         {
                             tempBuildingApplication.BPApplicationID = model.BPApplicationID;
                         }
+                        if (model.BPApplicationType != null)
+                        {
+                            tempBuildingApplication.BPApplicationType = model.BPApplicationType;
+                        }
+                        if (model.ApplicationType != null)
+                        {
+                            tempBuildingApplication.ApplicationType = model.ApplicationType;
+                        }
+                        if (model.isCombinedApplication != null)
+                        {
+                            tempBuildingApplication.isCombinedApplication = model.isCombinedApplication;
+                        }
+                        if (model.isCombinedApplication != null)
+                        {
+                            tempBuildingApplication.isCombinedApplication = model.isCombinedApplication;
+                        }
+                        if (model.NameOfCompany != null)
+                        {
+                            tempBuildingApplication.NameOfCompany = model.NameOfCompany;
+                        }
+                        if (model.RegNoOfCompany != null)
+                        {
+                            tempBuildingApplication.RegNoOfCompany = model.RegNoOfCompany;
+                        }
+                        if (model.NameOfAgent != null)
+                        {
+                            tempBuildingApplication.NameOfAgent = model.NameOfAgent;
+                        }
+                        if (model.AgentCellNo != null)
+                        {
+                            tempBuildingApplication.AgentCellNo = model.AgentCellNo;
+                        }
+                        if (model.AgentEmail != null)
+                        {
+                            tempBuildingApplication.AgentEmail = model.AgentEmail;
+                        }
+                        if (model.AgentPostalAddress != null)
+                        {
+                            tempBuildingApplication.AgentPostalAddress = model.AgentPostalAddress;
+                        }
+                        if (model.DescriptionOfProject != null)
+                        {
+                            tempBuildingApplication.DescriptionOfProject = model.DescriptionOfProject;
+                        }
+                        if (model.SupportingDocuments != null)
+                        {
+                            tempBuildingApplication.SupportingDocuments = model.SupportingDocuments;
+                        }
                         tempBuildingApplication.DateUpdated = DateTime.Now;
 
                         _context.Update(tempBuildingApplication);
@@ -751,7 +799,7 @@ namespace BuildingPlans.Controllers
             {
                 var result = await (
                     from buildingApplication in _context.BuildingApplications
-                    where buildingApplication.isActive == true && buildingApplication.LSNumber != null
+                    where buildingApplication.isActive == true && buildingApplication.BPApplicationType == "Town Planning"
                     select new BuildingApplicationDTO()
                     {
                         ApplicationID = buildingApplication.ApplicationID,
@@ -794,6 +842,17 @@ namespace BuildingPlans.Controllers
                         StageNumber = buildingApplication.StageNumber,
                         CreatedById = buildingApplication.CreatedById,
                         BPApplicationID = buildingApplication.BPApplicationID,
+                        AgentCellNo = buildingApplication.AgentCellNo,
+                        AgentEmail = buildingApplication.AgentEmail,
+                        AgentPostalAddress = buildingApplication.AgentPostalAddress,
+                        NameOfAgent = buildingApplication.NameOfAgent,
+                        ApplicationType = buildingApplication.ApplicationType,
+                        BPApplicationType = buildingApplication.BPApplicationType,
+                        DescriptionOfProject = buildingApplication.DescriptionOfProject,
+                        isCombinedApplication = buildingApplication.isCombinedApplication,
+                        NameOfCompany = buildingApplication.NameOfCompany,
+                        RegNoOfCompany = buildingApplication.RegNoOfCompany,
+                        
                     }
                     ).ToListAsync();
 

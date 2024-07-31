@@ -16,21 +16,18 @@ h2 {
   margin: 10px;
 }
 h3 span {
-  background-color: #b87700;
+  /* background-color: #735725; */
   padding: 0 10px;
-  color: #343a40;
+  /* color: #343a40 !important; */
   font-size: 23px;
 }
 .card {
   box-shadow: 0 4px 8px 0 #262626, 0 6px 20px 0 #71717100;
-  margin: 20px;
-  border-color: #b87700;
-  background-color: #b87700;
-  margin-bottom: 50px;
-  margin-top: 50px;
+  background-color: #0f8187;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-align: center;
 }
 .mat-horizontal-stepper-header {
   pointer-events: none !important;
@@ -59,15 +56,15 @@ h3 span {
   padding-bottom: 10px;
 }
 h3 {
-  width: 30em;
-  border-color: #ffffff;
-  text-align: center;
+  /* width: 30em; */
+  /* border-color: #ffffff; */
+  /* text-align: center; */
   font-family: 'Nunito', sans-serif;
-  border-bottom: 1px solid #ffffff;
-  line-height: 0.1em;
-  margin: 0 auto;
-  padding-top: 50px;
-  margin-bottom: 50px;
+  /* border-bottom: 1px solid #ffffff; */
+  /* line-height: 0.1em; */
+  /* margin: 0 auto; */
+  padding-top: 20px;
+  /* margin-bottom: 50px; */
   justify-content: space-around;
 }
 .mat-form-field {

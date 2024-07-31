@@ -186,6 +186,7 @@ export class SharedService {
   isPlanArchive: boolean;
   isDemolitionArchive: boolean;
   isFlagApplication: boolean;
+    applicationBeingCreatedType: string;
 
   setArchitectID(UserID: string) {
     this.architectUserID = UserID;
@@ -241,6 +242,13 @@ export class SharedService {
     return this.checkEmail;
   }
 
+  setApplicationBeingCreatedType(data:string) {
+    this.applicationBeingCreatedType = data;
+  }
+
+  getApplicationBeingCreatedType(): any {
+    return this.applicationBeingCreatedType;
+  }
 
   setConfigShow(data: any) {
     this.configShow = data;

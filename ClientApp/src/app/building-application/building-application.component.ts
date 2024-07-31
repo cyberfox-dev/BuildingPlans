@@ -191,6 +191,8 @@ export class BuildingApplicationComponent implements OnInit {
   validArchitectId: boolean = false;
   validArchitectReg: boolean = false;
 
+  TPTOA = '';
+
   BPMandatoryDocumentList: Observable<BPMandatoryDocumentUploadList[]>;
 
   MandatoryDocumentsLinkedStagesList = new BehaviorSubject<MandatoryDocumentsLinkedStagesList[]>([]);
@@ -211,7 +213,8 @@ export class BuildingApplicationComponent implements OnInit {
   isArchitect: boolean = false;
   isOwner: boolean = false;
   isArchivePlan: boolean;
-
+  applicationBeingCreatedType: string;
+  applicationBeingCreatedTypeNextStage: string;
   servitudeBox: boolean = false;
 
   @ViewChild("selectClassification", { static: true }) content!: ElementRef;
@@ -247,8 +250,9 @@ export class BuildingApplicationComponent implements OnInit {
     this.CurrentUser = JSON.parse(this.stringifiedData);
     this.stringifiedDataUserProfile = JSON.parse(JSON.stringify(localStorage.getItem('userProfile')));
     this.CurrentUserProfile = JSON.parse(this.stringifiedDataUserProfile);
-    
-   
+
+    this.applicationBeingCreatedType = this.sharedService.getApplicationBeingCreatedType();
+
     this.option = this.sharedService.option;
     this.clientUserID = this.sharedService.clientUserID;
     this.architectUserID = this.sharedService.architectUserID;
@@ -273,7 +277,7 @@ export class BuildingApplicationComponent implements OnInit {
   }
 
   onPassFileName(event: { uploadFor: string; fileName: string }, index: any) {
-    debugger;
+    
     const { uploadFor, fileName } = event;
     // const index = parseInt(uploadFor.substring('CoverLetter'.length));
     
@@ -318,7 +322,13 @@ export class BuildingApplicationComponent implements OnInit {
     this.FileDocument.push(tempFileDocumentList);
     console.log("this.FileDocument", this.FileDocument);
   }
-
+  text: string = '';
+  checked = false;
+  maxLength: number = 250;
+  DescriptionofApplicaitonTP = '';
+  updateCharacterCount() {
+    return this.text.length;
+  }
   uploadFileEvtCoverLetter(File: any) {
 
     const tempFileDocumentList = {} as FileDocument;
@@ -541,16 +551,16 @@ export class BuildingApplicationComponent implements OnInit {
 
     
   getBPDocumentsList(): Observable<BPMandatoryDocumentUploadList[]> {
-    debugger;
+    
     return this.bpManDocService.getAllMandatoryDocuments()
       .pipe(
         map((data: any) => {
-          debugger;
+          
           if (data.responseCode === 1) {
-            debugger;
+            
             const tempList: BPMandatoryDocumentUploadList[] = [];
             for (let i = 0; i < data.dateSet.length; i++) {
-              debugger;
+              
               const current = data.dateSet[i];
               const tempRequiredDocuments: BPMandatoryDocumentUploadList = {
                 mandatoryDocumentID: current.mandatoryDocumentID,
@@ -871,7 +881,7 @@ export class BuildingApplicationComponent implements OnInit {
         
       }
       else {
-        debugger;
+        
         const current = this.CurrentUserProfile[0];
 
         this.clientName = current.fullName.substring(0, current.fullName.indexOf(" "));
@@ -904,11 +914,24 @@ export class BuildingApplicationComponent implements OnInit {
     }
   }
 
-  
+  TPTOAOther: any;
+  isCombinedApplication: any;
+  NameOfCompany: any;
+  RegNoOfCompany: any;
+  AgentName: any;
+  AgentAddress: any;
+  AgentCell: any;
+  AgentEmail: any;
+/*  TPSupportingDocs: any;*/
   AddUpdateBuildingApplication() {
     this.mapAddress = this.sharedService.mapAddress;
     this.latitude = this.sharedService.latitude;
     this.longitude = this.sharedService.longitude;
+
+    if (this.TPTOA == "other") {
+      this.TPTOA = "Other: " + this.TPTOAOther;
+    }
+   
 
     if (this.isArchivePlan) {
       this.router.navigate(["/home"]);
@@ -916,49 +939,65 @@ export class BuildingApplicationComponent implements OnInit {
 
     else {
      
-      
-      if (this.option == "client" || this.isInternal == true) {
-        
+      if (this.applicationBeingCreatedType == "Town Planning") {
         this.applicationService.addUpdateBuildingApplication(this.applicationID, this.lSNumber, this.clientUserID, this.clientName, this.clientSurname,
           this.clientEmail, this.clientCell, this.clientAltEmail, this.clientAltCell, this.clientIDNo, this.propertyDescription, this.premisesName,
           this.addressType, this.erfNo, this.portionNo, this.NoOfUnits, this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
           this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
-          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Submission Plan","LS Review",1, this.servitudeBox,null).subscribe((data: any) => {
-          if (data.responseCode == 1) {
-            
-            this.CreateNotification(this.CurrentUser.appUserId);
-            this.CreateNotification(this.clientUserID);
-            alert("Application Created");
-            this.router.navigate(["/home"]);
-          }
-          else {
-            alert(data.responseMessage)
-          }
-        }, error => {
-          console.log("BuildingApplicationError: ", error)
-        })
+          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Submission Plan", "LS Review", 1, this.servitudeBox, null, this.applicationBeingCreatedType, this.TPTOA, this.isCombinedApplication, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
+            if (data.responseCode == 1) {
+
+              this.CreateNotification(this.CurrentUser.appUserId);
+              alert("Application Created");
+              this.router.navigate(["/home"]);
+            }
+            else {
+              alert(data.responseMessage)
+            }
+          }, error => {
+            console.log("BuildingApplicationError: ", error)
+          })
       }
-      else {
-        
+      else if (this.applicationBeingCreatedType == "Building Plans") {
         this.applicationService.addUpdateBuildingApplication(this.applicationID, this.lSNumber, this.clientUserID, this.clientName, this.clientSurname,
           this.clientEmail, this.clientCell, this.clientAltEmail, this.clientAltCell, this.clientIDNo, this.propertyDescription, this.premisesName,
           this.addressType, this.erfNo, this.portionNo, this.NoOfUnits, this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
           this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
-          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Submission Plan", "LS Review", 1, this.servitudeBox,null).subscribe((data: any) => {
-          if (data.responseCode == 1) {
-            
-            this.CreateNotification(this.CurrentUser.appUserId);
-            alert("Application Created");
-            this.router.navigate(["/home"]);
-          }
-          else {
-            alert(data.responseMessage)
-          }
-        }, error => {
-          console.log("BuildingApplicationError: ", error)
-        })
+          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "BCO Distribution", "BCO Distribution", 3, this.servitudeBox, null, this.applicationBeingCreatedType, this.TPTOA, this.isCombinedApplication, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
+            if (data.responseCode == 1) {
+
+              this.CreateNotification(this.CurrentUser.appUserId);
+              alert("Application Created");
+              this.router.navigate(["/home"]);
+            }
+            else {
+              alert(data.responseMessage)
+            }
+          }, error => {
+            console.log("BuildingApplicationError: ", error)
+          })
       }
-    }
+      else if (this.applicationBeingCreatedType == "Land Survey") {
+        this.applicationService.addUpdateBuildingApplication(this.applicationID, this.lSNumber, this.clientUserID, this.clientName, this.clientSurname,
+          this.clientEmail, this.clientCell, this.clientAltEmail, this.clientAltCell, this.clientIDNo, this.propertyDescription, this.premisesName,
+          this.addressType, this.erfNo, this.portionNo, this.NoOfUnits, this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
+          this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
+          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Submission Plan", "LS Review", 1, this.servitudeBox, null, this.applicationBeingCreatedType, this.TPTOA, this.isCombinedApplication, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
+            if (data.responseCode == 1) {
+
+              this.CreateNotification(this.CurrentUser.appUserId);
+              alert("Application Created");
+              this.router.navigate(["/home"]);
+            }
+            else {
+              alert(data.responseMessage)
+            }
+          }, error => {
+            console.log("BuildingApplicationError: ", error)
+          })
+      }
+
+      }
   }
 
   CreateNotification(UserId: string) {
