@@ -430,6 +430,7 @@ namespace BuildingPlans.Controllers
                         StageNumber = buildingApplication.StageNumber,
                         CreatedById = buildingApplication.CreatedById,
                         BPApplicationID = buildingApplication.BPApplicationID,
+                        BPApplicationType = buildingApplication.BPApplicationType,
 
                     }).ToListAsync();
                 return await Task.FromResult(new ResponseModel(Enums.ResponseCode.OK, "Got Application By ApplicationID", result));
@@ -738,7 +739,7 @@ namespace BuildingPlans.Controllers
             {
                 var result = await (
                     from buildingApplication in _context.BuildingApplications
-                    where buildingApplication.isActive == true && buildingApplication.LSNumber != null
+                    where buildingApplication.isActive == true && buildingApplication.BPApplicationType == "Land Survey" && buildingApplication.FirstName != null
                     select new BuildingApplicationDTO()
                     {
                         ApplicationID = buildingApplication.ApplicationID,
@@ -799,7 +800,7 @@ namespace BuildingPlans.Controllers
             {
                 var result = await (
                     from buildingApplication in _context.BuildingApplications
-                    where buildingApplication.isActive == true && buildingApplication.BPApplicationType == "Town Planning"
+                    where buildingApplication.isActive == true && buildingApplication.BPApplicationType == "Town Planning" && buildingApplication.FirstName != null
                     select new BuildingApplicationDTO()
                     {
                         ApplicationID = buildingApplication.ApplicationID,
@@ -871,7 +872,7 @@ namespace BuildingPlans.Controllers
             {
                 var result = await (
                     from buildingApplication in _context.BuildingApplications
-                    where buildingApplication.isActive == true && buildingApplication.BPApplicationID != null 
+                    where buildingApplication.isActive == true && buildingApplication.BPApplicationType == "Building Plans" && buildingApplication.FirstName != null
                     select new BuildingApplicationDTO()
                     {
                         ApplicationID = buildingApplication.ApplicationID,

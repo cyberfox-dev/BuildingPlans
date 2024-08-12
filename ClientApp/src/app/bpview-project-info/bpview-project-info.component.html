@@ -19,6 +19,7 @@
     <button mat-button color="action" [matMenuTriggerFor]="actions" class="animationSlideUp" *ngIf="!ActionCenter"> <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ellipsis-vertical-solid.svg" class="icon"></button>
     <mat-menu #actions="matMenu">
       <button mat-menu-item> Move to Paid</button>
+      <button mat-menu-item> Apply For A Building Plan</button>
       <!--<button mat-menu-item (click)="MoveToNextStage()" *ngIf="isInternalUser">Move to Next Stage</button>-->
       <!--<button mat-menu-item (click)="MoveToNextStage()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon"> Cancel Application</button>--><!--reapply Sindiswa 22 January 2023-->
       <button mat-menu-item><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon"> Cancel Application</button>
@@ -272,7 +273,7 @@
       </div>
     </mat-tab>
 
-    <!---------------------------------------Comments ------------------------------------------->
+    <!--------------------------------------- Comments ------------------------------------------->
     <mat-tab label="Comments">
       <!--<div class="cardApprove ">
 
@@ -383,13 +384,13 @@
       </div>
     </mat-tab>
 
-    <!-----BP Financials Kyle------>
+    <!----- BP Financials Kyle ------>
     <mat-tab label="Financials">
       <app-bpfinancials></app-bpfinancials>
     </mat-tab>
 
-    <!-----BP Financials Kyle------>
-    <!-------------------------------------------------Document Uploads ----------------------------------------->
+    <!----- BP Financials Kyle ------>
+    <!------------------------------------------------- Document Uploads ----------------------------------------->
     <mat-tab label="Documents Upload">
 
       <div *ngIf="currentStage == 'LS Relaxation - Unpaid' || currentStage == 'TP Relaxation - Unpaid'">
@@ -496,9 +497,17 @@
 
     </mat-tab>
 
-    <!--    <mat-tab label="Land Survey Upload Checklist" *ngIf="currentStage == 'LS Relaxation - Unpaid'">
+    <mat-tab label="Town Planning Pre-Scrutiny Checklist">
+      <mat-selection-list >
 
-      </mat-tab>-->
+        <mat-list-option value="1">Project Overview: Summary of the proposed development, including purpose, scale, and intended use.</mat-list-option>
+        <mat-list-option value="2">Site Location: Check if the location is zoned appropriately for the proposed development.</mat-list-option>
+        <mat-list-option value="3">Ownership and Tenure: Verification of land ownership and tenure.</mat-list-option>
+        <mat-list-option value="4">Historical Significance: Assessment of any historical, cultural, or architectural significance of the site</mat-list-option>
+
+      </mat-selection-list>
+      
+    </mat-tab>
 
 
   </mat-tab-group>

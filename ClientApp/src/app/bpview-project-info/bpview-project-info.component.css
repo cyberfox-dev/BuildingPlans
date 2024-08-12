@@ -14,7 +14,7 @@
   /* margin-bottom: 150px; */
 }
 h2 {
-  color: #ffffff;
+
   margin-top: 200px;
   margin-bottom: 0px;
   text-align: center;
@@ -35,7 +35,7 @@ h2 {
 h3 span {
   background-color: #ccdee2;
   padding: 0 10px;
-  color: #343a40;
+
   font-size: 23px;
 }
 
@@ -57,7 +57,7 @@ h3 span {
 
 .card p {
   font-size: 17px;
-  color: #4C5656;
+
   margin-top: 40px;
   z-index: 1000;
   transition: color 0.3s ease-out;
@@ -116,7 +116,7 @@ h3 {
   animation-duration: 0s;
 }
 .mat-action {
-  color: white;
+
   background-color: #d57d38;
   margin: 10px;
   margin-bottom: 153px;
@@ -127,13 +127,13 @@ h3 {
   margin: 5px;
   background-color: #9FA8DA;
   width: auto;
-  color: black;
+
 }
 
 .mat-orange {
   margin: 5px;
   background-color: #ff9900;
-  color: black;
+
   width: auto;
 }
 
@@ -173,7 +173,7 @@ table {
 }
 :host ::ng-deep .mat-tab-label-active {
   background-color: #d57d38;
-  color: white;
+
   border-radius: 20px;
 }
 
@@ -485,7 +485,7 @@ table {
 
 .mat-clarify {
   background-color: #f48a36;
-  color: #fff;
+
   margin-bottom: 17px;
 }
 .messageFoot {
@@ -501,7 +501,7 @@ table {
   border: 2px solid;
   border-color: #d57d38;
   background: white;
-  color: black !important;
+
   font-weight: bolder;
   font-size: 17px;
   margin-left: 30px;
@@ -513,7 +513,7 @@ table {
 
 .mat-clarify2 {
   background-color: #f48a36;
-  color: #fff;
+
   margin: 5px;
 
 }

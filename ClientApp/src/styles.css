@@ -1,6 +1,235 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~quill/dist/quill.bubble.css';
 
+.sideNavIcons:hover {
+  background-color: #8787872e;
+}
+@media(prefers-color-scheme:dark) {
+    *{
+        color:white !important;
+    }
+  .fa-bars {
+    color: white !important;
+  }
+  .mat-stepper-horizontal[_ngcontent-ng-cli-universal-c416], .mat-stepper-vertical[_ngcontent-ng-cli-universal-c416] {
+    background: #323e4e !important;
+  }
+  .example-sidenav {
+    background-color: #2f3a49;
+  }
+  .loading-screen {
+    background-color: #2f3a49;
+  }
+  .nav {
+    background-color: #2f3a49;
+  }
+  body {
+    background: #323e4e;
+    color:white !important;
+  }
+  :root {
+    background: #323e4e;
+    color: white !important;
+  }
+  .container {
+    background-color: #323e4e;
+  }
+  .backgroundWLMS{
+    width: 100%;
+    height: 470px;
+    position: absolute;
+    background-image: url('assets/pietermaritzburg-modified-12.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    box-shadow: none;
+    background-clip: content-box;
+  }
+  .offcanvas-menu {
+    background-color: #323e53 !important;
+  }
+
+
+  table {
+    border-spacing: 0;
+    background: #425166 !important;
+    color: white !important;
+  }
+
+  input {
+    background: #425166 !important;
+    color: white !important;
+    border-color: #1b222b8c !important;
+  }
+
+  .mat-input {
+    font: inherit;
+    background: rgb(50 62 78) !important;
+    color: currentColor;
+    border: none;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    vertical-align: bottom;
+    text-align: inherit;
+    box-sizing: content-box;
+    caret-color: rgb(50 62 78) !important;
+  }
+
+  .mat-menu-panel {
+    background: #323e4e !important
+  }
+
+  .modal-content {
+    background: #323e4e !important
+  }
+
+  .mat-horizontal-stepper-wrapper.ng-tns-c133-22.ng-star-inserted {
+    background: #323e4e !important;
+  }
+
+  :host ::ng-deep.mat-horizontal-stepper.ng-tns-c133-20.mat-stepper-horizontal.mat-stepper-label-position-end.ng-star-inserted {
+    background: #323e4e !important;
+  }
+
+  .offcanvas {
+    background: #323e4e !important
+  }
+
+  mat-dialog-container#mat-dialog-0 {
+    background: #323e4e !important
+  }
+
+  .button:hover {
+    background: #3e4c5f !important
+  }
+
+  tr:hover {
+    background: #3e4c5f !important
+  }
+
+  .mat-select-panel {
+    background: #576b86;
+  }
+
+  .mat-toolbar {
+    background: #323e4e !important;
+  }
+
+  .mat-checkbox-checked {
+    background-color: #323e4e00 !important;
+  }
+
+  .mat-paginator-container {
+    background: #323e4e !important;
+  }
+
+  .card {
+    box-shadow: 0 4px 8px 0 #262626, 0 6px 20px 0 #71717100;
+    margin: 20px;
+    border-color: #0f8187;
+    background-color: #0f8187;
+    margin-bottom: 50px;
+    margin-top: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mat-expansion-panel {
+    background: #425166;
+  }
+}
+
+@media(prefers-color-scheme:light) {
+  .fa-bars{
+      color:black !important;
+  }
+  .card {
+    box-shadow: 0 4px 8px 0 #26262661, 0 6px 20px 0 #71717100 !important;
+    background-color: #99d1d4 !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+  }
+  .mat-stepper-horizontal[_ngcontent-ng-cli-universal-c416], .mat-stepper-vertical[_ngcontent-ng-cli-universal-c416] {
+    background: white !important;
+  }
+  .example-sidenav-content {
+    background-color: rgb(255 255 255 / 0%) !important;
+  }
+  .example-sidenav {
+    background-color: white;
+  }
+  .loading-screen {
+    background-color: white;
+  }
+  .nav {
+    background-color: white;
+  }
+  :root {
+    --base: #d7d7d7;
+    --text: black !important;
+    color: black !important;
+  }
+
+  .container {
+    background-color: white;
+  }
+
+  .backgroundWLMS {
+    width: 100%;
+    height: 581px;
+    position: absolute;
+    background-image: url('assets/pietermaritzburg-modified-12(light).png.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    box-shadow: none;
+    background-clip: content-box;
+  }
+  body {
+    background: #ffffff00;
+    color:black !important;
+  }
+  .mat-tab-labels {
+    background-color: #eaeaea !important;
+  }
+}
+
+.light {
+  --base: #d7d7d7;
+  --text: #323e4e00;
+}
+.dark {
+  --base: #323e4e;
+  --text: #fff;
+}
+[data-theme="light"] {
+    color-scheme:light;
+  --base: #d7d7d7;
+  --text: #323e4e00;
+}
+[data-theme="dark"] {
+  color-scheme:dark;
+  --base: #323e4e;
+  --text: #fff;
+}
+
+html {
+  color-scheme: dark light;
+}
 /* OR ??
    @import '~quill/dist/quill.snow.css'; */
 /* Provide sufficient contrast against white background */
@@ -12,13 +241,7 @@ code {
   color: #e01a76;
 }
 
-.backgroundWLMS {
-  width: 100%;
-  height: 581px;
-  position: absolute;
-  top: 214px;
 
-}
 
 .btn-primary {
   color: #fff;
@@ -31,234 +254,11 @@ code {
   background: #cee2cc00;
 }
 
-/*-------------------------------------------------------------------------IF THE VIEW BREAKS REMOVE THIS FROM THE FILE---------------------------------*/
-.cdk-overlay-container {
-  z-index: 10000 !important;
-}
-.cdk-global-overlay-wrapper, .cdk-overlay-pane {
-  /*z-index: 20000 !important;  margin: 5px;
-  color: #005870;
-  background-color: #ccdee2;
-  width: 20px;*/
-}
-/*-------------------------------------------------------------------------IF THE VIEW BREAKS REMOVE THIS FROM THE FILE---------------------------------*/
 
-#stripes {
-  width: 100%;
-  height: 50em;
-  top: -230px;
-  overflow: hidden;
-  transform-origin: 0;
-  transform: skewY(0deg);
-  z-index: -1;
-  background: white;
-}
-
-  #stripes, #stripes span {
-    position: absolute;
-  }
-
-    #stripes span {
-      height: 40px;
-    }
-
-/* styles.css or styles.scss */
-@font-face {
-  font-family: 'CenturyGothic';
-  src: url('assets/Packs/CenturyGothic.woff') format('woff');
-  font-weight: normal;
-}
-@font-face {
-  font-family: 'CenturyGothic';
-  src: url('assets/Packs/CenturyGothic-Bold.woff') format('woff');
-  font-weight: bold;
-}
-
-
-
-@media (min-width: 400px) {
-  #stripes span {
-    height: 190px;
-  }
-
- 
-
-  #stripes :nth-child(4) {
-    width: 33.33333%;
-    top: 380px;
-    right: -16.66666%;
-    background: #343a401f;
-    animation: shape2 10s ease infinite normal
-  }
-
-  #stripes :nth-child(5) {
-    width: 33.33333%;
-    bottom: 0;
-    background: #343a401f;
-    animation: Shape1 10s ease infinite normal;
-    left: -178px;
-  }
-  @keyframes Shape1 {
-    0% {
-      transform: translate(0,0);
-    }
-
-    50% {
-      transform: translate(3em,0);
-    }
-
-    100% {
-      transform: translate(0,0);
-    }
-  }
-
-  @keyframes shape2 {
-    0% {
-      transform: translate(0,0);
-    }
-
-    50% {
-      transform: translate(5em,0);
-    }
-
-    100% {
-      transform: translate(0,0);
-    }
-  }
-}
-
-
-.area {
-  background-color: #4158D0;
-}
-
-.circles {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  z-index: -2;
-}
-
-  .circles li {
-    position: absolute;
-    display: block;
-    list-style: none;
-    width: 20px;
-    height: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 80px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    animation: animate 25s linear infinite;
-    bottom: -150px;
-  }
-
-    .circles li:nth-child(1) {
-      left: 25%;
-      width: 80px;
-      height: 80px;
-      animation-delay: 0s;
-    }
-
-
-    .circles li:nth-child(2) {
-      left: 10%;
-      width: 20px;
-      height: 20px;
-      animation-delay: 2s;
-      animation-duration: 12s;
-    }
-
-    .circles li:nth-child(3) {
-      left: 70%;
-      width: 20px;
-      height: 20px;
-      animation-delay: 4s;
-    }
-
-    .circles li:nth-child(4) {
-      left: 40%;
-      width: 60px;
-      height: 60px;
-      animation-delay: 0s;
-      animation-duration: 18s;
-    }
-
-    .circles li:nth-child(5) {
-      left: 65%;
-      width: 20px;
-      height: 20px;
-      animation-delay: 0s;
-    }
-
-    .circles li:nth-child(6) {
-      left: 75%;
-      width: 110px;
-      height: 110px;
-      animation-delay: 3s;
-    }
-
-    .circles li:nth-child(7) {
-      left: 35%;
-      width: 150px;
-      height: 150px;
-      animation-delay: 7s;
-    }
-
-    .circles li:nth-child(8) {
-      left: 50%;
-      width: 25px;
-      height: 25px;
-      animation-delay: 15s;
-      animation-duration: 45s;
-    }
-
-    .circles li:nth-child(9) {
-      left: 20%;
-      width: 15px;
-      height: 15px;
-      animation-delay: 2s;
-      animation-duration: 35s;
-    }
-
-    .circles li:nth-child(10) {
-      left: 85%;
-      width: 150px;
-      height: 150px;
-      animation-delay: 0s;
-      animation-duration: 11s;
-    }
-
-
-
-@keyframes animate {
-
-  0% {
-    transform: translateY(0) rotate(0deg);
-    opacity: 1;
-    border-radius: 0;
-  }
-
-  100% {
-    transform: translateY(-1000px) rotate(720deg);
-    opacity: 0;
-    border-radius: 50%;
-  }
-}
-
-html, body {
-  height: 100%;
-  background: #323e5300;
-}
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  background: #323e4e;
+/*  background: #323e4e;*/
 }
 .mat-tab-labels {
   display: flex;
@@ -336,10 +336,10 @@ body {
   background: #e2cccc;
   color: #700000;
 }
-* {
+/** {
   background: #323e4e00;
   color: white !important;
-}
+}*/
 .yellow-snackbar {
   text-align: center !important;
   border-radius: 91px !important;
@@ -358,10 +358,8 @@ quill-editor {
   min-height: 500px;
   overflow-y: auto;
 }
-.pac-container {
-  z-index: 1000000 !important;
-}
-.offcanvas-menu {
+
+/*.offcanvas-menu {
   background-color: #323e53 !important;
 }
 
@@ -442,4 +440,4 @@ tr:hover {
 .mat-expansion-panel {
 
   background: #425166;
-}
+}*/

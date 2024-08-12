@@ -1329,6 +1329,27 @@ export class NavMenuComponent implements OnInit {
       }
     }
   }
+  changeMode() {
+    const themeSwitcher = document.querySelector("[data-theme-picker]");
+
+    // Get the current theme from the data attribute
+/*    const currentTheme = document.body.getAttribute('data-theme') || 'light'; // Default to 'light' if null
+    alert(currentTheme);
+    // Switch to the opposite theme
+    if (currentTheme === 'light') {
+      this.changeToDarkMode();
+    } else {
+      this.changeToLightMode();
+    }*/
+  }
+
+  changeToLightMode() {
+    document.body.setAttribute('data-theme', 'light');
+  }
+
+  changeToDarkMode() {
+    document.body.setAttribute('data-theme', 'dark');
+  }
 
 
 

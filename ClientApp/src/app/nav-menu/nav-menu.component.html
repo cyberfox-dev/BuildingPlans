@@ -2,19 +2,23 @@
   <input type="checkbox" id="nav-check">
   <div class="nav-header">
     <div class="nav-title" (click)="goHome()">
-      <img src="assets/engage_dev_logo.png" class="logo">
+      <img src="assets/building plans dark mode.png" class="logo">
     </div>
   </div>
   <div class="nav-btn">
     <!--notifications Sindiswa 12 February 2024-->
+
+
     <button mat-button matTooltip="Menu" (click)="openEnd(content)" *ngIf="!this.hasNotifications"><i class="fa fa-bars" aria-hidden="true" style="color: #ffffff;"></i></button>
     <button mat-button matTooltip="Menu" (click)="openEnd(content)" *ngIf="this.hasNotifications"><i class="fa fa-bars" aria-hidden="true" style="color: #ffffff;"></i></button>
     <!--notifications Sindiswa 12 February 2024-->
   </div>
 
   <div class="nav-links" *ngIf="Icons">
+
     <!--notifications Sindiswa 12 February 2024-->
-    <button mat-button matTooltip="Menu" (click)="openEnd(content)" *ngIf="!this.hasNotifications"><i class="fa fa-bars" aria-hidden="true" style="color: #ffffff;"></i></button>
+    <button mat-button matTooltip="Menu" (click)="openEnd(content)" *ngIf="!this.hasNotifications"><i class="fa fa-bars" aria-hidden="true"></i></button>
+
     <button mat-button matTooltip="Menu" (click)="openEnd(content)" *ngIf="this.hasNotifications"><i class="fa fa-bars" aria-hidden="true" style="color: #ffffff;"></i></button>
     <!--notifications Sindiswa 12 February 2024-->
   </div>
@@ -318,8 +322,8 @@
       <button mat-button class="sideNavIcons" (click)="goToCyberfoxCofig();offcanvas.dismiss('Cross click')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/lemon-regular.svg" class="icon">   Dev Configs</button>
       <button mat-button class="sideNavIcons" (click)="openRepositoryModal(repositoryModal)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/box-archive-solid.svg" class="icon">   Document Repository</button>
       <button mat-button class="sideNavIcons" (click)="getAllCommentsByUserID(commentBuilder)" *ngIf="isInternalUser"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid-black.svg" class="icon">  Comment Builder</button>
-      <button mat-button class="sideNavIcons" (click)="goToConfig();offcanvas.dismiss('Cross click')" *ngIf="Configurations"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/gear-solid.svg" class="icon">    Configurations</button>
-      <button mat-button class="sideNavIcons" (click)="goToBPConfig();offcanvas.dismiss('Cross click')" *ngIf="Configurations"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/gear-solid.svg" class="icon">    BP Configurations</button>
+      <button mat-button class="sideNavIcons" (click)="goToConfig();offcanvas.dismiss('Cross click')" ><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/gear-solid.svg" class="icon">    Configurations</button>
+      <button mat-button class="sideNavIcons" (click)="goToBPConfig();offcanvas.dismiss('Cross click')" ><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/gear-solid.svg" class="icon">    BP Configurations</button>
       <!--notifications Sindiswa 12 February 2024-->
       <button mat-button class="sideNavIcons" (click)="openNotificationsModal();offcanvas.dismiss('Cross click')" *ngIf="this.hasNotifications"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bell-solid-notification.svg" class="icon">   Notifications <span *ngIf="notificationsQuantity >= 1">({{ notificationsQuantity }})</span></button><!--routingToProject Sindiswa 05 February 2024-->
       <button mat-button class="sideNavIcons" (click)="openNotificationsModal();offcanvas.dismiss('Cross click')" *ngIf="!this.hasNotifications"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/bell-solid.svg" class="icon">   Notifications</button><!--routingToProject Sindiswa 05 February 2024-->
