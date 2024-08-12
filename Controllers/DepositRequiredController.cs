@@ -92,7 +92,7 @@ namespace BuildingPlans.Controllers
             }
         }
 
-        [HttpPost("DeleteServiceItemID")]
+        [HttpPost("DeleteDepositRequiredByID")]
         public async Task<object> DeleteDepositRequiredByID([FromBody] int depositRequiredID)
         {
             try
@@ -183,7 +183,7 @@ namespace BuildingPlans.Controllers
             {
                 var result = await (
                from depositRequired in _context.DepositRequired
-               where depositRequired.ApplicationID == applicationID && depositRequired.isActive == true
+               where depositRequired.ApplicationID == applicationID 
                select new DepositRequiredDTO()
                {
                    DepositRequiredID = depositRequired.DepositRequiredID,

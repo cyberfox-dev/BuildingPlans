@@ -96,6 +96,10 @@ export interface ServiceItemList {
   dateCreated: any;
   vatApplicable: boolean;
   isChecked: boolean;
+  remarks: string;
+  quantity: number;
+  addAmount: number;
+  servicesRendered: any;
 }
 
 export interface StagesList {
@@ -497,7 +501,7 @@ export class ActionCenterComponent implements OnInit {
   saveBtn: boolean = true;
   option = '';
   planningWayleave: boolean = false;
-  selectSI = 0;
+  selectSI :any;
 
   leaveAComment = "";
   leaveACommentGIS = "";
@@ -606,8 +610,8 @@ export class ActionCenterComponent implements OnInit {
     this.CheckApplicant();
     this.setProjectNumber();
     this.getAllDocumentsForServiceInformation();
-    this.GetSubDepartment();
-
+    /*this.GetSubDepartment();*/
+    this.getAllDepositRequiredForApplication();
 
 
   }
@@ -1921,7 +1925,7 @@ export class ActionCenterComponent implements OnInit {
         for (var i = 0; i < data.dateSet.length; i++) {
 
           let current = data.dateSet[i];
-          if (current.userAssaignedToComment == this.CurrentUser.appUserId) { /*&& current.userAssaignedToComment != this.userID*/
+          if (current.userAssaignedToComment == null) { /*&& current.userAssaignedToComment != this.userID*/
             this.canComment = true;
 
             //if (this.canComment == true && this.canCommentFinalApprover == false) {
@@ -2284,61 +2288,20 @@ export class ActionCenterComponent implements OnInit {
 
 
   async CanCommentFinalApprover() {
+    debugger;
+    if (this.CurrentUserProfile[0].departmentName == "Wayleave" && this.CurrentUserProfile[0].subDepartmentName == "Land Survey") {
+      
+      const data: any = await this.subDepartmentForCommentService.getSubDepartmentForComment(this.ApplicationID).toPromise();
+       
+      const current = data.dateSet;
+      const canComment = current.some(x => x.commentStatus == null);
 
-
-
-    await this.subDepartmentForCommentService.getSubDepartmentForCommentBySubID(this.ApplicationID, this.loggedInUsersSubDepartmentID, this.CurrentUser.appUserId).subscribe((data: any) => {
-      if (data.responseCode == 1) {
-
-        let foundMatch = false;
-        let current = data.dateSet[0];// Flag to track if a match is found
-
-
-        // projectTracker Sindiswa 19 January 2024
-        if (current.userAssaignedToComment == "All users in Subdepartment FA" || (current.userAssaignedToComment !== null && (current.commentStatus == 'Approved' || current.commentStatus === 'Rejected'))) {
-
-
-
-          for (var i = 0; i < this.finalApproverUsers.length; i++) {
-
-
-            if (this.finalApproverUsers[i].userID == this.CurrentUser.appUserId) {
-
-              // Check if any userID in this.finalApproverUsers matches current.userAssaignedToComment
-              if (current.subDepartmentID == this.loggedInUsersSubDepartmentID) {
-
-
-                foundMatch = true;
-                break;
-              }
-
-            }
-
-            if (foundMatch) {
-
-              // A match was found, no need to continue checking
-              break;
-            }
-          }
-        }
-        else {
-          this.canCommentFinalApprover = false;
-        }
-
-
-        this.canCommentFinalApprover = foundMatch;
-        //if (this.ACHeader != "You can comment!") {
-        //  this.ACHeader = "You can final approve!";
-        //}
-
-      } else {
-        alert(data.responseMessage);
+      if (canComment == false) {
+        this.canCommentFinalApprover = true;
       }
+    }
 
-      console.log("response", data);
-    }, error => {
-      console.log("Error: ", error);
-    })
+    console.log("CanCommentFinalApprover Kyle", this.canCommentFinalApprover);
   }
 
 
@@ -3990,14 +3953,14 @@ export class ActionCenterComponent implements OnInit {
     this.SubDepartmentList.splice(0, this.SubDepartmentList.length);
     this.SubDepartmentLinkedList.splice(0, this.SubDepartmentLinkedList.length);
 
-    this.subDepartment.getAllNotLinkedSubDepartmentsForComment(this.ApplicationID).subscribe((data: any) => {
-
+    this.subDepartment.getSubDepartmentForComment(this.ApplicationID).subscribe((data: any) => {
+      debugger;
       if (data.responseCode == 1) {
 
         for (let i = 0; i < data.dateSet.length; i++) {
           const tempSubDepartmentList = {} as SubDepartmentList;
           const current = data.dateSet[i];
-
+          debugger;
           tempSubDepartmentList.subDepartmentID = current.subDepartmentID;
           tempSubDepartmentList.subDepartmentName = current.subDepartmentName;
 
@@ -4025,44 +3988,7 @@ export class ActionCenterComponent implements OnInit {
     })
 
 
-    this.subDepartment.getAllLinkedSubDepartmentsForComment(this.ApplicationID).subscribe((data: any) => {
-
-      if (data.responseCode == 1) {
-
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempSubDepartmentLinkedList = {} as SubDepartmentList;
-          const current = data.dateSet[i];
-
-          tempSubDepartmentLinkedList.subDepartmentID = current.subDepartmentID;
-          tempSubDepartmentLinkedList.UserAssaignedToComment = current.userAssaignedToComment;
-          tempSubDepartmentLinkedList.subDepartmentName = current.subDepartmentName;
-          tempSubDepartmentLinkedList.departmentID = current.departmentID;
-          tempSubDepartmentLinkedList.dateUpdated = current.dateUpdated;
-          tempSubDepartmentLinkedList.dateCreated = current.dateCreated;
-          tempSubDepartmentLinkedList.zoneID = current.zoneID;
-          tempSubDepartmentLinkedList.subdepartmentForCommentID = current.subDepartmentForCommentID;
-
-          this.SubDepartmentLinkedList.push(tempSubDepartmentLinkedList);
-          this.SubDepartmentListTable?.renderRows();
-        }
-
-        this.setRoles();
-        this.SubDepartmentListTable?.renderRows();
-        this.SubDepartmentLinkedListTable?.renderRows();
-        // this.modalService.open(assign, { size: 'xl' });
-      }
-      else {
-        //alert("Invalid Email or Password");
-        alert(data.responseMessage);
-        this.SubDepartmentListTable?.renderRows();
-        this.SubDepartmentLinkedListTable?.renderRows();
-
-      }
-      console.log("reponseGetAllLinkedSubDepartmentsForComment", data);
-
-    }, error => {
-      console.log("Error: ", error);
-    })
+   
 
   }
 
@@ -4148,15 +4074,23 @@ export class ActionCenterComponent implements OnInit {
     this.serviceItemService.getAllServiceItem().subscribe((data: any) => {
       if (data.responseCode == 1) {
 
-
+        debugger;
         for (let i = 0; i < data.dateSet.length; i++) {
-          const tempServiceItemList = {} as ServiceItemCodeDropdown;
+          const tempServiceItemList = {} as ServiceItemList;
           const current = data.dateSet[i];
+
           tempServiceItemList.serviceItemID = current.serviceItemID;
           tempServiceItemList.serviceItemCode = current.serviceItemCode;
-
-          this.ServiceItemCodeDropdown.push(tempServiceItemList);
+          tempServiceItemList.Rate = current.rate;
+          tempServiceItemList.Description = current.description;
+          tempServiceItemList.totalVat = current.totalVat;
+          tempServiceItemList.vatApplicable = current.vatApplicable;
+          tempServiceItemList.dateCreated = current.dateCreated.substring(0, current.dateCreated.indexOf("T"));
+          tempServiceItemList.isChecked = false;
+          tempServiceItemList.quantity = current.quantity;
+          this.DepositReqList.push(tempServiceItemList);
         }
+        console.log("THIS IS ALL THE DEPOSIT REQUIRED FOR THIS APPLICATION", this.ServiceItemList);
         this.modalService.open(deposit, { backdrop: 'static', size: 'xl' });
       }
       else {
@@ -4205,36 +4139,51 @@ export class ActionCenterComponent implements OnInit {
   //}
 
   onPopulateDeposit() {
+    debugger;
+    this.selectSI;
+    this.selectedServiceItems.splice(0, this.selectedServiceItems.length);
 
-    let selectedServiceItem = Number(this.selectSI);
+    for (let i = 0; i < this.selectSI.length; i++) {
 
-    console.log("THIS IS THE SERVICE ITEM CODE", selectedServiceItem);
+      const serviceItemID = parseFloat(this.selectSI[i]);
+      this.description = "";
+      debugger;
 
-    this.serviceItemService.getServiceItemByServiceItemID(selectedServiceItem).subscribe((data: any) => {
-      if (data.responseCode == 1) {
+      this.rate = 0;
+      this.serviceItemService.getServiceItemByServiceItemID(serviceItemID).subscribe((data: any) => {
+        if (data.responseCode == 1) {
 
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempServiceItemList = {} as ServiceItemList;
-          const current = data.dateSet[i];
-          tempServiceItemList.serviceItemID = current.serviceItemID;
-          tempServiceItemList.serviceItemCode = current.serviceItemCode;
-          this.depositRequired.controls["vatApplicable"].setValue(current.vatApplicable);
-          this.depositRequired.controls["description"].setValue(current.description);
+          for (let i = 0; i < data.dateSet.length; i++) {
+            debugger;
+            const tempServiceItem = {} as ServiceItemList;
+            const current = data.dateSet[i];
 
-          this.depositRequired.controls["rate"].setValue(current.rate);
-          this.depositRequired.controls["total"].setValue(current.totalVat);
-          this.depositRequired.controls["remarks"].setValue(current.remarks);
+            tempServiceItem.serviceItemID = current.serviceItemID;
+            tempServiceItem.serviceItemCode = current.serviceItemCode;
+            tempServiceItem.Description = current.description;
+            tempServiceItem.Rate = current.rate;
+            tempServiceItem.servicesRendered = current.servicesRendered;
+            tempServiceItem.quantity = 0;
+            tempServiceItem.remarks = "";
+            tempServiceItem.addAmount = 0;
+            this.rate = parseFloat((this.rate + current.rate).toFixed(2));
+            this.description = this.description + current.servicesRendered;
+            this.selectedServiceItems.push(tempServiceItem);
+
+
+          }
+
+          console.log("SelectedServiceItems", this.selectedServiceItems);
         }
-      }
-      else {
-        alert(data.responseMessage);
-      }
-      console.log("reponse", data);
-    }, error => {
-      console.log("Error: ", error);
-    })
+        else {
+          alert(data.responseMessage);
+        }
+        console.log("reponse", data);
+      }, error => {
+        console.log("Error: ", error);
+      })
+    }
   }
-
   departmentSelectedForLink(department: any) {
 
     this.selection.toggle(department);
@@ -5494,7 +5443,9 @@ export class ActionCenterComponent implements OnInit {
 
 
     }
-
+    else if (this.canCommentFinalApprover == true) {
+      this.openXl(content);
+    }
     else if ((this.userAssignedText != null && this.userAssignedText != "Senior Reviewer to comment" && this.userAssignedText != "All users in Subdepartment FA") && (this.commentState == "Approved" || this.commentState == "Referred" || this.commentState == "Approved(Conditional)" || this.commentState == "Rejected")) {
       alert("This application is currently under review by a senior reviewer or final approver.");
     }
@@ -5505,367 +5456,49 @@ export class ActionCenterComponent implements OnInit {
 
 
 
-    let SubDepartmentName = "";
-    for (var i = 0; i < this.SubDepartmentLinkedList.length; i++) {
-      if (this.SubDepartmentLinkedList[i].subDepartmentID == this.loggedInUsersSubDepartmentID) {
-        SubDepartmentName = this.SubDepartmentLinkedList[i].subDepartmentName;
-      }
-    }
+    
 
     if (this.leaveAComment == "") {
-      alert("Please leave a comment on what you need clafication on");
+      alert("Please leave a comment ");
     }
     else {
       switch (interact) {
-        case "Clarify": {
+        case "Approve": {
+          this.subDepartmentForCommentService.getSubDepartmentForComment(this.ApplicationID).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              for (let i = 0; i < data.dateSet.length; i++) {
+                const current = data.dateSet[i];
 
-          // this.getDepartmentManagerUserID("Senior Reviewer");
-          if (confirm("Are you sure you want to get clarity from applicant for this application?")) {
-
-            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
-
-              if (data.responseCode == 1) {
-                const emailContent = `
-        <html>
-        <head>
-          <style>
-            /* Define your font and styles here */
-            body {
-             font-family: 'Century Gothic';
-            }
-            .email-content {
-              padding: 20px;
-              border: 1px solid #ccc;
-              border-radius: 5px;
-            }
-            .footer {
-              margin-top: 20px;
-              color: #777;
-            }
-            .footer-logo {
-              display: inline-block;
-              vertical-align: middle;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="email-content">
-            <p>Dear ${this.loggedInUserName}</p>
-            <p>You have requested clarity on ${this.projectNo} with the comment:</p>
-            <p>${this.leaveAComment}</p>
-               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
-                          <p>
-              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
-            </p>
-             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
-          </div>
-
-        </body>
-      </html>
-     
-           
-    `;
-
-
-
-                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
-                if (this.CurrentUserProfile[0].alternativeEmail) {
-                  this.notificationsService.sendEmail(this.CurrentUserProfile[0].alternativeEmail, "Request for clarification", emailContent, emailContent);
-                }
-
-                /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-                */
-                const emailContentApp = `
-        <html>
-        <head>
-          <style>
-            /* Define your font and styles here */
-            body {
-             font-family: 'Century Gothic';
-            }
-            .email-content {
-              padding: 20px;
-              border: 1px solid #ccc;
-              border-radius: 5px;
-            }
-            .footer {
-              margin-top: 20px;
-              color: #777;
-            }
-            .footer-logo {
-              display: inline-block;
-              vertical-align: middle;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="email-content">
-            <p>Dear ${this.applicationData.clientName}</p>
-            <p>A reviewer has asked you to clarify your application ${this.projectNo} with the comment:</p>
-            <p>${this.leaveAComment}</p>
-               <p >Please login to the <a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a> and provide a response</p>
-               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
-                          <p>
-              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
-            </p>
-             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
-          </div>
-
-        </body>
-      </html>
-     
-           
-    `;
-
-
-
-                this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
-                if (this.applicationData.clientAlternativeEmail) {
-                  this.notificationsService.sendEmail(this.applicationData.clientAlternativeEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
-                }
-/*              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/              this.notificationsService.addUpdateNotification(0, "Wayleave Application Request", "Request for clarification", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserId, "You have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
-
-                  if (data.responseCode == 1) {
-
-
-                  }
-                  else {
-                    alert(data.responseMessage);
-                  }
-
-                  console.log("response", data);
-                }, error => {
-                  console.log("Error", error);
-                });
-                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarificaion", false, this.applicationData.UserID, this.ApplicationID, this.CurrentUser.appUserId, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
-
-                  if (data.responseCode == 1) {
-
-
-                  }
-                  else {
-                    alert(data.responseMessage);
-                  }
-
-                  console.log("response", data);
-                }, error => {
-                  console.log("Error", error);
-                });
-
-                //commentsService                                                                                                                                                                                                                                        //Comments Kyle 01/02/24 //Clarify Alerts Kyle 
-                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Applicant Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.CurrentApplication.UserID).subscribe((data: any) => {
-                  //Comments Kyle 01/02/24
-                  if (data.responseCode == 1) {
-
-
-                    this.viewProjectInfoComponent.getAllComments();
-                  }
-                  else {
-                    alert(data.responseMessage);
-
-                  }
-                  console.log("reponse", data);
-
-                }, error => {
-                  console.log("Error: ", error);
-                })
-                this.refreshParent.emit();
+                this.UpdateCommentStatusToFinalApproved(current.subDepartmentForCommentID);
+               
               }
-              else {
-                alert(data.responseMessage);
+              this.moveToMonitoring();
+            }
+            else {
+              alert(data.reponseMessage);
+            }
+          })
 
-              }
-              console.log("reponse", data);
-
-            }, error => {
-              console.log("Error: ", error);
-            })
-            // alert("In progress");
-            this.modalService.dismissAll();
-            this.openSnackBar("Application Actioned");
-            this.router.navigate(["/home"]);
-
-
-          }
           break;
         }
 
-        case "Reviewer": {
-          if (confirm("Are you sure you want to get clarity from the previous reviewer?")) {
+        case "Reject": {
+          this.subDepartmentForCommentService.getSubDepartmentForComment(this.ApplicationID).subscribe((data: any) => {
+            if (data.responseCode == 1) {
+              for (let i = 0; i < data.dateSet.length; i++) {
+                const current = data.dateSet[i];
 
-            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentUser.appUserId, null).subscribe((data: any) => {
-
-              if (data.responseCode == 1) {
-
-                const emailContent = `
-        <html>
-        <head>
-          <style>
-            /* Define your font and styles here */
-            body {
-             font-family: 'Century Gothic';
-            }
-            .email-content {
-              padding: 20px;
-              border: 1px solid #ccc;
-              border-radius: 5px;
-            }
-            .footer {
-              margin-top: 20px;
-              color: #777;
-            }
-            .footer-logo {
-              display: inline-block;
-              vertical-align: middle;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="email-content">
-            <p>Dear ${this.loggedInUserName}</p>
-            <p>You have requested reviewer clarity on ${this.projectNo} with the comment:</p>
-            <p>${this.leaveAComment}</p>
-               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
-                          <p>
-              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
-            </p>
-             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
-          </div>
-
-        </body>
-      </html>
-     
-           
-    `;
-
-
-
-                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
-                if (this.CurrentUserProfile[0].alternativeEmail) {
-                  this.notificationsService.sendEmail(this.CurrentUserProfile[0].alternativeEmail, "Request for clarification", emailContent, emailContent);
-                }
-                /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-                */
-                const emailContentApp = `
-        <html>
-        <head>
-          <style>
-            /* Define your font and styles here */
-            body {
-             font-family: 'Century Gothic';
-            }
-            .email-content {
-              padding: 20px;
-              border: 1px solid #ccc;
-              border-radius: 5px;
-            }
-            .footer {
-              margin-top: 20px;
-              color: #777;
-            }
-            .footer-logo {
-              display: inline-block;
-              vertical-align: middle;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="email-content">
-            <p>Dear ${this.previousReviewer.fullName}</p>
-            <p>A final approver has asked you to clarify application ${this.projectNo} with the comment:</p>
-            <p>${this.leaveAComment}</p>
-               <p >Please login to the <a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a> and provide a response</p>
-               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
-                          <p>
-              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
-            </p>
-             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
-          </div>
-
-        </body>
-      </html>
-     
-           
-    `;
-
-
-
-                this.notificationsService.sendEmail(this.previousReviewer.email, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
-                if (this.previousReviewer.alternativeEmail) {
-                  this.notificationsService.sendEmail(this.previousReviewer.alternativeEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
-                }
-/*              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/              this.notificationsService.addUpdateNotification(0, "Wayleave Application Request", "Request for clarification", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserId, "You have asked a snenior reviewer to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
-
-                  if (data.responseCode == 1) {
-
-
-                  }
-                  else {
-                    alert(data.responseMessage);
-                  }
-
-                  console.log("response", data);
-                }, error => {
-                  console.log("Error", error);
-                });
-                this.notificationsService.addUpdateNotification(0, "Wayleave Application", "Request for clarificaion", false, this.CurrentUser.appUserId, this.ApplicationID, this.previousReviewer.userID
-                  , "A final approver has asked that you clarify application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
-
-                    if (data.responseCode == 1) {
-
-
-                    }
-                    else {
-                      alert(data.responseMessage);
-                    }
-
-                    console.log("response", data);
-                  }, error => {
-                    console.log("Error", error);
-                  });
-
-                //commentsService                                                                                                                                                                                                                                        //Comments Kyle 01/02/24
-                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Reviewer Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.previousReviewer.userID).subscribe((data: any) => {
-                  //Comments Kyle 01/02/24
-
-                  if (data.responseCode == 1) {
-
-                    console.log("Comment Created Kyle");
-                    this.viewProjectInfoComponent.getAllComments();
-                  }
-                  else {
-                    alert(data.responseMessage);
-
-                  }
-                  console.log("reponse", data);
-
-                }, error => {
-                  console.log("Error: ", error);
-                })
-                this.refreshParent.emit();
+                this.UpdateCommentStatusToRejected(current.subDepartmentForCommentID);
               }
-              else {
-                alert(data.responseMessage);
-
-              }
-              console.log("reponse", data);
-
-            }, error => {
-              console.log("Error: ", error);
-            })
-            // alert("In progress");
-            this.modalService.dismissAll();
-            this.openSnackBar("Application Actioned");
-            this.router.navigate(["/home"]);
-          }
-
-        }
+            }
+            else {
+              alert(data.reponseMessage);
+            }
+          })
           break;
 
+        }
       }
-
     }
   }
   //Final Approver && Senior Approver Kyle 01/02/24
@@ -7152,8 +6785,301 @@ export class ActionCenterComponent implements OnInit {
       })
     }
   }
-}
 
+  UpdateCommentStatusToFinalApproved(subDepForCommentID: number) {
+    this.subDepartmentForCommentService.updateCommentStatus(subDepForCommentID, "Final Approved", false, null, null, true).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log(error);
+    })
+  }
+
+  UpdateCommentStatusToRejected(subDepForCommentID: number) {
+    this.subDepartmentForCommentService.updateCommentStatus(subDepForCommentID, "Rejected", false, null, null, true).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log(error);
+    })
+  }
+
+  showSelection: boolean = false;
+  showAddBox: boolean = false;
+
+  DepositReqList: ServiceItemList[] = [];
+  selectedServiceItems: ServiceItemList[] = [];
+
+  totalAmountDeposit: number;
+  totalExVatDeposit: number;
+  totalVatDeposit: Number;
+  totalExVatSupervision: number;
+  onNumberChange(event: Event) {
+    this.totalAmountDeposit = 0;
+    this.totalExVatDeposit = 0;
+    this.totalVatDeposit = 0;
+    let addAmount = 0;
+    for (let i = 0; i < this.selectedServiceItems.length; i++) {
+      const current = this.selectedServiceItems[i];
+      debugger;
+      this.totalExVatDeposit = Number(this.totalExVatDeposit) + Number(current.Rate * current.quantity);
+      addAmount = Number(addAmount) + Number(current.addAmount);
+      current.totalVat = Number(current.Rate) + Number(current.addAmount);
+    }
+    debugger;
+    this.totalExVatDeposit = this.totalExVatDeposit + Number(addAmount);
+    this.totalVatDeposit = Number(this.totalVatDeposit) * 0.15;
+    const totalIncVat = Number(this.totalExVatSupervision) + Number(this.totalVatDeposit);
+
+
+
+    this.totalAmountDeposit = this.totalExVatDeposit + Number(addAmount);
+
+  }
+
+  showBox() {
+    this.showAddBox = true;
+  }
+
+  goBackToSelection() {
+    this.showSelection = false;
+  }
+
+  confirmSelection() {
+    this.showSelection = true;
+  }
+
+  genInvoice2() {
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    const img = new Image();
+    img.src = 'assets/Msunduzi_CoA.png';
+
+    doc.addFont('assets/century-gothic/CenturyGothic.ttf', 'CustomFont', 'normal');
+    doc.addFont('assets/century-gothic/GOTHICB0.TTF', 'CustomFontBold', 'bold');
+    doc.setFont('CustomFont', 'normal');
+    let currentPage = 1;
+    // Add logo
+    doc.addImage(img, 'png', 6, 10, 50, 40);
+
+    // Set font for header
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.text('Msunduzi Municipality', 200, 17, { align: 'right' });
+    doc.text('341 Church Street', 200, 22, { align: 'right' });
+    doc.text('Pietermaritzburg 3201', 200, 27, { align: 'right' });
+
+    // Website and Portal links
+    doc.setFont('CustomFontBold', 'bold');
+
+    doc.setTextColor(0, 88, 112);
+    doc.textWithLink('http://www.msunduzi.gov.za/site/home/index.html', 200, 35, { align: 'right' });
+
+    // Reference number
+    doc.setTextColor(0, 0, 0);
+    doc.text('Reference Number: ' + "to be determined", 200, 50, { align: 'right' });
+
+    // Date and project description
+    doc.setFontSize(10);
+    doc.setFont('CustomFont', 'normal');
+    doc.text('DATE : ' + this.formattedDate, 10, 60, { align: 'left' });
+    doc.text('BUILDING PLANS APPLICATION: ', 10, 70, { maxWidth: 190, lineHeightFactor: 1.5, align: 'left' });
+
+    // Greeting
+    doc.text('Dear ' + this.applicationData.clientName, 10, 80, { align: 'left' });
+
+    // Application summary
+    doc.text('Please find below service items', 10, 90, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+
+    // Status summary title
+    doc.setFont('CustomFontBold', 'bold');
+    doc.text('Status Summary:', 10, 110, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFont', 'normal');
+
+    const data = this.selectedServiceItems.map(deposit => [deposit.serviceItemCode, deposit.Description, deposit.totalVat]);
+    // Render the table in the PDF document
+    autoTable(doc, {
+      head: [['Service Item', 'Description', 'Total']], // Define table headers
+      body: data, // Populate table body with data
+      startY: 120, // Start position of the table on the Y axis
+      headStyles: { fillColor: '#005870' }, // Header styles
+      styles: {
+        fontSize: 8, // Font size for table content
+        halign: 'left', // Horizontal alignment for table content
+        valign: 'middle', // Vertical alignment for table content
+      },
+      columnStyles: {
+        0: { cellWidth: 50, fontStyle: 'bold' }, // Style for the first column
+        1: { cellWidth: 50 }, // Style for the second column
+        2: { cellWidth: 30 }, // Style for the second column
+      },
+    });
+    // Rejection summary
+    doc.setFontSize(10);
+    doc.setFont('CustomFont', 'italic');
+    doc.text("Disclaimer:\n This Pack and all associated attachments are intended for the named recipient / s only, and are not transferrable to a third party.The City reserves the right to revoke this permit in the event of infringements, change in scope, methodology or site - specific conditions and / or discovery of new or additional information.Expiry of the Permit validity for one or more departments will render the entire Pack invalid.It is the responsibility of the named recipient to apply timeously for renewals as applicable. Note that it is the recipient’s sole responsibility to ascertain the exact location and depth of existing services infrastructure.The City will not be held liable for consequences resulting from decisions based on any information provided in good faith.", 10, 190, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFont', 'normal');
+    // Signature
+    doc.setFontSize(12);
+    doc.setFont('CustomFontBold', 'bold');
+    doc.text('CITY OF PIETERMARITZBURG', 10, 260, { maxWidth: 190, lineHeightFactor: 1.5, align: 'justify' });
+    doc.setFont('CustomFont', 'italic');
+
+    // Save PDF document
+
+    const pdfData = doc.output('blob'); // Convert the PDF document to a blob object
+    const file = new File([pdfData], 'Deposit Required Invoice', { type: 'application/pdf' });
+
+
+    // Prepare the form data
+    const formData = new FormData();
+    formData.append('file', file);
+    this.sharedService.pushFileForTempFileUpload(file, "Deposit Required Invoice" + ".pdf");
+    this.saveDeposit();
+
+    // window.open(pdfUrl, '_blank')
+
+    // this.router.navigate(["/home"]);
+
+  }
+
+
+  saveDeposit() {
+
+
+
+
+    const filesForUpload = this.sharedService.pullFilesForUpload();
+    for (var i = 0; i < filesForUpload.length; i++) {
+      const formData = new FormData();
+      let fileExtention = filesForUpload[i].UploadFor.substring(filesForUpload[i].UploadFor.indexOf('.'));
+      let fileUploadName = filesForUpload[i].UploadFor.substring(0, filesForUpload[i].UploadFor.indexOf('.')) + "-appID-" + this.ApplicationID;
+      formData.append('file', filesForUpload[i].formData, fileUploadName + fileExtention);
+
+
+
+
+      this.http.post(this.apiUrl + 'documentUpload/UploadDocument', formData, { reportProgress: true, observe: 'events' })
+        .subscribe({
+          next: (event) => {
+
+
+            if (event.type === HttpEventType.UploadProgress && event.total)
+              this.progress = Math.round(100 * event.loaded / event.total);
+            else if (event.type === HttpEventType.Response) {
+              this.message = 'Upload success.';
+              this.uploadFinishedDeposit(event.body);
+
+            }
+          },
+          error: (err: HttpErrorResponse) => console.log(err)
+        });
+    }
+
+  }
+
+  uploadFinishedDeposit = (event: any) => {
+    const currentApplication = this.sharedService.getViewApplicationIndex();
+
+    this.response = event;
+    console.log("this.response", this.response);
+    console.log("this.response?.dbPath", this.response?.dbPath);
+
+
+    const documentName = this.response?.dbPath.substring(this.response?.dbPath.indexOf('d') + 2);
+    console.log("documentName", documentName);
+    //JJS Commit Permit Cover 30 May 24
+    /*    this.documentUploadService.addUpdateDocument(0, documentName, this.response?.dbPath, this.ApplicationID, this.CurrentUser.appUserId, this.CurrentUser.appUserId,"PTW").subscribe((data: any) => {*/
+    this.financialService.addUpdateFinancial(0, "Deposit Required Invoice", "Generated Pack", documentName, this.response?.dbPath, this.ApplicationID, "System Generated Pack").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        /*  this.router.navigate(["/home"]);*/
+      }
+
+    }, error => {
+      console.log("Error: ", error);
+    })
+
+
+    this.depositRequiredService.addUpdateDepositRequired(0, null, this.totalAmountDeposit, this.ApplicationID, "Wayleave Deposit Required", this.CurrentUserProfile[0].subDepartmentID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        this.router.navigate(["/home"]);
+      }
+    }, error => {
+      console.log("Error:", error);
+    })
+
+  }
+  hasDeposit: boolean = false;
+  depositPaid: boolean = false;
+  getAllDepositRequiredForApplication() {
+    this.depositRequiredService.getDepositRequiredByApplicationID(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        if (data.dateSet.length > 0) {
+          if (data.dateSet.some(x => x.isActive == false)) {
+            this.hasDeposit = true;
+            this.depositPaid = true;
+          }
+          else {
+            this.hasDeposit = true;
+            this.depositPaid = false;
+          }
+         
+        }
+      }
+      else {
+        this.hasDeposit = false;
+      }
+    }, error => {
+      console.log(error);
+    })
+  }
+
+  moveToMonitoring() {
+    this.subDepartmentForCommentService.getSubDepartmentForComment(this.ApplicationID).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        if (data.dateSet.some(x => x.commentStatus == null)) {
+         //not all the departments are final approved
+        }
+        else {
+          this.applicationsService.updateApplicationStage(this.ApplicationID, this.StagesList[4].StageName, this.StagesList[4].StageOrderNumber, this.StagesList[5].StageName, this.StagesList[5].StageOrderNumber, this.StagesList[6].StageName, this.StagesList[6].StageOrderNumber, "Monitoring", null).subscribe((data: any) => {
+
+            if (data.responseCode == 1) {
+              //Audit Trail Kyle 
+
+              this.onSaveToAuditTrail2("Application Moved To Monitoring Stage");
+              //Audit Traik Kyle 
+              alert("Application Moved To Monitoring");
+              this.modalService.dismissAll();
+              this.router.navigate(["/home"]);
+
+            }
+            else {
+              alert(data.responseMessage);
+            }
+            console.log("responseAddapplication", data);
+          }, error => {
+            console.log("Error", error);
+          })
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    })
+  }
+}
 
 
 

@@ -59,7 +59,7 @@
   <app-action-center [ApplicationID]="ApplicationID" (refreshParent)="ngOnInit()" *ngIf="isInternalUser && InternalExternalUser == false && generateApprovalbtn == false" (optionEvent)="reciveOption($event)" class="animationSlideUp"></app-action-center>
   <button mat-button color="action" [matMenuTriggerFor]="actions" class="animationSlideUp"> <img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ellipsis-vertical-solid.svg" class="icon"></button>
   <mat-menu #actions="matMenu">
-    <button mat-menu-item (click)="openPaidDate(paidDateModal)" *ngIf="EMB"> Move to Paid</button>
+    <button mat-menu-item (click)="openPaidDate(paidDateModal)" *ngIf="CurrentUserProfile[0].subDepartmentName == 'Land Survey'"> Move to Paid</button>
     <!--<button mat-menu-item (click)="MoveToNextStage()" *ngIf="isInternalUser">Move to Next Stage</button>-->
     <!--<button mat-menu-item (click)="MoveToNextStage()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon"> Cancel Application</button>--><!--reapply Sindiswa 22 January 2023-->
     <button mat-menu-item (click)=" moveToClosed()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/ban-solid.svg" class="icon"> Cancel Application</button>
@@ -360,7 +360,7 @@
               <!---- Financial POP Kyle 15/01/24-->
               <!--<button  (click)="genInvoice()" mat-raised-button color="permit" [disabled]="fromReApplyArchive == true">Generate Invoice</button>-->
               <button *ngIf="applicationDataForView[0].ApplicationStatus == 'Unpaid' && uploadedPOP == false" (click)="openDocUpload(newSub);OnPOPUpload()" mat-raised-button color="permit" [disabled]="fromReApplyArchive == true">Upload Proof Of Payment</button>
-
+             <button *ngIf="hasDeposit == true" mat-raised-button color="permit" (click)="openDocUpload(newSub);onUploadDepositPOP()">Upload  Deposit Proof Of Payment</button>
               <!----Financial POP Kyle 15/01/24-->
 
           </div>
@@ -398,12 +398,12 @@
           <input type="text" class="form-control" id="wbsNumberRequested" placeholder="WBS Number" [(ngModel)]="wbsNumberRequested" readonly>
           <label for="wbsNumberRequested">WBS Number</label>
         </div>
-        <div class="cont" *ngIf="isInternalUser">
+        <!--div class="cont" *ngIf="isInternalUser">
           <button mat-raised-button (click)="enterWBSNumberModal(wbsNumberModal)" color="orange" *ngIf="WBSBtn">WBS</button>
           <button mat-raised-button color="orange" *ngIf="isEMBUser" (click)="generateConsolidatedDepositInvoice()">Consolidate Deposits</button>
           <button mat-raised-button color="orange" *ngIf="isEMBUser">Deposit Refund</button>
           <button mat-raised-button color="orange" *ngIf="isEMBUser" (click)="generateInvoiceSplit()">Invoice Split</button>
-        </div>
+        </div>-->
         <!--        <input type="text" id="datePaid" placeholder="DatePaid" [(ngModel)]="datePaid" readonly>-->
         <div class="alert alert-info" role="alert" *ngIf="ExternalPaid">This application has been paid on the : {{Paid}}</div>
 
@@ -949,7 +949,7 @@
                                      (onUploadSuccess)="onFileUpload2($event,i)">
                     </app-file-upload>
                   </div>
-                  <button mat-raised-button color="blue2"  *ngIf="manDoc.hasFile === true" matTooltip="View Document" (click)="viewDocument2(i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid.svg" class="icon blue"></button>
+                  <button mat-raised-button color="blue2"  *ngIf="manDoc.hasFile === true " matTooltip="View Document" (click)="viewDocument2(i)"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid.svg" class="icon blue"></button>
                 </mat-toolbar>
                
               </div>

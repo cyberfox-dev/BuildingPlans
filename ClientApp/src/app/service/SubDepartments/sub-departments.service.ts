@@ -14,8 +14,8 @@ export class SubDepartmentsService {
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
 
-  public addUpdateSubDepartment(subDepartmentID: number | null, subDepartmentName: string | null, departmentID: number | null, createdById: string | null ,glCode: string| null, profitCenter: string| null ,permitExpiration:number|null ,wayleaveExpiration:number|null, needsZXNumber: boolean | null) {
-    
+  public addUpdateSubDepartment(subDepartmentID: number | null, subDepartmentName: string | null, departmentID: number | null, createdById: string | null, glCode: string | null, profitCenter: string | null, permitExpiration: number | null, wayleaveExpiration: number | null, needsZXNumber: boolean | null) {
+
     const body = {
       SubDepartmentID: subDepartmentID,
       SubDepartmentName: subDepartmentName,
@@ -32,12 +32,12 @@ export class SubDepartmentsService {
   }
 
 
-  public addDepartmentAdmin(subDepartmentID: number | null, DepartmentAdminUserID:string) {
+  public addDepartmentAdmin(subDepartmentID: number | null, DepartmentAdminUserID: string) {
 
     const body = {
       SubDepartmentID: subDepartmentID,
       SubDepartmentAdminUserID: DepartmentAdminUserID,
-  
+
     }
     return this.httpClient.post(this.baseURL + "AddSubDepartmentAdmin", body);
 
@@ -66,12 +66,12 @@ export class SubDepartmentsService {
 
   }
 
-  public getSubDepartmentsByDepartmentID(departmentId : number ) {
-  
+  public getSubDepartmentsByDepartmentID(departmentId: number) {
+
     const body = {
- 
+
       DepartmentID: departmentId,
-      
+
     }
     return this.httpClient.post(this.baseURL + "GetSubDepartmentByDepartmentID", body);
 
@@ -80,14 +80,14 @@ export class SubDepartmentsService {
   public getSubDepartmentBySubDepartmentID(subDepID: number) {
 
     const body = {
-     
+
       SubDepartmentID: subDepID,
 
     }
     return this.httpClient.post(this.baseURL + "GetSubDepartmentBySubDepartmentID", body);
 
   }
-  
+
   public getAllSubDepartmentsForAutoDistribution() {
 
     return this.httpClient.get(this.baseURL + "GetAllSubDepartmentsForAutoDistribution");
@@ -102,5 +102,11 @@ export class SubDepartmentsService {
     }
     return this.httpClient.post(this.baseURL + " GetSubDepartmentID", body);
   }
- 
+
+  public getSubDepartmentForComment(applicationID: number | null) {
+    const body = {
+      ApplicationID :applicationID
+    }
+    return this.httpClient.post(this.baseURL + "GetSubDepartmentForComment", body);
+  }
 }
