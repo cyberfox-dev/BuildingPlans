@@ -126,9 +126,9 @@ export class CreateNewApplicationComponent implements OnInit {
           tempApplicationList.TestApplicationStageAge = stageDateDiff;
           console.log("WheknfnfetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAgetempApplicationList.TestApplicationStageAge", tempApplicationList.TestApplicationStageAge);
 
+          debugger;
 
-
-          if (current.projectNumber != null) {
+          if (current.projectNumber != null && current.projectNumber != "") {
             tempApplicationList.ProjectNumber = current.projectNumber;
           } else {
             tempApplicationList.ProjectNumber = (current.applicationID).toString();

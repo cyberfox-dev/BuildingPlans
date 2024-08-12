@@ -1949,7 +1949,7 @@ this.subscriptions.push(subscription);
   createWayleave(applicationType: boolean, isPlanning: boolean) {
     //application type refers to whether it is a brand new application or if it is a reapply.
     console.log("THIS IS THE APPLICATION TYPE", applicationType);
-    this.sharedService.setReapply(applicationType);
+   /* this.sharedService.setReapply(applicationType)*/;
 
     
     if (this.option == "client" || this.option == 'proxy') {
@@ -7012,7 +7012,7 @@ this.subscriptions.push(subscription);
     debugger;
     this.sharedService.setApplicationBeingCreatedType(this.ApplicationBeginCreatedType);
     this.isArchivePlan = isPlanArchive;
-    if (this.isArchitect == false || this.isArchitect == null) {
+    if (this.isArchitect == false || this.isArchitect == null && this.CurrentUserProfile[0].isInternal == true) {
      
       this.openSm(this.content);
     }
@@ -7021,7 +7021,7 @@ this.subscriptions.push(subscription);
       this.openClientOption(this.clientOption);
     }
     else {
-      this.getAllArchitectsForUser();
+      this.onCreateBuildingApplication();
 
       this.sharedService.External = true;
     }
@@ -7064,25 +7064,28 @@ this.subscriptions.push(subscription);
 
   isWayleave: boolean;
     onCreateBuildingApplication() {
-    
-    /* NEEDED FOR FILE UPLOAD TO WORK CORRECTLY*/
-      this.bpApplicationService.addUpdateBuildingApplication(0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.CurrentUser.appUserId, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,null).subscribe((data: any) => {
-      if (data.responseCode == 1) {
-        
-        const current = data.dateSet;
-        this.bpApplicationId = current.applicationID;
-        
-        this.sharedService.applicationID = this.bpApplicationId;
-        this.sharedService.isPlanArchive = this.isArchivePlan;
-        this.router.navigate(['/building-application']);
+      if (this.isWayleave) {
+        this.createWayleave(false, false);
       }
       else {
-        alert(data.responseMessage)
-      }
-    }, error => {
-      console.log("BuildingApplicationError: ", error)
-    })
+        /* NEEDED FOR FILE UPLOAD TO WORK CORRECTLY*/
+        this.bpApplicationService.addUpdateBuildingApplication(0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.CurrentUser.appUserId, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+          if (data.responseCode == 1) {
 
+            const current = data.dateSet;
+            this.bpApplicationId = current.applicationID;
+
+            this.sharedService.applicationID = this.bpApplicationId;
+            this.sharedService.isPlanArchive = this.isArchivePlan;
+            this.router.navigate(['/building-application']);
+          }
+          else {
+            alert(data.responseMessage)
+          }
+        }, error => {
+          console.log("BuildingApplicationError: ", error)
+        })
+      }
   }
   GetAllPreInvoiceScrutinyApplications() {
     

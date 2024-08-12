@@ -33,7 +33,8 @@ import { DomSanitizer, SafeHtml, SafeResourceUrl, SafeUrl } from '@angular/platf
 import { ApprovalPackComponent } from 'src/app/Packs//ApprovalPackComponent/approval-pack.component';
 import { StatusOfWorksComponent } from 'src/app/status-of-works/status-of-works.component';
 import { MandatoryDocumentUploadService } from 'src/app/service/MandatoryDocumentUpload/mandatory-document-upload.service';
-
+import { SnackBarAlertsComponent } from '../../snack-bar-alerts/snack-bar-alerts.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 /*import { PdfGenerationService } from 'src/app/service/PDFGeneration/pdf-generation.service';*/
 
 import 'jspdf-autotable';
@@ -47,6 +48,7 @@ import { AuditTrailService } from '../../service/AuditTrail/audit-trail.service'
 
 import { DepartmentsService } from '../../service/Departments/departments.service'; //zxNumberUpdate Sindiswa 01 March 2024
 import { ZXNumberService } from '../../service/ZXNumber/zxnumber.service';
+import { BpDepartmentsService } from '../../service/BPDepartments/bp-departments.service';
 export interface RolesList {
   RoleID: number;
   RoleName: string;
@@ -538,6 +540,20 @@ export class ViewProjectInfoComponent implements OnInit {
     this.uploadingPOP = true;
     
   }
+  openSnackBar(message: string) {
+    this._snackBar.openFromComponent(SnackBarAlertsComponent, {
+      data: { message }, // Pass the message as data to the component
+      duration: 2 * 1000,
+      panelClass: ['green-snackbar'],
+      verticalPosition: 'top',
+    });
+  }
+  isDeposit: boolean = false;
+  onUploadDepositPOP() {
+    this.fileAttrsName = "Deposit Proof Of Payment";
+    this.fileAttrs = "Deposit Proof Of Payment";
+    this.isDeposit = true; 
+  }
    //  Financial POP Kyle 15/01/24
   isFinancial = true;
 
@@ -604,6 +620,8 @@ export class ViewProjectInfoComponent implements OnInit {
     private auditTrailService: AuditTrailService,
     private statusOfWorksComponent: StatusOfWorksComponent,
     private mandatroyDocumentUploadService: MandatoryDocumentUploadService,
+    private _snackBar: MatSnackBar,
+    private bpDepartmentsService: BpDepartmentsService,
     //Audit Trail Kyle
     /*zxNumberUpdate Sindiswa 01 March 2024*/private departmentService: DepartmentsService,
     /*zxNumberUpdate Sindiswa 01 March 2024*/private zxNumberService: ZXNumberService,
@@ -789,6 +807,7 @@ export class ViewProjectInfoComponent implements OnInit {
     //#region zxNumberUpdate Sindiswa 01 March 2024
     this.shouldShowPreInvoice();
     this.getZXDepartments();
+    this.getAllRequiredDeposits();
     //#endregion
   }
   // #region reapply Sindiswa 26 January 2024
@@ -1314,14 +1333,46 @@ export class ViewProjectInfoComponent implements OnInit {
     } else {
       this.hasFile = true;
     }
+
+    debugger;
+    if (this.isDeposit == true) {
+      this.depositRequiredService.getDepositRequiredByApplicationID(this.ApplicationID).subscribe((data: any) => {
+        if (data.responseCode === 1) {
+          const current = data.dateSet[0];
+          const depositRequiredID = current.depositRequiredID;
+          debugger;
+          this.depositRequiredService.deleteDepositRequiredByID(depositRequiredID).subscribe((data: any) => {
+            debugger;
+            if (data.responseCode == 1) {
+              alert("Proof of Payment Uploaded Successfully");
+              this.router.navigate(["/home"]);
+
+            }
+            else {
+              alert(data.responseMessage);
+            }
+          }, error => {
+            console.log(error);
+          })
+        }
+        else {
+          alert(data.responseMessage);
+        }
+      })
+    }
   }
   onFileUpload(event: any) {
    
-
     
   }
   onFileUpload2(event: any, index: any) {
-    this.MandatoryDocumentUploadList[index].hasFile = true;
+    
+    
+    
+      this.MandatoryDocumentUploadList[index].hasFile = true;
+    
+
+   
   }
 
   onAutoLinkForPermit() {
@@ -1908,6 +1959,7 @@ export class ViewProjectInfoComponent implements OnInit {
     })
   }
 
+  hasDeposit: boolean = false;
   getAllRequiredDeposits() {
 
 
@@ -1915,28 +1967,15 @@ export class ViewProjectInfoComponent implements OnInit {
 
       if (data.responseCode == 1) {
 
-        for (let i = 0; i < data.dateSet.length; i++) {
-          const tempDepositRequired = {} as DepositRequired;
-          const current = data.dateSet[i];
-
-          tempDepositRequired.ApplicationID = current.applicationID;
-          tempDepositRequired.DepositRequiredID = current.depositRequiredID;
-          tempDepositRequired.Desciption = current.desciption;
-          tempDepositRequired.Quantity = current.quantity;
-          
-          tempDepositRequired.Rate = current.rate;
-          tempDepositRequired.SubDepartmentForCommentID = current.subDepartmentForCommentID;
-          tempDepositRequired.SubDepartmentID = current.subDepartmentID;
-          tempDepositRequired.SubDepartmentName = current.subDepartmentName.replace(/\r?\n|\r/g, '');
-          tempDepositRequired.WBS = current.wbs;
-
-
-
-          this.DepositRequired.push(tempDepositRequired);
-
+        if (data.dateSet.length > 0) {
+          this.hasDeposit = true;
         }
 
-        console.log(" this.DepositRequiredList this.DepositRequiredList this.DepositRequiredList this.DepositRequiredList", this.DepositRequired);
+        else {
+          this.hasDeposit = false;
+        }
+
+       
 
       }
       else {
@@ -2424,98 +2463,31 @@ export class ViewProjectInfoComponent implements OnInit {
   ChangeApplicationStatusToPaid() {
     
     if (this.CurrentApplicationBeingViewed[0].CurrentStageName == this.StagesList[1].StageName && this.CurrentApplicationBeingViewed[0].ApplicationStatus == "Unpaid") {
-
       this.configService.getConfigsByConfigName("ProjectNumberTracker").subscribe((data: any) => {
         if (data.responseCode == 1) {
-
           const current = data.dateSet[0];
-          this.configNumberOfProject = current.utilitySlot1;
+          const configID = current.configID;
+          this.configNumberOfProject = Number(current.utilitySlot1) + 1;
           this.configMonthYear = current.utilitySlot2;
-          this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
+
+          this.ProjectNum = "WL:" +this.configNumberOfProject.toString() + "/" + this.configMonthYear;
+
+          this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, null, null, "Distributed", null, this.ProjectNum, this.CurrentApplicationBeingViewed[0].isPlanning, null, this.selectPaidDate).subscribe((data: any) => {
             if (data.responseCode == 1) {
-               //Service Information Kyle 31/01/24                                                                                                                                                                                                                                                                                                                                                                         //Service Information Kyle
-              this.applicationsService.addUpdateApplication(this.ApplicationID, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, this.StagesList[2].StageName, this.StagesList[2].StageOrderNumber, null, null, "Distributed", null, "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, this.CurrentApplicationBeingViewed[0].isPlanning, null, this.selectPaidDate).subscribe((data: any) => {
-               //Service Information Kyle 31/01/24
-                if (data.responseCode == 1) {
-
-                  alert(data.responseMessage);
-                  this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application payment", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>You have moved application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave to paid. <br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-                  if (this.CurrentUserProfile[0].alternativeEmail) {
-                    this.notificationsService.sendEmail(this.CurrentUser.email, "Wayleave application payment", "check html", "Dear " + this.CurrentUser.fullName + ",<br><br><p>You have moved application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave to paid. <br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-                  }
-
-                  this.notificationsService.sendEmail(this.CurrentApplicationBeingViewed[0].clientEmail, "Wayleave application payment", "check html", "Dear " + this.CurrentApplicationBeingViewed[0].clientName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-                  if (this.CurrentApplicationBeingViewed[0].clientAlternativeEmail) { 
-                    this.notificationsService.sendEmail(this.CurrentApplicationBeingViewed[0].clientAlternativeEmail, "Wayleave application payment", "check html", "Dear " + this.CurrentApplicationBeingViewed[0].clientName + ",<br><br><p>Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process.<br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-                  }
-                  // #region checkingNotifications Sindiswa 15 February 2024
-                  this.notificationsService.addUpdateNotification(0, "Wayleave applicant payment ", "Wayleave applicant payment ", false, this.CurrentApplicationBeingViewed[0].UserID, this.ApplicationID, this.CurrentUser.appUserId, "Your application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid. You will be notified once your application has reached the next stage in the process."  ).subscribe((data: any) => {
-
-                    if (data.responseCode == 1) {
-
-
-                    }
-                    else {
-                      alert(data.responseMessage);
-                    }
-
-                    console.log("response", data);
-                  }, error => {
-                    console.log("Error", error);
-                  });
-
-                  this.notificationsService.addUpdateNotification(0, "Wayleave applicant payment ", "Wayleave applicant payment ", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserId, "You have moved application (" + "WL:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear + ") for wayleave has been paid.").subscribe((data: any) => {
-
-                    if (data.responseCode == 1) {
-
-
-                    }
-                    else {
-                      alert(data.responseMessage);
-                    }
-
-                    console.log("response", data);
-                  }, error => {
-                    console.log("Error", error);
-                  });
-                  // #endregion
-
-                  //Audit Trail Kyle
-                  this.onSaveToAuditTrail("Application moved to Paid");
-                  this.onSaveToAuditTrail("Application distributed to Departments");
-                  //Audit Trail Kyle
-
-                }
-                else {
-                  /*          alert(data.responseMessage);*/
-                }
-
-                console.log("responseAddapplication", data);
-
-              }, error => {
-                console.log("Error", error);
-              })
+              this.UpdateProjectNumberConfig(configID);
             }
             else {
-              //alert("Invalid Email or Password");
-              alert(data.responseMessage);
+              alert(data.resonseMessage);
             }
-            console.log("addUpdateConfigReponse", data);
-
           }, error => {
-            console.log("addUpdateConfigError: ", error);
+            console.log(error);
           })
-          this.MoveToNextStage();
-          this.router.navigate(["/home"]);
         }
         else {
-          //alert("Invalid Email or Password");
-          alert(data.responseMessage);
+          alert(data.responseCode);
         }
-        console.log("getConfigsByConfigNameReponse", data);
-
       }, error => {
-        console.log("getConfigsByConfigNameError: ", error);
+        console.log(error);
       })
 
     }
@@ -2526,7 +2498,42 @@ export class ViewProjectInfoComponent implements OnInit {
 
   }
   
+  UpdateProjectNumberConfig(configID: number) {
+    this.configService.addUpdateConfig(configID, "ProjectNumberTracker", null, this.configNumberOfProject).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        this.distributeApplication();
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log(error);
+    })
+  }
 
+  distributeApplication() {
+    this.bpDepartmentsService.getAllDepartmentsForFunctionalArea("Wayleave").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        for (let i = 0; i < data.dateSet.length; i++) {
+          const current = data.dateSet[i];
+          if (current.departmentName != "Land Survey") {
+            this.subDepartmentForCommentService.addUpdateDepartmentForComment(0, this.ApplicationID, current.departmentID, current.departmentName, null, null, this.CurrentUser.appUserId, null, null).subscribe((data: any) => {
+              if (data.responseCode == 1) {
+                this.modalService.dismissAll();
+                this.openSnackBar("Application Distributed");
+                this.router.navigate(["/home"]);
+              }
+              else {
+                alert(data.responseMessage);
+              }
+            }, error => {
+              console.log(error);
+            })
+          }
+        }
+      }
+    })
+  }
   checkIfPermitExsist() {
     
     if (this.applicationDataForView[0].CreatedById == this.CurrentUser.appUserId && this.applicationDataForView[0].CurrentStageName == "PTW") {
@@ -3563,7 +3570,7 @@ export class ViewProjectInfoComponent implements OnInit {
         .subscribe({
           next: (event) => {
             if (event.type === HttpEventType.UploadProgress && event.total) {
-              this.progress = Math.round(100 * event.loaded / event.total);
+              this.progress = Math.round(100 * event.loaded / event.total); 
             } else if (event.type === HttpEventType.Response) {
               this.message = 'Upload success.';
               this.uploadFinished(event.body);
@@ -4349,7 +4356,7 @@ export class ViewProjectInfoComponent implements OnInit {
 
   // altered slightly to ensure that a png is downloaded instead of doing iframe tings
   viewDocument(index: any) {
-    
+
     const filename = this.FinancialDocumentsList[index].FinancialDocumentName;
     const extension = filename.split('.').pop().toLowerCase();
 
@@ -4382,16 +4389,25 @@ export class ViewProjectInfoComponent implements OnInit {
       fetch(this.apiUrl + `documentUpload/GetDocument?filename=${filename}`)
         .then(response => {
           if (response.ok) {
-            return response.blob();
+            // The response status is in the 200 range
+
+            return response.blob(); // Extract the response body as a Blob
+
           } else {
             throw new Error('Error fetching the document');
           }
         })
         .then(blob => {
+          // Create a URL for the Blob object
           const documentURL = URL.createObjectURL(blob);
-          const iframe = document.createElement('iframe');
-          iframe.src = documentURL;
-          document.body.appendChild(iframe);
+
+          window.open(documentURL, '_blank');
+
+          // Download the document
+          const link = document.createElement('a');
+          link.href = documentURL;
+          link.download = this.DocumentsList[index].DocumentName; // Set the downloaded file name
+          link.click();
         })
         .catch(error => {
           console.log(error);
