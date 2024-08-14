@@ -3241,12 +3241,13 @@ export class BpActionCenterComponent implements OnInit {
         }
 
         case "Reject": {
-
+          debugger;
           this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, "Relaxation", "TP Relaxation - Unpaid", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+              debugger;
               if (data.responseCode == 1) {
 
                 /*            this.CreateNotification(this.CurrentUser.appUserId);

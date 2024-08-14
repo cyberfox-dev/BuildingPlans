@@ -103,5 +103,7 @@ namespace BuildingPlans.Data
 
         public DbSet<BPServiceItems> BPServiceItems { get; set; }
         public DbSet<BPComments> BPComments { get; set; }
+
+        public DbSet<NeighbourConsent> NeighbourConsent { get; set; }
     }
 }
