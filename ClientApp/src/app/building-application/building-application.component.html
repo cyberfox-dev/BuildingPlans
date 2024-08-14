@@ -112,6 +112,21 @@
       <div class="row">
         <div class="col">
           <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="NoOfUnits" name="NoOfUnits" placeholder="Enter number of units">
+            <label for="NoOfUnits">Number of Units *</label>
+          </div>
+        </div>
+        <div class="col" *ngIf="isInputDisabled == false && addressType && addressType != 'Household'">
+          <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" [(ngModel)]="unitNo" name="UnitNo" placeholder="Enter unit number">
+            <label for="UnitNo">{{addressType}} Number *</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="form-floating mb-3 mt-3">
             <input type="text" class="form-control" [(ngModel)]="erfNo" name="erfNo" placeholder="Enter Erf Number">
             <label for="erfNo">Erf Number *</label>
           </div>
@@ -123,67 +138,16 @@
           </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="NoOfUnits" name="NoOfUnits" placeholder="Enter number of units">
-            <label for="NoOfUnits">Number of Units *</label>
-          </div>
-        </div>
-        <div class="col" *ngIf="isInputDisabled == false && addressType && addressType != 'Household'">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="unitNo" name="UnitNo" placeholder="Enter unit number">
-            <label for="UnitNo">{{addressType}} Number *</label>
-          </div>
-        </div>
-        <div class="card">
-        </div>
-        <h3><span>Address Details Of Development</span></h3>
-      </div>
-      <div #address>
-        <div class="row">
-
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="streetAddress" name="streetAddress" placeholder="Street Address" [disabled]="isInputDisabled">
-              <label for="streetAddress">Street Address</label>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="suburb" name="suburb" placeholder="Suburb" [disabled]="isInputDisabled">
-              <label for="suburb">Suburb</label>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="city" name="city" placeholder="City" [disabled]="isInputDisabled">
-              <label for="city">City</label>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="form-floating mb-3 mt-3">
-              <input type="text" class="form-control" [(ngModel)]="postalCode" name="postalCode" placeholder="Postal Code" [disabled]="isInputDisabled">
-              <label for="postalCode">Postal Code</label>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-floating mb-3 mt-3">
-            <input type="text" class="form-control" [(ngModel)]="sGCode" name="sGCode" placeholder="SG Code">
-            <label for="sGCode">SG Code</label>
-          </div>
+      <div class="col">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" [(ngModel)]="sGCode" name="sGCode" placeholder="SG Code">
+          <label for="sGCode">SG Code</label>
         </div>
       </div>
+
 
       <div class="card" *ngIf="map">
         <h3><span>Location</span></h3>
-        <span>Double click on map to pin location or use select address in address box</span>
       </div>
 
       <!--<div *ngIf="map"> <app-project-details-map [data]="ARCGISAPIData"></app-project-details-map></div>-->
@@ -206,7 +170,7 @@
 
         <mat-form-field>
           <mat-label>Type Of Application*</mat-label>
-          <mat-select [(ngModel)]="TPTOA" name="addressType">
+          <mat-select [(ngModel)]="TPTOA" name="addressType" (selectionChange)="TypeOfApplicationDropDown()">
             <mat-option value="formal-authority">Formal Authority</mat-option>
             <mat-option value="scheme-amendment">Scheme Amendment</mat-option>
             <mat-option value="consent-application">Consent Application in terms of the Scheme</mat-option>
@@ -229,8 +193,8 @@
 
       </div>
       <div class="row">
-        <div class="form-floating mb-3 mt-3">
-          <input type="text" class="form-control" name="otherSpecify" placeholder="Enter other Specify" [(ngModel)]="TPTOAOther">
+        <div class="form-floating mb-3 mt-3" *ngIf="typeOfApplicationOtherDes">
+          <input type="text" class="form-control" name="otherSpecify" placeholder="Enter other Specify" [(ngModel)]="TPTOAOther" >
           <label for="premisesName">Please specify Other *</label>
         </div>
       </div>

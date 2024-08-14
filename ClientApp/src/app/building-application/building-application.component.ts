@@ -24,6 +24,8 @@ import { GoogleMapsComponentComponent } from '../create-new-wayleave/google-maps
 import { RefreshService } from '../shared/refresh.service';
 import { BPNotificationsService } from '../service/BPNotifications/bpnotifications.service';
 import { MatTable } from '@angular/material/table';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackBarAlertsComponent } from '../snack-bar-alerts/snack-bar-alerts.component';
 
 export interface ApplicaitionList {
   ApplicationID: number;
@@ -234,6 +236,7 @@ export class BuildingApplicationComponent implements OnInit {
     private classificationService: OccupationClassificationService,
     private mapComponent: GoogleMapsComponentComponent,
     private refreshService: RefreshService,
+    private _snackBar: MatSnackBar,
     private bpNotificationService: BPNotificationsService,
     private modalService: NgbModal
   ) {
@@ -916,6 +919,7 @@ export class BuildingApplicationComponent implements OnInit {
 
   TPTOAOther: any;
   isCombinedApplication: any;
+  isCombined: boolean;
   NameOfCompany: any;
   RegNoOfCompany: any;
   AgentName: any;
@@ -927,24 +931,30 @@ export class BuildingApplicationComponent implements OnInit {
     this.mapAddress = this.sharedService.mapAddress;
     this.latitude = this.sharedService.latitude;
     this.longitude = this.sharedService.longitude;
+    debugger;
 
     if (this.TPTOA == "other") {
       this.TPTOA = "Other: " + this.TPTOAOther;
+    }
+    if (this.isCombinedApplication == 'true') {
+      this.isCombined = true;
+    }
+    else if (this.isCombinedApplication == 'false') {
+      this.isCombined = false;
     }
    
 
     if (this.isArchivePlan) {
       this.router.navigate(["/home"]);
     }
-
     else {
-     
+      debugger;
       if (this.applicationBeingCreatedType == "Town Planning") {
         this.applicationService.addUpdateBuildingApplication(this.applicationID, this.lSNumber, this.clientUserID, this.clientName, this.clientSurname,
           this.clientEmail, this.clientCell, this.clientAltEmail, this.clientAltCell, this.clientIDNo, this.propertyDescription, this.premisesName,
           this.addressType, this.erfNo, this.portionNo, this.NoOfUnits, this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
           this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
-          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Submission Plan", "LS Review", 1, this.servitudeBox, null, this.applicationBeingCreatedType, this.TPTOA, this.isCombinedApplication, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
+          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Submission Plan", "Submission Plan", 1, this.servitudeBox, null, this.applicationBeingCreatedType, this.TPTOA, this.isCombined, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
             if (data.responseCode == 1) {
 
               this.CreateNotification(this.CurrentUser.appUserId);
@@ -959,15 +969,62 @@ export class BuildingApplicationComponent implements OnInit {
           })
       }
       else if (this.applicationBeingCreatedType == "Building Plans") {
+
+
+        this.configService.getConfigsByConfigName("BPApplicationIDTracker").subscribe((data: any) => {
+          if (data.responseCode == 1) {
+
+            const current = data.dateSet[0];
+            this.configNumberOfProject = current.utilitySlot1;
+            this.configMonthYear = current.utilitySlot2;
+            this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
+              if (data.responseCode == 1) {
+                this.applicationService.addUpdateBuildingApplication(this.applicationID, this.lSNumber, this.clientUserID, this.clientName, this.clientSurname,
+                  this.clientEmail, this.clientCell, this.clientAltEmail, this.clientAltCell, this.clientIDNo, this.propertyDescription, this.premisesName,
+                  this.addressType, this.erfNo, this.portionNo, this.NoOfUnits, this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
+                  this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
+                  this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "BCO Distribution", "BCO Distribution", 3, null, "BP:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, this.applicationBeingCreatedType, this.TPTOA, this.isCombined, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
+                    if (data.responseCode == 1) {
+                      this.modalService.dismissAll();
+                      this.openSnackBar("Application Actioned");
+                      this.router.navigate(["/home"]);
+                    }
+                    else {
+                      alert(data.responseMessage)
+                    }
+                  }, error => {
+                    console.log("BuildingApplicationError: ", error)
+                  })
+              }
+              else {
+
+                alert(data.responseMessage);
+              }
+              console.log("addUpdateConfigReponse", data);
+
+            }, error => {
+              console.log("addUpdateConfigError: ", error);
+            })
+
+          }
+          else {
+            alert(data.responseMessage);
+          }
+          console.log("getConfigsByConfigNameReponse", data);
+
+        }, error => {
+          console.log("getConfigsByConfigNameError: ", error);
+        })
+
         this.applicationService.addUpdateBuildingApplication(this.applicationID, this.lSNumber, this.clientUserID, this.clientName, this.clientSurname,
           this.clientEmail, this.clientCell, this.clientAltEmail, this.clientAltCell, this.clientIDNo, this.propertyDescription, this.premisesName,
           this.addressType, this.erfNo, this.portionNo, this.NoOfUnits, this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
           this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
-          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "BCO Distribution", "BCO Distribution", 3, this.servitudeBox, null, this.applicationBeingCreatedType, this.TPTOA, this.isCombinedApplication, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
+          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "BCO Distribution", "BCO Distribution", 3, this.servitudeBox,null, this.applicationBeingCreatedType, this.TPTOA, this.isCombined, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
             if (data.responseCode == 1) {
 
               this.CreateNotification(this.CurrentUser.appUserId);
-              alert("Application Created");
+
               this.router.navigate(["/home"]);
             }
             else {
@@ -982,11 +1039,11 @@ export class BuildingApplicationComponent implements OnInit {
           this.clientEmail, this.clientCell, this.clientAltEmail, this.clientAltCell, this.clientIDNo, this.propertyDescription, this.premisesName,
           this.addressType, this.erfNo, this.portionNo, this.NoOfUnits, this.unitNo, this.mapAddress, this.latitude, this.longitude, this.architectName,
           this.architectUserID, this.buildingPlansFor, this.typeOfDevelopment, this.totalArea, this.Classification, this.planFees, this.propertyValue,
-          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Submission Plan", "LS Review", 1, this.servitudeBox, null, this.applicationBeingCreatedType, this.TPTOA, this.isCombinedApplication, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
+          this.streetAddress, this.suburb, this.city, this.postalCode, this.sGCode, this.CurrentUser.appUserId, "Submission Plan", "LS Review", 1, this.servitudeBox, null, this.applicationBeingCreatedType, this.TPTOA, this.isCombined, this.NameOfCompany, this.RegNoOfCompany, this.AgentName, this.AgentCell, this.AgentEmail, this.AgentAddress, this.DescriptionofApplicaitonTP, "").subscribe((data: any) => {
             if (data.responseCode == 1) {
 
               this.CreateNotification(this.CurrentUser.appUserId);
-              alert("Application Created");
+
               this.router.navigate(["/home"]);
             }
             else {
@@ -999,6 +1056,20 @@ export class BuildingApplicationComponent implements OnInit {
 
       }
   }
+  typeOfApplicationOtherDes: boolean = false;
+  TypeOfApplicationDropDown() {
+    debugger;
+
+    if (this.TPTOA == "other") {
+
+      this.typeOfApplicationOtherDes = true;
+    }
+    else {
+      this.typeOfApplicationOtherDes = false;
+    }
+          alert(this.TPTOA);
+  }
+
 
   CreateNotification(UserId: string) {
     
@@ -1030,6 +1101,15 @@ export class BuildingApplicationComponent implements OnInit {
     else {
       this.servitudeBox = false;
     }
+  }
+
+  openSnackBar(message: string) {
+    this._snackBar.openFromComponent(SnackBarAlertsComponent, {
+      data: { message }, // Pass the message as data to the component
+      duration: 4 * 1000,
+      panelClass: ['green-snackbar'],
+      verticalPosition: 'top',
+    });
   }
 }
 

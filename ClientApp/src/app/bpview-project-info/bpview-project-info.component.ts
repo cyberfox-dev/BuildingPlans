@@ -569,5 +569,56 @@ export class BPViewProjectInfoComponent implements OnInit {
       console.log(error);
     })
   }
+  configNumberOfProject: any;
+  configMonthYear: any;
+/*  generateBPApplicationID() {
+
+    this.configService.getConfigsByConfigName("BPApplicationIDTracker").subscribe((data: any) => {
+      if (data.responseCode == 1) {
+
+        const current = data.dateSet[0];
+        this.configNumberOfProject = current.utilitySlot1;
+        this.configMonthYear = current.utilitySlot2;
+        this.configService.addUpdateConfig(current.configID, null, null, (Number(this.configNumberOfProject) + 1).toString(), null, null, null).subscribe((data: any) => {
+          if (data.responseCode == 1) {
+            this.applicationService.addUpdateBuildingApplication(this.applicationId, null, null, null, null,
+              null, null, null, null, null, null, null,
+              null, null, null, null, null, null, null, null, null,
+              null, null, null, null, null, null, null,
+              null, null, null, null, null, null, "Distribution", "BCO Distribution", 3, null, "BP:" + (Number(this.configNumberOfProject) + 1).toString() + "/" + this.configMonthYear, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+                if (data.responseCode == 1) {
+                  this.modalService.dismissAll();
+                  this.openSnackBar("Application Actioned");
+                  this.router.navigate(["/home"]);
+                }
+                else {
+                  alert(data.responseMessage)
+                }
+              }, error => {
+                console.log("BuildingApplicationError: ", error)
+              })
+          }
+          else {
+
+            alert(data.responseMessage);
+          }
+          console.log("addUpdateConfigReponse", data);
+
+        }, error => {
+          console.log("addUpdateConfigError: ", error);
+        })
+
+      }
+      else {
+        alert(data.responseMessage);
+      }
+      console.log("getConfigsByConfigNameReponse", data);
+
+    }, error => {
+      console.log("getConfigsByConfigNameError: ", error);
+    })
+
+  }*/
+
 }
 

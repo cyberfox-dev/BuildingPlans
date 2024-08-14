@@ -28,81 +28,248 @@
     <mat-divider *ngIf="AssignUserForComment == true && canCommentFinalApprover == false && showPermitTab === false"></mat-divider>
 
     <br>
-    <mat-form-field class="example-full-width">
-      <mat-label>Type new Comment/Special Condition. Please also make reference to the Services Conditions tab, if documents have been uploaded.</mat-label>
-      <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea" maxlength="250" (input)="updateCharacterCount()"></textarea>
-      <div>{{ leaveAComment.length }}/250</div>
-    </mat-form-field>
+
+    <!-- #region Land survey (Building plans) -->
+    <div class="" *ngIf="CurrentApplicationBeingViewed[0].BPApplicationType == 'Land Survey'">
+      <mat-form-field class="example-full-width">
+        <mat-label>Type new Comment/Special Condition. Please also make reference to the Services Conditions tab, if documents have been uploaded.</mat-label>
+        <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea" maxlength="250" (input)="updateCharacterCount()"></textarea>
+        <div>{{ leaveAComment.length }}/250</div>
+      </mat-form-field>
+      <!-- #region Land Survey Review Actions -->
+
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'LS Review'">
+        <p>LS Reviewer</p>
+        <div class="containerLS">
+          <button mat-raised-button color="approveBTN" (click)="onComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
+          <button mat-raised-button color="relaxationBTN" (click)="onComment('Reject')"><i class="fa fa-file" aria-hidden="true" style="color:white"></i>   Request For Relaxation</button>
+          <button mat-raised-button color="rejectBTN" (click)="onComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject</button>
+          <button mat-raised-button color="clarifyBTN" (click)="onComment('Clarify')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/comment-solid.svg" class="icon">    Clarify</button>
+        </div>
+        <mat-checkbox class="example-margin" [(ngModel)]="DepositCheck" (click)="getAllServiceItmesForDropdown(deposit)">Add Relaxation Tarrif</mat-checkbox>
+      </div>
+
+      <!-- #endregion -->
+      <!-- #region Land Survey Move to Paid -->
+
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'LS Relaxation - Unpaid'">
+        <p>LS Reviewer</p>
+        <button mat-raised-button color="relaxationBTN" (click)="moveToPaidBPApplication()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move to paid</button>
+      </div>
+
+      <!-- #endregion -->
+      <!-- #region Old land Survey Approve after paid actions *not used anymore* -->
+
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'LS Relaxation - Paid'">
+        <p>LS Reviewer</p>
+        <button mat-raised-button color="approveBTN" (click)="onComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
+        <button mat-raised-button color="rejectBTN" (click)="onComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject</button>
+      </div>
+
+      <!-- #endregion -->
+      <!-- #region Town Planning Review for land survey application -->
+
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'TP Review'">
+        <p>TP Reviewer</p>
+        <button mat-raised-button color="approveBTN" (click)="onCommentTP('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon"> Prov. Approved</button>
+        <button mat-raised-button color="relaxationBTN" (click)="onCommentTP('Reject')"><i class="fa fa-file" aria-hidden="true" style="color:white"></i>   Request For Relaxation</button>
+      </div>
+
+      <!-- #endregion -->
+      <!-- #region Town planning review move to paid -->
+
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'TP Relaxation - Unpaid'">
+        <p>TP Reviewer</p>
+        <button mat-raised-button color="relaxationBTN" (click)="moveToPaidBPApplicationTP()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move to paid</button>
+      </div>
+
+      <!-- #endregion -->
+      <!-- #region Old town planning approve after paid actions *will be changed* -->
+
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'TP Relaxation - Paid'">
+        <p>TP Reviewer</p>
+        <button mat-raised-button color="approveBTN" (click)="onCommentTP('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
+        <button mat-raised-button color="rejectBTN" (click)="onCommentTP('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject</button>
+      </div>
+
+      <!-- #endregion -->
+
+      <!-- #region Create a building plans application -->
+
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Closed'">
+        <p>Use this application to create building plan</p>
+        <button mat-raised-button color="relaxationBTN" (click)="generateBPApplicationID()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Create Building plans Application</button>
+      </div>
+
+      <!-- #endregion -->
+      <!-- #region BCO Actions -->
+
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'BCO Distribution' ||this.CurrentApplicationBeingViewed[0].currentStage == 'BCO Recommendation'">
+        <p>BCO</p>
+        <button mat-raised-button color="approveBTN" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage != 'BCO Recommendation'"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move Application To Plans Examiner</button>
+        <button mat-raised-button color="relaxationBTN" (click)="MoveApplicationToDistribution()" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage != 'BCO Recommendation'"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move Application To Distribution</button>
+        <button mat-raised-button color="relaxationBTN" (click)="MoveApplicationToPAC('Approve')" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'BCO Recommendation'"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move Application To PAC</button>
+      </div>
+
+      <!-- #endregion -->
+      <!-- #region department distributions actions -->
+
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Distribution'">
+        <p>Department Distribution</p>
+        <button mat-raised-button color="approveBTN" (click)="onBPComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
+        <button mat-raised-button color="rejectBTN" (click)="onBPComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject</button>
+      </div>
+
+      <!-- #endregion -->
+      <!-- #region Plans examiner actions -->
+
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Plans Examiner'">
+        <p>Plans Examiner</p>
+        <button mat-raised-button color="approveBTN" (click)="onBPPlansExaminerComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  All in order</button>
+        <button mat-raised-button color="rejectBTN" (click)="onBPPlansExaminerComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Not in order </button>
+      </div>
+
+      <!-- #endregion -->
+      <!-- #region PAC(Plan approval comittee) actions -->
+
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Plan Approval Committee(PAC)'">
+        <p>Plan Approval Committee</p>
+        <button mat-raised-button color="approveBTN" (click)="MoveApplicationtoJacketUpload('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
+        <button mat-raised-button color="rejectBTN"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject </button>
+      </div>
+
+      <!-- #endregion -->
+      <!-- #region Jacket Upload Actions -->
+
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Jacket Upload Plans'">
+        <p>Jacket Upload</p>
+        <button mat-raised-button color="approveBTN" (click)="MoveApplicationtoBuildingInspection('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move to Building Inspection</button>
+      </div>
+
+      <!-- #endregion -->
+      <!-- #region Building inspector actions -->
+
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Building Inspector'">
+        <p>Building Inspector</p>
+        <button mat-raised-button color="approveBTN" (click)="MoveApplicationtoApprovedClosed('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move to Building closed</button>
+      </div>
+
+      <!-- #endregion -->
+    </div>
+    <!-- #endregion -->
 
 
 
-    <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'LS Review'">
-      <p>LS Reviewer</p>
-      <button mat-raised-button color="approveBTN" (click)="onComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
-      <button mat-raised-button color="relaxationBTN" (click)="onComment('Reject')"><i class="fa fa-file" aria-hidden="true" style="color:white"></i>   Request For Relaxation</button>
-      <mat-checkbox class="example-margin" [(ngModel)]="DepositCheck" (click)="getAllServiceItmesForDropdown(deposit)">Add Relaxation Tarrif</mat-checkbox>
-    </div>
-    <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'LS Relaxation - Unpaid'">
-      <p>LS Reviewer</p>
-      <button mat-raised-button color="relaxationBTN" (click)="moveToPaidBPApplication()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move to paid</button>
-    </div>
-    <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'LS Relaxation - Paid'">
-      <p>LS Reviewer</p>
-      <button mat-raised-button color="approveBTN" (click)="onComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
-      <button mat-raised-button color="rejectBTN" (click)="onComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject</button>
-    </div>
-    <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'TP Review'">
-      <p>TP Reviewer</p>
-      <button mat-raised-button color="approveBTN" (click)="onCommentTP('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon"> Prov. Approved</button>
-      <button mat-raised-button color="relaxationBTN" (click)="onCommentTP('Reject')"><i class="fa fa-file" aria-hidden="true" style="color:white"></i>   Request For Relaxation</button>
-    </div>
-    <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'TP Relaxation - Unpaid'">
-      <p>TP Reviewer</p>
-      <button mat-raised-button color="relaxationBTN" (click)="moveToPaidBPApplicationTP()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move to paid</button>
-    </div>
-    <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'TP Relaxation - Paid'">
-      <p>TP Reviewer</p>
-      <button mat-raised-button color="approveBTN" (click)="onCommentTP('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
-      <button mat-raised-button color="rejectBTN" (click)="onCommentTP('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject</button>
-    </div>
-    <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Closed'">
-      <p>Use this application to create building plan</p>
-      <button mat-raised-button color="relaxationBTN" (click)="generateBPApplicationID()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Create Building plans Application</button>
-    </div>
-    <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'BCO Distribution' ||this.CurrentApplicationBeingViewed[0].currentStage == 'BCO Recommendation'">
-      <p>BCO</p>
-      <button mat-raised-button color="approveBTN"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move Application To Plans Examiner</button>
-      <button mat-raised-button color="relaxationBTN" (click)="MoveApplicationToDistribution()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move Application To Distribution</button>
-      <button mat-raised-button color="relaxationBTN" (click)="MoveApplicationToPAC('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move Application To PAC</button>
+
+    <!-- #region Town Planning Application Action Center -->
+    <div class="" *ngIf="CurrentApplicationBeingViewed[0].BPApplicationType == 'Town Planning'">
+      <mat-form-field class="example-full-width">
+        <mat-label>Type a comment</mat-label>
+        <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea" maxlength="250" (input)="updateCharacterCount()"></textarea>
+        <div>{{ leaveAComment.length }}/250</div>
+      </mat-form-field>
+
+      <!-- #region Town Planning applications department (step1) -->
+      <button mat-raised-button color="relaxationBTN" (click)="MoveApplicationToDistribution()" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Submission Plan'"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move Application To Distribution (TP Application)</button>
+      <!-- #endregion -->
+      <!-- #region department distributions actions (step2) -->
+
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Distribution'">
+        <p>Department Distribution</p>
+        <button mat-raised-button color="approveBTN" (click)="onBPComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
+        <button mat-raised-button color="rejectBTN" (click)="onBPComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject</button>
+      </div>
+
+      <!-- #endregion -->
+      <!-- #region town planners for evaluation (step4) -->
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Evaluation'">
+        <p>Town Planner</p>
+        <button mat-raised-button color="approveBTN" (click)="onTPEvaluationComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
+        <button mat-raised-button color="rejectBTN"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Not in order</button>
+      </div>
+      <!-- #endregion -->
+      <!-- #region Planning Approval Authority  -->
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Planning approval authority'">
+        <p>Planning Approval Authority </p>
+        <button mat-raised-button color="approveBTN" (click)="onTPPlanningApprovalAuthorityComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
+        <button mat-raised-button color="rejectBTN"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Not in order</button>
+      </div>
+
+      <!-- #endregion -->
     </div>
 
-    <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Distribution'">
-      <p>Department Distribution</p>
-      <button mat-raised-button color="approveBTN" (click)="onBPComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
-      <button mat-raised-button color="rejectBTN" (click)="onBPComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject</button>
-    </div>
 
-    <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Plans Examiner'">
-      <p>Plans Examiner</p>
-      <button mat-raised-button color="approveBTN" (click)="onBPPlansExaminerComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  All in order</button>
-      <button mat-raised-button color="rejectBTN" (click)="onBPPlansExaminerComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Not in order </button>
-    </div>
+    <!-- #endregion -->
 
-    <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Plan Approval Committee(PAC)'">
-      <p>Plan Approval Committee</p>
-      <button mat-raised-button color="approveBTN" (click)="MoveApplicationtoJacketUpload('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
-      <button mat-raised-button color="rejectBTN"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject </button>
-    </div>
 
-    <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Jacket Upload Plans'">
-      <p>Jacket Upload</p>
-      <button mat-raised-button color="approveBTN" (click)="MoveApplicationtoBuildingInspection('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move to Building Inspection</button>
 
+
+    <!-- #region Building plans Application -->
+
+    <div class="" *ngIf="CurrentApplicationBeingViewed[0].BPApplicationType == 'Building Plans'">
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Type a comment</mat-label>
+        <textarea matInput [(ngModel)]="leaveAComment" placeholder="Eg. This is good" id="myTextarea" maxlength="250" (input)="updateCharacterCount()"></textarea>
+        <div>{{ leaveAComment.length }}/250</div>
+      </mat-form-field>
+      <!-- #region BCO Actions -->
+
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'BCO Distribution' ||this.CurrentApplicationBeingViewed[0].currentStage == 'BCO Recommendation'">
+        <p>BCO</p>
+        <button mat-raised-button color="approveBTN" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage != 'BCO Recommendation'"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move Application To Plans Examiner</button>
+        <button mat-raised-button color="relaxationBTN" (click)="MoveApplicationToDistribution()" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage != 'BCO Recommendation'"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move Application To Distribution</button>
+        <button mat-raised-button color="relaxationBTN" (click)="MoveApplicationToPAC('Approve')" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'BCO Recommendation'"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move Application To PAC</button>
+      </div>
+
+      <!-- #endregion -->
+      <!-- #region department distributions actions -->
+
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Distribution'">
+        <p>Department Distribution</p>
+        <button mat-raised-button color="approveBTN" (click)="onBPComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
+        <button mat-raised-button color="rejectBTN" (click)="onBPComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject</button>
+      </div>
+
+      <!-- #endregion -->
+      <!-- #region Plans examiner actions -->
+
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Plans Examiner'">
+        <p>Plans Examiner</p>
+        <button mat-raised-button color="approveBTN" (click)="onBPPlansExaminerComment('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  All in order</button>
+        <button mat-raised-button color="rejectBTN" (click)="onBPPlansExaminerComment('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Not in order </button>
+      </div>
+
+      <!-- #endregion -->
+      <!-- #region PAC(Plan approval comittee) actions -->
+
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Plan Approval Committee(PAC)'">
+        <p>Plan Approval Committee</p>
+        <button mat-raised-button color="approveBTN" (click)="MoveApplicationtoJacketUpload('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
+        <button mat-raised-button color="rejectBTN"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject </button>
+      </div>
+
+      <!-- #endregion -->
+      <!-- #region Jacket Upload Actions -->
+
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Jacket Upload Plans'">
+        <p>Jacket Upload</p>
+        <button mat-raised-button color="approveBTN" (click)="MoveApplicationtoBuildingInspection('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move to Building Inspection</button>
+      </div>
+
+      <!-- #endregion -->
+      <!-- #region Building inspector actions -->
+
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Building Inspector'">
+        <p>Building Inspector</p>
+        <button mat-raised-button color="approveBTN" (click)="MoveApplicationtoApprovedClosed('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move to Building closed</button>
+      </div>
+
+      <!-- #endregion -->
     </div>
-    <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'Building Inspector'">
-      <p>Building Inspector</p>
-      <button mat-raised-button color="approveBTN" (click)="MoveApplicationtoApprovedClosed('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move to Building closed</button>
-    </div>
+    <!-- #endregion -->
+
+
   </div>
 
 </ng-template>

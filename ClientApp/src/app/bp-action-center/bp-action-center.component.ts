@@ -242,6 +242,7 @@ export interface ServiceInfoDocumentsList {
 }
 
 export interface CurrentApplicationBeingViewed {
+  BPApplicationType: any;
   lsNumber: string;
   typeOfDev: string;
   typeOfAddress: string;
@@ -3215,7 +3216,7 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "Submission Plan", "CLosed", 1, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+            null, null, null, null, null, null, "Submission Plan", "Closed", 1, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
               if (data.responseCode == 1) {
 
                 /*            this.CreateNotification(this.CurrentUser.appUserId);
@@ -3358,172 +3359,22 @@ export class BpActionCenterComponent implements OnInit {
 
         case "Clarify": {
 
-          // this.getDepartmentManagerUserID("Senior Reviewer");
-          if (confirm("Are you sure you want to get clarity from applicant for this application?")) {
-            this.subDepartmentForCommentService.updateCommentStatus(this.forManuallyAssignSubForCommentID, "Clarify", true, null, this.CurrentApplicant, null).subscribe((data: any) => {
-
+          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, "Relaxation", "LS Relaxation - Unpaid", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
               if (data.responseCode == 1) {
-                const emailContent = `
-        <html>
-        <head>
-          <style>
-            /* Define your font and styles here */
-            body {
-             font-family: 'Century Gothic';
-            }
-            .email-content {
-              padding: 20px;
-              border: 1px solid #ccc;
-              border-radius: 5px;
-            }
-            .footer {
-              margin-top: 20px;
-              color: #777;
-            }
-            .footer-logo {
-              display: inline-block;
-              vertical-align: middle;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="email-content">
-            <p>Dear ${this.loggedInUserName}</p>
-            <p>You have requested clarity on ${this.projectNo} with the comment:</p>
-            <p>${this.leaveAComment}</p>
-               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
-                          <p>
-              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
-            </p>
-             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
-          </div>
 
-        </body>
-      </html>
-     
-           
-    `;
-
-
-
-                this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", emailContent, emailContent);
-                if (this.CurrentUserProfile[0].alternativeEmail) { //checkingNotifications Sindiswa 15 February 2024
-                  this.notificationsService.sendEmail(this.CurrentUserProfile[0].alternativeEmail, "Request for clarification", emailContent, emailContent);
-                }
-                /*              this.notificationsService.sendEmail(this.loggedInUsersEmail, "Request for clarification", "Check html", "Dear " + this.loggedInUserName + ",<br><br>You have asked the applicant to clarify the application " + this.projectNo + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-                */
-                const emailContentApp = `
-        <html>
-        <head>
-          <style>
-            /* Define your font and styles here */
-            body {
-             font-family: 'Century Gothic';
-            }
-            .email-content {
-              padding: 20px;
-              border: 1px solid #ccc;
-              border-radius: 5px;
-            }
-            .footer {
-              margin-top: 20px;
-              color: #777;
-            }
-            .footer-logo {
-              display: inline-block;
-              vertical-align: middle;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="email-content">
-            <p>Dear ${this.applicationData.clientName}</p>
-            <p>A reviewer has asked you to clarify your application ${this.projectNo} with the comment:</p>
-            <p>${this.leaveAComment}</p>
-               <p >Please login to the <a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a> and provide a response</p>
-               <p >Regards,<br><a href="https://wayleave.capetown.gov.za/">Wayleave Management System</a></p>
-                          <p>
-              <a href="https://www.capetown.gov.za/">CCT Web</a> | <a href="https://www.capetown.gov.za/General/Contact-us">Contacts</a> | <a href="https://www.capetown.gov.za/Media-and-news">Media</a> | <a href="https://eservices1.capetown.gov.za/coct/wapl/zsreq_app/index.html">Report a fault</a> | <a href="mailto:accounts@capetown.gov.za?subject=Account query">Accounts</a>              
-            </p>
-             <img class="footer-logo" src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png' alt="Wayleave Management System Logo" width="100">
-          </div>
-
-        </body>
-      </html>
-     
-           
-    `;
-
-
-
-                this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
-                if (this.applicationData.clientAlternativeEmail) {
-                  this.notificationsService.sendEmail(this.applicationData.clientAlternativeEmail, "Wayleave Application #" + this.ApplicationID, emailContentApp, emailContentApp);
-                }
-/*              this.notificationsService.sendEmail(this.applicationData.clientEmail, "Wayleave Application #" + this.ApplicationID, "Check html", "Dear " + this.applicationData.clientName + ",<br><br>A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment: <br><br><i>" + this.leaveAComment + "</i><br><br>Regards,<br><b>Wayleave Management System<b><br><img src='https://resource.capetown.gov.za/Style%20Library/Images/coct-logo@2x.png'>");
-*/              this.notificationsService.addUpdateNotification(0, "Wayleave Application Clarification Request", "Request for clarification", false, this.CurrentUser.appUserId, this.ApplicationID, this.CurrentUser.appUserId, "You have asked the applicant to clarify the application " + this.projectNo + " with comment:" + this.leaveAComment).subscribe((data: any) => {
-
-                  if (data.responseCode == 1) {
-
-
-                  }
-                  else {
-                    alert(data.responseMessage);
-                  }
-
-                  console.log("response", data);
-                }, error => {
-                  console.log("Error", error);
-                });
-                this.notificationsService.addUpdateNotification(0, "Wayleave Application Clarification Request", "Request for clarificaion", false, this.applicationData.userID, this.ApplicationID, this.CurrentUser.appUserId, "A reviewer has asked that you clarify your application " + this.ApplicationID + " with comment:" + this.leaveAComment).subscribe((data: any) => {
-
-                  if (data.responseCode == 1) {
-
-
-                  }
-                  else {
-                    alert(data.responseMessage);
-                  }
-
-                  console.log("response", data);
-                }, error => {
-                  console.log("Error", error);
-                });
-
-                //commentsService
-                //Comments Kyle 01/02/24
-                this.commentsService.addUpdateComment(0, this.ApplicationID, this.forManuallyAssignSubForCommentID, this.loggedInUsersSubDepartmentID, SubDepartmentName, this.leaveAComment, "Clarify", this.CurrentUser.appUserId, null, null, this.loggedInUserName, this.CurrentUserZoneName, this.CurrentApplication.UserID).subscribe((data: any) => {
-                  //Comments Kyle 01/02/24
-                  if (data.responseCode == 1) {
-
-
-                    this.viewProjectInfoComponent.getAllComments();
-                  }
-                  else {
-                    alert(data.responseMessage);
-
-                  }
-                  console.log("reponse", data);
-
-                }, error => {
-                  console.log("Error: ", error);
-                })
-                this.refreshParent.emit();
+                this.AddComment("LS Review Clarify", null);
               }
               else {
-                alert(data.responseMessage);
-
+                alert(data.responseMessage)
               }
-              console.log("reponse", data);
-
             }, error => {
-              console.log("Error: ", error);
+              console.log("BuildingApplicationError: ", error)
             })
-            // alert("In progress");
-            this.modalService.dismissAll();
-            this.openSnackBar("Application Actioned");
-            this.router.navigate(["/home"]);
-          }
+        
           break;
         }
         case "Refer": {
@@ -3707,6 +3558,7 @@ export class BpActionCenterComponent implements OnInit {
   countApproveBP = 0;
 
   checkCountForApprovals() {
+
     this.bpDepartmentForCommentService.getDepartmentForComment(this.ApplicationID).subscribe((data: any) => {
       if (data.responseCode === 1) {
         this.countApproveBP = 0; // Initialize countApproveBP
@@ -3720,7 +3572,16 @@ export class BpActionCenterComponent implements OnInit {
         alert(`Number of approvals: ${this.countApproveBP}`);
 
         if (this.countApproveBP === this.BPDepartmentsForCommentList.length) {
-          this.moveApplicationToPlanExaminer();
+          if (this.CurrentApplicationBeingViewed[0].BPApplicationType == "Town Planning") {
+            this.moveApplicationToTownPlanner();
+          }
+          else if (this.CurrentApplicationBeingViewed[0].BPApplicationType == "Building Plans") {
+            this.moveApplicationToPlanExaminer();
+          }
+          else {
+
+          }
+
         } else {
           this.modalService.dismissAll();
           this.openSnackBar("Application Approved");
@@ -3739,7 +3600,7 @@ export class BpActionCenterComponent implements OnInit {
   onBPComment(interact: any) {
 
     //console.log("SubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentName", SubDepartmentName);
-    if (this.leaveAComment != "") {
+    if (this.leaveAComment == "") {
       const dialogRef = this.dialog.open(BpAlertModalComponent, {
         data: {
           message: "Please leave a comment in order to interact with the application"
@@ -4586,6 +4447,158 @@ export class BpActionCenterComponent implements OnInit {
         }
 
 
+        default: {
+
+          break;
+        }
+      }
+    }
+  }
+
+  onTPEvaluationComment(interact: any) {
+
+    //console.log("SubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentName", SubDepartmentName);
+    if (this.leaveAComment != "") {
+      const dialogRef = this.dialog.open(BpAlertModalComponent, {
+        data: {
+          message: "Please leave a comment in order to interact with the application"
+        }
+      });
+    }
+    else {
+      debugger;
+      switch (interact) {
+
+        case "Approve": {
+          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, "Planning approval authority", "Planning approval authority", 100, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+              debugger;
+              if (data.responseCode == 1) {
+                debugger;
+
+                this.AddComment("Town Planner Approved", null);
+              }
+              else {
+                alert(data.responseMessage)
+              }
+            }, error => {
+              console.log("BuildingApplicationError: ", error)
+            })
+
+
+
+
+
+          break;
+        }
+
+        case "Reject": {
+
+          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, "Relaxation", "LS Relaxation - Unpaid", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+              if (data.responseCode == 1) {
+
+                this.AddComment("LS Relaxation", null);
+              }
+              else {
+                alert(data.responseMessage)
+              }
+            }, error => {
+              console.log("BuildingApplicationError: ", error)
+            })
+
+
+
+          break;
+        }
+
+        case "Clarify": {
+
+
+          break;
+        }
+        default: {
+
+          break;
+        }
+      }
+    }
+  }
+
+  onTPPlanningApprovalAuthorityComment(interact: any) {
+
+    //console.log("SubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentNameSubDepartmentName", SubDepartmentName);
+    if (this.leaveAComment != "") {
+      const dialogRef = this.dialog.open(BpAlertModalComponent, {
+        data: {
+          message: "Please leave a comment in order to interact with the application"
+        }
+      });
+    }
+    else {
+      debugger;
+      switch (interact) {
+
+        case "Approve": {
+          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, "Closed", "Approved", 100, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+              debugger;
+              if (data.responseCode == 1) {
+                debugger;
+
+                this.AddComment("Town Planner Approved", null);
+              }
+              else {
+                alert(data.responseMessage)
+              }
+            }, error => {
+              console.log("BuildingApplicationError: ", error)
+            })
+
+
+
+
+
+          break;
+        }
+
+        case "Reject": {
+
+          this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null, null, null, "Relaxation", "LS Relaxation - Unpaid", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+              if (data.responseCode == 1) {
+
+                this.AddComment("LS Relaxation", null);
+              }
+              else {
+                alert(data.responseMessage)
+              }
+            }, error => {
+              console.log("BuildingApplicationError: ", error)
+            })
+
+
+
+          break;
+        }
+
+        case "Clarify": {
+
+
+          break;
+        }
         default: {
 
           break;
@@ -9104,11 +9117,13 @@ export class BpActionCenterComponent implements OnInit {
         tempApplication.currentStage = current.stage;
         tempApplication.fullName = current.firstName + " " + current.surname;
         tempApplication.userID = current.userID;
+        tempApplication.BPApplicationType = current.bpApplicationType;
         this.CurrentApplicationBeingViewed.push(tempApplication);
       }
       else {
         alert(data.responseMessage);
-      }
+       }
+
       console.log("THIS IS CURRENT APPLICATION DATA", data);
     }, error => {
       console.log("Error: ", error);
@@ -9530,13 +9545,34 @@ export class BpActionCenterComponent implements OnInit {
   }
 
   moveApplicationToPlanExaminer() {
-    alert("Plans Examiner");
+
 
     this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
       null, null, null, null, null, null, null,
       null, null, null, null, null, null, null, null, null,
       null, null, null, null, null, null, null,
       null, null, null, null, null, null, "Plans Examiner", "Plans Examiner", 5, null, this.projectNo, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          this.modalService.dismissAll();
+          this.openSnackBar("Application Distributed");
+          this.router.navigate(["/home"]);
+        }
+        else {
+          alert(data.responseMessage)
+        }
+      }, error => {
+        console.log("BuildingApplicationError: ", error)
+      })
+  }
+
+
+  moveApplicationToTownPlanner() {
+
+    this.applicationService.addUpdateBuildingApplication(this.ApplicationID, null, null, null, null,
+      null, null, null, null, null, null, null,
+      null, null, null, null, null, null, null, null, null,
+      null, null, null, null, null, null, null,
+      null, null, null, null, null, null, "Town Planner", "Evaluation", 5, null, this.projectNo, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
         if (data.responseCode == 1) {
           this.modalService.dismissAll();
           this.openSnackBar("Application Distributed");

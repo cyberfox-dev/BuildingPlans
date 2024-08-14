@@ -51,12 +51,19 @@
   <button mat-raised-button color="createWayleave" class="animationSlideDown" [matMenuTriggerFor]="menu2">Create New Application</button>
   <mat-menu #menu2="matMenu" xPosition="after">
     <button mat-menu-item (click)="GoToBuildingApplication(false,'ls',false)">Pre-Submission Application</button>
+    <mat-divider></mat-divider>
     <button mat-menu-item (click)="GoToBuildingApplication(false,'tp',false)">Town Planning Application</button>
+    <mat-divider></mat-divider>
     <button mat-menu-item (click)="GoToBuildingApplication(false,'bp',false)">Building Plan Application</button>
+    <mat-divider></mat-divider>
     <button mat-menu-item (click)="goToDemolition(false)">Demolition Application</button>
+    <mat-divider></mat-divider>
     <button mat-menu-item (click)="goToSignageApplication()">Signage Application</button>
+    <mat-divider></mat-divider>
     <button mat-menu-item (click)="goToBannerApplication(false)">Banner/Poster Application</button>
+    <mat-divider></mat-divider>
     <button mat-menu-item (click)="goToBannerApplication(true)">Flag/Pole/Headline Application</button>
+    <mat-divider></mat-divider>
     <button mat-menu-item (click)="openArchiveOption()">Archive</button>
   </mat-menu>
   <button mat-raised-button color="createWayleave" class="animationSlideDown" (click)="GoToBuildingApplication(false,null,true)">Create Wayleave Application</button>
@@ -92,11 +99,17 @@
           </button>-->
           <mat-menu #menu="matMenu" yPosition="below">
             <button mat-menu-item (click)=" onFilterBPApplications('Building Plan')"><span>Building Plan Application</span></button>
+            <mat-divider></mat-divider>
             <button mat-menu-item (click)=" onFilterBPApplications('Demolition')">Demolition Application</button>
+            <mat-divider></mat-divider>
             <button mat-menu-item (click)=" onFilterBPApplications('Signage')">Signage Application</button>
+            <mat-divider></mat-divider>
             <button mat-menu-item (click)=" onFilterBPApplications('Banner')">Banner/Poster Application</button>
+            <mat-divider></mat-divider>
             <button mat-menu-item (click)=" onFilterBPApplications('Flag')">Flag/Pole/Headline Application</button>
+            <mat-divider></mat-divider>
             <button mat-menu-item (click)=" onFilterBPApplications('Wayleave')">Wayleave</button>
+            <mat-divider></mat-divider>
             <button mat-menu-item>Archive</button>
             <!--<button mat-menu-item (click)="onFilterApplicationsFprMyApplications()">
     <span>My Applications</span>
@@ -127,8 +140,11 @@
             <!-- Tabs inside the drawer -->
             <mat-tab-group [selectedIndex]="selectedTabIndex" (selectedTabChange)="onChangeDataSource($event)">
               <mat-tab label="Pre-Submission Applications"></mat-tab>
+              <mat-divider></mat-divider>
               <mat-tab label="Town Planning Applications"></mat-tab>
+              <mat-divider></mat-divider>
               <mat-tab label="Building Plan Applications"></mat-tab>
+              <mat-divider></mat-divider>
               <mat-tab label="Demolition Application"></mat-tab>
               <mat-tab label="Sinage Application"></mat-tab>
               <mat-tab label="Banner/Poster Application"></mat-tab>
