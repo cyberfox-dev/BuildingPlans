@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild, Input, Output, EventEmitter, ElementRef } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild, Input, Output, EventEmitter, ElementRef,ChangeDetectorRef } from '@angular/core';
 import { UntypedFormGroup, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
@@ -57,7 +57,10 @@ import { BpAlertModalComponent } from '../bp-alert-modal/bp-alert-modal.componen
 import { MatDialog } from '@angular/material/dialog';
 import { BPCommentsService } from '../service/BPComments/bpcomments.service';
 import { BpDepartmentsService } from '../service/BPDepartments/bp-departments.service';
-import { BpDepartmentForCommentService} from '../service/BPDepartmentForComment/bp-department-for-comment.service';
+import { BpDepartmentForCommentService } from '../service/BPDepartmentForComment/bp-department-for-comment.service';
+import { GoogleMap, MapInfoWindow, MapMarker, GoogleMapsModule } from '@angular/google-maps';
+import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
+import { NeighbourConsentService } from '../service/NeighbourConsent/neighbour-consent.service';
 //Audit Trail Kyle
 declare var tinymce: any;
 
@@ -516,7 +519,9 @@ export class BpActionCenterComponent implements OnInit {
     private dialog: MatDialog,
     private bpCommentsService: BPCommentsService,
     //Audit Trail Kyle
-        private BpDepartmentForCommentService: BpDepartmentForCommentService,
+    private BpDepartmentForCommentService: BpDepartmentForCommentService,
+    private cdRef: ChangeDetectorRef,
+    private neighbourConsentService: NeighbourConsentService,
 
 ) { }
 
@@ -580,6 +585,9 @@ export class BpActionCenterComponent implements OnInit {
    
     this.bpApplicationId = this.sharedService.getApplicationID();
     this.getApplicationInfo();
+    debugger;
+    this.getAllApplicationInfo();
+    this.getAllNeighbourConsent();
     this.getUserRoles();
     this.getServicesByDepID();
 /*    this.getUsersByRoleName("Senior Reviewer");
@@ -591,6 +599,8 @@ export class BpActionCenterComponent implements OnInit {
     this.CheckApplicant();
     this.setProjectNumber();
     this.getAllDocumentsForServiceInformation();
+    debugger;
+   
 /*    this.GetSubDepartment();*/
 /*    this.getAllDepartmentsForCommentForBPApplication();*/
 
@@ -620,8 +630,7 @@ export class BpActionCenterComponent implements OnInit {
   occupationClassification: string;
   buildingPlanFor: string;
   physicalAddress: string;
-  latitude: string;
-  longitude: string;
+  
   sGCode: string;
 
   functionalArea: string;
@@ -3208,6 +3217,7 @@ export class BpActionCenterComponent implements OnInit {
       });
     }
     else {
+      
       switch (interact) {
 
         case "Approve": {
@@ -3247,7 +3257,7 @@ export class BpActionCenterComponent implements OnInit {
             null, null, null, null, null, null, null,
             null, null, null, null, null, null, null, null, null,
             null, null, null, null, null, null, null,
-            null, null, null, null, null, null, "Relaxation", "TP Relaxation - Unpaid", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
+            null, null, null, null, null, null, "Relaxation", "TP Relaxation ", 2, null, null, null, null, null, null, null, null, null, null, null, null, null).subscribe((data: any) => {
               debugger;
               if (data.responseCode == 1) {
 
@@ -3255,7 +3265,7 @@ export class BpActionCenterComponent implements OnInit {
                             this.CreateNotification(this.clientUserID);*/
                 /*  this.moveToFinalApprovalForDepartment();*/
                 this.AddComment("TP Relaxation",null);
-                this.getAllServiceItemsForRelaxation();
+                /*this.getAllServiceItemsForRelaxation();*/
               }
               else {
                 alert(data.responseMessage)
@@ -9585,7 +9595,356 @@ export class BpActionCenterComponent implements OnInit {
         console.log("BuildingApplicationError: ", error)
       })
   }
+
+
+  enteredAddress: any;
+  latitude: any ;
+  longitude: any;
+  markers: any = [];
+  contents: any;
+  position: any;
+  markerAdded: boolean = false;
+  infoContent = '';
+
+  readonly southwest = { lat: -29.730694, lng: 30.169144 };
+  readonly southeast = { lat: -29.730694, lng: 30.602760 };
+  readonly northeast = { lat: -29.469492, lng: 30.602760 };
+  readonly northwest = { lat: -29.469492, lng: 30.169144 };
+
+
+  readonly bounds: google.maps.LatLngBounds = new google.maps.LatLngBounds(this.southwest, this.northeast); // Create a LatLngBounds object
+  @Output() markerDblclick: EventEmitter<void> = new EventEmitter();
+
+  onMarkerDblClick() {
+    this.markerDblclick.emit();
+  }
+
+  options = {
+    types: [],
+    componentRestrictions: {
+      country: 'ZA',
+    },
+    disableDoubleClickZoom: true,
+    bounds: this.bounds, // Set the bounds property - doesn't seem to be working
+  } as unknown as Options;
+
+  @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
+  @ViewChild(MapInfoWindow, { static: false }) info: MapInfoWindow;
+
+  async addMarkerOnDblClick(event: google.maps.MapMouseEvent) {
+    debugger;
+    if (!this.markerAdded) {
+      const position = {
+        lat: event.latLng.lat(),
+        lng: event.latLng.lng(),
+      };
+
+      const locationName = await this.getLocationName(position);
+      debugger;
+      if (locationName) {
+
+        this.latitude = position.lat;
+        this.longitude = position.lng;
+
+        this.sharedService.mapAddress = locationName;
+        this.sharedService.longitude = this.longitude;
+        this.sharedService.latitude = this.latitude;
+        const newMarker = new google.maps.Marker({
+          position,
+          animation: google.maps.Animation.BOUNCE,
+          title: locationName, // Set the marker's title to the location name
+          draggable: true,
+          clickable: true
+        });
+
+
+        this.markers.push(newMarker);
+        this.enteredAddress = locationName;
+        // Set markerAdded to true to prevent adding more markers
+
+        //newMarker.addListener('dblclick', () => {
+        //  newMarker.setMap(null);
+        //  this.markers = [];
+        //  this.markers = this.markers.filter(marker => marker !== newMarker);
+        //  this.markerAdded = false;
+        //});
+
+        google.maps.event.addListener(newMarker, 'click', function () {
+          newMarker.setMap(null); // Remove the marker from the map
+        });
+
+
+
+
+
+      }
+    } else {
+      // Handle the case where you don't want to add more markers
+    }
+  }
+
+  removeMarker(marker: google.maps.Marker) {
+    debugger;
+    const index = this.markers.indexOf(marker);
+    if (index !== -1 && index !== 0) {
+      this.markers.splice(index, 1);  // Remove the marker from the array
+    }
+  }
   
+  getLocationName(latLng: google.maps.LatLngLiteral): Promise<string | null> {
+    return new Promise((resolve, reject) => {
+      const geocoder = new google.maps.Geocoder();
+
+      geocoder.geocode({ location: latLng }, (results, status) => {
+
+        if (status === google.maps.GeocoderStatus.OK) {
+
+          if (results[0]) {
+
+            const locationName = results[0].formatted_address;
+            resolve(locationName);
+
+          } else {
+            resolve(null); // No results found
+          }
+        } else {
+          reject(status);
+        }
+      });
+    });
+  }
+  openRelaxation(TPRelaxation: any) {
+    if (this.leaveAComment == null || this.leaveAComment == '') {
+      alert("Please enter a comment before proceeding");
+    }
+    else {
+      this.getCoOrdinatesForAddress();
+      this.modalService.dismissAll();
+      this.modalService.open(TPRelaxation, { centered: true, size: 'xl' });
+    }
    
+  }
+
+  startLat: number = 0;
+  startLng: number =0;
+  zoom = 20;
+  center: google.maps.LatLngLiteral = {
+    lat: this.startLat,
+    lng: this.startLng
+  };
+  mapOptions = {
+    center: this.center,
+    zoom: this.zoom,
+    disableDoubleClickZoom: true,
+    mapTypeId: google.maps.MapTypeId.SATELLITE,
+    streetViewControl: false,
+    mapTypeControl: false,
+    drawingControl: true,
+    zoomControl: false,       // Disable zoom control buttons
+    scrollwheel: false,       // Disable zooming with mouse scrol
+  };
+  
+  
+  initMap() {
+    var map = new google.maps.Map(document.getElementById('map'), {
+      center: { lat: -29.6182639, lng: 30.3795833 },
+      zoom: 8
+    });
+  }
+  display: any;
+  move(event: google.maps.MapMouseEvent) {
+    if (event.latLng != null) this.display = event.latLng.toJSON();
+  }
+  
+  getCoOrdinatesForAddress() {
+    debugger;
+    this.applicationData
+    this.center;
+    this.updateCenter(this.startLat,this.startLng);
+  }
+  getAllApplicationInfo() {
+    debugger;
+    this.bpService.getBuildingApplicationByApplicationID(this.bpApplicationId).subscribe((data: any) => {
+      debugger;
+      if (data.responseCode == 1) {
+        const current = data.dateSet[0];
+
+        this.applicationData = current;
+        this.applicationAddress = current.physicalAddress
+        this.startLng = parseFloat(current.longitude);
+        this.startLat= parseFloat(current.latitude);
+      }
+      else {
+        alert(data.responseMessage);
+      }
+    }, error => {
+      console.log(error);
+    })
+  }
+
+  locationName: string;
+  applicationAddress: any;
+  async updateCenter(newLat: number, newLng: number) {
+    this.center = {
+      lat: newLat,
+      lng: newLng
+    };
+    // Trigger change detection if needed
+    const position = {
+      lat: newLat,
+      lng: newLng,
+    };
+
+    this.locationName = await this.getLocationName(position);
+    const newMarker = new google.maps.Marker({
+      position,
+      animation: google.maps.Animation.BOUNCE,
+      title: this.locationName, // Set the marker's title to the location name
+      draggable: false,
+      clickable: false
+    });
+
+
+    
+    this.markers.push(newMarker);
+    this.cdRef.detectChanges();
+  }
+
+  drawingManager: google.maps.drawing.DrawingManager;
+  initializeDrawingManager(map: google.maps.Map) {
+    this.drawingManager = new google.maps.drawing.DrawingManager({
+     
+      drawingControl: true,
+      drawingControlOptions: {
+        position: google.maps.ControlPosition.TOP_LEFT,
+        drawingModes: [google.maps.drawing.OverlayType.MARKER,
+          google.maps.drawing.OverlayType.CIRCLE,
+          google.maps.drawing.OverlayType.POLYGON,
+          google.maps.drawing.OverlayType.POLYLINE,
+          google.maps.drawing.OverlayType.RECTANGLE]
+      },
+      markerOptions: {
+        icon: 'assets\fontawesome-free-6.4.2-web\svgs\regular\pencil-solid.svg'
+      },
+      circleOptions: {
+        fillColor: '#090708',
+        fillOpacity: 1,
+        strokeWeight: 5,
+        clickable: false,
+        editable: true,
+        zIndex: 10000
+      }
+    });
+    this.drawingManager.setMap(map);
+
+    google.maps.event.addListener(this.drawingManager, 'overlaycomplete', (event) => {
+      let shapeData: any = {};
+
+      // Capture the shape type and its coordinates
+      switch (event.type) {
+        case google.maps.drawing.OverlayType.MARKER:
+          shapeData = {
+            type: 'marker',
+            position: event.overlay.getPosition().toJSON() // LatLng object
+          };
+          break;
+        case google.maps.drawing.OverlayType.CIRCLE:
+          shapeData = {
+            type: 'circle',
+            center: event.overlay.getCenter().toJSON(), // LatLng object
+            radius: event.overlay.getRadius() // Radius in meters
+          };
+          break;
+        case google.maps.drawing.OverlayType.POLYGON:
+          shapeData = {
+            type: 'polygon',
+            paths: event.overlay.getPath().getArray().map((path: any) => path.toJSON()) // Array of LatLng objects
+          };
+          break;
+        case google.maps.drawing.OverlayType.POLYLINE:
+          shapeData = {
+            type: 'polyline',
+            path: event.overlay.getPath().getArray().map((path: any) => path.toJSON()) // Array of LatLng objects
+          };
+          break;
+        case google.maps.drawing.OverlayType.RECTANGLE:
+          shapeData = {
+            type: 'rectangle',
+            bounds: {
+              north: event.overlay.getBounds().getNorthEast().lat(),
+              east: event.overlay.getBounds().getNorthEast().lng(),
+              south: event.overlay.getBounds().getSouthWest().lat(),
+              west: event.overlay.getBounds().getSouthWest().lng()
+            } // Bounds object
+          };
+          break;
+      }
+
+      // Store the shape data in an array (you can also send this to a backend)
+      this.drawnShapes.push(shapeData);
+      console.log('Shape Data:', shapeData);
+
+      // Optionally, persist the shape data to a backend or local storage
+      this.saveShapeData(shapeData);
+    });
+  }
+  drawnShapes: any[] = []; 
+  saveShapeData(shapeData: any) {
+    debugger;
+    // Example function to save the data, modify according to your needs
+    // For example, save to a backend via an HTTP request or to local storage
+    console.log('Saving shape data:', shapeData);
+    // Implement actual saving logic here
+  }
+ 
+  
+ async saveAllNeighbourConsent() {
+    debugger;
+    for (let i = 1; i < this.markers.length; i++) {
+      debugger;
+      const location = this.markers[i];
+
+      const locationName = await this.getLocationName(location.position);
+
+      debugger;
+      await this.neighbourConsentService.addUpdateNeighbourConsent(0, this.bpApplicationId, locationName, null, null, "waiting", this.CurrentUser.appUserId).subscribe((data: any) => {
+        if (data.responseCode == 1) {
+          if (i == Number(this.markers.length - 1)) {
+             this.onCommentTP('Reject');
+
+            this.modalService.dismissAll();
+          }
+        }
+        else {
+          alert(data.responseMessage);
+        }
+      }, error => {
+        console.log(error);
+      })
+      
+    }
+  }
+  moveTPToPaid: boolean ;
+  getAllNeighbourConsent() {
+    this.neighbourConsentService.getAllNeighbourConsentForApplication(this.bpApplicationId).subscribe((data: any) => {
+      if (data.responseCode == 1) {
+        const current = data.dateSet;
+
+        if (current.some(x => x.documentName == null || x.documentLocalPath == null)) {
+          this.moveTPToPaid = false;
+        }
+      }
+      else {
+        alert(data.responseMessage);
+      }
+
+      console.log("Neighbours Consent", data.dateSet, " Move to Paid", this.moveTPToPaid);
+    }, error => {
+      console.log(error);
+    })
+
+    
+  }
+  
 }
 

@@ -72,24 +72,25 @@
       <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'TP Review'">
         <p>TP Reviewer</p>
         <button mat-raised-button color="approveBTN" (click)="onCommentTP('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon"> Prov. Approved</button>
-        <button mat-raised-button color="relaxationBTN" (click)="onCommentTP('Reject')"><i class="fa fa-file" aria-hidden="true" style="color:white"></i>   Request For Relaxation</button>
+        <button mat-raised-button color="relaxationBTN" (click)="openRelaxation(TPRelaxation)"><i class="fa fa-file" aria-hidden="true" style="color:white"></i>   Request For Relaxation</button>
       </div>
 
       <!-- #endregion -->
       <!-- #region Town planning review move to paid -->
-
-      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'TP Relaxation - Unpaid'">
+      <!--- Not needed at the moment - Kyle 20-08-24-->
+      <!--<div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'TP Relaxation'">
         <p>TP Reviewer</p>
-        <button mat-raised-button color="relaxationBTN" (click)="moveToPaidBPApplicationTP()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move to paid</button>
-      </div>
+        <button mat-raised-button color="relaxationBTN" (click)="moveToPaidBPApplicationTP()" [disabled]="moveTPToPaid == false"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Move to paid</button>
+      </div>-->
 
       <!-- #endregion -->
-      <!-- #region Old town planning approve after paid actions *will be changed* -->
+      <!-- #region Old town planning approve after neighbours consent uploaded * -->
 
-      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'TP Relaxation - Paid'">
+      <div class="cont2" *ngIf="this.CurrentApplicationBeingViewed[0].currentStage == 'TP Relaxation' ">
         <p>TP Reviewer</p>
-        <button mat-raised-button color="approveBTN" (click)="onCommentTP('Approve')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
-        <button mat-raised-button color="rejectBTN" (click)="onCommentTP('Reject')"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject</button>
+        <p *ngIf="moveTPToPaid == false"><em>* Waiting for all neighbour consent to be uploaded by applicant</em></p>
+        <button mat-raised-button color="approveBTN" (click)="onCommentTP('Approve')" [disabled]="moveTPToPaid == false"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-up-solid.svg" class="icon">  Approve</button>
+        <button mat-raised-button color="rejectBTN" (click)="onCommentTP('Reject')" [disabled]="moveTPToPaid == false"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/thumbs-down-solid.svg" class="icon">    Reject</button>
       </div>
 
       <!-- #endregion -->
@@ -479,4 +480,57 @@
   </div>
 
 
+</ng-template>
+
+<ng-template #TPRelaxation let-modal>
+  <div class="modal-header">
+    <h1 class="modal-title">Town Planning Relaxation</h1>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+
+      <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control"  [(ngModel)]="applicationAddress"placeholder="Enter Total" readonly>
+        <label for="address">Application Address</label>
+      </div>
+      </div>
+    <br/>
+    <p><em>*Note : Double click on location to add a pin and  request for neighbour's consent / Double click on location pin to remove the pin</em></p>
+
+    <div>
+      <google-map height="550px"
+                  width="100%"
+                  [center]="center"
+                  [options]="mapOptions"
+                  (mapDblclick)="markerAdded ? null : addMarkerOnDblClick($event)"
+                  (mapMousemove)="move($event)">
+
+        <!--- the line commented out below is going to be needed in the map about when doing drawings on the map ---->
+        <!-- (mapInitialized)="initializeDrawingManager($event)"-->
+        <map-marker *ngFor="let marker of markers"
+                    [position]="marker.position"
+                    [title]="marker.title"
+                    (mapDblclick)="removeMarker(marker)">
+        </map-marker>
+
+      </google-map>
+    </div>
+    <br/>
+    <h2 *ngIf="markers.length > 1">Neighbours' Consent List</h2>
+    <div class="row" *ngFor="let marker of markers;let i = index">
+
+      <div class="form-floating mb-3 mt-3" *ngIf="i != 0">
+        <input type="text" class="form-control"  name="addresses" id="addresses" [(ngModel)]="marker.title"placeholder="Enter Total" readonly>
+        <label for="addresses">Neigbour {{i}}</label>
+      </div>
+    </div>
+
+    </div>
+
+    <div class="modal-footer">
+       <button type="submit" class="btn btn-outline-success" (click)="saveAllNeighbourConsent()" >Save</button>
+    </div>
 </ng-template>

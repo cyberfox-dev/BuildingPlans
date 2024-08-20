@@ -25,7 +25,7 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using System.Runtime.CompilerServices;
 using iText.Commons.Actions.Contexts;
-
+using NetTopologySuite.Geometries;
 namespace BuildingPlans.Controllers
 {
     [Route("api/[controller]")]
@@ -100,7 +100,8 @@ namespace BuildingPlans.Controllers
                             StageNumber = model.StageNumber,
                             Status = model.Status,
                             OmnibusServitude = model.OmnibusServitude,
-                            BPApplicationID = model.BPApplicationID
+                            BPApplicationID = model.BPApplicationID,
+                           
 
                         };
                         await _context.BuildingApplications.AddAsync(tempBuildingApplication);
@@ -987,5 +988,7 @@ namespace BuildingPlans.Controllers
             }
         }
 
+
+        
     }
 }

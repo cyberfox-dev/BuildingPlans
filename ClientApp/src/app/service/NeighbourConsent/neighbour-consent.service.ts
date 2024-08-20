@@ -8,7 +8,7 @@ import { SharedService } from 'src/app/shared/shared.service';
 export class NeighbourConsentService {
 
   private readonly apiUrl: string = this.sharedService.getApiUrl() + '/api/';
-  private readonly baseURL: string = this.apiUrl + "serviceItem/";
+  private readonly baseURL: string = this.apiUrl + "neighbourConsent/";
 
   constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 

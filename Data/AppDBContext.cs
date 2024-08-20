@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.Options;
+
 
 namespace BuildingPlans.Data
 {
@@ -105,5 +107,14 @@ namespace BuildingPlans.Data
         public DbSet<BPComments> BPComments { get; set; }
 
         public DbSet<NeighbourConsent> NeighbourConsent { get; set; }
+
+        public DbSet<DrawingCoOrdinates> DrawingCoOrdinates { get; set; }
+
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer("YourPostgreSqlConnectionStringHere")
+        //                .UseNetTopologySuite();
+
+        //}
     }
 }

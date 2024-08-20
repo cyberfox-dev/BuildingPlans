@@ -1,4 +1,6 @@
-﻿namespace BuildingPlans.Models.BindingModel
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using NetTopologySuite.Geometries;
+namespace BuildingPlans.Models.BindingModel
 {
     public class BuildingApplicationBindingModel
     {
@@ -52,6 +54,6 @@
         public string? AgentPostalAddress { get; set; }
         public string? DescriptionOfProject { get; set; }
         public string? SupportingDocuments { get; set; }
-
+      
     }
 }

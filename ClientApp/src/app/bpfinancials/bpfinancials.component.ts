@@ -104,7 +104,6 @@ export class BPFinancialsComponent implements OnInit {
   }
 
   viewDocument(index: any) {
-
     const filename = this.financialDocumentList[index].FinancialDocumentName;
     const extension = filename.split('.').pop().toLowerCase();
 
@@ -137,16 +136,25 @@ export class BPFinancialsComponent implements OnInit {
       fetch(this.apiUrl + `documentUpload/GetDocument?filename=${filename}`)
         .then(response => {
           if (response.ok) {
-            return response.blob();
+            // The response status is in the 200 range
+
+            return response.blob(); // Extract the response body as a Blob
+
           } else {
             throw new Error('Error fetching the document');
           }
         })
         .then(blob => {
+          // Create a URL for the Blob object
           const documentURL = URL.createObjectURL(blob);
-          const iframe = document.createElement('iframe');
-          iframe.src = documentURL;
-          document.body.appendChild(iframe);
+
+          window.open(documentURL, '_blank');
+
+          // Download the document
+          const link = document.createElement('a');
+          link.href = documentURL;
+          link.download = this.financialDocumentList[index].FinancialDocumentName; // Set the downloaded file name
+          link.click();
         })
         .catch(error => {
           console.log(error);

@@ -1,5 +1,5 @@
 ﻿using BuildingPlans.Data.Entities;
-
+using NetTopologySuite.Geometries;
 namespace BuildingPlans.Models.DTO
 {
     public class BuildingApplicationDTO
@@ -57,5 +57,6 @@ namespace BuildingPlans.Models.DTO
         public string? AgentPostalAddress { get; set; }
         public string? DescriptionOfProject { get; set; }
         public string? SupportingDocuments { get; set; }
+        
     }
 }

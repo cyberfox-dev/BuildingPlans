@@ -1,5 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Drawing;
+using NetTopologySuite.Geometries;
+
+
 
 namespace BuildingPlans.Data.Entities
 {
@@ -56,6 +59,6 @@ namespace BuildingPlans.Data.Entities
         public string? AgentPostalAddress { get; set; }
         public string? DescriptionOfProject { get; set; }
         public string? SupportingDocuments { get; set; }
-
+       
     }
 }

@@ -5,6 +5,7 @@
   <button mat-raised-button color="blue" *ngIf="isCalledInsidePermit && hasDocument" (click)="viewDocument(-1)" matTooltip="View document"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/eye-solid-white.svg" class="icon"></button>
   <button mat-raised-button color ="warn" *ngIf="CurrentUserProfile[0].subDepartmentName == 'EMB' && hasDocument === true" matToolTip="Delete Permit Document"matTooltip="Delete Document" (click)="deletePermitDocument()"><img src="assets/fontawesome-free-6.4.2-web/svgs/regular/trash-can-solid-white.svg" class="icon"></button>
   <!--End of permitupload Sindiswa 09 January 2024 - for the purpose of uploading documents under the "Permits" tab-->
+  <button mat-raised-button color="action" *ngIf="currentStage == 'TP Relaxation'" (click)="getAllNeighboutConsents(neighbourConsent)">Upload Neighbour's Consent</button>
 </div>
 
 <table  *ngIf="!isCalledInsidePermit" mat-table [dataSource]="dataSourceDoc" class="mat-elevation-z8">
@@ -72,5 +73,26 @@
   <div class="modal-footer">
     <button *ngIf="!isCalledInsidePermit" type="submit" class="btn btn-outline-success" (click)="  ConfirmUpload();getAllDocsForApplication();changeHasFile();modal.close('Close click')">Save</button>
     <button *ngIf="isCalledInsidePermit" type="submit" class="btn btn-outline-success" (click)="  ConfirmUpload();changeHasFile();modal.close('Close click')">Save</button>
+  </div>
+</ng-template>
+
+
+<ng-template #neighbourConsent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Upload Neighbour Consent Documents</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="onCloseFile()"></button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+      <mat-form-field>
+        <mat-label>Select address for neighbour consent upload</mat-label>
+        <mat-select [(value)]="selectedAddress">
+          <mat-option *ngFor="let consent of neighbourConsentList" value="{{consent}}">{{consent.Address}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
   </div>
 </ng-template>

@@ -4,6 +4,7 @@ using BuildingPlans.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BuildingPlans.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240816134129_DrawingsTablw")]
+    partial class DrawingsTablw
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,7 +55,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("AccessGroupRoleLinkID");
 
-                    b.ToTable("AccessGroupRoleLink", (string)null);
+                    b.ToTable("AccessGroupRoleLink");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.AccessGroups", b =>
@@ -84,7 +86,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("AccessGroupID");
 
-                    b.ToTable("AccessGroups", (string)null);
+                    b.ToTable("AccessGroups");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.AccessGroupUserLink", b =>
@@ -124,7 +126,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("AccessGroupUserLinkID");
 
-                    b.ToTable("AccessGroupUserLink", (string)null);
+                    b.ToTable("AccessGroupUserLink");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.Applications", b =>
@@ -278,7 +280,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("ApplicationID");
 
-                    b.ToTable("Application", (string)null);
+                    b.ToTable("Application");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.AppUser", b =>
@@ -393,7 +395,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("AuditTrailID");
 
-                    b.ToTable("AuditTrail", (string)null);
+                    b.ToTable("AuditTrail");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPAccessGroupRoleLink", b =>
@@ -430,7 +432,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("AccessGroupRoleLinkID");
 
-                    b.ToTable("BPAccessGroupRoleLink", (string)null);
+                    b.ToTable("BPAccessGroupRoleLink");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPAccessGroups", b =>
@@ -461,7 +463,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("AccessGroupID");
 
-                    b.ToTable("BPAccessGroups", (string)null);
+                    b.ToTable("BPAccessGroups");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPAccessGroupsUserLink", b =>
@@ -513,7 +515,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("AccessGroupUserLinkID");
 
-                    b.ToTable("BPAccessGroupsUserLinks", (string)null);
+                    b.ToTable("BPAccessGroupsUserLinks");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPAddressType", b =>
@@ -541,7 +543,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("AddresTypeID");
 
-                    b.ToTable("BPAddressTypes", (string)null);
+                    b.ToTable("BPAddressTypes");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPBannerApplication", b =>
@@ -626,7 +628,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("ApplicationID");
 
-                    b.ToTable("BPBannerApplication", (string)null);
+                    b.ToTable("BPBannerApplication");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPComments", b =>
@@ -678,7 +680,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("CommentID");
 
-                    b.ToTable("BPComments", (string)null);
+                    b.ToTable("BPComments");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPComplaints", b =>
@@ -736,7 +738,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("ComplaintID");
 
-                    b.ToTable("BPComplaints", (string)null);
+                    b.ToTable("BPComplaints");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPDemolitionApplication", b =>
@@ -830,7 +832,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("DemolitionID");
 
-                    b.ToTable("BPDemolitionApplication", (string)null);
+                    b.ToTable("BPDemolitionApplication");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPDepartmentChecklists", b =>
@@ -864,7 +866,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("ChecklistItemID");
 
-                    b.ToTable("BPDepartmentChecklists", (string)null);
+                    b.ToTable("BPDepartmentChecklists");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPDepartmentForComment", b =>
@@ -910,7 +912,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("BPDepartmentForCommentID");
 
-                    b.ToTable("BPDepartmentForComment", (string)null);
+                    b.ToTable("BPDepartmentForComment");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPDepartmentLinkTable", b =>
@@ -956,7 +958,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("DepartmentLinkID");
 
-                    b.ToTable("BPDepartmentLinkTable", (string)null);
+                    b.ToTable("BPDepartmentLinkTable");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPDepartments", b =>
@@ -990,7 +992,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("DepartmentID");
 
-                    b.ToTable("BPDepartments", (string)null);
+                    b.ToTable("BPDepartments");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPDocumentCategoryTable", b =>
@@ -1021,7 +1023,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("BPDocumentCategoryTable", (string)null);
+                    b.ToTable("BPDocumentCategoryTable");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPDocumentUploads", b =>
@@ -1076,7 +1078,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("DocumentID");
 
-                    b.ToTable("BPDocumentUploads", (string)null);
+                    b.ToTable("BPDocumentUploads");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPFinancial", b =>
@@ -1116,7 +1118,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("FinancialID");
 
-                    b.ToTable("BPFinancial", (string)null);
+                    b.ToTable("BPFinancial");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPFlagApplication", b =>
@@ -1204,7 +1206,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("ApplicationID");
 
-                    b.ToTable("BPFlagApplication", (string)null);
+                    b.ToTable("BPFlagApplication");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPFunctionalAreas", b =>
@@ -1235,7 +1237,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("FunctionalAreaID");
 
-                    b.ToTable("BPFunctionalAreas", (string)null);
+                    b.ToTable("BPFunctionalAreas");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPMandatoryDepartmentDocuments", b =>
@@ -1269,7 +1271,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("DocumentID");
 
-                    b.ToTable("BPMandatoryDepartmentDocuments", (string)null);
+                    b.ToTable("BPMandatoryDepartmentDocuments");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPMandatoryDocumentUploads", b =>
@@ -1300,7 +1302,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("MandatoryDocumentID");
 
-                    b.ToTable("BPMandatoryDocumentUploads", (string)null);
+                    b.ToTable("BPMandatoryDocumentUploads");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPMandatoryStageDocuments", b =>
@@ -1334,7 +1336,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("DocumentID");
 
-                    b.ToTable("BPMandatoryStageDocuments", (string)null);
+                    b.ToTable("BPMandatoryStageDocuments");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPNotifications", b =>
@@ -1374,7 +1376,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("NotificationID");
 
-                    b.ToTable("BPNotifications", (string)null);
+                    b.ToTable("BPNotifications");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPRoles", b =>
@@ -1408,7 +1410,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("RoleID");
 
-                    b.ToTable("BPRoles", (string)null);
+                    b.ToTable("BPRoles");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPServiceItems", b =>
@@ -1457,7 +1459,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("ServiceItemID");
 
-                    b.ToTable("BPServiceItems", (string)null);
+                    b.ToTable("BPServiceItems");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPSignageApplication", b =>
@@ -1569,7 +1571,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("ApplicationID");
 
-                    b.ToTable("BPSignageApplication", (string)null);
+                    b.ToTable("BPSignageApplication");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BPStagesCheckLists", b =>
@@ -1603,7 +1605,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("CheckListItemID");
 
-                    b.ToTable("bpStagesCheckLists", (string)null);
+                    b.ToTable("bpStagesCheckLists");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.BuildingApplication", b =>
@@ -1772,7 +1774,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("ApplicationID");
 
-                    b.ToTable("BuildingApplications", (string)null);
+                    b.ToTable("BuildingApplications");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.CommentBuilder", b =>
@@ -1800,7 +1802,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("CommentID");
 
-                    b.ToTable("CommentBuilder", (string)null);
+                    b.ToTable("CommentBuilder");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.Comments", b =>
@@ -1858,7 +1860,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("CommentID");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.Config", b =>
@@ -1898,7 +1900,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("ConfigID");
 
-                    b.ToTable("Config", (string)null);
+                    b.ToTable("Config");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.ContactDetails", b =>
@@ -1944,7 +1946,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("ContactDetailID");
 
-                    b.ToTable("ContactDetails", (string)null);
+                    b.ToTable("ContactDetails");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.Departments", b =>
@@ -1979,7 +1981,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("DepartmentID");
 
-                    b.ToTable("DepartmentsTable", (string)null);
+                    b.ToTable("DepartmentsTable");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.DepositRequired", b =>
@@ -2040,7 +2042,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("DepositRequiredID");
 
-                    b.ToTable("DepositRequired", (string)null);
+                    b.ToTable("DepositRequired");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.DocumentsRepository", b =>
@@ -2071,7 +2073,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("DocumentsRepositoryID");
 
-                    b.ToTable("DocumentsRepository", (string)null);
+                    b.ToTable("DocumentsRepository");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.DocumentUpload", b =>
@@ -2126,7 +2128,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("DocumentID");
 
-                    b.ToTable("DocumentUpload", (string)null);
+                    b.ToTable("DocumentUpload");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.DraftedProjects", b =>
@@ -2217,7 +2219,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("DraftID");
 
-                    b.ToTable("DraftedProjectsTable", (string)null);
+                    b.ToTable("DraftedProjectsTable");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.DrawingCoOrdinates", b =>
@@ -2257,7 +2259,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("CoOrdinateID");
 
-                    b.ToTable("DrawingCoOrdinates", (string)null);
+                    b.ToTable("DrawingCoOrdinates");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.FAQ", b =>
@@ -2288,7 +2290,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("FAQID");
 
-                    b.ToTable("FAQ", (string)null);
+                    b.ToTable("FAQ");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.Financial", b =>
@@ -2328,7 +2330,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("FinancialID");
 
-                    b.ToTable("Financial", (string)null);
+                    b.ToTable("Financial");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.GLCode", b =>
@@ -2365,7 +2367,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("GLCodeID");
 
-                    b.ToTable("GLCode", (string)null);
+                    b.ToTable("GLCode");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.MandatoryDocumentStageLink", b =>
@@ -2399,7 +2401,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("MandatoryDocumentStageLinkID");
 
-                    b.ToTable("MandatoryDocumentStageLink", (string)null);
+                    b.ToTable("MandatoryDocumentStageLink");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.MandatoryDocumentUpload", b =>
@@ -2430,7 +2432,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("MandatoryDocumentID");
 
-                    b.ToTable("MandatoryDocumentUploads", (string)null);
+                    b.ToTable("MandatoryDocumentUploads");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.ManuallyAssignUsers", b =>
@@ -2467,7 +2469,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("ReferalID");
 
-                    b.ToTable("ManuallyAssignUsers", (string)null);
+                    b.ToTable("ManuallyAssignUsers");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.MFT", b =>
@@ -2507,7 +2509,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("MFTID");
 
-                    b.ToTable("MFT", (string)null);
+                    b.ToTable("MFT");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.NeighbourConsent", b =>
@@ -2547,7 +2549,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("ConsentID");
 
-                    b.ToTable("NeighbourConsent", (string)null);
+                    b.ToTable("NeighbourConsent");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.Notification", b =>
@@ -2590,7 +2592,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("NotificationID");
 
-                    b.ToTable("Notification", (string)null);
+                    b.ToTable("Notification");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.OccupationClassificationTable", b =>
@@ -2630,7 +2632,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("OccupationID");
 
-                    b.ToTable("OccupationClassificationTable", (string)null);
+                    b.ToTable("OccupationClassificationTable");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.PermitSubForComment", b =>
@@ -2697,7 +2699,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("PermitSubForCommentID");
 
-                    b.ToTable("PermitSubForComment", (string)null);
+                    b.ToTable("PermitSubForComment");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.Professionals", b =>
@@ -2754,7 +2756,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasIndex("AppUserID");
 
-                    b.ToTable("ProfessionalsTable", (string)null);
+                    b.ToTable("ProfessionalsTable");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.ProfessionalsLinks", b =>
@@ -2785,7 +2787,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("ProfessionalsLinkID");
 
-                    b.ToTable("ProfessionalsLink", (string)null);
+                    b.ToTable("ProfessionalsLink");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.ProjectSizeCheckList", b =>
@@ -2822,7 +2824,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("ProjectSizeCheckListID");
 
-                    b.ToTable("ProjectSizeCheckList", (string)null);
+                    b.ToTable("ProjectSizeCheckList");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.ProjectSizedSelections", b =>
@@ -2859,7 +2861,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("SelectionID");
 
-                    b.ToTable("ProjectSizedSelections", (string)null);
+                    b.ToTable("ProjectSizedSelections");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.ReviewerAssignment", b =>
@@ -2908,7 +2910,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("ReviewerForCommentID");
 
-                    b.ToTable("ReviewerForComment", (string)null);
+                    b.ToTable("ReviewerForComment");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.Roles", b =>
@@ -2942,7 +2944,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("RoleID");
 
-                    b.ToTable("Role", (string)null);
+                    b.ToTable("Role");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.ServiceItems", b =>
@@ -2991,7 +2993,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("ServiceItemID");
 
-                    b.ToTable("ServiceItem", (string)null);
+                    b.ToTable("ServiceItem");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.Stages", b =>
@@ -3022,7 +3024,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("StageID");
 
-                    b.ToTable("StageTable", (string)null);
+                    b.ToTable("StageTable");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.StagesTableBP", b =>
@@ -3059,7 +3061,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("StageID");
 
-                    b.ToTable("StagesTableBP", (string)null);
+                    b.ToTable("StagesTableBP");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.SubDepartmentForComment", b =>
@@ -3123,7 +3125,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("SubDepartmentForCommentID");
 
-                    b.ToTable("SubDepartmentForComment", (string)null);
+                    b.ToTable("SubDepartmentForComment");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.SubDepartments", b =>
@@ -3178,7 +3180,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("SubDepartmentID");
 
-                    b.ToTable("SubDepartmentsTable", (string)null);
+                    b.ToTable("SubDepartmentsTable");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.TypeOfExcavation", b =>
@@ -3209,7 +3211,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("TypeOfExcavationID");
 
-                    b.ToTable("TypesOfExcavation", (string)null);
+                    b.ToTable("TypesOfExcavation");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.UserLinkToArchitect", b =>
@@ -3249,7 +3251,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("UserLinkID");
 
-                    b.ToTable("UserLinkToArchitects", (string)null);
+                    b.ToTable("UserLinkToArchitects");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.UserProfile", b =>
@@ -3376,7 +3378,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("UserProfileID");
 
-                    b.ToTable("UserProfilesTable", (string)null);
+                    b.ToTable("UserProfilesTable");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.ZoneForComment", b =>
@@ -3413,7 +3415,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("ZoneForCommentID");
 
-                    b.ToTable("ZoneForComment", (string)null);
+                    b.ToTable("ZoneForComment");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.ZoneLink", b =>
@@ -3474,7 +3476,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("ZoneLinkID");
 
-                    b.ToTable("ZoneLinkTable", (string)null);
+                    b.ToTable("ZoneLinkTable");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.Zones", b =>
@@ -3512,7 +3514,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("ZoneID");
 
-                    b.ToTable("ZonesTable", (string)null);
+                    b.ToTable("ZonesTable");
                 });
 
             modelBuilder.Entity("BuildingPlans.Data.Entities.ZXNumberLog", b =>
@@ -3549,7 +3551,7 @@ namespace BuildingPlans.Data.Migrations
 
                     b.HasKey("ZXNumberID");
 
-                    b.ToTable("ZXNumberLog", (string)null);
+                    b.ToTable("ZXNumberLog");
                 });
 
             modelBuilder.Entity("BuildingPlans.DTO.LinkedUserSpDTO", b =>
@@ -3569,7 +3571,7 @@ namespace BuildingPlans.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("LinkedUserSpDTOs", (string)null);
+                    b.ToTable("LinkedUserSpDTOs");
                 });
 
             modelBuilder.Entity("BuildingPlans.DTO.UserSpDTO", b =>
@@ -3582,7 +3584,7 @@ namespace BuildingPlans.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("UserSpDTOs", (string)null);
+                    b.ToTable("UserSpDTOs");
                 });
 
             modelBuilder.Entity("BuildingPlans.Models.DTO.ApplicationsDTO", b =>
@@ -3734,7 +3736,7 @@ namespace BuildingPlans.Data.Migrations
                     b.Property<DateTime?>("permitStartDate")
                         .HasColumnType("datetime2");
 
-                    b.ToTable("ApplicationListDTO", (string)null);
+                    b.ToTable("ApplicationListDTO");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
